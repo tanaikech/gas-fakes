@@ -13,11 +13,9 @@
     "test": "node ./test/test.js",
     "pub": "npm publish --access public"
   },
-  "devDependencies": {
-    "@mcpher/unit": "^1.1.6"
-  },
   "name": "@mcpher/gas-fakes",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "main.js",
-  "description": "A proof of concept implementation of Apps Script Environment on Node"
+  "description": "A proof of concept implementation of Apps Script Environment on Node",
+  "repository": "github:brucemcpherson/gas-fakes"
 }

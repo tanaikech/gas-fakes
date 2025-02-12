@@ -28,7 +28,15 @@ I recommend you use the test project included in the repo to make sure all is se
 
 The script togas.sh will move your files to gas - just set the SOURCE and TARGET folders in the script. Make sure you have an appsscript.json manifest in the SOURCE folder, as gas-fakes reads that to handle OAuth on Node.
 
-You can write your project to run on Node and call GAS services, and it will also run on the GAS environment with no code changes. 
+You can write your project to run on Node and call GAS services, and it will also run on the GAS environment with no code changes, except on the node side you have this one import
+
+````
+// all the fake services are here
+import '@mcpher/gas-fakes/main.js'
+````
+
+togas.sh will remove imports and exports on the way to apps script, which doesnt support them.
+
 
 ## Approach
 
