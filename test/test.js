@@ -3,13 +3,9 @@
 // this is loaded by npm, but is a library on Apps Script side
 import { Exports as unitExports } from '@mcpher/unit'
 
-// this is for testing on node directly only
-import { Auth } from '../src/support/auth.js'
-import { Utils } from '../src/support/utils.js'
-import { fieldUrlParams } from '../src/services/drive/fakedrivehelpers.js'
 
 // all the fake services are here
-import '../main.js'
+import '@mcpher/gas-fakes/main.js'
 
 const testFakes = async () => {
 
@@ -142,25 +138,6 @@ const testFakes = async () => {
   })
 
 
-  // this section won't run on APPS SCRIPT but will run ON node only
-  await unit.section('scopes and oauth - gas fake only', async t => {
-
-    // normally we dont need to do anything to kick off the scriptapp intialization cycle,
-    // but if we are testing the auth stuff directly on node, we can just get a token to make all that happen
-    // never necessary if we're just using Apps Script services which have all this wrapped up
-    // this section is only testing things that exist on node side only
-    t.is(typeof ScriptApp.getOAuthToken(), "string")
-
-    const auth = Auth.getAuth()
-    t.not(auth, null)
-    t.is(typeof auth, "object")
-    const token = await auth.getAccessToken()
-    t.is(typeof token, "string")
-    const projectId = await auth.getProjectId()
-    t.is(typeof projectId, "string")
-
-  }, { skip: !ScriptApp.isFake })
-
   unit.section('gas utiltities', t => {
     const now = new Date().getTime()
     const ms = 200
@@ -292,21 +269,6 @@ const testFakes = async () => {
     t.is(root.name, "My Drive")
     t.is(root.mimeType, "application/vnd.google-apps.folder")
   }, { skip: false })
-
-  unit.section('field and param merging utilities - only runs on gas fake', t => {
-
-    const { actual: fields } = t.is(fieldUrlParams(), "name,parents,id,mimeType")
-    t.is(fieldUrlParams(["x"]), "name,parents,id,mimeType,x")
-
-    t.is(Utils.makeUrlParams({ x: 'px' }), "x=px")
-    t.is(Utils.makeUrlParams([{ x: 'px', y: 'py' }]), "x=px&y=py")
-    t.is(Utils.makeUrlParams([{ x: 'px', y: 'py' }, { x: 'pxx' }]), "x=pxx&y=py")
-    t.is(Utils.makeUrlParams([{ x: 'px', y: 'py' }, { x: 'pxx' }, { z: 'pz' }]), "x=pxx&y=py&z=pz")
-    t.is(decodeURIComponent(Utils.makeUrlParams({ fields })), "fields=name,parents,id,mimeType")
-
-
-  }, { skip: !ScriptApp.isFake })
-
 
 
   unit.report()

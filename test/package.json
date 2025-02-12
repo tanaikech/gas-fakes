@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "@mcpher/unit": "^1.1.6",
+    "@mcpher/gas-fakes": "^1.0.1"
+  },
+  "type": "module",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "name": "test-gas-fakes",
+  "version": "1.0.0",
+  "main": "test.js",
+  "description": "test A proof of concept implementation of Apps Script Environment on Node",
+  "repository": "github:brucemcpherson/gas-fakes"
+}
