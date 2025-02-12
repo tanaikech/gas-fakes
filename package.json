@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+    "get-stream": "^9.0.1",
+    "google-auth-library": "^9.15.0",
+    "googleapis": "^144.0.0",
+    "got": "^14.4.5",
+    "make-synchronous": "^1.0.0",
+    "mime": "^4.0.6",
+    "sleep-synchronously": "^2.0.0"
+  },
+  "type": "module",
+  "scripts": {
+    "test": "node ./test/test.js"
+  },
+  "devDependencies": {
+    "@mcpher/unit": "^1.1.3"
+  }
+}
