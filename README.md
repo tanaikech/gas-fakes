@@ -38,6 +38,7 @@ There were 3 main sticky problems to overcome to get this working
 - GAS is entirely synchronous, whereas the replacement calls to Workspace APIS on Node are all asynchrounous.
 - GAS handles OAuth initialization from the manifest file automatically, whereas we need some additional coding or alternative approaches on Node.
 - The service singletons (eg. DriveApp) are all intialized and available in the global space automatically, whereas in Node they need some post AUTH intialization, sequencing intialization and exposure.
+- GAS iterators aren't the same as standard iterators, as they have a hasNext() method and don't behave in the same way.
 
 Beyond that, implementation is just a lot of busy work. Here's how I've dealt with these 3 problems.
 
@@ -214,6 +215,88 @@ In short, the service us registered as an empty object, but when any attempt is 
 
 There's also a test available to see if you are running in GAS or on Node - ScriptApp.isFake
 
+### Iterators
+
+An iterator created by a generator does not have a hasNext() function, whereas GAS iterators do. To get round this, we can create a regular Node iterator, but introduce a wrapper so the constructor actually gets the first one, and next() uses the value we've already peeked at. Here's a wrapper to convert an iterator into a GAS style one. 
+````
+import { Proxies } from './proxies.js'
+/**
+ * this is a class to add a hasnext to a generator
+ * @class Peeker
+ * 
+ */
+class Peeker {
+  /**
+   * @constructor 
+   * @param {function} generator the generator function to add a hasNext() to
+   * @returns {Peeker}
+   */
+  constructor(generator) {
+    this.generator = generator
+    // in order to be able to do a hasnext we have to actually get the value
+    // this is the next value stored
+    this.peeked = generator.next()
+  }
+
+  /**
+   * we see if there's a next if the peeked at is all over
+   * @returns {Boolean}
+   */
+  hasNext () {
+    return !this.peeked.done
+  }
+
+  /**
+   * get the next value - actually its already got and storef in peeked
+   * @returns {object} {value, done}
+   */
+  next () {
+    if (!this.hasNext()) {
+      // TODO find out what driveapp does
+      throw new Error ('iterator is exhausted - there is no more')
+    }
+    // instead of returning the next, we return the prepeeked next
+    const value = this.peeked.value
+    this.peeked = this.generator.next()
+    return value
+  }
+}
+
+export const newPeeker = (...args) => Proxies.guard(new Peeker (...args))
+````
+
+And an example of usage, creating a parents iterator from a Drive API file.
+````
+/**
+ * this gets an intertor to fetch all the parents meta data
+ * @param {FakeDriveMeta} {file} the meta data
+ * @returns {object} {Peeker}
+ */
+const getParentsIterator = ({
+  file
+}) => {
+
+  Utils.assertType(file, "object")
+  Utils.assertType(file.parents, "array")
+
+  function* filesink() {
+    // the result tank, we just get them all by id
+    let tank = file.parents.map(id => getFileById({ id, allow404: false }))
+
+    while (tank.length) {
+      yield newFakeDriveFolder(tank.splice(0, 1)[0])
+    }
+  }
+
+  // create the iterator
+  const parentsIt = filesink()
+
+  // a regular iterator doesnt support the same methods 
+  // as Apps Script so we'll fake that too
+  return newPeeker(parentsIt)
+
+}
+````
 ## Help
 
 As I mentioned earlier, to take this further, I'm going to need a lot of help to extend the methods and services supported - so if you feel this would be useful to you, and would like to collaborate, please ping me on @bruce@mcpher.com and we'll talk.
