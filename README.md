@@ -313,3 +313,8 @@ const getParentsIterator = ({
 ## Help
 
 As I mentioned earlier, to take this further, I'm going to need a lot of help to extend the methods and services supported - so if you feel this would be useful to you, and would like to collaborate, please ping me on [bruce@mcpher.com](mailto:bruce@mcpher.com) and we'll talk.
+
+## Translations and writeups
+
+- [mcpher] (https://ramblings.mcpher.com/a-proof-of-concept-implementation-of-apps-script-environment-on-node/)
+- [Russian version](README.RU.md) ([credit Alex Ivanov](https://github.com/oshliaer))

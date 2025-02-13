@@ -17,5 +17,6 @@
   "version": "1.0.1",
   "main": "main.js",
   "description": "A proof of concept implementation of Apps Script Environment on Node",
-  "repository": "github:brucemcpherson/gas-fakes"
+  "repository": "github:brucemcpherson/gas-fakes",
+  "homepage":  "https://ramblings.mcpher.com/a-proof-of-concept-implementation-of-apps-script-environment-on-node/"
 }
