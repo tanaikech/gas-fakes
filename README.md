@@ -17,7 +17,7 @@ The idea is that you can run GAS services (so far implemented) locally on Node, 
 
 ### Cloud project
 
-You don't have access to the GAS maintained cloud project, so you'll need to create a GCP project to use locally. In order to duplicate the OAuth management handled by GAS, we'll use Application Default Credentials. There are some scripts in this repo to set up and test these. Once you've set up a cloud project go to the shells folder and add your project id to setaccount.sh and run it.
+You don't have access to the GAS maintained cloud project, so you'll need to create a GCP project to use locally. In order to duplicate the OAuth management handled by GAS, we'll use Application Default Credentials. There are some scripts in this repo to set up and test these. Once you've set up a clud project go to the shells folder and add your project id to setaccount.sh and
 
 The 
 
