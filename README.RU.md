@@ -288,8 +288,8 @@ const getParentsIterator = ({
   file
 }) => {
 
-  Utils.assertType(file, "object")
-  Utils.assertType(file.parents, "array")
+  Utils.assert.object(file)
+  Utils.assert.array(file.parents)
 
   function* filesink() {
     // the result tank, we just get them all by id

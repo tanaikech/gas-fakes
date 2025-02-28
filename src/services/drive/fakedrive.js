@@ -1,6 +1,9 @@
 import { Proxies } from '../../support/proxies.js'
 import { newPeeker } from '../../support/peeker.js'
 import { Utils } from '../../support/utils.js'
+import is from '@sindresorhus/is';
+
+
 import {
   handleError,
   decorateParams,
@@ -155,12 +158,13 @@ const getFilesIterator = ({
   fileTypes
 }) => {
 
+  const {assert} = Utils
   // parentId can be null to search everywhere
-  if (!Utils.isNull(parentId)) Utils.assertType(parentId, "string")
-  Utils.assertType(handler, "function")
-  Utils.assertType(fields, "object")
-  Utils.assertType(folderTypes, "boolean")
-  Utils.assertType(fileTypes, "boolean")
+  if (!is.null(parentId))assert.nonEmptyString(parentId)
+  assert.function(handler)
+  assert.object(fields)
+  assert.boolean(folderTypes)
+  assert.boolean(fileTypes)
 
 
   /**
@@ -216,9 +220,9 @@ const getFilesIterator = ({
 const getParentsIterator = ({
   file
 }) => {
-
-  Utils.assertType(file, "object")
-  Utils.assertType(file.parents, "array")
+  const {assert} = Utils
+  assert.object(file)
+  assert.array(file.parents)
 
   function* filesink() {
     // the result tank, we just get them all by id
@@ -246,8 +250,9 @@ const getParentsIterator = ({
  * @returns {object} {File, FakeHttpResponse}
  */
 const fetchFile = ({ id, handler = handleError, fields }) => {
-  Utils.assertType(id, "string")
-  Utils.assertType(handler, "function")
+  const {assert} = Utils
+  assert.string(id)
+  assert.function(handler)
 
   const params = decorateParams({
     fields, min: minFields, params: { fileId: id }
@@ -344,7 +349,9 @@ export class FakeDriveMeta {
 
   getSize() {
     // the meta is actually a string so convert
-    return parseInt(this.getDecorated("size"), 10)
+    const d = parseInt(this.getDecorated("size"), 10)
+    // folders dont return a size
+    return isNaN(d) ? 0 : d
   }
 
   getDateCreated() {
@@ -354,7 +361,7 @@ export class FakeDriveMeta {
   getDescription() {
     // the meta can be undefined so return null
     const d = this.getDecorated("description")
-    return Utils.isUndefined(d) ? null : d
+    return is.undefined(d) ? null : d
   }
 
   getLastUpdated() {
@@ -425,11 +432,6 @@ export class FakeDriveFolder extends FakeDriveMeta {
     if (!isFolder(meta)) {
       throw new Error(`file must be a folder:` + JSON.stringify(meta))
     }
-  }
-
-  //TODO something wrong with this
-  get _isRoot() {
-    return Boolean(this.getParents() || !this.getParents().length)
   }
 
   /**

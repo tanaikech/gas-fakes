@@ -129,14 +129,16 @@ I recommend you do this to make sure Auth it's all good before you start coding 
 
 ### Global intialization
 
-This was a little problematic to sequence, but I wanted to make sure that any GAS services being imitated were available and initialized on the Node side, just as they are in GAS. At the time of writing (a subset of the methods of) these services are implemented.
+This was a little problematic to sequence, but I wanted to make sure that any GAS services being imitated were available and initialized on the Node side, just as they are in GAS. At the time of writing these services are implemented. Only a subset of methods are currently available - the rest are work in progress.
 
-v1.0.0 proof of concept for
-
+v1.0.1 
 - `DriveApp`
 - `ScriptApp`
 - `UrlFetchApp`
 - `Utilities`
+- `Sheets`
+- `CacheService`
+- `PropertiesService`
 
 #### Proxies and globalThis
 
@@ -145,6 +147,7 @@ Each service has a FakeClass but I needed the Auth cycle to be initiated and don
 Here's the code for `ScriptApp`
 
 ```js
+
 /**
  * adds to global space to mimic Apps Script behavior
  */
@@ -152,18 +155,14 @@ const name = "ScriptApp"
 
 if (typeof globalThis[name] === typeof undefined) {
 
-  console.log ('setting script app to global')
+  // initializing auth etc
+  Syncit.fxInit()
 
+  console.log(`setting ${name} to global`)
   const getApp = () => {
 
     // if it hasn't been intialized yet then do that
     if (!_app) {
-      
-      // we also need to do the manifest scopes thing and the project id
-      const projectId = Syncit.fxGetProjectId()
-      const manifest = Syncit.fxGetManifest()
-      Auth.setProjectId (projectId)
-      Auth.setManifestScopes(manifest)
 
       _app = {
         getOAuthToken,
@@ -278,18 +277,13 @@ export const newPeeker = (...args) => Proxies.guard(new Peeker (...args))
 
 And an example of usage, creating a parents iterator from a Drive API file.
 
-```js
-/**
- * this gets an intertor to fetch all the parents meta data
- * @param {FakeDriveMeta} {file} the meta data
- * @returns {object} {Peeker}
- */
+````
 const getParentsIterator = ({
   file
 }) => {
 
-  Utils.assertType(file, "object")
-  Utils.assertType(file.parents, "array")
+  assert.object(file)
+  assert.array(file.parents)
 
   function* filesink() {
     // the result tank, we just get them all by id
@@ -308,7 +302,28 @@ const getParentsIterator = ({
   return newPeeker(parentsIt)
 
 }
-```
+````
+
+### Cache and Property services
+
+These are currently implemented using [keyv](https://github.com/jaredwray/keyv) with storage adaptor [keyv-file](https://github.com/zaaack/keyv-file). By default the Node side files are held in './gas-fakes/store'. I've gone for local file storage rather than something like redis to avoid adding local service requirements, but keyv takes a wide range of storage adaptors if you want to do something fancier. A small modificaion to kv.js is all you need.
+
+#### script, user and document store varieties
+
+All 3 are supported for both properties and cache. 
+
+##### scriptId
+
+The local version may have no knowledge of the Apps ScriptId. If you are using clasp, it's picked up from the .clasp.json file. However if you are not using clasp, it'll create a fake id in ./gas-fakes/settings.json and use that. All property and cache stores use the scriptId to partition data.
+
+##### userId
+
+The userId is extracted from an accessToken and will match the id derived from Application Default Credentials. This means that you can logon as a different user to test user data isolation. All user level property and cache stores use the scriptId and userId to partition data.
+
+##### documentId
+
+The documentId is only meaningful if you are working on a container bound script or add-on. We use the .clasp.json to find the container doc if it's specified, otherwise it'll generate a fake documentId in ./gas-fakes/.settings.json and use that. All document level property and cache stores use the scriptId and documentId to partition data.
+
 
 ## Help
 

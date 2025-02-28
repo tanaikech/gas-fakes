@@ -5,8 +5,11 @@ import makeSynchronous from 'make-synchronous';
 import path from 'path'
 import { Auth } from "./auth.js"
 
+
 const authPath = "../support/auth.js"
 const drapisPath = "../services/drive/drapis.js"
+const shapisPath = "../services/drive/shapis.js"
+const kvPath = '../support/kv.js'
 
 /**
  * note that the relpath of exports file 
@@ -23,31 +26,31 @@ const drapisPath = "../services/drive/drapis.js"
 const getModulePath = (relTarget) => path.resolve(import.meta.dirname, relTarget)
 
 
-
 /**
- * sync a call to Drive api
+ * sync a call to google api
  * @param {object} p pargs
  * @param {string} p.prop the prop of drive eg 'files' for drive.files
  * @param {string} p.method the method of drive eg 'list' for drive.files.list
  * @param {object} p.params the params to add to the request
+ * @param {string} p.apiPath where to import the api from
  * @return {DriveResponse} from the drive api
  */
-const fxDrive = ({ prop, method, params }) => {
+const fxApi = ({ prop, method, params, apiPath }) => {
 
   // this will run a node child process
   // note that nothing is inherited, so consider it as a standalone script
-  const fx = makeSynchronous(async ({ prop, method, drapisPath, authPath, scopes, params }) => {
+  const fx = makeSynchronous(async ({ prop, method, apiPath, authPath, scopes, params }) => {
 
-    const { Auth } = await import(authPath)
-    const { getDriveClient, responseSyncify } = await import(drapisPath)
+    const { Auth, responseSyncify } = await import(authPath)
+    const { getApiClient } = await import(apiPath)
 
     // the scopes are required to set up an appropriate auth
     Auth.setAuth(scopes)
     const auth = Auth.getAuth()
 
     // this is the node drive service
-    const drive = getDriveClient(auth)
-    const response = await drive[prop][method](params)
+    const apiClient = getApiClient(auth)
+    const response = await apiClient[prop][method](params)
 
     return {
       data: response.data,
@@ -59,12 +62,61 @@ const fxDrive = ({ prop, method, params }) => {
   const result = fx({
     prop,
     method,
-    drapisPath: getModulePath(drapisPath),
+    apiPath: getModulePath(apiPath),
     authPath: getModulePath(authPath),
     scopes,
     params
   })
   return result
+}
+
+/**
+ * because we're using a file backed cache we need to syncit
+ * it'll slow it down but it's necessary to emuate apps script behavior
+ * @param {object} p params
+ * @param {}
+ * @returns {*}
+ */
+const fxStore = ( storeArgs , method = "get" , ...kvArgs) => {
+
+  const fx = makeSynchronous(async ({kvPath, kvArgs, storeArgs, method}) => {
+    const { newKStore } = await import(kvPath)
+    const { store } = newKStore(storeArgs)
+    const result = await store[method](...kvArgs)
+    return result
+  })
+
+  const result = fx({
+    kvPath: getModulePath(kvPath),
+    method,
+    kvArgs,
+    storeArgs
+  })
+
+  return result
+}
+
+
+
+/**
+ * sync a call to Drive api
+ * @param {object} p pargs
+ * @param {string} p.prop the prop of drive eg 'files' for drive.files
+ * @param {string} p.method the method of drive eg 'list' for drive.files.list
+ * @param {object} p.params the params to add to the request
+ * @return {DriveResponse} from the drive api
+ */
+const fxDrive = ({ prop, method, params }) => {
+  const scopes = Array.from(Auth.getAuthedScopes().keys())
+  return fxApi({
+    prop,
+    method,
+    apiPath: drapisPath,
+    authPath,
+    scopes,
+    params
+  })
+
 }
 
 /**
@@ -81,8 +133,8 @@ const fxDriveMedia = ({ id }) => {
   // note that nothing is inherited, so consider it as a standalone script
   const fx = makeSynchronous(async ({ id, drapisPath, authPath, scopes }) => {
 
-    const { Auth } = await import(authPath)
-    const { getDriveClient, responseSyncify } = await import(drapisPath)
+    const { Auth, responseSyncify } = await import(authPath)
+    const { getApiClient } = await import(drapisPath)
     const { getStreamAsBuffer } = await import('get-stream');
 
     // the scopes are required to set up an appropriate auth
@@ -90,19 +142,19 @@ const fxDriveMedia = ({ id }) => {
     const auth = Auth.getAuth()
 
     // this is the node drive service
-    const drive = getDriveClient(auth)
+    const drive = getApiClient(auth)
     const streamed = await drive.files.get({
       fileId: id,
       alt: 'media'
     }, {
       responseType: 'stream'
     })
-    const response =  responseSyncify(streamed)
+    const response = responseSyncify(streamed)
 
     if (response.status === 200) {
       const buf = await getStreamAsBuffer(streamed.data)
       const data = Array.from(buf)
- 
+
       return {
         data,
         response
@@ -113,7 +165,7 @@ const fxDriveMedia = ({ id }) => {
         response
       }
     }
-    
+
   })
 
   const scopes = Array.from(Auth.getAuthedScopes().keys())
@@ -126,78 +178,78 @@ const fxDriveMedia = ({ id }) => {
   return result
 }
 
-const fxGetManifest = (manifestPath = './appsscript.json') => {
+/**
+ * we dont want to generate a lot of async/sync calls so start by getting themanifest stuff out of the way
+ * @param {string} [manifestPath ='./appsscript.json']
+ * 
+ */
+const fxInit = (manifestPath = './appsscript.json') => {
 
-  const fx = makeSynchronous(async (manifestFile) => {
+  const fx = makeSynchronous(async ({ manifestFile, authPath }) => {
+
+    // get the manifest
     const { readFile } = await import('node:fs/promises')
     console.log(`using manifest file:${manifestFile}`)
     const contents = await readFile(manifestFile, { encoding: 'utf8' })
-    return JSON.parse(contents)
-  })
+    const manifest = JSON.parse(contents)
 
-  // we assume that the manifest file is in the same path as the executing main
-  // TODO allow a yargs option to put it somewhere else
-  const mainDir = path.dirname(process.argv[1])
-  const manifestFile = path.resolve(mainDir, manifestPath)
-  const result = fx(manifestFile)
-  return result
-}
-/**
- * get any prop from an auth object, syncjronously
- * @param {prop} prop the prop that should be executed
- * @returns {*} the value of the prop
- */
-const fxGet = (prop) => {
+    // get the required scopes and set them
+    const scopes = manifest.oauthScopes || []
 
-  // now turn all that into a synchronous function - it runs as a subprocess, so we need to start from scratch
-  const fx = makeSynchronous(async (scopes, prop, authPath) => {
+    // get the current auth
     const { Auth } = await import(authPath)
-
-    // these are the scopes needed from the manifest file
     Auth.setAuth(scopes)
+
+    // get the googleauth object
     const auth = Auth.getAuth()
-    const value = await auth[prop]()
-    return value
-  })
 
+    // we need the projectId for special header for UrlFetchApp to Goog apis
+    const projectId = await auth.getProjectId()
 
-  // these will already have been set from the manifest
-  const scopes = Array.from(Auth.getAuthedScopes().keys())
-  const result = fx(scopes, prop, getModulePath(authPath))
-  return result
-}
+    // get an access token so we can test it to pick up the authed scopes etc
+    const accessToken = await auth.getAccessToken()
 
-/**
- * wrap function in synch convertor, run and get access token
- * @returns {string}
- */
-const fxGetAccessToken = () => {
-  return fxGet("getAccessToken")
-}
-/**
- * wrap function in synch convertor, run and get access token
- * @returns {string}
- */
-const fxGetProjectId = () => {
-  return fxGet("getProjectId")
-}
-/**
- * a sync version of token checking
- * @param {string} token the token to check
- * @returns {object} access token info
- */
-const fxCheckToken = (accessToken) => {
-
-  // now turn all that into a synchronous function - it runs as a subprocess, so we need to start from scratch
-  const fx = makeSynchronous(async accessToken => {
+    // get access token info
     const { default: got } = await import('got')
     const tokenInfo = await got(`https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${accessToken}`).json()
-    return tokenInfo
+
+
+    /// these all jst exist in this sub process so we need to send them back to parent process
+    return {
+      scopes,
+      projectId,
+      tokenInfo,
+      accessToken
+    }
+
+
   })
 
-  const result = fx(accessToken)
-  return result
+  const mainDir = path.dirname(process.argv[1])
+  const manifestFile = path.resolve(mainDir, manifestPath)
+
+  // because this is all run in a synced subprocess it's not an async result
+  const synced = fx({
+    manifestFile,
+    authPath: getModulePath(authPath)
+  })
+  const {
+    scopes,
+    projectId,
+    tokenInfo,
+    accessToken
+  } = synced
+
+  // set these for the rest of the project
+  Auth.setAuth(scopes)
+  Auth.setProjectId(projectId)
+  Auth.setTokenInfo(tokenInfo)
+  Auth.setAccessToken(accessToken)
+
+  return synced
+
 }
+
 
 /**
  * a sync version of fetching
@@ -225,11 +277,9 @@ const fxFetch = (url, options, responseFields) => {
 }
 
 export const Syncit = {
-  fxGetAccessToken,
-  fxCheckToken,
   fxFetch,
-  fxGetManifest,
-  fxGetProjectId,
   fxDrive,
-  fxDriveMedia
+  fxDriveMedia,
+  fxInit, 
+  fxStore
 }

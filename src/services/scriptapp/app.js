@@ -11,8 +11,7 @@ import { Proxies } from '../../support/proxies.js'
  * @return {string} token
  */
 const getOAuthToken = () => {
-  // make a sync request in a subprocess to get an access token
-  return Syncit.fxGetAccessToken()
+  return Auth.getAccessToken()
 }
 
 const limitMode = (mode) => {
@@ -49,14 +48,6 @@ const requireScopes = (mode, required) => {
   return checkScopesMatch(required)
 }
 
-/**
- * a sync version of token checking
- * @param {string} token the token to check
- * @returns {object} access token info
- */
-const checkToken = (accessToken) => {
-  return Syncit.fxCheckToken(accessToken)
-}
 
 /**
  * check that all scopes requested have been asked for
@@ -65,12 +56,10 @@ const checkToken = (accessToken) => {
  */
 const checkScopesMatch = (required) => {
 
-  // we can do a sync version of the accesstoken fetch
-  const token = getOAuthToken()
-  const tokenInfo = checkToken(token)
+  const scopes = Auth.getTokenScopes()
 
   // now we're syncronous all the way
-  const tokened = new Set(tokenInfo.scope.split(" "))
+  const tokened = new Set(scopes.split(" "))
 
   // see which ones are missing
   const missing = required.filter(s => {
@@ -99,18 +88,14 @@ const name = "ScriptApp"
 
 if (typeof globalThis[name] === typeof undefined) {
 
-  console.log ('setting script app to global')
+  // initializing auth etc
+  Syncit.fxInit()
 
+  console.log(`setting ${name} to global`)
   const getApp = () => {
 
     // if it hasn't been intialized yet then do that
     if (!_app) {
-      
-      // we also need to do the manifest scopes thing and the project id
-      const projectId = Syncit.fxGetProjectId()
-      const manifest = Syncit.fxGetManifest()
-      Auth.setProjectId (projectId)
-      Auth.setManifestScopes(manifest)
 
       _app = {
         getOAuthToken,

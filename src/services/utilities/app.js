@@ -1,13 +1,14 @@
 import sleepSynchronously from 'sleep-synchronously';
-import { Utils } from '../../support/utils.js'
 import { Proxies } from '../../support/proxies.js'
 import { newBlob } from './fakeblob.js'
+import {Utils} from '../../support/utils.js'
 /**
  * a blocking sleep to emulate Apps Script
  * @param {number} ms number of milliseconds to sleep
  */
 const sleep = (ms) => {
-  sleepSynchronously(Utils.assertType (ms, 'number',`Cannot convert ${ms} to int.`));
+  Utils.assert.number (ms, `Cannot convert ${ms} to int.`)
+  sleepSynchronously(ms);
 }
 
 
@@ -19,7 +20,7 @@ let _app = null
  */
 const name = "Utilities"
 if (typeof globalThis[name] === typeof undefined) {
-
+  console.log (`setting ${name} to global`)
   const getApp = () => {
     // if it hasne been intialized yet then do that
     if (!_app) {

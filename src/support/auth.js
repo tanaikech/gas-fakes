@@ -1,51 +1,41 @@
 import { GoogleAuth } from 'google-auth-library'
-import {readFile} from 'node:fs/promises'
-import got from 'got'
-import path from 'path'
-import {Utils} from './utils.js'
+import is from '@sindresorhus/is'
 
 const _authScopes = new Set([])
+
+// all this stuff gets populated by the initial synced fxInit
 let _auth = null
 let _projectId = null
+let _tokenInfo = null
+let _accessToken = null
+
+// TODO figure out how to make a scriptId/documentId locally
+let _scriptId = 'todo:script'
+let _documentId = 'todo:doc'
+
+const getScriptId = () => _scriptId
+const getDocumentId = () => _documentId
 
 const setProjectId = (projectId) => _projectId = projectId
-const setManifestScopes = (manifest) => setAuth(Utils.arrify(manifest.oauthScopes))
+const setTokenInfo = (tokenInfo) => _tokenInfo = tokenInfo
+const setAccessToken = (accessToken) => _accessToken = accessToken
 
-/**
- * get the manifest scopes and set them
- * @param {string} [manifestParh] the manifest file path
- * @returns {Promise <string[]>} the scopes
- */
-const initManifestScopes = async (manifestParh) => {
-  const scopes = await getManifestScopes(manifestParh)
-  setAuth (scopes)
-  // we also set the project id to avoid catching that every time
-  // the project id is required for fetches to workspace apis using application default credentials
-  _projectId = await authProjectId()
-  return scopes
-}
-/**
- * get the manifest content and parse
- * @param {string} [manifestPath] the manifest file path
- * @returns {Promise <object>} the manifest
- */
-const getManifest = async (manifestPath='./appsscript.json') => {
-  const mainDir = path.dirname(process.argv[1])
-  const manifestFile = path.resolve ( mainDir, manifestPath) 
-  console.log (`using manifest file:${manifestFile}`) 
-  const contents = await readFile(manifestFile, { encoding: 'utf8' })
-  return JSON.parse (contents)
+const getTokenInfo = () => {
+  if (!_tokenInfo) throw `token info isnt set yet`
+  return _tokenInfo
 }
 
-/**
- * get the scopes from the manifest
- * @param {string} [path] the manifest file path
- * @returns {Promise <string[]>} the scopes required by the manifest 
- */
-const getManifestScopes = async (path) => {
-  const manifest = await getManifest(path)
-  return Utils.arrify(manifest.oauthScopes)
+const getAccessToken= () => {
+  if (!_accessToken) throw `access token isnt set yet`
+  return _accessToken
 }
+
+
+const getUserId = () => getTokenInfo().sub
+const getTokenScopes = () => getTokenInfo().scope
+
+
+
 /**
  * we'll be using adc credentials so no need for any special auth here
  * the idea here is to keep addign scopes to any auth so we have them all
@@ -90,20 +80,15 @@ const googify = (options = {}) => {
   }
 
 }
-/**
- * @returns {Promise <string>} the projectId
- */
-const authProjectId = async () => {
-  return getAuth().getProjectId()
-}
+
 
 /**
  * this would have been set up when manifest was imported
  * @returns {string} the project id
  */
 const getProjectId = () => {
-  if (Utils.isNU(_projectId)) {
-    throw new Error ('Project id not set - did you forget to run initManifestScopes?')
+  if (is.null(_projectId) || is.undefined(_projectId)) {
+    throw new Error ('Project id not set - this means that the fxInit wasnt run')
   }
   return _projectId
 }
@@ -121,16 +106,19 @@ const getAuth = () => {
   return _auth
 }
 
-/**
- * gets the info about an access token
- * @param {string} accessToken the accessToken to check
- * @returns {Promise <object>} access toekn info
- */
 
-const checkToken = async (accessToken) => {
-  const pack = await got(`https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${accessToken}`).json()
-  return pack
-}
+/**
+ * we can't serialize a return object from sheets api
+ * so we just select a few props from it
+ * @param {SyncApiResponse} result 
+ * @returns 
+ */
+export const responseSyncify = (result) => ({
+  status: result.status,
+  statusText: result.statusText,
+  responseUrl: result.request?.responseURL
+})
+
 
 /**
  * these are the ones that have been so far requested
@@ -139,16 +127,18 @@ const checkToken = async (accessToken) => {
 const getAuthedScopes = () => _authScopes
 
 export const Auth = {
-  checkToken,
   getAuth,
   hasAuth,
   getProjectId,
   setAuth,
-  getManifestScopes,
-  getManifest,
-  initManifestScopes,
   getAuthedScopes,
   googify,
   setProjectId,
-  setManifestScopes
+  getUserId,
+  setTokenInfo,
+  setAccessToken,
+  getAccessToken,
+  getTokenScopes,
+  getScriptId,
+  getDocumentId
 }

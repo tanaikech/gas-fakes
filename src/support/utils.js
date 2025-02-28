@@ -1,18 +1,14 @@
-const isUndefined = (item) => typeof item === typeof undefined
-const isNull = (item) => item === null
-const isNU = (item) => isNull(item) || isUndefined(item)
-const isObject = (item) => typeof item === 'object'
-const isFunction = (item) => typeof item === 'function'
-const isArray = (item) => Array.isArray(item)
-const isString = (item) => typeof item === "string"
-const isNumber = (item) => Number.isFinite(item)
-const isBoolean = (item) => typeof item === "boolean"
-const isBuffer = (item) => Buffer.isBuffer (item)
-const arrify = (item) => isArray(item)
+
+
+import is from '@sindresorhus/is';
+import {assert} from '@sindresorhus/is';
+
+const isNU = (item) => is.null(item) || is.undefined (item)
+
+const arrify = (item) => is.array(item)
   ? item
   : (isNU(item) ? item : [item])
 
-const isPromise = (item) => !isNU(item) && (isObject(item) || isFunction(item)) && isFunction(item.then)
 const fromJson = (text, failOnError = false) => {
   try {
     return JSON.parse(text)
@@ -58,57 +54,29 @@ const makeParams = (pob = []) => {
   }, new Map())
   return Array.from(mapob.entries())
 }
-const is = {
-  nu: isNU,
-  null: isNull,
-  undefined: isUndefined,
-  object: isObject,
-  function: isFunction,
-  array: isArray,
-  promise: isPromise,
-  string: isString,
-  number: isNumber,
-  boolean: isBoolean,
-  buffer: isBuffer
-}
 
-/**
- * assert is of correct type
- * @param {} value 
- * @param {string} type 
- * @param {string} [mess] override default thrown message 
- * @returns {*} value-
- */
-const assertType = (value, type, mess) => {
-  if (!Reflect.has(is, type)) {
-    throw new Error(`dont know how to check asserted type ${type}`)
-  }
-  mess = mess || `value is not asserted ${type} : it's a ${typeof value}`
-  if (!is[type](value)) {
-    throw new Error(mess)
-  }
-  return value
-}
 
 const settleAsString = (data, charset) => {
-  if (isBuffer(data)) {
+  if (is.buffer(data)) {
     return bytesToString (Array.from(data), charset)
-  } else if (isArray(data)) {
+  } else if (is.array(data)) {
     return bytesToString (data, charset)
   } else {
-    return assertType (data, "string")
+    assert.string (data)
+    return data
   }
 
 }
 
 const settleAsBytes = (data, charset) => {
 
-  if (isString(data)) {
+  if (is.string(data)) {
     return stringToBytes (data, charset)
-  } else if (isBuffer(data)) {
+  } else if (is.buffer(data)) {
     return Array.from (data)
-  } else {
-    return assertType (data, "array")
+  } else { 
+    assert.array (data)
+    return data
   }
 
 }
@@ -121,23 +89,13 @@ export const Utils = {
   bytesToString,
   settleAsBytes,
   settleAsString,
-  is,
-  isBuffer,
-  isNU,
-  isNull,
-  isUndefined,
-  isObject,
-  isFunction,
-  isArray,
-  isPromise,
-  isNumber,
-  isString,
   fromJson,
   arrify,
-  assertType,
   makeUrlParams,
   makeParams,
-  makeParamOb
+  makeParamOb,
+  isNU,
+  assert
 }
 
 

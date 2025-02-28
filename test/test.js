@@ -2,11 +2,12 @@
 // all these imports 
 // this is loaded by npm, but is a library on Apps Script side
 import { Exports as unitExports } from '@mcpher/unit'
-
+import is from '@sindresorhus/is';
+import { newKStore} from '../src/support/kv.js'
 
 // all the fake services are here
-import '@mcpher/gas-fakes/main.js'
-
+//import '@mcpher/gas-fakes/main.js'
+import '../main.js'
 const testFakes = async () => {
 
 
@@ -29,133 +30,80 @@ const testFakes = async () => {
     TEXT_FILE_CONTENT: 'foo is not bar',
     BLOB_NAME: 'foo.txt',
     BLOB_TYPE: 'text/plain',
-    TEST_SHEET_ID: '1DlKpVVYCrCPNfRbGsz6N_K3oPTgdC9gQIKi0aNb42uI'
+    TEST_SHEET_ID: '1DlKpVVYCrCPNfRbGsz6N_K3oPTgdC9gQIKi0aNb42uI',
+    TEST_SHEET_NAME: 'sharedlibraries'
   }
 
-  unit.section("searching with queries", t => {
 
-    const root = DriveApp.getRootFolder()
+  unit.section ("properties store", t=> {
+    const ps = {}
+    const testKey = 't'
 
-    // this gets the folders directly under root folder with given name
-    const folders = root.getFoldersByName(fixes.TEST_FOLDER_NAME)
- 
-    const folderPile = []
-    while (folders.hasNext()) {
-      folderPile.push (folders.next())
-    }
+    t.is (typeof PropertiesService.getUserProperties, 'function')
+    ps.up =  PropertiesService.getUserProperties()
+    t.is (ps.up.type, "USER")
 
-    t.is (folderPile.length, 1)
+    t.is (typeof PropertiesService.getScriptProperties, 'function')
+    ps.sp =  PropertiesService.getScriptProperties()
+    t.is (ps.sp.type, "SCRIPT")
+    
+    t.is (typeof PropertiesService.getDocumentProperties, 'function')
+    ps.dp =  PropertiesService.getDocumentProperties()
+    t.is (ps.dp.type, "DOCUMENT")
 
-    const filePile = []
-    const [folder] = folderPile
-    const dapMatches = DriveApp.getFoldersByName (folder.getName())
-    t.true (dapMatches.hasNext())
-    t.is (dapMatches.next().getName(), folder.getName())
-
-    const files = folder.getFiles()
-    while (files.hasNext()) {
-      filePile.push (files.next())
-    }
-    t.is (filePile.length, fixes.TEST_FOLDER_FILES)
-    filePile.forEach (file=> {
-      const matches = folder.getFilesByName(file.getName())
-      t.true (matches.hasNext())
-      t.is (matches.next().getId(), file.getId())
-      t.false(matches.hasNext())
-      const dapMatches = DriveApp.getFilesByName (file.getName())
-      t.true (dapMatches.hasNext())
-      t.is (dapMatches.next().getName(), file.getName())
+    const p = ['dp', 'sp', 'up']
+    p.forEach (f=> {
+      const testValue = f+'p'
+      t.is (ps[f].setProperty (testKey, testValue).getProperty(testKey), testValue)
+      // in apps script delete returns the object for chaining
+      t.is (ps[f].deleteProperty (testKey).getProperty(testKey), null)
     })
 
 
-
-  }, { skip: false })
-
-
-
-  unit.section('all about blobs', t => {
-    const blob = Utilities.newBlob(fixes.TEXT_FILE_CONTENT)
-    t.is(blob.getName(), null)
-    t.is(blob.getContentType(), fixes.BLOB_TYPE)
-    t.is(blob.getDataAsString(), fixes.TEXT_FILE_CONTENT)
-    const bytes = blob.getBytes()
-    const blob2 = Utilities.newBlob(bytes, fixes.BLOB_TYPE, fixes.BLOB_NAME)
-    t.is(blob2.getName(), fixes.BLOB_NAME)
-    t.is(blob2.getContentType(), fixes.BLOB_TYPE)
-    t.is(blob2.getDataAsString(), fixes.TEXT_FILE_CONTENT)
-    t.deepEqual(blob2.getBytes(), bytes)
-    const blob3 = blob.copyBlob()
-    blob3.setName(blob2.getName())
-    t.is(blob3.getName(), fixes.BLOB_NAME)
-    t.is(blob3.setContentTypeFromExtension().getContentType(), fixes.BLOB_TYPE)
-    const bytes3 = bytes.slice().reverse()
-    t.deepEqual(blob3.setBytes(bytes3).getBytes(), bytes3)
-    t.is(blob3.setDataFromString(fixes.TEXT_FILE_CONTENT).getDataAsString(),
-      blob2.getDataAsString())
-    t.false(blob3.isGoogleType())
-  })
-  
-  unit.section('getting content', t => {
-    const file = DriveApp.getFileById(fixes.TEXT_FILE_ID)
-    const folder = DriveApp.getFolderById(fixes.TEST_FOLDER_ID)
-    t.is(file.getMimeType(), 'text/plain')
-    t.is(file.getName(), 'fake.txt')
-    t.is(file.getParents().next().getId(), folder.getId())
-    const blob = file.getBlob()
-    t.is (blob.getDataAsString(),fixes.TEXT_FILE_CONTENT )
-  })
-
-  unit.section ('extended meta data', t=> {
-    const file = DriveApp.getFileById(fixes.TEXT_FILE_ID)
-    t.true (Reflect.has(file.getLastUpdated(), "getTime")) 
-    t.true (Reflect.has(file.getDateCreated(), "getTime")) 
-    t.true (typeof file.getDescription () === "string" || file.getDescription () === null)
-    t.is (typeof file.getSize (), "number")
-    t.is (file.getSize(), fixes.TEXT_FILE_CONTENT.length)
-    t.false (file.isStarred())
-    t.false (file.isTrashed())
-
-    // make sure that nothing got overwritten with enhanced props
-    t.is(file.getMimeType(), 'text/plain')
-    t.is(file.getId(), fixes.TEXT_FILE_ID)
-
-    const folder = DriveApp.getFolderById(fixes.TEST_FOLDER_ID)
-    t.true (Reflect.has(folder.getLastUpdated(), "getTime")) 
-    t.true (Reflect.has(folder.getDateCreated(), "getTime")) 
-    t.is (typeof folder.getSize (), "number")
-
-    const sheet = DriveApp.getFileById(fixes.TEST_SHEET_ID)
-    t.true (Reflect.has(sheet.getLastUpdated(), "getTime")) 
-    t.true (Reflect.has(sheet.getDateCreated(), "getTime")) 
-    t.is (typeof sheet.getName (), "string")
-    t.is (typeof sheet.getSize (), "number")
-    // dont really know what size to expect for a sheet
-    t.true (sheet.getSize()>0)
-    t.is (sheet.getMimeType(), 'application/vnd.google-apps.spreadsheet') 
-
-  }, {
-    skip: false
   })
 
 
-  unit.section('gas utiltities', t => {
-    const now = new Date().getTime()
-    const ms = 200
-    Utilities.sleep(ms)
-    const after = new Date().getTime()
-    t.true(after - now >= 200, 'check we waited synchronously')
-    t.rxMatch(
-      t.threw(() => Utilities.sleep("rubbish")),
-      /Cannot convert/,
-      'double check its a sleepable number'
-    )
-  }, {
-    skip: !ScriptApp.isFake
+  unit.section ("cache store", t=> {
+    const ps = {}
+    const testKey = 't'
+
+    t.is (typeof CacheService.getUserCache, 'function')
+    ps.up =  CacheService.getUserCache()
+    t.is (ps.up.type, "USER")
+
+    t.is (typeof CacheService.getScriptCache, 'function')
+    ps.sp =  CacheService.getScriptCache()
+    t.is (ps.sp.type, "SCRIPT")
+
+    t.is (typeof CacheService.getDocumentCache, 'function')
+    ps.dp =  CacheService.getDocumentCache()
+    t.is (ps.dp.type, "DOCUMENT")
+
+    const exValue ='ex'
+    const p = ['dp', 'sp', 'up']
+    p.forEach (f=> {
+      const testValue = f+'p'
+      t.is(ps[f].put (testKey, testValue),null)
+      t.is (ps[f].get(testKey), testValue)
+      t.is (ps[f].remove (testKey), null)
+      t.is (ps[f].put(testKey, exValue, 2 ), null)
+    })
+
+    p.forEach (f=> {
+      t.is (ps[f].get(testKey), exValue)
+    })
+    Utilities.sleep (2000)
+    p.forEach (f=> {
+      t.is (ps[f].get(testKey), null)
+    })
   })
+
+  unit.cancel()
+
 
   unit.section('scopes and oauth', t => {
     const token = ScriptApp.getOAuthToken()
-    t.is(typeof token, "string")
+    t.true(is.nonEmptyString(token))
     /**
      * Apps Script  doesnt throw an error on an an invalid requiredallscopes ENUM as it should
        it returns null just like a succesfful call for now will omit on Apps Script side tests
@@ -201,6 +149,155 @@ const testFakes = async () => {
   }, {
     skip: !ScriptApp.isFake
   })
+
+
+
+
+
+  unit.section("spreadsheet app", t => {
+    const sap = SpreadsheetApp
+    t.true(is.object(sap.SheetType))
+    t.is(sap.SheetType.GRID, "GRID")
+    t.truthy(sap.ValueType.IMAGE)
+    t.falsey(sap.ValueType.RUBBISH)
+    const ss = sap.openById(fixes.TEST_SHEET_ID)
+    t.is(ss.getId(), fixes.TEST_SHEET_ID)
+    t.is(sap.getActiveSpreadsheet().getId(), fixes.TEST_SHEET_ID)
+    t.is(sap.getActiveSpreadsheet().getName(), fixes.TEST_SHEET_NAME)
+  }, {
+    skip: false
+  })
+
+
+  unit.section("searching with queries", t => {
+
+    const root = DriveApp.getRootFolder()
+
+    // this gets the folders directly under root folder with given name
+    const folders = root.getFoldersByName(fixes.TEST_FOLDER_NAME)
+
+    const folderPile = []
+    while (folders.hasNext()) {
+      folderPile.push(folders.next())
+    }
+
+    t.is(folderPile.length, 1)
+
+    const filePile = []
+    const [folder] = folderPile
+    const dapMatches = DriveApp.getFoldersByName(folder.getName())
+    t.true(dapMatches.hasNext())
+    t.is(dapMatches.next().getName(), folder.getName())
+
+    const files = folder.getFiles()
+    while (files.hasNext()) {
+      filePile.push(files.next())
+    }
+    t.is(filePile.length, fixes.TEST_FOLDER_FILES)
+    filePile.forEach(file => {
+      const matches = folder.getFilesByName(file.getName())
+      t.true(matches.hasNext())
+      t.is(matches.next().getId(), file.getId())
+      t.false(matches.hasNext())
+      const dapMatches = DriveApp.getFilesByName(file.getName())
+      t.true(dapMatches.hasNext())
+      t.is(dapMatches.next().getName(), file.getName())
+    })
+
+
+
+  }, { skip: true })
+
+
+
+  unit.section('all about blobs', t => {
+    const blob = Utilities.newBlob(fixes.TEXT_FILE_CONTENT)
+    t.is(blob.getName(), null)
+    t.is(blob.getContentType(), fixes.BLOB_TYPE)
+    t.is(blob.getDataAsString(), fixes.TEXT_FILE_CONTENT)
+    const bytes = blob.getBytes()
+    const blob2 = Utilities.newBlob(bytes, fixes.BLOB_TYPE, fixes.BLOB_NAME)
+    t.is(blob2.getName(), fixes.BLOB_NAME)
+    t.is(blob2.getContentType(), fixes.BLOB_TYPE)
+    t.is(blob2.getDataAsString(), fixes.TEXT_FILE_CONTENT)
+    t.deepEqual(blob2.getBytes(), bytes)
+    const blob3 = blob.copyBlob()
+    blob3.setName(blob2.getName())
+    t.is(blob3.getName(), fixes.BLOB_NAME)
+    t.is(blob3.setContentTypeFromExtension().getContentType(), fixes.BLOB_TYPE)
+    const bytes3 = bytes.slice().reverse()
+    t.deepEqual(blob3.setBytes(bytes3).getBytes(), bytes3)
+    t.is(blob3.setDataFromString(fixes.TEXT_FILE_CONTENT).getDataAsString(),
+      blob2.getDataAsString())
+    t.false(blob3.isGoogleType())
+  })
+
+  unit.section('getting content', t => {
+    const file = DriveApp.getFileById(fixes.TEXT_FILE_ID)
+    const folder = DriveApp.getFolderById(fixes.TEST_FOLDER_ID)
+    t.is(file.getMimeType(), 'text/plain')
+    t.is(file.getName(), 'fake.txt')
+    t.is(file.getParents().next().getId(), folder.getId())
+    const blob = file.getBlob()
+    t.is(blob.getDataAsString(), fixes.TEXT_FILE_CONTENT)
+  })
+
+  unit.section('extended meta data', t => {
+    const file = DriveApp.getFileById(fixes.TEXT_FILE_ID)
+    t.true(is.date(file.getLastUpdated()))
+    t.true(is.date(file.getDateCreated()))
+
+    t.true(is.string(file.getDescription()) || is.null(file.getDescription()))
+    t.true(is.number(file.getSize()))
+    t.is(file.getSize(), fixes.TEXT_FILE_CONTENT.length)
+    t.false(file.isStarred())
+    t.false(file.isTrashed())
+
+    // make sure that nothing got overwritten with enhanced props
+    t.is(file.getMimeType(), 'text/plain')
+    t.is(file.getId(), fixes.TEXT_FILE_ID)
+
+    const folder = DriveApp.getFolderById(fixes.TEST_FOLDER_ID)
+    t.true(is.function(folder.getLastUpdated().getTime))
+    t.true(is.date(folder.getLastUpdated()))
+    t.true(is.function(folder.getDateCreated().getTime))
+    t.true(is.date(folder.getDateCreated()))
+    t.true(is.number(folder.getSize()))
+
+    const sheetFile = DriveApp.getFileById(fixes.TEST_SHEET_ID)
+
+    t.true(is.function(sheetFile.getLastUpdated().getTime))
+    t.true(is.date(sheetFile.getLastUpdated()))
+    t.true(is.function(sheetFile.getDateCreated().getTime))
+    t.true(is.date(sheetFile.getDateCreated()))
+
+    t.true(is.nonEmptyString(sheetFile.getName()))
+    t.true(is.number(sheetFile.getSize()))
+    // dont really know what size to expect for a sheet
+    t.true(sheetFile.getSize() > 0)
+    t.is(sheetFile.getMimeType(), 'application/vnd.google-apps.spreadsheet')
+
+  }, {
+    skip: false
+  })
+
+
+  unit.section('gas utiltities', t => {
+    const now = new Date().getTime()
+    const ms = 200
+    Utilities.sleep(ms)
+    const after = new Date().getTime()
+    t.true(after - now >= 200, 'check we waited synchronously')
+    t.rxMatch(
+      t.threw(() => Utilities.sleep("rubbish")),
+      /Cannot convert/,
+      'double check its a sleepable number'
+    )
+  }, {
+    skip: !ScriptApp.isFake
+  })
+
+
 
   unit.section("driveapp searches", t => {
 
@@ -260,9 +357,9 @@ const testFakes = async () => {
     const response = UrlFetchApp.fetch(`${endpoint}/files`, { headers })
 
     t.is(response.getResponseCode(), 200)
-    t.is(typeof response.getHeaders(), "object")
+    t.true(is.object(response.getHeaders()))
     const text = response.getContentText()
-    t.is(typeof text, "string")
+    t.true(is.string(text))
 
     const rootResponse = UrlFetchApp.fetch(`${endpoint}/files/root`, { headers })
     const root = JSON.parse(rootResponse.getContentText())

@@ -5,12 +5,18 @@
  * @param {function} a function to get the proxy object to substitutes
  * @returns {function} a handler for a proxy
  */
-const getAppHandler = (getApp) => {
+const getAppHandler = (getApp, name) => {
   return {
 
-    get(_, prop, receiver) {
+    get(_, prop) {
       // this will let the caller know we're not really running in Apps Script 
-      return (prop === 'isFake')  ? true : Reflect.get(getApp(), prop, receiver);
+      return (prop === 'isFake')  ? true : Reflect.get(getApp(), prop);
+    },
+
+    set(_, prop, value) {
+      // private props are indicated with a leading __ so are allowed
+      if (prop.substring(0,2) === '__') return Reflect.set (getApp(), prop, value)
+      throw new Error(`setting values directly in ${name}.${prop} is not allowed`)
     },
 
     ownKeys(_) {
@@ -20,7 +26,7 @@ const getAppHandler = (getApp) => {
 }
 
 const registerProxy = (name, getApp) => {
-  const value = new Proxy({}, getAppHandler(getApp))
+  const value = new Proxy({}, getAppHandler(getApp, name))
   // add it to the global space to mimic what apps script does
   Object.defineProperty(globalThis, name, {
     value,

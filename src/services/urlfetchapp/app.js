@@ -69,7 +69,7 @@ let _app = null
  */
 const name = "UrlFetchApp"
 if (typeof globalThis[name] === typeof undefined) {
-
+  console.log (`setting ${name} to global`)
   const getApp = () => {
     // if it hasne been intialized yet then do that
     if (!_app) {

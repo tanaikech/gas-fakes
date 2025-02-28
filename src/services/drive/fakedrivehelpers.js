@@ -1,5 +1,6 @@
 import { Utils } from '../../support/utils.js'
 import { folderType } from '../../support/constants.js'
+import is from '@sindresorhus/is';
 /**
  * utilities for drive access shared between all fakedrive classes
  */
@@ -19,15 +20,15 @@ export const handleError = (response) => {
 
 /**
  * check if a drive reponse good 
- * @param {SyncDriveResponse} response 
+ * @param {SyncApiResponse} response 
  * @returns {Boolean}
  */
 export const isGood = (response) => Math.floor(response.status / 100) === 2
 
 
 /**
- * check if a SyncDriveResponse is a not found
- * @param {SyncDriveResponse} response 
+ * check if a SyncApiResponse is a not found
+ * @param {SyncApiResponse} response 
  * @returns {Boolean}
  */
 const is404 = (response) => response.status === 404
@@ -43,7 +44,7 @@ export const isFolder = (file) => file.mimeType === folderType
 
 /**
  * general throw when a reponse is bad
- * @param {SyncDriveResponse} response the response from a fake fetch
+ * @param {SyncApiResponse} response the response from a fake fetch
  */
 export const throwResponse = (response) => {
   throw new Error(`status: ${response.status} : ${response.statusText}`)
@@ -68,11 +69,11 @@ export const minFieldsList = ["nextPageToken", { files: minFields }]
 const reduceFields = (spec, model) => {
 
   const reduced = Utils.arrify(spec).reduce((p, c) => {
-    if (Utils.isString(c)) {
+    if (is.string(c)) {
       // so this would generate at top level
       p.set(c, new Set())
     } else {
-      if (!Utils.isObject(c)) {
+      if (!is.object(c)) {
         throw new Error(`field format should be like ${JSON.stringify(model)}`)
       }
       //we end up with someting like Map{x:Set(null), file: Set(name,id,etc) which will allow merging of multiple of these
