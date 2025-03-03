@@ -4,6 +4,10 @@ I use clasp/vscode to develop Google Apps Script (GAS) applications, but when us
 
 This is just a proof of concept so I've just implemented a very limited number of services and methods, but the tricky parts are all in place so all that's left is a load of busy work (to which I heartily invite any interested collaborators).
 
+## progress
+
+This is a pretty huge task, so I'm working on adding services a little bit at a time, with usually just a few methods added in each release.
+
 ## Getting started
 
 You can get the package from npm
@@ -20,7 +24,31 @@ You don't have access to the GAS maintained cloud project, so you'll need to cre
 
 ### Testing
 
-I recommend you use the test project included in the repo to make sure all is set up correctly. It uses a Fake DriveApp service to excercise Auth etc. Just change the fixtures to values present in your own Drive, then `npm i && npm test`. Note that I use a [unit tester](https://ramblings.mcpher.com/apps-script-test-runner-library-ported-to-node/) that runs in both GAS and Node, so the exact same tests will run in both environments.
+I recommend you use the test project included in the repo to make sure all is set up correctly. It uses a Fake DriveApp service to excercise Auth etc. Just change the fixtures to values present in your own Drive, then `npm i && npm test`. Note that I use a [unit tester](https://ramblings.mcpher.com/apps-script-test-runner-library-ported-to-node/) that runs in both GAS and Node, so the exact same tests will run in both environments. There are some example tests in the repo. Each test has been proved on both Node and GAS. 
+
+### Settings
+
+gasfakes.json holds various location and behavior parameters to inform about your Node environment. It's not required on GAS as you can't change anything over there. If you don't have one, it'll create one for you and use some sensible defaults. Here's an example of one with the defaults. It should be in the same folder as your main script.
+````
+{
+  "manifest": "./appsscript.json",
+  "clasp": "./.clasp.json",
+  "documentId": null,
+  "cache": "/tmp/gas-fakes/cache",
+  "properties": "/tmp/gas-fakes/properties",
+  "scriptId": "1ey2fr74m4n9fwaqi9dsx9ye"
+}
+````
+| property   | type            | default                              | description                                                                                   |
+| ----------- | --------------- | ------------------------------------ | --------------------------------------------------------------------------------------------- |
+| manifest | string          | ./appsscript.json | the manifest path and name relative to your main module                                                                   |
+| clasp       | string        | ./clasp.json    | where to look for an optional clasp file |
+| documentId     | string | null | a bound document id. This will allow testing of container bound script. The documentId will become your activeDocument (for the appropriate service) |
+| cache | string | /tmp/gas-fakes/cache | gas-fakes uses a local file to emulate apps script's CacheService. This is where it should put the files |
+| properties | string | /tmp/gas-fakes/properties | gas-fakes uses a local file to emulate apps script's PropertiesService. This is where it should put the files. You may want to put it somewhere other than /tmp to avoid accidental deletion, but don't put it in a place that'll get commited to public git repo |
+| scriptId | string | from clasp, or some random value | If you have a clasp file, it'll pick up the scriptId from there. If not you can enter your scriptId manually, or just leave it to create a fake one. It's use for the moment is to return something useful from ScriptApp.getScriptId() and to partition the  cache and properties stores  |
+
+More on all this later.
 
 ### Pushing to GAS
 
@@ -46,7 +74,7 @@ There were 3 main sticky problems to overcome to get this working
 - The service singletons (eg. DriveApp) are all intialized and available in the global space automatically, whereas in Node they need some post AUTH intialization, sequencing intialization and exposure.
 - GAS iterators aren't the same as standard iterators, as they have a hasNext() method and don't behave in the same way.
 
-Beyond that, implementation is just a lot of busy work. Here's how I've dealt with these 3 problems.
+Beyond that, implementation is just a lot of busy work. If you are interested, here's how I've dealt with these 3 problems.
 
 ### Sync versus Async
 
@@ -222,7 +250,7 @@ const registerProxy = (name, getApp) => {
 
 In short, the service us registered as an empty object, but when any attempt is made to access it actually returns a different object which handles the request. In the `ScriptApp` example, `ScriptApp` is an empty object, but accessing `ScriptApp.getOAuthToken()` returns an Fake `ScriptApp` object which has been initialized.
 
-There's also a test available to see if you are running in GAS or on Node - `ScriptApp.isFake`
+There's also a test available to see if you are running in GAS or on Node - `ScriptApp.isFake`. In fact this method 'isFake' is available on any of the implemented services eg `DriveApp.isFake`.
 
 ### Iterators
 
@@ -305,10 +333,9 @@ const getParentsIterator = ({
 ````
 
 
-
 ### Cache and Property services
 
-These are currently implemented using [keyv](https://github.com/jaredwray/keyv) with storage adaptor [keyv-file](https://github.com/zaaack/keyv-file). By default the Node side files are held in './.gas-fakes/store'. I've gone for local file storage rather than something like redis to avoid adding local service requirements, but keyv takes a wide range of storage adaptors if you want to do something fancier. A small modificaion to kv.js is all you need.
+These are currently implemented using [keyv](https://github.com/jaredwray/keyv) with storage adaptor [keyv-file](https://github.com/zaaack/keyv-file).The `gasfakes.json` file is used to commiicate where these files should be. I've gone for local file storage rather than something like redis to avoid adding local service requirements, but keyv takes a wide range of storage adaptors if you want to do something fancier. A small modificaion to kv.js is all you need.
 
 
 #### Script, user and document store varieties
@@ -317,7 +344,7 @@ All 3 are supported for both properties and cache.
 
 ##### scriptId
 
-The local version may have no knowledge of the Apps ScriptId. If you are using clasp, it's picked up from the .clasp.json file. However if you are not using clasp, it'll create a fake id in ./.gas-fakes/settings.json and use that. All property and cache stores use the scriptId to partition data.
+The local version may have no knowledge of the Apps ScriptId. If you are using clasp, it's picked up from the .clasp.json file. However if you are not using clasp, or want to use something else, you can set the scriptId in `gasfakes.json`, otherwise it'll create a fake id use that. All property and cache stores use the scriptId to partition data.
 
 ##### userId
 
@@ -325,11 +352,11 @@ The userId is extracted from an accessToken and will match the id derived from A
 
 ##### documentId
 
-The documentId is only meaningful if you are working on a container bound script or add-on. We use the .clasp.json to find the container doc if it's specified, otherwise it'll generate a fake documentId in ./gas-fakes/.settings.json and use that. All document level property and cache stores use the scriptId and documentId to partition data.
+The documentId is only meaningful if you are working on a container bound scrip. We use the the documentId property of gasfakes.json to identify a container file.  All document level property and cache stores use the scriptId and documentId to partition data.
 
 ### Settings and temporary files
 
-As you will have noticed, there are various local support files for props/caching etc. You should make sure that .gas-fakes is added to .gitignore as it may contain cached or property values you don't want to share publicly. 
+As you will have noticed, there are various local support files for props/caching etc. Be careful that these do not get committed to a public repo if you are adding sensitive values to your stores.
 
 
 ## Help
