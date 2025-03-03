@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "@mcpher/unit": "^1.1.10",
-    "@mcpher/gas-fakes": "^1.0.1"
+    "@mcpher/gas-fakes": "^1.0.2"
   },
   "type": "module",
   "scripts": {
