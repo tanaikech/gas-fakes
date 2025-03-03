@@ -9,7 +9,7 @@ AC=default
 DEFAULT_SCOPES="https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/drive,openid,https://www.googleapis.com/auth/cloud-platform,https://www.googleapis.com/auth/sqlservice.login"
 
 # these are the ones we want to add (note comma at beginning)
-EXTRA_SCOPES=",https://www.googleapis.com/auth/drive"
+EXTRA_SCOPES=",https://www.googleapis.com/auth/drive,https://www.googleapis.com/auth/spreadsheets"
 
 SCOPES="${DEFAULT_SCOPES}${EXTRA_SCOPES}"
 

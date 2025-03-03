@@ -6,10 +6,16 @@ import path from 'path'
 import { Auth } from "./auth.js"
 
 
+
 const authPath = "../support/auth.js"
 const drapisPath = "../services/drive/drapis.js"
 const shapisPath = "../services/drive/shapis.js"
 const kvPath = '../support/kv.js'
+const manifestDefaultPath = './appsscript.json'
+const claspDefaultPath = "./.clasp.json"
+const settingsDefaultPath = "./gasfakes.json"
+const propertiesDefaultPath = "/tmp/gas-fakes/properties"
+const cacheDefaultPath = "/tmp/gas-fakes/cache"
 
 /**
  * note that the relpath of exports file 
@@ -25,6 +31,152 @@ const kvPath = '../support/kv.js'
  */
 const getModulePath = (relTarget) => path.resolve(import.meta.dirname, relTarget)
 
+
+/**
+ * we dont want to generate a lot of async/sync calls so start by getting themanifest stuff out of the way
+ * @param {string} [manifestPath ='./appsscript.json']
+ * 
+ */
+const fxInit = ({ 
+  manifestPath = manifestDefaultPath, 
+  claspPath = claspDefaultPath, 
+  settingsPath = settingsDefaultPath,
+  cachePath = cacheDefaultPath,
+  propertiesPath = propertiesDefaultPath
+} = {}) => {
+
+  const fx = makeSynchronous(async ({ manifestPath, authPath, claspPath, settingsPath, mainDir, cachePath, propertiesPath }) => {
+
+    // get the settings and manifest
+    const path = await import('path')
+    const { readFile, writeFile, mkdir } = await import('node:fs/promises')
+    const { Auth } = await import(authPath)
+
+    /// make a fake scriptid
+    const makeFakeId = (length = 24) => {
+      const seed = new Date().getTime()
+      let t = ''
+      while (t.length < length) {
+        t += Math.trunc(seed * Math.random()).toString(36)
+      }
+      return t.substring(0, length)
+    }
+
+    // get a file and parse if it exists
+    const getIfExists = async (file) => {
+      try {
+        const content = await readFile(file, { encoding: 'utf8' })
+        console.log(`...using ${file}`)
+        return JSON.parse(content)
+
+      } catch (err) {
+        console.log(`...didnt find ${file} ... skipping`)
+        return {}
+      }
+    }
+
+    // files are relative to this main path
+    const settingsFile = path.resolve(mainDir, settingsPath)
+    const settingsDir = path.dirname(settingsFile)
+
+
+    // get the setting file if it exists
+    const _settings = await getIfExists(path.resolve(mainDir, settingsFile))
+    const settings = { ..._settings }
+
+    // the content of the settings file take precedence over whatever is passed as the default
+    // get the manifest and clasp file
+    settings.manifest = settings.manifest || manifestPath
+    settings.clasp = settings.clasp || claspPath
+    const [manifest, clasp] = await Promise.all([
+      getIfExists(path.resolve(mainDir, settings.manifest)),
+      getIfExists(path.resolve(mainDir, settings.clasp))
+    ])
+
+    /// if we dont have a scriptId we need to check in clasp or make a fakeone
+    settings.scriptId = settings.scriptId || clasp.scriptId || makeFakeId()
+
+    // if we don't have a documentID, then see if this is a bound one
+    settings.documentId = settings.documentId || null
+
+    // cache & props cache can also be set in settings
+    settings.cache = settings.cache || cachePath
+    settings.properties = settings.properties || propertiesPath
+
+    console.log (`...cache will be in ${settings.cache}`)
+    console.log (`...properties will be in ${settings.properties}`)
+
+    // now update all that if anything has changed
+    const strSet = JSON.stringify(settings,null,2)
+    if (JSON.stringify(_settings,null, 2) !== strSet) {
+      await mkdir(settingsDir, { recursive: true })
+      console.log('...writing to ', settingsFile)
+      writeFile(settingsFile, strSet, { flag: 'w' })
+    }
+
+    // get the required scopes and set them
+    const scopes = manifest.oauthScopes || []
+
+    // register the required scopes
+    Auth.setAuth(scopes)
+
+    // get the googleauth object
+    const auth = Auth.getAuth()
+
+    // we need the projectId for special header for UrlFetchApp to Goog apis
+    const projectId = await auth.getProjectId()
+
+    // get an access token so we can test it to pick up the authed scopes etc
+    const accessToken = await auth.getAccessToken()
+
+    // get access token info
+    const { default: got } = await import('got')
+    const tokenInfo = await got(`https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${accessToken}`).json()
+
+
+    /// these all jst exist in this sub process so we need to send them back to parent process
+    return {
+      scopes,
+      projectId,
+      tokenInfo,
+      accessToken,
+      settings
+    }
+
+
+  })
+
+  // this is the path of the runing main process
+  const mainDir = path.dirname(process.argv[1])
+
+
+  // because this is all run in a synced subprocess it's not an async result
+  const synced = fx({
+    claspPath,
+    settingsPath,
+    manifestPath,
+    authPath: getModulePath(authPath),
+    mainDir,
+    cachePath,
+    propertiesPath
+  })
+  const {
+    scopes,
+    projectId,
+    tokenInfo,
+    accessToken,
+    settings
+  } = synced
+
+  // set these values from the subprocess for the main project
+  Auth.setAuth(scopes)
+  Auth.setProjectId(projectId)
+  Auth.setTokenInfo(tokenInfo)
+  Auth.setAccessToken(accessToken)
+  Auth.setSettings(settings)
+  return synced
+
+}
 
 /**
  * sync a call to google api
@@ -77,9 +229,9 @@ const fxApi = ({ prop, method, params, apiPath }) => {
  * @param {}
  * @returns {*}
  */
-const fxStore = ( storeArgs , method = "get" , ...kvArgs) => {
+const fxStore = (storeArgs, method = "get", ...kvArgs) => {
 
-  const fx = makeSynchronous(async ({kvPath, kvArgs, storeArgs, method}) => {
+  const fx = makeSynchronous(async ({ kvPath, kvArgs, storeArgs, method }) => {
     const { newKStore } = await import(kvPath)
     const { store } = newKStore(storeArgs)
     const result = await store[method](...kvArgs)
@@ -178,77 +330,7 @@ const fxDriveMedia = ({ id }) => {
   return result
 }
 
-/**
- * we dont want to generate a lot of async/sync calls so start by getting themanifest stuff out of the way
- * @param {string} [manifestPath ='./appsscript.json']
- * 
- */
-const fxInit = (manifestPath = './appsscript.json') => {
 
-  const fx = makeSynchronous(async ({ manifestFile, authPath }) => {
-
-    // get the manifest
-    const { readFile } = await import('node:fs/promises')
-    console.log(`using manifest file:${manifestFile}`)
-    const contents = await readFile(manifestFile, { encoding: 'utf8' })
-    const manifest = JSON.parse(contents)
-
-    // get the required scopes and set them
-    const scopes = manifest.oauthScopes || []
-
-    // get the current auth
-    const { Auth } = await import(authPath)
-    Auth.setAuth(scopes)
-
-    // get the googleauth object
-    const auth = Auth.getAuth()
-
-    // we need the projectId for special header for UrlFetchApp to Goog apis
-    const projectId = await auth.getProjectId()
-
-    // get an access token so we can test it to pick up the authed scopes etc
-    const accessToken = await auth.getAccessToken()
-
-    // get access token info
-    const { default: got } = await import('got')
-    const tokenInfo = await got(`https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${accessToken}`).json()
-
-
-    /// these all jst exist in this sub process so we need to send them back to parent process
-    return {
-      scopes,
-      projectId,
-      tokenInfo,
-      accessToken
-    }
-
-
-  })
-
-  const mainDir = path.dirname(process.argv[1])
-  const manifestFile = path.resolve(mainDir, manifestPath)
-
-  // because this is all run in a synced subprocess it's not an async result
-  const synced = fx({
-    manifestFile,
-    authPath: getModulePath(authPath)
-  })
-  const {
-    scopes,
-    projectId,
-    tokenInfo,
-    accessToken
-  } = synced
-
-  // set these for the rest of the project
-  Auth.setAuth(scopes)
-  Auth.setProjectId(projectId)
-  Auth.setTokenInfo(tokenInfo)
-  Auth.setAccessToken(accessToken)
-
-  return synced
-
-}
 
 
 /**
@@ -280,6 +362,6 @@ export const Syncit = {
   fxFetch,
   fxDrive,
   fxDriveMedia,
-  fxInit, 
+  fxInit,
   fxStore
 }

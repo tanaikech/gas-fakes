@@ -1,6 +1,6 @@
 import { Proxies } from '../../support/proxies.js'
 import { spreadsheetType } from '../../support/constants.js'
-
+import { Auth } from '../../support/auth.js'
 /**
  * create a new FakeSpreadsheetApp instance
  * @param  {...any} args 
@@ -84,6 +84,7 @@ export class FakeSpreadsheet {
   }
 }
 
+
 /**
  * basic fake FakeSpreadsheetApp
  * TODO add lots more methods
@@ -91,12 +92,20 @@ export class FakeSpreadsheet {
  * @returns {FakeSpreadsheetApp}
  */
 export class FakeSpreadsheetApp {
+  
+  static open = (id) => {
+    const file = DriveApp.getFileById(id)
+    const ss = newFakeSpreadsheet(file)
+    return ss
+  }
 
   constructor() {
-    this.__activeSpreadsheet = null
+    const documentId = Auth.getDocumentId()
+    this.__activeSpreadsheet = documentId ? FakeSpreadsheetApp.open (documentId) : null
   }
+
   getActiveSpreadsheet() {
-    return this.__activeSpreadsheet || null
+    return this.__activeSpreadsheet
   }
   getActiveSheet() {
     return this.__activeSpreadsheet?.getActiveSheet() || null
@@ -106,16 +115,14 @@ export class FakeSpreadsheetApp {
    * @return {FakeSpreadsheet}
    */
   open(file) {
-    this.__activeSpreadsheet = newFakeSpreadsheet(file)
-    return this.getActiveSpreadsheet()
+    return this.openById (file.id)
   }
   /**
    * @param {string} id file id
    * @return {FakeSpreadsheet}
    */
   openById(id) {
-    const file = DriveApp.getFileById(id)
-    return this.open(file)
+    return FakeSpreadsheetApp.open (id)
   }
 
 

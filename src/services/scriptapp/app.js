@@ -14,6 +14,7 @@ const getOAuthToken = () => {
   return Auth.getAccessToken()
 }
 
+
 const limitMode = (mode) => {
   if (mode !== ScriptApp.AuthMode.FULL) {
     throw new Error(`only ${ScriptApp.AuthMode.FULL} is supported as mode for now`)
@@ -101,6 +102,7 @@ if (typeof globalThis[name] === typeof undefined) {
         getOAuthToken,
         requireAllScopes,
         requireScopes,
+        getScriptId: Auth.getScriptId,
         AuthMode: {
           FULL: 'FULL'
         }

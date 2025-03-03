@@ -1,7 +1,7 @@
 import { Proxies } from '../../support/proxies.js'
 import { Syncit } from '../../support/syncit.js'
 import { Auth } from '../../support/auth.js'
-import { deflateSync } from 'zlib'
+
 /**
  * caching support uses node files storage
  */
@@ -27,7 +27,7 @@ const MAXIMUM_CACHE_EXPIRY = 21600
  */
 const normExpiry = (secs) => {
   if (typeof secs === typeof undefined || secs === null) secs = DEFAULT_CACHE_EXPIRY
-  return Math.max(1, Math.min (MAXIMUM_CACHE_EXPIRY * 1000, secs * 1000))
+  return Math.max(1, Math.min(MAXIMUM_CACHE_EXPIRY * 1000, secs * 1000))
 }
 
 /**
@@ -90,12 +90,6 @@ export const newFakeService = (kind) => {
   return Proxies.guard(kind === ServiceKind.CACHE ? new FakeCacheService() : new FakePropertiesService())
 }
 
-/**
- * fix up for partialfunction names
- * @param {string} name 
- * @returns {string} eg ABC -> Abc
- */
-const lc = (name) => name.substring(0,1).toUpperCase() + name.substring(1).toLowerCase() 
 
 /**
  * @class FakePropertiesService
@@ -103,8 +97,18 @@ const lc = (name) => name.substring(0,1).toUpperCase() + name.substring(1).toLow
 class FakePropertiesService {
   constructor() {
     this.kind = StoreType.PROPERTIES
-    Reflect.ownKeys(StoreType)
-      .forEach(type => this[`get${lc(StoreType[type])}Properties`] = () => Proxies.guard(new FakeProperties(type)))
+
+  }
+  getDocumentProperties() {
+    // apps script needs a bound document to use this store
+    if (!Auth.getDocumentId()) return null
+    return Proxies.guard(new FakeProperties(StoreType.DOCUMENT))
+  }
+  getUserProperties() {
+    return Proxies.guard(new FakeProperties(StoreType.USER))
+  }
+  getScriptProperties() {
+    return Proxies.guard(new FakeProperties(StoreType.SCRIPT))
   }
 }
 
@@ -113,9 +117,18 @@ class FakePropertiesService {
  */
 class FakeCacheService {
   constructor() {
-    this.kind = StoreType.PROPERTIES
-    Reflect.ownKeys(StoreType)
-      .forEach(type => this[`get${lc(StoreType[type])}Cache`] = () => Proxies.guard(new FakeCache(type)))
+    this.kind = StoreType.CACHE
+  }
+  getDocumentCache() {
+    // apps script needs a bound document to use this store
+    if (!Auth.getDocumentId()) return null
+    return Proxies.guard(new FakeCache(StoreType.DOCUMENT))
+  }
+  getUserCache() {
+    return Proxies.guard(new FakeCache(StoreType.USER))
+  }
+  getScriptCache() {
+    return Proxies.guard(new FakeCache(StoreType.SCRIPT))
   }
 }
 
@@ -131,23 +144,8 @@ class FakeStore {
   constructor(type) {
     checkStoreType(type)
     this._type = type
-
-    // storeDir = .kind
-    // filename = .u-scriptId-userId or .s-scriptId or .d-scriptId-documentId
-    // tmpdir = somewhere local
-    // namespace is not used as we'll split all into separate files
-    const prefix = `.${type.substring(0,1).toLowerCase()}-`
-
-    let subId = ""
-    if (type !== "SCRIPT") {
-      subId +=  "-" + (type === "USER" ? Auth.getUserId() : Auth.getDocumentId ())
-    }
-    this.storeArgs = {
-      inMemory: false,
-      fileName: `${prefix}${Auth.getScriptId()}${subId}`,
-      tmpDir: './.gas-fakes/store'
-    }
   }
+
   /**
    * @returns {StoreType}
    */
@@ -155,7 +153,28 @@ class FakeStore {
     return this._type
   }
 
+  getFileName(kind) {
+
+    const t = this.type.substring(0, 1).toLowerCase()
+    const k = kind.substring(0, 1).toLowerCase()
+    const scriptId = Auth.getScriptId()
+    const documentId = Auth.getDocumentId()
+
+    let fileName = `${k}-${t}-${scriptId}`
+    if (this.type === StoreType.USER) {
+      fileName += `-${Auth.getUserId()}`
+    }
+    else if (this.type === StoreType.DOCUMENT && documentId) {
+      fileName += `-${documentId}`
+    }
+
+    return fileName
+  }
+
+
 }
+
+
 /**
  * @class FakeProperties
  */
@@ -164,16 +183,17 @@ class FakeProperties extends FakeStore {
    * @constructor
    * @param {StoreType} type 
    */
-  constructor (type) {
+  constructor(type) {
     super(type)
-    // these are use to construct the cahce file name
-    this.storeArgs = {
-      ...this.storeArgs,
-      storeDir: 'props'
+    this._storeArgs =  {
+      inMemory: false,
+      fileName: this.getFileName (ServiceKind.PROPERTIES),
+      storeDir:  Auth.getPropertiesPath()
     }
   }
 
-  deleteAllProperties () {
+
+  deleteAllProperties() {
 
   }
   /**
@@ -181,14 +201,14 @@ class FakeProperties extends FakeStore {
    * @param {string} key 
    * @returns {FakeProperties} in Apps Script this is returned for chaining
    */
-  deleteProperty (key) {
-    Syncit.fxStore (this.storeArgs, "delete", key)
+  deleteProperty(key) {
+    Syncit.fxStore(this._storeArgs, "delete", key)
     return this
   }
-  getKeys () {
+  getKeys() {
 
   }
-  getProperties () {
+  getProperties() {
 
   }
   /**
@@ -196,10 +216,10 @@ class FakeProperties extends FakeStore {
    * @param {string} key 
    * @returns {string| null}
    */
-  getProperty (key) {
-    return fixun(Syncit.fxStore (this.storeArgs, "get", key))
+  getProperty(key) {
+    return fixun(Syncit.fxStore(this._storeArgs, "get", key))
   }
-  setProperties (properties, deleteAllOthers) {
+  setProperties(properties, deleteAllOthers) {
 
   }
   /**
@@ -208,22 +228,23 @@ class FakeProperties extends FakeStore {
    * @param {string} value 
    * @returns {FakeProperties} in Apps Script this is returned for chaining
    */
-  setProperty (key, value) {
-    Syncit.fxStore (this.storeArgs, "set", key, value)
+  setProperty(key, value) {
+    Syncit.fxStore(this._storeArgs, "set", key, value)
     return this
   }
 
 }
 
 class FakeCache extends FakeStore {
-  constructor (type) {
+  constructor(type) {
     super(type)
-    this.storeArgs = {
-      ...this.storeArgs,
-      storeDir: 'cache'
+    this._storeArgs =  {
+      inMemory: false,
+      fileName: this.getFileName (ServiceKind.CACHE),
+      storeDir:  Auth.getCachePath()
     }
   }
-  getAll (keys) {
+  getAll(keys) {
 
   }
 
@@ -234,13 +255,13 @@ class FakeCache extends FakeStore {
    * @param {number} expirationInSeconds 
    * @returns null
    */
-  put (key, value, expirationInSeconds ) {
-    Syncit.fxStore (this.storeArgs, "set", key, value, normExpiry(expirationInSeconds))
+  put(key, value, expirationInSeconds) {
+    Syncit.fxStore(this._storeArgs, "set", key, value, normExpiry(expirationInSeconds))
     return null
   }
 
-  putAll (values, expirationInSeconds) {
-    
+  putAll(values, expirationInSeconds) {
+
   }
 
   /**
@@ -248,16 +269,16 @@ class FakeCache extends FakeStore {
    * @param {string} key 
    * @returns {FakeCache} in Apps Script this is returned for chaining
    */
-  remove (key) {
-    Syncit.fxStore (this.storeArgs, "delete", key)
+  remove(key) {
+    Syncit.fxStore(this._storeArgs, "delete", key)
     return null
   }
 
-  removeAll (keys) {
-    
+  removeAll(keys) {
+
   }
-  get (key) {
-    return fixun(Syncit.fxStore (this.storeArgs, "get", key))
+  get(key) {
+    return fixun(Syncit.fxStore(this._storeArgs, "get", key))
   }
 
 }

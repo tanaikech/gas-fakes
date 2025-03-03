@@ -304,17 +304,20 @@ const getParentsIterator = ({
 }
 ````
 
+
+
 ### Cache and Property services
 
-These are currently implemented using [keyv](https://github.com/jaredwray/keyv) with storage adaptor [keyv-file](https://github.com/zaaack/keyv-file). By default the Node side files are held in './gas-fakes/store'. I've gone for local file storage rather than something like redis to avoid adding local service requirements, but keyv takes a wide range of storage adaptors if you want to do something fancier. A small modificaion to kv.js is all you need.
+These are currently implemented using [keyv](https://github.com/jaredwray/keyv) with storage adaptor [keyv-file](https://github.com/zaaack/keyv-file). By default the Node side files are held in './.gas-fakes/store'. I've gone for local file storage rather than something like redis to avoid adding local service requirements, but keyv takes a wide range of storage adaptors if you want to do something fancier. A small modificaion to kv.js is all you need.
 
-#### script, user and document store varieties
+
+#### Script, user and document store varieties
 
 All 3 are supported for both properties and cache. 
 
 ##### scriptId
 
-The local version may have no knowledge of the Apps ScriptId. If you are using clasp, it's picked up from the .clasp.json file. However if you are not using clasp, it'll create a fake id in ./gas-fakes/settings.json and use that. All property and cache stores use the scriptId to partition data.
+The local version may have no knowledge of the Apps ScriptId. If you are using clasp, it's picked up from the .clasp.json file. However if you are not using clasp, it'll create a fake id in ./.gas-fakes/settings.json and use that. All property and cache stores use the scriptId to partition data.
 
 ##### userId
 
@@ -324,6 +327,10 @@ The userId is extracted from an accessToken and will match the id derived from A
 
 The documentId is only meaningful if you are working on a container bound script or add-on. We use the .clasp.json to find the container doc if it's specified, otherwise it'll generate a fake documentId in ./gas-fakes/.settings.json and use that. All document level property and cache stores use the scriptId and documentId to partition data.
 
+### Settings and temporary files
+
+As you will have noticed, there are various local support files for props/caching etc. You should make sure that .gas-fakes is added to .gitignore as it may contain cached or property values you don't want to share publicly. 
+
 
 ## Help
 
@@ -331,5 +338,5 @@ As I mentioned earlier, to take this further, I'm going to need a lot of help to
 
 ## Translations and writeups
 
-- [mcpher] (https://ramblings.mcpher.com/a-proof-of-concept-implementation-of-apps-script-environment-on-node/)
+- [mcpher](https://ramblings.mcpher.com/a-proof-of-concept-implementation-of-apps-script-environment-on-node/)
 - [Russian version](README.RU.md) ([credit Alex Ivanov](https://github.com/oshliaer))

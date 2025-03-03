@@ -3,7 +3,7 @@
 // this is loaded by npm, but is a library on Apps Script side
 import { Exports as unitExports } from '@mcpher/unit'
 import is from '@sindresorhus/is';
-import { newKStore} from '../src/support/kv.js'
+
 
 // all the fake services are here
 //import '@mcpher/gas-fakes/main.js'
@@ -18,6 +18,13 @@ const testFakes = async () => {
     showErrorsOnly: true
   })
 
+  // apps script can't get from parent without access to the getresource of the parent
+  if (unitExports.CodeLocator.isGas) {
+    // because a GAS library cant get its caller's code
+    unitExports.CodeLocator.setGetResource(ScriptApp.getResource)
+    // optional - generally not needed - only necessary if you are using multiple libraries and some file sahre the same ID
+    unitExports.CodeLocator.setScriptId(ScriptApp.getScriptId())
+  }
 
   // these are som fixtures to test applicable to my own drive
   const fixes = {
@@ -35,77 +42,106 @@ const testFakes = async () => {
   }
 
 
-  unit.section ("properties store", t=> {
+  unit.section("properties store", t => {
     const ps = {}
     const testKey = 't'
 
-    t.is (typeof PropertiesService.getUserProperties, 'function')
-    ps.up =  PropertiesService.getUserProperties()
-    t.is (ps.up.type, "USER")
+    t.is(typeof PropertiesService.getUserProperties, 'function')
+    ps.up = PropertiesService.getUserProperties()
+    t.is(ps.up.type, "USER", {
+      skip: !ScriptApp.isFake
+    })
 
-    t.is (typeof PropertiesService.getScriptProperties, 'function')
-    ps.sp =  PropertiesService.getScriptProperties()
-    t.is (ps.sp.type, "SCRIPT")
-    
-    t.is (typeof PropertiesService.getDocumentProperties, 'function')
-    ps.dp =  PropertiesService.getDocumentProperties()
-    t.is (ps.dp.type, "DOCUMENT")
+    t.is(typeof PropertiesService.getScriptProperties, 'function')
+    ps.sp = PropertiesService.getScriptProperties()
+    t.is(ps.sp.type, "SCRIPT", {
+      skip: !ScriptApp.isFake
+    })
+
+    t.is(typeof PropertiesService.getDocumentProperties, 'function')
+    ps.dp = PropertiesService.getDocumentProperties()
+    if (ps.dp) {
+      t.is(ps.dp.type, "DOCUMENT", {
+        skip: !ScriptApp.isFake
+      })
+    }
 
     const p = ['dp', 'sp', 'up']
-    p.forEach (f=> {
-      const testValue = f+'p'
-      t.is (ps[f].setProperty (testKey, testValue).getProperty(testKey), testValue)
-      // in apps script delete returns the object for chaining
-      t.is (ps[f].deleteProperty (testKey).getProperty(testKey), null)
+    p.forEach(f => {
+      const testValue = f + 'p'
+      if (ps[f]) {
+        t.is(ps[f].setProperty(testKey, testValue).getProperty(testKey), testValue)
+        // in apps script delete returns the object for chaining
+        t.is(ps[f].deleteProperty(testKey).getProperty(testKey), null)
+      }
     })
 
 
   })
 
 
-  unit.section ("cache store", t=> {
+  unit.section("cache store", t => {
     const ps = {}
     const testKey = 't'
 
-    t.is (typeof CacheService.getUserCache, 'function')
-    ps.up =  CacheService.getUserCache()
-    t.is (ps.up.type, "USER")
+    t.is(typeof CacheService.getUserCache, 'function')
+    ps.up = CacheService.getUserCache()
+    t.is(ps.up.type, "USER", {
+      skip: !ScriptApp.isFake
+    })
 
-    t.is (typeof CacheService.getScriptCache, 'function')
-    ps.sp =  CacheService.getScriptCache()
-    t.is (ps.sp.type, "SCRIPT")
+    t.is(typeof CacheService.getScriptCache, 'function')
+    ps.sp = CacheService.getScriptCache()
+    t.is(ps.sp.type, "SCRIPT", {
+      skip: !ScriptApp.isFake
+    })
 
-    t.is (typeof CacheService.getDocumentCache, 'function')
-    ps.dp =  CacheService.getDocumentCache()
-    t.is (ps.dp.type, "DOCUMENT")
+    t.is(typeof CacheService.getDocumentCache, 'function')
+    ps.dp = CacheService.getDocumentCache()
+    if (ps.dp) {
+      t.is(ps.dp.type, "DOCUMENT", {
+        skip: !ScriptApp.isFake
+      })
+    }
 
-    const exValue ='ex'
+    const exValue = 'ex'
     const p = ['dp', 'sp', 'up']
-    p.forEach (f=> {
-      const testValue = f+'p'
-      t.is(ps[f].put (testKey, testValue),null)
-      t.is (ps[f].get(testKey), testValue)
-      t.is (ps[f].remove (testKey), null)
-      t.is (ps[f].put(testKey, exValue, 2 ), null)
+    p.forEach(f => {
+      const testValue = f + 'p'
+      if (ps[f]) {
+        t.is(ps[f].put(testKey, testValue), null)
+        t.is(ps[f].get(testKey), testValue)
+        t.is(ps[f].remove(testKey), null)
+        t.is(ps[f].put(testKey, exValue, 2), null)
+      } else {
+        t.is(ps[f], null)
+      }
     })
 
-    p.forEach (f=> {
-      t.is (ps[f].get(testKey), exValue)
+    p.forEach(f => {
+      if (ps[f]) {
+        t.is(ps[f].get(testKey), exValue)
+      }
     })
-    Utilities.sleep (2000)
-    p.forEach (f=> {
-      t.is (ps[f].get(testKey), null)
+    Utilities.sleep(2000)
+    p.forEach(f => {
+      if (ps[f]) {
+        t.is(ps[f].get(testKey), null)
+      }
     })
   })
 
-  unit.cancel()
+
+  unit.section ("scriptapp tests", t=> {
+    t.true (is.nonEmptyString(ScriptApp.getScriptId()))
+  })
 
 
   unit.section('scopes and oauth', t => {
     const token = ScriptApp.getOAuthToken()
     t.true(is.nonEmptyString(token))
     /**
-     * Apps Script  doesnt throw an error on an an invalid requiredallscopes ENUM as it should
+     * Apps Script  doesn't throw an error on an an invalid requiredallscopes ENUM as it should
        it returns null just like a succesfful call for now will omit on Apps Script side tests
        see https://issuetracker.google.com/issues/395159729
      */
@@ -147,23 +183,27 @@ const testFakes = async () => {
     })
 
   }, {
-    skip: !ScriptApp.isFake
+    skip: false
   })
 
-
-
-
-
+  
   unit.section("spreadsheet app", t => {
     const sap = SpreadsheetApp
     t.true(is.object(sap.SheetType))
-    t.is(sap.SheetType.GRID, "GRID")
+    t.is(sap.SheetType.GRID.toString(), "GRID")
     t.truthy(sap.ValueType.IMAGE)
     t.falsey(sap.ValueType.RUBBISH)
     const ss = sap.openById(fixes.TEST_SHEET_ID)
     t.is(ss.getId(), fixes.TEST_SHEET_ID)
-    t.is(sap.getActiveSpreadsheet().getId(), fixes.TEST_SHEET_ID)
-    t.is(sap.getActiveSpreadsheet().getName(), fixes.TEST_SHEET_NAME)
+
+    // this'll be null if there's no bound sheet
+    const ass = sap.getActiveSpreadsheet()
+
+    t.true (is.object(ass) || ass === null)
+    if (ass) {
+      t.is(ass.getId(), fixes.TEST_SHEET_ID)
+      t.is(ass.getName(), fixes.TEST_SHEET_NAME)
+    }
   }, {
     skip: false
   })

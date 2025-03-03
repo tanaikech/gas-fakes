@@ -9,17 +9,16 @@ let _projectId = null
 let _tokenInfo = null
 let _accessToken = null
 
-// TODO figure out how to make a scriptId/documentId locally
-let _scriptId = 'todo:script'
-let _documentId = 'todo:doc'
-
-const getScriptId = () => _scriptId
-const getDocumentId = () => _documentId
-
+let _settings = null
+const getSettings = () => _settings
+const getScriptId = () => getSettings().scriptId
+const getDocumentId = () => getSettings().documentId
 const setProjectId = (projectId) => _projectId = projectId
 const setTokenInfo = (tokenInfo) => _tokenInfo = tokenInfo
 const setAccessToken = (accessToken) => _accessToken = accessToken
-
+const setSettings = (settings) => _settings = settings
+const getCachePath = () => getSettings().cache
+const getPropertiesPath = () => getSettings().properties
 const getTokenInfo = () => {
   if (!_tokenInfo) throw `token info isnt set yet`
   return _tokenInfo
@@ -140,5 +139,8 @@ export const Auth = {
   getAccessToken,
   getTokenScopes,
   getScriptId,
-  getDocumentId
+  getDocumentId,
+  setSettings,
+  getCachePath,
+  getPropertiesPath
 }

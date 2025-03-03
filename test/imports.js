@@ -3,3 +3,4 @@
  * to emulate node imports
  */
 const unitExports = bmUnitTester.Exports
+const {is} = bmIs.Exports
