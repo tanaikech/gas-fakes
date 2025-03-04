@@ -11,10 +11,10 @@ class FakeBlob {
   /**
    * 
    * @constructor 
-   * @param {byte[]} [data] data 
+   * @param {*} [data] data 
    * @param {string} [contentType]
    * @param {string} [name]
-   * @returns {FakeDriveFile}
+   * @returns {FakeBlob}
    */
   constructor(data, contentType, name) {
     this._data = Utils.settleAsBytes(data)
@@ -45,7 +45,7 @@ class FakeBlob {
   }
 
   copyBlob() {
-    return newBlob(this.getBytes(), this.getContentType(), this.getName())
+    return newFakeBlob(this.getBytes(), this.getContentType(), this.getName())
   }
 
   setBytes(data) {
@@ -72,4 +72,4 @@ class FakeBlob {
   }
 
 }
-export const newBlob = (...args) => Proxies.guard(new FakeBlob(...args))
+export const newFakeBlob = (...args) => Proxies.guard(new FakeBlob(...args))

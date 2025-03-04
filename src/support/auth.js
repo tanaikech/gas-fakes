@@ -1,5 +1,6 @@
 import { GoogleAuth } from 'google-auth-library'
 import is from '@sindresorhus/is'
+import { createHash } from 'node:crypto'
 
 const _authScopes = new Set([])
 
@@ -8,8 +9,14 @@ let _auth = null
 let _projectId = null
 let _tokenInfo = null
 let _accessToken = null
+let _manifest = null
+let _clasp = null
 
 let _settings = null
+const setManifest = (manifest) => _manifest = manifest
+const setClasp = (clasp) => _clasp = clasp
+const getManifest = () => _manifest
+const getClasp = () => _clasp
 const getSettings = () => _settings
 const getScriptId = () => getSettings().scriptId
 const getDocumentId = () => getSettings().documentId
@@ -29,10 +36,10 @@ const getAccessToken= () => {
   return _accessToken
 }
 
-
+const getTimeZone = () => getManifest().timeZone 
 const getUserId = () => getTokenInfo().sub
 const getTokenScopes = () => getTokenInfo().scope
-
+const getHashedUserId = () => createHash('md5').update(getUserId()+'hud').digest().toString('hex')
 
 
 /**
@@ -142,5 +149,12 @@ export const Auth = {
   getDocumentId,
   setSettings,
   getCachePath,
-  getPropertiesPath
+  getPropertiesPath,
+  getTokenInfo,
+  getHashedUserId,
+  setManifest,
+  setClasp,
+  getManifest,
+  getClasp,
+  getTimeZone
 }

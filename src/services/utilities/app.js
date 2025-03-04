@@ -1,15 +1,5 @@
-import sleepSynchronously from 'sleep-synchronously';
 import { Proxies } from '../../support/proxies.js'
-import { newBlob } from './fakeblob.js'
-import {Utils} from '../../support/utils.js'
-/**
- * a blocking sleep to emulate Apps Script
- * @param {number} ms number of milliseconds to sleep
- */
-const sleep = (ms) => {
-  Utils.assert.number (ms, `Cannot convert ${ms} to int.`)
-  sleepSynchronously(ms);
-}
+import { newFakeUtilities } from './fakeutilities.js';
 
 
 // This will eventually hold a proxy for DriveApp
@@ -20,19 +10,14 @@ let _app = null
  */
 const name = "Utilities"
 if (typeof globalThis[name] === typeof undefined) {
-  console.log (`setting ${name} to global`)
   const getApp = () => {
-    // if it hasne been intialized yet then do that
+    // if it hasnt been intialized yet then do that
     if (!_app) {
-      _app = {
-        sleep,
-        newBlob
-      }
+      console.log (`setting ${name} to global`)
+      _app = newFakeUtilities()
     }
     // this is the actual driveApp we'll return from the proxy
     return _app
   }
-
   Proxies.registerProxy (name, getApp)
-
 }

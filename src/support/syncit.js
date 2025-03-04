@@ -4,7 +4,7 @@
 import makeSynchronous from 'make-synchronous';
 import path from 'path'
 import { Auth } from "./auth.js"
-
+import { randomUUID } from 'node:crypto'
 
 
 const authPath = "../support/auth.js"
@@ -45,22 +45,12 @@ const fxInit = ({
   propertiesPath = propertiesDefaultPath
 } = {}) => {
 
-  const fx = makeSynchronous(async ({ manifestPath, authPath, claspPath, settingsPath, mainDir, cachePath, propertiesPath }) => {
+  const fx = makeSynchronous(async ({ manifestPath, authPath, claspPath, settingsPath, mainDir, cachePath, propertiesPath, fakeId }) => {
 
     // get the settings and manifest
     const path = await import('path')
     const { readFile, writeFile, mkdir } = await import('node:fs/promises')
     const { Auth } = await import(authPath)
-
-    /// make a fake scriptid
-    const makeFakeId = (length = 24) => {
-      const seed = new Date().getTime()
-      let t = ''
-      while (t.length < length) {
-        t += Math.trunc(seed * Math.random()).toString(36)
-      }
-      return t.substring(0, length)
-    }
 
     // get a file and parse if it exists
     const getIfExists = async (file) => {
@@ -94,7 +84,7 @@ const fxInit = ({
     ])
 
     /// if we dont have a scriptId we need to check in clasp or make a fakeone
-    settings.scriptId = settings.scriptId || clasp.scriptId || makeFakeId()
+    settings.scriptId = settings.scriptId || clasp.scriptId || fakeId
 
     // if we don't have a documentID, then see if this is a bound one
     settings.documentId = settings.documentId || null
@@ -140,7 +130,9 @@ const fxInit = ({
       projectId,
       tokenInfo,
       accessToken,
-      settings
+      settings,
+      manifest,
+      clasp
     }
 
 
@@ -158,14 +150,17 @@ const fxInit = ({
     authPath: getModulePath(authPath),
     mainDir,
     cachePath,
-    propertiesPath
+    propertiesPath,
+    fakeId: randomUUID ()
   })
   const {
     scopes,
     projectId,
     tokenInfo,
     accessToken,
-    settings
+    settings,
+    manifest,
+    clasp
   } = synced
 
   // set these values from the subprocess for the main project
@@ -174,6 +169,8 @@ const fxInit = ({
   Auth.setTokenInfo(tokenInfo)
   Auth.setAccessToken(accessToken)
   Auth.setSettings(settings)
+  Auth.setClasp (clasp)
+  Auth.setManifest (manifest)
   return synced
 
 }

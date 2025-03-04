@@ -160,9 +160,9 @@ class FakeStore {
     const scriptId = Auth.getScriptId()
     const documentId = Auth.getDocumentId()
 
-    let fileName = `${k}-${t}-${scriptId}`
+    let fileName = `${k}${t}-${scriptId}`
     if (this.type === StoreType.USER) {
-      fileName += `-${Auth.getUserId()}`
+      fileName += `-${Auth.getHashedUserId()}`
     }
     else if (this.type === StoreType.DOCUMENT && documentId) {
       fileName += `-${documentId}`

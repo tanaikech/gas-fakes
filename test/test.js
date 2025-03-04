@@ -7,9 +7,10 @@ import is from '@sindresorhus/is';
 
 // all the fake services are here
 //import '@mcpher/gas-fakes/main.js'
-import '../main.js'
-const testFakes = async () => {
 
+import '../main.js'
+import { Utils } from '../src/support/utils.js';
+const testFakes = async () => {
 
   // on node this will have come from the imports that get stripped when mocing to gas
   // on apps script, you'll have a gas only imports file that aliases 
@@ -38,9 +39,49 @@ const testFakes = async () => {
     BLOB_NAME: 'foo.txt',
     BLOB_TYPE: 'text/plain',
     TEST_SHEET_ID: '1DlKpVVYCrCPNfRbGsz6N_K3oPTgdC9gQIKi0aNb42uI',
-    TEST_SHEET_NAME: 'sharedlibraries'
+    TEST_SHEET_NAME: 'sharedlibraries',
+    EMAIL: 'bruce@mcpher.com',
+    TIMEZONE: 'Europe/London',
+    LOCALE: 'en_US'
   }
 
+
+  unit.section("session", t => {
+    t.is(Session.getActiveUser().toString(), fixes.EMAIL)
+    t.is(Session.getActiveUser().getEmail(), fixes.EMAIL)
+    t.is(Session.getEffectiveUser().getEmail(), fixes.EMAIL)
+    t.is(Session.getActiveUserLocale(), fixes.LOCALE)
+    t.is(Session.getScriptTimeZone(), fixes.TIMEZONE)
+    t.true(is.nonEmptyString(Session.getTemporaryActiveUserKey()))
+  }, {
+    skip: false
+  })
+
+  unit.section('utilities', t => {
+    t.true(is.nonEmptyString(Utilities.getUuid()))
+  })
+
+  unit.section('all about blobs', t => {
+    const blob = Utilities.newBlob(fixes.TEXT_FILE_CONTENT)
+    t.is(blob.getName(), null)
+    t.is(blob.getContentType(), fixes.BLOB_TYPE)
+    t.is(blob.getDataAsString(), fixes.TEXT_FILE_CONTENT)
+    const bytes = blob.getBytes()
+    const blob2 = Utilities.newBlob(bytes, fixes.BLOB_TYPE, fixes.BLOB_NAME)
+    t.is(blob2.getName(), fixes.BLOB_NAME)
+    t.is(blob2.getContentType(), fixes.BLOB_TYPE)
+    t.is(blob2.getDataAsString(), fixes.TEXT_FILE_CONTENT)
+    t.deepEqual(blob2.getBytes(), bytes)
+    const blob3 = blob.copyBlob()
+    blob3.setName(blob2.getName())
+    t.is(blob3.getName(), fixes.BLOB_NAME)
+    t.is(blob3.setContentTypeFromExtension().getContentType(), fixes.BLOB_TYPE)
+    const bytes3 = bytes.slice().reverse()
+    t.deepEqual(blob3.setBytes(bytes3).getBytes(), bytes3)
+    t.is(blob3.setDataFromString(fixes.TEXT_FILE_CONTENT).getDataAsString(),
+      blob2.getDataAsString())
+    t.false(blob3.isGoogleType())
+  })
 
   unit.section("properties store", t => {
     const ps = {}
@@ -132,8 +173,8 @@ const testFakes = async () => {
   })
 
 
-  unit.section ("scriptapp tests", t=> {
-    t.true (is.nonEmptyString(ScriptApp.getScriptId()))
+  unit.section("scriptapp tests", t => {
+    t.true(is.nonEmptyString(ScriptApp.getScriptId()))
   })
 
 
@@ -186,7 +227,7 @@ const testFakes = async () => {
     skip: false
   })
 
-  
+
   unit.section("spreadsheet app", t => {
     const sap = SpreadsheetApp
     t.true(is.object(sap.SheetType))
@@ -199,7 +240,7 @@ const testFakes = async () => {
     // this'll be null if there's no bound sheet
     const ass = sap.getActiveSpreadsheet()
 
-    t.true (is.object(ass) || ass === null)
+    t.true(is.object(ass) || ass === null)
     if (ass) {
       t.is(ass.getId(), fixes.TEST_SHEET_ID)
       t.is(ass.getName(), fixes.TEST_SHEET_NAME)
@@ -250,27 +291,9 @@ const testFakes = async () => {
 
 
 
-  unit.section('all about blobs', t => {
-    const blob = Utilities.newBlob(fixes.TEXT_FILE_CONTENT)
-    t.is(blob.getName(), null)
-    t.is(blob.getContentType(), fixes.BLOB_TYPE)
-    t.is(blob.getDataAsString(), fixes.TEXT_FILE_CONTENT)
-    const bytes = blob.getBytes()
-    const blob2 = Utilities.newBlob(bytes, fixes.BLOB_TYPE, fixes.BLOB_NAME)
-    t.is(blob2.getName(), fixes.BLOB_NAME)
-    t.is(blob2.getContentType(), fixes.BLOB_TYPE)
-    t.is(blob2.getDataAsString(), fixes.TEXT_FILE_CONTENT)
-    t.deepEqual(blob2.getBytes(), bytes)
-    const blob3 = blob.copyBlob()
-    blob3.setName(blob2.getName())
-    t.is(blob3.getName(), fixes.BLOB_NAME)
-    t.is(blob3.setContentTypeFromExtension().getContentType(), fixes.BLOB_TYPE)
-    const bytes3 = bytes.slice().reverse()
-    t.deepEqual(blob3.setBytes(bytes3).getBytes(), bytes3)
-    t.is(blob3.setDataFromString(fixes.TEXT_FILE_CONTENT).getDataAsString(),
-      blob2.getDataAsString())
-    t.false(blob3.isGoogleType())
-  })
+
+
+
 
   unit.section('getting content', t => {
     const file = DriveApp.getFileById(fixes.TEXT_FILE_ID)

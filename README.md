@@ -36,7 +36,7 @@ gasfakes.json holds various location and behavior parameters to inform about you
   "documentId": null,
   "cache": "/tmp/gas-fakes/cache",
   "properties": "/tmp/gas-fakes/properties",
-  "scriptId": "1ey2fr74m4n9fwaqi9dsx9ye"
+  "scriptId": "1bc79bd3-fe02-425f-9653-525e5ae0b678"
 }
 ````
 | property   | type            | default                              | description                                                                                   |
@@ -157,9 +157,9 @@ I recommend you do this to make sure Auth it's all good before you start coding 
 
 ### Global intialization
 
-This was a little problematic to sequence, but I wanted to make sure that any GAS services being imitated were available and initialized on the Node side, just as they are in GAS. At the time of writing these services are implemented. Only a subset of methods are currently available - the rest are work in progress.
+This was a little problematic to sequence, but I wanted to make sure that any GAS services being imitated were available and initialized on the Node side, just as they are in GAS. At the time of writing these services and classes are implemented. However, only a subset of methods are currently available for some of them - the rest are work in progress.
 
-v1.0.1 
+v1.0.3 
 - `DriveApp`
 - `ScriptApp`
 - `UrlFetchApp`
@@ -167,6 +167,9 @@ v1.0.1
 - `Sheets`
 - `CacheService`
 - `PropertiesService`
+- `Session`
+- `Blob`
+- `User`
 
 #### Proxies and globalThis
 
@@ -349,14 +352,13 @@ The local version may have no knowledge of the Apps ScriptId. If you are using c
 ##### userId
 
 The userId is extracted from an accessToken and will match the id derived from Application Default Credentials. This means that you can logon as a different user to test user data isolation. All user level property and cache stores use the scriptId and userId to partition data.
-
 ##### documentId
 
 The documentId is only meaningful if you are working on a container bound scrip. We use the the documentId property of gasfakes.json to identify a container file.  All document level property and cache stores use the scriptId and documentId to partition data.
 
 ### Settings and temporary files
 
-As you will have noticed, there are various local support files for props/caching etc. Be careful that these do not get committed to a public repo if you are adding sensitive values to your stores.
+As you will have noticed, there are various local support files for props/caching etc. Be careful that these do not get committed to a public repo if you are adding sensitive values to your stores. Note that the real user Id is not used when creating files, but rather an encrypted version of it. This avoids real user ids being revealed in your file system.
 
 
 ## Help

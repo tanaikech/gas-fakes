@@ -21,11 +21,12 @@ let _cacheApp = null
  */
 const registerApp = (_app, name, kind) => {
   if (typeof globalThis[name] === typeof undefined) {
-    console.log(`setting ${name} to global`)
+
 
     const getApp = () => {
       // if it hasnt been intialized yet then do that
       if (!_app) {
+        console.log(`setting ${name} to global`)
         _app = newFakeService(kind)
       }
       // this is the actual driveApp we'll return from the proxy
