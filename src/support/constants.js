@@ -15,3 +15,5 @@ export const spreadsheetType = `${gooType}.spreadsheet`
 
 export const isGoogleType = (mimeType) => 
   mimeType && mimeType.substring(0,gooType.length) === gooType
+
+export const gzipType = 'application/x-gzip'

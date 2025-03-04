@@ -2,7 +2,7 @@ import { Proxies } from '../../support/proxies.js'
 import { newFakeUtilities } from './fakeutilities.js';
 
 
-// This will eventually hold a proxy for DriveApp
+// This will eventually hold a proxy for Utilities
 let _app = null
 
 /**

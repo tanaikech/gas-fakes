@@ -175,44 +175,35 @@ v1.0.3
 
 Each service has a FakeClass but I needed the Auth cycle to be initiated and done before making them public. Using a proxy was the simplest approach.
 
-Here's the code for `ScriptApp`
+Here's the code for `Utilities`
 
 ```js
 
 /**
  * adds to global space to mimic Apps Script behavior
  */
-const name = "ScriptApp"
+import { Proxies } from '../../support/proxies.js'
+import { newFakeUtilities } from './fakeutilities.js';
 
+
+// This will eventually hold a proxy for Utilties
+let _app = null
+
+/**
+ * adds to global space to mimic Apps Script behavior
+ */
+const name = "Utilities"
 if (typeof globalThis[name] === typeof undefined) {
-
-  // initializing auth etc
-  Syncit.fxInit()
-
-  console.log(`setting ${name} to global`)
   const getApp = () => {
-
-    // if it hasn't been intialized yet then do that
+    // if it hasnt been intialized yet then do that
     if (!_app) {
-
-      _app = {
-        getOAuthToken,
-        requireAllScopes,
-        requireScopes,
-        AuthMode: {
-          FULL: 'FULL'
-        }
-      }
-
-
+      console.log (`setting ${name} to global`)
+      _app = newFakeUtilities()
     }
     // this is the actual driveApp we'll return from the proxy
     return _app
   }
-
-
-  Proxies.registerProxy(name, getApp)
-
+  Proxies.registerProxy (name, getApp)
 }
 ```
 

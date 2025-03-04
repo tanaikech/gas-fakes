@@ -9,7 +9,7 @@ import is from '@sindresorhus/is';
 //import '@mcpher/gas-fakes/main.js'
 
 import '../main.js'
-import { Utils } from '../src/support/utils.js';
+
 const testFakes = async () => {
 
   // on node this will have come from the imports that get stripped when mocing to gas
@@ -59,6 +59,21 @@ const testFakes = async () => {
 
   unit.section('utilities', t => {
     t.true(is.nonEmptyString(Utilities.getUuid()))
+
+    const blob = Utilities.newBlob(fixes.TEXT_FILE_CONTENT)
+    const gz = Utilities.gzip (blob)
+    t.is (gz.getContentType(), "application/x-gzip")
+    t.is (gz.getName(), "archive.gz")
+
+    const ugz = Utilities.ungzip (gz)
+    t.is (ugz.getDataAsString(), fixes.TEXT_FILE_CONTENT)
+    t.is (ugz.getContentType (), null)
+    t.is (ugz.getName(), "archive")
+    
+    const ngz = Utilities.gzip (blob, "named")
+    const nugz = Utilities.ungzip (ngz)
+    t.is (nugz.getName() , "named")
+
   })
 
   unit.section('all about blobs', t => {
