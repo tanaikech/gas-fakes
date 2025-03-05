@@ -5,7 +5,7 @@ import makeSynchronous from 'make-synchronous';
 import path from 'path'
 import { Auth } from "./auth.js"
 import { randomUUID } from 'node:crypto'
-
+import mime from 'mime';
 
 const authPath = "../support/auth.js"
 const drapisPath = "../services/drive/drapis.js"
@@ -31,15 +31,134 @@ const cacheDefaultPath = "/tmp/gas-fakes/cache"
  */
 const getModulePath = (relTarget) => path.resolve(import.meta.dirname, relTarget)
 
+/**
+ * zipper
+ * @param {object} p
+ * @param {FakeBlob} p.blobs an array of blobs to be zipped
+ * @returns {FakeBlob} a combined zip file
+ */
+const fxZipper = ({ blobs }) => {
 
+  const fx = makeSynchronous(async ({ blobsContent }) => {
+
+    const { default: archiver } = await import('archiver')
+    const { getStreamAsBuffer } = await import('get-stream')
+    const { PassThrough } = await import('node:stream')
+
+    const passthrough = new PassThrough()
+
+    // just use the default compression level
+
+    const archive = archiver.create('zip', {})
+
+    const doArchive = async () => {
+
+      // warning could be non destructive
+      archive.on("warning", function (err) {
+        if (err.code === "ENOENT") {
+          console.log("....warning on archiver", err)
+        } else {
+          // throw error
+          return Promise.reject(err)
+        }
+      });
+
+      archive.on("error", function (err) {
+        return Promise.reject(err)
+      })
+
+      const result = getStreamAsBuffer(archive.pipe(passthrough))
+
+      blobsContent.forEach(f => {
+        archive.append(Buffer.from(f.bytes), { name: f.name })
+      })
+
+      archive.finalize()
+
+      return result.then(buffer => Array.from(buffer))
+
+    }
+
+    return doArchive()
+      .catch(err => {
+        console.log('...archiver failed with error', err)
+        return Promise.reject(err)
+      })
+
+  })
+
+
+  const dupCheck = new Set()
+  const blobsContent = blobs.map((f,i) => {
+    const ext = mime.getExtension(f.getContentType())
+    const name = f.getName() || `Untitled${i+1}${ext ? "."+ext : ""}`
+    if (dupCheck.has (name)) {
+      throw new Error(`Duplicate filename ${name} not allowed in zip`)
+    }
+    dupCheck.add (name)
+    return {
+      name,
+      bytes: f.getBytes()
+    }
+  })
+  // check we don't have duplicate names
+  
+
+  return fx({
+    blobsContent
+  })
+
+
+}
+
+/**
+ * Unzipper
+ * @param {object} p
+ * @param {FakeBlob} p.blob the blob containing the zipped files
+ * @returns {FakeBlob[]} each of the files unzipped
+ */
+const fxUnZipper = ({ blob }) => {
+
+  const fx = makeSynchronous(async ({ blobContent }) => {
+
+    const { default: unzipper } = await import('unzipper')
+    const { getStreamAsBuffer } = await import('get-stream')
+
+    const buffer = Buffer.from(blobContent.bytes)
+    const unzipped = await unzipper.Open.buffer(buffer)
+
+    const result = await Promise.all(unzipped.files.map(async file => {
+      const bytes = await getStreamAsBuffer(file.stream())
+
+      return {
+        bytes,
+        name: file.path
+      }
+    }))
+
+    return result
+  })
+
+  const blobContent = {
+    name: blob.getName(),
+    bytes: blob.getBytes()
+  }
+
+
+  return fx({
+    blobContent
+  })
+
+
+}
 /**
  * we dont want to generate a lot of async/sync calls so start by getting themanifest stuff out of the way
  * @param {string} [manifestPath ='./appsscript.json']
  * 
  */
-const fxInit = ({ 
-  manifestPath = manifestDefaultPath, 
-  claspPath = claspDefaultPath, 
+const fxInit = ({
+  manifestPath = manifestDefaultPath,
+  claspPath = claspDefaultPath,
   settingsPath = settingsDefaultPath,
   cachePath = cacheDefaultPath,
   propertiesPath = propertiesDefaultPath
@@ -93,12 +212,12 @@ const fxInit = ({
     settings.cache = settings.cache || cachePath
     settings.properties = settings.properties || propertiesPath
 
-    console.log (`...cache will be in ${settings.cache}`)
-    console.log (`...properties will be in ${settings.properties}`)
+    console.log(`...cache will be in ${settings.cache}`)
+    console.log(`...properties will be in ${settings.properties}`)
 
     // now update all that if anything has changed
-    const strSet = JSON.stringify(settings,null,2)
-    if (JSON.stringify(_settings,null, 2) !== strSet) {
+    const strSet = JSON.stringify(settings, null, 2)
+    if (JSON.stringify(_settings, null, 2) !== strSet) {
       await mkdir(settingsDir, { recursive: true })
       console.log('...writing to ', settingsFile)
       writeFile(settingsFile, strSet, { flag: 'w' })
@@ -151,7 +270,7 @@ const fxInit = ({
     mainDir,
     cachePath,
     propertiesPath,
-    fakeId: randomUUID ()
+    fakeId: randomUUID()
   })
   const {
     scopes,
@@ -169,8 +288,8 @@ const fxInit = ({
   Auth.setTokenInfo(tokenInfo)
   Auth.setAccessToken(accessToken)
   Auth.setSettings(settings)
-  Auth.setClasp (clasp)
-  Auth.setManifest (manifest)
+  Auth.setClasp(clasp)
+  Auth.setManifest(manifest)
   return synced
 
 }
@@ -360,5 +479,7 @@ export const Syncit = {
   fxDrive,
   fxDriveMedia,
   fxInit,
-  fxStore
+  fxStore,
+  fxZipper,
+  fxUnZipper
 }

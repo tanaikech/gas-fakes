@@ -2,9 +2,10 @@ import sleepSynchronously from 'sleep-synchronously';
 import { Proxies } from '../../support/proxies.js'
 import { newFakeBlob } from './fakeblob.js'
 import { Utils } from '../../support/utils.js'
-import { gzipType } from '../../support/constants.js'
+import { gzipType, zipType } from '../../support/constants.js'
 import { randomUUID } from 'node:crypto'
 import { gzipSync , gunzipSync} from 'node:zlib'
+import { Syncit } from '../../support/syncit.js';
 
 class FakeUtilities {
   constructor() {
@@ -49,11 +50,14 @@ class FakeUtilities {
   /**
    * Creates a new Blob object that is a zip file containing the data from the Blobs passed in.
    * @param {FakeBlob[]} blobs
-   * @param {string} [name]
+   * @param {string} [name=archive.zip]
    * @returns {FakeBlob}
    */
-  zip(blobs, name) {
-    
+  zip(blobs, name = "archive.zip") {
+    // decided to use 'archiver' rather than zlib for this as the objective may be to create a file containing multiple files
+    // zlib only supports singe files
+    const zipped = Syncit.fxZipper ({blobs})
+    return newFakeBlob (zipped, zipType , name)
   }
 
   /**
@@ -62,8 +66,10 @@ class FakeUtilities {
    * @param {string} [name]
    * @returns {FakeBlob[]}
    */
-  unzip(blob) {
-
+  unzip (blob) {
+    const unzipped = Syncit.fxUnZipper ({blob})
+    // the content type is lost in a zipped file, same as Apps Script behavior - which seems to be to use the extension to reassert content type
+    return unzipped.map (f=> newFakeBlob (f.bytes, null, f.name)).map(f=>f.setContentTypeFromExtension())
   }
 
   /**
@@ -76,6 +82,22 @@ class FakeUtilities {
     const name = blob.getName()
     const newName =  name ? name.replace(/\.gz$/,"") : null
     return this.newBlob (gunzipSync(buffer), null, newName)
+  }
+
+  base64Encode (data, charset) {
+    return Buffer.from(Utils.settleAsBytes(data,charset)).toString('base64')
+  }
+
+  base64EncodeWebSafe (data, charset) {
+    return Buffer.from(Utils.settleAsBytes(data,charset)).toString('base64url')
+  }
+
+  base64Decode (b64) {
+    return Utils.settleAsBytes (Buffer.from (b64, 'base64')) 
+  }
+
+  base64DecodeWebSafe (b64) {
+    return Utils.settleAsBytes (Buffer.from (b64, 'base64url')) 
   }
 
 }

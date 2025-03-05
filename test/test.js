@@ -42,8 +42,55 @@ const testFakes = async () => {
     TEST_SHEET_NAME: 'sharedlibraries',
     EMAIL: 'bruce@mcpher.com',
     TIMEZONE: 'Europe/London',
-    LOCALE: 'en_US'
+    LOCALE: 'en_US',
+    ZIP_TYPE: "application/zip"
   }
+
+
+  unit.section("b64", t=> {
+    const text = fixes.TEXT_FILE_CONTENT
+    const blob = Utilities.newBlob (text)
+    const {actual: b64} = t.is (Utilities.base64Encode(blob.getBytes()),Utilities.base64Encode(text) )
+    t.true(is.nonEmptyString (b64))
+
+    const {actual: b64w} = t.is (Utilities.base64EncodeWebSafe(blob.getBytes()),Utilities.base64EncodeWebSafe(text) )
+    t.true(is.nonEmptyString (b64w))
+
+
+    const trouble = text + '+/='
+    const b64t = Utilities.base64EncodeWebSafe(trouble)
+
+    const b = Utilities.newBlob (Utilities.base64Decode (b64)).getDataAsString()
+    const bw = Utilities.newBlob (Utilities.base64Decode (b64w)).getDataAsString()
+    const bt = Utilities.newBlob (Utilities.base64DecodeWebSafe (b64t)).getDataAsString()
+    const bbt = Utilities.newBlob (Utilities.base64Decode (b64t)).getDataAsString()
+
+    t.is (bt, trouble)
+    t.is (b, text)
+    t.is (bw, text)
+    t.is (bbt, trouble)
+
+  })
+  unit.cancel()
+  unit.section ("zipping", t=> {
+    const texts = [fixes.TEXT_FILE_CONTENT,fixes.TEST_FOLDER_NAME]
+    const blobs = texts.map((f,i)=> Utilities.newBlob (f, fixes.BLOB_TYPE,'b'+i+'.txt'))
+    const z = Utilities.zip(blobs)
+    t.is(z.getName(), "archive.zip")
+
+    const y = Utilities.zip(blobs,"y.zip")
+    t.is(y.getName(), "y.zip")
+    t.is(z.getContentType(), fixes.ZIP_TYPE)
+
+    const u = Utilities.unzip (z)
+    t.is (u.length, texts.length)
+
+    u.forEach ((f,i)=>{
+      t.is (f.getName(),blobs[i].getName())
+      t.is (f.getContentType(), blobs[i].getContentType())
+      t.is (f.getDataAsString(), texts[i])
+    })
+  })
 
 
   unit.section("session", t => {

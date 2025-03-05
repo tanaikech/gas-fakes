@@ -17,3 +17,4 @@ export const isGoogleType = (mimeType) =>
   mimeType && mimeType.substring(0,gooType.length) === gooType
 
 export const gzipType = 'application/x-gzip'
+export const zipType = 'application/zip'

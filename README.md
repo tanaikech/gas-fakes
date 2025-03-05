@@ -352,6 +352,11 @@ The documentId is only meaningful if you are working on a container bound scrip.
 As you will have noticed, there are various local support files for props/caching etc. Be careful that these do not get committed to a public repo if you are adding sensitive values to your stores. Note that the real user Id is not used when creating files, but rather an encrypted version of it. This avoids real user ids being revealed in your file system.
 
 
+## Noticed differences
+
+I'll make a note here on trivial implementation differences. The main will be slight differences in error message text, which I'll normalize over time. Please report any differences in behavior you find in the repo issues.
+
+
 ## Help
 
 As I mentioned earlier, to take this further, I'm going to need a lot of help to extend the methods and services supported - so if you feel this would be useful to you, and would like to collaborate, please ping me on [bruce@mcpher.com](mailto:bruce@mcpher.com) and we'll talk.
