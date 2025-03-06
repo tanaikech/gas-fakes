@@ -47,6 +47,15 @@ const testFakes = async () => {
   }
 
 
+
+  unit.section("advanced drive", t=> {
+    t.true(is.nonEmptyString(Drive.toString()))
+    t.true(is.nonEmptyString(Drive.Files.toString()))
+    t.is (Drive.getVersion(), 'v3')
+    t.is (Drive.About.toString(),Drive.toString())
+    t.is (Drive.About.toString(),Drive.Files.toString())
+  })
+  unit.cancel()
   unit.section("b64", t=> {
     const text = fixes.TEXT_FILE_CONTENT
     const blob = Utilities.newBlob (text)
@@ -71,7 +80,7 @@ const testFakes = async () => {
     t.is (bbt, trouble)
 
   })
-  unit.cancel()
+
   unit.section ("zipping", t=> {
     const texts = [fixes.TEXT_FILE_CONTENT,fixes.TEST_FOLDER_NAME]
     const blobs = texts.map((f,i)=> Utilities.newBlob (f, fixes.BLOB_TYPE,'b'+i+'.txt'))

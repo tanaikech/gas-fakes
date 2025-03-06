@@ -18,3 +18,5 @@ export const isGoogleType = (mimeType) =>
 
 export const gzipType = 'application/x-gzip'
 export const zipType = 'application/zip'
+
+export const notYetImplemented = `That is not yet implemented - watch https://github.com/brucemcpherson/gas-fakes for progress`
