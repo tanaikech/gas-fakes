@@ -93,7 +93,6 @@ if (typeof globalThis[name] === typeof undefined) {
   Syncit.fxInit()
 
   const getApp = () => {
-
     console.log(`setting ${name} to global`)
     // if it hasn't been intialized yet then do that
     if (!_app) {

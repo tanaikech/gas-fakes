@@ -3,6 +3,7 @@
  */
 import { Proxies } from '../../support/proxies.js'
 import { notYetImplemented } from '../../support/constants.js'
+import { getFileById } from '../../support/drivehelpers.js'
 
 class FakeAdvDrive {
   constructor() {
@@ -103,8 +104,14 @@ class FakeAdvDriveFiles {
     return notYetImplemented
   }
 
-  get() {
-    return notYetImplemented
+  /**
+   * get file by Id
+   * @param {string} id 
+   * @returns {Drive.File}
+   */
+  get(id) {
+    const file = getFileById({ id })
+    return file
   }
 
   create() {

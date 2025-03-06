@@ -16,7 +16,11 @@ You can get the package from npm
 npm i @mcpher/gas-fakes
 ```
 
-The idea is that you can run GAS services (so far implemented) locally on Node, and it will use various Google Workspace APIS to emulate what would happen if you were to run the same thing in the GAS environment.
+The idea is that you can run GAS services (so far implemented) locally on Node, and it will use various Google Workspace APIS to emulate what would happen if you were to run the same thing in the GAS environment. Other than logging in with application default credentials (see below) you don't have to do any intitialization and can start using the implemented Apps Script services directly from Node using the same syntax and getting equivalent responses.
+
+Just as on Apps Script, everything is executed synchronously so you don't need to bother with handling Promises/async/await. Note that the intended audience is Apps Script developers who want to run the same code and access the same services in both Node and Apps Script.
+
+If you don't plan on using Apps Script at all, the Node Workspace APIs (which I use in the background for all these services in any case) will be more efficient if operating in their normal asynchronous mode.
 
 ### Cloud project
 
@@ -24,12 +28,13 @@ You don't have access to the GAS maintained cloud project, so you'll need to cre
 
 ### Testing
 
-I recommend you use the test project included in the repo to make sure all is set up correctly. It uses a Fake DriveApp service to excercise Auth etc. Just change the fixtures to values present in your own Drive, then `npm i && npm test`. Note that I use a [unit tester](https://ramblings.mcpher.com/apps-script-test-runner-library-ported-to-node/) that runs in both GAS and Node, so the exact same tests will run in both environments. There are some example tests in the repo. Each test has been proved on both Node and GAS. 
+I recommend you use the test project included in the repo to make sure all is set up correctly. It uses a Fake DriveApp service to excercise Auth etc. Just change the fixtures to values present in your own Drive, then `npm i && npm test`. Note that I use a [unit tester](https://ramblings.mcpher.com/apps-script-test-runner-library-ported-to-node/) that runs in both GAS and Node, so the exact same tests will run in both environments. There are some example tests in the repo. Each test has been proved on both Node and GAS. There's also a shell (togas.sh) which will use clasp to push the test code to Apps Script.
 
 ### Settings
 
 gasfakes.json holds various location and behavior parameters to inform about your Node environment. It's not required on GAS as you can't change anything over there. If you don't have one, it'll create one for you and use some sensible defaults. Here's an example of one with the defaults. It should be in the same folder as your main script.
-````
+
+```
 {
   "manifest": "./appsscript.json",
   "clasp": "./.clasp.json",
@@ -38,15 +43,16 @@ gasfakes.json holds various location and behavior parameters to inform about you
   "properties": "/tmp/gas-fakes/properties",
   "scriptId": "1bc79bd3-fe02-425f-9653-525e5ae0b678"
 }
-````
-| property   | type            | default                              | description                                                                                   |
-| ----------- | --------------- | ------------------------------------ | --------------------------------------------------------------------------------------------- |
-| manifest | string          | ./appsscript.json | the manifest path and name relative to your main module                                                                   |
-| clasp       | string        | ./clasp.json    | where to look for an optional clasp file |
-| documentId     | string | null | a bound document id. This will allow testing of container bound script. The documentId will become your activeDocument (for the appropriate service) |
-| cache | string | /tmp/gas-fakes/cache | gas-fakes uses a local file to emulate apps script's CacheService. This is where it should put the files |
-| properties | string | /tmp/gas-fakes/properties | gas-fakes uses a local file to emulate apps script's PropertiesService. This is where it should put the files. You may want to put it somewhere other than /tmp to avoid accidental deletion, but don't put it in a place that'll get commited to public git repo |
-| scriptId | string | from clasp, or some random value | If you have a clasp file, it'll pick up the scriptId from there. If not you can enter your scriptId manually, or just leave it to create a fake one. It's use for the moment is to return something useful from ScriptApp.getScriptId() and to partition the  cache and properties stores  |
+```
+
+| property   | type   | default                          | description                                                                                                                                                                                                                                                                              |
+| ---------- | ------ | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| manifest   | string | ./appsscript.json                | the manifest path and name relative to your main module                                                                                                                                                                                                                                  |
+| clasp      | string | ./clasp.json                     | where to look for an optional clasp file                                                                                                                                                                                                                                                 |
+| documentId | string | null                             | a bound document id. This will allow testing of container bound script. The documentId will become your activeDocument (for the appropriate service)                                                                                                                                     |
+| cache      | string | /tmp/gas-fakes/cache             | gas-fakes uses a local file to emulate apps script's CacheService. This is where it should put the files                                                                                                                                                                                 |
+| properties | string | /tmp/gas-fakes/properties        | gas-fakes uses a local file to emulate apps script's PropertiesService. This is where it should put the files. You may want to put it somewhere other than /tmp to avoid accidental deletion, but don't put it in a place that'll get commited to public git repo                        |
+| scriptId   | string | from clasp, or some random value | If you have a clasp file, it'll pick up the scriptId from there. If not you can enter your scriptId manually, or just leave it to create a fake one. It's use for the moment is to return something useful from ScriptApp.getScriptId() and to partition the cache and properties stores |
 
 More on all this later.
 
@@ -80,7 +86,7 @@ Beyond that, implementation is just a lot of busy work. If you are interested, h
 
 Although Apps Script supports async/await/promise syntax, it operates in blocking mode. I didn't really want to have to insist on async coding in code targeted at GAS, so I needed to find a way to emulate what the GAS environment probably does.
 
-Since asynchonicity is fundamental to Node, there's no real simple way to convert async to sync. However, there is such a thing as a [child-process](https://nodejs.org/api/child_process.html#child-process) which you can start up to run things, and it features an [execSync](https://nodejs.org/api/child_process.html#child_processexecsynccommand-options)  method which delays the return from the child process until the promise queue is all settled. So the simplest solution is to run an async method in a child process, wait till it's done, and return the results synchronously. I found that [Sindre Sorhus](https://github.com/sindresorhus) uses this approach with [make-synchronous](https://github.com/sindresorhus/make-synchronous), so I'm using that.
+Since asynchonicity is fundamental to Node, there's no real simple way to convert async to sync. However, there is such a thing as a [child-process](https://nodejs.org/api/child_process.html#child-process) which you can start up to run things, and it features an [execSync](https://nodejs.org/api/child_process.html#child_processexecsynccommand-options) method which delays the return from the child process until the promise queue is all settled. So the simplest solution is to run an async method in a child process, wait till it's done, and return the results synchronously. I found that [Sindre Sorhus](https://github.com/sindresorhus) uses this approach with [make-synchronous](https://github.com/sindresorhus/make-synchronous), so I'm using that.
 
 Here's a simple example of how to get info on an access token made synchronous
 
@@ -91,17 +97,18 @@ Here's a simple example of how to get info on an access token made synchronous
  * @returns {object} access token info
  */
 const fxCheckToken = (accessToken) => {
-
   // now turn all that into a synchronous function - it runs as a subprocess, so we need to start from scratch
-  const fx = makeSynchronous(async accessToken => {
-    const { default: got } = await import('got')
-    const tokenInfo = await got(`https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${accessToken}`).json()
-    return tokenInfo
-  })
+  const fx = makeSynchronous(async (accessToken) => {
+    const { default: got } = await import("got");
+    const tokenInfo = await got(
+      `https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${accessToken}`
+    ).json();
+    return tokenInfo;
+  });
 
-  const result = fx(accessToken)
-  return result
-}
+  const result = fx(accessToken);
+  return result;
+};
 ```
 
 ### OAuth
@@ -157,19 +164,23 @@ I recommend you do this to make sure Auth it's all good before you start coding 
 
 ### Global intialization
 
-This was a little problematic to sequence, but I wanted to make sure that any GAS services being imitated were available and initialized on the Node side, just as they are in GAS. At the time of writing these services and classes are implemented. However, only a subset of methods are currently available for some of them - the rest are work in progress.
+This was a little problematic to sequence, but I wanted to make sure that any GAS services being imitated were available and initialized on the Node side, just as they are in GAS. At the time of writing these services and classes are partially implemented.
 
-v1.0.3 
-- `DriveApp`
-- `ScriptApp`
-- `UrlFetchApp`
-- `Utilities`
-- `Sheets`
-- `CacheService`
-- `PropertiesService`
-- `Session`
-- `Blob`
-- `User`
+Only a subset of methods are currently available for some of them - the rest are work in progress. My approach is to start with a little bit of each service to prove feasibility and provide a base to build on.
+
+v1.0.4
+
+- `DriveApp` - 50%
+- `ScriptApp` - almost all
+- `UrlFetchApp` - 50%
+- `Utilities` - 50%
+- `Sheets` - `minimal`
+- `CacheService` - 50%
+- `PropertiesService` - 50%
+- `Session` - almost all
+- `Blob` - all
+- `User` - all
+- `Drive (Advanced Service)` - minimal
 
 #### Proxies and globalThis
 
@@ -178,39 +189,36 @@ Each service has a FakeClass but I needed the Auth cycle to be initiated and don
 Here's the code for `Utilities`
 
 ```js
-
 /**
  * adds to global space to mimic Apps Script behavior
  */
-import { Proxies } from '../../support/proxies.js'
-import { newFakeUtilities } from './fakeutilities.js';
-
+import { Proxies } from "../../support/proxies.js";
+import { newFakeUtilities } from "./fakeutilities.js";
 
 // This will eventually hold a proxy for Utilties
-let _app = null
+let _app = null;
 
 /**
  * adds to global space to mimic Apps Script behavior
  */
-const name = "Utilities"
+const name = "Utilities";
 if (typeof globalThis[name] === typeof undefined) {
   const getApp = () => {
     // if it hasnt been intialized yet then do that
     if (!_app) {
-      console.log (`setting ${name} to global`)
-      _app = newFakeUtilities()
+      console.log(`setting ${name} to global`);
+      _app = newFakeUtilities();
     }
     // this is the actual driveApp we'll return from the proxy
-    return _app
-  }
-  Proxies.registerProxy (name, getApp)
+    return _app;
+  };
+  Proxies.registerProxy(name, getApp);
 }
 ```
 
 Here's how the proxies are registered
 
 ```js
-
 /**
  * diverts the property get to another object returned by the getApp function
  * @param {function} a function to get the proxy object to substitutes
@@ -218,20 +226,19 @@ Here's how the proxies are registered
  */
 const getAppHandler = (getApp) => {
   return {
-
     get(_, prop, receiver) {
-      // this will let the caller know we're not really running in Apps Script 
-      return (prop === 'isFake')  ? true : Reflect.get(getApp(), prop, receiver);
+      // this will let the caller know we're not really running in Apps Script
+      return prop === "isFake" ? true : Reflect.get(getApp(), prop, receiver);
     },
 
     ownKeys(_) {
-      return Reflect.ownKeys(getApp())
-    }
-  }
-}
+      return Reflect.ownKeys(getApp());
+    },
+  };
+};
 
 const registerProxy = (name, getApp) => {
-  const value = new Proxy({}, getAppHandler(getApp))
+  const value = new Proxy({}, getAppHandler(getApp));
   // add it to the global space to mimic what apps script does
   Object.defineProperty(globalThis, name, {
     value,
@@ -239,7 +246,7 @@ const registerProxy = (name, getApp) => {
     configurable: false,
     writable: false,
   });
-}
+};
 ```
 
 In short, the service us registered as an empty object, but when any attempt is made to access it actually returns a different object which handles the request. In the `ScriptApp` example, `ScriptApp` is an empty object, but accessing `ScriptApp.getOAuthToken()` returns an Fake `ScriptApp` object which has been initialized.
@@ -251,55 +258,55 @@ There's also a test available to see if you are running in GAS or on Node - `Scr
 An iterator created by a generator does not have a `hasNext()` function, whereas GAS iterators do. To get round this, we can create a regular Node iterator, but introduce a wrapper so the constructor actually gets the first one, and `next()` uses the value we've already peeked at. Here's a wrapper to convert an iterator into a GAS style one.
 
 ```js
-import { Proxies } from './proxies.js'
+import { Proxies } from "./proxies.js";
 /**
  * this is a class to add a hasnext to a generator
  * @class Peeker
- * 
+ *
  */
 class Peeker {
   /**
-   * @constructor 
+   * @constructor
    * @param {function} generator the generator function to add a hasNext() to
    * @returns {Peeker}
    */
   constructor(generator) {
-    this.generator = generator
+    this.generator = generator;
     // in order to be able to do a hasnext we have to actually get the value
     // this is the next value stored
-    this.peeked = generator.next()
+    this.peeked = generator.next();
   }
 
   /**
    * we see if there's a next if the peeked at is all over
    * @returns {Boolean}
    */
-  hasNext () {
-    return !this.peeked.done
+  hasNext() {
+    return !this.peeked.done;
   }
 
   /**
    * get the next value - actually its already got and storef in peeked
    * @returns {object} {value, done}
    */
-  next () {
+  next() {
     if (!this.hasNext()) {
       // TODO find out what driveapp does
-      throw new Error ('iterator is exhausted - there is no more')
+      throw new Error("iterator is exhausted - there is no more");
     }
     // instead of returning the next, we return the prepeeked next
-    const value = this.peeked.value
-    this.peeked = this.generator.next()
-    return value
+    const value = this.peeked.value;
+    this.peeked = this.generator.next();
+    return value;
   }
 }
 
-export const newPeeker = (...args) => Proxies.guard(new Peeker (...args))
+export const newPeeker = (...args) => Proxies.guard(new Peeker(...args));
 ```
 
 And an example of usage, creating a parents iterator from a Drive API file.
 
-````
+```
 const getParentsIterator = ({
   file
 }) => {
@@ -319,22 +326,20 @@ const getParentsIterator = ({
   // create the iterator
   const parentsIt = filesink()
 
-  // a regular iterator doesnt support the same methods 
+  // a regular iterator doesnt support the same methods
   // as Apps Script so we'll fake that too
   return newPeeker(parentsIt)
 
 }
-````
-
+```
 
 ### Cache and Property services
 
 These are currently implemented using [keyv](https://github.com/jaredwray/keyv) with storage adaptor [keyv-file](https://github.com/zaaack/keyv-file).The `gasfakes.json` file is used to commiicate where these files should be. I've gone for local file storage rather than something like redis to avoid adding local service requirements, but keyv takes a wide range of storage adaptors if you want to do something fancier. A small modificaion to kv.js is all you need.
 
-
 #### Script, user and document store varieties
 
-All 3 are supported for both properties and cache. 
+All 3 are supported for both properties and cache.
 
 ##### scriptId
 
@@ -343,19 +348,18 @@ The local version may have no knowledge of the Apps ScriptId. If you are using c
 ##### userId
 
 The userId is extracted from an accessToken and will match the id derived from Application Default Credentials. This means that you can logon as a different user to test user data isolation. All user level property and cache stores use the scriptId and userId to partition data.
+
 ##### documentId
 
-The documentId is only meaningful if you are working on a container bound scrip. We use the the documentId property of gasfakes.json to identify a container file.  All document level property and cache stores use the scriptId and documentId to partition data.
+The documentId is only meaningful if you are working on a container bound scrip. We use the the documentId property of gasfakes.json to identify a container file. All document level property and cache stores use the scriptId and documentId to partition data.
 
 ### Settings and temporary files
 
 As you will have noticed, there are various local support files for props/caching etc. Be careful that these do not get committed to a public repo if you are adding sensitive values to your stores. Note that the real user Id is not used when creating files, but rather an encrypted version of it. This avoids real user ids being revealed in your file system.
 
-
 ## Noticed differences
 
 I'll make a note here on trivial implementation differences. The main will be slight differences in error message text, which I'll normalize over time. Please report any differences in behavior you find in the repo issues.
-
 
 ## Help
 

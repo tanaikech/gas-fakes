@@ -33,8 +33,10 @@ const testFakes = async () => {
     TEST_FOLDER_NAME: "math",
     TEST_FOLDER_FILES: 3,
     SKIP_SINGLE_PARENT: true,
+    TEXT_FILE_NAME: 'fake.txt',
     TEST_FOLDER_ID: '1Zww9oCTFR7zYcUYXxd70yQr3sw6VdLG-',
     TEXT_FILE_ID: '1142Vn7W-pGl5nWLpUSkpOB82JDiz9R6p',
+    TEXT_FILE_TYPE: 'text/plain',
     TEXT_FILE_CONTENT: 'foo is not bar',
     BLOB_NAME: 'foo.txt',
     BLOB_TYPE: 'text/plain',
@@ -54,8 +56,16 @@ const testFakes = async () => {
     t.is (Drive.getVersion(), 'v3')
     t.is (Drive.About.toString(),Drive.toString())
     t.is (Drive.About.toString(),Drive.Files.toString())
+    // TODO - the default minfields are different for driveAPP so we need to fix that
+    // remove parents, add kind
+    const file =  Drive.Files.get(fixes.TEXT_FILE_ID)
+    t.is (file.id, fixes.TEXT_FILE_ID)
+    t.is (file.name, fixes.TEXT_FILE_NAME)
+    t.is (file.mimeType, fixes.TEXT_FILE_TYPE)
+    console.log (Drive.Files.get(fixes.TEXT_FILE_ID))
   })
-  unit.cancel()
+
+
   unit.section("b64", t=> {
     const text = fixes.TEXT_FILE_CONTENT
     const blob = Utilities.newBlob (text)

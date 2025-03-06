@@ -1,6 +1,8 @@
-import { Utils } from '../../support/utils.js'
-import { folderType } from '../../support/constants.js'
+import { Utils } from './utils.js'
+import { folderType } from './constants.js'
 import is from '@sindresorhus/is';
+import { getFromFileCache, setInFileCache } from './filecache.js';
+import { Syncit } from './syncit.js'
 /**
  * utilities for drive access shared between all fakedrive classes
  */
@@ -139,4 +141,105 @@ export const decorateUrl = ({ url, fields, params, min  }) => {
 export const decorateParams = ({ fields, params = {}, min = minFields }) => {
   const fp = fieldUrlParams(fields, min)
   return Utils.makeParamOb({ fields: fp, ...params })
+}
+
+/**
+ * shared get any kind of file meta data by its id
+ * @param {string} id the file id 
+ * @param {function} [handler = handleError]
+ * @param {TODO} [fields] the fields to fetch
+ * @returns {object} {File, FakeHttpResponse}
+ */
+export const fetchFile = ({ id, handler = handleError, fields }) => {
+  const { assert } = Utils
+  assert.string(id)
+  assert.function(handler)
+
+  const params = decorateParams({
+    fields, min: minFields, params: { fileId: id }
+  })
+
+  // TODO need to handle muteHttpExceptions and any other options
+  // use the sync version of the drive gapi api
+  const { data, response } = Syncit.fxDrive({ prop: "files", method: "get", params })
+  return {
+    file: data,
+    response
+  }
+}
+
+/**
+ * general getter by id
+ * @param {object} p args
+ * @param {string} p.id the id to get
+ * @param {boolean} [p.allow404=true] normally a 404 doesnt throw an error 
+ * @returns {FakeDriveFolder}
+ */
+export const getFileById = ({ id, allow404 = true, fields }) => {
+
+  // we'll pull this from cache if poss
+  const cachedFile = getFromFileCache(id, fields)
+  if (cachedFile) return cachedFile
+
+  // it wasnt in cache or didn't have the right fields
+  const { file, response } = fetchFile({ id, fields })
+  if (!file) {
+    if (!allow404) {
+      throwResponse(response)
+    } else {
+      return null
+    }
+  }
+
+  return setInFileCache(id, file)
+}
+
+/**
+ * list  get any kind using the NODE client
+ * @param {string} [parentId] the parent id 
+ * @param {function} [handler = handleError]
+ * @param {object|[object]} [qob] any additional queries
+ * @param {TODO} [fields] the fields to fetch
+ * @param {TODO} [options] mimic fetchapp options
+ * @param {string} [pageToken=null] if we're doing a pagetoken kind of thing
+ * @param {boolean} folderTypes whether to get foldertypes 
+ * @param {boolean} fileTypes whether to get fileTypes 
+ * @returns {object} a collection of files {response, data}
+ */
+export const fileLister = ({
+  qob, parentId, fields, handler, folderTypes, fileTypes, pageToken = null, fileName
+}) => {
+  // enhance any already supplied query params
+  qob = Utils.arrify(qob) || []
+  if (parentId) {
+    qob.push(`'${parentId}' in parents`)
+  }
+
+  // wheteher we're getting files,folders or both
+  if (!(folderTypes || fileTypes)) {
+    throw new Error(`Must specify either folder type,file type or both`)
+  }
+
+  // exclusive xor - if they're both true we dont need to do any extra q filtering
+  if (folderTypes !== fileTypes) {
+    qob.push(`mimeType${fileTypes ? "!" : ""}='${folderType}'`)
+  }
+
+  const q = qob.map(f => `(${f})`).join(" and ")
+  let params = { q }
+  if (pageToken) {
+    params.pageToken = pageToken
+  }
+
+  params = decorateParams({ fields, params, min: minFieldsList })
+
+  // this will have be synced from async
+  try {
+    const result = Syncit.fxDrive({ prop: "files", method: "list", params })
+    return result
+  } catch (err) {
+    handler(err)
+  }
+
+  return result
 }
