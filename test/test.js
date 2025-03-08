@@ -3,7 +3,7 @@
 // this is loaded by npm, but is a library on Apps Script side
 import { Exports as unitExports } from '@mcpher/unit'
 import is from '@sindresorhus/is';
-
+import { getPerformance } from '../src/support/filecache.js';
 
 // all the fake services are here
 //import '@mcpher/gas-fakes/main.js'
@@ -45,28 +45,98 @@ const testFakes = async () => {
     EMAIL: 'bruce@mcpher.com',
     TIMEZONE: 'Europe/London',
     LOCALE: 'en_US',
-    ZIP_TYPE: "application/zip"
+    ZIP_TYPE: "application/zip",
+    KIND_DRIVE: "drive#file"
   }
 
 
-
-  unit.section("advanced drive", t=> {
+  unit.section("advanced drive basics", t=> {
     t.true(is.nonEmptyString(Drive.toString()))
     t.true(is.nonEmptyString(Drive.Files.toString()))
     t.is (Drive.getVersion(), 'v3')
     t.is (Drive.About.toString(),Drive.toString())
     t.is (Drive.About.toString(),Drive.Files.toString())
-    // TODO - the default minfields are different for driveAPP so we need to fix that
-    // remove parents, add kind
     const file =  Drive.Files.get(fixes.TEXT_FILE_ID)
     t.is (file.id, fixes.TEXT_FILE_ID)
     t.is (file.name, fixes.TEXT_FILE_NAME)
     t.is (file.mimeType, fixes.TEXT_FILE_TYPE)
-    console.log (Drive.Files.get(fixes.TEXT_FILE_ID))
+    t.is (file.kind, fixes.KIND_DRIVE)
+    t.deepEqual (file, DriveApp.getFileById (fixes.TEXT_FILE_ID).meta, {
+      skip: !DriveApp.isFake,
+      description: 'meta property only exists on fakedrive class'
+    })
+    if (Drive.isFake) console.log ('...cumulative drive cache performance', getPerformance())
   })
 
+  unit.section('driveapp basics and Drive equivalence', t => {
+    const file = DriveApp.getFileById(fixes.TEXT_FILE_ID)
+    const folder = DriveApp.getFolderById(fixes.TEST_FOLDER_ID)
+    t.is(file.getMimeType(), 'text/plain')
+    t.is(file.getName(), 'fake.txt')
+    t.is(file.getParents().next().getId(), folder.getId())
+    t.is(folder.getName(), Drive.Files.get (fixes.TEST_FOLDER_ID).name)
+    t.is(file.getParents().next().getId(), Drive.Files.get(fixes.TEST_FOLDER_ID).id)
+    t.true(file.getParents().hasNext())
+    const blob = file.getBlob()
+    t.is(blob.getDataAsString(), fixes.TEXT_FILE_CONTENT)
+    if (Drive.isFake) console.log ('...cumulative drive cache performance', getPerformance())
+  })
 
-  unit.section("b64", t=> {
+  unit.section("driveapp searching with queries", t => {
+
+    const root = DriveApp.getRootFolder()
+
+    // this gets the folders directly under root folder with given name
+    const folders = root.getFoldersByName(fixes.TEST_FOLDER_NAME)
+
+    const folderPile = []
+    while (folders.hasNext()) {
+      folderPile.push(folders.next())
+    }
+
+    t.is(folderPile.length, 1)
+
+    const filePile = []
+    const [folder] = folderPile
+    const dapMatches = DriveApp.getFoldersByName(folder.getName())
+    t.true(dapMatches.hasNext())
+    t.is(dapMatches.next().getName(), folder.getName())
+
+    const files = folder.getFiles()
+    while (files.hasNext()) {
+      filePile.push(files.next())
+    }
+    t.is(filePile.length, fixes.TEST_FOLDER_FILES)
+    filePile.forEach(file => {
+      const matches = folder.getFilesByName(file.getName())
+      t.true(matches.hasNext())
+      t.is(matches.next().getId(), file.getId())
+      t.false(matches.hasNext())
+      const dapMatches = DriveApp.getFilesByName(file.getName())
+      t.true(dapMatches.hasNext())
+      t.is(dapMatches.next().getName(), file.getName())
+    })
+
+    if (Drive.isFake) console.log ('...cumulative drive cache performance', getPerformance())
+
+  }, { skip: false })
+
+
+
+
+unit.section("session properties", t => {
+  t.is(Session.getActiveUser().toString(), fixes.EMAIL)
+  t.is(Session.getActiveUser().getEmail(), fixes.EMAIL)
+  t.is(Session.getEffectiveUser().getEmail(), fixes.EMAIL)
+  t.is(Session.getActiveUserLocale(), fixes.LOCALE)
+  t.is(Session.getScriptTimeZone(), fixes.TIMEZONE)
+  t.true(is.nonEmptyString(Session.getTemporaryActiveUserKey()))
+}, {
+  skip: false
+})
+
+
+  unit.section("utilities base64 encoding", t=> {
     const text = fixes.TEXT_FILE_CONTENT
     const blob = Utilities.newBlob (text)
     const {actual: b64} = t.is (Utilities.base64Encode(blob.getBytes()),Utilities.base64Encode(text) )
@@ -91,7 +161,7 @@ const testFakes = async () => {
 
   })
 
-  unit.section ("zipping", t=> {
+  unit.section ("utilities zipping", t=> {
     const texts = [fixes.TEXT_FILE_CONTENT,fixes.TEST_FOLDER_NAME]
     const blobs = texts.map((f,i)=> Utilities.newBlob (f, fixes.BLOB_TYPE,'b'+i+'.txt'))
     const z = Utilities.zip(blobs)
@@ -112,18 +182,8 @@ const testFakes = async () => {
   })
 
 
-  unit.section("session", t => {
-    t.is(Session.getActiveUser().toString(), fixes.EMAIL)
-    t.is(Session.getActiveUser().getEmail(), fixes.EMAIL)
-    t.is(Session.getEffectiveUser().getEmail(), fixes.EMAIL)
-    t.is(Session.getActiveUserLocale(), fixes.LOCALE)
-    t.is(Session.getScriptTimeZone(), fixes.TIMEZONE)
-    t.true(is.nonEmptyString(Session.getTemporaryActiveUserKey()))
-  }, {
-    skip: false
-  })
 
-  unit.section('utilities', t => {
+  unit.section('utilities gzipping', t => {
     t.true(is.nonEmptyString(Utilities.getUuid()))
 
     const blob = Utilities.newBlob(fixes.TEXT_FILE_CONTENT)
@@ -142,7 +202,7 @@ const testFakes = async () => {
 
   })
 
-  unit.section('all about blobs', t => {
+  unit.section('utilities blob manipulation', t => {
     const blob = Utilities.newBlob(fixes.TEXT_FILE_CONTENT)
     t.is(blob.getName(), null)
     t.is(blob.getContentType(), fixes.BLOB_TYPE)
@@ -254,7 +314,7 @@ const testFakes = async () => {
   })
 
 
-  unit.section("scriptapp tests", t => {
+  unit.section("scriptapp basics", t => {
     t.true(is.nonEmptyString(ScriptApp.getScriptId()))
   })
 
@@ -309,7 +369,7 @@ const testFakes = async () => {
   })
 
 
-  unit.section("spreadsheet app", t => {
+  unit.section("WIP spreadsheet app", t => {
     const sap = SpreadsheetApp
     t.true(is.object(sap.SheetType))
     t.is(sap.SheetType.GRID.toString(), "GRID")
@@ -331,44 +391,7 @@ const testFakes = async () => {
   })
 
 
-  unit.section("searching with queries", t => {
 
-    const root = DriveApp.getRootFolder()
-
-    // this gets the folders directly under root folder with given name
-    const folders = root.getFoldersByName(fixes.TEST_FOLDER_NAME)
-
-    const folderPile = []
-    while (folders.hasNext()) {
-      folderPile.push(folders.next())
-    }
-
-    t.is(folderPile.length, 1)
-
-    const filePile = []
-    const [folder] = folderPile
-    const dapMatches = DriveApp.getFoldersByName(folder.getName())
-    t.true(dapMatches.hasNext())
-    t.is(dapMatches.next().getName(), folder.getName())
-
-    const files = folder.getFiles()
-    while (files.hasNext()) {
-      filePile.push(files.next())
-    }
-    t.is(filePile.length, fixes.TEST_FOLDER_FILES)
-    filePile.forEach(file => {
-      const matches = folder.getFilesByName(file.getName())
-      t.true(matches.hasNext())
-      t.is(matches.next().getId(), file.getId())
-      t.false(matches.hasNext())
-      const dapMatches = DriveApp.getFilesByName(file.getName())
-      t.true(dapMatches.hasNext())
-      t.is(dapMatches.next().getName(), file.getName())
-    })
-
-
-
-  }, { skip: true })
 
 
 

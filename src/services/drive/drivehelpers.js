@@ -1,8 +1,8 @@
-import { Utils } from './utils.js'
-import { folderType } from './constants.js'
+import { Utils } from '../../support/utils.js'
+import { folderType } from '../../support/constants.js'
 import is from '@sindresorhus/is';
-import { getFromFileCache, setInFileCache } from './filecache.js';
-import { Syncit } from './syncit.js'
+import { getFromFileCache, setInFileCache } from '../../support/filecache.js';
+import { Syncit } from '../../support/syncit.js'
 /**
  * utilities for drive access shared between all fakedrive classes
  */
@@ -33,7 +33,7 @@ export const isGood = (response) => Math.floor(response.status / 100) === 2
  * @param {SyncApiResponse} response 
  * @returns {Boolean}
  */
-const is404 = (response) => response.status === 404
+export const is404 = (response) => response.status === 404
 
 
 
@@ -52,15 +52,15 @@ export const throwResponse = (response) => {
   throw new Error(`status: ${response.status} : ${response.statusText}`)
 }
 
-const fileFields = ["name", "parents", "id", "mimeType"]
+const fileFields = "name,id,mimeType,kind"
 /**
  * minimum fields i'll retrieve
  * @constant
  * @type {object}
  * @default
  */
-export const minFields = fileFields
-export const minFieldsList = ["nextPageToken", { files: minFields }]
+export const minFields =`${fileFields},parents`
+
 
 /**
  * in preparation for merginhg field specifications
@@ -144,57 +144,6 @@ export const decorateParams = ({ fields, params = {}, min = minFields }) => {
 }
 
 /**
- * shared get any kind of file meta data by its id
- * @param {string} id the file id 
- * @param {function} [handler = handleError]
- * @param {TODO} [fields] the fields to fetch
- * @returns {object} {File, FakeHttpResponse}
- */
-export const fetchFile = ({ id, handler = handleError, fields }) => {
-  const { assert } = Utils
-  assert.string(id)
-  assert.function(handler)
-
-  const params = decorateParams({
-    fields, min: minFields, params: { fileId: id }
-  })
-
-  // TODO need to handle muteHttpExceptions and any other options
-  // use the sync version of the drive gapi api
-  const { data, response } = Syncit.fxDrive({ prop: "files", method: "get", params })
-  return {
-    file: data,
-    response
-  }
-}
-
-/**
- * general getter by id
- * @param {object} p args
- * @param {string} p.id the id to get
- * @param {boolean} [p.allow404=true] normally a 404 doesnt throw an error 
- * @returns {FakeDriveFolder}
- */
-export const getFileById = ({ id, allow404 = true, fields }) => {
-
-  // we'll pull this from cache if poss
-  const cachedFile = getFromFileCache(id, fields)
-  if (cachedFile) return cachedFile
-
-  // it wasnt in cache or didn't have the right fields
-  const { file, response } = fetchFile({ id, fields })
-  if (!file) {
-    if (!allow404) {
-      throwResponse(response)
-    } else {
-      return null
-    }
-  }
-
-  return setInFileCache(id, file)
-}
-
-/**
  * list  get any kind using the NODE client
  * @param {string} [parentId] the parent id 
  * @param {function} [handler = handleError]
@@ -231,15 +180,16 @@ export const fileLister = ({
     params.pageToken = pageToken
   }
 
-  params = decorateParams({ fields, params, min: minFieldsList })
-
+  params = decorateParams({ fields, params, min: `files(${minFields}),nextPageToken` })
+console.log ('decorated params', params)
+  
   // this will have be synced from async
   try {
     const result = Syncit.fxDrive({ prop: "files", method: "list", params })
     return result
   } catch (err) {
-    handler(err)
+    console.log (err)
+    throw new Error (err)
   }
 
-  return result
 }

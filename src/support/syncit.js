@@ -310,16 +310,14 @@ const fxApi = ({ prop, method, params, apiPath }) => {
   const fx = makeSynchronous(async ({ prop, method, apiPath, authPath, scopes, params }) => {
 
     const { Auth, responseSyncify } = await import(authPath)
-    const { getApiClient } = await import(apiPath)
+    const { getAuthedClient } = await import(apiPath)
 
     // the scopes are required to set up an appropriate auth
     Auth.setAuth(scopes)
-    const auth = Auth.getAuth()
 
     // this is the node drive service
-    const apiClient = getApiClient(auth)
+    const apiClient = getAuthedClient()
     const response = await apiClient[prop][method](params)
-
     return {
       data: response.data,
       response: responseSyncify(response)
@@ -335,6 +333,7 @@ const fxApi = ({ prop, method, params, apiPath }) => {
     scopes,
     params
   })
+
   return result
 }
 

@@ -5,11 +5,11 @@ import is from '@sindresorhus/is';
 
 
 import {
-  getFileById,
   handleError,
   isFolder,
-  fileLister
-} from '../../support/drivehelpers.js'
+  fileLister,
+  minFields
+} from './drivehelpers.js'
 
 import { Syncit } from '../../support/syncit.js'
 
@@ -134,7 +134,7 @@ const getParentsIterator = ({
 
   function* filesink() {
     // the result tank, we just get them all by id
-    let tank = file.parents.map(id => getFileById({ id, allow404: false }))
+    let tank = file.parents.map(id => Drive.Files.get( id, {}, {allow404: false}))
 
     while (tank.length) {
       yield newFakeDriveFolder(tank.splice(0, 1)[0])
@@ -185,6 +185,7 @@ export class FakeDriveMeta {
    * @returns {string} the file id
    */
   getId() {
+    this.decorateWithFields("id")
     return this.meta.id
   }
 
@@ -193,6 +194,7 @@ export class FakeDriveMeta {
    * @returns {string} the file name
    */
   getName() {
+    this.decorateWithFields("name")
     return this.meta.name
   }
 
@@ -201,6 +203,7 @@ export class FakeDriveMeta {
    * @returns {string} the file mimetpe
    */
   getMimeType() {
+    this.decorateWithFields("mimeType")
     return this.meta.mimeType
   }
 
@@ -209,16 +212,23 @@ export class FakeDriveMeta {
    * @returns {string[]} the file parents
    */
   getParents() {
+    this.decorateWithFields("parents")
     return getParentsIterator({ file: this.meta })
   }
 
   /**
    * for enhancing the file with fields not retrieved by default
-   * @param {string|string[]} [field=[]] the required fields
+   * @param {string} [fields=''] the required fields
    * @return {FakeDriveMeta} self
    */
-  decorateWithFields(fields = []) {
-    const newMeta = getFileById({ id: this.getId(), fields, allow404: false })
+  decorateWithFields(fields = '') {
+    // if we already have it nothing needed
+    const sf = fields.split (",")
+    if (sf.every(f=>Reflect.has (this.meta, f))){
+      return this
+    }
+
+    const newMeta = Drive.Files.get(this.getId(), {fields}, {allow404: false})
     // need to merge this with already known fields
     this.meta = { ...this.meta, ...newMeta }
     return this
@@ -350,7 +360,7 @@ export class FakeDriveFolder extends FakeDriveMeta {
    * @returns {FakeDriveFile|null}
    */
   getFileById(id) {
-    const file = getFileById({ id })
+    const file = Drive.Files.get (id, {}, {allow404: true})
     return file ? newFakeDriveFile(file) : null
   }
 
@@ -361,7 +371,7 @@ export class FakeDriveFolder extends FakeDriveMeta {
    * @returns {FakeDriveFolder|null}
    */
   getFolderById(id) {
-    const file = getFileById({ id })
+    const file = Drive.Files.get(id, {}, {allow404: true})
     return file ? newFakeDriveFolder(file) : null
   }
 
@@ -404,7 +414,7 @@ export class FakeDriveFolder extends FakeDriveMeta {
 export class FakeDriveApp {
 
   constructor() {
-    const file = getFileById({ id: 'root', allow404: false })
+    const file = Drive.Files.get('root', {} , {allow404: true} )
     this.rootFolder = newFakeDriveFolder(file)
   }
 
@@ -414,7 +424,7 @@ export class FakeDriveApp {
    * @returns {FakeDriveFolder}
    */
   getRootFolder() {
-    const file = getFileById({ id: 'root', allow404: false })
+    const file =  Drive.Files.get('root', {}, {allow404: false})
     return newFakeDriveFolder(file)
   }
 
