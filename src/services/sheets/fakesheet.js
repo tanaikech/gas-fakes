@@ -1,5 +1,5 @@
 import { Proxies } from '../../support/proxies.js'
-import { spreadsheetType } from '../../support/constants.js'
+import { spreadsheetType } from '../../support/general.js'
 import { Auth } from '../../support/auth.js'
 /**
  * create a new FakeSpreadsheetApp instance

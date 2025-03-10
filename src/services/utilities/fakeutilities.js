@@ -2,7 +2,7 @@ import sleepSynchronously from 'sleep-synchronously';
 import { Proxies } from '../../support/proxies.js'
 import { newFakeBlob } from './fakeblob.js'
 import { Utils } from '../../support/utils.js'
-import { gzipType, zipType } from '../../support/constants.js'
+import { gzipType, zipType } from '../../support/general.js'
 import { randomUUID } from 'node:crypto'
 import { gzipSync , gunzipSync} from 'node:zlib'
 import { Syncit } from '../../support/syncit.js';

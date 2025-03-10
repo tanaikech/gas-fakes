@@ -317,11 +317,26 @@ const fxApi = ({ prop, method, params, apiPath }) => {
 
     // this is the node drive service
     const apiClient = getAuthedClient()
-    const response = await apiClient[prop][method](params)
-    return {
-      data: response.data,
-      response: responseSyncify(response)
+    try {
+      const response = await apiClient[prop][method](params)
+      return {
+        data: response.data,
+        response: responseSyncify(response)
+      }
+    } catch (err) {
+      console.error('failed in syncit fxapi',err)
+      console.info (`was attempting ${prop}.${method} with params`, params)
+      const response = err?.response
+      return {
+        data: null,
+        response: {
+          status: response?.status,
+          statusText: response?.statusText,
+          responseUrl: response?.request?.responseURL
+        }
+      }
     }
+
   })
 
   const scopes = Array.from(Auth.getAuthedScopes().keys())

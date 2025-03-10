@@ -2,17 +2,58 @@ import { Proxies } from '../../support/proxies.js'
 import { newPeeker } from '../../support/peeker.js'
 import { Utils } from '../../support/utils.js'
 import is from '@sindresorhus/is';
+import { folderType, minFields, isFolder } from '../../support/general.js'
 
-
-import {
-  handleError,
-  isFolder,
-  fileLister,
-  minFields
-} from './drivehelpers.js'
 
 import { Syncit } from '../../support/syncit.js'
 
+
+/**
+ * list  get any kind using the NODE client
+ * @param {string} [parentId] the parent id 
+ * @param {object|[object]} [qob] any additional queries
+ * @param {string} [fields] the fields to fetch
+ * @param {TODO} [options] mimic fetchapp options
+ * @param {string} [pageToken=null] if we're doing a pagetoken kind of thing
+ * @param {boolean} folderTypes whether to get foldertypes 
+ * @param {boolean} fileTypes whether to get fileTypes 
+ * @returns {object} a collection of files {response, data}
+ */
+const fileLister = ({
+  qob, parentId, fields, folderTypes, fileTypes, pageToken = null
+}) => {
+  // enhance any already supplied query params
+  qob = Utils.arrify(qob) || []
+  if (parentId) {
+    qob.push(`'${parentId}' in parents`)
+  }
+
+  // wheteher we're getting files,folders or both
+  if (!(folderTypes || fileTypes)) {
+    throw new Error(`Must specify either folder type,file type or both`)
+  }
+
+  // exclusive xor - if they're both true we dont need to do any extra q filtering
+  if (folderTypes !== fileTypes) {
+    qob.push(`mimeType${fileTypes ? "!" : ""}='${folderType}'`)
+  }
+
+  const q = qob.map(f => `(${f})`).join(" and ")
+  let params = { q, fields }
+  if (pageToken) {
+    params.pageToken = pageToken
+  }
+
+  // this will have be synced from async
+  try {
+    const result = Drive.Files.list(params)
+    return result
+  } catch (err) {
+    console.error(err)
+    throw new Error(err)
+  }
+
+}
 
 
 /**
@@ -43,16 +84,10 @@ export const newFakeDriveApp = (...args) => {
 }
 
 
-
-
-
 /**
  * shared get any kind of file meta data by its id
  * @param {string} [parentId] the parent id 
- * @param {function} [handler = handleError]
  * @param {object[]} [qob] any additional queries
- * @param {object|object[]} [fields] the fields to fetch
- * @param {TODO} [options] mimic fetchapp options
  * @param {boolean} folderTypes whether to get foldertypes 
  * @param {boolean} fileTypes whether to get fileTypes 
  * @returns {object} {Peeker}
@@ -60,8 +95,6 @@ export const newFakeDriveApp = (...args) => {
 const getFilesIterator = ({
   qob,
   parentId = null,
-  fields = [],
-  handler = handleError,
   folderTypes,
   fileTypes
 }) => {
@@ -69,11 +102,11 @@ const getFilesIterator = ({
   const { assert } = Utils
   // parentId can be null to search everywhere
   if (!is.null(parentId)) assert.nonEmptyString(parentId)
-  assert.function(handler)
-  assert.object(fields)
   assert.boolean(folderTypes)
   assert.boolean(fileTypes)
 
+  // DriveApp doesnt give option to specify these so this will be fixes
+  const fields = `files(${minFields}),nextPageToken`
 
   /**
    * this generator will get chunks of matching files from the drive api
@@ -86,18 +119,18 @@ const getFilesIterator = ({
     let pageToken = null
 
     do {
-      // if nothing in the tank, fill it up
+      // if nothing in the tank, fill it upFdrive
       if (!tank.length) {
-
-        const result = fileLister({
-          qob, parentId, fields, handler, folderTypes, fileTypes, pageToken
+        const data = fileLister({
+          qob, parentId, fields, folderTypes, fileTypes, pageToken
         })
 
         // the presence of a nextPageToken is the signal that there's more to come
-        pageToken = result.data.nextPageToken
+        pageToken = data.nextPageToken
+
 
         // format the results into the folder or file object
-        tank = result.data.files.map(
+        tank = data.files.map(
           f => isFolder(f) ? newFakeDriveFolder(f) : newFakeDriveFile(f)
         )
       }
@@ -106,6 +139,7 @@ const getFilesIterator = ({
       if (tank.length) {
         yield tank.splice(0, 1)[0]
       }
+
       // if there's still anything left in the tank, 
       // or there's a page token to get more continue
     } while (pageToken || tank.length)
@@ -134,7 +168,7 @@ const getParentsIterator = ({
 
   function* filesink() {
     // the result tank, we just get them all by id
-    let tank = file.parents.map(id => Drive.Files.get( id, {}, {allow404: false}))
+    let tank = file.parents.map(id => Drive.Files.get(id, {}, { allow404: false }))
 
     while (tank.length) {
       yield newFakeDriveFolder(tank.splice(0, 1)[0])
@@ -218,17 +252,21 @@ export class FakeDriveMeta {
 
   /**
    * for enhancing the file with fields not retrieved by default
-   * @param {string} [fields=''] the required fields
+   * @param {string} fields='' the required fields
    * @return {FakeDriveMeta} self
    */
-  decorateWithFields(fields = '') {
+  decorateWithFields(fields) {
     // if we already have it nothing needed
-    const sf = fields.split (",")
-    if (sf.every(f=>Reflect.has (this.meta, f))){
+    if (!is.nonEmptyString(fields)) {
+      throw new Error('decorate fields was not a non empty string')
+    }
+    const sf = fields.split(",")
+
+    if (sf.every(f => Reflect.has(this.meta, f))) {
       return this
     }
 
-    const newMeta = Drive.Files.get(this.getId(), {fields}, {allow404: false})
+    const newMeta = Drive.Files.get(this.getId(), { fields }, { allow404: false })
     // need to merge this with already known fields
     this.meta = { ...this.meta, ...newMeta }
     return this
@@ -240,7 +278,6 @@ export class FakeDriveMeta {
   getDecorated(prop) {
     return this.decorateWithFields(prop).meta[prop]
   }
-
 
   getSize() {
     // the meta is actually a string so convert
@@ -329,6 +366,10 @@ export class FakeDriveFolder extends FakeDriveMeta {
     }
   }
 
+  toString() {
+    return this.meta.name
+  }
+
   /**
    * get files in this folder
    * @return {FakeDriveFileIterator}
@@ -360,7 +401,7 @@ export class FakeDriveFolder extends FakeDriveMeta {
    * @returns {FakeDriveFile|null}
    */
   getFileById(id) {
-    const file = Drive.Files.get (id, {}, {allow404: true})
+    const file = Drive.Files.get(id, {}, { allow404: true })
     return file ? newFakeDriveFile(file) : null
   }
 
@@ -371,7 +412,7 @@ export class FakeDriveFolder extends FakeDriveMeta {
    * @returns {FakeDriveFolder|null}
    */
   getFolderById(id) {
-    const file = Drive.Files.get(id, {}, {allow404: true})
+    const file = Drive.Files.get(id, {}, { allow404: true })
     return file ? newFakeDriveFolder(file) : null
   }
 
@@ -402,6 +443,20 @@ export class FakeDriveFolder extends FakeDriveMeta {
     })
   }
 
+  /**
+   *  get files by type
+   * @param {string} type 
+   * @return {FakeDriveFileIterator}
+   */
+  getFilesByType(type) {
+    return getFilesIterator({
+      parentId: this.getId(),
+      fileTypes: true,
+      folderTypes: false,
+      qob: [`mimeType='${type}'`]
+    })
+  }
+
 }
 
 /**
@@ -414,8 +469,13 @@ export class FakeDriveFolder extends FakeDriveMeta {
 export class FakeDriveApp {
 
   constructor() {
-    const file = Drive.Files.get('root', {} , {allow404: true} )
-    this.rootFolder = newFakeDriveFolder(file)
+    const rf = Drive.Files.get('root', {}, { allow404: true })
+    // because the parent folder prop isnt returned we'll spoof it
+    this.__rootFolder = newFakeDriveFolder(rf)
+  }
+
+  toString() {
+    return 'Drive'
   }
 
   /**
@@ -424,16 +484,15 @@ export class FakeDriveApp {
    * @returns {FakeDriveFolder}
    */
   getRootFolder() {
-    const file =  Drive.Files.get('root', {}, {allow404: false})
-    return newFakeDriveFolder(file)
+    return this.__rootFolder
   }
 
   getFileById(id) {
-    return this.rootFolder.getFileById(id)
+    return this.getRootFolder().getFileById(id)
   }
 
   getFolderById(id) {
-    return this.rootFolder.getFolderById(id)
+    return this.getRootFolder().getFolderById(id)
   }
 
   /**
@@ -462,4 +521,105 @@ export class FakeDriveApp {
     })
   }
 
+  /**
+   *  get files by type
+   * @param {string} type 
+   * @return {FakeDriveFileIterator}
+   */
+  getFilesByType(type) {
+    return getFilesIterator({
+      fileTypes: true,
+      folderTypes: false,
+      qob: [`mimeType='${type}'`]
+    })
+  }
+
 }
+
+/* driveapp
+='toString',
+'getFileByIdAndResourceKey',
+'getFolderByIdAndResourceKey',
+'continueFolderIterator',
+'getTrashedFiles',
+'continueFileIterator',
+'getFolderById',
+'getTrashedFolders',
+'getRootFolder',
+'getStorageUsed',
+'enforceSingleParent',
+'getStorageLimit',
+'getFileById',
+'createShortcutForTargetIdAndResourceKey',
+'addFolder',
+='getFilesByType',
+'createFolder',
+'searchFolders',
+='getFiles',
+'removeFile',
+'getFoldersByName',
+'searchFiles',
+'removeFolder',
+='getFolders',
+'getFilesByName',
+'createShortcut',
+'addFile',
+'createFile',
+'Access',
+'Permission'
+*/
+
+/* folder
+ ='toString',
+  'getEditors',
+  'getViewers',
+  'getOwner',
+  'getSecurityUpdateEligible',
+  'getSecurityUpdateEnabled',
+  'setSecurityUpdateEnabled',
+  'moveTo',
+  'getAccess',
+  ='getLastUpdated',
+  ='getDateCreated',
+  'getUrl',
+  ='isTrashed',
+  'getResourceKey',
+  ='getParents',
+  'setSharing',
+  'getSharingAccess',
+  'setStarred',
+  ='isStarred',
+  'getSharingPermission',
+  'setTrashed',
+  'setDescription',
+  ='getDescription',
+  ='getName',
+  'setName',
+  ='getId',
+  ='getSize',
+  'createShortcutForTargetIdAndResourceKey',
+  'createFolder',
+  ='getFilesByName',
+  'searchFiles',
+  'removeFolder',
+  'addFolder',
+  'searchFolders',
+  ='getFilesByType',
+  ='getFolders',
+  'removeFile',
+  'getFoldersByName',
+  'createShortcut',
+  'getFiles',
+  'addFile',
+  'createFile',
+  'setShareableByEditors',
+  'isShareableByEditors',
+  'revokePermissions',
+  'setOwner',
+  'addViewers',
+  'removeViewer',
+  'removeEditor',
+  'addViewer',
+  'addEditor',
+  'addEditors' ]
+*/

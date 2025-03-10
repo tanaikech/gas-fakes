@@ -2,13 +2,45 @@
  * Advanced drive service
  */
 import { Proxies } from '../../support/proxies.js'
-import { notYetImplemented } from '../../support/constants.js'
+import { notYetImplemented,  minFields,  is404, isGood, throwResponse} from '../../support/general.js'
 import { getAuthedClient } from './drapis.js'
 import { Syncit } from '../../support/syncit.js'
-import { throwResponse, is404, isGood, minFields } from './drivehelpers.js'
-import { getFromFileCache, setInFileCache } from '../../support/filecache.js';
+import { getFromFileCache, improveFileCache, setInFileCache } from '../../support/filecache.js';
+import is from '@sindresorhus/is';
 
 
+/**
+ * tidy up a fields parameter
+ * @param {object} p
+ * @param {string} [p.fields=minFields] which fields to get
+ * @return {string[]} an array of the fields required merged with the minimum fields required to support caching
+ */
+const tidyFieldsFar = ({ fields = "" } = {}) => {
+  if (!is.string(fields)) {
+    throw new Error(`invalid fields definition`, fields)
+  }
+  // now clean up 
+  return Array.from(
+    new Set((minFields.split(",").concat(fields.split(","))
+      .map(f => f.replace(/\s/g, ""))
+      .filter(f => f)))
+      .keys()
+  )
+}
+
+/**
+ * enhance the array of required fields by adding any propertyies already in cache
+ * @param {object} p
+ * @param {File} p.cachedFile meta data
+ * @returns {string} an enhanced fields as a string with the dedupped fields already in cache
+ */
+const enhanceFar = ({ cachedFile, far }) => {
+  // we'll enhance the cache with the current value of any already fetched key by fetching it again
+  far = cachedFile ? Array.from(new Set(far.concat(Reflect.ownKeys(cachedFile))).keys()) : far
+
+  // now construct an appropriate fields arg
+  return far.join(",")
+}
 /**
  * check response from sync is good and throw an error if requried 
  * @param {string} id 
@@ -21,9 +53,9 @@ const checkResponse = (id, response, allow404) => {
   if (!isGood(response)) {
 
     // scratch for next time
-    setInFileCache (id, null)
-    
-    if (!allow404 && is404 (response)) {
+    setInFileCache(id, null)
+
+    if (!allow404 && is404(response)) {
       throwResponse(response)
     } else {
       return null
@@ -119,8 +151,33 @@ class FakeAdvDriveFiles {
     return notYetImplemented
   }
 
-  list() {
-    return notYetImplemented
+  list(params = {}) {
+    // this is pretty straightforward as the onus is on thecaller to provide a valid queryOb
+    // and validation will be done by the api.
+    // however to support caching, we'll fiddle with the fields parameter
+    const fob = params.fields && params.fields.files
+    if (fob) {
+      const far = tidyFieldsFar(fob)
+      params = {...params, fields: {
+        ...params.fields,
+        files: far.join(",") 
+      }}
+    }
+
+    // sincify that call
+    const { response, data } = Syncit.fxDrive({ prop: this.apiProp, method: 'list', params })
+
+    // maybe we need to throw an error
+    if (!isGood(response)) {
+      throwResponse (response)
+    }
+
+    // lets improve cache with any enhanced data we've found
+    data.files.forEach (f=> { 
+      improveFileCache (f.id, f)
+    })
+    return data
+
   }
   remove() {
     return notYetImplemented
@@ -147,24 +204,27 @@ class FakeAdvDriveFiles {
    * @param {boolean} [fakeparams.allow404=true] whether to allow 404 errors
    * @returns {Drive.File}
    */
-  get(id, params = {}, {allow404= true} = {}) {
-    
-    // minimum fields can be replaced by params 
-    const fields = params.fields || minFields
+  get(id, params = {}, { allow404 = true } = {}) {
 
-    // we'll only hit i in cache if the fields there at least match the required fields
-    const cached = getFromFileCache (id, fields)
-    if (cached) return cached
+    // now clean up 
+    let far = tidyFieldsFar(params)
 
-    // enhance the params
-    params = {...params, fields, fileId: id}
-    const {response, data: file} =  Syncit.fxDrive({ prop: this.apiProp, method: 'get', params })
-    
+    // the cache will check the fields it already has against those requested
+    const { cachedFile, good } = getFromFileCache(id, far)
+    if (good) return cachedFile
+
+
+    // we'll enhance the cache with the current value of any already fetched field by fetching it again
+    params = { ...params, fileId: id, fields: enhanceFar({ cachedFile, far }) }
+
+    // run as a sub process to unasync it
+    const { response, data: file } = Syncit.fxDrive({ prop: this.apiProp, method: 'get', params })
+
     // maybe we need to throw an error
-    checkResponse (id, response, allow404) 
+    checkResponse(id, response, allow404)
 
     // finally register in cache for next time
-    return setInFileCache (id, file)
+    return improveFileCache(id, file)
   }
 
   create() {

@@ -114,7 +114,10 @@ const getAuth = () => {
 
 
 /**
- * we can't serialize a return object from sheets api
+ * why is this here ?
+ * because when we syncit, we import auth for each method and it needs this
+ * if it was somewhere else we'd need to import that too.
+ * we can't serialize a return object 
  * so we just select a few props from it
  * @param {SyncApiResponse} result 
  * @returns 

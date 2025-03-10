@@ -29,6 +29,8 @@ const testFakes = async () => {
 
   // these are som fixtures to test applicable to my own drive
   const fixes = {
+    MIN_ROOT_PDFS: 20,
+    MIN_PDFS: 400,
     MIN_FOLDERS_ROOT: 110,
     TEST_FOLDER_NAME: "math",
     TEST_FOLDER_FILES: 3,
@@ -50,37 +52,113 @@ const testFakes = async () => {
   }
 
 
-  unit.section("advanced drive basics", t=> {
-    t.true(is.nonEmptyString(Drive.toString()))
-    t.true(is.nonEmptyString(Drive.Files.toString()))
-    t.is (Drive.getVersion(), 'v3')
-    t.is (Drive.About.toString(),Drive.toString())
-    t.is (Drive.About.toString(),Drive.Files.toString())
-    const file =  Drive.Files.get(fixes.TEXT_FILE_ID)
-    t.is (file.id, fixes.TEXT_FILE_ID)
-    t.is (file.name, fixes.TEXT_FILE_NAME)
-    t.is (file.mimeType, fixes.TEXT_FILE_TYPE)
-    t.is (file.kind, fixes.KIND_DRIVE)
-    t.deepEqual (file, DriveApp.getFileById (fixes.TEXT_FILE_ID).meta, {
-      skip: !DriveApp.isFake,
-      description: 'meta property only exists on fakedrive class'
-    })
-    if (Drive.isFake) console.log ('...cumulative drive cache performance', getPerformance())
-  })
-
   unit.section('driveapp basics and Drive equivalence', t => {
+    t.is(DriveApp.toString(), "Drive")
+    t.is(DriveApp.getRootFolder().toString(), "My Drive")
+
     const file = DriveApp.getFileById(fixes.TEXT_FILE_ID)
     const folder = DriveApp.getFolderById(fixes.TEST_FOLDER_ID)
     t.is(file.getMimeType(), 'text/plain')
     t.is(file.getName(), 'fake.txt')
     t.is(file.getParents().next().getId(), folder.getId())
-    t.is(folder.getName(), Drive.Files.get (fixes.TEST_FOLDER_ID).name)
+    t.is(folder.getName(), Drive.Files.get(fixes.TEST_FOLDER_ID).name)
+    t.is(folder.toString(), folder.getName())
     t.is(file.getParents().next().getId(), Drive.Files.get(fixes.TEST_FOLDER_ID).id)
     t.true(file.getParents().hasNext())
     const blob = file.getBlob()
     t.is(blob.getDataAsString(), fixes.TEXT_FILE_CONTENT)
-    if (Drive.isFake) console.log ('...cumulative drive cache performance', getPerformance())
+
+    if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
+
+
   })
+
+  unit.section("exotic driveapps versus Drive", t => {
+
+    const appPdf = DriveApp.getFilesByType('application/pdf')
+    const appPdfPile = []
+    while (appPdf.hasNext()) {
+      const file = appPdf.next()
+      t.is(file.getMimeType(), "application/pdf")
+      appPdfPile.push(file)
+    }
+
+    t.true(appPdfPile.length >= fixes.MIN_PDFS)
+
+    const rootPdf = DriveApp.getRootFolder().getFilesByType('application/pdf')
+    const rootPdfPile = []
+    while (rootPdf.hasNext()) {
+      const file = rootPdf.next()
+      t.is(file.getMimeType(), "application/pdf")
+      rootPdfPile.push(file)
+    }
+
+    t.true(rootPdfPile.length >= fixes.MIN_ROOT_PDFS)
+
+
+
+    /*
+     const drivePile = Drive.Files.list ({
+       orderBy: "createdTime,name",
+       fields: "files(name,id,size)",
+       pageSize: 100,
+       q: "name contains 's' and mimeType='application/pdf'"
+     })
+       */
+    if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
+  })
+
+  unit.cancel()
+
+  unit.section("driveapp searches", t => {
+
+    // driveapp itself isnt actually a folder although it shares many of the methods
+    // this is the folder that DriveApp represents
+    const root = DriveApp.getRootFolder()
+
+    // this gets the folders directly under root
+    const folders = root.getFolders()
+
+    const parentCheck = (folders, grandad, folderPile = []) => {
+      while (folders.hasNext()) {
+        const folder = folders.next()
+        folderPile.push(folder)
+
+        // note that parents is an iterator, not an array
+        const parents = folder.getParents()
+        t.true(Reflect.has(parents, "next"))
+        t.true(Reflect.has(parents, "hasNext"))
+
+        // and the next operation should get the meta data of the parent, not just the id
+        // in this case there should one be 1
+        const parentPile = []
+        while (parents.hasNext()) {
+          const parent = parents.next()
+          t.is(parent.getName(), grandad.getName())
+          t.is(parent.getId(), grandad.getId())
+          parentPile.push(parent)
+        }
+        // not really expecting multiple parents nowadays.
+        t.is(parentPile.length, 1, { skip: fixes.SKIP_SINGLE_PARENT })
+      }
+      return folderPile
+    }
+    const folderPile = parentCheck(folders, root)
+
+    // MYDRIVE I know i have at least thes number of folders in the root
+    t.true(folderPile.length > fixes.MIN_FOLDERS_ROOT)
+
+    // I know i have a folder called this
+    const math = folderPile.find(f => f.getName() === fixes.TEST_FOLDER_NAME)
+    t.is(math.getName(), fixes.TEST_FOLDER_NAME)
+    const files = math.getFiles()
+    const pile = parentCheck(files, math)
+
+    // i know i have 3 files in math
+    t.is(pile.length, fixes.TEST_FOLDER_FILES)
+  }, { skip: false })
+
+
 
   unit.section("driveapp searching with queries", t => {
 
@@ -117,67 +195,92 @@ const testFakes = async () => {
       t.is(dapMatches.next().getName(), file.getName())
     })
 
-    if (Drive.isFake) console.log ('...cumulative drive cache performance', getPerformance())
+    if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
 
   }, { skip: false })
 
+/*
+  console.log(Drive.Files.list({
+    orderBy: "createdTime,name",
+    fields: "files(name,id),nextPageToken",
+    q: "name contains 's'"
+  }))
+*/
+
+  unit.section("advanced drive basics", t => {
+    t.true(is.nonEmptyString(Drive.toString()))
+    t.true(is.nonEmptyString(Drive.Files.toString()))
+    t.is(Drive.getVersion(), 'v3')
+    t.is(Drive.About.toString(), Drive.toString())
+    t.is(Drive.About.toString(), Drive.Files.toString())
+    const file = Drive.Files.get(fixes.TEXT_FILE_ID)
+    t.is(file.id, fixes.TEXT_FILE_ID)
+    t.is(file.name, fixes.TEXT_FILE_NAME)
+    t.is(file.mimeType, fixes.TEXT_FILE_TYPE)
+    t.is(file.kind, fixes.KIND_DRIVE)
+    t.deepEqual(file, DriveApp.getFileById(fixes.TEXT_FILE_ID).meta, {
+      skip: !DriveApp.isFake,
+      description: 'meta property only exists on fakedrive class'
+    })
+    if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
+  })
 
 
 
-unit.section("session properties", t => {
-  t.is(Session.getActiveUser().toString(), fixes.EMAIL)
-  t.is(Session.getActiveUser().getEmail(), fixes.EMAIL)
-  t.is(Session.getEffectiveUser().getEmail(), fixes.EMAIL)
-  t.is(Session.getActiveUserLocale(), fixes.LOCALE)
-  t.is(Session.getScriptTimeZone(), fixes.TIMEZONE)
-  t.true(is.nonEmptyString(Session.getTemporaryActiveUserKey()))
-}, {
-  skip: false
-})
+  unit.section("session properties", t => {
+    t.is(Session.getActiveUser().toString(), fixes.EMAIL)
+    t.is(Session.getActiveUser().getEmail(), fixes.EMAIL)
+    t.is(Session.getEffectiveUser().getEmail(), fixes.EMAIL)
+    t.is(Session.getActiveUserLocale(), fixes.LOCALE)
+    t.is(Session.getScriptTimeZone(), fixes.TIMEZONE)
+    t.true(is.nonEmptyString(Session.getTemporaryActiveUserKey()))
+  }, {
+    skip: false
+  })
 
 
-  unit.section("utilities base64 encoding", t=> {
+  unit.section("utilities base64 encoding", t => {
     const text = fixes.TEXT_FILE_CONTENT
-    const blob = Utilities.newBlob (text)
-    const {actual: b64} = t.is (Utilities.base64Encode(blob.getBytes()),Utilities.base64Encode(text) )
-    t.true(is.nonEmptyString (b64))
+    const blob = Utilities.newBlob(text)
+    const { actual: b64 } = t.is(Utilities.base64Encode(blob.getBytes()), Utilities.base64Encode(text))
+    t.true(is.nonEmptyString(b64))
 
-    const {actual: b64w} = t.is (Utilities.base64EncodeWebSafe(blob.getBytes()),Utilities.base64EncodeWebSafe(text) )
-    t.true(is.nonEmptyString (b64w))
+    const { actual: b64w } = t.is(Utilities.base64EncodeWebSafe(blob.getBytes()), Utilities.base64EncodeWebSafe(text))
+    t.true(is.nonEmptyString(b64w))
 
 
     const trouble = text + '+/='
     const b64t = Utilities.base64EncodeWebSafe(trouble)
 
-    const b = Utilities.newBlob (Utilities.base64Decode (b64)).getDataAsString()
-    const bw = Utilities.newBlob (Utilities.base64Decode (b64w)).getDataAsString()
-    const bt = Utilities.newBlob (Utilities.base64DecodeWebSafe (b64t)).getDataAsString()
-    const bbt = Utilities.newBlob (Utilities.base64Decode (b64t)).getDataAsString()
+    const b = Utilities.newBlob(Utilities.base64Decode(b64)).getDataAsString()
+    const bw = Utilities.newBlob(Utilities.base64Decode(b64w)).getDataAsString()
+    const bt = Utilities.newBlob(Utilities.base64DecodeWebSafe(b64t)).getDataAsString()
+    const bbt = Utilities.newBlob(Utilities.base64Decode(b64t)).getDataAsString()
 
-    t.is (bt, trouble)
-    t.is (b, text)
-    t.is (bw, text)
-    t.is (bbt, trouble)
+    t.is(bt, trouble)
+    t.is(b, text)
+    t.is(bw, text)
+    t.is(bbt, trouble)
 
   })
 
-  unit.section ("utilities zipping", t=> {
-    const texts = [fixes.TEXT_FILE_CONTENT,fixes.TEST_FOLDER_NAME]
-    const blobs = texts.map((f,i)=> Utilities.newBlob (f, fixes.BLOB_TYPE,'b'+i+'.txt'))
+  unit.section("utilities zipping", t => {
+    const texts = [fixes.TEXT_FILE_CONTENT, fixes.TEST_FOLDER_NAME]
+    const blobs = texts.map((f, i) => Utilities.newBlob(f, fixes.BLOB_TYPE, 'b' + i + '.txt'))
     const z = Utilities.zip(blobs)
     t.is(z.getName(), "archive.zip")
 
-    const y = Utilities.zip(blobs,"y.zip")
+    const y = Utilities.zip(blobs, "y.zip")
     t.is(y.getName(), "y.zip")
     t.is(z.getContentType(), fixes.ZIP_TYPE)
 
-    const u = Utilities.unzip (z)
-    t.is (u.length, texts.length)
+    const u = Utilities.unzip(z)
+    t.is(u.length, texts.length)
 
-    u.forEach ((f,i)=>{
-      t.is (f.getName(),blobs[i].getName())
-      t.is (f.getContentType(), blobs[i].getContentType())
-      t.is (f.getDataAsString(), texts[i])
+    u.forEach((f, i) => {
+      t.is(f.getName(), blobs[i].getName())
+      t.is(f.getContentType(), blobs[i].getContentType())
+      t.is(f.getDataAsString(), texts[i])
     })
   })
 
@@ -187,18 +290,18 @@ unit.section("session properties", t => {
     t.true(is.nonEmptyString(Utilities.getUuid()))
 
     const blob = Utilities.newBlob(fixes.TEXT_FILE_CONTENT)
-    const gz = Utilities.gzip (blob)
-    t.is (gz.getContentType(), "application/x-gzip")
-    t.is (gz.getName(), "archive.gz")
+    const gz = Utilities.gzip(blob)
+    t.is(gz.getContentType(), "application/x-gzip")
+    t.is(gz.getName(), "archive.gz")
 
-    const ugz = Utilities.ungzip (gz)
-    t.is (ugz.getDataAsString(), fixes.TEXT_FILE_CONTENT)
-    t.is (ugz.getContentType (), null)
-    t.is (ugz.getName(), "archive")
-    
-    const ngz = Utilities.gzip (blob, "named")
-    const nugz = Utilities.ungzip (ngz)
-    t.is (nugz.getName() , "named")
+    const ugz = Utilities.ungzip(gz)
+    t.is(ugz.getDataAsString(), fixes.TEXT_FILE_CONTENT)
+    t.is(ugz.getContentType(), null)
+    t.is(ugz.getName(), "archive")
+
+    const ngz = Utilities.gzip(blob, "named")
+    const nugz = Utilities.ungzip(ngz)
+    t.is(nugz.getName(), "named")
 
   })
 
@@ -392,13 +495,6 @@ unit.section("session properties", t => {
 
 
 
-
-
-
-
-
-
-
   unit.section('getting content', t => {
     const file = DriveApp.getFileById(fixes.TEXT_FILE_ID)
     const folder = DriveApp.getFolderById(fixes.TEST_FOLDER_ID)
@@ -466,53 +562,7 @@ unit.section("session properties", t => {
 
 
 
-  unit.section("driveapp searches", t => {
 
-    // driveapp itself isnt actually a folder although it shares many of the methods
-    // this is the folder that DriveApp represents
-    const root = DriveApp.getRootFolder()
-
-    // this gets the folders directly under root
-    const folders = root.getFolders()
-
-    const parentCheck = (folders, grandad, folderPile = []) => {
-      while (folders.hasNext()) {
-        const folder = folders.next()
-        folderPile.push(folder)
-
-        // note that parents is an iterator, not an array
-        const parents = folder.getParents()
-        t.true(Reflect.has(parents, "next"))
-        t.true(Reflect.has(parents, "hasNext"))
-
-        // and the next operation should get the meta data of the parent, not just the id
-        // in this case there should one be 1
-        const parentPile = []
-        while (parents.hasNext()) {
-          const parent = parents.next()
-          t.is(parent.getName(), grandad.getName())
-          t.is(parent.getId(), grandad.getId())
-          parentPile.push(parent)
-        }
-        // not really expecting multiple parents nowadays.
-        t.is(parentPile.length, 1, { skip: fixes.SKIP_SINGLE_PARENT })
-      }
-      return folderPile
-    }
-    const folderPile = parentCheck(folders, root)
-
-    // MYDRIVE I know i have at least thes number of folders in the root
-    t.true(folderPile.length > fixes.MIN_FOLDERS_ROOT)
-
-    // I know i have a folder called this
-    const math = folderPile.find(f => f.getName() === fixes.TEST_FOLDER_NAME)
-    t.is(math.getName(), fixes.TEST_FOLDER_NAME)
-    const files = math.getFiles()
-    const pile = parentCheck(files, math)
-
-    // i know i have 3 files in math
-    t.is(pile.length, fixes.TEST_FOLDER_FILES)
-  }, { skip: false })
 
   unit.section('drive JSON api tests with urlfetchapp directly', t => {
 

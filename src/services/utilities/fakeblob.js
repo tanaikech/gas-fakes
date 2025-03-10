@@ -1,6 +1,6 @@
 import { Proxies } from '../../support/proxies.js'
 import { Utils } from '../../support/utils.js'
-import { isGoogleType } from '../../support/constants.js'
+import { isGoogleType } from '../../support/general.js'
 import is from '@sindresorhus/is'
 
 import mime from 'mime';
