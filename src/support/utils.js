@@ -84,6 +84,78 @@ const settleAsBytes = (data, charset) => {
 const stringToBytes = (string, charset) => Array.from(Buffer.from(string, charset))
 const bytesToString = (data, charset) => Buffer.from(data).toString (charset)
 
+/**
+ * merge something like
+ * sa = "a,b,f(x,y),g(a,b),h(h)"
+ * sb = "c,b,f(x,z),h(h,i)"
+ * into "a,b,f(x,y,z),g(a,b),h(h,i) 
+ * @param  {...string} any number of other strings to merge 
+ * @returns {string}
+ */
+export const mergeParamStrings = (...args) => {
+
+  const enhanceMap = (str, itemMap = new Map()) => {
+    // extract all the items with subfields
+    const rxSubs = /([^,(]*)(?=\()\(([^)]*)\)/g
+    /**
+     * 	[ [ 'f(x,y)', 'f', 'x,y' ],
+    [ 'g(a,b)', 'g', 'a,b' ],
+    [ 'h(h)', 'h', 'h' ] ]
+     */
+    const subs = Array.from(str.matchAll(rxSubs))
+
+    // there should be 3 groups for each member
+    // for example fields(a,b) fields a,b  - we want to set up an map that looks like fields, "a,b"
+
+    subs.forEach(match => {
+      if (match.length !== 3) {
+        throw new Error(`Invalid format for subfield ${JSON.stringify(match)}`)
+      }
+      const [_, key, items] = match
+      if (!itemMap.has(key)) itemMap.set(key, new Set())
+      const item =  itemMap.get(key)
+      assert.set(item)
+      items.split(",").forEach(f => itemMap.get(key).add(f))
+    })
+
+    // there should be 2 groups for each member
+    // for example foo  - we want a map item with key foo and value null
+    const rxPlains = /(?<!\([^)]*),?([^,(]+)(?=(?:,|$)(?![^(]*\)))/g;
+    const plains = Array.from(str.matchAll(rxPlains))
+
+    plains.forEach (match => {
+      if (match.length !== 2) {
+        throw new Error(`Invalid format for field ${JSON.stringify(match)}`)
+      }
+      const [_,key] = match
+      const item = itemMap.get (key)
+      // because whether it exists or not it should be null otherwise its a conflict a set
+      if (itemMap.has (key)) {
+        assert.null (item)
+      } else {
+        itemMap.set (key, null)
+      }
+    })
+
+    return itemMap
+   }
+
+   const itemMap = new Map ()
+   args.forEach (f=>{
+    assert.string(f)
+    return enhanceMap(f.replace(/\s/g,""), itemMap)
+  })
+
+   // now just convert that into a string
+   return Array.from (itemMap.entries()).map(([key, value])=> {
+
+    return is.null(value) 
+      ? key
+      : `${key}(${Array.from(value.keys()).sort().join(",")})` 
+   }).sort().join (",")
+}
+
+
 export const Utils = {
   stringToBytes,
   bytesToString,

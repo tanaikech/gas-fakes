@@ -19,8 +19,15 @@ export const isGoogleType = (mimeType) =>
 export const gzipType = 'application/x-gzip'
 export const zipType = 'application/zip'
 
-export const notYetImplemented = `That is not yet implemented - watch https://github.com/brucemcpherson/gas-fakes for progress`
+export const notYetImplemented = (item ='That') => {
+  const mess = `${item} is not yet implemented - watch https://github.com/brucemcpherson/gas-fakes for progress`
+  return mess
+}
 
+export const wontBeImplemented = (item="That") => {
+  const mess = `${item} will not be implemented - raise issue on https://github.com/brucemcpherson/gas-fakes if you think it should`
+  return mess
+}
 // added parents to the minfield length as its often needed
 const minFieldsList = ["name","id","mimeType","kind","parents"]
 /**
@@ -32,6 +39,7 @@ const minFieldsList = ["name","id","mimeType","kind","parents"]
  * @default
  */
 export const minFields = minFieldsList.join(",")
+export const minPermissionFields = "kind,id,role,type"
 
 
 /**

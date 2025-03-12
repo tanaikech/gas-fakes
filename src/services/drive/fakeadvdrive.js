@@ -2,11 +2,12 @@
  * Advanced drive service
  */
 import { Proxies } from '../../support/proxies.js'
-import { notYetImplemented,  minFields,  is404, isGood, throwResponse} from '../../support/general.js'
+import { notYetImplemented ,  minFields,  is404, isGood, throwResponse, minPermissionFields} from '../../support/helpers.js'
 import { getAuthedClient } from './drapis.js'
 import { Syncit } from '../../support/syncit.js'
 import { getFromFileCache, improveFileCache, setInFileCache } from '../../support/filecache.js';
 import is from '@sindresorhus/is';
+import { mergeParamStrings } from '../../support/utils.js';
 
 
 /**
@@ -15,13 +16,13 @@ import is from '@sindresorhus/is';
  * @param {string} [p.fields=minFields] which fields to get
  * @return {string[]} an array of the fields required merged with the minimum fields required to support caching
  */
-const tidyFieldsFar = ({ fields = "" } = {}) => {
+const tidyFieldsFar = ({ fields = "" } = {}, mf = minFields) => {
   if (!is.string(fields)) {
     throw new Error(`invalid fields definition`, fields)
   }
-  // now clean up 
+
   return Array.from(
-    new Set((minFields.split(",").concat(fields.split(","))
+    new Set((mf.split(",").concat(fields.split(","))
       .map(f => f.replace(/\s/g, ""))
       .filter(f => f)))
       .keys()
@@ -80,37 +81,37 @@ class FakeAdvDrive {
     return newFakeAdvDriveAbout(this)
   }
   get Accessproposals() {
-    return notYetImplemented
+    return notYetImplemented()
   }
   get Apps() {
-    return notYetImplemented
+    return notYetImplemented()
   }
   get Changes() {
-    return notYetImplemented
+    return notYetImplemented()
   }
   get Channels() {
-    return notYetImplemented
+    return notYetImplemented()
   }
   get Comments() {
-    return notYetImplemented
+    return notYetImplemented()
   }
   get Drives() {
-    return notYetImplemented
+    return notYetImplemented()
   }
   get Operations() {
-    return notYetImplemented
+    return notYetImplemented()
   }
   get Permissions() {
-    return notYetImplemented
+    return newFakeDrivePermissions(this)
   }
   get Replies() {
-    return notYetImplemented
+    return notYetImplemented()
   }
   get Revisions() {
-    return notYetImplemented
+    return notYetImplemented()
   }
   get Teamdrives() {
-    return notYetImplemented
+    return notYetImplemented()
   }
 
 }
@@ -122,7 +123,7 @@ class FakeAdvDriveAbout {
 
   // this is a schema and needs the fields parameter
   get() {
-    return notYetImplemented
+    return notYetImplemented()
   }
 }
 
@@ -140,15 +141,15 @@ class FakeAdvDriveFiles {
   }
 
   listLabels() {
-    return notYetImplemented
+    return notYetImplemented()
   }
 
   emptyTrash() {
-    return notYetImplemented
+    return notYetImplemented()
   }
 
   update() {
-    return notYetImplemented
+    return notYetImplemented()
   }
 
   list(params = {}) {
@@ -180,19 +181,19 @@ class FakeAdvDriveFiles {
 
   }
   remove() {
-    return notYetImplemented
+    return notYetImplemented()
   }
 
   download() {
-    return notYetImplemented
+    return notYetImplemented()
   }
 
   modifyLabels() {
-    return notYetImplemented
+    return notYetImplemented()
   }
 
   watch() {
-    return notYetImplemented
+    return notYetImplemented()
   }
 
 
@@ -228,26 +229,54 @@ class FakeAdvDriveFiles {
   }
 
   create() {
-    return notYetImplemented
+    return notYetImplemented()
   }
 
   generateIds() {
-    return notYetImplemented
+    return notYetImplemented()
   }
 
   copy() {
-    return notYetImplemented
+    return notYetImplemented()
   }
 
   export() {
-    return notYetImplemented
+    return notYetImplemented()
   }
 
 }
 
+class FakeAdvDrivePermissions {
+  constructor (drive) {
+    this.drive = drive
+    this.apiProp ="permissions"
+  }
+  create () {
+    return notYetImplemented('create')
+  }
+  delete () {
+    return notYetImplemented('delete')
+  }
+  get () {
+    return notYetImplemented('get')
+  }
+  list (fileId, params = {}) {
+    params = {...params,   fileId }
+    params.fields = mergeParamStrings (params.fields || "", `permissions(${minPermissionFields})`)  
+    const { response, data } = Syncit.fxDrive({ prop: this.apiProp, method: 'list', params })
+    // maybe we need to throw an error
+    checkResponse(fileId, response, false)
+    return data
+  }
+  update () {
+    return notYetImplemented('update')
+  }
+}
+
+const newFakeDrivePermissions= (...args) => Proxies.guard(new FakeAdvDrivePermissions(...args))
 const newFakeAdvDriveFiles = (...args) => Proxies.guard(new FakeAdvDriveFiles(...args))
 const newFakeAdvDriveAbout = (...args) => Proxies.guard(new FakeAdvDriveAbout(...args))
-export const newFakeAdvDrive = (...args) => Proxies.guard(new FakeAdvDrive)
+export const newFakeAdvDrive = (...args) => Proxies.guard(new FakeAdvDrive(...args))
 
 
 

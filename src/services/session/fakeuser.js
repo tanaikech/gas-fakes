@@ -11,14 +11,26 @@ class FakeUser {
    * @param {string} p.email email
    * @returns {FakeUser}
    */
-  constructor ({email}) {
+  constructor ({email,name,photoUrl,domain}) {
     this.__email = email
+    this.__domain = domain
+    this.__photoUrl = photoUrl
+    this.__name = name
   }
   getEmail () {
     return this.__email
   }
   toString () {
     return this.getEmail()
+  }
+  getDomain() {
+    return this.__domain
+  }
+  getPhotoUrl() {
+    return this.__photoUrl
+  }
+  getName() {
+    return this.__name
   }
 }
 

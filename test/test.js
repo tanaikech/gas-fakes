@@ -4,13 +4,13 @@
 import { Exports as unitExports } from '@mcpher/unit'
 import is from '@sindresorhus/is';
 import { getPerformance } from '../src/support/filecache.js';
-
+import { mergeParamStrings } from '../src/support/utils.js';
 // all the fake services are here
 //import '@mcpher/gas-fakes/main.js'
 
 import '../main.js'
 
-const testFakes = async () => {
+const testFakes =  () => {
 
   // on node this will have come from the imports that get stripped when mocing to gas
   // on apps script, you'll have a gas only imports file that aliases 
@@ -48,10 +48,51 @@ const testFakes = async () => {
     TIMEZONE: 'Europe/London',
     LOCALE: 'en_US',
     ZIP_TYPE: "application/zip",
-    KIND_DRIVE: "drive#file"
+    KIND_DRIVE: "drive#file",
+    OWNER_NAME: "Bruce Mcpherson",
+    PUBLIC_SHARE_FILE_ID: "1OFJk38kW9TRrEf-B9F1gTZk2uLV-ZSpR",
+    SHARED_FILE_ID: "1uz4cxEDxtQzu0cBb1B4h6fsjgWy7hNFf"
   }
 
 
+
+
+  unit.section ('driveapp and adv permissions', t=> {
+
+    const {permissions} = Drive.Permissions.list (fixes.TEXT_FILE_ID)
+    t.is (permissions.length, 1)
+    const [p0] = permissions
+    t.true (is.nonEmptyString (p0.id))
+    t.is (p0.type, "user")
+    t.is (p0.role,"owner")
+
+    const {permissions: extras} = Drive.Permissions.list (fixes.TEXT_FILE_ID, {fields: "permissions(emailAddress,deleted)"})
+    const [e0] = extras
+    t.is (e0.kind, p0.kind)
+    t.is (e0.id, p0.id)
+    t.is (e0.emailAddress, fixes.EMAIL)
+    t.false (e0.deleted)
+
+    const rootFolder = DriveApp.getRootFolder()
+    const owner = rootFolder.getOwner ()
+    t.is (owner.getName(), fixes.OWNER_NAME)
+    t.true (is.urlString(owner.getPhotoUrl()))
+    t.is (owner.getEmail(), fixes.EMAIL)
+  
+
+    const file = DriveApp.getFileById (fixes.SHARED_FILE_ID)
+    t.is (file.getOwner().getEmail(),fixes.EMAIL ) 
+
+    const viewers = file.getViewers()
+    t.is (viewers.length, 1)
+    viewers.forEach (f=> t.true (is.nonEmptyString (f.getEmail())))
+
+    const editors = file.getEditors()
+    t.is (editors.length, 1)
+    editors.forEach (f=> t.true (is.nonEmptyString (f.getName())))
+
+  })
+  unit.cancel()
   unit.section('driveapp basics and Drive equivalence', t => {
     t.is(DriveApp.toString(), "Drive")
     t.is(DriveApp.getRootFolder().toString(), "My Drive")
@@ -96,7 +137,6 @@ const testFakes = async () => {
     t.true(rootPdfPile.length >= fixes.MIN_ROOT_PDFS)
 
 
-
     /*
      const drivePile = Drive.Files.list ({
        orderBy: "createdTime,name",
@@ -108,7 +148,6 @@ const testFakes = async () => {
     if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
   })
 
-  unit.cancel()
 
   unit.section("driveapp searches", t => {
 
@@ -583,6 +622,27 @@ const testFakes = async () => {
     t.is(root.name, "My Drive")
     t.is(root.mimeType, "application/vnd.google-apps.folder")
   }, { skip: false })
+
+
+  unit.section ('fake helper tests', t=>{
+    const s1 = "fields(f1,f2),a1,t2,permissions(p1,p2)"
+    const s2 = "t1,t2,t3,permissions(p1,p3)"
+    const s3 = "fields(f1,f3),t3,t4,t1"
+    const expect = "a1,fields(f1,f2,f3),permissions(p1,p2,p3),t1,t2,t3,t4"
+    t.is (mergeParamStrings(s1,s2,s3), expect)
+    t.is (mergeParamStrings(s1,s2,s3,s1), expect, 'check exact dups are allowed')
+
+    try {
+      t.is (mergeParamStrings(s1,s2,s3,s1,"fields"), expect, "this should fail because of different roles for fields")
+    }
+    catch (err) {
+      t.rxMatch (err.toString(),/^TypeError:/  )
+    }
+
+
+  }, {
+    skip: !ScriptApp.isFake
+  })
 
 
   unit.report()
