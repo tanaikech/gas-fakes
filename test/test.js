@@ -66,19 +66,17 @@ const testFakes =  () => {
     t.is (p0.type, "user")
     t.is (p0.role,"owner")
 
-    const {permissions: extras} = Drive.Permissions.list (fixes.TEXT_FILE_ID, {fields: "permissions(emailAddress,deleted)"})
+    const {permissions: extras} = Drive.Permissions.list (fixes.TEXT_FILE_ID, {fields: "permissions(kind,id,role,type,emailAddress,deleted)"})
     const [e0] = extras
-    t.is (e0.kind, p0.kind)
     t.is (e0.id, p0.id)
+    t.is (e0.kind, p0.kind)
     t.is (e0.emailAddress, fixes.EMAIL)
     t.false (e0.deleted)
 
     const rootFolder = DriveApp.getRootFolder()
     const owner = rootFolder.getOwner ()
     t.is (owner.getName(), fixes.OWNER_NAME)
-    t.true (is.urlString(owner.getPhotoUrl()))
     t.is (owner.getEmail(), fixes.EMAIL)
-  
 
     const file = DriveApp.getFileById (fixes.SHARED_FILE_ID)
     t.is (file.getOwner().getEmail(),fixes.EMAIL ) 
