@@ -57,6 +57,68 @@ const testFakes =  () => {
 
 
 
+  unit.section('driveapp basics and Drive equivalence', t => {
+    t.is(DriveApp.toString(), "Drive")
+    t.is(DriveApp.getRootFolder().toString(), "My Drive")
+
+    const file = DriveApp.getFileById(fixes.TEXT_FILE_ID)
+    const folder = DriveApp.getFolderById(fixes.TEST_FOLDER_ID)
+    t.is(file.getMimeType(), 'text/plain')
+    t.is(file.getName(), 'fake.txt')
+    t.is(file.getParents().next().getId(), folder.getId())
+    t.is(folder.getName(), Drive.Files.get(fixes.TEST_FOLDER_ID).name)
+    t.is(folder.toString(), folder.getName())
+    t.is(file.getParents().next().getId(), Drive.Files.get(fixes.TEST_FOLDER_ID).id)
+    t.true(file.getParents().hasNext())
+    const blob = file.getBlob()
+    t.is(blob.getDataAsString(), fixes.TEXT_FILE_CONTENT)
+
+    if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
+
+
+  })
+
+  unit.section ('check where google doesnt support in adv drive', t=> {
+    try {
+      t.true (Drive.Operations.list ('foo'))
+    } catch (err) {
+      t.rxMatch (err.toString(), /Error: GoogleJsonResponseException: API call to drive.operations.list failed/)
+    }
+
+  })
+
+  unit.section ('adv drive downloads',t=> {
+    const r = Drive.Files.download (fixes.TEXT_FILE_ID)
+    t.true (is.object(r.metadata))
+    t.true (is.nonEmptyString(r.name))
+    t.true (is.nonEmptyObject(r.response))
+    t.true (is.nonEmptyString(r.response.downloadUri))
+
+
+    const token = ScriptApp.getOAuthToken()
+    t.true (is.nonEmptyString(token))
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+
+    // can we use the url to download
+    const response = UrlFetchApp.fetch (r.response.downloadUri, {headers})
+    t.is(response.getResponseCode(), 200)
+    t.true(is.object(response.getHeaders()))
+    const text = response.getContentText()
+    t.is(text, fixes.TEXT_FILE_CONTENT)
+
+    // and driveapp to compare and do the same things
+    const aFile = Drive.Files.get (fixes.TEXT_FILE_ID)
+    const file = DriveApp.getFileById(fixes.TEXT_FILE_ID)
+    const blob = file.getBlob()
+    t.is (blob.getName() , aFile.name)
+    t.is (blob.getDataAsString(),text)
+    t.is (file.getId(), aFile.id)
+
+  })
+
+
   unit.section ('driveapp and adv permissions', t=> {
 
     const {permissions} = Drive.Permissions.list (fixes.TEXT_FILE_ID)
@@ -90,27 +152,7 @@ const testFakes =  () => {
     editors.forEach (f=> t.true (is.nonEmptyString (f.getName())))
 
   })
-  unit.cancel()
-  unit.section('driveapp basics and Drive equivalence', t => {
-    t.is(DriveApp.toString(), "Drive")
-    t.is(DriveApp.getRootFolder().toString(), "My Drive")
 
-    const file = DriveApp.getFileById(fixes.TEXT_FILE_ID)
-    const folder = DriveApp.getFolderById(fixes.TEST_FOLDER_ID)
-    t.is(file.getMimeType(), 'text/plain')
-    t.is(file.getName(), 'fake.txt')
-    t.is(file.getParents().next().getId(), folder.getId())
-    t.is(folder.getName(), Drive.Files.get(fixes.TEST_FOLDER_ID).name)
-    t.is(folder.toString(), folder.getName())
-    t.is(file.getParents().next().getId(), Drive.Files.get(fixes.TEST_FOLDER_ID).id)
-    t.true(file.getParents().hasNext())
-    const blob = file.getBlob()
-    t.is(blob.getDataAsString(), fixes.TEXT_FILE_CONTENT)
-
-    if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
-
-
-  })
 
   unit.section("exotic driveapps versus Drive", t => {
 
@@ -642,6 +684,16 @@ const testFakes =  () => {
     skip: !ScriptApp.isFake
   })
 
+
+  unit.section('adv drive Apps - drive.apps script is blocked on adc so cant test this for now', t => {
+    const { items } = Drive.Apps.list()
+    t.true(is.array(items))
+    const [i0] = items
+    console.log (i0)
+    t.deepEqual(Drive.Apps.get(i0.id), i0)
+  }, {
+    skip: true
+  })
 
   unit.report()
 }

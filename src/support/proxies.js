@@ -36,6 +36,14 @@ const registerProxy = (name, getApp) => {
   });
 }
 
+// this proxy returns a stanard function to any attempt to access any properties
+const blanketProxy = (blanketFunc) => {
+  return new Proxy ({}, {
+    get () {
+      return blanketFunc
+    }
+  })
+}
 
 
 
@@ -76,5 +84,6 @@ const validateProperties = () => {
 export const Proxies = {
   getAppHandler,
   registerProxy,
-  guard
+  guard,
+  blanketProxy
 }

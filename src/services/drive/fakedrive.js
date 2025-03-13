@@ -321,8 +321,7 @@ export class FakeDriveMeta {
    * @returns {string} the file id
    */
   getId() {
-    this.decorateWithFields("id")
-    return this.meta.id
+    return this.getDecorated("id")
   }
 
   /**
@@ -330,8 +329,7 @@ export class FakeDriveMeta {
    * @returns {string} the file name
    */
   getName() {
-    this.decorateWithFields("name")
-    return this.meta.name
+    return this.getDecorated("name")
   }
 
   isStarred() {
@@ -397,15 +395,18 @@ export class FakeDriveMeta {
   getEditors() {
     return getSharers(this.getId(), 'writer')
   }
+
+  getUrl() {
+    return this.getDecorated("webViewLink")
+  }
+
   // TODO-----------
 
   setDescription() {
     return notYetImplemented('setDescription')
   }
 
-  getUrl() {
-    return notYetImplemented('getUrl')
-  }
+
 
   getSharingPermission() {
     return notYetImplemented('getSharingPermission')
@@ -508,8 +509,7 @@ export class FakeDriveFile extends FakeDriveMeta {
    * @returns {string} the file mimetpe
    */
   getMimeType() {
-    this.decorateWithFields("mimeType")
-    return this.meta.mimeType
+    return this.getDecorated("mimeType")
   }
   /**
    * 
@@ -520,7 +520,7 @@ export class FakeDriveFile extends FakeDriveMeta {
     // spawn child process to syncify getting content as by array
     const { data } = Syncit.fxDriveMedia({ id: this.getId() })
     // and blobify
-    return Utilities.newBlob(data, this.getName(), this.getMimeType())
+    return Utilities.newBlob(data, this.getMimeType(), this.getName())
   }
 
 }

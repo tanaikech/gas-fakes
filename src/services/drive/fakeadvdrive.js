@@ -84,7 +84,7 @@ class FakeAdvDrive {
     return notYetImplemented()
   }
   get Apps() {
-    return notYetImplemented()
+    return newFakeAdvDriveApps(this)
   }
   get Changes() {
     return notYetImplemented()
@@ -99,7 +99,9 @@ class FakeAdvDrive {
     return notYetImplemented()
   }
   get Operations() {
-    return notYetImplemented()
+    return blanketProxy(
+      "GoogleJsonResponseException: API call to drive.operations.list failed with error: Operation is not implemented, or supported, or enabled."
+    )
   }
   get Permissions() {
     return newFakeDrivePermissions(this)
@@ -127,8 +129,49 @@ class FakeAdvDriveAbout {
   }
 }
 
+/**
+ * these apply to Drive.apps
+ */
+class FakeAdvDriveApps {
+  constructor(drive) {
+    this.drive = drive
+    this.name = 'Drive.Apps'
+    this.apiProp = 'apps'
+  }
 
+  toString() {
+    return this.drive.toString()
+  }
 
+  get (appId , params = {}) {
+    // sincify that call
+    params = {...params, appId}
+    const { response, data } = Syncit.fxDrive({ prop: this.apiProp, method: 'get', params })
+
+    // maybe we need to throw an error
+    if (!isGood(response)) {
+      throwResponse (response)
+    }
+
+    return data
+  }
+
+  list (params) {
+    // sincify that call
+    const { response, data } = Syncit.fxDrive({ prop: this.apiProp, method: 'list', params })
+
+    // maybe we need to throw an error
+    if (!isGood(response)) {
+      throwResponse (response)
+    }
+    return data
+  }
+
+}
+
+/**
+ * these apply to Drive.files
+ */
 class FakeAdvDriveFiles {
   constructor(drive) {
     this.drive = drive
@@ -184,8 +227,38 @@ class FakeAdvDriveFiles {
     return notYetImplemented()
   }
 
-  download() {
-    return notYetImplemented()
+  /**
+   * this is fairly pointless in apps script as it returns an operation, and Drive.Operations are not supported
+   * TODO - look into what actually happens to the operation - it may be possible to do something with it using the operations ap directly
+   * for the moment we'll just return a fake operation that looks like adv returns
+   * @param {string} fileId 
+   * @param {object} params 
+   * @returns {object}
+   */
+  download(fileId, params = {}) {
+
+    // this just gets the meta data which we'll use to enhance cache
+
+
+    // we'll just do a get to populate cache with any new meta data
+    const file = this.get (fileId, params, {allow404: false})
+
+    // the download uri us just constructed from the id - doesnt appear to be in any of the properties of file
+    return { 
+      metadata: { 
+        "@type": "type.googleapis.com/google.apps.drive.v3.DownloadFileMetadata" 
+      },
+      // this is an operation name
+      name: "operation name not implemented as drive.operations not supported by advanced drive anyway",
+      response: {
+        // the only thing of interest here for now
+        partialDownloadAllowed: true,
+        downloadUri: `https://www.googleapis.com/drive/v3/files/${file.id}?alt=media&source=downloadUrl`,
+       "@type": "type.googleapis.com/google.apps.drive.v3.DownloadFileResponse" 
+      },
+      done: true 
+    }
+    
   }
 
   modifyLabels() {
@@ -273,9 +346,17 @@ class FakeAdvDrivePermissions {
   }
 }
 
+
+
+// will always fail no matter which method is selected
+const blanketProxy = (message) => Proxies.blanketProxy (()=> {
+  throw new Error (message)
+})
 const newFakeDrivePermissions= (...args) => Proxies.guard(new FakeAdvDrivePermissions(...args))
 const newFakeAdvDriveFiles = (...args) => Proxies.guard(new FakeAdvDriveFiles(...args))
 const newFakeAdvDriveAbout = (...args) => Proxies.guard(new FakeAdvDriveAbout(...args))
+const newFakeAdvDriveApps = (...args) => Proxies.guard (new FakeAdvDriveApps(...args))
+
 export const newFakeAdvDrive = (...args) => Proxies.guard(new FakeAdvDrive(...args))
 
 
