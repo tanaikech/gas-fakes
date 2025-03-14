@@ -252,9 +252,6 @@ const getParentsIterator = ({
 
 }
 
-
-
-
 /**
  * a File type returned from the json api with my default fields applied
  * there could be others if custom fields are returned
@@ -287,7 +284,7 @@ export class FakeDriveMeta {
    * @param {string} fields='' the required fields
    * @return {FakeDriveMeta} self
    */
-  decorateWithFields(fields) {
+  __decorateWithFields(fields) {
     // if we already have it nothing needed
     if (!is.nonEmptyString(fields)) {
       throw new Error('decorate fields was not a non empty string')
@@ -307,8 +304,8 @@ export class FakeDriveMeta {
   /**
    * the meta data for the following fields are not fetched by default
    */
-  getDecorated(prop) {
-    return this.decorateWithFields(prop).meta[prop]
+  __getDecorated(prop) {
+    return this.__decorateWithFields(prop).meta[prop]
   }
 
   // shared between folder and file
@@ -321,7 +318,7 @@ export class FakeDriveMeta {
    * @returns {string} the file id
    */
   getId() {
-    return this.getDecorated("id")
+    return this.__getDecorated("id")
   }
 
   /**
@@ -329,33 +326,33 @@ export class FakeDriveMeta {
    * @returns {string} the file name
    */
   getName() {
-    return this.getDecorated("name")
+    return this.__getDecorated("name")
   }
 
   isStarred() {
-    return this.getDecorated("starred")
+    return this.__getDecorated("starred")
   }
 
   isTrashed() {
-    return this.getDecorated("trashed")
+    return this.__getDecorated("trashed")
   }
 
   getLastUpdated() {
-    return new Date(this.getDecorated("modifiedTime"))
+    return new Date(this.__getDecorated("modifiedTime"))
   }
 
   getDescription() {
     // the meta can be undefined so return null
-    const d = this.getDecorated("description")
+    const d = this.__getDecorated("description")
     return is.undefined(d) ? null : d
   }
 
   getDateCreated() {
-    return new Date(this.getDecorated("createdTime"))
+    return new Date(this.__getDecorated("createdTime"))
   }
   getSize() {
     // the meta is actually a string so convert
-    const d = parseInt(this.getDecorated("size"), 10)
+    const d = parseInt(this.__getDecorated("size"), 10)
     // folders dont return a size
     return isNaN(d) ? 0 : d
   }
@@ -365,7 +362,7 @@ export class FakeDriveMeta {
    * @returns {string[]} the file parents
    */
   getParents() {
-    this.decorateWithFields("parents")
+    this.__decorateWithFields("parents")
     return getParentsIterator({ file: this.meta })
   }
 
@@ -397,8 +394,10 @@ export class FakeDriveMeta {
   }
 
   getUrl() {
-    return this.getDecorated("webViewLink")
+    return this.__getDecorated("webViewLink")
   }
+
+
 
   // TODO-----------
 
@@ -509,18 +508,37 @@ export class FakeDriveFile extends FakeDriveMeta {
    * @returns {string} the file mimetpe
    */
   getMimeType() {
-    return this.getDecorated("mimeType")
+    return this.__getDecorated("mimeType")
   }
   /**
    * 
    * @returns {FakeBlob}
    */
-
   getBlob() {
     // spawn child process to syncify getting content as by array
     const { data } = Syncit.fxDriveMedia({ id: this.getId() })
     // and blobify
     return Utilities.newBlob(data, this.getMimeType(), this.getName())
+  }
+
+  /**
+   * 
+   * @returns get a blob for the thumbnail if it exists
+   * @returns {FakeBlob|null }
+   */
+  getThumbnail() {
+    this.__decorateWithFields("hasThumbnail,thumbnailLink")
+    if (!this.meta.hasThumbnail) return null
+
+    return UrlFetchApp.fetch(this.meta.thumbnailLink).getBlob()
+  }
+
+  /**
+   * returns the download url - this is the same as the webcontentlink
+   * @return {string}
+   */
+  getDownloadUrl () {
+    return this.__getDecorated("webContentLink")
   }
 
 }

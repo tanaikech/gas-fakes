@@ -168,19 +168,23 @@ This was a little problematic to sequence, but I wanted to make sure that any GA
 
 Only a subset of methods are currently available for some of them - the rest are work in progress. My approach is to start with a little bit of each service to prove feasibility and provide a base to build on.
 
-v1.0.4
+v1.0.5
 
 - `DriveApp` - 50%
 - `ScriptApp` - almost all
-- `UrlFetchApp` - 50%
-- `Utilities` - 50%
+- `UrlFetchApp` - 80%
+- `Utilities` - 60%
 - `Sheets` - `minimal`
-- `CacheService` - 50%
-- `PropertiesService` - 50%
+- `CacheService` - 80%
+- `PropertiesService` - 80%
 - `Session` - almost all
 - `Blob` - all
 - `User` - all
-- `Drive (Advanced Service)` - minimal
+- `Drive (Advanced Service)` - 40%
+
+### Testing coverage
+
+Tests for all methods are added as we go to the cumulative unit tests and run on both Apps Script and Node. The goal is to try to get the behavior as exactly equivalent as possible. See/updated the issues section for detected anomalies. There are currently 1182 active tests.
 
 #### Proxies and globalThis
 

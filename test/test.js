@@ -51,9 +51,76 @@ const testFakes =  () => {
     KIND_DRIVE: "drive#file",
     OWNER_NAME: "Bruce Mcpherson",
     PUBLIC_SHARE_FILE_ID: "1OFJk38kW9TRrEf-B9F1gTZk2uLV-ZSpR",
-    SHARED_FILE_ID: "1uz4cxEDxtQzu0cBb1B4h6fsjgWy7hNFf"
+    SHARED_FILE_ID: "1uz4cxEDxtQzu0cBb1B4h6fsjgWy7hNFf",
+    RANDOM_IMAGE: "https://picsum.photos/200",
+    API_URL:"http://suggestqueries.google.com/complete/search?client=chrome&hl=en&q=trump",
+    API_TYPE: "text/javascript"
   }
 
+  unit.section('drive JSON api tests with urlfetchapp directly', t => {
+
+    const token = ScriptApp.getOAuthToken()
+    const endpoint = 'https://www.googleapis.com/drive/v3'
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    const response = UrlFetchApp.fetch(`${endpoint}/files`, { headers })
+
+    t.is(response.getResponseCode(), 200)
+    t.true(is.object(response.getHeaders()))
+    const text = response.getContentText()
+    t.true(is.string(text))
+
+    const rootResponse = UrlFetchApp.fetch(`${endpoint}/files/root`, { headers })
+    const root = JSON.parse(rootResponse.getContentText())
+    t.is(root.name, "My Drive")
+    t.is(root.mimeType, "application/vnd.google-apps.folder")
+  }, { skip: false })
+
+  
+  unit.section ('drive thumbnails', t=> {
+
+    const df = Drive.Files.get (fixes.TEXT_FILE_ID, {fields: "id,hasThumbnail,thumbnailLink"})
+    const af = DriveApp.getFileById (fixes.TEXT_FILE_ID)
+    t.is (df.id, af.getId())
+    t.true (df.hasThumbnail)
+    t.true (is.nonEmptyString(df.thumbnailLink))
+
+    // now try with a spreadsheet
+    const tdf = Drive.Files.get (fixes.TEST_SHEET_ID, {fields: "id,hasThumbnail,thumbnailLink"})
+    const taf = DriveApp.getFileById (fixes.TEST_SHEET_ID)
+    t.is (tdf.id, taf.getId())
+    t.true (tdf.hasThumbnail)
+    t.true (is.nonEmptyString(tdf.thumbnailLink))
+    const tblob = taf.getThumbnail()
+    t.true (is.array(tblob.getBytes()))
+
+    // now fetch it with the link and check the same as returned by get thumbnail
+    const ublob = UrlFetchApp.fetch (tdf.thumbnailLink).getBlob()
+    t.true (is.array(ublob.getBytes()))
+    // this test doesnt work because thumbnail returns a compressed version, whereas the link itself is not compressed
+    // t.deepEqual (tblob.getBytes(), ublob.getBytes())
+
+
+  })
+
+
+  unit.section ('urlfetchapp external and blobs', t=> {
+    const img = UrlFetchApp.fetch (fixes.RANDOM_IMAGE)
+    const blob = img.getBlob()
+    t.true (is.nonEmptyString(blob.getName()))
+    t.is (blob.getContentType(), 'image/jpeg', 'assumes the random image is a jpeg')
+    t.true (is.array(blob.getBytes()))
+
+    // to an api fetch
+    const text = UrlFetchApp.fetch (fixes.API_URL)
+    const textBlob = text.getBlob()
+    t.deepEqual (JSON.parse(textBlob.getDataAsString()), JSON.parse (text.getContentText()))
+    t.true (is.array(JSON.parse (text.getContentText())))
+    t.is (textBlob.getContentType(), fixes.API_TYPE,'expected this be application/json but suggest actually returns this')
+    t.true (is.nonEmptyString(textBlob.getName()))
+
+  })
 
 
 
@@ -73,19 +140,13 @@ const testFakes =  () => {
     const blob = file.getBlob()
     t.is(blob.getDataAsString(), fixes.TEXT_FILE_CONTENT)
 
+    t.is (file.getDownloadUrl(), Drive.Files.get (file.getId(), {fields: "webContentLink"}).webContentLink)
+
     if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
 
-
   })
+  
 
-  unit.section ('check where google doesnt support in adv drive', t=> {
-    try {
-      t.true (Drive.Operations.list ('foo'))
-    } catch (err) {
-      t.rxMatch (err.toString(), /Error: GoogleJsonResponseException: API call to drive.operations.list failed/)
-    }
-
-  })
 
   unit.section ('adv drive downloads',t=> {
     const r = Drive.Files.download (fixes.TEXT_FILE_ID)
@@ -115,8 +176,21 @@ const testFakes =  () => {
     t.is (blob.getName() , aFile.name)
     t.is (blob.getDataAsString(),text)
     t.is (file.getId(), aFile.id)
+    t.deepEqual (response.getBlob().getBytes(), blob.getBytes())
 
   })
+
+
+  unit.section ('check where google doesnt support in adv drive', t=> {
+    try {
+      t.true (Drive.Operations.list ('foo'))
+    } catch (err) {
+      t.rxMatch (err.toString(), /Error: GoogleJsonResponseException: API call to drive.operations.list failed/)
+    }
+
+  })
+
+
 
 
   unit.section ('driveapp and adv permissions', t=> {
@@ -643,25 +717,6 @@ const testFakes =  () => {
 
 
 
-  unit.section('drive JSON api tests with urlfetchapp directly', t => {
-
-    const token = ScriptApp.getOAuthToken()
-    const endpoint = 'https://www.googleapis.com/drive/v3'
-    const headers = {
-      Authorization: `Bearer ${token}`
-    }
-    const response = UrlFetchApp.fetch(`${endpoint}/files`, { headers })
-
-    t.is(response.getResponseCode(), 200)
-    t.true(is.object(response.getHeaders()))
-    const text = response.getContentText()
-    t.true(is.string(text))
-
-    const rootResponse = UrlFetchApp.fetch(`${endpoint}/files/root`, { headers })
-    const root = JSON.parse(rootResponse.getContentText())
-    t.is(root.name, "My Drive")
-    t.is(root.mimeType, "application/vnd.google-apps.folder")
-  }, { skip: false })
 
 
   unit.section ('fake helper tests', t=>{

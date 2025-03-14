@@ -3,6 +3,7 @@
 import { Auth } from '../../support/auth.js'
 import { Syncit } from '../../support/syncit.js'
 import { Proxies } from '../../support/proxies.js'
+
 // Note that all async type functions have been converted to synch ro make it Apps Script like
 
 
@@ -13,20 +14,47 @@ import { Proxies } from '../../support/proxies.js'
  */
 const responsify = (response) => {
 
-  // TODO test all these
   // getAllHeaders()	Object	Returns an attribute/value map of headers for the HTTP response, with headers that have multiple values returned as arrays.
-  // need to identify the difference between this and getHeaders
-  const getAllHeaders = () => response.rawHeaders
+  const getAllHeaders = () => fixHeaders(response)
 
   // getResponseCode()	Integer	Get the HTTP status code (200 for OK, etc.) of an HTTP response
   const getResponseCode = () => response.statusCode
 
   // getContentText()	String	Gets the content of an HTTP response encoded as a string.
-
-  const getContentText = () => response.body
+  const getContentText = () => blobify(response).getDataAsString()
 
   // getHeaders()	Object	Returns an attribute/value map of headers for the HTTP response.
-  const getHeaders = () => response.headers
+  const getHeaders = () => fixHeaders(response)
+
+  // getContent() Bytes[] the data as byte array
+  const getContent = () => response.body
+
+  // getBlob () FakeBlob the content as a blob
+  const getBlob = () => blobify (response)
+
+  // got returns lower case headers props, so we have to resort to using rawheaders so we match the case of Apps Script
+  // TODO - find an example in apps script where getAllHeaders is not equal to getHeaders
+  const fixHeaders = (response) => {
+    // it's a map with a pair of values
+    const headers = (response.rawHeaders || [])
+    if (headers % 2) {
+      throw `fixHeaders:invalid number of header value pairs - ${headers.length}`
+    }
+    // split into pairs and return as object
+    const mapHeaders = new Map(headers.flatMap((_, i, a) => i % 2 ? [] : [a.slice(i, i + 2)])); 
+    return Object.fromEntries(mapHeaders)
+  }
+  const blobify = (response) => {
+    const headers = fixHeaders (response)
+    if (!headers) return null
+    // the name is buried in the Conent-Disposition
+    const disp = headers["Content-Disposition"]
+    const filename = disp && disp.replace (/.*filename="([^"]*).*/,"$1")
+    const name = filename || ""
+    const contentType = headers["Content-Type"].replace (/([^;]*).*/,"$1").trim()
+    const bytes = response.body || null
+    return Utilities.newBlob (bytes, contentType, name)
+  }
 
   /* TODO
   getAs(contentType)	Blob	Return the data inside this object as a blob converted to the specified content type.
@@ -38,7 +66,9 @@ const responsify = (response) => {
     getAllHeaders,
     getResponseCode,
     getContentText,
-    getHeaders
+    getHeaders,
+    getBlob,
+    getContent
   }
 }
 
