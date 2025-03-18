@@ -32,6 +32,90 @@ const cacheDefaultPath = "/tmp/gas-fakes/cache"
 const getModulePath = (relTarget) => path.resolve(import.meta.dirname, relTarget)
 
 /**
+ * sync a call to Drive api to stream a download
+ * @param {object} p pargs
+ * @param {string} [p.file] the file meta data
+ * @param {blob} p.blob the content
+ * @param {string} [p.fields] the fields to return
+ * @return {DriveResponse} from the drive api
+ */
+const fxStreamUpMedia = ({ file = {}, blob, fields }) => {
+
+  // this will run a node child process
+  // note that nothing is inherited, so consider it as a standalone script
+  const fx = makeSynchronous(async ({ resource , drapisPath, authPath, scopes, bytes, fields }) => {
+
+    const { Auth, responseSyncify } = await import(authPath)
+    const { getApiClient } = await import(drapisPath)
+    const  {default:intoStream } = await import('into-stream');
+
+    // the scopes are required to set up an appropriate auth
+    Auth.setAuth(scopes)
+    const auth = Auth.getAuth()
+
+    // this is the node drive service
+    const drive = getApiClient(auth)
+
+    // set up the media
+    let media = null
+    if (bytes) {
+      const buffer = Buffer.from(bytes)
+      const body = intoStream(buffer)
+      media = {
+        mimeType: resource.mimeType,
+        body 
+      }
+    }
+
+    try {
+      const pack = {
+        resource,
+        fields
+      }
+      if (media) pack.media = media
+      const created = await drive.files.create({
+        resource,
+        media,
+        fields
+      }) 
+
+      const response = responseSyncify(created)
+
+      return {
+        data: created.data,
+        response
+      }
+    } catch (err) {
+      console.error('failed in syncit fxStreamUpMedia',err)
+      const response = err?.response
+      return {
+        data: null,
+        response: {
+          status: response?.status,
+          statusText: response?.statusText,
+          responseUrl: response?.request?.responseURL
+        }
+      }
+    }
+
+  })
+
+  // scopes are already set
+  const scopes = Array.from(Auth.getAuthedScopes().keys())
+
+  const result = fx({
+    resource: file,
+    bytes: blob ? blob.getBytes() : null,
+    drapisPath: getModulePath(drapisPath),
+    authPath: getModulePath(authPath),
+    scopes,
+    fields
+  })
+
+  return result
+}
+
+/**
  * zipper
  * @param {object} p
  * @param {FakeBlob} p.blobs an array of blobs to be zipped
@@ -401,6 +485,8 @@ const fxDrive = ({ prop, method, params }) => {
 
 }
 
+
+
 /**
  * sync a call to Drive api to stream a download
  * @param {object} p pargs
@@ -495,5 +581,6 @@ export const Syncit = {
   fxInit,
   fxStore,
   fxZipper,
-  fxUnZipper
+  fxUnZipper,
+  fxStreamUpMedia
 }

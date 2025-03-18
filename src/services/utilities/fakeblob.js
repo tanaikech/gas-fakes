@@ -7,6 +7,22 @@ import mime from 'mime';
 // Apps Script blob fake
 
 
+/**
+ * deduce from args 
+ * and end up with a blob
+ * @param {string} name this could already be a blob
+ * @param {*} content 
+ * @param {*} mimeType 
+ * @returns {FakeBlob}
+ */
+export const settleAsBlob = (contentOrBlob, mimeType, name) => {
+  if (Utils.isBlob(contentOrBlob)) {
+    return contentOrBlob
+  }
+
+  return newFakeBlob(contentOrBlob,  mimeType, name)
+}
+
 class FakeBlob {
   /**
    * 
@@ -16,7 +32,7 @@ class FakeBlob {
    * @param {string} [name]
    * @returns {FakeBlob}
    */
-  constructor(data, contentType, name) {
+  constructor(data = [], contentType, name) {
     this._data = Utils.settleAsBytes(data)
     this._contentType = contentType || 
       (is.string(data) ? 'text/plain' : null)

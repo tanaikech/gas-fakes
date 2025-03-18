@@ -10,7 +10,7 @@ import { mergeParamStrings } from '../src/support/utils.js';
 
 import '../main.js'
 
-const testFakes =  () => {
+const testFakes = () => {
 
   // on node this will have come from the imports that get stripped when mocing to gas
   // on apps script, you'll have a gas only imports file that aliases 
@@ -53,9 +53,118 @@ const testFakes =  () => {
     PUBLIC_SHARE_FILE_ID: "1OFJk38kW9TRrEf-B9F1gTZk2uLV-ZSpR",
     SHARED_FILE_ID: "1uz4cxEDxtQzu0cBb1B4h6fsjgWy7hNFf",
     RANDOM_IMAGE: "https://picsum.photos/200",
-    API_URL:"http://suggestqueries.google.com/complete/search?client=chrome&hl=en&q=trump",
+    API_URL: "http://suggestqueries.google.com/complete/search?client=chrome&hl=en&q=trump",
     API_TYPE: "text/javascript"
   }
+
+  unit.section('driveapp and adv permissions', t => {
+
+    const { permissions } = Drive.Permissions.list(fixes.TEXT_FILE_ID)
+    t.is(permissions.length, 1)
+    const [p0] = permissions
+    t.true(is.nonEmptyString(p0.id))
+    t.is(p0.type, "user")
+    t.is(p0.role, "owner")
+
+    const { permissions: extras } = Drive.Permissions.list(fixes.TEXT_FILE_ID, { fields: "permissions(kind,id,role,type,emailAddress,deleted)" })
+    const [e0] = extras
+    t.is(e0.id, p0.id)
+    t.is(e0.kind, p0.kind)
+    t.is(e0.emailAddress, fixes.EMAIL)
+    t.false(e0.deleted)
+
+    const rootFolder = DriveApp.getRootFolder()
+    const owner = rootFolder.getOwner()
+    t.is(owner.getName(), fixes.OWNER_NAME)
+    t.is(owner.getEmail(), fixes.EMAIL)
+
+    const file = DriveApp.getFileById(fixes.SHARED_FILE_ID)
+    t.is(file.getOwner().getEmail(), fixes.EMAIL)
+
+    const viewers = file.getViewers()
+    t.is(viewers.length, 1)
+    viewers.forEach(f => t.true(is.nonEmptyString(f.getEmail())))
+
+    const editors = file.getEditors()
+    t.is(editors.length, 1)
+    editors.forEach(f => t.true(is.nonEmptyString(f.getName())))
+
+  })
+  
+  unit.section('create files with driveapp and compare content with adv drive and urlfetch', t => {
+    const rootFolder = DriveApp.getRootFolder()
+    t.is(rootFolder.toString(), "My Drive")
+    const rname = '--loado--f--utterjunk.txt'
+
+
+    const rootFile = rootFolder.createFile(rname, fixes.TEXT_FILE_CONTENT, fixes.TEXT_FILE_TYPE)
+    t.is(rootFile.getParents().next().getId(), rootFolder.getId())
+    t.is(rootFile.getMimeType(), fixes.TEXT_FILE_TYPE)
+    t.is(rootFile.getBlob().getDataAsString(), fixes.TEXT_FILE_CONTENT)
+    t.is(rootFile.getName(), rname)
+    const checkFile = DriveApp.getFileById(rootFile.getId())
+    t.deepEqual(checkFile.getBlob().getBytes(), rootFile.getBlob().getBytes())
+    t.deepEqual(checkFile.getBlob().getBytes(), Utilities.newBlob(fixes.TEXT_FILE_CONTENT).getBytes())
+
+
+    // cant create file by meta data only with DriveApp - so give it min required
+    const mname = "m-" + rname
+    const metaFile = rootFolder.createFile(mname, "")
+    const mfile = Drive.Files.get(metaFile.getId(), { fields: "parents,id,name" })
+    t.is(mfile.name, metaFile.getName())
+    t.is(mfile.parents[0], rootFolder.getId())
+
+
+    // folders
+    const fname = "--folder--of-junk"
+    const folder = DriveApp.createFolder(fname)
+    const mfolder = DriveApp.getFolderById(folder.getId())
+    t.is(mfolder.getId(), folder.getId())
+    t.is(DriveApp.getFolderById(folder.getId()).getSize(), 0)
+
+
+    // files in folders
+    const img = UrlFetchApp.fetch(fixes.RANDOM_IMAGE)
+    const blob = img.getBlob()
+    const mffile = mfolder.createFile(blob)
+    t.is(mffile.getParents().next().getId(), mfolder.getId())
+    t.deepEqual(mffile.getBlob().getBytes(), blob.getBytes())
+    t.is(mffile.getName(), blob.getName())
+    t.is(mffile.getMimeType(), blob.getContentType())
+
+    // fetch it back with urlfetch
+    const token = ScriptApp.getOAuthToken()
+    t.true(is.nonEmptyString(token))
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    // can we use the url to download
+    const r = Drive.Files.download(mffile.getId())
+    const response = UrlFetchApp.fetch(r.response.downloadUri, { headers })
+    const rblob = response.getBlob()
+    t.deepEqual(rblob.getBytes(), blob.getBytes())
+    const rmffile = DriveApp.getFileById(mffile.getId())
+    t.deepEqual(rblob.getBytes(), rmffile.getBlob().getBytes())
+    t.is(rblob.getContentType(), rmffile.getMimeType())
+    const dr = DriveApp.getFileById(mffile.getId())
+    t.deepEqual(dr.getBlob().getBytes(), blob.getBytes())
+    t.is(dr.getName(), mffile.getName())
+    t.is(dr.getSize(), mffile.getSize())
+    t.is(dr.getName(), mffile.getName())
+    t.is(dr.getParents().next().getId(), mffile.getParents().next().getId())
+    t.is(dr.getParents().next().getId(), mfolder.getId())
+
+    // check errors are thrown
+    t.rxMatch(t.threw(() => DriveApp.createFile()).toString(), /Invalid argument: name/)
+    t.rxMatch(t.threw(() => DriveApp.createFile("")).toString(), /The parameters \(String\)/)
+    t.rxMatch(t.threw(() => DriveApp.createFile(null, "")).toString(), /Invalid argument: name/)
+    t.rxMatch(t.threw(() => DriveApp.createFile(blob, "")).toString(), /The parameters \(Blob,String\)/)
+    t.rxMatch(t.threw(() => DriveApp.createFile(mname)).toString(), /The parameters \(String\)/)
+    t.rxMatch(t.threw(() => DriveApp.createFile(Utilities.newBlob(""))).toString(), /Blob object must have non-null name for this operation./)
+
+    if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
+  })
+
 
   unit.section('drive JSON api tests with urlfetchapp directly', t => {
 
@@ -77,27 +186,27 @@ const testFakes =  () => {
     t.is(root.mimeType, "application/vnd.google-apps.folder")
   }, { skip: false })
 
-  
-  unit.section ('drive thumbnails', t=> {
 
-    const df = Drive.Files.get (fixes.TEXT_FILE_ID, {fields: "id,hasThumbnail,thumbnailLink"})
-    const af = DriveApp.getFileById (fixes.TEXT_FILE_ID)
-    t.is (df.id, af.getId())
-    t.true (df.hasThumbnail)
-    t.true (is.nonEmptyString(df.thumbnailLink))
+  unit.section('drive thumbnails', t => {
+
+    const df = Drive.Files.get(fixes.TEXT_FILE_ID, { fields: "id,hasThumbnail,thumbnailLink" })
+    const af = DriveApp.getFileById(fixes.TEXT_FILE_ID)
+    t.is(df.id, af.getId())
+    t.true(df.hasThumbnail)
+    t.true(is.nonEmptyString(df.thumbnailLink))
 
     // now try with a spreadsheet
-    const tdf = Drive.Files.get (fixes.TEST_SHEET_ID, {fields: "id,hasThumbnail,thumbnailLink"})
-    const taf = DriveApp.getFileById (fixes.TEST_SHEET_ID)
-    t.is (tdf.id, taf.getId())
-    t.true (tdf.hasThumbnail)
-    t.true (is.nonEmptyString(tdf.thumbnailLink))
+    const tdf = Drive.Files.get(fixes.TEST_SHEET_ID, { fields: "id,hasThumbnail,thumbnailLink" })
+    const taf = DriveApp.getFileById(fixes.TEST_SHEET_ID)
+    t.is(tdf.id, taf.getId())
+    t.true(tdf.hasThumbnail)
+    t.true(is.nonEmptyString(tdf.thumbnailLink))
     const tblob = taf.getThumbnail()
-    t.true (is.array(tblob.getBytes()))
+    t.true(is.array(tblob.getBytes()))
 
     // now fetch it with the link and check the same as returned by get thumbnail
-    const ublob = UrlFetchApp.fetch (tdf.thumbnailLink).getBlob()
-    t.true (is.array(ublob.getBytes()))
+    const ublob = UrlFetchApp.fetch(tdf.thumbnailLink).getBlob()
+    t.true(is.array(ublob.getBytes()))
     // this test doesnt work because thumbnail returns a compressed version, whereas the link itself is not compressed
     // t.deepEqual (tblob.getBytes(), ublob.getBytes())
 
@@ -105,20 +214,20 @@ const testFakes =  () => {
   })
 
 
-  unit.section ('urlfetchapp external and blobs', t=> {
-    const img = UrlFetchApp.fetch (fixes.RANDOM_IMAGE)
+  unit.section('urlfetchapp external and blobs', t => {
+    const img = UrlFetchApp.fetch(fixes.RANDOM_IMAGE)
     const blob = img.getBlob()
-    t.true (is.nonEmptyString(blob.getName()))
-    t.is (blob.getContentType(), 'image/jpeg', 'assumes the random image is a jpeg')
-    t.true (is.array(blob.getBytes()))
+    t.true(is.nonEmptyString(blob.getName()))
+    t.is(blob.getContentType(), 'image/jpeg', 'assumes the random image is a jpeg')
+    t.true(is.array(blob.getBytes()))
 
     // to an api fetch
-    const text = UrlFetchApp.fetch (fixes.API_URL)
+    const text = UrlFetchApp.fetch(fixes.API_URL)
     const textBlob = text.getBlob()
-    t.deepEqual (JSON.parse(textBlob.getDataAsString()), JSON.parse (text.getContentText()))
-    t.true (is.array(JSON.parse (text.getContentText())))
-    t.is (textBlob.getContentType(), fixes.API_TYPE,'expected this be application/json but suggest actually returns this')
-    t.true (is.nonEmptyString(textBlob.getName()))
+    t.deepEqual(JSON.parse(textBlob.getDataAsString()), JSON.parse(text.getContentText()))
+    t.true(is.array(JSON.parse(text.getContentText())))
+    t.is(textBlob.getContentType(), fixes.API_TYPE, 'expected this be application/json but suggest actually returns this')
+    t.true(is.nonEmptyString(textBlob.getName()))
 
   })
 
@@ -140,92 +249,54 @@ const testFakes =  () => {
     const blob = file.getBlob()
     t.is(blob.getDataAsString(), fixes.TEXT_FILE_CONTENT)
 
-    t.is (file.getDownloadUrl(), Drive.Files.get (file.getId(), {fields: "webContentLink"}).webContentLink)
+    t.is(file.getDownloadUrl(), Drive.Files.get(file.getId(), { fields: "webContentLink" }).webContentLink)
 
     if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
 
   })
-  
 
 
-  unit.section ('adv drive downloads',t=> {
-    const r = Drive.Files.download (fixes.TEXT_FILE_ID)
-    t.true (is.object(r.metadata))
-    t.true (is.nonEmptyString(r.name))
-    t.true (is.nonEmptyObject(r.response))
-    t.true (is.nonEmptyString(r.response.downloadUri))
+
+  unit.section('adv drive downloads', t => {
+    const r = Drive.Files.download(fixes.TEXT_FILE_ID)
+    t.true(is.object(r.metadata))
+    t.true(is.nonEmptyString(r.name))
+    t.true(is.nonEmptyObject(r.response))
+    t.true(is.nonEmptyString(r.response.downloadUri))
 
 
     const token = ScriptApp.getOAuthToken()
-    t.true (is.nonEmptyString(token))
+    t.true(is.nonEmptyString(token))
     const headers = {
       Authorization: `Bearer ${token}`
     }
 
     // can we use the url to download
-    const response = UrlFetchApp.fetch (r.response.downloadUri, {headers})
+    const response = UrlFetchApp.fetch(r.response.downloadUri, { headers })
     t.is(response.getResponseCode(), 200)
     t.true(is.object(response.getHeaders()))
     const text = response.getContentText()
     t.is(text, fixes.TEXT_FILE_CONTENT)
 
     // and driveapp to compare and do the same things
-    const aFile = Drive.Files.get (fixes.TEXT_FILE_ID)
+    const aFile = Drive.Files.get(fixes.TEXT_FILE_ID)
     const file = DriveApp.getFileById(fixes.TEXT_FILE_ID)
     const blob = file.getBlob()
-    t.is (blob.getName() , aFile.name)
-    t.is (blob.getDataAsString(),text)
-    t.is (file.getId(), aFile.id)
-    t.deepEqual (response.getBlob().getBytes(), blob.getBytes())
+    t.is(blob.getName(), aFile.name)
+    t.is(blob.getDataAsString(), text)
+    t.is(file.getId(), aFile.id)
+    t.deepEqual(response.getBlob().getBytes(), blob.getBytes())
 
   })
 
 
-  unit.section ('check where google doesnt support in adv drive', t=> {
-    try {
-      t.true (Drive.Operations.list ('foo'))
-    } catch (err) {
-      t.rxMatch (err.toString(), /Error: GoogleJsonResponseException: API call to drive.operations.list failed/)
-    }
+  unit.section('check where google doesnt support in adv drive', t => {
+    t.rxMatch(t.threw(() => Drive.Operations.list()).toString(), /is not implemented, or supported, or enabled/)
 
   })
 
 
 
-
-  unit.section ('driveapp and adv permissions', t=> {
-
-    const {permissions} = Drive.Permissions.list (fixes.TEXT_FILE_ID)
-    t.is (permissions.length, 1)
-    const [p0] = permissions
-    t.true (is.nonEmptyString (p0.id))
-    t.is (p0.type, "user")
-    t.is (p0.role,"owner")
-
-    const {permissions: extras} = Drive.Permissions.list (fixes.TEXT_FILE_ID, {fields: "permissions(kind,id,role,type,emailAddress,deleted)"})
-    const [e0] = extras
-    t.is (e0.id, p0.id)
-    t.is (e0.kind, p0.kind)
-    t.is (e0.emailAddress, fixes.EMAIL)
-    t.false (e0.deleted)
-
-    const rootFolder = DriveApp.getRootFolder()
-    const owner = rootFolder.getOwner ()
-    t.is (owner.getName(), fixes.OWNER_NAME)
-    t.is (owner.getEmail(), fixes.EMAIL)
-
-    const file = DriveApp.getFileById (fixes.SHARED_FILE_ID)
-    t.is (file.getOwner().getEmail(),fixes.EMAIL ) 
-
-    const viewers = file.getViewers()
-    t.is (viewers.length, 1)
-    viewers.forEach (f=> t.true (is.nonEmptyString (f.getEmail())))
-
-    const editors = file.getEditors()
-    t.is (editors.length, 1)
-    editors.forEach (f=> t.true (is.nonEmptyString (f.getName())))
-
-  })
 
 
   unit.section("exotic driveapps versus Drive", t => {
@@ -352,13 +423,13 @@ const testFakes =  () => {
 
   }, { skip: false })
 
-/*
-  console.log(Drive.Files.list({
-    orderBy: "createdTime,name",
-    fields: "files(name,id),nextPageToken",
-    q: "name contains 's'"
-  }))
-*/
+  /*
+    console.log(Drive.Files.list({
+      orderBy: "createdTime,name",
+      fields: "files(name,id),nextPageToken",
+      q: "name contains 's'"
+    }))
+  */
 
   unit.section("advanced drive basics", t => {
     t.true(is.nonEmptyString(Drive.toString()))
@@ -719,19 +790,19 @@ const testFakes =  () => {
 
 
 
-  unit.section ('fake helper tests', t=>{
+  unit.section('fake helper tests', t => {
     const s1 = "fields(f1,f2),a1,t2,permissions(p1,p2)"
     const s2 = "t1,t2,t3,permissions(p1,p3)"
     const s3 = "fields(f1,f3),t3,t4,t1"
     const expect = "a1,fields(f1,f2,f3),permissions(p1,p2,p3),t1,t2,t3,t4"
-    t.is (mergeParamStrings(s1,s2,s3), expect)
-    t.is (mergeParamStrings(s1,s2,s3,s1), expect, 'check exact dups are allowed')
+    t.is(mergeParamStrings(s1, s2, s3), expect)
+    t.is(mergeParamStrings(s1, s2, s3, s1), expect, 'check exact dups are allowed')
 
     try {
-      t.is (mergeParamStrings(s1,s2,s3,s1,"fields"), expect, "this should fail because of different roles for fields")
+      t.is(mergeParamStrings(s1, s2, s3, s1, "fields"), expect, "this should fail because of different roles for fields")
     }
     catch (err) {
-      t.rxMatch (err.toString(),/^TypeError:/  )
+      t.rxMatch(err.toString(), /^TypeError:/)
     }
 
 
@@ -744,7 +815,7 @@ const testFakes =  () => {
     const { items } = Drive.Apps.list()
     t.true(is.array(items))
     const [i0] = items
-    console.log (i0)
+    console.log(i0)
     t.deepEqual(Drive.Apps.get(i0.id), i0)
   }, {
     skip: true

@@ -1,0 +1,161 @@
+import { newFakeDriveFolder } from './fakedrivefolder.js'
+import { newFakeFolderApp } from './fakefolderapp.js'
+import { newFakeDriveFile } from './fakedrivefile.js'
+import { notYetImplemented } from '../../support/helpers.js'
+import { Proxies } from '../../support/proxies.js'
+/**
+ * basic fake DriveApp
+ * @class FakeDriveApp
+ * @returns {FakeDriveApp}
+ */
+export class FakeDriveApp {
+
+  constructor() {
+    const rf = Drive.Files.get('root', {}, { allow404: true })
+    // because the parent folder prop isnt returned we'll spoof it
+    this.__rootFolder = newFakeDriveFolder(rf)
+    this.folderApp = newFakeFolderApp()
+  }
+
+  toString() {
+    return 'Drive'
+  }
+
+  /**
+   * get folder by Id
+   * folders can get files
+   * @returns {FakeDriveFolder}
+   */
+  getRootFolder() {
+    return this.__rootFolder
+  }
+
+
+  /**
+   * get file by Id
+   * folders can get files
+   * @param {string} id 
+   * @returns {newFakeDriveFile|null}
+   */
+  getFileById(id) {
+    const file = Drive.Files.get(id, {}, { allow404: true })
+    return file ? newFakeDriveFile(file) : null
+  }
+
+  /**
+   * get folder by Id
+   * folders can get files
+   * @param {string} id 
+   * @returns {FakeDriveFolder|null}
+   */
+  getFolderById(id) {
+    const file = Drive.Files.get(id, {}, { allow404: true })
+    return file ? newFakeDriveFolder(file) : null
+  }
+
+  /**
+  * get files in this folder
+  * @return {FakeDriveFileIterator}
+  */
+  getFiles() {
+    return this.folderApp.getFiles({ folderTypes: false })
+  }
+
+  /**
+   * get folders in this folder
+   * @return {FakeDriveFileIterator}
+   */
+  getFolders() {
+    return this.folderApp.getFiles({ folderTypes: true })
+  }
+
+  /**
+   * get folders by name
+   * @param {string} name 
+   * @return {FakeDriveFileIterator}
+  */
+  getFoldersByName(name) {
+    return this.folderApp.getFilesByName({ folderTypes: true, name })
+  }
+
+  /**
+   * get files by name
+   * @param {string} name 
+   * @return {FakeDriveFileIterator}
+   */
+  getFilesByName(name) {
+    return this.folderApp.getFilesByName({ folderTypes: false, name })
+  }
+
+  /**
+   * get files by name
+   * @param {string} name 
+   * @return {FakeDriveFileIterator}
+   */
+  getFilesByType(type) {
+    return this.folderApp.getFilesByType({ folderTypes: false, type })
+  }
+
+
+  /**
+   * create a file in this folder
+   */
+  createFile(name, content, mimeType) {
+    return this.getRootFolder().createFile(name, content, mimeType)
+  }
+
+  /**
+   * create a folder in this folder
+   */
+  createFolder(name) {
+    return this.getRootFolder().createFolder(name)
+  }
+
+  //-- TODO ---
+
+  getFolderByIdAndResourceKey() {
+    return notYetImplemented('getFolderByIdAndResourceKey')
+  }
+  getFileByIdAndResourceKey() {
+    return notYetImplemented('getFileByIdAndResourceKey')
+  }
+
+  continueFileIterator() {
+    return notYetImplemented('continueFileIterator')
+  }
+  continueFolderIterator() {
+    return notYetImplemented('continueFolderIterator')
+  }
+  getTrashedFiles() {
+    return notYetImplemented('getTrashedFiles')
+  }
+  getTrashedFolders() {
+    return notYetImplemented('getTrashedFolders')
+  }
+
+  getStorageLimit() {
+    return notYetImplemented('getStorageLimit')
+  }
+  getStorageUsed() {
+    return notYetImplemented('getStorageUsed')
+  }
+  enforceSingleParent() {
+    return notYetImplemented('enforceSingleParent')
+  }
+  get Access() {
+    return notYetImplemented('Access')
+  }
+  get Permission() {
+    return notYetImplemented('Permission')
+  }
+
+}
+
+/**
+ * create a new driveapp  instance
+ * @param  {...any} args 
+ * @returns {FakeDriveApp}
+ */
+export const newFakeDriveApp = (...args) => {
+  return Proxies.guard(new FakeDriveApp(...args))
+}

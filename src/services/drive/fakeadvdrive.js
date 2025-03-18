@@ -2,10 +2,10 @@
  * Advanced drive service
  */
 import { Proxies } from '../../support/proxies.js'
-import { notYetImplemented ,  minFields,  is404, isGood, throwResponse, minPermissionFields} from '../../support/helpers.js'
+import { notYetImplemented ,  minFields,   isGood, throwResponse, minPermissionFields} from '../../support/helpers.js'
 import { getAuthedClient } from './drapis.js'
 import { Syncit } from '../../support/syncit.js'
-import { getFromFileCache, improveFileCache, setInFileCache } from '../../support/filecache.js';
+import { getFromFileCache, improveFileCache,  checkResponse } from '../../support/filecache.js';
 import is from '@sindresorhus/is';
 import { mergeParamStrings } from '../../support/utils.js';
 
@@ -42,27 +42,7 @@ const enhanceFar = ({ cachedFile, far }) => {
   // now construct an appropriate fields arg
   return far.join(",")
 }
-/**
- * check response from sync is good and throw an error if requried 
- * @param {string} id 
- * @param {SyncApiResponse} response 
- * @returns {SyncApiResponse} response 
- */
-const checkResponse = (id, response, allow404) => {
 
-  // sometimes a 404 will be allowed, sometimes not
-  if (!isGood(response)) {
-
-    // scratch for next time
-    setInFileCache(id, null)
-
-    if (!allow404 && is404(response)) {
-      throwResponse(response)
-    } else {
-      return null
-    }
-  }
-}
 
 class FakeAdvDrive {
   constructor() {

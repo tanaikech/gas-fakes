@@ -363,7 +363,11 @@ As you will have noticed, there are various local support files for props/cachin
 
 ## Noticed differences
 
-I'll make a note here on trivial implementation differences. The main will be slight differences in error message text, which I'll normalize over time. Please report any differences in behavior you find in the repo issues.
+I'll make a note in thre repos issues on implementation differences. In the main will be slight differences in error message text, which I'll normalize over time, or where Apps Script has a fundamental obstacle. Please report any differences in behavior you find in the repo issues.
+
+### Tradeoffs
+
+I've come across various Apps Script bugs/issues as I work through this which I've reported to the GAS team, and added workarounds in the gas fakes code - not sure at this point whether to duplicate the buggy behavior or simulate what would seem to be the correct one. Again - any things you come across please use the issues in the repo to report. 
 
 ## Help
 

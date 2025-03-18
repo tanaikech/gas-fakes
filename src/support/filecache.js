@@ -2,8 +2,8 @@
  * things are pretty slow on node, especially repeatedly getting parents
  * so we'll cache that over here
  */
-
-
+import {  is404, isGood, throwResponse } from './helpers.js'
+import is from '@sindresorhus/is';
 const _performance = {
   hits: 0,
   misses: 0,
@@ -14,6 +14,31 @@ export const getPerformance = () => _performance
 
 const CACHE_ENABLED = true
 const fileCache = new Map()
+
+/**
+ * check response from sync is good and throw an error if requried 
+ * @param {string} id 
+ * @param {SyncApiResponse} response 
+ * @returns {SyncApiResponse} response 
+ */
+export const checkResponse = (id, response, allow404) => {
+
+  // sometimes a 404 will be allowed, sometimes not
+  if (!isGood(response)) {
+
+    // scratch for next time
+    if (is.nonEmptyString(id)) setInFileCache(id, null)
+
+    if (!allow404 && is404(response)) {
+      throwResponse(response)
+    } else {
+      return null
+    }
+  } else if (!is.nonEmptyString(id)) {
+    throw new Error ("id was not provided to cache sanitizer checkresponse")
+  }
+}
+
 
 const _getFromCache = (id) => {
   if (CACHE_ENABLED) {

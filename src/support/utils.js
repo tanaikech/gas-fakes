@@ -21,6 +21,8 @@ const fromJson = (text, failOnError = false) => {
   }
 }
 
+const isBlob = (item) => is.object (item) && Reflect.has (item, "copyBlob") && is.function (item.copyBlob)
+
 /**
  * merge a series of url params 
  * @param {object|object[]} pob an object eg [{pa:a,pb:b},{pc:c}] 
@@ -155,6 +157,7 @@ export const mergeParamStrings = (...args) => {
    }).sort().join (",")
 }
 
+const capital = (str) => str.substring(0,1).toUpperCase()+str.substring(1)
 
 export const Utils = {
   stringToBytes,
@@ -167,7 +170,9 @@ export const Utils = {
   makeParams,
   makeParamOb,
   isNU,
-  assert
+  assert,
+  isBlob,
+  capital
 }
 
 
