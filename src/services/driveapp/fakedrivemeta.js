@@ -10,8 +10,9 @@
 
 import is from '@sindresorhus/is';
 import { notYetImplemented } from '../../support/helpers.js'
-import { getParentsIterator} from './fditerators.js';
-import { getSharers } from './fdworkers.js';
+import { getParentsIterator, getPermissionIterator} from './fakedriveiterators.js';
+import { newFakeUser } from '../session/fakeuser.js';
+
 /**
  * basic fake File meta data
  * @class FakeDriveMeta
@@ -229,4 +230,28 @@ export class FakeDriveMeta {
   addEditors() {
     return notYetImplemented('addEditors')
   }
+}
+
+/**
+ * get the file sharers
+ * @returns {FakeUser} the file viewers
+ */
+const getSharers = (id, role) => {
+  const pit = getPermissionIterator({ id })
+  const viewers = []
+  while (pit.hasNext()) {
+    const permission = pit.next()
+    if (permission.role === role && permission.type === "user") viewers.push(makeUserFromPermission(permission))
+  }
+  return viewers
+}
+
+
+const makeUserFromPermission = (permission) => {
+  return newFakeUser({
+    email: permission.emailAddress,
+    photoUrl: permission.photoLink,
+    name: permission.displayName,
+    domain: permission.domain
+  })
 }

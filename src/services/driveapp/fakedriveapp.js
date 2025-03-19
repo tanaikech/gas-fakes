@@ -1,7 +1,7 @@
-import { newFakeDriveFolder } from './fakedrivefolder.js'
+import { FakeDriveFolder, newFakeDriveFolder } from './fakedrivefolder.js'
 import { newFakeFolderApp } from './fakefolderapp.js'
 import { newFakeDriveFile } from './fakedrivefile.js'
-import { notYetImplemented } from '../../support/helpers.js'
+import { notYetImplemented, isFolder } from '../../support/helpers.js'
 import { Proxies } from '../../support/proxies.js'
 /**
  * basic fake DriveApp
@@ -15,7 +15,9 @@ export class FakeDriveApp {
     // because the parent folder prop isnt returned we'll spoof it
     this.__rootFolder = newFakeDriveFolder(rf)
     this.folderApp = newFakeFolderApp()
+    this.__settleClass = (file) => isFolder(file) ? newFakeDriveFolder(file) : newFakeDriveFile(file)
   }
+
 
   toString() {
     return 'Drive'

@@ -57,6 +57,151 @@ const testFakes = () => {
     API_TYPE: "text/javascript"
   }
 
+  unit.section('create and copy files with driveapp and compare content with adv drive and urlfetch', t => {
+    const rootFolder = DriveApp.getRootFolder()
+    t.is(rootFolder.toString(), "My Drive")
+    const prefix = "--"
+
+    // folders
+    const fname = prefix + "folder--of-junk"
+    const folder = DriveApp.createFolder(fname)
+    const mfolder = DriveApp.getFolderById(folder.getId())
+    t.is(mfolder.getId(), folder.getId())
+    t.is(DriveApp.getFolderById(folder.getId()).getSize(), 0)
+
+    // adv drive creating
+    const aname = prefix + "a-adv-drive-junk---.txt"
+    const adc = Drive.Files.create({ name: aname, mimeType: fixes.TEXT_FILE_TYPE }, Utilities.newBlob(fixes.TEXT_FILE_CONTENT))
+    t.true(is.nonEmptyString(adc.id))
+    t.is(adc.name, aname)
+    t.is(adc.mimeType, fixes.TEXT_FILE_TYPE)
+    t.deepEqual(DriveApp.getFileById(adc.id).getBlob().getDataAsString(), fixes.TEXT_FILE_CONTENT)
+
+    // adv drive copying
+    const cname = prefix + "copy-adv-drive-junk---.txt"
+    const adcopy = Drive.Files.copy({ name: cname }, adc.id)
+    t.is(adcopy.name, cname)
+    t.true(is.nonEmptyString(adcopy.id))
+    t.is(adcopy.mimeType, fixes.TEXT_FILE_TYPE)
+    t.deepEqual(DriveApp.getFileById(adcopy.id).getBlob().getDataAsString(), fixes.TEXT_FILE_CONTENT)
+
+
+    // drivapp copying
+    const dcname = prefix + "copy-drive-junk---.txt"
+    const rcname = prefix + "copy-drive-junk-rename---.txt"
+    const dcfile = DriveApp.getFileById(adcopy.id)
+    const dcopy1 = dcfile.makeCopy()
+    t.is(dcopy1.getName(), cname)
+    t.true(is.nonEmptyString(dcopy1.getId()))
+    t.not(dcopy1.getId(), dcfile.getId())
+    t.is(dcopy1.getMimeType(), fixes.TEXT_FILE_TYPE)
+    t.deepEqual(dcopy1.getBlob().getDataAsString(), fixes.TEXT_FILE_CONTENT)
+    t.is(dcopy1.getParents().next().getId(), dcfile.getParents().next().getId())
+
+    const dcopy2 = dcfile.makeCopy(rcname)
+    t.is(dcopy2.getName(), rcname)
+    t.not(dcopy2.getId(), dcfile.getId())
+    t.is(dcopy2.getMimeType(), fixes.TEXT_FILE_TYPE)
+    t.deepEqual(dcopy2.getBlob().getDataAsString(), fixes.TEXT_FILE_CONTENT)
+    t.is(dcopy2.getParents().next().getId(), dcfile.getParents().next().getId())
+
+    const dcopy3 = dcfile.makeCopy(folder)
+    t.is(dcopy3.getName(), dcfile.getName())
+    t.is(dcopy3.getParents().next().getId(), folder.getId())
+
+    const dcopy4 = dcfile.makeCopy(rcname,folder)
+    t.is(dcopy4.getName(), rcname)
+    t.is(dcopy4.getParents().next().getId(), folder.getId())
+
+    // drveapp creating
+    const rname = prefix + 'loado--f--utterjunk.txt'
+    const rootFile = rootFolder.createFile(rname, fixes.TEXT_FILE_CONTENT, fixes.TEXT_FILE_TYPE)
+    t.is(rootFile.getParents().next().getId(), rootFolder.getId())
+    t.is(rootFile.getMimeType(), fixes.TEXT_FILE_TYPE)
+    t.is(rootFile.getBlob().getDataAsString(), fixes.TEXT_FILE_CONTENT)
+    t.is(rootFile.getName(), rname)
+    const checkFile = DriveApp.getFileById(rootFile.getId())
+    t.deepEqual(checkFile.getBlob().getBytes(), rootFile.getBlob().getBytes())
+    t.deepEqual(checkFile.getBlob().getBytes(), Utilities.newBlob(fixes.TEXT_FILE_CONTENT).getBytes())
+
+
+    // cant create file by meta data only with DriveApp - so give it min required
+    const mname = prefix + 'loado--m--utterjunk.txt'
+    const metaFile = rootFolder.createFile(mname, "")
+    const mfile = Drive.Files.get(metaFile.getId(), { fields: "parents,id,name" })
+    t.is(mfile.name, metaFile.getName())
+    t.is(mfile.parents[0], rootFolder.getId())
+
+
+
+
+
+    // files in folders
+    const img = UrlFetchApp.fetch(fixes.RANDOM_IMAGE)
+    const blob = img.getBlob()
+    const mffile = mfolder.createFile(blob)
+    t.is(mffile.getParents().next().getId(), mfolder.getId())
+    t.deepEqual(mffile.getBlob().getBytes(), blob.getBytes())
+    t.is(mffile.getName(), blob.getName())
+    t.is(mffile.getMimeType(), blob.getContentType())
+
+    // fetch it back with urlfetch
+    const token = ScriptApp.getOAuthToken()
+    t.true(is.nonEmptyString(token))
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    // can we use the url to download
+    const r = Drive.Files.download(mffile.getId())
+    const response = UrlFetchApp.fetch(r.response.downloadUri, { headers })
+    const rblob = response.getBlob()
+    t.deepEqual(rblob.getBytes(), blob.getBytes())
+    const rmffile = DriveApp.getFileById(mffile.getId())
+    t.deepEqual(rblob.getBytes(), rmffile.getBlob().getBytes())
+    t.is(rblob.getContentType(), rmffile.getMimeType())
+    const dr = DriveApp.getFileById(mffile.getId())
+    t.deepEqual(dr.getBlob().getBytes(), blob.getBytes())
+    t.is(dr.getName(), mffile.getName())
+    t.is(dr.getSize(), mffile.getSize())
+    t.is(dr.getName(), mffile.getName())
+    t.is(dr.getParents().next().getId(), mffile.getParents().next().getId())
+    t.is(dr.getParents().next().getId(), mfolder.getId())
+
+
+
+    // check errors are thrown
+    t.rxMatch(t.threw(() => DriveApp.createFile()).toString(), /The parameters \(\) don't match/)
+    t.rxMatch(t.threw(() => DriveApp.createFile("")).toString(), /The parameters \(String\)/)
+    t.rxMatch(t.threw(() => DriveApp.createFile(null, "")).toString(), /Invalid argument: name/)
+    t.rxMatch(t.threw(() => DriveApp.createFile(blob, "")).toString(), /The parameters \(Blob,String\)/)
+    t.rxMatch(t.threw(() => DriveApp.createFile(mname)).toString(), /The parameters \(String\)/)
+    t.rxMatch(t.threw(() => DriveApp.createFile(Utilities.newBlob(""))).toString(), /Blob object must have non-null name for this operation./)
+    t.rxMatch(t.threw(() => Drive.Files.create({ name: aname }, "foo")).toString(), /The mediaData parameter only supports Blob types for upload./)
+    t.rxMatch(t.threw(() => Drive.Files.copy(null, null)).toString(), /API call to drive.files.copy failed with error: Required/)
+    t.rxMatch(t.threw(() => dcfile.makeCopy(folder, "xx")).toString(), /The parameters \(DriveApp.Folder,String\) don't match/)
+    t.rxMatch(t.threw(() => dcfile.makeCopy("yy", "xx")).toString(), /The parameters \(String,String\) don't match/)
+
+    if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
+  })
+
+  unit.section("advanced drive basics", t => {
+    t.true(is.nonEmptyString(Drive.toString()))
+    t.true(is.nonEmptyString(Drive.Files.toString()))
+    t.is(Drive.getVersion(), 'v3')
+    t.is(Drive.About.toString(), Drive.toString())
+    t.is(Drive.About.toString(), Drive.Files.toString())
+    const file = Drive.Files.get(fixes.TEXT_FILE_ID)
+    t.is(file.id, fixes.TEXT_FILE_ID)
+    t.is(file.name, fixes.TEXT_FILE_NAME)
+    t.is(file.mimeType, fixes.TEXT_FILE_TYPE)
+    t.is(file.kind, fixes.KIND_DRIVE)
+    t.deepEqual(file, DriveApp.getFileById(fixes.TEXT_FILE_ID).meta, {
+      skip: !DriveApp.isFake,
+      description: 'meta property only exists on fakedrive class'
+    })
+    if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
+  })
+
   unit.section('driveapp and adv permissions', t => {
 
     const { permissions } = Drive.Permissions.list(fixes.TEXT_FILE_ID)
@@ -90,7 +235,7 @@ const testFakes = () => {
     editors.forEach(f => t.true(is.nonEmptyString(f.getName())))
 
   })
-  
+
   unit.section('create files with driveapp and compare content with adv drive and urlfetch', t => {
     const rootFolder = DriveApp.getRootFolder()
     t.is(rootFolder.toString(), "My Drive")
@@ -155,7 +300,7 @@ const testFakes = () => {
     t.is(dr.getParents().next().getId(), mfolder.getId())
 
     // check errors are thrown
-    t.rxMatch(t.threw(() => DriveApp.createFile()).toString(), /Invalid argument: name/)
+    t.rxMatch(t.threw(() => DriveApp.createFile()).toString(), /The parameters \(\)/)
     t.rxMatch(t.threw(() => DriveApp.createFile("")).toString(), /The parameters \(String\)/)
     t.rxMatch(t.threw(() => DriveApp.createFile(null, "")).toString(), /Invalid argument: name/)
     t.rxMatch(t.threw(() => DriveApp.createFile(blob, "")).toString(), /The parameters \(Blob,String\)/)
@@ -431,23 +576,7 @@ const testFakes = () => {
     }))
   */
 
-  unit.section("advanced drive basics", t => {
-    t.true(is.nonEmptyString(Drive.toString()))
-    t.true(is.nonEmptyString(Drive.Files.toString()))
-    t.is(Drive.getVersion(), 'v3')
-    t.is(Drive.About.toString(), Drive.toString())
-    t.is(Drive.About.toString(), Drive.Files.toString())
-    const file = Drive.Files.get(fixes.TEXT_FILE_ID)
-    t.is(file.id, fixes.TEXT_FILE_ID)
-    t.is(file.name, fixes.TEXT_FILE_NAME)
-    t.is(file.mimeType, fixes.TEXT_FILE_TYPE)
-    t.is(file.kind, fixes.KIND_DRIVE)
-    t.deepEqual(file, DriveApp.getFileById(fixes.TEXT_FILE_ID).meta, {
-      skip: !DriveApp.isFake,
-      description: 'meta property only exists on fakedrive class'
-    })
-    if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
-  })
+
 
 
 

@@ -6,13 +6,8 @@ import { settleAsBlob } from "../utilities/fakeblob.js"
 import is from '@sindresorhus/is';
 import { Syncit } from "../../support/syncit.js"
 import { checkResponse, improveFileCache } from "../../support/filecache.js"
+import { getFilesIterator } from "./fakedriveiterators.js"
 
-/**
- * settle class to folder or file
- * @param {FakeFileMeta} file 
- * @returns {FakeDriveFile | FakeDriveFolder }
- */
-const settleClass = (file) => isFolder(file) ? newFakeDriveFolder(file) : newFakeDriveFile(file)
 
 
 
@@ -99,7 +94,12 @@ class FakeFolderApp {
    * the args are a bit flexible
    * we can have 1 arg which mucst be ablob
    * or (name,content,[mimeType])
-   * @param {} param0 
+   * @param {} p
+   * @param {number} nargs how many args were provided
+   * @param {string|Blob} blobOrName either a blob or a filename
+   * @param {*} content provided instead of a blob
+   * @param {string} mimeType 
+   * @param {File} file the file resource 
    * @returns 
    */
   createFile({ nargs, name: blobOrName, content, mimeType, file = {} }) {
@@ -122,8 +122,10 @@ class FakeFolderApp {
       if (!name) {
         throw new Error("Blob object must have non-null name for this operation.")
       }
+    } else if (is.undefined(name)) {
+      matchThrow()
     }
-
+    
     if (!is.string(name)) {
       throw new Error("Invalid argument: name")
     }
@@ -146,7 +148,7 @@ class FakeFolderApp {
     const { data, response } = result
     checkResponse(data?.id, response, false)
     improveFileCache(data.id, data)
-    return settleClass(result.data)
+    return DriveApp.__settleClass(result.data)
 
   }
 }

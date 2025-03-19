@@ -8,7 +8,7 @@ import { randomUUID } from 'node:crypto'
 import mime from 'mime';
 
 const authPath = "../support/auth.js"
-const drapisPath = "../services/drive/drapis.js"
+const drapisPath = "../services/driveapp/drapis.js"
 const shapisPath = "../services/drive/shapis.js"
 const kvPath = '../support/kv.js'
 const manifestDefaultPath = './appsscript.json'
@@ -72,6 +72,7 @@ const fxStreamUpMedia = ({ file = {}, blob, fields }) => {
         resource,
         fields
       }
+      
       if (media) pack.media = media
       const created = await drive.files.create({
         resource,
@@ -387,11 +388,11 @@ const fxInit = ({
  * @param {string} p.apiPath where to import the api from
  * @return {DriveResponse} from the drive api
  */
-const fxApi = ({ prop, method, params, apiPath }) => {
+const fxApi = ({ prop, method, params, apiPath, options }) => {
 
   // this will run a node child process
   // note that nothing is inherited, so consider it as a standalone script
-  const fx = makeSynchronous(async ({ prop, method, apiPath, authPath, scopes, params }) => {
+  const fx = makeSynchronous(async ({ prop, method, apiPath, authPath, scopes, params , options}) => {
 
     const { Auth, responseSyncify } = await import(authPath)
     const { getAuthedClient } = await import(apiPath)
@@ -402,7 +403,7 @@ const fxApi = ({ prop, method, params, apiPath }) => {
     // this is the node drive service
     const apiClient = getAuthedClient()
     try {
-      const response = await apiClient[prop][method](params)
+      const response = await apiClient[prop][method](params, options)
       return {
         data: response.data,
         response: responseSyncify(response)
@@ -430,7 +431,8 @@ const fxApi = ({ prop, method, params, apiPath }) => {
     apiPath: getModulePath(apiPath),
     authPath: getModulePath(authPath),
     scopes,
-    params
+    params,
+    options
   })
 
   return result

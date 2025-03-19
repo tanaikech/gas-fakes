@@ -47,7 +47,7 @@ export const minPermissionFields = "kind,id,role,type"
  * @param {File} file 
  * @returns {Boolean}
  */
-export const isFolder = (file) => file.mimeType === folderType
+export const isFolder = (file) => file?.mimeType === folderType
 
 /**
  * check if a drive reponse good 

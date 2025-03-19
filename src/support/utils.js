@@ -172,7 +172,8 @@ export const Utils = {
   isNU,
   assert,
   isBlob,
-  capital
+  capital,
+  is
 }
 
 

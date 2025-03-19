@@ -1,14 +1,14 @@
 import { Utils } from '../../support/utils.js'
 import { newPeeker } from '../../support/peeker.js'
-import { fileLister } from './fdworkers.js'
-import { newFakeDriveFolder } from './fakedrivefolder.js'
+import { minFields, folderType } from '../../support/helpers.js'
+const { assert, is } = Utils
 
 // we can get all the permissions - need iterate in case theres more than a page (unlikely)
 export const getPermissionIterator = ({
   id
 
 }) => {
-  const { assert } = Utils
+
   assert.string(id)
 
   /**
@@ -97,7 +97,7 @@ export const getFilesIterator = ({
 
 
         // format the results into the folder or file object
-        tank = data.files.map(settleClass)
+        tank = data.files.map(DriveApp.__settleClass)
 
       }
 
@@ -137,7 +137,7 @@ export const getParentsIterator = ({
     let tank = file.parents.map(id => Drive.Files.get(id, {}, { allow404: false }))
 
     while (tank.length) {
-      yield newFakeDriveFolder(tank.splice(0, 1)[0])
+      yield DriveApp.__settleClass(tank.splice(0, 1)[0])
     }
   }
 
@@ -150,3 +150,49 @@ export const getParentsIterator = ({
 
 }
 
+/**
+ * list  get any kind using the NODE client
+ * @param {string} [parentId] the parent id 
+ * @param {object|[object]} [qob] any additional queries
+ * @param {string} [fields] the fields to fetch
+ * @param {TODO} [options] mimic fetchapp options
+ * @param {string} [pageToken=null] if we're doing a pagetoken kind of thing
+ * @param {boolean} folderTypes whether to get foldertypes 
+ * @param {boolean} fileTypes whether to get fileTypes 
+ * @returns {object} a collection of files {response, data}
+ */
+const fileLister = ({
+  qob, parentId, fields, folderTypes, fileTypes, pageToken = null
+}) => {
+  // enhance any already supplied query params
+  qob = Utils.arrify(qob) || []
+  if (parentId) {
+    qob.push(`'${parentId}' in parents`)
+  }
+
+  // wheteher we're getting files,folders or both
+  if (!(folderTypes || fileTypes)) {
+    throw new Error(`Must specify either folder type,file type or both`)
+  }
+
+  // exclusive xor - if they're both true we dont need to do any extra q filtering
+  if (folderTypes !== fileTypes) {
+    qob.push(`mimeType${fileTypes ? "!" : ""}='${folderType}'`)
+  }
+
+  const q = qob.map(f => `(${f})`).join(" and ")
+  let params = { q, fields }
+  if (pageToken) {
+    params.pageToken = pageToken
+  }
+
+  // this will have be synced from async
+  try {
+    const result = Drive.Files.list(params)
+    return result
+  } catch (err) {
+    console.error(err)
+    throw new Error(err)
+  }
+
+}
