@@ -39,6 +39,10 @@ class FakeBlob {
     this._name = name || null
   }
 
+  toString () {
+    // oddly this just refurns the object name rather than converting content to string
+    return 'Blob'
+  }
 
   getBytes() {
     return this._data

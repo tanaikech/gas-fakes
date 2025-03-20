@@ -1,9 +1,12 @@
 import { FakeDriveMeta } from "./fakedrivemeta.js"
 import { Proxies } from '../../support/proxies.js'
-import { isFolder } from '../../support/helpers.js'
+import { isFolder, isFakeFolder, argsMatchThrow } from '../../support/helpers.js'
 import { Syncit } from "../../support/syncit.js"
 import { FakeDriveFolder } from "./fakedrivefolder.js"
 import { Utils } from "../../support/utils.js"
+import { settleAsBlob } from "../utilities/fakeblob.js"
+import {  improveFileCache } from "../../support/filecache.js"
+
 const { is } = Utils
 
 /**
@@ -66,32 +69,51 @@ class FakeDriveFile extends FakeDriveMeta {
   }
 
   /**
+   * set the content to something else
+   * @param {string} content apparently this can only be a string and not a blob 
+   * @return {FakeDriveFile} self
+   */
+  setContent(content) {
+    // for param checking
+    const matchThrow = () => argsMatchThrow(Array.from(arguments))
+    // apps script does a toString on the arg rather than failing
+    if (!is.function (content?.toString)) {
+      matchThrow()
+    }
+    
+    // this remains its current mimetype even though its now text
+    const blob = settleAsBlob(content.toString(), this.getMimeType(), this.getName())
+    const data = Drive.Files.update({}, this.getId(), blob)
+    
+    // merge this with already known fields and improve cache
+    this.meta = {...this.meta, ...data}
+    improveFileCache(this.getId(), this.meta)
+    return this
+
+  }
+
+  /**
    * make a copy
    * @param {FakeDriveFolder|string|null} [destinationOrName] where to copy it to/chaneg the name if required
    * @param {FakeDriveFolder} [destination] where to copy it to
    */
   makeCopy(destinationOrName, destination) {
-    
+
     // default is same name as copied file
     let name = this.__getDecorated("name")
 
     // default is the parent of the file to be copied
     let parents = this.__getDecorated("parents")
-    const nargs = arguments.length
 
     // for param checking
-    const metaFolder = (item) => isFolder(item?.meta) ? "DriveApp.Folder" : is(item)
-    const passedTypes = [metaFolder(destinationOrName), metaFolder(destination)]
-      .slice(0, nargs).map(Utils.capital).join(",")
-    const matchThrow = (mess = "") => {
-      throw new Error(`The parameters (${passedTypes}) don't match the method ${mess}`)
-    }
+    const matchThrow = () => argsMatchThrow(Array.from(arguments))
+
 
     // check args make sense
     if (Utils.isNU(destination) && Utils.isNU(destinationOrName)) {
       // makecopy()
       // no args provided, we use the defaults
-    } else if (isFolder(destinationOrName?.meta)) {
+    } else if (isFakeFolder(destinationOrName)) {
       // makecopy (afolder)
       // destination is a folder, so no 2nd arg required
       parents = [destinationOrName.__getDecorated("id")]
@@ -100,7 +122,7 @@ class FakeDriveFile extends FakeDriveMeta {
       // makecopy (notastring,...)
       // they tried to give a name but its not a string
       matchThrow()
-    } else if (isFolder(destination?.meta)) {
+    } else if (isFakeFolder(destination)) {
       // makecopy (a string,a folder)
       name = destinationOrName
       parents = [destination.__getDecorated("id")]

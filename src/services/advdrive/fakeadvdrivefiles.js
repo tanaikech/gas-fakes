@@ -1,9 +1,12 @@
 import { Proxies } from '../../support/proxies.js'
-import { notYetImplemented, isGood, throwResponse, minFields } from '../../support/helpers.js'
+import { notYetImplemented, isGood, throwResponse, minFields, isFolder } from '../../support/helpers.js'
 import { Syncit } from '../../support/syncit.js'
 import { getFromFileCache, improveFileCache, checkResponse } from '../../support/filecache.js';
-import {Utils} from '../../support/utils.js'
-const {is} = Utils
+import { Utils, mergeParamStrings } from '../../support/utils.js'
+
+const { is } = Utils
+
+const apiProp = 'files'
 
 /**
  * these apply to Drive.files
@@ -12,7 +15,7 @@ class FakeAdvDriveFiles {
   constructor(drive) {
     this.drive = drive
     this.name = 'Drive.Files'
-    this.apiProp = 'files'
+    this.apiProp = apiProp
   }
 
   toString() {
@@ -27,9 +30,7 @@ class FakeAdvDriveFiles {
     return notYetImplemented()
   }
 
-  update() {
-    return notYetImplemented()
-  }
+
 
   list(params = {}) {
     // this is pretty straightforward as the onus is on thecaller to provide a valid queryOb
@@ -143,18 +144,18 @@ class FakeAdvDriveFiles {
    * ceate a file and optionally upload some data
    * @param {File} [file] file resource
    * @param {Blob} [blob] the mediadata 
+   * @param {string} [fields] (not and advanced drive option but allow me to use this from driveapp and avoid an extra fetch)
    */
-  create(file = {}, blob) {
+  create(file = {}, blob, fields) {
+
     if (!is.undefined(blob) && !Utils.isBlob(blob)) {
       throw new Error("The mediaData parameter only supports Blob types for upload.")
     }
-    const mimeType = file.mimeType || blob?.getContentType()
-    const name = file.name || blob?.getName() || (isFolder({ mimeType }) ? "New Folder" : "Untitled")
-    const result = Syncit.fxStreamUpMedia({ fields: minFields, blob, file: { ...file, mimeType, name } })
-    const { data, response } = result
-    checkResponse(data?.id, response, false)
-    improveFileCache(data.id, data)
-    return data
+
+    // must have some kind of name so derive if not given
+    const name = file.name || blob?.getName() || (isFolder(file) ? "New Folder" : "Untitled")
+    return updateOrCreate ({method: "create", file: { ...file, name }, blob, fields })
+
   }
 
   generateIds() {
@@ -162,25 +163,42 @@ class FakeAdvDriveFiles {
   }
 
   /**
+   * patch a file and ioptionally upoad new content
+   * @param {Drive.File} file the resource metadata
+   * @param {string} fileId the fileid to update
+   * @param {FakeBlob} [blob] new media if required
+   * @param {string} [fields] (not and advanced drive option but allow me to use this from driveapp and avoid an extra fetch)
+   * @returns {Drive.File} updated
+   */
+  update(file, fileId, blob, fields) {
+    if (!is.nonEmptyString(fileId)) {
+      throw new Error(`API call to drive.files.update failed with error: Required`)
+    }
+    return updateOrCreate ({method: 'update', file,  blob, fileId , fields})
+  }
+  /**
    * ceate a file and optionally upload some data
    * @param {File} [file] file resource to patch
    * @param {string} fileId the file to copy 
    * @param {object} [options] request options
    */
   copy(file, fileId, options) {
+
     if (!is.nonEmptyString(fileId)) {
-      throw new Error ("API call to drive.files.copy failed with error: Required")
+      throw new Error(`API call to drive.files.copy failed with error: Required`)
     }
+
     const params = {
       fields: minFields,
       fileId,
       resource: file
     }
 
-    const { response, data } =  Syncit.fxDrive({ prop: this.apiProp, method: 'copy', params, options })
+    const { response, data } = Syncit.fxDrive({ prop: apiProp, method: 'copy', params, options })
     checkResponse(data?.id, response, false)
     improveFileCache(data.id, data)
     return data
+
   }
 
   export() {
@@ -223,5 +241,27 @@ const enhanceFar = ({ cachedFile, far }) => {
   // now construct an appropriate fields arg
   return far.join(",")
 }
+
+
+  /**
+   * ceate/patch a file and optionally upload some data
+   * update and copy are virtually the same payload
+   * @param {string} method the api method
+   * @param {File} [file] file resource to patch/create
+   * @param {string} fileId the file to update 
+   * @param {FakeBlob} [blob] blob if media is provided
+   */
+  const updateOrCreate = ( {method, file = {}, blob, fileId, fields="" }) => {
+    
+    if (!Utils.isNU(blob) && !Utils.isBlob(blob)) {
+      throw new Error("The mediaData parameter only supports Blob types for upload.")
+    }
+
+    const result = Syncit.fxStreamUpMedia({ method, fields: mergeParamStrings(fields, minFields), blob, file , fileId })
+    const { data, response } = result
+    checkResponse(data?.id, response, false)
+    improveFileCache(data.id, data)
+    return data
+  }
 
 export const newFakeAdvDriveFiles = (...args) => Proxies.guard(new FakeAdvDriveFiles(...args))

@@ -1,3 +1,6 @@
+import {Utils} from './utils.js'
+
+
 /**
  * @constant
  * @type {string}
@@ -41,13 +44,35 @@ const minFieldsList = ["name","id","mimeType","kind","parents"]
 export const minFields = minFieldsList.join(",")
 export const minPermissionFields = "kind,id,role,type"
 
+/**
+ * is an object a folder
+ * @param {FakeDriveMeta} file 
+ * @returns {Boolean}
+ */
+export const isFakeFolder = (file) => getFakeType (file) && isFolder(file.meta) 
+
 
 /**
  * file mimetype is a folder
  * @param {File} file 
  * @returns {Boolean}
  */
-export const isFolder = (file) => file?.mimeType === folderType
+export const isFolder = (file) => file?.mimeType === folderType 
+
+/**
+ * fake service
+ * @param {object} item 
+ * @returns {string}
+ */
+export const getFakeService = (item) =>  item?.__gas_fake_service || null
+
+
+/**
+ * fake type 
+ * @param {object} item 
+ * @returns {string}
+ */
+export const getFakeType = (item) => getFakeService(item) && item.__getFakeType ()
 
 /**
  * check if a drive reponse good 
@@ -73,3 +98,20 @@ export const throwResponse = (response) => {
   throw new Error(`status: ${response.status} : ${response.statusText}`)
 }
 
+/**
+ * get the type of items enhanced by fake types
+ * @param {*} item 
+ * @returns {string}
+ */
+const getWhat = (item) => getFakeType(item) || Utils.is(item)
+
+/**
+ * report that args given dont match the type expected in the style of apps script arg checking
+ * @param {*[]} items 
+ * @param {string} mess additional method
+ */
+export const argsMatchThrow = ( items, mess = "") => {
+  // limit the error message 
+  const passedTypes = items.map(getWhat).map(Utils.capital).join(",")
+  throw new Error(`The parameters (${passedTypes}) don't match the method ${mess}`)
+}

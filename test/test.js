@@ -54,23 +54,89 @@ const testFakes = () => {
     SHARED_FILE_ID: "1uz4cxEDxtQzu0cBb1B4h6fsjgWy7hNFf",
     RANDOM_IMAGE: "https://picsum.photos/200",
     API_URL: "http://suggestqueries.google.com/complete/search?client=chrome&hl=en&q=trump",
-    API_TYPE: "text/javascript"
+    API_TYPE: "text/javascript",
+    PREFIX:"--",
+    PDF_ID: "1-YBGiTRfIYcmYUMNzNJEDlEmKAbyQqz8"
   }
+
+
+  unit.section('updates and moves advdrive and driveapp', t => {
+
+    // create a text file with nothing in it
+    const aname = fixes.PREFIX + "u-adv-drive-junk---.txt"
+    const afile = Drive.Files.create ({name: aname, mimeType: fixes.TEXT_FILE_TYPE})
+    t.is (afile.name, aname)
+    t.is (afile.mimeType,fixes.TEXT_FILE_TYPE )
+    
+    // now get a pdf blob and update it with that and change the name
+    const pdfBlob = DriveApp.getFileById(fixes.PDF_ID).getBlob()
+    const pname = fixes.PREFIX + pdfBlob.getName()
+    const pfile = Drive.Files.update ({name: pname }, afile.id, pdfBlob)
+    t.deepEqual (DriveApp.getFileById(pfile.id).getBlob().getBytes(), pdfBlob.getBytes())
+    t.is (pfile.id,afile.id)
+    t.is (pfile.mimeType, "application/pdf", 'media should have redone the mimetype')
+    t.is (pfile.name, pname)
+
+    // move it somewhere else
+    const dfile = DriveApp.getFileById(pfile.id)
+    t.is (dfile.getParents().next().getId(), afile.parents[0])
+    const folder = DriveApp.getFolderById (fixes.TEST_FOLDER_ID)
+    const mfile = dfile.moveTo (folder)
+    t.is (mfile.getId(),dfile.getId())
+    t.deepEqual (mfile.getBlob().getBytes(),dfile.getBlob().getBytes())
+    t.is (mfile.getSize(),dfile.getBlob().getBytes().length)
+    t.is (mfile.getMimeType(), pfile.mimeType)
+    t.is (mfile.getParents().next().getId(), folder.getParents().next().getId())
+
+    // set some content
+    const cfname = fixes.PREFIX + "cf-content"
+    const cf = DriveApp.createFile(Utilities.newBlob(fixes.TEXT_FILE_CONTENT, fixes.TEXT_FILE_TYPE, cfname))
+    cf.setContent ("foo")
+    t.is (cf.getBlob().getDataAsString(), "foo")
+    t.not(cf.getBlob().getDataAsString(), fixes.TEXT_FILE_CONTENT)
+    cf.setContent (cf.getBlob())
+    t.is (cf.getBlob().getDataAsString(), "Blob", "Bizarrely set content only takes a string and does a toString() on other things")
+
+    // set some props
+    t.false (cf.isTrashed())
+    t.false (cf.isStarred())
+    t.true (cf.isShareableByEditors())
+    cf.setDescription ("foo")
+    cf.setStarred(true)
+    cf.setTrashed(true)
+    cf.setShareableByEditors(false)
+    t.true (cf.isTrashed())
+    t.true (cf.isStarred())
+    t.false (cf.isShareableByEditors())
+    t.is (cf.getDescription(), "foo")
+    cf.setStarred(false)
+    cf.setTrashed(false)
+    cf.setShareableByEditors(true)
+    t.false (cf.isTrashed())
+    t.false (cf.isStarred())
+    t.true (cf.isShareableByEditors())
+
+    // check bad args
+    t.rxMatch(t.threw(() => mfile.moveTo()).toString(), /The parameters \(\) don't match/)
+    t.rxMatch(t.threw(() => mfile.moveTo("rubbish")).toString(), /The parameters \(String\)/)
+
+
+  })
 
   unit.section('create and copy files with driveapp and compare content with adv drive and urlfetch', t => {
     const rootFolder = DriveApp.getRootFolder()
     t.is(rootFolder.toString(), "My Drive")
-    const prefix = "--"
+
 
     // folders
-    const fname = prefix + "folder--of-junk"
+    const fname = fixes.PREFIX + "folder--of-junk"
     const folder = DriveApp.createFolder(fname)
     const mfolder = DriveApp.getFolderById(folder.getId())
     t.is(mfolder.getId(), folder.getId())
     t.is(DriveApp.getFolderById(folder.getId()).getSize(), 0)
 
     // adv drive creating
-    const aname = prefix + "a-adv-drive-junk---.txt"
+    const aname = fixes.PREFIX + "a-adv-drive-junk---.txt"
     const adc = Drive.Files.create({ name: aname, mimeType: fixes.TEXT_FILE_TYPE }, Utilities.newBlob(fixes.TEXT_FILE_CONTENT))
     t.true(is.nonEmptyString(adc.id))
     t.is(adc.name, aname)
@@ -78,7 +144,7 @@ const testFakes = () => {
     t.deepEqual(DriveApp.getFileById(adc.id).getBlob().getDataAsString(), fixes.TEXT_FILE_CONTENT)
 
     // adv drive copying
-    const cname = prefix + "copy-adv-drive-junk---.txt"
+    const cname = fixes.PREFIX + "copy-adv-drive-junk---.txt"
     const adcopy = Drive.Files.copy({ name: cname }, adc.id)
     t.is(adcopy.name, cname)
     t.true(is.nonEmptyString(adcopy.id))
@@ -87,8 +153,8 @@ const testFakes = () => {
 
 
     // drivapp copying
-    const dcname = prefix + "copy-drive-junk---.txt"
-    const rcname = prefix + "copy-drive-junk-rename---.txt"
+    const dcname = fixes.PREFIX + "copy-drive-junk---.txt"
+    const rcname = fixes.PREFIX + "copy-drive-junk-rename---.txt"
     const dcfile = DriveApp.getFileById(adcopy.id)
     const dcopy1 = dcfile.makeCopy()
     t.is(dcopy1.getName(), cname)
@@ -109,12 +175,12 @@ const testFakes = () => {
     t.is(dcopy3.getName(), dcfile.getName())
     t.is(dcopy3.getParents().next().getId(), folder.getId())
 
-    const dcopy4 = dcfile.makeCopy(rcname,folder)
+    const dcopy4 = dcfile.makeCopy(rcname, folder)
     t.is(dcopy4.getName(), rcname)
     t.is(dcopy4.getParents().next().getId(), folder.getId())
 
     // drveapp creating
-    const rname = prefix + 'loado--f--utterjunk.txt'
+    const rname = fixes.PREFIX + 'loado--f--utterjunk.txt'
     const rootFile = rootFolder.createFile(rname, fixes.TEXT_FILE_CONTENT, fixes.TEXT_FILE_TYPE)
     t.is(rootFile.getParents().next().getId(), rootFolder.getId())
     t.is(rootFile.getMimeType(), fixes.TEXT_FILE_TYPE)
@@ -126,7 +192,7 @@ const testFakes = () => {
 
 
     // cant create file by meta data only with DriveApp - so give it min required
-    const mname = prefix + 'loado--m--utterjunk.txt'
+    const mname = fixes.PREFIX + 'loado--m--utterjunk.txt'
     const metaFile = rootFolder.createFile(mname, "")
     const mfile = Drive.Files.get(metaFile.getId(), { fields: "parents,id,name" })
     t.is(mfile.name, metaFile.getName())
@@ -177,7 +243,7 @@ const testFakes = () => {
     t.rxMatch(t.threw(() => DriveApp.createFile(mname)).toString(), /The parameters \(String\)/)
     t.rxMatch(t.threw(() => DriveApp.createFile(Utilities.newBlob(""))).toString(), /Blob object must have non-null name for this operation./)
     t.rxMatch(t.threw(() => Drive.Files.create({ name: aname }, "foo")).toString(), /The mediaData parameter only supports Blob types for upload./)
-    t.rxMatch(t.threw(() => Drive.Files.copy(null, null)).toString(), /API call to drive.files.copy failed with error: Required/)
+    t.rxMatch(t.threw(() => Drive.Files.copy(null, null)).toString(), /API call to drive\.files\.copy failed with error: Required/)
     t.rxMatch(t.threw(() => dcfile.makeCopy(folder, "xx")).toString(), /The parameters \(DriveApp.Folder,String\) don't match/)
     t.rxMatch(t.threw(() => dcfile.makeCopy("yy", "xx")).toString(), /The parameters \(String,String\) don't match/)
 

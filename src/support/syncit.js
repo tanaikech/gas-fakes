@@ -34,16 +34,19 @@ const getModulePath = (relTarget) => path.resolve(import.meta.dirname, relTarget
 /**
  * sync a call to Drive api to stream a download
  * @param {object} p pargs
+ * @param {string} p.method - update or create
  * @param {string} [p.file] the file meta data
- * @param {blob} p.blob the content
+ * @param {blob} [p.blob] the content
  * @param {string} [p.fields] the fields to return
+ * @param {string} [p.mimeType] the mimeType to assign
+ * @param {string} [p.fileId] the fileId - required of patching
  * @return {DriveResponse} from the drive api
  */
-const fxStreamUpMedia = ({ file = {}, blob, fields }) => {
+const fxStreamUpMedia = ({ file = {}, blob, fields, method = "create" , fileId}) => {
 
   // this will run a node child process
   // note that nothing is inherited, so consider it as a standalone script
-  const fx = makeSynchronous(async ({ resource , drapisPath, authPath, scopes, bytes, fields }) => {
+  const fx = makeSynchronous(async ({ resource , drapisPath, authPath, scopes, bytes, fields, method, mimeType, fileId}) => {
 
     const { Auth, responseSyncify } = await import(authPath)
     const { getApiClient } = await import(drapisPath)
@@ -62,7 +65,7 @@ const fxStreamUpMedia = ({ file = {}, blob, fields }) => {
       const buffer = Buffer.from(bytes)
       const body = intoStream(buffer)
       media = {
-        mimeType: resource.mimeType,
+        mimeType,
         body 
       }
     }
@@ -70,16 +73,12 @@ const fxStreamUpMedia = ({ file = {}, blob, fields }) => {
     try {
       const pack = {
         resource,
-        fields
+        fields,
+        fileId,
+        media
       }
-      
-      if (media) pack.media = media
-      const created = await drive.files.create({
-        resource,
-        media,
-        fields
-      }) 
 
+      const created = await drive.files[method](pack) 
       const response = responseSyncify(created)
 
       return {
@@ -110,7 +109,10 @@ const fxStreamUpMedia = ({ file = {}, blob, fields }) => {
     drapisPath: getModulePath(drapisPath),
     authPath: getModulePath(authPath),
     scopes,
-    fields
+    fields,
+    method,
+    mimeType: file.mimeType || blob?.getContentType(),
+    fileId
   })
 
   return result

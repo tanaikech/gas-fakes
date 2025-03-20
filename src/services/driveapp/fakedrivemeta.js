@@ -9,12 +9,14 @@
  */
 
 import is from '@sindresorhus/is';
-import { notYetImplemented } from '../../support/helpers.js'
-import { getParentsIterator, getPermissionIterator} from './fakedriveiterators.js';
+import { isFolder, notYetImplemented, argsMatchThrow, isFakeFolder } from '../../support/helpers.js'
+import { getParentsIterator, getPermissionIterator } from './fakedriveiterators.js';
 import { newFakeUser } from '../session/fakeuser.js';
+import { improveFileCache } from "../../support/filecache.js"
 
 /**
  * basic fake File meta data
+ * these are shared between folders and files
  * @class FakeDriveMeta
  * @returns {FakeDriveMeta}
  */
@@ -27,7 +29,7 @@ export class FakeDriveMeta {
    */
   constructor(meta) {
     this.meta = meta
-
+    this.__gas_fake_service = "DriveApp"
   }
 
   /**
@@ -53,10 +55,41 @@ export class FakeDriveMeta {
   }
 
   /**
+   * this will return the type DriveApp.Folder or DriveApp.File
+   * return {string}
+   */
+  __getFakeType() {
+    return isFolder(this.meta) ? "DriveApp.Folder" : "DriveApp.File"
+  }
+  /**
    * the meta data for the following fields are not fetched by default
    */
   __getDecorated(prop) {
     return this.__decorateWithFields(prop).meta[prop]
+  }
+
+  /** 
+   * __updateMeta - used to set simple felds using update
+   * @param {string} prop the meta data to set
+   * @param {*} value what to set it to
+   * @param {string} type whhat type it should be
+   * @param {object} args array like item with what was passed to the original function
+   * @returns this self
+   */
+  __updateMeta(prop, value, type, ...args) {
+
+    const matchThrow = () => argsMatchThrow(args)
+    if (!is[type](value)) {
+      matchThrow()
+    }
+    const file = {}
+    file[prop] = value
+
+    const data = Drive.Files.update(file, this.getId(), null, prop)
+    this.meta = {...this.meta, ...data}
+    improveFileCache (this.getId(), data)
+    
+    return this
   }
 
   // shared between folder and file
@@ -144,34 +177,104 @@ export class FakeDriveMeta {
     return getSharers(this.getId(), 'writer')
   }
 
+  /**
+   * get the file url
+   * @returns {string} the webviewlink
+   */
   getUrl() {
     return this.__getDecorated("webViewLink")
   }
 
+  /**
+   * moves a file to a mew destination
+   * @param {FakeDriveFolder} destination
+   * @returns self for chaining
+   */
+  moveTo(destination) {
+    // prepare for any arg errors
+    const matchThrow = () => argsMatchThrow(Array.from(arguments))
+    if (!isFakeFolder(destination)) {
+      matchThrow()
+    }
+    // pick up parents for destination if not already known
+    const addParents = destination.__getDecorated("parents")
 
+    // we cant just fix the resource parents, we have to add and remove
+    // so that's a 2 step
+    const removeParents = this.__getDecorated("parents")
 
-  // TODO-----------
+    const data = Drive.Files.update({ addParents, removeParents }, this.getId())
 
-  setDescription() {
-    return notYetImplemented('setDescription')
+    // merge this with already known fields and improve cache
+    this.meta = { ...this.meta, ...data }
+    improveFileCache(this.getId(), this.meta)
+    return this
+
   }
 
+  /**
+   * @param {string} value the updated value
+   * @returns {FakeDriveFile|FakeDriveFolder} this self
+   */
+  setDescription(value) {
+    return this.__updateMeta("description", value, "string", arguments)
+  }
 
+  /**
+   * @param {string} value the updated value
+   * @returns {FakeDriveFile|FakeDriveFolder} this self
+   */
+  setName(value) {
+    return this.__updateMeta("name", value, "string", arguments)
+  }
+
+  /**
+   * Sets whether users with edit permissions to the Folder are allowed to share with other users or change the permissions. 
+   * @param {boolean} value the updated value
+   * @returns {FakeDriveFile|FakeDriveFolder} this self
+   */
+  setShareableByEditors(value) {
+    return this.__updateMeta("writersCanShare", value, "boolean", arguments)
+  }
+
+  /**
+   * Determines whether users with edit permissions to the Folder/File are allowed to share with other users or change the permissions
+   * @returns {Boolean}
+   */
+  isShareableByEditors() {
+    return this.__getDecorated("writersCanShare")
+  }
+
+  /**
+   * Sets whether the Folder/File is starred in the user's Drive. 
+   * @param {boolean} value the updated value
+   * @returns {FakeDriveFile|FakeDriveFolder} this self
+   */
+  setStarred(value) {
+    return this.__updateMeta("starred", value, "boolean", arguments)
+  }
+
+  /**
+   * Whether the file has been trashed, either explicitly or from a trashed parent folder
+   * @param {boolean} value the updated value
+   * @returns {FakeDriveFile|FakeDriveFolder} this self
+   */
+  setTrashed(value) {
+    return this.__updateMeta("trashed", value, "boolean", arguments)
+  }
+
+  // TODO-----------
 
   getSharingPermission() {
     return notYetImplemented('getSharingPermission')
   }
-  setTrashed() {
-    return notYetImplemented('setTrashed')
-  }
+
 
   getSharingAccess() {
     return notYetImplemented('getSharingAccess')
   }
 
-  setStarred() {
-    return notYetImplemented('setStarred')
-  }
+
   getResourceKey() {
     return notYetImplemented('getResourceKey')
   }
@@ -191,24 +294,13 @@ export class FakeDriveMeta {
   getAccess() {
     return notYetImplemented('getAccess')
   }
-  moveTo() {
-    return notYetImplemented('moveTo')
-  }
-
-  setName() {
-    return notYetImplemented('setName')
-  }
 
 
   revokePermissions() {
     return notYetImplemented('revokePermissions')
   }
-  isShareableByEditors() {
-    return notYetImplemented('isShareableByEditors')
-  }
-  setShareableByEditors() {
-    return notYetImplemented('setShareableByEditors')
-  }
+
+
   setOwner() {
     return notYetImplemented('setOwner')
   }
