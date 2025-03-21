@@ -67,7 +67,7 @@ class FakeUtilities {
    * @returns {FakeBlob[]}
    */
   unzip (blob) {
-    const unzipped = Syncit.fxUnZipper ({blob})
+    const unzipped = Syncit.fxUnzipper ({blob})
     // the content type is lost in a zipped file, same as Apps Script behavior - which seems to be to use the extension to reassert content type
     return unzipped.map (f=> newFakeBlob (f.bytes, null, f.name)).map(f=>f.setContentTypeFromExtension())
   }

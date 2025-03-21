@@ -146,7 +146,7 @@ class FakeAdvDriveFiles {
    * @param {Blob} [blob] the mediadata 
    * @param {string} [fields] (not and advanced drive option but allow me to use this from driveapp and avoid an extra fetch)
    */
-  create(file = {}, blob, fields) {
+  create(file = {}, blob, fields,params) {
 
     if (!is.undefined(blob) && !Utils.isBlob(blob)) {
       throw new Error("The mediaData parameter only supports Blob types for upload.")
@@ -154,7 +154,7 @@ class FakeAdvDriveFiles {
 
     // must have some kind of name so derive if not given
     const name = file.name || blob?.getName() || (isFolder(file) ? "New Folder" : "Untitled")
-    return updateOrCreate ({method: "create", file: { ...file, name }, blob, fields })
+    return updateOrCreate ({method: "create", file: { ...file, name }, blob, fields, params })
 
   }
 
@@ -168,13 +168,14 @@ class FakeAdvDriveFiles {
    * @param {string} fileId the fileid to update
    * @param {FakeBlob} [blob] new media if required
    * @param {string} [fields] (not and advanced drive option but allow me to use this from driveapp and avoid an extra fetch)
+   * @param {object} [params] any extra params
    * @returns {Drive.File} updated
    */
-  update(file, fileId, blob, fields) {
+  update(file, fileId, blob, fields,params) {
     if (!is.nonEmptyString(fileId)) {
       throw new Error(`API call to drive.files.update failed with error: Required`)
     }
-    return updateOrCreate ({method: 'update', file,  blob, fileId , fields})
+    return updateOrCreate ({method: 'update', file,  blob, fileId , fields, params})
   }
   /**
    * ceate a file and optionally upload some data
@@ -251,13 +252,13 @@ const enhanceFar = ({ cachedFile, far }) => {
    * @param {string} fileId the file to update 
    * @param {FakeBlob} [blob] blob if media is provided
    */
-  const updateOrCreate = ( {method, file = {}, blob, fileId, fields="" }) => {
+  const updateOrCreate = ( {method, file = {}, blob, fileId, fields="" , params}) => {
     
     if (!Utils.isNU(blob) && !Utils.isBlob(blob)) {
       throw new Error("The mediaData parameter only supports Blob types for upload.")
     }
 
-    const result = Syncit.fxStreamUpMedia({ method, fields: mergeParamStrings(fields, minFields), blob, file , fileId })
+    const result = Syncit.fxStreamUpMedia({ method, fields: mergeParamStrings(fields, minFields), blob, file , fileId, params })
     const { data, response } = result
     checkResponse(data?.id, response, false)
     improveFileCache(data.id, data)

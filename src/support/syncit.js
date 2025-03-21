@@ -1,11 +1,18 @@
 /**
- * these are utilities to return sync versions of functions
+ * these are utilities to create and run sync versions of services
+ * the sx versions are all async in separate files so they can be tested async if necessary
+ * they are made sync when called from here
  */
 import makeSynchronous from 'make-synchronous';
 import path from 'path'
 import { Auth } from "./auth.js"
 import { randomUUID } from 'node:crypto'
 import mime from 'mime';
+import { sxStreamUpMedia,  sxApi, sxDriveMedia } from './sxdrive.js';
+import { sxStore } from './sxstore.js'
+import { sxInit } from './sxauth.js'
+import { sxZipper, sxUnzipper } from './sxzip.js';
+import { sxFetch } from './sxfetch.js';
 
 const authPath = "../support/auth.js"
 const drapisPath = "../services/driveapp/drapis.js"
@@ -31,6 +38,7 @@ const cacheDefaultPath = "/tmp/gas-fakes/cache"
  */
 const getModulePath = (relTarget) => path.resolve(import.meta.dirname, relTarget)
 
+
 /**
  * sync a call to Drive api to stream a download
  * @param {object} p pargs
@@ -40,69 +48,18 @@ const getModulePath = (relTarget) => path.resolve(import.meta.dirname, relTarget
  * @param {string} [p.fields] the fields to return
  * @param {string} [p.mimeType] the mimeType to assign
  * @param {string} [p.fileId] the fileId - required of patching
+ * @param {object} [p.params] any extra params
  * @return {DriveResponse} from the drive api
  */
-const fxStreamUpMedia = ({ file = {}, blob, fields, method = "create" , fileId}) => {
-
-  // this will run a node child process
-  // note that nothing is inherited, so consider it as a standalone script
-  const fx = makeSynchronous(async ({ resource , drapisPath, authPath, scopes, bytes, fields, method, mimeType, fileId}) => {
-
-    const { Auth, responseSyncify } = await import(authPath)
-    const { getApiClient } = await import(drapisPath)
-    const  {default:intoStream } = await import('into-stream');
-
-    // the scopes are required to set up an appropriate auth
-    Auth.setAuth(scopes)
-    const auth = Auth.getAuth()
-
-    // this is the node drive service
-    const drive = getApiClient(auth)
-
-    // set up the media
-    let media = null
-    if (bytes) {
-      const buffer = Buffer.from(bytes)
-      const body = intoStream(buffer)
-      media = {
-        mimeType,
-        body 
-      }
-    }
-
-    try {
-      const pack = {
-        resource,
-        fields,
-        fileId,
-        media
-      }
-
-      const created = await drive.files[method](pack) 
-      const response = responseSyncify(created)
-
-      return {
-        data: created.data,
-        response
-      }
-    } catch (err) {
-      console.error('failed in syncit fxStreamUpMedia',err)
-      const response = err?.response
-      return {
-        data: null,
-        response: {
-          status: response?.status,
-          statusText: response?.statusText,
-          responseUrl: response?.request?.responseURL
-        }
-      }
-    }
-
-  })
+const fxStreamUpMedia = ({ file = {}, blob, fields, method = "create", fileId, params={} }) => {
 
   // scopes are already set
   const scopes = Array.from(Auth.getAuthedScopes().keys())
 
+  // get a sync version of this async function
+  const fx = makeSynchronous(sxStreamUpMedia)
+
+  // run in a subprocess
   const result = fx({
     resource: file,
     bytes: blob ? blob.getBytes() : null,
@@ -112,7 +69,8 @@ const fxStreamUpMedia = ({ file = {}, blob, fields, method = "create" , fileId})
     fields,
     method,
     mimeType: file.mimeType || blob?.getContentType(),
-    fileId
+    fileId,
+    params
   })
 
   return result
@@ -126,75 +84,24 @@ const fxStreamUpMedia = ({ file = {}, blob, fields, method = "create" , fileId})
  */
 const fxZipper = ({ blobs }) => {
 
-  const fx = makeSynchronous(async ({ blobsContent }) => {
-
-    const { default: archiver } = await import('archiver')
-    const { getStreamAsBuffer } = await import('get-stream')
-    const { PassThrough } = await import('node:stream')
-
-    const passthrough = new PassThrough()
-
-    // just use the default compression level
-
-    const archive = archiver.create('zip', {})
-
-    const doArchive = async () => {
-
-      // warning could be non destructive
-      archive.on("warning", function (err) {
-        if (err.code === "ENOENT") {
-          console.log("....warning on archiver", err)
-        } else {
-          // throw error
-          return Promise.reject(err)
-        }
-      });
-
-      archive.on("error", function (err) {
-        return Promise.reject(err)
-      })
-
-      const result = getStreamAsBuffer(archive.pipe(passthrough))
-
-      blobsContent.forEach(f => {
-        archive.append(Buffer.from(f.bytes), { name: f.name })
-      })
-
-      archive.finalize()
-
-      return result.then(buffer => Array.from(buffer))
-
-    }
-
-    return doArchive()
-      .catch(err => {
-        console.log('...archiver failed with error', err)
-        return Promise.reject(err)
-      })
-
-  })
-
-
   const dupCheck = new Set()
-  const blobsContent = blobs.map((f,i) => {
+  const blobsContent = blobs.map((f, i) => {
     const ext = mime.getExtension(f.getContentType())
-    const name = f.getName() || `Untitled${i+1}${ext ? "."+ext : ""}`
-    if (dupCheck.has (name)) {
+    const name = f.getName() || `Untitled${i + 1}${ext ? "." + ext : ""}`
+    if (dupCheck.has(name)) {
       throw new Error(`Duplicate filename ${name} not allowed in zip`)
     }
-    dupCheck.add (name)
+    dupCheck.add(name)
     return {
       name,
       bytes: f.getBytes()
     }
   })
-  // check we don't have duplicate names
-  
-
+  // get a sync version of this async function
+  const fx = makeSynchronous(sxZipper)
   return fx({
     blobsContent
   })
-
 
 }
 
@@ -204,44 +111,28 @@ const fxZipper = ({ blobs }) => {
  * @param {FakeBlob} p.blob the blob containing the zipped files
  * @returns {FakeBlob[]} each of the files unzipped
  */
-const fxUnZipper = ({ blob }) => {
-
-  const fx = makeSynchronous(async ({ blobContent }) => {
-
-    const { default: unzipper } = await import('unzipper')
-    const { getStreamAsBuffer } = await import('get-stream')
-
-    const buffer = Buffer.from(blobContent.bytes)
-    const unzipped = await unzipper.Open.buffer(buffer)
-
-    const result = await Promise.all(unzipped.files.map(async file => {
-      const bytes = await getStreamAsBuffer(file.stream())
-
-      return {
-        bytes,
-        name: file.path
-      }
-    }))
-
-    return result
-  })
-
+const fxUnzipper = ({ blob }) => {
   const blobContent = {
     name: blob.getName(),
     bytes: blob.getBytes()
   }
-
-
+  // get a sync version of this async function
+  const fx = makeSynchronous(sxUnzipper)
   return fx({
     blobContent
   })
-
-
 }
+
 /**
- * we dont want to generate a lot of async/sync calls so start by getting themanifest stuff out of the way
- * @param {string} [manifestPath ='./appsscript.json']
- * 
+ * initialize all the stuff at the beginning such as manifest content and settings
+ * and register them all in Auth object for future reference
+ * @param {object} p pargs
+ * @param {string} p.manifestPath where to finfd the manifest by default
+ * @param {string} p.claspPath where to find the clasp file by default
+ * @param {string} p.settingsPath where to find the settings file
+ * @param {string} p.cachePath the cache files
+ * @param {string} p.propertiesPath the properties file location
+ * @return {object} the finalized vesions of all the above 
  */
 const fxInit = ({
   manifestPath = manifestDefaultPath,
@@ -251,102 +142,11 @@ const fxInit = ({
   propertiesPath = propertiesDefaultPath
 } = {}) => {
 
-  const fx = makeSynchronous(async ({ manifestPath, authPath, claspPath, settingsPath, mainDir, cachePath, propertiesPath, fakeId }) => {
-
-    // get the settings and manifest
-    const path = await import('path')
-    const { readFile, writeFile, mkdir } = await import('node:fs/promises')
-    const { Auth } = await import(authPath)
-
-    // get a file and parse if it exists
-    const getIfExists = async (file) => {
-      try {
-        const content = await readFile(file, { encoding: 'utf8' })
-        console.log(`...using ${file}`)
-        return JSON.parse(content)
-
-      } catch (err) {
-        console.log(`...didnt find ${file} ... skipping`)
-        return {}
-      }
-    }
-
-    // files are relative to this main path
-    const settingsFile = path.resolve(mainDir, settingsPath)
-    const settingsDir = path.dirname(settingsFile)
-
-
-    // get the setting file if it exists
-    const _settings = await getIfExists(path.resolve(mainDir, settingsFile))
-    const settings = { ..._settings }
-
-    // the content of the settings file take precedence over whatever is passed as the default
-    // get the manifest and clasp file
-    settings.manifest = settings.manifest || manifestPath
-    settings.clasp = settings.clasp || claspPath
-    const [manifest, clasp] = await Promise.all([
-      getIfExists(path.resolve(mainDir, settings.manifest)),
-      getIfExists(path.resolve(mainDir, settings.clasp))
-    ])
-
-    /// if we dont have a scriptId we need to check in clasp or make a fakeone
-    settings.scriptId = settings.scriptId || clasp.scriptId || fakeId
-
-    // if we don't have a documentID, then see if this is a bound one
-    settings.documentId = settings.documentId || null
-
-    // cache & props cache can also be set in settings
-    settings.cache = settings.cache || cachePath
-    settings.properties = settings.properties || propertiesPath
-
-    console.log(`...cache will be in ${settings.cache}`)
-    console.log(`...properties will be in ${settings.properties}`)
-
-    // now update all that if anything has changed
-    const strSet = JSON.stringify(settings, null, 2)
-    if (JSON.stringify(_settings, null, 2) !== strSet) {
-      await mkdir(settingsDir, { recursive: true })
-      console.log('...writing to ', settingsFile)
-      writeFile(settingsFile, strSet, { flag: 'w' })
-    }
-
-    // get the required scopes and set them
-    const scopes = manifest.oauthScopes || []
-
-    // register the required scopes
-    Auth.setAuth(scopes)
-
-    // get the googleauth object
-    const auth = Auth.getAuth()
-
-    // we need the projectId for special header for UrlFetchApp to Goog apis
-    const projectId = await auth.getProjectId()
-
-    // get an access token so we can test it to pick up the authed scopes etc
-    const accessToken = await auth.getAccessToken()
-
-    // get access token info
-    const { default: got } = await import('got')
-    const tokenInfo = await got(`https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${accessToken}`).json()
-
-
-    /// these all jst exist in this sub process so we need to send them back to parent process
-    return {
-      scopes,
-      projectId,
-      tokenInfo,
-      accessToken,
-      settings,
-      manifest,
-      clasp
-    }
-
-
-  })
-
   // this is the path of the runing main process
   const mainDir = path.dirname(process.argv[1])
 
+  // get a sync version of this async function
+  const fx = makeSynchronous(sxInit)
 
   // because this is all run in a synced subprocess it's not an async result
   const synced = fx({
@@ -359,6 +159,7 @@ const fxInit = ({
     propertiesPath,
     fakeId: randomUUID()
   })
+
   const {
     scopes,
     projectId,
@@ -392,41 +193,11 @@ const fxInit = ({
  */
 const fxApi = ({ prop, method, params, apiPath, options }) => {
 
-  // this will run a node child process
-  // note that nothing is inherited, so consider it as a standalone script
-  const fx = makeSynchronous(async ({ prop, method, apiPath, authPath, scopes, params , options}) => {
-
-    const { Auth, responseSyncify } = await import(authPath)
-    const { getAuthedClient } = await import(apiPath)
-
-    // the scopes are required to set up an appropriate auth
-    Auth.setAuth(scopes)
-
-    // this is the node drive service
-    const apiClient = getAuthedClient()
-    try {
-      const response = await apiClient[prop][method](params, options)
-      return {
-        data: response.data,
-        response: responseSyncify(response)
-      }
-    } catch (err) {
-      console.error('failed in syncit fxapi',err)
-      console.info (`was attempting ${prop}.${method} with params`, params)
-      const response = err?.response
-      return {
-        data: null,
-        response: {
-          status: response?.status,
-          statusText: response?.statusText,
-          responseUrl: response?.request?.responseURL
-        }
-      }
-    }
-
-  })
-
   const scopes = Array.from(Auth.getAuthedScopes().keys())
+
+  // get a sync version of this async function
+  const fx = makeSynchronous(sxApi)
+
   const result = fx({
     prop,
     method,
@@ -449,12 +220,8 @@ const fxApi = ({ prop, method, params, apiPath, options }) => {
  */
 const fxStore = (storeArgs, method = "get", ...kvArgs) => {
 
-  const fx = makeSynchronous(async ({ kvPath, kvArgs, storeArgs, method }) => {
-    const { newKStore } = await import(kvPath)
-    const { store } = newKStore(storeArgs)
-    const result = await store[method](...kvArgs)
-    return result
-  })
+  // get a sync version of this async function
+  const fx = makeSynchronous(sxStore)
 
   const result = fx({
     kvPath: getModulePath(kvPath),
@@ -465,8 +232,6 @@ const fxStore = (storeArgs, method = "get", ...kvArgs) => {
 
   return result
 }
-
-
 
 /**
  * sync a call to Drive api
@@ -503,43 +268,9 @@ const fxDriveMedia = ({ id }) => {
 
   // this will run a node child process
   // note that nothing is inherited, so consider it as a standalone script
-  const fx = makeSynchronous(async ({ id, drapisPath, authPath, scopes }) => {
 
-    const { Auth, responseSyncify } = await import(authPath)
-    const { getApiClient } = await import(drapisPath)
-    const { getStreamAsBuffer } = await import('get-stream');
-
-    // the scopes are required to set up an appropriate auth
-    Auth.setAuth(scopes)
-    const auth = Auth.getAuth()
-
-    // this is the node drive service
-    const drive = getApiClient(auth)
-    const streamed = await drive.files.get({
-      fileId: id,
-      alt: 'media'
-    }, {
-      responseType: 'stream'
-    })
-    const response = responseSyncify(streamed)
-
-    if (response.status === 200) {
-      const buf = await getStreamAsBuffer(streamed.data)
-      const data = Array.from(buf)
-
-      return {
-        data,
-        response
-      }
-    } else {
-      return {
-        data: null,
-        response
-      }
-    }
-
-  })
-
+  // get a sync version of this async function
+  const fx = makeSynchronous(sxDriveMedia)
   const scopes = Array.from(Auth.getAuthedScopes().keys())
   const result = fx({
     id,
@@ -562,19 +293,7 @@ const fxDriveMedia = ({ id }) => {
  */
 const fxFetch = (url, options, responseFields) => {
   // TODO need to handle muteHttpExceptions
-  // now turn all that into a synchronous function - it runs as a subprocess, so we need to start from scratch
-  const fx = makeSynchronous(async (url, options, responseFields) => {
-    const { default: got } = await import('got')
-    const response = await got(url, {
-      ...options
-    })
-    // we cant return the response from this as it cant be serialized
-    // so we;ll extract oout the fields required
-    return responseFields.reduce((p, c) => {
-      p[c] = response[c]
-      return p
-    }, {})
-  })
+  const fx = makeSynchronous(sxFetch)
   return fx(url, options, responseFields)
 }
 
@@ -585,6 +304,6 @@ export const Syncit = {
   fxInit,
   fxStore,
   fxZipper,
-  fxUnZipper,
+  fxUnzipper,
   fxStreamUpMedia
 }

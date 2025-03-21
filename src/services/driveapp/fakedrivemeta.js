@@ -9,7 +9,7 @@
  */
 
 import is from '@sindresorhus/is';
-import { isFolder, notYetImplemented, argsMatchThrow, isFakeFolder } from '../../support/helpers.js'
+import { isFolder, notYetImplemented, argsMatchThrow, isFakeFolder, minFields } from '../../support/helpers.js'
 import { getParentsIterator, getPermissionIterator } from './fakedriveiterators.js';
 import { newFakeUser } from '../session/fakeuser.js';
 import { improveFileCache } from "../../support/filecache.js"
@@ -197,16 +197,24 @@ export class FakeDriveMeta {
       matchThrow()
     }
     // pick up parents for destination if not already known
-    const addParents = destination.__getDecorated("parents")
+    const newParent = destination.getId()
+    if (!is.nonEmptyString(newParent)) {
+      throw new Error (`expected to find destination id as a string but got ${newParent}`)
+    }
 
     // we cant just fix the resource parents, we have to add and remove
     // so that's a 2 step
-    const removeParents = this.__getDecorated("parents")
+    const params = {
+      addParents: newParent,
+      removeParents: this.__getDecorated("parents")[0]
+    }
 
-    const data = Drive.Files.update({ addParents, removeParents }, this.getId())
+    // need to make sure we get the new parents field back to improve cache with
+    const data = Drive.Files.update({}, this.getId(), null, "parents", params)
 
-    // merge this with already known fields and improve cache
+    // merge this with already known fields and improve cache   
     this.meta = { ...this.meta, ...data }
+
     improveFileCache(this.getId(), this.meta)
     return this
 
