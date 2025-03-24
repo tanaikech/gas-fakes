@@ -17,6 +17,7 @@
  * @property {number} status
  * @property {string} statusText
  * @property {string} responseUrl
+ * @property {boolean} fromCache
  */
 
 /**

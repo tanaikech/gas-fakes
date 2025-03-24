@@ -1,7 +1,7 @@
 import { Proxies } from '../../support/proxies.js'
 import { notYetImplemented, isGood, throwResponse, minFields, isFolder } from '../../support/helpers.js'
 import { Syncit } from '../../support/syncit.js'
-import { getFromFileCache, improveFileCache, checkResponse } from '../../support/filecache.js';
+import {  improveFileCache, checkResponse } from '../../support/filecache.js';
 import { Utils, mergeParamStrings } from '../../support/utils.js'
 
 const { is } = Utils
@@ -36,16 +36,8 @@ class FakeAdvDriveFiles {
     // this is pretty straightforward as the onus is on thecaller to provide a valid queryOb
     // and validation will be done by the api.
     // however to support caching, we'll fiddle with the fields parameter
-    const fob = params.fields && params.fields.files
-    if (fob) {
-      const far = tidyFieldsFar(fob)
-      params = {
-        ...params, fields: {
-          ...params.fields,
-          files: far.join(",")
-        }
-      }
-    }
+
+    params.fields = mergeParamStrings(params.fields || "", `files(${minFields})`)
 
     // sincify that call
     const { response, data } = Syncit.fxDrive({ prop: this.apiProp, method: 'list', params })
@@ -56,8 +48,11 @@ class FakeAdvDriveFiles {
     }
 
     // lets improve cache with any enhanced data we've found
+    /// extract out the fieldslist
+    const fields = params.fields.replace(/.*files\(([^)]*)\).*/,"$1")
+
     data.files.forEach(f => {
-      improveFileCache(f.id, f)
+      improveFileCache(f.id, f,fields)
     })
     return data
 
@@ -118,26 +113,8 @@ class FakeAdvDriveFiles {
    * @returns {Drive.File}
    */
   get(id, params = {}, { allow404 = true } = {}) {
-
-    // now clean up 
-    let far = tidyFieldsFar(params)
-
-    // the cache will check the fields it already has against those requested
-    const { cachedFile, good } = getFromFileCache(id, far)
-    if (good) return cachedFile
-
-
-    // we'll enhance the cache with the current value of any already fetched field by fetching it again
-    params = { ...params, fileId: id, fields: enhanceFar({ cachedFile, far }) }
-
-    // run as a sub process to unasync it
-    const { response, data: file } = Syncit.fxDrive({ prop: this.apiProp, method: 'get', params })
-
-    // maybe we need to throw an error
-    checkResponse(id, response, allow404)
-
-    // finally register in cache for next time
-    return improveFileCache(id, file)
+    const {data} = Syncit.fxDriveGet ({ id, params, allow404, allowCache: true }) 
+    return data
   }
 
   /**
@@ -183,21 +160,21 @@ class FakeAdvDriveFiles {
    * @param {string} fileId the file to copy 
    * @param {object} [options] request options
    */
-  copy(file, fileId, options) {
+  copy(file, fileId, options={}) {
 
     if (!is.nonEmptyString(fileId)) {
       throw new Error(`API call to drive.files.copy failed with error: Required`)
     }
-
+    const fields = mergeParamStrings(options.fields || "",minFields)
     const params = {
-      fields: minFields,
+      fields,
       fileId,
       resource: file
     }
 
     const { response, data } = Syncit.fxDrive({ prop: apiProp, method: 'copy', params, options })
     checkResponse(data?.id, response, false)
-    improveFileCache(data.id, data)
+    improveFileCache(data.id, data,fields)
     return data
 
   }
@@ -257,11 +234,10 @@ const enhanceFar = ({ cachedFile, far }) => {
     if (!Utils.isNU(blob) && !Utils.isBlob(blob)) {
       throw new Error("The mediaData parameter only supports Blob types for upload.")
     }
-
-    const result = Syncit.fxStreamUpMedia({ method, fields: mergeParamStrings(fields, minFields), blob, file , fileId, params })
-    const { data, response } = result
-    checkResponse(data?.id, response, false)
-    improveFileCache(data.id, data)
+    fields = mergeParamStrings(fields, minFields)
+    // streamupmedia takes care of improving the cache
+    const result = Syncit.fxStreamUpMedia({ method, fields, blob, file , fileId, params })
+    const { data } = result
     return data
   }
 

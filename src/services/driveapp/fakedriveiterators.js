@@ -72,7 +72,7 @@ export const getFilesIterator = ({
   assert.boolean(folderTypes)
   assert.boolean(fileTypes)
 
-  // DriveApp doesnt give option to specify these so this will be fixes
+  // DriveApp doesnt give option to specify these so this will be fixed
   const fields = `files(${minFields}),nextPageToken`
 
   /**
@@ -97,6 +97,8 @@ export const getFilesIterator = ({
 
 
         // format the results into the folder or file object
+        assert.array (data.files)
+        assert.function (DriveApp.__settleClass)
         tank = data.files.map(DriveApp.__settleClass)
 
       }
@@ -130,12 +132,16 @@ export const getParentsIterator = ({
 }) => {
   const { assert } = Utils
   assert.object(file)
-  assert.array(file.parents)
+  // if its rott folder can be null
+  const parents  = is.null (file.parents) ? [] : file.parents
+  assert.array(parents)
 
   function* filesink() {
-    // the result tank, we just get them all by id
-    let tank = file.parents.map(id => Drive.Files.get(id, {}, { allow404: false }))
+    // the result tank, we just get them all by id - will return the usual minfields
+    // and will also stick them in cache
+    let tank = parents.map(id => Drive.Files.get(id, {}, { allow404: false }))
 
+    // let them out, 1 at a time
     while (tank.length) {
       yield DriveApp.__settleClass(tank.splice(0, 1)[0])
     }
@@ -185,6 +191,7 @@ const fileLister = ({
   if (pageToken) {
     params.pageToken = pageToken
   }
+
 
   // this will have be synced from async
   try {

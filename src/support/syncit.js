@@ -2,17 +2,22 @@
  * these are utilities to create and run sync versions of services
  * the sx versions are all async in separate files so they can be tested async if necessary
  * they are made sync when called from here
+ * move all caching logic to here so we can forget anbout it higher up
  */
+
 import makeSynchronous from 'make-synchronous';
 import path from 'path'
 import { Auth } from "./auth.js"
 import { randomUUID } from 'node:crypto'
 import mime from 'mime';
-import { sxStreamUpMedia,  sxApi, sxDriveMedia } from './sxdrive.js';
+import { sxStreamUpMedia, sxApi, sxDriveMedia } from './sxdrive.js';
 import { sxStore } from './sxstore.js'
 import { sxInit } from './sxauth.js'
 import { sxZipper, sxUnzipper } from './sxzip.js';
 import { sxFetch } from './sxfetch.js';
+import { minFields } from './helpers.js'
+import { mergeParamStrings } from './utils.js'
+import { improveFileCache, checkResponse, getFromFileCache } from "./filecache.js"
 
 const authPath = "../support/auth.js"
 const drapisPath = "../services/driveapp/drapis.js"
@@ -38,7 +43,23 @@ const cacheDefaultPath = "/tmp/gas-fakes/cache"
  */
 const getModulePath = (relTarget) => path.resolve(import.meta.dirname, relTarget)
 
-
+/**
+ * check and register a result in cache
+ * @param {import('./sxdrive.js').SxResult} the result of a sync api call
+ * @return {import('./sxdrive.js').SxResult} 
+ */
+const registerSx = (result, allow404 = false, fields) => {
+  const { data, response } = result
+  checkResponse(data?.id, response, allow404)
+  if (data?.id) {
+    return {
+      ...result,
+      data: improveFileCache(data.id, data, fields)
+    }
+  } else {
+    return result
+  }
+}
 /**
  * sync a call to Drive api to stream a download
  * @param {object} p pargs
@@ -49,12 +70,15 @@ const getModulePath = (relTarget) => path.resolve(import.meta.dirname, relTarget
  * @param {string} [p.mimeType] the mimeType to assign
  * @param {string} [p.fileId] the fileId - required of patching
  * @param {object} [p.params] any extra params
- * @return {DriveResponse} from the drive api
+ * @return {import('./sxdrive.js').SxResult} from the drive api
  */
-const fxStreamUpMedia = ({ file = {}, blob, fields, method = "create", fileId, params={} }) => {
+const fxStreamUpMedia = ({ file = {}, blob, fields = "", method = "create", fileId, params = {} }) => {
 
   // scopes are already set
   const scopes = Array.from(Auth.getAuthedScopes().keys())
+
+  // merge the required fields with the minimum
+  fields = mergeParamStrings(minFields, fields)
 
   // get a sync version of this async function
   const fx = makeSynchronous(sxStreamUpMedia)
@@ -71,6 +95,106 @@ const fxStreamUpMedia = ({ file = {}, blob, fields, method = "create", fileId, p
     mimeType: file.mimeType || blob?.getContentType(),
     fileId,
     params
+  })
+  // check result and register in cache
+  return registerSx(result, false,fields)
+}
+
+/**
+ * sync a call to Drive api
+ * @param {object} p pargs
+ * @param {string} p.prop the prop of drive eg 'files' for drive.files
+ * @param {string} p.method the method of drive eg 'list' for drive.files.list
+ * @param {object} p.params the params to add to the request
+ * @return {DriveResponse} from the drive api
+ */
+const fxDrive = ({ prop, method, params }) => {
+
+  // fixup the fields param
+
+  const scopes = Array.from(Auth.getAuthedScopes().keys())
+  return fxApi({
+    prop,
+    method,
+    apiPath: drapisPath,
+    authPath,
+    scopes,
+    params
+  })
+
+}
+
+/**
+ * sync a call to Drive api get
+ * @param {object} p pargs
+ * @param {string} p.id the file id
+ * @param {boolean} [p.allowCache=true] whether to allow the result to come from cache
+ * @param {boolean} [p.allow404=false] whether to allow 404 errors
+ * @param {object} p.params the params to add to the request
+ * @return {DriveResponse} from the drive api
+ */
+const fxDriveGet = ({ id, params, allow404 = false, allowCache = true }) => {
+
+  // fixup the fields param
+  // we'll fiddle with the scopes to populate cache
+  params.fields = mergeParamStrings(minFields, params.fields || "")
+  params.fileId = id
+
+  // now we check if it's in cache and already has the necessary fields
+  // the cache will check the fields it already has against those requested
+  if (allowCache) {
+    const { cachedFile, good } = getFromFileCache(id, params.fields)
+    if (good) return {
+   
+      data: cachedFile,
+      // fake a good sxresponse
+      response: {
+        status: 200,
+        fromCache: true
+      }
+    }
+  }
+ 
+  // so we have to hit the API
+  // these would have been set from the manifest
+  const scopes = Array.from(Auth.getAuthedScopes().keys())
+  const result = fxApi({
+    prop: "files",
+    method: "get",
+    apiPath: drapisPath,
+    authPath,
+    scopes,
+    params
+  })
+
+  // check result and register in cache
+  return registerSx(result, allow404,params.fields)
+}
+
+/**
+ * sync a call to google api
+ * @param {object} p pargs
+ * @param {string} p.prop the prop of drive eg 'files' for drive.files
+ * @param {string} p.method the method of drive eg 'list' for drive.files.list
+ * @param {object} p.params the params to add to the request
+ * @param {string} p.apiPath where to import the api from
+ * @return {DriveResponse} from the drive api
+ */
+const fxApi = ({ prop, method, params, apiPath, options }) => {
+
+  const scopes = Array.from(Auth.getAuthedScopes().keys())
+
+  // get a sync version of this async function
+  const fx = makeSynchronous(sxApi)
+
+  const result = fx({
+    prop,
+    method,
+    apiPath: getModulePath(apiPath),
+    authPath: getModulePath(authPath),
+    scopes,
+    params,
+    options
   })
 
   return result
@@ -182,34 +306,7 @@ const fxInit = ({
 
 }
 
-/**
- * sync a call to google api
- * @param {object} p pargs
- * @param {string} p.prop the prop of drive eg 'files' for drive.files
- * @param {string} p.method the method of drive eg 'list' for drive.files.list
- * @param {object} p.params the params to add to the request
- * @param {string} p.apiPath where to import the api from
- * @return {DriveResponse} from the drive api
- */
-const fxApi = ({ prop, method, params, apiPath, options }) => {
 
-  const scopes = Array.from(Auth.getAuthedScopes().keys())
-
-  // get a sync version of this async function
-  const fx = makeSynchronous(sxApi)
-
-  const result = fx({
-    prop,
-    method,
-    apiPath: getModulePath(apiPath),
-    authPath: getModulePath(authPath),
-    scopes,
-    params,
-    options
-  })
-
-  return result
-}
 
 /**
  * because we're using a file backed cache we need to syncit
@@ -231,27 +328,6 @@ const fxStore = (storeArgs, method = "get", ...kvArgs) => {
   })
 
   return result
-}
-
-/**
- * sync a call to Drive api
- * @param {object} p pargs
- * @param {string} p.prop the prop of drive eg 'files' for drive.files
- * @param {string} p.method the method of drive eg 'list' for drive.files.list
- * @param {object} p.params the params to add to the request
- * @return {DriveResponse} from the drive api
- */
-const fxDrive = ({ prop, method, params }) => {
-  const scopes = Array.from(Auth.getAuthedScopes().keys())
-  return fxApi({
-    prop,
-    method,
-    apiPath: drapisPath,
-    authPath,
-    scopes,
-    params
-  })
-
 }
 
 
@@ -305,5 +381,6 @@ export const Syncit = {
   fxStore,
   fxZipper,
   fxUnzipper,
-  fxStreamUpMedia
+  fxStreamUpMedia,
+  fxDriveGet
 }

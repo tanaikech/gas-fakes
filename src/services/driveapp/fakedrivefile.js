@@ -108,27 +108,35 @@ class FakeDriveFile extends FakeDriveMeta {
     // for param checking
     const matchThrow = () => argsMatchThrow(Array.from(arguments))
 
+    
+    // cant move the root folder
+    this.__preventRootDamage("copy", this)
 
     // check args make sense
     if (Utils.isNU(destination) && Utils.isNU(destinationOrName)) {
       // makecopy()
       // no args provided, we use the defaults
+
     } else if (isFakeFolder(destinationOrName)) {
       // makecopy (afolder)
       // destination is a folder, so no 2nd arg required
       parents = [destinationOrName.__getDecorated("id")]
       if (!Utils.isNU(destination)) matchThrow()
+
     } else if (!is.nonEmptyString(destinationOrName)) {
       // makecopy (notastring,...)
       // they tried to give a name but its not a string
       matchThrow()
+
     } else if (isFakeFolder(destination)) {
       // makecopy (a string,a folder)
       name = destinationOrName
       parents = [destination.__getDecorated("id")]
+
     } else if (Utils.isNU(destination)) {
       // makecopy (string)
       name = destinationOrName
+
     } else {
       // makecopy (string, notafolder)
       matchThrow()

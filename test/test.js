@@ -55,9 +55,79 @@ const testFakes = () => {
     RANDOM_IMAGE: "https://picsum.photos/200",
     API_URL: "http://suggestqueries.google.com/complete/search?client=chrome&hl=en&q=trump",
     API_TYPE: "text/javascript",
-    PREFIX:"--",
-    PDF_ID: "1-YBGiTRfIYcmYUMNzNJEDlEmKAbyQqz8"
+    // we can compare files created on either side if necessary - set CLEAN to false
+    PREFIX:Drive.isFake ? "--f" : "--g",
+    PDF_ID: "1-YBGiTRfIYcmYUMNzNJEDlEmKAbyQqz8",
+    CLEAN: true
   }
+
+  unit.section ("root folder checks", t=> {
+    const rootFolder = DriveApp.getRootFolder ()
+    if (DriveApp.isFake) {
+      t.true (rootFolder.__isRoot, 'fake internal check')
+    }
+    t.false (rootFolder.getParents().hasNext())
+    const root = Drive.Files.get ('root', {fields: 'parents'})
+    // TODO - slight difference fake returns null for no parents, gas undefined
+    t.true (is.undefined(root.parents), {skip: Drive.isFake})
+    t.true (is.null(root.parents), {skip: !Drive.isFake})
+
+    // cant set meta data
+    t.rxMatch (t.threw(()=>rootFolder.setStarred (true)).toString(),/Access denied/)
+    //TODO find out whether we can set permissions etc.
+
+  })
+
+
+  unit.section("driveapp searches", t => {
+
+    // driveapp itself isnt actually a folder although it shares many of the methods
+    // this is the folder that DriveApp represents
+    const root = DriveApp.getRootFolder()
+
+    // this gets the folders directly under root
+    const folders = root.getFolders()
+
+    const parentCheck = (folders, grandad, folderPile = []) => {
+      while (folders.hasNext()) {
+        const folder = folders.next()
+        folderPile.push(folder)
+
+        // note that parents is an iterator, not an array
+        const parents = folder.getParents()
+        t.true(Reflect.has(parents, "next"))
+        t.true(Reflect.has(parents, "hasNext"))
+
+        // and the next operation should get the meta data of the parent, not just the id
+        // in this case there should one be 1
+        const parentPile = []
+        while (parents.hasNext()) {
+          const parent = parents.next()
+          t.is(parent.getName(), grandad.getName())
+          t.is(parent.getId(), grandad.getId())
+          parentPile.push(parent)
+        }
+        // not really expecting multiple parents nowadays.
+        t.is(parentPile.length, 1, { skip: fixes.SKIP_SINGLE_PARENT })
+      }
+      return folderPile
+    }
+    const folderPile = parentCheck(folders, root)
+
+    // MYDRIVE I know i have at least thes number of folders in the root
+    t.true(folderPile.length > fixes.MIN_FOLDERS_ROOT)
+
+    // I know i have a folder called this
+    const math = folderPile.find(f => f.getName() === fixes.TEST_FOLDER_NAME)
+    t.is(math.getName(), fixes.TEST_FOLDER_NAME)
+    const files = math.getFiles()
+    const pile = parentCheck(files, math)
+
+    // i know i have 3 files in math
+    t.is(pile.length, fixes.TEST_FOLDER_FILES)
+
+    if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
+  })
 
 
 
@@ -132,7 +202,7 @@ const testFakes = () => {
     t.rxMatch(t.threw(() => mfile.moveTo("rubbish")).toString(), /The parameters \(String\)/)
 
     // trash all files
-    toTrash.forEach (f=>f.setTrashed(true))
+    if(fixes.CLEAN)toTrash.forEach (f=>f.setTrashed(true))
     if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
   })
 
@@ -267,7 +337,7 @@ const testFakes = () => {
     t.rxMatch(t.threw(() => dcfile.makeCopy(folder, "xx")).toString(), /The parameters \(DriveApp.Folder,String\) don't match/)
     t.rxMatch(t.threw(() => dcfile.makeCopy("yy", "xx")).toString(), /The parameters \(String,String\) don't match/)
     
-    toTrash.forEach (f=>f.setTrashed(true))
+    if(fixes.CLEAN)toTrash.forEach (f=>f.setTrashed(true))
     if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
   })
 
@@ -398,7 +468,7 @@ const testFakes = () => {
     t.rxMatch(t.threw(() => DriveApp.createFile(mname)).toString(), /The parameters \(String\)/)
     t.rxMatch(t.threw(() => DriveApp.createFile(Utilities.newBlob(""))).toString(), /Blob object must have non-null name for this operation./)
     
-    toTrash.forEach (f=>f.setTrashed(true))
+    if(fixes.CLEAN)toTrash.forEach (f=>f.setTrashed(true))
     if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
   })
 
@@ -469,7 +539,6 @@ const testFakes = () => {
   })
 
 
-
   unit.section('driveapp basics and Drive equivalence', t => {
     t.is(DriveApp.toString(), "Drive")
     t.is(DriveApp.getRootFolder().toString(), "My Drive")
@@ -491,8 +560,6 @@ const testFakes = () => {
     if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
 
   })
-
-
 
   unit.section('adv drive downloads', t => {
     const r = Drive.Files.download(fixes.TEXT_FILE_ID)
@@ -526,15 +593,10 @@ const testFakes = () => {
 
   })
 
-
   unit.section('check where google doesnt support in adv drive', t => {
     t.rxMatch(t.threw(() => Drive.Operations.list()).toString(), /is not implemented, or supported, or enabled/)
 
   })
-
-
-
-
 
   unit.section("exotic driveapps versus Drive", t => {
 
@@ -557,67 +619,9 @@ const testFakes = () => {
     }
 
     t.true(rootPdfPile.length >= fixes.MIN_ROOT_PDFS)
-
-
-    /*
-     const drivePile = Drive.Files.list ({
-       orderBy: "createdTime,name",
-       fields: "files(name,id,size)",
-       pageSize: 100,
-       q: "name contains 's' and mimeType='application/pdf'"
-     })
-       */
     if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
   })
 
-
-  unit.section("driveapp searches", t => {
-
-    // driveapp itself isnt actually a folder although it shares many of the methods
-    // this is the folder that DriveApp represents
-    const root = DriveApp.getRootFolder()
-
-    // this gets the folders directly under root
-    const folders = root.getFolders()
-
-    const parentCheck = (folders, grandad, folderPile = []) => {
-      while (folders.hasNext()) {
-        const folder = folders.next()
-        folderPile.push(folder)
-
-        // note that parents is an iterator, not an array
-        const parents = folder.getParents()
-        t.true(Reflect.has(parents, "next"))
-        t.true(Reflect.has(parents, "hasNext"))
-
-        // and the next operation should get the meta data of the parent, not just the id
-        // in this case there should one be 1
-        const parentPile = []
-        while (parents.hasNext()) {
-          const parent = parents.next()
-          t.is(parent.getName(), grandad.getName())
-          t.is(parent.getId(), grandad.getId())
-          parentPile.push(parent)
-        }
-        // not really expecting multiple parents nowadays.
-        t.is(parentPile.length, 1, { skip: fixes.SKIP_SINGLE_PARENT })
-      }
-      return folderPile
-    }
-    const folderPile = parentCheck(folders, root)
-
-    // MYDRIVE I know i have at least thes number of folders in the root
-    t.true(folderPile.length > fixes.MIN_FOLDERS_ROOT)
-
-    // I know i have a folder called this
-    const math = folderPile.find(f => f.getName() === fixes.TEST_FOLDER_NAME)
-    t.is(math.getName(), fixes.TEST_FOLDER_NAME)
-    const files = math.getFiles()
-    const pile = parentCheck(files, math)
-
-    // i know i have 3 files in math
-    t.is(pile.length, fixes.TEST_FOLDER_FILES)
-  }, { skip: false })
 
 
 
@@ -1042,6 +1046,7 @@ const testFakes = () => {
     skip: true
   })
 
+  if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
   unit.report()
 }
 

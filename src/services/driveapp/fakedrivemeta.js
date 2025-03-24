@@ -14,6 +14,7 @@ import { getParentsIterator, getPermissionIterator } from './fakedriveiterators.
 import { newFakeUser } from '../session/fakeuser.js';
 import { improveFileCache } from "../../support/filecache.js"
 
+
 /**
  * basic fake File meta data
  * these are shared between folders and files
@@ -32,6 +33,16 @@ export class FakeDriveMeta {
     this.__gas_fake_service = "DriveApp"
   }
 
+  __preventRootDamage = (operation) => {
+    if (this.__isRoot) {
+      console.log (`Can't do ${operation} on root folder`)
+      throw new Error("Access denied: DriveApp")
+    }
+  }
+  get __isRoot () {
+    const parents = this.__getDecorated("parents")
+    return is.null (parents)
+  }
   /**
    * for enhancing the file with fields not retrieved by default
    * @param {string} fields='' the required fields
@@ -43,7 +54,6 @@ export class FakeDriveMeta {
       throw new Error('decorate fields was not a non empty string')
     }
     const sf = fields.split(",")
-
     if (sf.every(f => Reflect.has(this.meta, f))) {
       return this
     }
@@ -51,6 +61,7 @@ export class FakeDriveMeta {
     const newMeta = Drive.Files.get(this.getId(), { fields }, { allow404: false })
     // need to merge this with already known fields
     this.meta = { ...this.meta, ...newMeta }
+    improveFileCache (this.getId(), this.meta, fields)
     return this
   }
 
@@ -78,6 +89,9 @@ export class FakeDriveMeta {
    */
   __updateMeta(prop, value, type, ...args) {
 
+    // cant update any meta on root folder
+    this.__preventRootDamage (`set ${prop}`)
+    
     const matchThrow = () => argsMatchThrow(args)
     if (!is[type](value)) {
       matchThrow()
@@ -202,6 +216,9 @@ export class FakeDriveMeta {
       throw new Error (`expected to find destination id as a string but got ${newParent}`)
     }
 
+    // cant move the root folder
+    this.__preventRootDamage("move")
+
     // we cant just fix the resource parents, we have to add and remove
     // so that's a 2 step
     const params = {
@@ -268,6 +285,7 @@ export class FakeDriveMeta {
    * @returns {FakeDriveFile|FakeDriveFolder} this self
    */
   setTrashed(value) {
+    this.__preventRootDamage("trash")
     return this.__updateMeta("trashed", value, "boolean", arguments)
   }
 
