@@ -1,6 +1,10 @@
+# load in environment variables from root folder
+ROOT_DIRECTORY=$(git rev-parse --show-toplevel)
+source "$ROOT_DIRECTORY/.env"
+
 # check tokens have scopes required for DRIVE access
 # set below to a fileid on drive you have access to
-FILE_ID=SOME_FILE_ID
+FILE_ID=$DRIVE_TEST_FILE_ID
 
 # get the access tokens and current project
 ADT=$(gcloud auth application-default print-access-token)

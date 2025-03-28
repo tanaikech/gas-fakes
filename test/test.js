@@ -27,38 +27,38 @@ const testFakes = () => {
     unitExports.CodeLocator.setScriptId(ScriptApp.getScriptId())
   }
 
-  // these are som fixtures to test applicable to my own drive
+  // these are fixtures to test
+  // using process.env creates strings, convert to appropriate types as needed
   const fixes = {
-    MIN_ROOT_PDFS: 20,
-    MIN_PDFS: 400,
-    MIN_FOLDERS_ROOT: 110,
-    TEST_FOLDER_NAME: "math",
-    TEST_FOLDER_FILES: 3,
-    SKIP_SINGLE_PARENT: true,
-    TEXT_FILE_NAME: 'fake.txt',
-    TEST_FOLDER_ID: '1Zww9oCTFR7zYcUYXxd70yQr3sw6VdLG-',
-    TEXT_FILE_ID: '1142Vn7W-pGl5nWLpUSkpOB82JDiz9R6p',
-    TEXT_FILE_TYPE: 'text/plain',
-    TEXT_FILE_CONTENT: 'foo is not bar',
-    BLOB_NAME: 'foo.txt',
-    BLOB_TYPE: 'text/plain',
-    TEST_SHEET_ID: '1DlKpVVYCrCPNfRbGsz6N_K3oPTgdC9gQIKi0aNb42uI',
-    TEST_SHEET_NAME: 'sharedlibraries',
-    EMAIL: 'bruce@mcpher.com',
-    TIMEZONE: 'Europe/London',
-    LOCALE: 'en_US',
-    ZIP_TYPE: "application/zip",
-    KIND_DRIVE: "drive#file",
-    OWNER_NAME: "Bruce Mcpherson",
-    PUBLIC_SHARE_FILE_ID: "1OFJk38kW9TRrEf-B9F1gTZk2uLV-ZSpR",
-    SHARED_FILE_ID: "1uz4cxEDxtQzu0cBb1B4h6fsjgWy7hNFf",
-    RANDOM_IMAGE: "https://picsum.photos/200",
-    API_URL: "http://suggestqueries.google.com/complete/search?client=chrome&hl=en&q=trump",
-    API_TYPE: "text/javascript",
-    // we can compare files created on either side if necessary - set CLEAN to false
-    PREFIX:Drive.isFake ? "--f" : "--g",
-    PDF_ID: "1-YBGiTRfIYcmYUMNzNJEDlEmKAbyQqz8",
-    CLEAN: true
+    MIN_ROOT_PDFS: Number(process.env.MIN_NUM_ROOT_PDFS),
+    MIN_PDFS: Number(process.env.MIN_NUM_PDFS),
+    MIN_FOLDERS_ROOT: process.env.MIN_FOLDERS_ROOT,
+    TEST_FOLDER_NAME: process.env.TEST_FOLDER_NAME,
+    TEST_FOLDER_FILES: Number(process.env.TEST_FOLDER_NUM_CHILD_FILES),
+    SKIP_SINGLE_PARENT: process.env.SKIP_SINGLE_PARENT === 'true',
+    TEST_FOLDER_ID: process.env.TEST_FOLDER_ID,
+    TEXT_FILE_NAME: process.env.TEXT_FILE_NAME,
+    TEXT_FILE_ID: process.env.TEXT_FILE_ID,
+    TEXT_FILE_TYPE: process.env.TEXT_FILE_TYPE,
+    TEXT_FILE_CONTENT: process.env.TEXT_FILE_CONTENT,
+    BLOB_NAME: process.env.BLOB_NAME,
+    BLOB_TYPE: process.env.BLOB_TYPE,
+    TEST_SHEET_ID: process.env.TEST_SHEET_ID,
+    TEST_SHEET_NAME: process.env.TEST_SHEET_NAME,
+    EMAIL: process.env.EMAIL,
+    TIMEZONE: process.env.TIMEZONE,
+    LOCALE: process.env.LOCALE,
+    ZIP_TYPE: process.env.ZIP_TYPE,
+    KIND_DRIVE: process.env.KIND_DRIVE,
+    OWNER_NAME: process.env.OWNER_NAME,
+    PUBLIC_SHARE_FILE_ID: process.env.PUBLIC_SHARE_FILE_ID,
+    SHARED_FILE_ID: process.env.SHARED_FILE_ID,
+    RANDOM_IMAGE: process.env.RANDOM_IMAGE,
+    API_URL: process.env.API_URL,
+    API_TYPE: process.env.API_TYPE,
+    PREFIX: Drive.isFake ? "--f" : "--g",
+    PDF_ID: process.env.PDF_ID,
+    CLEAN: process.env.CLEAN === 'true'
   }
 
   unit.section ("root folder checks", t=> {
@@ -118,12 +118,12 @@ const testFakes = () => {
     t.true(folderPile.length > fixes.MIN_FOLDERS_ROOT)
 
     // I know i have a folder called this
-    const math = folderPile.find(f => f.getName() === fixes.TEST_FOLDER_NAME)
-    t.is(math.getName(), fixes.TEST_FOLDER_NAME)
-    const files = math.getFiles()
-    const pile = parentCheck(files, math)
+    const knownTestFolder = folderPile.find(f => f.getName() === fixes.TEST_FOLDER_NAME)
+    t.is(knownTestFolder.getName(), fixes.TEST_FOLDER_NAME)
+    const files = knownTestFolder.getFiles()
+    const pile = parentCheck(files, knownTestFolder)
 
-    // i know i have 3 files in math
+    // i know i have this number of files in the folder
     t.is(pile.length, fixes.TEST_FOLDER_FILES)
 
     if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
