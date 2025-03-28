@@ -1,11 +1,14 @@
 {
+  "engines": {
+    "node": ">=20.11.0"
+  },
   "dependencies": {
     "@mcpher/unit": "^1.1.10",
     "@mcpher/gas-fakes": "^1.0.2"
   },
   "type": "module",
   "scripts": {
-    "test": "node test.js"
+    "test": "node --env-file=../.env test.js"
   },
   "name": "test-gas-fakes",
   "version": "1.0.1",

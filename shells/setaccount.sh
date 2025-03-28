@@ -1,15 +1,19 @@
+# load in environment variables from root folder
+ROOT_DIRECTORY=$(git rev-parse --show-toplevel)
+source "$ROOT_DIRECTORY/.env"
+
 # project ID
-P=YOUR_GCP_PROJECT_ID
+P=$GCP_PROJECT_ID
 
 # config to activate - multiple configs can each be named
 # here we're working on the default project configuration
 AC=default
 
 # these are the ones it sets by default - take some of these out if you want to minimize access
-DEFAULT_SCOPES="https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/drive,openid,https://www.googleapis.com/auth/cloud-platform,https://www.googleapis.com/auth/sqlservice.login"
+DEFAULT_SCOPES=$DEFAULT_SCOPES
 
 # these are the ones we want to add (note comma at beginning)
-EXTRA_SCOPES=",https://www.googleapis.com/auth/drive,https://www.googleapis.com/auth/spreadsheets"
+EXTRA_SCOPES=$EXTRA_SCOPES
 
 SCOPES="${DEFAULT_SCOPES}${EXTRA_SCOPES}"
 
