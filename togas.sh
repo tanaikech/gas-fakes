@@ -31,9 +31,6 @@ sed -i 's/^\s*export\s\s*//g' $(find "${TARGET}" -name "${EXT}" -type f)
 # process.env is not usable in apps script
 for var in $(grep -oP 'process\.env\.\K\w+' "${TARGET}/test/test.js"); do
     value=$(printenv "$var")  # Get the environment variable value
-    echo $value
-    v="\"$value\""
-    echo $v
     # Check if the value contains non-numeric characters (treat as a string)
     if [[ "$value" =~ [^0-9] ]]; then
         value="\"$value\""  # Add double quotes
