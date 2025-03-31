@@ -10,7 +10,8 @@ import path from 'path'
 import { Auth } from "./auth.js"
 import { randomUUID } from 'node:crypto'
 import mime from 'mime';
-import { sxStreamUpMedia, sxApi, sxDriveMedia } from './sxdrive.js';
+import { sxStreamUpMedia,  sxDriveMedia } from './sxdrive.js';
+import { sxApi } from './sxapi.js';
 import { sxStore } from './sxstore.js'
 import { sxInit } from './sxauth.js'
 import { sxZipper, sxUnzipper } from './sxzip.js';

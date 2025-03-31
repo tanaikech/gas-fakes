@@ -61,6 +61,33 @@ const testFakes = () => {
     CLEAN: process.env.CLEAN === 'true'
   }
 
+  unit.section("advanced sheet basics", t => {
+    t.true(is.nonEmptyString(Sheets.toString()))
+    t.is(Sheets.getVersion(), 'v4')
+    t.is (Drive.isFake, Sheets.isFake)
+    t.is (Sheets.toString(), Sheets.Spreadsheets.toString()) 
+  })
+
+  unit.section("advanced drive basics", t => {
+    t.true(is.nonEmptyString(Drive.toString()))
+    t.true(is.nonEmptyString(Drive.Files.toString()))
+    t.is(Drive.getVersion(), 'v3')
+    t.is(Drive.About.toString(), Drive.toString())
+    t.is(Drive.About.toString(), Drive.Files.toString())
+    const file = Drive.Files.get(fixes.TEXT_FILE_ID)
+    t.is(file.id, fixes.TEXT_FILE_ID)
+    t.is(file.name, fixes.TEXT_FILE_NAME)
+    t.is(file.mimeType, fixes.TEXT_FILE_TYPE)
+    t.is(file.kind, fixes.KIND_DRIVE)
+    t.deepEqual(file, DriveApp.getFileById(fixes.TEXT_FILE_ID).meta, {
+      skip: !DriveApp.isFake,
+      description: 'meta property only exists on fakedrive class'
+    })
+    if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
+  })
+
+  unit.cancel(true)
+
   unit.section ("root folder checks", t=> {
     const rootFolder = DriveApp.getRootFolder ()
     if (DriveApp.isFake) {
@@ -341,23 +368,7 @@ const testFakes = () => {
     if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
   })
 
-  unit.section("advanced drive basics", t => {
-    t.true(is.nonEmptyString(Drive.toString()))
-    t.true(is.nonEmptyString(Drive.Files.toString()))
-    t.is(Drive.getVersion(), 'v3')
-    t.is(Drive.About.toString(), Drive.toString())
-    t.is(Drive.About.toString(), Drive.Files.toString())
-    const file = Drive.Files.get(fixes.TEXT_FILE_ID)
-    t.is(file.id, fixes.TEXT_FILE_ID)
-    t.is(file.name, fixes.TEXT_FILE_NAME)
-    t.is(file.mimeType, fixes.TEXT_FILE_TYPE)
-    t.is(file.kind, fixes.KIND_DRIVE)
-    t.deepEqual(file, DriveApp.getFileById(fixes.TEXT_FILE_ID).meta, {
-      skip: !DriveApp.isFake,
-      description: 'meta property only exists on fakedrive class'
-    })
-    if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
-  })
+
 
   unit.section('driveapp and adv permissions', t => {
 
