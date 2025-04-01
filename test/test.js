@@ -64,9 +64,44 @@ const testFakes = () => {
   unit.section("advanced sheet basics", t => {
     t.true(is.nonEmptyString(Sheets.toString()))
     t.is(Sheets.getVersion(), 'v4')
-    t.is (Drive.isFake, Sheets.isFake)
+    t.is (Drive.isFake, Sheets.isFake, {
+      neverUndefined: false
+    })
     t.is (Sheets.toString(), Sheets.Spreadsheets.toString()) 
+    const ss = Sheets.Spreadsheets.get(fixes.TEST_SHEET_ID)
+    t.is(ss.spreadsheetId, fixes.TEST_SHEET_ID)
+    t.true(is.nonEmptyObject(ss.properties))
+    t.is(ss.properties.title, fixes.TEST_SHEET_NAME)
+    t.is(ss.properties.autoRecalc, "ON_CHANGE")
+    t.true(is.nonEmptyObject(ss.properties.defaultFormat))
+    t.true(is.nonEmptyObject(ss.properties.spreadsheetTheme))
+    t.true(is.array(ss.sheets))
+    t.truthy(ss.sheets.length)
+    t.true(is.nonEmptyString(ss.spreadsheetUrl))  
   })
+
+  unit.section("spreadsheetapp basics", t=> {
+    const ass =  Sheets.Spreadsheets.get(fixes.TEST_SHEET_ID)
+    const ss = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
+    t.is(ss.getId(), fixes.TEST_SHEET_ID)
+    t.is(ss.getName(), fixes.TEST_SHEET_NAME)
+    t.is(ss.getNumSheets(), ass.sheets.length)
+    const sheets = ss.getSheets()
+    t.is(sheets.length, ass.sheets.length)
+
+    sheets.forEach((s,i)=> {
+      t.is(s.getName(), ass.sheets[i].properties.title)
+      t.is(s.getSheetId(), ass.sheets[i].properties.sheetId)
+      t.is(s.getIndex(),i+1)
+      t.true(is.number(s.getSheetId()))
+      t.is(s.getName(),s.getSheetName())
+      t.is(s.getMaxColumns(),ass.sheets[i].properties.gridProperties.columnCount)
+      t.is(s.getMaxRows(),ass.sheets[i].properties.gridProperties.rowCount)
+      t.is(s.getType().toString(),ass.sheets[i].properties.sheetType)
+    })
+
+  })
+
 
   unit.section("advanced drive basics", t => {
     t.true(is.nonEmptyString(Drive.toString()))
@@ -86,7 +121,7 @@ const testFakes = () => {
     if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
   })
 
-  unit.cancel(true)
+
 
   unit.section ("root folder checks", t=> {
     const rootFolder = DriveApp.getRootFolder ()
@@ -927,28 +962,6 @@ const testFakes = () => {
       description: 'skip on Apps Script till bug is fixed'
     })
 
-  }, {
-    skip: false
-  })
-
-
-  unit.section("WIP spreadsheet app", t => {
-    const sap = SpreadsheetApp
-    t.true(is.object(sap.SheetType))
-    t.is(sap.SheetType.GRID.toString(), "GRID")
-    t.truthy(sap.ValueType.IMAGE)
-    t.falsey(sap.ValueType.RUBBISH)
-    const ss = sap.openById(fixes.TEST_SHEET_ID)
-    t.is(ss.getId(), fixes.TEST_SHEET_ID)
-
-    // this'll be null if there's no bound sheet
-    const ass = sap.getActiveSpreadsheet()
-
-    t.true(is.object(ass) || ass === null)
-    if (ass) {
-      t.is(ass.getId(), fixes.TEST_SHEET_ID)
-      t.is(ass.getName(), fixes.TEST_SHEET_NAME)
-    }
   }, {
     skip: false
   })

@@ -5,7 +5,7 @@
  * We do this by using a proxy, intercepting calls to the 
  * initial sigleton and diverting them to a completed one
  */
-import { newFakeSpreadsheetApp} from './fakesheet.js'
+import { newFakeSpreadsheetApp} from './fakespreadsheetapp.js'
 import { Proxies } from '../../support/proxies.js'
 
 // This will eventually hold a proxy for DriveApp

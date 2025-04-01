@@ -1,23 +1,6 @@
 import { Proxies } from '../../support/proxies.js'
-import { spreadsheetType } from '../../support/helpers.js'
-import { Auth } from '../../support/auth.js'
-/**
- * create a new FakeSpreadsheetApp instance
- * @param  {...any} args 
- * @returns {FakeSpreadsheetApp}
- */
-export const newFakeSpreadsheetApp = (...args) => {
-  return Proxies.guard(new FakeSpreadsheetApp(...args))
-}
 
-/**
- * create a new FakeSpreadsheet instance
- * @param  {...any} args 
- * @returns {FakeSpreadsheet}
- */
-export const newFakeSpreadsheet = (...args) => {
-  return Proxies.guard(new FakeSpreadsheet(...args))
-}
+
 
 // private properties are identified with leading __
 // this will signal to the proxy handler that it's okay to set them
@@ -38,118 +21,167 @@ export const newFakeSheet = (...args) => {
  */
 export class FakeSheet {
 
-  constructor(parent) {
-    this.__parent = parent
+  constructor(sheet) {
+    this.__sheet = sheet
+    const props = ['toString',
+      'activate',
+      'autoResizeColumns',
+      'autoResizeRows',
+      'setColumnWidths',
+      'setRowHeights',
+      'setRowHeightsForced',
+      'isRightToLeft',
+      'setRightToLeft',
+      'hasHiddenGridlines',
+      'setHiddenGridlines',
+      'setConditionalFormatRules',
+      'getConditionalFormatRules',
+      'getRowGroupControlPosition',
+      'getColumnGroupControlPosition',
+      'setRowGroupControlPosition',
+      'setColumnGroupControlPosition',
+      'expandRowGroupsUpToDepth',
+      'expandColumnGroupsUpToDepth',
+      'collapseAllColumnGroups',
+      'clearComments',
+      'clearFormats',
+      'getTabColor',
+      'getTabColorObject',
+      'setTabColor',
+      'setTabColorObject',
+      'insertRows',
+      'hideColumns',
+      'showColumns',
+      'hideRows',
+      'showRows',
+      'hideSheet',
+      'showSheet',
+      'isSheetHidden',
+      'moveRows',
+      'moveColumns',
+      'getPivotTables',
+      'getRowGroupDepth',
+      'getColumnGroupDepth',
+      'getRowGroup',
+      'getColumnGroup',
+      'expandAllRowGroups',
+      'collapseAllRowGroups',
+      'expandAllColumnGroups',
+      'asDataSourceSheet',
+      'getSlicers',
+      'insertSlicer',
+      'getDrawings',
+      'insertColumns',
+      'clearConditionalFormatRules',
+      'protect',
+      'clearNotes',
+      'insertChart',
+      'removeChart',
+      'updateChart',
+      'newChart',
+      'getRange',
+      'clearContents',
+      'getCharts',
+      'createDeveloperMetadataFinder',
+      'getDataSourceUrl',
+      'deleteRows',
+      'getNamedRanges',
+      'getFormUrl',
+      'getProtections',
+      'getBandings',
+      'createTextFinder',
+      'addDeveloperMetadata',
+      'getDeveloperMetadata',
+      'deleteColumns',
+      'copyTo',
+      'clear',
+      'getParent',
+      'setName',
+      'getFilter',
+      'getImages',
+      'getDataSourcePivotTables',
+      'getCurrentCell',
+      'getActiveRange',
+      'getActiveRangeList',
+      'getSelection',
+      'setCurrentCell',
+      'setActiveRange',
+      'setActiveRangeList',
+      'insertRowAfter',
+      'deleteColumn',
+      'deleteRow',
+      'getRangeList',
+      'getActiveCell',
+      'getActiveSelection',
+      'getLastRow',
+      'getLastColumn',
+      'getDataRange',
+      'getColumnWidth',
+      'getRowHeight',
+      'isRowHiddenByUser',
+      'isColumnHiddenByUser',
+      'getSheetValues',
+      'getFrozenRows',
+      'getFrozenColumns',
+      'hideColumn',
+      'hideRow',
+      'insertColumnAfter',
+      'insertColumnBefore',
+      'insertColumnsAfter',
+      'insertColumnsBefore',
+      'insertImage',
+      'insertRowBefore',
+      'insertRowsAfter',
+      'insertRowsBefore',
+      'revealColumn',
+      'unhideColumn',
+      'revealRow',
+      'unhideRow',
+      'setActiveCell',
+      'setActiveSelection',
+      'autoResizeColumn',
+      'setColumnWidth',
+      'setFrozenColumns',
+      'setFrozenRows',
+      'setRowHeight',
+      'getSheetPermissions',
+      'setSheetPermissions',
+      'getSheetProtection',
+      'setSheetProtection',
+      'appendRow',
+      'getDataSourceTables',
+      'getDataSourceFormulas',
+      'isRowHiddenByFilter',
+      'find',
+      'sort']
+    props.forEach(f => {
+      this[f] = () => {
+        return notYetImplemented()
+      }
+    })
   }
-  getParent() {
-    return this.__parent
+  getIndex() {
+    // spreadsheetapp is 1 based, adv is 0 based
+    return this.__sheet.properties.index +1
   }
-}
-
-/**
- * basic fake FakeSpreadsheet
- * TODO add lots more methods
- * @class FakeSpreadsheet
- * @returns {FakeSpreadsheet}
- */
-export class FakeSpreadsheet {
-
-  constructor(file) {
-    if (file.getMimeType() !== spreadsheetType) {
-      throw `file is not a spreadsheet - its a ${file.getMimeType()}`
-    }
-    this.file = file
-    this.__activeSheet = null
-  }
-  getActiveSheet() {
-    return this.__activeSheet
-  }
-  /**
-   *  @return {string} the spreadsheet id
-   */
-  getId() {
-    return this.file.getId()
-  }
-  /**
-   *  @return {string} the spreadsheet name
-   */
   getName() {
-    return this.file.getName()
+    return this.__sheet.properties.title
   }
-  /**
-   * @return {number} number of sheets in the spreadsheet
-   */
-  getNumSheets () {
-    return 0
+  getSheetId() {
+    return this.__sheet.properties.sheetId
   }
-}
-
-
-/**
- * basic fake FakeSpreadsheetApp
- * TODO add lots more methods
- * @class FakeSpreadsheetApp
- * @returns {FakeSpreadsheetApp}
- */
-export class FakeSpreadsheetApp {
-  
-  static open = (id) => {
-    const file = DriveApp.getFileById(id)
-    const ss = newFakeSpreadsheet(file)
-    return ss
+  getSheetName() {
+    return this.getName()
   }
-
-  constructor() {
-    const documentId = Auth.getDocumentId()
-    this.__activeSpreadsheet = documentId ? FakeSpreadsheetApp.open (documentId) : null
+  getMaxRows() {
+    return this.__sheet.properties.gridProperties.rowCount
   }
-
-  getActiveSpreadsheet() {
-    return this.__activeSpreadsheet
+  getMaxColumns() {
+    return this.__sheet.properties.gridProperties.columnCount
   }
-  getActiveSheet() {
-    return this.__activeSpreadsheet?.getActiveSheet() || null
-  }
-  /**
-   * @param {FakeFile} file sheet as a file
-   * @return {FakeSpreadsheet}
-   */
-  open(file) {
-    return this.openById (file.id)
-  }
-  /**
-   * @param {string} id file id
-   * @return {FakeSpreadsheet}
-   */
-  openById(id) {
-    return FakeSpreadsheetApp.open (id)
+  getType() {
+    return this.__sheet.properties.sheetType
   }
 
 
-  /**
-   * The different types of sheets that can exist in a spreadsheet.
-   * @returns {object}
-   */
-  get SheetType() {
-    return {
-      "GRID": "GRID", 	//Enum	A sheet containing a grid. This is the default type.
-      "OBJECT": "OBJECT", //Enum	A sheet containing a single embedded object such as an EmbeddedChart.
-      "DATASOURCE": "DATASOURCE" //Enum	A sheet containing a DataSource.
-    }
-  }
-
-  /**
-   * An enumeration of value types returned by Range.getValue() and Range.getValues() from the Range class of the Spreadsheet service. 
-   * @returns {object}
-   * 
-   */
-  get ValueType() {
-    return {
-      "number": "number",
-      "boolean": "boolean",
-      "date": "date",
-      "string": "string",
-      "IMAGE": "IMAGE"
-    }
-  }
 }

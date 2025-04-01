@@ -22,7 +22,7 @@ import { improveFileCache, checkResponse, getFromFileCache } from "./filecache.j
 
 const authPath = "../support/auth.js"
 const drapisPath = "../services/driveapp/drapis.js"
-const shapisPath = "../services/drive/shapis.js"
+const shapisPath = "../services/spreadsheetapp/shapis.js"
 const kvPath = '../support/kv.js'
 const manifestDefaultPath = './appsscript.json'
 const claspDefaultPath = "./.clasp.json"
@@ -111,13 +111,34 @@ const fxStreamUpMedia = ({ file = {}, blob, fields = "", method = "create", file
  */
 const fxDrive = ({ prop, method, params }) => {
 
-  // fixup the fields param
-
   const scopes = Array.from(Auth.getAuthedScopes().keys())
   return fxApi({
     prop,
     method,
     apiPath: drapisPath,
+    authPath,
+    scopes,
+    params
+  })
+
+}
+
+/**
+ * sync a call to sheets api
+ * @param {object} p pargs
+ * @param {string} p.prop the prop of sheet eg 'spreadsheets' for sheets.spreadsheets
+ * @param {string} p.method the method of drive eg 'get' for sheets.spreadsheets.get
+ * @param {object} p.params the params to add to the request
+ * @return {SheetsResponse} from the sheets api
+ */
+const fxSheets = ({ prop, method, params }) => {
+
+
+  const scopes = Array.from(Auth.getAuthedScopes().keys())
+  return fxApi({
+    prop,
+    method,
+    apiPath: shapisPath,
     authPath,
     scopes,
     params
@@ -383,5 +404,6 @@ export const Syncit = {
   fxZipper,
   fxUnzipper,
   fxStreamUpMedia,
-  fxDriveGet
+  fxDriveGet,
+  fxSheets
 }
