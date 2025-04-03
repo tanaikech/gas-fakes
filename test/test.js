@@ -101,7 +101,26 @@ const testFakes = () => {
 
   })
 
+  unit.section("advanced sheet basics", t => {
+    t.true(is.nonEmptyString(Sheets.toString()))
+    t.is(Sheets.getVersion(), 'v4')
+    t.is(Drive.isFake, Sheets.isFake, {
+      neverUndefined: false
+    })
+    t.is(Sheets.toString(), Sheets.Spreadsheets.toString())
+    const ss = Sheets.Spreadsheets.get(fixes.TEST_SHEET_ID)
+    t.is(ss.spreadsheetId, fixes.TEST_SHEET_ID)
+    t.true(is.nonEmptyObject(ss.properties))
+    t.is(ss.properties.title, fixes.TEST_SHEET_NAME)
+    t.is(ss.properties.autoRecalc, "ON_CHANGE")
+    t.true(is.nonEmptyObject(ss.properties.defaultFormat))
+    t.true(is.nonEmptyObject(ss.properties.spreadsheetTheme))
+    t.true(is.array(ss.sheets))
+    t.truthy(ss.sheets.length)
+    t.true(is.nonEmptyString(ss.spreadsheetUrl))
 
+  })
+  
   unit.section("advanced drive basics", t => {
     t.true(is.nonEmptyString(Drive.toString()))
     t.true(is.nonEmptyString(Drive.Files.toString()))
@@ -1068,26 +1087,7 @@ const testFakes = () => {
     skip: true
   })
 
-  unit.section("advanced sheet basics", t => {
-    t.true(is.nonEmptyString(Sheets.toString()))
-    t.is(Sheets.getVersion(), 'v4')
-    t.is(Drive.isFake, Sheets.isFake, {
-      neverUndefined: false
-    })
-    t.is(Sheets.toString(), Sheets.Spreadsheets.toString())
-    const ss = Sheets.Spreadsheets.get(fixes.TEST_SHEET_ID)
-    t.is(ss.spreadsheetId, fixes.TEST_SHEET_ID)
-    t.true(is.nonEmptyObject(ss.properties))
-    t.is(ss.properties.title, fixes.TEST_SHEET_NAME)
-    t.is(ss.properties.autoRecalc, "ON_CHANGE")
-    t.true(is.nonEmptyObject(ss.properties.defaultFormat))
-    t.true(is.nonEmptyObject(ss.properties.spreadsheetTheme))
-    t.true(is.array(ss.sheets))
-    t.truthy(ss.sheets.length)
-    t.true(is.nonEmptyString(ss.spreadsheetUrl))
 
-
-  })
 
 
 
