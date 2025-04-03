@@ -1,5 +1,6 @@
 import { Proxies } from '../../support/proxies.js'
 import { newFakeSpreadsheet } from './fakespreadsheet.js'
+import { notYetImplemented } from '../../support/helpers.js'
 
 /**
  * create a new FakeSpreadsheetApp instance
@@ -20,14 +21,13 @@ export class FakeSpreadsheetApp {
 
   constructor() {
     const props = ['toString',
-      'openByUrl',
+
       'getActive',
       'newConditionalFormatRule',
       'enableBigQueryExecution',
       'enableAllDataSourcesExecution',
       'newTextStyle',
       'enableLookerExecution',
-      'openByKey',
       'getActiveSpreadsheet',
       'getActiveSheet',
       'getCurrentCell',
@@ -93,11 +93,28 @@ export class FakeSpreadsheetApp {
   }
 
   /**
+   * this one is probably deprecated
+   * @param {string} id file id
+   * @return {FakeSpreadsheet}
+   */
+  openByKey(id) {
+    return this.openById(id)
+  }
+
+  /**
    * @param {string} id file id
    * @return {FakeSpreadsheet}
    */
   openById(id) {
     return newFakeSpreadsheet(Sheets.Spreadsheets.get(id, {}, { ss: true }))
+  }
+  /**
+   * url looks like this https://docs.google.com/spreadsheets/d/1lc7YcqMuP1ap23FFW0EqywyLojBmHTKZde_0cYcyPSQ/edit?gid=907032523#gid=907032523
+   * @param {string} url 
+   * @return {FakeSpreadsheet}
+   */
+  openByUrl(url) {
+    return this.openById(url.replace(/.*\/spreadsheets\/d\/([^\/]*).*/i, "$1"))
   }
 
 }

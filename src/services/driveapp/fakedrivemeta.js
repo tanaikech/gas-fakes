@@ -9,11 +9,10 @@
  */
 
 import is from '@sindresorhus/is';
-import { isFolder, notYetImplemented, argsMatchThrow, isFakeFolder, minFields } from '../../support/helpers.js'
-import { getParentsIterator, getPermissionIterator } from './fakedriveiterators.js';
-import { newFakeUser } from '../session/fakeuser.js';
+import { isFolder, notYetImplemented, argsMatchThrow, isFakeFolder } from '../../support/helpers.js'
+import { getParentsIterator } from './driveiterators.js';
 import { improveFileCache } from "../../support/filecache.js"
-
+import { getSharers } from '../../support/filesharers.js';
 
 /**
  * basic fake File meta data
@@ -350,26 +349,3 @@ export class FakeDriveMeta {
   }
 }
 
-/**
- * get the file sharers
- * @returns {FakeUser} the file viewers
- */
-const getSharers = (id, role) => {
-  const pit = getPermissionIterator({ id })
-  const viewers = []
-  while (pit.hasNext()) {
-    const permission = pit.next()
-    if (permission.role === role && permission.type === "user") viewers.push(makeUserFromPermission(permission))
-  }
-  return viewers
-}
-
-
-const makeUserFromPermission = (permission) => {
-  return newFakeUser({
-    email: permission.emailAddress,
-    photoUrl: permission.photoLink,
-    name: permission.displayName,
-    domain: permission.domain
-  })
-}

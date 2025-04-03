@@ -1,15 +1,11 @@
-import { newFakeDriveFile } from "./fakedrivefile.js"
-import { newFakeDriveFolder } from "./fakedrivefolder.js"
 import { minFields, isFolder, notYetImplemented } from '../../support/helpers.js'
 import { Utils } from '../../support/utils.js'
 import { settleAsBlob } from "../utilities/fakeblob.js"
-import is from '@sindresorhus/is';
 import { Syncit } from "../../support/syncit.js"
 import { checkResponse, improveFileCache } from "../../support/filecache.js"
-import { getFilesIterator } from "./fakedriveiterators.js"
+import { getFilesIterator } from './driveiterators.js';
 
-
-
+const { is } = Utils
 
 /**
  * methods shared between driveapp and folder
