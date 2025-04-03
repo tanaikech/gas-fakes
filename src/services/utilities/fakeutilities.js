@@ -3,7 +3,7 @@ import { Proxies } from '../../support/proxies.js'
 import { newFakeBlob } from './fakeblob.js'
 import { Utils } from '../../support/utils.js'
 import { gzipType, zipType } from '../../support/helpers.js'
-import { randomUUID } from 'node:crypto'
+import { randomUUID, createHmac } from 'node:crypto'
 import { gzipSync , gunzipSync} from 'node:zlib'
 import { Syncit } from '../../support/syncit.js';
 
@@ -98,6 +98,18 @@ class FakeUtilities {
 
   base64DecodeWebSafe (b64) {
     return Utils.settleAsBytes (Buffer.from (b64, 'base64url')) 
+  }
+
+  /**
+   * Signs the provided value using HMAC-SHA256 with the given key. 
+   * @param {string} value
+   * @param {string} key
+   * @returns {Byte[]} signed integer byte array
+   */
+  computeHmacSha256Signature(value, key) {
+    const signatureBuffer = createHmac('sha256', key).update(value).digest()
+    // GAS uses signed integers so convert to signed before returning
+    return Array.from(new Int8Array(signatureBuffer))
   }
 
 }

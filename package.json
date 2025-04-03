@@ -21,7 +21,7 @@
   },
   "type": "module",
   "scripts": {
-    "test": "node --env-file=.env ./test/test.js",
+    "test": "node --env-file=.env ./test/test_utils.js",
     "pub": "npm publish --access public"
   },
   "name": "@mcpher/gas-fakes",
