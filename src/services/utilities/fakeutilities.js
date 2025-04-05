@@ -2,13 +2,41 @@ import sleepSynchronously from 'sleep-synchronously';
 import { Proxies } from '../../support/proxies.js'
 import { newFakeBlob } from './fakeblob.js'
 import { Utils } from '../../support/utils.js'
-import { gzipType, zipType } from '../../support/helpers.js'
+import { gzipType, zipType, argsMatchThrow } from '../../support/helpers.js'
 import { randomUUID, createHmac } from 'node:crypto'
 import { gzipSync , gunzipSync} from 'node:zlib'
 import { Syncit } from '../../support/syncit.js';
 
 class FakeUtilities {
   constructor() {
+    this.Charset = Object.freeze({
+      UTF_8: 'utf-8',
+      US_ASCII: 'ascii'
+    });
+
+    this.checkCharset = (charset) => {
+      if (!Object.values(this.Charset).includes(charset)) {
+        throw new Error(`Invalid charset: ${charset}`);
+      }
+      return charset
+    }
+
+    /**
+     * Returns a new string, replacing non-ASCII characters
+     * with the '?' character (ASCII code 63), similar to Apps Script behavior.
+     * 
+     * @param {string} text - The text to convert
+     * @returns {string} - ASCII encoded string with replacements
+     */
+    this.replaceNonAscii = (text) => {
+      const newChars = Array.from(text).map(char => {
+        const code = char.charCodeAt(0);
+        return code <= 127 ? code : 63; // 63 is '?' (replacement character)
+      });
+      return Buffer.from(newChars).toString();
+    }
+
+    
 
   }
   /**
@@ -101,15 +129,31 @@ class FakeUtilities {
   }
 
   /**
-   * Signs the provided value using HMAC-SHA256 with the given key. 
-   * @param {string} value
-   * @param {string} key
-   * @returns {Byte[]} signed integer byte array
+   * Signs the provided value using HMAC-SHA256 with the given key and character set.
+   * @param {string | number[]} value to sign
+   * @param {string | number[]} key to use
+   * @param {Charset} charset representing the input character set
+   * @returns {number[]} Signed integer byte array
    */
-  computeHmacSha256Signature(value, key) {
-    const signatureBuffer = createHmac('sha256', key).update(value).digest()
-    // GAS uses signed integers so convert to signed before returning
-    return Array.from(new Int8Array(signatureBuffer))
+  computeHmacSha256Signature(value, key, charset) {
+    // TODO deal with any argument errors
+    // must be: string, string OR string, string, string (must be in charset) OR number[], number[]
+    const matchThrow = () => argsMatchThrow(Array.from(arguments))
+
+    // Convert inputs to appropriate format based on type
+    // if charset is explicitly set to US_ASCII
+    // or if charset is not set and the value and key are strings (i.e. not bytes)
+    // then replace any non-ASCII characters
+    const encodedValue = (charset === this.Charset.US_ASCII || (!charset && typeof value === 'string'))  ? this.replaceNonAscii(value) : value;
+    const encodedKey = (charset === this.Charset.US_ASCII || (!charset && typeof key === 'string')) ? this.replaceNonAscii(key) : key;
+    const valueBuffer = Buffer.from(encodedValue, charset);
+    const keyBuffer = Buffer.from(encodedKey, charset);
+    
+    // Get digest and convert to signed bytes to match Apps Script
+    const digestBuffer = createHmac('sha256', keyBuffer).update(valueBuffer).digest();
+    const signedByteArray = Array.from(new Int8Array(digestBuffer))
+    
+    return signedByteArray;
   }
 
 }
