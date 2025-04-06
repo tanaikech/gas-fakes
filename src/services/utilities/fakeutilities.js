@@ -14,11 +14,11 @@ class FakeUtilities {
       US_ASCII: 'ascii'
     });
 
-    this.checkCharset = (charset) => {
+    this.isValidCharset = (charset) => {
       if (!Object.values(this.Charset).includes(charset)) {
-        throw new Error(`Invalid charset: ${charset}`);
+        return false;
       }
-      return charset
+      return true;
     }
 
     /**
@@ -136,9 +136,29 @@ class FakeUtilities {
    * @returns {number[]} Signed integer byte array
    */
   computeHmacSha256Signature(value, key, charset) {
-    // TODO deal with any argument errors
-    // must be: string, string OR string, string, string (must be in charset) OR number[], number[]
-    const matchThrow = () => argsMatchThrow(Array.from(arguments))
+    // Ensure arguments are valid
+    const args = Array.from(arguments);
+    const matchThrow = () => argsMatchThrow(args, "Utilities.computeHmacSha256Signature");
+
+    // args must be at least 2 and at most 3
+    if (args.length < 2 || args.length > 3) matchThrow();
+    
+    // args must be: string, string OR number[], number[]
+    const stringArgs = args.slice(0, 2).filter((el) => typeof el === 'string');
+    if (stringArgs.length === 1) {
+      matchThrow();
+    }
+
+    // if number[], number[], cannot have charset defined
+    if (stringArgs.length === 0 && typeof charset !== 'undefined') {
+      matchThrow();
+    }
+
+    // if charset is present, charset must be valid
+    if (charset && !this.isValidCharset(charset)) {
+      matchThrow();
+    }
+
 
     // Convert inputs to appropriate format based on type
     // if charset is explicitly set to US_ASCII

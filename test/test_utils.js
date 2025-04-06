@@ -125,22 +125,30 @@ const testUtilFakes = () => {
     t.is(actual_signature.length, expected_special_key_signature.length);
     t.deepEqual(actual_signature, expected_special_key_signature);
 
-    // TODO these do not work yet
+    // test arguments that are not valid
+    // too many arguments: number[], string
+    const too_many_args = () => Utilities.computeHmacSha256Signature(text_input, text_key, Utilities.Charset.US_ASCII, 4);
+    t.rxMatch(t.threw(too_many_args).toString(), /The parameters \(.*\) don't match/);
+
+    // too few arguments: number[], string
+    const too_few_args = () => Utilities.computeHmacSha256Signature(text_input);
+    t.rxMatch(t.threw(too_few_args).toString(), /The parameters \(.*\) don't match/);
+
     // bad parameters: number[], string
     const bad_params_bytes_with_string = () => Utilities.computeHmacSha256Signature(byte_input, text_key);
-    //t.rxMatch(t.threw(bad_params_bytes_with_string), /The parameters \(\) don't match/);
+    t.rxMatch(t.threw(bad_params_bytes_with_string).toString(), /The parameters \(.*\) don't match/);
 
     // bad parameters: string, number[]
     const bad_params_string_with_bytes = () => Utilities.computeHmacSha256Signature(text_input, byte_key);
-    //t.rxMatch(t.threw(bad_params_string_with_bytes), /The parameters \(\) don't match/);
+    t.rxMatch(t.threw(bad_params_string_with_bytes).toString(), /The parameters \(.*\) don't match/);
     
     // bad parameters: number[], number[], charset
     const bad_params_bytes_with_charset = () => Utilities.computeHmacSha256Signature(byte_input, byte_key, Utilities.Charset.UTF_8);
-    //t.rxMatch(t.threw(bad_params_bytes_with_charset).toString(), /The parameters \(\) don't match/);
+    t.rxMatch(t.threw(bad_params_bytes_with_charset).toString(), /The parameters \(.*\) don't match/);
 
     // bad parameters: string, string, fake charset
     const bad_params_fake_charset = () => Utilities.computeHmacSha256Signature(text_input, text_key, 'fake');
-    //t.rxMatch(t.threw(bad_params_fake_charset).toString(), /The parameters \(\) don't match/);
+    t.rxMatch(t.threw(bad_params_fake_charset).toString(), /The parameters \(.*\) don't match/);
 
 
   })
