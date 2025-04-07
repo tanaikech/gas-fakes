@@ -47,7 +47,7 @@ const testFakes = () => {
     TEST_SHEET_NAME: process.env.TEST_SHEET_NAME,
     EMAIL: process.env.EMAIL,
     TIMEZONE: process.env.TIMEZONE,
-    LOCALE: process.env.LOCALE,
+    TEST_LOCALE: process.env.TEST_LOCALE,
     ZIP_TYPE: process.env.ZIP_TYPE,
     KIND_DRIVE: process.env.KIND_DRIVE,
     OWNER_NAME: process.env.OWNER_NAME,
@@ -726,7 +726,7 @@ const testFakes = () => {
     t.is(Session.getActiveUser().toString(), fixes.EMAIL)
     t.is(Session.getActiveUser().getEmail(), fixes.EMAIL)
     t.is(Session.getEffectiveUser().getEmail(), fixes.EMAIL)
-    t.is(Session.getActiveUserLocale(), fixes.LOCALE)
+    t.is(Session.getActiveUserLocale(), fixes.TEST_LOCALE)
     t.is(Session.getScriptTimeZone(), fixes.TIMEZONE)
     t.true(is.nonEmptyString(Session.getTemporaryActiveUserKey()))
   }, {
