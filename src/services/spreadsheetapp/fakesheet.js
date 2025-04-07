@@ -15,7 +15,6 @@ export const newFakeSheet = (...args) => {
 
 /**
  * basic fake FakeSheet
- * TODO add lots more methods
  * @class FakeSpreadsheet
  * @returns {FakeSheet}
  */

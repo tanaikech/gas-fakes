@@ -61,13 +61,53 @@ const testFakes = () => {
     CLEAN: process.env.CLEAN === 'true'
   }
 
+
+
+  unit.section("spreadsheetapp basics", t => {
+    const ass = Sheets.Spreadsheets.get(fixes.TEST_SHEET_ID)
+    const ss = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
+    t.is(ss.getId(), fixes.TEST_SHEET_ID)
+    t.is(ss.getName(), fixes.TEST_SHEET_NAME)
+    t.is(ss.getNumSheets(), ass.sheets.length)
+    const sheets = ss.getSheets()
+    t.is(sheets.length, ass.sheets.length)
+
+    sheets.forEach((s, i) => {
+      t.is(s.getName(), ass.sheets[i].properties.title)
+      t.is(s.getSheetId(), ass.sheets[i].properties.sheetId)
+      t.is(s.getIndex(), i + 1)
+      t.true(is.number(s.getSheetId()))
+      t.is(s.getName(), s.getSheetName())
+      t.is(s.getMaxColumns(), ass.sheets[i].properties.gridProperties.columnCount)
+      t.is(s.getMaxRows(), ass.sheets[i].properties.gridProperties.rowCount)
+      t.is(s.getType().toString(), ass.sheets[i].properties.sheetType)
+      t.is(ss.getSheetById(s.getSheetId()).getName(), s.getName())
+      t.is(ss.getSheetByName(s.getName()).getSheetId(), s.getSheetId())
+    })
+
+
+    t.is(ss.getId(), ss.getKey())
+    t.is(ss.getSheetId(), sheets[0].getSheetId())
+    t.is(ss.getSheetName(), sheets[0].getName())
+
+    const file = DriveApp.getFileById(ss.getId())
+    t.is(file.getName(), ss.getName())
+    t.is(file.getMimeType(), "application/vnd.google-apps.spreadsheet")
+    t.is(file.getOwner().getEmail(), ss.getOwner().getEmail())
+    t.is(file.getOwner().getEmail(), fixes.EMAIL)
+
+    t.is(SpreadsheetApp.openByUrl(ss.getUrl()).getId(), ss.getId())
+    t.is(SpreadsheetApp.openByKey(ss.getId()).getId(), ss.getId())
+
+  })
+
   unit.section("advanced sheet basics", t => {
     t.true(is.nonEmptyString(Sheets.toString()))
     t.is(Sheets.getVersion(), 'v4')
-    t.is (Drive.isFake, Sheets.isFake, {
+    t.is(Drive.isFake, Sheets.isFake, {
       neverUndefined: false
     })
-    t.is (Sheets.toString(), Sheets.Spreadsheets.toString()) 
+    t.is(Sheets.toString(), Sheets.Spreadsheets.toString())
     const ss = Sheets.Spreadsheets.get(fixes.TEST_SHEET_ID)
     t.is(ss.spreadsheetId, fixes.TEST_SHEET_ID)
     t.true(is.nonEmptyObject(ss.properties))
@@ -77,32 +117,10 @@ const testFakes = () => {
     t.true(is.nonEmptyObject(ss.properties.spreadsheetTheme))
     t.true(is.array(ss.sheets))
     t.truthy(ss.sheets.length)
-    t.true(is.nonEmptyString(ss.spreadsheetUrl))  
-  })
-
-  unit.section("spreadsheetapp basics", t=> {
-    const ass =  Sheets.Spreadsheets.get(fixes.TEST_SHEET_ID)
-    const ss = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
-    t.is(ss.getId(), fixes.TEST_SHEET_ID)
-    t.is(ss.getName(), fixes.TEST_SHEET_NAME)
-    t.is(ss.getNumSheets(), ass.sheets.length)
-    const sheets = ss.getSheets()
-    t.is(sheets.length, ass.sheets.length)
-
-    sheets.forEach((s,i)=> {
-      t.is(s.getName(), ass.sheets[i].properties.title)
-      t.is(s.getSheetId(), ass.sheets[i].properties.sheetId)
-      t.is(s.getIndex(),i+1)
-      t.true(is.number(s.getSheetId()))
-      t.is(s.getName(),s.getSheetName())
-      t.is(s.getMaxColumns(),ass.sheets[i].properties.gridProperties.columnCount)
-      t.is(s.getMaxRows(),ass.sheets[i].properties.gridProperties.rowCount)
-      t.is(s.getType().toString(),ass.sheets[i].properties.sheetType)
-    })
+    t.true(is.nonEmptyString(ss.spreadsheetUrl))
 
   })
-
-
+  
   unit.section("advanced drive basics", t => {
     t.true(is.nonEmptyString(Drive.toString()))
     t.true(is.nonEmptyString(Drive.Files.toString()))
@@ -122,20 +140,19 @@ const testFakes = () => {
   })
 
 
-
-  unit.section ("root folder checks", t=> {
-    const rootFolder = DriveApp.getRootFolder ()
+  unit.section("root folder checks", t => {
+    const rootFolder = DriveApp.getRootFolder()
     if (DriveApp.isFake) {
-      t.true (rootFolder.__isRoot, 'fake internal check')
+      t.true(rootFolder.__isRoot, 'fake internal check')
     }
-    t.false (rootFolder.getParents().hasNext())
-    const root = Drive.Files.get ('root', {fields: 'parents'})
+    t.false(rootFolder.getParents().hasNext())
+    const root = Drive.Files.get('root', { fields: 'parents' })
     // TODO - slight difference fake returns null for no parents, gas undefined
-    t.true (is.undefined(root.parents), {skip: Drive.isFake})
-    t.true (is.null(root.parents), {skip: !Drive.isFake})
+    t.true(is.undefined(root.parents), { skip: Drive.isFake })
+    t.true(is.null(root.parents), { skip: !Drive.isFake })
 
     // cant set meta data
-    t.rxMatch (t.threw(()=>rootFolder.setStarred (true)).toString(),/Access denied/)
+    t.rxMatch(t.threw(() => rootFolder.setStarred(true)).toString(), /Access denied/)
     //TODO find out whether we can set permissions etc.
 
   })
@@ -191,83 +208,80 @@ const testFakes = () => {
     if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
   })
 
-
-
   unit.section('updates and moves advdrive and driveapp', t => {
-    
+
     const toTrash = []
-    
+
     // create a text file with nothing in it
     const aname = fixes.PREFIX + "u-afile---.txt"
-    const zfile = Drive.Files.create ({name: aname, mimeType: fixes.TEXT_FILE_TYPE})
+    const zfile = Drive.Files.create({ name: aname, mimeType: fixes.TEXT_FILE_TYPE })
 
-    const afile = Drive.Files.get (zfile.id, {fields: "id,parents,mimeType,name"})
-    t.is (afile.name, aname)
-    t.is (afile.mimeType,fixes.TEXT_FILE_TYPE )
-    t.is (afile.id, zfile.id)
-    toTrash.push (DriveApp.getFileById(afile.id))
+    const afile = Drive.Files.get(zfile.id, { fields: "id,parents,mimeType,name" })
+    t.is(afile.name, aname)
+    t.is(afile.mimeType, fixes.TEXT_FILE_TYPE)
+    t.is(afile.id, zfile.id)
+    toTrash.push(DriveApp.getFileById(afile.id))
 
 
     // now get a pdf blob and update it with that and change the name
     const pdfBlob = DriveApp.getFileById(fixes.PDF_ID).getBlob()
     const pname = fixes.PREFIX + pdfBlob.getName()
-    const pfile = Drive.Files.update ({name: pname }, afile.id, pdfBlob)
-    t.deepEqual (DriveApp.getFileById(pfile.id).getBlob().getBytes(), pdfBlob.getBytes())
-    t.is (pfile.id,afile.id)
-    t.is (pfile.mimeType, "application/pdf", 'media should have redone the mimetype')
-    t.is (pfile.name, pname)
+    const pfile = Drive.Files.update({ name: pname }, afile.id, pdfBlob)
+    t.deepEqual(DriveApp.getFileById(pfile.id).getBlob().getBytes(), pdfBlob.getBytes())
+    t.is(pfile.id, afile.id)
+    t.is(pfile.mimeType, "application/pdf", 'media should have redone the mimetype')
+    t.is(pfile.name, pname)
 
     // move it somewhere else
     const dfile = DriveApp.getFileById(pfile.id)
-    t.is (dfile.getParents().next().getId(), afile.parents[0])
-    const folder = DriveApp.getFolderById (fixes.TEST_FOLDER_ID)
-    const mfile = dfile.moveTo (folder)
-    t.is (mfile.getId(),dfile.getId())
-    t.deepEqual (mfile.getBlob().getBytes(),dfile.getBlob().getBytes())
-    t.is (mfile.getSize(),dfile.getBlob().getBytes().length)
-    t.is (mfile.getMimeType(), pfile.mimeType)
+    t.is(dfile.getParents().next().getId(), afile.parents[0])
+    const folder = DriveApp.getFolderById(fixes.TEST_FOLDER_ID)
+    const mfile = dfile.moveTo(folder)
+    t.is(mfile.getId(), dfile.getId())
+    t.deepEqual(mfile.getBlob().getBytes(), dfile.getBlob().getBytes())
+    t.is(mfile.getSize(), dfile.getBlob().getBytes().length)
+    t.is(mfile.getMimeType(), pfile.mimeType)
     // TODO -moveTo is not updating cache probably because we'er not retrieving the parents property
-    t.is (mfile.getParents().next().getId(), folder.getId())
+    t.is(mfile.getParents().next().getId(), folder.getId())
 
     // set some content
     const cfname = fixes.PREFIX + "u-cfile.txt"
     const cf = DriveApp.createFile(Utilities.newBlob(fixes.TEXT_FILE_CONTENT, fixes.TEXT_FILE_TYPE, cfname))
-    toTrash.push (cf)
+    toTrash.push(cf)
 
-    cf.setContent ("foo")
-    t.is (cf.getBlob().getDataAsString(), "foo")
+    cf.setContent("foo")
+    t.is(cf.getBlob().getDataAsString(), "foo")
     t.not(cf.getBlob().getDataAsString(), fixes.TEXT_FILE_CONTENT)
-    cf.setContent (cf.getBlob())
-    t.is (cf.getBlob().getDataAsString(), "Blob", "Bizarrely set content only takes a string and does a toString() on other things")
+    cf.setContent(cf.getBlob())
+    t.is(cf.getBlob().getDataAsString(), "Blob", "Bizarrely set content only takes a string and does a toString() on other things")
 
     // set some props
-    t.false (cf.isTrashed())
-    t.false (cf.isStarred())
-    t.true (cf.isShareableByEditors())
-    cf.setDescription ("foo")
+    t.false(cf.isTrashed())
+    t.false(cf.isStarred())
+    t.true(cf.isShareableByEditors())
+    cf.setDescription("foo")
     cf.setStarred(true)
     cf.setTrashed(true)
     cf.setShareableByEditors(false)
-    t.true (cf.isTrashed())
-    t.true (cf.isStarred())
-    t.false (cf.isShareableByEditors())
-    t.is (cf.getDescription(), "foo")
+    t.true(cf.isTrashed())
+    t.true(cf.isStarred())
+    t.false(cf.isShareableByEditors())
+    t.is(cf.getDescription(), "foo")
     cf.setStarred(false)
     cf.setTrashed(false)
     cf.setShareableByEditors(true)
-    t.false (cf.isTrashed())
-    t.false (cf.isStarred())
-    t.true (cf.isShareableByEditors())
+    t.false(cf.isTrashed())
+    t.false(cf.isStarred())
+    t.true(cf.isShareableByEditors())
 
     // check bad args
     t.rxMatch(t.threw(() => mfile.moveTo()).toString(), /The parameters \(\) don't match/)
     t.rxMatch(t.threw(() => mfile.moveTo("rubbish")).toString(), /The parameters \(String\)/)
 
     // trash all files
-    if(fixes.CLEAN)toTrash.forEach (f=>f.setTrashed(true))
+    if (fixes.CLEAN) toTrash.forEach(f => f.setTrashed(true))
     if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
   })
-
 
   unit.section('create and copy files with driveapp and compare content with adv drive and urlfetch', t => {
 
@@ -398,12 +412,10 @@ const testFakes = () => {
     t.rxMatch(t.threw(() => Drive.Files.copy(null, null)).toString(), /API call to drive\.files\.copy failed with error: Required/)
     t.rxMatch(t.threw(() => dcfile.makeCopy(folder, "xx")).toString(), /The parameters \(DriveApp.Folder,String\) don't match/)
     t.rxMatch(t.threw(() => dcfile.makeCopy("yy", "xx")).toString(), /The parameters \(String,String\) don't match/)
-    
-    if(fixes.CLEAN)toTrash.forEach (f=>f.setTrashed(true))
+
+    if (fixes.CLEAN) toTrash.forEach(f => f.setTrashed(true))
     if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
   })
-
-
 
   unit.section('driveapp and adv permissions', t => {
 
@@ -513,8 +525,8 @@ const testFakes = () => {
     t.rxMatch(t.threw(() => DriveApp.createFile(blob, "")).toString(), /The parameters \(Blob,String\)/)
     t.rxMatch(t.threw(() => DriveApp.createFile(mname)).toString(), /The parameters \(String\)/)
     t.rxMatch(t.threw(() => DriveApp.createFile(Utilities.newBlob(""))).toString(), /Blob object must have non-null name for this operation./)
-    
-    if(fixes.CLEAN)toTrash.forEach (f=>f.setTrashed(true))
+
+    if (fixes.CLEAN) toTrash.forEach(f => f.setTrashed(true))
     if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
   })
 
@@ -669,8 +681,6 @@ const testFakes = () => {
   })
 
 
-
-
   unit.section("driveapp searching with queries", t => {
 
     const root = DriveApp.getRootFolder()
@@ -778,7 +788,6 @@ const testFakes = () => {
       t.is(f.getDataAsString(), texts[i])
     })
   })
-
 
 
   unit.section('utilities gzipping', t => {
@@ -916,7 +925,6 @@ const testFakes = () => {
     t.true(is.nonEmptyString(ScriptApp.getScriptId()))
   })
 
-
   unit.section('scopes and oauth', t => {
     const token = ScriptApp.getOAuthToken()
     t.true(is.nonEmptyString(token))
@@ -965,7 +973,6 @@ const testFakes = () => {
   }, {
     skip: false
   })
-
 
 
   unit.section('getting content', t => {
@@ -1034,11 +1041,6 @@ const testFakes = () => {
   })
 
 
-
-
-
-
-
   unit.section('fake helper tests', t => {
     const s1 = "fields(f1,f2),a1,t2,permissions(p1,p2)"
     const s2 = "t1,t2,t3,permissions(p1,p3)"
@@ -1059,7 +1061,6 @@ const testFakes = () => {
     skip: !ScriptApp.isFake
   })
 
-
   unit.section('adv drive Apps - drive.apps script is blocked on adc so cant test this for now', t => {
     const { items } = Drive.Apps.list()
     t.true(is.array(items))
@@ -1069,6 +1070,50 @@ const testFakes = () => {
   }, {
     skip: true
   })
+
+  unit.section("spreadsheetapp basics", t => {
+    const ass = Sheets.Spreadsheets.get(fixes.TEST_SHEET_ID)
+    const ss = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
+    t.is(ss.getId(), fixes.TEST_SHEET_ID)
+    t.is(ss.getName(), fixes.TEST_SHEET_NAME)
+    t.is(ss.getNumSheets(), ass.sheets.length)
+    const sheets = ss.getSheets()
+    t.is(sheets.length, ass.sheets.length)
+
+    sheets.forEach((s, i) => {
+      t.is(s.getName(), ass.sheets[i].properties.title)
+      t.is(s.getSheetId(), ass.sheets[i].properties.sheetId)
+      t.is(s.getIndex(), i + 1)
+      t.true(is.number(s.getSheetId()))
+      t.is(s.getName(), s.getSheetName())
+      t.is(s.getMaxColumns(), ass.sheets[i].properties.gridProperties.columnCount)
+      t.is(s.getMaxRows(), ass.sheets[i].properties.gridProperties.rowCount)
+      t.is(s.getType().toString(), ass.sheets[i].properties.sheetType)
+      t.is(ss.getSheetById(s.getSheetId()).getName(), s.getName())
+      t.is(ss.getSheetByName(s.getName()).getSheetId(), s.getSheetId())
+    })
+
+
+    t.is(ss.getId(), ss.getKey())
+    t.is(ss.getSheetId(), sheets[0].getSheetId())
+    t.is(ss.getSheetName(), sheets[0].getName())
+  })
+
+
+  unit.section("session properties", t => {
+    t.is(Session.getActiveUser().toString(), fixes.EMAIL)
+    t.is(Session.getActiveUser().getEmail(), fixes.EMAIL)
+    t.is(Session.getEffectiveUser().getEmail(), fixes.EMAIL)
+    t.is(Session.getActiveUserLocale(), fixes.LOCALE)
+    t.is(Session.getScriptTimeZone(), fixes.TIMEZONE)
+    t.true(is.nonEmptyString(Session.getTemporaryActiveUserKey()))
+  }, {
+    skip: true
+  })
+
+
+
+
 
   if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
   unit.report()
