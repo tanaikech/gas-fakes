@@ -126,16 +126,18 @@ const fxDrive = ({ prop, method, params }) => {
 /**
  * sync a call to sheets api
  * @param {object} p pargs
+ * @param {string} p.subProp sometimes theres an extra prop - eg sheets.spreadsheets.values.get = prop:spreadsheets, subprop: values
  * @param {string} p.prop the prop of sheet eg 'spreadsheets' for sheets.spreadsheets
  * @param {string} p.method the method of drive eg 'get' for sheets.spreadsheets.get
  * @param {object} p.params the params to add to the request
  * @return {SheetsResponse} from the sheets api
  */
-const fxSheets = ({ prop, method, params }) => {
+const fxSheets = ({subProp,  prop, method, params }) => {
 
 
   const scopes = Array.from(Auth.getAuthedScopes().keys())
   return fxApi({
+    subProp,
     prop,
     method,
     apiPath: shapisPath,
@@ -196,13 +198,14 @@ const fxDriveGet = ({ id, params, allow404 = false, allowCache = true }) => {
 /**
  * sync a call to google api
  * @param {object} p pargs
+ * @param {string} p.subProp sometimes theres an extra prop - eg sheets.spreadsheets.values.get = prop:spreadsheets, subprop: values
  * @param {string} p.prop the prop of drive eg 'files' for drive.files
  * @param {string} p.method the method of drive eg 'list' for drive.files.list
  * @param {object} p.params the params to add to the request
  * @param {string} p.apiPath where to import the api from
  * @return {DriveResponse} from the drive api
  */
-const fxApi = ({ prop, method, params, apiPath, options }) => {
+const fxApi = ({subProp,  prop, method, params, apiPath, options }) => {
 
   const scopes = Array.from(Auth.getAuthedScopes().keys())
 
@@ -210,6 +213,7 @@ const fxApi = ({ prop, method, params, apiPath, options }) => {
   const fx = makeSynchronous(sxApi)
 
   const result = fx({
+    subProp,
     prop,
     method,
     apiPath: getModulePath(apiPath),

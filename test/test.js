@@ -9,6 +9,7 @@ import { mergeParamStrings } from '../src/support/utils.js';
 //import '@mcpher/gas-fakes/main.js'
 
 import '../main.js'
+import { LRUCache } from 'google-auth-library/build/src/util.js';
 
 const testFakes = () => {
 
@@ -61,7 +62,57 @@ const testFakes = () => {
     CLEAN: process.env.CLEAN === 'true'
   }
 
+  unit.section("advanced & spreaddsheetapp values", t => {
+    t.is(Sheets.Spreadsheets.Values.toString(),Sheets.toString())
+    const ss = Sheets.Spreadsheets.get(fixes.TEST_SHEET_ID)
+    t.is(ss.spreadsheetId, fixes.TEST_SHEET_ID)
+    const result = Sheets.Spreadsheets.Values.get(ss.spreadsheetId,ss.sheets[0].properties.title)
+    const {range, majorDimension, values} = result
+    t.true(is.nonEmptyString(range))
+    t.is(majorDimension, 'ROWS')
+    t.true(is.array(values))
+    t.true(is.array(values[0]))
+    t.true(values.length>0)
 
+    const sa = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
+    const sheet = sa.getSheetByName(ss.sheets[0].properties.title)
+    const dr = sheet.getDataRange()
+    const lr = sheet.getLastRow()
+    const lc = sheet.getLastColumn()
+    const ar = dr.getA1Notation()
+    t.true(is.object(dr))
+    t.true(is.nonEmptyString(ar))
+    t.is(lr,values.length)
+    t.is(lc,values[0].length)
+    console.log(ar)
+    t.is(parseInt(ar.replace (/[^\d]+(\d+).*/,'$1'),10),1)
+    t.is(parseInt(ar.replace (/.*:[^\d]+(\d+)/,'$1'),10),lr)
+    t.is(ar.replace (/([^\d]).*/,'$1'),'A')
+    t.is(sheet.getRange(1,1,lr,lc ).getA1Notation(),ar)
+  })
+
+
+
+  unit.cancel()
+  unit.section("advanced sheet basics", t => {
+    t.true(is.nonEmptyString(Sheets.toString()))
+    t.is(Sheets.getVersion(), 'v4')
+    t.is(Drive.isFake, Sheets.isFake, {
+      neverUndefined: false
+    })
+    t.is(Sheets.toString(), Sheets.Spreadsheets.toString())
+    const ss = Sheets.Spreadsheets.get(fixes.TEST_SHEET_ID)
+    t.is(ss.spreadsheetId, fixes.TEST_SHEET_ID)
+    t.true(is.nonEmptyObject(ss.properties))
+    t.is(ss.properties.title, fixes.TEST_SHEET_NAME)
+    t.is(ss.properties.autoRecalc, "ON_CHANGE")
+    t.true(is.nonEmptyObject(ss.properties.defaultFormat))
+    t.true(is.nonEmptyObject(ss.properties.spreadsheetTheme))
+    t.true(is.array(ss.sheets))
+    t.truthy(ss.sheets.length)
+    t.true(is.nonEmptyString(ss.spreadsheetUrl))
+
+  })
 
   unit.section("spreadsheetapp basics", t => {
     const ass = Sheets.Spreadsheets.get(fixes.TEST_SHEET_ID)
@@ -101,25 +152,7 @@ const testFakes = () => {
 
   })
 
-  unit.section("advanced sheet basics", t => {
-    t.true(is.nonEmptyString(Sheets.toString()))
-    t.is(Sheets.getVersion(), 'v4')
-    t.is(Drive.isFake, Sheets.isFake, {
-      neverUndefined: false
-    })
-    t.is(Sheets.toString(), Sheets.Spreadsheets.toString())
-    const ss = Sheets.Spreadsheets.get(fixes.TEST_SHEET_ID)
-    t.is(ss.spreadsheetId, fixes.TEST_SHEET_ID)
-    t.true(is.nonEmptyObject(ss.properties))
-    t.is(ss.properties.title, fixes.TEST_SHEET_NAME)
-    t.is(ss.properties.autoRecalc, "ON_CHANGE")
-    t.true(is.nonEmptyObject(ss.properties.defaultFormat))
-    t.true(is.nonEmptyObject(ss.properties.spreadsheetTheme))
-    t.true(is.array(ss.sheets))
-    t.truthy(ss.sheets.length)
-    t.true(is.nonEmptyString(ss.spreadsheetUrl))
 
-  })
   
   unit.section("advanced drive basics", t => {
     t.true(is.nonEmptyString(Drive.toString()))

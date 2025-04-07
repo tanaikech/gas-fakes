@@ -17,7 +17,6 @@ class FakeAdvSheets {
   constructor() {
     this.client = Proxies.guard(getAuthedClient())
     const props = [ 
-    
       'newGridData',
       'newConditionalFormatRule',
       'newAddBandingRequest',

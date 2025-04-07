@@ -5,7 +5,9 @@
 
 import { Proxies } from '../../support/proxies.js'
 import { Syncit } from '../../support/syncit.js'
-import { notYetImplemented, isGood, throwResponse, is404 } from '../../support/helpers.js'
+import { notYetImplemented, isGood } from '../../support/helpers.js'
+import { newFakeSheetValues } from './fakeadvvalues.js'
+
 
 /**
  * the advanced Sheets Apps Script service faked - Spreadsheets class
@@ -19,8 +21,7 @@ class FakeAdvSheetsSpreadsheets {
       'batchUpdate',
       'create',
       'DeveloperMetadata',
-      'Sheets',
-      'Values']
+      'Sheets']
 
     props.forEach(f => {
       this[f] = () => {
@@ -32,6 +33,10 @@ class FakeAdvSheetsSpreadsheets {
   }
   toString() {
     return this.__sheets.toString()
+  }
+
+  get Values () {
+    return newFakeSheetValues(this.__sheets)
   }
 
   /**

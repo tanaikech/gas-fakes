@@ -89,7 +89,6 @@ export class FakeSpreadsheet {
       'getPredefinedSpreadsheetThemes',
       'setName',
       'copy',
-      
       'rename',
       'isReadable',
       'isWritable',
@@ -197,7 +196,7 @@ export class FakeSpreadsheet {
    * @return {FakeSheets[]} the sheets in the spreadsheet
    */
   getSheets() {
-    return this.__meta.sheets.map(f => newFakeSheet(f))
+    return this.__meta.sheets.map(f => newFakeSheet(f, this))
   }
   /**
    * @return {string} the spreadsheet url
@@ -251,5 +250,8 @@ export class FakeSpreadsheet {
    */
   getOwner() {
     return this.__file.getOwner()
+  }
+  getRange () {
+    
   }
 }
