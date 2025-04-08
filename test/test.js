@@ -84,7 +84,7 @@ const testFakes = () => {
     t.true(is.nonEmptyString(ar))
     t.is(lr,values.length)
     t.is(lc,values[0].length)
-    console.log(ar)
+
     t.is(parseInt(ar.replace (/[^\d]+(\d+).*/,'$1'),10),1)
     t.is(parseInt(ar.replace (/.*:[^\d]+(\d+)/,'$1'),10),lr)
     t.is(ar.replace (/([^\d]).*/,'$1'),'A')
