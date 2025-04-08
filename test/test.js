@@ -116,8 +116,6 @@ const testFakes = () => {
   })
 
 
-
-  unit.cancel()
   unit.section("advanced sheet basics", t => {
     t.true(is.nonEmptyString(Sheets.toString()))
     t.is(Sheets.getVersion(), 'v4')
