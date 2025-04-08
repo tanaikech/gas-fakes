@@ -100,7 +100,6 @@ export class FakeSpreadsheet {
       'setCurrentCell',
       'getActiveRange',
       'deleteRow',
-      'getRange',
       'hideRow',
       'appendRow',
       'getSheetProtection',
@@ -251,7 +250,15 @@ export class FakeSpreadsheet {
   getOwner() {
     return this.__file.getOwner()
   }
-  getRange () {
-    
+
+  getRange(range) {
+    // this should be in sheet1!a1:a2 format
+    const parts = range.split('!')
+    const sheet = parts.length === 2 ? this.getSheetByName(parts[0]) : this.getSheets()[0]
+    const rangePart = parts.length === 2 ? parts[1] : parts[0]
+    if (!rangePart || !sheet) {
+      throw new Error(`Invalid range ${range}`)
+    }
+    return sheet.getRange(rangePart)
   }
 }

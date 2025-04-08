@@ -62,7 +62,7 @@ const testFakes = () => {
     CLEAN: process.env.CLEAN === 'true'
   }
 
-  unit.section("advanced & spreaddsheetapp values", t => {
+  unit.section("advanced & spreadsheetapp values and ranges", t => {
     t.is(Sheets.Spreadsheets.Values.toString(),Sheets.toString())
     const ss = Sheets.Spreadsheets.get(fixes.TEST_SHEET_ID)
     t.is(ss.spreadsheetId, fixes.TEST_SHEET_ID)
@@ -75,6 +75,11 @@ const testFakes = () => {
     t.true(values.length>0)
 
     const sa = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
+    const sr= sa.getRange("A1:B2")
+    t.is(sr.getA1Notation(),"A1:B2")
+    const st= sa.getRange(`${sa.getSheets()[0].getName()}!${sr.getA1Notation()}`)
+    t.is(st.getA1Notation(),sr.getA1Notation())
+    
     const sheet = sa.getSheetByName(ss.sheets[0].properties.title)
     const dr = sheet.getDataRange()
     const lr = sheet.getLastRow()
