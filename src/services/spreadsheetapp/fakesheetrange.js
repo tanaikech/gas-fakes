@@ -30,7 +30,7 @@ export class FakeSheetRange {
    * @returns {FakeSheetRange}
    */
   constructor(gridRange, parent) {
-    console.log (gridRange)
+
     this.__gridRange = gridRange
     this.__parent = parent
     const props = ['toString',
@@ -47,8 +47,6 @@ export class FakeSheetRange {
       'setDataValidation',
       'getBackground',
       'getBorder',
-      'getColumnIndex',
-      'getNumColumns',
       'getTextDirection',
       'setTextDirection',
       'getTextStyle',
@@ -161,7 +159,6 @@ export class FakeSheetRange {
       'trimWhitespace',
       'getTextDirections',
       'setValues',
-      'getNumRows',
       'copyTo',
       'setTextStyle',
       'getVerticalAlignment',
@@ -186,8 +183,6 @@ export class FakeSheetRange {
       'getNote',
       'setFontFamily',
       'getDataSourceFormulas',
-      'getLastRow',
-      'getLastColumn',
       'getDataSourceTables',
       'clearContent',
       'setBackgroundColor',
@@ -240,8 +235,14 @@ export class FakeSheetRange {
   getSheet() {
     return this.__parent
   }
+  // row and columnindex are probably now deprecated in apps script
+  // in any case, in gas they currently return the 1 based value, not the 0 based value as you'd expect
+  // so the same as the getrow and getcolumn
   getRowIndex() {
-    return this.__gridRange.startRowIndex
+    return this.getRow()
+  }
+  getColumnIndex() {
+    return this.getColumn()
   }
   getRow() {
     return this.__gridRange.startRowIndex + 1
@@ -249,5 +250,20 @@ export class FakeSheetRange {
   getColumn() {
     return this.__gridRange.startColumnIndex + 1
   }
+  getLastRow() {
+    return this.__gridRange.endRowIndex 
+  }
+  getLastColumn() {
+    return this.__gridRange.endColumnIndex 
+  }
+  getNumRows () {
+    return this.__gridRange.endRowIndex - this.__gridRange.startRowIndex
+  }
+  getNumColumns () {
+    return this.__gridRange.endColumnIndex - this.__gridRange.startColumnIndex
+  }
+  
+  
+  
 
 }

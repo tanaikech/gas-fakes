@@ -253,8 +253,8 @@ export class FakeSheet {
       sheetId: this.getSheetId(),
       startRowIndex: row - 1,
       startColumnIndex: column - 1,
-      endRowIndex: row + (numRows || 0),
-      endColumnIndex: column + (numColumns || 0)  
+      endRowIndex: row + (numRows || 0) -1,
+      endColumnIndex: column + (numColumns || 0)  -1
     })
 
   }

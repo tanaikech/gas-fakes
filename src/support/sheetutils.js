@@ -1,3 +1,5 @@
+import is from '@sindresorhus/is';
+
 /**
  * Converts row and column numbers to a spreadsheet-style range (e.g., A1, B3:C5).
  *
@@ -9,20 +11,23 @@
  * @throws {Error} If input parameters are invalid.
  */
 const toRange = (startRow, startColumn, endRow, endColumn) => {
-  console.log(startRow, startColumn, endRow, endColumn)
-  if (!Number.isInteger(startRow) || startRow < 1 ||
-      !Number.isInteger(startColumn) || startColumn < 1) {
+
+  if (!is.positiveNumber(startRow) || startRow < 1 ||
+    !is.positiveNumber(startColumn) || startColumn < 1) {
     throw new Error("Start row and column must be positive integers.");
   }
-
+  // starts are 1 based - make A1
   const startCell = columnToLetter(startColumn) + startRow;
 
-  if (endRow === undefined && endColumn === undefined) {
+  if (endRow === startRow && endColumn === startColumn) {
+    // Single cell range
     return startCell;
-  } else if (Number.isInteger(endRow) && endRow >= startRow &&
-             Number.isInteger(endColumn) && endColumn >= startColumn) {
+  } else if (is.positiveNumber(endRow) && endRow >= startRow &&
+    is.positiveNumber(endColumn) && endColumn >= startColumn) {
     const endCell = columnToLetter(endColumn) + endRow;
-    return `${startCell}:${endCell}`;
+    const r = `${startCell}:${endCell}`;
+
+    return r
   } else {
     throw new Error("Invalid end row or column numbers.");
   }
@@ -34,7 +39,7 @@ const toRange = (startRow, startColumn, endRow, endColumn) => {
  * @param {number} column The column number (1-based).
  * @returns {string} The column letter.
  */
-const columnToLetter = (column) =>  {
+const columnToLetter = (column) => {
   let temp, letter = '';
   while (column > 0) {
     temp = (column - 1) % 26;
@@ -54,62 +59,65 @@ const columnToLetter = (column) =>  {
  * or null if the range format is invalid.
  */
 const fromRange = (range) => {
-  try {
-    // Remove sheet name if present
-    const cleanRange = range.includes('!') ? range.split('!')[1] : range;
 
-    if (!cleanRange) {
-      return null;
-    }
+  // Remove sheet name if present
+  let cleanRange = range.includes('!') ? range.split('!')[1] : range;
 
-    const parts = cleanRange.split(':');
-
-    if (parts.length === 1) {
-      // Single cell range (e.g., "A1")
-      const colMatch = parts[0].match(/^[A-Z]+/i);
-      const rowMatch = parts[0].match(/\d+$/);
-
-      if (colMatch && rowMatch) {
-        return { numRows: 1, numColumns: 1 };
-      } else {
-        return null; // Invalid single cell format
-      }
-    } else if (parts.length === 2) {
-      // Range with start and end cells (e.g., "A1:C5")
-      const startCell = parts[0];
-      const endCell = parts[1];
-
-      const startColMatch = startCell.match(/^[A-Z]+/i);
-      const startRowMatch = startCell.match(/\d+$/);
-      const endColMatch = endCell.match(/^[A-Z]+/i);
-      const endRowMatch = endCell.match(/\d+$/);
-
-      if (startColMatch && startRowMatch && endColMatch && endRowMatch) {
-        const startColumn = letterToColumn(startColMatch[0].toUpperCase());
-        const startRow = parseInt(startRowMatch[0], 10);
-        const endColumn = letterToColumn(endColMatch[0].toUpperCase());
-        const endRow = parseInt(endRowMatch[0], 10);
-
-        if (isNaN(startRow) || isNaN(endRow) || startRow < 1 || endRow < startRow || startColumn < 1 || endColumn < startColumn) {
-          return null; // Invalid row or column numbers
-        }
-        return {
-          startRowIndex: startRow-1,
-          endRowIndex: endColumn - startColumn + 1,
-          startColumnIndex: startColumn -1,
-          endColumnIndex: endColumn - startColumn + 1
-        }
-
-      } else {
-        return null; // Invalid range format
-      }
-    } else {
-      return null; // Invalid range format (more than one colon)
-    }
-  } catch (error) {
-    console.error("Error parsing range:", error);
-    return null;
+  // todo handle error format
+  if (!cleanRange) {
+    throw new Error("Invalid range format " + range);
   }
+
+  /// remove $ from $A$1 style
+  cleanRange = cleanRange.replace(/\$/g, "")
+  const parts = cleanRange.split(':');
+  if (!parts.length || parts.length > 2) {
+    throw new Error("Invalid range format " + range);
+  }
+
+  const [startCell, endCell] = parts;
+
+  const startColMatch = startCell.match(/^[A-Z]+/i);
+  const startRowMatch = startCell.match(/\d+$/);
+  const startColumn = letterToColumn(startColMatch[0].toUpperCase());
+  const startRow = parseInt(startRowMatch[0], 10);
+  if (!is.positiveNumber(startRow) || !is.positiveNumber(startColumn)) {
+    throw new Error("Invalid range format " + range);
+  }
+
+  if (parts.length === 1) {
+    // Single cell range (e.g., "A1")
+    return {
+      startRowIndex: startRow - 1,
+      endRowIndex: startRow,
+      startColumnIndex: startColumn - 1,
+      endColumnIndex: startColumn
+    }
+  }
+
+  const endColMatch = endCell.match(/^[A-Z]+/i);
+  const endRowMatch = endCell.match(/\d+$/);
+  const endColumn = letterToColumn(endColMatch[0].toUpperCase());
+  const endRow = parseInt(endRowMatch[0], 10);
+  if (!is.positiveNumber(endRow) || !is.positiveNumber(endColumn)) {
+    throw new Error("Invalid range format " + range);
+  }
+
+  // at this point the end and start values are indexed 1, so we need to index as 0
+  // also endIndex works like slice - so .slice(3,5) selects 0 based columns 4,5  
+  // say start = 5 and end = 9 : 1 based (5,6,7,8,9) 
+  // startindex = 4 , endindex = 9 : 0 based (4,5,6,7,8)  
+  const r = {
+    startRowIndex: startRow - 1,
+    endRowIndex: endRow,
+    startColumnIndex: startColumn - 1,
+    endColumnIndex: endColumn
+  }
+
+  return r
+
+
+
 }
 
 /**
