@@ -20,10 +20,8 @@ class FakeSession {
    * @returns {string}
    */
   getActiveUserLocale() {
-    console.log('before: ', process.env.LANG)
     const lang = process.env.LANG || ''
     // it'll be a format like en_US.UTF-8 so we need to drop the encoding to be like apps script
-    console.log('after: ', lang.replace(/\_.*/,''))
     return lang.replace(/\_.*/,'')
   }
   /**
