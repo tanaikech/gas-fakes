@@ -26,15 +26,15 @@ export class FakeSheetRange {
   /**
    * @constructor
    * @param {import('../typedefs.js').GridRange} gridRange 
-   * @param {FakeSheet} sheet the parent sheet
+   * @param {FakeSheet} parent the parent
    * @returns {FakeSheetRange}
    */
-  constructor(gridRange, sheet) {
+  constructor(gridRange, parent) {
 
     this.__gridRange = gridRange
-    this.__sheet = sheet
-
+    this.__parent = parent
     const props = ['toString',
+      'getValues',
       'removeDuplicates',
       'getMergedRanges',
       'setBackgroundObjects',
@@ -233,7 +233,7 @@ export class FakeSheetRange {
     return this.__gridRange.endRowIndex + 1
   }
   getSheet() {
-    return this.__sheet
+    return this.__parent
   }
   // row and columnindex are probably now deprecated in apps script
   // in any case, in gas they currently return the 1 based value, not the 0 based value as you'd expect
@@ -262,19 +262,6 @@ export class FakeSheetRange {
   getNumColumns () {
     return this.__gridRange.endColumnIndex - this.__gridRange.startColumnIndex
   }
-  
-  getValues () {
-    const { values } = Sheets.Spreadsheets.Values.get(this.__getSS().getId(),this.__getA1WithSheet())
-    return values
-  }
-  
-  __getSS () {
-    this.__sheet.getParent()
-  }
 
-  __getA1WithSheet () {
-    return `${this.getSheet().getName()}!${this.getA1Notation()}`
-  }
-  
 
 }
