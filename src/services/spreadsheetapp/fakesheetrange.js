@@ -262,6 +262,8 @@ export class FakeSheetRange {
   getNumColumns () {
     return this.__gridRange.endColumnIndex - this.__gridRange.startColumnIndex
   }
-
+  
+  
+  
 
 }
