@@ -79,7 +79,7 @@ const testFakes = () => {
     t.is(sr.getA1Notation(),"A1:B2")
     const st= sa.getRange(`${sa.getSheets()[0].getName()}!${sr.getA1Notation()}`)
     t.is(st.getA1Notation(),sr.getA1Notation())
-    
+    console.log (sr.getValues())
     const sheet = sa.getSheetByName(ss.sheets[0].properties.title)
     const dr = sheet.getDataRange()
     const lr = sheet.getLastRow()
