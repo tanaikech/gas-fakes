@@ -1,6 +1,6 @@
 # Collaborating
 
-Testing and updating in a collaorative environment can be hard. Here's how it works to minimize merge problems
+Testing and updating in a collaborative environment can be hard. Here's how it works to minimize merge problems
 - Communicate what you're working on before starting
 - Work on service separately where possible - for Example if A is working on Drive, B should work on Sheets
 
@@ -92,7 +92,7 @@ The package.json should contain a reference to the test
 ````
 they can be run individually with - for example
 ````
-npm run test testdrive
+npm run testdrive
 ````
 ## Running all tests
 The consolidated test.js should contain references to all known tests
