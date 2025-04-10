@@ -5,3 +5,6 @@ togas.sh
 **/node_modules
 shells
 **/.gas-fakes/store
+.gitignore
+*.MD
+.env*
