@@ -29,7 +29,7 @@ const toRange = (startRow, startColumn, endRow, endColumn) => {
 
     return r
   } else {
-    throw new Error("Invalid end row or column numbers.");
+    throw new Error(`Invalid end row or column numbers.${JSON.stringify({ startRow, startColumn, endRow, endColumn })}`);
   }
 }
 

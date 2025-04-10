@@ -1,6 +1,10 @@
 import { Proxies } from '../../support/proxies.js'
 import { FakeSheet } from './fakesheet.js'
 import { SheetUtils } from '../../support/sheetutils.js'
+import is from '@sindresorhus/is'
+
+import { notYetImplemented } from '../../support/helpers.js'
+
 //TODO - deal with r1c1 style ranges
 /**
  * @file
@@ -198,9 +202,7 @@ export class FakeSheetRange {
       'createDeveloperMetadataFinder',
       'getDataSourcePivotTables',
       'clear',
-      'getValue',
       'isBlank',
-      'offset',
       'merge',
       'sort',
       'setValue',
@@ -218,10 +220,19 @@ export class FakeSheetRange {
 
   }
   __getWithSheet() {
-    return `${this.__sheet.getName()}!${this.getA1Notation()}`
+    return this.__getRangeWithSheet(this)
   }
 
-  toString()  {
+  __getTopLeft() {
+    return this.offset(0, 0, 1, 1)
+  }
+
+  __getRangeWithSheet(range) {
+    return `${range.__sheet.getName()}!${this.getA1Notation()}`
+  }
+
+
+  toString() {
     return 'Range'
   }
 
@@ -259,19 +270,50 @@ export class FakeSheetRange {
     return this.__gridRange.startColumnIndex + 1
   }
   getLastRow() {
-    return this.__gridRange.endRowIndex 
+    return this.__gridRange.endRowIndex
   }
   getLastColumn() {
-    return this.__gridRange.endColumnIndex 
+    return this.__gridRange.endColumnIndex
   }
-  getNumRows () {
+  getNumRows() {
     return this.__gridRange.endRowIndex - this.__gridRange.startRowIndex
   }
-  getNumColumns () {
+  getNumColumns() {
     return this.__gridRange.endColumnIndex - this.__gridRange.startColumnIndex
   }
-  getValues () {
+  getValues() {
     const { values } = Sheets.Spreadsheets.Values.get(this.__sheet.getParent().getId(), this.__getWithSheet())
     return values
   }
+  getValue() {
+    const { values } = Sheets.Spreadsheets.Values.get(this.__sheet.getParent().getId(), this.__getRangeWithSheet(this.__getTopLeft()))
+    return values && values[0][0]
+  }
+
+  offset(rowOffset, columnOffset, numRows, numColumns) {
+    const nargs = arguments.length
+    const passedTypes = [is(rowOffset), is(columnOffset), is(numRows), is(numColumns)].slice(0, nargs)
+
+    const matchThrow = (mess = "") => {
+      throw new Error(`The parameters (${passedTypes}) don't match the method signature for ${mess}`)
+    }
+    // basic signature tests
+    if (nargs > 4 || nargs < 2) matchThrow()
+    if (!is.integer(rowOffset) || !is.integer(columnOffset)) matchThrow()
+    if (nargs > 2 && !is.integer(numRows)) matchThrow()
+    if (nargs > 3 && !is.integer(numColumns)) matchThrow()
+    const gr = { ...this.__gridRange }
+
+    numColumns = numColumns || this.getNumColumns()
+    numRows = numRows || this.getNumRows()
+
+    gr.startRowIndex += rowOffset
+    gr.startColumnIndex += columnOffset
+    gr.endRowIndex = gr.startRowIndex + numRows
+    gr.endColumnIndex = gr.startColumnIndex + numColumns
+
+    return newFakeSheetRange(gr, this.__sheet)
+
+  }
+
 }

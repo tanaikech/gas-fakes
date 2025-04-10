@@ -16,7 +16,7 @@ export const testSheets = (pack) => {
 
   unit.section ("spreadsheetapp range dive", t => {
     const ss = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
-    const sheet = ss.getSheets()[0]
+    const sheet = ss.getSheets()[1]
     const range = sheet.getRange ("a2:$b$4")
     t.is (range.toString(), "Range")
     t.is (range.getA1Notation(), "A2:B4")
@@ -38,7 +38,26 @@ export const testSheets = (pack) => {
     // TODO - this fails on gas if the fields are dates- see https://github.com/brucemcpherson/gas-fakes/issues/15
     const rv= range.getValues()
     t.deepEqual (rv, target)
- 
+    const dr = sheet.getDataRange()
+    t.is (dr.offset(0,0).getA1Notation(), dr.getA1Notation())
+    t.is (dr.offset(0,0,1,1).getA1Notation(), "A1")
+    t.is (dr.offset(1,1,1,1).getA1Notation(), "B2")
+    t.is (dr.offset(2,1).getColumn(), 2)
+    t.is (dr.offset(3,5).getRow(),4)
+    t.is (dr.offset(0,1).getLastColumn(), dr.getLastColumn()+1)
+    t.is (dr.offset(1,1).getNumRows(), dr.getNumRows())
+    t.is (dr.offset(1,1).getNumColumns(), dr.getNumColumns())
+    t.is (dr.offset(1,1,2,2).getNumRows(), 2) 
+    t.is (dr.offset(1,1,2,2).getNumColumns(), 2)
+    t.is (dr.offset(1,1,3).getNumRows(), 3)
+    t.is (dr.offset(1,1,3,4).getNumColumns(), 4)
+
+    t.is (range.getValue(), atv[0][0])
+    t.is (range.getValue(), atv[0][0])
+    t.is (range.offset(1,1,1,1).getValue(), atv[1][1])
+    t.is (range.offset(0,2,1,1).getValue(), atv[0][2])
+    t.deepEqual (range.offset(2,0,2).getValues(), atv[2].concat(atv[3]))
+    
     
   })
 
