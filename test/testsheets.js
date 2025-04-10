@@ -17,13 +17,13 @@ export const testSheets = (pack) => {
   unit.section ("spreadhseetapp range dive", t => {
     const ss = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
     const sheet = ss.getSheets()[0]
-    const range = sheet.getRange ("b2:c3")
+    const range = sheet.getRange ("a2:$b$4")
     t.is (range.toString(), "Range")
-    t.is (range.getA1Notation(), "B2:C3")
+    t.is (range.getA1Notation(), "A2:B4")
     t.is(range.getRow(),2)
-    t.is(range.getColumn(),2)
-    t.is(range.getLastRow(),3)
-    t.is(range.getLastColumn(),3)
+    t.is(range.getColumn(),1)
+    t.is(range.getLastRow(),4)
+    t.is(range.getLastColumn(),2)
     const {values} = Sheets.Spreadsheets.Values.get(sheet.getParent().getId(),sheet.getName())
     const target = values.slice (range.getRow()-1, range.getLastRow()).map(row=>row.slice(range.getColumn()-1,range.getLastColumn()))
     t.true(is.array(target))
@@ -35,8 +35,10 @@ export const testSheets = (pack) => {
     t.is (atv[0].length, target[0].length)
     t.is (atr, tr)
     t.deepEqual (atv, target)
-    const av= range.getValues()
-    t.deepEqual (av, target)
+    // TODO - this fails on gas if the fields are dates- see https://github.com/brucemcpherson/gas-fakes/issues/15
+    const rv= range.getValues()
+    t.deepEqual (rv, target)
+    console.log(rv)
     
   })
   unit.cancel()
