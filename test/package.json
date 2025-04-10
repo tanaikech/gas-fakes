@@ -4,11 +4,12 @@
   },
   "dependencies": {
     "@mcpher/unit": "^1.1.10",
-    "@mcpher/gas-fakes": "^1.0.2"
+    "@mcpher/gas-fakes": "^1.0.7"
   },
   "type": "module",
   "scripts": {
-    "test": "node --env-file=../.env alltests.js"
+    "test": "cp ../mainlocal.js ../main.js && node --env-file=../.env ./test.js",
+    "testnpm": "cp ../mainnpm.js ../main.js &&  node --env-file=../.env ./test.js"
   },
   "name": "test-gas-fakes",
   "version": "1.0.2",

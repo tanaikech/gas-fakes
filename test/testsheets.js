@@ -14,7 +14,7 @@ import { initTests }  from  './testinit.js'
 export const testSheets = (pack) => {
   const {unit, fixes} = pack || initTests()
 
-  unit.section ("spreadhseetapp range dive", t => {
+  unit.section ("spreadsheetapp range dive", t => {
     const ss = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
     const sheet = ss.getSheets()[0]
     const range = sheet.getRange ("a2:$b$4")
@@ -38,10 +38,10 @@ export const testSheets = (pack) => {
     // TODO - this fails on gas if the fields are dates- see https://github.com/brucemcpherson/gas-fakes/issues/15
     const rv= range.getValues()
     t.deepEqual (rv, target)
-    console.log(rv)
+ 
     
   })
-  unit.cancel()
+
   unit.section("advanced & spreadsheetapp values and ranges", t => {
     t.is(Sheets.Spreadsheets.Values.toString(),Sheets.toString())
     const ss = Sheets.Spreadsheets.get(fixes.TEST_SHEET_ID)
