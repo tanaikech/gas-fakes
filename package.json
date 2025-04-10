@@ -22,10 +22,17 @@
   "type": "module",
   "scripts": {
     "test": "node --env-file=.env ./test/test.js",
+    "testdrive": "node --env-file=.env ./test/testdrive.js execute",
+    "testsheets": "node --env-file=.env ./test/testsheets.js execute",
+    "testfetch": "node --env-file=.env ./test/testfetch.js execute",
+    "testsession": "node --env-file=.env ./test/testsession.js execute",
+    "testutilities": "node --env-file=.env ./test/testutilities.js execute",
+    "teststores": "node --env-file=.env ./test/teststores.js execute",
+    "testscriptapp": "node --env-file=.env ./test/testscriptapp.js execute",
     "pub": "npm publish --access public"
   },
   "name": "@mcpher/gas-fakes",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "main": "main.js",
   "description": "A proof of concept implementation of Apps Script Environment on Node",
   "repository": "github:brucemcpherson/gas-fakes",

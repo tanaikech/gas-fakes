@@ -20,7 +20,7 @@ CLASP=true
 # the soure appsscript.json manifest should be in the top level 
 cp ${SOURCE}/appsscript.json ${TARGET}
 cp ${SOURCE}/imports.js ${TARGET}/test
-cp ${SOURCE}/test.js ${TARGET}/test
+cp ${SOURCE}/test*.js ${TARGET}/test
 
 # find all the copied files and comment/fixes out import and export statements
 # note - this simple version naively expects that to be on 1 line
@@ -29,7 +29,7 @@ sed -i 's/^\s*export\s\s*//g' $(find "${TARGET}" -name "${EXT}" -type f)
 
 # replace all process.env.VAR_NAME occurrences with actual value
 # process.env is not usable in apps script
-for var in $(grep -oP 'process\.env\.\K\w+' "${TARGET}/test/test.js"); do
+for var in $(grep -oP 'process\.env\.\K\w+' "${TARGET}/test/testinit.js"); do
     value=$(printenv "$var")  # Get the environment variable value
 
     # Escape characters for sed, e.g. \n becomes \\n, & becomes \&
@@ -41,7 +41,7 @@ for var in $(grep -oP 'process\.env\.\K\w+' "${TARGET}/test/test.js"); do
     fi
 
     # Replace process.env.VARIABLE_NAME with the actual value
-    sed -i "s|process.env.$var|$value|g" ${TARGET}/test/test.js
+    sed -i "s|process.env.$var|$value|g" ${TARGET}/test/testinit.js
 done
 
 # now go to the target and push and open if required

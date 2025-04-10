@@ -28,7 +28,11 @@ You don't have access to the GAS maintained cloud project, so you'll need to cre
 
 ### Testing
 
-I recommend you use the test project included in the repo to make sure all is set up correctly. It uses a Fake DriveApp service to excercise Auth etc. Just change the fixtures to values present in your own Drive, then `npm i && npm test`. Note that I use a [unit tester](https://ramblings.mcpher.com/apps-script-test-runner-library-ported-to-node/) that runs in both GAS and Node, so the exact same tests will run in both environments. There are some example tests in the repo. Each test has been proved on both Node and GAS. There's also a shell (togas.sh) which will use clasp to push the test code to Apps Script.
+I recommend you use the test project included in the repo to make sure all is set up correctly. It uses a Fake DriveApp service to excercise Auth etc. Just change the fixtures in .env_template in your own environments, then `npm i && npm test`. 
+
+Note that I use a [unit tester](https://ramblings.mcpher.com/apps-script-test-runner-library-ported-to-node/) that runs in both GAS and Node, so the exact same tests will run in both environments. There are some example tests in the repo. Each test has been proved on both Node and GAS. There's also a shell (togas.sh) which will use clasp to push the test code to Apps Script.
+
+Each test can be run indivually (for example `npm run testdrive`) or all with `npm test`
 
 ### Settings
 
@@ -168,13 +172,14 @@ This was a little problematic to sequence, but I wanted to make sure that any GA
 
 Only a subset of methods are currently available for some of them - the rest are work in progress. My approach is to start with a little bit of each service to prove feasibility and provide a base to build on.
 
-v1.0.5
+v1.0.7
 
 - `DriveApp` - 50%
 - `ScriptApp` - almost all
 - `UrlFetchApp` - 80%
-- `Utilities` - 60%
-- `Sheets` - `minimal`
+- `Utilities` - almost all
+- `Sheets` - 25%
+- `SpreadsheetApp` - 25%
 - `CacheService` - 80%
 - `PropertiesService` - 80%
 - `Session` - almost all
