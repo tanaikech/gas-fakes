@@ -14,7 +14,32 @@ import { initTests }  from  './testinit.js'
 export const testSheets = (pack) => {
   const {unit, fixes} = pack || initTests()
 
-
+  unit.section ("spreadhseetapp range dive", t => {
+    const ss = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
+    const sheet = ss.getSheets()[0]
+    const range = sheet.getRange ("b2:c3")
+    t.is (range.toString(), "Range")
+    t.is (range.getA1Notation(), "B2:C3")
+    t.is(range.getRow(),2)
+    t.is(range.getColumn(),2)
+    t.is(range.getLastRow(),3)
+    t.is(range.getLastColumn(),3)
+    const {values} = Sheets.Spreadsheets.Values.get(sheet.getParent().getId(),sheet.getName())
+    const target = values.slice (range.getRow()-1, range.getLastRow()).map(row=>row.slice(range.getColumn()-1,range.getLastColumn()))
+    t.true(is.array(target))
+    t.is (target.length, range.getNumRows())
+    t.is (target[0].length, range.getNumColumns())
+    const tr = `${sheet.getName()}!${range.getA1Notation()}`
+    const {values:atv, range: atr}  = Sheets.Spreadsheets.Values.get(fixes.TEST_SHEET_ID, tr)
+    t.is (atv.length, target.length)
+    t.is (atv[0].length, target[0].length)
+    t.is (atr, tr)
+    t.deepEqual (atv, target)
+    const av= range.getValues()
+    t.deepEqual (av, target)
+    
+  })
+  unit.cancel()
   unit.section("advanced & spreadsheetapp values and ranges", t => {
     t.is(Sheets.Spreadsheets.Values.toString(),Sheets.toString())
     const ss = Sheets.Spreadsheets.get(fixes.TEST_SHEET_ID)
@@ -71,6 +96,7 @@ export const testSheets = (pack) => {
     t.is(aa.getNumRows(),aa.getLastRow()  - aa.getRow()+ 1)
     t.is(aa.getNumColumns(),aa.getLastColumn() - aa.getColumn() +1)
     t.is(sheet.getRange(aa.getRow(),aa.getColumn(),aa.getNumRows(),aa.getNumColumns()).getA1Notation(),aaex)
+  
   })
 
 

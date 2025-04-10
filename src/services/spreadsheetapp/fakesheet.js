@@ -212,7 +212,7 @@ export class FakeSheet {
    * @returns {import('../typedefs.js').GridRange} gridRange 
    */
   getDataRange() {
-    return newFakeSheetRange(this.__getGridRange())
+    return newFakeSheetRange(this.__getGridRange(), this)
   }
   // 1 based
   getLastRow() {
@@ -245,7 +245,7 @@ export class FakeSheet {
       return newFakeSheetRange({
         ...grid,
         sheetId: this.getSheetId()
-      })
+      }, this)
     }
     const row = rowOrA1
     if (!is.number(column) || !is.number(row)) matchThrow()
@@ -255,7 +255,7 @@ export class FakeSheet {
       startColumnIndex: column - 1,
       endRowIndex: row + (numRows || 0) -1,
       endColumnIndex: column + (numColumns || 0)  -1
-    })
+    },this)
 
   }
 
