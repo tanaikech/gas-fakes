@@ -8,3 +8,5 @@ shells
 .gitignore
 *.MD
 .env*
+mainlocal.js
+mainnpm.js
