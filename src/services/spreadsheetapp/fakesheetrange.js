@@ -1,7 +1,10 @@
 import { Proxies } from '../../support/proxies.js'
 import { FakeSheet } from './fakesheet.js'
 import { SheetUtils } from '../../support/sheetutils.js'
-import is from '@sindresorhus/is'
+import { Utils } from '../../support/utils.js'
+
+const {is, signatureArgs} = Utils
+
 
 import { notYetImplemented } from '../../support/helpers.js'
 
@@ -38,7 +41,6 @@ export class FakeSheetRange {
     this.__gridRange = gridRange
     this.__sheet = sheet
     const props = [
-
       'removeDuplicates',
       'getMergedRanges',
       'setBackgroundObjects',
@@ -107,7 +109,6 @@ export class FakeSheetRange {
       'setWraps',
       'copyValuesToRange',
       'copyFormatToRange',
-      'getGridId',
       'getFontColor',
       'getFontColorObject',
       'getFontColors',
@@ -177,13 +178,10 @@ export class FakeSheetRange {
       'setNotes',
       'setNote',
       'clearNote',
-      'getHeight',
       'createFilter',
       'setVerticalAlignment',
       'setHorizontalAlignment',
       'getNotes',
-      'getWidth',
-      'getCell',
       'getNote',
       'setFontFamily',
       'getDataSourceFormulas',
@@ -289,14 +287,58 @@ export class FakeSheetRange {
     const { values } = Sheets.Spreadsheets.Values.get(this.__sheet.getParent().getId(), this.__getRangeWithSheet(this.__getTopLeft()))
     return values && values[0][0]
   }
-
+  /**
+   * getCell(row, column) Returns a given cell within a range.
+   * @param {number} row 1 based cell relative to range
+   * @param {number} column 1 based cell relative to range
+   * @return {FakeSheetRange}
+   */
+  getCell(row, column){
+    // let offset check args
+    return this.offset(row-1,column-1,1,1)
+  }
+  /**
+   * getGridId() https://developers.google.com/apps-script/reference/spreadsheet/range#getgridid
+   * Returns the grid ID of the range's parent sheet. IDs are random non-negative int values.
+   * gridid seems to be the same as the sheetid 
+   * @returns {number}
+   */
+  getGridId() {
+    return this.__sheet.getSheetId()
+  }
+  /**
+   * getHeight() https://developers.google.com/apps-script/reference/spreadsheet/range#getheight
+   * appears to be the same as getNumRows()
+   * Returns the height of the range.
+   * @returns {number} 
+   */
+  getHeight () {
+    return this.getNumRows()
+  }
+  /**
+   * getWidth() https://developers.google.com/apps-script/reference/spreadsheet/range#getwidth
+   * appears to be the same as getNumColumns()
+   * Returns the width of the range in columns.
+   * @returns {number} 
+   */  
+  getWidth () {
+    return this.getNumColumns()
+  }
+  /**
+   * offset(rowOffset, columnOffset) https://developers.google.com/apps-script/reference/spreadsheet/range#offsetrowoffset,-columnoffset
+   * Returns a new range that is offset from this range by the given number of rows and columns (which can be negative). 
+   * The new range is the same size as the original range.
+   * offsets are zero based
+   * @param {number} rowOffset 
+   * @param {number} columnOffset 
+   * @param {number} numRows 
+   * @param {number} numColumns 
+   * @returns 
+   */
   offset(rowOffset, columnOffset, numRows, numColumns) {
-    const nargs = arguments.length
-    const passedTypes = [is(rowOffset), is(columnOffset), is(numRows), is(numColumns)].slice(0, nargs)
+    // get arg types
+    const { nargs, matchThrow } = signatureArgs(arguments, "offset") 
 
-    const matchThrow = (mess = "") => {
-      throw new Error(`The parameters (${passedTypes}) don't match the method signature for ${mess}`)
-    }
     // basic signature tests
     if (nargs > 4 || nargs < 2) matchThrow()
     if (!is.integer(rowOffset) || !is.integer(columnOffset)) matchThrow()

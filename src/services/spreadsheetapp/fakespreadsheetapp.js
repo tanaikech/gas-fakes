@@ -1,6 +1,6 @@
 import { Proxies } from '../../support/proxies.js'
 import { newFakeSpreadsheet } from './fakespreadsheet.js'
-import { notYetImplemented } from '../../support/helpers.js'
+import { notYetImplemented, minSheetFields } from '../../support/helpers.js'
 
 /**
  * create a new FakeSpreadsheetApp instance
@@ -106,7 +106,7 @@ export class FakeSpreadsheetApp {
    * @return {FakeSpreadsheet}
    */
   openById(id) {
-    return newFakeSpreadsheet(Sheets.Spreadsheets.get(id, {}, { ss: true }))
+    return newFakeSpreadsheet(Sheets.Spreadsheets.get(id, {fields: minSheetFields}, { ss: true }))
   }
   /**
    * url looks like this https://docs.google.com/spreadsheets/d/1lc7YcqMuP1ap23FFW0EqywyLojBmHTKZde_0cYcyPSQ/edit?gid=907032523#gid=907032523

@@ -21,6 +21,20 @@ const fromJson = (text, failOnError = false) => {
   }
 }
 
+const signatureArgs = (received,method) => {
+  const args = Array.from(received)
+  const nargs = args.length
+  const passedTypes = args.map(is)
+  const matchThrow = (mess = method) => {
+    throw new Error(`The parameters (${passedTypes}) don't match the method signature for ${mess}`)
+  }
+  return {
+    nargs,
+    passedTypes,
+    matchThrow
+  }
+}
+
 const isBlob = (item) => is.object (item) && Reflect.has (item, "copyBlob") && is.function (item.copyBlob)
 
 /**
@@ -173,7 +187,8 @@ export const Utils = {
   assert,
   isBlob,
   capital,
-  is
+  is,
+  signatureArgs
 }
 
 
