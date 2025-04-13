@@ -20,6 +20,7 @@ import { minFields } from './helpers.js'
 import { mergeParamStrings } from './utils.js'
 import { improveFileCache, checkResponse, getFromFileCache } from "./filecache.js"
 
+
 const authPath = "../support/auth.js"
 const drapisPath = "../services/driveapp/drapis.js"
 const shapisPath = "../services/spreadsheetapp/shapis.js"
@@ -211,7 +212,7 @@ const fxApi = ({subProp,  prop, method, params, apiPath, options }) => {
 
   // get a sync version of this async function
   const fx = makeSynchronous(sxApi)
-
+  
   const result = fx({
     subProp,
     prop,

@@ -1,6 +1,7 @@
 import { Proxies } from '../../support/proxies.js'
-import { notYetImplemented, isGood, throwResponse } from '../../support/helpers.js'
+import { notYetImplemented } from '../../support/helpers.js'
 import { Syncit } from '../../support/syncit.js'
+import { getWorkbookEntry, setWorkbookEntry } from "../../support/sheetscache.js"
 /**
  * @file
  * @imports ../typedefs.js
@@ -55,22 +56,29 @@ class FakeSheetValues {
 
   /**
    * @param {string} spreadsheetId the spreadsheet id
-   * @param {string} range the a1 style range including the name of the sheet
+   * @param {string} ranges the a1 style range including the name of the sheet
    * @param {object} options
    */
-  get(spreadsheetId, range, options) {
-    const { data } = Syncit.fxSheets({
+  get(spreadsheetId, range, options ={}) {
+
+    const pack = {
       subProp: "values",
       prop: "spreadsheets",
       method: "get",
       params: {
         spreadsheetId: spreadsheetId,
-        range: range,
+        range,
         ...options
       }
-    })
-    // should be values, majorDimension, range
-    return data
+    }
+    const cache = getWorkbookEntry(spreadsheetId, pack)
+    if (cache) {
+      return cache
+    } 
+
+    const { data } = Syncit.fxSheets(pack)
+
+    return setWorkbookEntry(spreadsheetId, pack, data)
   }
 
 }

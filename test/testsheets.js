@@ -9,10 +9,56 @@ import '../main.js'
 //import '@mcpher/gas-fakes/main.js'
 
 import { initTests } from './testinit.js'
+import { getSheetsPerformance } from '../src/support/sheetscache.js';
+import { Fiddler} from '../gaslibtests/bmfiddler/Code.js'
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testSheets = (pack) => {
   const { unit, fixes } = pack || initTests()
+
+  unit.section ("testfiddler - needs utilities sha1", t=> {
+    const ss = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
+    const sheet = ss.getSheets()[1]
+    const fiddler = new Fiddler(sheet)
+  }, {
+    skip: true
+  })
+
+  unit.section("rangelists", t=> {
+    const ss = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
+    const sheet = ss.getSheets()[1]
+    const rltests = ["a2:c3", "bb4:be12"]
+    const rl = sheet.getRangeList (rltests)
+    t.is(rl.getRanges().length, rltests.length)
+    rl.getRanges().forEach ((f,i)=>t.is(f.getA1Notation(), rltests[i].toUpperCase()))
+    
+  })
+
+  unit.section("spreadsheet exotics", t => {
+    const ss = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
+    const sheet = ss.getSheets()[0]
+
+    t.is(sheet.getColumnWidth(2), ss.getColumnWidth(2))
+    t.is(sheet.getRowHeight(1), ss.getRowHeight(1))
+    t.true(sheet.getRowHeight(1) > 10)
+    t.true(sheet.getColumnWidth(2) > 20)
+    t.true(is.nonEmptyString(ss.getRecalculationInterval().toString()))
+
+    const owner = ss.getOwner()
+    t.is(owner.getEmail(), fixes.EMAIL)
+
+    const viewers = ss.getViewers()
+    t.truthy(viewers.length)
+    viewers.forEach(f => t.true(is.nonEmptyString(f.getEmail())))
+
+    const editors = ss.getEditors()
+    t.truthy(editors.length)
+    editors.forEach(f => t.true(is.nonEmptyString(f.getEmail())))
+
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+  })
+
 
   unit.section("spreadsheetapp range dive", t => {
 
@@ -23,6 +69,7 @@ export const testSheets = (pack) => {
     const ss = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
     const sheet = ss.getSheets()[1]
     const range = sheet.getRange("c2:$d$4")
+    t.false(sheet.isSheetHidden())
     t.is(range.toString(), "Range")
     t.is(range.getGridId(), sheet.getSheetId())
     t.is(range.getA1Notation(), "C2:D4")
@@ -37,6 +84,7 @@ export const testSheets = (pack) => {
     t.is(range.getHeight(), range.getNumRows())
     t.is(range.getNumColumns(), range.getLastColumn() - range.getColumn() + 1)
     t.is(range.getNumRows(), range.getLastRow() - range.getRow() + 1)
+    t.deepEqual(range.getValues(), sheet.getSheetValues(range.getRow(), range.getColumn(), range.getNumRows(), range.getNumColumns()))
 
     const { values } = Sheets.Spreadsheets.Values.get(sheet.getParent().getId(), sheet.getName())
     const target = values.slice(range.getRow() - 1, range.getLastRow()).map(row => row.slice(range.getColumn() - 1, range.getLastColumn()))
@@ -71,7 +119,7 @@ export const testSheets = (pack) => {
     t.is(range.offset(1, 1, 1, 1).getValue(), atv[1][1])
     t.is(range.offset(0, 2, 1, 1).getValue(), values[1][2])
     t.deepEqual(range.offset(2, 0, 1).getValues()[0], values[range.getRow() + 2 - 1].slice(range.getColumn() - 1, range.getLastColumn()))
-
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
   })
 
   unit.section("advanced & spreadsheetapp values and ranges", t => {
@@ -130,7 +178,7 @@ export const testSheets = (pack) => {
     t.is(aa.getNumRows(), aa.getLastRow() - aa.getRow() + 1)
     t.is(aa.getNumColumns(), aa.getLastColumn() - aa.getColumn() + 1)
     t.is(sheet.getRange(aa.getRow(), aa.getColumn(), aa.getNumRows(), aa.getNumColumns()).getA1Notation(), aaex)
-
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
   })
 
 
@@ -151,7 +199,7 @@ export const testSheets = (pack) => {
     t.true(is.array(ss.sheets))
     t.truthy(ss.sheets.length)
     t.true(is.nonEmptyString(ss.spreadsheetUrl))
-
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
   })
 
   unit.section("spreadsheetapp basics", t => {
@@ -174,6 +222,7 @@ export const testSheets = (pack) => {
       t.is(s.getType().toString(), ass.sheets[i].properties.sheetType)
       t.is(ss.getSheetById(s.getSheetId()).getName(), s.getName())
       t.is(ss.getSheetByName(s.getName()).getSheetId(), s.getSheetId())
+
     })
 
 
@@ -189,10 +238,14 @@ export const testSheets = (pack) => {
 
     t.is(SpreadsheetApp.openByUrl(ss.getUrl()).getId(), ss.getId())
     t.is(SpreadsheetApp.openByKey(ss.getId()).getId(), ss.getId())
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+
 
   })
 
+
   if (!pack) {
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
     unit.report()
   }
   return { unit, fixes }

@@ -14,6 +14,9 @@ import { testSession } from './testsession.js';
 import { testUtilities } from './testutilities.js';
 import { testStores } from './teststores.js';
 import { testScriptApp } from './testscriptapp.js';
+import { getPerformance } from '../src/support/filecache.js';
+import { getSheetsPerformance } from '../src/support/sheetscache.js';
+
 
 const testFakes = () => {
   const pack = initTests()
@@ -28,7 +31,8 @@ const testFakes = () => {
   testUtilities(pack)
   testStores(pack)
   testScriptApp(pack)
-  
+  if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
+  if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
   unit.report()
 }
 

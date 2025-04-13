@@ -1,6 +1,11 @@
 import { Proxies } from '../../support/proxies.js'
-import { newFakeSheet } from './fakesheet.js'
+import { FakeSheet, newFakeSheet } from './fakesheet.js'
 import { notYetImplemented } from '../../support/helpers.js'
+import { FakeSheetRange } from './fakesheetrange.js'
+/**
+ * @file
+ * @imports ../typedefs.js
+ */
 
 /**
  * create a new FakeSpreadsheet instance
@@ -79,7 +84,6 @@ export class FakeSpreadsheet {
       'show',
       'getIterativeCalculationConvergenceThreshold',
       'setIterativeCalculationConvergenceThreshold',
-      'getRecalculationInterval',
       'setRecalculationInterval',
       'setIterativeCalculationEnabled',
       'isIterativeCalculationEnabled',
@@ -128,8 +132,6 @@ export class FakeSpreadsheet {
       'getDataSourceFormulas',
       'insertImage',
       'getSheetPermissions',
-      'getRowHeight',
-      'getColumnWidth',
       'insertColumnBefore',
       'setRowHeight',
       'isColumnHiddenByUser',
@@ -138,25 +140,23 @@ export class FakeSpreadsheet {
       'insertRowAfter',
       'setColumnWidth',
       'revealColumn',
-      'getDataRange',
       'getActiveCell',
       'getDataSourcePivotTables',
       'deleteColumns',
       'getActiveSelection',
-      'getLastColumn',
       'deleteColumn',
-      'getLastRow',
       'getImages',
       'find',
       'sort',
-      'getEditors',
       'addEditor',
       'addEditors',
       'addViewers',
-      'getViewers',
       'addViewer',
       'removeViewer',
       'removeEditor',
+
+      // these convert to a pdf so we'll need to figure out how to do that
+      // probably using the Drive export
       'getAs',
       'getBlob']
 
@@ -165,6 +165,124 @@ export class FakeSpreadsheet {
         return notYetImplemented()
       }
     })
+  }
+
+
+  /**
+   * get sheetlevel meta data for  given ranges
+   * @param {FakeSheetRange} range 
+   * @param {string} fields to get
+   * @return {object} data
+   */
+  __getSheetMetaProps = (ranges, fields) => {
+    const data = Sheets.Spreadsheets.get(this.getId(), { ranges, fields })
+    return data
+  }
+
+  /**
+   * TODO - does this apply to the active sheet or the 1st sheet?
+   * @returns {FakeSheet}
+   */
+  __getFirstSheet() {
+    return this.getSheets()[0]
+  }
+
+  /**
+   * get spreadsesheetlevel meta 
+   * @param {string} fields to get
+   * @return {object} data
+   */
+  __getMetaProps  (fields)  {
+    const data = Sheets.Spreadsheets.get(this.getId(), { fields })
+    return data
+  }
+
+  /**
+   * getViewers() https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet#getviewers
+   * Gets the list of viewers and commenters for this Spreadsheet.
+   * @returns {FakeUser[]} the file viewers
+   */
+  getViewers() {
+    return this.__file.getViewers()
+  }
+  /**
+   * getEditors() https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet#geteditors
+   * Gets the list of editors for this Spreadsheet.
+   * @returns {FakeUser[]} the file editors
+   */
+  getEditors() {
+    return this.__file.getEditors()
+  }
+  
+  /**
+   * getOwner() https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet#getowner
+   * Returns the owner of the document, or null for a document in a shared drive.
+   * @returns {FakeUser}
+   */
+  getOwner() {
+    return this.__file.getOwner()
+  }
+
+  /**
+   * dont know the exact status of this one - TODO keep an eye on if it gets activated in gas
+   */
+  isAnonymousView () {
+    // weird right ? but that's what it does on gas
+   throw new Error(`The api method 'isAnonymousView' is not available yet in the new version of Google Sheets`)
+  }
+  
+  /**
+   * getRecalculationInterval() https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet#getrecalculationinterval
+   * Returns the calculation interval for this spreadsheet.
+   * @returns {import('../typedefs.js').RecalculationInterval}  
+   */
+   
+  getRecalculationInterval () {
+    return this.__getMetaProps("properties.autoRecalc").properties.autoRecalc
+  }
+
+  /**
+   * getLastColumn() https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet#getlastcolumn
+   * Returns the position of the last column that has content.
+   * @return {number} 
+   */
+  getLastColumn() {
+    return this.__getFirstSheet().getLastColumn()
+  }
+  /**
+   * getLastRow() https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet#getlastrow
+   * Returns the position of the last row that has content.
+   */
+  getLastRow() {
+    return this.__getFirstSheet().getLastRow()
+  }
+  /**
+   * getDataRange() https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet#getdatarange
+   * Returns a Range corresponding to the dimensions in which data is present.
+   * @returns {FakeSheetRange}
+   */
+  getDataRange() {
+    return this.__getFirstSheet().getDataRange()
+  }
+  
+  /**
+   * getColumnWidth(columnPosition) https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet#getcolumnwidthcolumnposition
+   * Gets the width in pixels of the given column.
+   * @param {number} columnPosition 
+   * @returns {number} pixels
+   */
+  getColumnWidth(column) {
+    return this.__getFirstSheet().getColumnWidth(column)
+  }
+
+  /**
+   * getRowHeight(rowPosition) https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet#getrowheightrowposition
+   * Gets the height in pixels of the given row.
+   * @param {number} rowPosition 
+   * @returns {number} pixels
+  */
+  getRowHeight(row) {
+    return this.__getFirstSheet().getRowHeight(row)
   }
 
   /**
@@ -228,8 +346,7 @@ export class FakeSpreadsheet {
    * @return {number} the first sheet id in the spreadsheet
    */
   getSheetId() {
-    const sheets = this.getSheets()
-    return sheets[0].getSheetId()
+    return this.__getFirstSheet().getSheetId()
   }
   /**
    * Returns name of first sheet.
@@ -238,18 +355,9 @@ export class FakeSpreadsheet {
    * @return {id} the first sheet name in the spreadsheet
    */
   getSheetName() {
-    const sheets = this.getSheets()
-    return sheets[0].getName()
+    return this.__getFirstSheet().getName()
   }
-  /**
-   * Returns owner of first sheet.
-   * we can get this with the DriveAPI
-   * the apps script docs are misleading
-   * @return {FakeUser} the owner of the spreadsheet
-   */
-  getOwner() {
-    return this.__file.getOwner()
-  }
+
 
   getRange(range) {
     // this should be in sheet1!a1:a2 format

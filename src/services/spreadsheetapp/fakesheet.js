@@ -1,7 +1,8 @@
 import { Proxies } from '../../support/proxies.js'
 import { SheetUtils } from '../../support/sheetutils.js'
 import { notYetImplemented } from '../../support/helpers.js'
-import { newFakeSheetRange } from './fakesheetrange.js'
+import {  newFakeSheetRange } from './fakesheetrange.js'
+import { newFakeSheetRangeList  } from './fakesheetrangelist.js'
 import { Utils } from "../../support/utils.js"
 const { is } = Utils
 /**
@@ -63,7 +64,6 @@ export class FakeSheet {
       'showRows',
       'hideSheet',
       'showSheet',
-      'isSheetHidden',
       'moveRows',
       'moveColumns',
       'getPivotTables',
@@ -115,14 +115,10 @@ export class FakeSheet {
       'insertRowAfter',
       'deleteColumn',
       'deleteRow',
-      'getRangeList',
       'getActiveCell',
       'getActiveSelection',
-      'getColumnWidth',
-      'getRowHeight',
       'isRowHiddenByUser',
       'isColumnHiddenByUser',
-      'getSheetValues',
       'getFrozenRows',
       'getFrozenColumns',
       'hideColumn',
@@ -162,6 +158,7 @@ export class FakeSheet {
       }
     })
   }
+
   getParent() {
     return this.__parent
   }
@@ -188,6 +185,11 @@ export class FakeSheet {
   getType() {
     return this.__sheet.properties.sheetType
   }
+
+  isSheetHidden() {
+    return Boolean(this.__sheet.properties.hidden)
+  }
+  
 
   /**
    * gets a grid range as per the api format
@@ -222,9 +224,50 @@ export class FakeSheet {
   getLastColumn() {
     return this.__getGridRange().endColumnIndex 
   }
+  /**
+   * @param {number} rowPosition 
+   * @returns 
+   */
+  getRowHeight(rowPosition) {
+    return notYetImplemented()
+  }
+  
+  /**
+   * getColumnWidth(columnPosition) https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet#getcolumnwidthcolumnposition
+   * Gets the width in pixels of the given column.
+   * @param {number} columnPosition 
+   * @returns {number} pixels
+   */
+  getColumnWidth(columnPosition) {
+    // we just need 1 column
+    const ranges = [this.getRange(1, columnPosition, 1, 1).__getWithSheet()]
+    const data = this.getParent().__getSheetMetaProps(ranges, "sheets.data.columnMetadata")
+    return data.sheets[0].data[0].columnMetadata[0].pixelSize
+  } 
+
+  /**
+   * getRowHeight(rowPosition) https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet#getrowheightrowposition
+   * Gets the height in pixels of the given row.
+   * @param {number} rowPosition 
+   * @returns {number} pixels
+   */
+  getRowHeight(rowPosition)  {
+    // we just need 1 row
+    const ranges = [this.getRange(rowPosition, 1, 1, 1).__getWithSheet()]
+    const data = this.getParent().__getSheetMetaProps(ranges, "sheets.data.rowMetadata")
+    return data.sheets[0].data[0].rowMetadata[0].pixelSize
+  }
+
+  /**
+   * getRangeList(a1Notations)
+   * @param {string[]} a1Notations  a1 notations ranges
+   * @returns {FakeSheetRangeList}
+   */
+  getRangeList(a1Notations) {
+    return newFakeSheetRangeList(a1Notations.map(f=>this.getRange (f)))
+  }
 
   /** 
-   * TODO - this needs to return a fakerange
    * arguments can be flexible row/column is 1 based
    * @param {number|string} rowOrA1 can also be a string if its a1 notation
    * @param {number} column 
@@ -258,7 +301,18 @@ export class FakeSheet {
     },this)
 
   }
-
-
+  /**
+   * getSheetValues(startRow, startColumn, numRows, numColumns) - all 1 based
+   * https://developers.google.com/apps-script/reference/spreadsheet/sheet#getsheetvaluesstartrow,-startcolumn,-numrows,-numcolumns
+   * @param {number} numColumns The number of columns to return values for.
+   * @param {number} numRows The number of rows to return values for.
+   * @param {number} startColumn The position of the starting column.
+   * @param {number} startRow The position of the starting row.
+   * @returns {*[][]}  a two-dimensional array of values
+   */
+  getSheetValues(startRow, startColumn, numRows, numColumns) {
+    const range = this.getRange(startRow, startColumn, numRows, numColumns)
+    return range.getValues()
+  }
 
 }

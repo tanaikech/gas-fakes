@@ -7,6 +7,7 @@ import { Proxies } from '../../support/proxies.js'
 import { Syncit } from '../../support/syncit.js'
 import { notYetImplemented, isGood } from '../../support/helpers.js'
 import { newFakeSheetValues } from './fakeadvvalues.js'
+import { getWorkbookEntry, setWorkbookEntry } from "../../support/sheetscache.js"
 
 
 /**
@@ -46,14 +47,20 @@ class FakeAdvSheetsSpreadsheets {
    */
   get(id, options, { ss = false } ={}) {
 
-    const { response, data } = Syncit.fxSheets({
+    const pack = {
       prop: "spreadsheets",
       method: "get",
       params: {
         spreadsheetId: id,
         ...options
       }
-    })
+    }
+    const cache = getWorkbookEntry(id, pack)
+    if (cache) {
+      return cache
+    } 
+
+    const { response, data } = Syncit.fxSheets(pack)
 
     // maybe we need to throw an error
     if (!isGood(response)) {
@@ -67,7 +74,7 @@ class FakeAdvSheetsSpreadsheets {
     }
 
     // all is good
-    return data
+    return setWorkbookEntry(id, pack, data)
 
   }
 

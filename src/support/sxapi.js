@@ -18,7 +18,7 @@ export const sxApi = async ({ subProp, prop, method, apiPath, authPath, scopes, 
 
   // the scopes are required to set up an appropriate auth
   Auth.setAuth(scopes)
-
+ // console.log ( 'sxapi', { subProp, prop, method, apiPath, authPath, scopes, params, options })
   // this is the node drive service
   const apiClient = getAuthedClient()
   try {

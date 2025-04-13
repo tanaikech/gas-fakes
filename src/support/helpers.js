@@ -44,7 +44,7 @@ const minFieldsList = ["name","id","mimeType","kind","parents"]
 export const minFields = minFieldsList.join(",")
 export const minPermissionFields = "kind,id,role,type"
 
-export const minSheetFields = "sheets.properties,spreadsheetId"
+export const minSheetFields = "sheets.properties,spreadsheetId,properties.title,spreadsheetUrl"
 /**
  * is an object a folder
  * @param {FakeDriveMeta} file 
