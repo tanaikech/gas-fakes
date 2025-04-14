@@ -78,7 +78,8 @@ class FakeSheetValues {
 
     const { data } = Syncit.fxSheets(pack)
 
-    return setWorkbookEntry(spreadsheetId, pack, data)
+    setWorkbookEntry(spreadsheetId, pack, data)
+    return data
   }
 
 }

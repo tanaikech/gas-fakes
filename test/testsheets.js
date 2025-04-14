@@ -10,28 +10,101 @@ import '../main.js'
 
 import { initTests } from './testinit.js'
 import { getSheetsPerformance } from '../src/support/sheetscache.js';
-import { Fiddler} from '../gaslibtests/bmfiddler/Code.js'
+
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testSheets = (pack) => {
   const { unit, fixes } = pack || initTests()
 
-  unit.section ("testfiddler - needs utilities sha1", t=> {
+  unit.section("adv sheets updating", t => {
     const ss = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
     const sheet = ss.getSheets()[1]
-    const fiddler = new Fiddler(sheet)
-  }, {
-    skip: true
+    const col = 2
+    const row = 3
+    const cw = sheet.getColumnWidth(2)
+    const rh = sheet.getRowHeight(3)
+    const cx = 200
+    const rx = 31
+
+    let requests = [{
+      updateDimensionProperties: {
+        range: {
+          sheetId: sheet.getSheetId(),
+          dimension: 'ROWS',
+          startIndex: row - 1,
+          endIndex: row,
+        },
+        properties: {
+          pixelSize: rx,
+        },
+        fields: 'pixelSize',
+      }
+    }, {
+      updateDimensionProperties: {
+        range: {
+          sheetId: sheet.getSheetId(),
+          dimension: 'COLUMNS',
+          startIndex: col - 1,
+          endIndex: col,
+        },
+        properties: {
+          pixelSize: cx,
+        },
+        fields: 'pixelSize',
+      }
+    }]
+    t.true (is.nonEmptyObject(Sheets.Spreadsheets.batchUpdate({requests}, fixes.TEST_SHEET_ID)))
+    t.is(sheet.getColumnWidth(col), cx)
+    t.is(sheet.getRowHeight(row), rx)
+
+    // reset
+    requests[0].updateDimensionProperties.properties.pixelSize = cw
+    requests[0].updateDimensionProperties.properties.pixelSize = rh
+    const reset = Sheets.Spreadsheets.batchUpdate( {requests}, fixes.TEST_SHEET_ID)
+    t.is (reset.spreadsheetId, ss.getId())
+    t.is (reset.replies.length, requests.length)
+    t.true (reset.replies.every (f=>is.emptyObject(f)))
+    t.is(sheet.getColumnWidth(col),cw)
+    t.is(sheet.getRowHeight(row), rh)
+
+    // lets try that with spreadsheet app
+    sheet.setColumnWidth(col, cx).setRowHeight(row, rx)
+    t.is(sheet.getColumnWidth(col), cx)
+    t.is(sheet.getRowHeight(row), rx)
+
+    const ncols = 3
+    const nrows = 4
+
+    // now try with a few columns/rows
+    sheet.setColumnWidths(col, ncols, cx).setRowHeights(row, nrows, rx)
+
+    for (let r = row; r < nrows + row  ; r++) {
+      t.is (sheet.getRowHeight(r), rx)
+    }
+    for (let c = col; c < ncols + col  ; c++) {
+      t.is (sheet.getColumnWidth(c), cx)
+    }
+
+    t.is(sheet.getColumnWidth(col), cx)
+    t.is(sheet.getRowHeight(row), rx)
+
+    // reset everything
+    sheet.setColumnWidths(col, ncols, cw).setRowHeights(row, nrows, rh)
+    t.is(sheet.getColumnWidth(col), cw)
+    t.is(sheet.getRowHeight(row), rh)
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
   })
 
-  unit.section("rangelists", t=> {
+
+  unit.section("spreadsheetapp rangelists", t => {
     const ss = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
     const sheet = ss.getSheets()[1]
     const rltests = ["a2:c3", "bb4:be12"]
-    const rl = sheet.getRangeList (rltests)
+    const rl = sheet.getRangeList(rltests)
     t.is(rl.getRanges().length, rltests.length)
-    rl.getRanges().forEach ((f,i)=>t.is(f.getA1Notation(), rltests[i].toUpperCase()))
-    
+    rl.getRanges().forEach((f, i) => t.is(f.getA1Notation(), rltests[i].toUpperCase()))
+
   })
 
   unit.section("spreadsheet exotics", t => {

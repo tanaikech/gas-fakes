@@ -7,7 +7,8 @@ import { Proxies } from '../../support/proxies.js'
 import { Syncit } from '../../support/syncit.js'
 import { notYetImplemented, isGood } from '../../support/helpers.js'
 import { newFakeSheetValues } from './fakeadvvalues.js'
-import { getWorkbookEntry, setWorkbookEntry } from "../../support/sheetscache.js"
+import { getWorkbookEntry, setWorkbookEntry, clearWorkbookCache } from "../../support/sheetscache.js"
+import { clear } from 'google-auth-library/build/src/auth/envDetect.js'
 
 
 /**
@@ -19,7 +20,6 @@ class FakeAdvSheetsSpreadsheets {
 
     const props = [
       'getByDataFilter',
-      'batchUpdate',
       'create',
       'DeveloperMetadata',
       'Sheets']
@@ -36,8 +36,47 @@ class FakeAdvSheetsSpreadsheets {
     return this.__sheets.toString()
   }
 
-  get Values () {
+  get Values() {
     return newFakeSheetValues(this.__sheets)
+  }
+
+  /**
+   * batchUpdate: https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets/batchUpdate
+   * note that the order of args -- requests first then id - is different to usual
+   * Batch request looks like this https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets/request#request
+   * @param {object} request batch request {request:Request[]}
+   */
+  batchUpdate(requests, spreadsheetId, { ss = false } = {}) {
+
+    // note that in GAS adv sheet service doesnt take the requestBody parameter - it just sends requests as the arg
+    // so we need to wrap that in requestbody for the Node API
+    const requestBody = requests
+
+    const pack = {
+      prop: "spreadsheets",
+      method: "batchUpdate",
+      params: {
+        spreadsheetId,
+        requestBody
+      }
+    }
+
+    const { response, data } = Syncit.fxSheets(pack)
+
+    // maybe we need to throw an error
+    if (!isGood(response)) {
+      //  driveapp and adv will have different errors
+      // TODO find ot exacty what they are
+      if (ss) {
+        throw new Error("Unexpected error while doing batchUpdate.")
+      } else {
+        // adv drive throws this one
+        throw new Error(`GoogleJsonResponseException: API call to sheets.spreadsheets.batchUpdate failed with error: ${response.error.message}`)
+      }
+    }
+    // zap cache for this spreadsheet as it might now be invalid after an update
+    clearWorkbookCache(spreadsheetId)
+    return data
   }
 
   /**
@@ -45,7 +84,7 @@ class FakeAdvSheetsSpreadsheets {
    * @param {string} id 
    * @param {object} options 
    */
-  get(id, options, { ss = false } ={}) {
+  get(id, options, { ss = false } = {}) {
 
     const pack = {
       prop: "spreadsheets",
@@ -58,7 +97,7 @@ class FakeAdvSheetsSpreadsheets {
     const cache = getWorkbookEntry(id, pack)
     if (cache) {
       return cache
-    } 
+    }
 
     const { response, data } = Syncit.fxSheets(pack)
 
@@ -74,8 +113,8 @@ class FakeAdvSheetsSpreadsheets {
     }
 
     // all is good
-    return setWorkbookEntry(id, pack, data)
-
+    setWorkbookEntry(id, pack, data)
+    return data
   }
 
 

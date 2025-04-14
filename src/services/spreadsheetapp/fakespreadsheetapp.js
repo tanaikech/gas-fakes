@@ -106,7 +106,8 @@ export class FakeSpreadsheetApp {
    * @return {FakeSpreadsheet}
    */
   openById(id) {
-    return newFakeSpreadsheet(Sheets.Spreadsheets.get(id, {fields: minSheetFields}, { ss: true }))
+    const result =  newFakeSpreadsheet(Sheets.Spreadsheets.get(id, {fields: minSheetFields}, { ss: true }))
+    return result
   }
   /**
    * url looks like this https://docs.google.com/spreadsheets/d/1lc7YcqMuP1ap23FFW0EqywyLojBmHTKZde_0cYcyPSQ/edit?gid=907032523#gid=907032523

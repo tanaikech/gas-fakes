@@ -16,6 +16,7 @@ import { testStores } from './teststores.js';
 import { testScriptApp } from './testscriptapp.js';
 import { getPerformance } from '../src/support/filecache.js';
 import { getSheetsPerformance } from '../src/support/sheetscache.js';
+import { testFiddler } from './testfiddler.js';
 
 
 const testFakes = () => {
@@ -23,16 +24,20 @@ const testFakes = () => {
   const {unit} = pack
 
   // add one of these for each service being tested
-  
   testSheets(pack)
+  testFiddler(pack)
   testDrive(pack)
   testFetch(pack)
   testSession(pack)
   testUtilities(pack)
   testStores(pack)
   testScriptApp(pack)
+
+  // reports on cache performance
   if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
   if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+  
+  // all tests cumulative unit report
   unit.report()
 }
 

@@ -42,7 +42,7 @@ export const clearWorkbookCache = (id) => {
 
 
 export const setWorkbookEntry = (id, params, value) => {
-  if (!USE_CACHE) return null
+  if (!USE_CACHE) return value
   const cache = getWorkbookCache(id)
   const key = digest(params)
   cache.set(key, value)

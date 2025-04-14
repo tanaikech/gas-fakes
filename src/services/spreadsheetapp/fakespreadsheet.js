@@ -27,6 +27,7 @@ export class FakeSpreadsheet {
 
   constructor(file) {
     this.__meta = file
+
     // may of these props can be picked up from the Drive API, so we'll look as a file too
     this.__file = DriveApp.getFileById(file.spreadsheetId)
 
@@ -133,12 +134,12 @@ export class FakeSpreadsheet {
       'insertImage',
       'getSheetPermissions',
       'insertColumnBefore',
-      'setRowHeight',
+
       'isColumnHiddenByUser',
       'getRangeList',
       'insertRowBefore',
       'insertRowAfter',
-      'setColumnWidth',
+
       'revealColumn',
       'getActiveCell',
       'getDataSourcePivotTables',
@@ -357,7 +358,26 @@ export class FakeSpreadsheet {
   getSheetName() {
     return this.__getFirstSheet().getName()
   }
+  /**
+   * setColumnWidth(columnPosition, width) https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet#setcolumnwidthcolumnposition,-width
+   * @param {number} columnPosition	The position of the given column to set.
+   * @param {number} width  The width in pixels to set it to
+   * @param {setColumnWidth(columnPosition, width)} range 
+   * @returns {FakeSheet}
+   */
+  setColumnWidth(column, width) {
+    return this.__getFirstSheet().setColumnWidth(column, width)
+  } 
 
+  /**
+   * setRowHeight(rowPosition, height) https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet#setrowheightrowposition,-height
+   * Sets the row height of the given row in pixels.
+   * @param {} range 
+   * @returns {FakeSheet}
+   */
+  setRowHeight(row, height) {
+    return this.__getFirstSheet().setRowHeight(row, height)
+  } 
 
   getRange(range) {
     // this should be in sheet1!a1:a2 format

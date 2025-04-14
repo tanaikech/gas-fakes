@@ -1,8 +1,8 @@
 import { Proxies } from '../../support/proxies.js'
 import { SheetUtils } from '../../support/sheetutils.js'
 import { notYetImplemented } from '../../support/helpers.js'
-import {  newFakeSheetRange } from './fakesheetrange.js'
-import { newFakeSheetRangeList  } from './fakesheetrangelist.js'
+import { newFakeSheetRange } from './fakesheetrange.js'
+import { newFakeSheetRangeList } from './fakesheetrangelist.js'
 import { Utils } from "../../support/utils.js"
 const { is } = Utils
 /**
@@ -35,8 +35,6 @@ export class FakeSheet {
       'activate',
       'autoResizeColumns',
       'autoResizeRows',
-      'setColumnWidths',
-      'setRowHeights',
       'setRowHeightsForced',
       'isRightToLeft',
       'setRightToLeft',
@@ -138,10 +136,8 @@ export class FakeSheet {
       'setActiveCell',
       'setActiveSelection',
       'autoResizeColumn',
-      'setColumnWidth',
       'setFrozenColumns',
       'setFrozenRows',
-      'setRowHeight',
       'getSheetPermissions',
       'setSheetPermissions',
       'getSheetProtection',
@@ -189,7 +185,7 @@ export class FakeSheet {
   isSheetHidden() {
     return Boolean(this.__sheet.properties.hidden)
   }
-  
+
 
   /**
    * gets a grid range as per the api format
@@ -218,20 +214,97 @@ export class FakeSheet {
   }
   // 1 based
   getLastRow() {
-    return this.__getGridRange().endRowIndex 
+    return this.__getGridRange().endRowIndex
   }
   // 1 based
   getLastColumn() {
-    return this.__getGridRange().endColumnIndex 
+    return this.__getGridRange().endColumnIndex
   }
+
   /**
-   * @param {number} rowPosition 
-   * @returns 
+   * setRowHeights(startRow, numRows, height) https://developers.google.com/apps-script/reference/spreadsheet/sheet#setrowheightsstartrow,-numrows,-height
+   * Sets the height of the given rows in pixels. By default, rows grow to fit cell contents. 
+   * @param {number} startRow 1 based  starting row position to change.
+   * @param {number} numRows 	The number of rows to change.
+   * @param {number} height The height in pixels to set it to.
+   * @returns {FakeSheet} this
    */
-  getRowHeight(rowPosition) {
-    return notYetImplemented()
+  setRowHeights(startRow, numRows, height) {
+
+    let requests = [{
+      updateDimensionProperties: {
+        range: {
+          sheetId: this.getSheetId(),
+          dimension: 'ROWS',
+          startIndex: startRow - 1,
+          endIndex: startRow + numRows - 1,
+        },
+        properties: {
+          pixelSize: height,
+        },
+        fields: 'pixelSize',
+      }
+    }]
+
+    // let sheets handle errors
+    Sheets.Spreadsheets.batchUpdate({requests}, this.__parent.getId(), { ss: true })
+    return this
+
   }
-  
+
+  /**
+   * setRowHeight(rowPosition, height) https://developers.google.com/apps-script/reference/spreadsheet/sheet#setrowheightrowposition,-height
+   * Sets the row height of the given row in pixels. By default, rows grow to fit cell contents
+   * @param {number} rowPosition 1 based row number
+   * @param {number} height pixels
+   * @returns {FakeSheet} this
+   */
+  setRowHeight(rowPosition, height) {
+    return this.setRowHeights(rowPosition, 1, height)
+  }
+
+  /**
+   * setColumnWidths(startColumn, numColumns, width) https://developers.google.com/apps-script/reference/spreadsheet/sheet#setcolumnwidthsstartcolumn,-numcolumns,-width
+   * Sets the width of the given columns in pixels. 
+   * @param {number} startColumn 1 based  starting column position to change.
+   * @param {number} numColumns 	The number of columns to change.
+   * @param {number} width The width in pixels to set it to.
+   * @returns {FakeSheet} this
+   */
+  setColumnWidths(startColumn, numColumns, width) {
+
+    let requests = [{
+      updateDimensionProperties: {
+        range: {
+          sheetId: this.getSheetId(),
+          dimension: 'COLUMNS',
+          startIndex: startColumn - 1,
+          endIndex: startColumn + numColumns - 1,
+        },
+        properties: {
+          pixelSize: width,
+        },
+        fields: 'pixelSize',
+      }
+    }]
+
+    // let sheets handle errors
+    Sheets.Spreadsheets.batchUpdate({requests}, this.__parent.getId(), { ss: true })
+    return this
+
+  }
+
+  /**
+   * setColumnWidth(columnPosition, width) https://developers.google.com/apps-script/reference/spreadsheet/sheet#setcolumnwidthcolumnposition,-width
+   * Sets the column width of the given column in pixels. 
+   * @param {number} columnPosition 1 based column number
+   * @param {number} width The width in pixels to set it to.
+   * @returns {FakeSheet} this
+   */
+  setColumnWidth(columnPosition, width) {
+    return this.setColumnWidths(columnPosition, 1, width)
+  }
+
   /**
    * getColumnWidth(columnPosition) https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet#getcolumnwidthcolumnposition
    * Gets the width in pixels of the given column.
@@ -243,7 +316,7 @@ export class FakeSheet {
     const ranges = [this.getRange(1, columnPosition, 1, 1).__getWithSheet()]
     const data = this.getParent().__getSheetMetaProps(ranges, "sheets.data.columnMetadata")
     return data.sheets[0].data[0].columnMetadata[0].pixelSize
-  } 
+  }
 
   /**
    * getRowHeight(rowPosition) https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet#getrowheightrowposition
@@ -251,7 +324,7 @@ export class FakeSheet {
    * @param {number} rowPosition 
    * @returns {number} pixels
    */
-  getRowHeight(rowPosition)  {
+  getRowHeight(rowPosition) {
     // we just need 1 row
     const ranges = [this.getRange(rowPosition, 1, 1, 1).__getWithSheet()]
     const data = this.getParent().__getSheetMetaProps(ranges, "sheets.data.rowMetadata")
@@ -264,7 +337,7 @@ export class FakeSheet {
    * @returns {FakeSheetRangeList}
    */
   getRangeList(a1Notations) {
-    return newFakeSheetRangeList(a1Notations.map(f=>this.getRange (f)))
+    return newFakeSheetRangeList(a1Notations.map(f => this.getRange(f)))
   }
 
   /** 
@@ -296,9 +369,9 @@ export class FakeSheet {
       sheetId: this.getSheetId(),
       startRowIndex: row - 1,
       startColumnIndex: column - 1,
-      endRowIndex: row + (numRows || 0) -1,
-      endColumnIndex: column + (numColumns || 0)  -1
-    },this)
+      endRowIndex: row + (numRows || 0) - 1,
+      endColumnIndex: column + (numColumns || 0) - 1
+    }, this)
 
   }
   /**

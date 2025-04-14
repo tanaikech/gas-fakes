@@ -9,7 +9,7 @@
 */
 export function Fiddler(sheet) {
 
-
+  
 
   var self = this;
   var _values,
