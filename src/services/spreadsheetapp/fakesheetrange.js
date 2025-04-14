@@ -3,7 +3,7 @@ import { FakeSheet } from './fakesheet.js'
 import { SheetUtils } from '../../support/sheetutils.js'
 import { Utils } from '../../support/utils.js'
 
-const {is, signatureArgs} = Utils
+const { is, signatureArgs } = Utils
 
 
 import { notYetImplemented } from '../../support/helpers.js'
@@ -59,7 +59,6 @@ export class FakeSheetRange {
       'getFontWeight',
       'getFontFamilies',
       'setFontWeight',
-      'getFormulas',
       'setBackground',
       'setHorizontalAlignments',
       'getHorizontalAlignments',
@@ -81,8 +80,6 @@ export class FakeSheetRange {
       'setFormulaR1C1',
       'setFormulasR1C1',
       'setBackgroundColors',
-      'getDisplayValue',
-      'getDisplayValues',
       'mergeAcross',
       'mergeVertically',
       'isPartOfMerge',
@@ -190,7 +187,6 @@ export class FakeSheetRange {
       'setBackgroundColor',
       'getBackgroundColor',
       'setFormula',
-      'getFormula',
       'getDataSourceUrl',
       'getFontSize',
       'getDataTable',
@@ -279,23 +275,65 @@ export class FakeSheetRange {
   getNumColumns() {
     return this.__gridRange.endColumnIndex - this.__gridRange.startColumnIndex
   }
+  __getValues ({single = false, options}={} ) {
+    const range = single ? this.__getRangeWithSheet(this.__getTopLeft()) : this.__getWithSheet()
+    const { values } = Sheets.Spreadsheets.Values.get(this.__sheet.getParent().getId(), range, options)
+    return single ? values[0][0] : values
+  }
+
   getValues() {
-    const { values } = Sheets.Spreadsheets.Values.get(this.__sheet.getParent().getId(), this.__getWithSheet())
-    return values
+    return this.__getValues()
   }
+
   getValue() {
-    const { values } = Sheets.Spreadsheets.Values.get(this.__sheet.getParent().getId(), this.__getRangeWithSheet(this.__getTopLeft()))
-    return values && values[0][0]
+    return this.__getValues({single: true})
   }
+
+  /**
+   * getDisplayValue() https://developers.google.com/apps-script/reference/spreadsheet/range#getdisplayvalue
+   * The displayed value takes into account date, time and currency formatting
+   * @returns {string} The displayed value in this cell.
+   */
+  getDisplayValue() {
+    return this.__getValues ({single: true, options: {valueRenderOption: 'FORMATTED_VALUE'} })
+  }
+
+  /**
+   * getDisplayValues() https://developers.google.com/apps-script/reference/spreadsheet/range#getdisplayvalues
+   * The displayed value takes into account date, time and currency formatting,
+   * @returns {string[][]} A two-dimensional array of values.
+   */
+  getDisplayValues() {
+    return this.__getValues ({ options: {valueRenderOption: 'FORMATTED_VALUE'} })
+  }
+
+  /**
+   * getFormula() https://developers.google.com/apps-script/reference/spreadsheet/range#getdisplayvalue
+   * Returns the formulas (A1 notation) for the cells in the range. Entries in the 2D array are empty strings for cells with no formula.
+   * @returns {string} The formula value in this cell.
+   */
+  getFormula() {
+    return this.__getValues ({single: true, options: {valueRenderOption: 'FORMULA'} })
+  }
+
+  /**
+   * getFormulas() https://developers.google.com/apps-script/reference/spreadsheet/range#getdisplayvalue
+   * Returns the formulas (A1 notation) for the cells in the range. Entries in the 2D array are empty strings for cells with no formula.
+   * @returns {string[][]} — A two-dimensional array of formulas in string format.
+   */
+  getFormulas() {
+    return this.__getValues ({ options: {valueRenderOption: 'FORMULA'} })
+  }
+
   /**
    * getCell(row, column) Returns a given cell within a range.
    * @param {number} row 1 based cell relative to range
    * @param {number} column 1 based cell relative to range
    * @return {FakeSheetRange}
    */
-  getCell(row, column){
+  getCell(row, column) {
     // let offset check args
-    return this.offset(row-1,column-1,1,1)
+    return this.offset(row - 1, column - 1, 1, 1)
   }
   /**
    * getGridId() https://developers.google.com/apps-script/reference/spreadsheet/range#getgridid
@@ -312,7 +350,7 @@ export class FakeSheetRange {
    * Returns the height of the range.
    * @returns {number} 
    */
-  getHeight () {
+  getHeight() {
     return this.getNumRows()
   }
   /**
@@ -320,8 +358,8 @@ export class FakeSheetRange {
    * appears to be the same as getNumColumns()
    * Returns the width of the range in columns.
    * @returns {number} 
-   */  
-  getWidth () {
+   */
+  getWidth() {
     return this.getNumColumns()
   }
   /**
@@ -337,7 +375,7 @@ export class FakeSheetRange {
    */
   offset(rowOffset, columnOffset, numRows, numColumns) {
     // get arg types
-    const { nargs, matchThrow } = signatureArgs(arguments, "offset") 
+    const { nargs, matchThrow } = signatureArgs(arguments, "offset")
 
     // basic signature tests
     if (nargs > 4 || nargs < 2) matchThrow()

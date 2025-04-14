@@ -16,7 +16,80 @@ import { getSheetsPerformance } from '../src/support/sheetscache.js';
 export const testSheets = (pack) => {
   const { unit, fixes } = pack || initTests()
 
-  unit.section("adv sheets updating", t => {
+  unit.section("spreadsheetapp ranges and values", t => {
+
+    // careful with confusion of combining 0 (offset,array indices) and 1 start (range methods)
+    // TODO - fails on gas if the fields are dates or numbers because gas automayically detects and converts types
+    // whereas advanced sheets/node api does not
+    // - see https://github.com/brucemcpherson/gas-fakes/issues/15
+    const ss = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
+    const sheet = ss.getSheets()[1]
+    const range = sheet.getRange("c2:$d$4")
+    t.false(sheet.isSheetHidden())
+    t.is(range.toString(), "Range")
+    t.is(range.getGridId(), sheet.getSheetId())
+    t.is(range.getA1Notation(), "C2:D4")
+    t.is(range.getRow(), 2)
+    t.is(range.getColumn(), 3)
+    t.is(range.getLastRow(), 4)
+    t.is(range.getLastColumn(), 4)
+    t.is(range.getCell(1, 1).getA1Notation(), range.offset(0, 0, 1, 1).getA1Notation())
+    t.is(range.getCell(2, 2).getColumn(), range.getColumn() + 1)
+    t.is(range.getCell(2, 2).getRow(), range.getRow() + 1)
+    t.is(range.getWidth(), range.getNumColumns())
+    t.is(range.getHeight(), range.getNumRows())
+    t.is(range.getNumColumns(), range.getLastColumn() - range.getColumn() + 1)
+    t.is(range.getNumRows(), range.getLastRow() - range.getRow() + 1)
+    t.deepEqual(range.getValues(), sheet.getSheetValues(range.getRow(), range.getColumn(), range.getNumRows(), range.getNumColumns()))
+
+    const { values } = Sheets.Spreadsheets.Values.get(sheet.getParent().getId(), sheet.getName())
+    const target = values.slice(range.getRow() - 1, range.getLastRow()).map(row => row.slice(range.getColumn() - 1, range.getLastColumn()))
+    t.true(is.array(target))
+    t.is(target.length, range.getNumRows())
+    t.is(target[0].length, range.getNumColumns())
+    const tr = `${sheet.getName()}!${range.getA1Notation()}`
+    const { values: atv, range: atr } = Sheets.Spreadsheets.Values.get(fixes.TEST_SHEET_ID, tr)
+    t.is(atv.length, target.length)
+    t.is(atv[0].length, target[0].length)
+    t.is(atr, tr)
+    t.deepEqual(atv, target)
+
+    const rv = range.getValues()
+    t.deepEqual(rv, target)
+    const dr = sheet.getDataRange()
+    t.is(dr.offset(0, 0).getA1Notation(), dr.getA1Notation())
+    t.is(dr.offset(0, 0, 1, 1).getA1Notation(), "A1")
+    t.is(dr.offset(1, 1, 1, 1).getA1Notation(), "B2")
+    t.is(dr.offset(2, 1).getColumn(), 2)
+    t.is(dr.offset(3, 5).getRow(), 4)
+    t.is(dr.offset(0, 1).getLastColumn(), dr.getLastColumn() + 1)
+    t.is(dr.offset(1, 1).getNumRows(), dr.getNumRows())
+    t.is(dr.offset(1, 1).getNumColumns(), dr.getNumColumns())
+    t.is(dr.offset(1, 1, 2, 2).getNumRows(), 2)
+    t.is(dr.offset(1, 1, 2, 2).getNumColumns(), 2)
+    t.is(dr.offset(1, 1, 3).getNumRows(), 3)
+    t.is(dr.offset(1, 1, 3, 4).getNumColumns(), 4)
+
+    t.is(range.getValue(), atv[0][0])
+    t.is(range.getValue(), atv[0][0])
+    t.is(range.offset(1, 1, 1, 1).getValue(), atv[1][1])
+    t.is(range.offset(0, 2, 1, 1).getValue(), values[1][2])
+    t.deepEqual(range.offset(2, 0, 1).getValues()[0], values[range.getRow() + 2 - 1].slice(range.getColumn() - 1, range.getLastColumn()))
+
+    t.is(range.getDisplayValue() , atv[0][0].toString())
+    t.deepEqual(range.getDisplayValues(), atv.map (r=>r.map(f=>f.toString())))
+
+    // TODO check when we have some formulas in place
+    t.true(is.string(range.getFormula()))  
+    t.true(range.getFormulas().every (r=>r.map(f=>is.string(f))))
+    t.is(range.getFormulas().length,atv.length)
+    t.is(range.getFormulas()[0].length,atv[0].length)
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+  })
+
+
+  unit.section("batchupdate dimension properties", t => {
     const ss = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
     const sheet = ss.getSheets()[1]
     const col = 2
@@ -96,7 +169,6 @@ export const testSheets = (pack) => {
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
   })
 
-
   unit.section("spreadsheetapp rangelists", t => {
     const ss = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
     const sheet = ss.getSheets()[1]
@@ -133,67 +205,7 @@ export const testSheets = (pack) => {
   })
 
 
-  unit.section("spreadsheetapp range dive", t => {
 
-    // careful with confusion of combining 0 (offset,array indices) and 1 start (range methods)
-    // TODO - fails on gas if the fields are dates or numbers because gas automayically detects and converts types
-    // whereas advanced sheets/node api does not
-    // - see https://github.com/brucemcpherson/gas-fakes/issues/15
-    const ss = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
-    const sheet = ss.getSheets()[1]
-    const range = sheet.getRange("c2:$d$4")
-    t.false(sheet.isSheetHidden())
-    t.is(range.toString(), "Range")
-    t.is(range.getGridId(), sheet.getSheetId())
-    t.is(range.getA1Notation(), "C2:D4")
-    t.is(range.getRow(), 2)
-    t.is(range.getColumn(), 3)
-    t.is(range.getLastRow(), 4)
-    t.is(range.getLastColumn(), 4)
-    t.is(range.getCell(1, 1).getA1Notation(), range.offset(0, 0, 1, 1).getA1Notation())
-    t.is(range.getCell(2, 2).getColumn(), range.getColumn() + 1)
-    t.is(range.getCell(2, 2).getRow(), range.getRow() + 1)
-    t.is(range.getWidth(), range.getNumColumns())
-    t.is(range.getHeight(), range.getNumRows())
-    t.is(range.getNumColumns(), range.getLastColumn() - range.getColumn() + 1)
-    t.is(range.getNumRows(), range.getLastRow() - range.getRow() + 1)
-    t.deepEqual(range.getValues(), sheet.getSheetValues(range.getRow(), range.getColumn(), range.getNumRows(), range.getNumColumns()))
-
-    const { values } = Sheets.Spreadsheets.Values.get(sheet.getParent().getId(), sheet.getName())
-    const target = values.slice(range.getRow() - 1, range.getLastRow()).map(row => row.slice(range.getColumn() - 1, range.getLastColumn()))
-    t.true(is.array(target))
-    t.is(target.length, range.getNumRows())
-    t.is(target[0].length, range.getNumColumns())
-    const tr = `${sheet.getName()}!${range.getA1Notation()}`
-    const { values: atv, range: atr } = Sheets.Spreadsheets.Values.get(fixes.TEST_SHEET_ID, tr)
-    t.is(atv.length, target.length)
-    t.is(atv[0].length, target[0].length)
-    t.is(atr, tr)
-    t.deepEqual(atv, target)
-
-    const rv = range.getValues()
-    t.deepEqual(rv, target)
-    const dr = sheet.getDataRange()
-    t.is(dr.offset(0, 0).getA1Notation(), dr.getA1Notation())
-    t.is(dr.offset(0, 0, 1, 1).getA1Notation(), "A1")
-    t.is(dr.offset(1, 1, 1, 1).getA1Notation(), "B2")
-    t.is(dr.offset(2, 1).getColumn(), 2)
-    t.is(dr.offset(3, 5).getRow(), 4)
-    t.is(dr.offset(0, 1).getLastColumn(), dr.getLastColumn() + 1)
-    t.is(dr.offset(1, 1).getNumRows(), dr.getNumRows())
-    t.is(dr.offset(1, 1).getNumColumns(), dr.getNumColumns())
-    t.is(dr.offset(1, 1, 2, 2).getNumRows(), 2)
-    t.is(dr.offset(1, 1, 2, 2).getNumColumns(), 2)
-    t.is(dr.offset(1, 1, 3).getNumRows(), 3)
-    t.is(dr.offset(1, 1, 3, 4).getNumColumns(), 4)
-
-    t.is(range.getValue(), atv[0][0])
-    t.is(range.getValue(), atv[0][0])
-    t.is(range.offset(1, 1, 1, 1).getValue(), atv[1][1])
-    t.is(range.offset(0, 2, 1, 1).getValue(), values[1][2])
-    t.deepEqual(range.offset(2, 0, 1).getValues()[0], values[range.getRow() + 2 - 1].slice(range.getColumn() - 1, range.getLastColumn()))
-    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-  })
 
   unit.section("advanced & spreadsheetapp values and ranges", t => {
     t.is(Sheets.Spreadsheets.Values.toString(), Sheets.toString())
