@@ -2,7 +2,7 @@
 We use a .env file to store variables for testing. Using `.env` is a common pattern to store 'secrets' or local variables that we don't want version controlled. We gitignore the .env file so that anytime a collaborator sets up their environment, there is no conflict on the remote when they push changes.
 
 ## Getting started
-- Copy the `.env.template` file and rename it `.env`. 
+- Copy the `.env.template` file and rename the newly created copy `.env`. Note: Do not edit .env.template with your specific variables. 
 - Fill out the .env with specific information (file ids, project ids, etc.) for your environment
 
 ## How it works
