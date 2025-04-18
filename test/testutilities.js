@@ -10,6 +10,22 @@ import '../main.js'
 
 import { initTests }  from  './testinit.js'
 
+const DigestAlgorithm = Utilities.DigestAlgorithm;
+const Charset = Utilities.Charset;
+
+const algorithmMap = {
+  md5: DigestAlgorithm.MD5,
+  sha1: DigestAlgorithm.SHA_1,
+  sha256: DigestAlgorithm.SHA_256,
+  sha384: DigestAlgorithm.SHA_384,
+  sha512: DigestAlgorithm.SHA_512
+};
+
+const charsetMap = {
+  UTF_8: Charset.UTF_8,
+  US_ASCII: Charset.US_ASCII
+};
+
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testUtilities = (pack) => {
   const {unit, fixes} = pack || initTests()
@@ -166,11 +182,11 @@ export const testUtilities = (pack) => {
     t.deepEqual(actual_signature, expected_special_key_signature);
 
     // test arguments that are not valid
-    // too many arguments: number[], string
+    // too many arguments: string, string, charset, number
     const too_many_args = () => Utilities.computeHmacSha256Signature(text_input, text_key, Utilities.Charset.US_ASCII, 4);
     t.rxMatch(t.threw(too_many_args).toString(), /The parameters \(.*\) don't match/);
 
-    // too few arguments: number[], string
+    // too few arguments: string
     const too_few_args = () => Utilities.computeHmacSha256Signature(text_input);
     t.rxMatch(t.threw(too_few_args).toString(), /The parameters \(.*\) don't match/);
 
@@ -190,7 +206,61 @@ export const testUtilities = (pack) => {
     const bad_params_fake_charset = () => Utilities.computeHmacSha256Signature(text_input, text_key, 'fake');
     t.rxMatch(t.threw(bad_params_fake_charset).toString(), /The parameters \(.*\) don't match/);
 
+    //TODO
+    // bad parameters: array but not numbers
 
+
+  })
+
+  unit.section("utilities digest", t => {
+    const test_inputs = ['input to hash', '€🙂'];
+    const charsets = Object.keys(charsetMap);
+    const algorithms = Object.keys(algorithmMap);
+    const expected_digests = {
+      'input to hash': {
+        UTF_8: {
+          md5: [-16,-20,-112,64,-50,-47,-118,102,-113,70,-112,94,-34,-49,117,-103],
+          sha1: [-94,-96,117,87,84,-100,-66,98,-21,-116,87,55,93,-82,-11,-73,79,108,-115,95],
+          sha256: [54,-72,-70,-64,23,78,-86,57,-77,-65,45,3,-95,47,-122,55,-91,107,-91,39,-55,20,-87,-65,-17,29,111,118,-120,-69,93,-93],
+          sha384: [85,-35,-41,-89,-113,43,117,-109,-90,112,2,-70,-89,-43,117,61,62,85,17,49,65,43,-108,-78,-8,16,-71,-12,64,98,42,54,-16,30,18,-112,58,110,-7,-35,40,7,103,-95,94,-51,11,-69],
+          sha512: [11,81,116,39,-41,-64,-61,121,84,87,85,121,55,-13,80,101,-103,52,-5,-73,62,107,-33,43,26,-15,-93,113,-116,78,-58,93,-40,70,65,-82,117,116,95,-14,-12,-13,21,1,104,91,-96,100,22,81,-104,-72,2,-103,-10,-25,-62,-98,-68,-12,57,127,43,121]
+        },
+        US_ASCII: {
+          md5: [-16,-20,-112,64,-50,-47,-118,102,-113,70,-112,94,-34,-49,117,-103],
+          sha1: [-94,-96,117,87,84,-100,-66,98,-21,-116,87,55,93,-82,-11,-73,79,108,-115,95],
+          sha256: [54,-72,-70,-64,23,78,-86,57,-77,-65,45,3,-95,47,-122,55,-91,107,-91,39,-55,20,-87,-65,-17,29,111,118,-120,-69,93,-93],
+          sha384: [85,-35,-41,-89,-113,43,117,-109,-90,112,2,-70,-89,-43,117,61,62,85,17,49,65,43,-108,-78,-8,16,-71,-12,64,98,42,54,-16,30,18,-112,58,110,-7,-35,40,7,103,-95,94,-51,11,-69],
+          sha512: [11,81,116,39,-41,-64,-61,121,84,87,85,121,55,-13,80,101,-103,52,-5,-73,62,107,-33,43,26,-15,-93,113,-116,78,-58,93,-40,70,65,-82,117,116,95,-14,-12,-13,21,1,104,91,-96,100,22,81,-104,-72,2,-103,-10,-25,-62,-98,-68,-12,57,127,43,121]
+        }
+      },
+      '€🙂': {
+        UTF_8: {
+          md5: [-71,89,42,-99,35,-63,-51,-82,83,46,87,-53,-35,-67,116,-6],
+          sha1: [-19,-37,-55,-43,37,16,-31,77,89,112,42,90,-115,10,-113,-31,50,-76,60,-125],
+          sha256: [-88,113,-56,11,33,65,-120,-22,68,-108,-12,96,79,31,50,2,75,2,-11,-5,66,40,-63,3,-102,83,87,-120,26,19,-18,-69],
+          sha384: [-91,-38,-80,-12,-109,-108,-82,-64,44,-110,-48,-77,104,-66,52,-124,-67,44,8,-88,-68,17,-61,45,-115,65,-61,-83,-7,119,-28,-104,-55,52,-45,102,-22,-124,77,103,37,48,31,-55,74,-16,119,-41],
+          sha512: [63,-102,-12,-120,79,25,110,21,45,2,-63,-126,1,-52,94,105,99,-38,30,123,88,63,-2,-38,-45,92,-95,123,3,-122,-83,-112,-45,-9,-112,121,-77,73,69,30,55,115,-13,-121,-94,-118,77,54,-50,95,-31,-46,-99,49,-90,43,103,60,24,73,-116,111,-5,94]
+        },
+        US_ASCII: {
+          md5: [-22,3,-4,-72,-60,120,34,-68,-25,114,-49,108,7,-48,-21,-69],
+          sha1: [22,-56,-8,-84,123,87,-67,91,88,-76,19,39,34,-114,63,-94,18,1,-37,104],
+          sha256: [-30,112,-82,-77,71,-14,22,85,116,-61,-91,-59,-65,17,-48,56,-68,-45,-84,-43,-85,-3,-75,-82,-118,27,82,-39,28,-72,66,-16],
+          sha384: [86,65,19,-74,-67,66,74,18,-37,-117,31,-124,102,-72,96,118,33,-111,37,59,-104,-30,102,9,-98,85,38,-103,-5,-122,-35,2,17,79,-59,-80,-48,-51,-96,-100,81,113,22,-33,122,28,31,64],
+          sha512: [-70,-99,100,-111,115,-41,-1,-55,-41,84,-62,-97,80,-40,-12,93,54,24,60,2,-24,124,-37,-111,93,78,-70,-99,57,114,-75,-14,88,-77,-23,34,74,26,90,72,-125,78,-119,-22,-79,109,21,-62,121,38,-27,87,-106,-110,28,-93,-49,-44,58,124,-65,71,-83,92]
+        }
+      }
+    };
+
+    for (const input of test_inputs) {
+      for (const charset of charsets) {
+        for (const algorithm of algorithms) {
+          const expected_digest = expected_digests[input][charset][algorithm];
+          const actual_digest = Utilities.computeDigest(algorithmMap[algorithm], input, charsetMap[charset]);
+          t.is(actual_digest.length, expected_digest.length);
+          t.deepEqual(actual_digest, expected_digest)
+        }
+      }
+    }
   })
 
   unit.section('gas utiltities', t => {
