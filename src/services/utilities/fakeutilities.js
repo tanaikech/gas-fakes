@@ -2,8 +2,8 @@ import sleepSynchronously from 'sleep-synchronously';
 import { Proxies } from '../../support/proxies.js'
 import { newFakeBlob } from './fakeblob.js'
 import { Utils } from '../../support/utils.js'
-import { gzipType, zipType, argsMatchThrow } from '../../support/helpers.js'
-import { randomUUID, createHmac } from 'node:crypto'
+import { gzipType, zipType, argsMatchThrow, notYetImplemented } from '../../support/helpers.js'
+import { randomUUID, createHash, createHmac } from 'node:crypto'
 import { gzipSync , gunzipSync} from 'node:zlib'
 import { Syncit } from '../../support/syncit.js';
 
@@ -34,6 +34,22 @@ class FakeUtilities {
         return code <= 127 ? code : 63; // 63 is '?' (replacement character)
       });
       return Buffer.from(newChars).toString();
+    }
+
+    this.DigestAlgorithm = Object.freeze({
+      MD2: 'md2',
+      MD5: 'md5',
+      SHA_1: 'sha1',
+      SHA_256: 'sha256',
+      SHA_384: 'sha384',
+      SHA_512: 'sha512'
+    })
+
+    this.isValidDigestAlgorithm = (algorithm) => {
+      if (!Object.values(this.DigestAlgorithm).includes(algorithm)) {
+        return false;
+      }
+      return true;
     }
 
     
@@ -126,6 +142,59 @@ class FakeUtilities {
 
   base64DecodeWebSafe (b64) {
     return Utils.settleAsBytes (Buffer.from (b64, 'base64url')) 
+  }
+
+  /**
+   * Compute a digest using the specified algorithm on the specified String value with the given character set. 
+   * @param {string} DigestAlgorithm to use
+   * @param {string | number[]} value to use
+   * @param {Charset} charset representing the input character set
+   * @returns {number[]} Signed integer byte array
+   */
+  computeDigest(algorithm, value, charset) {
+    // Ensure arguments are valid
+    const args = Array.from(arguments);
+    const matchThrow = () => argsMatchThrow(args, "Utilities.computeDigest");
+
+    // args must be at least 2 and at most 3
+    if (args.length < 2 || args.length > 3) matchThrow();
+    
+    // first arg must be string
+    if (typeof algorithm !== 'string') {
+      matchThrow();
+    }
+
+    // second arg must be string or array of bytes
+    if (typeof value !== 'string' && !Array.isArray(value)) {
+      matchThrow();
+    }
+
+    // digest algorithm must be valid
+    if (!this.isValidDigestAlgorithm(algorithm)) {
+      matchThrow();
+    }
+
+    // if charset is present, charset must be valid
+    if (charset && !this.isValidCharset(charset)) {
+      matchThrow();
+    }
+
+    // Node Crypto no longer supports MD2
+    if (algorithm === 'md2') {
+      return notYetImplemented();
+    }
+
+    // Convert inputs to appropriate format based on type
+    // if charset is explicitly set to US_ASCII
+    // or if charset is not set and the value and key are strings (i.e. not bytes)
+    // then replace any non-ASCII characters
+    const encodedValue = (charset === this.Charset.US_ASCII || (!charset && typeof value === 'string'))  ? this.replaceNonAscii(value) : value;
+
+    // Get digest and convert to signed bytes to match Apps Script
+    const digestBuffer = createHash(algorithm).update(encodedValue, charset).digest() 
+    const signedByteArray = Array.from(new Int8Array(digestBuffer))
+    
+    return signedByteArray;
   }
 
   /**
