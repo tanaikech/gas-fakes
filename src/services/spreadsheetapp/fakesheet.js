@@ -28,9 +28,14 @@ export const newFakeSheet = (...args) => {
  */
 export class FakeSheet {
 
-  constructor(sheet, parent) {
+  constructor(sheetId, parent) {
+    // although the sheet is correct at time of creation
+    // its possible that the sheet content will have changed since it was created
+    // so we store only the sheetID, then accessing the sheet goes via the parent to find
+    // the latest content in the related sheet - see get __sheet later 
     this.__parent = parent
-    this.__sheet = sheet
+    this.__sheetId = sheetId
+    
     const props = ['toString',
       'activate',
       'autoResizeColumns',
@@ -153,6 +158,10 @@ export class FakeSheet {
         return notYetImplemented()
       }
     })
+  }
+
+  get __sheet () {
+    return this.getParent().__getSheetMeta(this.__sheetId)
   }
 
   getParent() {

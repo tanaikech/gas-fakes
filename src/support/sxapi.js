@@ -25,6 +25,7 @@ export const sxApi = async ({ subProp, prop, method, apiPath, authPath, scopes, 
 
     const callish = subProp ? apiClient[prop][subProp] : apiClient[prop] 
     const response = await callish[method](params, options)
+
     return {
       data: response.data,
       response: responseSyncify(response)

@@ -15,13 +15,253 @@ import { getSheetsPerformance } from '../src/support/sheetscache.js';
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testSheets = (pack) => {
   const { unit, fixes } = pack || initTests()
+  const toTrash = []
 
-  unit.section("spreadsheetapp ranges and values", t => {
 
-    // careful with confusion of combining 0 (offset,array indices) and 1 start (range methods)
+
+  unit.section("cell formatting options", t => {
+
+    const aname = fixes.PREFIX + "a-sheet"
+    const ss = SpreadsheetApp.create(aname)
+    const sheets = ss.getSheets()
+    const [sheet] = sheets
+    const range = sheet.getRange("a1:b3")
+   
+    const backgrounds = range.getBackgrounds()
+    const background = range.getBackground()
+    t.true (is.nonEmptyString(background))
+    t.true (is.array(backgrounds))
+    t.is (backgrounds.length, range.getNumRows())
+    t.is (backgrounds[0].length, range.getNumColumns())
+    t.is (backgrounds[0][0], background)
+    t.true (backgrounds.flat().every(f => is.nonEmptyString(f)))
+    t.is (background.substring(0,1),'#')
+    t.is (background.length, 7)
+    t.is (background, '#ffffff','newly created sheet will have white background')
+
+    
+    const verticalAlignments = range.getVerticalAlignments()
+    const verticalAlignment = range.getVerticalAlignment()
+    t.is (verticalAlignments.length, range.getNumRows())
+    t.is (verticalAlignments[0].length, range.getNumColumns())
+    t.true (verticalAlignments.flat().every(f => is.nonEmptyString(f)))
+    t.is (verticalAlignments[0][0], verticalAlignment)
+    t.is (verticalAlignment, 'bottom','newly created sheet will have bottom')
+
+    const horizontalAlignments = range.getHorizontalAlignments()
+    const horizontalAlignment = range.getHorizontalAlignment()
+    t.is (horizontalAlignments.length, range.getNumRows())
+    t.is (horizontalAlignments[0].length, range.getNumColumns())
+    t.true (horizontalAlignments.flat().every(f => is.nonEmptyString(f)))
+    t.is (horizontalAlignments[0][0], horizontalAlignment) 
+    t.is (horizontalAlignment, 'general','newly created sheet will have general')
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+    if (fixes.CLEAN) {
+      toTrash.push(DriveApp.getFileById(ss.getId()))
+    }
+
+  })
+
+  unit.section ("basic adv sheets cell formatting fetch fix", t=>{
+    // this section will work with the testsheet where we have some horizonatl alignment (as opposed to the default which returns nothing)
+    const spreadsheetId = fixes.TEST_SHEET_ID
+    const ss = Sheets.Spreadsheets.get(spreadsheetId)
+    const sheets = ss.sheets
+    const sheet = sheets[0]
+    const range = `'${sheet.properties.title}'!a1:b3`
+    const props = 'effectiveFormat.horizontalAlignment'
+  
+    const x = Sheets.Spreadsheets.get(spreadsheetId, {
+      ranges: [range],
+      fields: `sheets.data.rowData.values.${props}`,
+    })
+    const {rowData} = x.sheets[0].data[0]
+    
+    t.is (rowData.length, 3)
+    t.is (rowData[0].values.length, 2)
+  
+  })
+
+  unit.section("creating and updating sheets", t => {
+
+    const aname = fixes.PREFIX + "a-sheet"
+    const ss = SpreadsheetApp.create(aname)
+    t.is(ss.getName(), aname)
+
+    const bname = fixes.PREFIX + "b-sheet"
+    const bs = Sheets.Spreadsheets.create({
+      properties: {
+        title: bname
+      }
+    })
+    t.is(bs.properties.title, bname)
+
+    const cname = fixes.PREFIX + "c-sheet"
+    const prows = 25
+    const pcols = 10
+    const cs = SpreadsheetApp.create(cname, prows, pcols)
+    t.is(cs.getName(), cname)
+    t.is(cs.getNumSheets(), 1)
+    t.is(cs.getSheets()[0].getMaxRows(), prows)
+    t.is(cs.getSheets()[0].getMaxColumns(), pcols)
+
+    // insert some sheets and test that index is properly updated
+    // the sheets get reordered and the sheetIndex gets updated
+    const s1 = cs.insertSheet('s1') // sheet1,s1
+    const s2 = cs.insertSheet('s2') // sheet1,s1,s2
+    const s3 = cs.insertSheet('s3', 1) // sheet1,s3,s1,s2
+    const s4 = cs.insertSheet('s4', 0) // s4,sheet1,s3,s1,s2
+    const act = cs.getSheets().map(f => [f.getName(), f.getIndex()])
+    const exs = [[s4.getName(), 1], ['Sheet1', 2], [s3.getName(), 3], [s1.getName(), 4], [s2.getName(), 5]]
+    t.deepEqual(act, exs)
+
+
+    t.is(cs.getSheetByName('s1').getIndex(), cs.getSheetById(s1.getSheetId()).getIndex())
+    cs.getSheets().forEach((f, i) => t.is(f.getIndex(), i + 1))
+
+
+    const sheet = cs.getSheets()[1]
+    const col = 2
+    const row = 3
+    const cw = sheet.getColumnWidth(2)
+    const rh = sheet.getRowHeight(3)
+    const cx = 200
+    const rx = 31
+
+    let requests = [{
+      updateDimensionProperties: {
+        range: {
+          sheetId: sheet.getSheetId(),
+          dimension: 'ROWS',
+          startIndex: row - 1,
+          endIndex: row,
+        },
+        properties: {
+          pixelSize: rx,
+        },
+        fields: 'pixelSize',
+      }
+    }, {
+      updateDimensionProperties: {
+        range: {
+          sheetId: sheet.getSheetId(),
+          dimension: 'COLUMNS',
+          startIndex: col - 1,
+          endIndex: col,
+        },
+        properties: {
+          pixelSize: cx,
+        },
+        fields: 'pixelSize',
+      }
+    }]
+    t.true(is.nonEmptyObject(Sheets.Spreadsheets.batchUpdate({ requests }, cs.getId())))
+    t.is(sheet.getColumnWidth(col), cx)
+    t.is(sheet.getRowHeight(row), rx)
+
+    // reset
+    requests[1].updateDimensionProperties.properties.pixelSize = cw
+    requests[0].updateDimensionProperties.properties.pixelSize = rh
+    const reset = Sheets.Spreadsheets.batchUpdate({ requests }, cs.getId())
+    t.is(reset.spreadsheetId, cs.getId())
+    t.is(reset.replies.length, requests.length)
+    t.true(reset.replies.every(f => is.emptyObject(f)))
+    t.is(sheet.getColumnWidth(col), cw)
+    t.is(sheet.getRowHeight(row), rh)
+
+    // lets try that with spreadsheet app
+    sheet.setColumnWidth(col, cx).setRowHeight(row, rx)
+    t.is(sheet.getColumnWidth(col), cx)
+    t.is(sheet.getRowHeight(row), rx)
+
+    const ncols = 3
+    const nrows = 4
+
+    // now try with a few columns/rows
+    sheet.setColumnWidths(col, ncols, cx).setRowHeights(row, nrows, rx)
+
+    for (let r = row; r < nrows + row; r++) {
+      t.is(sheet.getRowHeight(r), rx)
+    }
+    for (let c = col; c < ncols + col; c++) {
+      t.is(sheet.getColumnWidth(c), cx)
+    }
+
+    t.is(sheet.getColumnWidth(col), cx)
+    t.is(sheet.getRowHeight(row), rx)
+
+    // reset everything
+    sheet.setColumnWidths(col, ncols, cw).setRowHeights(row, nrows, rh)
+    t.is(sheet.getColumnWidth(col), cw)
+    t.is(sheet.getRowHeight(row), rh)
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+
+
+    if (fixes.CLEAN) {
+      toTrash.push(DriveApp.getFileById(cs.getId()))
+      toTrash.push(DriveApp.getFileById(ss.getId()))
+      toTrash.push(DriveApp.getFileById(bs.spreadsheetId))
+    }
+
+  })
+
+  unit.cancel()
+  unit.section("spreadsheet values", t => {
+
     // TODO - fails on gas if the fields are dates or numbers because gas automayically detects and converts types
     // whereas advanced sheets/node api does not
     // - see https://github.com/brucemcpherson/gas-fakes/issues/15
+
+    // lets make some test data
+    const fooName = fixes.PREFIX + "foo"
+
+    const cs = SpreadsheetApp.create(fooName)
+    if (fixes.CLEAN) toTrash.push(DriveApp.getFileById(cs.getId()))
+    const fooSheet = cs.insertSheet('foosheet')
+    const fooValues = Array.from({ length: 10 }, (_, i) => Array.from({ length: 6 }, (_, j) => i + j))
+    const fooRange = fooSheet.getRange(1, 1, fooValues.length, fooValues[0].length).getA1Notation()
+    /**
+     * Note:
+     * the Google Sheets API doesn't guarantee that the data type will be strictly preserved 
+     * but valueInputoption "RAW" has a better success rate then "USER_ENTERED"
+     * need to use in conjunction with valueRenderOption: 'UNFORMATTED_VALUE' on the get
+     * howver it's not clear what behavior to expect from gas
+     */
+    const fooRequest = {
+      valueInputOption: "RAW",
+      data: [{
+        majorDimension: "ROWS",
+        range: `'${fooSheet.getName()}'!${fooRange}`,
+        values: fooValues,
+      }]
+    }
+    const foosh = Sheets.Spreadsheets.Values.batchUpdate(fooRequest, cs.getId())
+
+    t.is(foosh.totalUpdatedCells, fooValues.length * fooValues[0].length)
+    t.is(foosh.totalUpdatedRows, fooValues.length)
+    t.is(foosh.totalUpdatedColumns, fooValues[0].length)
+    t.is(foosh.totalUpdatedSheets, 1)
+
+    const barSheet = cs.insertSheet('barsheet')
+    const barRange = barSheet.getRange(1, 1, fooValues.length, fooValues[0].length)
+    barRange.setValues(fooValues)
+
+    const barValues = barRange.getValues()
+    t.deepEqual(barSheet.getDataRange().getValues(), fooValues)
+
+    t.deepEqual(fooSheet.getRange(fooRange).getValues(), barValues)
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+  })
+
+
+
+
+
+
+  unit.section("spreadsheet ranges", t => {
+    // careful with confusion of combining 0 (offset,array indices) and 1 start (range methods)
     const ss = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
     const sheet = ss.getSheets()[1]
     const range = sheet.getRange("c2:$d$4")
@@ -76,98 +316,20 @@ export const testSheets = (pack) => {
     t.is(range.offset(0, 2, 1, 1).getValue(), values[1][2])
     t.deepEqual(range.offset(2, 0, 1).getValues()[0], values[range.getRow() + 2 - 1].slice(range.getColumn() - 1, range.getLastColumn()))
 
-    t.is(range.getDisplayValue() , atv[0][0].toString())
-    t.deepEqual(range.getDisplayValues(), atv.map (r=>r.map(f=>f.toString())))
+    t.is(range.getDisplayValue(), atv[0][0].toString())
+    t.deepEqual(range.getDisplayValues(), atv.map(r => r.map(f => f.toString())))
 
     // TODO check when we have some formulas in place
-    t.true(is.string(range.getFormula()))  
-    t.true(range.getFormulas().every (r=>r.map(f=>is.string(f))))
-    t.is(range.getFormulas().length,atv.length)
-    t.is(range.getFormulas()[0].length,atv[0].length)
+    t.true(is.string(range.getFormula()))
+    t.true(range.getFormulas().every(r => r.map(f => is.string(f))))
+    t.is(range.getFormulas().length, atv.length)
+    t.is(range.getFormulas()[0].length, atv[0].length)
 
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
   })
 
 
-  unit.section("batchupdate dimension properties", t => {
-    const ss = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
-    const sheet = ss.getSheets()[1]
-    const col = 2
-    const row = 3
-    const cw = sheet.getColumnWidth(2)
-    const rh = sheet.getRowHeight(3)
-    const cx = 200
-    const rx = 31
 
-    let requests = [{
-      updateDimensionProperties: {
-        range: {
-          sheetId: sheet.getSheetId(),
-          dimension: 'ROWS',
-          startIndex: row - 1,
-          endIndex: row,
-        },
-        properties: {
-          pixelSize: rx,
-        },
-        fields: 'pixelSize',
-      }
-    }, {
-      updateDimensionProperties: {
-        range: {
-          sheetId: sheet.getSheetId(),
-          dimension: 'COLUMNS',
-          startIndex: col - 1,
-          endIndex: col,
-        },
-        properties: {
-          pixelSize: cx,
-        },
-        fields: 'pixelSize',
-      }
-    }]
-    t.true (is.nonEmptyObject(Sheets.Spreadsheets.batchUpdate({requests}, fixes.TEST_SHEET_ID)))
-    t.is(sheet.getColumnWidth(col), cx)
-    t.is(sheet.getRowHeight(row), rx)
-
-    // reset
-    requests[0].updateDimensionProperties.properties.pixelSize = cw
-    requests[0].updateDimensionProperties.properties.pixelSize = rh
-    const reset = Sheets.Spreadsheets.batchUpdate( {requests}, fixes.TEST_SHEET_ID)
-    t.is (reset.spreadsheetId, ss.getId())
-    t.is (reset.replies.length, requests.length)
-    t.true (reset.replies.every (f=>is.emptyObject(f)))
-    t.is(sheet.getColumnWidth(col),cw)
-    t.is(sheet.getRowHeight(row), rh)
-
-    // lets try that with spreadsheet app
-    sheet.setColumnWidth(col, cx).setRowHeight(row, rx)
-    t.is(sheet.getColumnWidth(col), cx)
-    t.is(sheet.getRowHeight(row), rx)
-
-    const ncols = 3
-    const nrows = 4
-
-    // now try with a few columns/rows
-    sheet.setColumnWidths(col, ncols, cx).setRowHeights(row, nrows, rx)
-
-    for (let r = row; r < nrows + row  ; r++) {
-      t.is (sheet.getRowHeight(r), rx)
-    }
-    for (let c = col; c < ncols + col  ; c++) {
-      t.is (sheet.getColumnWidth(c), cx)
-    }
-
-    t.is(sheet.getColumnWidth(col), cx)
-    t.is(sheet.getRowHeight(row), rx)
-
-    // reset everything
-    sheet.setColumnWidths(col, ncols, cw).setRowHeights(row, nrows, rh)
-    t.is(sheet.getColumnWidth(col), cw)
-    t.is(sheet.getRowHeight(row), rh)
-
-    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-  })
 
   unit.section("spreadsheetapp rangelists", t => {
     const ss = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
@@ -333,6 +495,10 @@ export const testSheets = (pack) => {
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
     unit.report()
   }
+
+  // clean up if necessary
+  toTrash.forEach(f => f.setTrashed(true))
+
   return { unit, fixes }
 }
 

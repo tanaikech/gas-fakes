@@ -5,10 +5,10 @@
 
 import { Proxies } from '../../support/proxies.js'
 import { Syncit } from '../../support/syncit.js'
-import { notYetImplemented, isGood } from '../../support/helpers.js'
+import { notYetImplemented, ssError } from '../../support/helpers.js'
 import { newFakeSheetValues } from './fakeadvvalues.js'
 import { getWorkbookEntry, setWorkbookEntry, clearWorkbookCache } from "../../support/sheetscache.js"
-import { clear } from 'google-auth-library/build/src/auth/envDetect.js'
+
 
 
 /**
@@ -20,7 +20,6 @@ class FakeAdvSheetsSpreadsheets {
 
     const props = [
       'getByDataFilter',
-      'create',
       'DeveloperMetadata',
       'Sheets']
 
@@ -62,20 +61,13 @@ class FakeAdvSheetsSpreadsheets {
     }
 
     const { response, data } = Syncit.fxSheets(pack)
+    
+    // naive cache - was an update so zap everything
+    clearWorkbookCache(spreadsheetId)
 
     // maybe we need to throw an error
-    if (!isGood(response)) {
-      //  driveapp and adv will have different errors
-      // TODO find ot exacty what they are
-      if (ss) {
-        throw new Error("Unexpected error while doing batchUpdate.")
-      } else {
-        // adv drive throws this one
-        throw new Error(`GoogleJsonResponseException: API call to sheets.spreadsheets.batchUpdate failed with error: ${response.error.message}`)
-      }
-    }
-    // zap cache for this spreadsheet as it might now be invalid after an update
-    clearWorkbookCache(spreadsheetId)
+    ssError (response, pack.method, ss)
+
     return data
   }
 
@@ -102,24 +94,37 @@ class FakeAdvSheetsSpreadsheets {
     const { response, data } = Syncit.fxSheets(pack)
 
     // maybe we need to throw an error
-    if (!isGood(response)) {
-      //  driveapp throws this error with a bad id
-      if (ss) {
-        throw new Error("Unexpected error while getting the method or property openById on object SpreadsheetApp.")
-      } else {
-        // adv drive throws this one
-        throw new Error("GoogleJsonResponseException: API call to sheets.spreadsheets.get failed with error: Requested entity was not found.")
-      }
-    }
+    ssError (response, pack.method, ss)
 
-    // all is good
+    // all is good so write to cache
     setWorkbookEntry(id, pack, data)
     return data
   }
 
+  /**
+   * @param {Spreadsheet} resource #https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets#SpreadsheetProperties
+   * @return {Spreadsheet} resource
+   */
+  create(resource, {ss=false} = {}) {
 
+    const pack = {
+      prop: "spreadsheets",
+      method: "create",
+      params: {
+        requestBody: resource
+      }
+    }
 
+    // create the sheet
+    const { response, data } = Syncit.fxSheets(pack)
+
+    // maybe we need to throw an error
+    ssError (response, pack.method, ss)
+
+    return data
+  }
 }
+
 
 export const newFakeAdvSheetsSpreadsheets = (...args) => Proxies.guard(new FakeAdvSheetsSpreadsheets(...args))
 

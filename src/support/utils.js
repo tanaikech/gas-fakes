@@ -173,6 +173,19 @@ export const mergeParamStrings = (...args) => {
 
 const capital = (str) => str.substring(0,1).toUpperCase()+str.substring(1)
 
+const rgbToHex = (r, g, b) => {
+  const toHex = (c) => {
+    if (!c) return '00';
+    const val = Math.round(c * 255);
+    const hex = val.toString(16);
+    return hex.length === 1 ? '0' + hex : hex;
+  };
+  const red = toHex(r);
+  const green = toHex(g);
+  const blue = toHex(b);
+  return `#${red}${green}${blue}`;
+}
+
 export const Utils = {
   stringToBytes,
   bytesToString,
@@ -188,7 +201,8 @@ export const Utils = {
   isBlob,
   capital,
   is,
-  signatureArgs
+  signatureArgs,
+  rgbToHex
 }
 
 

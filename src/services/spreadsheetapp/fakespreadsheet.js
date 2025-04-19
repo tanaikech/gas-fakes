@@ -1,7 +1,9 @@
 import { Proxies } from '../../support/proxies.js'
 import { FakeSheet, newFakeSheet } from './fakesheet.js'
-import { notYetImplemented } from '../../support/helpers.js'
+import { notYetImplemented, minSheetFields } from '../../support/helpers.js'
 import { FakeSheetRange } from './fakesheetrange.js'
+import { Utils } from "../../support/utils.js"
+const { is, signatureArgs } = Utils
 /**
  * @file
  * @imports ../typedefs.js
@@ -19,13 +21,14 @@ export const newFakeSpreadsheet = (...args) => {
 
 /**
  * basic fake FakeSpreadsheet
- * TODO add lots more methods
  * @class FakeSpreadsheet
  * @returns {FakeSpreadsheet}
  */
 export class FakeSpreadsheet {
 
   constructor(file) {
+
+    // when we insert/delete sheets row/cols we update this metadata too
     this.__meta = file
 
     // may of these props can be picked up from the Drive API, so we'll look as a file too
@@ -68,7 +71,7 @@ export class FakeSpreadsheet {
       'getNamedRanges',
       'deleteActiveSheet',
       'setNamedRange',
-      'insertSheet',
+
       'setSpreadsheetLocale',
       'getDataSourceSheets',
       'setSpreadsheetTheme',
@@ -168,6 +171,9 @@ export class FakeSpreadsheet {
     })
   }
 
+  __updateMeta (file) {
+    this.__meta = file
+  }
 
   /**
    * get sheetlevel meta data for  given ranges
@@ -193,7 +199,7 @@ export class FakeSpreadsheet {
    * @param {string} fields to get
    * @return {object} data
    */
-  __getMetaProps  (fields)  {
+  __getMetaProps(fields) {
     const data = Sheets.Spreadsheets.get(this.getId(), { fields })
     return data
   }
@@ -214,7 +220,7 @@ export class FakeSpreadsheet {
   getEditors() {
     return this.__file.getEditors()
   }
-  
+
   /**
    * getOwner() https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet#getowner
    * Returns the owner of the document, or null for a document in a shared drive.
@@ -227,18 +233,18 @@ export class FakeSpreadsheet {
   /**
    * dont know the exact status of this one - TODO keep an eye on if it gets activated in gas
    */
-  isAnonymousView () {
+  isAnonymousView() {
     // weird right ? but that's what it does on gas
-   throw new Error(`The api method 'isAnonymousView' is not available yet in the new version of Google Sheets`)
+    throw new Error(`The api method 'isAnonymousView' is not available yet in the new version of Google Sheets`)
   }
-  
+
   /**
    * getRecalculationInterval() https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet#getrecalculationinterval
    * Returns the calculation interval for this spreadsheet.
    * @returns {import('../typedefs.js').RecalculationInterval}  
    */
-   
-  getRecalculationInterval () {
+
+  getRecalculationInterval() {
     return this.__getMetaProps("properties.autoRecalc").properties.autoRecalc
   }
 
@@ -265,7 +271,7 @@ export class FakeSpreadsheet {
   getDataRange() {
     return this.__getFirstSheet().getDataRange()
   }
-  
+
   /**
    * getColumnWidth(columnPosition) https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet#getcolumnwidthcolumnposition
    * Gets the width in pixels of the given column.
@@ -314,8 +320,12 @@ export class FakeSpreadsheet {
    * @return {FakeSheets[]} the sheets in the spreadsheet
    */
   getSheets() {
-    return this.__meta.sheets.map(f => newFakeSheet(f, this))
+    return this.__meta.sheets.map(f => newFakeSheet(f.properties.sheetId, this))
   }
+  __getSheetMeta(id) {
+    return this.__meta.sheets.find(f => f.properties.sheetId === id)
+  }
+   
   /**
    * @return {string} the spreadsheet url
    */
@@ -329,7 +339,7 @@ export class FakeSpreadsheet {
    */
   getSheetById(id) {
     const sheets = this.getSheets()
-    return sheets.find(f => f.getSheetId() === id) || null
+    return sheets.find(f => f.__sheetId === id) || null
   }
   /**
    * Returns a sheet with the given name..
@@ -367,7 +377,7 @@ export class FakeSpreadsheet {
    */
   setColumnWidth(column, width) {
     return this.__getFirstSheet().setColumnWidth(column, width)
-  } 
+  }
 
   /**
    * setRowHeight(rowPosition, height) https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet#setrowheightrowposition,-height
@@ -377,7 +387,109 @@ export class FakeSpreadsheet {
    */
   setRowHeight(row, height) {
     return this.__getFirstSheet().setRowHeight(row, height)
-  } 
+  }
+
+  /**
+   * insertSheet() nserts a new sheet into the spreadsheet https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet#insertsheet
+   * TODO The new sheet becomes the active sheet.
+   * TODO which options are valid ? so far i can only see template sheet - 
+   * for this we need to find and handle template sheet serializaton beore pasing to advanced sheets
+   * @param {number|object|string} [indexOrOptionsOrNameA] the index or options orname or nothing for all defaults
+   * @param {number|object|string} [indexOrOptionsOrNameB] sheet index or options 
+   * @param {object} [onlyOptions] the options
+   */
+  insertSheet(indexOrOptionsOrNameA, indexOrOptionsOrNameB, options) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "insertSheet")
+
+    // The index of the newly created sheet. To insert a sheet as the first one in the spreadsheet, set it to 0.
+    let sheetIndex = null
+    let sheetName = null
+    let sheetOptions = null
+
+    if (!nargs) {
+      // use defaults
+    }
+
+    else if (nargs === 1) {
+      // insertSheet(sheetIndex) 
+      // insertSheet(options)
+      // insertSheet(sheetName)
+      if (is.number(indexOrOptionsOrNameA)) {
+        sheetIndex = indexOrOptionsOrNameA
+      } else if (is.object(indexOrOptionsOrNameA)) {
+        sheetOptions = indexOrOptionsOrNameA
+      } else if (is.string(indexOrOptionsOrNameA)) {
+        sheetName = indexOrOptionsOrNameA
+      } else {
+        matchThrow()
+      }
+
+    } else if (nargs === 2) {
+      // insertSheet(sheetName, sheetIndex)
+      // insertSheet(sheetName, options)
+      // insertSheet(sheetIndex, options)
+      if (is.number(indexOrOptionsOrNameA) && is.object(indexOrOptionsOrNameB)) {
+        sheetIndex = indexOrOptionsOrNameA
+        sheetOptions = indexOrOptionsOrNameB
+      } else if (is.string(indexOrOptionsOrNameA) && is.object(indexOrOptionsOrNameB)) {
+        sheetName = indexOrOptionsOrNameA
+        sheetOptions = indexOrOptionsOrNameB
+      } else if (is.string(indexOrOptionsOrNameA) && is.number(indexOrOptionsOrNameB)) {
+        sheetName = indexOrOptionsOrNameA
+        sheetIndex = indexOrOptionsOrNameB
+      } else {
+        matchThrow()
+      }
+
+    } else if (nargs === 3) {
+      // insertSheet(sheetIndex, sheetName, options)
+      if (!is.object(onlyOptions)) {
+        matchThrow()
+      }
+      sheetOptions = onlyOptions
+    }
+    else {
+      matchThrow()
+    }
+
+    // TODO validate options as they could be Fake objects needing serialized !!
+    if (sheetOptions) {
+      throw `handling options not yet implemented`
+    }
+
+    const pack = {
+      properties: {
+        sheetType: "GRID"
+      }
+    }
+    if (is.number(sheetIndex)) {
+      pack.properties.index = sheetIndex
+    }
+    if (sheetName) {
+      pack.properties.title = sheetName
+    }
+
+    let requests = [{
+      addSheet: pack
+    }]
+
+    // let sheets handle errors
+    const result = Sheets.Spreadsheets.batchUpdate({requests}, this.getId(), { ss: true })
+    const sheet = new FakeSheet(result.replies[0].addSheet.properties.sheetId, this)
+
+    // there will have been disrupton, so we need to reset the spreadsheet metadata
+    this.__disruption()
+
+    return sheet
+   /* 
+    {"spreadsheetId":"1i4eEijAwm0b62iL_IEV8NUSZwlWPDP51thgAWQHGols","replies":[{"addSheet":{"properties":{"sheetId":630852383,"title":"Sheet2","index":1,"sheetType":"GRID","gridProperties":{"rowCount":1000,"columnCount":26}}}}]}
+*/
+
+  }
+
+  __disruption () {
+      this.__updateMeta(  Sheets.Spreadsheets.get(this.getId(), { fields: minSheetFields }, { ss: true }))
+  }
 
   getRange(range) {
     // this should be in sheet1!a1:a2 format

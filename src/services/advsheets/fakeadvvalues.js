@@ -1,7 +1,7 @@
 import { Proxies } from '../../support/proxies.js'
-import { notYetImplemented } from '../../support/helpers.js'
+import { notYetImplemented, ssError } from '../../support/helpers.js'
 import { Syncit } from '../../support/syncit.js'
-import { getWorkbookEntry, setWorkbookEntry } from "../../support/sheetscache.js"
+import { getWorkbookEntry, setWorkbookEntry, clearWorkbookCache } from "../../support/sheetscache.js"
 /**
  * @file
  * @imports ../typedefs.js
@@ -36,7 +36,6 @@ class FakeSheetValues {
       'batchClearByDataFilter',
       'batchUpdateByDataFilter',
       'batchClear',
-      'batchUpdate',
       'batchGetByDataFilter',
       'clear',
       'update',
@@ -79,6 +78,38 @@ class FakeSheetValues {
     const { data } = Syncit.fxSheets(pack)
 
     setWorkbookEntry(spreadsheetId, pack, data)
+    return data
+  }
+
+
+  /**
+   * batchUpdate: https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets.values/batchUpdate
+   * note that the order of args -- requests first then id - is different to usual
+   * Batch request looks like this https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets/request#request
+   * @param {object} request batch request {request:Request[]}
+   */
+  batchUpdate(requests, spreadsheetId, { ss = false } = {}) {
+
+    const requestBody = requests
+
+    const pack = {
+      subProp: "values",
+      prop: "spreadsheets",
+      method: "batchUpdate",
+      params: {
+        spreadsheetId,
+        requestBody
+      }
+    }
+
+    const { response, data } = Syncit.fxSheets(pack)
+    
+    // naive cache - was an update so zap everything
+    clearWorkbookCache(spreadsheetId)
+
+    // maybe we need to throw an error
+    ssError (response, pack.method, ss)
+
     return data
   }
 

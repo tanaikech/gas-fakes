@@ -1,11 +1,4 @@
 import { Proxies } from '../../support/proxies.js'
-import { FakeSheet } from './fakesheet.js'
-import { SheetUtils } from '../../support/sheetutils.js'
-import { Utils } from '../../support/utils.js'
-
-const { is, signatureArgs } = Utils
-
-
 import { notYetImplemented } from '../../support/helpers.js'
 
 //TODO - deal with r1c1 style ranges

@@ -24,12 +24,12 @@ export const zipType = 'application/zip'
 
 export const notYetImplemented = (item ='That') => {
   const mess = `${item} is not yet implemented - watch https://github.com/brucemcpherson/gas-fakes for progress`
-  return mess
+  throw new Error(mess)
 }
 
 export const wontBeImplemented = (item="That") => {
   const mess = `${item} will not be implemented - raise issue on https://github.com/brucemcpherson/gas-fakes if you think it should`
-  return mess
+  throw new Error(mess)
 }
 // added parents to the minfield length as its often needed
 const minFieldsList = ["name","id","mimeType","kind","parents"]
@@ -115,4 +115,17 @@ export const argsMatchThrow = ( items, mess = "") => {
   // limit the error message 
   const passedTypes = items.map(getWhat).map(Utils.capital).join(",")
   throw new Error(`The parameters (${passedTypes}) don't match the method ${mess}`)
+}
+
+export const ssError = (response, method, ss) => {
+
+  if (!isGood(response)) {
+    if (ss) {
+      throw new Error(`Unexpected error while getting the method or property ${method} on object SpreadsheetApp.`)
+    } else {
+      // adv drive throws this one
+      throw new Error(`GoogleJsonResponseException: API call to sheets.spreadsheets.${method} failed with error", ${response?.error?.message}`  )
+    }
+  }
+  return response
 }

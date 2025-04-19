@@ -1,6 +1,12 @@
 import { Proxies } from '../../support/proxies.js'
 import { newFakeSpreadsheet } from './fakespreadsheet.js'
-import { notYetImplemented, minSheetFields } from '../../support/helpers.js'
+import { notYetImplemented, minSheetFields} from '../../support/helpers.js'
+import { Utils } from "../../support/utils.js"
+const { is, signatureArgs } = Utils
+/**
+ * @file
+ * @imports ../typedefs.js
+ */
 
 /**
  * create a new FakeSpreadsheetApp instance
@@ -48,7 +54,6 @@ export class FakeSpreadsheetApp {
       'getUi',
       'flush',
       'open',
-      'create',
       'AutoFillSeries',
       'BandingTheme',
       'BooleanCriteria',
@@ -106,9 +111,47 @@ export class FakeSpreadsheetApp {
    * @return {FakeSpreadsheet}
    */
   openById(id) {
-    const result =  newFakeSpreadsheet(Sheets.Spreadsheets.get(id, {fields: minSheetFields}, { ss: true }))
+    const result = newFakeSpreadsheet(Sheets.Spreadsheets.get(id, { fields: minSheetFields }, { ss: true }))
     return result
   }
+
+  /**
+   * Creates a new spreadsheet with the given name and optinally and the specified number of rows and columns.
+   * @param {string} name the name
+   * @param {number} [rows] number of rows
+   * @param {number} [columns] number of columns
+   * @return {FakeSpreadsheet}
+   */
+  create(name, rows, columns) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "create")
+    if (nargs < 1) matchThrow()
+    if (nargs > 3) matchThrow()
+    if (!is.nonEmptyString(name)) matchThrow()
+    if (nargs > 1 && (!is.positiveNumber(rows) || !is.positiveNumber(columns))) matchThrow()
+    const pack = {
+      properties: {
+        title: name
+      }
+    }
+
+    // if rows/cols specified we need to fiddle with the first sheet's properties too
+    if (nargs > 1) {
+      pack.sheets = [{
+        properties: {
+          sheetType: 'GRID',
+          gridProperties: {
+            rowCount: rows,
+            columnCount: columns
+          }
+        },
+      }]
+    }
+
+    const data = Sheets.Spreadsheets.create(pack, { ss: true })
+    return  newFakeSpreadsheet(data)
+
+  }
+
   /**
    * url looks like this https://docs.google.com/spreadsheets/d/1lc7YcqMuP1ap23FFW0EqywyLojBmHTKZde_0cYcyPSQ/edit?gid=907032523#gid=907032523
    * @param {string} url 
