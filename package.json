@@ -29,6 +29,7 @@
     "testutilities": "cp mainlocal.js main.js && node --env-file=.env ./test/testutilities.js execute",
     "teststores": "cp mainlocal.js main.js && node --env-file=.env ./test/teststores.js execute",
     "testscriptapp": "cp mainlocal.js main.js &&  node --env-file=.env ./test/testscriptapp.js execute",
+    "testfiddler": "cp mainlocal.js main.js &&  node --env-file=.env ./test/testfiddler.js execute",
     "pub": "cp mainlocal.js main.js && npm publish --access public"
   },
   "name": "@mcpher/gas-fakes",

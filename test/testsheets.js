@@ -207,7 +207,7 @@ export const testSheets = (pack) => {
 
   })
 
-  unit.cancel()
+
   unit.section("spreadsheet values", t => {
 
     // TODO - fails on gas if the fields are dates or numbers because gas automayically detects and converts types

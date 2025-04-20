@@ -9,19 +9,34 @@ import '../main.js'
 
 import { initTests } from './testinit.js'
 import { getSheetsPerformance } from '../src/support/sheetscache.js';
-import { Fiddler} from '../gaslibtests/bmfiddler/Code.js'
+import { Fiddler } from '../gaslibtests/bmfiddler/Code.js'
 
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testFiddler = (pack) => {
   const { unit, fixes } = pack || initTests()
+  let airports = null
+  let copyAirports = null
+  const toTrash = []
 
-  unit.section ("testfiddler - needs utilities sha1", t=> {
+  const getCopy = () => {
+    if (!copyAirports) {
+      airports = SpreadsheetApp.openById(fixes.TEST_AIRPORTS)
+      copyAirports = SpreadsheetApp.create(fixes.PREFIX + airports.getName())
+      const sheet = copyAirports.insertSheet(fixes.TEST_AIRPORTS_NAME)
+      if (fixes.CLEAN) {
+        toTrash.push(DriveApp.getFileById(copyAirports.getId()))
+      }
+    }
+  }
+
+  unit.section("testfiddler - needs utilities sha1", t => {
     const ss = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
     const sheet = ss.getSheets()[1]
     const fiddler = new Fiddler(sheet)
+    console.log(fiddler.getValues())
   }, {
-    skip: true
+    skip: false
   })
 
   if (!pack) {
@@ -37,4 +52,4 @@ export const testFiddler = (pack) => {
 // on apps script we don't want it to run automatically
 // when running as part of a consolidated test, we dont want to run it, as the caller will do that
 
-if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) testSheets()
+if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) testFiddler()
