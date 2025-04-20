@@ -30,11 +30,13 @@ export const initTests = () => {
   // these are fixtures to test
   // using process.env creates strings, convert to appropriate types as needed
   const fixes = {
-    MIN_ROOT_PDFS: Number(process.env.MIN_NUM_ROOT_PDFS),
-    MIN_PDFS: Number(process.env.MIN_NUM_PDFS),
+    TEST_AIRPORTS: process.env.TEST_AIRPORTS,
+    TEST_AIRPORTS_NAME: process.env.TEST_AIRPORTS_NAME,
+    MIN_ROOT_PDFS: Number(process.env.MIN_ROOT_PDFS),
+    MIN_PDFS: Number(process.env.MIN_PDFS),
     MIN_FOLDERS_ROOT: process.env.MIN_FOLDERS_ROOT,
     TEST_FOLDER_NAME: process.env.TEST_FOLDER_NAME,
-    TEST_FOLDER_FILES: Number(process.env.TEST_FOLDER_NUM_CHILD_FILES),
+    TEST_FOLDER_FILES: Number(process.env.TEST_FOLDER_FILES),
     SKIP_SINGLE_PARENT: process.env.SKIP_SINGLE_PARENT === 'true',
     TEST_FOLDER_ID: process.env.TEST_FOLDER_ID,
     TEXT_FILE_NAME: process.env.TEXT_FILE_NAME,
@@ -60,7 +62,9 @@ export const initTests = () => {
     PDF_ID: process.env.PDF_ID,
     CLEAN: process.env.CLEAN === 'true'
   }
-
+  Reflect.ownKeys (fixes).forEach(k => {
+    if (!Reflect.has(process.env,k) && k!=='PREFIX') throw new Error (`process.env.${k} value is not set`)
+  })
   
   return {
     unit,

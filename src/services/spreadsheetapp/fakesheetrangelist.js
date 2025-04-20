@@ -71,7 +71,7 @@ export class FakeSheetRangeList {
 
     props.forEach(f => {
       this[f] = () => {
-        return notYetImplemented()
+        return notYetImplemented(f)
       }
     })
 

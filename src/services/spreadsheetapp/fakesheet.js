@@ -155,7 +155,7 @@ export class FakeSheet {
       'sort']
     props.forEach(f => {
       this[f] = () => {
-        return notYetImplemented()
+        return notYetImplemented(f)
       }
     })
   }
@@ -201,14 +201,21 @@ export class FakeSheet {
    * @returns {import('../typedefs.js').GridRange} gridRange 
    */
   __getGridRange() {
-    const { values } = Sheets.Spreadsheets.Values.get(this.__parent.getId(), this.getName())
-    // not sure if all widths are equal - so we'll do this
-    const maxWidth = values.reduce((p, c) => c.length > p ? c.length : p, 0)
+    let { values } = Sheets.Spreadsheets.Values.get(this.__parent.getId(), this.getName())
+    // no values indicates an empty sheet
+    // in this case the gridrange as far as gas is concerned is A1
+    let maxWidth =1
+    let maxHeight = 1
+    if (values) {
+      maxWidth = values.reduce((p, c) => c.length > p ? c.length : p, 0)
+      maxHeight = values.length
+    }
+
 
     return {
       sheetId: this.getSheetId(),
       startRowIndex: 0,
-      endRowIndex: values.length,
+      endRowIndex: maxHeight,
       startColumnIndex: 0,
       endColumnIndex: maxWidth
     }

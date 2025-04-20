@@ -186,7 +186,20 @@ const rgbToHex = (r, g, b) => {
   return `#${red}${green}${blue}`;
 }
 
+const hexToRgb = (hex) => {
+  const bigint = parseInt(hex.slice(1), 16);
+  const r = (bigint >> 16) & 255;
+  const g = (bigint >> 8) & 255;
+  const b = bigint & 255;
+  return {
+    red: r / 255,
+    green: g / 255,
+    blue: b / 255,
+  };
+}
+
 export const Utils = {
+  hexToRgb,
   stringToBytes,
   bytesToString,
   settleAsBytes,

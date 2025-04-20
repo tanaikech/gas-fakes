@@ -4,7 +4,7 @@ import { SheetUtils } from '../../support/sheetutils.js'
 import { Utils } from '../../support/utils.js'
 
 
-const { is, signatureArgs, rgbToHex } = Utils
+const { is, signatureArgs, rgbToHex, hexToRgb } = Utils
 const WHITE = '#ffffff'
 
 import { notYetImplemented } from '../../support/helpers.js'
@@ -59,7 +59,7 @@ export class FakeSheetRange {
       'getFontWeight',
       'getFontFamilies',
       'setFontWeight',
-      'setBackground',
+
       'setHorizontalAlignments',
 
       'createDataSourcePivotTable',
@@ -84,7 +84,7 @@ export class FakeSheetRange {
       'mergeVertically',
       'isPartOfMerge',
       'setBackgroundObject',
-      'setBackgrounds',
+
       'getBackgroundObject',
       'getBackgroundObjects',
       'setBackgroundRGB',
@@ -181,7 +181,7 @@ export class FakeSheetRange {
       'setFontFamily',
       'getDataSourceFormulas',
       'getDataSourceTables',
-      'clearContent',
+
       'setBackgroundColor',
       'getBackgroundColor',
       'setFormula',
@@ -197,7 +197,7 @@ export class FakeSheetRange {
       'isBlank',
       'merge',
       'sort',
-      'setValue',
+
       'check',
       'getFilter',
       'setNumberFormat',
@@ -206,7 +206,7 @@ export class FakeSheetRange {
       'getComment']
     props.forEach(f => {
       this[f] = () => {
-        return notYetImplemented()
+        return notYetImplemented(f)
       }
     })
 
@@ -223,6 +223,9 @@ export class FakeSheetRange {
     return `${range.__sheet.getName()}!${this.getA1Notation()}`
   }
 
+  clearContent() {
+    return this.setValues([])
+  }
 
   toString() {
     return 'Range'
@@ -290,6 +293,54 @@ export class FakeSheetRange {
 {"sheets":[{"data":[{"rowData":[{"values":[{"effectiveFormat":{"horizontalAlignment":"LEFT"}},{"effectiveFormat":{"horizontalAlignment":"LEFT"}}]},{"values":[{"effectiveFormat":{"horizontalAlignment":"LEFT"}},{"effectiveFormat":{"horizontalAlignment":"LEFT"}}]},{"values":[{"effectiveFormat":{"horizontalAlignment":"LEFT"}},{"effectiveFormat":{"horizontalAlignment":"LEFT"}}]}]}]}]}
     sometimes the properties are not there and we have to use a default value
   */
+
+
+  /**
+   * Sets the background color of all cells in the range in CSS notation (such as '#ffffff' or 'white').
+   * setBackgrounds(color) https://developers.google.com/apps-script/reference/spreadsheet/range#setbackgroundscolor
+   * @param {string[][]} colors A two-dimensional array of colors in CSS notation (such as '#ffffff' or 'white'); null values reset the color.
+   * @return {FakeSheetRange} self
+   */
+  setBackgrounds(colors) {
+    const gridRange = this.__gridRange
+    const start = {
+      sheetId: gridRange.sheetId,
+      rowIndex: gridRange.startRowIndex,
+      columnIndex: gridRange.startColumnIndex
+    }
+    const rows = colors.map(row => ({
+      values: row.map(c => ({
+        userEnteredFormat: {
+          backgroundColor: hexToRgb(c)
+        }
+      }))
+    }))
+    const fields = 'userEnteredFormat.backgroundColor'
+
+    const request = {
+      updateCells: {
+        start,
+        rows,
+        fields 
+      },
+
+    }
+    Sheets.Spreadsheets.batchUpdate({ requests: [request] }, this.__sheet.getParent().getId(), { ss: true })
+    return this
+  }
+
+  __fillRange({ range = this, value }) {
+    return Array.from({ length: range.getNumRows() }).fill(Array.from({ length: range.getNumColumns() }).fill(value))
+  }
+  /**
+   * Sets the background color of all cells in the range in CSS notation (such as '#ffffff' or 'white').
+   * setBackground(color) https://developers.google.com/apps-script/reference/spreadsheet/range#setbackgroundcolor
+   * @param {string} color A color code in CSS notation (such as '#ffffff' or 'white'); a null value resets the color.
+   * @return {FakeSheetRange} self
+   */
+  setBackground(color) {
+    return this.setBackgrounds(this.__fillRange({ value: color }))
+  }
 
   /**
    * called by each attribute get

@@ -11,6 +11,18 @@ import '../main.js'
 import { initTests } from './testinit.js'
 import { getSheetsPerformance } from '../src/support/sheetscache.js';
 
+const rgbToHex = ({red:r, green:g, blue: b}) => {
+  const toHex = (c) => {
+    if (!c) return '00';
+    const val = Math.round(c * 255);
+    const hex = val.toString(16);
+    return hex.length === 1 ? '0' + hex : hex;
+  };
+  const red = toHex(r);
+  const green = toHex(g);
+  const blue = toHex(b);
+  return `#${red}${green}${blue}`;
+}
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testSheets = (pack) => {
@@ -39,14 +51,24 @@ export const testSheets = (pack) => {
     t.is (background.length, 7)
     t.is (background, '#ffffff','newly created sheet will have white background')
 
-    
+    const color = '#77ff33'
+    range.setBackground(color)
+    t.is (range.getBackground(), color)
+    t.true (range.getBackgrounds().flat().every(f=>f===color))
+
+    const colors = Array.from({ length: range.getNumRows() }).fill(Array.from({ length: range.getNumColumns() })
+      .map(_=>({red:Math.random(),green:Math.random(),blue:Math.random()})).map(rgbToHex))
+    range.setBackgrounds(colors)
+    t.deepEqual(range.getBackgrounds(), colors)
+
+
     const verticalAlignments = range.getVerticalAlignments()
     const verticalAlignment = range.getVerticalAlignment()
     t.is (verticalAlignments.length, range.getNumRows())
     t.is (verticalAlignments[0].length, range.getNumColumns())
     t.true (verticalAlignments.flat().every(f => is.nonEmptyString(f)))
     t.is (verticalAlignments[0][0], verticalAlignment)
-    t.is (verticalAlignment, 'bottom','newly created sheet will have bottom')
+    t.is (verticalAlignment, 'BOTTOM','newly created sheet will have bottom')
 
     const horizontalAlignments = range.getHorizontalAlignments()
     const horizontalAlignment = range.getHorizontalAlignment()
@@ -55,6 +77,8 @@ export const testSheets = (pack) => {
     t.true (horizontalAlignments.flat().every(f => is.nonEmptyString(f)))
     t.is (horizontalAlignments[0][0], horizontalAlignment) 
     t.is (horizontalAlignment, 'general','newly created sheet will have general')
+
+
 
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
     if (fixes.CLEAN) {

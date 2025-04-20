@@ -91,7 +91,7 @@ export class FakeSpreadsheetApp {
 
     props.forEach(f => {
       this[f] = () => {
-        return notYetImplemented()
+        return notYetImplemented(f)
       }
     })
 
