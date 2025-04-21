@@ -1,9 +1,9 @@
 
 
 import is from '@sindresorhus/is';
-import {assert} from '@sindresorhus/is';
+import { assert } from '@sindresorhus/is';
 
-const isNU = (item) => is.null(item) || is.undefined (item)
+const isNU = (item) => is.null(item) || is.undefined(item)
 
 const arrify = (item) => is.array(item)
   ? item
@@ -21,7 +21,7 @@ const fromJson = (text, failOnError = false) => {
   }
 }
 
-const signatureArgs = (received,method) => {
+const signatureArgs = (received, method) => {
   const args = Array.from(received)
   const nargs = args.length
   const passedTypes = args.map(is)
@@ -35,7 +35,7 @@ const signatureArgs = (received,method) => {
   }
 }
 
-const isBlob = (item) => is.object (item) && Reflect.has (item, "copyBlob") && is.function (item.copyBlob)
+const isBlob = (item) => is.object(item) && Reflect.has(item, "copyBlob") && is.function(item.copyBlob)
 
 /**
  * merge a series of url params 
@@ -51,11 +51,11 @@ const makeUrlParams = (pob) => {
  * @returns {object} merged and dedupped paramaters reduced
  */
 const makeParamOb = (pob) => {
-  const a = makeParams (pob)
-  return a.reduce ((p, [k,v])=>{
+  const a = makeParams(pob)
+  return a.reduce((p, [k, v]) => {
     p[k] = v
     return p
-  },{})
+  }, {})
 }
 /**
  * merge a series of url params 
@@ -74,11 +74,11 @@ const makeParams = (pob = []) => {
 
 const settleAsString = (data, charset) => {
   if (is.buffer(data)) {
-    return bytesToString (Array.from(data), charset)
+    return bytesToString(Array.from(data), charset)
   } else if (is.array(data)) {
-    return bytesToString (data, charset)
+    return bytesToString(data, charset)
   } else {
-    assert.string (data)
+    assert.string(data)
     return data
   }
 
@@ -87,18 +87,18 @@ const settleAsString = (data, charset) => {
 const settleAsBytes = (data, charset) => {
 
   if (is.string(data)) {
-    return stringToBytes (data, charset)
+    return stringToBytes(data, charset)
   } else if (is.buffer(data)) {
-    return Array.from (data)
-  } else { 
-    assert.array (data)
+    return Array.from(data)
+  } else {
+    assert.array(data)
     return data
   }
 
 }
 
 const stringToBytes = (string, charset) => Array.from(Buffer.from(string, charset))
-const bytesToString = (data, charset) => Buffer.from(data).toString (charset)
+const bytesToString = (data, charset) => Buffer.from(data).toString(charset)
 
 /**
  * merge something like
@@ -129,7 +129,7 @@ export const mergeParamStrings = (...args) => {
       }
       const [_, key, items] = match
       if (!itemMap.has(key)) itemMap.set(key, new Set())
-      const item =  itemMap.get(key)
+      const item = itemMap.get(key)
       assert.set(item)
       items.split(",").forEach(f => itemMap.get(key).add(f))
     })
@@ -139,39 +139,39 @@ export const mergeParamStrings = (...args) => {
     const rxPlains = /(?<!\([^)]*),?([^,(]+)(?=(?:,|$)(?![^(]*\)))/g;
     const plains = Array.from(str.matchAll(rxPlains))
 
-    plains.forEach (match => {
+    plains.forEach(match => {
       if (match.length !== 2) {
         throw new Error(`Invalid format for field ${JSON.stringify(match)}`)
       }
-      const [_,key] = match
-      const item = itemMap.get (key)
+      const [_, key] = match
+      const item = itemMap.get(key)
       // because whether it exists or not it should be null otherwise its a conflict a set
-      if (itemMap.has (key)) {
-        assert.null (item)
+      if (itemMap.has(key)) {
+        assert.null(item)
       } else {
-        itemMap.set (key, null)
+        itemMap.set(key, null)
       }
     })
 
     return itemMap
-   }
+  }
 
-   const itemMap = new Map ()
-   args.forEach (f=>{
+  const itemMap = new Map()
+  args.forEach(f => {
     assert.string(f)
-    return enhanceMap(f.replace(/\s/g,""), itemMap)
+    return enhanceMap(f.replace(/\s/g, ""), itemMap)
   })
 
-   // now just convert that into a string
-   return Array.from (itemMap.entries()).map(([key, value])=> {
+  // now just convert that into a string
+  return Array.from(itemMap.entries()).map(([key, value]) => {
 
-    return is.null(value) 
+    return is.null(value)
       ? key
-      : `${key}(${Array.from(value.keys()).sort().join(",")})` 
-   }).sort().join (",")
+      : `${key}(${Array.from(value.keys()).sort().join(",")})`
+  }).sort().join(",")
 }
 
-const capital = (str) => str.substring(0,1).toUpperCase()+str.substring(1)
+const capital = (str) => str.substring(0, 1).toUpperCase() + str.substring(1)
 
 const rgbToHex = (r, g, b) => {
   const toHex = (c) => {
@@ -186,6 +186,17 @@ const rgbToHex = (r, g, b) => {
   return `#${red}${green}${blue}`;
 }
 
+const getPlucker = (props, defaultValue) => {
+  const pex = props.split(".")
+  return (v) => {
+    const px = pex.reduce((p, c) => {
+      const t = p && p[c]
+      return isNU(t) ? defaultValue : t
+    }, v)
+    return px
+  }
+}
+
 const hexToRgb = (hex) => {
   const bigint = parseInt(hex.slice(1), 16);
   const r = (bigint >> 16) & 255;
@@ -197,6 +208,8 @@ const hexToRgb = (hex) => {
     blue: b / 255,
   };
 }
+
+
 
 export const Utils = {
   hexToRgb,
@@ -215,7 +228,8 @@ export const Utils = {
   capital,
   is,
   signatureArgs,
-  rgbToHex
+  rgbToHex,
+  getPlucker
 }
 
 

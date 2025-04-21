@@ -2,6 +2,9 @@ import { Proxies } from '../../support/proxies.js'
 import { newFakeSpreadsheet } from './fakespreadsheet.js'
 import { notYetImplemented, minSheetFields} from '../../support/helpers.js'
 import { Utils } from "../../support/utils.js"
+import { newFakeColorBuilder } from './fakecolorbuilder.js'
+import { ThemeColorType } from '../typedefs.js'
+
 const { is, signatureArgs } = Utils
 /**
  * @file
@@ -49,7 +52,6 @@ export class FakeSpreadsheetApp {
       'newRichTextValue',
       'newFilterCriteria',
       'newDataSourceSpec',
-      'newColor',
       'newCellImage',
       'getUi',
       'flush',
@@ -85,7 +87,6 @@ export class FakeSpreadsheetApp {
       'SortOrder',
       'TextDirection',
       'TextToColumnsDelimiter',
-      'ThemeColorType',
       'ValueType',
       'WrapStrategy']
 
@@ -159,6 +160,19 @@ export class FakeSpreadsheetApp {
    */
   openByUrl(url) {
     return this.openById(url.replace(/.*\/spreadsheets\/d\/([^\/]*).*/i, "$1"))
+  }
+
+  /**
+   * newColor() https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#newcolor
+   * Creates a builder for a Color.
+   * return {FakeColorBuilder}
+   */
+  newColor() {
+    return newFakeColorBuilder()
+  }
+  
+  get ThemeColorType () {
+    return ThemeColorType
   }
 
 }

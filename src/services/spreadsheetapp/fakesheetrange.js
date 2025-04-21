@@ -4,7 +4,7 @@ import { SheetUtils } from '../../support/sheetutils.js'
 import { Utils } from '../../support/utils.js'
 
 
-const { is, signatureArgs, rgbToHex, hexToRgb } = Utils
+const { is, signatureArgs, rgbToHex, hexToRgb, getPlucker } = Utils
 const WHITE = '#ffffff'
 
 import { notYetImplemented } from '../../support/helpers.js'
@@ -24,6 +24,7 @@ import { notYetImplemented } from '../../support/helpers.js'
 export const newFakeSheetRange = (...args) => {
   return Proxies.guard(new FakeSheetRange(...args))
 }
+
 
 /**
  * basic fake FakeSheetRange
@@ -87,7 +88,7 @@ export class FakeSheetRange {
 
       'getBackgroundObject',
       'getBackgroundObjects',
-      'setBackgroundRGB',
+
       'setBorder',
       'activateAsCurrentCell',
       'setFontColor',
@@ -211,24 +212,11 @@ export class FakeSheetRange {
     })
 
   }
-  __getWithSheet() {
-    return this.__getRangeWithSheet(this)
-  }
 
-  __getTopLeft() {
-    return this.offset(0, 0, 1, 1)
-  }
 
-  __getRangeWithSheet(range) {
-    return `${range.__sheet.getName()}!${this.getA1Notation()}`
-  }
 
   clearContent() {
     return this.setValues([])
-  }
-
-  toString() {
-    return 'Range'
   }
 
   getA1Notation() {
@@ -239,166 +227,6 @@ export class FakeSheetRange {
       this.__gridRange.endColumnIndex
     )
   }
-
-  getEndColumn() {
-    return this.__gridRange.endColumnIndex + 1
-  }
-  getEndRow() {
-    return this.__gridRange.endRowIndex + 1
-  }
-  getSheet() {
-    return this.__sheet
-  }
-  // row and columnindex are probably now deprecated in apps script
-  // in any case, in gas they currently return the 1 based value, not the 0 based value as you'd expect
-  // so the same as the getrow and getcolumn
-  getRowIndex() {
-    return this.getRow()
-  }
-  getColumnIndex() {
-    return this.getColumn()
-  }
-  getRow() {
-    return this.__gridRange.startRowIndex + 1
-  }
-  getColumn() {
-    return this.__gridRange.startColumnIndex + 1
-  }
-  getLastRow() {
-    return this.__gridRange.endRowIndex
-  }
-  getLastColumn() {
-    return this.__gridRange.endColumnIndex
-  }
-  getNumRows() {
-    return this.__gridRange.endRowIndex - this.__gridRange.startRowIndex
-  }
-  getNumColumns() {
-    return this.__gridRange.endColumnIndex - this.__gridRange.startColumnIndex
-  }
-  __getValues({ range = this, options } = {}) {
-    const { values } = Sheets.Spreadsheets.Values.get(this.__sheet.getParent().getId(), this.__getRangeWithSheet(range), options)
-    return values
-  }
-
-  /**
-   * attribute helpers
-   * need to deal with a response that looks like this
-   * in response to a query that looks like this
-   *  Sheets.Spreadsheets.get(spreadsheetId, {
-      ranges: [range],
-      fields: `sheets.data.rowData.values.${props}`,
-    })
-      we get this
-{"sheets":[{"data":[{"rowData":[{"values":[{"effectiveFormat":{"horizontalAlignment":"LEFT"}},{"effectiveFormat":{"horizontalAlignment":"LEFT"}}]},{"values":[{"effectiveFormat":{"horizontalAlignment":"LEFT"}},{"effectiveFormat":{"horizontalAlignment":"LEFT"}}]},{"values":[{"effectiveFormat":{"horizontalAlignment":"LEFT"}},{"effectiveFormat":{"horizontalAlignment":"LEFT"}}]}]}]}]}
-    sometimes the properties are not there and we have to use a default value
-  */
-
-
-  /**
-   * Sets the background color of all cells in the range in CSS notation (such as '#ffffff' or 'white').
-   * setBackgrounds(color) https://developers.google.com/apps-script/reference/spreadsheet/range#setbackgroundscolor
-   * @param {string[][]} colors A two-dimensional array of colors in CSS notation (such as '#ffffff' or 'white'); null values reset the color.
-   * @return {FakeSheetRange} self
-   */
-  setBackgrounds(colors) {
-    const gridRange = this.__gridRange
-    const start = {
-      sheetId: gridRange.sheetId,
-      rowIndex: gridRange.startRowIndex,
-      columnIndex: gridRange.startColumnIndex
-    }
-    const rows = colors.map(row => ({
-      values: row.map(c => ({
-        userEnteredFormat: {
-          backgroundColor: hexToRgb(c)
-        }
-      }))
-    }))
-    const fields = 'userEnteredFormat.backgroundColor'
-
-    const request = {
-      updateCells: {
-        start,
-        rows,
-        fields 
-      },
-
-    }
-    Sheets.Spreadsheets.batchUpdate({ requests: [request] }, this.__sheet.getParent().getId(), { ss: true })
-    return this
-  }
-
-  __fillRange({ range = this, value }) {
-    return Array.from({ length: range.getNumRows() }).fill(Array.from({ length: range.getNumColumns() }).fill(value))
-  }
-  /**
-   * Sets the background color of all cells in the range in CSS notation (such as '#ffffff' or 'white').
-   * setBackground(color) https://developers.google.com/apps-script/reference/spreadsheet/range#setbackgroundcolor
-   * @param {string} color A color code in CSS notation (such as '#ffffff' or 'white'); a null value resets the color.
-   * @return {FakeSheetRange} self
-   */
-  setBackground(color) {
-    return this.setBackgrounds(this.__fillRange({ value: color }))
-  }
-
-  /**
-   * called by each attribute get
-   * __getRowDataAttribs 
-   * @param {FakeSheetRange} [range=this] the range
-   * @param {string} props the props to extract
-   * @returns {*[]}
-   */
-  __getRowDataAttribs({ range = this, props, defaultValue }) {
-
-    // get the collection of rows with data for the required properties
-    const { sheets } = Sheets.Spreadsheets.get(this.__sheet.getParent().getId(), {
-      ranges: [this.__getRangeWithSheet(range)],
-      fields: `sheets.data.rowData.values.${props}`
-    })
-
-    const { rowData } = sheets[0]?.data[0]
-
-    // then we have to shape some default values
-    if (!rowData) {
-      return Array.from({ length: range.getNumRows() }).fill(Array.from({ length: range.getNumColumns() }).fill(defaultValue))
-    }
-
-    // extract the required props to an array
-    const pex = props.split(".")
-
-
-    // plucker
-    const getPex = (v) => {
-
-      const px = pex.reduce((p, c) => {
-        const t = p && p[c]
-        return Utils.isNU(t) ? defaultValue : t
-      }, v)
-      return px
-    }
-
-    // pluck each cell
-    return rowData.map(row => row.values.map(getPex))
-  }
-
-  __getBackgrounds({ range = this } = {}) {
-
-    const rows = this.__getRowDataAttribs({
-      range,
-      props: 'effectiveFormat.backgroundColor',
-      defaultValue: { red: 1, green: 1, blue: 1 }
-    })
-
-    const rgbs = rows.map(r => {
-      // default background is white
-      return r.map(f => {
-        return is.null(f) ? WHITE : rgbToHex(f.red, f.green, f.blue)
-      })
-    })
-    return rgbs
-  }
-
   /**
    * getBackground() https://developers.google.com/apps-script/reference/spreadsheet/range#getbackground
    * Returns the background color of the top-left cell in the range (for example, '#ffffff').
@@ -417,91 +245,22 @@ export class FakeSheetRange {
   getBackgrounds() {
     return this.__getBackgrounds()
   }
-
   /**
-   * getVerticalAlignments()  https://developers.google.com/apps-script/reference/spreadsheet/range#getverticalalignments
-   * Returns the vertical alignments of the cells in the range.
-   * @returns {string}
+   * getCell(row, column) Returns a given cell within a range.
+   * @param {number} row 1 based cell relative to range
+   * @param {number} column 1 based cell relative to range
+   * @return {FakeSheetRange}
    */
-  __getVerticalAlignments({ range = this } = {}) {
-    return this.__getRowDataAttribs({
-      props: 'effectiveFormat.verticalAlignment',
-      defaultValue: "bottom",
-      range
-    })
+  getCell(row, column) {
+    // let offset check args
+    return this.offset(row - 1, column - 1, 1, 1)
   }
-
-  /**
-   * getVerticalAlignment() https://developers.google.com/apps-script/reference/spreadsheet/range#getverticalalignment
-   * Returns the vertical alignment (top/middle/bottom) of the cell in the top-left corner of the range.
-   * @returns {string}
-   */
-  getVerticalAlignment() {
-    const values = this.__getVerticalAlignments({ range: this.__getTopLeft() })
-    return (values && values[0] && values[0][0]) || ''
+  getColumn() {
+    return this.__gridRange.startColumnIndex + 1
   }
-
-  /**
-   * getVerticalAlignments()  https://developers.google.com/apps-script/reference/spreadsheet/range#getverticalalignments
-   * Returns the vertical alignments of the cells in the range.
-   * @returns {string}
-   */
-  getVerticalAlignments() {
-    return this.__getVerticalAlignments()
+  getColumnIndex() {
+    return this.getColumn()
   }
-
-  /**
-   * __getHorizontalAlignment() https://developers.google.com/apps-script/reference/spreadsheet/range#gethorizontalalignment
-   * Returns the horizontal alignment of the text (left/center/right) of the cell in the top-left corner of the range.
-   * @returns {string}
-   */
-  __getHorizontalAlignments({ range = this } = {}) {
-    return this.__getRowDataAttribs({
-      props: 'effectiveFormat.horizontalAlignment',
-      defaultValue: "general",
-      range
-    })
-  }
-
-  /**
-   * getHorizontalAlignment() https://developers.google.com/apps-script/reference/spreadsheet/range#gethorizontalalignment
-   * Returns the horizontal alignment of the text (left/center/right) of the cell in the top-left corner of the range.
-   * @returns {string}
-   */
-  getHorizontalAlignment() {
-    const values = this.__getHorizontalAlignments({ range: this.__getTopLeft() })
-    return (values && values[0] && values[0][0]) || ''
-  }
-
-  /**
-   * getHorizontalAlignments()  https://developers.google.com/apps-script/reference/spreadsheet/range#gethorizontalalignments
-   * Returns the horizontal alignments of the cells in the range.
-   * @returns {string}
-   */
-  getHorizontalAlignments() {
-    return this.__getHorizontalAlignments()
-  }
-
-
-  /**
-   * getValues() https://developers.google.com/apps-script/reference/spreadsheet/range#getvalues
-   * Returns the rectangular grid of values for this range.
-   * @returns {*[][]}
-   */
-  getValues() {
-    return this.__getValues({ options: { valueRenderOption: 'UNFORMATTED_VALUE' } })
-  }
-
-  /**
-   * getValue() https://developers.google.com/apps-script/reference/spreadsheet/range#getvalue
-   * Returns the value of the top-left cell in the range. 
-   * @returns {*}
-   */
-  getValue() {
-    const values = this.__getValues({ range: this.__getTopLeft(), options: { valueRenderOption: 'UNFORMATTED_VALUE' } })
-    return values && values[0][0]
-  }
-
   /**
    * getDisplayValue() https://developers.google.com/apps-script/reference/spreadsheet/range#getdisplayvalue
    * The displayed value takes into account date, time and currency formatting
@@ -520,7 +279,12 @@ export class FakeSheetRange {
   getDisplayValues() {
     return this.__getValues({ options: { valueRenderOption: 'FORMATTED_VALUE' } })
   }
-
+  getEndColumn() {
+    return this.__gridRange.endColumnIndex + 1
+  }
+  getEndRow() {
+    return this.__gridRange.endRowIndex + 1
+  }
   /**
    * getFormula() https://developers.google.com/apps-script/reference/spreadsheet/range#getdisplayvalue
    * Returns the formulas (A1 notation) for the cells in the range. Entries in the 2D array are empty strings for cells with no formula.
@@ -538,17 +302,6 @@ export class FakeSheetRange {
    */
   getFormulas() {
     return this.__getValues({ options: { valueRenderOption: 'FORMULA' } })
-  }
-
-  /**
-   * getCell(row, column) Returns a given cell within a range.
-   * @param {number} row 1 based cell relative to range
-   * @param {number} column 1 based cell relative to range
-   * @return {FakeSheetRange}
-   */
-  getCell(row, column) {
-    // let offset check args
-    return this.offset(row - 1, column - 1, 1, 1)
   }
   /**
    * getGridId() https://developers.google.com/apps-script/reference/spreadsheet/range#getgridid
@@ -569,6 +322,84 @@ export class FakeSheetRange {
     return this.getNumRows()
   }
   /**
+   * getHorizontalAlignment() https://developers.google.com/apps-script/reference/spreadsheet/range#gethorizontalalignment
+   * Returns the horizontal alignment of the text (left/center/right) of the cell in the top-left corner of the range.
+   * @returns {string}
+   */
+  getHorizontalAlignment() {
+    const values = this.__getHorizontalAlignments({ range: this.__getTopLeft() })
+    return (values && values[0] && values[0][0]) || ''
+  }
+  /**
+   * getHorizontalAlignments()  https://developers.google.com/apps-script/reference/spreadsheet/range#gethorizontalalignments
+   * Returns the horizontal alignments of the cells in the range.
+   * @returns {string}
+   */
+  getHorizontalAlignments() {
+    return this.__getHorizontalAlignments()
+  }
+  getLastColumn() {
+    return this.__gridRange.endColumnIndex
+  }
+  getLastRow() {
+    return this.__gridRange.endRowIndex
+  }
+  getNumColumns() {
+    return this.__gridRange.endColumnIndex - this.__gridRange.startColumnIndex
+  }
+  getNumRows() {
+    return this.__gridRange.endRowIndex - this.__gridRange.startRowIndex
+  }
+  getRow() {
+    return this.__gridRange.startRowIndex + 1
+  }
+  // row and columnindex are probably now deprecated in apps script
+  // in any case, in gas they currently return the 1 based value, not the 0 based value as you'd expect
+  // so the same as the getrow and getcolumn
+  getRowIndex() {
+    return this.getRow()
+  }
+  getSheet() {
+    return this.__sheet
+  }
+  /**
+   * getValues() https://developers.google.com/apps-script/reference/spreadsheet/range#getvalues
+   * Returns the rectangular grid of values for this range.
+   * @returns {*[][]}
+   */
+  getValues() {
+    return this.__getValues({ options: { valueRenderOption: 'UNFORMATTED_VALUE' } })
+  }
+
+  /**
+   * getValue() https://developers.google.com/apps-script/reference/spreadsheet/range#getvalue
+   * Returns the value of the top-left cell in the range. 
+   * @returns {*}
+   */
+  getValue() {
+    const values = this.__getValues({ range: this.__getTopLeft(), options: { valueRenderOption: 'UNFORMATTED_VALUE' } })
+    return values && values[0][0]
+  }
+  /**
+   * getVerticalAlignment() https://developers.google.com/apps-script/reference/spreadsheet/range#getverticalalignment
+   * Returns the vertical alignment (top/middle/bottom) of the cell in the top-left corner of the range.
+   * @returns {string}
+   */
+  getVerticalAlignment() {
+    const values = this.__getVerticalAlignments({ range: this.__getTopLeft() })
+    return (values && values[0] && values[0][0]) || ''
+  }
+
+  /**
+   * getVerticalAlignments()  https://developers.google.com/apps-script/reference/spreadsheet/range#getverticalalignments
+   * Returns the vertical alignments of the cells in the range.
+   * @returns {string}
+   */
+  getVerticalAlignments() {
+    return this.__getVerticalAlignments()
+  }
+
+  /**
    * getWidth() https://developers.google.com/apps-script/reference/spreadsheet/range#getwidth
    * appears to be the same as getNumColumns()
    * Returns the width of the range in columns.
@@ -576,37 +407,6 @@ export class FakeSheetRange {
    */
   getWidth() {
     return this.getNumColumns()
-  }
-  /** 
-   * setValues(values) https://developers.google.com/apps-script/reference/spreadsheet/range#setvaluesvalues
-   * @param {object[][]} A two-dimensional array of values.
-   * @return {FakeSheetRange} this
-   */
-  setValues(values) {
-    return this.__setValues({ values })
-  }
-  /** 
-   * setValue(value) https://developers.google.com/apps-script/reference/spreadsheet/range#setvaluesvalues
-   * @param {object} A value
-   * @return {FakeSheetRange} this
-   */
-  setValue(value) {
-    return this.__setValues({ values: [[value]], single: true })
-  }
-
-  __setValues({ values, single = false, options = { valueInputOption: "RAW" } }) {
-
-    const range = single ? this.__getRangeWithSheet(this.__getTopLeft()) : this.__getWithSheet()
-    const request = {
-      ...options,
-      data: [{
-        majorDimension: "ROWS",
-        range,
-        values
-      }]
-    }
-    Sheets.Spreadsheets.Values.batchUpdate(request, this.__sheet.getParent().getId())
-    return this
   }
 
   /**
@@ -641,6 +441,194 @@ export class FakeSheetRange {
 
     return newFakeSheetRange(gr, this.__sheet)
 
+  }
+  /**
+   * Sets the background color of all cells in the range in CSS notation (such as '#ffffff' or 'white').
+   * setBackground(color) https://developers.google.com/apps-script/reference/spreadsheet/range#setbackgroundcolor
+   * @param {string} color A color code in CSS notation (such as '#ffffff' or 'white'); a null value resets the color.
+   * @return {FakeSheetRange} self
+   */
+  setBackground(color) {
+    return this.setBackgrounds(this.__fillRange({ value: color }))
+  }
+
+  /**
+   * setBackgroundRGB(red, green, blue) https://developers.google.com/apps-script/reference/spreadsheet/range#setbackgroundrgbred,-green,-blue
+   * @returns {FakeSheetRange} self
+   */
+  setBackgroundRGB(red, green, blue) {
+    const outside = (n, l, h) => n < l || n > h
+    const outsideInt = (n, l, h) => outside(n, l, h) || !is.integer(n)
+
+    const { nargs, matchThrow } = signatureArgs(arguments, "setBackgroundRGB")
+    if (nargs !== 3) matchThrow()
+    if (outsideInt(red, 0, 255) || outsideInt(green, 0, 255) || outsideInt(blue, 0, 255)) matchThrow()
+    return this.setBackground(rgbToHex(red / 255, green / 255, blue / 255))
+
+  }
+
+  /**
+   * Sets the background color of all cells in the range in CSS notation (such as '#ffffff' or 'white').
+   * setBackgrounds(color) https://developers.google.com/apps-script/reference/spreadsheet/range#setbackgroundscolor
+   * @param {string[][]} colors A two-dimensional array of colors in CSS notation (such as '#ffffff' or 'white'); null values reset the color.
+   * @return {FakeSheetRange} self
+   */
+  setBackgrounds(colors) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "range.setBackgrounds")
+    if (nargs !==1) matchThrow()
+    if (!Array.isArray(colors)) matchThrow()
+    if (colors.length && !Array.isArray(colors[0])) matchThrow()
+
+    const rows = colors.map(row => ({
+      values: row.map(c => ({
+        userEnteredFormat: {
+          backgroundColor: hexToRgb(c)
+        }
+      }))
+    }))
+    const fields = 'userEnteredFormat.backgroundColor'
+    const request = this.__getRequestUc(rows, fields)
+    Sheets.Spreadsheets.batchUpdate({ requests: [request] }, this.__sheet.getParent().getId(), { ss: true })
+    return this
+  }
+
+  /** 
+   * setValue(value) https://developers.google.com/apps-script/reference/spreadsheet/range#setvaluesvalues
+   * @param {object} A value
+   * @return {FakeSheetRange} this
+   */
+  setValue(value) {
+    return this.__setValues({ values: [[value]], single: true })
+  }
+
+  /** 
+   * setValues(values) https://developers.google.com/apps-script/reference/spreadsheet/range#setvaluesvalues
+   * @param {object[][]} A two-dimensional array of values.
+   * @return {FakeSheetRange} this
+   */
+  setValues(values) {
+    return this.__setValues({ values })
+  }
+
+  toString() {
+    return 'Range'
+  }
+
+  //-- private helpers
+  __fillRange({ range = this, value }) {
+    return Array.from({ length: range.getNumRows() }).fill(Array.from({ length: range.getNumColumns() }).fill(value))
+  }
+
+  __getBackgrounds({ range = this } = {}) {
+
+    const rows = this.__getRowDataAttribs({
+      range,
+      props: 'effectiveFormat.backgroundColor',
+      defaultValue: { red: 1, green: 1, blue: 1 }
+    })
+
+    const rgbs = rows.map(r => {
+      // default background is white
+      return r.map(f => {
+        return is.null(f) ? WHITE : rgbToHex(f.red, f.green, f.blue)
+      })
+    })
+    return rgbs
+  }
+
+  __getHorizontalAlignments({ range = this } = {}) {
+    return this.__getRowDataAttribs({
+      props: 'effectiveFormat.horizontalAlignment',
+      defaultValue: "general",
+      range
+    })
+  }
+
+  __getRangeWithSheet(range) {
+    return `${range.__sheet.getName()}!${this.getA1Notation()}`
+  }
+
+  __getRowDataAttribs({ range = this, props, defaultValue }) {
+
+    // get the collection of rows with data for the required properties
+    const { sheets } = Sheets.Spreadsheets.get(this.__sheet.getParent().getId(), {
+      ranges: [this.__getRangeWithSheet(range)],
+      fields: `sheets.data.rowData.values.${props}`
+    })
+
+    const { rowData } = sheets[0]?.data[0]
+
+    // then we have to shape some default values
+    if (!rowData) {
+      return Array.from({ length: range.getNumRows() }).fill(Array.from({ length: range.getNumColumns() }).fill(defaultValue))
+    }
+
+    // pluck each cell
+    // extract the required props to an array
+    const plucker = getPlucker(props, defaultValue)
+    return rowData.map(row => row.values.map(plucker))
+  }
+
+  /**
+   * for use with updateCells
+   * @returns {object}
+   */
+  __getRequestUc = (rows, fields) => {
+    return {
+      updateCells: {
+        start: this.__getStartUc(),
+        rows,
+        fields
+      }
+    }
+  }
+
+  /**
+   * for use with updateCells
+   * @returns {object}
+   */
+  __getStartUc = () => {
+    const gridRange = this.__gridRange
+    const start = {
+      sheetId: gridRange.sheetId,
+      rowIndex: gridRange.startRowIndex,
+      columnIndex: gridRange.startColumnIndex
+    }
+    return start
+  }
+
+  __getTopLeft() {
+    return this.offset(0, 0, 1, 1)
+  }
+  __getValues({ range = this, options } = {}) {
+    const { values } = Sheets.Spreadsheets.Values.get(this.__sheet.getParent().getId(), this.__getRangeWithSheet(range), options)
+    return values
+  }
+
+  __getVerticalAlignments({ range = this } = {}) {
+    return this.__getRowDataAttribs({
+      props: 'effectiveFormat.verticalAlignment',
+      defaultValue: "bottom",
+      range
+    })
+  }
+  __getWithSheet() {
+    return this.__getRangeWithSheet(this)
+  }
+
+  __setValues({ values, single = false, options = { valueInputOption: "RAW" } }) {
+
+    const range = single ? this.__getRangeWithSheet(this.__getTopLeft()) : this.__getWithSheet()
+    const request = {
+      ...options,
+      data: [{
+        majorDimension: "ROWS",
+        range,
+        values
+      }]
+    }
+    Sheets.Spreadsheets.Values.batchUpdate(request, this.__sheet.getParent().getId())
+    return this
   }
 
 }

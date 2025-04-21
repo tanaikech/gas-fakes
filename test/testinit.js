@@ -30,7 +30,7 @@ export const initTests = () => {
   // these are fixtures to test
   // using process.env creates strings, convert to appropriate types as needed
   const fixes = {
-    TEST_AIRPORTS: process.env.TEST_AIRPORTS,
+    TEST_AIRPORTS_ID: process.env.TEST_AIRPORTS_ID,
     TEST_AIRPORTS_NAME: process.env.TEST_AIRPORTS_NAME,
     MIN_ROOT_PDFS: Number(process.env.MIN_ROOT_PDFS),
     MIN_PDFS: Number(process.env.MIN_PDFS),
@@ -62,16 +62,19 @@ export const initTests = () => {
     PDF_ID: process.env.PDF_ID,
     CLEAN: process.env.CLEAN === 'true'
   }
-  Reflect.ownKeys (fixes).forEach(k => {
-    if (!Reflect.has(process.env,k) && k!=='PREFIX') throw new Error (`process.env.${k} value is not set`)
-  })
-  
+  // double check all is defined in process.env if on node
+  if (!unitExports.CodeLocator.isGas) {
+    Reflect.ownKeys(fixes).forEach(k => {
+      if (!Reflect.has(process.env, k) && k !== 'PREFIX') throw new Error(`process.env.${k} value is not set`)
+    })
+  }
+
   return {
     unit,
     fixes,
     // because we want to automatically run any functions in this list if in Node
-    runnables: ScriptApp.isFake ? process.argv.slice(2)  : []
+    runnables: ScriptApp.isFake ? process.argv.slice(2) : []
   }
-  
+
 }
 

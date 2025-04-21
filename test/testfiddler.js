@@ -11,6 +11,9 @@ import { initTests } from './testinit.js'
 import { getSheetsPerformance } from '../src/support/sheetscache.js';
 import { Fiddler } from '../gaslibtests/bmfiddler/Code.js'
 
+const hexify = (c) => {
+  return '#' +  c.toString(16).padStart(6, '0')
+};
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testFiddler = (pack) => {
@@ -24,7 +27,7 @@ export const testFiddler = (pack) => {
 
   const getCopy = () => {
     if (!copyAirports) {
-      airports = SpreadsheetApp.openById(fixes.TEST_AIRPORTS)
+      airports = SpreadsheetApp.openById(fixes.TEST_AIRPORTS_ID)
       copyAirports = SpreadsheetApp.create(fixes.PREFIX + airports.getName())
       const copySheet = copyAirports.insertSheet(fixes.TEST_AIRPORTS_NAME)
       const sheet = airports.getSheetByName(fixes.TEST_AIRPORTS_NAME)
@@ -38,14 +41,48 @@ export const testFiddler = (pack) => {
   }
 
 
-  unit.section ("fiddler coloring", t=> {
-    getCopy ()
-    const coloringFiddler = new Fiddler(copyFiddler.getSheet().getParent().insertSheet("coloring sheet")).setValues(fiddler.getValues())
-    const baseColor = 0xffffff
-    const countries = coloringFiddler.getUniqueValues("iso_country")
-    const colorMap = new Map (countries.map ((f,i)=>[f,baseColor-(32*i)]))
-    const backgrounds = coloringFiddler.getValues().map(row=>colorMap.get(row))
-    coloringFiddler.setColumnFormat({backgrounds}).dumpValues()
+  unit.section("fiddler coloring", t => {
+    getCopy()
+    const coloringFiddler = new Fiddler(copyFiddler.getSheet().getParent().insertSheet("coloring sheet"))
+      .setData(fiddler.getData().sort((a, b) => a.iso_country.localeCompare(b.iso_country)))
+
+    const baseColor = 0xf0f0f1
+
+    // get all the unique countries mentioned
+    const countries = coloringFiddler.getUniqueValues("iso_country").sort()
+    
+    // generate a color for each country
+    const colorMap = new Map(countries.map((f, i) => [f, hexify(Math.abs(baseColor - (512 * i)) % 0xffffff )]))
+    // need to transpose to make rowwise
+    const backgrounds = coloringFiddler.getData().map(row => colorMap.get(row.iso_country)).reduce((p, c) => {
+      p.push([c])
+      return p
+    }, [])
+
+    // set all columns to some background color
+    const back = '#ecafc1'
+    coloringFiddler.setColumnFormat({ backgrounds: back })
+
+    // set the iso column, region, municipality format based on the country code
+    const tcolumns = ['iso_country', 'iso_region', 'municipality']
+    const rangeList = coloringFiddler.getRangeList(tcolumns)
+
+    // dump all that
+    coloringFiddler.dumpValues()
+
+    // set the backgrounds of each range according to the country
+    // rangelists dont have a setbackgrounds function so we have to do each range separately
+    rangeList.getRanges().forEach(r => r.setBackgrounds(backgrounds))
+    rangeList.getRanges().forEach(r=>t.deepEqual(r.getBackgrounds(), backgrounds))
+
+    // now check that all is good using ss methods and a new fiddler
+    const checkFiddler = new Fiddler(coloringFiddler.getSheet())
+    const checkData = checkFiddler.getData()
+    const checkRangeList = checkFiddler.getRangeList(tcolumns)
+    checkRangeList.getRanges().forEach(r => t.true(r.getBackgrounds().every((c, i) => {
+      return c[0] === colorMap.get(checkData[i].iso_country)
+    })))
+
 
   })
 
@@ -53,14 +90,14 @@ export const testFiddler = (pack) => {
     getCopy()
     t.deepEqual(fiddler.getValues(), copyFiddler.getValues(), 'copy was successful')
 
-    const playFiddler = new Fiddler().setData([{a:1}]);
-    t.false (playFiddler.isDirty(), 'fingerprint tests')
-    t.is (playFiddler.getFingerprint(), playFiddler.getInitialFingerprint())
+    const playFiddler = new Fiddler().setData([{ a: 1 }]);
+    t.false(playFiddler.isDirty(), 'fingerprint tests')
+    t.is(playFiddler.getFingerprint(), playFiddler.getInitialFingerprint())
 
-    const playFiddler2 = new Fiddler().setValues (copyFiddler.getValues())
-    t.false (playFiddler2.isDirty(), 'clean fingerprint tests')
-    t.is (playFiddler2.getFingerprint(), playFiddler2.getInitialFingerprint())
-    t.is (playFiddler2.getFingerprint(), copyFiddler.getFingerprint())
+    const playFiddler2 = new Fiddler().setValues(copyFiddler.getValues())
+    t.false(playFiddler2.isDirty(), 'clean fingerprint tests')
+    t.is(playFiddler2.getFingerprint(), playFiddler2.getInitialFingerprint())
+    t.is(playFiddler2.getFingerprint(), copyFiddler.getFingerprint())
 
     playFiddler2.setHasHeaders(false)
     t.true(playFiddler2.isDirty(), 'dirty with headers removed')

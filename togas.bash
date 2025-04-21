@@ -34,7 +34,7 @@ for var in $(grep -oP 'process\.env\.\K\w+' "${TARGET}/test/testinit.js"); do
 
     # Escape characters for sed, e.g. \n becomes \\n, & becomes \&
     value=$(printf '%q' "$value")
-    
+
     # Check if the value contains non-numeric characters (treat as a string)
     if [[ "$value" =~ [^0-9] ]]; then
         value="\"$value\""  # Add double quotes

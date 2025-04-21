@@ -35,11 +35,11 @@ export class FakeSheetRangeList {
     const props = [
       'clearDataValidations',
       'setFontWeight',
-      'setBackground',
+ 
       'activate',
       'breakApart',
       'setFormulaR1C1',
-      'setBackgroundRGB',
+ 
       'setBorder',
       'setFontColor',
       'setFontLine',
@@ -88,5 +88,16 @@ export class FakeSheetRangeList {
   getRanges() {
     return this.__ranges
   }
+
+  setBackground (color) {
+    this.__ranges.forEach(r => r.setBackground(color))
+    return this
+  }
+ 
+  setBackgroundRGB (red, green, blue) {
+    this.__ranges.forEach(r => r.setBackgroundRGB(red, green, blue))
+    return this
+  }
+
 
 }
