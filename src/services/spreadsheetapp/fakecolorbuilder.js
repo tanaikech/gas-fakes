@@ -1,3 +1,8 @@
+import { Proxies } from '../../support/proxies.js'
+import { newFakeColor } from './fakecolor.js'
+import { newFakeRgbColor } from './fakergbcolor.js'
+import { FakeColorBase } from './fakecolorbase.js'
+import { newFakeThemeColor } from './fakethemecolor.js'
 /**
  * @file
  * @imports ../typedefs.js
@@ -8,41 +13,54 @@
  * @returns {FakeColorBuilder}
  */
 export const newFakeColorBuilder = (...args) => {
-  return Proxies.guard(new FakeColor(...args))
+  return Proxies.guard(new FakeColorBuilder(...args))
 }
 
 
-class FakeColorBuilder {
-  // this is color type UNSUPPORTED until built
+class FakeColorBuilder extends FakeColorBase {
   constructor() {
-    this.__type = {
-      toString() {
-        return 'UNSUPPORTED'
-      }
-    }
+    super()
   }
+
   asRgbColor() {
-    throw new Error('Object is not of type RgbColor.')
+    this.__checkType('RGB', 'RgbColor')
+    return newFakeRgbColor(this.__color)
   }
+
   asThemeColor() {
-    throw new Error ('Object is not of type ThemeColor.')
+    this.__checkType('THEME', 'ThemeColor')
+    return newFakeThemeColor  (this.__themeColorType)
   }
-  getColorType() {
-    return this.__type
+
+  /**
+   * setRgbColor(cssString) https://developers.google.com/apps-script/reference/spreadsheet/color-builder#setrgbcolorcssstring
+   * Sets as RGB color
+   * @param {string} cssString The RGB color in CSS notation (such as '#ffffff').
+   * @returns {FakeColorBuilder} self
+   */
+  setRgbColor(cssString) {
+    this.__color = cssString
+    this.__type = 'RGB'
+    return this
   }
-  setRgbColor(color) {
-    this.__color = color
-    this.__colorType = 'RGB'
+  
+  /**
+   * setThemeColor(themeColorType) https://developers.google.com/apps-script/reference/spreadsheet/color-builder#setthemecolorthemecolortype
+   * Sets as theme color.
+   * @param {ThemeColorType} The theme color type.
+   * @returns {FakeColorBuilder} self
+   */
+  setThemeColor(themeColorType) {
+    this.__themeColorType = themeColorType
+    this.__type = 'THEME'
     return this
   }
 
-  setThemeColor(color) {
-    this.__color = color
-    this.__colorType = 'THEME'
-    return this
-  }
   build() {
     return newFakeColor(this)
+  }
+  toString() {
+    return 'ColorBuilder'
   }
 
 

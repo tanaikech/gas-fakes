@@ -171,7 +171,28 @@ export const mergeParamStrings = (...args) => {
   }).sort().join(",")
 }
 
-const capital = (str) => str.substring(0, 1).toUpperCase() + str.substring(1)
+const capital = (str) => str.substring(0, 1).toLowerCase() + str.substring(1)
+
+const validateHex = (cssString) => {
+  if (!is.nonEmptyString(cssString)) return null
+  const hex = cssString.trim().toLowerCase()
+  if (hex.length !== 7) return null
+  if (hex.substring(0, 1)  !== '#') return null
+  const hexValue = hex.substring(1)
+  if (!hexValue.match(/^[0-9a-f]{6}$/)) return null
+  const rgb = hexToRgb(hex)
+
+  return {
+    cssString,
+    hexValue,
+    hex,
+    ...rgb,
+    r: Math.round(rgb.red * 255),
+    g: Math.round(rgb.green * 255),
+    b: Math.round(rgb.blue * 255),
+  }
+
+}
 
 const rgbToHex = (r, g, b) => {
   const toHex = (c) => {
@@ -229,7 +250,8 @@ export const Utils = {
   is,
   signatureArgs,
   rgbToHex,
-  getPlucker
+  getPlucker,
+  validateHex
 }
 
 

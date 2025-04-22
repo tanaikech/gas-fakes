@@ -1,3 +1,5 @@
+import { Proxies } from '../../support/proxies.js'
+import { newNummery } from '../../support/nummery.js'
 /**
  * @file
  * @imports ../typedefs.js
@@ -7,30 +9,33 @@
  * @param  {...any} args 
  * @returns {FakeThemeColor}
  */
-export const FakeThemeColor = (...args) => {
+export const newFakeThemeColor = (...args) => {
   return Proxies.guard(new FakeThemeColor(...args))
 }
 
 
 class FakeThemeColor {
-  constructor(color) {
-    this.__color = color
+
+  constructor(themeColorType) {
+    this.__type = 'THEME'
+    this.__themeColorType = themeColorType
   }
+
+  toString() {
+    return 'ThemeColor'
+  }
+
   /**
-   * getColorType() https://developers.google.com/apps-script/reference/spreadsheet/theme-color#getcolortype
+   * getColorType() https://developers.google.com/apps-script/reference/base/rgb-color.html#getcolortype
    * Get the type of this color.
    * @returns {ColorType}
    */
   getColorType() {
-    return this.__color
+    return this.__type
   }
-  /**
-   * getThemeColorType() https://developers.google.com/apps-script/reference/spreadsheet/theme-color#getthemecolortype
-   * Get the theme color type of this color.
-   * @returns {ThemeColorType}
-   */
+
   getThemeColorType() {
-    return this.__color
+    return this.__themeColorType
   }
 
 }

@@ -1,13 +1,18 @@
+import { newNummery } from '../../support/nummery.js'
+import { Proxies } from '../../support/proxies.js'
+import { Utils } from '../../support/utils.js'
+const { validateHex } = Utils
+
 /**
  * @file
  * @imports ../typedefs.js
  */
 /**
- * create a new FakeColor instance
+ * create a new FakeRgbColor instance
  * @param  {...any} args 
  * @returns {FakeRgbColor}
  */
-export const FakeRgbColor = (...args) => {
+export const newFakeRgbColor = (...args) => {
   return Proxies.guard(new FakeRgbColor(...args))
 }
 
@@ -15,6 +20,20 @@ export const FakeRgbColor = (...args) => {
 class FakeRgbColor {
   constructor(color) {
     this.__color = color
+    this.__type = newNummery('RGB')
+  }
+  toString() {
+    return 'RgbColor'
+  }
+
+  __checkHex() {
+    const v = validateHex(this.__color)
+    if (!v) throw this.__invalidArg(this.__color)
+    return v
+  }
+
+  __invalidArg(value) {
+    throw new Error(`Invalid argument ${value}`)
   }
   /**
    * asHexString() https://developers.google.com/apps-script/reference/base/rgb-color.html#ashexstring
@@ -22,15 +41,16 @@ class FakeRgbColor {
    * @returns {string}
    */
   asHexString() {
-    return this.__color
+    return this.__checkHex().hex
   }
+
   /**
    * getBlue() https://developers.google.com/apps-script/reference/base/rgb-color.html#getblue
    * The blue channel of this color, as a number from 0 to 255.
    * @returns {number}
    */
   getBlue() {
-    return this.__color
+    return this.__checkHex().b
   }
   /**
    * getColorType() https://developers.google.com/apps-script/reference/base/rgb-color.html#getcolortype
@@ -38,7 +58,7 @@ class FakeRgbColor {
    * @returns {ColorType}
    */
   getColorType() {
-    return this.__color
+    return this.__type
   }
   /**
    * getGreen() https://developers.google.com/apps-script/reference/base/rgb-color.html#getgreen
@@ -46,7 +66,7 @@ class FakeRgbColor {
    * @returns {number}
    */
   getGreen() {
-    return this.__color
+    return this.__checkHex().g
   }
   /**
    * getRed() https://developers.google.com/apps-script/reference/base/rgb-color.html#getred
@@ -54,7 +74,7 @@ class FakeRgbColor {
    * @returns {number}
    */
   getRed() {
-    return this.__color
+    return this.__checkHex().r
   }
 }
 

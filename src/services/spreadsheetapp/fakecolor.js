@@ -1,30 +1,42 @@
+import { Proxies } from '../../support/proxies.js'
+import { FakeColorBase } from './fakecolorbase.js'
+import { newFakeRgbColor } from './fakergbcolor.js'
+import { newFakeThemeColor } from './fakethemecolor.js'
+
 /**
  * @file
  * @imports ../typedefs.js
  */
+
 /**
  * create a new FakeColor instance
  * @param  {...any} args 
  * @returns {FakeColor}
  */
-export const FakeColor = (...args) => {
+export const newFakeColor = (...args) => {
   return Proxies.guard(new FakeColor(...args))
 }
 
 
-class FakeColor {
+class FakeColor extends FakeColorBase {
   constructor(builder) {
-    this.__builder = builder
+    super()
+    this.__type = builder.__type
+    this.__color = builder.__color
+    this.__themeColorType = builder.__themeColorType
   }
   asRgbColor() {
-    return this.__builder.__color
+    this.__checkType('RGB', 'RgbColor')
+    return newFakeRgbColor(this.__color)
   }
   asThemeColor() {
-    return this.__builder.__color
+    this.__checkType('THEME', 'ThemeColor')
+    return newFakeThemeColor(this.__themeColorType)
   }
-  getColorType() {
-    return this.__builder.__colorType
+  toString() {
+    return 'Color'
+  }
 
-  }
+
 }
 
