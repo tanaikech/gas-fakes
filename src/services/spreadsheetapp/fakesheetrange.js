@@ -91,9 +91,9 @@ export class FakeSheetRange {
 
       'setBorder',
       'activateAsCurrentCell',
-      'setFontColor',
+
       'setFontColorObject',
-      'setFontColors',
+
       'setFontFamilies',
       'setFontLine',
       'setFontSizes',
@@ -475,7 +475,7 @@ export class FakeSheetRange {
    */
   setBackgrounds(colors) {
     const { nargs, matchThrow } = signatureArgs(arguments, "range.setBackgrounds")
-    if (nargs !==1) matchThrow()
+    if (nargs !== 1) matchThrow()
     if (!Array.isArray(colors)) matchThrow()
     if (colors.length && !Array.isArray(colors[0])) matchThrow()
 
@@ -487,6 +487,50 @@ export class FakeSheetRange {
       }))
     }))
     const fields = 'userEnteredFormat.backgroundColor'
+    const request = this.__getRequestUc(rows, fields)
+    Sheets.Spreadsheets.batchUpdate({ requests: [request] }, this.__sheet.getParent().getId(), { ss: true })
+    return this
+  }
+
+
+  /**
+   * Sets the font color in CSS notation (such as '#ffffff' or 'white')
+   * setFontColor(color) https://developers.google.com/apps-script/reference/spreadsheet/range#setfontcolorcolor
+   * @param {string} color A color code in CSS notation (such as '#ffffff' or 'white'); a null value resets the color.
+   * @return {FakeSheetRange} self
+   */
+  setFontColor(color) {
+    return this.setFontColors(this.__fillRange({ value: color }))
+  }
+
+  /**
+   * Sets a rectangular grid of font colors (must match dimensions of this range). The colors are in CSS notation (such as '#ffffff' or 'white').
+   * setFontColors(color) https://developers.google.com/apps-script/reference/spreadsheet/range#setfontcolorscolors
+   * @param {string[][]} colors A two-dimensional array of colors in CSS notation (such as '#ffffff' or 'white'); null values reset the color.
+   * @return {FakeSheetRange} self
+   */
+  setFontColors(colors) {
+
+    const { nargs, matchThrow } = signatureArgs(arguments, "range.setFontColors")
+    if (nargs !== 1) matchThrow()
+    if (!Array.isArray(colors)) matchThrow()
+    if (colors.length && !Array.isArray(colors[0])) matchThrow()
+
+
+    const rows = colors.map(row => ({
+      values: row.map(c => {
+        return {
+          userEnteredFormat: {
+            textFormat: {
+              foregroundColor: hexToRgb(c)
+            }
+          }
+        }
+      })
+    }))
+
+
+    const fields = 'userEnteredFormat.textFormat.foregroundColor'
     const request = this.__getRequestUc(rows, fields)
     Sheets.Spreadsheets.batchUpdate({ requests: [request] }, this.__sheet.getParent().getId(), { ss: true })
     return this
