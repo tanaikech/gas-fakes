@@ -9,7 +9,7 @@ import '../main.js'
 
 import { initTests } from './testinit.js'
 import { getSheetsPerformance } from '../src/support/sheetscache.js';
-import { Fiddler } from '../gaslibtests/bmfiddler/Code.js'
+import { Fiddler } from '@mcpher/fiddler'
 
 const hexify = (c) => {
   return '#' +  c.toString(16).padStart(6, '0')
