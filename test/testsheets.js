@@ -28,13 +28,135 @@ const rgbToHex = ({ red: r, green: g, blue: b }) => {
 }
 const getRandomRgb = () => ({ red: Math.random(), green: Math.random(), blue: Math.random() })
 const getRandomHex = () => rgbToHex(getRandomRgb())
-
+const getStuff = (range) => Array.from({ length: range.getNumRows() }, _ => Array.from({ length: range.getNumColumns() }, () => Utilities.getUuid()))
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testSheets = (pack) => {
   const { unit, fixes } = pack || initTests()
   const toTrash = []
 
+
+
+
+  unit.section("color objects and builders", t => {
+
+    const builder = SpreadsheetApp.newColor()
+    t.is(builder.toString(), "ColorBuilder")
+    t.is(t.threw(() => builder.asThemeColor()).message, "Object is not of type ThemeColor.")
+    t.is(t.threw(() => builder.asRgbColor()).message, "Object is not of type RgbColor.")
+    t.is(builder.getColorType().toString(), "UNSUPPORTED")
+    const rgbColor = getRandomHex()
+
+    builder.setRgbColor(rgbColor)
+    t.is(t.threw(() => builder.asThemeColor()).message, "Object is not of type ThemeColor.")
+    t.is(builder.getColorType().toString(), "RGB")
+    t.is(builder.asRgbColor().toString(), "RgbColor")
+    t.is(builder.asRgbColor().asHexString(), rgbColor)
+    t.is(builder.asRgbColor().getRed(), parseInt(rgbColor.substring(1, 3), 16))
+
+    const builtRgb = builder.build()
+    t.is(builtRgb.toString(), "Color")
+    t.is(builtRgb.getColorType().toString(), "RGB")
+    t.is(builtRgb.asRgbColor().toString(), "RgbColor")
+    t.is(builtRgb.asRgbColor().getGreen(), parseInt(rgbColor.substring(3, 5), 16))
+    t.is(builtRgb.asRgbColor().getBlue(), parseInt(rgbColor.substring(5, 7), 16))
+    t.is(builtRgb.asRgbColor().getRed(), parseInt(rgbColor.substring(1, 3), 16))
+    t.is(t.threw(() => builtRgb.asThemeColor()).message, "Object is not of type ThemeColor.")
+
+    const themeBuilder = SpreadsheetApp.newColor()
+    themeBuilder.setThemeColor(SpreadsheetApp.ThemeColorType.ACCENT1)
+    t.is(themeBuilder.getColorType().toString(), "THEME")
+    t.is(themeBuilder.asThemeColor().getColorType().toString(), "THEME")
+    t.is(themeBuilder.asThemeColor().getThemeColorType().toString(), "ACCENT1")
+    t.is(t.threw(() => themeBuilder.asRgbColor()).message, "Object is not of type RgbColor.")
+
+    const builtTheme = themeBuilder.build()
+    t.is(builtTheme.toString(), "Color")
+    t.is(builtTheme.getColorType().toString(), "THEME")
+    t.is(builtTheme.asThemeColor().getColorType().toString(), "THEME")
+    t.is(t.threw(() => builtTheme.asRgbColor()).message, "Object is not of type RgbColor.")
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+  })
+
+  unit.section("setting and getting color objects}", t => {
+    const aname = fixes.PREFIX + "ob-sheet"
+    const ss = SpreadsheetApp.create(aname)
+    const sheets = ss.getSheets()
+    const [sheet] = sheets
+    const range = sheet.getRange("c6:i12")
+
+    // so we can see the colors better if necessary add some random values
+    const stuff = getStuff(range)
+    range.setValues(stuff)
+    t.deepEqual(range.getValues(), stuff)
+
+    const cts = [
+      "TEXT",
+      "BACKGROUND",
+      "ACCENT1",
+      "ACCENT2",
+      "ACCENT3",
+      "ACCENT4",
+      "ACCENT5",
+      "ACCENT6",
+      "LINK"
+    ]
+
+    const colorObjects = Array.from({
+      length: range.getNumRows()
+    },
+      _ => Array.from({
+        length: range.getNumColumns()
+      }, (_, i) => SpreadsheetApp.newColor().setThemeColor(SpreadsheetApp.ThemeColorType[cts[i % cts.length]]).build()))
+
+    t.true(colorObjects.flat().every(f => f.asThemeColor().getColorType().toString() === "THEME"))
+    t.true(colorObjects.flat().every(f => f.getColorType().toString() === "THEME"))
+
+    range.setBackgroundObjects(colorObjects)
+
+    // color objects can be rgb too
+    const rgbObjects =  Array.from({
+      length: range.getNumRows()
+    },
+      _ => Array.from({
+        length: range.getNumColumns()
+      }, (_, i) => SpreadsheetApp.newColor().setRgbColor(getRandomHex()).build()))
+
+    const rgbRange = range.offset (range.getNumRows()+1,0)
+    rgbRange.setBackgroundObjects(rgbObjects)
+
+    // and they can be mixed
+    const mixedRange = rgbRange.offset (rgbRange.getNumRows()+1,0)
+    const half = Math.floor(mixedRange.getNumRows()/2)
+    const mixed = colorObjects.slice (0,half).concat(rgbObjects.slice (0,mixedRange.getNumRows()-half))
+    mixedRange.setBackgroundObjects(mixed)
+
+    const singleColor = getRandomHex ()
+    const singleColorObj = SpreadsheetApp.newColor().setRgbColor(singleColor).build()
+    const singleRange = mixedRange.offset (mixedRange.getNumRows()+1,0)
+    singleRange.setBackgroundObject(singleColorObj)
+    const back1 = singleRange.getBackgrounds()
+    t.true (back1.flat().every(f => f === singleColor))
+
+    const singleRgbRange = singleRange.offset (singleRange.getNumRows()+1,0)
+    const singleColorRgbObj = SpreadsheetApp.newColor().setRgbColor(singleColor).build()
+    singleRgbRange.setBackgroundObject(singleColorRgbObj)
+    const back2 = singleRgbRange.getBackgrounds()
+    t.true (back2.flat().every(f => f === singleColor))
+
+    t.deepEqual(back1, back2)
+
+
+
+
+    
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+    if (fixes.CLEAN) {
+      toTrash.push(DriveApp.getFileById(ss.getId()))
+    }
+
+  })
 
   unit.section("cell formatting options", t => {
 
@@ -67,7 +189,7 @@ export const testSheets = (pack) => {
     range.setBackgroundRGB(...color255)
     t.is(range.getBackground(), rgbToHex(colorRgb))
 
-    // some random colors
+    // some random colorsas
     const colors = Array.from({
       length: range.getNumRows()
     }, () => Array.from({ length: range.getNumColumns() }, () => getRandomHex()))
@@ -83,8 +205,8 @@ export const testSheets = (pack) => {
     range.setFontColors(fontColors)
     // TODO getFontColors is deprec - how to equivalent
 
-    range.setFontColor (getRandomHex())
-   
+    range.setFontColor(getRandomHex())
+
     // now with rangelists
     const range2 = range.offset(3, 3, 2, 2)
     const rangeList = range.getSheet().getRangeList([range, range2].map(r => r.getA1Notation()))
@@ -120,46 +242,7 @@ export const testSheets = (pack) => {
 
   })
 
-  unit.section("color objects", t=> {
-    
-    const builder = SpreadsheetApp.newColor()
-    t.is (builder.toString(), "ColorBuilder")
-    t.is (t.threw (()=>builder.asThemeColor()).message, "Object is not of type ThemeColor.")
-    t.is (t.threw (()=>builder.asRgbColor()).message, "Object is not of type RgbColor.")
-    t.is (builder.getColorType().toString(), "UNSUPPORTED")
-    const rgbColor = getRandomHex()
 
-    builder.setRgbColor(rgbColor)
-    t.is (t.threw (()=>builder.asThemeColor()).message, "Object is not of type ThemeColor.")
-    t.is (builder.getColorType().toString(), "RGB")
-    t.is (builder.asRgbColor().toString(), "RgbColor")
-    t.is (builder.asRgbColor().asHexString(), rgbColor)
-    t.is (builder.asRgbColor().getRed(), parseInt(rgbColor.substring(1, 3),16))
-
-    const builtRgb = builder.build()
-    t.is(builtRgb.toString(), "Color")
-    t.is (builtRgb.getColorType().toString(), "RGB")  
-    t.is(builtRgb.asRgbColor().toString(), "RgbColor")
-    t.is (builtRgb.asRgbColor().getGreen(), parseInt(rgbColor.substring(3, 5),16))
-    t.is (builtRgb.asRgbColor().getBlue(), parseInt(rgbColor.substring(5, 7),16))
-    t.is (builtRgb.asRgbColor().getRed(), parseInt(rgbColor.substring(1, 3),16))
-    t.is (t.threw (()=>builtRgb.asThemeColor()).message, "Object is not of type ThemeColor.")
-
-    const themeBuilder = SpreadsheetApp.newColor()
-    themeBuilder.setThemeColor(SpreadsheetApp.ThemeColorType.ACCENT1)
-    t.is (themeBuilder.getColorType().toString(), "THEME")
-    t.is (themeBuilder.asThemeColor().getColorType().toString(), "THEME")
-    t.is (themeBuilder.asThemeColor().getThemeColorType().toString(), "ACCENT1")
-    t.is (t.threw (()=>themeBuilder.asRgbColor()).message, "Object is not of type RgbColor.")
-
-    const builtTheme = themeBuilder.build()
-    t.is(builtTheme.toString(), "Color")
-    t.is (builtTheme.getColorType().toString(), "THEME")
-    t.is (builtTheme.asThemeColor().getColorType().toString(), "THEME")
-    t.is (t.threw (()=>builtTheme.asRgbColor()).message, "Object is not of type RgbColor.")
-
-    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-  })
 
 
   unit.section("basic adv sheets cell formatting fetch fix", t => {

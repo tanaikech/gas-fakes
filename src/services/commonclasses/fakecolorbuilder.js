@@ -3,6 +3,10 @@ import { newFakeColor } from './fakecolor.js'
 import { newFakeRgbColor } from './fakergbcolor.js'
 import { FakeColorBase } from './fakecolorbase.js'
 import { newFakeThemeColor } from './fakethemecolor.js'
+import { signatureArgs } from '../../support/helpers.js'
+import { Utils} from '../../support/utils.js'
+const { is } = Utils
+
 /**
  * @file
  * @imports ../typedefs.js
@@ -39,6 +43,8 @@ class FakeColorBuilder extends FakeColorBase {
    * @returns {FakeColorBuilder} self
    */
   setRgbColor(cssString) {
+    const {nargs, makeThrow} = signatureArgs(arguments, "SpreadsheetApp.ColorBuilder.setRgbColor")
+    if (nargs !== 1 || !is.string(cssString)) makeThrow()
     this.__color = cssString
     this.__type = 'RGB'
     return this
@@ -51,6 +57,8 @@ class FakeColorBuilder extends FakeColorBase {
    * @returns {FakeColorBuilder} self
    */
   setThemeColor(themeColorType) {
+    const {nargs, makeThrow} = signatureArgs(arguments, "SpreadsheetApp.ColorBuilder.setThemeColor")
+    if (nargs !== 1 || !is.string(themeColorType)) makeThrow()
     this.__themeColorType = themeColorType
     this.__type = 'THEME'
     return this

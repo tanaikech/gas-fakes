@@ -2,9 +2,7 @@ import { Proxies } from '../../support/proxies.js'
 import { FakeSheet } from './fakesheet.js'
 import { SheetUtils } from '../../support/sheetutils.js'
 import { Utils } from '../../support/utils.js'
-
-
-const { is,  rgbToHex, hexToRgb, getPlucker } = Utils
+const { is, rgbToHex, hexToRgb, getPlucker } = Utils
 const WHITE = '#ffffff'
 
 import { notYetImplemented, signatureArgs } from '../../support/helpers.js'
@@ -45,7 +43,7 @@ export class FakeSheetRange {
     const props = [
       'removeDuplicates',
       'getMergedRanges',
-      'setBackgroundObjects',
+
       'setFontColorObjects',
       'getDataValidation',
       'getDataValidations',
@@ -84,7 +82,7 @@ export class FakeSheetRange {
       'mergeAcross',
       'mergeVertically',
       'isPartOfMerge',
-      'setBackgroundObject',
+
 
       'getBackgroundObject',
       'getBackgroundObjects',
@@ -475,9 +473,7 @@ export class FakeSheetRange {
    */
   setBackgrounds(colors) {
     const { nargs, matchThrow } = signatureArgs(arguments, "Range.setBackgrounds")
-    if (nargs !== 1) matchThrow()
-    if (!Array.isArray(colors)) matchThrow()
-    if (colors.length && !Array.isArray(colors[0])) matchThrow()
+    if (nargs !== 1 || !this.__arrMatchesRange(colors, "string")) matchThrow()
 
     const rows = colors.map(row => ({
       values: row.map(c => ({
@@ -492,6 +488,38 @@ export class FakeSheetRange {
     return this
   }
 
+  /**
+   * setBackgroundObjects(color) https://developers.google.com/apps-script/reference/spreadsheet/range#setbackgroundobjectscolor
+   * Sets a rectangular grid of background colors (must match dimensions of this range).
+   * @param {Color[][]} colors A two-dimensional array of colors; null values reset the color.
+   * @returns {FakeSheetRange} self
+   */
+  setBackgroundObjects(colors) {
+
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.setBackgroundObjects", "Color")
+    if (nargs !== 1 || !this.__arrMatchesRange(colors, "object")) matchThrow()
+
+    const rows = colors.map(row => ({
+      values: row.map(c => this.__getColorItem(c))
+    }))
+
+    // see __getColorItem for how this allows mixing of both theme and rgb colors.
+    const fields = 'userEnteredFormat.backgroundColorStyle'
+    const request = this.__getRequestUc(rows, fields)
+    Sheets.Spreadsheets.batchUpdate({ requests: [request] }, this.__sheet.getParent().getId(), { ss: true })
+    return this
+
+  }
+
+  /**
+ * Sets the font color in CSS notation (such as '#ffffff' or 'white')
+ * setBackgroundObject(color) https://developers.google.com/apps-script/reference/spreadsheet/range#setbackgroundobjectcolor
+ * @param {Color} color The background color to set; null value resets the background color.
+ * @return {FakeSheetRange} self
+ */
+  setBackgroundObject(color) {
+    return this.setBackgroundObjects(this.__fillRange({ value: color }))
+  }
 
   /**
    * Sets the font color in CSS notation (such as '#ffffff' or 'white')
@@ -512,10 +540,7 @@ export class FakeSheetRange {
   setFontColors(colors) {
 
     const { nargs, matchThrow } = signatureArgs(arguments, "Range.setFontColors")
-    if (nargs !== 1) matchThrow()
-    if (!Array.isArray(colors)) matchThrow()
-    if (colors.length && !Array.isArray(colors[0])) matchThrow()
-
+    if (nargs !== 1 || !this.__arrMatchesRange(colors, "string")) matchThrow()
 
     const rows = colors.map(row => ({
       values: row.map(c => {
@@ -559,6 +584,17 @@ export class FakeSheetRange {
   }
 
   //-- private helpers
+
+  __arrMatchesRange(arr, itemType) {
+    if (!is.array(arr)) return false
+    if (arr.length !== this.getNumRows()) return false
+    if (arr.some(r => !is.array(r))) return false
+    if (arr.some(r => r.length !== this.getNumColumns())) return false
+    if (itemType && !arr.flat().every(f => is[itemType](f))) return false
+    return true
+  }
+
+
   __fillRange({ range = this, value }) {
     return Array.from({ length: range.getNumRows() }).fill(Array.from({ length: range.getNumColumns() }).fill(value))
   }
@@ -578,6 +614,38 @@ export class FakeSheetRange {
       })
     })
     return rgbs
+  }
+
+  __getColorItem = (color) => {
+    // this can be a little complex since the color objects are allowed to be both rgb color and theme colors mixed
+    const isTheme = (ob) => ob.getColorType().toString() === "THEME"
+    const isRgb = (ob) => ob.getColorType().toString() === "RGB"
+    const getItem = (ob) => {
+      if (isTheme(ob)) {
+        return themed(ob.asThemeColor().getThemeColorType().toString())
+      } else if (isRgb(ob)) {
+        return rgb(ob.asRgbColor().asHexString())
+      } else {
+        throw new Error('unexpected color value', ob)
+      }
+    }
+    const themed = (value) => ({
+      userEnteredFormat: {
+        backgroundColorStyle: {
+          themeColor: value
+        }
+      }
+    })
+
+    // although you'd expect this to be background rather than style, we can use backgroundColorStyle to allow the mixing of both theme and color
+    const rgb = (value) => ({
+      userEnteredFormat: {
+        backgroundColorStyle: {
+          rgbColor: hexToRgb(value)
+        }
+      }
+    })
+    return getItem(color)
   }
 
   __getHorizontalAlignments({ range = this } = {}) {
