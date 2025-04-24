@@ -30,7 +30,7 @@ class FakeSheetValues {
    * @returns {FakeSheetValues}
    */
   constructor(sheets) {
-
+    this.__fakeObjectType ="Sheets.Spreadsheets.Values"
     this.__sheets = sheets
     const props = [
       'batchClearByDataFilter',

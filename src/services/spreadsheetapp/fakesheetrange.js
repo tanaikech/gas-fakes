@@ -4,10 +4,10 @@ import { SheetUtils } from '../../support/sheetutils.js'
 import { Utils } from '../../support/utils.js'
 
 
-const { is, signatureArgs, rgbToHex, hexToRgb, getPlucker } = Utils
+const { is,  rgbToHex, hexToRgb, getPlucker } = Utils
 const WHITE = '#ffffff'
 
-import { notYetImplemented } from '../../support/helpers.js'
+import { notYetImplemented, signatureArgs } from '../../support/helpers.js'
 
 //TODO - deal with r1c1 style ranges
 /**
@@ -422,7 +422,7 @@ export class FakeSheetRange {
    */
   offset(rowOffset, columnOffset, numRows, numColumns) {
     // get arg types
-    const { nargs, matchThrow } = signatureArgs(arguments, "offset")
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.offset")
 
     // basic signature tests
     if (nargs > 4 || nargs < 2) matchThrow()
@@ -460,7 +460,7 @@ export class FakeSheetRange {
     const outside = (n, l, h) => n < l || n > h
     const outsideInt = (n, l, h) => outside(n, l, h) || !is.integer(n)
 
-    const { nargs, matchThrow } = signatureArgs(arguments, "setBackgroundRGB")
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.setBackgroundRGB")
     if (nargs !== 3) matchThrow()
     if (outsideInt(red, 0, 255) || outsideInt(green, 0, 255) || outsideInt(blue, 0, 255)) matchThrow()
     return this.setBackground(rgbToHex(red / 255, green / 255, blue / 255))
@@ -474,7 +474,7 @@ export class FakeSheetRange {
    * @return {FakeSheetRange} self
    */
   setBackgrounds(colors) {
-    const { nargs, matchThrow } = signatureArgs(arguments, "range.setBackgrounds")
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.setBackgrounds")
     if (nargs !== 1) matchThrow()
     if (!Array.isArray(colors)) matchThrow()
     if (colors.length && !Array.isArray(colors[0])) matchThrow()
@@ -511,7 +511,7 @@ export class FakeSheetRange {
    */
   setFontColors(colors) {
 
-    const { nargs, matchThrow } = signatureArgs(arguments, "range.setFontColors")
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.setFontColors")
     if (nargs !== 1) matchThrow()
     if (!Array.isArray(colors)) matchThrow()
     if (colors.length && !Array.isArray(colors[0])) matchThrow()

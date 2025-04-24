@@ -1,6 +1,6 @@
 import { FakeDriveMeta } from "./fakedrivemeta.js"
 import { Proxies } from '../../support/proxies.js'
-import { isFolder, isFakeFolder, argsMatchThrow } from '../../support/helpers.js'
+import { isFolder, isFakeFolder,  signatureArgs } from '../../support/helpers.js'
 import { Syncit } from "../../support/syncit.js"
 import { FakeDriveFolder } from "./fakedrivefolder.js"
 import { Utils } from "../../support/utils.js"
@@ -75,7 +75,8 @@ class FakeDriveFile extends FakeDriveMeta {
    */
   setContent(content) {
     // for param checking
-    const matchThrow = () => argsMatchThrow(Array.from(arguments))
+    const { matchThrow } = signatureArgs(arguments, "setContent")
+
     // apps script does a toString on the arg rather than failing
     if (!is.function (content?.toString)) {
       matchThrow()
@@ -106,8 +107,7 @@ class FakeDriveFile extends FakeDriveMeta {
     let parents = this.__getDecorated("parents")
 
     // for param checking
-    const matchThrow = () => argsMatchThrow(Array.from(arguments))
-
+    const { matchThrow } = signatureArgs(arguments, "makeCopy","DriveApp.Folder")
     
     // cant move the root folder
     this.__preventRootDamage("copy", this)

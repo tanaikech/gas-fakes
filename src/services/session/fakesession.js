@@ -1,4 +1,4 @@
-import { newFakeUser} from './fakeuser.js'
+import { newFakeUser} from '../commonclasses/fakeuser.js'
 import { Auth } from '../../support/auth.js'
 import { Proxies } from '../../support/proxies.js'
 

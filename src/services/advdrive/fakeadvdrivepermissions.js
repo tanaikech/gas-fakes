@@ -9,6 +9,7 @@ class FakeAdvDrivePermissions {
   constructor(drive) {
     this.drive = drive
     this.apiProp = "permissions"
+    this.__fakeObjectType ="Drive.Permissions"
   }
   create() {
     return notYetImplemented('create')

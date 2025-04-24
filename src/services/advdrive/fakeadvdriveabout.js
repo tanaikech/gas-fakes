@@ -4,6 +4,7 @@ import { notYetImplemented } from '../../support/helpers.js'
 class FakeAdvDriveAbout {
   constructor(drive) {
     this.toString = drive.toString
+    this.__fakeObjectType ="Drive.About"
   }
 
   // this is a schema and needs the fields parameter

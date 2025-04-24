@@ -16,6 +16,7 @@ import {newFakeAdvSheetsSpreadsheets} from './fakeadvsheetsspreadsheets.js'
 class FakeAdvSheets {
   constructor() {
     this.client = Proxies.guard(getAuthedClient())
+    this.__fakeObjectType ="Sheets"
     const props = [ 
       'newGridData',
       'newConditionalFormatRule',

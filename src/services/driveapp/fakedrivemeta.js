@@ -9,7 +9,7 @@
  */
 
 import is from '@sindresorhus/is';
-import { isFolder, notYetImplemented, argsMatchThrow, isFakeFolder } from '../../support/helpers.js'
+import { isFolder, notYetImplemented, isFakeFolder, signatureArgs } from '../../support/helpers.js'
 import { getParentsIterator } from './driveiterators.js';
 import { improveFileCache } from "../../support/filecache.js"
 import { getSharers } from '../../support/filesharers.js';
@@ -90,8 +90,8 @@ export class FakeDriveMeta {
 
     // cant update any meta on root folder
     this.__preventRootDamage (`set ${prop}`)
-    
-    const matchThrow = () => argsMatchThrow(args)
+    const { matchThrow } = signatureArgs(arguments, "update")
+
     if (!is[type](value)) {
       matchThrow()
     }
@@ -205,7 +205,8 @@ export class FakeDriveMeta {
    */
   moveTo(destination) {
     // prepare for any arg errors
-    const matchThrow = () => argsMatchThrow(Array.from(arguments))
+    const { matchThrow } = signatureArgs(arguments, "moveTo", "DriveApp.Folder")
+   
     if (!isFakeFolder(destination)) {
       matchThrow()
     }

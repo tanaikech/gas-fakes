@@ -1,11 +1,11 @@
 import { Proxies } from '../../support/proxies.js'
 import { newFakeSpreadsheet } from './fakespreadsheet.js'
-import { notYetImplemented, minSheetFields} from '../../support/helpers.js'
+import { notYetImplemented, minSheetFields, signatureArgs} from '../../support/helpers.js'
 import { Utils } from "../../support/utils.js"
-import { newFakeColorBuilder } from './fakecolorbuilder.js'
+import { newFakeColorBuilder } from '../commonclasses/fakecolorbuilder.js'
 import { ThemeColorType } from '../typedefs.js'
 
-const { is, signatureArgs } = Utils
+const { is } = Utils
 /**
  * @file
  * @imports ../typedefs.js

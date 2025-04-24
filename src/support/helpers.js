@@ -1,4 +1,5 @@
 import {Utils} from './utils.js'
+const {is, capital} = Utils
 
 
 /**
@@ -128,4 +129,21 @@ export const ssError = (response, method, ss) => {
     }
   }
   return response
+}
+
+export const signatureArgs = (received, method, objectType = 'Object') => {
+  const args = Array.from(received)
+  const nargs = args.length
+  
+  // let's update the passedTypes for the error message to match what GAS does - https://github.com/brucemcpherson/gas-fakes/issues/25
+  const passedTypes = args.map(is).map(capital).map(f=>f==='Object' ? objectType : f)
+
+  const matchThrow = (mess = method) => {
+    throw new Error(`The parameters (${passedTypes.join(",")}) don't match the method signature for ${mess}`)
+  }
+  return {
+    nargs,
+    passedTypes,
+    matchThrow
+  }
 }

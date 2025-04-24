@@ -12,6 +12,7 @@ class FakeAdvDriveApps {
     this.drive = drive
     this.name = 'Drive.Apps'
     this.apiProp = 'apps'
+    this.__fakeObjectType ="Drive.Apps"
   }
 
   toString() {

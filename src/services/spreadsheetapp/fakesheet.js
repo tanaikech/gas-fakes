@@ -1,6 +1,6 @@
 import { Proxies } from '../../support/proxies.js'
 import { SheetUtils } from '../../support/sheetutils.js'
-import { notYetImplemented } from '../../support/helpers.js'
+import { notYetImplemented, signatureArgs } from '../../support/helpers.js'
 import { newFakeSheetRange } from './fakesheetrange.js'
 import { newFakeSheetRangeList } from './fakesheetrangelist.js'
 import { Utils } from "../../support/utils.js"
@@ -364,12 +364,9 @@ export class FakeSheet {
    * @param {number} [numColumns]
    */
   getRange(rowOrA1, column, numRows, numColumns) {
-    const nargs = arguments.length
-    const passedTypes = [is(rowOrA1), is(column), is(numRows), is(numColumns)].slice(0, nargs)
 
-    const matchThrow = (mess = "") => {
-      throw new Error(`The parameters (${passedTypes}) don't match the method ${mess}`)
-    }
+    const { nargs, matchThrow } = signatureArgs(arguments, "getRange")
+
     if (nargs > 4 || !nargs) matchThrow()
     if (nargs === 1) {
       if (!is.string(rowOrA1)) matchThrow()

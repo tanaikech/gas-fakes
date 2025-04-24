@@ -17,6 +17,7 @@ import { newFakeDrivePermissions } from './fakeadvdrivepermissions.js'
 class FakeAdvDrive {
   constructor() {
     this.client = Proxies.guard(getAuthedClient())
+    this.__fakeObjectType ="Drive"
   }
   toString() {
     return `AdvancedServiceIdentifier{name=drive, version=v3}`

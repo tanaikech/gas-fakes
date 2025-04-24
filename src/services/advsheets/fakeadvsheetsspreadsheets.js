@@ -18,6 +18,8 @@ import { getWorkbookEntry, setWorkbookEntry, clearWorkbookCache } from "../../su
 class FakeAdvSheetsSpreadsheets {
   constructor(sheets) {
 
+    this.__fakeObjectType ="Sheets.Spreadsheets"
+
     const props = [
       'getByDataFilter',
       'DeveloperMetadata',
