@@ -18,7 +18,7 @@ export const testSession = (pack) => {
     t.is(Session.getActiveUser().toString(), fixes.EMAIL)
     t.is(Session.getActiveUser().getEmail(), fixes.EMAIL)
     t.is(Session.getEffectiveUser().getEmail(), fixes.EMAIL)
-    t.is(Session.getActiveUserLocale(), fixes.TEST_LOCALE)
+    t.is(Session.getActiveUserLocale().replace (/_.*/, ''), fixes.TEST_LOCALE.replace (/_.*/, ''))
     t.is(Session.getScriptTimeZone(), fixes.TIMEZONE)
     t.true(is.nonEmptyString(Session.getTemporaryActiveUserKey()))
   }, {

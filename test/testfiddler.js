@@ -41,6 +41,24 @@ export const testFiddler = (pack) => {
   }
 
 
+  unit.section ("fiddler basics", t => {
+    const airports = SpreadsheetApp.openById(fixes.TEST_AIRPORTS_ID)
+    const fiddler = new Fiddler(airports.getSheetByName(fixes.TEST_AIRPORTS_NAME))
+    
+    const sheet = fiddler.getSheet()
+    t.is(sheet.getName(), fixes.TEST_AIRPORTS_NAME, 'correct sheet name')
+    
+    const dataRange = sheet.getDataRange()
+    t.is (dataRange.getA1Notation(), fiddler.getRange().getA1Notation(), 'correct data range')
+    t.deepEqual(dataRange.offset(0,0,1).getValues()[0], fiddler.getHeaders(), 'correct headers')
+    t.deepEqual (
+      dataRange.offset(1,fiddler.getHeaderIndex('name'),dataRange.getNumRows()-1,1).getValues().flat(), 
+      fiddler.getData().map(f=>f.name),
+      'selected data matches offset'
+     )
+  })
+
+
   unit.section("fiddler coloring", t => {
     getCopy()
     const coloringFiddler = new Fiddler(copyFiddler.getSheet().getParent().insertSheet("coloring sheet"))
