@@ -36,7 +36,31 @@ export const testSheets = (pack) => {
   const toTrash = []
 
 
+  unit.section("user entered formats", t => {
+    const aname = fixes.PREFIX + "ue-sheet"
+    const ss = SpreadsheetApp.create(aname)
+    const sheets = ss.getSheets()
+    const [sheet] = sheets
+    const range = sheet.getRange("c2:i4")
+    const stuff = getStuff(range)
+    range.setValues(stuff)
+    t.deepEqual(range.getValues(), stuff)
+    const nfs = range.getNumberFormats()
+    const nf = range.getNumberFormat()
+    t.is(nf, nfs[0][0])
+    t.is(nfs.length, range.getNumRows())
+    t.is(nfs[0].length, range.getNumColumns())
+    // see issue https://github.com/brucemcpherson/gas-fakes/issues/27
+    const dfv = "0.###############"
+    t.true(nfs.flat().every(f => f === dfv))
+    t.is(nf, dfv)
 
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+    if (fixes.CLEAN) {
+      toTrash.push(DriveApp.getFileById(ss.getId()))
+    }
+
+  })
 
   unit.section("color objects and builders", t => {
 
@@ -116,41 +140,37 @@ export const testSheets = (pack) => {
     range.setBackgroundObjects(colorObjects)
 
     // color objects can be rgb too
-    const rgbObjects =  Array.from({
+    const rgbObjects = Array.from({
       length: range.getNumRows()
     },
       _ => Array.from({
         length: range.getNumColumns()
       }, (_, i) => SpreadsheetApp.newColor().setRgbColor(getRandomHex()).build()))
 
-    const rgbRange = range.offset (range.getNumRows()+1,0)
+    const rgbRange = range.offset(range.getNumRows() + 1, 0)
     rgbRange.setBackgroundObjects(rgbObjects)
 
     // and they can be mixed
-    const mixedRange = rgbRange.offset (rgbRange.getNumRows()+1,0)
-    const half = Math.floor(mixedRange.getNumRows()/2)
-    const mixed = colorObjects.slice (0,half).concat(rgbObjects.slice (0,mixedRange.getNumRows()-half))
+    const mixedRange = rgbRange.offset(rgbRange.getNumRows() + 1, 0)
+    const half = Math.floor(mixedRange.getNumRows() / 2)
+    const mixed = colorObjects.slice(0, half).concat(rgbObjects.slice(0, mixedRange.getNumRows() - half))
     mixedRange.setBackgroundObjects(mixed)
 
-    const singleColor = getRandomHex ()
+    const singleColor = getRandomHex()
     const singleColorObj = SpreadsheetApp.newColor().setRgbColor(singleColor).build()
-    const singleRange = mixedRange.offset (mixedRange.getNumRows()+1,0)
+    const singleRange = mixedRange.offset(mixedRange.getNumRows() + 1, 0)
     singleRange.setBackgroundObject(singleColorObj)
     const back1 = singleRange.getBackgrounds()
-    t.true (back1.flat().every(f => f === singleColor))
+    t.true(back1.flat().every(f => f === singleColor))
 
-    const singleRgbRange = singleRange.offset (singleRange.getNumRows()+1,0)
+    const singleRgbRange = singleRange.offset(singleRange.getNumRows() + 1, 0)
     const singleColorRgbObj = SpreadsheetApp.newColor().setRgbColor(singleColor).build()
     singleRgbRange.setBackgroundObject(singleColorRgbObj)
     const back2 = singleRgbRange.getBackgrounds()
-    t.true (back2.flat().every(f => f === singleColor))
+    t.true(back2.flat().every(f => f === singleColor))
 
     t.deepEqual(back1, back2)
 
-
-
-
-    
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
     if (fixes.CLEAN) {
       toTrash.push(DriveApp.getFileById(ss.getId()))
@@ -241,8 +261,6 @@ export const testSheets = (pack) => {
     }
 
   })
-
-
 
 
   unit.section("basic adv sheets cell formatting fetch fix", t => {

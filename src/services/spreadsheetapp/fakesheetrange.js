@@ -72,7 +72,7 @@ export class FakeSheetRange {
       'getFormulaR1C1',
       'getFormulasR1C1',
       'getDataSourceFormula',
-      'getNumberFormats',
+
       'getBackgroundColors',
       'insertCells',
       'setFormulas',
@@ -200,7 +200,7 @@ export class FakeSheetRange {
       'check',
       'getFilter',
       'setNumberFormat',
-      'getNumberFormat',
+
       'setComment',
       'getComment']
     props.forEach(f => {
@@ -328,6 +328,7 @@ export class FakeSheetRange {
     const values = this.__getHorizontalAlignments({ range: this.__getTopLeft() })
     return (values && values[0] && values[0][0]) || ''
   }
+
   /**
    * getHorizontalAlignments()  https://developers.google.com/apps-script/reference/spreadsheet/range#gethorizontalalignments
    * Returns the horizontal alignments of the cells in the range.
@@ -342,6 +343,25 @@ export class FakeSheetRange {
   getLastRow() {
     return this.__gridRange.endRowIndex
   }
+
+  /**
+   * getNumberFormat() https://developers.google.com/apps-script/reference/spreadsheet/range#getnumberformat
+   * Get the number or date formatting of the top-left cell of the given range. The returned format patterns are described in the Sheets API documentation.
+   * @returns {string}
+   */
+  getNumberFormat() {
+    const values = this.__getNumberFormats({ range: this.__getTopLeft() })
+    return (values && values[0] && values[0][0]) || ''
+  }
+  /**
+   * getNumberFormats() https://developers.google.com/apps-script/reference/spreadsheet/range#getnumberformats
+   * Returns the number or date formats for the cells in the range. The returned format patterns are described in the Sheets API documentation.
+   * @returns {string}
+   */
+  getNumberFormats() {
+    return this.__getNumberFormats()
+  }
+
   getNumColumns() {
     return this.__gridRange.endColumnIndex - this.__gridRange.startColumnIndex
   }
@@ -512,11 +532,11 @@ export class FakeSheetRange {
   }
 
   /**
- * Sets the font color in CSS notation (such as '#ffffff' or 'white')
- * setBackgroundObject(color) https://developers.google.com/apps-script/reference/spreadsheet/range#setbackgroundobjectcolor
- * @param {Color} color The background color to set; null value resets the background color.
- * @return {FakeSheetRange} self
- */
+  * Sets the font color in CSS notation (such as '#ffffff' or 'white')
+  * setBackgroundObject(color) https://developers.google.com/apps-script/reference/spreadsheet/range#setbackgroundobjectcolor
+  * @param {Color} color The background color to set; null value resets the background color.
+  * @return {FakeSheetRange} self
+  */
   setBackgroundObject(color) {
     return this.setBackgroundObjects(this.__fillRange({ value: color }))
   }
@@ -719,11 +739,21 @@ export class FakeSheetRange {
 
   __getVerticalAlignments({ range = this } = {}) {
     return this.__getRowDataAttribs({
-      props: 'effectiveFormat.verticalAlignment',
+      props: 'userEnteredFormat.verticalAlignment',
       defaultValue: "bottom",
       range
     })
   }
+
+  __getNumberFormats({ range = this } = {}) {
+    return this.__getRowDataAttribs({
+      props: 'userEnteredFormat.numberFormat',
+      // see issue https://github.com/brucemcpherson/gas-fakes/issues/27
+      defaultValue: "0.###############",
+      range
+    })
+  }
+
   __getWithSheet() {
     return this.__getRangeWithSheet(this)
   }
