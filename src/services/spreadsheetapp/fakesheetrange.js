@@ -2,8 +2,11 @@ import { Proxies } from '../../support/proxies.js'
 import { FakeSheet } from './fakesheet.js'
 import { SheetUtils } from '../../support/sheetutils.js'
 import { Utils } from '../../support/utils.js'
+import { newFakeColorBuilder } from '../commonclasses/fakecolorbuilder.js'
+
 const { is, rgbToHex, hexToRgb, getPlucker } = Utils
-const WHITE = '#ffffff'
+const WHITE ='#ffffff'
+const BLACK ='#000000'
 
 import { notYetImplemented, signatureArgs } from '../../support/helpers.js'
 
@@ -40,6 +43,82 @@ export class FakeSheetRange {
 
     this.__gridRange = gridRange
     this.__sheet = sheet
+
+
+    // insert a method to get the required attributes, bith single and array version
+    const attrGens = (target) => {
+
+      // sometimes the returned values may need tweaked/converted
+      const cleaner = target.cleaner || ((f) => f)
+
+      // curry a getter
+      const getters = (range) => getRowDataAttribs({
+        cleaner,
+        range,
+        defaultValue: target.defaultValue,
+        props: target.props
+      })
+
+      // both a single and collection version
+      this[target.name + 's'] = () => getters(this)
+      this[target.name] = () => {
+        const values = getters(this.__getTopLeft())
+        return (values && values[0] && values[0][0]) || cleaner(target.defaultValue)
+      }
+
+    }
+
+    // shared function to get attributes that use spreadsheets.get
+    const getRowDataAttribs = ({ range = this, props, defaultValue, cleaner }) => {
+
+      // get the collection of rows with data for the required properties
+      const { sheets } = Sheets.Spreadsheets.get(this.__sheet.getParent().getId(), {
+        ranges: [this.__getRangeWithSheet(range)],
+        fields: `sheets.data.rowData.values${props}`
+      })
+
+      const { rowData } = sheets[0]?.data[0]
+
+      // then we have to shape some default values
+      if (!rowData) {
+        return Array.from({ length: range.getNumRows() }).fill(Array.from({ length: range.getNumColumns() }).fill(defaultValue).map(cleaner))
+      }
+
+      // pluck each cell
+      // extract the required props to an array
+      const plucker = getPlucker(props, defaultValue)
+      return rowData.map(row => row.values.map(plucker).map(cleaner))
+    }
+
+
+    // generate methods for similar code
+    const attrGetList = [{
+      name: 'getNumberFormat',
+      props: '.userEnteredFormat.numberFormat',
+      defaultValue: "0.###############"
+    }, {
+      name: 'getVerticalAlignment',
+      props: '.userEnteredFormat.verticalAlignment',
+      defaultValue: "bottom"
+    }, {
+      name: 'getHorizontalAlignment',
+      props: '.userEnteredFormat.horizontalAlignment',
+      defaultValue: "general"
+    }, {
+      name: 'getBackground',
+      props: '.userEnteredFormat.backgroundColor',
+      defaultValue: { red: 1, green: 1, blue: 1 },
+      cleaner: (f) => is.null(f) ? WHITE : rgbToHex(f.red, f.green, f.blue)
+    }, {
+      name: 'getFontWeight',
+      props: '.userEnteredFormat.textFormat.bold',
+      defaultValue:false,
+      cleaner: (f) => f ? 'bold' : 'normal'
+    }]
+    attrGetList.forEach(attrGens)
+
+
+    // list of not yet implemented methods
     const props = [
       'removeDuplicates',
       'getMergedRanges',
@@ -55,7 +134,7 @@ export class FakeSheetRange {
       'getTextDirection',
       'setTextDirection',
       'getTextStyle',
-      'getFontWeight',
+   
       'getFontFamilies',
       'setFontWeight',
 
@@ -104,16 +183,15 @@ export class FakeSheetRange {
       'setWraps',
       'copyValuesToRange',
       'copyFormatToRange',
-      'getFontColor',
+
       'getFontColorObject',
-      'getFontColors',
+  
       'getFontColorObjects',
       'getFontLine',
       'getFontLines',
       'getFontSizes',
       'getFontStyle',
       'setComments',
-      'getFontWeights',
 
 
       'getWrap',
@@ -225,24 +303,8 @@ export class FakeSheetRange {
       this.__gridRange.endColumnIndex
     )
   }
-  /**
-   * getBackground() https://developers.google.com/apps-script/reference/spreadsheet/range#getbackground
-   * Returns the background color of the top-left cell in the range (for example, '#ffffff').
-   * @returns {string}
-   */
-  getBackground() {
-    const values = this.__getBackgrounds({ range: this.__getTopLeft() })
-    return (values && values[0] && values[0][0]) || WHITE
-  }
 
-  /**
-   * getBackgrounds() https://developers.google.com/apps-script/reference/spreadsheet/range#getbackgrounds
-   * Returns the background colors of the cells in the range (for example, '#ffffff').
-   * @returns {string}
-   */
-  getBackgrounds() {
-    return this.__getBackgrounds()
-  }
+
   /**
    * getCell(row, column) Returns a given cell within a range.
    * @param {number} row 1 based cell relative to range
@@ -319,47 +381,12 @@ export class FakeSheetRange {
   getHeight() {
     return this.getNumRows()
   }
-  /**
-   * getHorizontalAlignment() https://developers.google.com/apps-script/reference/spreadsheet/range#gethorizontalalignment
-   * Returns the horizontal alignment of the text (left/center/right) of the cell in the top-left corner of the range.
-   * @returns {string}
-   */
-  getHorizontalAlignment() {
-    const values = this.__getHorizontalAlignments({ range: this.__getTopLeft() })
-    return (values && values[0] && values[0][0]) || ''
-  }
 
-  /**
-   * getHorizontalAlignments()  https://developers.google.com/apps-script/reference/spreadsheet/range#gethorizontalalignments
-   * Returns the horizontal alignments of the cells in the range.
-   * @returns {string}
-   */
-  getHorizontalAlignments() {
-    return this.__getHorizontalAlignments()
-  }
   getLastColumn() {
     return this.__gridRange.endColumnIndex
   }
   getLastRow() {
     return this.__gridRange.endRowIndex
-  }
-
-  /**
-   * getNumberFormat() https://developers.google.com/apps-script/reference/spreadsheet/range#getnumberformat
-   * Get the number or date formatting of the top-left cell of the given range. The returned format patterns are described in the Sheets API documentation.
-   * @returns {string}
-   */
-  getNumberFormat() {
-    const values = this.__getNumberFormats({ range: this.__getTopLeft() })
-    return (values && values[0] && values[0][0]) || ''
-  }
-  /**
-   * getNumberFormats() https://developers.google.com/apps-script/reference/spreadsheet/range#getnumberformats
-   * Returns the number or date formats for the cells in the range. The returned format patterns are described in the Sheets API documentation.
-   * @returns {string}
-   */
-  getNumberFormats() {
-    return this.__getNumberFormats()
   }
 
   getNumColumns() {
@@ -397,24 +424,6 @@ export class FakeSheetRange {
   getValue() {
     const values = this.__getValues({ range: this.__getTopLeft(), options: { valueRenderOption: 'UNFORMATTED_VALUE' } })
     return values && values[0][0]
-  }
-  /**
-   * getVerticalAlignment() https://developers.google.com/apps-script/reference/spreadsheet/range#getverticalalignment
-   * Returns the vertical alignment (top/middle/bottom) of the cell in the top-left corner of the range.
-   * @returns {string}
-   */
-  getVerticalAlignment() {
-    const values = this.__getVerticalAlignments({ range: this.__getTopLeft() })
-    return (values && values[0] && values[0][0]) || ''
-  }
-
-  /**
-   * getVerticalAlignments()  https://developers.google.com/apps-script/reference/spreadsheet/range#getverticalalignments
-   * Returns the vertical alignments of the cells in the range.
-   * @returns {string}
-   */
-  getVerticalAlignments() {
-    return this.__getVerticalAlignments()
   }
 
   /**
@@ -619,22 +628,6 @@ export class FakeSheetRange {
     return Array.from({ length: range.getNumRows() }).fill(Array.from({ length: range.getNumColumns() }).fill(value))
   }
 
-  __getBackgrounds({ range = this } = {}) {
-
-    const rows = this.__getRowDataAttribs({
-      range,
-      props: 'effectiveFormat.backgroundColor',
-      defaultValue: { red: 1, green: 1, blue: 1 }
-    })
-
-    const rgbs = rows.map(r => {
-      // default background is white
-      return r.map(f => {
-        return is.null(f) ? WHITE : rgbToHex(f.red, f.green, f.blue)
-      })
-    })
-    return rgbs
-  }
 
   __getColorItem = (color) => {
     // this can be a little complex since the color objects are allowed to be both rgb color and theme colors mixed
@@ -668,38 +661,12 @@ export class FakeSheetRange {
     return getItem(color)
   }
 
-  __getHorizontalAlignments({ range = this } = {}) {
-    return this.__getRowDataAttribs({
-      props: 'effectiveFormat.horizontalAlignment',
-      defaultValue: "general",
-      range
-    })
-  }
+
 
   __getRangeWithSheet(range) {
     return `${range.__sheet.getName()}!${this.getA1Notation()}`
   }
 
-  __getRowDataAttribs({ range = this, props, defaultValue }) {
-
-    // get the collection of rows with data for the required properties
-    const { sheets } = Sheets.Spreadsheets.get(this.__sheet.getParent().getId(), {
-      ranges: [this.__getRangeWithSheet(range)],
-      fields: `sheets.data.rowData.values.${props}`
-    })
-
-    const { rowData } = sheets[0]?.data[0]
-
-    // then we have to shape some default values
-    if (!rowData) {
-      return Array.from({ length: range.getNumRows() }).fill(Array.from({ length: range.getNumColumns() }).fill(defaultValue))
-    }
-
-    // pluck each cell
-    // extract the required props to an array
-    const plucker = getPlucker(props, defaultValue)
-    return rowData.map(row => row.values.map(plucker))
-  }
 
   /**
    * for use with updateCells
@@ -737,22 +704,6 @@ export class FakeSheetRange {
     return values
   }
 
-  __getVerticalAlignments({ range = this } = {}) {
-    return this.__getRowDataAttribs({
-      props: 'userEnteredFormat.verticalAlignment',
-      defaultValue: "bottom",
-      range
-    })
-  }
-
-  __getNumberFormats({ range = this } = {}) {
-    return this.__getRowDataAttribs({
-      props: 'userEnteredFormat.numberFormat',
-      // see issue https://github.com/brucemcpherson/gas-fakes/issues/27
-      defaultValue: "0.###############",
-      range
-    })
-  }
 
   __getWithSheet() {
     return this.__getRangeWithSheet(this)

@@ -196,7 +196,7 @@ const rgbToHex = (r, g, b) => {
 }
 
 const getPlucker = (props, defaultValue) => {
-  const pex = props.split(".")
+  const pex = props.split(".").filter(f => f)
   return (v) => {
     const px = pex.reduce((p, c) => {
       const t = p && p[c]
