@@ -114,6 +114,14 @@ export class FakeSheetRange {
       props: '.userEnteredFormat.textFormat.bold',
       defaultValue:false,
       cleaner: (f) => f ? 'bold' : 'normal'
+    }, {
+      name: 'getBorder',
+      props: '.userEnteredFormat.borders',
+      defaultValue:null,
+      cleaner: (f=> {
+        console.log (f)
+        return f
+      })
     }]
     attrGetList.forEach(attrGens)
 
@@ -130,7 +138,7 @@ export class FakeSheetRange {
       'clearDataValidations',
       'protect',
       'setDataValidation',
-      'getBorder',
+
       'getTextDirection',
       'setTextDirection',
       'getTextStyle',
@@ -142,7 +150,7 @@ export class FakeSheetRange {
 
       'createDataSourcePivotTable',
       'setFontLines',
-      'getBorders',
+
       'activate',
       'breakApart',
       'deleteCells',
