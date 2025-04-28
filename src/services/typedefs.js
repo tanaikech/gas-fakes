@@ -173,7 +173,8 @@ const yc = ["STYLE_UNSPECIFIED",
   "DOTTED",
   "DASHED",
   "SOLID",
-  "MEDIUM",
+  // TODO check this - docs say MEDIUM, API returns SOLID_MEDIUM
+  "SOLID_MEDIUM",
   "SOLID_THICK",
   "NONE",
   "DOUBLE"]

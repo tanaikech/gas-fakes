@@ -43,8 +43,9 @@ class FakeColorBuilder extends FakeColorBase {
    * @returns {FakeColorBuilder} self
    */
   setRgbColor(cssString) {
-    const {nargs, makeThrow} = signatureArgs(arguments, "SpreadsheetApp.ColorBuilder.setRgbColor")
-    if (nargs !== 1 || !is.string(cssString)) makeThrow()
+
+    const {nargs, matchThrow} = signatureArgs(arguments, "SpreadsheetApp.ColorBuilder.setRgbColor")
+    if (nargs !== 1 || !is.string(cssString)) matchThrow()
     this.__color = cssString
     this.__type = 'RGB'
     return this
@@ -57,8 +58,9 @@ class FakeColorBuilder extends FakeColorBase {
    * @returns {FakeColorBuilder} self
    */
   setThemeColor(themeColorType) {
-    const {nargs, makeThrow} = signatureArgs(arguments, "SpreadsheetApp.ColorBuilder.setThemeColor")
-    if (nargs !== 1 || !is.string(themeColorType)) makeThrow()
+
+    const {nargs, matchThrow} = signatureArgs(arguments, "SpreadsheetApp.ColorBuilder.setThemeColor")
+    if (nargs !== 1 || !is.string(themeColorType)) matchThrow()
     this.__themeColorType = themeColorType
     this.__type = 'THEME'
     return this

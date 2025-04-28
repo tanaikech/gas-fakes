@@ -2,13 +2,14 @@ import { Proxies } from '../../support/proxies.js'
 import { FakeSheet } from './fakesheet.js'
 import { SheetUtils } from '../../support/sheetutils.js'
 import { Utils } from '../../support/utils.js'
-import { newFakeColorBuilder } from '../commonclasses/fakecolorbuilder.js'
+import { newFakeBorders } from '../commonclasses/fakeborders.js'
 
 const { is, rgbToHex, hexToRgb, getPlucker } = Utils
-const WHITE ='#ffffff'
-const BLACK ='#000000'
+const WHITE = '#ffffff'
+const BLACK = '#000000'
 
 import { notYetImplemented, signatureArgs } from '../../support/helpers.js'
+
 
 //TODO - deal with r1c1 style ranges
 /**
@@ -26,6 +27,81 @@ export const newFakeSheetRange = (...args) => {
   return Proxies.guard(new FakeSheetRange(...args))
 }
 
+// insert a method to get the required attributes, bith single and array version
+// many methods can be genereated automatically
+const attrGens = (self, target) => {
+
+  // shared function to get attributes that use spreadsheets.get
+  const getRowDataAttribs = ({ range = self, props, defaultValue, cleaner }) => {
+
+    // get the collection of rows with data for the required properties
+    const { sheets } = Sheets.Spreadsheets.get(self.__sheet.getParent().getId(), {
+      ranges: [self.__getRangeWithSheet(range)],
+      fields: `sheets.data.rowData.values${props}`
+    })
+
+    const { rowData } = sheets[0]?.data[0]
+
+    // then we have to shape some default values
+    if (!rowData) {
+      return Array.from({ length: range.getNumRows() }).fill(Array.from({ length: range.getNumColumns() }).fill(defaultValue).map(cleaner))
+    }
+
+    // pluck each cell
+    // extract the required props to an array
+    const plucker = getPlucker(props, defaultValue)
+    return rowData.map(row => row.values.map(plucker).map(cleaner))
+  }
+
+  // sometimes the returned values may need tweaked/converted
+  const cleaner = target.cleaner || ((f) => f)
+
+  // curry a getter
+  const getters = (range) => getRowDataAttribs({
+    cleaner,
+    range,
+    defaultValue: target.defaultValue,
+    props: target.props
+  })
+
+  // both a single and collection version
+  self[target.name + 's'] = () => getters(self)
+  self[target.name] = () => {
+    const values = getters(self.__getTopLeft())
+    return (values && values[0] && values[0][0]) || cleaner(target.defaultValue)
+  }
+  return self
+}
+
+// generate methods for similar code
+const attrGetList = [{
+  name: 'getNumberFormat',
+  props: '.userEnteredFormat.numberFormat',
+  defaultValue: "0.###############"
+}, {
+  name: 'getVerticalAlignment',
+  props: '.userEnteredFormat.verticalAlignment',
+  defaultValue: "bottom"
+}, {
+  name: 'getHorizontalAlignment',
+  props: '.userEnteredFormat.horizontalAlignment',
+  defaultValue: "general"
+}, {
+  name: 'getBackground',
+  props: '.userEnteredFormat.backgroundColor',
+  defaultValue: { red: 1, green: 1, blue: 1 },
+  cleaner: (f) => is.null(f) ? WHITE : rgbToHex(f.red, f.green, f.blue)
+}, {
+  name: 'getFontWeight',
+  props: '.userEnteredFormat.textFormat.bold',
+  defaultValue: false,
+  cleaner: (f) => f ? 'bold' : 'normal'
+}, {
+  name: 'getBorder',
+  props: '.userEnteredFormat.borders',
+  defaultValue: null,
+  cleaner: (f =>  is.null(f) ? null : newFakeBorders(f))
+}]
 
 /**
  * basic fake FakeSheetRange
@@ -44,93 +120,13 @@ export class FakeSheetRange {
     this.__gridRange = gridRange
     this.__sheet = sheet
 
-
-    // insert a method to get the required attributes, bith single and array version
-    const attrGens = (target) => {
-
-      // sometimes the returned values may need tweaked/converted
-      const cleaner = target.cleaner || ((f) => f)
-
-      // curry a getter
-      const getters = (range) => getRowDataAttribs({
-        cleaner,
-        range,
-        defaultValue: target.defaultValue,
-        props: target.props
-      })
-
-      // both a single and collection version
-      this[target.name + 's'] = () => getters(this)
-      this[target.name] = () => {
-        const values = getters(this.__getTopLeft())
-        return (values && values[0] && values[0][0]) || cleaner(target.defaultValue)
-      }
-
-    }
-
-    // shared function to get attributes that use spreadsheets.get
-    const getRowDataAttribs = ({ range = this, props, defaultValue, cleaner }) => {
-
-      // get the collection of rows with data for the required properties
-      const { sheets } = Sheets.Spreadsheets.get(this.__sheet.getParent().getId(), {
-        ranges: [this.__getRangeWithSheet(range)],
-        fields: `sheets.data.rowData.values${props}`
-      })
-
-      const { rowData } = sheets[0]?.data[0]
-
-      // then we have to shape some default values
-      if (!rowData) {
-        return Array.from({ length: range.getNumRows() }).fill(Array.from({ length: range.getNumColumns() }).fill(defaultValue).map(cleaner))
-      }
-
-      // pluck each cell
-      // extract the required props to an array
-      const plucker = getPlucker(props, defaultValue)
-      return rowData.map(row => row.values.map(plucker).map(cleaner))
-    }
-
-
-    // generate methods for similar code
-    const attrGetList = [{
-      name: 'getNumberFormat',
-      props: '.userEnteredFormat.numberFormat',
-      defaultValue: "0.###############"
-    }, {
-      name: 'getVerticalAlignment',
-      props: '.userEnteredFormat.verticalAlignment',
-      defaultValue: "bottom"
-    }, {
-      name: 'getHorizontalAlignment',
-      props: '.userEnteredFormat.horizontalAlignment',
-      defaultValue: "general"
-    }, {
-      name: 'getBackground',
-      props: '.userEnteredFormat.backgroundColor',
-      defaultValue: { red: 1, green: 1, blue: 1 },
-      cleaner: (f) => is.null(f) ? WHITE : rgbToHex(f.red, f.green, f.blue)
-    }, {
-      name: 'getFontWeight',
-      props: '.userEnteredFormat.textFormat.bold',
-      defaultValue:false,
-      cleaner: (f) => f ? 'bold' : 'normal'
-    }, {
-      name: 'getBorder',
-      props: '.userEnteredFormat.borders',
-      defaultValue:null,
-      cleaner: (f=> {
-        console.log (f)
-        return f
-      })
-    }]
-    attrGetList.forEach(attrGens)
-
+    // make the generatable functions
+    attrGetList.forEach(target => attrGens(this, target))
 
     // list of not yet implemented methods
     const props = [
       'removeDuplicates',
       'getMergedRanges',
-
       'setFontColorObjects',
       'getDataValidation',
       'getDataValidations',
@@ -138,19 +134,14 @@ export class FakeSheetRange {
       'clearDataValidations',
       'protect',
       'setDataValidation',
-
       'getTextDirection',
       'setTextDirection',
       'getTextStyle',
-   
       'getFontFamilies',
       'setFontWeight',
-
       'setHorizontalAlignments',
-
       'createDataSourcePivotTable',
       'setFontLines',
-
       'activate',
       'breakApart',
       'deleteCells',
@@ -159,7 +150,6 @@ export class FakeSheetRange {
       'getFormulaR1C1',
       'getFormulasR1C1',
       'getDataSourceFormula',
-
       'getBackgroundColors',
       'insertCells',
       'setFormulas',
@@ -169,16 +159,11 @@ export class FakeSheetRange {
       'mergeAcross',
       'mergeVertically',
       'isPartOfMerge',
-
-
       'getBackgroundObject',
       'getBackgroundObjects',
-
       'setBorder',
       'activateAsCurrentCell',
-
       'setFontColorObject',
-
       'setFontFamilies',
       'setFontLine',
       'setFontSizes',
@@ -191,17 +176,13 @@ export class FakeSheetRange {
       'setWraps',
       'copyValuesToRange',
       'copyFormatToRange',
-
       'getFontColorObject',
-  
       'getFontColorObjects',
       'getFontLine',
       'getFontLines',
       'getFontSizes',
       'getFontStyle',
       'setComments',
-
-
       'getWrap',
       'getWraps',
       'randomize',
@@ -246,7 +227,6 @@ export class FakeSheetRange {
       'getTextDirections',
       'copyTo',
       'setTextStyle',
-
       'getComments',
       'clearComment',
       'getBandings',
@@ -266,7 +246,6 @@ export class FakeSheetRange {
       'setFontFamily',
       'getDataSourceFormulas',
       'getDataSourceTables',
-
       'setBackgroundColor',
       'getBackgroundColor',
       'setFormula',
@@ -282,11 +261,9 @@ export class FakeSheetRange {
       'isBlank',
       'merge',
       'sort',
-
       'check',
       'getFilter',
       'setNumberFormat',
-
       'setComment',
       'getComment']
     props.forEach(f => {
@@ -296,7 +273,6 @@ export class FakeSheetRange {
     })
 
   }
-
 
 
   clearContent() {

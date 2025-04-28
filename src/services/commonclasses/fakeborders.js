@@ -16,10 +16,10 @@ export const newFakeBorders = (...args) => {
 // https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets/cells#Borders
 class FakeBorders {
   constructor({ top, bottom, left, right }) {
-    this.__top = newFakeBorder(top)
-    this.__bottom = newFakeBorder(bottom)
-    this.__left = newFakeBorder(left)
-    this.__right = newFakeBorder(right)
+    this.__top = top ? newFakeBorder(top) : null
+    this.__bottom = bottom ? newFakeBorder(bottom) : null
+    this.__left = left ? newFakeBorder(left) : null
+    this.__right = right ? newFakeBorder(right) : null
   }
   getBottom() {
     return this.__bottom

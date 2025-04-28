@@ -11,6 +11,9 @@ import '../main.js'
 import { initTests } from './testinit.js'
 import { getSheetsPerformance } from '../src/support/sheetscache.js';
 
+const BLACK = '#000000'
+const RED = '#ff0000'
+
 
 const toHex = (c) => {
   if (!c) return '00';
@@ -36,6 +39,74 @@ export const testSheets = (pack) => {
   const toTrash = []
 
 
+  unit.section("range borders", t => {
+
+    const aname = fixes.PREFIX + "border-sheet"
+    const ss = SpreadsheetApp.create(aname)
+    const sheets = ss.getSheets()
+    const [sheet] = sheets
+    const range = sheet.getRange("c2:i4")
+
+    // newly created sheet has all null borders
+    t.is(range.getBorders().length, range.getNumRows())
+    t.is(range.getBorders()[0].length, range.getNumColumns())
+    t.is(range.getBorder(), null)
+    t.is(range.getBorders().flat().every(is.null), true)
+
+    // this sheet temporarily has some borders in it - once I have setborders working, I'll eliminate
+    const sp = SpreadsheetApp.openById(fixes.TEST_BORDERS_ID)
+    const sb = sp.getSheets()[0]
+    const rb = sb.getRange("a6:b10")
+    const b = rb.getBorders()
+    t.is(b.length, rb.getNumRows())
+    t.is(b[0].length, rb.getNumColumns())
+    const points = ['getTop', 'getLeft', 'getBottom', 'getRight']
+    points.forEach(f => {
+      const ps = b.flat().map(g => g[f]())
+      t.true(ps.every(g => g.getColor().asRgbColor().asHexString(), BLACK))
+      t.true(ps.every(g => g.getBorderStyle().toString(), "SOLID"))
+      t.is(rb.getBorder()[f]().getColor().asRgbColor().asHexString(), BLACK)
+      t.is(rb.getBorder()[f]().getBorderStyle().toString(), "SOLID")
+    })
+
+    const rr = sb.getRange("a19:b21")
+    const bb = rr.getBorders()
+    t.is(bb.length, rr.getNumRows())
+    t.is(bb[0].length, rr.getNumColumns())
+    points.forEach(f => {
+      const ps = bb.flat().map(g => g[f]())
+      t.true(ps.every(g => g.getColor().asRgbColor().asHexString(), RED))
+      t.true(ps.every(g => g.getBorderStyle().toString(), "SOLID_THICK"))
+      t.is(rr.getBorder()[f]().getColor().asRgbColor().asHexString(), RED)
+      t.is(rr.getBorder()[f]().getBorderStyle().toString(), "SOLID_THICK")
+    })
+
+    const rt = sb.getRange("a26:b28")
+    const bt = rt.getBorders()
+    t.is(bt.length, rt.getNumRows())
+    t.is(bt[0].length, rt.getNumColumns())
+
+    // the top of of the first row should be null
+    // the bottom of the last row should be null
+    // the left of the first column should be null
+    // the right of last column should be null
+    const topRow = bt[0]
+    const bottomRow = bt[bt.length - 1]
+    const leftCol = bt.map(f => f[0])
+    const rightCol = bt.map(f => f[f.length - 1])
+    t.true (topRow.every(f => f.getTop() === null))
+    t.true (bottomRow.every(f => f.getBottom() === null))
+    t.true (leftCol.every(f => f.getLeft() === null))
+    t.true (rightCol.every(f=>f.getRight() === null ))
+
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+    if (fixes.CLEAN) {
+      toTrash.push(DriveApp.getFileById(ss.getId()))
+    }
+
+  })
+
   unit.section("user entered formats", t => {
     const aname = fixes.PREFIX + "ue-sheet"
     const ss = SpreadsheetApp.create(aname)
@@ -59,11 +130,11 @@ export const testSheets = (pack) => {
     const fws = range.getFontWeight()
     const fw = range.getFontWeights()
     t.is(fw.length, range.getNumRows())
-    t.is(fw[0].length, range.getNumColumns  ())
+    t.is(fw[0].length, range.getNumColumns())
     t.true(fw.flat().every(f => is.nonEmptyString(f)))
     t.is(fws, fw[0][0])
     t.is(fws, 'normal')
-    
+
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
     if (fixes.CLEAN) {
       toTrash.push(DriveApp.getFileById(ss.getId()))

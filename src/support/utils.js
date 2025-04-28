@@ -182,6 +182,9 @@ const validateHex = (cssString) => {
 
 }
 
+const robToHex = ({red, green, blue}) => rgbToHex(red, green, blue)
+
+
 const rgbToHex = (r, g, b) => {
   const toHex = (c) => {
     if (!c) return '00';
@@ -238,7 +241,8 @@ export const Utils = {
   is,
   rgbToHex,
   getPlucker,
-  validateHex
+  validateHex,
+  robToHex
 }
 
 
