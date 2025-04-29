@@ -39,7 +39,10 @@ export const testSheets = (pack) => {
   const toTrash = []
 
 
-  unit.section("range borders", t => {
+  // range.getBorders() doesn't work on GAS
+  // see this issue - https://issuetracker.google.com/issues/329473815
+  // we can resurrect this if it ever gets fixed
+  unit.section("range borders - there's a bug in Gas range.getBorders so this doesnt run there", t => {
 
     const aname = fixes.PREFIX + "border-sheet"
     const ss = SpreadsheetApp.create(aname)
@@ -105,6 +108,8 @@ export const testSheets = (pack) => {
       toTrash.push(DriveApp.getFileById(ss.getId()))
     }
 
+  }, {
+    skip: !SpreadsheetApp.isFake
   })
 
   unit.section("user entered formats", t => {
