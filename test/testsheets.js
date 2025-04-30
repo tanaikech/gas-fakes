@@ -42,19 +42,17 @@ export const testSheets = (pack) => {
   // range.getBorders() doesn't work on GAS
   // see this issue - https://issuetracker.google.com/issues/329473815
   // we can resurrect this if it ever gets fixed
-  unit.section("range borders - there's a bug in Gas range.getBorders so this doesnt run there", t => {
+  unit.section("range borders - there's a bug in GAS range.getBorders so this doesnt run there", t => {
 
-    const aname = fixes.PREFIX + "border-sheet"
+    const aname = fixes.PREFIX + "borders-sheet"
     const ss = SpreadsheetApp.create(aname)
     const sheets = ss.getSheets()
     const [sheet] = sheets
     const range = sheet.getRange("c2:i4")
+    const points = ['getTop', 'getLeft', 'getBottom', 'getRight']
 
-    // newly created sheet has all null borders
-    t.is(range.getBorders().length, range.getNumRows())
-    t.is(range.getBorders()[0].length, range.getNumColumns())
-    t.is(range.getBorder(), null)
-    t.is(range.getBorders().flat().every(is.null), true)
+    // newly created sheet has all null borders so the borders object should be null
+    t.true(range.getBorders().flat().every (f=>is.null(f)))
 
     // this sheet temporarily has some borders in it - once I have setborders working, I'll eliminate
     const sp = SpreadsheetApp.openById(fixes.TEST_BORDERS_ID)
@@ -63,13 +61,11 @@ export const testSheets = (pack) => {
     const b = rb.getBorders()
     t.is(b.length, rb.getNumRows())
     t.is(b[0].length, rb.getNumColumns())
-    const points = ['getTop', 'getLeft', 'getBottom', 'getRight']
+
     points.forEach(f => {
       const ps = b.flat().map(g => g[f]())
       t.true(ps.every(g => g.getColor().asRgbColor().asHexString(), BLACK))
       t.true(ps.every(g => g.getBorderStyle().toString(), "SOLID"))
-      t.is(rb.getBorder()[f]().getColor().asRgbColor().asHexString(), BLACK)
-      t.is(rb.getBorder()[f]().getBorderStyle().toString(), "SOLID")
     })
 
     const rr = sb.getRange("a19:b21")
@@ -80,8 +76,6 @@ export const testSheets = (pack) => {
       const ps = bb.flat().map(g => g[f]())
       t.true(ps.every(g => g.getColor().asRgbColor().asHexString(), RED))
       t.true(ps.every(g => g.getBorderStyle().toString(), "SOLID_THICK"))
-      t.is(rr.getBorder()[f]().getColor().asRgbColor().asHexString(), RED)
-      t.is(rr.getBorder()[f]().getBorderStyle().toString(), "SOLID_THICK")
     })
 
     const rt = sb.getRange("a26:b28")
@@ -97,10 +91,146 @@ export const testSheets = (pack) => {
     const bottomRow = bt[bt.length - 1]
     const leftCol = bt.map(f => f[0])
     const rightCol = bt.map(f => f[f.length - 1])
-    t.true (topRow.every(f => f.getTop() === null))
-    t.true (bottomRow.every(f => f.getBottom() === null))
-    t.true (leftCol.every(f => f.getLeft() === null))
-    t.true (rightCol.every(f=>f.getRight() === null ))
+
+    // can't really test if this is the correct response till the GAS bug is fixed and investigation is possible
+    // but given responses to getBorder() it should be correct
+    t.true(topRow.every(r => r.getTop().getColor().getColorType().toString() === 'UNSUPPORTED'))
+    t.true(bottomRow.every(r => r.getBottom().getColor().getColorType().toString() === 'UNSUPPORTED'))
+    t.true(leftCol.every(r => r.getLeft().getColor().getColorType().toString() === 'UNSUPPORTED'))
+    t.true(rightCol.every(r => r.getRight().getColor().getColorType().toString() === 'UNSUPPORTED'))
+    t.true(topRow.every(r => r.getTop().getBorderStyle() === null))
+    t.true(bottomRow.every(r => r.getBottom().getBorderStyle() === null))
+    t.true(leftCol.every(r => r.getLeft().getBorderStyle() === null))
+    t.true(rightCol.every(r => r.getRight().getBorderStyle() === null))
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+    if (fixes.CLEAN) {
+      toTrash.push(DriveApp.getFileById(ss.getId()))
+    }
+
+  }, {
+    skip: !SpreadsheetApp.isFake
+  })
+
+  unit.section("spreadsheet ranges", t => {
+    // careful with confusion of combining 0 (offset,array indices) and 1 start (range methods)
+    const ss = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
+    const sheet = ss.getSheets()[1]
+    const range = sheet.getRange("c2:$d$4")
+    t.false(sheet.isSheetHidden())
+    t.is(range.toString(), "Range")
+    t.is(range.getGridId(), sheet.getSheetId())
+    t.is(range.getA1Notation(), "C2:D4")
+    t.is(range.getRow(), 2)
+    t.is(range.getColumn(), 3)
+    t.is(range.getLastRow(), 4)
+    t.is(range.getLastColumn(), 4)
+    t.is(range.getCell(1, 1).getA1Notation(), range.offset(0, 0, 1, 1).getA1Notation())
+    t.is(range.getCell(2, 2).getColumn(), range.getColumn() + 1)
+    t.is(range.getCell(2, 2).getRow(), range.getRow() + 1)
+    t.is(range.getWidth(), range.getNumColumns())
+    t.is(range.getHeight(), range.getNumRows())
+    t.is(range.getNumColumns(), range.getLastColumn() - range.getColumn() + 1)
+    t.is(range.getNumRows(), range.getLastRow() - range.getRow() + 1)
+
+
+    const { values } = Sheets.Spreadsheets.Values.get(sheet.getParent().getId(), sheet.getName())
+    const target = values.slice(range.getRow() - 1, range.getLastRow()).map(row => row.slice(range.getColumn() - 1, range.getLastColumn()))
+    t.true(is.array(target))
+    t.is(target.length, range.getNumRows())
+    t.is(target[0].length, range.getNumColumns())
+    const tr = `${sheet.getName()}!${range.getA1Notation()}`
+    const { values: atv, range: atr } = Sheets.Spreadsheets.Values.get(fixes.TEST_SHEET_ID, tr)
+    t.is(atv.length, target.length)
+    t.is(atv[0].length, target[0].length)
+    t.is(atr, tr)
+
+
+    const rv = range.getValues()
+    const dr = sheet.getDataRange()
+    t.is(dr.offset(0, 0).getA1Notation(), dr.getA1Notation())
+    t.is(dr.offset(0, 0, 1, 1).getA1Notation(), "A1")
+    t.is(dr.offset(1, 1, 1, 1).getA1Notation(), "B2")
+    t.is(dr.offset(2, 1).getColumn(), 2)
+    t.is(dr.offset(3, 5).getRow(), 4)
+    t.is(dr.offset(0, 1).getLastColumn(), dr.getLastColumn() + 1)
+    t.is(dr.offset(1, 1).getNumRows(), dr.getNumRows())
+    t.is(dr.offset(1, 1).getNumColumns(), dr.getNumColumns())
+    t.is(dr.offset(1, 1, 2, 2).getNumRows(), 2)
+    t.is(dr.offset(1, 1, 2, 2).getNumColumns(), 2)
+    t.is(dr.offset(1, 1, 3).getNumRows(), 3)
+    t.is(dr.offset(1, 1, 3, 4).getNumColumns(), 4)
+
+    t.is(range.getValue(), atv[0][0])
+    t.is(range.getValue(), atv[0][0])
+    t.is(range.offset(1, 1, 1, 1).getValue(), atv[1][1])
+    t.is(range.offset(0, 2, 1, 1).getValue(), values[1][2])
+
+    t.is(range.getDisplayValue(), atv[0][0].toString())
+
+    t.rxMatch(t.threw(() => range.offset(0, 0, 0)).message, /number of rows/)
+    t.rxMatch(t.threw(() => range.offset(0, 0, 1, 0)).message, /number of columns/)
+
+    // TODO check when we have some formulas in place
+    t.true(is.string(range.getFormula()))
+    t.true(range.getFormulas().every(r => r.map(f => is.string(f))))
+    t.is(range.getFormulas().length, atv.length)
+    t.is(range.getFormulas()[0].length, atv[0].length)
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+  })
+
+
+  unit.section("range.getBorder() does work on GAS although it's not documented", t => {
+
+    const aname = fixes.PREFIX + "border-sheet"
+    const ss = SpreadsheetApp.create(aname)
+    const sheets = ss.getSheets()
+    const [sheet] = sheets
+    const range = sheet.getRange("c2:i4")
+    const points = ['getTop', 'getLeft', 'getBottom', 'getRight']
+
+    // newly created sheet has all null borders
+    t.is(range.getBorder(), null)
+
+
+    // this sheet temporarily has some borders in it - once I have setborders working, I'll eliminate
+    const sp = SpreadsheetApp.openById(fixes.TEST_BORDERS_ID)
+    const sb = sp.getSheets()[0]
+    const rb = sb.getRange("a6:b10")
+
+
+    points.forEach(f => {
+      t.is(rb.getBorder()[f]().getColor().asRgbColor().asHexString(), BLACK)
+      t.is(rb.getBorder()[f]().getBorderStyle().toString(), "SOLID")
+    })
+
+    const rr = sb.getRange("a19:b21")
+    points.forEach(f => {
+      t.is(rr.getBorder()[f]().getColor().asRgbColor().asHexString(), RED)
+      t.is(rr.getBorder()[f]().getBorderStyle().toString(), "SOLID_THICK")
+    })
+
+    const rt = sb.getRange("a26:b28")
+
+    // the top of of the first row should be null
+    // the bottom of the last row should be null
+    // the left of the first column should be null
+    // the right of last column should be null
+    const topRow = rt.offset(0, 0, 1).getBorder()
+    const bottomRow = rt.offset(rt.getNumRows() - 1, 1).getBorder()
+    const leftCol = rt.offset(0, 0, rt.getNumRows(), 1).getBorder()
+    const rightCol = rt.offset(0, rt.getNumColumns() - 1, rt.getNumRows(), 1).getBorder()
+
+
+    t.is(topRow.getTop().getColor().getColorType().toString(), 'UNSUPPORTED')
+    t.is(bottomRow.getBottom().getColor().getColorType().toString(), 'UNSUPPORTED')
+    t.is(leftCol.getLeft().getColor().getColorType().toString(), 'UNSUPPORTED')
+    t.is(rightCol.getRight().getColor().getColorType().toString(), 'UNSUPPORTED')
+    t.is(topRow.getTop().getBorderStyle(), null)
+    t.is(bottomRow.getBottom().getBorderStyle(), null)
+    t.is(leftCol.getLeft().getBorderStyle(), null)
+    t.is(rightCol.getRight().getBorderStyle(), null)
 
 
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
@@ -112,7 +242,8 @@ export const testSheets = (pack) => {
     skip: !SpreadsheetApp.isFake
   })
 
-  unit.section("user entered formats", t => {
+
+  unit.section("assorted cell userenteredformats", t => {
     const aname = fixes.PREFIX + "ue-sheet"
     const ss = SpreadsheetApp.create(aname)
     const sheets = ss.getSheets()
@@ -131,7 +262,6 @@ export const testSheets = (pack) => {
     t.true(nfs.flat().every(f => f === dfv))
     t.is(nf, dfv)
 
-
     const fws = range.getFontWeight()
     const fw = range.getFontWeights()
     t.is(fw.length, range.getNumRows())
@@ -147,7 +277,7 @@ export const testSheets = (pack) => {
 
   })
 
-  unit.section("cell formatting options", t => {
+  unit.section("cell backgrounds and alignments", t => {
 
     const aname = fixes.PREFIX + "a-sheet"
     const ss = SpreadsheetApp.create(aname)
@@ -350,7 +480,6 @@ export const testSheets = (pack) => {
 
 
 
-
   unit.section("basic adv sheets cell formatting fetch fix", t => {
     // this section will work with the testsheet where we have some horizonatl alignment (as opposed to the default which returns nothing)
     const spreadsheetId = fixes.TEST_SHEET_ID
@@ -371,250 +500,6 @@ export const testSheets = (pack) => {
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
 
   })
-
-  unit.section("creating and updating sheets", t => {
-
-    const aname = fixes.PREFIX + "a-sheet"
-    const ss = SpreadsheetApp.create(aname)
-    t.is(ss.getName(), aname)
-
-    const bname = fixes.PREFIX + "b-sheet"
-    const bs = Sheets.Spreadsheets.create({
-      properties: {
-        title: bname
-      }
-    })
-    t.is(bs.properties.title, bname)
-
-    const cname = fixes.PREFIX + "c-sheet"
-    const prows = 25
-    const pcols = 10
-    const cs = SpreadsheetApp.create(cname, prows, pcols)
-    t.is(cs.getName(), cname)
-    t.is(cs.getNumSheets(), 1)
-    t.is(cs.getSheets()[0].getMaxRows(), prows)
-    t.is(cs.getSheets()[0].getMaxColumns(), pcols)
-
-    // insert some sheets and test that index is properly updated
-    // the sheets get reordered and the sheetIndex gets updated
-    const s1 = cs.insertSheet('s1') // sheet1,s1
-    const s2 = cs.insertSheet('s2') // sheet1,s1,s2
-    const s3 = cs.insertSheet('s3', 1) // sheet1,s3,s1,s2
-    const s4 = cs.insertSheet('s4', 0) // s4,sheet1,s3,s1,s2
-    const act = cs.getSheets().map(f => [f.getName(), f.getIndex()])
-    const exs = [[s4.getName(), 1], ['Sheet1', 2], [s3.getName(), 3], [s1.getName(), 4], [s2.getName(), 5]]
-    t.deepEqual(act, exs)
-
-
-    t.is(cs.getSheetByName('s1').getIndex(), cs.getSheetById(s1.getSheetId()).getIndex())
-    cs.getSheets().forEach((f, i) => t.is(f.getIndex(), i + 1))
-
-
-    const sheet = cs.getSheets()[1]
-    const col = 2
-    const row = 3
-    const cw = sheet.getColumnWidth(2)
-    const rh = sheet.getRowHeight(3)
-    const cx = 200
-    const rx = 31
-
-    let requests = [{
-      updateDimensionProperties: {
-        range: {
-          sheetId: sheet.getSheetId(),
-          dimension: 'ROWS',
-          startIndex: row - 1,
-          endIndex: row,
-        },
-        properties: {
-          pixelSize: rx,
-        },
-        fields: 'pixelSize',
-      }
-    }, {
-      updateDimensionProperties: {
-        range: {
-          sheetId: sheet.getSheetId(),
-          dimension: 'COLUMNS',
-          startIndex: col - 1,
-          endIndex: col,
-        },
-        properties: {
-          pixelSize: cx,
-        },
-        fields: 'pixelSize',
-      }
-    }]
-    t.true(is.nonEmptyObject(Sheets.Spreadsheets.batchUpdate({ requests }, cs.getId())))
-    t.is(sheet.getColumnWidth(col), cx)
-    t.is(sheet.getRowHeight(row), rx)
-
-    // reset
-    requests[1].updateDimensionProperties.properties.pixelSize = cw
-    requests[0].updateDimensionProperties.properties.pixelSize = rh
-    const reset = Sheets.Spreadsheets.batchUpdate({ requests }, cs.getId())
-    t.is(reset.spreadsheetId, cs.getId())
-    t.is(reset.replies.length, requests.length)
-    t.true(reset.replies.every(f => is.emptyObject(f)))
-    t.is(sheet.getColumnWidth(col), cw)
-    t.is(sheet.getRowHeight(row), rh)
-
-    // lets try that with spreadsheet app
-    sheet.setColumnWidth(col, cx).setRowHeight(row, rx)
-    t.is(sheet.getColumnWidth(col), cx)
-    t.is(sheet.getRowHeight(row), rx)
-
-    const ncols = 3
-    const nrows = 4
-
-    // now try with a few columns/rows
-    sheet.setColumnWidths(col, ncols, cx).setRowHeights(row, nrows, rx)
-
-    for (let r = row; r < nrows + row; r++) {
-      t.is(sheet.getRowHeight(r), rx)
-    }
-    for (let c = col; c < ncols + col; c++) {
-      t.is(sheet.getColumnWidth(c), cx)
-    }
-
-    t.is(sheet.getColumnWidth(col), cx)
-    t.is(sheet.getRowHeight(row), rx)
-
-    // reset everything
-    sheet.setColumnWidths(col, ncols, cw).setRowHeights(row, nrows, rh)
-    t.is(sheet.getColumnWidth(col), cw)
-    t.is(sheet.getRowHeight(row), rh)
-
-    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-
-
-    if (fixes.CLEAN) {
-      toTrash.push(DriveApp.getFileById(cs.getId()))
-      toTrash.push(DriveApp.getFileById(ss.getId()))
-      toTrash.push(DriveApp.getFileById(bs.spreadsheetId))
-    }
-
-  })
-
-
-  unit.section("spreadsheet values", t => {
-
-    // TODO - fails on gas if the fields are dates or numbers because gas automayically detects and converts types
-    // whereas advanced sheets/node api does not
-    // - see https://github.com/brucemcpherson/gas-fakes/issues/15
-
-    // lets make some test data
-    const fooName = fixes.PREFIX + "foo"
-
-    const cs = SpreadsheetApp.create(fooName)
-    if (fixes.CLEAN) toTrash.push(DriveApp.getFileById(cs.getId()))
-    const fooSheet = cs.insertSheet('foosheet')
-    const fooValues = Array.from({ length: 10 }, (_, i) => Array.from({ length: 6 }, (_, j) => i + j))
-    const fooRange = fooSheet.getRange(1, 1, fooValues.length, fooValues[0].length).getA1Notation()
-    /**
-     * Note:
-     * the Google Sheets API doesn't guarantee that the data type will be strictly preserved 
-     * but valueInputoption "RAW" has a better success rate then "USER_ENTERED"
-     * need to use in conjunction with valueRenderOption: 'UNFORMATTED_VALUE' on the get
-     * howver it's not clear what behavior to expect from gas
-     */
-    const fooRequest = {
-      valueInputOption: "RAW",
-      data: [{
-        majorDimension: "ROWS",
-        range: `'${fooSheet.getName()}'!${fooRange}`,
-        values: fooValues,
-      }]
-    }
-    const foosh = Sheets.Spreadsheets.Values.batchUpdate(fooRequest, cs.getId())
-
-    t.is(foosh.totalUpdatedCells, fooValues.length * fooValues[0].length)
-    t.is(foosh.totalUpdatedRows, fooValues.length)
-    t.is(foosh.totalUpdatedColumns, fooValues[0].length)
-    t.is(foosh.totalUpdatedSheets, 1)
-
-    const barSheet = cs.insertSheet('barsheet')
-    const barRange = barSheet.getRange(1, 1, fooValues.length, fooValues[0].length)
-    barRange.setValues(fooValues)
-
-    const barValues = barRange.getValues()
-    t.deepEqual(barSheet.getDataRange().getValues(), fooValues)
-
-    t.deepEqual(fooSheet.getRange(fooRange).getValues(), barValues)
-    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-  })
-
-
-
-
-
-
-  unit.section("spreadsheet ranges", t => {
-    // careful with confusion of combining 0 (offset,array indices) and 1 start (range methods)
-    const ss = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
-    const sheet = ss.getSheets()[1]
-    const range = sheet.getRange("c2:$d$4")
-    t.false(sheet.isSheetHidden())
-    t.is(range.toString(), "Range")
-    t.is(range.getGridId(), sheet.getSheetId())
-    t.is(range.getA1Notation(), "C2:D4")
-    t.is(range.getRow(), 2)
-    t.is(range.getColumn(), 3)
-    t.is(range.getLastRow(), 4)
-    t.is(range.getLastColumn(), 4)
-    t.is(range.getCell(1, 1).getA1Notation(), range.offset(0, 0, 1, 1).getA1Notation())
-    t.is(range.getCell(2, 2).getColumn(), range.getColumn() + 1)
-    t.is(range.getCell(2, 2).getRow(), range.getRow() + 1)
-    t.is(range.getWidth(), range.getNumColumns())
-    t.is(range.getHeight(), range.getNumRows())
-    t.is(range.getNumColumns(), range.getLastColumn() - range.getColumn() + 1)
-    t.is(range.getNumRows(), range.getLastRow() - range.getRow() + 1)
-
-
-    const { values } = Sheets.Spreadsheets.Values.get(sheet.getParent().getId(), sheet.getName())
-    const target = values.slice(range.getRow() - 1, range.getLastRow()).map(row => row.slice(range.getColumn() - 1, range.getLastColumn()))
-    t.true(is.array(target))
-    t.is(target.length, range.getNumRows())
-    t.is(target[0].length, range.getNumColumns())
-    const tr = `${sheet.getName()}!${range.getA1Notation()}`
-    const { values: atv, range: atr } = Sheets.Spreadsheets.Values.get(fixes.TEST_SHEET_ID, tr)
-    t.is(atv.length, target.length)
-    t.is(atv[0].length, target[0].length)
-    t.is(atr, tr)
-
-
-    const rv = range.getValues()
-    const dr = sheet.getDataRange()
-    t.is(dr.offset(0, 0).getA1Notation(), dr.getA1Notation())
-    t.is(dr.offset(0, 0, 1, 1).getA1Notation(), "A1")
-    t.is(dr.offset(1, 1, 1, 1).getA1Notation(), "B2")
-    t.is(dr.offset(2, 1).getColumn(), 2)
-    t.is(dr.offset(3, 5).getRow(), 4)
-    t.is(dr.offset(0, 1).getLastColumn(), dr.getLastColumn() + 1)
-    t.is(dr.offset(1, 1).getNumRows(), dr.getNumRows())
-    t.is(dr.offset(1, 1).getNumColumns(), dr.getNumColumns())
-    t.is(dr.offset(1, 1, 2, 2).getNumRows(), 2)
-    t.is(dr.offset(1, 1, 2, 2).getNumColumns(), 2)
-    t.is(dr.offset(1, 1, 3).getNumRows(), 3)
-    t.is(dr.offset(1, 1, 3, 4).getNumColumns(), 4)
-
-    t.is(range.getValue(), atv[0][0])
-    t.is(range.getValue(), atv[0][0])
-    t.is(range.offset(1, 1, 1, 1).getValue(), atv[1][1])
-    t.is(range.offset(0, 2, 1, 1).getValue(), values[1][2])
-
-    t.is(range.getDisplayValue(), atv[0][0].toString())
-
-    // TODO check when we have some formulas in place
-    t.true(is.string(range.getFormula()))
-    t.true(range.getFormulas().every(r => r.map(f => is.string(f))))
-    t.is(range.getFormulas().length, atv.length)
-    t.is(range.getFormulas()[0].length, atv[0].length)
-
-    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-  })
-
-
 
 
   unit.section("spreadsheetapp rangelists", t => {
@@ -653,66 +538,6 @@ export const testSheets = (pack) => {
   })
 
 
-
-
-  unit.section("advanced & spreadsheetapp values and ranges", t => {
-    t.is(Sheets.Spreadsheets.Values.toString(), Sheets.toString())
-    const ss = Sheets.Spreadsheets.get(fixes.TEST_SHEET_ID)
-    t.is(ss.spreadsheetId, fixes.TEST_SHEET_ID)
-    const result = Sheets.Spreadsheets.Values.get(ss.spreadsheetId, ss.sheets[0].properties.title)
-    const { range, majorDimension, values } = result
-    t.true(is.nonEmptyString(range))
-    t.is(majorDimension, 'ROWS')
-    t.true(is.array(values))
-    t.true(is.array(values[0]))
-    t.true(values.length > 0)
-
-    const sa = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
-    const sr = sa.getRange("A1:B2")
-    t.is(sr.getA1Notation(), "A1:B2")
-    const st = sa.getRange(`${sa.getSheets()[0].getName()}!${sr.getA1Notation()}`)
-    t.is(st.getA1Notation(), sr.getA1Notation())
-
-    const sheet = sa.getSheetByName(ss.sheets[0].properties.title)
-    const dr = sheet.getDataRange()
-    const lr = sheet.getLastRow()
-    const lc = sheet.getLastColumn()
-    const ar = dr.getA1Notation()
-    t.true(is.object(dr))
-    t.true(is.nonEmptyString(ar))
-    t.is(lr, values.length)
-    t.is(lc, values[0].length)
-
-    t.is(parseInt(ar.replace(/[^\d]+(\d+).*/, '$1'), 10), 1)
-    t.is(parseInt(ar.replace(/.*:[^\d]+(\d+)/, '$1'), 10), lr)
-    t.is(ar.replace(/([^\d]).*/, '$1'), 'A')
-    t.is(sheet.getRange(1, 1, lr, lc).getA1Notation(), ar)
-    const art = "C11:AB20"
-    const tr = sheet.getRange(art)
-    t.is(tr.getA1Notation(), art)
-    t.is(tr.getRow(), 11)
-    t.is(tr.getColumn(), 3)
-    t.is(tr.getLastRow(), 20)
-    t.is(tr.getLastColumn(), 28)
-    t.is(tr.getRowIndex(), tr.getRow())
-    t.is(tr.getColumnIndex(), tr.getColumn())
-    t.is(tr.getNumRows(), tr.getLastRow() - tr.getRow() + 1)
-    t.is(tr.getNumColumns(), tr.getLastColumn() - tr.getColumn() + 1)
-    t.is(sheet.getRange(tr.getRow(), tr.getColumn(), tr.getNumRows(), tr.getNumColumns()).getA1Notation(), art)
-    const aa = sheet.getRange("$aa$11")
-    const aaex = "AA11"
-    t.is(aa.getA1Notation(), aaex)
-    t.is(aa.getRow(), 11)
-    t.is(aa.getColumn(), 27)
-    t.is(aa.getLastRow(), aa.getRow())
-    t.is(aa.getLastColumn(), aa.getColumn())
-    t.is(aa.getRowIndex(), aa.getRow())
-    t.is(aa.getColumnIndex(), aa.getColumn())
-    t.is(aa.getNumRows(), aa.getLastRow() - aa.getRow() + 1)
-    t.is(aa.getNumColumns(), aa.getLastColumn() - aa.getColumn() + 1)
-    t.is(sheet.getRange(aa.getRow(), aa.getColumn(), aa.getNumRows(), aa.getNumColumns()).getA1Notation(), aaex)
-    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-  })
 
 
   unit.section("advanced sheet basics", t => {

@@ -26,8 +26,14 @@ class FakeBorder {
    * @param {ColorStyle} colorStyle {rgbColor|themeColor}
    * @returns {FakeBorder} a border
    */
-  constructor({color, style, width, colorStyle }) {
-    this.__borderStyle = newNummery(style)
+  // it's possible that the border info will be null
+  // we need to produce various defaults to support the object type
+  // rules deduced from GAS tests seem to be
+  // color -  an UNSUPPORTED colorType - this is the default 
+  // borderStyle - null
+  constructor(apiResult) {
+    const {color, style, width, colorStyle } = apiResult || {}
+    this.__borderStyle = style ? newNummery(style) : null
 
     // TODO not sure what to do with this information yet
     // since width is part of the definition of borderstyle
@@ -53,8 +59,11 @@ class FakeBorder {
       // in this case its just an rgbcolor - and I think only here for legacy - i doubt if this will ever be called
       colorBuilder.setColor(robToHex(color))
 
+    } else if (!apiResult) {
+      // this can happen if we got a null from the API so we allow the builder to create an UNSUPPORTED type
+      // no action required here
     } else {
-      throw new Error ('neither color not colorStyle specified for border')
+      throw new Error ('no color types were provided for border')
     }
     this.__color = colorBuilder.build()
   }

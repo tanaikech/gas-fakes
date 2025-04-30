@@ -9,6 +9,7 @@ import '../main.js'
 import { initTests }  from  './testinit.js'
 import { testDrive } from './testdrive.js';
 import { testSheets } from './testsheets.js';
+import { testSheetsValues } from './testsheetsvalues.js';
 import { testFetch } from './testfetch.js';
 import { testSession } from './testsession.js';
 import { testUtilities } from './testutilities.js';
@@ -25,6 +26,7 @@ const testFakes = () => {
 
   // add one of these for each service being tested
   testSheets(pack)
+  testSheetsValues(pack)  
   testFiddler(pack)
   testDrive(pack)
   testFetch(pack)

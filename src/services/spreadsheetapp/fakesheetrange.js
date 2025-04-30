@@ -100,7 +100,7 @@ const attrGetList = [{
   name: 'getBorder',
   props: '.userEnteredFormat.borders',
   defaultValue: null,
-  cleaner: (f =>  is.null(f) ? null : newFakeBorders(f))
+  cleaner: (f => is.null(f) ? null : newFakeBorders(f))
 }]
 
 /**
@@ -442,9 +442,15 @@ export class FakeSheetRange {
     if (nargs > 3 && !is.integer(numColumns)) matchThrow()
     const gr = { ...this.__gridRange }
 
-    numColumns = numColumns || this.getNumColumns()
-    numRows = numRows || this.getNumRows()
+    numColumns = is.undefined(numColumns) ? this.getNumColumns() : numColumns
+    numRows = is.undefined(numRows) ? this.getNumRows() : numRows
 
+    if (!numRows) {
+      throw new Error ('The number of rows in the range must be at least 1')
+    }
+    if (!numColumns){
+      throw new Error ('The number of columns in the range must be at least 1')
+    }
     gr.startRowIndex += rowOffset
     gr.startColumnIndex += columnOffset
     gr.endRowIndex = gr.startRowIndex + numRows
