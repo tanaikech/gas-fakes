@@ -5,7 +5,7 @@ import { FakeColorBase } from './fakecolorbase.js'
 import { newFakeThemeColor } from './fakethemecolor.js'
 import { signatureArgs } from '../../support/helpers.js'
 import { Utils} from '../../support/utils.js'
-const { is } = Utils
+const { is, robToHex } = Utils
 
 /**
  * @file
@@ -20,6 +20,15 @@ export const newFakeColorBuilder = (...args) => {
   return Proxies.guard(new FakeColorBuilder(...args))
 }
 
+export const makeColorFromApi = (apiResult) => {
+  const builder = newFakeColorBuilder()
+  if (apiResult.themeColor) {
+    builder.setThemeColor(apiResult.themeColor)
+  } else if (apiResult.rgbColor) {
+    builder.setRgbColor(robToHex(apiResult.rgbColor))
+  }
+  return builder.build()
+}
 
 class FakeColorBuilder extends FakeColorBase {
   constructor() {
