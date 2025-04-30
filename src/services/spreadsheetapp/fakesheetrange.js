@@ -3,12 +3,15 @@ import { FakeSheet } from './fakesheet.js'
 import { SheetUtils } from '../../support/sheetutils.js'
 import { Utils } from '../../support/utils.js'
 import { newFakeBorders } from '../commonclasses/fakeborders.js'
+import { makeColorFromApi } from '../commonclasses/fakecolorbuilder.js'
+
 
 const { is, rgbToHex, hexToRgb, getPlucker } = Utils
 const WHITE = '#ffffff'
 const BLACK = '#000000'
 
 import { notYetImplemented, signatureArgs } from '../../support/helpers.js'
+import { newFakeColor } from '../commonclasses/fakecolor.js'
 
 
 //TODO - deal with r1c1 style ranges
@@ -101,6 +104,11 @@ const attrGetList = [{
   props: '.userEnteredFormat.borders',
   defaultValue: null,
   cleaner: (f => is.null(f) ? null : newFakeBorders(f))
+}, {
+  name: 'getBackgroundObject',
+  props: '.userEnteredFormat.backgroundColorStyle',
+  defaultValue: { rgbColor: { red: 1, green: 1, blue: 1 } },
+  cleaner: (f) => makeColorFromApi (f)
 }]
 
 /**
@@ -159,8 +167,7 @@ export class FakeSheetRange {
       'mergeAcross',
       'mergeVertically',
       'isPartOfMerge',
-      'getBackgroundObject',
-      'getBackgroundObjects',
+
       'setBorder',
       'activateAsCurrentCell',
       'setFontColorObject',
@@ -446,10 +453,10 @@ export class FakeSheetRange {
     numRows = is.undefined(numRows) ? this.getNumRows() : numRows
 
     if (!numRows) {
-      throw new Error ('The number of rows in the range must be at least 1')
+      throw new Error('The number of rows in the range must be at least 1')
     }
-    if (!numColumns){
-      throw new Error ('The number of columns in the range must be at least 1')
+    if (!numColumns) {
+      throw new Error('The number of columns in the range must be at least 1')
     }
     gr.startRowIndex += rowOffset
     gr.startColumnIndex += columnOffset
