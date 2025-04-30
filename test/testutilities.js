@@ -141,7 +141,7 @@ export const testUtilities = (pack) => {
     t.is(actual_signature.length, expected_signature.length);
     t.deepEqual(actual_signature, expected_signature);
 
-    // test text, no explicit charset (should be same as utf8)
+    // test text, no explicit charset
     actual_signature = Utilities.computeHmacSha256Signature(text_input, text_key);
     t.is(actual_signature.length, expected_signature.length);
     t.deepEqual(actual_signature, expected_signature);
@@ -162,7 +162,7 @@ export const testUtilities = (pack) => {
     t.is(actual_signature.length, expected_ascii_special_signature.length);
     t.deepEqual(actual_signature, expected_ascii_special_signature);
 
-    // test special text for input and key, no explicit charset
+    // test special text for input and key, no explicit charset, default is ascii
     actual_signature = Utilities.computeHmacSha256Signature(text_input_special, text_key_special);
     t.is(actual_signature.length, expected_ascii_special_signature.length);
     t.deepEqual(actual_signature, expected_ascii_special_signature);
@@ -212,9 +212,8 @@ export const testUtilities = (pack) => {
     t.rxMatch(t.threw(bad_params_bad_bytes1).toString(), /Cannot convert .*/);
     const bad_params_bad_bytes2 = () => Utilities.computeHmacSha256Signature(byte_input, bad_bytes);
     t.rxMatch(t.threw(bad_params_bad_bytes2).toString(), /Cannot convert .*/);
-    
-
-
+    const bad_params_bad_bytes3 = () => Utilities.computeHmacSha256Signature(bad_bytes, bad_bytes, Utilities.Charset.UTF_8);
+    t.rxMatch(t.threw(bad_params_bad_bytes3).toString(), /The parameters \(.*\) don't match/);
   })
 
   unit.section("utilities digest", t => {
@@ -269,7 +268,7 @@ export const testUtilities = (pack) => {
     }
 
     // test string values, no charset is set
-    // default charset is US_ASCII
+    // default charset with special text is US_ASCII
     let default_charset = "US_ASCII"
     for (const input of test_inputs) {
       for (const algorithm of algorithms) {
@@ -280,7 +279,7 @@ export const testUtilities = (pack) => {
       }
     }
 
-    // test byte values, default charset is now UTF_8
+    // test byte values, default charset is UTF_8
     default_charset = "UTF_8"
     const text_to_byte = {};
     test_inputs.forEach((text) => text_to_byte[text] = Utilities.newBlob(text).getBytes());
@@ -323,7 +322,6 @@ export const testUtilities = (pack) => {
     // bad parameters: digest, bad byte, charset
     const bad_params_bad_bytes2 = () => Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, bad_bytes, Utilities.Charset.UTF_8);
     t.rxMatch(t.threw(bad_params_bad_bytes2).toString(), /The parameters \(.*\) don't match/);
-
   })
 
   unit.section('gas utiltities', t => {
