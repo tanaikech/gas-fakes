@@ -145,8 +145,8 @@ class FakeUtilities {
   }
 
   /**
-   * Compute a digest using the specified algorithm on the specified String value with the given character set. 
-   * @param {string} DigestAlgorithm to use
+   * Compute a digest using the specified algorithm on the specified value with the (optional) character set. 
+   * @param {DigestAlgorithm} algorithm to use
    * @param {string | number[]} value to use
    * @param {Charset} charset representing the input character set
    * @returns {number[]} Signed integer byte array
@@ -165,7 +165,13 @@ class FakeUtilities {
     }
 
     // second arg must be string or array of bytes
-    if (typeof value !== 'string' && !Array.isArray(value)) {
+    if (typeof value !== 'string' && !Utils.isByteArray(value)) {
+      throw new Error(`Cannot convert value: ${value} to array of bytes.`)
+    }
+
+
+    // if number[], cannot have charset defined
+    if (typeof value !== 'string'  && typeof charset !== 'undefined') {
       matchThrow();
     }
 
@@ -188,10 +194,12 @@ class FakeUtilities {
     // if charset is explicitly set to US_ASCII
     // or if charset is not set and the value and key are strings (i.e. not bytes)
     // then replace any non-ASCII characters
+    // Create buffer out of encoded value to work with update() method in crypto
     const encodedValue = (charset === this.Charset.US_ASCII || (!charset && typeof value === 'string'))  ? this.replaceNonAscii(value) : value;
+    const valueBuffer = Buffer.from(encodedValue, charset);
 
     // Get digest and convert to signed bytes to match Apps Script
-    const digestBuffer = createHash(algorithm).update(encodedValue, charset).digest() 
+    const digestBuffer = createHash(algorithm).update(valueBuffer).digest() 
     const signedByteArray = Array.from(new Int8Array(digestBuffer))
     
     return signedByteArray;
@@ -216,7 +224,17 @@ class FakeUtilities {
     const stringArgs = args.slice(0, 2).filter((el) => typeof el === 'string');
     if (stringArgs.length === 1) {
       matchThrow();
+    } 
+    
+    if (stringArgs.length === 0 && !Utils.isByteArray(value)) {
+      throw new Error(`Cannot convert value: ${value} to array of bytes.`)
     }
+
+    if (stringArgs.length === 0 && !Utils.isByteArray(key)) {
+      throw new Error(`Cannot convert key: ${key} to array of bytes.`)
+    }
+
+
 
     // if number[], number[], cannot have charset defined
     if (stringArgs.length === 0 && typeof charset !== 'undefined') {

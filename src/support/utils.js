@@ -88,6 +88,10 @@ const settleAsBytes = (data, charset) => {
 const stringToBytes = (string, charset) => Array.from(Buffer.from(string, charset))
 const bytesToString = (data, charset) => Buffer.from(data).toString(charset)
 
+const isByteArray = (arr) => {
+  return Array.isArray(arr) && arr.every((n) => Number.isInteger(n) && n >= 0 && n <= 255);
+}
+
 /**
  * merge something like
  * sa = "a,b,f(x,y),g(a,b),h(h)"
@@ -229,6 +233,7 @@ export const Utils = {
   bytesToString,
   settleAsBytes,
   settleAsString,
+  isByteArray,
   fromJson,
   arrify,
   makeUrlParams,
