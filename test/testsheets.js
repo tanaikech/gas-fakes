@@ -73,15 +73,12 @@ export const testSheets = (pack) => {
     t.true(colorObjects.flat().every(f => f.getColorType().toString() === "THEME"))
 
     range.setBackgroundObjects(colorObjects)
-<<<<<<< HEAD
-=======
     const tobs = range.getBackgroundObjects()
     t.true(tobs.flat().every(f => f.getColorType().toString() === "THEME"))
     t.deepEqual(
       tobs.flat().map(f => f.asThemeColor().getThemeColorType().toString()),
       colorObjects.flat().map(f => f.asThemeColor().getThemeColorType().toString())
     )
->>>>>>> colorobjects
 
     // color objects can be rgb too
     const rgbObjects = Array.from({
@@ -93,23 +90,17 @@ export const testSheets = (pack) => {
 
     const rgbRange = range.offset(range.getNumRows() + 1, 0)
     rgbRange.setBackgroundObjects(rgbObjects)
-<<<<<<< HEAD
-=======
     const robs = rgbRange.getBackgroundObjects()
     t.true(robs.flat().every(f => f.getColorType().toString() === "RGB"))
     t.deepEqual(robs.flat().map(f => f.asRgbColor().asHexString()), rgbObjects.flat().map(f => f.asRgbColor().asHexString()))
->>>>>>> colorobjects
 
     // and they can be mixed
     const mixedRange = rgbRange.offset(rgbRange.getNumRows() + 1, 0)
     const half = Math.floor(mixedRange.getNumRows() / 2)
     const mixed = colorObjects.slice(0, half).concat(rgbObjects.slice(0, mixedRange.getNumRows() - half))
     mixedRange.setBackgroundObjects(mixed)
-<<<<<<< HEAD
-=======
     const mobs = mixedRange.getBackgroundObjects()
     t.deepEqual(mobs.flat().map(f => f.getColorType().toString()), mixed.flat().map(f => f.getColorType().toString()))
->>>>>>> colorobjects
 
     const singleColor = getRandomHex()
     const singleColorObj = SpreadsheetApp.newColor().setRgbColor(singleColor).build()
@@ -117,23 +108,16 @@ export const testSheets = (pack) => {
     singleRange.setBackgroundObject(singleColorObj)
     const back1 = singleRange.getBackgrounds()
     t.true(back1.flat().every(f => f === singleColor))
-<<<<<<< HEAD
-=======
     const sobs = singleRange.getBackgroundObjects()
     t.true (sobs.flat().every(f => f.asRgbColor().asHexString() === singleColor))
->>>>>>> colorobjects
 
     const singleRgbRange = singleRange.offset(singleRange.getNumRows() + 1, 0)
     const singleColorRgbObj = SpreadsheetApp.newColor().setRgbColor(singleColor).build()
     singleRgbRange.setBackgroundObject(singleColorRgbObj)
     const back2 = singleRgbRange.getBackgrounds()
     t.true(back2.flat().every(f => f === singleColor))
-<<<<<<< HEAD
-
-=======
     const srobs = singleRange.getBackgroundObjects()
     t.true (srobs.flat().every(f => f.asRgbColor().asHexString() === singleColor))
->>>>>>> colorobjects
     t.deepEqual(back1, back2)
 
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
