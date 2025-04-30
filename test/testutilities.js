@@ -316,10 +316,13 @@ export const testUtilities = (pack) => {
     t.rxMatch(t.threw(bad_params_fake_digest).toString(), /The parameters \(.*\) don't match/);
 
     // bad parameters: array but not numbers
-    //TODO: not working on apps script
     const bad_bytes = Utilities.newBlob(test_inputs[0]).getBytes().map((el) => '' + el + 'bad');
-    const bad_params_bad_bytes1 = () => Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, bad_bytes, Utilities.Charset.UTF_8);
+    const bad_params_bad_bytes1 = () => Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, bad_bytes);
     t.rxMatch(t.threw(bad_params_bad_bytes1).toString(), /Cannot convert .*/);
+
+    // bad parameters: digest, bad byte, charset
+    const bad_params_bad_bytes2 = () => Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, bad_bytes, Utilities.Charset.UTF_8);
+    t.rxMatch(t.threw(bad_params_bad_bytes2).toString(), /The parameters \(.*\) don't match/);
 
   })
 
