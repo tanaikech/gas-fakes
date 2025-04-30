@@ -101,6 +101,11 @@ const attrGetList = [{
   props: '.userEnteredFormat.borders',
   defaultValue: null,
   cleaner: (f => is.null(f) ? null : newFakeBorders(f))
+}, {
+  name: 'getBackgroundObject',
+  props: '.userEnteredFormat.backgroundColorStyle',
+  defaultValue: { red: 1, green: 1, blue: 1},
+  cleaner: (f) => console.log(f)
 }]
 
 /**
@@ -159,8 +164,7 @@ export class FakeSheetRange {
       'mergeAcross',
       'mergeVertically',
       'isPartOfMerge',
-      'getBackgroundObject',
-      'getBackgroundObjects',
+
       'setBorder',
       'activateAsCurrentCell',
       'setFontColorObject',

@@ -38,6 +38,80 @@ export const testSheets = (pack) => {
   const { unit, fixes } = pack || initTests()
   const toTrash = []
 
+  unit.section("setting and getting color objects}", t => {
+    const aname = fixes.PREFIX + "ob-sheet"
+    const ss = SpreadsheetApp.create(aname)
+    const sheets = ss.getSheets()
+    const [sheet] = sheets
+    const range = sheet.getRange("c6:i12")
+
+    // so we can see the colors better if necessary add some random values
+    const stuff = getStuff(range)
+    range.setValues(stuff)
+    t.deepEqual(range.getValues(), stuff)
+
+    const cts = [
+      "TEXT",
+      "BACKGROUND",
+      "ACCENT1",
+      "ACCENT2",
+      "ACCENT3",
+      "ACCENT4",
+      "ACCENT5",
+      "ACCENT6",
+      "LINK"
+    ]
+
+    const colorObjects = Array.from({
+      length: range.getNumRows()
+    },
+      _ => Array.from({
+        length: range.getNumColumns()
+      }, (_, i) => SpreadsheetApp.newColor().setThemeColor(SpreadsheetApp.ThemeColorType[cts[i % cts.length]]).build()))
+
+    t.true(colorObjects.flat().every(f => f.asThemeColor().getColorType().toString() === "THEME"))
+    t.true(colorObjects.flat().every(f => f.getColorType().toString() === "THEME"))
+
+    range.setBackgroundObjects(colorObjects)
+
+    // color objects can be rgb too
+    const rgbObjects = Array.from({
+      length: range.getNumRows()
+    },
+      _ => Array.from({
+        length: range.getNumColumns()
+      }, (_, i) => SpreadsheetApp.newColor().setRgbColor(getRandomHex()).build()))
+
+    const rgbRange = range.offset(range.getNumRows() + 1, 0)
+    rgbRange.setBackgroundObjects(rgbObjects)
+
+    // and they can be mixed
+    const mixedRange = rgbRange.offset(rgbRange.getNumRows() + 1, 0)
+    const half = Math.floor(mixedRange.getNumRows() / 2)
+    const mixed = colorObjects.slice(0, half).concat(rgbObjects.slice(0, mixedRange.getNumRows() - half))
+    mixedRange.setBackgroundObjects(mixed)
+
+    const singleColor = getRandomHex()
+    const singleColorObj = SpreadsheetApp.newColor().setRgbColor(singleColor).build()
+    const singleRange = mixedRange.offset(mixedRange.getNumRows() + 1, 0)
+    singleRange.setBackgroundObject(singleColorObj)
+    const back1 = singleRange.getBackgrounds()
+    t.true(back1.flat().every(f => f === singleColor))
+
+    const singleRgbRange = singleRange.offset(singleRange.getNumRows() + 1, 0)
+    const singleColorRgbObj = SpreadsheetApp.newColor().setRgbColor(singleColor).build()
+    singleRgbRange.setBackgroundObject(singleColorRgbObj)
+    const back2 = singleRgbRange.getBackgrounds()
+    t.true(back2.flat().every(f => f === singleColor))
+
+    t.deepEqual(back1, back2)
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+    if (fixes.CLEAN) {
+      toTrash.push(DriveApp.getFileById(ss.getId()))
+    }
+
+  })
 
   // range.getBorders() doesn't work on GAS
   // see this issue - https://issuetracker.google.com/issues/329473815

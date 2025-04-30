@@ -25,16 +25,25 @@ const testFakes = () => {
   const {unit} = pack
 
   // add one of these for each service being tested
+  console.log ('\n----Test Sheets----')
   testSheets(pack)
+  console.log ('\n----Test SheetsValues----')
   testSheetsValues(pack)  
+  console.log ('\n----Test Fiddler----')
   testFiddler(pack)
+  console.log ('\n----Test Drive----')
   testDrive(pack)
+  console.log ('\n----Test Fetch----')
   testFetch(pack)
+  console.log ('\n----Test Session----')
   testSession(pack)
+  console.log ('\n----Test Utilities----')
   testUtilities(pack)
+  console.log ('\n----Test Stores----')
   testStores(pack)
+  console.log ('\n----Test ScriptApp----')
   testScriptApp(pack)
-
+  console.log ('\n----TEST FILES COMPLETE----')
   // reports on cache performance
   if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
   if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
