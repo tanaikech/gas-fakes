@@ -38,6 +38,145 @@ export const testSheets = (pack) => {
   const { unit, fixes } = pack || initTests()
   const toTrash = []
 
+  unit.section("cell and font backgrounds and alignments", t => {
+
+    const aname = fixes.PREFIX + "a-sheet"
+    const ss = SpreadsheetApp.create(aname)
+    const sheets = ss.getSheets()
+    const [sheet] = sheets
+    const range = sheet.getRange("a1:b3")
+
+    // backgrounds
+    const backgrounds = range.getBackgrounds()
+    const background = range.getBackground()
+    t.true(is.nonEmptyString(background))
+    t.true(is.array(backgrounds))
+
+    t.is(backgrounds.length, range.getNumRows())
+    t.is(backgrounds[0].length, range.getNumColumns())
+    t.is(backgrounds[0][0], background)
+    t.true(backgrounds.flat().every(f => is.nonEmptyString(f)))
+    t.is(background.substring(0, 1), '#')
+    t.is(background.length, 7)
+    t.is(background, '#ffffff', 'newly created sheet will have white background')
+
+    const color = getRandomHex()
+    range.setBackground(color)
+    t.is(range.getBackground(), color)
+    t.true(range.getBackgrounds().flat().every(f => f === color))
+
+    const colorRgb = getRandomRgb()
+    const color255 = [Math.round(colorRgb.red * 255), Math.round(colorRgb.green * 255), Math.round(colorRgb.blue * 255)]
+    range.setBackgroundRGB(...color255)
+    t.is(range.getBackground(), rgbToHex(colorRgb))
+
+    // some random colorsas
+    const colors = Array.from({
+      length: range.getNumRows()
+    }, () => Array.from({ length: range.getNumColumns() }, () => getRandomHex()))
+
+    const fontColors = Array.from({
+      length: range.getNumRows()
+    }, () => Array.from({ length: range.getNumColumns() }, () => getRandomHex()))
+
+
+    range.setBackgrounds(colors)
+    t.deepEqual(range.getBackgrounds(), colors)
+
+    range.setFontColors(fontColors)
+
+    // this is deprec, but we'll implement it anyway
+    const fcs = range.getFontColors()
+    const fc = range.getFontColor()
+    t.is(fcs.length, range.getNumRows())
+    t.is(fcs[0].length, range.getNumColumns())
+    t.deepEqual(fcs, fontColors)
+    t.is(fc, fontColors[0][0])
+
+    // default font family
+    const defFamily = "Arial"
+    const ffs = range.getFontFamilies()
+    const ff = range.getFontFamily()
+    t.is(ffs.length, range.getNumRows())
+    t.is(ffs[0].length, range.getNumColumns())
+    t.true(ffs.flat().every(f => f === ff))
+    t.is(ff, defFamily)
+
+    // default font family
+    const defFontSize = 10
+    const fss = range.getFontSizes()
+    const fs = range.getFontSize()
+    t.is(fss.length, range.getNumRows())
+    t.is(fss[0].length, range.getNumColumns())
+    t.true(fss.flat().every(f => f === fs))
+    t.is(fs, defFontSize)
+
+    // default wrap
+    const defWrap = true
+    const fws = range.getWraps()
+    const fw = range.getWrap()
+    t.is(fws.length, range.getNumRows())
+    t.is(fws[0].length, range.getNumColumns())
+    t.true(fws.flat().every(f => f === fw))
+    t.is(fw, defWrap)
+
+    const defWrapStrategy = "OVERFLOW"
+    const wss = range.getWrapStrategies()
+    const ws = range.getWrapStrategy()
+    t.is(wss.length, range.getNumRows())
+    t.is(wss[0].length, range.getNumColumns())
+    t.true(wss.flat().every(f => f.toString() === fw.toString()))
+    t.is(ws.toString(), defWrapStrategy)
+
+
+    console.log (range.getTextRotation())
+
+
+    // the preferred way nowadays
+    const fcobs = range.getFontColorObjects()
+    const fcob = range.getFontColorObject()
+    t.is(fcobs.length, range.getNumRows())
+    t.is(fcobs[0].length, range.getNumColumns())
+    t.deepEqual(fcobs.flat().map(f=>f.asRgbColor().asHexString()), fontColors.flat())
+    t.is(fcob.asRgbColor().asHexString(), fontColors[0][0])
+
+    range.setFontColor(getRandomHex())
+
+    // now with rangelists
+    const range2 = range.offset(3, 3, 2, 2)
+    const rangeList = range.getSheet().getRangeList([range, range2].map(r => r.getA1Notation()))
+    rangeList.setBackground(color)
+    rangeList.getRanges().forEach(range => t.true(range.getBackgrounds().flat().every(f => f === color)))
+    rangeList.getRanges().forEach(range => {
+      range.setBackgroundRGB(...color255)
+      t.is(range.getBackground(), rgbToHex(colorRgb))
+    })
+
+    // now alignments
+    const verticalAlignments = range.getVerticalAlignments()
+    const verticalAlignment = range.getVerticalAlignment()
+    t.is(verticalAlignments.length, range.getNumRows())
+    t.is(verticalAlignments[0].length, range.getNumColumns())
+    t.true(verticalAlignments.flat().every(f => is.nonEmptyString(f)))
+    t.is(verticalAlignments[0][0], verticalAlignment)
+    // sometimes this is upper sometimes lower - havent figured out rule yet
+    t.is(verticalAlignment.toUpperCase(), 'BOTTOM', 'newly created sheet will have bottom')
+
+    const horizontalAlignments = range.getHorizontalAlignments()
+    const horizontalAlignment = range.getHorizontalAlignment()
+    t.is(horizontalAlignments.length, range.getNumRows())
+    t.is(horizontalAlignments[0].length, range.getNumColumns())
+    t.true(horizontalAlignments.flat().every(f => is.nonEmptyString(f)))
+    t.is(horizontalAlignments[0][0], horizontalAlignment)
+    t.is(horizontalAlignment, 'general', 'newly created sheet will have general')
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+    if (fixes.CLEAN) {
+      toTrash.push(DriveApp.getFileById(ss.getId()))
+    }
+
+  })
+
   unit.section("setting and getting color objects}", t => {
     const aname = fixes.PREFIX + "ob-sheet"
     const ss = SpreadsheetApp.create(aname)
@@ -94,6 +233,7 @@ export const testSheets = (pack) => {
     t.true(robs.flat().every(f => f.getColorType().toString() === "RGB"))
     t.deepEqual(robs.flat().map(f => f.asRgbColor().asHexString()), rgbObjects.flat().map(f => f.asRgbColor().asHexString()))
 
+
     // and they can be mixed
     const mixedRange = rgbRange.offset(rgbRange.getNumRows() + 1, 0)
     const half = Math.floor(mixedRange.getNumRows() / 2)
@@ -109,7 +249,7 @@ export const testSheets = (pack) => {
     const back1 = singleRange.getBackgrounds()
     t.true(back1.flat().every(f => f === singleColor))
     const sobs = singleRange.getBackgroundObjects()
-    t.true (sobs.flat().every(f => f.asRgbColor().asHexString() === singleColor))
+    t.true(sobs.flat().every(f => f.asRgbColor().asHexString() === singleColor))
 
     const singleRgbRange = singleRange.offset(singleRange.getNumRows() + 1, 0)
     const singleColorRgbObj = SpreadsheetApp.newColor().setRgbColor(singleColor).build()
@@ -117,7 +257,7 @@ export const testSheets = (pack) => {
     const back2 = singleRgbRange.getBackgrounds()
     t.true(back2.flat().every(f => f === singleColor))
     const srobs = singleRange.getBackgroundObjects()
-    t.true (srobs.flat().every(f => f.asRgbColor().asHexString() === singleColor))
+    t.true(srobs.flat().every(f => f.asRgbColor().asHexString() === singleColor))
     t.deepEqual(back1, back2)
 
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
@@ -365,90 +505,7 @@ export const testSheets = (pack) => {
 
   })
 
-  unit.section("cell backgrounds and alignments", t => {
 
-    const aname = fixes.PREFIX + "a-sheet"
-    const ss = SpreadsheetApp.create(aname)
-    const sheets = ss.getSheets()
-    const [sheet] = sheets
-    const range = sheet.getRange("a1:b3")
-
-    // backgrounds
-    const backgrounds = range.getBackgrounds()
-    const background = range.getBackground()
-    t.true(is.nonEmptyString(background))
-    t.true(is.array(backgrounds))
-
-    t.is(backgrounds.length, range.getNumRows())
-    t.is(backgrounds[0].length, range.getNumColumns())
-    t.is(backgrounds[0][0], background)
-    t.true(backgrounds.flat().every(f => is.nonEmptyString(f)))
-    t.is(background.substring(0, 1), '#')
-    t.is(background.length, 7)
-    t.is(background, '#ffffff', 'newly created sheet will have white background')
-
-    const color = getRandomHex()
-    range.setBackground(color)
-    t.is(range.getBackground(), color)
-    t.true(range.getBackgrounds().flat().every(f => f === color))
-
-    const colorRgb = getRandomRgb()
-    const color255 = [Math.round(colorRgb.red * 255), Math.round(colorRgb.green * 255), Math.round(colorRgb.blue * 255)]
-    range.setBackgroundRGB(...color255)
-    t.is(range.getBackground(), rgbToHex(colorRgb))
-
-    // some random colorsas
-    const colors = Array.from({
-      length: range.getNumRows()
-    }, () => Array.from({ length: range.getNumColumns() }, () => getRandomHex()))
-
-    const fontColors = Array.from({
-      length: range.getNumRows()
-    }, () => Array.from({ length: range.getNumColumns() }, () => getRandomHex()))
-
-
-    range.setBackgrounds(colors)
-    t.deepEqual(range.getBackgrounds(), colors)
-
-    range.setFontColors(fontColors)
-    // TODO getFontColors is deprec - how to equivalent
-
-    range.setFontColor(getRandomHex())
-
-    // now with rangelists
-    const range2 = range.offset(3, 3, 2, 2)
-    const rangeList = range.getSheet().getRangeList([range, range2].map(r => r.getA1Notation()))
-    rangeList.setBackground(color)
-    rangeList.getRanges().forEach(range => t.true(range.getBackgrounds().flat().every(f => f === color)))
-    rangeList.getRanges().forEach(range => {
-      range.setBackgroundRGB(...color255)
-      t.is(range.getBackground(), rgbToHex(colorRgb))
-    })
-
-    // now alignments
-    const verticalAlignments = range.getVerticalAlignments()
-    const verticalAlignment = range.getVerticalAlignment()
-    t.is(verticalAlignments.length, range.getNumRows())
-    t.is(verticalAlignments[0].length, range.getNumColumns())
-    t.true(verticalAlignments.flat().every(f => is.nonEmptyString(f)))
-    t.is(verticalAlignments[0][0], verticalAlignment)
-    // sometimes this is upper sometimes lower - havent figured out rule yet
-    t.is(verticalAlignment.toUpperCase(), 'BOTTOM', 'newly created sheet will have bottom')
-
-    const horizontalAlignments = range.getHorizontalAlignments()
-    const horizontalAlignment = range.getHorizontalAlignment()
-    t.is(horizontalAlignments.length, range.getNumRows())
-    t.is(horizontalAlignments[0].length, range.getNumColumns())
-    t.true(horizontalAlignments.flat().every(f => is.nonEmptyString(f)))
-    t.is(horizontalAlignments[0][0], horizontalAlignment)
-    t.is(horizontalAlignment, 'general', 'newly created sheet will have general')
-
-    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-    if (fixes.CLEAN) {
-      toTrash.push(DriveApp.getFileById(ss.getId()))
-    }
-
-  })
 
   unit.section("color objects and builders", t => {
 
