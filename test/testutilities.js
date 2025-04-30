@@ -206,8 +206,13 @@ export const testUtilities = (pack) => {
     const bad_params_fake_charset = () => Utilities.computeHmacSha256Signature(text_input, text_key, 'fake');
     t.rxMatch(t.threw(bad_params_fake_charset).toString(), /The parameters \(.*\) don't match/);
 
-    //TODO
     // bad parameters: array but not numbers
+    const bad_bytes = Utilities.newBlob(text_input).getBytes().map((el) => '' + el + 'woah');
+    const bad_params_bad_bytes1 = () => Utilities.computeHmacSha256Signature(bad_bytes, byte_key);
+    t.rxMatch(t.threw(bad_params_bad_bytes1).toString(), /Cannot convert .*/);
+    const bad_params_bad_bytes2 = () => Utilities.computeHmacSha256Signature(byte_input, bad_bytes);
+    t.rxMatch(t.threw(bad_params_bad_bytes2).toString(), /Cannot convert .*/);
+    
 
 
   })
@@ -251,6 +256,7 @@ export const testUtilities = (pack) => {
       }
     };
 
+    // test string values, charset is explicity set
     for (const input of test_inputs) {
       for (const charset of charsets) {
         for (const algorithm of algorithms) {
@@ -261,6 +267,60 @@ export const testUtilities = (pack) => {
         }
       }
     }
+
+    // test string values, no charset is set
+    // default charset is US_ASCII
+    let default_charset = "US_ASCII"
+    for (const input of test_inputs) {
+      for (const algorithm of algorithms) {
+        const expected_digest = expected_digests[input][default_charset][algorithm];
+        const actual_digest = Utilities.computeDigest(algorithmMap[algorithm], input);
+        t.is(actual_digest.length, expected_digest.length);
+        t.deepEqual(actual_digest, expected_digest)
+      }
+    }
+
+    // test byte values, default charset is now UTF_8
+    default_charset = "UTF_8"
+    const text_to_byte = {};
+    test_inputs.forEach((text) => text_to_byte[text] = Utilities.newBlob(text).getBytes());
+
+    for (const [text_input, byte_input] of Object.entries(text_to_byte)) {
+      for (const algorithm of algorithms) {
+        const expected_digest = expected_digests[text_input][default_charset][algorithm];
+        const actual_digest = Utilities.computeDigest(algorithmMap[algorithm], byte_input);
+        t.is(actual_digest.length, expected_digest.length);
+        t.deepEqual(actual_digest, expected_digest)
+      }
+    }
+
+    // test arguments that are not valid
+    // too many arguments: digest, string, charset, number
+    const too_many_args = () => Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, test_inputs[0], Utilities.Charset.US_ASCII, 4);
+    t.rxMatch(t.threw(too_many_args).toString(), /The parameters \(.*\) don't match/);
+
+    // too few arguments: string
+    const too_few_args = () => Utilities.computeDigest(test_inputs[0]);
+    t.rxMatch(t.threw(too_few_args).toString(), /The parameters \(.*\) don't match/);
+
+    // bad parameters: digest, byte, charset
+    const bad_params_bytes_with_charset = () => Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, [0, 1, 2], Utilities.Charset.UTF_8);
+    t.rxMatch(t.threw(bad_params_bytes_with_charset).toString(), /The parameters \(.*\) don't match/);
+
+    // bad parameters: digest, string, fake charset
+    const bad_params_fake_charset = () => Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, test_inputs[0], 'fake');
+    t.rxMatch(t.threw(bad_params_fake_charset).toString(), /The parameters \(.*\) don't match/);
+
+    // bad parameters: fake digest, string, charset
+    const bad_params_fake_digest = () => Utilities.computeDigest('fake', test_inputs[0], Utilities.Charset.US_ASCII);
+    t.rxMatch(t.threw(bad_params_fake_digest).toString(), /The parameters \(.*\) don't match/);
+
+    // bad parameters: array but not numbers
+    //TODO: not working on apps script
+    const bad_bytes = Utilities.newBlob(test_inputs[0]).getBytes().map((el) => '' + el + 'bad');
+    const bad_params_bad_bytes1 = () => Utilities.computeDigest(Utilities.DigestAlgorithm.MD5, bad_bytes, Utilities.Charset.UTF_8);
+    t.rxMatch(t.threw(bad_params_bad_bytes1).toString(), /Cannot convert .*/);
+
   })
 
   unit.section('gas utiltities', t => {
