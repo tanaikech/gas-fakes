@@ -95,7 +95,7 @@ export const testSheets = (pack) => {
 */
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
   })
-  unit.cancel()
+
   unit.section("cell and font backgrounds and alignments", t => {
 
     const aname = fixes.PREFIX + "a-sheet"
