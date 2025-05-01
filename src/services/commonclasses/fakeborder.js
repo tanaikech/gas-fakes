@@ -2,7 +2,6 @@ import { Proxies } from '../../support/proxies.js'
 import { newNummery } from '../../support/nummery.js'
 import { newFakeColorBuilder } from '../commonclasses/fakecolorbuilder.js'
 import { Utils } from '../../support/utils.js'
-import { isNonEmptyObject } from '@sindresorhus/is'
 const {is, robToHex} = Utils
 const BLACK = '#000000'
 
@@ -55,7 +54,7 @@ class FakeBorder {
         throw new Error("border colorstyle missing both rgbColor and themeColor")
       }
 
-    } else if (color && isNonEmptyObject(color)) {
+    } else if (color && is.nonEmptyMap(color)) {
       // in this case its just an rgbcolor - and I think only here for legacy - i doubt if this will ever be called
       colorBuilder.setColor(robToHex(color))
 

@@ -225,7 +225,8 @@ const hexToRgb = (hex) => {
   };
 }
 
-
+const outside = (n, l, h) => n < l || n > h
+const outsideInt = (n, l, h) => outside(n, l, h) || !is.integer(n)
 
 export const Utils = {
   hexToRgb,
@@ -247,7 +248,9 @@ export const Utils = {
   rgbToHex,
   getPlucker,
   validateHex,
-  robToHex
+  robToHex,
+  outside,
+  outsideInt
 }
 
 

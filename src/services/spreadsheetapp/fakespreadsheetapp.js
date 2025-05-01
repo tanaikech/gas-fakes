@@ -4,6 +4,7 @@ import { notYetImplemented, minSheetFields, signatureArgs} from '../../support/h
 import { Utils } from "../../support/utils.js"
 import { newFakeColorBuilder } from '../commonclasses/fakecolorbuilder.js'
 import { ThemeColorType } from '../typedefs.js'
+import { newFakeTextStyleBuilder } from '../commonclasses/faketextstylebuilder.js'
 
 const { is } = Utils
 /**
@@ -35,7 +36,7 @@ export class FakeSpreadsheetApp {
       'newConditionalFormatRule',
       'enableBigQueryExecution',
       'enableAllDataSourcesExecution',
-      'newTextStyle',
+
       'enableLookerExecution',
       'getActiveSpreadsheet',
       'getActiveSheet',
@@ -171,6 +172,17 @@ export class FakeSpreadsheetApp {
     return newFakeColorBuilder()
   }
   
+  /**
+   * newTextStyle() https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#newTextStyle()
+   * Creates a builder for a TextStyle.
+   * return {FakeTextStyleBuilder}
+   */
+  newTextStyle() {
+    return newFakeTextStyleBuilder()
+  }
+
+
+
   get ThemeColorType () {
     return ThemeColorType
   }

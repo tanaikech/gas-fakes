@@ -4,14 +4,17 @@ import { SheetUtils } from '../../support/sheetutils.js'
 import { Utils } from '../../support/utils.js'
 import { newFakeBorders } from '../commonclasses/fakeborders.js'
 import { makeColorFromApi } from '../commonclasses/fakecolorbuilder.js'
+import { newFakeWrapStrategy, isWrapped } from '../commonclasses/fakewrapstrategy.js'
+import { newFakeTextRotation } from '../commonclasses/faketextrotation.js'
+import { makeTextStyleFromApi} from '../commonclasses/faketextstylebuilder.js'
 
 
-const { is, rgbToHex, hexToRgb, getPlucker } = Utils
+const { is, rgbToHex, hexToRgb, getPlucker, robToHex,outsideInt } = Utils
 const WHITE = '#ffffff'
 const BLACK = '#000000'
 
 import { notYetImplemented, signatureArgs } from '../../support/helpers.js'
-import { newFakeColor } from '../commonclasses/fakecolor.js'
+
 
 
 //TODO - deal with r1c1 style ranges
@@ -68,11 +71,17 @@ const attrGens = (self, target) => {
   })
 
   // both a single and collection version
-  self[target.name + 's'] = () => getters(self)
+  const plural = target.plural || (target.name + 's')
+  self[plural] = () => {
+    const values = getters(self)
+    return values
+  }
+
   self[target.name] = () => {
     const values = getters(self.__getTopLeft())
-    return (values && values[0] && values[0][0]) || cleaner(target.defaultValue)
+    return (values && values[0] && values[0][0])
   }
+
   return self
 }
 
@@ -108,7 +117,50 @@ const attrGetList = [{
   name: 'getBackgroundObject',
   props: '.userEnteredFormat.backgroundColorStyle',
   defaultValue: { rgbColor: { red: 1, green: 1, blue: 1 } },
-  cleaner: (f) => makeColorFromApi (f)
+  cleaner: (f) => makeColorFromApi(f)
+}, {
+  name: 'getFontColor',
+  props: '.userEnteredFormat.textFormat.foregroundColor',
+  defaultValue: { red: 0, green: 0, blue: 0 },
+  cleaner: (f) => robToHex(f)
+}, {
+  name: 'getFontColorObject',
+  props: '.userEnteredFormat.textFormat.foregroundColorStyle',
+  defaultValue: { rgbColor: { red: 0, green: 0, blue: 0 } },
+  cleaner: (f) => makeColorFromApi(f)
+}, {
+  name: 'getFontFamily',
+  props: '.userEnteredFormat.textFormat.fontFamily',
+  defaultValue: 'Arial',
+  plural: 'getFontFamilies'
+}, {
+  name: 'getFontSize',
+  props: '.userEnteredFormat.textFormat.fontSize',
+  defaultValue: 10,
+}, {
+  name: 'getWrapStrategy',
+  props: '.userEnteredFormat.wrapStrategy',
+  defaultValue: 'OVERFLOW_CELL',
+  cleaner: f=>newFakeWrapStrategy(f),
+  plural: 'getWrapStrategies'
+}, {
+  name: 'getWrap',
+  props: '.userEnteredFormat.wrapStrategy',
+  defaultValue: 'OVERFLOW_CELL',
+  cleaner: f=>isWrapped(newFakeWrapStrategy(f))
+}, {
+  name: 'getTextRotation',
+  props: '.userEnteredFormat.textRotation',
+  defaultValue: {angle: 0, vertical: "NONE"},
+  cleaner: f=>newFakeTextRotation(f || {angle: 0, vertical: "NONE"} )
+}, {
+  name: 'getTextStyle',
+  props: '.userEnteredFormat.textFormat',
+  defaultValue: null,
+  cleaner: (f) => {
+    console.log(f) 
+    return makeTextStyleFromApi(f)
+  }
 }]
 
 /**
@@ -144,8 +196,8 @@ export class FakeSheetRange {
       'setDataValidation',
       'getTextDirection',
       'setTextDirection',
-      'getTextStyle',
-      'getFontFamilies',
+ 
+
       'setFontWeight',
       'setHorizontalAlignments',
       'createDataSourcePivotTable',
@@ -167,7 +219,6 @@ export class FakeSheetRange {
       'mergeAcross',
       'mergeVertically',
       'isPartOfMerge',
-
       'setBorder',
       'activateAsCurrentCell',
       'setFontColorObject',
@@ -183,15 +234,11 @@ export class FakeSheetRange {
       'setWraps',
       'copyValuesToRange',
       'copyFormatToRange',
-      'getFontColorObject',
-      'getFontColorObjects',
+
       'getFontLine',
       'getFontLines',
-      'getFontSizes',
       'getFontStyle',
       'setComments',
-      'getWrap',
-      'getWraps',
       'randomize',
       'isStartColumnBounded',
       'isStartRowBounded',
@@ -200,8 +247,6 @@ export class FakeSheetRange {
       'autoFill',
       'autoFillToNeighbor',
       'setShowHyperlink',
-      'getTextRotation',
-      'getTextRotations',
       'setTextRotation',
       'setTextRotations',
       'setVerticalText',
@@ -212,8 +257,6 @@ export class FakeSheetRange {
       'applyColumnBanding',
       'applyRowBanding',
       'splitTextToColumns',
-      'getWrapStrategy',
-      'getWrapStrategies',
       'createPivotTable',
       'createDataSourceTable',
       'shiftRowGroupDepth',
@@ -224,7 +267,7 @@ export class FakeSheetRange {
       'getRichTextValues',
       'setRichTextValue',
       'setRichTextValues',
-      'getTextStyles',
+
       'setTextStyles',
       'uncheck',
       'insertCheckboxes',
@@ -257,10 +300,10 @@ export class FakeSheetRange {
       'getBackgroundColor',
       'setFormula',
       'getDataSourceUrl',
-      'getFontSize',
+
       'getDataTable',
       'clearFormat',
-      'getFontFamily',
+
       'canEdit',
       'createDeveloperMetadataFinder',
       'getDataSourcePivotTables',
@@ -481,8 +524,7 @@ export class FakeSheetRange {
    * @returns {FakeSheetRange} self
    */
   setBackgroundRGB(red, green, blue) {
-    const outside = (n, l, h) => n < l || n > h
-    const outsideInt = (n, l, h) => outside(n, l, h) || !is.integer(n)
+
 
     const { nargs, matchThrow } = signatureArgs(arguments, "Range.setBackgroundRGB")
     if (nargs !== 3) matchThrow()
