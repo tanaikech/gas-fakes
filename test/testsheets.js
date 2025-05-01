@@ -63,36 +63,7 @@ export const testSheets = (pack) => {
 
     const rgbColor = getRandomHex()
 
-/*
-    builder.setRgbColor(rgbColor)
-    t.is(t.threw(() => builder.asThemeColor()).message, "Object is not of type ThemeColor.")
-    t.is(builder.getColorType().toString(), "RGB")
-    t.is(builder.asRgbColor().toString(), "RgbColor")
-    t.is(builder.asRgbColor().asHexString(), rgbColor)
-    t.is(builder.asRgbColor().getRed(), parseInt(rgbColor.substring(1, 3), 16))
 
-    const builtRgb = builder.build()
-    t.is(builtRgb.toString(), "Color")
-    t.is(builtRgb.getColorType().toString(), "RGB")
-    t.is(builtRgb.asRgbColor().toString(), "RgbColor")
-    t.is(builtRgb.asRgbColor().getGreen(), parseInt(rgbColor.substring(3, 5), 16))
-    t.is(builtRgb.asRgbColor().getBlue(), parseInt(rgbColor.substring(5, 7), 16))
-    t.is(builtRgb.asRgbColor().getRed(), parseInt(rgbColor.substring(1, 3), 16))
-    t.is(t.threw(() => builtRgb.asThemeColor()).message, "Object is not of type ThemeColor.")
-
-    const themeBuilder = SpreadsheetApp.newColor()
-    themeBuilder.setThemeColor(SpreadsheetApp.ThemeColorType.ACCENT1)
-    t.is(themeBuilder.getColorType().toString(), "THEME")
-    t.is(themeBuilder.asThemeColor().getColorType().toString(), "THEME")
-    t.is(themeBuilder.asThemeColor().getThemeColorType().toString(), "ACCENT1")
-    t.is(t.threw(() => themeBuilder.asRgbColor()).message, "Object is not of type RgbColor.")
-
-    const builtTheme = themeBuilder.build()
-    t.is(builtTheme.toString(), "Color")
-    t.is(builtTheme.getColorType().toString(), "THEME")
-    t.is(builtTheme.asThemeColor().getColorType().toString(), "THEME")
-    t.is(t.threw(() => builtTheme.asRgbColor()).message, "Object is not of type RgbColor.")
-*/
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
   })
 
@@ -142,7 +113,8 @@ export const testSheets = (pack) => {
     t.deepEqual(range.getBackgrounds(), colors)
 
     range.setFontColors(fontColors)
-    console.log (range.getTextStyle())
+
+    // TODO - textStyle now ready for adding
 
     // text rotations
     const rots = range.getTextRotations()

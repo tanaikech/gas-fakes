@@ -4,7 +4,8 @@ import { Utils } from '../../support/utils.js'
 import { newFakeTextStyle } from './faketextstyle.js'
 import { newFakeColorBuilder } from './fakecolorbuilder.js'
 
-const { is, validateHex } = Utils
+const { is, validateHex, robToHex } = Utils
+
 /**
  * @file
  * @imports ../typedefs.js
@@ -25,17 +26,17 @@ export const newFakeTextStyleBuilder = (...args) => {
  */
 export const makeTextStyleFromApi = (apiResult) => {
   // its possible that the api result will be null
-  const { 
-    foregroundColor = null, 
-    foregroundColorStyle = null, 
-    fontfamily = null, 
-    fontSize = null, 
-    bold = null, 
-    italic = null, 
-    underline = null, 
-    strikethrough = null, 
+  const {
+    foregroundColor = null,
+    foregroundColorStyle = null,
+    fontfamily = null,
+    fontSize = null,
+    bold = null,
+    italic = null,
+    underline = null,
+    strikethrough = null,
     // this one is ignored as gfar as i can tell
-    link = null 
+    link = null
   } = apiResult || {}
 
   const builder = newFakeTextStyleBuilder()
@@ -49,7 +50,9 @@ export const makeTextStyleFromApi = (apiResult) => {
   const cb = newFakeColorBuilder
 
   // so weird stuff here
+  const BLACK = '#000000'
   const makeFromRgb = (rgb) => {
+    rgb = rgb ? robToHex(rgb) : BLACK
     builder.setForegroundColorObject = cb().setRgbColor(rgb).build()
     builder.setForegroundColor = cb().setRgbColor(rgb).build()
   }
@@ -64,7 +67,7 @@ export const makeTextStyleFromApi = (apiResult) => {
     if (foregroundColorStyle.themeColor) {
       builder.setForeGroundColorObject = newFakeColorBuilder().setThemeColor(foregroundColorStyle.themeColor).build()
     } else if (foregroundColorStyle.rgbColor) {
-      makeFromRgb (is.emptyObject(foregroundColorStyle.rgbColor) ? BLACK : robToHex(foregroundColorStyle.rgbColor))
+      makeFromRgb(foregroundColorStyle.rgbColor)
     } else {
       throw new Error("text colorstyle missing both rgbColor and themeColor")
     }
@@ -75,7 +78,8 @@ export const makeTextStyleFromApi = (apiResult) => {
 const nargCheck = (prop, args, req, reqType) => {
   const { nargs, matchThrow } = signatureArgs(args, "TextStyleBuilder." + prop)
   if (nargs !== req) matchThrow()
-  if (req === 1 && reqType && !is[reqType](args[0])) matchThrow()
+  // null is always allowed for this builder
+  if (!is.null(args[0]) && req === 1 && reqType && !is[reqType](args[0])) matchThrow()
   return {
     nargs, matchThrow
   }
@@ -174,7 +178,7 @@ class FakeTextStyleBuilder {
    * @returns {FakeTextStyleBuilder} self
    */
   setForeGroundColorObject(foregroundColor) {
-    nargCheck('setForeGroundColorObject', arguments, 1, "object")
+    nargCheck('setForeGroundColorObject', arguments, 1, "Object")
     this.__foregroundColorObject = foregroundColor
     return this
   }

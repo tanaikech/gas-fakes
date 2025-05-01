@@ -157,10 +157,7 @@ const attrGetList = [{
   name: 'getTextStyle',
   props: '.userEnteredFormat.textFormat',
   defaultValue: null,
-  cleaner: (f) => {
-    console.log(f) 
-    return makeTextStyleFromApi(f)
-  }
+  cleaner: (f) => makeTextStyleFromApi(f)
 }]
 
 /**
