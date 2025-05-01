@@ -38,6 +38,64 @@ export const testSheets = (pack) => {
   const { unit, fixes } = pack || initTests()
   const toTrash = []
 
+  unit.section("text Style objects and builders", t => {
+
+    const builder = SpreadsheetApp.newTextStyle()
+    t.is(builder.toString(), "TextStyleBuilder")
+    const fontFamily = 'Helvetica'
+    builder
+      .setFontSize(10)
+      .setBold(true)
+      .setItalic(true)
+      .setUnderline(false)
+      .setStrikethrough(false)
+      .setFontFamily(fontFamily)
+    const textStyle = builder.build()
+    t.is(textStyle.toString(), "TextStyle")
+    t.is(textStyle.getFontSize(), 10)
+    t.is(textStyle.getFontFamily(), fontFamily)
+    t.is(textStyle.isBold(), true)
+    t.is(textStyle.isItalic(), true)
+    t.is(textStyle.isUnderline(), false)
+    t.is(textStyle.isStrikethrough(), false)
+    t.is(textStyle.getForegroundColor(), null)
+    t.is(textStyle.getForegroundColorObject(), null)
+
+    const rgbColor = getRandomHex()
+
+/*
+    builder.setRgbColor(rgbColor)
+    t.is(t.threw(() => builder.asThemeColor()).message, "Object is not of type ThemeColor.")
+    t.is(builder.getColorType().toString(), "RGB")
+    t.is(builder.asRgbColor().toString(), "RgbColor")
+    t.is(builder.asRgbColor().asHexString(), rgbColor)
+    t.is(builder.asRgbColor().getRed(), parseInt(rgbColor.substring(1, 3), 16))
+
+    const builtRgb = builder.build()
+    t.is(builtRgb.toString(), "Color")
+    t.is(builtRgb.getColorType().toString(), "RGB")
+    t.is(builtRgb.asRgbColor().toString(), "RgbColor")
+    t.is(builtRgb.asRgbColor().getGreen(), parseInt(rgbColor.substring(3, 5), 16))
+    t.is(builtRgb.asRgbColor().getBlue(), parseInt(rgbColor.substring(5, 7), 16))
+    t.is(builtRgb.asRgbColor().getRed(), parseInt(rgbColor.substring(1, 3), 16))
+    t.is(t.threw(() => builtRgb.asThemeColor()).message, "Object is not of type ThemeColor.")
+
+    const themeBuilder = SpreadsheetApp.newColor()
+    themeBuilder.setThemeColor(SpreadsheetApp.ThemeColorType.ACCENT1)
+    t.is(themeBuilder.getColorType().toString(), "THEME")
+    t.is(themeBuilder.asThemeColor().getColorType().toString(), "THEME")
+    t.is(themeBuilder.asThemeColor().getThemeColorType().toString(), "ACCENT1")
+    t.is(t.threw(() => themeBuilder.asRgbColor()).message, "Object is not of type RgbColor.")
+
+    const builtTheme = themeBuilder.build()
+    t.is(builtTheme.toString(), "Color")
+    t.is(builtTheme.getColorType().toString(), "THEME")
+    t.is(builtTheme.asThemeColor().getColorType().toString(), "THEME")
+    t.is(t.threw(() => builtTheme.asRgbColor()).message, "Object is not of type RgbColor.")
+*/
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+  })
+  unit.cancel()
   unit.section("cell and font backgrounds and alignments", t => {
 
     const aname = fixes.PREFIX + "a-sheet"
@@ -84,6 +142,17 @@ export const testSheets = (pack) => {
     t.deepEqual(range.getBackgrounds(), colors)
 
     range.setFontColors(fontColors)
+    console.log (range.getTextStyle())
+
+    // text rotations
+    const rots = range.getTextRotations()
+    const rot = range.getTextRotation()
+    t.is(rots.length, range.getNumRows())
+    t.is(rots[0].length, range.getNumColumns())
+    t.true(rots.flat().every(f => f.getDegrees() === 0))
+    t.is(rot.getDegrees(), 0)
+    t.true(rots.flat().every(f => f.isVertical() === false))
+    t.is(rot.isVertical(), false)
 
     // this is deprec, but we'll implement it anyway
     const fcs = range.getFontColors()
@@ -125,11 +194,9 @@ export const testSheets = (pack) => {
     const ws = range.getWrapStrategy()
     t.is(wss.length, range.getNumRows())
     t.is(wss[0].length, range.getNumColumns())
-    t.true(wss.flat().every(f => f.toString() === fw.toString()))
+    t.true(wss.flat().every(f => f.toString() === ws.toString()))
     t.is(ws.toString(), defWrapStrategy)
 
-
-    console.log (range.getTextRotation())
 
 
     // the preferred way nowadays
@@ -504,7 +571,6 @@ export const testSheets = (pack) => {
     }
 
   })
-
 
 
   unit.section("color objects and builders", t => {

@@ -5,8 +5,11 @@ import { Utils } from '../../support/utils.js'
 import { newFakeBorders } from '../commonclasses/fakeborders.js'
 import { makeColorFromApi } from '../commonclasses/fakecolorbuilder.js'
 import { newFakeWrapStrategy, isWrapped } from '../commonclasses/fakewrapstrategy.js'
+import { newFakeTextRotation } from '../commonclasses/faketextrotation.js'
+import { makeTextStyleFromApi} from '../commonclasses/faketextstylebuilder.js'
 
-const { is, rgbToHex, hexToRgb, getPlucker, robToHex } = Utils
+
+const { is, rgbToHex, hexToRgb, getPlucker, robToHex,outsideInt } = Utils
 const WHITE = '#ffffff'
 const BLACK = '#000000'
 
@@ -138,18 +141,26 @@ const attrGetList = [{
   name: 'getWrapStrategy',
   props: '.userEnteredFormat.wrapStrategy',
   defaultValue: 'OVERFLOW_CELL',
-  clean: f=>newFakeWrapStrategy(f),
+  cleaner: f=>newFakeWrapStrategy(f),
   plural: 'getWrapStrategies'
 }, {
   name: 'getWrap',
   props: '.userEnteredFormat.wrapStrategy',
   defaultValue: 'OVERFLOW_CELL',
-  clean: f=>isWrapped(newFakeWrapStrategy(f))
+  cleaner: f=>isWrapped(newFakeWrapStrategy(f))
 }, {
   name: 'getTextRotation',
-  props: '.userEnteredFormat.textFormat.textRotation',
-  defaultValue: 0,
-  clean: f=>console.log(f)
+  props: '.userEnteredFormat.textRotation',
+  defaultValue: {angle: 0, vertical: "NONE"},
+  cleaner: f=>newFakeTextRotation(f || {angle: 0, vertical: "NONE"} )
+}, {
+  name: 'getTextStyle',
+  props: '.userEnteredFormat.textFormat',
+  defaultValue: null,
+  cleaner: (f) => {
+    console.log(f) 
+    return makeTextStyleFromApi(f)
+  }
 }]
 
 /**
@@ -185,7 +196,7 @@ export class FakeSheetRange {
       'setDataValidation',
       'getTextDirection',
       'setTextDirection',
-      'getTextStyle',
+ 
 
       'setFontWeight',
       'setHorizontalAlignments',
@@ -256,7 +267,7 @@ export class FakeSheetRange {
       'getRichTextValues',
       'setRichTextValue',
       'setRichTextValues',
-      'getTextStyles',
+
       'setTextStyles',
       'uncheck',
       'insertCheckboxes',
@@ -513,8 +524,7 @@ export class FakeSheetRange {
    * @returns {FakeSheetRange} self
    */
   setBackgroundRGB(red, green, blue) {
-    const outside = (n, l, h) => n < l || n > h
-    const outsideInt = (n, l, h) => outside(n, l, h) || !is.integer(n)
+
 
     const { nargs, matchThrow } = signatureArgs(arguments, "Range.setBackgroundRGB")
     if (nargs !== 3) matchThrow()
