@@ -164,15 +164,14 @@ class FakeUtilities {
       matchThrow();
     }
 
-    // second arg must be string or array of bytes
-    if (typeof value !== 'string' && !Utils.isByteArray(value)) {
-      throw new Error(`Cannot convert value: ${value} to array of bytes.`)
-    }
-
-
-    // if number[], cannot have charset defined
+    // if second arg is not a string, cannot have charset defined
     if (typeof value !== 'string'  && typeof charset !== 'undefined') {
       matchThrow();
+    }
+
+    // if second arg is not a string, it must be an array of bytes
+    if (typeof value !== 'string' && !Utils.isByteArray(value)) {
+      throw new Error(`Cannot convert value: ${value} to array of bytes.`)
     }
 
     // digest algorithm must be valid
@@ -225,20 +224,19 @@ class FakeUtilities {
     if (stringArgs.length === 1) {
       matchThrow();
     } 
-    
+
+    // if number[], number[], cannot have charset defined
+    if (stringArgs.length === 0 && typeof charset !== 'undefined') {
+      matchThrow();
+    }
+
+    // if number[], number[], must be valid byte arrays
     if (stringArgs.length === 0 && !Utils.isByteArray(value)) {
       throw new Error(`Cannot convert value: ${value} to array of bytes.`)
     }
 
     if (stringArgs.length === 0 && !Utils.isByteArray(key)) {
       throw new Error(`Cannot convert key: ${key} to array of bytes.`)
-    }
-
-
-
-    // if number[], number[], cannot have charset defined
-    if (stringArgs.length === 0 && typeof charset !== 'undefined') {
-      matchThrow();
     }
 
     // if charset is present, charset must be valid
