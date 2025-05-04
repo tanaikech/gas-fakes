@@ -4,7 +4,8 @@ import { Utils } from '../../support/utils.js'
 import { newFakeTextStyle } from './faketextstyle.js'
 import { newFakeColorBuilder } from './fakecolorbuilder.js'
 
-const { is, validateHex, robToHex } = Utils
+const { is, validateHex, robToHex, unCapital } = Utils
+const BLACK = '#000000'
 
 /**
  * @file
@@ -40,6 +41,7 @@ export const makeTextStyleFromApi = (apiResult) => {
   } = apiResult || {}
 
   const builder = newFakeTextStyleBuilder()
+  
   // it seems that the default for everything is null if not specified
   builder.setFontFamily(fontfamily)
   builder.setFontSize(fontSize)
@@ -47,31 +49,36 @@ export const makeTextStyleFromApi = (apiResult) => {
   builder.setItalic(italic)
   builder.setUnderline(underline)
   builder.setStrikethrough(strikethrough)
-  const cb = newFakeColorBuilder
 
-  // so weird stuff here
-  const BLACK = '#000000'
-  const makeFromRgb = (rgb) => {
-    rgb = rgb ? robToHex(rgb) : BLACK
-    builder.setForegroundColorObject = cb().setRgbColor(rgb).build()
-    builder.setForegroundColor = cb().setRgbColor(rgb).build()
+
+  // the API appears to return both an rgb and a style
+  // the builder should sort out any conflicts between the hex value and the color object provided
+
+  // if we have a foreground color 
+  if (is.nonEmptyObject(foregroundColor)) {
+    builder.setForegroundColor(robToHex(foregroundColor.rgbColor))
   }
 
-  // if we have a foreground color - it'll be rgb and we need to create an rgbcolor object and a colorstyle object
-  if (foregroundColor) {
-    makeFromRgb(foregroundColor)
-  }
-  // if we have a color style it could be either a theme or rgb - if its rgb we'll overwrite the colorstyle created above if there was one
-  if (foregroundColorStyle) {
-    // theme type color
+  // if we have a color style 
+  if (is.nonEmptyObject(foregroundColorStyle)){
     if (foregroundColorStyle.themeColor) {
-      builder.setForeGroundColorObject = newFakeColorBuilder().setThemeColor(foregroundColorStyle.themeColor).build()
+      builder.setForegroundColorObject = newFakeColorBuilder().setThemeColor(foregroundColorStyle.themeColor).build()
     } else if (foregroundColorStyle.rgbColor) {
-      makeFromRgb(foregroundColorStyle.rgbColor)
+      builder.setForegroundColorObject = newFakeColorBuilder().setRgbColor(robToHex(foregroundColorStyle.rgbColor)).build()
     } else {
       throw new Error("text colorstyle missing both rgbColor and themeColor")
     }
   }
+
+  if (is.null(foregroundColor) && is.null(foregroundColorStyle)) {
+    // in this case there is no specifically entered userenteredformat
+    // perhaps it would be better to get the effectiveformat, but Apps Script doesn't appear to do that
+    // instead it always returns the userenteredformat, even though there isnt one
+    // so we'll use the default - this means that if something is say , red because of the theme applied globally, we'll still return black
+    builder.setForegroundColor(BLACK)
+  }
+
+  // make a textStyle - 
   return builder.build()
 }
 
@@ -79,7 +86,7 @@ const nargCheck = (prop, args, req, reqType) => {
   const { nargs, matchThrow } = signatureArgs(args, "TextStyleBuilder." + prop)
   if (nargs !== req) matchThrow()
   // null is always allowed for this builder
-  if (!is.null(args[0]) && req === 1 && reqType && !is[reqType](args[0])) matchThrow()
+  if (!is.null(args[0]) && req === 1 && reqType && !is[unCapital(reqType)](args[0])) matchThrow()
   return {
     nargs, matchThrow
   }
@@ -107,7 +114,55 @@ class FakeTextStyleBuilder {
    * returns {FakeTextStyle}
    */
   build() {
+
+    // setup defaults - we have to do this here because in GAS, defaults appear to be only set on building
+    this.__bold = Boolean(this.__bold)
+    this.__italic = Boolean(this.__italic)
+    this.__underline = Boolean(this.__underline)
+    this.__strikethrough = Boolean(this.__strikethrough)
+    this.__fontSize = this.__fontSize || 10
+    this.__fontFamily = this.__fontFamily || "arial,sans,sans-serif"
+
+
+    // we didnt get a color hex, so pick it up from the color object
+    const defRgbFromCob = () => {
+      if (this.__foregroundColorObject.getColorType().toString() === 'THEME') {
+        // if it's not rgb then we use the theme value
+        this.__foregroundColor = this.__foregroundColorObject.asThemeColor().getThemeColorType().toString()
+      } else if (this.__foregroundColorObject.getColorType().toString() === 'RGB') {
+        this.__foregroundColor = this.__foregroundColorObject.asRgbColor().asHexString()
+      } else {
+        throw new Error (`unexpected color type ${this.__foregroundColorObject.getColorType().toString()}`)
+      }
+    }
+
+    // we didnt get a color object so set an RGB type one from the provided hex
+    const defCobFromRgb = () => {
+      this.__foregroundColorObject = newFakeColorBuilder().setRgbColor(this.__foregroundColor).build()
+    }
+
+    if (is.nonEmptyObject(this.__foregroundColorObject) && is.nonEmptyString(this.__foregroundColor))  {
+      // both are defined - so foreground color is already set to hex string 
+      // TODO - which takes precedence? - do I need to redefine foreground color based on the color object?
+      // otherwise, nothing to do
+
+    } else if (is.nonEmptyObject(this.__foregroundColorObject)) {
+      // only the object is defined, so derive the rgb color from it if it's rgb color type
+      // or strangely - a theme color returns the enum value for the themecolortype
+      defRgbFromCob()
+
+    } else if (is.nonEmptyString(this.__foregroundColor)) {
+      // only the hex is defined, so derive a color object based on that
+      defCobFromRgb()
+
+    } else if (is.null(this.__foregroundColorObject) && is.null(this.__foregroundColor)) {
+      // they are both null so we need to leave as null
+
+    } else {
+      throw new Error(`unexpected color object ${typeof this.__foregroundColorObject} and color hex ${typeof this.__foregroundColor} combination`)
+    }
     return newFakeTextStyle(this)
+
   }
 
   /**
@@ -160,13 +215,13 @@ class FakeTextStyleBuilder {
 
   /**
    * this one is deprecated, but I'll implement it anyway
-   * setForeGroundColor(cssString) https://developers.google.com/apps-script/reference/spreadsheet/text-style-builder#setforegroundcolorcssstring https://developers.google.com/apps-script/reference/spreadsheet/text-style-builder#setforegroundcolorobjectcolor
+   * setForegroundColor(cssString) https://developers.google.com/apps-script/reference/spreadsheet/text-style-builder#setforegroundcolorcssstring https://developers.google.com/apps-script/reference/spreadsheet/text-style-builder#setforegroundcolorobjectcolor
    * Sets the text font color.
    * @param {string} cssString 
    * @returns {FakeTextStyleBuilder} self
    */
-  setForeGroundColor(cssString) {
-    nargCheck('setForeGroundColor', arguments, 1, "string")
+  setForegroundColor(cssString) {
+    nargCheck('setForegroundColor', arguments, 1, "string")
     this.__foregroundColor = validateHex(cssString).hex
     return this
   }
@@ -177,8 +232,8 @@ class FakeTextStyleBuilder {
    * @param {FakeColor} foregroundColor 
    * @returns {FakeTextStyleBuilder} self
    */
-  setForeGroundColorObject(foregroundColor) {
-    nargCheck('setForeGroundColorObject', arguments, 1, "Object")
+  setForegroundColorObject(foregroundColor) {
+    nargCheck('setForegroundColorObject', arguments, 1, "Object")
     this.__foregroundColorObject = foregroundColor
     return this
   }

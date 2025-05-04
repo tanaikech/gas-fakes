@@ -33,10 +33,200 @@ const getRandomRgb = () => ({ red: Math.random(), green: Math.random(), blue: Ma
 const getRandomHex = () => rgbToHex(getRandomRgb())
 const getStuff = (range) => Array.from({ length: range.getNumRows() }, _ => Array.from({ length: range.getNumColumns() }, () => Utilities.getUuid()))
 
+
+
+
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testSheets = (pack) => {
+  let ss = null
+
+  const maketss = (sheetName, { clearContents = true, clearFormats = true } = {}) => {
+
+    if (!ss) {
+      const aname = fixes.PREFIX + "tss-sheet"
+      ss = SpreadsheetApp.create(aname)
+      if (fixes.CLEAN) {
+        toTrash.push(DriveApp.getFileById(ss.getId()))
+      }
+    }
+
+    let sheet = null
+    if (sheetName) {
+      sheet = ss.getSheetByName(sheetName)
+    }
+
+    if (!sheet) {
+      sheet = ss.insertSheet(sheetName)
+    } else {
+      if (clearContents || clearFormats) {
+        sheet.clear({ contentsOnly: !clearFormats, formatsOnly: !clearContents })
+      }
+    }
+
+    return {
+      ss,
+      sheet,
+      sheets: ss.getSheets()
+
+    }
+  }
+
   const { unit, fixes } = pack || initTests()
   const toTrash = []
+
+    // range.getBorders() doesn't work on GAS
+  // see this issue - https://issuetracker.google.com/issues/329473815
+  // we can resurrect this if it ever gets fixed
+  unit.section("range borders - there's a bug in GAS range.getBorders so some of this doesnt run there", t => {
+
+    const { sheet } = maketss('borders')
+
+    const range = sheet.getRange("c2:i4")
+    const points = ['getTop', 'getLeft', 'getBottom', 'getRight']
+
+    // font lines should be null for newly created sheet
+    const fl = range.getFontLine()
+    t.is(fl, 'none')
+    t.true(range.getFontLines().flat().every(f => f === fl))
+
+    // newly created sheet has all null borders so the borders object should be null
+    // TODO remove the skip if getBorders() on GAS is ever fixed
+    if (SpreadsheetApp.isFake) {
+      t.true(range.getBorders().flat().every(f => is.null(f)))
+    }
+
+
+    // this sheet temporarily has some borders in it - once I have setborders working, I'll eliminate
+    const sp = SpreadsheetApp.openById(fixes.TEST_BORDERS_ID)
+    const sb = sp.getSheets()[0]
+
+
+
+    // TODO remove the skip if getBorders() on GAS is ever fixed
+    if (SpreadsheetApp.isFake) {
+      const rb = sb.getRange("a6:b10")
+      const b = rb.getBorders()
+      t.is(b.length, rb.getNumRows())
+      t.is(b[0].length, rb.getNumColumns())
+
+      points.forEach(f => {
+        const ps = b.flat().map(g => g[f]())
+        t.true(ps.every(g => g.getColor().asRgbColor().asHexString(), BLACK))
+        t.true(ps.every(g => g.getBorderStyle().toString(), "SOLID"))
+      })
+
+      const rr = sb.getRange("a19:b21")
+      const bb = rr.getBorders()
+      t.is(bb.length, rr.getNumRows())
+      t.is(bb[0].length, rr.getNumColumns())
+      points.forEach(f => {
+        const ps = bb.flat().map(g => g[f]())
+        t.true(ps.every(g => g.getColor().asRgbColor().asHexString(), RED))
+        t.true(ps.every(g => g.getBorderStyle().toString(), "SOLID_THICK"))
+      })
+
+      const rt = sb.getRange("a26:b28")
+      const bt = rt.getBorders()
+      t.is(bt.length, rt.getNumRows())
+      t.is(bt[0].length, rt.getNumColumns())
+
+      // the top of of the first row should be null
+      // the bottom of the last row should be null
+      // the left of the first column should be null
+      // the right of last column should be null
+      const topRow = bt[0]
+      const bottomRow = bt[bt.length - 1]
+      const leftCol = bt.map(f => f[0])
+      const rightCol = bt.map(f => f[f.length - 1])
+
+      // can't really test if this is the correct response till the GAS bug is fixed and investigation is possible
+      // but given responses to getBorder() it should be correct
+      t.true(topRow.every(r => r.getTop().getColor().getColorType().toString() === 'UNSUPPORTED'))
+      t.true(bottomRow.every(r => r.getBottom().getColor().getColorType().toString() === 'UNSUPPORTED'))
+      t.true(leftCol.every(r => r.getLeft().getColor().getColorType().toString() === 'UNSUPPORTED'))
+      t.true(rightCol.every(r => r.getRight().getColor().getColorType().toString() === 'UNSUPPORTED'))
+      t.true(topRow.every(r => r.getTop().getBorderStyle() === null))
+      t.true(bottomRow.every(r => r.getBottom().getBorderStyle() === null))
+      t.true(leftCol.every(r => r.getLeft().getBorderStyle() === null))
+      t.true(rightCol.every(r => r.getRight().getBorderStyle() === null))
+    }
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+
+
+  })
+
+  unit.section("range.getBorder() does work on GAS although it's not documented", t => {
+
+    const { sheet } = maketss('borders')
+    const range = sheet.getRange("c2:i4")
+    const points = ['getTop', 'getLeft', 'getBottom', 'getRight']
+
+    // newly created sheet has all null borders
+    t.is(range.getBorder(), null)
+
+    // this sheet temporarily has some borders in it - once I have setborders working, I'll eliminate
+    const sp = SpreadsheetApp.openById(fixes.TEST_BORDERS_ID)
+    const sb = sp.getSheets()[0]
+    const rb = sb.getRange("a6:b10")
+
+
+    points.forEach(f => {
+      t.is(rb.getBorder()[f]().getColor().asRgbColor().asHexString(), BLACK)
+      t.is(rb.getBorder()[f]().getBorderStyle().toString(), "SOLID")
+    })
+
+    const rr = sb.getRange("a19:b21")
+    points.forEach(f => {
+      t.is(rr.getBorder()[f]().getColor().asRgbColor().asHexString(), RED)
+      t.is(rr.getBorder()[f]().getBorderStyle().toString(), "SOLID_THICK")
+    })
+
+    const rt = sb.getRange("a26:b28")
+
+    // the top of of the first row should be null
+    // the bottom of the last row should be null
+    // the left of the first column should be null
+    // the right of last column should be null
+    const topRow = rt.offset(0, 0, 1).getBorder()
+    const bottomRow = rt.offset(rt.getNumRows() - 1, 1).getBorder()
+    const leftCol = rt.offset(0, 0, rt.getNumRows(), 1).getBorder()
+    const rightCol = rt.offset(0, rt.getNumColumns() - 1, rt.getNumRows(), 1).getBorder()
+
+
+    t.is(topRow.getTop().getColor().getColorType().toString(), 'UNSUPPORTED')
+    t.is(bottomRow.getBottom().getColor().getColorType().toString(), 'UNSUPPORTED')
+    t.is(leftCol.getLeft().getColor().getColorType().toString(), 'UNSUPPORTED')
+    t.is(rightCol.getRight().getColor().getColorType().toString(), 'UNSUPPORTED')
+    t.is(topRow.getTop().getBorderStyle(), null)
+    t.is(bottomRow.getBottom().getBorderStyle(), null)
+    t.is(leftCol.getLeft().getBorderStyle(), null)
+    t.is(rightCol.getRight().getBorderStyle(), null)
+
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+
+  })
+
+  unit.section ("text style extracts", t=> {
+    const sp = SpreadsheetApp.openById(fixes.TEST_BORDERS_ID)
+    const sb = sp.getSheets()[0]
+    const flr = sb.getRange("c2:e3")
+    const flrss = flr.getFontLines()
+    const flrs = flr.getFontLine()
+
+    const flExpect = [
+      ['line-through', 'none', 'none'],
+      ['none', 'none', 'underline']
+    ]
+    t.is(flrss.length, flr.getNumRows())
+    t.is(flrss[0].length, flr.getNumColumns())
+    t.deepEqual(flrss, flExpect)
+    t.is(flrs, flrss[0][0])
+
+
+  })
+
 
   unit.section("text Style objects and builders", t => {
 
@@ -58,28 +248,110 @@ export const testSheets = (pack) => {
     t.is(textStyle.isItalic(), true)
     t.is(textStyle.isUnderline(), false)
     t.is(textStyle.isStrikethrough(), false)
+
+
     t.is(textStyle.getForegroundColor(), null)
     t.is(textStyle.getForegroundColorObject(), null)
 
     const rgbColor = getRandomHex()
+    const rgbBuilder = SpreadsheetApp.newTextStyle()
+    rgbBuilder.setForegroundColor(rgbColor)
+    const rgbStyle = rgbBuilder.build()
+    t.is(rgbStyle.getForegroundColor(), rgbColor)
+    t.is(rgbStyle.getForegroundColorObject().asRgbColor().asHexString(), rgbColor)
+
+    const tc = 'ACCENT4'
+    const tcb = SpreadsheetApp.newColor()
+    tcb.setThemeColor(SpreadsheetApp.ThemeColorType[tc]).build()
+    const themeBuilder = SpreadsheetApp.newTextStyle().setForegroundColorObject(tcb).build()
+    // strangely enough, if it's a theme color it returns the enum for the colortype
+    t.is(themeBuilder.getForegroundColor(), tc)
+    t.is(themeBuilder.getForegroundColorObject().asThemeColor().getThemeColorType().toString(), tc)
 
 
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
   })
 
-  unit.section("cell and font backgrounds and alignments", t => {
+  unit.section("color objects and builders", t => {
 
-    const aname = fixes.PREFIX + "a-sheet"
-    const ss = SpreadsheetApp.create(aname)
-    const sheets = ss.getSheets()
-    const [sheet] = sheets
+    const builder = SpreadsheetApp.newColor()
+    t.is(builder.toString(), "ColorBuilder")
+    t.is(t.threw(() => builder.asThemeColor()).message, "Object is not of type ThemeColor.")
+    t.is(t.threw(() => builder.asRgbColor()).message, "Object is not of type RgbColor.")
+    t.is(builder.getColorType().toString(), "UNSUPPORTED")
+    const rgbColor = getRandomHex()
+
+    builder.setRgbColor(rgbColor)
+    t.is(t.threw(() => builder.asThemeColor()).message, "Object is not of type ThemeColor.")
+    t.is(builder.getColorType().toString(), "RGB")
+    t.is(builder.asRgbColor().toString(), "RgbColor")
+    t.is(builder.asRgbColor().asHexString(), rgbColor)
+    t.is(builder.asRgbColor().getRed(), parseInt(rgbColor.substring(1, 3), 16))
+
+    const builtRgb = builder.build()
+    t.is(builtRgb.toString(), "Color")
+    t.is(builtRgb.getColorType().toString(), "RGB")
+    t.is(builtRgb.asRgbColor().toString(), "RgbColor")
+    t.is(builtRgb.asRgbColor().getGreen(), parseInt(rgbColor.substring(3, 5), 16))
+    t.is(builtRgb.asRgbColor().getBlue(), parseInt(rgbColor.substring(5, 7), 16))
+    t.is(builtRgb.asRgbColor().getRed(), parseInt(rgbColor.substring(1, 3), 16))
+    t.is(t.threw(() => builtRgb.asThemeColor()).message, "Object is not of type ThemeColor.")
+
+    const themeBuilder = SpreadsheetApp.newColor()
+    themeBuilder.setThemeColor(SpreadsheetApp.ThemeColorType.ACCENT1)
+    t.is(themeBuilder.getColorType().toString(), "THEME")
+    t.is(themeBuilder.asThemeColor().getColorType().toString(), "THEME")
+    t.is(themeBuilder.asThemeColor().getThemeColorType().toString(), "ACCENT1")
+    t.is(t.threw(() => themeBuilder.asRgbColor()).message, "Object is not of type RgbColor.")
+
+    const builtTheme = themeBuilder.build()
+    t.is(builtTheme.toString(), "Color")
+    t.is(builtTheme.getColorType().toString(), "THEME")
+    t.is(builtTheme.asThemeColor().getColorType().toString(), "THEME")
+    t.is(t.threw(() => builtTheme.asRgbColor()).message, "Object is not of type RgbColor.")
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+  })
+
+  unit.section("cell and font backgrounds, styles and alignments", t => {
+
+    const { sheet } = maketss('cells')
     const range = sheet.getRange("a1:b3")
+
+    // text styles - an empty sheet shoud all be defaults
+    const txss = range.getTextStyles()
+    const txs = range.getTextStyle()
+    t.is(txss.length, range.getNumRows())
+    t.is(txss[0].length, range.getNumColumns())
+    t.is(txs.toString(), "TextStyle")
+    t.is(txs.getFontSize(), 10)
+    t.is(txs.getFontFamily(), "arial,sans,sans-serif")
+    t.is(txs.isBold(), false)
+    t.is(txs.isItalic(), false)
+    t.is(txs.isUnderline(), false)
+    t.is(txs.isStrikethrough(), false)
+    t.is(txs.getForegroundColor(), BLACK)
+    t.is(txs.getForegroundColorObject().asRgbColor().asHexString(), BLACK)
+    t.true(txss.flat().every(f => f.getFontSize() === txs.getFontSize()))
+    t.true(txss.flat().every(f => f.getFontFamily() === txs.getFontFamily()))
+    t.true(txss.flat().every(f => f.isBold() === txs.isBold()))
+    t.true(txss.flat().every(f => f.isItalic() === txs.isItalic()))
+    t.true(txss.flat().every(f => f.isUnderline() === txs.isUnderline()))
+    t.true(txss.flat().every(f => f.isStrikethrough() === txs.isStrikethrough()))
+    t.true(txss.flat().every(f => f.getForegroundColor() === txs.getForegroundColor()))
+    t.true(txss.flat().every(
+      f => f.getForegroundColorObject().asRgbColor().asHexString() === txs.getForegroundColorObject().asRgbColor().asHexString()))
+
 
     // backgrounds
     const backgrounds = range.getBackgrounds()
     const background = range.getBackground()
     t.true(is.nonEmptyString(background))
     t.true(is.array(backgrounds))
+
+    // these 2 i think have just been renamed - they dont exist in the documentation any more
+    t.is(range.getBackgroundColor(), background)
+    t.deepEqual(range.getBackgroundColors(), backgrounds)
 
     t.is(backgrounds.length, range.getNumRows())
     t.is(backgrounds[0].length, range.getNumColumns())
@@ -114,7 +386,6 @@ export const testSheets = (pack) => {
 
     range.setFontColors(fontColors)
 
-    // TODO - textStyle now ready for adding
 
     // text rotations
     const rots = range.getTextRotations()
@@ -176,7 +447,7 @@ export const testSheets = (pack) => {
     const fcob = range.getFontColorObject()
     t.is(fcobs.length, range.getNumRows())
     t.is(fcobs[0].length, range.getNumColumns())
-    t.deepEqual(fcobs.flat().map(f=>f.asRgbColor().asHexString()), fontColors.flat())
+    t.deepEqual(fcobs.flat().map(f => f.asRgbColor().asHexString()), fontColors.flat())
     t.is(fcob.asRgbColor().asHexString(), fontColors[0][0])
 
     range.setFontColor(getRandomHex())
@@ -210,17 +481,11 @@ export const testSheets = (pack) => {
     t.is(horizontalAlignment, 'general', 'newly created sheet will have general')
 
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-    if (fixes.CLEAN) {
-      toTrash.push(DriveApp.getFileById(ss.getId()))
-    }
 
   })
 
   unit.section("setting and getting color objects}", t => {
-    const aname = fixes.PREFIX + "ob-sheet"
-    const ss = SpreadsheetApp.create(aname)
-    const sheets = ss.getSheets()
-    const [sheet] = sheets
+    const { sheet } = maketss('colors')
     const range = sheet.getRange("c6:i12")
 
     // so we can see the colors better if necessary add some random values
@@ -300,83 +565,7 @@ export const testSheets = (pack) => {
     t.deepEqual(back1, back2)
 
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-    if (fixes.CLEAN) {
-      toTrash.push(DriveApp.getFileById(ss.getId()))
-    }
 
-  })
-
-  // range.getBorders() doesn't work on GAS
-  // see this issue - https://issuetracker.google.com/issues/329473815
-  // we can resurrect this if it ever gets fixed
-  unit.section("range borders - there's a bug in GAS range.getBorders so this doesnt run there", t => {
-
-    const aname = fixes.PREFIX + "borders-sheet"
-    const ss = SpreadsheetApp.create(aname)
-    const sheets = ss.getSheets()
-    const [sheet] = sheets
-    const range = sheet.getRange("c2:i4")
-    const points = ['getTop', 'getLeft', 'getBottom', 'getRight']
-
-    // newly created sheet has all null borders so the borders object should be null
-    t.true(range.getBorders().flat().every(f => is.null(f)))
-
-    // this sheet temporarily has some borders in it - once I have setborders working, I'll eliminate
-    const sp = SpreadsheetApp.openById(fixes.TEST_BORDERS_ID)
-    const sb = sp.getSheets()[0]
-    const rb = sb.getRange("a6:b10")
-    const b = rb.getBorders()
-    t.is(b.length, rb.getNumRows())
-    t.is(b[0].length, rb.getNumColumns())
-
-    points.forEach(f => {
-      const ps = b.flat().map(g => g[f]())
-      t.true(ps.every(g => g.getColor().asRgbColor().asHexString(), BLACK))
-      t.true(ps.every(g => g.getBorderStyle().toString(), "SOLID"))
-    })
-
-    const rr = sb.getRange("a19:b21")
-    const bb = rr.getBorders()
-    t.is(bb.length, rr.getNumRows())
-    t.is(bb[0].length, rr.getNumColumns())
-    points.forEach(f => {
-      const ps = bb.flat().map(g => g[f]())
-      t.true(ps.every(g => g.getColor().asRgbColor().asHexString(), RED))
-      t.true(ps.every(g => g.getBorderStyle().toString(), "SOLID_THICK"))
-    })
-
-    const rt = sb.getRange("a26:b28")
-    const bt = rt.getBorders()
-    t.is(bt.length, rt.getNumRows())
-    t.is(bt[0].length, rt.getNumColumns())
-
-    // the top of of the first row should be null
-    // the bottom of the last row should be null
-    // the left of the first column should be null
-    // the right of last column should be null
-    const topRow = bt[0]
-    const bottomRow = bt[bt.length - 1]
-    const leftCol = bt.map(f => f[0])
-    const rightCol = bt.map(f => f[f.length - 1])
-
-    // can't really test if this is the correct response till the GAS bug is fixed and investigation is possible
-    // but given responses to getBorder() it should be correct
-    t.true(topRow.every(r => r.getTop().getColor().getColorType().toString() === 'UNSUPPORTED'))
-    t.true(bottomRow.every(r => r.getBottom().getColor().getColorType().toString() === 'UNSUPPORTED'))
-    t.true(leftCol.every(r => r.getLeft().getColor().getColorType().toString() === 'UNSUPPORTED'))
-    t.true(rightCol.every(r => r.getRight().getColor().getColorType().toString() === 'UNSUPPORTED'))
-    t.true(topRow.every(r => r.getTop().getBorderStyle() === null))
-    t.true(bottomRow.every(r => r.getBottom().getBorderStyle() === null))
-    t.true(leftCol.every(r => r.getLeft().getBorderStyle() === null))
-    t.true(rightCol.every(r => r.getRight().getBorderStyle() === null))
-
-    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-    if (fixes.CLEAN) {
-      toTrash.push(DriveApp.getFileById(ss.getId()))
-    }
-
-  }, {
-    skip: !SpreadsheetApp.isFake
   })
 
   unit.section("spreadsheet ranges", t => {
@@ -448,73 +637,9 @@ export const testSheets = (pack) => {
   })
 
 
-  unit.section("range.getBorder() does work on GAS although it's not documented", t => {
-
-    const aname = fixes.PREFIX + "border-sheet"
-    const ss = SpreadsheetApp.create(aname)
-    const sheets = ss.getSheets()
-    const [sheet] = sheets
-    const range = sheet.getRange("c2:i4")
-    const points = ['getTop', 'getLeft', 'getBottom', 'getRight']
-
-    // newly created sheet has all null borders
-    t.is(range.getBorder(), null)
-
-
-    // this sheet temporarily has some borders in it - once I have setborders working, I'll eliminate
-    const sp = SpreadsheetApp.openById(fixes.TEST_BORDERS_ID)
-    const sb = sp.getSheets()[0]
-    const rb = sb.getRange("a6:b10")
-
-
-    points.forEach(f => {
-      t.is(rb.getBorder()[f]().getColor().asRgbColor().asHexString(), BLACK)
-      t.is(rb.getBorder()[f]().getBorderStyle().toString(), "SOLID")
-    })
-
-    const rr = sb.getRange("a19:b21")
-    points.forEach(f => {
-      t.is(rr.getBorder()[f]().getColor().asRgbColor().asHexString(), RED)
-      t.is(rr.getBorder()[f]().getBorderStyle().toString(), "SOLID_THICK")
-    })
-
-    const rt = sb.getRange("a26:b28")
-
-    // the top of of the first row should be null
-    // the bottom of the last row should be null
-    // the left of the first column should be null
-    // the right of last column should be null
-    const topRow = rt.offset(0, 0, 1).getBorder()
-    const bottomRow = rt.offset(rt.getNumRows() - 1, 1).getBorder()
-    const leftCol = rt.offset(0, 0, rt.getNumRows(), 1).getBorder()
-    const rightCol = rt.offset(0, rt.getNumColumns() - 1, rt.getNumRows(), 1).getBorder()
-
-
-    t.is(topRow.getTop().getColor().getColorType().toString(), 'UNSUPPORTED')
-    t.is(bottomRow.getBottom().getColor().getColorType().toString(), 'UNSUPPORTED')
-    t.is(leftCol.getLeft().getColor().getColorType().toString(), 'UNSUPPORTED')
-    t.is(rightCol.getRight().getColor().getColorType().toString(), 'UNSUPPORTED')
-    t.is(topRow.getTop().getBorderStyle(), null)
-    t.is(bottomRow.getBottom().getBorderStyle(), null)
-    t.is(leftCol.getLeft().getBorderStyle(), null)
-    t.is(rightCol.getRight().getBorderStyle(), null)
-
-
-    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-    if (fixes.CLEAN) {
-      toTrash.push(DriveApp.getFileById(ss.getId()))
-    }
-
-  }, {
-    skip: !SpreadsheetApp.isFake
-  })
-
 
   unit.section("assorted cell userenteredformats", t => {
-    const aname = fixes.PREFIX + "ue-sheet"
-    const ss = SpreadsheetApp.create(aname)
-    const sheets = ss.getSheets()
-    const [sheet] = sheets
+    const { sheet } = maketss('assorted')
     const range = sheet.getRange("c2:i4")
     const stuff = getStuff(range)
     range.setValues(stuff)
@@ -538,53 +663,10 @@ export const testSheets = (pack) => {
     t.is(fws, 'normal')
 
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-    if (fixes.CLEAN) {
-      toTrash.push(DriveApp.getFileById(ss.getId()))
-    }
+
 
   })
 
-
-  unit.section("color objects and builders", t => {
-
-    const builder = SpreadsheetApp.newColor()
-    t.is(builder.toString(), "ColorBuilder")
-    t.is(t.threw(() => builder.asThemeColor()).message, "Object is not of type ThemeColor.")
-    t.is(t.threw(() => builder.asRgbColor()).message, "Object is not of type RgbColor.")
-    t.is(builder.getColorType().toString(), "UNSUPPORTED")
-    const rgbColor = getRandomHex()
-
-    builder.setRgbColor(rgbColor)
-    t.is(t.threw(() => builder.asThemeColor()).message, "Object is not of type ThemeColor.")
-    t.is(builder.getColorType().toString(), "RGB")
-    t.is(builder.asRgbColor().toString(), "RgbColor")
-    t.is(builder.asRgbColor().asHexString(), rgbColor)
-    t.is(builder.asRgbColor().getRed(), parseInt(rgbColor.substring(1, 3), 16))
-
-    const builtRgb = builder.build()
-    t.is(builtRgb.toString(), "Color")
-    t.is(builtRgb.getColorType().toString(), "RGB")
-    t.is(builtRgb.asRgbColor().toString(), "RgbColor")
-    t.is(builtRgb.asRgbColor().getGreen(), parseInt(rgbColor.substring(3, 5), 16))
-    t.is(builtRgb.asRgbColor().getBlue(), parseInt(rgbColor.substring(5, 7), 16))
-    t.is(builtRgb.asRgbColor().getRed(), parseInt(rgbColor.substring(1, 3), 16))
-    t.is(t.threw(() => builtRgb.asThemeColor()).message, "Object is not of type ThemeColor.")
-
-    const themeBuilder = SpreadsheetApp.newColor()
-    themeBuilder.setThemeColor(SpreadsheetApp.ThemeColorType.ACCENT1)
-    t.is(themeBuilder.getColorType().toString(), "THEME")
-    t.is(themeBuilder.asThemeColor().getColorType().toString(), "THEME")
-    t.is(themeBuilder.asThemeColor().getThemeColorType().toString(), "ACCENT1")
-    t.is(t.threw(() => themeBuilder.asRgbColor()).message, "Object is not of type RgbColor.")
-
-    const builtTheme = themeBuilder.build()
-    t.is(builtTheme.toString(), "Color")
-    t.is(builtTheme.getColorType().toString(), "THEME")
-    t.is(builtTheme.asThemeColor().getColorType().toString(), "THEME")
-    t.is(t.threw(() => builtTheme.asRgbColor()).message, "Object is not of type RgbColor.")
-
-    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-  })
 
   unit.section("basic adv sheets cell formatting fetch fix", t => {
     // this section will work with the testsheet where we have some horizonatl alignment (as opposed to the default which returns nothing)
@@ -642,8 +724,6 @@ export const testSheets = (pack) => {
 
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
   })
-
-
 
 
   unit.section("advanced sheet basics", t => {

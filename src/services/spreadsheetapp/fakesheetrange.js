@@ -6,12 +6,14 @@ import { newFakeBorders } from '../commonclasses/fakeborders.js'
 import { makeColorFromApi } from '../commonclasses/fakecolorbuilder.js'
 import { newFakeWrapStrategy, isWrapped } from '../commonclasses/fakewrapstrategy.js'
 import { newFakeTextRotation } from '../commonclasses/faketextrotation.js'
-import { makeTextStyleFromApi} from '../commonclasses/faketextstylebuilder.js'
+import { makeTextStyleFromApi } from '../commonclasses/faketextstylebuilder.js'
 
 
-const { is, rgbToHex, hexToRgb, getPlucker, robToHex,outsideInt } = Utils
-const WHITE = '#ffffff'
-const BLACK = '#000000'
+const { is, rgbToHex, hexToRgb, getPlucker, robToHex, outsideInt } = Utils
+
+const WHITER = { red: 1, green: 1, blue: 1 }
+const BLACKER = { red: 0, green: 0, blue: 0 }
+
 
 import { notYetImplemented, signatureArgs } from '../../support/helpers.js'
 
@@ -48,15 +50,29 @@ const attrGens = (self, target) => {
 
     const { rowData } = sheets[0]?.data[0]
 
-    // then we have to shape some default values
-    if (!rowData) {
-      return Array.from({ length: range.getNumRows() }).fill(Array.from({ length: range.getNumColumns() }).fill(defaultValue).map(cleaner))
-    }
+    // somewtimes we get a jagged array that needs to be padded to the right length with default values
+    const template = Array.from({ length: range.getNumRows() })
+      .fill(Array.from({ length: range.getNumColumns() })
+      .fill(defaultValue).map(cleaner))
+
+    // if we got nothing, return the template of defaults
+    if (!rowData) return template
 
     // pluck each cell
     // extract the required props to an array
     const plucker = getPlucker(props, defaultValue)
-    return rowData.map(row => row.values.map(plucker).map(cleaner))
+
+    // now replace the template with anything we got
+    const rows = template.map((row, i) => {
+      // use the template values if we've run out of data
+      if (i >= rowData.length) return row
+      return row.map((col, j) => {
+        // use the col value if there is one
+         return  (rowData[i].values[j]) ? cleaner(plucker(rowData[i].values[j])) : col
+      })
+    })
+    return rows
+    //return rowData.map(row => row.values.map(plucker).map(cleaner))
   }
 
   // sometimes the returned values may need tweaked/converted
@@ -101,8 +117,8 @@ const attrGetList = [{
 }, {
   name: 'getBackground',
   props: '.userEnteredFormat.backgroundColor',
-  defaultValue: { red: 1, green: 1, blue: 1 },
-  cleaner: (f) => is.null(f) ? WHITE : rgbToHex(f.red, f.green, f.blue)
+  defaultValue: WHITER,
+  cleaner: robToHex
 }, {
   name: 'getFontWeight',
   props: '.userEnteredFormat.textFormat.bold',
@@ -112,22 +128,24 @@ const attrGetList = [{
   name: 'getBorder',
   props: '.userEnteredFormat.borders',
   defaultValue: null,
-  cleaner: (f => is.null(f) ? null : newFakeBorders(f))
+  cleaner: (f => {
+    return is.null(f) ? null : newFakeBorders(f)
+  })
 }, {
   name: 'getBackgroundObject',
   props: '.userEnteredFormat.backgroundColorStyle',
-  defaultValue: { rgbColor: { red: 1, green: 1, blue: 1 } },
-  cleaner: (f) => makeColorFromApi(f)
+  defaultValue: { rgbColor: WHITER },
+  cleaner: makeColorFromApi
 }, {
   name: 'getFontColor',
   props: '.userEnteredFormat.textFormat.foregroundColor',
-  defaultValue: { red: 0, green: 0, blue: 0 },
-  cleaner: (f) => robToHex(f)
+  defaultValue: BLACKER,
+  cleaner: robToHex
 }, {
   name: 'getFontColorObject',
   props: '.userEnteredFormat.textFormat.foregroundColorStyle',
-  defaultValue: { rgbColor: { red: 0, green: 0, blue: 0 } },
-  cleaner: (f) => makeColorFromApi(f)
+  defaultValue: { rgbColor: BLACKER },
+  cleaner: makeColorFromApi
 }, {
   name: 'getFontFamily',
   props: '.userEnteredFormat.textFormat.fontFamily',
@@ -141,23 +159,33 @@ const attrGetList = [{
   name: 'getWrapStrategy',
   props: '.userEnteredFormat.wrapStrategy',
   defaultValue: 'OVERFLOW_CELL',
-  cleaner: f=>newFakeWrapStrategy(f),
+  cleaner: newFakeWrapStrategy,
   plural: 'getWrapStrategies'
 }, {
   name: 'getWrap',
   props: '.userEnteredFormat.wrapStrategy',
   defaultValue: 'OVERFLOW_CELL',
-  cleaner: f=>isWrapped(newFakeWrapStrategy(f))
+  cleaner: f => isWrapped(newFakeWrapStrategy(f))
 }, {
   name: 'getTextRotation',
   props: '.userEnteredFormat.textRotation',
-  defaultValue: {angle: 0, vertical: "NONE"},
-  cleaner: f=>newFakeTextRotation(f || {angle: 0, vertical: "NONE"} )
+  defaultValue: { angle: 0, vertical: "NONE" },
+  cleaner: f => newFakeTextRotation(f || { angle: 0, vertical: "NONE" })
 }, {
   name: 'getTextStyle',
   props: '.userEnteredFormat.textFormat',
-  defaultValue: null,
-  cleaner: (f) => makeTextStyleFromApi(f)
+  defaultValue: { foregroundColor: { rgbColor: BLACKER } },
+  cleaner: makeTextStyleFromApi
+}, {
+  name: 'getFontLine',
+  props: '.userEnteredFormat.textFormat',
+  defaultValue: { foregroundColor: { rgbColor: BLACKER } },
+  cleaner: f => {
+    const s = makeTextStyleFromApi(f)
+    if (s.isStrikethrough()) return 'line-through'
+    if (s.isUnderline()) return 'underline'
+    return 'none'
+  }
 }]
 
 /**
@@ -193,8 +221,6 @@ export class FakeSheetRange {
       'setDataValidation',
       'getTextDirection',
       'setTextDirection',
- 
-
       'setFontWeight',
       'setHorizontalAlignments',
       'createDataSourcePivotTable',
@@ -207,7 +233,6 @@ export class FakeSheetRange {
       'getFormulaR1C1',
       'getFormulasR1C1',
       'getDataSourceFormula',
-      'getBackgroundColors',
       'insertCells',
       'setFormulas',
       'setFormulaR1C1',
@@ -231,9 +256,6 @@ export class FakeSheetRange {
       'setWraps',
       'copyValuesToRange',
       'copyFormatToRange',
-
-      'getFontLine',
-      'getFontLines',
       'getFontStyle',
       'setComments',
       'randomize',
@@ -294,7 +316,7 @@ export class FakeSheetRange {
       'getDataSourceFormulas',
       'getDataSourceTables',
       'setBackgroundColor',
-      'getBackgroundColor',
+
       'setFormula',
       'getDataSourceUrl',
 
@@ -335,6 +357,15 @@ export class FakeSheetRange {
     )
   }
 
+  /**
+   * these 2 dont exist in the documentation any more - assume they have been renamed as getBackground(s)
+   */
+  getBackgroundColor() {
+    return this.getBackground()
+  }
+  getBackgroundColors() {
+    return this.getBackgrounds()
+  }
 
   /**
    * getCell(row, column) Returns a given cell within a range.
@@ -394,6 +425,8 @@ export class FakeSheetRange {
   getFormulas() {
     return this.__getValues({ options: { valueRenderOption: 'FORMULA' } })
   }
+
+
   /**
    * getGridId() https://developers.google.com/apps-script/reference/spreadsheet/range#getgridid
    * Returns the grid ID of the range's parent sheet. IDs are random non-negative int values.

@@ -35,7 +35,7 @@ export class FakeSheet {
     // the latest content in the related sheet - see get __sheet later 
     this.__parent = parent
     this.__sheetId = sheetId
-    
+
     const props = ['toString',
       'activate',
       'autoResizeColumns',
@@ -55,7 +55,7 @@ export class FakeSheet {
       'expandColumnGroupsUpToDepth',
       'collapseAllColumnGroups',
       'clearComments',
-      'clearFormats',
+
       'getTabColor',
       'getTabColorObject',
       'setTabColor',
@@ -89,7 +89,7 @@ export class FakeSheet {
       'removeChart',
       'updateChart',
       'newChart',
-      'clearContents',
+
       'getCharts',
       'createDeveloperMetadataFinder',
       'getDataSourceUrl',
@@ -103,7 +103,7 @@ export class FakeSheet {
       'getDeveloperMetadata',
       'deleteColumns',
       'copyTo',
-      'clear',
+  
       'setName',
       'getFilter',
       'getImages',
@@ -160,7 +160,7 @@ export class FakeSheet {
     })
   }
 
-  get __sheet () {
+  get __sheet() {
     return this.getParent().__getSheetMeta(this.__sheetId)
   }
 
@@ -204,7 +204,7 @@ export class FakeSheet {
     let { values } = Sheets.Spreadsheets.Values.get(this.__parent.getId(), this.getName())
     // no values indicates an empty sheet
     // in this case the gridrange as far as gas is concerned is A1
-    let maxWidth =1
+    let maxWidth = 1
     let maxHeight = 1
     if (values) {
       maxWidth = values.reduce((p, c) => c.length > p ? c.length : p, 0)
@@ -219,6 +219,41 @@ export class FakeSheet {
       startColumnIndex: 0,
       endColumnIndex: maxWidth
     }
+  }
+  __clear (fields) {
+
+    const request = {
+      updateCells: {
+        range: {
+          sheetId: this.getSheetId()
+        },
+        fields
+      }
+    }
+
+    Sheets.Spreadsheets.batchUpdate({ requests: [request] }, this.getParent().getId(), { ss: true })
+    return this
+  }
+  /**
+   * clear() https://developers.google.com/apps-script/reference/spreadsheet/sheet#clear
+   * Clears the sheet of content and formatting information.
+   * @returns {FakeSheet} this
+   */
+  clear({formatOnly = false, contentsOnly= false} ={}) {
+    const fields = [contentsOnly ? null : 'userEnteredFormat', formatOnly ? null : 'userEnteredValue'].filter(f=>f)
+  
+    // TODO check what GAS does do if both false or invalid options are specified
+    if (!fields.length) {
+      throw new Error ('contentsOnly and formatOnly cannot both be true')
+    }
+
+    return this.__clear(fields.join(","))
+  }
+  clearContents() {
+    return this.clear({ contentsOnly: true })
+  }
+  clearFormats () {
+    return this.clear({ formatOnly: true })
   }
 
   /**
@@ -263,7 +298,7 @@ export class FakeSheet {
     }]
 
     // let sheets handle errors
-    Sheets.Spreadsheets.batchUpdate({requests}, this.__parent.getId(), { ss: true })
+    Sheets.Spreadsheets.batchUpdate({ requests }, this.__parent.getId(), { ss: true })
     return this
 
   }
@@ -305,7 +340,7 @@ export class FakeSheet {
     }]
 
     // let sheets handle errors
-    Sheets.Spreadsheets.batchUpdate({requests}, this.__parent.getId(), { ss: true })
+    Sheets.Spreadsheets.batchUpdate({ requests }, this.__parent.getId(), { ss: true })
     return this
 
   }

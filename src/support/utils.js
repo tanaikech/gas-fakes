@@ -164,6 +164,7 @@ export const mergeParamStrings = (...args) => {
 }
 
 const capital = (str) => str.substring(0, 1).toUpperCase() + str.substring(1)
+const unCapital = (str) => str.substring(0, 1).toLowerCase() + str.substring(1)
 
 const validateHex = (cssString) => {
   if (!is.nonEmptyString(cssString)) return null
@@ -250,7 +251,8 @@ export const Utils = {
   validateHex,
   robToHex,
   outside,
-  outsideInt
+  outsideInt,
+  unCapital
 }
 
 

@@ -172,14 +172,14 @@ This was a little problematic to sequence, but I wanted to make sure that any GA
 
 Only a subset of methods are currently available for some of them - the rest are work in progress. My approach is to start with a little bit of each service to prove feasibility and provide a base to build on.
 
-v1.0.7
+v1.0.8
 
 - `DriveApp` - 50%
 - `ScriptApp` - almost all
 - `UrlFetchApp` - 80%
 - `Utilities` - almost all
 - `Sheets` - 25%
-- `SpreadsheetApp` - 25%
+- `SpreadsheetApp` - 50%
 - `CacheService` - 80%
 - `PropertiesService` - 80%
 - `Session` - almost all
@@ -373,6 +373,29 @@ I'll make a note in thre repos issues on implementation differences. In the main
 ### Tradeoffs
 
 I've come across various Apps Script bugs/issues as I work through this which I've reported to the GAS team, and added workarounds in the gas fakes code - not sure at this point whether to duplicate the buggy behavior or simulate what would seem to be the correct one. Again - any things you come across please use the issues in the repo to report. 
+
+## Oddities
+
+Just a few things I've come across when digging into the differences between the sheets API and what Apps Script does.
+
+### Formats and styles
+
+When getting formats with the sheets API, there are 2 types
+- userEnteredFormat - any formats a user (or an apps script function) has explicitly set
+- effectiveFormat - what rendered format actually looks like
+
+This means that sometimes, for example, a font might be red in the UI, but Apps Script reports it as black. This is because Apps Script uses the userEnteredFormat exclusively (I think). I've implemented the same in Gas Fakes. To get the effectiveFormat, you'll need to use the Fake Advanced Sheets service, just as you would in Apps Script.
+
+### Values
+
+Just as with Formats, the actual value rendered might be different than the value stored. For example the number 1 might be displayed as '1' but returned as 1, and visa versa depending on the effective format for its range. I'm not entrely sure at this point the exact rules that getValues() applies, but this is what I've implemented - which appears to get the results most similar to App Script. I haven't figured out how to handles dates yet.
+
+Here is how I've implemented getting and setting values.
+
+- getValues() uses { valueRenderOption: 'UNFORMATTED_VALUE' }
+- setValues() uses { valueInputOption: "RAW" } (as opposed to 'USER_ENTERED')
+- getDisplayValues() { valueRenderOption: 'FORMATTED_VALUE' } 
+
 
 ## Help
 
