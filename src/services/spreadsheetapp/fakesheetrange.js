@@ -53,7 +53,7 @@ const attrGens = (self, target) => {
     // somewtimes we get a jagged array that needs to be padded to the right length with default values
     const template = Array.from({ length: range.getNumRows() })
       .fill(Array.from({ length: range.getNumColumns() })
-      .fill(defaultValue).map(cleaner))
+        .fill(defaultValue).map(cleaner))
 
     // if we got nothing, return the template of defaults
     if (!rowData) return template
@@ -68,7 +68,7 @@ const attrGens = (self, target) => {
       if (i >= rowData.length) return row
       return row.map((col, j) => {
         // use the col value if there is one
-         return  (rowData[i].values[j]) ? cleaner(plucker(rowData[i].values[j])) : col
+        return (rowData[i].values[j]) ? cleaner(plucker(rowData[i].values[j])) : col
       })
     })
     return rows
@@ -99,6 +99,18 @@ const attrGens = (self, target) => {
   }
 
   return self
+}
+
+const valueGens = (self, target) => {
+
+  const getData = ({ range = self, options }) => {
+    const { values } = Sheets.Spreadsheets.Values.get(this.__sheet.getParent().getId(), this.__getRangeWithSheet(range), options)
+    return values
+  }
+
+  // both a single and collection version
+  const plural = target.plural || (target.name + 's')
+
 }
 
 // generate methods for similar code
@@ -186,6 +198,12 @@ const attrGetList = [{
     if (s.isUnderline()) return 'underline'
     return 'none'
   }
+}]
+
+const valuesGetList = [{
+  name: 'getValue',
+  valueRenderOption: 'UNFORMATTED_VALUE',
+  defaultValue: ''
 }]
 
 /**
