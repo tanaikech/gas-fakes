@@ -104,7 +104,7 @@ console.log (props, template )
   if (!target.skipSingle) {
     self[target.name] = () => {
       const values = getters(self.__getTopLeft())
-      console.log (target.name,values)
+      console.log (target.name,values, target.reducer)
       return target.reducer?  values : (values && values[0] && values[0][0])
     }
   }
