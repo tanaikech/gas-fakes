@@ -38,7 +38,7 @@ export const initTests = () => {
     MIN_FOLDERS_ROOT: process.env.MIN_FOLDERS_ROOT,
     TEST_FOLDER_NAME: process.env.TEST_FOLDER_NAME,
     TEST_FOLDER_FILES: Number(process.env.TEST_FOLDER_FILES),
-    SKIP_SINGLE_PARENT: process.env.SKIP_SINGLE_PARENT === 'true',
+    SKIP_SINGLE_PARENT: process.env.SKIP_SINGLE_PARENT,
     TEST_FOLDER_ID: process.env.TEST_FOLDER_ID,
     TEXT_FILE_NAME: process.env.TEXT_FILE_NAME,
     TEXT_FILE_ID: process.env.TEXT_FILE_ID,
@@ -61,7 +61,7 @@ export const initTests = () => {
     API_TYPE: process.env.API_TYPE,
     PREFIX: Drive.isFake ? "--f" : "--g",
     PDF_ID: process.env.PDF_ID,
-    CLEAN: process.env.CLEAN === 'true'
+    CLEAN: process.env.CLEAN
   }
   // double check all is defined in process.env if on node
   if (!unitExports.CodeLocator.isGas) {

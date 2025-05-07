@@ -10,18 +10,63 @@ import '../main.js'
 
 import { initTests } from './testinit.js'
 import { getSheetsPerformance } from '../src/support/sheetscache.js';
+import { maketss, trasher } from './testassist.js';
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testSheetsValues = (pack) => {
+
   const { unit, fixes } = pack || initTests()
   const toTrash = []
+  unit.section("spreadsheet values - both advanced and app", t => {
+
+    // TODO - fails on gas if the fields are dates or numbers because gas automayically detects and converts types
+    // whereas advanced sheets/node api does not
+    // - see https://github.com/brucemcpherson/gas-fakes/issues/15
+
+    const {sheet: fooSheet} = maketss ('foosheet',toTrash, fixes)
+    const fooValues = Array.from({ length: 10 }, (_, i) => Array.from({ length: 6 }, (_, j) => i + j))
+    const fooRange = fooSheet.getRange(1, 1, fooValues.length, fooValues[0].length).getA1Notation()
+    const cs = fooSheet.getParent()
+
+    t.true(fooSheet.getRange(fooRange).isBlank())
+    t.true(fooSheet.getRange(fooRange).offset(1,1,1,1).isBlank())
+
+    /**
+     * Note:
+     * the Google Sheets API doesn't guarantee that the data type will be strictly preserved 
+     * but valueInputoption "RAW" has a better success rate then "USER_ENTERED"
+     * need to use in conjunction with valueRenderOption: 'UNFORMATTED_VALUE' on the get
+     * howver it's not clear yet  what behavior to expect from gas
+     */
+    const fooRequest = {
+      valueInputOption: "RAW",
+      data: [{
+        majorDimension: "ROWS",
+        range: `'${fooSheet.getName()}'!${fooRange}`,
+        values: fooValues,
+      }]
+    }
+    const foosh = Sheets.Spreadsheets.Values.batchUpdate(fooRequest, cs.getId())
+
+    t.is(foosh.totalUpdatedCells, fooValues.length * fooValues[0].length)
+    t.is(foosh.totalUpdatedRows, fooValues.length)
+    t.is(foosh.totalUpdatedColumns, fooValues[0].length)
+    t.is(foosh.totalUpdatedSheets, 1)
+
+    const barSheet = cs.insertSheet('barsheet')
+    const barRange = barSheet.getRange(1, 1, fooValues.length, fooValues[0].length)
+    barRange.setValues(fooValues)
+
+    const barValues = barRange.getValues()
+    t.deepEqual(barSheet.getDataRange().getValues(), fooValues)
+
+    t.deepEqual(fooSheet.getRange(fooRange).getValues(), barValues)
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+  })
 
   unit.section("creating and updating sheets", t => {
 
-    const aname = fixes.PREFIX + "a-sheet"
-    const ss = SpreadsheetApp.create(aname)
-    t.is(ss.getName(), aname)
-
+    // create ss with advanced service
     const bname = fixes.PREFIX + "b-sheet"
     const bs = Sheets.Spreadsheets.create({
       properties: {
@@ -30,6 +75,7 @@ export const testSheetsValues = (pack) => {
     })
     t.is(bs.properties.title, bname)
 
+    // ceate a sheet with specific dimensions
     const cname = fixes.PREFIX + "c-sheet"
     const prows = 25
     const pcols = 10
@@ -134,59 +180,13 @@ export const testSheetsValues = (pack) => {
 
     if (fixes.CLEAN) {
       toTrash.push(DriveApp.getFileById(cs.getId()))
-      toTrash.push(DriveApp.getFileById(ss.getId()))
       toTrash.push(DriveApp.getFileById(bs.spreadsheetId))
     }
 
   })
 
 
-  unit.section("spreadsheet values", t => {
 
-    // TODO - fails on gas if the fields are dates or numbers because gas automayically detects and converts types
-    // whereas advanced sheets/node api does not
-    // - see https://github.com/brucemcpherson/gas-fakes/issues/15
-
-    // lets make some test data
-    const fooName = fixes.PREFIX + "foo"
-
-    const cs = SpreadsheetApp.create(fooName)
-    if (fixes.CLEAN) toTrash.push(DriveApp.getFileById(cs.getId()))
-    const fooSheet = cs.insertSheet('foosheet')
-    const fooValues = Array.from({ length: 10 }, (_, i) => Array.from({ length: 6 }, (_, j) => i + j))
-    const fooRange = fooSheet.getRange(1, 1, fooValues.length, fooValues[0].length).getA1Notation()
-    /**
-     * Note:
-     * the Google Sheets API doesn't guarantee that the data type will be strictly preserved 
-     * but valueInputoption "RAW" has a better success rate then "USER_ENTERED"
-     * need to use in conjunction with valueRenderOption: 'UNFORMATTED_VALUE' on the get
-     * howver it's not clear what behavior to expect from gas
-     */
-    const fooRequest = {
-      valueInputOption: "RAW",
-      data: [{
-        majorDimension: "ROWS",
-        range: `'${fooSheet.getName()}'!${fooRange}`,
-        values: fooValues,
-      }]
-    }
-    const foosh = Sheets.Spreadsheets.Values.batchUpdate(fooRequest, cs.getId())
-
-    t.is(foosh.totalUpdatedCells, fooValues.length * fooValues[0].length)
-    t.is(foosh.totalUpdatedRows, fooValues.length)
-    t.is(foosh.totalUpdatedColumns, fooValues[0].length)
-    t.is(foosh.totalUpdatedSheets, 1)
-
-    const barSheet = cs.insertSheet('barsheet')
-    const barRange = barSheet.getRange(1, 1, fooValues.length, fooValues[0].length)
-    barRange.setValues(fooValues)
-
-    const barValues = barRange.getValues()
-    t.deepEqual(barSheet.getDataRange().getValues(), fooValues)
-
-    t.deepEqual(fooSheet.getRange(fooRange).getValues(), barValues)
-    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-  })
 
 
   unit.section("advanced & spreadsheetapp values and ranges", t => {
@@ -317,7 +317,7 @@ export const testSheetsValues = (pack) => {
   }
 
   // clean up if necessary
-  toTrash.forEach(f => f.setTrashed(true))
+  trasher(toTrash)
 
   return { unit, fixes }
 }

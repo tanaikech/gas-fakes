@@ -10,76 +10,21 @@ import '../main.js'
 
 import { initTests } from './testinit.js'
 import { getSheetsPerformance } from '../src/support/sheetscache.js';
-
-const BLACK = '#000000'
-const RED = '#ff0000'
-
-
-const toHex = (c) => {
-  if (!c) return '00';
-  const val = Math.round(c * 255);
-  const hex = val.toString(16);
-  return hex.length === 1 ? '0' + hex : hex;
-};
-
-const rgbToHex = ({ red: r, green: g, blue: b }) => {
-
-  const red = toHex(r);
-  const green = toHex(g);
-  const blue = toHex(b);
-  return `#${red}${green}${blue}`;
-}
-const getRandomRgb = () => ({ red: Math.random(), green: Math.random(), blue: Math.random() })
-const getRandomHex = () => rgbToHex(getRandomRgb())
-const getStuff = (range) => Array.from({ length: range.getNumRows() }, _ => Array.from({ length: range.getNumColumns() }, () => Utilities.getUuid()))
-
-
+import { maketss, trasher, toHex, rgbToHex, getRandomRgb, getRandomHex, getStuff, BLACK, RED } from './testassist.js';
 
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testSheets = (pack) => {
-  let ss = null
-
-  const maketss = (sheetName, { clearContents = true, clearFormats = true } = {}) => {
-
-    if (!ss) {
-      const aname = fixes.PREFIX + "tss-sheet"
-      ss = SpreadsheetApp.create(aname)
-      if (fixes.CLEAN) {
-        toTrash.push(DriveApp.getFileById(ss.getId()))
-      }
-    }
-
-    let sheet = null
-    if (sheetName) {
-      sheet = ss.getSheetByName(sheetName)
-    }
-
-    if (!sheet) {
-      sheet = ss.insertSheet(sheetName)
-    } else {
-      if (clearContents || clearFormats) {
-        sheet.clear({ contentsOnly: !clearFormats, formatsOnly: !clearContents })
-      }
-    }
-
-    return {
-      ss,
-      sheet,
-      sheets: ss.getSheets()
-
-    }
-  }
 
   const { unit, fixes } = pack || initTests()
   const toTrash = []
 
-    // range.getBorders() doesn't work on GAS
+  // range.getBorders() doesn't work on GAS
   // see this issue - https://issuetracker.google.com/issues/329473815
   // we can resurrect this if it ever gets fixed
   unit.section("range borders - there's a bug in GAS range.getBorders so some of this doesnt run there", t => {
 
-    const { sheet } = maketss('borders')
+    const { sheet } = maketss('borders', toTrash, fixes)
 
     const range = sheet.getRange("c2:i4")
     const points = ['getTop', 'getLeft', 'getBottom', 'getRight']
@@ -158,7 +103,7 @@ export const testSheets = (pack) => {
 
   unit.section("range.getBorder() does work on GAS although it's not documented", t => {
 
-    const { sheet } = maketss('borders')
+    const { sheet } = maketss('borders', toTrash, fixes)
     const range = sheet.getRange("c2:i4")
     const points = ['getTop', 'getLeft', 'getBottom', 'getRight']
 
@@ -208,7 +153,7 @@ export const testSheets = (pack) => {
 
   })
 
-  unit.section ("text style extracts", t=> {
+  unit.section("text style extracts", t => {
     const sp = SpreadsheetApp.openById(fixes.TEST_BORDERS_ID)
     const sb = sp.getSheets()[0]
     const flr = sb.getRange("c2:e3")
@@ -315,7 +260,7 @@ export const testSheets = (pack) => {
 
   unit.section("cell and font backgrounds, styles and alignments", t => {
 
-    const { sheet } = maketss('cells')
+    const { sheet } = maketss('cells', toTrash, fixes)
     const range = sheet.getRange("a1:b3")
 
     // text styles - an empty sheet shoud all be defaults
@@ -485,7 +430,7 @@ export const testSheets = (pack) => {
   })
 
   unit.section("setting and getting color objects}", t => {
-    const { sheet } = maketss('colors')
+    const { sheet } = maketss('colors', toTrash, fixes)
     const range = sheet.getRange("c6:i12")
 
     // so we can see the colors better if necessary add some random values
@@ -639,7 +584,7 @@ export const testSheets = (pack) => {
 
 
   unit.section("assorted cell userenteredformats", t => {
-    const { sheet } = maketss('assorted')
+    const { sheet } = maketss('assorted', toTrash, fixes)
     const range = sheet.getRange("c2:i4")
     const stuff = getStuff(range)
     range.setValues(stuff)
@@ -787,15 +732,14 @@ export const testSheets = (pack) => {
 
   })
 
-
+  // running standalone
   if (!pack) {
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
     unit.report()
+
   }
 
-  // clean up if necessary
-  toTrash.forEach(f => f.setTrashed(true))
-
+  trasher(toTrash)
   return { unit, fixes }
 }
 

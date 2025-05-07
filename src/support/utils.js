@@ -203,7 +203,45 @@ const rgbToHex = (r, g, b) => {
   return `#${red}${green}${blue}`;
 }
 
+/**
+ * normally we'll have ".x.y.z" and we need to dig in to extract the value for x.y.z of the passed value
+ * however we may also have x(y,z) in which case we just need to extract up to x - since the stuff after the brackets was for the benfit of the api
+ * @param {string} props 
+ * @param {*} defaultValue what to use if prop not present
+ * @returns {function} to apply to returned api value
+ */
 const getPlucker = (props, defaultValue) => {
+  
+  // get any bracketed values
+  // clean the props
+  props = props.trim().replace(/\s/g, "").split(".").filter(f => f).join(".")
+
+  // now extract all the bracketed stuff - this will turn x.y(a,b) 
+  // into G1 - x.y G2 a,b
+  // and x.y into just x.y
+  const regex = /([^,(]*)(?=\()\(([^)]*)\)|.*/
+  const match = regex.exec(props);
+  if (!match) {
+    throw `undeciperable props ${props} for plucker`
+  }
+  // the stuff before the brackets
+  // we dont need to worry about the stuff after
+  const main = (match[1]||match[0]).split (".")
+
+  // now we need a function that will extract fields to match these
+  return (v) => {
+    const px = main.reduce((p, c) => {
+      const t = p && p[c]
+      return isNU(t) ? defaultValue : t
+    }, v)
+    return px
+  }
+
+
+}
+
+
+const xxgetPlucker = (props, defaultValue) => {
   const pex = props.split(".").filter(f => f)
   return (v) => {
     const px = pex.reduce((p, c) => {

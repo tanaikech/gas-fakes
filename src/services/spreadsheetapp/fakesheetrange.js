@@ -18,7 +18,6 @@ const BLACKER = { red: 0, green: 0, blue: 0 }
 import { notYetImplemented, signatureArgs } from '../../support/helpers.js'
 
 
-
 //TODO - deal with r1c1 style ranges
 /**
  * @file
@@ -35,6 +34,13 @@ export const newFakeSheetRange = (...args) => {
   return Proxies.guard(new FakeSheetRange(...args))
 }
 
+const makeTemplate = ({ range, defaultValue, cleaner }) => {
+  const template = Array.from({ length: range.getNumRows() })
+    .fill(Array.from({ length: range.getNumColumns() })
+      .fill(defaultValue))
+  return cleaner ? template.map(cleaner) : template
+}
+
 // insert a method to get the required attributes, bith single and array version
 // many methods can be genereated automatically
 const attrGens = (self, target) => {
@@ -49,12 +55,10 @@ const attrGens = (self, target) => {
     })
 
     const { rowData } = sheets[0]?.data[0]
-
+console.log (props, rowData, range.getA1Notation() )
     // somewtimes we get a jagged array that needs to be padded to the right length with default values
-    const template = Array.from({ length: range.getNumRows() })
-      .fill(Array.from({ length: range.getNumColumns() })
-        .fill(defaultValue).map(cleaner))
-
+    const template = makeTemplate({ range, defaultValue, cleaner })
+console.log (props, template )
     // if we got nothing, return the template of defaults
     if (!rowData) return template
 
@@ -71,31 +75,38 @@ const attrGens = (self, target) => {
         return (rowData[i].values[j]) ? cleaner(plucker(rowData[i].values[j])) : col
       })
     })
+    console.log (rows)
     return rows
     //return rowData.map(row => row.values.map(plucker).map(cleaner))
   }
+  const cleaner = target.cleaner || (f => f)
 
-  // sometimes the returned values may need tweaked/converted
-  const cleaner = target.cleaner || ((f) => f)
 
   // curry a getter
   const getters = (range) => getRowDataAttribs({
     cleaner,
     range,
     defaultValue: target.defaultValue,
-    props: target.props
+    props: target.props,
+    reducer: target.reducer
   })
 
   // both a single and collection version
-  const plural = target.plural || (target.name + 's')
-  self[plural] = () => {
-    const values = getters(self)
-    return values
+  // also some queries return a consolidated/reduced version
+  if (!target.skipPlural) {
+    const plural = target.plural || (target.name + 's')
+    self[plural] = () => {
+      const values = getters(self)
+      return target.reducer ? target.reducer(values.flat()) : values
+    }
   }
 
-  self[target.name] = () => {
-    const values = getters(self.__getTopLeft())
-    return (values && values[0] && values[0][0])
+  if (!target.skipSingle) {
+    self[target.name] = () => {
+      const values = getters(self.__getTopLeft())
+      console.log (target.name,values)
+      return target.reducer?  values : (values && values[0] && values[0][0])
+    }
   }
 
   return self
@@ -103,14 +114,41 @@ const attrGens = (self, target) => {
 
 const valueGens = (self, target) => {
 
-  const getData = ({ range = self, options }) => {
-    const { values } = Sheets.Spreadsheets.Values.get(this.__sheet.getParent().getId(), this.__getRangeWithSheet(range), options)
-    return values
+  const getData = ({ range, options }) => {
+    const result = Sheets.Spreadsheets.Values.get(
+      self.__sheet.getParent().getId(),
+      self.__getRangeWithSheet(range),
+      options
+    )
+    return result.values || []
   }
+
+  // make a template to handle jagged arrays
 
   // both a single and collection version
   const plural = target.plural || (target.name + 's')
+  const getters = (range) => {
+    const values = getData({ range, options: target.options })
+    /// TODO check if we ever get a jagged array back for values as we sometimes do for formats 
+    // - if we do, we'll need to populate with the template
+    let v = !values.length ? makeTemplate({ range, defaultValue: target.defaultValue }) : values
+    if (target.cleaner) v = v.map(target.cleaner)
+    if (target.reducer) v = target.reducer(v)
+    return v
+  }
 
+  // normally we need both plural and single version - but this allows skipping if required
+  if (!target.skipPlural) self[plural] = () => getters(self)
+  if (!target.skipSingle) {
+    self[target.name] = () => {
+      // just get a single cell
+      const r = getters(self.__getTopLeft())
+      const v = target.reducer ? r : r[0][0]
+      return v
+    }
+  }
+
+  return self
 }
 
 // generate methods for similar code
@@ -193,18 +231,48 @@ const attrGetList = [{
   props: '.userEnteredFormat.textFormat',
   defaultValue: { foregroundColor: { rgbColor: BLACKER } },
   cleaner: f => {
+    console.log ('cleaning', f)
     const s = makeTextStyleFromApi(f)
     if (s.isStrikethrough()) return 'line-through'
     if (s.isUnderline()) return 'underline'
     return 'none'
   }
+} , {
+  name: 'isChecked',
+  props: '(dataValidation,effectiveValue)',
+  defaultValue: null,
+  clean: (cell=> {
+    // its a checkbox
+    if(is.nonEmptyObject(cell) && is.nonEmptyObject (cell.condition) && cell.condition.type === "BOOLEAN") {
+      return cell.effectiveValue
+    } else {
+      return null
+    }
+  }),
+  // if there are any non checkboxes, return null, if all are true checkboxes return true, otherwose false
+  reducer: (cells=>cells.some (is.null) ? null : cells.every(f=>f))
 }]
 
 const valuesGetList = [{
   name: 'getValue',
-  valueRenderOption: 'UNFORMATTED_VALUE',
+  options: { valueRenderOption: 'UNFORMATTED_VALUE' },
   defaultValue: ''
+}, {
+  name: 'getDisplayValue',
+  options: { valueRenderOption: 'FORMATTED_VALUE' },
+  defaultValue: ''
+}, {
+  name: 'getFormula',
+  options: { valueRenderOption: 'FORMULA' },
+  defaultValue: ''
+}, {
+  name: 'isBlank',
+  options: { valueRenderOption: 'UNFORMATTED_VALUE' },
+  defaultValue: '',
+  reducer: (a) => a.flat().every(f => f === ''),
+  skipPlural: true
 }]
+
 
 /**
  * basic fake FakeSheetRange
@@ -225,6 +293,7 @@ export class FakeSheetRange {
 
     // make the generatable functions
     attrGetList.forEach(target => attrGens(this, target))
+    valuesGetList.forEach(target => valueGens(this, target))
 
     // list of not yet implemented methods
     const props = [
@@ -345,7 +414,7 @@ export class FakeSheetRange {
       'createDeveloperMetadataFinder',
       'getDataSourcePivotTables',
       'clear',
-      'isBlank',
+
       'merge',
       'sort',
       'check',
@@ -401,49 +470,14 @@ export class FakeSheetRange {
   getColumnIndex() {
     return this.getColumn()
   }
-  /**
-   * getDisplayValue() https://developers.google.com/apps-script/reference/spreadsheet/range#getdisplayvalue
-   * The displayed value takes into account date, time and currency formatting
-   * @returns {string} The displayed value in this cell.
-   */
-  getDisplayValue() {
-    const values = this.__getValues({ range: this.__getTopLeft(), options: { valueRenderOption: 'FORMATTED_VALUE' } })
-    return values && values[0][0]
-  }
 
-  /**
-   * getDisplayValues() https://developers.google.com/apps-script/reference/spreadsheet/range#getdisplayvalues
-   * The displayed value takes into account date, time and currency formatting,
-   * @returns {string[][]} A two-dimensional array of values.
-   */
-  getDisplayValues() {
-    return this.__getValues({ options: { valueRenderOption: 'FORMATTED_VALUE' } })
-  }
+
   getEndColumn() {
     return this.__gridRange.endColumnIndex + 1
   }
   getEndRow() {
     return this.__gridRange.endRowIndex + 1
   }
-  /**
-   * getFormula() https://developers.google.com/apps-script/reference/spreadsheet/range#getdisplayvalue
-   * Returns the formulas (A1 notation) for the cells in the range. Entries in the 2D array are empty strings for cells with no formula.
-   * @returns {string} The formula value in this cell.
-   */
-  getFormula() {
-    const values = this.__getValues({ range: this.__getTopLeft(), options: { valueRenderOption: 'FORMULA' } })
-    return values && values[0][0]
-  }
-
-  /**
-   * getFormulas() https://developers.google.com/apps-script/reference/spreadsheet/range#getdisplayvalue
-   * Returns the formulas (A1 notation) for the cells in the range. Entries in the 2D array are empty strings for cells with no formula.
-   * @returns {string[][]} — A two-dimensional array of formulas in string format.
-   */
-  getFormulas() {
-    return this.__getValues({ options: { valueRenderOption: 'FORMULA' } })
-  }
-
 
   /**
    * getGridId() https://developers.google.com/apps-script/reference/spreadsheet/range#getgridid
@@ -488,24 +522,6 @@ export class FakeSheetRange {
   }
   getSheet() {
     return this.__sheet
-  }
-  /**
-   * getValues() https://developers.google.com/apps-script/reference/spreadsheet/range#getvalues
-   * Returns the rectangular grid of values for this range.
-   * @returns {*[][]}
-   */
-  getValues() {
-    return this.__getValues({ options: { valueRenderOption: 'UNFORMATTED_VALUE' } })
-  }
-
-  /**
-   * getValue() https://developers.google.com/apps-script/reference/spreadsheet/range#getvalue
-   * Returns the value of the top-left cell in the range. 
-   * @returns {*}
-   */
-  getValue() {
-    const values = this.__getValues({ range: this.__getTopLeft(), options: { valueRenderOption: 'UNFORMATTED_VALUE' } })
-    return values && values[0][0]
   }
 
   /**
@@ -748,10 +764,8 @@ export class FakeSheetRange {
     return getItem(color)
   }
 
-
-
   __getRangeWithSheet(range) {
-    return `${range.__sheet.getName()}!${this.getA1Notation()}`
+    return `${range.__sheet.getName()}!${range.getA1Notation()}`
   }
 
 
@@ -786,11 +800,6 @@ export class FakeSheetRange {
   __getTopLeft() {
     return this.offset(0, 0, 1, 1)
   }
-  __getValues({ range = this, options } = {}) {
-    const { values } = Sheets.Spreadsheets.Values.get(this.__sheet.getParent().getId(), this.__getRangeWithSheet(range), options)
-    return values
-  }
-
 
   __getWithSheet() {
     return this.__getRangeWithSheet(this)
