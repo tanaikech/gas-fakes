@@ -7,7 +7,7 @@ import { makeColorFromApi } from '../commonclasses/fakecolorbuilder.js'
 import { newFakeWrapStrategy, isWrapped } from '../commonclasses/fakewrapstrategy.js'
 import { newFakeTextRotation } from '../commonclasses/faketextrotation.js'
 import { makeTextStyleFromApi } from '../commonclasses/faketextstylebuilder.js'
-
+import { newFakeTextDirection } from '../commonclasses/faketextdirection.js'
 
 const { is, rgbToHex, hexToRgb, getPlucker, robToHex, outsideInt } = Utils
 
@@ -34,12 +34,10 @@ export const newFakeSheetRange = (...args) => {
   return Proxies.guard(new FakeSheetRange(...args))
 }
 
-const makeTemplate = ({ range, defaultValue, cleaner }) => {
-  const template = Array.from({ length: range.getNumRows() })
+const makeTemplate = ({ range, defaultValue, cleaner = (f) => f }) =>
+  Array.from({ length: range.getNumRows() })
     .fill(Array.from({ length: range.getNumColumns() })
-      .fill(defaultValue))
-  return cleaner ? template.map(cleaner) : template
-}
+      .fill(defaultValue).map(cleaner))
 
 // insert a method to get the required attributes, bith single and array version
 // many methods can be genereated automatically
@@ -55,10 +53,10 @@ const attrGens = (self, target) => {
     })
 
     const { rowData } = sheets[0]?.data[0]
-console.log (props, rowData, range.getA1Notation() )
+
     // somewtimes we get a jagged array that needs to be padded to the right length with default values
     const template = makeTemplate({ range, defaultValue, cleaner })
-console.log (props, template )
+
     // if we got nothing, return the template of defaults
     if (!rowData) return template
 
@@ -68,19 +66,19 @@ console.log (props, template )
 
     // now replace the template with anything we got
     const rows = template.map((row, i) => {
-      // use the template values if we've run out of data
+      // use the template values if we've run out of data - template has already been cleaned
       if (i >= rowData.length) return row
       return row.map((col, j) => {
         // use the col value if there is one
-        return (rowData[i].values[j]) ? cleaner(plucker(rowData[i].values[j])) : col
+        return rowData[i].values[j] ? cleaner(plucker(rowData[i].values[j])) : col
       })
     })
-    console.log (rows)
     return rows
-    //return rowData.map(row => row.values.map(plucker).map(cleaner))
-  }
-  const cleaner = target.cleaner || (f => f)
 
+  }
+
+  // default is just copy api result with no cleaning
+  const cleaner = target.cleaner || (f => f)
 
   // curry a getter
   const getters = (range) => getRowDataAttribs({
@@ -91,6 +89,10 @@ console.log (props, template )
     reducer: target.reducer
   })
 
+  // it's likely that if there's a reducer, we should also be skippingSingle
+  if (target.reducer) {
+    if (!target.skipSingle) console.log(props, range.getA1Notation(), 'has a reducer but is not skipping single - sure thats right?')
+  }
   // both a single and collection version
   // also some queries return a consolidated/reduced version
   if (!target.skipPlural) {
@@ -104,8 +106,7 @@ console.log (props, template )
   if (!target.skipSingle) {
     self[target.name] = () => {
       const values = getters(self.__getTopLeft())
-      console.log (target.name,values, target.reducer)
-      return target.reducer?  values : (values && values[0] && values[0][0])
+      return target.reducer ? target.reducer(values.flat()) : (values && values[0] && values[0][0])
     }
   }
 
@@ -231,26 +232,51 @@ const attrGetList = [{
   props: '.userEnteredFormat.textFormat',
   defaultValue: { foregroundColor: { rgbColor: BLACKER } },
   cleaner: f => {
-    console.log ('cleaning', f)
     const s = makeTextStyleFromApi(f)
     if (s.isStrikethrough()) return 'line-through'
     if (s.isUnderline()) return 'underline'
     return 'none'
   }
-} , {
+}, {
   name: 'isChecked',
   props: '(dataValidation,effectiveValue)',
   defaultValue: null,
-  clean: (cell=> {
-    // its a checkbox
-    if(is.nonEmptyObject(cell) && is.nonEmptyObject (cell.condition) && cell.condition.type === "BOOLEAN") {
-      return cell.effectiveValue
+  skipSingle: true,
+  plural: 'isChecked',
+  cleaner: (cell => {
+    // its a checkbox?
+    if (is.nonEmptyObject(cell) &&
+      is.nonEmptyObject(cell.dataValidation) &&
+      is.nonEmptyObject(cell.dataValidation.condition) &&
+      cell.dataValidation.condition.type === "BOOLEAN"
+    ) {
+      return cell.effectiveValue.boolValue
     } else {
       return null
     }
   }),
-  // if there are any non checkboxes, return null, if all are true checkboxes return true, otherwose false
-  reducer: (cells=>cells.some (is.null) ? null : cells.every(f=>f))
+  // Returns whether all cells in the range have their checkbox state as 'checked'. Returns null if some cells are checked and the rest unchecked, or if some cells do not have checkbox data validation.
+  // so that means 
+  // - true -> all checkboxes + all true
+  // - false -> all checkboxes + all false
+  // - null -> any other combination
+  reducer: (cells => {
+    const allBoxes = cells.every(cell => !is.null(cell))
+    const allTrue = allBoxes && cells.every(cell => cell)
+    const allFalse = allBoxes && !allTrue && !cells.some(cell => cell)
+    return allTrue ? true : (allFalse ? false : null)
+
+  })
+} , {
+  // TODO this one needs testing on a R-L language sheet
+    name: 'getTextDirection',
+    props: '.userEnteredFormat.textDirection',
+    defaultValue: null,
+    cleaner:(f) => is.null (f) ? null : new newFakeTextDirection(f)
+}, {
+  name:'getNote',
+  props: '.note',
+  defaultValue: "",
 }]
 
 const valuesGetList = [{
@@ -267,10 +293,12 @@ const valuesGetList = [{
   defaultValue: ''
 }, {
   name: 'isBlank',
-  options: { valueRenderOption: 'UNFORMATTED_VALUE' },
+  options: { valueRenderOption: 'FORMATTED_VALUE' },
   defaultValue: '',
   reducer: (a) => a.flat().every(f => f === ''),
-  skipPlural: true
+  skipSingle: true,
+  plural: 'isBlank'
+}, {
 }]
 
 
@@ -306,7 +334,6 @@ export class FakeSheetRange {
       'clearDataValidations',
       'protect',
       'setDataValidation',
-      'getTextDirection',
       'setTextDirection',
       'setFontWeight',
       'setHorizontalAlignments',
@@ -373,14 +400,11 @@ export class FakeSheetRange {
       'getRichTextValues',
       'setRichTextValue',
       'setRichTextValues',
-
       'setTextStyles',
       'uncheck',
       'insertCheckboxes',
       'removeCheckboxes',
-      'isChecked',
       'trimWhitespace',
-      'getTextDirections',
       'copyTo',
       'setTextStyle',
       'getComments',
@@ -397,31 +421,28 @@ export class FakeSheetRange {
       'createFilter',
       'setVerticalAlignment',
       'setHorizontalAlignment',
-      'getNotes',
-      'getNote',
       'setFontFamily',
       'getDataSourceFormulas',
       'getDataSourceTables',
       'setBackgroundColor',
-
       'setFormula',
       'getDataSourceUrl',
-
       'getDataTable',
       'clearFormat',
-
       'canEdit',
       'createDeveloperMetadataFinder',
       'getDataSourcePivotTables',
       'clear',
-
       'merge',
       'sort',
       'check',
       'getFilter',
       'setNumberFormat',
+      // these are not documented, so will skip for now
       'setComment',
-      'getComment']
+      'getComment'
+      //--
+    ]
     props.forEach(f => {
       this[f] = () => {
         return notYetImplemented(f)

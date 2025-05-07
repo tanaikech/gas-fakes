@@ -56,6 +56,9 @@ export const testSheetsValues = (pack) => {
     const barSheet = cs.insertSheet('barsheet')
     const barRange = barSheet.getRange(1, 1, fooValues.length, fooValues[0].length)
     barRange.setValues(fooValues)
+    t.false (barRange.isBlank())
+    t.false (barRange.offset(1,1,1,1).isBlank())
+    t.false (barRange.offset(1,0).isBlank())
 
     const barValues = barRange.getValues()
     t.deepEqual(barSheet.getDataRange().getValues(), fooValues)

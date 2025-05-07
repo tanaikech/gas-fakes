@@ -19,6 +19,95 @@ export const testSheets = (pack) => {
   const { unit, fixes } = pack || initTests()
   const toTrash = []
 
+  unit.section("text style extracts, reducers and other exotics", t => {
+    const sp = SpreadsheetApp.openById(fixes.TEST_BORDERS_ID)
+    const sb = sp.getSheets()[0]
+    const flr = sb.getRange("c2:e3")
+
+    // notes 
+    const notes = flr.getNotes()
+    t.is(notes.length, flr.getNumRows())
+    t.is(notes[0].length, flr.getNumColumns())
+    t.true(notes.flat().every(f => f === ""))
+
+    const nr = sb.getRange ("c30:e30")
+    const nrns = nr.getNotes()
+    t.is(nrns.length, nr.getNumRows())
+    t.is(nrns[0].length, nr.getNumColumns())
+    t.is(nrns[0][0].replace(/\n/g,""),"C30","drop new line stuff")
+    t.is(nrns[0][1],"")
+    t.is(nrns[0][2].replace(/\n/g,""),"E30")
+
+
+    // text direction all null
+    t.is(flr.isChecked(), null)
+    const dirs = flr.getTextDirections()
+    t.is(dirs.length, flr.getNumRows())
+    t.is(dirs[0].length, flr.getNumColumns())
+    t.true(dirs.flat().every(is.null))
+    t.is(flr.getTextDirection(), dirs[0][0])
+
+    const dirtr = sb.getRange("h29:j29")
+    const dirtrs = dirtr.getTextDirections().flat()
+    t.is(dirtrs[0], null, "english")
+    // this has r-l language via translate but still returns null
+    t.is(dirtrs[1], null, "arabic")
+    // back to l-r
+    t.is(dirtrs[2], null, "japanese")
+    // TODO findout how to change to R-L and explicily set l-R
+
+    // 2 checkboxes - non ticked
+    const ckr1 = sb.getRange("g2:h2")
+    t.is(ckr1.isChecked(), false)
+
+    // 4 cells 2 with unticked checkboxes
+    const ckr2 = sb.getRange("f2:i2")
+    t.is(ckr2.isChecked(), null)
+
+    // 4 cells , 2 with ticked checkboxes
+    const ckr3 = sb.getRange("k2:n2")
+    t.is(ckr3.isChecked(), null)
+
+    // 2 cells both ticked
+    const ckr4 = sb.getRange("l2:m2")
+    t.is(ckr4.isChecked(), true)
+
+    // 4 cells some ticked, some not
+    const ckr5 = sb.getRange("l2:m3")
+    t.is(ckr5.isChecked(), null)
+
+    // 1 cell ticked
+    const ckr6 = sb.getRange("m2")
+    t.is(ckr6.isChecked(), true)
+
+    // 1 cell unticked
+    const ckr7 = sb.getRange("m3")
+    t.is(ckr7.isChecked(), false)
+
+    // cells with some of everything
+    const ckr8 = sb.getRange("g2:n3")
+    t.is(ckr8.isChecked(), null)
+
+    // do font lines
+    const flrss = flr.getFontLines()
+    const flrs = flr.getFontLine()
+    const flExpect = [
+      ['line-through', 'none', 'none'],
+      ['none', 'none', 'underline']
+    ]
+    t.is(flrss.length, flr.getNumRows())
+    t.is(flrss[0].length, flr.getNumColumns())
+    t.deepEqual(flrss, flExpect)
+    t.is(flrs, flrss[0][0])
+
+
+
+
+
+
+  })
+
+
   // range.getBorders() doesn't work on GAS
   // see this issue - https://issuetracker.google.com/issues/329473815
   // we can resurrect this if it ever gets fixed
@@ -34,6 +123,7 @@ export const testSheets = (pack) => {
     t.is(fl, 'none')
     t.true(range.getFontLines().flat().every(f => f === fl))
 
+
     // newly created sheet has all null borders so the borders object should be null
     // TODO remove the skip if getBorders() on GAS is ever fixed
     if (SpreadsheetApp.isFake) {
@@ -44,8 +134,6 @@ export const testSheets = (pack) => {
     // this sheet temporarily has some borders in it - once I have setborders working, I'll eliminate
     const sp = SpreadsheetApp.openById(fixes.TEST_BORDERS_ID)
     const sb = sp.getSheets()[0]
-
-
 
     // TODO remove the skip if getBorders() on GAS is ever fixed
     if (SpreadsheetApp.isFake) {
@@ -153,24 +241,7 @@ export const testSheets = (pack) => {
 
   })
 
-  unit.section("text style extracts", t => {
-    const sp = SpreadsheetApp.openById(fixes.TEST_BORDERS_ID)
-    const sb = sp.getSheets()[0]
-    const flr = sb.getRange("c2:e3")
-    const flrss = flr.getFontLines()
-    const flrs = flr.getFontLine()
 
-    const flExpect = [
-      ['line-through', 'none', 'none'],
-      ['none', 'none', 'underline']
-    ]
-    t.is(flrss.length, flr.getNumRows())
-    t.is(flrss[0].length, flr.getNumColumns())
-    t.deepEqual(flrss, flExpect)
-    t.is(flrs, flrss[0][0])
-
-
-  })
 
 
   unit.section("text Style objects and builders", t => {
