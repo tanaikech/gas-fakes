@@ -16,6 +16,7 @@ const BLACKER = { red: 0, green: 0, blue: 0 }
 
 
 import { notYetImplemented, signatureArgs } from '../../support/helpers.js'
+import { FakeSpreadsheet } from './fakespreadsheet.js'
 
 
 //TODO - deal with r1c1 style ranges
@@ -47,7 +48,7 @@ const attrGens = (self, target) => {
   const getRowDataAttribs = ({ range = self, props, defaultValue, cleaner }) => {
 
     // get the collection of rows with data for the required properties
-    const { sheets } = Sheets.Spreadsheets.get(self.__sheet.getParent().getId(), {
+    const { sheets } = Sheets.Spreadsheets.get(self.__getSpreadsheetId(), {
       ranges: [self.__getRangeWithSheet(range)],
       fields: `sheets.data.rowData.values${props}`
     })
@@ -117,7 +118,7 @@ const valueGens = (self, target) => {
 
   const getData = ({ range, options }) => {
     const result = Sheets.Spreadsheets.Values.get(
-      self.__sheet.getParent().getId(),
+      self.__getSpreadsheetId(),
       self.__getRangeWithSheet(range),
       options
     )
@@ -267,14 +268,14 @@ const attrGetList = [{
     return allTrue ? true : (allFalse ? false : null)
 
   })
-} , {
-  // TODO this one needs testing on a R-L language sheet
-    name: 'getTextDirection',
-    props: '.userEnteredFormat.textDirection',
-    defaultValue: null,
-    cleaner:(f) => is.null (f) ? null : new newFakeTextDirection(f)
 }, {
-  name:'getNote',
+  // TODO this one needs testing on a R-L language sheet
+  name: 'getTextDirection',
+  props: '.userEnteredFormat.textDirection',
+  defaultValue: null,
+  cleaner: (f) => is.null(f) ? null : new newFakeTextDirection(f)
+}, {
+  name: 'getNote',
   props: '.note',
   defaultValue: "",
 }]
@@ -332,7 +333,7 @@ export class FakeSheetRange {
       'getDataValidations',
       'setDataValidations',
       'clearDataValidations',
-      'protect',
+
       'setDataValidation',
       'setTextDirection',
       'setFontWeight',
@@ -429,7 +430,7 @@ export class FakeSheetRange {
       'getDataSourceUrl',
       'getDataTable',
       'clearFormat',
-      'canEdit',
+
       'createDeveloperMetadataFinder',
       'getDataSourcePivotTables',
       'clear',
@@ -451,9 +452,39 @@ export class FakeSheetRange {
 
   }
 
+  /**
+   * canEdit() https://developers.google.com/apps-script/reference/spreadsheet/range#canedit
+   * Determines whether the user has permission to edit every cell in the range. The spreadsheet owner is always able to edit protected ranges and sheets.
+   * @returns {boolean}
+   */
+  canEdit() {
+
+    // we'll need to use the Drive API to get the permissions
+    const owner = this.__getSpreadsheet().getOwner()
+    const user = Session.getEffectiveUser()
+
+    // the owner ? - can do anything
+    if (user.getEmail() === owner.getEmail()) return true
+
+    // edit privileges ? if yes then see if the range is protected
+    const editors = this.__getSpreadsheet().getEditors()
+    if (!editors.find(f => f.getEmail() === user.getEmail())) return null
+
+
+  }
 
   clearContent() {
     return this.setValues([])
+  }
+
+
+  /**
+   * protect() https://developers.google.com/apps-script/reference/spreadsheet/sheet#protect
+   * Creates an object that can protect the sheet from being edited except by users who have permission.
+   * @return {FakeProtection}
+   */
+  protect() {
+    return newFakeProtection(SpreadsheetApp.ProtectionType.RANGE, this)
   }
 
   getA1Notation() {
@@ -507,7 +538,7 @@ export class FakeSheetRange {
    * @returns {number}
    */
   getGridId() {
-    return this.__sheet.getSheetId()
+    return this.getSheet().getSheetId()
   }
   /**
    * getHeight() https://developers.google.com/apps-script/reference/spreadsheet/range#getheight
@@ -591,7 +622,7 @@ export class FakeSheetRange {
     gr.endRowIndex = gr.startRowIndex + numRows
     gr.endColumnIndex = gr.startColumnIndex + numColumns
 
-    return newFakeSheetRange(gr, this.__sheet)
+    return newFakeSheetRange(gr, this.getSheet())
 
   }
   /**
@@ -637,7 +668,7 @@ export class FakeSheetRange {
     }))
     const fields = 'userEnteredFormat.backgroundColor'
     const request = this.__getRequestUc(rows, fields)
-    Sheets.Spreadsheets.batchUpdate({ requests: [request] }, this.__sheet.getParent().getId(), { ss: true })
+    Sheets.Spreadsheets.batchUpdate({ requests: [request] }, this.__getSpreadsheetId(), { ss: true })
     return this
   }
 
@@ -659,7 +690,7 @@ export class FakeSheetRange {
     // see __getColorItem for how this allows mixing of both theme and rgb colors.
     const fields = 'userEnteredFormat.backgroundColorStyle'
     const request = this.__getRequestUc(rows, fields)
-    Sheets.Spreadsheets.batchUpdate({ requests: [request] }, this.__sheet.getParent().getId(), { ss: true })
+    Sheets.Spreadsheets.batchUpdate({ requests: [request] }, this.__getSpreadsheetId(), { ss: true })
     return this
 
   }
@@ -710,7 +741,7 @@ export class FakeSheetRange {
 
     const fields = 'userEnteredFormat.textFormat.foregroundColor'
     const request = this.__getRequestUc(rows, fields)
-    Sheets.Spreadsheets.batchUpdate({ requests: [request] }, this.__sheet.getParent().getId(), { ss: true })
+    Sheets.Spreadsheets.batchUpdate({ requests: [request] }, this.__getSpreadsheetId(), { ss: true })
     return this
   }
 
@@ -786,9 +817,28 @@ export class FakeSheetRange {
   }
 
   __getRangeWithSheet(range) {
-    return `${range.__sheet.getName()}!${range.getA1Notation()}`
+    return `${range.getSheet().getName()}!${range.getA1Notation()}`
   }
 
+
+  /**
+   * get the spreadsheet hosting this range
+   * @return {FakeSpreadsheet}
+   */
+  __getSpreadsheet() {
+    return this.getSheet().getParent()
+  }
+  /**
+   * get the id of the spreadsheet hosting this range
+   * returns {string}
+   */
+  __getSpreadsheetId() {
+    return this.__getSpreadsheet().getId()
+  }
+
+  /** 
+   * get the id of the sheet hostig this range
+   */
 
   /**
    * for use with updateCells
@@ -837,7 +887,7 @@ export class FakeSheetRange {
         values
       }]
     }
-    Sheets.Spreadsheets.Values.batchUpdate(request, this.__sheet.getParent().getId())
+    Sheets.Spreadsheets.Values.batchUpdate(request, this.__getSpreadsheetId())
     return this
   }
 

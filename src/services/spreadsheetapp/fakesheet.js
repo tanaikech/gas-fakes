@@ -4,6 +4,7 @@ import { notYetImplemented, signatureArgs } from '../../support/helpers.js'
 import { newFakeSheetRange } from './fakesheetrange.js'
 import { newFakeSheetRangeList } from './fakesheetrangelist.js'
 import { Utils } from "../../support/utils.js"
+import { newFakeProtection } from '../commonclasses/fakeprotection.js'
 const { is } = Utils
 /**
  * @file
@@ -83,7 +84,7 @@ export class FakeSheet {
       'getDrawings',
       'insertColumns',
       'clearConditionalFormatRules',
-      'protect',
+
       'clearNotes',
       'insertChart',
       'removeChart',
@@ -96,7 +97,7 @@ export class FakeSheet {
       'deleteRows',
       'getNamedRanges',
       'getFormUrl',
-      'getProtections',
+
       'getBandings',
       'createTextFinder',
       'addDeveloperMetadata',
@@ -195,6 +196,14 @@ export class FakeSheet {
     return Boolean(this.__sheet.properties.hidden)
   }
 
+  /**
+   * protect() https://developers.google.com/apps-script/reference/spreadsheet/sheet#protect
+   * Creates an object that can protect the sheet from being edited except by users who have permission.
+   * @return {FakeProtection}
+   */
+  protect () {
+    return newFakeProtection(SpreadsheetApp.ProtectionType.SHEET, this)
+  }
 
   /**
    * gets a grid range as per the api format
@@ -270,6 +279,14 @@ export class FakeSheet {
   // 1 based
   getLastColumn() {
     return this.__getGridRange().endColumnIndex
+  }
+  /**
+   * getProtections(type) https://developers.google.com/apps-script/reference/spreadsheet/sheet#getprotectionstype
+   * @param {FakeProtectionType}
+   * @returns {FakeProtection[]}
+   */
+  getProtections () {
+
   }
 
   /**

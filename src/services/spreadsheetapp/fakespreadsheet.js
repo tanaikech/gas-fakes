@@ -49,7 +49,7 @@ export class FakeSpreadsheet {
       'getCollaborators',
       'getChanges',
       'createTextFinder',
-      'getProtections',
+  
       'findSheetByName',
       'removeCollaborator',
       'getSpreadsheetLocale',
@@ -236,6 +236,16 @@ export class FakeSpreadsheet {
   isAnonymousView() {
     // weird right ? but that's what it does on gas
     throw new Error(`The api method 'isAnonymousView' is not available yet in the new version of Google Sheets`)
+  }
+
+  /**
+   * getProtections(type) https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet#getprotectionstype
+   * @param {FakeProtectionType} type
+   * @returns {FakeProtection[]}
+   */
+  getProtections(type) {
+    const t = type.toString().toLowerCase()
+    return this.__getMetaProps (`sheets.properties.sheetId,sheets.protectedRanges.${t}`)
   }
 
   /**

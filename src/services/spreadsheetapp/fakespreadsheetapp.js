@@ -5,6 +5,7 @@ import { Utils } from "../../support/utils.js"
 import { newFakeColorBuilder } from '../commonclasses/fakecolorbuilder.js'
 import { ThemeColorType } from '../typedefs.js'
 import { newFakeTextStyleBuilder } from '../commonclasses/faketextstylebuilder.js'
+import { ProtectionType } from '../commonclasses/fakeprotectiontype.js'
 
 const { is } = Utils
 /**
@@ -81,7 +82,7 @@ export class FakeSpreadsheetApp {
       'InterpolationType',
       'PivotTableSummarizeFunction',
       'PivotValueDisplayType',
-      'ProtectionType',
+
       'RecalculationInterval',
       'RelativeDate',
       'SheetType',
@@ -182,6 +183,9 @@ export class FakeSpreadsheetApp {
   }
 
 
+  get ProtectionType () {
+    return ProtectionType
+  } 
 
   get ThemeColorType () {
     return ThemeColorType
