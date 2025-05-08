@@ -465,6 +465,7 @@ export class FakeSheetRange {
     )
   }
 
+  
   /**
    * these 2 dont exist in the documentation any more - assume they have been renamed as getBackground(s)
    */
