@@ -22,23 +22,40 @@ export const testSheetsPermissions = (pack) => {
 
   unit.section ("protected cells", t=> {
     const sp = SpreadsheetApp.openById(fixes.TEST_BORDERS_ID)
-    const sb = sp.getSheetByName("permissions")
-
     t.is (SpreadsheetApp.ProtectionType.SHEET.toString(),'SHEET')
     t.is (SpreadsheetApp.ProtectionType.RANGE.toString(),'RANGE')
 
-    console.log (JSON.stringify(sp.getProtections(SpreadsheetApp.ProtectionType.RANGE)))
+    const protections = sp.getProtections(SpreadsheetApp.ProtectionType.RANGE)
+    const pss = sp.getProtections(SpreadsheetApp.ProtectionType.SHEET)
 
+    t.true (protections.every(f=>f.toString()==="Protection"))
+    t.true (pss.every(f=>f.toString()==="Protection"))
+
+    // ive set the descriptions to be the same as the ranges in the test sheet
+    t.true (protections.every(f=>f.getDescription()===f.getRange().getA1Notation()))
+    t.true (pss.every(f=>f.getDescription()===f.getRange().getA1Notation()))
+
+    t.true (protections.every(f=>f.canEdit()))
+    t.true (pss.every(f=>f.canEdit()))
+
+    t.false (protections.every(f=>f.canDomainEdit()))
+    t.false (pss.every(f=>f.canDomainEdit()))
+
+    // a sheet range actually has the dimensions of the max of that sheet if there's no given range
+    pss.forEach (f=> t.is (f.getRange().getNumColumns(), f.getRange().getSheet().getMaxColumns()))
+    pss.forEach (f=> t.is (f.getRange().getNumRows(), f.getRange().getSheet().getMaxRows() ))
+    pss.forEach (f=>t.is (f.getRange().getA1Notation(), "", "sheet level range has no a1 notation"))
+
+    // shouldnt have any unprotected ranges at this point
+    t.true (protections.every(f=>is.emptyArray(f.getUnprotectedRanges())))
+    t.true (pss.every(f=>is.emptyArray(f.getUnprotectedRanges())))
+
+    // shared files are owned by me
+    protections.forEach (f=>t.deepEqual (f.getEditors().map(f=>f.getEmail()), [fixes.SHARED_FILE_OWNER]))
+    pss.forEach (f=>t.deepEqual (f.getEditors().map(f=>f.getEmail()), [fixes.SHARED_FILE_OWNER]))
   })
 
 
-  unit.section("permissions for ranges", t => {
-    const sp = SpreadsheetApp.openById(fixes.TEST_BORDERS_ID)
-    const sb = sp.getSheets()[0]
-    const flr = sb.getRange("c2:e3")
-
-    t.true (flr.canEdit())
-  })
 
   // running standalone
   if (!pack) {

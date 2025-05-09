@@ -30,6 +30,7 @@ export const initTests = () => {
   // these are fixtures to test
   // using process.env creates strings, convert to appropriate types as needed
   const fixes = {
+    SHARED_FILE_OWNER: process.env.SHARED_FILE_OWNER,
     TEST_BORDERS_ID: process.env.TEST_BORDERS_ID,
     TEST_AIRPORTS_ID: process.env.TEST_AIRPORTS_ID,
     TEST_AIRPORTS_NAME: process.env.TEST_AIRPORTS_NAME,

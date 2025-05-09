@@ -317,8 +317,9 @@ export class FakeSheetRange {
    */
   constructor(gridRange, sheet) {
 
-    this.__gridRange = gridRange
+    this.__apiGridRange = gridRange
     this.__sheet = sheet
+    this.__hasGrid = Reflect.has(gridRange, "startRowIndex")
 
     // make the generatable functions
     attrGetList.forEach(target => attrGens(this, target))
@@ -488,6 +489,8 @@ export class FakeSheetRange {
   }
 
   getA1Notation() {
+    // a range can have just a sheet with no cells
+    if (!this.__hasGrid) return ""
     return SheetUtils.toRange(
       this.__gridRange.startRowIndex + 1,
       this.__gridRange.startColumnIndex + 1,
@@ -600,7 +603,7 @@ export class FakeSheetRange {
   offset(rowOffset, columnOffset, numRows, numColumns) {
     // get arg types
     const { nargs, matchThrow } = signatureArgs(arguments, "Range.offset")
-
+    
     // basic signature tests
     if (nargs > 4 || nargs < 2) matchThrow()
     if (!is.integer(rowOffset) || !is.integer(columnOffset)) matchThrow()
@@ -854,6 +857,20 @@ export class FakeSheetRange {
     }
   }
 
+  /**
+   * sometimes a range has no  grid range so we need to fake one
+   */
+  get __gridRange() {
+    if (this.__hasGrid) return this.__apiGridRange
+    // in this case we didn't get one, so we need to fake one
+    return {
+      sheetId: this.getSheet().getSheetId(),
+      startRowIndex: 0,
+      startColumnIndex: 0,
+      endRowIndex: this.getSheet().getMaxRows(),
+      endColumnIndex: this.getSheet().getMaxColumns()
+    }
+  }
   /**
    * for use with updateCells
    * @returns {object}

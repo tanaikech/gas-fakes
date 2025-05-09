@@ -1,8 +1,9 @@
 import { Proxies } from '../../support/proxies.js'
 import { FakeSheet, newFakeSheet } from './fakesheet.js'
-import { notYetImplemented, minSheetFields,signatureArgs } from '../../support/helpers.js'
-import { FakeSheetRange } from './fakesheetrange.js'
+import { notYetImplemented, minSheetFields, signatureArgs } from '../../support/helpers.js'
 import { Utils } from "../../support/utils.js"
+import { newFakeProtection } from '../commonclasses/fakeprotection.js'
+import { newFakeSheetRange } from '../spreadsheetapp/fakesheetrange.js'
 const { is } = Utils
 /**
  * @file
@@ -49,7 +50,7 @@ export class FakeSpreadsheet {
       'getCollaborators',
       'getChanges',
       'createTextFinder',
-  
+
       'findSheetByName',
       'removeCollaborator',
       'getSpreadsheetLocale',
@@ -171,7 +172,7 @@ export class FakeSpreadsheet {
     })
   }
 
-  __updateMeta (file) {
+  __updateMeta(file) {
     this.__meta = file
   }
 
@@ -241,11 +242,72 @@ export class FakeSpreadsheet {
   /**
    * getProtections(type) https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet#getprotectionstype
    * @param {FakeProtectionType} type
-   * @returns {FakeProtection[]}
+   * @param {ProtectedRange} apiResult https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets/sheets#ProtectedRange
+   * @returns {FakeProtection[]} api result in apps script style
    */
   getProtections(type) {
-    const t = type.toString().toLowerCase()
-    return this.__getMetaProps (`sheets.properties.sheetId,sheets.protectedRanges.${t}`)
+
+
+    const { sheets } = this.__getMetaProps(`sheets.protectedRanges`)
+    // a SHEET type has no has no grid properties
+
+    // filter out the types that were not requested
+    const t = type.toString()
+    const matches = sheets.filter(is.nonEmptyObject)
+      .map(sheet => {
+
+        return sheet.protectedRanges.filter(pr => {
+          switch (t) {
+            case 'RANGE':
+              return Reflect.has(pr.range, 'startRowIndex')
+
+            case 'SHEET':
+              return !Reflect.has(pr.range, 'startRowIndex')
+
+            default:
+              throw new Error(t, 'is not a valid protect range type')
+          }
+        })
+      })
+
+
+    // the api returns an array of items that match for each sheet
+    /*
+    [
+      [
+          {
+              "range": {
+                  "sheetId": 97278457,
+                  "startRowIndex": 1,
+                  "endRowIndex": 3,
+                  "startColumnIndex": 1,
+                  "endColumnIndex": 2
+              }
+          },
+          {
+              "range": {
+                  "sheetId": 97278457,
+                  "startRowIndex": 3,
+                  "endRowIndex": 5,
+                  "startColumnIndex": 3,
+                  "endColumnIndex": 5
+              }
+          }
+      ],
+      []
+    ]
+      BUT: what apps script wants is a flattened version of that, ie. a 1 dimensional array with a seperate entry for each protection
+      */
+    return matches.filter(f => f.length)
+      .flat()
+      .map(apiResult => newFakeProtection({
+        type,
+        sheet: this.getSheetById(apiResult.range.sheetId),
+        apiResult
+      }))
+
+
+    // TODO what does a sheet type with 'except certain cells' do
   }
 
   /**
@@ -335,7 +397,7 @@ export class FakeSpreadsheet {
   __getSheetMeta(id) {
     return this.__meta.sheets.find(f => f.properties.sheetId === id)
   }
-   
+
   /**
    * @return {string} the spreadsheet url
    */
@@ -484,21 +546,21 @@ export class FakeSpreadsheet {
     }]
 
     // let sheets handle errors
-    const result = Sheets.Spreadsheets.batchUpdate({requests}, this.getId(), { ss: true })
+    const result = Sheets.Spreadsheets.batchUpdate({ requests }, this.getId(), { ss: true })
     const sheet = new FakeSheet(result.replies[0].addSheet.properties.sheetId, this)
 
     // there will have been disrupton, so we need to reset the spreadsheet metadata
     this.__disruption()
 
     return sheet
-   /* 
-    {"spreadsheetId":"1i4eEijAwm0b62iL_IEV8NUSZwlWPDP51thgAWQHGols","replies":[{"addSheet":{"properties":{"sheetId":630852383,"title":"Sheet2","index":1,"sheetType":"GRID","gridProperties":{"rowCount":1000,"columnCount":26}}}}]}
-*/
+    /* 
+     {"spreadsheetId":"1i4eEijAwm0b62iL_IEV8NUSZwlWPDP51thgAWQHGols","replies":[{"addSheet":{"properties":{"sheetId":630852383,"title":"Sheet2","index":1,"sheetType":"GRID","gridProperties":{"rowCount":1000,"columnCount":26}}}}]}
+ */
 
   }
 
-  __disruption () {
-      this.__updateMeta(  Sheets.Spreadsheets.get(this.getId(), { fields: minSheetFields }, { ss: true }))
+  __disruption() {
+    this.__updateMeta(Sheets.Spreadsheets.get(this.getId(), { fields: minSheetFields }, { ss: true }))
   }
 
   getRange(range) {
