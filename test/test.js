@@ -9,6 +9,7 @@ import '../main.js'
 import { initTests }  from  './testinit.js'
 import { testDrive } from './testdrive.js';
 import { testSheets } from './testsheets.js';
+import { testSheetsPermissions } from './testsheetspermissions.js';
 import { testSheetsValues } from './testsheetsvalues.js';
 import { testFetch } from './testfetch.js';
 import { testSession } from './testsession.js';
@@ -25,6 +26,8 @@ const testFakes = () => {
   const {unit} = pack
 
   // add one of these for each service being tested
+  console.log ('\n----Test Sheets Permissions----')
+  testSheetsPermissions(pack)
   console.log ('\n----Test Sheets----')
   testSheets(pack)
   console.log ('\n----Test SheetsValues----')
