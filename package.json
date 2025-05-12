@@ -5,6 +5,7 @@
   "dependencies": {
     "@sindresorhus/is": "^7.0.1",
     "archiver": "^7.0.1",
+    "email-validator": "^2.0.4",
     "get-stream": "^9.0.1",
     "google-auth-library": "^9.15.0",
     "googleapis": "^144.0.0",
@@ -22,6 +23,7 @@
   "scripts": {
     "test": "cp mainlocal.js main.js && node --env-file=.env ./test/test.js",
     "testdrive": "cp mainlocal.js main.js && node --env-file=.env ./test/testdrive.js execute",
+    "testsheetsdatavalidations": "cp mainlocal.js main.js && node --env-file=.env ./test/testsheetsdatavalidations.js execute",
     "testsheetspermissions": "cp mainlocal.js main.js && node --env-file=.env ./test/testsheetspermissions.js execute",
     "testsheetsvalues": "cp mainlocal.js main.js && node --env-file=.env ./test/testsheetsvalues.js execute",
     "testsheets": "cp mainlocal.js main.js && node --env-file=.env ./test/testsheets.js execute",

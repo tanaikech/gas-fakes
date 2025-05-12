@@ -19,6 +19,7 @@ import { testScriptApp } from './testscriptapp.js';
 import { getPerformance } from '../src/support/filecache.js';
 import { getSheetsPerformance } from '../src/support/sheetscache.js';
 import { testFiddler } from './testfiddler.js';
+import { testSheetsDataValidations } from './testsheetsdatavalidations.js';
 
 
 const testFakes = () => {
@@ -26,6 +27,8 @@ const testFakes = () => {
   const {unit} = pack
 
   // add one of these for each service being tested
+  console.log ('\n----Test Sheets DataValidations----')
+  testSheetsDataValidations(pack)
   console.log ('\n----Test Sheets Permissions----')
   testSheetsPermissions(pack)
   console.log ('\n----Test Sheets----')

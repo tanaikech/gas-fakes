@@ -8,6 +8,9 @@ import { newFakeWrapStrategy, isWrapped } from '../commonclasses/fakewrapstrateg
 import { newFakeTextRotation } from '../commonclasses/faketextrotation.js'
 import { makeTextStyleFromApi } from '../commonclasses/faketextstylebuilder.js'
 import { newFakeTextDirection } from '../commonclasses/faketextdirection.js'
+import { attrGens,valueGens} from "./sheetrangehelpers.js"
+import { makeDataValidationFromApi} from "../commonclasses/fakedatavalidationbuilder.js"
+
 
 const { is, rgbToHex, hexToRgb, getPlucker, robToHex, outsideInt } = Utils
 
@@ -35,123 +38,7 @@ export const newFakeSheetRange = (...args) => {
   return Proxies.guard(new FakeSheetRange(...args))
 }
 
-const makeTemplate = ({ range, defaultValue, cleaner = (f) => f }) =>
-  Array.from({ length: range.getNumRows() })
-    .fill(Array.from({ length: range.getNumColumns() })
-      .fill(defaultValue).map(cleaner))
 
-// insert a method to get the required attributes, bith single and array version
-// many methods can be genereated automatically
-const attrGens = (self, target) => {
-
-  // shared function to get attributes that use spreadsheets.get
-  const getRowDataAttribs = ({ range = self, props, defaultValue, cleaner }) => {
-
-    // get the collection of rows with data for the required properties
-    const { sheets } = Sheets.Spreadsheets.get(self.__getSpreadsheetId(), {
-      ranges: [self.__getRangeWithSheet(range)],
-      fields: `sheets.data.rowData.values${props}`
-    })
-
-    const { rowData } = sheets[0]?.data[0]
-
-    // somewtimes we get a jagged array that needs to be padded to the right length with default values
-    const template = makeTemplate({ range, defaultValue, cleaner })
-
-    // if we got nothing, return the template of defaults
-    if (!rowData) return template
-
-    // pluck each cell
-    // extract the required props to an array
-    const plucker = getPlucker(props, defaultValue)
-
-    // now replace the template with anything we got
-    const rows = template.map((row, i) => {
-      // use the template values if we've run out of data - template has already been cleaned
-      if (i >= rowData.length) return row
-      return row.map((col, j) => {
-        // use the col value if there is one
-        return rowData[i].values[j] ? cleaner(plucker(rowData[i].values[j])) : col
-      })
-    })
-    return rows
-
-  }
-
-  // default is just copy api result with no cleaning
-  const cleaner = target.cleaner || (f => f)
-
-  // curry a getter
-  const getters = (range) => getRowDataAttribs({
-    cleaner,
-    range,
-    defaultValue: target.defaultValue,
-    props: target.props,
-    reducer: target.reducer
-  })
-
-  // it's likely that if there's a reducer, we should also be skippingSingle
-  if (target.reducer) {
-    if (!target.skipSingle) console.log(props, range.getA1Notation(), 'has a reducer but is not skipping single - sure thats right?')
-  }
-  // both a single and collection version
-  // also some queries return a consolidated/reduced version
-  if (!target.skipPlural) {
-    const plural = target.plural || (target.name + 's')
-    self[plural] = () => {
-      const values = getters(self)
-      return target.reducer ? target.reducer(values.flat()) : values
-    }
-  }
-
-  if (!target.skipSingle) {
-    self[target.name] = () => {
-      const values = getters(self.__getTopLeft())
-      return target.reducer ? target.reducer(values.flat()) : (values && values[0] && values[0][0])
-    }
-  }
-
-  return self
-}
-
-const valueGens = (self, target) => {
-
-  const getData = ({ range, options }) => {
-    const result = Sheets.Spreadsheets.Values.get(
-      self.__getSpreadsheetId(),
-      self.__getRangeWithSheet(range),
-      options
-    )
-    return result.values || []
-  }
-
-  // make a template to handle jagged arrays
-
-  // both a single and collection version
-  const plural = target.plural || (target.name + 's')
-  const getters = (range) => {
-    const values = getData({ range, options: target.options })
-    /// TODO check if we ever get a jagged array back for values as we sometimes do for formats 
-    // - if we do, we'll need to populate with the template
-    let v = !values.length ? makeTemplate({ range, defaultValue: target.defaultValue }) : values
-    if (target.cleaner) v = v.map(target.cleaner)
-    if (target.reducer) v = target.reducer(v)
-    return v
-  }
-
-  // normally we need both plural and single version - but this allows skipping if required
-  if (!target.skipPlural) self[plural] = () => getters(self)
-  if (!target.skipSingle) {
-    self[target.name] = () => {
-      // just get a single cell
-      const r = getters(self.__getTopLeft())
-      const v = target.reducer ? r : r[0][0]
-      return v
-    }
-  }
-
-  return self
-}
 
 // generate methods for similar code
 const attrGetList = [{
@@ -278,6 +165,13 @@ const attrGetList = [{
   name: 'getNote',
   props: '.note',
   defaultValue: "",
+}, {
+  name: "getDataValidation",
+  props: '.dataValidation',
+  defaultValue: null,
+  cleaner: (f => {
+    return makeDataValidationFromApi (f)
+  })
 }]
 
 const valuesGetList = [{
@@ -330,8 +224,7 @@ export class FakeSheetRange {
       'removeDuplicates',
       'getMergedRanges',
       'setFontColorObjects',
-      'getDataValidation',
-      'getDataValidations',
+
       'setDataValidations',
       'clearDataValidations',
 
@@ -499,7 +392,7 @@ export class FakeSheetRange {
     )
   }
 
-  
+
   /**
    * these 2 dont exist in the documentation any more - assume they have been renamed as getBackground(s)
    */
@@ -604,7 +497,7 @@ export class FakeSheetRange {
   offset(rowOffset, columnOffset, numRows, numColumns) {
     // get arg types
     const { nargs, matchThrow } = signatureArgs(arguments, "Range.offset")
-    
+
     // basic signature tests
     if (nargs > 4 || nargs < 2) matchThrow()
     if (!is.integer(rowOffset) || !is.integer(columnOffset)) matchThrow()

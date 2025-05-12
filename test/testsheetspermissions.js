@@ -11,7 +11,7 @@ import '../main.js'
 import { initTests } from './testinit.js'
 import { getSheetsPerformance } from '../src/support/sheetscache.js';
 import { getPerformance } from '../src/support/filecache.js';
-import { maketss, trasher, toHex, rgbToHex, getRandomRgb, getRandomHex, getStuff, BLACK, RED } from './testassist.js';
+import {  trasher } from './testassist.js';
 
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over

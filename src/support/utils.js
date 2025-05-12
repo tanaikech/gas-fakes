@@ -264,6 +264,12 @@ const hexToRgb = (hex) => {
 const outside = (n, l, h) => n < l || n > h
 const outsideInt = (n, l, h) => outside(n, l, h) || !is.integer(n)
 
+const zeroizeTime = (date) => {
+  const year = date.getFullYear();
+  const month = date.getMonth(); // Month is 0-indexed
+  const day = date.getDate();
+  return new Date(year, month, day, 0, 0, 0, 0);
+}
 export const Utils = {
   hexToRgb,
   stringToBytes,
@@ -287,7 +293,8 @@ export const Utils = {
   robToHex,
   outside,
   outsideInt,
-  unCapital
+  unCapital,
+  zeroizeTime
 }
 
 

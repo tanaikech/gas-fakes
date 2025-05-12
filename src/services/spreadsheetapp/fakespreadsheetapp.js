@@ -6,6 +6,8 @@ import { newFakeColorBuilder } from '../commonclasses/fakecolorbuilder.js'
 import { ThemeColorType } from '../typedefs.js'
 import { newFakeTextStyleBuilder } from '../commonclasses/faketextstylebuilder.js'
 import { ProtectionType } from '../commonclasses/fakeprotectiontype.js'
+import { newFakeDataValidationBuilder } from '../commonclasses/fakedatavalidationbuilder.js'
+import { DataValidationCriteria} from '../commonclasses/fakedatavalidationcriteria.js'
 
 const { is } = Utils
 /**
@@ -50,7 +52,7 @@ export class FakeSpreadsheetApp {
       'setCurrentCell',
       'setActiveRange',
       'setActiveRangeList',
-      'newDataValidation',
+  
       'newRichTextValue',
       'newFilterCriteria',
       'newDataSourceSpec',
@@ -71,7 +73,7 @@ export class FakeSpreadsheetApp {
       'DataSourceParameterType',
       'DataSourceRefreshScope',
       'DataSourceType',
-      'DataValidationCriteria',
+
       'DateTimeGroupingRuleType',
       'DeveloperMetadataLocationType',
       'DeveloperMetadataVisibility',
@@ -182,6 +184,15 @@ export class FakeSpreadsheetApp {
     return newFakeTextStyleBuilder()
   }
 
+  /**
+   * newDataValidation() https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#newdatavalidation
+   * Creates a builder for a data validation rule.
+   * @returns {FakeDataValidationBuilder}
+   */
+  newDataValidation() {
+    return newFakeDataValidationBuilder()
+  }
+
 
   get ProtectionType () {
     return ProtectionType
@@ -191,4 +202,9 @@ export class FakeSpreadsheetApp {
     return ThemeColorType
   }
 
+  get DataValidationCriteria () {
+    return DataValidationCriteria
+  }
+
+  
 }
