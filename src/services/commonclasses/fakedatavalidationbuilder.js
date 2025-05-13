@@ -2,12 +2,10 @@ import { Proxies } from '../../support/proxies.js'
 import { signatureArgs } from '../../support/helpers.js'
 import { Utils } from '../../support/utils.js'
 import { newFakeDataValidation } from './fakedatavalidation.js'
-import { notYetImplemented } from '../../support/helpers.js'
 import { newNummery } from '../../support/nummery.js'
-import * as validator from 'email-validator'
+import { newFakeValidationCriteria } from './fakedatavalidationcriteria.js'
 
 const { is, zeroizeTime } = Utils
-
 
 /**
  * create a new FakeValidationBuilder instance
@@ -17,7 +15,6 @@ const { is, zeroizeTime } = Utils
 export const newFakeDataValidationBuilder = (...args) => {
   return Proxies.guard(new FakeDataValidationBuilder(...args))
 }
-
 
 class FakeDataValidationBuilder {
   constructor() {
@@ -75,23 +72,21 @@ class FakeDataValidationBuilder {
     }
 
     Reflect.ownKeys(numberProps)
-    .forEach(f => basicRequires(f, numberProps[f].nargs, numberProps[f].prop))
-    
-    const props = [
-      "copy",//()	DataValidationBuilder	Creates a builder for a data validation rule based on this rule's settings.
-      "requireValueInList",//(values)	DataValidationBuilder	Sets the data validation rule to require that the input is equal to one of the given values.
-      "requireValueInList",//(values, showDropdown)	DataValidationBuilder	Sets the data validation rule to require that the input is equal to one of the given values, with an option to hide the dropdown menu.
-      "requireValueInRange",//(range)	DataValidationBuilder	Sets the data validation rule to require that the input is equal to a value in the given range.
-      "requireValueInRange",//(range, showDropdown)	DataValidationBuilder	Sets the data validation rule to require that the input is equal to a value in the given range, with an option to hide the dropdown menu.
-      //"setAllowInvalid",//(allowInvalidData)	DataValidationBuilder	Sets whether to show a warning when input fails data validation or whether to reject the input entirely.
-      // "setHelpText",//(helpText)	DataValidationBuilder	Sets the help text that appears when the user hovers over the cell on which data validation is set.
-      "withCriteria",//(criteria, args)	DataValidationBuilder	Sets the data validation rule to criteria defined by DataValidationCriteria values, typically taken from the criteria and arguments of an existing rule.
-    ]
-    props.forEach(f => {
-      this[f] = () => {
-        return notYetImplemented(f)
-      }
-    })
+      .forEach(f => basicRequires(f, numberProps[f].nargs, numberProps[f].prop))
+
+    const stringPrompts = {
+      "requireTextContains": { nargs: 1, prop: "TEXT_CONTAINS", checkProp: "string" },
+      "requireTextDoesNotContain": { nargs: 1, prop: "TEXT_DOES_NOT_CONTAIN", checkProp: "string" },
+      "requireTextEqualTo": { nargs: 1, prop: "TEXT_EQUAL_TO", checkProp: "string" },
+      "requireTextIsUrl": { nargs: 0, prop: "TEXT_IS_VALID_URL"},
+      "requireFormulaSatisfied": { nargs: 1, prop: "CUSTOM_FORMULA", checkProp: "string" },
+      "requireTextIsEmail": { nargs: 0, prop: "TEXT_IS_VALID_EMAIL" },
+    }
+
+    Reflect.ownKeys(stringPrompts)
+      .forEach(f =>
+        basicRequires(f, stringPrompts[f].nargs, stringPrompts[f].prop, stringPrompts[f].checkProp))
+
   }
 
   __setRule(criteriaType, criteriaValues = []) {
@@ -106,6 +101,15 @@ class FakeDataValidationBuilder {
     return newFakeDataValidation(this)
   }
 
+  copy () {
+    const copy = newFakeDataValidationBuilder()
+    copy.__rule = this.__rule
+    copy.__helpText = this.__helpText
+    copy.__allowInvalid
+    copy.__rule = JSON.parse(JSON.stringify(this.__rule))
+    return copy
+  }
+  
   getHelpText() {
     return this.__helpText
   }
@@ -122,35 +126,6 @@ class FakeDataValidationBuilder {
     return this.__allowInvalid
   }
 
-  requireTextContains (text) {
-    const { nargs, matchThrow } = signatureArgs(arguments, "requireTextContains")
-    if (nargs !==1 || !is.string(text)) matchThrow()
-    return this.__setRule('TEXT_CONTAINS', arguments)
-  }
-
-  requireTextDoesNotContain (text) {
-    const { nargs, matchThrow } = signatureArgs(arguments, "requireTextDoesNotContain")
-    if (nargs !==1 || !is.string(text)) matchThrow()
-    return this.__setRule('TEXT_DOES_NOT_CONTAIN', arguments)
-  }
-
-  requireTextEqualTo (text) {
-    const { nargs, matchThrow } = signatureArgs(arguments, "requireTextEqualTo")
-    if (nargs !==1 || !is.string(text)) matchThrow()
-    return this.__setRule('TEXT_EQUAL_TO', arguments)
-  }
-
-  requireTextIsEmail (text) {
-    const { nargs, matchThrow } = signatureArgs(arguments, "requireTextIsEmail")
-    if (nargs !==1 || !validator.validate(text)) matchThrow()
-    return this.__setRule('IS_EMAIL', arguments)
-  }
-
-  requireTextIsUrl (text) {
-    const { nargs, matchThrow } = signatureArgs(arguments, "requireTextIsUrl")
-    if (nargs !==1 || !is.urlString(text)) matchThrow()
-    return this.__setRule('IS_URL', arguments)
-  }
 
   requireCheckbox(checkedValue, uncheckedValue) {
     const { nargs, matchThrow } = signatureArgs(arguments, "requireCheckbox")
@@ -158,10 +133,26 @@ class FakeDataValidationBuilder {
     return this.__setRule('CHECKBOX', arguments)
   }
 
-  requireFormulaSatisfied(formula) {
-    const { nargs, matchThrow } = signatureArgs(arguments, "requireFormulaSatisfied")
-    if (nargs !== 1 || !is.string(formula)) matchThrow()
-    return this.__setRule('CUSTOM_FORMULA', [formula])
+  requireValueInRange(range, showDropdown = true) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "requireValueInRange")
+    if (nargs > 2 || !nargs) matchThrow()
+    if (!is.function(range?.toString) || range.toString() !== 'Range') matchThrow()
+    if (!is.boolean(showDropdown)) matchThrow()
+    return this.__setRule('VALUE_IN_RANGE', [range,showDropdown])
+
+  }
+
+  requireValueInList(values, showDropdown = true ) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "requireValueInList")
+    if (nargs > 2 || !nargs) matchThrow()
+    if (!is.array(values)) matchThrow()
+    //  Apps Script converts list values to strings 
+    if (values.some(f => !is.function(f?.toString))) matchThrow()
+    if (!is.boolean(showDropdown)) matchThrow()
+
+      // it seems that apps script insers a true default for showDropdown even if not explicitly given.
+    const args = [values.map(f=>f.toString()), showDropdown]
+    return this.__setRule('VALUE_IN_LIST', args)
   }
 
   setAllowInvalid(allowInvalid) {
@@ -182,6 +173,14 @@ class FakeDataValidationBuilder {
     return 'DataValidationBuilder'
   }
 
+  withCriteria (criteria, args) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "withCriteria")
+    if (nargs !== 2) matchThrow()
+    // validate the crit arg
+    const crit = newFakeValidationCriteria(criteria.toString())
+    this.__setRule(crit.toString(), args)
+    return this
+  }
 
 }
 
