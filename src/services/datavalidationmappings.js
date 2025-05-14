@@ -1,5 +1,5 @@
-// Apps Script CriteriaType	to Sheets API Condition.type
-export const dataValidationCritMapping = { 
+// Apps Script CriteriaType	to Sheets API Condition.type - this was mainly nonsense - it originally came from gemini but i've had t make lots of chenges so will probably abandon
+const xx = { 
 "BOOLEAN":"BOOLEAN",
 "DATE_EQUAL_TO":"DATE_EQUAL",
 "DATE_AFTER":"DATE_GREATER",

@@ -9,7 +9,6 @@ import { newNummery } from '../../support/nummery.js'
 const newFakeProtectionType = (...args) => {
   return Proxies.guard(new FakeProtectionType(...args))
 }
-// https://developers.google.com/apps-script/reference/spreadsheet/text-direction
 class FakeProtectionType {
   constructor(value) {
     const types = [

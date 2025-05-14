@@ -1,6 +1,7 @@
 import { Proxies } from '../../support/proxies.js'
 import { newNummery } from '../../support/nummery.js'
-import { newFakeDataValidation } from './fakedatavalidation.js'
+import { Utils } from '../../support/utils.js'
+const { is } = Utils
 
 /**
  * create a new FakeTextDirection 
@@ -13,7 +14,7 @@ export const newFakeValidationCriteria = (...args) => {
 // https://developers.google.com/apps-script/reference/spreadsheet/data-validation-criteria
 class FakeValidationCriteria {
   constructor(value) {
-
+    const critEnum = Reflect.ownKeys(dataValidationCriteriaMapping)
     if (!critEnum.includes(value)) {
       throw new Error(`${value} is not a data validation criteria`)
     }
@@ -22,36 +23,157 @@ class FakeValidationCriteria {
   }
 }
 
-const critEnum = [
-  "DATE_AFTER", //	Enum	Requires a date that is after the given value.
-  "DATE_BEFORE", //	Enum	Requires a date that is before the given value.
-  "DATE_BETWEEN", //	Enum	Requires a date that is between the given values.
-  "DATE_EQUAL_TO", //	Enum	Requires a date that is equal to the given value.
-  "DATE_IS_VALID_DATE", //	Enum	Requires a date.
-  "DATE_NOT_BETWEEN", //	Enum	Requires a date that is not between the given values.
-  "DATE_ON_OR_AFTER", //	Enum	Require a date that is on or after the given value.
-  "DATE_ON_OR_BEFORE", //	Enum	Requires a date that is on or before the given value.
-  "NUMBER_BETWEEN", //	Enum	Requires a number that is between the given values.
-  "NUMBER_EQUAL_TO", //	Enum	Requires a number that is equal to the given value.
-  "NUMBER_GREATER_THAN", //	Enum	Require a number that is greater than the given value.
-  "NUMBER_GREATER_THAN_OR_EQUAL_TO", //	Enum	Requires a number that is greater than or equal to the given value.
-  "NUMBER_LESS_THAN", //	Enum	Requires a number that is less than the given value.
-  "NUMBER_LESS_THAN_OR_EQUAL_TO", //	Enum	Requires a number that is less than or equal to the given value.
-  "NUMBER_NOT_BETWEEN", //	Enum	Requires a number that is not between the given values.
-  "NUMBER_NOT_EQUAL_TO", //	Enum	Requires a number that is not equal to the given value.
-  "TEXT_CONTAINS", //	Enum	Requires that the input contains the given value.
-  "TEXT_DOES_NOT_CONTAIN", //	Enum	Requires that the input does not contain the given value.
-  "TEXT_EQUAL_TO", //	Enum	Requires that the input is equal to the given value.
-  "TEXT_IS_VALID_EMAIL", //	Enum	Requires that the input is in the form of an email address.
-  "TEXT_IS_VALID_URL", //	Enum	Requires that the input is in the form of a URL.
-  "VALUE_IN_LIST", //	Enum	Requires that the input is equal to one of the given values.
-  "VALUE_IN_RANGE", //	Enum	Requires that the input is equal to a value in the given range.
-  "CUSTOM_FORMULA", //	Enum	Requires that the input makes the given formula evaluate to true.
-  "CHECKBOX" //	Enum	Requires that the input is a custom value or a boolean; rendered as a checkbox.
+// maps criteria type to builder function
+export const dataValidationCriteriaMapping = {
+  DATE_AFTER: {
+    method: "requireDateAfter",
+    nargs: 1,
+    type: 'date'
+  },
+  DATE_BEFORE: {
+    method: "requireDateBefore",
+    nargs: 1,
+    type: 'date'
+  },
+  DATE_EQUAL_TO: {
+    method: "requireDateEqualTo",
+    nargs: 1,
+    type: 'date'
+  },
+  DATE_BETWEEN: {
+    method: "requireDateBetween",
+    nargs: 2,
+    type: 'date'
+  },
+  DATE_NOT_BETWEEN: {
+    method: "requireDateNotBetween",
+    nargs: 2,
+    type: 'date'
+  },
+  DATE_IS_VALID_DATE: {
+    method: "requireDate",
+    nargs: 0,
+  },
+  DATE_ON_OR_AFTER: {
+    method: "requireDateOnOrAfter",
+    nargs: 1,
+    type: 'date'
+  },
+  DATE_ON_OR_BEFORE: {
+    method: "requireDateOnOrBefore",
+    nargs: 1,
+    type: 'date'
+  },
 
-]
+  NUMBER_EQUAL_TO: {
+    method: "requireNumberEqualTo",
+    nargs: 1,
+    type: 'number'
+  },
+  NUMBER_GREATER_THAN: {
+    method: "requireNumberGreaterThan",
+    nargs: 1,
+    type: 'number'
+  },
+  NUMBER_GREATER_THAN_OR_EQUAL_TO: {
+    method: "requireNumberGreaterThanOrEqualTo",
+    nargs: 1,
+    type: 'number'
+  },
+  NUMBER_LESS_THAN: {
+    method: "requireNumberLessThan",
+    nargs: 1,
+    type: 'number'
+  },
+  NUMBER_LESS_THAN_OR_EQUAL_TO: {
+    method: "requireNumberLessThanOrEqualTo",
+    nargs: 1,
+    type: 'number'
+  },
+  NUMBER_NOT_BETWEEN: {
+    method: "requireNumberNotBetween",
+    nargs: 2,
+    type: 'number'
+  },
+  NUMBER_BETWEEN: {
+    method: "requireNumberBetween",
+    nargs: 2,
+    type: 'number'
+  },
+  NUMBER_NOT_EQUAL_TO: {
+    method: "requireNumberNotEqualTo",
+    nargs: 1,
+    type: 'number'
+  },
+  TEXT_CONTAINS: {
+    method: "requireTextContains",
+    nargs: 1 ,
+    type: 'string'
+  },
+  TEXT_DOES_NOT_CONTAIN: {
+    method: "requireTextDoesNotContain",
+    nargs: 1,
+    type: 'string'
+  },
+  TEXT_EQUAL_TO: {
+    method: "requireTextEqualTo",
+    nargs: 1,
+    type: 'string'
+  },
+  TEXT_IS_VALID_URL: {
+    method: "requireTextIsUrl",
+    nargs: 0
+  },
+  CUSTOM_FORMULA: {
+    method: "requireFormulaSatisfied",
+    nargs: 1,
+    type: 'string'
+  },
+  TEXT_IS_VALID_EMAIL: {
+    method: "requireTextIsEmail",
+    nargs: 0,
+    apiEnum: 'TEXT_IS_EMAIL'
+  },
+  CHECKBOX: {
+    method: "requireCheckbox",
+    nargs: [0,2]
+  },
+  VALUE_IN_RANGE: {
+    method: "requireValueInRange",
+    nargs: [1,2],
+    type: ['range','boolean'],
+    validator: (args, matchThrow, nargs) => {
+      let [range, showDropdown] = args
+      if (nargs ===1 )showDropdown = true
+      if (!is.function(range.toString) || range.toString() !== 'Range') matchThrow()
+      return [range, showDropdown]
+    }
+  },
+  VALUE_IN_LIST: {
+    method: "requireValueInList",
+    nargs: [1,2],
+    type: ['array','boolean'],
+    // this returns a modified args list
+    validator: (args, matchThrow, nargs) => {
+      //  Apps Script converts list values to strings 
+      //  TODO - various options in the UI still to figure out
+      //  - display style chip/arrow/plain text 
+      //  - multiple selections - only chip allows this 
+      //  - what are the circumstances for showcustomui being true
+      console.log (args)
+      let [values, showDropdown] = args
+      // appply default showdropdown
+      if (nargs ===1 )showDropdown = true
+      if (values.some(f => !is.function(f?.toString))) matchThrow()
+        // it seems that apps script insers a true default for showDropdown even if not explicitly given.
+      return [values.map(f=>f.toString()), showDropdown]
+    },
+    apiEnum: 'ONE_OF_LIST'
+  }
+}
 
-export const DataValidationCriteria = critEnum.reduce((p, c) => {
+
+export const DataValidationCriteria = Reflect.ownKeys(dataValidationCriteriaMapping).reduce((p, c) => {
   p[c] = newNummery(c)
   return p
 }, {})

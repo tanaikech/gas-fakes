@@ -33,6 +33,30 @@ export const testSheetsDataValidations = (pack) => {
     return newDate;
   }
 
+
+  unit.section("data validation from api", t => {
+
+    const sp = SpreadsheetApp.openById(fixes.TEST_BORDERS_ID)
+    t.is(SpreadsheetApp.DataValidationCriteria.DATE_AFTER.toString(), 'DATE_AFTER', "check criteria enum")
+
+
+    const sb = sp.getSheetByName('dv')
+    const sr = sb.getRange("a1:b2")
+    const cbs = sr.getDataValidations()
+    t.is (cbs.length, sr.getNumRows())
+    t.is(cbs[0].length, sr.getNumColumns())
+    t.true(cbs.flat().every(f => f.getAllowInvalid()))
+    t.true(cbs.flat().every(f => f.getCriteriaType().toString() === 'TEXT_IS_VALID_EMAIL'))
+    t.true(cbs.flat().every(f => f.getHelpText() === 'email'))
+
+    const cb2 = sb.getRange("b3:c4").getDataValidations()
+    t.true(cb2.flat().every(f => !f.getAllowInvalid()))
+    cb2.flat().forEach(f => t.deepEqual (f.getCriteriaValues(),[['a','b'],true]))
+    t.true(cb2.flat().every(f => f.getCriteriaType().toString() === 'VALUE_IN_LIST'))
+    t.true(cb2.flat().every(f => f.getHelpText() === 'multipledropchip'))
+  })
+  unit.cancel()
+
   unit.section("data validation basics", t => {
 
     const sp = SpreadsheetApp.openById(fixes.TEST_BORDERS_ID)
@@ -140,19 +164,7 @@ export const testSheetsDataValidations = (pack) => {
     t.is(b2.toString(), "DataValidationBuilder")
 
   })
-  unit.cancel()
-  unit.section("data validation from api", t => {
 
-    const sp = SpreadsheetApp.openById(fixes.TEST_BORDERS_ID)
-    t.is(SpreadsheetApp.DataValidationCriteria.DATE_AFTER.toString(), 'DATE_AFTER', "check criteria enum")
-
-
-    const sb = sp.getSheets()[0]
-    const sr = sb.getRange("h31:j32")
-    const cbs = sr.getDataValidations()
-    t.true(cbs.flat().every(f => f.getHelpText() === 'booleans'))
-
-  })
 
 
 
