@@ -26,119 +26,154 @@ class FakeValidationCriteria {
 // maps criteria type to builder function
 export const dataValidationCriteriaMapping = {
   DATE_AFTER: {
+    name: "DATE_AFTER",
     method: "requireDateAfter",
     nargs: 1,
     type: 'date'
   },
   DATE_BEFORE: {
+    name: "DATE_BEFORE",
     method: "requireDateBefore",
     nargs: 1,
     type: 'date'
   },
   DATE_EQUAL_TO: {
+    name: "DATE_EQUAL_TO",
     method: "requireDateEqualTo",
     nargs: 1,
-    type: 'date'
+    type: 'date',
+    apiEnum: "DATE_EQ"
   },
   DATE_BETWEEN: {
+    name: "DATE_BETWEEN",
     method: "requireDateBetween",
     nargs: 2,
     type: 'date'
   },
   DATE_NOT_BETWEEN: {
+    name: "DATE_NOT_BETWEEN",
     method: "requireDateNotBetween",
     nargs: 2,
     type: 'date'
   },
   DATE_IS_VALID_DATE: {
+    name: "DATE_IS_VALID_DATE",
     method: "requireDate",
     nargs: 0,
+    apiEnum:"DATE_IS_VALID"
   },
   DATE_ON_OR_AFTER: {
+    name: "DATE_ON_OR_AFTER",
     method: "requireDateOnOrAfter",
     nargs: 1,
     type: 'date'
   },
   DATE_ON_OR_BEFORE: {
+    name: "DATE_ON_OR_BEFORE",
     method: "requireDateOnOrBefore",
     nargs: 1,
     type: 'date'
   },
 
   NUMBER_EQUAL_TO: {
+    name: "NUMBER_EQUAL_TO",
     method: "requireNumberEqualTo",
     nargs: 1,
-    type: 'number'
+    type: 'number',
+    apiEnum: "NUMBER_EQ"
   },
   NUMBER_GREATER_THAN: {
+    name: "NUMBER_GREATER_THAN",
     method: "requireNumberGreaterThan",
     nargs: 1,
-    type: 'number'
+    type: 'number',
+    apiEnum: "NUMBER_GREATER"
   },
   NUMBER_GREATER_THAN_OR_EQUAL_TO: {
+    name: "NUMBER_GREATER_THAN_OR_EQUAL_TO",
     method: "requireNumberGreaterThanOrEqualTo",
     nargs: 1,
-    type: 'number'
+    type: 'number',
+    apiEnum: "NUMBER_GREATER_THAN_EQ"
   },
   NUMBER_LESS_THAN: {
+    name: "NUMBER_LESS_THAN",
     method: "requireNumberLessThan",
     nargs: 1,
-    type: 'number'
+    type: 'number',
+    apiEnum: "NUMBER_LESS"
   },
   NUMBER_LESS_THAN_OR_EQUAL_TO: {
+    name: "NUMBER_LESS_THAN_OR_EQUAL_TO",
     method: "requireNumberLessThanOrEqualTo",
     nargs: 1,
-    type: 'number'
+    type: 'number',
+    apiEnum: "NUMBER_LESS_THAN_EQ"
   },
   NUMBER_NOT_BETWEEN: {
+    name: "NUMBER_NOT_BETWEEN",
     method: "requireNumberNotBetween",
     nargs: 2,
     type: 'number'
   },
   NUMBER_BETWEEN: {
+    name: "NUMBER_BETWEEN",
     method: "requireNumberBetween",
     nargs: 2,
     type: 'number'
   },
   NUMBER_NOT_EQUAL_TO: {
+    name: "NUMBER_NOT_EQUAL_TO",
     method: "requireNumberNotEqualTo",
     nargs: 1,
-    type: 'number'
+    type: 'number',
+    apiEnum:"NUMBER_NOT_EQ"
   },
   TEXT_CONTAINS: {
+    name: "TEXT_CONTAINS",
     method: "requireTextContains",
     nargs: 1 ,
     type: 'string'
   },
   TEXT_DOES_NOT_CONTAIN: {
+    name: "TEXT_DOES_NOT_CONTAIN",
     method: "requireTextDoesNotContain",
     nargs: 1,
-    type: 'string'
+    type: 'string',
+    apiEnum: "TEXT_NOT_CONTAINS"
   },
   TEXT_EQUAL_TO: {
+    name: "TEXT_EQUAL_TO",
     method: "requireTextEqualTo",
     nargs: 1,
-    type: 'string'
+    type: 'string',
+    apiEnum: "TEXT_EQ"
   },
   TEXT_IS_VALID_URL: {
+    name: "TEXT_IS_VALID_URL",
     method: "requireTextIsUrl",
-    nargs: 0
+    nargs: 0,
+    apiEnum: "TEXT_IS_URL"
   },
   CUSTOM_FORMULA: {
+    name: "CUSTOM_FORMULA",
     method: "requireFormulaSatisfied",
     nargs: 1,
     type: 'string'
   },
   TEXT_IS_VALID_EMAIL: {
+    name: "TEXT_IS_VALID_EMAIL",
     method: "requireTextIsEmail",
     nargs: 0,
     apiEnum: 'TEXT_IS_EMAIL'
   },
   CHECKBOX: {
+    name: "CHECKBOX",
     method: "requireCheckbox",
     nargs: [0,2]
   },
   VALUE_IN_RANGE: {
+    name: "VALUE_IN_RANGE",
     method: "requireValueInRange",
     nargs: [1,2],
     type: ['range','boolean'],
@@ -147,9 +182,11 @@ export const dataValidationCriteriaMapping = {
       if (nargs ===1 )showDropdown = true
       if (!is.function(range.toString) || range.toString() !== 'Range') matchThrow()
       return [range, showDropdown]
-    }
+    },
+    apiEnum: "ONE_OF_RANGE"
   },
   VALUE_IN_LIST: {
+    name: "VALUE_IN_LIST",
     method: "requireValueInList",
     nargs: [1,2],
     type: ['array','boolean'],
@@ -160,7 +197,6 @@ export const dataValidationCriteriaMapping = {
       //  - display style chip/arrow/plain text 
       //  - multiple selections - only chip allows this 
       //  - what are the circumstances for showcustomui being true
-      console.log (args)
       let [values, showDropdown] = args
       // appply default showdropdown
       if (nargs ===1 )showDropdown = true

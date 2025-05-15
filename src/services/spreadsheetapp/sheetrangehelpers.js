@@ -71,7 +71,7 @@ export const attrGens = (self, target) => {
     const plucker = getPlucker(props, defaultValue)
 
     // clean what we did get
-    const cleaned = rowData.map(row => row.values.map(col => cleaner(plucker(col))))
+    const cleaned = rowData.map(row => row.values.map(col => cleaner(plucker(col), range)))
 
     // if it's not jagged, we dont need to fill any missing values
     if (!isJagged({ cleaned, range })) return cleaned

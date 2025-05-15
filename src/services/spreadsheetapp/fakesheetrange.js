@@ -21,7 +21,6 @@ const BLACKER = { red: 0, green: 0, blue: 0 }
 import { notYetImplemented, signatureArgs } from '../../support/helpers.js'
 import { FakeSpreadsheet } from './fakespreadsheet.js'
 
-
 //TODO - deal with r1c1 style ranges
 /**
  * @file
@@ -41,6 +40,7 @@ export const newFakeSheetRange = (...args) => {
 
 
 // generate methods for similar code
+// TODO handle argument checks - should these all be nargs =0? if so - add a makethrow
 const attrGetList = [{
   name: 'getNumberFormat',
   props: '.userEnteredFormat.numberFormat',
@@ -169,8 +169,11 @@ const attrGetList = [{
   name: "getDataValidation",
   props: '.dataValidation',
   defaultValue: null,
-  cleaner: (f => {
-    return makeDataValidationFromApi (f)
+  // there's an optional argument to cleaner, which is the range requesting
+  // this will allow make from api to have access to spreadsheet requesting if it needs to make its own ranges
+  cleaner: ((f, range) => {
+    // make data validation needs a spreadsheet it refers to because it may need to create a range
+    return makeDataValidationFromApi (f, range)
   })
 }]
 

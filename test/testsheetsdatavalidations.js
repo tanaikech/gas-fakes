@@ -12,7 +12,7 @@ import { getSheetsPerformance } from '../src/support/sheetscache.js';
 import { getPerformance } from '../src/support/filecache.js';
 import { trasher } from './testassist.js';
 
-
+import is from '@sindresorhus/is';
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testSheetsDataValidations = (pack) => {
@@ -38,22 +38,55 @@ export const testSheetsDataValidations = (pack) => {
 
     const sp = SpreadsheetApp.openById(fixes.TEST_BORDERS_ID)
     t.is(SpreadsheetApp.DataValidationCriteria.DATE_AFTER.toString(), 'DATE_AFTER', "check criteria enum")
-
-
     const sb = sp.getSheetByName('dv')
-    const sr = sb.getRange("a1:b2")
-    const cbs = sr.getDataValidations()
-    t.is (cbs.length, sr.getNumRows())
-    t.is(cbs[0].length, sr.getNumColumns())
-    t.true(cbs.flat().every(f => f.getAllowInvalid()))
-    t.true(cbs.flat().every(f => f.getCriteriaType().toString() === 'TEXT_IS_VALID_EMAIL'))
-    t.true(cbs.flat().every(f => f.getHelpText() === 'email'))
 
-    const cb2 = sb.getRange("b3:c4").getDataValidations()
-    t.true(cb2.flat().every(f => !f.getAllowInvalid()))
-    cb2.flat().forEach(f => t.deepEqual (f.getCriteriaValues(),[['a','b'],true]))
-    t.true(cb2.flat().every(f => f.getCriteriaType().toString() === 'VALUE_IN_LIST'))
-    t.true(cb2.flat().every(f => f.getHelpText() === 'multipledropchip'))
+    const critty = (range, prop, values) => {
+      const cr = sb.getRange(range)
+      const cb = cr.getDataValidation()
+      t.is(cb.getCriteriaType().toString(), prop)
+      if (values) t.deepEqual(cb.getCriteriaValues(), values)
+      const cbs = cr.getDataValidations()
+      t.is(cbs.length, cr.getNumRows())
+      t.is(cbs[0].length, cr.getNumColumns())
+      t.true(cbs.flat().every(f => is.boolean(f.getAllowInvalid())))
+      t.true(cbs.flat().every(f => f.getCriteriaType().toString() === prop))
+      if (values) cbs.flat().forEach(f => t.deepEqual(f.getCriteriaValues(), values))
+    }
+
+
+    critty ("k21", "NUMBER_NOT_BETWEEN", [20,40])
+    critty ("J21", "NUMBER_BETWEEN", [20,40])
+    critty ("I21:I22", "NUMBER_NOT_EQUAL_TO", [20])
+    critty ("h21:h23", "NUMBER_EQUAL_TO", [20])
+    critty ("g21:g22", "NUMBER_LESS_THAN_OR_EQUAL_TO", [20])
+    critty ("e21:f22", "NUMBER_LESS_THAN", [20])
+    critty ("d21:d22", "NUMBER_GREATER_THAN_OR_EQUAL_TO", [20])
+    critty ("c21:c22", "NUMBER_GREATER_THAN", [20])
+    critty("b21:b22", "DATE_NOT_BETWEEN", [new Date('1920-11-18'), new Date('2012-12-31')])
+    critty("j16:j18", "DATE_BETWEEN", [new Date('1920-11-18'), new Date('2012-12-31')])
+    critty ("i16:i18", "DATE_ON_OR_AFTER", [new Date('2012-12-31')])
+    critty ("g16", "DATE_ON_OR_BEFORE", [new Date('2012-12-31')])
+    critty ("f16:f17", "DATE_BEFORE", [new Date('2012-12-31')])
+    critty ("e14:e16", "DATE_EQUAL_TO", [new Date('1920-11-18')])
+    critty ("h16:h17", "DATE_AFTER", [new Date('2012-12-31')])
+    critty ("f7:g8", "TEXT_CONTAINS", ['abc'])
+    critty ("b8:b10", "TEXT_DOES_NOT_CONTAIN", ['xyz'])
+    critty ("c11:d12", "TEXT_EQUAL_TO", ['exactly'])
+    critty ("f12:g12", "TEXT_IS_VALID_URL")
+    critty ("a1:b2", "TEXT_IS_VALID_EMAIL")
+    critty ("h11:h13","DATE_IS_VALID_DATE")
+    critty ("b3:c4", "VALUE_IN_LIST", [['a','b'],true])
+    critty ("c21:c22", "NUMBER_GREATER_THAN", [20])
+
+//TODO custom formula,checkboxsh 
+
+    const cr3 = sb.getRange("d5:e6")
+    const cb3 = cr3.getDataValidations()
+    cb3.flat().forEach(f => f.getCriteriaValues()[0].toString(), "Range")
+    cb3.flat().forEach(f => f.getCriteriaValues()[0].getA1Notation(), cr3.getA1Notation())
+    t.true(cb3.flat().every(f => f.getCriteriaType().toString() === 'VALUE_IN_RANGE'))
+    t.true(cb3.flat().every(f => f.getHelpText() === 'dropdownrange'))
+
   })
   unit.cancel()
 

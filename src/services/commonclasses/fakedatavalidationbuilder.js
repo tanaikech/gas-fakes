@@ -119,7 +119,9 @@ class FakeDataValidationBuilder {
 
 }
 
-export const makeDataValidationFromApi = (apiResult) => {
+export const makeDataValidationFromApi = (apiResult, range) => {
+  // we can get the spreadsheet if we have the requesting range
+
   const builder = newFakeDataValidationBuilder()
   console.log(JSON.stringify(apiResult))
   if (is.emptyObject(apiResult)) {
@@ -137,31 +139,82 @@ export const makeDataValidationFromApi = (apiResult) => {
     builder.setHelpText(inputMessage)
   }
 
-  console.log('got data validation', apiResult)
-  let critter = dataValidationCriteriaMapping[condition?.type]
+  console.log('got data validation', JSON.stringify(apiResult))
+  let conType = condition?.type
+  let critter = dataValidationCriteriaMapping[conType]
 
   // sigh - its possible that the api uses a different criteria name
   if (!critter) {
-    critter = Reflect.ownKeys(dataValidationCriteriaMapping).find(f => dataValidationCriteriaMapping[f].apiEnum === condition?.type)
+    critter = dataValidationCriteriaMapping[
+      Reflect.ownKeys(dataValidationCriteriaMapping).find(f => dataValidationCriteriaMapping[f].apiEnum === conType)
+    ]
   }
 
   if (!critter) {
-    throw new Error('received an unknown criteria type from the api', condition?.type)
+    throw new Error('received an unknown criteria type from the api', conType)
   }
-  const values = condition?.values 
-  console.log (critter)
-  const mapped = dataValidationCriteriaMapping[critter]
-  
+  console.log(critter)
+  if (!is.function(builder[critter.method])) {
+    throw new Error("failed to find method in datavalidation builder for criteria type", critter.name, conType)
+  }
+  const values = condition?.values
+
   // could also use withCriteria method here, but this will add all the validations as well instead
   if (values) {
-    console.log (JSON.stringify(values))
+
     const plucked = values.map(f => f.userEnteredValue)
-    // todo - what circumstances is a showdropdown required (2nd argument below)
-    const args = [plucked]
-    builder[mapped.method](...args)
+console.log (plucked)
+    if (critter.method === 'requireValueInRange') {
+
+      if (plucked.length !== 1) {
+        throw new Error('expected exactly 1 range for values_in_range but got', plucked.length)
+      }
+
+      // this is expecting a range so we need to make one
+      const ss = range ? range.__getSpreadsheet() : null
+      if (!ss) {
+        throw new Error('Expected to know the parent spreadsheet for values_in_range')
+      }
+      const [splut] = plucked
+      // because range is probably in format =sheet!range
+      const parts = splut.replace(/^=/, "").split("!")
+      if (parts.length !== 2) {
+        throw new Error('Expected range with sheet name for value in range but got', p)
+      }
+      // find the sheet  
+      const sheet = ss.getSheetByName(parts[0])
+      if (!sheet) {
+        throw new Error('Unable to find sheet mentioned in range', p)
+      }
+
+      // todo -- where does the 2nd argument come from (show dropdown)
+      builder[critter.method](sheet.getRange(parts[1]))
+
+    } else if (critter.method === 'requireValueInList') {
+      // todo - what circumstances is a showdropdown required (2nd argument below)
+      const args = [plucked]
+      builder[critter.method](...args)
+    } else if (critter.type === 'date') {
+      // TODO need to handle relative dates
+      // todo -- sometimes a formula can be returned -h owt ohandle?
+      const dated = plucked.map(f => {
+        if (!is.string(f)) {
+          throw new Error("expected string type from date validation - got ", f)
+        }
+        return new Date(f)
+      })
+      builder[critter.method](...dated)
+    } else if (critter.type === 'number') {
+      // because values are string - 
+      // todo -- sometimes a formula can be returned -h owt ohandle?
+      const numbered = plucked.map(Number)
+      builder[critter.method](...numbered)
+    } else {
+      builder[critter.method](...plucked)
+    }
   }
   else {
-    builder[mapped.method]()
+    builder[critter.method]()
   }
   builder.setAllowInvalid(!strict)
   // TODO - find out what customUI from sheetsapi could be about

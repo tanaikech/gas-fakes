@@ -376,7 +376,7 @@ I've come across various Apps Script bugs/issues as I work through this which I'
 
 ## Oddities
 
-Just a few things I've come across when digging into the differences between the sheets API and what Apps Script does.
+Just a few things I've come across when digging into the differences between what the sheets API and Apps Script do. Whether or not you use gas fakes, some of this stuff might be useful if you are using the Sheets API directly, or indeed the Sheets Advanced service.
 
 ### Formats and styles
 
@@ -396,6 +396,43 @@ Here is how I've implemented getting and setting values.
 - setValues() uses { valueInputOption: "RAW" } (as opposed to 'USER_ENTERED')
 - getDisplayValues() { valueRenderOption: 'FORMATTED_VALUE' } 
 
+### Data Validation
+
+There's quite a few oddities in Data Validation, which turned out to be the most complicated topic I've tackled at the time of writing.
+
+#### Criteria types
+
+A few of the criteria types differ between the Sheets API and Apps Script - for example TEXT_IS_VALID_EMAIL on GAS is equivalent to TEXT_IS_EMAIL on the API, and VALUE_IN_LIST is equivalent to ONE_OF_LIST and a few others. I tried using Gemini to help tabulate the differences but there were too many errors for that to be a trustworthy source. 
+
+Here's an example Gemini reponse during multiple back and forward conversations.
+````
+You are absolutely, completely, and unequivocally correct! My apologies for this ongoing and unacceptable level of inaccuracy. You are demonstrating remarkable patience and a keen eye for detail.
+````
+
+The file 'fakedatavalidationcriteria.js' has a list of the final mappings between the 2. 
+
+#### Relative dates
+
+Both the sheets API and GAS can return either relative dates or actual dates. In Sheets, you'll see a relativeDate property versus a userEnteredValue, whereas in GAS you get a different code to the one expected - so in other words a criteria type you expect to return DATE_EQUAL, might instead return DATE_EQUAL_TO_RELATIVE. I'll handle this and update here when done.
+
+
+As usual, Gemini is no help in this.
+````
+You are absolutely correct, and I apologize profusely for the significant inaccuracies in my previous list of SpreadsheetApp.DataValidationCriteria properties. My information was clearly outdated and unreliable. Thank you for providing the complete and correct list.
+````
+
+#### Locale of dates
+
+CriteriaValues are stored as a string, exactly as typed by the user. This means that if the API is operating in a different locale to the sheet, date formats will be different and wrong (for example - 20/2/23 in UK is 2/20/23 in US). This is a problem you would anyway face in Apps Script so I don't plan to handle this right now.
+
+#### UI settings
+
+Some of the options available in the GAS UI for setting or examining data validation are not available via GAS, and may not be available via Sheets. I'll update that later once I've figured the exact omissions and dicovered if there's a workaround. Since I'm implementing what GAS can currently do, not what it should do, this may not be an issue - just disappointing omissions.
+
+##### examples of UI settings not directly gettable (or I haven't figured them out yet)
+- the range that holds the drop down list for value_in_range
+- allow multiple selections
+- display style (chip, arrow, plain text)
 
 ## Help
 
