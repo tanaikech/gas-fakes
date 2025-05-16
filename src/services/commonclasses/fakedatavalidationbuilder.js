@@ -5,6 +5,7 @@ import { newFakeDataValidation } from './fakedatavalidation.js'
 import { newNummery } from '../../support/nummery.js'
 import { newFakeValidationCriteria, dataValidationCriteriaMapping } from './fakedatavalidationcriteria.js'
 
+
 const { is, zeroizeTime } = Utils
 
 /**
@@ -55,7 +56,7 @@ class FakeDataValidationBuilder {
 
   __setRule(criteriaType, criteriaValues = []) {
     this.__rule = ({
-      criteriaType: newNummery(criteriaType),
+      criteriaType: newNummery(criteriaType, dataValidationCriteriaMapping),
       criteriaValues: Array.from(criteriaValues)
     })
     return this
@@ -112,8 +113,7 @@ class FakeDataValidationBuilder {
     const { nargs, matchThrow } = signatureArgs(arguments, "withCriteria")
     if (nargs !== 2) matchThrow()
     // validate the crit arg
-    const crit = newFakeValidationCriteria(criteria.toString())
-    this.__setRule(crit.toString(), args)
+    this.__setRule(criteria.toString(), args)
     return this
   }
 
@@ -123,7 +123,7 @@ export const makeDataValidationFromApi = (apiResult, range) => {
   // we can get the spreadsheet if we have the requesting range
 
   const builder = newFakeDataValidationBuilder()
-  console.log(JSON.stringify(apiResult))
+  // console.log(JSON.stringify(apiResult))
   if (is.emptyObject(apiResult)) {
     throw new Error('missing apiresult for data validation')
   }
@@ -139,7 +139,16 @@ export const makeDataValidationFromApi = (apiResult, range) => {
     builder.setHelpText(inputMessage)
   }
 
-  console.log('got data validation', JSON.stringify(apiResult))
+  const isFormula = (f) => is.string(f) && f.startsWith('=')
+  const fixForFormulas = (values, builder,critter) => {
+    if (values.some(isFormula)) {
+      builder.withCriteria(newFakeValidationCriteria(critter.name), values)
+    } else {
+      builder[critter.method](...values)
+    }
+  }
+
+
   let conType = condition?.type
   let critter = dataValidationCriteriaMapping[conType]
 
@@ -153,7 +162,7 @@ export const makeDataValidationFromApi = (apiResult, range) => {
   if (!critter) {
     throw new Error('received an unknown criteria type from the api', conType)
   }
-  console.log(critter)
+
   if (!is.function(builder[critter.method])) {
     throw new Error("failed to find method in datavalidation builder for criteria type", critter.name, conType)
   }
@@ -163,9 +172,11 @@ export const makeDataValidationFromApi = (apiResult, range) => {
   if (values) {
 
     const plucked = values.map(f => f.userEnteredValue)
-console.log (plucked)
+    
+    // speciality value handling
     if (critter.method === 'requireValueInRange') {
 
+      // a range needs to be converted into an actual range so we can use the require method to validate the arguments
       if (plucked.length !== 1) {
         throw new Error('expected exactly 1 range for values_in_range but got', plucked.length)
       }
@@ -191,29 +202,39 @@ console.log (plucked)
       builder[critter.method](sheet.getRange(parts[1]))
 
     } else if (critter.method === 'requireValueInList') {
+
       // todo - what circumstances is a showdropdown required (2nd argument below)
+      // the list cant be a formula as that would requirevalueinrange
+      // it also seems that individual values in the list can't be formulas either
       const args = [plucked]
       builder[critter.method](...args)
+
     } else if (critter.type === 'date') {
+
       // TODO need to handle relative dates
-      // todo -- sometimes a formula can be returned -h owt ohandle?
+      // sometimes a formula can be returned but appsscript requires don't support that
+      // but it does allow them to be stored, so we need to use withCriteria if there's anything like that
       const dated = plucked.map(f => {
         if (!is.string(f)) {
           throw new Error("expected string type from date validation - got ", f)
         }
-        return new Date(f)
+        // it's possible that we have a formula
+        return isFormula(f) ? f : new Date(f)
       })
-      builder[critter.method](...dated)
+      fixForFormulas(dated, builder,critter)
+
     } else if (critter.type === 'number') {
-      // because values are string - 
-      // todo -- sometimes a formula can be returned -h owt ohandle?
-      const numbered = plucked.map(Number)
+      // because values are string - the might even be formulas
+      const numbered = plucked.map(f=>isFormula(f) ? f : Number(f))
       builder[critter.method](...numbered)
     } else {
+      // no need to fix for formulas for strings as they are already strings
       builder[critter.method](...plucked)
     }
+
   }
   else {
+    // there are no values so we don't need to formula fiddle with them
     builder[critter.method]()
   }
   builder.setAllowInvalid(!strict)

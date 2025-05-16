@@ -1,5 +1,5 @@
 import { Proxies } from '../../support/proxies.js'
-import { newNummery } from '../../support/nummery.js'
+
 /**
  * @file
  * @imports ../typedefs.js

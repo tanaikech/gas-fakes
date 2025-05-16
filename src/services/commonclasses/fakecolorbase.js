@@ -1,10 +1,5 @@
 import { newNummery } from '../../support/nummery.js'
 
-/**
- * @file
- * @imports ../typedefs.js
- */
-
 export class FakeColorBase {
   // this is color type UNSUPPORTED until built
   constructor() {

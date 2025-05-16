@@ -14,12 +14,11 @@ export const newFakeValidationCriteria = (...args) => {
 // https://developers.google.com/apps-script/reference/spreadsheet/data-validation-criteria
 class FakeValidationCriteria {
   constructor(value) {
-    const critEnum = Reflect.ownKeys(dataValidationCriteriaMapping)
-    if (!critEnum.includes(value)) {
+
+    if (!Reflect.has(DataValidationCriteria,value)) {
       throw new Error(`${value} is not a data validation criteria`)
     }
-
-    return critEnum[value]
+    return DataValidationCriteria[value]
   }
 }
 
@@ -170,7 +169,8 @@ export const dataValidationCriteriaMapping = {
   CHECKBOX: {
     name: "CHECKBOX",
     method: "requireCheckbox",
-    nargs: [0,2]
+    nargs: [0,2],
+    apiEnum: "BOOLEAN"
   },
   VALUE_IN_RANGE: {
     name: "VALUE_IN_RANGE",
@@ -210,7 +210,7 @@ export const dataValidationCriteriaMapping = {
 
 
 export const DataValidationCriteria = Reflect.ownKeys(dataValidationCriteriaMapping).reduce((p, c) => {
-  p[c] = newNummery(c)
+  p[c] = newNummery(c, dataValidationCriteriaMapping)
   return p
 }, {})
 

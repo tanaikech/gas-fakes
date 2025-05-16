@@ -8,6 +8,7 @@ import { newFakeTextStyleBuilder } from '../commonclasses/faketextstylebuilder.j
 import { ProtectionType } from '../commonclasses/fakeprotectiontype.js'
 import { newFakeDataValidationBuilder } from '../commonclasses/fakedatavalidationbuilder.js'
 import { DataValidationCriteria} from '../commonclasses/fakedatavalidationcriteria.js'
+import { RelativeDate } from '../commonclasses/fakerelativedate.js'
 
 const { is } = Utils
 /**
@@ -86,7 +87,7 @@ export class FakeSpreadsheetApp {
       'PivotValueDisplayType',
 
       'RecalculationInterval',
-      'RelativeDate',
+
       'SheetType',
       'SortOrder',
       'TextDirection',
@@ -206,5 +207,9 @@ export class FakeSpreadsheetApp {
     return DataValidationCriteria
   }
 
+  get RelativeDate () {
+    return RelativeDate
+  
+  }
   
 }

@@ -9,17 +9,19 @@ import { newNummery } from '../../support/nummery.js'
 const newFakeProtectionType = (...args) => {
   return Proxies.guard(new FakeProtectionType(...args))
 }
+
+
 class FakeProtectionType {
   constructor(value) {
     const types = [
+      'SHEET',
       'RANGE',
-      'SHEET'
     ]
     if (!types.includes(value)) {
       throw new Error(`${value} is not a valid text protection type`)
     }
 
-    return newNummery(value)
+    return newNummery(value, types)
   }
 }
 

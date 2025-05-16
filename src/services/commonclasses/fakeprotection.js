@@ -1,10 +1,7 @@
 import { Proxies } from '../../support/proxies.js'
-import { notYetImplemented, signatureArgs } from '../../support/helpers.js'
-import { Utils } from '../../support/utils.js'
+import { notYetImplemented } from '../../support/helpers.js'
 import { FakeSheetRange } from '../spreadsheetapp/fakesheetrange.js'
 import { newFakeUser } from './fakeuser.js'
-const { is } = Utils
-
 
 
 /**

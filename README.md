@@ -421,6 +421,27 @@ As usual, Gemini is no help in this.
 You are absolutely correct, and I apologize profusely for the significant inaccuracies in my previous list of SpreadsheetApp.DataValidationCriteria properties. My information was clearly outdated and unreliable. Thank you for providing the complete and correct list.
 ````
 
+#### datavalidation with formulas
+
+Normally there's a strict check on the input to .requirexxx methods (for example dates, numbers etc). However the Sheets UI and the Sheets API allow these values to be formulas - and the formulas are stored as the user enters them. When using GAS, you would normally use a custom formula for these occassions.
+
+In other words - here's what happens in GAS when you retrieve a data validation that has had a formula used as its value
+````
+  console.log (cb.getCriteriaType().toString())    // DATE_EQUAL_TO
+  console.log (cb.getCriteriaValues())             // [ '=I1' ]
+````
+and yet, you get the error 'The parameters (String) don't match the method signature for SpreadsheetApp.DataValidationBuilder.requireDate.' with this.
+````
+SpreadsheetApp.newDataValidation().requireDate("=i1")
+````
+
+Another way to bypass the argument validation is to use withCriteria. For example, this will work, even though the string argument would have been rejected by requireDate()
+````
+ SpreadsheetApp.newDataValidation().withCriteria(SpreadsheetApp.DataValidationCriteria.DATE_AFTER,['=i1']).build()
+````
+
+I'm leaving these same behaviors in place, and you would need to use the same workarounds as you do in GAS.
+
 #### Locale of dates
 
 CriteriaValues are stored as a string, exactly as typed by the user. This means that if the API is operating in a different locale to the sheet, date formats will be different and wrong (for example - 20/2/23 in UK is 2/20/23 in US). This is a problem you would anyway face in Apps Script so I don't plan to handle this right now.
