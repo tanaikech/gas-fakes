@@ -30,11 +30,31 @@ export const dataValidationCriteriaMapping = {
     nargs: 1,
     type: 'date'
   },
+  DATE_AFTER_RELATIVE: {
+    name: "DATE_AFTER_RELATIVE",
+    // this is not implemented in GAS so just throw
+    method: null,
+    nargs: 1,
+    type: 'date',
+    // the preseence of 'realtiveDate proerty in the api response distinguishes this from regular date_after
+    apiEnum: "DATE_AFTER",
+    apiField: "relativeDate"
+  },
   DATE_BEFORE: {
     name: "DATE_BEFORE",
     method: "requireDateBefore",
     nargs: 1,
     type: 'date'
+  },
+  DATE_BEFORE_RELATIVE: {
+    name: "DATE_BEFORE_RELATIVE",
+    // this is not implemented in GAS so just throw
+    method: null,
+    nargs: 1,
+    type: 'date',
+    // the preseence of 'realtiveDate proerty in the api response distinguishes this from regular date_after
+    apiEnum: "DATE_BEFORE",
+    apiField: "relativeDate"
   },
   DATE_EQUAL_TO: {
     name: "DATE_EQUAL_TO",
@@ -42,6 +62,16 @@ export const dataValidationCriteriaMapping = {
     nargs: 1,
     type: 'date',
     apiEnum: "DATE_EQ"
+  },
+  DATE_EQUAL_TO_RELATIVE: {
+    name: "DATE_EQUAL_TO_RELATIVE",
+    // this is not implemented in GAS so just throw
+    method: null,
+    nargs: 1,
+    type: 'date',
+    // the preseence of 'realtiveDate proerty in the api response distinguishes this from regular date_after
+    apiEnum: "DATE_EQ",
+    apiField: "relativeDate"
   },
   DATE_BETWEEN: {
     name: "DATE_BETWEEN",
@@ -210,7 +240,7 @@ export const dataValidationCriteriaMapping = {
 
 
 export const DataValidationCriteria = Reflect.ownKeys(dataValidationCriteriaMapping).reduce((p, c) => {
-  p[c] = newNummery(c, dataValidationCriteriaMapping)
+  p[c] = newNummery(c, Reflect.ownKeys(dataValidationCriteriaMapping))
   return p
 }, {})
 

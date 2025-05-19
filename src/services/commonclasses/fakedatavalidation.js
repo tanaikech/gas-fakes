@@ -31,6 +31,9 @@ export class FakeDataValidation {
   toString () {
     return 'DataValidation'
   }
+  __getCritter() {
+    return this.__builder.__getCritter()
+  }
 
 }
 

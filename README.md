@@ -92,28 +92,8 @@ Although Apps Script supports async/await/promise syntax, it operates in blockin
 
 Since asynchonicity is fundamental to Node, there's no real simple way to convert async to sync. However, there is such a thing as a [child-process](https://nodejs.org/api/child_process.html#child-process) which you can start up to run things, and it features an [execSync](https://nodejs.org/api/child_process.html#child_processexecsynccommand-options) method which delays the return from the child process until the promise queue is all settled. So the simplest solution is to run an async method in a child process, wait till it's done, and return the results synchronously. I found that [Sindre Sorhus](https://github.com/sindresorhus) uses this approach with [make-synchronous](https://github.com/sindresorhus/make-synchronous), so I'm using that.
 
-Here's a simple example of how to get info on an access token made synchronous
+Runnng up a child process in Node is pretty expensive and slow (especially of you're running in debug mode in vscode), so I'll be looking for ways to speed that up when I get to it.
 
-```js
-/**
- * a sync version of token checking
- * @param {string} token the token to check
- * @returns {object} access token info
- */
-const fxCheckToken = (accessToken) => {
-  // now turn all that into a synchronous function - it runs as a subprocess, so we need to start from scratch
-  const fx = makeSynchronous(async (accessToken) => {
-    const { default: got } = await import("got");
-    const tokenInfo = await got(
-      `https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${accessToken}`
-    ).json();
-    return tokenInfo;
-  });
-
-  const result = fx(accessToken);
-  return result;
-};
-```
 
 ### OAuth
 
@@ -179,7 +159,7 @@ v1.0.8
 - `UrlFetchApp` - 80%
 - `Utilities` - almost all
 - `Sheets` - 25%
-- `SpreadsheetApp` - 50%
+- `SpreadsheetApp` - 60%
 - `CacheService` - 80%
 - `PropertiesService` - 80%
 - `Session` - almost all
@@ -195,152 +175,13 @@ Tests for all methods are added as we go to the cumulative unit tests and run on
 
 Each service has a FakeClass but I needed the Auth cycle to be initiated and done before making them public. Using a proxy was the simplest approach.
 
-Here's the code for `Utilities`
+In short, the service is registered as an empty object, but when any attempt is made to access it actually returns a different object which handles the request. In the `ScriptApp` example, `ScriptApp` is an empty object, but accessing `ScriptApp.getOAuthToken()` returns an Fake `ScriptApp` object which gets initialized if you try to access it. 
 
-```js
-/**
- * adds to global space to mimic Apps Script behavior
- */
-import { Proxies } from "../../support/proxies.js";
-import { newFakeUtilities } from "./fakeutilities.js";
-
-// This will eventually hold a proxy for Utilties
-let _app = null;
-
-/**
- * adds to global space to mimic Apps Script behavior
- */
-const name = "Utilities";
-if (typeof globalThis[name] === typeof undefined) {
-  const getApp = () => {
-    // if it hasnt been intialized yet then do that
-    if (!_app) {
-      console.log(`setting ${name} to global`);
-      _app = newFakeUtilities();
-    }
-    // this is the actual driveApp we'll return from the proxy
-    return _app;
-  };
-  Proxies.registerProxy(name, getApp);
-}
-```
-
-Here's how the proxies are registered
-
-```js
-/**
- * diverts the property get to another object returned by the getApp function
- * @param {function} a function to get the proxy object to substitutes
- * @returns {function} a handler for a proxy
- */
-const getAppHandler = (getApp) => {
-  return {
-    get(_, prop, receiver) {
-      // this will let the caller know we're not really running in Apps Script
-      return prop === "isFake" ? true : Reflect.get(getApp(), prop, receiver);
-    },
-
-    ownKeys(_) {
-      return Reflect.ownKeys(getApp());
-    },
-  };
-};
-
-const registerProxy = (name, getApp) => {
-  const value = new Proxy({}, getAppHandler(getApp));
-  // add it to the global space to mimic what apps script does
-  Object.defineProperty(globalThis, name, {
-    value,
-    enumerable: true,
-    configurable: false,
-    writable: false,
-  });
-};
-```
-
-In short, the service us registered as an empty object, but when any attempt is made to access it actually returns a different object which handles the request. In the `ScriptApp` example, `ScriptApp` is an empty object, but accessing `ScriptApp.getOAuthToken()` returns an Fake `ScriptApp` object which has been initialized.
-
-There's also a test available to see if you are running in GAS or on Node - `ScriptApp.isFake`. In fact this method 'isFake' is available on any of the implemented services eg `DriveApp.isFake`.
+There's also a test available to see if you are running in GAS or on Node - `ScriptApp.isFake`. In fact this method 'isFake' is available on any of the implemented services, eg `DriveApp.isFake`.
 
 ### Iterators
 
-An iterator created by a generator does not have a `hasNext()` function, whereas GAS iterators do. To get round this, we can create a regular Node iterator, but introduce a wrapper so the constructor actually gets the first one, and `next()` uses the value we've already peeked at. Here's a wrapper to convert an iterator into a GAS style one.
-
-```js
-import { Proxies } from "./proxies.js";
-/**
- * this is a class to add a hasnext to a generator
- * @class Peeker
- *
- */
-class Peeker {
-  /**
-   * @constructor
-   * @param {function} generator the generator function to add a hasNext() to
-   * @returns {Peeker}
-   */
-  constructor(generator) {
-    this.generator = generator;
-    // in order to be able to do a hasnext we have to actually get the value
-    // this is the next value stored
-    this.peeked = generator.next();
-  }
-
-  /**
-   * we see if there's a next if the peeked at is all over
-   * @returns {Boolean}
-   */
-  hasNext() {
-    return !this.peeked.done;
-  }
-
-  /**
-   * get the next value - actually its already got and storef in peeked
-   * @returns {object} {value, done}
-   */
-  next() {
-    if (!this.hasNext()) {
-      // TODO find out what driveapp does
-      throw new Error("iterator is exhausted - there is no more");
-    }
-    // instead of returning the next, we return the prepeeked next
-    const value = this.peeked.value;
-    this.peeked = this.generator.next();
-    return value;
-  }
-}
-
-export const newPeeker = (...args) => Proxies.guard(new Peeker(...args));
-```
-
-And an example of usage, creating a parents iterator from a Drive API file.
-
-```
-const getParentsIterator = ({
-  file
-}) => {
-
-  assert.object(file)
-  assert.array(file.parents)
-
-  function* filesink() {
-    // the result tank, we just get them all by id
-    let tank = file.parents.map(id => getFileById({ id, allow404: false }))
-
-    while (tank.length) {
-      yield newFakeDriveFolder(tank.splice(0, 1)[0])
-    }
-  }
-
-  // create the iterator
-  const parentsIt = filesink()
-
-  // a regular iterator doesnt support the same methods
-  // as Apps Script so we'll fake that too
-  return newPeeker(parentsIt)
-
-}
-```
+An iterator created by a generator does not have a `hasNext()` function, whereas GAS iterators do. To get round this, I use a regular Node iterator, but with a wrapper so the constructor actually gets the first one, and `next()` uses the value we've already peeked at.
 
 ### Cache and Property services
 
@@ -413,7 +254,7 @@ The file 'fakedatavalidationcriteria.js' has a list of the final mappings betwee
 
 #### Relative dates
 
-Both the sheets API and GAS can return either relative dates or actual dates. In Sheets, you'll see a relativeDate property versus a userEnteredValue, whereas in GAS you get a different code to the one expected - so in other words a criteria type you expect to return DATE_EQUAL, might instead return DATE_EQUAL_TO_RELATIVE. I'll handle this and update here when done.
+Both the sheets API and GAS can return either relative dates or actual dates. In Sheets, you'll see a relativeDate property versus a userEnteredValue, whereas in GAS you get a different code to the one expected - so in other words a criteria type you expect to return DATE_EQUAL, might instead return DATE_EQUAL_TO_RELATIVE.
 
 
 As usual, Gemini is no help in this.
@@ -421,9 +262,50 @@ As usual, Gemini is no help in this.
 You are absolutely correct, and I apologize profusely for the significant inaccuracies in my previous list of SpreadsheetApp.DataValidationCriteria properties. My information was clearly outdated and unreliable. Thank you for providing the complete and correct list.
 ````
 
+##### Setting a relative date
+
+There are no methods in Apps Script to actually set relative dates in Data Validation - for example you'd expect a method such as requireDateEqualToRelative to exist - but it doesn't - to set you'd need to use the advanced sheets service or the withCriteria method. However this does not work - see this Apps Script issue - https://issuetracker.google.com/issues/418495831
+
+Not all date validations have related RELATIVE versions. See later section for details.
+
+In GAS (and of course also with GasFakes), in theory you would set a relative date like this, which gives the appearance of working, but in fact does nothing. If you follow up by retrieving the just set value, it'll throw an unexpected error.
+````js
+  const rule = SpreadsheetApp.newDataValidation()
+    .withCriteria (SpreadsheetApp.DataValidationCriteria.DATE_EQUAL_TO_RELATIVE,[SpreadsheetApp.RelativeDate.TODAY])
+    .build()
+  const range = sheet.getRange("b30")
+  range.setDataValidation(rule)
+
+````
+Because this doesn't work in GAS, I'm not at this point sure whether to handle this or throw an error. Will review once I see whether there is any insight on the reported issue.
+
+##### Getting a relative date
+
+You can of course set a limited set of relative Data Validation via the UI, and GAS supports returning its content. However the criteria type returned from App Script getCriteriaType() is in the form DATE_EQUAL_TO_RELATIVE etc. If you are using the advanced sheets service you can find these values in the relativeDate field, rather than the userEnteredValue field.
+
+This is what the sheets API returns.
+````
+{"condition":{"type":"DATE_EQ","values":[{"relativeDate":"TODAY"}]}}
+````
+
+Which would be translated into a criteria type of DATE_EQUAL_TO_RELATIVE in GAS, with the value SpreadsheetApp.DataValidation.Criteria.TODAY
+
+
+#### datavalidation enum and relative dates
+
+Despite being able to return a criteriaType of _RELATIVE, these are not documented in the criteriaType ENUM (https://developers.google.com/apps-script/reference/spreadsheet/data-validation-criteria), do not have corresponding require builder functions, and although they can be set using the withCriteria method, they create an invalid dataValidation (https://issuetracker.google.com/issues/418495831). 
+
+These 3 relatives exist as keys of SpreadsheetApp.DataValidationCriteria, but none of the other DATE enum values exist
+- DATE_AFTER_RELATIVE
+- DATE_BEFORE_RELATIVE
+- DATE_EQUAL_TO_RELATIVE
+
+I'll implement these 3 realtives in gasFakes, but treat the others as invalid.
+
+
 #### datavalidation with formulas
 
-Normally there's a strict check on the input to .requirexxx methods (for example dates, numbers etc). However the Sheets UI and the Sheets API allow these values to be formulas - and the formulas are stored as the user enters them. When using GAS, you would normally use a custom formula for these occassions.
+Normally there's a strict check on the input to .requirexxx methods (for example dates, numbers etc). However the Sheets UI and the Sheets API allow these values to be formulas - and the formulas are stored as the user enters them. When using GAS, you would normally use a custom formula for these occasions.
 
 In other words - here's what happens in GAS when you retrieve a data validation that has had a formula used as its value
 ````
@@ -441,6 +323,12 @@ Another way to bypass the argument validation is to use withCriteria. For exampl
 ````
 
 I'm leaving these same behaviors in place, and you would need to use the same workarounds as you do in GAS.
+
+#### mixing real dates and relative dates
+
+Since only relative versions of single dates are implemented in GAS, there's no need to handle mixed relative and real dates.  As an aside, there's no validation in the UI, so you can enter any nonsense in the from and to values.
+
+
 
 #### Locale of dates
 

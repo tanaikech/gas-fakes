@@ -34,68 +34,95 @@ export const testSheetsDataValidations = (pack) => {
   }
 
 
+  const critty = (t,sb,range, prop, values) => {
+    const cr = sb.getRange(range)
+    const cb = cr.getDataValidation()
+    t.is(cb.getCriteriaType().toString(), prop)
+    if (values) t.deepEqual(cb.getCriteriaValues()[0], values.flat()[0])
+    const cbs = cr.getDataValidations()
+    t.is(cbs.length, cr.getNumRows())
+    t.is(cbs[0].length, cr.getNumColumns())
+    t.true(cbs.flat().every(f => is.boolean(f.getAllowInvalid())))
+    t.true(cbs.flat().every(f => f.getCriteriaType().toString() === prop))
+    if (values) cbs.flat().forEach((f,i) => t.deepEqual(f.getCriteriaValues()[0], values.flat()[i]))
+  }
+
+  const scritty = (t,sb,range, prop, method, values=[]) => {
+    const cr = sb.getRange(range)
+    const dv = values.map (row=>row.map(v=>SpreadsheetApp.newDataValidation()[method](v).build()))
+    const r = cr.setDataValidations(dv)
+    t.is (r.getA1Notation(), cr.getA1Notation())
+    console.log (dv.flat().map(f=>f.getCriteriaValues()))
+    critty(t, sb, range, prop,values)
+  }
+    
+  unit.section ("setting data validations", t=> {
+    const sp = SpreadsheetApp.openById(fixes.TEST_BORDERS_ID)
+    const sb = sp.getSheetByName('tempset')
+    const vt = [['foo','bar'],['bar','foo']]
+    scritty (t,sb,"a1:b2", "TEXT_EQUAL_TO",'requireTextEqualTo',vt)
+    scritty (t,sb,"c1:d2", "CHECKBOX",'requireCheckbox')
+  })
+  unit.cancel()
+
   unit.section ("test enum selection", t=> {
     t.is(SpreadsheetApp.DataValidationCriteria.DATE_AFTER.toString(), 'DATE_AFTER', "check criteria enum")
     t.is(SpreadsheetApp.RelativeDate.TODAY.toString(), 'TODAY', "check relative dates")
     t.is(SpreadsheetApp.ProtectionType.SHEET.toString(), 'SHEET')
-   
+    t.is(SpreadsheetApp.DataValidationCriteria.DATE_BEFORE.toString(), 'DATE_BEFORE', "check criteria enum")
+    t.is(SpreadsheetApp.DataValidationCriteria.DATE_AFTER_RELATIVE.toString(), 'DATE_AFTER_RELATIVE', "check relative criteria enum")
   })
+
+  unit.section ("getting relative dates", t => {
+    const sp = SpreadsheetApp.openById(fixes.TEST_BORDERS_ID)
+    const sb = sp.getSheetByName('dv')
+    critty(t,sb,"b29", "DATE_EQUAL_TO_RELATIVE", [SpreadsheetApp.RelativeDate.TODAY])
+    critty(t,sb,"h28:i28", "DATE_AFTER_RELATIVE", [SpreadsheetApp.RelativeDate.TOMORROW])
+    critty(t,sb,"k28:k29", "DATE_BEFORE_RELATIVE", [SpreadsheetApp.RelativeDate.PAST_YEAR])
+  })
+
   unit.section("data validation from api", t => {
 
     const sp = SpreadsheetApp.openById(fixes.TEST_BORDERS_ID)
-
-    
     const sb = sp.getSheetByName('dv')
 
-    const critty = (range, prop, values) => {
-      const cr = sb.getRange(range)
-      const cb = cr.getDataValidation()
-      t.is(cb.getCriteriaType().toString(), prop)
-      if (values) t.deepEqual(cb.getCriteriaValues(), values)
-      const cbs = cr.getDataValidations()
-      t.is(cbs.length, cr.getNumRows())
-      t.is(cbs[0].length, cr.getNumColumns())
-      t.true(cbs.flat().every(f => is.boolean(f.getAllowInvalid())))
-      t.true(cbs.flat().every(f => f.getCriteriaType().toString() === prop))
-      if (values) cbs.flat().forEach(f => t.deepEqual(f.getCriteriaValues(), values))
-    }
 
     // what if value is a formula
-    critty("g24", "DATE_EQUAL_TO", ['=I1'])
-    critty("f24", "TEXT_CONTAINS", ['=F7'])
+    critty(t,sb,"g24", "DATE_EQUAL_TO", ['=I1'])
+    critty(t,sb,"f24", "TEXT_CONTAINS", ['=F7'])
 
 
     // with no sheet mentioned
-    critty("d24", "CUSTOM_FORMULA", ["=F7"])
+    critty(t,sb,"d24", "CUSTOM_FORMULA", ["=F7"])
     // with  sheet mentioned
-    critty("e24:e25", "CUSTOM_FORMULA", ["=Sheet1!$F$7:$F$8"])
+    critty(t,sb,"e24:e25", "CUSTOM_FORMULA", ["=Sheet1!$F$7:$F$8"])
     // checkbox default has no values
-    critty("b24:b25", "CHECKBOX")
+    critty(t,sb,"b24:b25", "CHECKBOX")
     // checkbox with custom values
-    critty("c24:c26", "CHECKBOX", ["a", "b"])
-    critty("k21", "NUMBER_NOT_BETWEEN", [20, 40])
-    critty("J21", "NUMBER_BETWEEN", [20, 40])
-    critty("I21:I22", "NUMBER_NOT_EQUAL_TO", [20])
-    critty("h21:h23", "NUMBER_EQUAL_TO", [20])
-    critty("g21:g22", "NUMBER_LESS_THAN_OR_EQUAL_TO", [20])
-    critty("e21:f22", "NUMBER_LESS_THAN", [20])
-    critty("d21:d22", "NUMBER_GREATER_THAN_OR_EQUAL_TO", [20])
-    critty("c21:c22", "NUMBER_GREATER_THAN", [20])
-    critty("b21:b22", "DATE_NOT_BETWEEN", [new Date('1920-11-18'), new Date('2012-12-31')])
-    critty("j16:j18", "DATE_BETWEEN", [new Date('1920-11-18'), new Date('2012-12-31')])
-    critty("i16:i18", "DATE_ON_OR_AFTER", [new Date('2012-12-31')])
-    critty("g16", "DATE_ON_OR_BEFORE", [new Date('2012-12-31')])
-    critty("f16:f17", "DATE_BEFORE", [new Date('2012-12-31')])
-    critty("e14:e16", "DATE_EQUAL_TO", [new Date('1920-11-18')])
-    critty("h16:h17", "DATE_AFTER", [new Date('2012-12-31')])
-    critty("f7:g8", "TEXT_CONTAINS", ['abc'])
-    critty("b8:b10", "TEXT_DOES_NOT_CONTAIN", ['xyz'])
-    critty("c11:d12", "TEXT_EQUAL_TO", ['exactly'])
-    critty("f12:g12", "TEXT_IS_VALID_URL")
-    critty("a1:b2", "TEXT_IS_VALID_EMAIL")
-    critty("h11:h13", "DATE_IS_VALID_DATE")
-    critty("b3:c4", "VALUE_IN_LIST", [['a', 'b'], true])
-    critty("c21:c22", "NUMBER_GREATER_THAN", [20])
+    critty(t,sb,"c24:c26", "CHECKBOX", ["a", "b"])
+    critty(t,sb,"k21", "NUMBER_NOT_BETWEEN", [20, 40])
+    critty(t,sb,"J21", "NUMBER_BETWEEN", [20, 40])
+    critty(t,sb,"I21:I22", "NUMBER_NOT_EQUAL_TO", [20])
+    critty(t,sb,"h21:h23", "NUMBER_EQUAL_TO", [20])
+    critty(t,sb,"g21:g22", "NUMBER_LESS_THAN_OR_EQUAL_TO", [20])
+    critty(t,sb,"e21:f22", "NUMBER_LESS_THAN", [20])
+    critty(t,sb,"d21:d22", "NUMBER_GREATER_THAN_OR_EQUAL_TO", [20])
+    critty(t,sb,"c21:c22", "NUMBER_GREATER_THAN", [20])
+    critty(t,sb,"b21:b22", "DATE_NOT_BETWEEN", [new Date('1920-11-18'), new Date('2012-12-31')])
+    critty(t,sb,"j16:j18", "DATE_BETWEEN", [new Date('1920-11-18'), new Date('2012-12-31')])
+    critty(t,sb,"i16:i18", "DATE_ON_OR_AFTER", [new Date('2012-12-31')])
+    critty(t,sb,"g16", "DATE_ON_OR_BEFORE", [new Date('2012-12-31')])
+    critty(t,sb,"f16:f17", "DATE_BEFORE", [new Date('2012-12-31')])
+    critty(t,sb,"e14:e16", "DATE_EQUAL_TO", [new Date('1920-11-18')])
+    critty(t,sb,"h16:h17", "DATE_AFTER", [new Date('2012-12-31')])
+    critty(t,sb,"f7:g8", "TEXT_CONTAINS", ['abc'])
+    critty(t,sb,"b8:b10", "TEXT_DOES_NOT_CONTAIN", ['xyz'])
+    critty(t,sb,"c11:d12", "TEXT_EQUAL_TO", ['exactly'])
+    critty(t,sb,"f12:g12", "TEXT_IS_VALID_URL")
+    critty(t,sb,"a1:b2", "TEXT_IS_VALID_EMAIL")
+    critty(t,sb,"h11:h13", "DATE_IS_VALID_DATE")
+    critty(t,sb,"b3:c4", "VALUE_IN_LIST", [['a', 'b'], true])
+    critty(t,sb,"c21:c22", "NUMBER_GREATER_THAN", [20])
 
 
 

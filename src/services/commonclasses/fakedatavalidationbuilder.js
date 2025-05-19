@@ -4,6 +4,7 @@ import { Utils } from '../../support/utils.js'
 import { newFakeDataValidation } from './fakedatavalidation.js'
 import { newNummery } from '../../support/nummery.js'
 import { newFakeValidationCriteria, dataValidationCriteriaMapping } from './fakedatavalidationcriteria.js'
+import { newFakeRelativeDate } from './fakerelativedate.js'
 
 
 const { is, zeroizeTime } = Utils
@@ -51,7 +52,21 @@ class FakeDataValidationBuilder {
     this.__allowInvalid = true
     // generate the methods from the sheets api to apps script mapping
     Reflect.ownKeys(dataValidationCriteriaMapping).forEach(prop => mapMethod(this, prop, dataValidationCriteriaMapping[prop]))
+  }
 
+  __getCritter(conType) {
+    conType = conType || this.getCriteriaType()
+    if (!conType) return null
+
+    let critter = dataValidationCriteriaMapping[conType]
+
+    // sigh - its possible that the api uses a different criteria name
+    if (!critter) {
+      critter = dataValidationCriteriaMapping[
+        Reflect.ownKeys(dataValidationCriteriaMapping).find(f => dataValidationCriteriaMapping[f].apiEnum === conType)
+      ]
+    }
+    return critter
   }
 
   __setRule(criteriaType, criteriaValues = []) {
@@ -123,14 +138,14 @@ export const makeDataValidationFromApi = (apiResult, range) => {
   // we can get the spreadsheet if we have the requesting range
 
   const builder = newFakeDataValidationBuilder()
-  // console.log(JSON.stringify(apiResult))
+  console.log(JSON.stringify(apiResult))
   if (is.emptyObject(apiResult)) {
     throw new Error('missing apiresult for data validation')
   }
   const {
     condition,
     inputMessage,
-    // what is this??
+    // this applies to allowing dropdownlists in value in list and value in range - TODO - find out where this is specifiablsin gas
     showCustomUi,
     // this is allow invalid
     strict
@@ -140,24 +155,12 @@ export const makeDataValidationFromApi = (apiResult, range) => {
   }
 
   const isFormula = (f) => is.string(f) && f.startsWith('=')
-  const fixForFormulas = (values, builder,critter) => {
-    if (values.some(isFormula)) {
-      builder.withCriteria(newFakeValidationCriteria(critter.name), values)
-    } else {
-      builder[critter.method](...values)
-    }
-  }
+  const hasRelative = (value) => Reflect.has(value, "relativeDate")
+  const hasActual = (value) => Reflect.has(value, "userEnteredValue")
 
 
   let conType = condition?.type
-  let critter = dataValidationCriteriaMapping[conType]
-
-  // sigh - its possible that the api uses a different criteria name
-  if (!critter) {
-    critter = dataValidationCriteriaMapping[
-      Reflect.ownKeys(dataValidationCriteriaMapping).find(f => dataValidationCriteriaMapping[f].apiEnum === conType)
-    ]
-  }
+  let critter = builder.__getCritter(conType)
 
   if (!critter) {
     throw new Error('received an unknown criteria type from the api', conType)
@@ -172,7 +175,7 @@ export const makeDataValidationFromApi = (apiResult, range) => {
   if (values) {
 
     const plucked = values.map(f => f.userEnteredValue)
-    
+
     // speciality value handling
     if (critter.method === 'requireValueInRange') {
 
@@ -211,22 +214,69 @@ export const makeDataValidationFromApi = (apiResult, range) => {
 
     } else if (critter.type === 'date') {
 
-      // TODO need to handle relative dates
+
+      // cant be both relative and exact
+      if (values.some(f => hasRelative(f) && hasActual(f))) {
+        throw new Error(`found both relative and actual date properties in`, JSON.stringify(f))
+      }
+
+      // in case there are any relative
+      const pluckRelative = values.map(f => f.relativeDate)
+
       // sometimes a formula can be returned but appsscript requires don't support that
       // but it does allow them to be stored, so we need to use withCriteria if there's anything like that
-      const dated = plucked.map(f => {
-        if (!is.string(f)) {
-          throw new Error("expected string type from date validation - got ", f)
+      // however withCriteria should work for relative dates but doesnt - see https://issuetracker.google.com/issues/418495831
+      const dated = plucked.map((f, i) => {
+        // handle either a real date, or a a relative
+        const value = f || pluckRelative[i]
+        if (!is.string(value)) {
+          throw new Error("expected string type from date validation - got ", value)
         }
+
+        // we'll return this as we may need to modify the prop name as well as the value
+        const datePack = {
+          name: critter.name,
+          value
+        }
+
         // it's possible that we have a formula
-        return isFormula(f) ? f : new Date(f)
+        // leave the prop and value as is
+        if (isFormula(value)) return datePack
+
+        // maybe its relative
+        if (hasRelative(values[i])) {
+          datePack.name = critter.name + "_RELATIVE"
+          datePack.value = newFakeRelativeDate(value)
+          return datePack
+        }
+
+        // so it should be a date - allow the builder to push
+        datePack.value = new Date(f)
+        return datePack
       })
-      fixForFormulas(dated, builder,critter)
+
+      // first check that all props are equal (it seems that apps script doesnt support mixed relative and real dates)
+      if (dated.some(f => f.name !== dated[0].name)) {
+        throw (`Apps Script doesn't support mixed relative and real dates - ${JSON.stringify(dated)}`)
+      }
+
+      // if there are only dates, we can use the normal builders functions
+      // otherwise we need to use withcriteria
+      const datedValues = dated.map(f => f.value)
+      if (!datedValues.every(is.date)) {
+        // this is okay for formulas
+        // TODO - but we know relative dates dont actually  work in apps script - so what to do ?
+        // see https://issuetracker.google.com/issues/418495831
+        builder.withCriteria(newFakeValidationCriteria(dated[0].name), datedValues)
+      } else {
+        builder[critter.method](...datedValues)
+      }
 
     } else if (critter.type === 'number') {
       // because values are string - the might even be formulas
-      const numbered = plucked.map(f=>isFormula(f) ? f : Number(f))
+      const numbered = plucked.map(f => isFormula(f) ? f : Number(f))
       builder[critter.method](...numbered)
+
     } else {
       // no need to fix for formulas for strings as they are already strings
       builder[critter.method](...plucked)

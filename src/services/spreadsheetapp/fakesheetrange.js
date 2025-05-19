@@ -8,8 +8,8 @@ import { newFakeWrapStrategy, isWrapped } from '../commonclasses/fakewrapstrateg
 import { newFakeTextRotation } from '../commonclasses/faketextrotation.js'
 import { makeTextStyleFromApi } from '../commonclasses/faketextstylebuilder.js'
 import { newFakeTextDirection } from '../commonclasses/faketextdirection.js'
-import { attrGens,valueGens} from "./sheetrangehelpers.js"
-import { makeDataValidationFromApi} from "../commonclasses/fakedatavalidationbuilder.js"
+import { attrGens, valueGens } from "./sheetrangehelpers.js"
+import { makeDataValidationFromApi } from "../commonclasses/fakedatavalidationbuilder.js"
 
 
 const { is, rgbToHex, hexToRgb, getPlucker, robToHex, outsideInt } = Utils
@@ -20,6 +20,7 @@ const BLACKER = { red: 0, green: 0, blue: 0 }
 
 import { notYetImplemented, signatureArgs } from '../../support/helpers.js'
 import { FakeSpreadsheet } from './fakespreadsheet.js'
+import { FakeDataValidation } from '../commonclasses/fakedatavalidation.js'
 
 //TODO - deal with r1c1 style ranges
 /**
@@ -173,7 +174,7 @@ const attrGetList = [{
   // this will allow make from api to have access to spreadsheet requesting if it needs to make its own ranges
   cleaner: ((f, range) => {
     // make data validation needs a spreadsheet it refers to because it may need to create a range
-    return makeDataValidationFromApi (f, range)
+    return makeDataValidationFromApi(f, range)
   })
 }]
 
@@ -228,10 +229,10 @@ export class FakeSheetRange {
       'getMergedRanges',
       'setFontColorObjects',
 
-      'setDataValidations',
+
       'clearDataValidations',
 
-      'setDataValidation',
+
       'setTextDirection',
       'setFontWeight',
       'setHorizontalAlignments',
@@ -550,6 +551,81 @@ export class FakeSheetRange {
   }
 
   /**
+   * setDataValidation(rule) https://developers.google.com/apps-script/reference/spreadsheet/range#setdatavalidationrule
+   * @param {FakeDataValidation} rule to apply to all
+   * @return {FakeSheetRange} self
+   */
+  setDataValidation(rule) {
+    // TODO clear if rules are null
+    return this.__setDataValidations(this.__fillRange({ value: rule }))
+  }
+
+  /**
+   * setDataValidations(rules)
+   * @param {FakeDataValidation[][]} rules 
+   * @return {FakeSheetRange} self
+   */
+  setDataValidations(rules) {
+    // TODO clear if rules are null
+    return this.__setDataValidations(rules)
+  }
+
+
+  __setDataValidations(rules) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.setDataValidations")
+    if (nargs !== 1 || !is.array(rules)) matchThrow()
+    if (!this.__arrMatchesRange(rules, "object"))
+      if (!rules.flat().every(f => f instanceof FakeDataValidation)) matchThrow()
+
+    // if the rules are all different we need to create a separate request for each member of the range
+    const requests = []
+   
+    for (let offsetRow = 0; offsetRow < this.getNumRows(); offsetRow++) {
+      for (let offsetCol = 0; offsetCol < this.getNumColumns(); offsetCol++) {
+        const range = this.offset(offsetRow, offsetCol, 1, 1)
+        const dv = rules[offsetRow][offsetCol]
+        const critter = dv.__getCritter()
+        if (!critter) {
+          throw new Error('couldnt find sheets api mapping for data validation rule', rule.getCriteriaType())
+        }
+        const field = critter.apiField || 'userEnteredValue'
+        const type = critter.apiEnum || critter.name
+        const values = dv.getCriteriaValues().map(f => ({
+          [field]: f
+        }))
+        const condition = {
+          type,
+          values
+        }
+        const rule = {
+          condition,
+          strict: !dv.getAllowInvalid(),
+          // TODO showcustomui 
+
+        }
+        if (!is.null(dv.getHelpText())) rule.inputMessage = dv.getHelpText()
+
+
+        const request = {
+          setDataValidation: {
+            range: this.__makeGridRange(range),
+            rule
+          }
+        }
+        requests.push(request)
+      }
+    }
+
+    Sheets.Spreadsheets.batchUpdate({ requests }, this.__getSpreadsheetId(), { ss: true })
+    return this
+
+
+
+
+  }
+
+
+  /**
    * Sets the background color of all cells in the range in CSS notation (such as '#ffffff' or 'white').
    * setBackgrounds(color) https://developers.google.com/apps-script/reference/spreadsheet/range#setbackgroundscolor
    * @param {string[][]} colors A two-dimensional array of colors in CSS notation (such as '#ffffff' or 'white'); null values reset the color.
@@ -753,7 +829,16 @@ export class FakeSheetRange {
       }
     }
   }
-
+  // Make a gridrange from a range
+  __makeGridRange = (range) => {
+    return {
+      sheetId: range.getSheet().getSheetId(),
+      startRowIndex: range.getRowIndex() - 1,
+      startColumnIndex: range.getColumnIndex() - 1,
+      endRowIndex: range.getRowIndex() + range.getNumRows() - 1,
+      endColumnIndex: range.getColumnIndex() + range.getNumColumns() - 1
+    }
+  }
   /**
    * sometimes a range has no  grid range so we need to fake one
    */
