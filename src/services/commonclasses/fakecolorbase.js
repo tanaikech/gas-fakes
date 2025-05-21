@@ -1,4 +1,5 @@
-import { newNummery } from '../../support/nummery.js'
+import { ColorType, ThemeColorType} from '../enums/commonenums.js'
+
 
 export class FakeColorBase {
   // this is color type UNSUPPORTED until built
@@ -12,11 +13,11 @@ export class FakeColorBase {
   }
 
   getColorType() {
-    return newNummery(this.__type)
+    return ColorType[this.__type]
   }
 
   getThemeColorType() {
-    return newNummery(this.__themeColorType)
+    return ThemeColorType[this.__themeColorType]
   }
 
 }

@@ -3,7 +3,7 @@ import { newFakeSpreadsheet } from './fakespreadsheet.js'
 import { notYetImplemented, minSheetFields, signatureArgs} from '../../support/helpers.js'
 import { Utils } from "../../support/utils.js"
 import { newFakeColorBuilder } from '../commonclasses/fakecolorbuilder.js'
-import { ThemeColorType } from '../typedefs.js'
+import { ThemeColorType, ColorType } from '../enums/commonenums.js'
 import { newFakeTextStyleBuilder } from '../commonclasses/faketextstylebuilder.js'
 import { ProtectionType } from '../commonclasses/fakeprotectiontype.js'
 import { newFakeDataValidationBuilder } from '../commonclasses/fakedatavalidationbuilder.js'
@@ -67,7 +67,7 @@ export class FakeSpreadsheetApp {
       'BorderStyle',
       'ChartAggregationType',
       'ChartTransformationType',
-      'ColorType',
+
       'CopyPasteType',
       'DataExecutionErrorCode',
       'DataExecutionState',
@@ -201,6 +201,10 @@ export class FakeSpreadsheetApp {
 
   get ThemeColorType () {
     return ThemeColorType
+  }
+
+  get ColorType () {
+    return ColorType
   }
 
   get DataValidationCriteria () {

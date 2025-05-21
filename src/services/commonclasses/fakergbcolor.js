@@ -1,4 +1,4 @@
-import { newNummery } from '../../support/nummery.js'
+import { newNummery } from '../enums/nummery.js'
 import { Proxies } from '../../support/proxies.js'
 import { Utils } from '../../support/utils.js'
 const { validateHex } = Utils

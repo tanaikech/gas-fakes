@@ -20,7 +20,7 @@ import { getPerformance } from '../src/support/filecache.js';
 import { getSheetsPerformance } from '../src/support/sheetscache.js';
 import { testFiddler } from './testfiddler.js';
 import { testSheetsDataValidations } from './testsheetsdatavalidations.js';
-
+import { testEnums } from './testenums.js';
 
 const testFakes = () => {
   const pack = initTests()

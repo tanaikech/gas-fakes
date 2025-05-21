@@ -1,8 +1,6 @@
-import { Proxies } from './proxies.js'
-/**
- * @file
- * @imports ../typedefs.js
- */
+import { Proxies } from '../../support/proxies.js'
+
+
 /**
  * we can use this to partially mimic the complex enummery stuff in gas
  * @param  {...any} args 
@@ -12,14 +10,20 @@ export const newNummery = (...args) => {
   return Proxies.guard(new Nummery(...args))
 }
 class Nummery {
+  #__parent
+  #__type
   // TODO - we can implement a fake ordinal by passing over the original gas enum
-  constructor(type,frozen = {}) {
-    this.__type = type
-    this.__frozen = frozen
+  constructor(type, parent) {
+    this.#__type = type
+    this.#__parent = parent
   }
 
-  name () {
-    return this.__type
+  // TODO compareto
+  compareTo(other) {
+    return this.#__parent.__compareTo (this.#__type, other)
+  }
+  name() {
+    return this.#__type
   }
   toString() {
     return this.name()
@@ -28,7 +32,7 @@ class Nummery {
     return this.name()
   }
   ordinal() {
-    return Reflect.ownKeys(this.__frozen).findIndex(f=>f=== this.name())
+    return this.#__parent.__ordinal (this.#__type)
   }
 
 }

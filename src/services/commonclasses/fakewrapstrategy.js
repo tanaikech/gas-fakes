@@ -1,5 +1,5 @@
 import { Proxies } from '../../support/proxies.js'
-import { newNummery } from '../../support/nummery.js'
+import { newNummery } from '../enums/nummery.js'
 
 /**
  * create a new FakeWrapStrategy instance

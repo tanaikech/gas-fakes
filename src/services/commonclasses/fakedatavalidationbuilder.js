@@ -2,7 +2,7 @@ import { Proxies } from '../../support/proxies.js'
 import { signatureArgs } from '../../support/helpers.js'
 import { Utils } from '../../support/utils.js'
 import { newFakeDataValidation } from './fakedatavalidation.js'
-import { newNummery } from '../../support/nummery.js'
+import { newNummery } from '../enums/nummery.js'
 import { newFakeValidationCriteria, dataValidationCriteriaMapping } from './fakedatavalidationcriteria.js'
 import { newFakeRelativeDate } from './fakerelativedate.js'
 
