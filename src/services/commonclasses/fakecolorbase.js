@@ -1,4 +1,4 @@
-import { ColorType, ThemeColorType} from '../enums/commonenums.js'
+import { ColorType, ThemeColorType} from '../enums/sheetsenums.js'
 
 
 export class FakeColorBase {
