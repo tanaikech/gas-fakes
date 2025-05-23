@@ -271,6 +271,18 @@ const zeroizeTime = (date) => {
   return new Date(year, month, day, 0, 0, 0, 0);
 }
 const isEnum = (a) => is.object(a) && Reflect.has(a,"compareTo") && is.function(a.compareTo)
+const hasFunction = (a, b=toString) => !isNU(a) && a[b] && is.function(a[b])
+
+const stringer = (value) => {
+  let func = is.date(value) ? "toISOString" : "toString"
+  if (!hasFunction(value, func)) {
+    throw new Error(`dont know how to stringify ${value}`)
+  }
+  const t = value[func]()
+  // drop time portion of iso date if that's what it is
+  return is.date(value) ? t.slice(0, 10) : t
+
+}
 export const Utils = {
   hexToRgb,
   stringToBytes,
@@ -296,8 +308,6 @@ export const Utils = {
   outsideInt,
   unCapital,
   zeroizeTime,
-  isEnum
+  isEnum,
+  stringer
 }
-
-
-

@@ -2,7 +2,7 @@ import { Proxies } from '../../support/proxies.js'
 import { signatureArgs } from '../../support/helpers.js'
 import { Utils } from '../../support/utils.js'
 import { newFakeDataValidation } from './fakedatavalidation.js'
-import {  dataValidationCriteriaMapping } from './fakedatavalidationcriteria.js'
+import {  dataValidationCriteriaMapping } from '../spreadsheetapp/datavalidationcriteriamapping.js'
 import { RelativeDate , DataValidationCriteria} from '../enums/sheetsenums.js'
 
 
@@ -147,7 +147,7 @@ export const makeDataValidationFromApi = (apiResult, range) => {
   // we can get the spreadsheet if we have the requesting range
 
   const builder = newFakeDataValidationBuilder()
-  console.log(JSON.stringify(apiResult))
+  // console.log(JSON.stringify(apiResult))
   if (is.emptyObject(apiResult)) {
     throw new Error('missing apiresult for data validation')
   }

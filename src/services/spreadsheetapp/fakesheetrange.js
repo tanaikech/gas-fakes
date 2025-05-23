@@ -12,7 +12,7 @@ import { attrGens, valueGens } from "./sheetrangehelpers.js"
 import { makeDataValidationFromApi } from "../commonclasses/fakedatavalidationbuilder.js"
 
 
-const { is, rgbToHex, hexToRgb, isEnum, robToHex, outsideInt } = Utils
+const { is, rgbToHex, hexToRgb, stringer, robToHex, outsideInt } = Utils
 
 const WHITER = { red: 1, green: 1, blue: 1 }
 const BLACKER = { red: 0, green: 0, blue: 0 }
@@ -569,6 +569,9 @@ export class FakeSheetRange {
 
 
   __setDataValidations(rules) {
+
+
+
     const { nargs, matchThrow } = signatureArgs(arguments, "Range.setDataValidations")
     if (nargs !== 1 || !is.array(rules)) matchThrow()
     if (!this.__arrMatchesRange(rules, "object"))
@@ -578,7 +581,9 @@ export class FakeSheetRange {
     const requests = []
 
     for (let offsetRow = 0; offsetRow < this.getNumRows(); offsetRow++) {
+
       for (let offsetCol = 0; offsetCol < this.getNumColumns(); offsetCol++) {
+
         const range = this.offset(offsetRow, offsetCol, 1, 1)
         const dv = rules[offsetRow][offsetCol]
         const critter = dv.__getCritter()
@@ -587,8 +592,9 @@ export class FakeSheetRange {
         }
         const field = critter.apiField || 'userEnteredValue'
         const type = critter.apiEnum || critter.name
-        // we have to get the text value of the enum if it is one
-        const values = dv.getCriteriaValues().map(f=>isEnum(f) ? f.toString() : f).map(f => ({
+
+        // all values need to be converted to string
+        const values = dv.getCriteriaValues().map(stringer).map(f => ({
           [field]: f
         }))
 
