@@ -1,9 +1,6 @@
 import { Proxies } from '../../support/proxies.js'
 import { newFakeBorder } from './fakeborder.js'
-/**
- * @file
- * @imports ../typedefs.js
- */
+
 
 /**
  * create a new FakeBorders instance

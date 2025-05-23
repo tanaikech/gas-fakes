@@ -1,6 +1,5 @@
 import { Proxies } from '../../support/proxies.js'
-import { newNummery } from '../enums/nummery.js'
-
+import { TextDirection } from '../enums/sheetsenums.js'
 /**
  * create a new FakeTextDirection 
  * @param  {...any} args 
@@ -15,6 +14,6 @@ class FakeTextDirection {
     if (!apiResult) {
       throw new Error (`${apiResult} is not a valid text direction`)
     }
-    return newNummery(apiResult)
+    return TextDirection[apiResult]
   }
 }

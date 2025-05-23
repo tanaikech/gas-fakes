@@ -270,6 +270,7 @@ const zeroizeTime = (date) => {
   const day = date.getDate();
   return new Date(year, month, day, 0, 0, 0, 0);
 }
+const isEnum = (a) => is.object(a) && Reflect.has(a,"compareTo") && is.function(a.compareTo)
 export const Utils = {
   hexToRgb,
   stringToBytes,
@@ -294,7 +295,8 @@ export const Utils = {
   outside,
   outsideInt,
   unCapital,
-  zeroizeTime
+  zeroizeTime,
+  isEnum
 }
 
 

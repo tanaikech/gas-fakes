@@ -5,12 +5,10 @@ import { FakeColorBase } from './fakecolorbase.js'
 import { newFakeThemeColor } from './fakethemecolor.js'
 import { signatureArgs } from '../../support/helpers.js'
 import { Utils} from '../../support/utils.js'
+import { ThemeColorType } from '../enums/sheetsenums.js'
 const { is, robToHex } = Utils
 
-/**
- * @file
- * @imports ../typedefs.js
- */
+
 /**
  * create a new FakeColorBuilder instance
  * @param  {...any} args 
@@ -23,7 +21,7 @@ export const newFakeColorBuilder = (...args) => {
 export const makeColorFromApi = (apiResult) => {
   const builder = newFakeColorBuilder()
   if (apiResult.themeColor) {
-    builder.setThemeColor(apiResult.themeColor)
+    builder.setThemeColor(ThemeColorType[apiResult.themeColor])
   } else if (apiResult.rgbColor) {
     builder.setRgbColor(robToHex(apiResult.rgbColor))
   }
@@ -69,7 +67,7 @@ class FakeColorBuilder extends FakeColorBase {
   setThemeColor(themeColorType) {
 
     const {nargs, matchThrow} = signatureArgs(arguments, "SpreadsheetApp.ColorBuilder.setThemeColor")
-    if (nargs !== 1 || !is.string(themeColorType)) matchThrow()
+    if (nargs !== 1 || !is.object(themeColorType)) matchThrow()
     this.__themeColorType = themeColorType
     this.__type = 'THEME'
     return this

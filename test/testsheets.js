@@ -19,6 +19,51 @@ export const testSheets = (pack) => {
   const { unit, fixes } = pack || initTests()
   const toTrash = []
 
+
+  unit.section("text Style objects and builders", t => {
+
+    const builder = SpreadsheetApp.newTextStyle()
+    t.is(builder.toString(), "TextStyleBuilder")
+    const fontFamily = 'Helvetica'
+    builder
+      .setFontSize(10)
+      .setBold(true)
+      .setItalic(true)
+      .setUnderline(false)
+      .setStrikethrough(false)
+      .setFontFamily(fontFamily)
+    const textStyle = builder.build()
+    t.is(textStyle.toString(), "TextStyle")
+    t.is(textStyle.getFontSize(), 10)
+    t.is(textStyle.getFontFamily(), fontFamily)
+    t.is(textStyle.isBold(), true)
+    t.is(textStyle.isItalic(), true)
+    t.is(textStyle.isUnderline(), false)
+    t.is(textStyle.isStrikethrough(), false)
+
+
+    t.is(textStyle.getForegroundColor(), null)
+    t.is(textStyle.getForegroundColorObject(), null)
+
+    const rgbColor = getRandomHex()
+    const rgbBuilder = SpreadsheetApp.newTextStyle()
+    rgbBuilder.setForegroundColor(rgbColor)
+    const rgbStyle = rgbBuilder.build()
+    t.is(rgbStyle.getForegroundColor(), rgbColor)
+    t.is(rgbStyle.getForegroundColorObject().asRgbColor().asHexString(), rgbColor)
+
+    const tc = 'ACCENT4'
+    const tcb = SpreadsheetApp.newColor()
+    tcb.setThemeColor(SpreadsheetApp.ThemeColorType[tc]).build()
+    const themeBuilder = SpreadsheetApp.newTextStyle().setForegroundColorObject(tcb).build()
+    // strangely enough, if it's a theme color it returns the enum for the colortype
+    t.is(themeBuilder.getForegroundColor(), tc)
+    t.is(themeBuilder.getForegroundColorObject().asThemeColor().getThemeColorType().toString(), tc)
+
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+  })
+
   unit.section("text style extracts, reducers and other exotics", t => {
     const sp = SpreadsheetApp.openById(fixes.TEST_BORDERS_ID)
     const sb = sp.getSheets()[0]
@@ -244,49 +289,6 @@ export const testSheets = (pack) => {
 
 
 
-  unit.section("text Style objects and builders", t => {
-
-    const builder = SpreadsheetApp.newTextStyle()
-    t.is(builder.toString(), "TextStyleBuilder")
-    const fontFamily = 'Helvetica'
-    builder
-      .setFontSize(10)
-      .setBold(true)
-      .setItalic(true)
-      .setUnderline(false)
-      .setStrikethrough(false)
-      .setFontFamily(fontFamily)
-    const textStyle = builder.build()
-    t.is(textStyle.toString(), "TextStyle")
-    t.is(textStyle.getFontSize(), 10)
-    t.is(textStyle.getFontFamily(), fontFamily)
-    t.is(textStyle.isBold(), true)
-    t.is(textStyle.isItalic(), true)
-    t.is(textStyle.isUnderline(), false)
-    t.is(textStyle.isStrikethrough(), false)
-
-
-    t.is(textStyle.getForegroundColor(), null)
-    t.is(textStyle.getForegroundColorObject(), null)
-
-    const rgbColor = getRandomHex()
-    const rgbBuilder = SpreadsheetApp.newTextStyle()
-    rgbBuilder.setForegroundColor(rgbColor)
-    const rgbStyle = rgbBuilder.build()
-    t.is(rgbStyle.getForegroundColor(), rgbColor)
-    t.is(rgbStyle.getForegroundColorObject().asRgbColor().asHexString(), rgbColor)
-
-    const tc = 'ACCENT4'
-    const tcb = SpreadsheetApp.newColor()
-    tcb.setThemeColor(SpreadsheetApp.ThemeColorType[tc]).build()
-    const themeBuilder = SpreadsheetApp.newTextStyle().setForegroundColorObject(tcb).build()
-    // strangely enough, if it's a theme color it returns the enum for the colortype
-    t.is(themeBuilder.getForegroundColor(), tc)
-    t.is(themeBuilder.getForegroundColorObject().asThemeColor().getThemeColorType().toString(), tc)
-
-
-    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-  })
 
   unit.section("color objects and builders", t => {
 

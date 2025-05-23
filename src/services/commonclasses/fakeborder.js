@@ -1,7 +1,7 @@
 import { Proxies } from '../../support/proxies.js'
-import { newNummery } from '../enums/nummery.js'
 import { newFakeColorBuilder } from '../commonclasses/fakecolorbuilder.js'
 import { Utils } from '../../support/utils.js'
+import { BorderStyle } from '../enums/sheetsenums.js'
 const {is, robToHex} = Utils
 const BLACK = '#000000'
 
@@ -19,7 +19,7 @@ class FakeBorder {
   /**
    * @param {FakeColor} color
    * @param {object} p result from sheets border query
-   * @param {import('../typedefs.js').Style} p.style border style 
+   * @param {BorderStyle} p.style border style 
    * @param {number} width border width
    * @param {Color} color ...to be discovered
    * @param {ColorStyle} colorStyle {rgbColor|themeColor}
@@ -32,7 +32,15 @@ class FakeBorder {
   // borderStyle - null
   constructor(apiResult) {
     const {color, style, width, colorStyle } = apiResult || {}
-    this.__borderStyle = style ? newNummery(style) : null
+
+    // the border style dotted/dashed etc
+    this.__borderStyle = null
+    if (style) {
+      if (!BorderStyle[style]){
+        throw new Error(`unknown border style ${style} received from api`)
+      }
+      this.__borderStyle = BorderStyle[style]
+    }
 
     // TODO not sure what to do with this information yet
     // since width is part of the definition of borderstyle
@@ -67,7 +75,7 @@ class FakeBorder {
     this.__color = colorBuilder.build()
   }
   /**
-   * @returns  {import('../typedefs.js').Style} borderStyle border style 
+   * @returns  {BorderStyle} borderStyle border style 
    */
   getBorderStyle() {
     return this.__borderStyle

@@ -6,10 +6,7 @@ import { newFakeSheetRangeList } from './fakesheetrangelist.js'
 import { Utils } from "../../support/utils.js"
 import { newFakeProtection } from '../commonclasses/fakeprotection.js'
 const { is } = Utils
-/**
- * @file
- * @imports ../typedefs.js
- */
+
 
 // private properties are identified with leading __
 // this will signal to the proxy handler that it's okay to set them
@@ -207,7 +204,7 @@ export class FakeSheet {
 
   /**
    * gets a grid range as per the api format
-   * @returns {import('../typedefs.js').GridRange} gridRange 
+   * @returns {GridRange} gridRange 
    */
   __getGridRange() {
     let { values } = Sheets.Spreadsheets.Values.get(this.__parent.getId(), this.getName())
@@ -267,7 +264,7 @@ export class FakeSheet {
 
   /**
    * gets a grid range as per the api format
-   * @returns {import('../typedefs.js').GridRange} gridRange 
+   * @returns {GridRange} gridRange 
    */
   getDataRange() {
     return newFakeSheetRange(this.__getGridRange(), this)

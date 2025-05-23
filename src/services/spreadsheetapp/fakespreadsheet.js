@@ -5,10 +5,7 @@ import { Utils } from "../../support/utils.js"
 import { newFakeProtection } from '../commonclasses/fakeprotection.js'
 import { newFakeSheetRange } from '../spreadsheetapp/fakesheetrange.js'
 const { is } = Utils
-/**
- * @file
- * @imports ../typedefs.js
- */
+
 
 /**
  * create a new FakeSpreadsheet instance
@@ -313,7 +310,7 @@ export class FakeSpreadsheet {
   /**
    * getRecalculationInterval() https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet#getrecalculationinterval
    * Returns the calculation interval for this spreadsheet.
-   * @returns {import('../typedefs.js').RecalculationInterval}  
+   * @returns {RecalculationInterval}  
    */
 
   getRecalculationInterval() {

@@ -12,7 +12,7 @@ import { attrGens, valueGens } from "./sheetrangehelpers.js"
 import { makeDataValidationFromApi } from "../commonclasses/fakedatavalidationbuilder.js"
 
 
-const { is, rgbToHex, hexToRgb, getPlucker, robToHex, outsideInt } = Utils
+const { is, rgbToHex, hexToRgb, isEnum, robToHex, outsideInt } = Utils
 
 const WHITER = { red: 1, green: 1, blue: 1 }
 const BLACKER = { red: 0, green: 0, blue: 0 }
@@ -23,10 +23,7 @@ import { FakeSpreadsheet } from './fakespreadsheet.js'
 import { FakeDataValidation } from '../commonclasses/fakedatavalidation.js'
 
 //TODO - deal with r1c1 style ranges
-/**
- * @file
- * @imports ../typedefs.js
- */
+
 // private properties are identified with leading __
 // this will signal to the proxy handler that it's okay to set them
 /**
@@ -209,7 +206,7 @@ export class FakeSheetRange {
 
   /**
    * @constructor
-   * @param {import('../typedefs.js').GridRange} gridRange 
+   * @param {GridRange} gridRange 
    * @param {FakeSheet} sheet the sheet
    * @returns {FakeSheetRange}
    */
@@ -579,7 +576,7 @@ export class FakeSheetRange {
 
     // if the rules are all different we need to create a separate request for each member of the range
     const requests = []
-   
+
     for (let offsetRow = 0; offsetRow < this.getNumRows(); offsetRow++) {
       for (let offsetCol = 0; offsetCol < this.getNumColumns(); offsetCol++) {
         const range = this.offset(offsetRow, offsetCol, 1, 1)
@@ -590,9 +587,11 @@ export class FakeSheetRange {
         }
         const field = critter.apiField || 'userEnteredValue'
         const type = critter.apiEnum || critter.name
-        const values = dv.getCriteriaValues().map(f => ({
+        // we have to get the text value of the enum if it is one
+        const values = dv.getCriteriaValues().map(f=>isEnum(f) ? f.toString() : f).map(f => ({
           [field]: f
         }))
+
         const condition = {
           type,
           values

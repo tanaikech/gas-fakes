@@ -2,9 +2,8 @@ import { Proxies } from '../../support/proxies.js'
 import { signatureArgs } from '../../support/helpers.js'
 import { Utils } from '../../support/utils.js'
 import { newFakeDataValidation } from './fakedatavalidation.js'
-import { newNummery } from '../enums/nummery.js'
-import { newFakeValidationCriteria, dataValidationCriteriaMapping } from './fakedatavalidationcriteria.js'
-import { newFakeRelativeDate } from './fakerelativedate.js'
+import {  dataValidationCriteriaMapping } from './fakedatavalidationcriteria.js'
+import { RelativeDate , DataValidationCriteria} from '../enums/sheetsenums.js'
 
 
 const { is, zeroizeTime } = Utils
@@ -70,8 +69,18 @@ class FakeDataValidationBuilder {
   }
 
   __setRule(criteriaType, criteriaValues = []) {
+    if (!DataValidationCriteria[criteriaType]) {
+      throw new Error (`unexpected criteria type ${criteriaType}`)
+    }
+    if (!is.string(criteriaType)) {
+      throw `criteria type must be a string in __setRule - got ${criteriaType}`
+    }
+    if (!is.array(criteriaValues)) {
+      throw `criteria values must be an array in __setRule - got ${criteriaValues}`
+    }
+
     this.__rule = ({
-      criteriaType: newNummery(criteriaType, dataValidationCriteriaMapping),
+      criteriaType: DataValidationCriteria[criteriaType],
       criteriaValues: Array.from(criteriaValues)
     })
     return this
@@ -246,7 +255,7 @@ export const makeDataValidationFromApi = (apiResult, range) => {
         // maybe its relative
         if (hasRelative(values[i])) {
           datePack.name = critter.name + "_RELATIVE"
-          datePack.value = newFakeRelativeDate(value)
+          datePack.value = RelativeDate[value]
           return datePack
         }
 
@@ -267,7 +276,7 @@ export const makeDataValidationFromApi = (apiResult, range) => {
         // this is okay for formulas
         // TODO - but we know relative dates dont actually  work in apps script - so what to do ?
         // see https://issuetracker.google.com/issues/418495831
-        builder.withCriteria(newFakeValidationCriteria(dated[0].name), datedValues)
+        builder.withCriteria(DataValidationCriteria[dated[0].name], datedValues)
       } else {
         builder[critter.method](...datedValues)
       }

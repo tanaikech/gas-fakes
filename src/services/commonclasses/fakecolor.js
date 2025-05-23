@@ -3,10 +3,7 @@ import { FakeColorBase } from './fakecolorbase.js'
 import { newFakeRgbColor } from './fakergbcolor.js'
 import { newFakeThemeColor } from './fakethemecolor.js'
 
-/**
- * @file
- * @imports ../typedefs.js
- */
+
 
 /**
  * create a new FakeColor instance

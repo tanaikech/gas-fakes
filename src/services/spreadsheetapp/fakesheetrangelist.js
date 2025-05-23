@@ -2,10 +2,7 @@ import { Proxies } from '../../support/proxies.js'
 import { notYetImplemented } from '../../support/helpers.js'
 
 //TODO - deal with r1c1 style ranges
-/**
- * @file
- * @imports ../typedefs.js
- */
+
 // private properties are identified with leading __
 // this will signal to the proxy handler that it's okay to set them
 /**

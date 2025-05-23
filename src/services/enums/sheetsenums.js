@@ -129,7 +129,11 @@ export const DataValidationCriteria = makeCircularEnum([
   "VALUE_IN_LIST", //	Enum	Requires that the input is equal to one of the given values.
   "VALUE_IN_RANGE", //	Enum	Requires that the input is equal to a value in the given range.
   "CUSTOM_FORMULA", //	Enum	Requires that the input makes the given formula evaluate to true.
-  "CHECKBOX", //	Enum	Requires that the input is a custom value or a boolean; rendered as a checkbox. 
+  "CHECKBOX", //	Enum	Requires that the input is a custom value or a boolean; rendered as a checkbox.
+  // these are not documented, but required to support datavalidation
+  "DATE_AFTER_RELATIVE", //	Enum	The criteria is met when a date is after the relative date value.
+  "DATE_BEFORE_RELATIVE", //	Enum	The criteria is met when a date is before the relative date value.
+  "DATE_EQUAL_TO_RELATIVE", //	Enum	The criteria is met when a date is equal to the relative date value. 
 ])
 export const DateTimeGroupingRuleType = makeCircularEnum([
   "UNSUPPORTED", //	Enum	A date-time grouping rule type that is not supported.

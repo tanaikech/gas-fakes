@@ -5,11 +5,7 @@ import { Proxies } from '../../support/proxies.js'
 import { notYetImplemented } from '../../support/helpers.js'
 import { getAuthedClient } from '../spreadsheetapp/shapis.js'
 import {newFakeAdvSheetsSpreadsheets} from './fakeadvsheetsspreadsheets.js'
-/// <reference path="../typedefs.js"
-/**
- * the advanced Sheets Apps Script service faked
- * @class FakeAdvSheets
- */
+
 
 
   

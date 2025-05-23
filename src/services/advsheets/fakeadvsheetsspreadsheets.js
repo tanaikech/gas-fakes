@@ -1,7 +1,7 @@
 /**
  * Advanced sheets service
  */
-/// <reference path="../typedefs.js"
+
 
 import { Proxies } from '../../support/proxies.js'
 import { Syncit } from '../../support/syncit.js'

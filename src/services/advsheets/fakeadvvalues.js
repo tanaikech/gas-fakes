@@ -2,10 +2,7 @@ import { Proxies } from '../../support/proxies.js'
 import { notYetImplemented, ssError } from '../../support/helpers.js'
 import { Syncit } from '../../support/syncit.js'
 import { getWorkbookEntry, setWorkbookEntry, clearWorkbookCache } from "../../support/sheetscache.js"
-/**
- * @file
- * @imports ../typedefs.js
- */
+
 // private properties are identified with leading __
 // this will signal to the proxy handler that it's okay to set them
 

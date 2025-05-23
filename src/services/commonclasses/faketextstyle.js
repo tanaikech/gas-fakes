@@ -1,10 +1,7 @@
 import { Proxies } from '../../support/proxies.js'
 
 
-/**
- * @file
- * @imports ../typedefs.js
- */
+
 
 
 /**
@@ -19,7 +16,7 @@ export const newFakeTextStyle = (...args) => {
 class FakeTextStyle {
 
   /**
-   * @param {import('../typedefs.js').TextFormat} apiResult
+   * @param {TextFormat} apiResult
    * @returns {FakeTextStyle} a fake text style
    */
 

@@ -1,26 +1,5 @@
-import { Proxies } from '../../support/proxies.js'
-import { newNummery } from '../enums/nummery.js'
 import { Utils } from '../../support/utils.js'
 const { is } = Utils
-
-/**
- * create a new FakeTextDirection 
- * @param  {...any} args 
- * @returns {FakeValidationCriteria}
- */
-export const newFakeValidationCriteria = (...args) => {
-  return Proxies.guard(new FakeValidationCriteria(...args))
-}
-// https://developers.google.com/apps-script/reference/spreadsheet/data-validation-criteria
-class FakeValidationCriteria {
-  constructor(value) {
-
-    if (!Reflect.has(DataValidationCriteria,value)) {
-      throw new Error(`${value} is not a data validation criteria`)
-    }
-    return DataValidationCriteria[value]
-  }
-}
 
 // maps criteria type to builder function
 export const dataValidationCriteriaMapping = {
@@ -237,10 +216,4 @@ export const dataValidationCriteriaMapping = {
     apiEnum: 'ONE_OF_LIST'
   }
 }
-
-
-export const DataValidationCriteria = Reflect.ownKeys(dataValidationCriteriaMapping).reduce((p, c) => {
-  p[c] = newNummery(c, Reflect.ownKeys(dataValidationCriteriaMapping))
-  return p
-}, {})
 

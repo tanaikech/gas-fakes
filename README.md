@@ -300,7 +300,7 @@ These 3 relatives exist as keys of SpreadsheetApp.DataValidationCriteria, but no
 - DATE_BEFORE_RELATIVE
 - DATE_EQUAL_TO_RELATIVE
 
-I'll implement these 3 realtives in gasFakes, but treat the others as invalid.
+I'll implement these 3 realtives in gasFakes, but treat the others as invalid. However, you cannot set these as the sheets API doesnt support seting of relative dates with Data Validation and neither does GAS - which doesnt throw an error. I believe it should I'm going to throw an error if you try.
 
 
 #### datavalidation with formulas

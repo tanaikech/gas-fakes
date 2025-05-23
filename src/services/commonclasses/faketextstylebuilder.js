@@ -7,10 +7,7 @@ import { newFakeColorBuilder } from './fakecolorbuilder.js'
 const { is, validateHex, robToHex, unCapital } = Utils
 const BLACK = '#000000'
 
-/**
- * @file
- * @imports ../typedefs.js
- */
+
 /**
  * create a new FakeTextStyleBuilder instance
  * @param  {...any} args 
@@ -22,7 +19,7 @@ export const newFakeTextStyleBuilder = (...args) => {
 
 /**
  * make a text style from an apiquery
- * @param {import('../typedefs.js').TextFormat} apiResult
+ * @param {TextFormat} apiResult
  * @returns {FakeTextStyle} a fake text style
  */
 export const makeTextStyleFromApi = (apiResult) => {

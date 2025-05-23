@@ -1,12 +1,8 @@
-import { newNummery } from '../enums/nummery.js'
 import { Proxies } from '../../support/proxies.js'
 import { Utils } from '../../support/utils.js'
+import { ColorType } from '../enums/sheetsenums.js'
 const { validateHex } = Utils
 
-/**
- * @file
- * @imports ../typedefs.js
- */
 /**
  * create a new FakeRgbColor instance
  * @param  {...any} args 
@@ -20,7 +16,7 @@ export const newFakeRgbColor = (...args) => {
 class FakeRgbColor {
   constructor(color) {
     this.__color = color
-    this.__type = newNummery('RGB')
+    this.__type = ColorType.RGB
   }
   toString() {
     return 'RgbColor'

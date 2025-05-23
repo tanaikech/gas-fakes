@@ -1,6 +1,5 @@
 import { Proxies } from '../../support/proxies.js'
-import { newNummery } from '../enums/nummery.js'
-
+import { WrapStrategy } from '../enums/sheetsenums.js'
 /**
  * create a new FakeWrapStrategy instance
  * @param  {...any} args 
@@ -24,7 +23,7 @@ class FakeWrapStrategy {
     if (!s) {
       throw new Error (`${apiResult} is not a valid wrap strategy`)
     }
-    return newNummery(s)
+    return WrapStrategy[s]
   }
 }
 

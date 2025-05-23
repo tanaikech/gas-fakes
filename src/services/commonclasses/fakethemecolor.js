@@ -1,9 +1,6 @@
 import { Proxies } from '../../support/proxies.js'
 
-/**
- * @file
- * @imports ../typedefs.js
- */
+
 /**
  * create a new FakeColor instance
  * @param  {...any} args 
