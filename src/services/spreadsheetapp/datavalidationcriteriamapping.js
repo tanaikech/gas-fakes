@@ -1,3 +1,4 @@
+import { isNullOrUndefined } from '@sindresorhus/is'
 import { Utils } from '../../support/utils.js'
 const { is } = Utils
 
@@ -186,9 +187,9 @@ export const dataValidationCriteriaMapping = {
     method: "requireValueInRange",
     nargs: [1,2],
     type: ['range','boolean'],
-    validator: (args, matchThrow, nargs) => {
+    validator: (args, matchThrow) => {
       let [range, showDropdown] = args
-      if (nargs ===1 )showDropdown = true
+      if (isNullOrUndefined(showDropdown)) showDropdown = true
       if (!is.function(range.toString) || range.toString() !== 'Range') matchThrow()
       return [range, showDropdown]
     },
@@ -200,17 +201,16 @@ export const dataValidationCriteriaMapping = {
     nargs: [1,2],
     type: ['array','boolean'],
     // this returns a modified args list
-    validator: (args, matchThrow, nargs) => {
+    validator: (args, matchThrow) => {
       //  Apps Script converts list values to strings 
-      //  TODO - various options in the UI still to figure out
+      //  These options are not settable in apps script so we'll just ignore
       //  - display style chip/arrow/plain text 
       //  - multiple selections - only chip allows this 
-      //  - what are the circumstances for showcustomui being true
       let [values, showDropdown] = args
-      // appply default showdropdown
-      if (nargs ===1 )showDropdown = true
+      if (isNullOrUndefined(showDropdown)) showDropdown = true
       if (values.some(f => !is.function(f?.toString))) matchThrow()
         // it seems that apps script insers a true default for showDropdown even if not explicitly given.
+       // we 
       return [values.map(f=>f.toString()), showDropdown]
     },
     apiEnum: 'ONE_OF_LIST'

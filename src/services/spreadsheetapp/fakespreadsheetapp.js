@@ -4,7 +4,7 @@ import { notYetImplemented, minSheetFields, signatureArgs } from '../../support/
 import { Utils } from "../../support/utils.js"
 import { newFakeColorBuilder } from '../commonclasses/fakecolorbuilder.js'
 import { newFakeTextStyleBuilder } from '../commonclasses/faketextstylebuilder.js'
-import { newFakeDataValidationBuilder } from '../commonclasses/fakedatavalidationbuilder.js'
+import { newFakeDataValidationBuilder } from './fakedatavalidationbuilder.js'
 
 
 import * as Enums from '../enums/sheetsenums.js'

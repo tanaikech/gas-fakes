@@ -2,6 +2,7 @@ import { Proxies } from '../../support/proxies.js'
 import { Syncit } from '../../support/syncit.js'
 import { Auth } from '../../support/auth.js'
 
+
 /**
  * caching support uses node files storage
  */
@@ -218,6 +219,8 @@ class FakeProperties extends FakeStore {
    */
   getProperty(key) {
     return fixun(Syncit.fxStore(this._storeArgs, "get", key))
+
+    
   }
   setProperties(properties, deleteAllOthers) {
 

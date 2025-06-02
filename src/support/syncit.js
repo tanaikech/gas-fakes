@@ -4,7 +4,7 @@
  * they are made sync when called from here
  * move all caching logic to here so we can forget anbout it higher up
  */
-
+import { createSyncFn } from 'synckit'
 import makeSynchronous from 'make-synchronous';
 import path from 'path'
 import { Auth } from "./auth.js"
@@ -357,7 +357,25 @@ const fxStore = (storeArgs, method = "get", ...kvArgs) => {
   return result
 }
 
+/**
+ * @param {object} p params
+ * @param {}
+ * @returns {*}
+ */
+export const fxStoreKit = (storeArgs, method = "get", ...kvArgs) => {
 
+  // get a sync version of this async function
+  const fx = createSyncFn(import.meta.resolve('./sxstorekit'))
+
+  const result = fx({
+    kvPath: getModulePath(kvPath),
+    method,
+    kvArgs,
+    storeArgs
+  })
+
+  return result
+}
 
 /**
  * sync a call to Drive api to stream a download

@@ -9,10 +9,9 @@ import { newFakeTextRotation } from '../commonclasses/faketextrotation.js'
 import { makeTextStyleFromApi } from '../commonclasses/faketextstylebuilder.js'
 import { newFakeTextDirection } from '../commonclasses/faketextdirection.js'
 import { attrGens, valueGens } from "./sheetrangehelpers.js"
-import { makeDataValidationFromApi } from "../commonclasses/fakedatavalidationbuilder.js"
-
-
+import { makeDataValidationFromApi } from "./fakedatavalidationbuilder.js"
 const { is, rgbToHex, hexToRgb, stringer, robToHex, outsideInt } = Utils
+const isRange = (a) => is.object(a) && !is.null(a) && is.function(a.toString) && a.toString() === "Range"
 
 const WHITER = { red: 1, green: 1, blue: 1 }
 const BLACKER = { red: 0, green: 0, blue: 0 }
@@ -20,7 +19,7 @@ const BLACKER = { red: 0, green: 0, blue: 0 }
 
 import { notYetImplemented, signatureArgs } from '../../support/helpers.js'
 import { FakeSpreadsheet } from './fakespreadsheet.js'
-import { FakeDataValidation } from '../commonclasses/fakedatavalidation.js'
+import { FakeDataValidation } from './fakedatavalidation.js'
 
 //TODO - deal with r1c1 style ranges
 
@@ -569,9 +568,6 @@ export class FakeSheetRange {
 
 
   __setDataValidations(rules) {
-
-
-
     const { nargs, matchThrow } = signatureArgs(arguments, "Range.setDataValidations")
     if (nargs !== 1 || !is.array(rules)) matchThrow()
     if (!this.__arrMatchesRange(rules, "object"))
@@ -592,9 +588,28 @@ export class FakeSheetRange {
         }
         const field = critter.apiField || 'userEnteredValue'
         const type = critter.apiEnum || critter.name
+        let values = dv.getCriteriaValues()
 
-        // all values need to be converted to string
-        const values = dv.getCriteriaValues().map(stringer).map(f => ({
+        let showCustomUi = null
+        // but if its one of these - drop the last arg
+        if (critter.name === "VALUE_IN_LIST" || critter.name === "VALUE_IN_RANGE") {
+          if (values.length !== 2) {
+            throw new Error(`Expected 2 args for ${critter.name} but got ${values.length}`)
+          } else {
+            showCustomUi = values[1]
+            values = values.slice(0, -1)
+          }
+          // convert any ranges to formulas
+          if (critter.name === "VALUE_IN_RANGE") {
+            if (!isRange(values[0])) {
+              throw `expected a range for ${critter.name} but got ${values[0]}`
+            }
+            values[0] = `=${values[0].__getWithSheet()}` 
+          }
+        }
+
+        // all values need to be converted to string 
+        values = values.map(stringer).map(f => ({
           [field]: f
         }))
 
@@ -604,12 +619,10 @@ export class FakeSheetRange {
         }
         const rule = {
           condition,
-          strict: !dv.getAllowInvalid(),
-          // TODO showcustomui 
-
+          strict: !dv.getAllowInvalid()
         }
+        if (!is.null(showCustomUi)) rule.showCustomUi = showCustomUi
         if (!is.null(dv.getHelpText())) rule.inputMessage = dv.getHelpText()
-
 
         const request = {
           setDataValidation: {
@@ -879,6 +892,8 @@ export class FakeSheetRange {
   __getWithSheet() {
     return this.__getRangeWithSheet(this)
   }
+
+
 
   __setValues({ values, single = false, options = { valueInputOption: "RAW" } }) {
 

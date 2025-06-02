@@ -2,9 +2,8 @@ import { Proxies } from '../../support/proxies.js'
 import { signatureArgs } from '../../support/helpers.js'
 import { Utils } from '../../support/utils.js'
 import { newFakeDataValidation } from './fakedatavalidation.js'
-import {  dataValidationCriteriaMapping } from '../spreadsheetapp/datavalidationcriteriamapping.js'
-import { RelativeDate , DataValidationCriteria} from '../enums/sheetsenums.js'
-
+import { dataValidationCriteriaMapping } from './datavalidationcriteriamapping.js'
+import { RelativeDate, DataValidationCriteria } from '../enums/sheetsenums.js'
 
 const { is, zeroizeTime } = Utils
 
@@ -39,6 +38,11 @@ const mapMethod = (self, prop, { method, nargs, type, validator }) => {
         return is.date(a) ? zeroizeTime(a) : a
       })
     }
+    if (method === "requireValueInRange" || method === "requireValueInList") {
+      // we only want the 1st argumnet      // because the second is handled differently in the api
+      // TODO - check the default is true in both cases
+      args[1] = (is.null(args[1]) || is.undefined(args[1]) ? true : args[1])
+    }
     return self.__setRule(prop, args)
   }
 }
@@ -49,6 +53,7 @@ class FakeDataValidationBuilder {
     this.__rule = null
     this.__helpText = null
     this.__allowInvalid = true
+
     // generate the methods from the sheets api to apps script mapping
     Reflect.ownKeys(dataValidationCriteriaMapping).forEach(prop => mapMethod(this, prop, dataValidationCriteriaMapping[prop]))
   }
@@ -68,9 +73,10 @@ class FakeDataValidationBuilder {
     return critter
   }
 
+
   __setRule(criteriaType, criteriaValues = []) {
     if (!DataValidationCriteria[criteriaType]) {
-      throw new Error (`unexpected criteria type ${criteriaType}`)
+      throw new Error(`unexpected criteria type ${criteriaType}`)
     }
     if (!is.string(criteriaType)) {
       throw `criteria type must be a string in __setRule - got ${criteriaType}`
@@ -94,7 +100,7 @@ class FakeDataValidationBuilder {
     const copy = newFakeDataValidationBuilder()
     copy.__rule = this.__rule
     copy.__helpText = this.__helpText
-    copy.__allowInvalid
+    copy.__allowInvalid = this.__allowInvalid
     copy.__rule = JSON.parse(JSON.stringify(this.__rule))
     return copy
   }
@@ -108,11 +114,24 @@ class FakeDataValidationBuilder {
   }
 
   getCriteriaValues() {
-    return this.__rule?.criteriaValues || []
+    // these 2 set and get the showcustomui as part of the require arguments and return it as a value, but in the api its a separate property.
+    const t = this.getCriteriaType()?.toString()
+    const vals = this.__rule?.criteriaValues || []
+     return vals
   }
 
   getAllowInvalid() {
     return this.__allowInvalid
+  }
+
+  // this doesn't exist in apps script - its an argument to value in list or value in range
+  __getShowCustomUi() {
+    return this.__showCustomUi
+  }
+
+  __setShowCustomUi(value) {
+    this.__showCustomUi = value
+    return this
   }
 
   setAllowInvalid(allowInvalid) {
@@ -147,14 +166,15 @@ export const makeDataValidationFromApi = (apiResult, range) => {
   // we can get the spreadsheet if we have the requesting range
 
   const builder = newFakeDataValidationBuilder()
-  // console.log(JSON.stringify(apiResult))
+
   if (is.emptyObject(apiResult)) {
     throw new Error('missing apiresult for data validation')
   }
-  const {
+  let {
     condition,
     inputMessage,
-    // this applies to allowing dropdownlists in value in list and value in range - TODO - find out where this is specifiablsin gas
+    // this applies to allowing dropdownlists in value in list and value in range
+    // it is the second argument for value_in_list and value_in_range, but not an argument in the api
     showCustomUi,
     // this is allow invalid
     strict
@@ -162,6 +182,9 @@ export const makeDataValidationFromApi = (apiResult, range) => {
   if (inputMessage) {
     builder.setHelpText(inputMessage)
   }
+
+  // TODO - check the default is true in both cases
+  if (is.nullOrUndefined(showCustomUi)) showCustomUi = true
 
   const isFormula = (f) => is.string(f) && f.startsWith('=')
   const hasRelative = (value) => Reflect.has(value, "relativeDate")
@@ -210,19 +233,18 @@ export const makeDataValidationFromApi = (apiResult, range) => {
         throw new Error('Unable to find sheet mentioned in range', p)
       }
 
-      // todo -- where does the 2nd argument come from (show dropdown)
-      builder[critter.method](sheet.getRange(parts[1]))
+      builder[critter.method](sheet.getRange(parts[1]), showCustomUi || false)
 
     } else if (critter.method === 'requireValueInList') {
 
-      // todo - what circumstances is a showdropdown required (2nd argument below)
       // the list cant be a formula as that would requirevalueinrange
-      // it also seems that individual values in the list can't be formulas either
+      // individual values in the list can't be formulas either
       const args = [plucked]
-      builder[critter.method](...args)
+
+      // the second argument here will be the showCustomUi which comes from the api
+      builder[critter.method](args[0], showCustomUi || false)
 
     } else if (critter.type === 'date') {
-
 
       // cant be both relative and exact
       if (values.some(f => hasRelative(f) && hasActual(f))) {
@@ -297,7 +319,6 @@ export const makeDataValidationFromApi = (apiResult, range) => {
     builder[critter.method]()
   }
   builder.setAllowInvalid(!strict)
-  // TODO - find out what customUI from sheetsapi could be about
   return builder.build()
 }
 
