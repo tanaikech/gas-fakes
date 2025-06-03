@@ -27,6 +27,8 @@ const testFakes = () => {
   const {unit} = pack
 
   // add one of these for each service being tested
+  console.log ('\n----Test Enums----')
+  testEnums(pack)
   console.log ('\n----Test Sheets DataValidations----')
   testSheetsDataValidations(pack)
   console.log ('\n----Test Sheets Permissions----')

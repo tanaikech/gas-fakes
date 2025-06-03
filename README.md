@@ -358,7 +358,9 @@ In the Apps Script DataValidation builder, setting showCustomUi is achieved via 
 
 Despite the various defaults, a missing value for these properties returned via the Sheets API always means false, and a missing displayStyle with showCustomUi set to true default is "ARROW".
 
+## Enums
 
+All Apps Script enums are imitated using a seperate class 'newFakeGasenum()'. A complete write up of that is in [fakegasenum](https://github.com/brucemcpherson/fakegasenum). The same functionality is also available as an Apps Script library if you'd like to make your own enums over on GAS just like you find in Apps Script.
 
 ## Help
 

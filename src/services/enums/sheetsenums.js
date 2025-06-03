@@ -1,7 +1,7 @@
-import { makeCircularEnum } from "./circularenum.js";
 
-export const AutoFillSeries = makeCircularEnum(["DEFAULT_SERIES", "ALTERNATE_SERIES"])
-export const BandingTheme = makeCircularEnum([
+import { newFakeGasenum} from "@mcpher/fake-gasenum";
+export const AutoFillSeries = newFakeGasenum(["DEFAULT_SERIES", "ALTERNATE_SERIES"])
+export const BandingTheme = newFakeGasenum([
   "LIGHT_GREY", //	Enum	A light grey banding theme.
   "CYAN", //	Enum	A cyan banding theme.,
   "GREEN",  //	Enum	A green banding theme.
@@ -15,7 +15,7 @@ export const BandingTheme = makeCircularEnum([
   "INDIGO", //	Enum	An indigo banding theme.
   "PINK" //	Enum	A pink banding theme.
 ])
-export const BooleanCriteria = makeCircularEnum([
+export const BooleanCriteria = newFakeGasenum([
   "CELL_EMPTY", //	Enum	The criteria is met when a cell is empty.
   "CELL_NOT_EMPTY", //	Enum	The criteria is met when a cell is not empty.
   "DATE_AFTER", //	Enum	The criteria is met when a date is after the given value.
@@ -41,7 +41,7 @@ export const BooleanCriteria = makeCircularEnum([
   "TEXT_ENDS_WITH", //	Enum	The criteria is met when the input ends with the given value.
   "CUSTOM_FORMULA" //	Enum	The criteria is met when the input makes the given formula evaluate to true.
 ])
-export const BorderStyle = makeCircularEnum([
+export const BorderStyle = newFakeGasenum([
   "DOTTED", //	Enum	Dotted line borders.
   "DASHED", //	Enum	Dashed line borders.
   "SOLID", //	Enum	Thin solid line borders.
@@ -49,12 +49,12 @@ export const BorderStyle = makeCircularEnum([
   "SOLID_THICK", //	Enum	Thick solid line borders.
   "DOUBLE", //	Enum	Two solid line borders.
 ])
-export const ColorType = makeCircularEnum([
+export const ColorType = newFakeGasenum([
   "UNSUPPORTED", //	Enum	A color type that is not supported.
   "RGB", //	Enum	A color defined by red, green, blue color channels.
   "THEME" //	Enum	A color that refers to an entry in the theme's color scheme.
 ])
-export const CopyPasteType = makeCircularEnum([
+export const CopyPasteType = newFakeGasenum([
   "PASTE_NORMAL", //	Enum	Paste values, formulas, formats and merges.
   "PASTE_NO_BORDERS", //	Enum	Paste values, formulas, formats and merges but without borders.
   "PASTE_FORMAT", //	Enum	Paste the format only.
@@ -64,7 +64,7 @@ export const CopyPasteType = makeCircularEnum([
   "PASTE_CONDITIONAL_FORMATTING", //	Enum	Paste the color rules only.
   "PASTE_COLUMN_WIDTHS" //	Enum	Paste the column widths only.
 ])
-export const DataExecutionErrorCode = makeCircularEnum([
+export const DataExecutionErrorCode = newFakeGasenum([
   "DATA_EXECUTION_ERROR_CODE_UNSUPPORTED", //	Enum	A data execution error code that is not supported in Apps Script.
   "NONE", //	Enum	The data execution has no error.
   "TIME_OUT", //	Enum	The data execution timed out. Please update the data source specification.
@@ -83,28 +83,28 @@ export const DataExecutionErrorCode = makeCircularEnum([
   "DATA_NOT_FOUND", //	Enum	The database referenced by the data source is not found. Please update the data source specification.
   "PERMISSION_DENIED", //	Enum	The user does not have access to the database referenced by the data source. Please update the data source specification or contact the owner of the billing project to request access.
 ])
-export const DataExecutionState = makeCircularEnum([
+export const DataExecutionState = newFakeGasenum([
   "DATA_EXECUTION_STATE_UNSUPPORTED", //	Enum	A data execution state is not supported in Apps Script.
   "RUNNING", //	Enum	The data execution has started and is running.
   "SUCCESS", //	Enum	The data execution is completed and successful.
   "ERROR", //	Enum	The data execution is completed and has errors.
   "NOT_STARTED", //	Enum	The data execution has not started.
 ])
-export const DataSourceParameterType = makeCircularEnum([
+export const DataSourceParameterType = newFakeGasenum([
   "DATA_SOURCE_PARAMETER_TYPE_UNSUPPORTED", //	Enum	A data source parameter type that is not supported in Apps Script.
   "CELL", //	Enum	The data source parameter is valued based on a cell.
 ])
-export const DataSourceRefreshScope = makeCircularEnum([
+export const DataSourceRefreshScope = newFakeGasenum([
   "DATA_SOURCE_REFRESH_SCOPE_UNSUPPORTED", //	Enum	The data source refresh scope is unsupported.
   "ALL_DATA_SOURCES", //	Enum	The refresh applies to all data sources in the spreadsheet.
 ])
-export const DataSourceType = makeCircularEnum([
+export const DataSourceType = newFakeGasenum([
   "DATA_SOURCE_TYPE_UNSUPPORTED", //	Enum	A data source type that is not supported in Apps Script.
   "BIGQUERY", //	Enum	A BigQuery data source.
   "LOOKER", //	Enum	A Looker data source.
 ])
 
-export const DataValidationCriteria = makeCircularEnum([
+export const DataValidationCriteria = newFakeGasenum([
   "DATE_AFTER", //	Enum	Requires a date that is after the given value.
   "DATE_BEFORE", //	Enum	Requires a date that is before the given value.
   "DATE_BETWEEN", //	Enum	Requires a date that is between the given values.
@@ -135,7 +135,7 @@ export const DataValidationCriteria = makeCircularEnum([
   "DATE_BEFORE_RELATIVE", //	Enum	The criteria is met when a date is before the relative date value.
   "DATE_EQUAL_TO_RELATIVE", //	Enum	The criteria is met when a date is equal to the relative date value. 
 ])
-export const DateTimeGroupingRuleType = makeCircularEnum([
+export const DateTimeGroupingRuleType = newFakeGasenum([
   "UNSUPPORTED", //	Enum	A date-time grouping rule type that is not supported.
   "SECOND", //	Enum	Group date-time by second, from 0 to 59.
   "MINUTE", //	Enum	Group date-time by minute, from 0 to 59.
@@ -153,44 +153,44 @@ export const DateTimeGroupingRuleType = makeCircularEnum([
   "YEAR_QUARTER", //	Enum	Group date-time by year and quarter, for example 2008 Q4 .
   "YEAR_MONTH_DAY", //	Enum	Group date-time by year, month, and day, for example 2008-11-22.
 ])
-export const DeveloperMetadataLocationType = makeCircularEnum([
+export const DeveloperMetadataLocationType = newFakeGasenum([
   "SPREADSHEET", //	Enum	The location type for developer metadata associated with the top-level spreadsheet.
   "SHEET", //	Enum	The location type for developer metadata associated with a whole sheet.
   "ROW", //	Enum	The location type for developer metadata associated with a row.
   "COLUMN", //	Enum	The location type for developer metadata associated with a column.
 ])
-export const DeveloperMetadataVisibility = makeCircularEnum([
+export const DeveloperMetadataVisibility = newFakeGasenum([
   "DOCUMENT", //	Enum	Document-visible metadata is accessible from any developer project with access to the document.
   "PROJECT", //	Enum	Project-visible metadata is only visible to and accessible by the developer project that created the metadata. Do not use project-visible developer metadata as a security mechanism or to store secrets. It can be exposed to users with view access to the document.  
 ])
-export const Dimension = makeCircularEnum([
+export const Dimension = newFakeGasenum([
   "COLUMNS", //	Enum	The column (vertical) dimension.
   "ROWS", //	Enum	The row (horizontal) dimension.
 ])
-export const Direction = makeCircularEnum([
+export const Direction = newFakeGasenum([
   "UP", //	Enum	The direction of decreasing row indices.
   "DOWN", //	Enum	The direction of increasing row indices.
   "PREVIOUS", //	Enum	The direction of decreasing column indices.
   "NEXT", //	Enum	The direction of increasing column indices.
 ])
-export const FrequencyType = makeCircularEnum([
+export const FrequencyType = newFakeGasenum([
   "FREQUENCY_TYPE_UNSUPPORTED", //	Enum	The frequency type is unsupported.
   "DAILY", //	Enum	Refresh daily.
   "WEEKLY", //	Enum	Refresh weekly, on given days of the week.
   "MONTHLY", //	Enum	Refresh monthly, on given days of the month.
 ])
-export const GroupControlTogglePosition = makeCircularEnum([
+export const GroupControlTogglePosition = newFakeGasenum([
   "BEFORE", //	Enum	The position where the control toggle is before the group (at lower indices).
   "AFTER", //	Enum	The position where the control toggle is after the group (at higher indices).
 ])
-export const InterpolationType = makeCircularEnum([
+export const InterpolationType = newFakeGasenum([
   "NUMBER", //	Enum	Use the number as as specific interpolation point for a gradient condition.
   "PERCENT", //	Enum	Use the number as a percentage interpolation point for a gradient condition.
   "PERCENTILE", //	Enum	Use the number as a percentile interpolation point for a gradient condition.
   "MIN", //	Enum	Infer the minimum number as a specific interpolation point for a gradient condition.
   "MAX", //	Enum	Infer the maximum number as a specific interpolation point for a gradient condition.
 ])
-export const PivotTableSummarizeFunction = makeCircularEnum([
+export const PivotTableSummarizeFunction = newFakeGasenum([
   "CUSTOM", //	Enum	A custom function, this value is only valid for calculated fields.
   "SUM", //	Enum	The SUM function
   "COUNTA", //	Enum	The COUNTA function
@@ -206,22 +206,22 @@ export const PivotTableSummarizeFunction = makeCircularEnum([
   "VAR", //	Enum	The VAR function
   "VARP", //	Enum	The VARP function
 ])
-export const PivotValueDisplayType = makeCircularEnum([
+export const PivotValueDisplayType = newFakeGasenum([
   "DEFAULT", //	Enum	Default. Displays pivot values as the actual value and not as a function of another value.
   "PERCENT_OF_ROW_TOTAL", //	Enum	Displays pivot values as a percent of the total for that row.
   "PERCENT_OF_COLUMN_TOTAL", //	Enum	Displays pivot values as a percent of the total for that column.
   "PERCENT_OF_GRAND_TOTAL", //	Enum	Displays pivot values as a percent of the grand total.  
 ])
-export const ProtectionType = makeCircularEnum([
+export const ProtectionType = newFakeGasenum([
   "RANGE", //	Enum	Protection for a range.
   "SHEET", //	Enum	Protection for a sheet.  
 ])
-export const RecalculationInterval = makeCircularEnum([
+export const RecalculationInterval = newFakeGasenum([
   "ON_CHANGE", //	Enum	Recalculate only when values are changed.
   "MINUTE", //	Enum	Recalculate when values are changed, and every minute.
   "HOUR", //	Enum	Recalculate when values are changed, and every hour.
 ])
-export const RelativeDate = makeCircularEnum([
+export const RelativeDate = newFakeGasenum([
   "TODAY", //	Enum	Dates compared against the current date.
   "TOMORROW", //	Enum	Dates compared against the date after the current date.
   "YESTERDAY", //	Enum	Dates compared against the date before the current date.
@@ -229,26 +229,26 @@ export const RelativeDate = makeCircularEnum([
   "PAST_MONTH", //	Enum	Dates that fall within the past month period.
   "PAST_YEAR", //	Enum	Dates that fall within the past year period.
 ])
-export const SheetType = makeCircularEnum([
+export const SheetType = newFakeGasenum([
   "GRID", //	Enum	A sheet containing a grid. This is the default type.
   "OBJECT", //	Enum	A sheet containing a single embedded object such as an EmbeddedChart.
   "DATASOURCE", //	Enum	A sheet containing a DataSource.
 ])
-export const SortOrder = makeCircularEnum([
+export const SortOrder = newFakeGasenum([
   "ASCENDING", //	Enum	Ascending sort order.
   "DESCENDING", //	Enum	Descending sort order.
 ])
-export const TextDirection = makeCircularEnum([
+export const TextDirection = newFakeGasenum([
   "LEFT_TO_RIGHT", //	Enum	Left-to-right text direction.
   "RIGHT_TO_LEFT", //	Enum	Right-to-left text direction.
 ])
-export const TextToColumnsDelimiter = makeCircularEnum([
+export const TextToColumnsDelimiter = newFakeGasenum([
   "COMMA", //	Enum	"," delimiter.
   "SEMICOLON", //	Enum	";" delimiter.
   "PERIOD", //	Enum	"." delimiter.
   "SPACE", //	Enum	" " delimiter.
 ])
-export const ThemeColorType = makeCircularEnum([
+export const ThemeColorType = newFakeGasenum([
   "UNSUPPORTED", //	Enum	Represents a theme color that is not supported.
   "TEXT", //	Enum	Represents the text color.
   "BACKGROUND", //	Enum	Represents the color to use for chart's background.
@@ -260,10 +260,10 @@ export const ThemeColorType = makeCircularEnum([
   "ACCENT6", //	Enum	Represents the sixth accent color.
   "HYPERLINK", //	Enum	Represents the color to use for hyperlinks.
 ])
-export const ValueType = makeCircularEnum([
+export const ValueType = newFakeGasenum([
   "IMAGE", //	Enum	The value type when the cell contains an image.
 ])
-export const WrapStrategy = makeCircularEnum([
+export const WrapStrategy = newFakeGasenum([
   "WRAP", //	Enum	Wrap lines that are longer than the cell width onto a new line. Single words that are longer than a line are wrapped at the character level.
   "OVERFLOW", //	Enum	Overflow lines into the next cell, so long as that cell is empty. If the next cell over is non-empty, this behaves the same as CLIP.
   "CLIP", //	Enum	Clip lines that are longer than the cell width.

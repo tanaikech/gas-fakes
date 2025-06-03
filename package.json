@@ -3,6 +3,7 @@
     "node": ">=20.11.0"
   },
   "dependencies": {
+    "@mcpher/fake-gasenum": "^1.0.1",
     "@sindresorhus/is": "^7.0.1",
     "archiver": "^7.0.1",
     "get-stream": "^9.0.1",

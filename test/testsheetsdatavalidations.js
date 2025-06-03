@@ -147,6 +147,33 @@ export const testSheetsDataValidations = (pack) => {
     check()
   }
 
+
+
+
+  unit.section("test enum selection", t => {
+    t.is(SpreadsheetApp.DataValidationCriteria.DATE_AFTER.toString(), 'DATE_AFTER', "check criteria enum")
+    t.is(SpreadsheetApp.RelativeDate.TODAY.toString(), 'TODAY', "check relative dates")
+    t.is(SpreadsheetApp.ProtectionType.SHEET.toString(), 'SHEET')
+    t.is(SpreadsheetApp.DataValidationCriteria.DATE_BEFORE.toString(), 'DATE_BEFORE', "check criteria enum")
+    t.is(SpreadsheetApp.DataValidationCriteria.DATE_AFTER_RELATIVE.toString(), 'DATE_AFTER_RELATIVE', "check relative criteria enum")
+  })
+
+
+  unit.section("getting relative dates and formulas with requires - these can only be set by the UI", t => {
+    const sp = SpreadsheetApp.openById(fixes.TEST_BORDERS_ID)
+    const sb = sp.getSheetByName('dv')
+
+    
+    critty(t, sb, "b29", "DATE_EQUAL_TO_RELATIVE", [SpreadsheetApp.RelativeDate.TODAY])
+    critty(t, sb, "h28:i28", "DATE_AFTER_RELATIVE", [SpreadsheetApp.RelativeDate.TOMORROW])
+    critty(t, sb, "k28:k29", "DATE_BEFORE_RELATIVE", [SpreadsheetApp.RelativeDate.PAST_YEAR])
+
+    // what if value is a formula
+    critty(t, sb, "g24", "DATE_EQUAL_TO", ['=I1'])
+    critty(t, sb, "f24", "TEXT_CONTAINS", ['=F7'])
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+  })
+
   unit.section("data validation basics", t => {
     const {sheet: sv} = maketss ('datavalidation',toTrash, fixes)
 
@@ -320,28 +347,6 @@ export const testSheetsDataValidations = (pack) => {
 
 
 
-  unit.section("getting relative dates and formulas with requires - these can only be set by the UI", t => {
-    const sp = SpreadsheetApp.openById(fixes.TEST_BORDERS_ID)
-    const sb = sp.getSheetByName('dv')
-
-    critty(t, sb, "b29", "DATE_EQUAL_TO_RELATIVE", [SpreadsheetApp.RelativeDate.TODAY])
-    critty(t, sb, "h28:i28", "DATE_AFTER_RELATIVE", [SpreadsheetApp.RelativeDate.TOMORROW])
-    critty(t, sb, "k28:k29", "DATE_BEFORE_RELATIVE", [SpreadsheetApp.RelativeDate.PAST_YEAR])
-
-    // what if value is a formula
-    critty(t, sb, "g24", "DATE_EQUAL_TO", ['=I1'])
-    critty(t, sb, "f24", "TEXT_CONTAINS", ['=F7'])
-    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-  })
-
-
-  unit.section("test enum selection", t => {
-    t.is(SpreadsheetApp.DataValidationCriteria.DATE_AFTER.toString(), 'DATE_AFTER', "check criteria enum")
-    t.is(SpreadsheetApp.RelativeDate.TODAY.toString(), 'TODAY', "check relative dates")
-    t.is(SpreadsheetApp.ProtectionType.SHEET.toString(), 'SHEET')
-    t.is(SpreadsheetApp.DataValidationCriteria.DATE_BEFORE.toString(), 'DATE_BEFORE', "check criteria enum")
-    t.is(SpreadsheetApp.DataValidationCriteria.DATE_AFTER_RELATIVE.toString(), 'DATE_AFTER_RELATIVE', "check relative criteria enum")
-  })
 
 
 

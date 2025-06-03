@@ -136,8 +136,16 @@ export const signatureArgs = (received, method, objectType = 'Object') => {
   const nargs = args.length
   
   // let's update the passedTypes for the error message to match what GAS does - https://github.com/brucemcpherson/gas-fakes/issues/25
-  const passedTypes = args.map(is).map(capital).map(f=>f==='Object' ? objectType : f)
-
+  // this throws an error if it inspects an ENUM
+  // TODO probably need to remove the guard on fake enums
+  // for now we;ll just catch and ignore
+  let passedTypes
+  try {
+    passedTypes = args.map(is).map(capital).map(f=>f==='Object' ? objectType : f)
+  } catch (err) {
+    console.log ("...warning failed signature check- probably an is. probe of an enum - ignoring", args)
+    passedTypes=[]
+  }
   const matchThrow = (mess = method) => {
     throw new Error(`The parameters (${passedTypes.join(",")}) don't match the method signature for ${mess}`)
   }
