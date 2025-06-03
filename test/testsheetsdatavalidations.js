@@ -147,66 +147,6 @@ export const testSheetsDataValidations = (pack) => {
     check()
   }
 
-  unit.section("setting data validations", t => {
-
-    const {sheet: sb} = maketss ('datavalidation',toTrash, fixes)
-
-    const da = new Date('1920-11-18')
-    const db = new Date('2012-12-31')
-
-    scritty(t, sb, "a19:b19", "VALUE_IN_RANGE", "requireValueInRange", [sb.getRange("$a$1:$b$3"), false])
-    scritty(t, sb, "a19:b19", "VALUE_IN_RANGE", "requireValueInRange", [sb.getRange("$a$1:$b$3"), true])
-
-    const comp = [
-      [[[1,2],true],[[3,4,5],false],[[6,7],true]],
-      [[['a','b'],false],[['c','d','e'],true],[['f','g'],false]]
-    ]
-    scritty(t, sb, "e19:g20", "VALUE_IN_LIST", "requireValueInList", comp, true)
-    scritty(t, sb, "c19:e19", "VALUE_IN_LIST", "requireValueInList", [["foo", "bar", "foobar"],true], true)
-
-    scritty(t, sb, "c15:e16", "DATE_BETWEEN", "requireDateBetween", [[[da, db], [db, db], [da, da]], [[da, da], [db, db], [da, db]]])
-    scritty(t, sb, "a15:b15", "DATE_IS_VALID_DATE", "requireDate")
-
-    scritty(t, sb, "a17:b17", "TEXT_CONTAINS", "requireTextContains", ["foo"])
-    scritty(t, sb, "c17:d17", "TEXT_DOES_NOT_CONTAIN", "requireTextDoesNotContain", ["bar"])
-    scritty(t, sb, "e17:f17", "TEXT_IS_VALID_URL", "requireTextIsUrl")
-
-
-    const vt = [[['foo'], ['bar']], [['bar'], ['foo']]]
-    scritty(t, sb, "a1:b2", "TEXT_EQUAL_TO", 'requireTextEqualTo', vt)
-    scritty(t, sb, "c1:d2", "CHECKBOX", 'requireCheckbox')
-    scritty(t, sb, "e1:f2", "CHECKBOX", 'requireCheckbox', ['foo', 'bar'])
-
-    scritty(t, sb, "a3", "CUSTOM_FORMULA", 'requireFormulaSatisfied', ["=F7"])
-    scritty(t, sb, "c3:d4", "CUSTOM_FORMULA", 'requireFormulaSatisfied', ["=Sheet1!$F$7:$F$8"])
-
-    scritty(t, sb, "a5:b6", "NUMBER_NOT_BETWEEN", "requireNumberNotBetween", [20, 40])
-    scritty(t, sb, "c5", "NUMBER_BETWEEN", "requireNumberBetween", [20, 40])
-    scritty(t, sb, "e5:f6", "NUMBER_NOT_EQUAL_TO", "requireNumberNotEqualTo", [20])
-
-    scritty(t, sb, "a7:b8", "NUMBER_EQUAL_TO", "requireNumberEqualTo", [20])
-    scritty(t, sb, "c7:d8", "NUMBER_LESS_THAN_OR_EQUAL_TO", "requireNumberLessThanOrEqualTo", [20])
-    scritty(t, sb, "e7:f8", "NUMBER_LESS_THAN", "requireNumberLessThan", [20])
-
-    scritty(t, sb, "a9:b10", "NUMBER_GREATER_THAN_OR_EQUAL_TO", "requireNumberGreaterThanOrEqualTo", [20])
-    scritty(t, sb, "c9:d10", "NUMBER_GREATER_THAN", "requireNumberGreaterThan", [20])
-    scritty(t, sb, "e9:f10", "NUMBER_BETWEEN", "requireNumberBetween", [[[20, 40], [30, 40]], [[50, 60], [70, 80]]])
-
-
-    scritty(t, sb, "a11:b11", "DATE_NOT_BETWEEN", "requireDateNotBetween", [da, db])
-    scritty(t, sb, "c11:d11", "DATE_BETWEEN", "requireDateBetween", [da, db])
-    scritty(t, sb, "e11:f11", "DATE_ON_OR_AFTER", "requireDateOnOrAfter", [da])
-
-    scritty(t, sb, "a13:b13", "DATE_ON_OR_BEFORE", "requireDateOnOrBefore", [da])
-    scritty(t, sb, "c13:d13", "DATE_BEFORE", "requireDateBefore", [da])
-    scritty(t, sb, "e13:f13", "DATE_EQUAL_TO", "requireDateEqualTo", [db])
-
-    scritty(t, sb, "a15:b15", "DATE_AFTER", "requireDateAfter", [da])
-
-    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-
-  })
-  
   unit.section("data validation basics", t => {
     const {sheet: sv} = maketss ('datavalidation',toTrash, fixes)
 
@@ -314,6 +254,69 @@ export const testSheetsDataValidations = (pack) => {
 
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
   })
+
+  unit.section("setting data validations", t => {
+
+    const {sheet: sb} = maketss ('datavalidation',toTrash, fixes)
+
+    const da = new Date('1920-11-18')
+    const db = new Date('2012-12-31')
+
+
+    const comp = [
+      [[[1,2],true],[[3,4,5],false],[[6,7],true]],
+      [[['a','b'],false],[['c','d','e'],true],[['f','g'],false]]
+    ]
+    scritty(t, sb, "e19:g20", "VALUE_IN_LIST", "requireValueInList", comp, true)
+    scritty(t, sb, "c19:e19", "VALUE_IN_LIST", "requireValueInList", [["foo", "bar", "foobar"],true], true)
+
+    scritty(t, sb, "a19:b19", "VALUE_IN_RANGE", "requireValueInRange", [sb.getRange("$a$1:$b$3"), false])
+    scritty(t, sb, "a19:b19", "VALUE_IN_RANGE", "requireValueInRange", [sb.getRange("$a$1:$b$3"), true])
+
+    scritty(t, sb, "c15:e16", "DATE_BETWEEN", "requireDateBetween", [[[da, db], [db, db], [da, da]], [[da, da], [db, db], [da, db]]])
+    scritty(t, sb, "a15:b15", "DATE_IS_VALID_DATE", "requireDate")
+
+    scritty(t, sb, "a17:b17", "TEXT_CONTAINS", "requireTextContains", ["foo"])
+    scritty(t, sb, "c17:d17", "TEXT_DOES_NOT_CONTAIN", "requireTextDoesNotContain", ["bar"])
+    scritty(t, sb, "e17:f17", "TEXT_IS_VALID_URL", "requireTextIsUrl")
+
+
+    const vt = [[['foo'], ['bar']], [['bar'], ['foo']]]
+    scritty(t, sb, "a1:b2", "TEXT_EQUAL_TO", 'requireTextEqualTo', vt)
+    scritty(t, sb, "c1:d2", "CHECKBOX", 'requireCheckbox')
+    scritty(t, sb, "e1:f2", "CHECKBOX", 'requireCheckbox', ['foo', 'bar'])
+
+    scritty(t, sb, "a3", "CUSTOM_FORMULA", 'requireFormulaSatisfied', ["=F7"])
+    scritty(t, sb, "c3:d4", "CUSTOM_FORMULA", 'requireFormulaSatisfied', ["=Sheet1!$F$7:$F$8"])
+
+    scritty(t, sb, "a5:b6", "NUMBER_NOT_BETWEEN", "requireNumberNotBetween", [20, 40])
+    scritty(t, sb, "c5", "NUMBER_BETWEEN", "requireNumberBetween", [20, 40])
+    scritty(t, sb, "e5:f6", "NUMBER_NOT_EQUAL_TO", "requireNumberNotEqualTo", [20])
+
+    scritty(t, sb, "a7:b8", "NUMBER_EQUAL_TO", "requireNumberEqualTo", [20])
+    scritty(t, sb, "c7:d8", "NUMBER_LESS_THAN_OR_EQUAL_TO", "requireNumberLessThanOrEqualTo", [20])
+    scritty(t, sb, "e7:f8", "NUMBER_LESS_THAN", "requireNumberLessThan", [20])
+
+    scritty(t, sb, "a9:b10", "NUMBER_GREATER_THAN_OR_EQUAL_TO", "requireNumberGreaterThanOrEqualTo", [20])
+    scritty(t, sb, "c9:d10", "NUMBER_GREATER_THAN", "requireNumberGreaterThan", [20])
+    scritty(t, sb, "e9:f10", "NUMBER_BETWEEN", "requireNumberBetween", [[[20, 40], [30, 40]], [[50, 60], [70, 80]]])
+
+
+    scritty(t, sb, "a11:b11", "DATE_NOT_BETWEEN", "requireDateNotBetween", [da, db])
+    scritty(t, sb, "c11:d11", "DATE_BETWEEN", "requireDateBetween", [da, db])
+    scritty(t, sb, "e11:f11", "DATE_ON_OR_AFTER", "requireDateOnOrAfter", [da])
+
+    scritty(t, sb, "a13:b13", "DATE_ON_OR_BEFORE", "requireDateOnOrBefore", [da])
+    scritty(t, sb, "c13:d13", "DATE_BEFORE", "requireDateBefore", [da])
+    scritty(t, sb, "e13:f13", "DATE_EQUAL_TO", "requireDateEqualTo", [db])
+
+    scritty(t, sb, "a15:b15", "DATE_AFTER", "requireDateAfter", [da])
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+
+  })
+  
+
 
 
 

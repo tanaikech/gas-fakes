@@ -189,9 +189,8 @@ export const dataValidationCriteriaMapping = {
     type: ['range','boolean'],
     validator: (args, matchThrow) => {
       let [range, showDropdown] = args
-      if (isNullOrUndefined(showDropdown)) showDropdown = true
       if (!is.function(range.toString) || range.toString() !== 'Range') matchThrow()
-      return [range, showDropdown]
+      return [range,  is.undefined(showDropdown) ? true : showDropdown]
     },
     apiEnum: "ONE_OF_RANGE"
   },
@@ -207,11 +206,10 @@ export const dataValidationCriteriaMapping = {
       //  - display style chip/arrow/plain text 
       //  - multiple selections - only chip allows this 
       let [values, showDropdown] = args
-      if (isNullOrUndefined(showDropdown)) showDropdown = true
       if (values.some(f => !is.function(f?.toString))) matchThrow()
         // it seems that apps script insers a true default for showDropdown even if not explicitly given.
        // we 
-      return [values.map(f=>f.toString()), showDropdown]
+      return [values.map(f=>f.toString()), is.undefined(showDropdown) ? true : showDropdown ]
     },
     apiEnum: 'ONE_OF_LIST'
   }

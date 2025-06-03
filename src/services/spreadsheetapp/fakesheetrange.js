@@ -589,7 +589,6 @@ export class FakeSheetRange {
         const field = critter.apiField || 'userEnteredValue'
         const type = critter.apiEnum || critter.name
         let values = dv.getCriteriaValues()
-
         let showCustomUi = null
         // but if its one of these - drop the last arg
         if (critter.name === "VALUE_IN_LIST" || critter.name === "VALUE_IN_RANGE") {
@@ -597,7 +596,7 @@ export class FakeSheetRange {
             throw new Error(`Expected 2 args for ${critter.name} but got ${values.length}`)
           } else {
             showCustomUi = values[1]
-            values = values.slice(0, -1)
+             values = values.slice(0, -1)
           }
           // convert any ranges to formulas
           if (critter.name === "VALUE_IN_RANGE") {

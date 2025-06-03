@@ -28,7 +28,7 @@ You don't have access to the GAS maintained cloud project, so you'll need to cre
 
 ### Testing
 
-I recommend you use the test project included in the repo to make sure all is set up correctly. It uses a Fake DriveApp service to excercise Auth etc. Just change the fixtures in your own environments by following the instructions in [setup-env.md](https://github.com/brucemcpherson/gas-fakes/blob/main/setup-env.MD), then `npm i && npm test`. 
+I recommend you use the test project included in the repo to make sure all is set up correctly. It uses a Fake DriveApp service to excercise Auth etc. Just change the fixtures in your own environments by following the instructions in [setup-env.md](https://github.com/brucemcpherson/gas-fakes/blob/main/setup-env.MD), then `npm i && npm test`.
 
 Note that I use a [unit tester](https://ramblings.mcpher.com/apps-script-test-runner-library-ported-to-node/) that runs in both GAS and Node, so the exact same tests will run in both environments. There are some example tests in the repo. Each test has been proved on both Node and GAS. There's also a shell (togas.sh) which will use clasp to push the test code to Apps Script.
 
@@ -93,7 +93,6 @@ Although Apps Script supports async/await/promise syntax, it operates in blockin
 Since asynchonicity is fundamental to Node, there's no real simple way to convert async to sync. However, there is such a thing as a [child-process](https://nodejs.org/api/child_process.html#child-process) which you can start up to run things, and it features an [execSync](https://nodejs.org/api/child_process.html#child_processexecsynccommand-options) method which delays the return from the child process until the promise queue is all settled. So the simplest solution is to run an async method in a child process, wait till it's done, and return the results synchronously. I found that [Sindre Sorhus](https://github.com/sindresorhus) uses this approach with [make-synchronous](https://github.com/sindresorhus/make-synchronous), so I'm using that.
 
 Runnng up a child process in Node is pretty expensive and slow (especially of you're running in debug mode in vscode), so I'll be looking for ways to speed that up when I get to it.
-
 
 ### OAuth
 
@@ -175,7 +174,7 @@ Tests for all methods are added as we go to the cumulative unit tests and run on
 
 Each service has a FakeClass but I needed the Auth cycle to be initiated and done before making them public. Using a proxy was the simplest approach.
 
-In short, the service is registered as an empty object, but when any attempt is made to access it actually returns a different object which handles the request. In the `ScriptApp` example, `ScriptApp` is an empty object, but accessing `ScriptApp.getOAuthToken()` returns an Fake `ScriptApp` object which gets initialized if you try to access it. 
+In short, the service is registered as an empty object, but when any attempt is made to access it actually returns a different object which handles the request. In the `ScriptApp` example, `ScriptApp` is an empty object, but accessing `ScriptApp.getOAuthToken()` returns an Fake `ScriptApp` object which gets initialized if you try to access it.
 
 There's also a test available to see if you are running in GAS or on Node - `ScriptApp.isFake`. In fact this method 'isFake' is available on any of the implemented services, eg `DriveApp.isFake`.
 
@@ -213,7 +212,7 @@ I'll make a note in thre repos issues on implementation differences. In the main
 
 ### Tradeoffs
 
-I've come across various Apps Script bugs/issues as I work through this which I've reported to the GAS team, and added workarounds in the gas fakes code - not sure at this point whether to duplicate the buggy behavior or simulate what would seem to be the correct one. Again - any things you come across please use the issues in the repo to report. 
+I've come across various Apps Script bugs/issues as I work through this which I've reported to the GAS team, and added workarounds in the gas fakes code - not sure at this point whether to duplicate the buggy behavior or simulate what would seem to be the correct one. Again - any things you come across please use the issues in the repo to report.
 
 ## Oddities
 
@@ -222,6 +221,7 @@ Just a few things I've come across when digging into the differences between wha
 ### Formats and styles
 
 When getting formats with the sheets API, there are 2 types
+
 - userEnteredFormat - any formats a user (or an apps script function) has explicitly set
 - effectiveFormat - what rendered format actually looks like
 
@@ -235,7 +235,7 @@ Here is how I've implemented getting and setting values.
 
 - getValues() uses { valueRenderOption: 'UNFORMATTED_VALUE' }
 - setValues() uses { valueInputOption: "RAW" } (as opposed to 'USER_ENTERED')
-- getDisplayValues() { valueRenderOption: 'FORMATTED_VALUE' } 
+- getDisplayValues() { valueRenderOption: 'FORMATTED_VALUE' }
 
 ### Data Validation
 
@@ -243,24 +243,25 @@ There's quite a few oddities in Data Validation, which turned out to be the most
 
 #### Criteria types
 
-A few of the criteria types differ between the Sheets API and Apps Script - for example TEXT_IS_VALID_EMAIL on GAS is equivalent to TEXT_IS_EMAIL on the API, and VALUE_IN_LIST is equivalent to ONE_OF_LIST and a few others. I tried using Gemini to help tabulate the differences but there were too many errors for that to be a trustworthy source. 
+A few of the criteria types differ between the Sheets API and Apps Script - for example TEXT_IS_VALID_EMAIL on GAS is equivalent to TEXT_IS_EMAIL on the API, and VALUE_IN_LIST is equivalent to ONE_OF_LIST and a few others. I tried using Gemini to help tabulate the differences but there were too many errors for that to be a trustworthy source.
 
 Here's an example Gemini reponse during multiple back and forward conversations.
-````
-You are absolutely, completely, and unequivocally correct! My apologies for this ongoing and unacceptable level of inaccuracy. You are demonstrating remarkable patience and a keen eye for detail.
-````
 
-The file 'fakedatavalidationcriteria.js' has a list of the final mappings between the 2. 
+```
+You are absolutely, completely, and unequivocally correct! My apologies for this ongoing and unacceptable level of inaccuracy. You are demonstrating remarkable patience and a keen eye for detail.
+```
+
+The file 'fakedatavalidationcriteria.js' has a list of the final mappings between the 2.
 
 #### Relative dates
 
 Both the sheets API and GAS can return either relative dates or actual dates. In Sheets, you'll see a relativeDate property versus a userEnteredValue, whereas in GAS you get a different code to the one expected - so in other words a criteria type you expect to return DATE_EQUAL, might instead return DATE_EQUAL_TO_RELATIVE.
 
-
 As usual, Gemini is no help in this.
-````
+
+```
 You are absolutely correct, and I apologize profusely for the significant inaccuracies in my previous list of SpreadsheetApp.DataValidationCriteria properties. My information was clearly outdated and unreliable. Thank you for providing the complete and correct list.
-````
+```
 
 ##### Setting a relative date
 
@@ -269,14 +270,17 @@ There are no methods in Apps Script to actually set relative dates in Data Valid
 Not all date validations have related RELATIVE versions. See later section for details.
 
 In GAS (and of course also with GasFakes), in theory you would set a relative date like this, which gives the appearance of working, but in fact does nothing. If you follow up by retrieving the just set value, it'll throw an unexpected error.
-````js
-  const rule = SpreadsheetApp.newDataValidation()
-    .withCriteria (SpreadsheetApp.DataValidationCriteria.DATE_EQUAL_TO_RELATIVE,[SpreadsheetApp.RelativeDate.TODAY])
-    .build()
-  const range = sheet.getRange("b30")
-  range.setDataValidation(rule)
 
-````
+```js
+const rule = SpreadsheetApp.newDataValidation()
+  .withCriteria(SpreadsheetApp.DataValidationCriteria.DATE_EQUAL_TO_RELATIVE, [
+    SpreadsheetApp.RelativeDate.TODAY,
+  ])
+  .build();
+const range = sheet.getRange("b30");
+range.setDataValidation(rule);
+```
+
 Because this doesn't work in GAS, I'm not at this point sure whether to handle this or throw an error. Will review once I see whether there is any insight on the reported issue.
 
 ##### Getting a relative date
@@ -284,51 +288,53 @@ Because this doesn't work in GAS, I'm not at this point sure whether to handle t
 You can of course set a limited set of relative Data Validation via the UI, and GAS supports returning its content. However the criteria type returned from App Script getCriteriaType() is in the form DATE_EQUAL_TO_RELATIVE etc. If you are using the advanced sheets service you can find these values in the relativeDate field, rather than the userEnteredValue field.
 
 This is what the sheets API returns.
-````
+
+```
 {"condition":{"type":"DATE_EQ","values":[{"relativeDate":"TODAY"}]}}
-````
+```
 
 Which would be translated into a criteria type of DATE_EQUAL_TO_RELATIVE in GAS, with the value SpreadsheetApp.DataValidation.Criteria.TODAY
 
-
 #### datavalidation enum and relative dates
 
-Despite being able to return a criteriaType of _RELATIVE, these are not documented in the criteriaType ENUM (https://developers.google.com/apps-script/reference/spreadsheet/data-validation-criteria), do not have corresponding require builder functions, and although they can be set using the withCriteria method, they create an invalid dataValidation (https://issuetracker.google.com/issues/418495831). 
+Despite being able to return a criteriaType of \_RELATIVE, these are not documented in the criteriaType ENUM (https://developers.google.com/apps-script/reference/spreadsheet/data-validation-criteria), do not have corresponding require builder functions, and although they can be set using the withCriteria method, they create an invalid dataValidation (https://issuetracker.google.com/issues/418495831).
 
 These 3 relatives exist as keys of SpreadsheetApp.DataValidationCriteria, but none of the other DATE enum values exist
+
 - DATE_AFTER_RELATIVE
 - DATE_BEFORE_RELATIVE
 - DATE_EQUAL_TO_RELATIVE
 
 I'll implement these 3 realtives in gasFakes, but treat the others as invalid. However, you cannot set these as the sheets API doesnt support seting of relative dates with Data Validation and neither does GAS - which doesnt throw an error. I believe it should I'm going to throw an error if you try.
 
-
 #### datavalidation with formulas
 
 Normally there's a strict check on the input to .requirexxx methods (for example dates, numbers etc). However the Sheets UI and the Sheets API allow these values to be formulas - and the formulas are stored as the user enters them. When using GAS, you would normally use a custom formula for these occasions.
 
 In other words - here's what happens in GAS when you retrieve a data validation that has had a formula used as its value
-````
+
+```
   console.log (cb.getCriteriaType().toString())    // DATE_EQUAL_TO
   console.log (cb.getCriteriaValues())             // [ '=I1' ]
-````
+```
+
 and yet, you get the error 'The parameters (String) don't match the method signature for SpreadsheetApp.DataValidationBuilder.requireDate.' with this.
-````
+
+```
 SpreadsheetApp.newDataValidation().requireDate("=i1")
-````
+```
 
 Another way to bypass the argument validation is to use withCriteria. For example, this will work, even though the string argument would have been rejected by requireDate()
-````
+
+```
  SpreadsheetApp.newDataValidation().withCriteria(SpreadsheetApp.DataValidationCriteria.DATE_AFTER,['=i1']).build()
-````
+```
 
 I'm leaving these same behaviors in place, and you would need to use the same workarounds as you do in GAS.
 
 #### mixing real dates and relative dates
 
-Since only relative versions of single dates are implemented in GAS, there's no need to handle mixed relative and real dates.  As an aside, there's no validation in the UI, so you can enter any nonsense in the from and to values.
-
-
+Since only relative versions of single dates are implemented in GAS, there's no need to handle mixed relative and real dates. As an aside, there's no validation in the UI, so you can enter any nonsense in the from and to values.
 
 #### Locale of dates
 
@@ -338,10 +344,21 @@ CriteriaValues are stored as a string, exactly as typed by the user. This means 
 
 Some of the options available in the GAS UI for setting or examining data validation are not available via GAS, and may not be available via Sheets. I'll update that later once I've figured the exact omissions and dicovered if there's a workaround. Since I'm implementing what GAS can currently do, not what it should do, this may not be an issue - just disappointing omissions.
 
-##### examples of UI settings not directly gettable (or I haven't figured them out yet)
-- the range that holds the drop down list for value_in_range
-- allow multiple selections
-- display style (chip, arrow, plain text)
+##### examples of UI settings not intuitively settable in GAS service
+
+- allow multiple selections - needs the allowMultipleSelections set to true - you need to you advanced service to set this
+- display style - chip - This needs the displayStyle property set to "CHIP" - you need to you advanced service to set this
+- color for drop downs - haven't looked into this, but it's not possible via regular gas service.
+
+###### showCustomUI
+
+This API property controls whether to show a drop down as plain text, or to use a fancy display such as chip or arrow. In the UI the default is true, and the displayStyle is "CHIP". As mentioned though you can't set the displayStyle with SpreadsheetApp, so setting showCustomUI true via the datavalidation builder will give you the arrow displayStyle.
+
+In the Apps Script DataValidation builder, setting showCustomUi is achieved via the boolean 2nd argument(known as showDropdown) to requireValueInList() and requireValueInRange(). 
+
+Despite the various defaults, a missing value for these properties returned via the Sheets API always means false, and a missing displayStyle with showCustomUi set to true default is "ARROW".
+
+
 
 ## Help
 

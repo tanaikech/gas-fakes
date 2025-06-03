@@ -38,11 +38,7 @@ const mapMethod = (self, prop, { method, nargs, type, validator }) => {
         return is.date(a) ? zeroizeTime(a) : a
       })
     }
-    if (method === "requireValueInRange" || method === "requireValueInList") {
-      // we only want the 1st argumnet      // because the second is handled differently in the api
-      // TODO - check the default is true in both cases
-      args[1] = (is.null(args[1]) || is.undefined(args[1]) ? true : args[1])
-    }
+
     return self.__setRule(prop, args)
   }
 }
@@ -124,15 +120,6 @@ class FakeDataValidationBuilder {
     return this.__allowInvalid
   }
 
-  // this doesn't exist in apps script - its an argument to value in list or value in range
-  __getShowCustomUi() {
-    return this.__showCustomUi
-  }
-
-  __setShowCustomUi(value) {
-    this.__showCustomUi = value
-    return this
-  }
 
   setAllowInvalid(allowInvalid) {
     const { nargs, matchThrow } = signatureArgs(arguments, "setAllowInvalid")
@@ -183,13 +170,9 @@ export const makeDataValidationFromApi = (apiResult, range) => {
     builder.setHelpText(inputMessage)
   }
 
-  // TODO - check the default is true in both cases
-  if (is.nullOrUndefined(showCustomUi)) showCustomUi = true
-
   const isFormula = (f) => is.string(f) && f.startsWith('=')
   const hasRelative = (value) => Reflect.has(value, "relativeDate")
   const hasActual = (value) => Reflect.has(value, "userEnteredValue")
-
 
   let conType = condition?.type
   let critter = builder.__getCritter(conType)

@@ -21,6 +21,7 @@ const newCircularEnum = (...args) => {
   return Proxies.guard(e)
 }
 
+
   /**
    * make an apps script style enum
    * @param {string[]} keys the valid key values for the enum
