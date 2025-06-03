@@ -1,0 +1,13 @@
+{
+
+  "type": "module",
+  "scripts": {
+
+  },
+  "name": "@mcpher/fake-gas-enum",
+  "version": "1.0.0",
+  "main": "main.js",
+  "description": "A interpretation of Apps Script Enums on Node",
+  "repository": "github:brucemcpherson/fakegasenums",
+  "homepage": "https://ramblings.mcpher.com/a-proof-of-concept-implementation-of-apps-script-environment-on-node/"
+}
