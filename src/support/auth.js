@@ -31,15 +31,15 @@ const getTokenInfo = () => {
   return _tokenInfo
 }
 
-const getAccessToken= () => {
+const getAccessToken = () => {
   if (!_accessToken) throw `access token isnt set yet`
   return _accessToken
 }
 
-const getTimeZone = () => getManifest().timeZone 
+const getTimeZone = () => getManifest().timeZone
 const getUserId = () => getTokenInfo().sub
 const getTokenScopes = () => getTokenInfo().scope
-const getHashedUserId = () => createHash('md5').update(getUserId()+'hud').digest().toString('hex')
+const getHashedUserId = () => createHash('md5').update(getUserId() + 'hud').digest().toString('hex')
 
 
 /**
@@ -48,13 +48,29 @@ const getHashedUserId = () => createHash('md5').update(getUserId()+'hud').digest
  * @param {string[]} [scopes=[]] the required scopes will be added to existing scopes already asked for
  * @returns {GoogleAuth.auth}
  */
+
+// initial call is just to set the project id using a simple auth
+const setProjectIdFromADC = async (scopes) => {
+  const auth = new GoogleAuth({
+    scopes,
+  })
+  _projectId = await auth.getProjectId()
+  if (!_projectId) throw new Error('failed to get project id from adc')
+  return _projectId
+}
+
 const setAuth = (scopes = []) => {
 
   if (!hasAuth() || !scopes.every(s => _authScopes.has(s))) {
+    // if we havent yet got a project id, then we need an auth that can get it
+    // want to keep this function sync so we'll simply re do auth on being called until somehow we get one
     _auth = new GoogleAuth({
-      scopes
+      scopes,
+      projectId: getProjectId()
     })
+
     scopes.forEach(s => _authScopes.add(s))
+
   }
   return getAuth()
 }
@@ -94,7 +110,7 @@ const googify = (options = {}) => {
  */
 const getProjectId = () => {
   if (is.null(_projectId) || is.undefined(_projectId)) {
-    throw new Error ('Project id not set - this means that the fxInit wasnt run')
+    throw new Error('Project id not set - this means that the fxInit wasnt run')
   }
   return _projectId
 }
@@ -102,7 +118,7 @@ const getProjectId = () => {
 /** 
  * @returns {Boolean} checks to see if auth has bee initialized yet
  */
-const hasAuth = () => Boolean (_auth)
+const hasAuth = () => Boolean(_auth)
 
 /**
  * @returns {GoogleAuth.auth}
@@ -159,5 +175,6 @@ export const Auth = {
   setClasp,
   getManifest,
   getClasp,
-  getTimeZone
+  getTimeZone,
+  setProjectIdFromADC
 }

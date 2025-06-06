@@ -57,6 +57,7 @@ export const sxStreamUpMedia = async ({ resource, drapisPath, authPath, scopes, 
   const { default: intoStream } = await import('into-stream');
 
   // the scopes are required to set up an appropriate auth
+  await Auth.setProjectIdFromADC(scopes)
   Auth.setAuth(scopes)
   const auth = Auth.getAuth()
 
@@ -117,6 +118,7 @@ export const sxDriveMedia = async ({ id, drapisPath, authPath, scopes }) => {
   const { getStreamAsBuffer } = await import('get-stream');
 
   // the scopes are required to set up an appropriate auth
+  await Auth.setProjectIdFromADC(scopes)
   Auth.setAuth(scopes)
   const auth = Auth.getAuth()
 

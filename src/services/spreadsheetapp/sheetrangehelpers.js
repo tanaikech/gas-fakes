@@ -1,5 +1,5 @@
 import { Utils} from '../../support/utils.js'
-const {  getPlucker } = Utils
+const {  getPlucker, is } = Utils
 
 /**
  * see if the result matches the range size - if it doesnt it's a jagged array - some api methods return that
@@ -66,6 +66,7 @@ export const attrGens = (self, target) => {
     // if we got nothing, return the template of defaults
     if (!rowData) return makeTemplate({ range, defaultValue, cleaner })
 
+
     // pluck each cell
     // extract the required props to an array
     const plucker = getPlucker(props, defaultValue)
@@ -94,25 +95,28 @@ export const attrGens = (self, target) => {
     reducer: target.reducer
   })
 
-  // it's likely that if there's a reducer, we should also be skippingSingle
-  if (target.reducer) {
-    if (!target.skipSingle) console.log(props, range.getA1Notation(), 'has a reducer but is not skipping single - sure thats right?')
-  }
-
   // both a single and collection version
   // also some queries return a consolidated/reduced version
   if (!target.skipPlural) {
     const plural = target.plural || (target.name + 's')
     self[plural] = () => {
+      // get all the values in the range
       const values = getters(self)
-      return target.reducer ? target.reducer(values.flat()) : values
+      // some gets would like a single result
+      const reduced  =  target.reducer ? target.reducer(values.flat()) : values
+      // some allow a null response for example
+      return target.finalizer ? target.finalizer(reduced) : reduced
     }
   }
 
   if (!target.skipSingle) {
     self[target.name] = () => {
+      // just get the 1st value in the range
       const values = getters(self.__getTopLeft())
-      return target.reducer ? target.reducer(values.flat()) : (values && values[0] && values[0][0])
+      // some gets would like a single result
+      const reduced = target.reducer ? target.reducer(values.flat()) : (values && values[0] && values[0][0])
+      // some allow a null response for example
+      return target.finalizer ? target.finalizer(reduced) : reduced
     }
   }
 

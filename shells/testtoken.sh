@@ -5,6 +5,7 @@ source "$ROOT_DIRECTORY/.env"
 # check tokens have scopes required for DRIVE access
 # set below to a fileid on drive you have access to
 FILE_ID=$DRIVE_TEST_FILE_ID
+SHEET_ID=$TEST_AIRPORTS_ID
 
 # get the access tokens and current project
 ADT=$(gcloud auth application-default print-access-token)
@@ -21,5 +22,9 @@ echo "...try using adc token"
 # note - you must add the x-goog-user-project header, otherwise it'll use some nonexistent project
 # - see https://cloud.google.com/docs/authentication/rest#set-billing-project
 curl -H "Authorization: Bearer ${ADT}" https://www.googleapis.com/drive/v3/files/${FILE_ID} \
+  -H "x-goog-user-project: ${P}" \
+  -H "Content-Type: application/json; charset=utf-8"
+
+curl -H "Authorization: Bearer ${ADT}" https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID} \
   -H "x-goog-user-project: ${P}" \
   -H "Content-Type: application/json; charset=utf-8"

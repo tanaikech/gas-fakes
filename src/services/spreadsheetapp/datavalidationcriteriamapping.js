@@ -1,4 +1,3 @@
-import { isNullOrUndefined } from '@sindresorhus/is'
 import { Utils } from '../../support/utils.js'
 const { is } = Utils
 

@@ -10,7 +10,7 @@ import '../main.js'
 import { initTests } from './testinit.js'
 import { getSheetsPerformance } from '../src/support/sheetscache.js';
 import { getPerformance } from '../src/support/filecache.js';
-import { maketss, trasher } from './testassist.js';
+import { maketss, trasher , compareValue, addDays, zeroizeTime, getDimensions } from './testassist.js';
 
 import is from '@sindresorhus/is';
 
@@ -22,45 +22,7 @@ export const testSheetsDataValidations = (pack) => {
 
   // for debugging
   const noisy = false
-  const zeroizeTime = (date) => {
-    const year = date.getFullYear();
-    const month = date.getMonth(); // Month is 0-indexed
-    const day = date.getDate();
-    return new Date(year, month, day, 0, 0, 0, 0);
-  }
 
-  const addDays = (date, daysToAdd = 1) => {
-    const newDate = new Date(date);
-    newDate.setDate(date.getDate() + daysToAdd);
-    return newDate;
-  }
-  const isRange = (a) => is.object(a) && !is.null(a) && is.function(a.toString) && a.toString() === "Range"
-  const isEnum = (a) => is.object(a) && Reflect.has(a, "compareTo") && is.function(a.compareTo)
-  const bothEnums = (a, b) => isEnum(a) && isEnum(b)
-  const rangeFix = (a) => isRange(a) ? `=${a.getSheet().getName()}!${a.getA1Notation()}` : a
-  const valuesFix = (a) => is.array(a) ? a.map (stringer) : stringer(a)
-  const stringer = (a) => is.null(a) || is.undefined(a) 
-    ? a 
-    : (isRange(a) ? rangeFix(a) : (is.function (a.toString) ? a.toString() : a))
-
-  const compareValue = (t, a, b, prop) => {
-    if (bothEnums(a, b)) {
-      t.is(a.compareTo(b), 0,prop)
-      t.is(a.toString(), b.toString(),prop)
-    } else {
-      t.deepEqual(valuesFix(a), valuesFix(b),prop)
-    }
-  }
-
-  // how many dimensions the values array has
-  const getDimensions = (v) => {
-    let dims = 0
-    while (is.array(v)) {
-      dims++
-      v = v[0]
-    }
-    return dims
-  }
 
   const critty = (t, sb, range, prop, values) => {
     const cr = sb.getRange(range)

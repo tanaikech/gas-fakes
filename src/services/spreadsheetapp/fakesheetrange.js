@@ -169,9 +169,13 @@ const attrGetList = [{
   // there's an optional argument to cleaner, which is the range requesting
   // this will allow make from api to have access to spreadsheet requesting if it needs to make its own ranges
   cleaner: ((f, range) => {
-    // make data validation needs a spreadsheet it refers to because it may need to create a range
-    return makeDataValidationFromApi(f, range)
-  })
+    // TODO check what happens if some of the parts of the range have no validation?
+    return is.null(f) ? null : makeDataValidationFromApi(f, range)
+  }),
+  finalizer: (a) => {
+    // this one allows a null to be returned of there's nothing
+    return (is.array(a) && a.flat(Infinity).every(f=>is.null(f))) ? null : a
+  }
 }]
 
 const valuesGetList = [{
@@ -226,8 +230,7 @@ export class FakeSheetRange {
       'setFontColorObjects',
 
 
-      'clearDataValidations',
-
+   
 
       'setTextDirection',
       'setFontWeight',
@@ -371,7 +374,9 @@ export class FakeSheetRange {
     return this.setValues([])
   }
 
-
+  clearDataValidations(){
+    this.setDataValidations(null)
+  }
   /**
    * protect() https://developers.google.com/apps-script/reference/spreadsheet/sheet#protect
    * Creates an object that can protect the sheet from being edited except by users who have permission.
@@ -562,18 +567,32 @@ export class FakeSheetRange {
    * @return {FakeSheetRange} self
    */
   setDataValidations(rules) {
-    // TODO clear if rules are null
     return this.__setDataValidations(rules)
   }
 
 
   __setDataValidations(rules) {
     const { nargs, matchThrow } = signatureArgs(arguments, "Range.setDataValidations")
-    if (nargs !== 1 || !is.array(rules)) matchThrow()
+    
+    // this is a clear
+    if (is.null(rules)) {
+      Sheets.Spreadsheets.batchUpdate({ requests: [{
+        setDataValidation: {
+          range: this.__makeGridRange(this)
+        }
+      }] }, this.__getSpreadsheetId(), { ss: true })
+      return this
+    }
+
+    // this setting some values
+    if (nargs !== 1 || !is.nonEmptyArray(rules)) matchThrow()
     if (!this.__arrMatchesRange(rules, "object"))
       if (!rules.flat().every(f => f instanceof FakeDataValidation)) matchThrow()
 
+    // TODO
     // if the rules are all different we need to create a separate request for each member of the range
+    // all the same we can use a single fetch
+
     const requests = []
 
     for (let offsetRow = 0; offsetRow < this.getNumRows(); offsetRow++) {
@@ -625,7 +644,7 @@ export class FakeSheetRange {
 
         const request = {
           setDataValidation: {
-            range: this.__makeGridRange(range),
+            range: this.__makeGridRange(this),
             rule
           }
         }
@@ -635,8 +654,6 @@ export class FakeSheetRange {
 
     Sheets.Spreadsheets.batchUpdate({ requests }, this.__getSpreadsheetId(), { ss: true })
     return this
-
-
 
 
   }

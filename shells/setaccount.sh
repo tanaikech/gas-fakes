@@ -31,8 +31,9 @@ gcloud config set billing/quota_project $P
 # login to both - (enable gdive if required)
 DRIVE="--enable-gdrive-access"
 gcloud auth login "${DRIVE}"
-gcloud auth application-default set-quota-project $P
 gcloud auth application-default login --scopes="${SCOPES}" 
+gcloud auth application-default set-quota-project $P
+
 
 # double check
 DC=$(cat ~/.config/gcloud/active_config)

@@ -86,14 +86,11 @@ export const sxInit = async ({ manifestPath, authPath, claspPath, settingsPath, 
   // get the required scopes and set them
   const scopes = manifest.oauthScopes || []
 
-  // register the required scopes
-  Auth.setAuth(scopes)
+  // first set up the projectId which is actually async
+  const projectId = await Auth.setProjectIdFromADC(scopes)
 
-  // get the googleauth object
-  const auth = Auth.getAuth()
-
-  // we need the projectId for special header for UrlFetchApp to Goog apis
-  const projectId = await auth.getProjectId()
+  // now we can register the scopes and set up a full auth including it
+  const auth = Auth.setAuth(scopes)
 
   // get an access token so we can test it to pick up the authed scopes etc
   const accessToken = await auth.getAccessToken()

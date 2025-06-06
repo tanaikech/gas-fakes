@@ -17,6 +17,7 @@ export const sxApi = async ({ subProp, prop, method, apiPath, authPath, scopes, 
   const { getAuthedClient } = await import(apiPath)
 
   // the scopes are required to set up an appropriate auth
+  await Auth.setProjectIdFromADC(scopes)
   Auth.setAuth(scopes)
   //console.log ( 'sxapi', { subProp, prop, method, apiPath, authPath, scopes, params, options })
   // this is the node service api

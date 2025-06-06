@@ -7,8 +7,7 @@
     "@sindresorhus/is": "^7.0.1",
     "archiver": "^7.0.1",
     "get-stream": "^9.0.1",
-    "google-auth-library": "^9.15.0",
-    "googleapis": "^144.0.0",
+    "googleapis": "^150.0.1",
     "got": "^14.4.5",
     "into-stream": "^8.0.1",
     "keyv": "^5.2.3",
@@ -34,6 +33,7 @@
     "testscriptapp": "cp mainlocal.js main.js &&  node --env-file=.env ./test/testscriptapp.js execute",
     "testfiddler": "cp mainlocal.js main.js &&  node --env-file=.env ./test/testfiddler.js execute",
     "testenums": "cp mainlocal.js main.js &&  node --env-file=.env ./test/testenums.js execute",
+    "testsheetssets": "cp mainlocal.js main.js &&  node --env-file=.env ./test/testsheetssets.js execute",
     "pub": "cp mainlocal.js main.js && npm publish --access public"
   },
   "name": "@mcpher/gas-fakes",

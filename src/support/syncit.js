@@ -322,8 +322,8 @@ const fxInit = ({
   } = synced
 
   // set these values from the subprocess for the main project
-  Auth.setAuth(scopes)
   Auth.setProjectId(projectId)
+  Auth.setAuth(scopes)
   Auth.setTokenInfo(tokenInfo)
   Auth.setAccessToken(accessToken)
   Auth.setSettings(settings)
