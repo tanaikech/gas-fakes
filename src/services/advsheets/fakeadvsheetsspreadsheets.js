@@ -18,7 +18,7 @@ import { getWorkbookEntry, setWorkbookEntry, clearWorkbookCache } from "../../su
 class FakeAdvSheetsSpreadsheets {
   constructor(sheets) {
 
-    this.__fakeObjectType ="Sheets.Spreadsheets"
+    this.__fakeObjectType = "Sheets.Spreadsheets"
 
     const props = [
       'getByDataFilter',
@@ -49,26 +49,25 @@ class FakeAdvSheetsSpreadsheets {
    */
   batchUpdate(requests, spreadsheetId, { ss = false } = {}) {
 
+    
     // note that in GAS adv sheet service doesnt take the requestBody parameter - it just sends requests as the arg
     // so we need to wrap that in requestbody for the Node API
-    const requestBody = requests
-
     const pack = {
       prop: "spreadsheets",
       method: "batchUpdate",
       params: {
         spreadsheetId,
-        requestBody
+        requestBody: requests
       }
     }
 
     const { response, data } = Syncit.fxSheets(pack)
-    
+
     // naive cache - was an update so zap everything
     clearWorkbookCache(spreadsheetId)
 
     // maybe we need to throw an error
-    ssError (response, pack.method, ss)
+    ssError(response, pack.method, ss)
 
     return data
   }
@@ -96,7 +95,7 @@ class FakeAdvSheetsSpreadsheets {
     const { response, data } = Syncit.fxSheets(pack)
 
     // maybe we need to throw an error
-    ssError (response, pack.method, ss)
+    ssError(response, pack.method, ss)
 
     // all is good so write to cache
     setWorkbookEntry(id, pack, data)
@@ -107,7 +106,7 @@ class FakeAdvSheetsSpreadsheets {
    * @param {Spreadsheet} resource #https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets#SpreadsheetProperties
    * @return {Spreadsheet} resource
    */
-  create(resource, {ss=false} = {}) {
+  create(resource, { ss = false } = {}) {
 
     const pack = {
       prop: "spreadsheets",
@@ -121,7 +120,7 @@ class FakeAdvSheetsSpreadsheets {
     const { response, data } = Syncit.fxSheets(pack)
 
     // maybe we need to throw an error
-    ssError (response, pack.method, ss)
+    ssError(response, pack.method, ss)
 
     return data
   }

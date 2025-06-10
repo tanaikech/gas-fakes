@@ -10,7 +10,7 @@ import path from 'path'
 import { Auth } from "./auth.js"
 import { randomUUID } from 'node:crypto'
 import mime from 'mime';
-import { sxStreamUpMedia,  sxDriveMedia } from './sxdrive.js';
+import { sxStreamUpMedia, sxDriveMedia } from './sxdrive.js';
 import { sxApi } from './sxapi.js';
 import { sxStore } from './sxstore.js'
 import { sxInit } from './sxauth.js'
@@ -19,6 +19,7 @@ import { sxFetch } from './sxfetch.js';
 import { minFields } from './helpers.js'
 import { mergeParamStrings } from './utils.js'
 import { improveFileCache, checkResponse, getFromFileCache } from "./filecache.js"
+import is from '@sindresorhus/is';
 
 
 const authPath = "../support/auth.js"
@@ -30,6 +31,9 @@ const claspDefaultPath = "./.clasp.json"
 const settingsDefaultPath = "./gasfakes.json"
 const propertiesDefaultPath = "/tmp/gas-fakes/properties"
 const cacheDefaultPath = "/tmp/gas-fakes/cache"
+// note that functions like Sheets.newGridRange() etc create objects that contain get and set functions
+// the makesynchronous functions need data that can be serialized. so we need to string/parse to normlaize them
+const normalizeSerialization = (ob) => is.nullOrUndefined(ob) || !is.object(ob) ? ob : JSON.parse(JSON.stringify(ob))
 
 /**
  * note that the relpath of exports file 
@@ -99,7 +103,7 @@ const fxStreamUpMedia = ({ file = {}, blob, fields = "", method = "create", file
     params
   })
   // check result and register in cache
-  return registerSx(result, false,fields)
+  return registerSx(result, false, fields)
 }
 
 /**
@@ -133,7 +137,7 @@ const fxDrive = ({ prop, method, params }) => {
  * @param {object} p.params the params to add to the request
  * @return {SheetsResponse} from the sheets api
  */
-const fxSheets = ({subProp,  prop, method, params }) => {
+const fxSheets = ({ subProp, prop, method, params }) => {
 
 
   const scopes = Array.from(Auth.getAuthedScopes().keys())
@@ -170,7 +174,7 @@ const fxDriveGet = ({ id, params, allow404 = false, allowCache = true }) => {
   if (allowCache) {
     const { cachedFile, good } = getFromFileCache(id, params.fields)
     if (good) return {
-   
+
       data: cachedFile,
       // fake a good sxresponse
       response: {
@@ -179,7 +183,7 @@ const fxDriveGet = ({ id, params, allow404 = false, allowCache = true }) => {
       }
     }
   }
- 
+
   // so we have to hit the API
   // these would have been set from the manifest
   const scopes = Array.from(Auth.getAuthedScopes().keys())
@@ -193,7 +197,7 @@ const fxDriveGet = ({ id, params, allow404 = false, allowCache = true }) => {
   })
 
   // check result and register in cache
-  return registerSx(result, allow404,params.fields)
+  return registerSx(result, allow404, params.fields)
 }
 
 /**
@@ -206,13 +210,15 @@ const fxDriveGet = ({ id, params, allow404 = false, allowCache = true }) => {
  * @param {string} p.apiPath where to import the api from
  * @return {DriveResponse} from the drive api
  */
-const fxApi = ({subProp,  prop, method, params, apiPath, options }) => {
+const fxApi = ({ subProp, prop, method, params, apiPath, options }) => {
 
   const scopes = Array.from(Auth.getAuthedScopes().keys())
 
   // get a sync version of this async function
   const fx = makeSynchronous(sxApi)
-  
+
+
+
   const result = fx({
     subProp,
     prop,
@@ -220,8 +226,8 @@ const fxApi = ({subProp,  prop, method, params, apiPath, options }) => {
     apiPath: getModulePath(apiPath),
     authPath: getModulePath(authPath),
     scopes,
-    params,
-    options
+    params: normalizeSerialization(params),
+    options: normalizeSerialization(options)
   })
 
   return result

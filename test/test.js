@@ -21,6 +21,7 @@ import { getSheetsPerformance } from '../src/support/sheetscache.js';
 import { testFiddler } from './testfiddler.js';
 import { testSheetsDataValidations } from './testsheetsdatavalidations.js';
 import { testEnums } from './testenums.js';
+import { testSheetsSets } from './testsheetssets.js';
 
 const testFakes = () => {
   const pack = initTests()
@@ -29,6 +30,8 @@ const testFakes = () => {
   // add one of these for each service being tested
   console.log ('\n----Test Enums----')
   testEnums(pack)
+  console.log ('\n----Test Sheets Sets----')
+  testSheetsSets(pack)
   console.log ('\n----Test Sheets DataValidations----')
   testSheetsDataValidations(pack)
   console.log ('\n----Test Sheets Permissions----')

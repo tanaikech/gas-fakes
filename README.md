@@ -32,7 +32,10 @@ I recommend you use the test project included in the repo to make sure all is se
 
 Note that I use a [unit tester](https://ramblings.mcpher.com/apps-script-test-runner-library-ported-to-node/) that runs in both GAS and Node, so the exact same tests will run in both environments. There are some example tests in the repo. Each test has been proved on both Node and GAS. There's also a shell (togas.sh) which will use clasp to push the test code to Apps Script.
 
-Each test can be run indivually (for example `npm run testdrive`) or all with `npm test`
+Each test can be run individually (for example `npm run testdrive`) or all with `npm test`
+
+Test settings and fixtures are in the .env file. Some readonly files are publicly shared and can be left with the example value in .env-template. Most files which are written are created and deleted afterwards on successful completion. They will be named something starting with --. 
+
 
 ### Settings
 
@@ -216,7 +219,20 @@ I've come across various Apps Script bugs/issues as I work through this which I'
 
 ## Oddities
 
-Just a few things I've come across when digging into the differences between what the sheets API and Apps Script do. Whether or not you use gas fakes, some of this stuff might be useful if you are using the Sheets API directly, or indeed the Sheets Advanced service.
+Just a few things I've come across when digging into the differences between what the sheets API and Apps Script do. Whether or not you use gas fakes, some of this stuff might be useful if you are using the Sheets API directly, or indeed the Sheets Advanced service. I'll just make a growing list of stuff I've found, in no particular order.
+
+
+### Note to collaborators
+If you are tempted to use Gemini as a shortcut to avoid reading the docs, I've found that it's pretty inaccurate and you can waste a huge amount of time taking what it says as gospel. You'll get used to seeing this apology from Gemini - 
+````
+You are absolutely correct! My sincerest apologies for that significant error.
+
+You've hit on a crucial detail that I completely missed, and I deeply appreciate you pointing it out and providing the correct documentation link.
+````
+
+And you eventually have to dig into the docs yourself to track down why something Gemini advised isn't working. 
+
+I'm just not bothering with at all now. It wastes more time than it saves.
 
 ### Formats and styles
 
@@ -361,6 +377,9 @@ Despite the various defaults, a missing value for these properties returned via 
 ## Enums
 
 All Apps Script enums are imitated using a seperate class 'newFakeGasenum()'. A complete write up of that is in [fakegasenum](https://github.com/brucemcpherson/fakegasenum). The same functionality is also available as an Apps Script library if you'd like to make your own enums over on GAS just like you find in Apps Script.
+
+## Auth
+Sometime between v144 and v150 of googleapis library, it appeared to become mandatory to include the project id in the auth pattern for API clients. Since we get the project id from the ADC, we actually have to do double auths. One to get the project id (which is async), and another to get an auth with the scopes required for the sheets, drive etc client (which is not async). All this now taken care of during the init phase, so look at an existing getauthenticated client function  for how if you are adding a new service,
 
 ## Help
 

@@ -8,10 +8,10 @@ import { newFakeWrapStrategy, isWrapped } from '../commonclasses/fakewrapstrateg
 import { newFakeTextRotation } from '../commonclasses/faketextrotation.js'
 import { makeTextStyleFromApi } from '../commonclasses/faketextstylebuilder.js'
 import { newFakeTextDirection } from '../commonclasses/faketextdirection.js'
-import { attrGens, valueGens } from "./sheetrangehelpers.js"
+import { attrGens, valueGens, getGridRange, updateCells, isRange, makeGridRange } from "./sheetrangehelpers.js"
 import { makeDataValidationFromApi } from "./fakedatavalidationbuilder.js"
 const { is, rgbToHex, hexToRgb, stringer, robToHex, outsideInt } = Utils
-const isRange = (a) => is.object(a) && !is.null(a) && is.function(a.toString) && a.toString() === "Range"
+
 
 const WHITER = { red: 1, green: 1, blue: 1 }
 const BLACKER = { red: 0, green: 0, blue: 0 }
@@ -90,7 +90,7 @@ const attrGetList = [{
 }, {
   name: 'getFontSize',
   props: '.userEnteredFormat.textFormat.fontSize',
-  defaultValue: 10,
+  defaultValue: 10
 }, {
   name: 'getWrapStrategy',
   props: '.userEnteredFormat.wrapStrategy',
@@ -223,14 +223,12 @@ export class FakeSheetRange {
     attrGetList.forEach(target => attrGens(this, target))
     valuesGetList.forEach(target => valueGens(this, target))
 
+
     // list of not yet implemented methods
     const props = [
       'removeDuplicates',
       'getMergedRanges',
       'setFontColorObjects',
-
-
-   
 
       'setTextDirection',
       'setFontWeight',
@@ -578,7 +576,7 @@ export class FakeSheetRange {
     if (is.null(rules)) {
       Sheets.Spreadsheets.batchUpdate({ requests: [{
         setDataValidation: {
-          range: this.__makeGridRange(this)
+          range: makeGridRange(this)
         }
       }] }, this.__getSpreadsheetId(), { ss: true })
       return this
@@ -644,7 +642,7 @@ export class FakeSheetRange {
 
         const request = {
           setDataValidation: {
-            range: this.__makeGridRange(this),
+            range: makeGridRange(range),
             rule
           }
         }
@@ -677,9 +675,8 @@ export class FakeSheetRange {
       }))
     }))
     const fields = 'userEnteredFormat.backgroundColor'
-    const request = this.__getRequestUc(rows, fields)
-    Sheets.Spreadsheets.batchUpdate({ requests: [request] }, this.__getSpreadsheetId(), { ss: true })
-    return this
+    return updateCells ({range: this, rows, fields, spreadsheetId: this.__getSpreadsheetId()})
+
   }
 
   /**
@@ -699,9 +696,7 @@ export class FakeSheetRange {
 
     // see __getColorItem for how this allows mixing of both theme and rgb colors.
     const fields = 'userEnteredFormat.backgroundColorStyle'
-    const request = this.__getRequestUc(rows, fields)
-    Sheets.Spreadsheets.batchUpdate({ requests: [request] }, this.__getSpreadsheetId(), { ss: true })
-    return this
+    return updateCells (this, rows, fields)
 
   }
 
@@ -750,9 +745,8 @@ export class FakeSheetRange {
 
 
     const fields = 'userEnteredFormat.textFormat.foregroundColor'
-    const request = this.__getRequestUc(rows, fields)
-    Sheets.Spreadsheets.batchUpdate({ requests: [request] }, this.__getSpreadsheetId(), { ss: true })
-    return this
+    return updateCells (this, rows, fields)
+
   }
 
   /** 
@@ -846,61 +840,26 @@ export class FakeSheetRange {
     return this.__getSpreadsheet().getId()
   }
 
-  /** 
-   * get the id of the sheet hostig this range
-   */
 
-  /**
-   * for use with updateCells
-   * @returns {object}
-   */
-  __getRequestUc = (rows, fields) => {
-    return {
-      updateCells: {
-        start: this.__getStartUc(),
-        rows,
-        fields
-      }
-    }
-  }
-  // Make a gridrange from a range
-  __makeGridRange = (range) => {
-    return {
-      sheetId: range.getSheet().getSheetId(),
-      startRowIndex: range.getRowIndex() - 1,
-      startColumnIndex: range.getColumnIndex() - 1,
-      endRowIndex: range.getRowIndex() + range.getNumRows() - 1,
-      endColumnIndex: range.getColumnIndex() + range.getNumColumns() - 1
-    }
-  }
+
   /**
    * sometimes a range has no  grid range so we need to fake one
    */
   get __gridRange() {
-    if (this.__hasGrid) return this.__apiGridRange
-    // in this case we didn't get one, so we need to fake one
-    return {
-      sheetId: this.getSheet().getSheetId(),
-      startRowIndex: 0,
-      startColumnIndex: 0,
-      endRowIndex: this.getSheet().getMaxRows(),
-      endColumnIndex: this.getSheet().getMaxColumns()
-    }
-  }
-  /**
-   * for use with updateCells
-   * @returns {object}
-   */
-  __getStartUc = () => {
-    const gridRange = this.__gridRange
-    const start = {
-      sheetId: gridRange.sheetId,
-      rowIndex: gridRange.startRowIndex,
-      columnIndex: gridRange.startColumnIndex
-    }
-    return start
+    return getGridRange(this)
   }
 
+  __toGridRange (range = this) {
+    const gr = makeGridRange(range)
+    
+    // convert to a sheets style
+    return Sheets.newGridRange(gr)
+      .setSheetId(gr.sheetId)
+      .setStartRowIndex(gr.startRowIndex)
+      .setStartColumnIndex(gr.startColumnIndex)
+      .setEndRowIndex(gr.endRowIndex)
+      .setEndColumnIndex(gr.endColumnIndex)
+  }
   __getTopLeft() {
     return this.offset(0, 0, 1, 1)
   }
