@@ -42,14 +42,24 @@ class FakeAdvSheetsSpreadsheets {
   }
 
   /**
+ * batchUpdate: https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets/batchUpdate
+ * note that the order of args -- requests first then id - is different to usual
+ * Batch request looks like this https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets/request#request
+ * @param {object} request batch request {request:Request[]}
+ */
+  batchUpdate(requests, spreadsheetId, options) {
+    return this.__batchUpdate(requests, spreadsheetId, options, { ss: false } )
+  }
+
+  /**
    * batchUpdate: https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets/batchUpdate
    * note that the order of args -- requests first then id - is different to usual
    * Batch request looks like this https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets/request#request
    * @param {object} request batch request {request:Request[]}
    */
-  batchUpdate(requests, spreadsheetId, { ss = false } = {}) {
+  __batchUpdate(requests, spreadsheetId, options, { ss = true } = {}) {
 
-    
+    // this is wrapper for batchupdate so we can alter the behavior depending on whether we're being called by spreadsheetapp
     // note that in GAS adv sheet service doesnt take the requestBody parameter - it just sends requests as the arg
     // so we need to wrap that in requestbody for the Node API
     const pack = {
@@ -58,7 +68,8 @@ class FakeAdvSheetsSpreadsheets {
       params: {
         spreadsheetId,
         requestBody: requests
-      }
+      },
+      options
     }
 
     const { response, data } = Syncit.fxSheets(pack)

@@ -80,7 +80,6 @@ export const testSheetsSets = (pack) => {
 
   })
 
-  
   unit.section("clearing ranges", t => {
     const { sheet: sv } = maketss('clearing', toTrash, fixes)
 

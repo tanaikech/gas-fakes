@@ -114,7 +114,7 @@ const fxStreamUpMedia = ({ file = {}, blob, fields = "", method = "create", file
  * @param {object} p.params the params to add to the request
  * @return {DriveResponse} from the drive api
  */
-const fxDrive = ({ prop, method, params }) => {
+const fxDrive = ({ prop, method, params, options }) => {
 
   const scopes = Array.from(Auth.getAuthedScopes().keys())
   return fxApi({
@@ -123,7 +123,8 @@ const fxDrive = ({ prop, method, params }) => {
     apiPath: drapisPath,
     authPath,
     scopes,
-    params
+    params,
+    options
   })
 
 }
@@ -137,7 +138,7 @@ const fxDrive = ({ prop, method, params }) => {
  * @param {object} p.params the params to add to the request
  * @return {SheetsResponse} from the sheets api
  */
-const fxSheets = ({ subProp, prop, method, params }) => {
+const fxSheets = ({ subProp, prop, method, params, options }) => {
 
 
   const scopes = Array.from(Auth.getAuthedScopes().keys())
@@ -148,7 +149,8 @@ const fxSheets = ({ subProp, prop, method, params }) => {
     apiPath: shapisPath,
     authPath,
     scopes,
-    params
+    params,
+    options
   })
 
 }
@@ -162,7 +164,7 @@ const fxSheets = ({ subProp, prop, method, params }) => {
  * @param {object} p.params the params to add to the request
  * @return {DriveResponse} from the drive api
  */
-const fxDriveGet = ({ id, params, allow404 = false, allowCache = true }) => {
+const fxDriveGet = ({ id, params, allow404 = false, allowCache = true ,options}) => {
 
   // fixup the fields param
   // we'll fiddle with the scopes to populate cache
@@ -193,7 +195,8 @@ const fxDriveGet = ({ id, params, allow404 = false, allowCache = true }) => {
     apiPath: drapisPath,
     authPath,
     scopes,
-    params
+    params,
+    options
   })
 
   // check result and register in cache
@@ -216,8 +219,6 @@ const fxApi = ({ subProp, prop, method, params, apiPath, options }) => {
 
   // get a sync version of this async function
   const fx = makeSynchronous(sxApi)
-
-
 
   const result = fx({
     subProp,

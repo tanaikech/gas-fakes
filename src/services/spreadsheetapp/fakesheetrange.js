@@ -8,7 +8,7 @@ import { newFakeWrapStrategy, isWrapped } from '../commonclasses/fakewrapstrateg
 import { newFakeTextRotation } from '../commonclasses/faketextrotation.js'
 import { makeTextStyleFromApi } from '../commonclasses/faketextstylebuilder.js'
 import { newFakeTextDirection } from '../commonclasses/faketextdirection.js'
-import { attrGens, valueGens, getGridRange, updateCells, isRange, makeGridRange } from "./sheetrangehelpers.js"
+import { attrGens, valueGens, getGridRange, updateCells, isRange, makeGridRange, makeSheetsGridRange, batchUpdate } from "./sheetrangehelpers.js"
 import { makeDataValidationFromApi } from "./fakedatavalidationbuilder.js"
 const { is, rgbToHex, hexToRgb, stringer, robToHex, outsideInt } = Utils
 
@@ -41,7 +41,8 @@ export const newFakeSheetRange = (...args) => {
 const attrGetList = [{
   name: 'getNumberFormat',
   props: '.userEnteredFormat.numberFormat',
-  defaultValue: "0.###############"
+  defaultValue: "0.###############",
+  makeSetter: (value) => Sheets.newNumberFormat().setPattern(value).setType("NUMBER")
 }, {
   name: 'getVerticalAlignment',
   props: '.userEnteredFormat.verticalAlignment',
@@ -174,7 +175,7 @@ const attrGetList = [{
   }),
   finalizer: (a) => {
     // this one allows a null to be returned of there's nothing
-    return (is.array(a) && a.flat(Infinity).every(f=>is.null(f))) ? null : a
+    return (is.array(a) && a.flat(Infinity).every(f => is.null(f))) ? null : a
   }
 }]
 
@@ -260,7 +261,7 @@ export class FakeSheetRange {
       'setFontStyle',
       'setFontStyles',
       'setFontWeights',
-      'setNumberFormats',
+
       'setVerticalAlignments',
       'setWrap',
       'setWraps',
@@ -333,7 +334,7 @@ export class FakeSheetRange {
       'sort',
       'check',
       'getFilter',
-      'setNumberFormat',
+
       // these are not documented, so will skip for now
       'setComment',
       'getComment'
@@ -372,7 +373,7 @@ export class FakeSheetRange {
     return this.setValues([])
   }
 
-  clearDataValidations(){
+  clearDataValidations() {
     this.setDataValidations(null)
   }
   /**
@@ -555,7 +556,6 @@ export class FakeSheetRange {
    * @return {FakeSheetRange} self
    */
   setDataValidation(rule) {
-    // TODO clear if rules are null
     return this.__setDataValidations(this.__fillRange({ value: rule }))
   }
 
@@ -568,20 +568,24 @@ export class FakeSheetRange {
     return this.__setDataValidations(rules)
   }
 
-
+  
   __setDataValidations(rules) {
     const { nargs, matchThrow } = signatureArgs(arguments, "Range.setDataValidations")
-    
+    const spreadsheetId = this.__getSpreadsheetId()
+
+    // an 'official Sheets objects to do this kind of thing
+    // it's actually more long winded than just constructing the requests manually
     // this is a clear
     if (is.null(rules)) {
-      Sheets.Spreadsheets.batchUpdate({ requests: [{
-        setDataValidation: {
-          range: makeGridRange(this)
-        }
-      }] }, this.__getSpreadsheetId(), { ss: true })
+      const setDataValidation = Sheets
+        .newSetDataValidationRequest()
+        .setRange(makeSheetsGridRange(this))
+        .setRule(null);
+      batchUpdate({ spreadsheetId, requests: [{ setDataValidation }] })
       return this
     }
 
+    //---
     // this setting some values
     if (nargs !== 1 || !is.nonEmptyArray(rules)) matchThrow()
     if (!this.__arrMatchesRange(rules, "object"))
@@ -613,14 +617,14 @@ export class FakeSheetRange {
             throw new Error(`Expected 2 args for ${critter.name} but got ${values.length}`)
           } else {
             showCustomUi = values[1]
-             values = values.slice(0, -1)
+            values = values.slice(0, -1)
           }
           // convert any ranges to formulas
           if (critter.name === "VALUE_IN_RANGE") {
             if (!isRange(values[0])) {
               throw `expected a range for ${critter.name} but got ${values[0]}`
             }
-            values[0] = `=${values[0].__getWithSheet()}` 
+            values[0] = `=${values[0].__getWithSheet()}`
           }
         }
 
@@ -633,26 +637,23 @@ export class FakeSheetRange {
           type,
           values
         }
-        const rule = {
-          condition,
-          strict: !dv.getAllowInvalid()
-        }
-        if (!is.null(showCustomUi)) rule.showCustomUi = showCustomUi
-        if (!is.null(dv.getHelpText())) rule.inputMessage = dv.getHelpText()
 
-        const request = {
-          setDataValidation: {
-            range: makeGridRange(range),
-            rule
-          }
-        }
-        requests.push(request)
+        const rule = Sheets.newDataValidationRule()
+          .setCondition(condition)
+          .setStrict(!dv.getAllowInvalid())
+
+        if (!is.null(showCustomUi)) rule.setShowCustomUi (showCustomUi)
+
+        const setDataValidation = Sheets
+          .newSetDataValidationRequest()
+          .setRange(makeSheetsGridRange(range))
+          .setRule(rule);
+
+        requests.push({setDataValidation})
       }
     }
-
-    Sheets.Spreadsheets.batchUpdate({ requests }, this.__getSpreadsheetId(), { ss: true })
+    batchUpdate({ spreadsheetId, requests })
     return this
-
 
   }
 
@@ -675,7 +676,7 @@ export class FakeSheetRange {
       }))
     }))
     const fields = 'userEnteredFormat.backgroundColor'
-    return updateCells ({range: this, rows, fields, spreadsheetId: this.__getSpreadsheetId()})
+    return updateCells({ range: this, rows, fields, spreadsheetId: this.__getSpreadsheetId() })
 
   }
 
@@ -696,7 +697,7 @@ export class FakeSheetRange {
 
     // see __getColorItem for how this allows mixing of both theme and rgb colors.
     const fields = 'userEnteredFormat.backgroundColorStyle'
-    return updateCells (this, rows, fields)
+    return updateCells({ range: this, rows, fields, spreadsheetId: this.__getSpreadsheetId() })
 
   }
 
@@ -745,7 +746,7 @@ export class FakeSheetRange {
 
 
     const fields = 'userEnteredFormat.textFormat.foregroundColor'
-    return updateCells (this, rows, fields)
+    return updateCells({ range: this, rows, fields, spreadsheetId: this.__getSpreadsheetId() })
 
   }
 
@@ -849,9 +850,9 @@ export class FakeSheetRange {
     return getGridRange(this)
   }
 
-  __toGridRange (range = this) {
+  __toGridRange(range = this) {
     const gr = makeGridRange(range)
-    
+
     // convert to a sheets style
     return Sheets.newGridRange(gr)
       .setSheetId(gr.sheetId)

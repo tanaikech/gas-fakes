@@ -19,7 +19,197 @@ export const testSheets = (pack) => {
   const { unit, fixes } = pack || initTests()
   const toTrash = []
 
+  unit.section("assorted cell userenteredformats", t => {
+    const { sheet } = maketss('assorted', toTrash, fixes)
+    const range = sheet.getRange("c2:i4")
+    const stuff = getStuff(range)
+    range.setValues(stuff)
+    t.deepEqual(range.getValues(), stuff)
+    const nFormat = "0.#"
+    range.setNumberFormat(nFormat)
+    const nfs = range.getNumberFormats()
+    const nf = range.getNumberFormat()
+    t.is(nf, nfs[0][0])
+    t.is(nfs.length, range.getNumRows())
+    t.is(nfs[0].length, range.getNumColumns())
+    t.true(nfs.flat().every(f => f === nFormat))
+    t.is(nf, nFormat)
 
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+
+
+  })
+
+  unit.section("cell and font backgrounds, styles and alignments", t => {
+
+    const { sheet } = maketss('cells', toTrash, fixes)
+    const range = sheet.getRange("a1:b3")
+
+    // text styles - an empty sheet shoud all be defaults
+    const txss = range.getTextStyles()
+    const txs = range.getTextStyle()
+    t.is(txss.length, range.getNumRows())
+    t.is(txss[0].length, range.getNumColumns())
+    t.is(txs.toString(), "TextStyle")
+    t.is(txs.getFontSize(), 10)
+    t.is(txs.getFontFamily(), "arial,sans,sans-serif")
+    t.is(txs.isBold(), false)
+    t.is(txs.isItalic(), false)
+    t.is(txs.isUnderline(), false)
+    t.is(txs.isStrikethrough(), false)
+    t.is(txs.getForegroundColor(), BLACK)
+    t.is(txs.getForegroundColorObject().asRgbColor().asHexString(), BLACK)
+    t.true(txss.flat().every(f => f.getFontSize() === txs.getFontSize()))
+    t.true(txss.flat().every(f => f.getFontFamily() === txs.getFontFamily()))
+    t.true(txss.flat().every(f => f.isBold() === txs.isBold()))
+    t.true(txss.flat().every(f => f.isItalic() === txs.isItalic()))
+    t.true(txss.flat().every(f => f.isUnderline() === txs.isUnderline()))
+    t.true(txss.flat().every(f => f.isStrikethrough() === txs.isStrikethrough()))
+    t.true(txss.flat().every(f => f.getForegroundColor() === txs.getForegroundColor()))
+    t.true(txss.flat().every(
+      f => f.getForegroundColorObject().asRgbColor().asHexString() === txs.getForegroundColorObject().asRgbColor().asHexString()))
+
+
+    // backgrounds
+    const backgrounds = range.getBackgrounds()
+    const background = range.getBackground()
+    t.true(is.nonEmptyString(background))
+    t.true(is.array(backgrounds))
+
+    // these 2 i think have just been renamed - they dont exist in the documentation any more
+    t.is(range.getBackgroundColor(), background)
+    t.deepEqual(range.getBackgroundColors(), backgrounds)
+
+    t.is(backgrounds.length, range.getNumRows())
+    t.is(backgrounds[0].length, range.getNumColumns())
+    t.is(backgrounds[0][0], background)
+    t.true(backgrounds.flat().every(f => is.nonEmptyString(f)))
+    t.is(background.substring(0, 1), '#')
+    t.is(background.length, 7)
+    t.is(background, '#ffffff', 'newly created sheet will have white background')
+
+    const color = getRandomHex()
+    range.setBackground(color)
+    t.is(range.getBackground(), color)
+    t.true(range.getBackgrounds().flat().every(f => f === color))
+
+    const colorRgb = getRandomRgb()
+    const color255 = [Math.round(colorRgb.red * 255), Math.round(colorRgb.green * 255), Math.round(colorRgb.blue * 255)]
+    range.setBackgroundRGB(...color255)
+    t.is(range.getBackground(), rgbToHex(colorRgb))
+
+    // some random colorsas
+    const colors = Array.from({
+      length: range.getNumRows()
+    }, () => Array.from({ length: range.getNumColumns() }, () => getRandomHex()))
+
+    const fontColors = Array.from({
+      length: range.getNumRows()
+    }, () => Array.from({ length: range.getNumColumns() }, () => getRandomHex()))
+
+
+    range.setBackgrounds(colors)
+    t.deepEqual(range.getBackgrounds(), colors)
+
+    range.setFontColors(fontColors)
+
+
+    // text rotations
+    const rots = range.getTextRotations()
+    const rot = range.getTextRotation()
+    t.is(rots.length, range.getNumRows())
+    t.is(rots[0].length, range.getNumColumns())
+    t.true(rots.flat().every(f => f.getDegrees() === 0))
+    t.is(rot.getDegrees(), 0)
+    t.true(rots.flat().every(f => f.isVertical() === false))
+    t.is(rot.isVertical(), false)
+
+    // this is deprec, but we'll implement it anyway
+    const fcs = range.getFontColors()
+    const fc = range.getFontColor()
+    t.is(fcs.length, range.getNumRows())
+    t.is(fcs[0].length, range.getNumColumns())
+    t.deepEqual(fcs, fontColors)
+    t.is(fc, fontColors[0][0])
+
+    // default font family
+    const defFamily = "Arial"
+    const ffs = range.getFontFamilies()
+    const ff = range.getFontFamily()
+    t.is(ffs.length, range.getNumRows())
+    t.is(ffs[0].length, range.getNumColumns())
+    t.true(ffs.flat().every(f => f === ff))
+    t.is(ff, defFamily)
+
+    // default font family
+    const defFontSize = 10
+    const fss = range.getFontSizes()
+    const fs = range.getFontSize()
+    t.is(fss.length, range.getNumRows())
+    t.is(fss[0].length, range.getNumColumns())
+    t.true(fss.flat().every(f => f === fs))
+    t.is(fs, defFontSize)
+
+    // default wrap
+    const defWrap = true
+    const fws = range.getWraps()
+    const fw = range.getWrap()
+    t.is(fws.length, range.getNumRows())
+    t.is(fws[0].length, range.getNumColumns())
+    t.true(fws.flat().every(f => f === fw))
+    t.is(fw, defWrap)
+
+    const defWrapStrategy = "OVERFLOW"
+    const wss = range.getWrapStrategies()
+    const ws = range.getWrapStrategy()
+    t.is(wss.length, range.getNumRows())
+    t.is(wss[0].length, range.getNumColumns())
+    t.true(wss.flat().every(f => f.toString() === ws.toString()))
+    t.is(ws.toString(), defWrapStrategy)
+
+
+
+    // the preferred way nowadays
+    const fcobs = range.getFontColorObjects()
+    const fcob = range.getFontColorObject()
+    t.is(fcobs.length, range.getNumRows())
+    t.is(fcobs[0].length, range.getNumColumns())
+    t.deepEqual(fcobs.flat().map(f => f.asRgbColor().asHexString()), fontColors.flat())
+    t.is(fcob.asRgbColor().asHexString(), fontColors[0][0])
+
+    range.setFontColor(getRandomHex())
+
+    // now with rangelists
+    const range2 = range.offset(3, 3, 2, 2)
+    const rangeList = range.getSheet().getRangeList([range, range2].map(r => r.getA1Notation()))
+    rangeList.setBackground(color)
+    rangeList.getRanges().forEach(range => t.true(range.getBackgrounds().flat().every(f => f === color)))
+    rangeList.getRanges().forEach(range => {
+      range.setBackgroundRGB(...color255)
+      t.is(range.getBackground(), rgbToHex(colorRgb))
+    })
+
+    // now alignments
+    const verticalAlignments = range.getVerticalAlignments()
+    const verticalAlignment = range.getVerticalAlignment()
+    t.is(verticalAlignments.length, range.getNumRows())
+    t.is(verticalAlignments[0].length, range.getNumColumns())
+    t.true(verticalAlignments.flat().every(f => is.nonEmptyString(f)))
+    t.is(verticalAlignments[0][0], verticalAlignment)
+    // sometimes this is upper sometimes lower - havent figured out rule yet
+    t.is(verticalAlignment.toUpperCase(), 'BOTTOM', 'newly created sheet will have bottom')
+
+    const horizontalAlignments = range.getHorizontalAlignments()
+    const horizontalAlignment = range.getHorizontalAlignment()
+    t.is(horizontalAlignments.length, range.getNumRows())
+    t.is(horizontalAlignments[0].length, range.getNumColumns())
+    t.true(horizontalAlignments.flat().every(f => is.nonEmptyString(f)))
+    t.is(horizontalAlignments[0][0], horizontalAlignment)
+    t.is(horizontalAlignment, 'general', 'newly created sheet will have general')
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+
+  })
   unit.section("text Style objects and builders", t => {
 
     const builder = SpreadsheetApp.newTextStyle()
@@ -331,176 +521,7 @@ export const testSheets = (pack) => {
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
   })
 
-  unit.section("cell and font backgrounds, styles and alignments", t => {
 
-    const { sheet } = maketss('cells', toTrash, fixes)
-    const range = sheet.getRange("a1:b3")
-
-    // text styles - an empty sheet shoud all be defaults
-    const txss = range.getTextStyles()
-    const txs = range.getTextStyle()
-    t.is(txss.length, range.getNumRows())
-    t.is(txss[0].length, range.getNumColumns())
-    t.is(txs.toString(), "TextStyle")
-    t.is(txs.getFontSize(), 10)
-    t.is(txs.getFontFamily(), "arial,sans,sans-serif")
-    t.is(txs.isBold(), false)
-    t.is(txs.isItalic(), false)
-    t.is(txs.isUnderline(), false)
-    t.is(txs.isStrikethrough(), false)
-    t.is(txs.getForegroundColor(), BLACK)
-    t.is(txs.getForegroundColorObject().asRgbColor().asHexString(), BLACK)
-    t.true(txss.flat().every(f => f.getFontSize() === txs.getFontSize()))
-    t.true(txss.flat().every(f => f.getFontFamily() === txs.getFontFamily()))
-    t.true(txss.flat().every(f => f.isBold() === txs.isBold()))
-    t.true(txss.flat().every(f => f.isItalic() === txs.isItalic()))
-    t.true(txss.flat().every(f => f.isUnderline() === txs.isUnderline()))
-    t.true(txss.flat().every(f => f.isStrikethrough() === txs.isStrikethrough()))
-    t.true(txss.flat().every(f => f.getForegroundColor() === txs.getForegroundColor()))
-    t.true(txss.flat().every(
-      f => f.getForegroundColorObject().asRgbColor().asHexString() === txs.getForegroundColorObject().asRgbColor().asHexString()))
-
-
-    // backgrounds
-    const backgrounds = range.getBackgrounds()
-    const background = range.getBackground()
-    t.true(is.nonEmptyString(background))
-    t.true(is.array(backgrounds))
-
-    // these 2 i think have just been renamed - they dont exist in the documentation any more
-    t.is(range.getBackgroundColor(), background)
-    t.deepEqual(range.getBackgroundColors(), backgrounds)
-
-    t.is(backgrounds.length, range.getNumRows())
-    t.is(backgrounds[0].length, range.getNumColumns())
-    t.is(backgrounds[0][0], background)
-    t.true(backgrounds.flat().every(f => is.nonEmptyString(f)))
-    t.is(background.substring(0, 1), '#')
-    t.is(background.length, 7)
-    t.is(background, '#ffffff', 'newly created sheet will have white background')
-
-    const color = getRandomHex()
-    range.setBackground(color)
-    t.is(range.getBackground(), color)
-    t.true(range.getBackgrounds().flat().every(f => f === color))
-
-    const colorRgb = getRandomRgb()
-    const color255 = [Math.round(colorRgb.red * 255), Math.round(colorRgb.green * 255), Math.round(colorRgb.blue * 255)]
-    range.setBackgroundRGB(...color255)
-    t.is(range.getBackground(), rgbToHex(colorRgb))
-
-    // some random colorsas
-    const colors = Array.from({
-      length: range.getNumRows()
-    }, () => Array.from({ length: range.getNumColumns() }, () => getRandomHex()))
-
-    const fontColors = Array.from({
-      length: range.getNumRows()
-    }, () => Array.from({ length: range.getNumColumns() }, () => getRandomHex()))
-
-
-    range.setBackgrounds(colors)
-    t.deepEqual(range.getBackgrounds(), colors)
-
-    range.setFontColors(fontColors)
-
-
-    // text rotations
-    const rots = range.getTextRotations()
-    const rot = range.getTextRotation()
-    t.is(rots.length, range.getNumRows())
-    t.is(rots[0].length, range.getNumColumns())
-    t.true(rots.flat().every(f => f.getDegrees() === 0))
-    t.is(rot.getDegrees(), 0)
-    t.true(rots.flat().every(f => f.isVertical() === false))
-    t.is(rot.isVertical(), false)
-
-    // this is deprec, but we'll implement it anyway
-    const fcs = range.getFontColors()
-    const fc = range.getFontColor()
-    t.is(fcs.length, range.getNumRows())
-    t.is(fcs[0].length, range.getNumColumns())
-    t.deepEqual(fcs, fontColors)
-    t.is(fc, fontColors[0][0])
-
-    // default font family
-    const defFamily = "Arial"
-    const ffs = range.getFontFamilies()
-    const ff = range.getFontFamily()
-    t.is(ffs.length, range.getNumRows())
-    t.is(ffs[0].length, range.getNumColumns())
-    t.true(ffs.flat().every(f => f === ff))
-    t.is(ff, defFamily)
-
-    // default font family
-    const defFontSize = 10
-    const fss = range.getFontSizes()
-    const fs = range.getFontSize()
-    t.is(fss.length, range.getNumRows())
-    t.is(fss[0].length, range.getNumColumns())
-    t.true(fss.flat().every(f => f === fs))
-    t.is(fs, defFontSize)
-
-    // default wrap
-    const defWrap = true
-    const fws = range.getWraps()
-    const fw = range.getWrap()
-    t.is(fws.length, range.getNumRows())
-    t.is(fws[0].length, range.getNumColumns())
-    t.true(fws.flat().every(f => f === fw))
-    t.is(fw, defWrap)
-
-    const defWrapStrategy = "OVERFLOW"
-    const wss = range.getWrapStrategies()
-    const ws = range.getWrapStrategy()
-    t.is(wss.length, range.getNumRows())
-    t.is(wss[0].length, range.getNumColumns())
-    t.true(wss.flat().every(f => f.toString() === ws.toString()))
-    t.is(ws.toString(), defWrapStrategy)
-
-
-
-    // the preferred way nowadays
-    const fcobs = range.getFontColorObjects()
-    const fcob = range.getFontColorObject()
-    t.is(fcobs.length, range.getNumRows())
-    t.is(fcobs[0].length, range.getNumColumns())
-    t.deepEqual(fcobs.flat().map(f => f.asRgbColor().asHexString()), fontColors.flat())
-    t.is(fcob.asRgbColor().asHexString(), fontColors[0][0])
-
-    range.setFontColor(getRandomHex())
-
-    // now with rangelists
-    const range2 = range.offset(3, 3, 2, 2)
-    const rangeList = range.getSheet().getRangeList([range, range2].map(r => r.getA1Notation()))
-    rangeList.setBackground(color)
-    rangeList.getRanges().forEach(range => t.true(range.getBackgrounds().flat().every(f => f === color)))
-    rangeList.getRanges().forEach(range => {
-      range.setBackgroundRGB(...color255)
-      t.is(range.getBackground(), rgbToHex(colorRgb))
-    })
-
-    // now alignments
-    const verticalAlignments = range.getVerticalAlignments()
-    const verticalAlignment = range.getVerticalAlignment()
-    t.is(verticalAlignments.length, range.getNumRows())
-    t.is(verticalAlignments[0].length, range.getNumColumns())
-    t.true(verticalAlignments.flat().every(f => is.nonEmptyString(f)))
-    t.is(verticalAlignments[0][0], verticalAlignment)
-    // sometimes this is upper sometimes lower - havent figured out rule yet
-    t.is(verticalAlignment.toUpperCase(), 'BOTTOM', 'newly created sheet will have bottom')
-
-    const horizontalAlignments = range.getHorizontalAlignments()
-    const horizontalAlignment = range.getHorizontalAlignment()
-    t.is(horizontalAlignments.length, range.getNumRows())
-    t.is(horizontalAlignments[0].length, range.getNumColumns())
-    t.true(horizontalAlignments.flat().every(f => is.nonEmptyString(f)))
-    t.is(horizontalAlignments[0][0], horizontalAlignment)
-    t.is(horizontalAlignment, 'general', 'newly created sheet will have general')
-
-    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-
-  })
 
   unit.section("setting and getting color objects}", t => {
     const { sheet } = maketss('colors', toTrash, fixes)
@@ -656,34 +677,7 @@ export const testSheets = (pack) => {
 
 
 
-  unit.section("assorted cell userenteredformats", t => {
-    const { sheet } = maketss('assorted', toTrash, fixes)
-    const range = sheet.getRange("c2:i4")
-    const stuff = getStuff(range)
-    range.setValues(stuff)
-    t.deepEqual(range.getValues(), stuff)
-    const nfs = range.getNumberFormats()
-    const nf = range.getNumberFormat()
-    t.is(nf, nfs[0][0])
-    t.is(nfs.length, range.getNumRows())
-    t.is(nfs[0].length, range.getNumColumns())
-    // see issue https://github.com/brucemcpherson/gas-fakes/issues/27
-    const dfv = "0.###############"
-    t.true(nfs.flat().every(f => f === dfv))
-    t.is(nf, dfv)
 
-    const fws = range.getFontWeight()
-    const fw = range.getFontWeights()
-    t.is(fw.length, range.getNumRows())
-    t.is(fw[0].length, range.getNumColumns())
-    t.true(fw.flat().every(f => is.nonEmptyString(f)))
-    t.is(fws, fw[0][0])
-    t.is(fws, 'normal')
-
-    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-
-
-  })
 
 
   unit.section("basic adv sheets cell formatting fetch fix", t => {

@@ -1,5 +1,5 @@
 import { Utils } from '../../support/utils.js'
-const { getPlucker, is } = Utils
+const { getPlucker, is, capital } = Utils
 
 /**
  * see if the result matches the range size - if it doesnt it's a jagged array - some api methods return that
@@ -51,11 +51,13 @@ const makeTemplate = ({ range, defaultValue, cleaner = (f) => f }) =>
 // many methods can be genereated automatically
 export const attrGens = (self, target) => {
 
+  const spreadsheetId = self.__getSpreadsheetId()
+
   // shared function to get attributes that use spreadsheets.get
   const getRowDataAttribs = ({ range = self, props, defaultValue, cleaner }) => {
 
     // get the collection of rows with data for the required properties
-    const { sheets } = Sheets.Spreadsheets.get(self.__getSpreadsheetId(), {
+    const { sheets } = Sheets.Spreadsheets.get(spreadsheetId, {
       ranges: [self.__getRangeWithSheet(range)],
       fields: `sheets.data.rowData.values${props}`
     })
@@ -83,8 +85,6 @@ export const attrGens = (self, target) => {
 
   }
 
-
-
   // default is just copy api result with no cleaning
   const cleaner = target.cleaner || (f => f)
 
@@ -98,7 +98,14 @@ export const attrGens = (self, target) => {
   })
 
 
+  const fields = target.props.replace (/^\./,"")
 
+  const setterValue = (target, value) =>  {
+    const obName = capital(target.name.replace(/^get(.*)/, "$1"))
+    const cellFormat = Sheets.newCellFormat()['set'+obName](target.makeSetter(value))
+    const cellData = Sheets.newCellData().setUserEnteredFormat(cellFormat)
+    return cellData
+  }
   // both a single and collection version
   // also some queries return a consolidated/reduced version
   if (!target.skipPlural) {
@@ -106,6 +113,7 @@ export const attrGens = (self, target) => {
     const plural = target.plural || (target.name + 's')
 
     self[plural] = () => {
+
       // get all the values in the range
       const values = getters(self)
       // some gets would like a single result
@@ -114,16 +122,37 @@ export const attrGens = (self, target) => {
       return target.finalizer ? target.finalizer(reduced) : reduced
     }
 
-  }
+    if (target.makeSetter) {
+      const name = capital(plural.replace(/^get(.*)/, "$1"))
+      self['set' + name] = (values) => {
+        const rows = values.map(row => {
+          return Sheets.newRowData().setValues(row.map(c => setterValue (target, c )))
+        })
+        updateCells({ range: self, rows, fields , spreadsheetId })
+        return self
+      }
+    }
 
-  if (!target.skipSingle) {
-    self[target.name] = () => {
-      // just get the 1st value in the range
-      const values = getters(self.__getTopLeft())
-      // some gets would like a single result
-      const reduced = target.reducer ? target.reducer(values.flat()) : (values && values[0] && values[0][0])
-      // some allow a null response for example
-      return target.finalizer ? target.finalizer(reduced) : reduced
+
+    if (!target.skipSingle) {
+
+      self[target.name] = () => {
+        const tl = self.__getTopLeft()
+        // just get the 1st value in the range
+        const values = getters(tl)
+        // some gets would like a single result
+        const reduced = target.reducer ? target.reducer(values.flat()) : (values && values[0] && values[0][0])
+        // some allow a null response for example
+        return target.finalizer ? target.finalizer(reduced) : reduced
+      }
+      if (target.makeSetter) {
+        const name = capital(target.name.replace(/^get(.*)/, "$1"))
+        self['set' + name] = (value) => {
+          const tl = self.__getTopLeft()
+          const rows = [Sheets.newRowData().setValues([setterValue (target, value)])]
+          updateCells({ range: tl, rows, fields, spreadsheetId })
+        }
+      }
     }
   }
 
@@ -187,44 +216,27 @@ export const getGridRange = (range) => {
 }
 
 
-/**
- * for use with updateCells
- * @returns {object}
- */
-const getRequestUc = (range, rows, fields) => {
-  return {
-    updateCells: {
-      start: getStartUc(range),
-      rows,
-      fields
-    }
-  }
-}
-
-/**
-* for use with updateCells
-* @returns {object}
-*/
-const getStartUc = (range) => {
-  const gridRange = makeGridRange(range)
-  const start = {
-    sheetId: gridRange.sheetId,
-    rowIndex: gridRange.startRowIndex,
-    columnIndex: gridRange.startColumnIndex
-  }
-  return start
-}
-
 export const updateCells = ({ range, rows, fields, spreadsheetId }) => {
-  const request = getRequestUc(range, rows, fields)
-  Sheets.Spreadsheets.batchUpdate({ requests: [request] }, spreadsheetId, { ss: true })
+  const ucr = Sheets.newUpdateCellsRequest()
+    .setRange(makeSheetsGridRange(range))
+    .setFields(fields)
+    .setRows(rows)
+  const bur = Sheets
+    .newBatchUpdateSpreadsheetRequest()
+    .setRequests([{ updateCells: ucr }])
+  Sheets.Spreadsheets.__batchUpdate(bur, spreadsheetId, null, { ss: true })
   return this
 }
 
 export const isRange = (a) => is.object(a) && !is.null(a) && is.function(a.toString) && a.toString() === "Range"
 
+
 // Make a gridrange from a range
 export const makeGridRange = (range) => {
+  if (!isRange(range)) {
+    console.log(range)
+    throw new Error(`expected a range but got ${typeof range}`)
+  }
   return {
     sheetId: range.getSheet().getSheetId(),
     startRowIndex: range.getRowIndex() - 1,
@@ -279,3 +291,8 @@ const dateToSerial = (date) => {
   return adjustedMs / msPerDay
 }
 
+export const batchUpdate = ({ spreadsheetId, requests }) => {
+  const bur = Sheets.newBatchUpdateSpreadsheetRequest()
+  bur.setRequests(requests)
+  Sheets.Spreadsheets.__batchUpdate(bur, spreadsheetId, null, { ss: true })
+}

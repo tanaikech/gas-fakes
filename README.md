@@ -160,7 +160,7 @@ v1.0.8
 - `ScriptApp` - almost all
 - `UrlFetchApp` - 80%
 - `Utilities` - almost all
-- `Sheets` - 25%
+- `Sheets` - 50%
 - `SpreadsheetApp` - 60%
 - `CacheService` - 80%
 - `PropertiesService` - 80%
@@ -355,6 +355,20 @@ Since only relative versions of single dates are implemented in GAS, there's no 
 #### Locale of dates
 
 CriteriaValues are stored as a string, exactly as typed by the user. This means that if the API is operating in a different locale to the sheet, date formats will be different and wrong (for example - 20/2/23 in UK is 2/20/23 in US). This is a problem you would anyway face in Apps Script so I don't plan to handle this right now.
+
+### Advanced sheets updating cells
+
+The advanced sheets service provides a huge list of builders such as Sheets.newCellData(). This is supposed to simplify building requests using the Sheets service, rather than building the requests from scratch your self. I actually find them more long winded that just making the objects, and I notice that there are no checks on the values that you set using them, so there's not even any validation to proft from. In any case, I've implemented them all (other than one that doesnt work in GAS - (https://issuetracker.google.com/issues/423737982), so you can use them if you want. 
+
+I mainly use them when emulating Apps Script SpreadsheetApp services too as a double check that they are working as intended, but sometimes I build the requests up from scratch if it makes the automation simpler.
+
+If you want to see how these are all generated, see the constructor in services/advsheets/fakeadvsheets.
+
+#### Handling multiple response variations and formats.
+
+If you retrieve a cell format that has been set in the UI (or in Apps Script), you often get a less full response than one that has been set using the API. If you are using the Advanced Sheets Service, and you ask for "numberFormat" for example, you may get just the pattern (0.###) or you may get the full cellformat data { type: "NUMBER", pattern: "0.###""}. This applies in both native GAS and GAS FAKES. 
+
+To emulate the regular SpreadsheetApp behavior, fakeRange.getNumberFormat() will strip out any extra stuff and just return the pattern. fakeRange.setNumberFormat("0.###") will always set the complete cellformat object { type: "NUMBER", pattern: "0.###""}
 
 #### UI settings
 
