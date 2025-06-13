@@ -283,6 +283,10 @@ const stringer = (value) => {
   return is.date(value) ? t.slice(0, 10) : t
 
 }
+export const WHITER = { red: 1, green: 1, blue: 1 }
+export const BLACKER = { red: 0, green: 0, blue: 0 }
+export const BLACK = '#000000'
+export const WHITE = '#ffffff'
 export const Utils = {
   hexToRgb,
   stringToBytes,
@@ -309,5 +313,9 @@ export const Utils = {
   unCapital,
   zeroizeTime,
   isEnum,
-  stringer
+  stringer,
+  WHITE,
+  BLACK,
+  BLACKER,
+  WHITER
 }

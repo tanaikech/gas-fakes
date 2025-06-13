@@ -10,7 +10,7 @@ import '../main.js'
 import { initTests } from './testinit.js'
 import { getSheetsPerformance } from '../src/support/sheetscache.js';
 import { getPerformance } from '../src/support/filecache.js';
-import { maketss, trasher, makeSheetsGridRange, makeExtendedValue , dateToSerial} from './testassist.js';
+import { maketss, trasher, makeSheetsGridRange, makeExtendedValue , dateToSerial, fillRange, arrMatchesRange} from './testassist.js';
 import is from '@sindresorhus/is';
 
 
@@ -64,17 +64,17 @@ export const testSheetsSets = (pack) => {
     const data = Sheets.Spreadsheets.Values.get(spreadsheetId, tr)
 
     // a bit tricky to compare values as the api returns converted strings
-    const valueChecker = (original) =>  {
+    const valueChecker = (original, cell) =>  {
       if (is.date(original)) {
-        // the api loses some precision
-        return dateToSerial(original).toFixed(5)
+        // the api loses some precision so match up to whatever we got from the api
+        return dateToSerial(original).toFixed(cell.replace(/.*\./,"").length)
       } else if (is.boolean(original)) {
         return original.toString().toUpperCase() 
       } else {
         return original.toString()
       }
     }
-    data.values.forEach((row, i) => row.forEach((cell, j) => t.is (valueChecker(cdVals[i][j]), cell)))
+    data.values.forEach((row, i) => row.forEach((cell, j) => t.is (valueChecker(cdVals[i][j],cell), cell)))
     t.is (data.majorDimension, "ROWS")
     t.is (sv.getRange(data.range).getA1Notation(), range.getA1Notation())
 
@@ -95,7 +95,7 @@ export const testSheetsSets = (pack) => {
 
     cr.clearDataValidations()
     const cbs2 = cr.getDataValidations()
-    t.is(cbs2, null)
+    t.deepEqual(cbs2, fillRange(cr, null))
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
   })
 

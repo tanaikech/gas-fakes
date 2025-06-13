@@ -8,18 +8,29 @@ import { newFakeWrapStrategy, isWrapped } from '../commonclasses/fakewrapstrateg
 import { newFakeTextRotation } from '../commonclasses/faketextrotation.js'
 import { makeTextStyleFromApi } from '../commonclasses/faketextstylebuilder.js'
 import { newFakeTextDirection } from '../commonclasses/faketextdirection.js'
-import { attrGens, valueGens, getGridRange, updateCells, isRange, makeGridRange, makeSheetsGridRange, batchUpdate } from "./sheetrangehelpers.js"
+import {
+  attrGens,
+  valueGens,
+  getGridRange,
+  updateCells,
+  isRange,
+  makeGridRange,
+  makeSheetsGridRange,
+  batchUpdate,
+  fillRange,
+  arrMatchesRange,
+  extractPattern,
+  isColor
+} from "./sheetrangehelpers.js"
 import { makeDataValidationFromApi } from "./fakedatavalidationbuilder.js"
-const { is, rgbToHex, hexToRgb, stringer, robToHex, outsideInt } = Utils
+const { is, rgbToHex, hexToRgb, stringer, robToHex, outsideInt, capital, WHITER, BLACKER } = Utils
 
-
-const WHITER = { red: 1, green: 1, blue: 1 }
-const BLACKER = { red: 0, green: 0, blue: 0 }
 
 
 import { notYetImplemented, signatureArgs } from '../../support/helpers.js'
 import { FakeSpreadsheet } from './fakespreadsheet.js'
 import { FakeDataValidation } from './fakedatavalidation.js'
+import { isEnum } from '../../../test/testassist.js'
 
 //TODO - deal with r1c1 style ranges
 
@@ -34,15 +45,14 @@ export const newFakeSheetRange = (...args) => {
   return Proxies.guard(new FakeSheetRange(...args))
 }
 
-
-
 // generate methods for similar code
-// TODO handle argument checks - should these all be nargs =0? if so - add a makethrow
+// TODO handle argument checks - should these all be nargs =0? if so - add a matchThrow
 const attrGetList = [{
   name: 'getNumberFormat',
   props: '.userEnteredFormat.numberFormat',
   defaultValue: "0.###############",
-  makeSetter: (value) => Sheets.newNumberFormat().setPattern(value).setType("NUMBER")
+  makeSetter: (value) => Sheets.newNumberFormat().setPattern(value).setType("NUMBER"),
+  cleaner: extractPattern
 }, {
   name: 'getVerticalAlignment',
   props: '.userEnteredFormat.verticalAlignment',
@@ -172,11 +182,13 @@ const attrGetList = [{
   cleaner: ((f, range) => {
     // TODO check what happens if some of the parts of the range have no validation?
     return is.null(f) ? null : makeDataValidationFromApi(f, range)
-  }),
+  })/*,
   finalizer: (a) => {
     // this one allows a null to be returned of there's nothing
+    // but it's not what happens in the case of getDataValidations
     return (is.array(a) && a.flat(Infinity).every(f => is.null(f))) ? null : a
   }
+    */
 }]
 
 const valuesGetList = [{
@@ -229,7 +241,7 @@ export class FakeSheetRange {
     const props = [
       'removeDuplicates',
       'getMergedRanges',
-      'setFontColorObjects',
+
 
       'setTextDirection',
       'setFontWeight',
@@ -252,9 +264,9 @@ export class FakeSheetRange {
       'mergeAcross',
       'mergeVertically',
       'isPartOfMerge',
-      'setBorder',
+
       'activateAsCurrentCell',
-      'setFontColorObject',
+
       'setFontFamilies',
       'setFontLine',
       'setFontSizes',
@@ -533,7 +545,7 @@ export class FakeSheetRange {
    * @return {FakeSheetRange} self
    */
   setBackground(color) {
-    return this.setBackgrounds(this.__fillRange({ value: color }))
+    return this.setBackgrounds(fillRange(this, color))
   }
 
   /**
@@ -541,12 +553,75 @@ export class FakeSheetRange {
    * @returns {FakeSheetRange} self
    */
   setBackgroundRGB(red, green, blue) {
-
-
     const { nargs, matchThrow } = signatureArgs(arguments, "Range.setBackgroundRGB")
     if (nargs !== 3) matchThrow()
     if (outsideInt(red, 0, 255) || outsideInt(green, 0, 255) || outsideInt(blue, 0, 255)) matchThrow()
     return this.setBackground(rgbToHex(red / 255, green / 255, blue / 255))
+
+  }
+  /**
+   * there is no 'setBorders' variant
+   * setBorder(top, left, bottom, right, vertical, horizontal, color, style)
+   * https://developers.google.com/apps-script/reference/spreadsheet/range#setbordertop,-left,-bottom,-right,-vertical,-horizontal,-color,-style
+   * @param {Boolean} top		true for border, false for none, null for no change.
+   * @param {Boolean} left		true for border, false for none, null for no change.
+   * @param {Boolean} bottom	true for border, false for none, null for no change.
+   * @param {Boolean} right	true for border, false for none, null for no change.
+   * @param {Boolean} vertical true for internal vertical borders, false for none, null for no change.
+   * @param {Boolean} horizontal	Boolean	true for internal horizontal borders, false for none, null for no change.
+   * @param {Boolean}	[color] A color in CSS notation (such as '#ffffff' or 'white'), null for default color (black).
+   * @param {Boolean} [SpreadsheetApp.BorderStyle]	A style for the borders, null for default style (solid).
+   * @return {FakeSheetRange} self
+   */
+  setBorder(top, left, bottom, right, vertical, horizontal, color = null, style = null) {
+    // there are 2 valid variants
+    // one with each of the first 6 args
+    // and another with all 8
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.setDataValidations")
+
+    if (nargs < 6) matchThrow()
+    // check first 6 args
+    const args = Array.from(arguments).slice(0, 6)
+    if (!args.every(f => is.boolean(f) || is.null(f))) matchThrow()
+
+    // if we have some other number of args
+    if (nargs > 6) {
+      if (nargs !== 8) matchThrow()
+      if (!is.string(color) && !is.null(color)) matchThrow()
+      if (!is.null(style) && !isEnum(style)) matchThrow()
+    }
+
+    // note that null means leave as it is, and a boolean false means get rid of it
+    // in the sheets api, null means get rid of it, and a missing value means leave as it is
+    // width is not an option on Apps Script, so we can just do inner or outer
+    const innerBorder = Sheets.newBorder()
+      .setColor(is.null(color) ? BLACKER : hexToRgb(color))
+      .setStyle(is.null(style) ? "SOLID" : style.toString())
+
+    // construct the request
+    const ubr = Sheets.newUpdateBordersRequest().setRange(makeSheetsGridRange(this))
+
+      // if it's mentioned then we have to turn the border either off or on
+      ;['top', 'left', 'bottom', 'right'].forEach((f, i) => {
+        if (!is.null(args[i])) {
+          ubr['set' + capital(f)](args[i] ? innerBorder : null)
+        }
+      })
+
+    // finally the vertical and horizontals
+    if (!is.null(vertical)) {
+      ubr.setInnerVertical(vertical ? innerBorder : null)
+    }
+    if (!is.null(horizontal)) {
+      ubr.setInnerHorizontal(horizontal ? innerBorder : null)
+    }
+
+    batchUpdate({
+      spreadsheetId: this.__getSpreadsheetId(),
+      requests: [{ updateBorders: ubr }]
+    })
+
+    return this
 
   }
 
@@ -556,7 +631,7 @@ export class FakeSheetRange {
    * @return {FakeSheetRange} self
    */
   setDataValidation(rule) {
-    return this.__setDataValidations(this.__fillRange({ value: rule }))
+    return this.__setDataValidations(fillRange(this, rule))
   }
 
   /**
@@ -568,7 +643,7 @@ export class FakeSheetRange {
     return this.__setDataValidations(rules)
   }
 
-  
+
   __setDataValidations(rules) {
     const { nargs, matchThrow } = signatureArgs(arguments, "Range.setDataValidations")
     const spreadsheetId = this.__getSpreadsheetId()
@@ -588,7 +663,7 @@ export class FakeSheetRange {
     //---
     // this setting some values
     if (nargs !== 1 || !is.nonEmptyArray(rules)) matchThrow()
-    if (!this.__arrMatchesRange(rules, "object"))
+    if (!arrMatchesRange(this, rules, "object"))
       if (!rules.flat().every(f => f instanceof FakeDataValidation)) matchThrow()
 
     // TODO
@@ -642,14 +717,14 @@ export class FakeSheetRange {
           .setCondition(condition)
           .setStrict(!dv.getAllowInvalid())
 
-        if (!is.null(showCustomUi)) rule.setShowCustomUi (showCustomUi)
+        if (!is.null(showCustomUi)) rule.setShowCustomUi(showCustomUi)
 
         const setDataValidation = Sheets
           .newSetDataValidationRequest()
           .setRange(makeSheetsGridRange(range))
           .setRule(rule);
 
-        requests.push({setDataValidation})
+        requests.push({ setDataValidation })
       }
     }
     batchUpdate({ spreadsheetId, requests })
@@ -666,7 +741,7 @@ export class FakeSheetRange {
    */
   setBackgrounds(colors) {
     const { nargs, matchThrow } = signatureArgs(arguments, "Range.setBackgrounds")
-    if (nargs !== 1 || !this.__arrMatchesRange(colors, "string")) matchThrow()
+    if (nargs !== 1 || !arrMatchesRange(this, colors, "string")) matchThrow()
 
     const rows = colors.map(row => ({
       values: row.map(c => ({
@@ -689,7 +764,7 @@ export class FakeSheetRange {
   setBackgroundObjects(colors) {
 
     const { nargs, matchThrow } = signatureArgs(arguments, "Range.setBackgroundObjects", "Color")
-    if (nargs !== 1 || !this.__arrMatchesRange(colors, "object")) matchThrow()
+    if (nargs !== 1 || !arrMatchesRange(this, colors, "object")) matchThrow()
 
     const rows = colors.map(row => ({
       values: row.map(c => this.__getColorItem(c))
@@ -708,7 +783,7 @@ export class FakeSheetRange {
   * @return {FakeSheetRange} self
   */
   setBackgroundObject(color) {
-    return this.setBackgroundObjects(this.__fillRange({ value: color }))
+    return this.setBackgroundObjects(fillRange(this, color))
   }
 
   /**
@@ -718,7 +793,7 @@ export class FakeSheetRange {
    * @return {FakeSheetRange} self
    */
   setFontColor(color) {
-    return this.setFontColors(this.__fillRange({ value: color }))
+    return this.setFontColors(fillRange(this, color))
   }
 
   /**
@@ -730,7 +805,7 @@ export class FakeSheetRange {
   setFontColors(colors) {
 
     const { nargs, matchThrow } = signatureArgs(arguments, "Range.setFontColors")
-    if (nargs !== 1 || !this.__arrMatchesRange(colors, "string")) matchThrow()
+    if (nargs !== 1 || !arrMatchesRange(this, colors, "string")) matchThrow()
 
     const rows = colors.map(row => ({
       values: row.map(c => {
@@ -744,12 +819,65 @@ export class FakeSheetRange {
       })
     }))
 
-
     const fields = 'userEnteredFormat.textFormat.foregroundColor'
     return updateCells({ range: this, rows, fields, spreadsheetId: this.__getSpreadsheetId() })
 
   }
 
+  setFontColorObjects(colors) {
+    const { matchThrow, nargs } = signatureArgs(arguments, "Range.setFontColorObjects")
+    if (nargs !== 1 || !arrMatchesRange(this, colors, "object")) matchThrow()
+    // TODO - HYPERLINK NEEDS MAPPED TO LINK somewhere
+    const fieldSet = new Set()
+    const rows = colors.map(row => {
+      return Sheets.newRowData().setValues(row.map(color => {
+        if (!isColor(color)) matchThrow()
+        const {cellData, fields} = this.__makeColorStyle(color)
+        fieldSet.add(fields) 
+        return cellData
+      }))
+    })
+    const fields = Array.from(fieldSet).join(',')
+    const spreadsheetId = this.__getSpreadsheetId()
+    return updateCells({ range: this, rows, fields, spreadsheetId})
+
+  }
+
+  __makeRepeatRequest = (range,cellData, fields) => {
+    const request = Sheets.newRepeatCellRequest()
+      .setRange(makeSheetsGridRange(range))
+      .setCell(cellData)
+      .setFields(fields)
+    return request
+  }
+
+  __makeColorStyle = (color) => {
+    const colorStyle = Sheets.newColorStyle()
+
+    // TODO colorobject can be rgb as well
+    colorStyle.setThemeColor(color.asThemeColor().getThemeColorType().toString())
+    const fields = 'userEnteredFormat.textFormat.foregroundColorStyle.themeColor'
+    const textFormat = Sheets.newTextFormat().setForegroundColorStyle(colorStyle)
+    const cellFormat = Sheets.newCellFormat().setTextFormat(textFormat)
+    const cellData = Sheets.newCellData().setUserEnteredFormat(cellFormat)
+    return {
+      cellData, 
+      fields
+    }
+  }
+
+  setFontColorObject(color) {
+    // we can use repeat cell for this
+    const { matchThrow, nargs } = signatureArgs(arguments, "Range.setFontColorObject")
+    if (nargs !== 1 ||  !isColor(color)) matchThrow()
+    const {cellData, fields} = this.__makeColorStyle(color)
+    const request = this.__makeRepeatRequest(this, cellData, fields)
+    const spreadsheetId = this.__getSpreadsheetId()
+    const requests = [{ repeatCell: request }]
+    batchUpdate({spreadsheetId, requests})
+    return this
+
+  }
   /** 
    * setValue(value) https://developers.google.com/apps-script/reference/spreadsheet/range#setvaluesvalues
    * @param {object} A value
@@ -773,20 +901,6 @@ export class FakeSheetRange {
   }
 
   //-- private helpers
-
-  __arrMatchesRange(arr, itemType) {
-    if (!is.array(arr)) return false
-    if (arr.length !== this.getNumRows()) return false
-    if (arr.some(r => !is.array(r))) return false
-    if (arr.some(r => r.length !== this.getNumColumns())) return false
-    if (itemType && !arr.flat().every(f => is[itemType](f))) return false
-    return true
-  }
-
-
-  __fillRange({ range = this, value }) {
-    return Array.from({ length: range.getNumRows() }).fill(Array.from({ length: range.getNumColumns() }).fill(value))
-  }
 
 
   __getColorItem = (color) => {

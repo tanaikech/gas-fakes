@@ -2,8 +2,8 @@ import { Proxies } from '../../support/proxies.js'
 import { newFakeColorBuilder } from '../commonclasses/fakecolorbuilder.js'
 import { Utils } from '../../support/utils.js'
 import { BorderStyle } from '../enums/sheetsenums.js'
-const {is, robToHex} = Utils
-const BLACK = '#000000'
+const {is, robToHex, BLACK} = Utils
+
 
 
 /**

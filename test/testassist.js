@@ -60,8 +60,12 @@ export const rgbToHex = ({ red: r, green: g, blue: b }) => {
 }
 export const getRandomRgb = () => ({ red: Math.random(), green: Math.random(), blue: Math.random() })
 export const getRandomHex = () => rgbToHex(getRandomRgb())
-export const getStuff = (range) => Array.from({ length: range.getNumRows() }, _ => Array.from({ length: range.getNumColumns() }, () => Utilities.getUuid()))
+export const getStuff = (range, funStuff = ()=> Utilities.getUuid()) => 
+  Array.from({ length: range.getNumRows() }, _ => Array.from({ length: range.getNumColumns() }, funStuff))
 
+export const getRandomBetween = ( max,min=0 ) => Math.floor(Math.random() * (max - min + 1)) + min;
+export const getRandomFromDomain = (domain) => domain[getRandomBetween(domain.length - 1)]
+export const fillRangeFromDomain = (range, domain) => getStuff(range, () => getRandomFromDomain(domain))
 export const BLACK = '#000000'
 export const RED = '#ff0000'
 
@@ -161,4 +165,17 @@ export const makeSheetsGridRange = (range) => {
     .setStartColumnIndex(mr.startColumnIndex)
     .setEndRowIndex(mr.endRowIndex)
     .setEndColumnIndex(mr.endColumnIndex)
+}
+
+export const fillRange = (range, value ) =>{
+  return Array.from({ length: range.getNumRows() }).fill(Array.from({ length: range.getNumColumns() }).fill(value))
+}
+
+export const  arrMatchesRange = (range, arr, itemType) => {
+  if (!is.array(arr)) return false
+  if (arr.length !== range.getNumRows()) return false
+  if (arr.some(r => !is.array(r))) return false
+  if (arr.some(r => r.length !== range.getNumColumns())) return false
+  if (itemType && !arr.flat().every(f => is[itemType](f))) return false
+  return true
 }

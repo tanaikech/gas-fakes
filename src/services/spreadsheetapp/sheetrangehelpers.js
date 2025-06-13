@@ -66,7 +66,8 @@ export const attrGens = (self, target) => {
 
     // sometimes we get a jagged array that needs to be padded to the right length with default values
     // if we got nothing, return the template of defaults
-    if (!rowData) return makeTemplate({ range, defaultValue, cleaner })
+
+    if (!rowData ) return makeTemplate({ range, defaultValue, cleaner })
 
 
     // pluck each cell
@@ -225,11 +226,11 @@ export const updateCells = ({ range, rows, fields, spreadsheetId }) => {
     .newBatchUpdateSpreadsheetRequest()
     .setRequests([{ updateCells: ucr }])
   Sheets.Spreadsheets.__batchUpdate(bur, spreadsheetId, null, { ss: true })
-  return this
+  return range
 }
 
 export const isRange = (a) => is.object(a) && !is.null(a) && is.function(a.toString) && a.toString() === "Range"
-
+export const isColor = (a) => is.object(a) && !is.null(a) && is.function(a.toString) && a.toString() === "Color"
 
 // Make a gridrange from a range
 export const makeGridRange = (range) => {
@@ -295,4 +296,24 @@ export const batchUpdate = ({ spreadsheetId, requests }) => {
   const bur = Sheets.newBatchUpdateSpreadsheetRequest()
   bur.setRequests(requests)
   Sheets.Spreadsheets.__batchUpdate(bur, spreadsheetId, null, { ss: true })
+}
+export const fillRange = (range, value ) =>{
+  return Array.from({ length: range.getNumRows() }).fill(Array.from({ length: range.getNumColumns() }).fill(value))
+}
+
+export const  arrMatchesRange = (range, arr, itemType) => {
+  if (!is.array(arr)) return false
+  if (arr.length !== range.getNumRows()) return false
+  if (arr.some(r => !is.array(r))) return false
+  if (arr.some(r => r.length !== range.getNumColumns())) return false
+  if (itemType && !arr.flat().every(f => is[itemType](f))) return false
+  return true
+}
+
+export const extractPattern = (response) => {
+  // a plain pattern entered by UI, apps script or lax api call
+  if (is.string(response)) return response
+  // should be { type: "TYPE", pattern: "xxx"}
+  if (!is.object(response) || !Reflect.has(response, "pattern")) return null
+  return response.pattern
 }

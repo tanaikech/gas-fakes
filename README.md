@@ -245,7 +245,7 @@ This means that sometimes, for example, a font might be red in the UI, but Apps 
 
 ### Values
 
-Just as with Formats, the actual value rendered might be different than the value stored. For example the number 1 might be displayed as '1' but returned as 1, and visa versa depending on the effective format for its range. I'm not entrely sure at this point the exact rules that getValues() applies, but this is what I've implemented - which appears to get the results most similar to App Script. I haven't figured out how to handles dates yet.
+Just as with Formats, the actual value rendered might be different than the value stored. For example the number 1 might be displayed as '1' but returned as 1, and visa versa depending on the effective format for its range. I'm not entrely sure at this point the exact rules that getValues() applies, but this is what I've implemented - which appears to get the results most similar to App Script. 
 
 Here is how I've implemented getting and setting values.
 
@@ -356,6 +356,10 @@ Since only relative versions of single dates are implemented in GAS, there's no 
 
 CriteriaValues are stored as a string, exactly as typed by the user. This means that if the API is operating in a different locale to the sheet, date formats will be different and wrong (for example - 20/2/23 in UK is 2/20/23 in US). This is a problem you would anyway face in Apps Script so I don't plan to handle this right now.
 
+## Various hints when using the advanced sheets service
+
+I've tried to exactly imitate the behavior of the Sheets advanced service (even though it's often inconvenient and inconsistent), so these following comments apply to both Sheets and FakeSheets. If you are usng the Advanced service, here's a few hints Ive come across that might be helpful.
+
 ### Advanced sheets updating cells
 
 The advanced sheets service provides a huge list of builders such as Sheets.newCellData(). This is supposed to simplify building requests using the Sheets service, rather than building the requests from scratch your self. I actually find them more long winded that just making the objects, and I notice that there are no checks on the values that you set using them, so there's not even any validation to proft from. In any case, I've implemented them all (other than one that doesnt work in GAS - (https://issuetracker.google.com/issues/423737982), so you can use them if you want. 
@@ -366,9 +370,40 @@ If you want to see how these are all generated, see the constructor in services/
 
 #### Handling multiple response variations and formats.
 
-If you retrieve a cell format that has been set in the UI (or in Apps Script), you often get a less full response than one that has been set using the API. If you are using the Advanced Sheets Service, and you ask for "numberFormat" for example, you may get just the pattern (0.###) or you may get the full cellformat data { type: "NUMBER", pattern: "0.###""}. This applies in both native GAS and GAS FAKES. 
+If you retrieve a cell format that has been set in the UI (or in Apps Script), you often get a less full response than one that has been set using the API. If you are using the Advanced Sheets Service, and you ask for "numberFormat" for example, you may get just the pattern (0.###) or you may get the full cellformat data { type: "NUMBER", pattern: "0.###""}. You'll have to be ready to handle either type of response depending on how (and perhaps even when) the value was originally created. This could apply to any fetches of format values. Something like this should do the trick.
+````js
+const extractPattern = (response) => {
+  // a plain pattern entered by UI, apps script or lax api call
+  if (is.string(response)) return response
+  // should be { type: "TYPE", pattern: "xxx"}
+  if (!is.object(response) || !Reflect.has(response, "pattern")) return null
+  return response.pattern
+}
+````
 
-To emulate the regular SpreadsheetApp behavior, fakeRange.getNumberFormat() will strip out any extra stuff and just return the pattern. fakeRange.setNumberFormat("0.###") will always set the complete cellformat object { type: "NUMBER", pattern: "0.###""}
+To emulate the regular SpreadsheetApp behavior, `fakeRange.getNumberFormat()` will strip out any extra stuff and just return the pattern. `fakeRange.setNumberFormat("0.###")` will always set the complete cellformat object { type: "NUMBER", pattern: "0.###""}
+
+#### Dates and sheets advanced service
+
+Dates can be stored in 'Excel dateserial' format in the API. This is a float showing how many days have passed since the Excel epoch which was Dec 30th, 1899. Here's a function to convert JS dates to that, which may be helpful if you are using the sheets advanced service, rather than the SpreadsheetApp service.
+````js
+const dateToSerial = (date) => {
+  if (!is.date(date)) {
+    throw new Error(`dateToSerial is expecting a date but got ${is(date)}`)
+  }
+  // these are held in a serial number like in Excel, rather than JavaScript epoch
+  // so the epoch is actually Dec 30 1899 rather than Jan 1 1970
+  const epochCorrection = 2209161600000
+  const msPerDay = 24 * 60 * 60 * 1000
+  const adjustedMs = date.getTime() + epochCorrection
+  return adjustedMs / msPerDay
+}
+````
+To enter this, you submit do this to create the value for your updateCells request body.
+````js
+const value = Sheets.newExtendedValue().setNumberValue(dateToSerial(value))
+````
+Note that this simply enters the numeric value of the dateSerial, without mentioning that it actually a date. To fix it as a date, you'll need to follow up with an userEnterFormat request to set the type to a date along with a custom format if required.
 
 #### UI settings
 

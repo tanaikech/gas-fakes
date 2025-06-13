@@ -4,8 +4,8 @@ import { Utils } from '../../support/utils.js'
 import { newFakeTextStyle } from './faketextstyle.js'
 import { newFakeColorBuilder } from './fakecolorbuilder.js'
 
-const { is, validateHex, robToHex, unCapital } = Utils
-const BLACK = '#000000'
+const { is, validateHex, robToHex, unCapital, BLACK } = Utils
+
 
 
 /**
@@ -52,7 +52,8 @@ export const makeTextStyleFromApi = (apiResult) => {
   // the builder should sort out any conflicts between the hex value and the color object provided
 
   // if we have a foreground color 
-  if (is.nonEmptyObject(foregroundColor)) {
+  const rgbPresent = is.nonEmptyObject(foregroundColor) && is.nonEmptyString(foregroundColor.rgbColor)
+  if (rgbPresent) {
     builder.setForegroundColor(robToHex(foregroundColor.rgbColor))
   }
 
@@ -67,7 +68,7 @@ export const makeTextStyleFromApi = (apiResult) => {
     }
   }
 
-  if (is.null(foregroundColor) && is.null(foregroundColorStyle)) {
+  if (!rgbPresent && is.null(foregroundColorStyle)) {
     // in this case there is no specifically entered userenteredformat
     // perhaps it would be better to get the effectiveformat, but Apps Script doesn't appear to do that
     // instead it always returns the userenteredformat, even though there isnt one
