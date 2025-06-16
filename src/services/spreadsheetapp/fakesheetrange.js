@@ -2,15 +2,8 @@ import { Proxies } from '../../support/proxies.js'
 import { FakeSheet } from './fakesheet.js'
 import { SheetUtils } from '../../support/sheetutils.js'
 import { Utils } from '../../support/utils.js'
-import { newFakeBorders } from '../commonclasses/fakeborders.js'
-import { makeColorFromApi } from '../commonclasses/fakecolorbuilder.js'
-import { newFakeWrapStrategy, isWrapped } from '../commonclasses/fakewrapstrategy.js'
-import { newFakeTextRotation } from '../commonclasses/faketextrotation.js'
-import { makeTextStyleFromApi } from '../commonclasses/faketextstylebuilder.js'
-import { newFakeTextDirection } from '../commonclasses/faketextdirection.js'
+import { setterList, attrGetList, valuesGetList, setterMaker, attrGens, valueGens } from './sheetrangelists.js'
 import {
-  attrGens,
-  valueGens,
   getGridRange,
   updateCells,
   isRange,
@@ -19,13 +12,10 @@ import {
   batchUpdate,
   fillRange,
   arrMatchesRange,
-  extractPattern,
-  isColor
+  makeCellTextFormatData,
 } from "./sheetrangehelpers.js"
-import { makeDataValidationFromApi } from "./fakedatavalidationbuilder.js"
-const { is, rgbToHex, hexToRgb, stringer, robToHex, outsideInt, capital, WHITER, BLACKER } = Utils
 
-
+const { is, rgbToHex, hexToRgb, stringer, outsideInt, capital, BLACKER } = Utils
 
 import { notYetImplemented, signatureArgs } from '../../support/helpers.js'
 import { FakeSpreadsheet } from './fakespreadsheet.js'
@@ -44,174 +34,6 @@ import { isEnum } from '../../../test/testassist.js'
 export const newFakeSheetRange = (...args) => {
   return Proxies.guard(new FakeSheetRange(...args))
 }
-
-// generate methods for similar code
-// TODO handle argument checks - should these all be nargs =0? if so - add a matchThrow
-const attrGetList = [{
-  name: 'getNumberFormat',
-  props: '.userEnteredFormat.numberFormat',
-  defaultValue: "0.###############",
-  makeSetter: (value) => Sheets.newNumberFormat().setPattern(value).setType("NUMBER"),
-  cleaner: extractPattern
-}, {
-  name: 'getVerticalAlignment',
-  props: '.userEnteredFormat.verticalAlignment',
-  defaultValue: "bottom"
-}, {
-  name: 'getHorizontalAlignment',
-  props: '.userEnteredFormat.horizontalAlignment',
-  defaultValue: "general"
-}, {
-  name: 'getBackground',
-  props: '.userEnteredFormat.backgroundColor',
-  defaultValue: WHITER,
-  cleaner: robToHex
-}, {
-  name: 'getFontWeight',
-  props: '.userEnteredFormat.textFormat.bold',
-  defaultValue: false,
-  cleaner: (f) => f ? 'bold' : 'normal'
-}, {
-  name: 'getBorder',
-  props: '.userEnteredFormat.borders',
-  defaultValue: null,
-  cleaner: (f => {
-    return is.null(f) ? null : newFakeBorders(f)
-  })
-}, {
-  name: 'getBackgroundObject',
-  props: '.userEnteredFormat.backgroundColorStyle',
-  defaultValue: { rgbColor: WHITER },
-  cleaner: makeColorFromApi
-}, {
-  name: 'getFontColor',
-  props: '.userEnteredFormat.textFormat.foregroundColor',
-  defaultValue: BLACKER,
-  cleaner: robToHex
-}, {
-  name: 'getFontColorObject',
-  props: '.userEnteredFormat.textFormat.foregroundColorStyle',
-  defaultValue: { rgbColor: BLACKER },
-  cleaner: makeColorFromApi
-}, {
-  name: 'getFontFamily',
-  props: '.userEnteredFormat.textFormat.fontFamily',
-  defaultValue: 'Arial',
-  plural: 'getFontFamilies'
-}, {
-  name: 'getFontSize',
-  props: '.userEnteredFormat.textFormat.fontSize',
-  defaultValue: 10
-}, {
-  name: 'getWrapStrategy',
-  props: '.userEnteredFormat.wrapStrategy',
-  defaultValue: 'OVERFLOW_CELL',
-  cleaner: newFakeWrapStrategy,
-  plural: 'getWrapStrategies'
-}, {
-  name: 'getWrap',
-  props: '.userEnteredFormat.wrapStrategy',
-  defaultValue: 'OVERFLOW_CELL',
-  cleaner: f => isWrapped(newFakeWrapStrategy(f))
-}, {
-  name: 'getTextRotation',
-  props: '.userEnteredFormat.textRotation',
-  defaultValue: { angle: 0, vertical: "NONE" },
-  cleaner: f => newFakeTextRotation(f || { angle: 0, vertical: "NONE" })
-}, {
-  name: 'getTextStyle',
-  props: '.userEnteredFormat.textFormat',
-  defaultValue: { foregroundColor: { rgbColor: BLACKER } },
-  cleaner: makeTextStyleFromApi
-}, {
-  name: 'getFontLine',
-  props: '.userEnteredFormat.textFormat',
-  defaultValue: { foregroundColor: { rgbColor: BLACKER } },
-  cleaner: f => {
-    const s = makeTextStyleFromApi(f)
-    if (s.isStrikethrough()) return 'line-through'
-    if (s.isUnderline()) return 'underline'
-    return 'none'
-  }
-}, {
-  name: 'isChecked',
-  props: '(dataValidation,effectiveValue)',
-  defaultValue: null,
-  skipSingle: true,
-  plural: 'isChecked',
-  cleaner: (cell => {
-    // its a checkbox?
-    if (is.nonEmptyObject(cell) &&
-      is.nonEmptyObject(cell.dataValidation) &&
-      is.nonEmptyObject(cell.dataValidation.condition) &&
-      cell.dataValidation.condition.type === "BOOLEAN"
-    ) {
-      return cell.effectiveValue.boolValue
-    } else {
-      return null
-    }
-  }),
-  // Returns whether all cells in the range have their checkbox state as 'checked'. Returns null if some cells are checked and the rest unchecked, or if some cells do not have checkbox data validation.
-  // so that means 
-  // - true -> all checkboxes + all true
-  // - false -> all checkboxes + all false
-  // - null -> any other combination
-  reducer: (cells => {
-    const allBoxes = cells.every(cell => !is.null(cell))
-    const allTrue = allBoxes && cells.every(cell => cell)
-    const allFalse = allBoxes && !allTrue && !cells.some(cell => cell)
-    return allTrue ? true : (allFalse ? false : null)
-
-  })
-}, {
-  // TODO this one needs testing on a R-L language sheet
-  name: 'getTextDirection',
-  props: '.userEnteredFormat.textDirection',
-  defaultValue: null,
-  cleaner: (f) => is.null(f) ? null : new newFakeTextDirection(f)
-}, {
-  name: 'getNote',
-  props: '.note',
-  defaultValue: "",
-}, {
-  name: "getDataValidation",
-  props: '.dataValidation',
-  defaultValue: null,
-  // there's an optional argument to cleaner, which is the range requesting
-  // this will allow make from api to have access to spreadsheet requesting if it needs to make its own ranges
-  cleaner: ((f, range) => {
-    // TODO check what happens if some of the parts of the range have no validation?
-    return is.null(f) ? null : makeDataValidationFromApi(f, range)
-  })/*,
-  finalizer: (a) => {
-    // this one allows a null to be returned of there's nothing
-    // but it's not what happens in the case of getDataValidations
-    return (is.array(a) && a.flat(Infinity).every(f => is.null(f))) ? null : a
-  }
-    */
-}]
-
-const valuesGetList = [{
-  name: 'getValue',
-  options: { valueRenderOption: 'UNFORMATTED_VALUE' },
-  defaultValue: ''
-}, {
-  name: 'getDisplayValue',
-  options: { valueRenderOption: 'FORMATTED_VALUE' },
-  defaultValue: ''
-}, {
-  name: 'getFormula',
-  options: { valueRenderOption: 'FORMULA' },
-  defaultValue: ''
-}, {
-  name: 'isBlank',
-  options: { valueRenderOption: 'FORMATTED_VALUE' },
-  defaultValue: '',
-  reducer: (a) => a.flat().every(f => f === ''),
-  skipSingle: true,
-  plural: 'isBlank'
-}, {
-}]
 
 
 /**
@@ -236,7 +58,6 @@ export class FakeSheetRange {
     attrGetList.forEach(target => attrGens(this, target))
     valuesGetList.forEach(target => valueGens(this, target))
 
-
     // list of not yet implemented methods
     const props = [
       'removeDuplicates',
@@ -244,10 +65,10 @@ export class FakeSheetRange {
 
 
       'setTextDirection',
-      'setFontWeight',
+
       'setHorizontalAlignments',
       'createDataSourcePivotTable',
-      'setFontLines',
+
       'activate',
       'breakApart',
       'deleteCells',
@@ -267,19 +88,12 @@ export class FakeSheetRange {
 
       'activateAsCurrentCell',
 
-      'setFontFamilies',
-      'setFontLine',
-      'setFontSizes',
-      'setFontStyle',
-      'setFontStyles',
-      'setFontWeights',
-
       'setVerticalAlignments',
       'setWrap',
       'setWraps',
       'copyValuesToRange',
       'copyFormatToRange',
-      'getFontStyle',
+
       'setComments',
       'randomize',
       'isStartColumnBounded',
@@ -293,7 +107,7 @@ export class FakeSheetRange {
       'setTextRotations',
       'setVerticalText',
       'setTextDirections',
-      'getFontStyles',
+
       'setWrapStrategies',
       'setWrapStrategy',
       'applyColumnBanding',
@@ -323,14 +137,14 @@ export class FakeSheetRange {
       'getDeveloperMetadata',
       'createTextFinder',
       'moveTo',
-      'setFontSize',
+
       'setNotes',
       'setNote',
       'clearNote',
       'createFilter',
       'setVerticalAlignment',
       'setHorizontalAlignment',
-      'setFontFamily',
+      ,
       'getDataSourceFormulas',
       'getDataSourceTables',
       'setBackgroundColor',
@@ -358,6 +172,17 @@ export class FakeSheetRange {
       }
     })
 
+    setterList.forEach(f => {
+      setterMaker({
+        self: this,
+        ...f,
+        single: 'set' + capital(f.single || f.name),
+        plural: f.plural || ('set' + capital(f.single || f.name) + 's'),
+        fields: f.fields || `userEnteredFormat.textFormat.${f.name}`,
+        maker: f.maker || makeCellTextFormatData,
+        apiSetter: f.apiSetter || 'set' + capital(f.single || f.name)
+      })
+    })
   }
 
   /**
@@ -793,91 +618,28 @@ export class FakeSheetRange {
    * @return {FakeSheetRange} self
    */
   setFontColor(color) {
-    return this.setFontColors(fillRange(this, color))
+    // we can use the set colorObject here
+    // TODO - handle null
+    return this.setFontColorObject(is.null(color) ? null : SpreadsheetApp.newColor().setRgbColor(color).build())
   }
 
   /**
+   * TODO -- dont support html color names yet
    * Sets a rectangular grid of font colors (must match dimensions of this range). The colors are in CSS notation (such as '#ffffff' or 'white').
    * setFontColors(color) https://developers.google.com/apps-script/reference/spreadsheet/range#setfontcolorscolors
    * @param {string[][]} colors A two-dimensional array of colors in CSS notation (such as '#ffffff' or 'white'); null values reset the color.
    * @return {FakeSheetRange} self
    */
   setFontColors(colors) {
-
+    // we can use the set colorObject here
     const { nargs, matchThrow } = signatureArgs(arguments, "Range.setFontColors")
-    if (nargs !== 1 || !arrMatchesRange(this, colors, "string")) matchThrow()
-
-    const rows = colors.map(row => ({
-      values: row.map(c => {
-        return {
-          userEnteredFormat: {
-            textFormat: {
-              foregroundColor: hexToRgb(c)
-            }
-          }
-        }
-      })
-    }))
-
-    const fields = 'userEnteredFormat.textFormat.foregroundColor'
-    return updateCells({ range: this, rows, fields, spreadsheetId: this.__getSpreadsheetId() })
-
+    if (nargs !== 1 || !arrMatchesRange(this, colors)) matchThrow()
+    return this.setFontColorObjects(colors.map(row => row.map(color => {
+      return is.null(color) ? null : SpreadsheetApp.newColor().setRgbColor(color).build()
+    })))
   }
 
-  setFontColorObjects(colors) {
-    const { matchThrow, nargs } = signatureArgs(arguments, "Range.setFontColorObjects")
-    if (nargs !== 1 || !arrMatchesRange(this, colors, "object")) matchThrow()
-    // TODO - HYPERLINK NEEDS MAPPED TO LINK somewhere
-    const fieldSet = new Set()
-    const rows = colors.map(row => {
-      return Sheets.newRowData().setValues(row.map(color => {
-        if (!isColor(color)) matchThrow()
-        const {cellData, fields} = this.__makeColorStyle(color)
-        fieldSet.add(fields) 
-        return cellData
-      }))
-    })
-    const fields = Array.from(fieldSet).join(',')
-    const spreadsheetId = this.__getSpreadsheetId()
-    return updateCells({ range: this, rows, fields, spreadsheetId})
 
-  }
-
-  __makeRepeatRequest = (range,cellData, fields) => {
-    const request = Sheets.newRepeatCellRequest()
-      .setRange(makeSheetsGridRange(range))
-      .setCell(cellData)
-      .setFields(fields)
-    return request
-  }
-
-  __makeColorStyle = (color) => {
-    const colorStyle = Sheets.newColorStyle()
-
-    // TODO colorobject can be rgb as well
-    colorStyle.setThemeColor(color.asThemeColor().getThemeColorType().toString())
-    const fields = 'userEnteredFormat.textFormat.foregroundColorStyle.themeColor'
-    const textFormat = Sheets.newTextFormat().setForegroundColorStyle(colorStyle)
-    const cellFormat = Sheets.newCellFormat().setTextFormat(textFormat)
-    const cellData = Sheets.newCellData().setUserEnteredFormat(cellFormat)
-    return {
-      cellData, 
-      fields
-    }
-  }
-
-  setFontColorObject(color) {
-    // we can use repeat cell for this
-    const { matchThrow, nargs } = signatureArgs(arguments, "Range.setFontColorObject")
-    if (nargs !== 1 ||  !isColor(color)) matchThrow()
-    const {cellData, fields} = this.__makeColorStyle(color)
-    const request = this.__makeRepeatRequest(this, cellData, fields)
-    const spreadsheetId = this.__getSpreadsheetId()
-    const requests = [{ repeatCell: request }]
-    batchUpdate({spreadsheetId, requests})
-    return this
-
-  }
   /** 
    * setValue(value) https://developers.google.com/apps-script/reference/spreadsheet/range#setvaluesvalues
    * @param {object} A value

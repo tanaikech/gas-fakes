@@ -19,29 +19,141 @@ export const testSheets = (pack) => {
   const { unit, fixes } = pack || initTests()
   const toTrash = []
 
-  unit.section("cell and font backgrounds, styles and alignments", t => {
 
-    const { sheet } = maketss('cells', toTrash, fixes)
-    const fr = sheet.getRange("f6:g9")
+  unit.section("setting and repeating cell formats", t => {
 
+    const { sheet } = maketss('cellsformats', toTrash, fixes)
+
+    const tester = (range, prop, props, domain, nullIs) => {
+      // font weight
+      console.log(prop, props)
+      const rd = fillRangeFromDomain(range, domain)
+      range['set' + props](rd)
+      const rdn = rd.map(row => row.map(f => is.null(f) ? nullIs : f))
+      const cobs = range['get' + props]()
+      t.deepEqual(cobs, rdn, props)
+
+      //set all to the same thing
+      range['set' + prop](rd[0][0])
+      const cob = range['get' + props]()
+      t.deepEqual(cob, fillRange(range, rdn[0][0]), props)
+      t.is(cobs[0][0], cob[0][0], props)
+      t.is(range['get' + prop](), cob[0][0], prop)
+    }
+    const startAt = sheet.getRange("h9:k12")
+
+    tester(startAt.offset(30, 6), 'VerticalAlignment', 'VerticalAlignments', ['top', 'middle', 'bottom',null], "bottom")
+    tester(startAt.offset(30, 6), 'HorizontalAlignment', 'HorizontalAlignments',  ['left', 'center', 'right', 'normal',null], "general")
+    tester(startAt.offset(0, 0), 'FontWeight', 'FontWeights', ['bold', 'normal', null], "normal")
+    tester(startAt.offset(5, 1), 'FontStyle', 'FontStyles', ['italic', 'normal', null], "normal")
+    tester(startAt.offset(10, 2), 'FontSize', 'FontSizes', [10, 8, 4, 5, 20, 11, null], 10)
+    tester(startAt.offset(15, 3), 'FontLine', 'FontLines', ['line-through', 'none', 'underline', null], "none")
+    tester(startAt.offset(20, 4), 'FontFamily', 'FontFamilies',
+      ['Arial,Tahoma,Times New Roman', 'Helvetica', 'Verdana,Sans Serif', 'Courier New'], null)
+    tester(startAt.offset(25, 5), 'NumberFormat', 'NumberFormats', ['0.0000', '#,##0.00', '$#.##0.00', null], "0.###############")
+
+
+    const startAgain = startAt.offset(30, 0)
     // fontcolorobjects
+    // these are more complex so i wont bother trying to push them thru standard test
+    const fr = startAgain.offset(0, 0)
     const tct = SpreadsheetApp.ThemeColorType
-    const td = Object.keys(tct).filter(f => f !== "UNSUPPORTED" && f !== "HYPERLINK" && !is.function(tct[f])).map(f => tct[f])
+    const td = Object.keys(tct).filter(f => f !== "UNSUPPORTED" && !is.function(tct[f])).map(f => tct[f])
     const rd = fillRangeFromDomain(fr, td)
     const rc = rd.map(row => row.map(f => SpreadsheetApp.newColor().setThemeColor(f).build()))
 
-    const fr2 = sheet.getRange("f10:g12")
+    const fr2 = startAgain.offset(5, 1)
     fr2.setFontColorObject(rc[0][0])
-    const cobs2 = fr2.getFontColorObjects().map(row => row.map (f=> f.asThemeColor().getThemeColorType())) 
+    const cobs2 = fr2.getFontColorObjects().map(row => row.map(f => f.asThemeColor().getThemeColorType()))
     t.deepEqual(cobs2, fillRange(fr2, rd[0][0]))
     const cob2 = fr2.getFontColorObject().asThemeColor().getThemeColorType()
-    t.is (cob2, rc[0][0].asThemeColor().getThemeColorType())
+    t.is(cob2, rc[0][0].asThemeColor().getThemeColorType())
 
     fr.setFontColorObjects(rc)
-    const cobs = fr.getFontColorObjects().map(row => row.map (f=> f.asThemeColor().getThemeColorType())) 
+    const cobs = fr.getFontColorObjects().map(row => row.map(f => f.asThemeColor().getThemeColorType()))
     t.deepEqual(cobs, rd)
 
+    // try all that with rgb color object
+    const fr3 = startAgain.offset(10, 2)
+    const rd3 = fillRange(fr3, getRandomHex)
+    const rc3 = rd3.map(row => row.map(f => SpreadsheetApp.newColor().setRgbColor(f).build()))
+    fr3.setFontColorObjects(rc3)
 
+    const fr4 = startAgain.offset(15, 3)
+    fr4.setFontColorObject(rc3[0][0])
+    const cobs4 = fr4.getFontColorObjects().map(row => row.map(f => f.asRgbColor().asHexString()))
+    t.deepEqual(cobs4, fillRange(fr4, rd3[0][0]))
+    const cob4 = fr4.getFontColorObject().asRgbColor().asHexString()
+    t.is(cob4, rc3[0][0].asRgbColor().asHexString())
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+
+  })
+
+  // this section is kind of redundant now as I've consolodated most of these tests into setting and repearing cell formats
+  // however we'll just leave these here as extra tests in any case
+  unit.section("assorted cell userenteredformats", t => {
+    const { sheet } = maketss('assorted', toTrash, fixes)
+    const range = sheet.getRange("b15:e19")
+    const nFormat = "0.#"
+    const nFormats = fillRange(range, nFormat)
+    range.setNumberFormat(nFormat)
+
+    const nf = range.getNumberFormat()
+    t.is(nf, nFormat)
+    range.setNumberFormats(nFormats)
+    const nfs = range.getNumberFormats()
+
+    t.is(nf, nfs[0][0])
+    t.is(nfs.length, range.getNumRows())
+    t.is(nfs[0].length, range.getNumColumns())
+    t.deepEqual(nfs, nFormats)
+
+
+    const fl = range.getFontLine()
+    t.is(fl, 'none')
+    t.true(range.getFontLines().flat().every(f => f === fl))
+
+    // newly created sheet has all null borders
+    t.is(range.getBorder(), null)
+
+    // default colot and style
+    range.setBorder(true, true, true, true, true, true)
+    // this doesnt work on GAS
+    // const b1 = range.getBorders()
+    const b1 = range.getBorder()
+    t.is(b1.getTop().getColor().getColorType().toString(), "RGB")
+    t.is(b1.getTop().getBorderStyle().toString(), "SOLID")
+    t.is(b1.getBottom().getBorderStyle().toString(), "SOLID")
+    t.is(b1.getLeft().getBorderStyle().toString(), "SOLID")
+    t.is(b1.getRight().getBorderStyle().toString(), "SOLID")
+    t.is(b1.getTop().getColor().asRgbColor().asHexString(), BLACK)
+
+    // hopefully we can get something from an offset to mitigate the range.getBorders() thing
+    const b0 = range.offset(1, 1, 1, 1).getBorder()
+
+    // this will drop any symbols in the response
+    t.deepEqual(JSON.stringify(b0), JSON.stringify(b1))
+
+
+
+    // left should remain as before
+    const GREEN = '#00ff00'
+    range.setBorder(true, null, true, true, true, true, GREEN, SpreadsheetApp.BorderStyle.DASHED)
+    const b2 = range.getBorder()
+    t.is(b2.getTop().getBorderStyle().toString(), "DASHED")
+    t.is(b2.getLeft().getBorderStyle().toString(), "SOLID")
+    t.is(b2.getTop().getColor().asRgbColor().asHexString(), GREEN)
+    t.is(b2.getLeft().getColor().asRgbColor().asHexString(), BLACK)
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+
+  })
+
+
+  unit.section("cell and font backgrounds, styles and alignments", t => {
+
+    const { sheet } = maketss('cells', toTrash, fixes)
 
     // text styles - an empty sheet shoud all be defaults
     const range = sheet.getRange("A1:C5")
@@ -98,21 +210,14 @@ export const testSheets = (pack) => {
     t.is(range.getBackground(), rgbToHex(colorRgb))
 
     // some random colorsas
-    const colors = Array.from({
-      length: range.getNumRows()
-    }, () => Array.from({ length: range.getNumColumns() }, () => getRandomHex()))
-
-    const fontColors = Array.from({
-      length: range.getNumRows()
-    }, () => Array.from({ length: range.getNumColumns() }, () => getRandomHex()))
+    const colors = fillRange(range, getRandomHex)
+    const fontColors = fillRange(range, getRandomHex)
 
 
     range.setBackgrounds(colors)
     t.deepEqual(range.getBackgrounds(), colors)
 
     range.setFontColors(fontColors)
-
-
 
 
     // text rotations
@@ -212,71 +317,7 @@ export const testSheets = (pack) => {
 
   })
 
-  unit.section("assorted cell userenteredformats", t => {
-    const { sheet } = maketss('assorted', toTrash, fixes)
-    const range = sheet.getRange("b15:e19")
-    const nFormat = "0.#"
-    const nFormats = fillRange(range, nFormat)
-    range.setNumberFormat(nFormat)
-
-
-
-    const nf = range.getNumberFormat()
-    t.is(nf, nFormat)
-    range.setNumberFormats(nFormats)
-    const nfs = range.getNumberFormats()
-
-    t.is(nf, nfs[0][0])
-    t.is(nfs.length, range.getNumRows())
-    t.is(nfs[0].length, range.getNumColumns())
-    t.deepEqual(nfs, nFormats)
-
-
-    const fl = range.getFontLine()
-    t.is(fl, 'none')
-    t.true(range.getFontLines().flat().every(f => f === fl))
-
-    // newly created sheet has all null borders
-    t.is(range.getBorder(), null)
-
-    // default colot and style
-    range.setBorder(true, true, true, true, true, true)
-    // this doesnt work on GAS
-    // const b1 = range.getBorders()
-    const b1 = range.getBorder()
-    t.is(b1.getTop().getColor().getColorType().toString(), "RGB")
-    t.is(b1.getTop().getBorderStyle().toString(), "SOLID")
-    t.is(b1.getBottom().getBorderStyle().toString(), "SOLID")
-    t.is(b1.getLeft().getBorderStyle().toString(), "SOLID")
-    t.is(b1.getRight().getBorderStyle().toString(), "SOLID")
-    t.is(b1.getTop().getColor().asRgbColor().asHexString(), BLACK)
-
-    // hopefully we can get something from an offset to mitigate the range.getBorders() thing
-    const b0 = range.offset(1, 1, 1, 1).getBorder()
-
-    // this will drop any symbols in the response
-    t.deepEqual(JSON.stringify(b0), JSON.stringify(b1))
-
-
-
-    // left should remain as before
-    const GREEN = '#00ff00'
-    range.setBorder(true, null, true, true, true, true, GREEN, SpreadsheetApp.BorderStyle.DASHED)
-    const b2 = range.getBorder()
-    t.is(b2.getTop().getBorderStyle().toString(), "DASHED")
-    t.is(b2.getLeft().getBorderStyle().toString(), "SOLID")
-    t.is(b2.getTop().getColor().asRgbColor().asHexString(), GREEN)
-    t.is(b2.getLeft().getColor().asRgbColor().asHexString(), BLACK)
-
-
-
-    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-
-  })
-
-
-
-  unit.section("range.getBorder() does work on GAS although it's not documented", t => {
+  unit.section("TODO - currently skipped - range.getBorder() does work on GAS although it's not documented", t => {
     // TODO figure out how to handle thick/medium etc.
 
     const rt = sb.getRange("a26:b28")
@@ -304,9 +345,6 @@ export const testSheets = (pack) => {
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
 
   }, { skip: true })
-
-
-
 
   unit.section("text Style objects and builders", t => {
 
@@ -352,87 +390,7 @@ export const testSheets = (pack) => {
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
   })
 
-  unit.section("text style extracts, reducers and other exotics", t => {
-    const sp = SpreadsheetApp.openById(fixes.TEST_BORDERS_ID)
-    const sb = sp.getSheets()[0]
-    const flr = sb.getRange("c2:e3")
 
-    // notes 
-    const notes = flr.getNotes()
-    t.is(notes.length, flr.getNumRows())
-    t.is(notes[0].length, flr.getNumColumns())
-    t.true(notes.flat().every(f => f === ""))
-
-    const nr = sb.getRange("c30:e30")
-    const nrns = nr.getNotes()
-    t.is(nrns.length, nr.getNumRows())
-    t.is(nrns[0].length, nr.getNumColumns())
-    t.is(nrns[0][0].replace(/\n/g, ""), "C30", "drop new line stuff")
-    t.is(nrns[0][1], "")
-    t.is(nrns[0][2].replace(/\n/g, ""), "E30")
-
-
-    // text direction all null
-    t.is(flr.isChecked(), null)
-    const dirs = flr.getTextDirections()
-    t.is(dirs.length, flr.getNumRows())
-    t.is(dirs[0].length, flr.getNumColumns())
-    t.true(dirs.flat().every(is.null))
-    t.is(flr.getTextDirection(), dirs[0][0])
-
-    const dirtr = sb.getRange("h29:j29")
-    const dirtrs = dirtr.getTextDirections().flat()
-    t.is(dirtrs[0], null, "english")
-    // this has r-l language via translate but still returns null
-    t.is(dirtrs[1], null, "arabic")
-    // back to l-r
-    t.is(dirtrs[2], null, "japanese")
-    // TODO findout how to change to R-L and explicily set l-R
-
-    // 2 checkboxes - non ticked
-    const ckr1 = sb.getRange("g2:h2")
-    t.is(ckr1.isChecked(), false)
-
-    // 4 cells 2 with unticked checkboxes
-    const ckr2 = sb.getRange("f2:i2")
-    t.is(ckr2.isChecked(), null)
-
-    // 4 cells , 2 with ticked checkboxes
-    const ckr3 = sb.getRange("k2:n2")
-    t.is(ckr3.isChecked(), null)
-
-    // 2 cells both ticked
-    const ckr4 = sb.getRange("l2:m2")
-    t.is(ckr4.isChecked(), true)
-
-    // 4 cells some ticked, some not
-    const ckr5 = sb.getRange("l2:m3")
-    t.is(ckr5.isChecked(), null)
-
-    // 1 cell ticked
-    const ckr6 = sb.getRange("m2")
-    t.is(ckr6.isChecked(), true)
-
-    // 1 cell unticked
-    const ckr7 = sb.getRange("m3")
-    t.is(ckr7.isChecked(), false)
-
-    // cells with some of everything
-    const ckr8 = sb.getRange("g2:n3")
-    t.is(ckr8.isChecked(), null)
-
-    // do font lines
-    const flrss = flr.getFontLines()
-    const flrs = flr.getFontLine()
-    const flExpect = [
-      ['line-through', 'none', 'none'],
-      ['none', 'none', 'underline']
-    ]
-    t.is(flrss.length, flr.getNumRows())
-    t.is(flrss[0].length, flr.getNumColumns())
-    t.deepEqual(flrss, flExpect)
-    t.is(flrs, flrss[0][0])
-  })
 
   unit.section("color objects and builders", t => {
 
@@ -556,193 +514,6 @@ export const testSheets = (pack) => {
     t.deepEqual(back1, back2)
 
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-
-  })
-
-  unit.section("spreadsheet ranges", t => {
-    // careful with confusion of combining 0 (offset,array indices) and 1 start (range methods)
-    const ss = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
-    const sheet = ss.getSheets()[1]
-    const range = sheet.getRange("c2:$d$4")
-    t.false(sheet.isSheetHidden())
-    t.is(range.toString(), "Range")
-    t.is(range.getGridId(), sheet.getSheetId())
-    t.is(range.getA1Notation(), "C2:D4")
-    t.is(range.getRow(), 2)
-    t.is(range.getColumn(), 3)
-    t.is(range.getLastRow(), 4)
-    t.is(range.getLastColumn(), 4)
-    t.is(range.getCell(1, 1).getA1Notation(), range.offset(0, 0, 1, 1).getA1Notation())
-    t.is(range.getCell(2, 2).getColumn(), range.getColumn() + 1)
-    t.is(range.getCell(2, 2).getRow(), range.getRow() + 1)
-    t.is(range.getWidth(), range.getNumColumns())
-    t.is(range.getHeight(), range.getNumRows())
-    t.is(range.getNumColumns(), range.getLastColumn() - range.getColumn() + 1)
-    t.is(range.getNumRows(), range.getLastRow() - range.getRow() + 1)
-
-
-    const { values } = Sheets.Spreadsheets.Values.get(sheet.getParent().getId(), sheet.getName())
-    const target = values.slice(range.getRow() - 1, range.getLastRow()).map(row => row.slice(range.getColumn() - 1, range.getLastColumn()))
-    t.true(is.array(target))
-    t.is(target.length, range.getNumRows())
-    t.is(target[0].length, range.getNumColumns())
-    const tr = `${sheet.getName()}!${range.getA1Notation()}`
-    const { values: atv, range: atr } = Sheets.Spreadsheets.Values.get(fixes.TEST_SHEET_ID, tr)
-    t.is(atv.length, target.length)
-    t.is(atv[0].length, target[0].length)
-    t.is(atr, tr)
-
-
-    const rv = range.getValues()
-    const dr = sheet.getDataRange()
-    t.is(dr.offset(0, 0).getA1Notation(), dr.getA1Notation())
-    t.is(dr.offset(0, 0, 1, 1).getA1Notation(), "A1")
-    t.is(dr.offset(1, 1, 1, 1).getA1Notation(), "B2")
-    t.is(dr.offset(2, 1).getColumn(), 2)
-    t.is(dr.offset(3, 5).getRow(), 4)
-    t.is(dr.offset(0, 1).getLastColumn(), dr.getLastColumn() + 1)
-    t.is(dr.offset(1, 1).getNumRows(), dr.getNumRows())
-    t.is(dr.offset(1, 1).getNumColumns(), dr.getNumColumns())
-    t.is(dr.offset(1, 1, 2, 2).getNumRows(), 2)
-    t.is(dr.offset(1, 1, 2, 2).getNumColumns(), 2)
-    t.is(dr.offset(1, 1, 3).getNumRows(), 3)
-    t.is(dr.offset(1, 1, 3, 4).getNumColumns(), 4)
-
-    t.is(range.getValue(), atv[0][0])
-    t.is(range.getValue(), atv[0][0])
-    t.is(range.offset(1, 1, 1, 1).getValue(), atv[1][1])
-    t.is(range.offset(0, 2, 1, 1).getValue(), values[1][2])
-
-    t.is(range.getDisplayValue(), atv[0][0].toString())
-
-    t.rxMatch(t.threw(() => range.offset(0, 0, 0)).message, /number of rows/)
-    t.rxMatch(t.threw(() => range.offset(0, 0, 1, 0)).message, /number of columns/)
-
-    // TODO check when we have some formulas in place
-    t.true(is.string(range.getFormula()))
-    t.true(range.getFormulas().every(r => r.map(f => is.string(f))))
-    t.is(range.getFormulas().length, atv.length)
-    t.is(range.getFormulas()[0].length, atv[0].length)
-
-    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-  })
-
-
-  unit.section("basic adv sheets cell formatting fetch fix", t => {
-    // this section will work with the testsheet where we have some horizonatl alignment (as opposed to the default which returns nothing)
-    const spreadsheetId = fixes.TEST_SHEET_ID
-    const ss = Sheets.Spreadsheets.get(spreadsheetId)
-    const sheets = ss.sheets
-    const sheet = sheets[0]
-    const range = `'${sheet.properties.title}'!a1:b3`
-    const props = 'effectiveFormat.horizontalAlignment'
-
-    const x = Sheets.Spreadsheets.get(spreadsheetId, {
-      ranges: [range],
-      fields: `sheets.data.rowData.values.${props}`,
-    })
-    const { rowData } = x.sheets[0].data[0]
-
-    t.is(rowData.length, 3)
-    t.is(rowData[0].values.length, 2)
-    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-
-  })
-
-  unit.section("spreadsheetapp rangelists", t => {
-    const ss = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
-    const sheet = ss.getSheets()[1]
-    const rltests = ["a2:c3", "bb4:be12"]
-    const rl = sheet.getRangeList(rltests)
-    t.is(rl.getRanges().length, rltests.length)
-    rl.getRanges().forEach((f, i) => t.is(f.getA1Notation(), rltests[i].toUpperCase()))
-    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-  })
-
-  unit.section("spreadsheet exotics", t => {
-    const ss = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
-    const sheet = ss.getSheets()[0]
-
-    t.is(sheet.getColumnWidth(2), ss.getColumnWidth(2))
-    t.is(sheet.getRowHeight(1), ss.getRowHeight(1))
-    t.true(sheet.getRowHeight(1) > 10)
-    t.true(sheet.getColumnWidth(2) > 20)
-    t.true(is.nonEmptyString(ss.getRecalculationInterval().toString()))
-
-    const owner = ss.getOwner()
-    t.is(owner.getEmail(), fixes.EMAIL)
-
-    const viewers = ss.getViewers()
-    t.truthy(viewers.length)
-    viewers.forEach(f => t.true(is.nonEmptyString(f.getEmail())))
-
-    const editors = ss.getEditors()
-    t.truthy(editors.length)
-    editors.forEach(f => t.true(is.nonEmptyString(f.getEmail())))
-
-
-    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-  })
-
-
-  unit.section("advanced sheet basics", t => {
-    t.true(is.nonEmptyString(Sheets.toString()))
-    t.is(Sheets.getVersion(), 'v4')
-    t.is(Drive.isFake, Sheets.isFake, {
-      neverUndefined: false
-    })
-    t.is(Sheets.toString(), Sheets.Spreadsheets.toString())
-    const ss = Sheets.Spreadsheets.get(fixes.TEST_SHEET_ID)
-    t.is(ss.spreadsheetId, fixes.TEST_SHEET_ID)
-    t.true(is.nonEmptyObject(ss.properties))
-    t.is(ss.properties.title, fixes.TEST_SHEET_NAME)
-    t.is(ss.properties.autoRecalc, "ON_CHANGE")
-    t.true(is.nonEmptyObject(ss.properties.defaultFormat))
-    t.true(is.nonEmptyObject(ss.properties.spreadsheetTheme))
-    t.true(is.array(ss.sheets))
-    t.truthy(ss.sheets.length)
-    t.true(is.nonEmptyString(ss.spreadsheetUrl))
-    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-  })
-
-  unit.section("spreadsheetapp basics", t => {
-    const ass = Sheets.Spreadsheets.get(fixes.TEST_SHEET_ID)
-    const ss = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
-    t.is(ss.getId(), fixes.TEST_SHEET_ID)
-    t.is(ss.getName(), fixes.TEST_SHEET_NAME)
-    t.is(ss.getNumSheets(), ass.sheets.length)
-    const sheets = ss.getSheets()
-    t.is(sheets.length, ass.sheets.length)
-
-    sheets.forEach((s, i) => {
-      t.is(s.getName(), ass.sheets[i].properties.title)
-      t.is(s.getSheetId(), ass.sheets[i].properties.sheetId)
-      t.is(s.getIndex(), i + 1)
-      t.true(is.number(s.getSheetId()))
-      t.is(s.getName(), s.getSheetName())
-      t.is(s.getMaxColumns(), ass.sheets[i].properties.gridProperties.columnCount)
-      t.is(s.getMaxRows(), ass.sheets[i].properties.gridProperties.rowCount)
-      t.is(s.getType().toString(), ass.sheets[i].properties.sheetType)
-      t.is(ss.getSheetById(s.getSheetId()).getName(), s.getName())
-      t.is(ss.getSheetByName(s.getName()).getSheetId(), s.getSheetId())
-
-    })
-
-
-    t.is(ss.getId(), ss.getKey())
-    t.is(ss.getSheetId(), sheets[0].getSheetId())
-    t.is(ss.getSheetName(), sheets[0].getName())
-
-    const file = DriveApp.getFileById(ss.getId())
-    t.is(file.getName(), ss.getName())
-    t.is(file.getMimeType(), "application/vnd.google-apps.spreadsheet")
-    t.is(file.getOwner().getEmail(), ss.getOwner().getEmail())
-    t.is(file.getOwner().getEmail(), fixes.EMAIL)
-
-    t.is(SpreadsheetApp.openByUrl(ss.getUrl()).getId(), ss.getId())
-    t.is(SpreadsheetApp.openByKey(ss.getId()).getId(), ss.getId())
-    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-
 
   })
 

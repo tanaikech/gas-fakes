@@ -168,7 +168,14 @@ export const makeSheetsGridRange = (range) => {
 }
 
 export const fillRange = (range, value ) =>{
-  return Array.from({ length: range.getNumRows() }).fill(Array.from({ length: range.getNumColumns() }).fill(value))
+  if (is.function(value))  {
+    return fillRangeFunc(range, value)
+  }
+  return Array.from({ length: range.getNumRows() }).fill(Array.from({ length: range.getNumColumns() }).fill( value ))
+}
+
+export const fillRangeFunc = (range, value ) => {
+  return Array.from ({ length: range.getNumRows() }, _ => Array.from ({length: range.getNumColumns()}, () => value()))
 }
 
 export const  arrMatchesRange = (range, arr, itemType) => {

@@ -293,8 +293,6 @@ class FakeAdvSheets {
       newClearBasicFilterRequest: ['sheetId'],
       // this one bugs out https://issuetracker.google.com/issues/423737982
       newClearValuesRequest: [],
-
-      newColor: ['alpha', 'red', 'green', 'blue'],
       newColorStyle: ['rgbColor', 'themeColor'],
       newConditionalFormatRule: ['booleanRule', 'gradientRule', 'ranges'],
       newConditionValue: ['relativeDate', 'userEnteredValue'],

@@ -21,7 +21,13 @@ export const newFakeColorBuilder = (...args) => {
 export const makeColorFromApi = (apiResult) => {
   const builder = newFakeColorBuilder()
   if (apiResult.themeColor) {
-    builder.setThemeColor(ThemeColorType[apiResult.themeColor])
+    // its a mismatch between api and spreadsheetApp
+    const tc = apiResult.themeColor === "LINK" ? "HYPERLINK" : apiResult.themeColor
+    let t = ThemeColorType[tc]
+    if (!t) {
+      throw `apiResult ${tc} is not a valid theme color`
+    }
+    builder.setThemeColor(t)
   } else if (apiResult.rgbColor) {
     builder.setRgbColor(robToHex(apiResult.rgbColor))
   }

@@ -33,7 +33,7 @@ export const makeTextStyleFromApi = (apiResult) => {
     italic = null,
     underline = null,
     strikethrough = null,
-    // this one is ignored as gfar as i can tell
+    // need to see what's going on here 
     link = null
   } = apiResult || {}
 
@@ -42,6 +42,7 @@ export const makeTextStyleFromApi = (apiResult) => {
   // it seems that the default for everything is null if not specified
   builder.setFontFamily(fontfamily)
   builder.setFontSize(fontSize)
+
   builder.setBold(bold)
   builder.setItalic(italic)
   builder.setUnderline(underline)
@@ -84,6 +85,7 @@ const nargCheck = (prop, args, req, reqType) => {
   const { nargs, matchThrow } = signatureArgs(args, "TextStyleBuilder." + prop)
   if (nargs !== req) matchThrow()
   // null is always allowed for this builder
+
   if (!is.null(args[0]) && req === 1 && reqType && !is[unCapital(reqType)](args[0])) matchThrow()
   return {
     nargs, matchThrow

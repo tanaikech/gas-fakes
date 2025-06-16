@@ -1,203 +1,6 @@
 import { Utils } from '../../support/utils.js'
-const { getPlucker, is, capital } = Utils
+const { is, hexToRgb } = Utils
 
-/**
- * see if the result matches the range size - if it doesnt it's a jagged array - some api methods return that
- * @param {object} p
- * @param {FakeSheetRange} p.range the range to check against 
- * @param {*[][]} p.cleaned the 2 dim array to check of dimensions match range 
- * @returns  {boolean}
- */
-const isJagged = ({ range, cleaned }) => {
-  const nr = range.getNumRows()
-  const nc = range.getNumColumns()
-  // a jagged doesnt have an array of arrays that matches the range size
-  return cleaned.length !== nr || cleaned.some(row => row.length !== nc)
-}
-
-/**
- * if the result is jagged/wrongly dimensioned, we need to fill in the blanks with the default values from a template
- * @param {object} p
- * @param {*[][]} p.template 2 dim array of the correct dimensions
- * @param {*[][]} p.cleaned the 2 dim array with actual values in it
- * @returns  {boolean}
- */
-const fixJagged = ({ template, cleaned }) => {
-  return template.map((row, i) => {
-    // use the template values if we've run out of data 
-    if (i >= cleaned.length) return row
-
-    // use the template if we're out of cols
-    return row.map((col, j) => j < cleaned[i].length ? cleaned[i][j] : col)
-
-  })
-}
-
-/**
- * make a template full of default values
- * @param {object} p
- * @param {FakeSheetRange} p.range the ramge we are targetting
- * @param {*} p.defaultValue the default value for the api results
- * @param {function} p.cleaner the cleaner function that decorates the default value - same as the one used to clean api results
- * @returns  {*[][]}
- */
-const makeTemplate = ({ range, defaultValue, cleaner = (f) => f }) =>
-  Array.from({ length: range.getNumRows() })
-    .fill(Array.from({ length: range.getNumColumns() })
-      .fill(defaultValue).map(cleaner))
-
-
-// insert a method to get the required attributes, bith single and array version
-// many methods can be genereated automatically
-export const attrGens = (self, target) => {
-
-  const spreadsheetId = self.__getSpreadsheetId()
-
-  // shared function to get attributes that use spreadsheets.get
-  const getRowDataAttribs = ({ range = self, props, defaultValue, cleaner }) => {
-
-    // get the collection of rows with data for the required properties
-    const { sheets } = Sheets.Spreadsheets.get(spreadsheetId, {
-      ranges: [self.__getRangeWithSheet(range)],
-      fields: `sheets.data.rowData.values${props}`
-    })
-
-    const { rowData } = sheets[0]?.data[0]
-
-    // sometimes we get a jagged array that needs to be padded to the right length with default values
-    // if we got nothing, return the template of defaults
-
-    if (!rowData ) return makeTemplate({ range, defaultValue, cleaner })
-
-
-    // pluck each cell
-    // extract the required props to an array
-    const plucker = getPlucker(props, defaultValue)
-
-    // clean what we did get
-    const cleaned = rowData.map(row => row.values.map(col => cleaner(plucker(col), range)))
-
-    // if it's not jagged, we dont need to fill any missing values
-    if (!isJagged({ cleaned, range })) return cleaned
-
-    // fill in missing values from template shaped results
-    const template = makeTemplate({ range, defaultValue, cleaner })
-    return fixJagged({ template, cleaned })
-
-  }
-
-  // default is just copy api result with no cleaning
-  const cleaner = target.cleaner || (f => f)
-
-  // curry a getter
-  const getters = (range) => getRowDataAttribs({
-    cleaner,
-    range,
-    defaultValue: target.defaultValue,
-    props: target.props,
-    reducer: target.reducer
-  })
-
-
-  const fields = target.props.replace (/^\./,"")
-
-  const setterValue = (target, value) =>  {
-    const obName = capital(target.name.replace(/^get(.*)/, "$1"))
-    const cellFormat = Sheets.newCellFormat()['set'+obName](target.makeSetter(value))
-    const cellData = Sheets.newCellData().setUserEnteredFormat(cellFormat)
-    return cellData
-  }
-  // both a single and collection version
-  // also some queries return a consolidated/reduced version
-  if (!target.skipPlural) {
-
-    const plural = target.plural || (target.name + 's')
-
-    self[plural] = () => {
-
-      // get all the values in the range
-      const values = getters(self)
-      // some gets would like a single result
-      const reduced = target.reducer ? target.reducer(values.flat()) : values
-      // some allow a null response for example
-      return target.finalizer ? target.finalizer(reduced) : reduced
-    }
-
-    if (target.makeSetter) {
-      const name = capital(plural.replace(/^get(.*)/, "$1"))
-      self['set' + name] = (values) => {
-        const rows = values.map(row => {
-          return Sheets.newRowData().setValues(row.map(c => setterValue (target, c )))
-        })
-        updateCells({ range: self, rows, fields , spreadsheetId })
-        return self
-      }
-    }
-
-
-    if (!target.skipSingle) {
-
-      self[target.name] = () => {
-        const tl = self.__getTopLeft()
-        // just get the 1st value in the range
-        const values = getters(tl)
-        // some gets would like a single result
-        const reduced = target.reducer ? target.reducer(values.flat()) : (values && values[0] && values[0][0])
-        // some allow a null response for example
-        return target.finalizer ? target.finalizer(reduced) : reduced
-      }
-      if (target.makeSetter) {
-        const name = capital(target.name.replace(/^get(.*)/, "$1"))
-        self['set' + name] = (value) => {
-          const tl = self.__getTopLeft()
-          const rows = [Sheets.newRowData().setValues([setterValue (target, value)])]
-          updateCells({ range: tl, rows, fields, spreadsheetId })
-        }
-      }
-    }
-  }
-
-  return self
-}
-
-export const valueGens = (self, target) => {
-
-  const getData = ({ range, options }) => {
-    const result = Sheets.Spreadsheets.Values.get(
-      self.__getSpreadsheetId(),
-      self.__getRangeWithSheet(range),
-      options
-    )
-    return result.values || []
-  }
-
-  // make a template to handle jagged arrays
-
-  // both a single and collection version
-  const plural = target.plural || (target.name + 's')
-  const getters = (range) => {
-    const values = getData({ range, options: target.options })
-    /// TODO check if we ever get a jagged array back for values as we sometimes do for formats 
-    // - if we do, we'll need to populate with the template
-    let v = !values.length ? makeTemplate({ range, defaultValue: target.defaultValue }) : values
-    if (target.cleaner) v = v.map(target.cleaner)
-    if (target.reducer) v = target.reducer(v)
-    return v
-  }
-
-  // normally we need both plural and single version - but this allows skipping if required
-  if (!target.skipPlural) self[plural] = () => getters(self)
-  if (!target.skipSingle) {
-    self[target.name] = () => {
-      // just get a single cell
-      const r = getters(self.__getTopLeft())
-      const v = target.reducer ? r : r[0][0]
-      return v
-    }
-  }
-
-  return self
-}
 
 export const getGridRange = (range) => {
   if (!isRange(range)) {
@@ -216,7 +19,6 @@ export const getGridRange = (range) => {
   }
 }
 
-
 export const updateCells = ({ range, rows, fields, spreadsheetId }) => {
   const ucr = Sheets.newUpdateCellsRequest()
     .setRange(makeSheetsGridRange(range))
@@ -231,7 +33,15 @@ export const updateCells = ({ range, rows, fields, spreadsheetId }) => {
 
 export const isRange = (a) => is.object(a) && !is.null(a) && is.function(a.toString) && a.toString() === "Range"
 export const isColor = (a) => is.object(a) && !is.null(a) && is.function(a.toString) && a.toString() === "Color"
-
+export const isThemeColor = (color) =>{
+  if (!isColor(color)) {
+    throw new Error `expected a color but got ${is(color)}`
+  }
+  const type = color.getColorType().toString()
+  if (type === 'THEME') return true
+  if (type === 'RGB') return false
+  throw new Error (`Couldnt estabish color type ${type}`)
+}
 // Make a gridrange from a range
 export const makeGridRange = (range) => {
   if (!isRange(range)) {
@@ -301,12 +111,12 @@ export const fillRange = (range, value ) =>{
   return Array.from({ length: range.getNumRows() }).fill(Array.from({ length: range.getNumColumns() }).fill(value))
 }
 
-export const  arrMatchesRange = (range, arr, itemType) => {
+export const  arrMatchesRange = (range, arr, itemType, nullOkay = false) => {
   if (!is.array(arr)) return false
   if (arr.length !== range.getNumRows()) return false
   if (arr.some(r => !is.array(r))) return false
   if (arr.some(r => r.length !== range.getNumColumns())) return false
-  if (itemType && !arr.flat().every(f => is[itemType](f))) return false
+  if (itemType && !arr.flat().every(f => is[itemType](f) || (nullOkay && is.null(f)))) return false
   return true
 }
 
@@ -317,3 +127,70 @@ export const extractPattern = (response) => {
   if (!is.object(response) || !Reflect.has(response, "pattern")) return null
   return response.pattern
 }
+
+export const makeRepeatRequest = (range,cellData, fields) => {
+  const request = Sheets.newRepeatCellRequest()
+    .setRange(makeSheetsGridRange(range))
+    .setCell(cellData)
+    .setFields(fields)
+  return request
+}
+
+export const makeColorStyle = (color) => {
+  const colorStyle = Sheets.newColorStyle()
+  const isTheme = isThemeColor(color)
+  let fields = 'userEnteredFormat.textFormat.foregroundColorStyle.'
+  if (isTheme) {
+    const s = color.asThemeColor().getThemeColorType().toString()
+    // API doesnt use hyperlink
+    colorStyle.setThemeColor(s === "HYPERLINK" ? "LINK" : s)
+    fields += 'themeColor'
+  } else {
+    const r = color.asRgbColor()
+    colorStyle.setRgbColor(hexToRgb(r.asHexString()))
+    fields += 'rgbColor'
+  }
+  const textFormat = Sheets.newTextFormat().setForegroundColorStyle(colorStyle)
+  const cellFormat = Sheets.newCellFormat().setTextFormat(textFormat)
+  const cellData = Sheets.newCellData().setUserEnteredFormat(cellFormat)
+  return {
+    cellData, 
+    fields
+  }
+}
+
+export const makeCellTextFormatData = ( prop, value) => {
+  const textFormat = Sheets.newTextFormat()
+  // to unset you have to do is mention the field but don't set value on the prop
+  if (!is.function (textFormat[prop])) {
+    throw new Error (`tied to call ${prop} method on textFormat but it's not a function}`)
+  }
+  if (!is.null(value))textFormat[prop](value)
+  const cellFormat = Sheets.newCellFormat().setTextFormat(textFormat)
+  const cellData = Sheets.newCellData().setUserEnteredFormat(cellFormat)
+  return cellData
+}
+
+export const makeNumberFormatData = (value, type ="NUMBER") => {
+  const numberFormat = Sheets.newNumberFormat()
+  if (!is.null (value)) {
+    numberFormat.setPattern(value).setType(type)
+  }
+  const cellFormat = Sheets.newCellFormat().setNumberFormat(numberFormat)
+  const cellData = Sheets.newCellData().setUserEnteredFormat(cellFormat)
+  return cellData
+}
+
+
+export const makeCellFontLineData = ( value) => {
+  const textFormat = Sheets.newTextFormat()
+    .setStrikethrough(value === 'line-through')
+    .setUnderline(value === 'underline')
+  if (value !== 'none' && value !== 'line-through' && value !== 'underline' && !is.null(value)) {
+    throw `invalid font line value ${value}`
+  }
+  const cellFormat = Sheets.newCellFormat().setTextFormat(textFormat)
+  const cellData = Sheets.newCellData().setUserEnteredFormat(cellFormat)
+  return cellData
+}
+
