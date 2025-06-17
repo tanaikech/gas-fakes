@@ -33,6 +33,8 @@ export const updateCells = ({ range, rows, fields, spreadsheetId }) => {
 
 export const isRange = (a) => is.object(a) && !is.null(a) && is.function(a.toString) && a.toString() === "Range"
 export const isColor = (a) => is.object(a) && !is.null(a) && is.function(a.toString) && a.toString() === "Color"
+export const isTextRotation = (a) => is.object(a) && !is.null(a) && is.function(a.getAngle) 
+
 export const isThemeColor = (color) =>{
   if (!isColor(color)) {
     throw new Error `expected a color but got ${is(color)}`
@@ -120,77 +122,5 @@ export const  arrMatchesRange = (range, arr, itemType, nullOkay = false) => {
   return true
 }
 
-export const extractPattern = (response) => {
-  // a plain pattern entered by UI, apps script or lax api call
-  if (is.string(response)) return response
-  // should be { type: "TYPE", pattern: "xxx"}
-  if (!is.object(response) || !Reflect.has(response, "pattern")) return null
-  return response.pattern
-}
 
-export const makeRepeatRequest = (range,cellData, fields) => {
-  const request = Sheets.newRepeatCellRequest()
-    .setRange(makeSheetsGridRange(range))
-    .setCell(cellData)
-    .setFields(fields)
-  return request
-}
-
-export const makeColorStyle = (color) => {
-  const colorStyle = Sheets.newColorStyle()
-  const isTheme = isThemeColor(color)
-  let fields = 'userEnteredFormat.textFormat.foregroundColorStyle.'
-  if (isTheme) {
-    const s = color.asThemeColor().getThemeColorType().toString()
-    // API doesnt use hyperlink
-    colorStyle.setThemeColor(s === "HYPERLINK" ? "LINK" : s)
-    fields += 'themeColor'
-  } else {
-    const r = color.asRgbColor()
-    colorStyle.setRgbColor(hexToRgb(r.asHexString()))
-    fields += 'rgbColor'
-  }
-  const textFormat = Sheets.newTextFormat().setForegroundColorStyle(colorStyle)
-  const cellFormat = Sheets.newCellFormat().setTextFormat(textFormat)
-  const cellData = Sheets.newCellData().setUserEnteredFormat(cellFormat)
-  return {
-    cellData, 
-    fields
-  }
-}
-
-export const makeCellTextFormatData = ( prop, value) => {
-  const textFormat = Sheets.newTextFormat()
-  // to unset you have to do is mention the field but don't set value on the prop
-  if (!is.function (textFormat[prop])) {
-    throw new Error (`tied to call ${prop} method on textFormat but it's not a function}`)
-  }
-  if (!is.null(value))textFormat[prop](value)
-  const cellFormat = Sheets.newCellFormat().setTextFormat(textFormat)
-  const cellData = Sheets.newCellData().setUserEnteredFormat(cellFormat)
-  return cellData
-}
-
-export const makeNumberFormatData = (value, type ="NUMBER") => {
-  const numberFormat = Sheets.newNumberFormat()
-  if (!is.null (value)) {
-    numberFormat.setPattern(value).setType(type)
-  }
-  const cellFormat = Sheets.newCellFormat().setNumberFormat(numberFormat)
-  const cellData = Sheets.newCellData().setUserEnteredFormat(cellFormat)
-  return cellData
-}
-
-
-export const makeCellFontLineData = ( value) => {
-  const textFormat = Sheets.newTextFormat()
-    .setStrikethrough(value === 'line-through')
-    .setUnderline(value === 'underline')
-  if (value !== 'none' && value !== 'line-through' && value !== 'underline' && !is.null(value)) {
-    throw `invalid font line value ${value}`
-  }
-  const cellFormat = Sheets.newCellFormat().setTextFormat(textFormat)
-  const cellData = Sheets.newCellData().setUserEnteredFormat(cellFormat)
-  return cellData
-}
 

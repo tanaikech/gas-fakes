@@ -10,7 +10,7 @@ import '../main.js'
 
 import { initTests } from './testinit.js'
 import { getSheetsPerformance } from '../src/support/sheetscache.js';
-import { maketss, trasher, toHex, rgbToHex, getRandomRgb, getRandomHex, getStuff, BLACK, RED, fillRange, arrMatchesRange, fillRangeFromDomain } from './testassist.js';
+import { maketss, trasher, rgbToHex, getRandomRgb, getRandomHex, getStuff, BLACK, fillRange, fillRangeFromDomain, isEnum } from './testassist.js';
 
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
@@ -24,39 +24,88 @@ export const testSheets = (pack) => {
 
     const { sheet } = maketss('cellsformats', toTrash, fixes)
 
-    const tester = (range, prop, props, domain, nullIs) => {
+    const tester = (range, prop, props, domain, nullIs, patcher) => {
       // font weight
       console.log(prop, props)
       const rd = fillRangeFromDomain(range, domain)
       range['set' + props](rd)
-      const rdn = rd.map(row => row.map(f => is.null(f) ? nullIs : f))
+      const rdn = rd.map(row => row.map(f => {
+        return is.null(f) ? nullIs : f
+      }))
+
+      // sometimes the api returns a different value to what was set or what gas expects
+      let rdnCompare = patcher
+        ? rdn.map(row => row.map(f => {
+          return patcher[f] || f
+        }))
+        : rdn
+
+      // now we need to normalize for enums
+      rdnCompare = rdnCompare.map(row => row.map(f => isEnum(f) ? f.toString() : f))
       const cobs = range['get' + props]()
-      t.deepEqual(cobs, rdn, props)
+      const cobsCompare = cobs.map(row => row.map(f => isEnum(f) ? f.toString() : f))
+      t.deepEqual(cobsCompare, rdnCompare, props)
 
       //set all to the same thing
       range['set' + prop](rd[0][0])
       const cob = range['get' + props]()
-      t.deepEqual(cob, fillRange(range, rdn[0][0]), props)
-      t.is(cobs[0][0], cob[0][0], props)
-      t.is(range['get' + prop](), cob[0][0], prop)
+      const cobCompare = isEnum(cob) ? cob.toString() : cob
+      t.deepEqual(cobCompare, fillRange(range, rdnCompare[0][0]), props)
+      t.is(cobsCompare[0][0], cobCompare[0][0], props)
+      const gs = range['get' + prop]()
+      const gsCompare = isEnum(gs) ? gs.toString() : gs
+      t.is(gsCompare, cobsCompare[0][0], props)
+      if (isEnum(gs)) {
+        t.is(gs.compareTo(cobs[0][0]), 0, props)
+      }
     }
     const startAt = sheet.getRange("h9:k12")
 
-    tester(startAt.offset(30, 6), 'VerticalAlignment', 'VerticalAlignments', ['top', 'middle', 'bottom',null], "bottom")
-    tester(startAt.offset(30, 6), 'HorizontalAlignment', 'HorizontalAlignments',  ['left', 'center', 'right', 'normal',null], "general")
+    // TODO can't properly do text rotation because of https://issuetracker.google.com/issues/425390984.
+    // revisit this when fixed
+    const fr0 = startAt.offset(0, 0)
+    fr0.setTextRotation(45)
+    // see https://issuetracker.google.com/issues/425390984 and readme oddities - textRotation
+    const tr0 = fr0.getTextRotation()
+    t.is(tr0.getDegrees(), Sheets.isFake ? 0 : 45)
+    t.is(tr0.isVertical(), false)
+    const rotd = fillRangeFromDomain(fr0, [-2, 9, 89, null])
+    // this also doesnt work in GAS so we'll skipuntil its fixed
+    if (Sheets.isFake) {
+      fr0.setTextRotations(rotd)
+      const r2 = fr0.getTextRotations()
+      // see https://issuetracker.google.com/issues/425390984 and readme oddities - textRotation
+      t.deepEqual(r2.flat().map(f => f.getDegrees()), rotd.flat().map(f => Sheets.isFake ? 0 : f))
+      // this should always be false if we've set rotation with a number
+      t.true(r2.flat().every(f => !f.isVertical()))
+      // Note that pass TextRotation object rather than degrees throws an error in GAS so we wont be implementing that overload yet.
+    }
     tester(startAt.offset(0, 0), 'FontWeight', 'FontWeights', ['bold', 'normal', null], "normal")
     tester(startAt.offset(5, 1), 'FontStyle', 'FontStyles', ['italic', 'normal', null], "normal")
     tester(startAt.offset(10, 2), 'FontSize', 'FontSizes', [10, 8, 4, 5, 20, 11, null], 10)
     tester(startAt.offset(15, 3), 'FontLine', 'FontLines', ['line-through', 'none', 'underline', null], "none")
     tester(startAt.offset(20, 4), 'FontFamily', 'FontFamilies',
       ['Arial,Tahoma,Times New Roman', 'Helvetica', 'Verdana,Sans Serif', 'Courier New'], null)
-    tester(startAt.offset(25, 5), 'NumberFormat', 'NumberFormats', ['0.0000', '#,##0.00', '$#.##0.00', null], "0.###############")
+    tester(startAt.offset(25, 5), 'NumberFormat', 'NumberFormats', ['0.0000', '#,##0.00', '$#.##0.00', 'general'], null, {
+      // because we set general, but receive this default in return
+      general: "0.###############"
+    })
+    tester(startAt.offset(30, 6), 'HorizontalAlignment', 'HorizontalAlignments', ['left', 'center', 'right', 'normal', null], "general", {
+      // see readme oddities for why this....
+      normal: Sheets.isFake ? "general" : "general-left"
+    })
+    tester(startAt.offset(35, 6), 'VerticalAlignment', 'VerticalAlignments', ['top', 'middle', 'bottom', null], "bottom")
+    tester(startAt.offset(40, 7), 'TextDirection', 'TextDirections', [SpreadsheetApp.TextDirection.LEFT_TO_RIGHT, SpreadsheetApp.TextDirection.RIGHT_TO_LEFT, null], null)
 
 
-    const startAgain = startAt.offset(30, 0)
+    const startAgain = startAt.offset(60, 0)
+
+
+
+
     // fontcolorobjects
     // these are more complex so i wont bother trying to push them thru standard test
-    const fr = startAgain.offset(0, 0)
+    const fr = startAgain.offset(1, 0)
     const tct = SpreadsheetApp.ThemeColorType
     const td = Object.keys(tct).filter(f => f !== "UNSUPPORTED" && !is.function(tct[f])).map(f => tct[f])
     const rd = fillRangeFromDomain(fr, td)

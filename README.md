@@ -370,7 +370,9 @@ If you want to see how these are all generated, see the constructor in services/
 
 #### Handling multiple response variations and formats.
 
-If you retrieve a cell format that has been set in the UI (or in Apps Script), you often get a less full response than one that has been set using the API. If you are using the Advanced Sheets Service, and you ask for "numberFormat" for example, you may get just the pattern (0.###) or you may get the full cellformat data { type: "NUMBER", pattern: "0.###""}. You'll have to be ready to handle either type of response depending on how (and perhaps even when) the value was originally created. This could apply to any fetches of format values. Something like this should do the trick.
+If you retrieve a cell format that has been set in the UI (or in Apps Script), you often get a less full response than one that has been set using the API. If you are using the Advanced Sheets Service, and you ask for "numberFormat" for example, you may get just the pattern (0.###) or you may get the full cellformat data { type: "NUMBER", pattern: "0.###""}. You'll have to be ready to handle either type of response depending on how (and perhaps even when) the value was originally created. This could apply to any fetches of format values. 
+
+Something like this should do the trick.
 ````js
 const extractPattern = (response) => {
   // a plain pattern entered by UI, apps script or lax api call
@@ -381,7 +383,15 @@ const extractPattern = (response) => {
 }
 ````
 
-To emulate the regular SpreadsheetApp behavior, `fakeRange.getNumberFormat()` will strip out any extra stuff and just return the pattern. `fakeRange.setNumberFormat("0.###")` will always set the complete cellformat object { type: "NUMBER", pattern: "0.###""}
+To emulate the regular SpreadsheetApp behavior, `fakeRange.getNumberFormat()` will strip out any extra stuff and just return the pattern. `fakeRange.setNumberFormat("0.###")` will always set the complete cellformat object { type: "NUMBER", pattern: "0.###"}
+
+##### Numberformat default pattern
+
+Normally we can use a null value to reset a format to the default UI value. However, number format will fail messily with a null argument. The correct way is `setNumberFormat('general')` even though `getNumberFormat()` returns '0.###############" or similar. If using Advanced Sheets, you still need to use the 'pattern' approach - { pattern: "general", type: "NUMBER" }
+
+#### Text direction 
+
+Unlike other similar functions, `setTextDirection(TextDirection)` takes an enum argument and `getTextDirection()` returns an enum too. `setTextDirection(null)` will reset to default behavior, but a subsequent  `getTextDirection()` will return null, rather than a default value. This allows the Sheets UI to make an in context decision based on language locale.
 
 #### Horizontal alignment
 
@@ -389,6 +399,29 @@ The documented acceptable values to `range.setHorizontalAlignment()` are left, c
 
 As with most of these format setting methods, Apps Script will silently ignore invalid arguments. I've generally throw an error if an invalid value argument is sent so, by design, `range.setHorizontalAlignment('foo') will throw an error on FakeGas, but not on Apps Script.
 
+#### TextRotation
+
+
+Apps Script returns a `TextRotation` object to `range.getTextRotation()`, which has both an 'isVertical()' and `getDegrees()` method. There is an overload for the `setTextRotation(degrees)` function - `setTextRotation(TextRotation)` which theoretically allows you to set a vertical or and angle. https://developers.google.com/apps-script/reference/spreadsheet/range#settextrotationrotation
+
+However, unlike most objects like this, there is not a `SpreadsheetApp.newTextRotation()`, and the object returned by `getTextRotation()` is readonly with no set variants. Trying to pass a plain JavaScript object with the assumed properties results in this error.
+
+````
+Exception: The parameters ((class)) don't match the method signature for SpreadsheetApp.Range.setTextRotation.
+````
+So the conclusion is that the overload for `setTextRotation(TextRotation)` does not work, so I won't be implementing this until the issue is resolved. `setTextRotation(degrees)` has been implemented of course.
+
+[See this issue for more information ](https://issuetracker.google.com/issues/425390984)
+
+
+Here's Gemini's verdict on textRotation
+
+"You are absolutely right, and I sincerely apologize once again for the continuous string of incorrect information regarding SpreadsheetApp's TextRotation capabilities. This specific part of the Apps Script API is surprisingly complex and poorly documented/intuitive."
+
+
+There's also a bug in the advanced sheet service - it doesn't return an angle in its response, even though it is set in the UI and even though Range.getTextRotation() correctly returns the angle. See https://issuetracker.google.com/issues/425390984.
+
+Since I'm using the API I can't detect the angle until that issue is fixed, so an angle set by the UI will always be seen as 0.
 
 #### Dates and sheets advanced service
 

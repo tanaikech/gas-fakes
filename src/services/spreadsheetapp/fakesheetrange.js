@@ -2,7 +2,7 @@ import { Proxies } from '../../support/proxies.js'
 import { FakeSheet } from './fakesheet.js'
 import { SheetUtils } from '../../support/sheetutils.js'
 import { Utils } from '../../support/utils.js'
-import { setterList, attrGetList, valuesGetList, setterMaker, attrGens, valueGens } from './sheetrangelists.js'
+import { setterList, attrGetList, valuesGetList, setterMaker, attrGens, valueGens, makeCellTextFormatData } from './sheetrangelists.js'
 import {
   getGridRange,
   updateCells,
@@ -11,8 +11,7 @@ import {
   makeSheetsGridRange,
   batchUpdate,
   fillRange,
-  arrMatchesRange,
-  makeCellTextFormatData,
+  arrMatchesRange
 } from "./sheetrangehelpers.js"
 
 const { is, rgbToHex, hexToRgb, stringer, outsideInt, capital, BLACKER } = Utils
@@ -62,13 +61,7 @@ export class FakeSheetRange {
     const props = [
       'removeDuplicates',
       'getMergedRanges',
-
-
-      'setTextDirection',
-
-      'setHorizontalAlignments',
       'createDataSourcePivotTable',
-
       'activate',
       'breakApart',
       'deleteCells',
@@ -85,15 +78,11 @@ export class FakeSheetRange {
       'mergeAcross',
       'mergeVertically',
       'isPartOfMerge',
-
       'activateAsCurrentCell',
-
-      'setVerticalAlignments',
       'setWrap',
       'setWraps',
       'copyValuesToRange',
       'copyFormatToRange',
-
       'setComments',
       'randomize',
       'isStartColumnBounded',
@@ -103,11 +92,7 @@ export class FakeSheetRange {
       'autoFill',
       'autoFillToNeighbor',
       'setShowHyperlink',
-      'setTextRotation',
-      'setTextRotations',
       'setVerticalText',
-      'setTextDirections',
-
       'setWrapStrategies',
       'setWrapStrategy',
       'applyColumnBanding',
@@ -137,14 +122,10 @@ export class FakeSheetRange {
       'getDeveloperMetadata',
       'createTextFinder',
       'moveTo',
-
       'setNotes',
       'setNote',
       'clearNote',
       'createFilter',
-      'setVerticalAlignment',
-      'setHorizontalAlignment',
-      ,
       'getDataSourceFormulas',
       'getDataSourceTables',
       'setBackgroundColor',
@@ -152,7 +133,6 @@ export class FakeSheetRange {
       'getDataSourceUrl',
       'getDataTable',
       'clearFormat',
-
       'createDeveloperMetadataFinder',
       'getDataSourcePivotTables',
       'clear',
@@ -160,7 +140,6 @@ export class FakeSheetRange {
       'sort',
       'check',
       'getFilter',
-
       // these are not documented, so will skip for now
       'setComment',
       'getComment'

@@ -1,10 +1,12 @@
 import { Utils } from '../../support/utils.js'
 import {
-  extractPattern,
   arrMatchesRange,
   isColor,
   isThemeColor,
-  updateCells
+  updateCells,
+  makeSheetsGridRange,
+  batchUpdate,
+  isTextRotation
 } from "./sheetrangehelpers.js"
 import { signatureArgs } from '../../support/helpers.js'
 import { newFakeBorders } from '../commonclasses/fakeborders.js'
@@ -14,44 +16,81 @@ import { newFakeTextRotation } from '../commonclasses/faketextrotation.js'
 import { makeTextStyleFromApi } from '../commonclasses/faketextstylebuilder.js'
 import { newFakeTextDirection } from '../commonclasses/faketextdirection.js'
 import { makeDataValidationFromApi } from "./fakedatavalidationbuilder.js"
+import { TextDirection } from '../enums/sheetsenums.js'
 
+const { getPlucker, is, robToHex, WHITER, BLACKER, hexToRgb, outsideInt, getEnumKeys } = Utils
 
-const { getPlucker, is, robToHex, WHITER, BLACKER } = Utils
-
+const extractPattern = (response) => {
+  // a plain pattern entered by UI, apps script or lax api call
+  if (is.string(response)) return response
+  // should be { type: "TYPE", pattern: "xxx"}
+  if (!is.object(response) || !Reflect.has(response, "pattern")) return null
+  return response.pattern
+}
 
 // this is a list of all range format setters and how to generate them
 export const setterList = [{
-  name:'verticalAlignment',
+  name: 'textRotation',
+  nullAllowed: true,
+  maker: (_, value) => {
+    let rot = Sheets.newTextRotation()
+    if (is.number(value)) {
+      rot.setAngle(value)
+    } else if (isTextRotation(value)) {
+      // note that this doesnt work - https://issuetracker.google.com/issues/425390984
+      if (!is.null(value.getAngle())) rot.setAngle(value.getAngle())
+      if (!is.null(value.getVertical())) rot.setVertical(value.getVertical())
+      throw `doesnt work in GAS - See this issue https://issuetracker.google.com/issues/425390984`
+    } else if (!is.null(value)) {
+      throw new Error(`unknown value type to setTextRotation ${typeof value}`)
+    }
+    return makeCellData('setTextRotation', rot)
+  },
+  typeChecker: (value) => {
+    return is.number(value) || isTextRotation(value)
+  },
+  fields: 'userEnteredFormat.textRotation'
+}, {
+  name: 'textDirection',
+  type: "object",
+  nullAllowed: true,
+  maker: (_, value) => {
+    return makeCellData('setTextDirection', is.null(value) ? null : value.toString())
+  },
+  fields: 'userEnteredFormat.textDirection',
+  // this one expects an TextDirectionEnum
+  typeChecker: (value) => getEnumKeys(TextDirection).includes(value.toString())
+}, {
+  name: 'verticalAlignment',
   type: "string",
   nullAllowed: true,
-  maker: (_, value) => makeCellData('setVerticalAlignment', value),
+  maker: (_, value) => {
+    return makeCellData('setVerticalAlignment', value)
+  },
   fields: 'userEnteredFormat.verticalAlignment',
-  typeChecker: (value) => {
-    console.log ('checking', value)
-    return is.null(value) || ['top', 'middle', 'bottom'].includes(value.toLowerCase())
-  }
-},{
-  name:'horizontalAlignment',
+  // note that apps script ignores upper case versions so this will error out if we spot one
+  typeChecker: (value) => ['top', 'middle', 'bottom'].includes(value)
+}, {
+  name: 'horizontalAlignment',
   type: "string",
   nullAllowed: true,
   // apps script lists left,right,normal and null as possible, but right also works as well
   // also some peculiar nuances to handle if the value in the cell to be aligned is a string
   // The api accept left,right,normal + (start,end,justify which we'll ignore as gas doesnt)
   maker: (_, value) => {
-    value = value.toUpperCase()
     // this will clear and set the alignment returned value to 'general'
-    if (is.null(value) || value ==="NORMAL") return makeCellData('setHorizontalAlignment', null)
+    if (is.null(value) || value === "normal") return makeCellData('setHorizontalAlignment', null)
     return makeCellData('setHorizontalAlignment', value)
   },
   fields: 'userEnteredFormat.horizontalAlignment',
   // apps script lists left,right,normal and null as possible, but right also works as well
-  typeChecker: (value) => is.null(value) || ['left', 'center', 'right',normal].includes(value.toLowerCase())
-},{
+  typeChecker: (value) => ['left', 'center', 'right', 'normal'].includes(value)
+}, {
   name: 'fontColorObject',
   type: "object",
   typeChecker: isColor,
   maker: (_, value) => makeColorStyle(value),
-  fields: 'userEnteredFormat.textFormat.foregroundColorStyle.themeColor,userEnteredFormat.foregroundColorStyle.rgbColor'
+  fields: 'userEnteredFormat.textFormat.foregroundColorStyle.themeColor,userEnteredFormat.textFormat.foregroundColorStyle.rgbColor'
 }, {
   name: 'fontLine',
   type: "string",
@@ -59,9 +98,9 @@ export const setterList = [{
   maker: (_, value) => makeCellFontLineData(value),
   fields: 'userEnteredFormat.textFormat.strikethrough,userEnteredFormat.textFormat.underline'
 }, {
+  // note that reset to default is not null, but 'general' even though it returns a value like "0.###############"
   name: 'numberFormat',
   type: "string",
-  nullAllowed: true,
   maker: (_, value) => makeNumberFormatData(value, "NUMBER"),
   fields: 'userEnteredFormat.numberFormat'
 }, {
@@ -98,11 +137,16 @@ export const attrGetList = [{
 }, {
   name: 'getVerticalAlignment',
   props: '.userEnteredFormat.verticalAlignment',
-  defaultValue: "bottom"
+  defaultValue: "bottom",
+  // apps script wants lower case - api returns uppercase
+  cleaner: (f) => f ? f.toLowerCase() : "bottom"
 }, {
   name: 'getHorizontalAlignment',
   props: '.userEnteredFormat.horizontalAlignment',
-  defaultValue: "general"
+  defaultValue: "general",
+  // apps script wants lower case - api returns uppercase
+  // still undecided if i return general or general-left here -- search readme for oddity details
+  cleaner: (f) => f ? f.toLowerCase() : "general"
 }, {
   name: 'getBackground',
   props: '.userEnteredFormat.backgroundColor',
@@ -163,8 +207,8 @@ export const attrGetList = [{
 }, {
   name: 'getTextRotation',
   props: '.userEnteredFormat.textRotation',
-  defaultValue: { angle: 0, vertical: "NONE" },
-  cleaner: f => newFakeTextRotation(f || { angle: 0, vertical: "NONE" })
+  defaultValue: { angle: 0, vertical: false },
+  cleaner: f => newFakeTextRotation(f || { angle: 0, vertical: false })
 }, {
   name: 'getTextStyle',
   props: '.userEnteredFormat.textFormat',
@@ -215,7 +259,7 @@ export const attrGetList = [{
   name: 'getTextDirection',
   props: '.userEnteredFormat.textDirection',
   defaultValue: null,
-  cleaner: (f) => is.null(f) ? null : new newFakeTextDirection(f)
+  cleaner: (f) => is.null(f) ? null : newFakeTextDirection(f)
 }, {
   name: 'getNote',
   props: '.note',
@@ -261,16 +305,32 @@ export const valuesGetList = [{
 }, {
 }]
 
+const typeOk = (value, nullAllowed, type, typeChecker) => {
+  if (is.null(value)) return nullAllowed
+  if (type && !is(value)) return false
+  return typeChecker ? typeChecker(value) : true
+}
+
 
 export const setterMaker = ({ self, fields, maker, single, plural, type, nullAllowed, apiSetter, typeChecker }) => {
+
+  if (self[single]) {
+    throw new Error(`range.${single} already exists`)
+  }
+  if (self[plural]) {
+    throw new Error(`range.${single} already exists`)
+  }
 
   self[single] = (...args) => {
     const { matchThrow, nargs } = signatureArgs(args, `Range.${single}`)
     if (nargs !== 1) matchThrow()
     const [value] = args
-    if (type && !is(value) === type) matchThrow()
-    if (typeChecker && !typeChecker(value)) matchThrow()
-    return self.__repeatRequest(maker(apiSetter, value), fields)
+    if (!typeOk(value, nullAllowed, type, typeChecker)) matchThrow()
+    const request = makeRepeatRequest(self, maker(apiSetter, value), fields)
+    const spreadsheetId = self.__getSpreadsheetId()
+    const requests = [{ repeatCell: request }]
+    batchUpdate({ spreadsheetId, requests })
+    return self
   }
 
   self[plural] = (...args) => {
@@ -278,11 +338,11 @@ export const setterMaker = ({ self, fields, maker, single, plural, type, nullAll
     if (nargs !== 1) matchThrow()
     const [values] = args
     if (!arrMatchesRange(self, values, type, nullAllowed)) matchThrow()
-    if (typeChecker && !values.flat().every(typeChecker)) matchThrow()
+    if (typeChecker && !values.flat().every(value => typeOk(value, nullAllowed, type, typeChecker))) matchThrow()
     const rows = values.map(row => {
       return Sheets.newRowData().setValues(row.map(value => maker(apiSetter, value)))
     })
-    return  updateCells({ range: self, rows, fields, spreadsheetId: self.__getSpreadsheetId() })
+    return updateCells({ range: self, rows, fields, spreadsheetId: self.__getSpreadsheetId() })
   }
 }
 
@@ -479,31 +539,43 @@ const makeColorStyle = (color) => {
 
 }
 
-const makeCellTextFormatData = ( prop, value) => {
+export const makeCellTextFormatData = (prop, value) => {
   const textFormat = Sheets.newTextFormat()
   // to unset you have to do is mention the field but don't set value on the prop
-  if (!is.function (textFormat[prop])) {
-    throw new Error (`tied to call ${prop} method on textFormat but it's not a function}`)
+  if (!is.function(textFormat[prop])) {
+    throw new Error(`tied to call ${prop} method on textFormat but it's not a function}`)
   }
-  if (!is.null(value))textFormat[prop](value)
-  return makeCellData ('setTextFormat', textFormat)
+  if (!is.null(value)) textFormat[prop](value)
+  return makeCellData('setTextFormat', textFormat)
 }
 
-const makeCellFontLineData = ( value) => {
+const makeCellFontLineData = (value) => {
   const textFormat = Sheets.newTextFormat()
     .setStrikethrough(value === 'line-through')
     .setUnderline(value === 'underline')
   if (value !== 'none' && value !== 'line-through' && value !== 'underline' && !is.null(value)) {
     throw `invalid font line value ${value}`
   }
-  return makeCellData ('setTextFormat', textFormat)
+  return makeCellData('setTextFormat', textFormat)
 }
 
 
-const makeNumberFormatData = (value, type ="NUMBER") => {
-  const numberFormat = Sheets.newNumberFormat()
-  if (!is.null (value)) {
-    numberFormat.setPattern(value).setType(type)
+const makeNumberFormatData = (value, type = "NUMBER") => {
+  // although apps script doesn't allow null if the pattern is 'general', then we need to behave like a null
+  // that's to say, we clear the cellData using the numberformat mask with nothing else set
+  if (value === "general") {
+    return Sheets.newCellData()
   }
-  return makeCellData ('setNumberFormat', numberFormat)
+
+  const numberFormat = Sheets.newNumberFormat().setPattern(value).setType(type)
+  return makeCellData('setNumberFormat', numberFormat)
 }
+
+const makeRepeatRequest = (range, cellData, fields) => {
+  const request = Sheets.newRepeatCellRequest()
+    .setRange(makeSheetsGridRange(range))
+    .setCell(cellData)
+    .setFields(fields)
+  return request
+}
+

@@ -1,6 +1,6 @@
 import { Proxies } from '../../support/proxies.js'
-import {Utils} from '../../support/utils.js'
-const {outsideInt} = Utils
+import { Utils } from '../../support/utils.js'
+const { outsideInt , is} = Utils
 
 
 /**
@@ -15,31 +15,20 @@ export const newFakeTextRotation = (...args) => {
 class FakeTextRotation {
   constructor(apiResult) {
     if (!apiResult) {
-      throw new Error (`apiresult for textrotation is missing`)
+      throw new Error(`apiresult for textrotation is missing`)
     }
-    if (outsideInt(apiResult.angle, -180, 180)) {
-      throw new Error (`${apiResult.angle} is not a valid angle`)
+    this.__apiResult = apiResult 
+    const { vertical = false, angle  =0 } = apiResult
+    this.__vertical = Boolean(vertical)
+    this.__angle = Number(angle)
+    if (outsideInt(this.__angle, -90, 90)) {
+      throw new Error(`${apiResult.angle} is not a valid angle`)
     }
-    // the values returned from the api differ from Apps Script
-    const gasWrap = {
-      "NONE": "NONE",
-      "TOP": "OVERFLOW",
-      "CENTER": "MIDDLE",
-      "BOTTOM": "BOTTOM"
-    }
-
-    const s = gasWrap[apiResult.vertical]
-    if (!s) {
-      throw new Error(`${JSON.stringify(apiResult)} is not a valid verical text rotation`)
-    }
-    this.__apiResult = apiResult
-    this.__angle = apiResult.angle
-    this.__vertical = s
   }
   getDegrees() {
     return this.__angle
   }
   isVertical() {
-    return this.__vertical !== "NONE"
+    return this.__vertical
   }
 }

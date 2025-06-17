@@ -170,7 +170,7 @@ const validateHex = (cssString) => {
   if (!is.nonEmptyString(cssString)) return null
   const hex = cssString.trim().toLowerCase()
   if (hex.length !== 7) return null
-  if (hex.substring(0, 1)  !== '#') return null
+  if (hex.substring(0, 1) !== '#') return null
   const hexValue = hex.substring(1)
   if (!hexValue.match(/^[0-9a-f]{6}$/)) return null
   const rgb = hexToRgb(hex)
@@ -187,7 +187,7 @@ const validateHex = (cssString) => {
 
 }
 
-const robToHex = ({red, green, blue}) => rgbToHex(red, green, blue)
+const robToHex = ({ red, green, blue }) => rgbToHex(red, green, blue)
 
 
 const rgbToHex = (r, g, b) => {
@@ -224,20 +224,20 @@ const getPlucker = (props, defaultValue) => {
   // so this would be a.b(c,d)  main [a,b] sub [c,d]
   // right now only supporting single depth
   const main = match[1] && match[1].split(".")
-  const subs = match[2] && match[2].replace(/\(/,"").replace(/\)/,"").split(",")
+  const subs = match[2] && match[2].replace(/\(/, "").replace(/\)/, "").split(",")
 
   const pluckSub = (v) => {
     if (!subs) return v
-    return subs.reduce ((p,c)=> {
+    return subs.reduce((p, c) => {
       p[c] = v && is.nonEmptyObject(v) && !isNU(v[c]) ? v[c] : defaultValue
       return p
-    },{})
+    }, {})
   }
 
   // now we need a function that will extract fields to match these
   return (v) => {
     // if there are no main then we just return the plucked values from the sub
-    if (!main) return pluckSub (v)
+    if (!main) return pluckSub(v)
 
     const px = main.reduce((p, c) => {
       const t = p && p[c]
@@ -270,8 +270,8 @@ const zeroizeTime = (date) => {
   const day = date.getDate();
   return new Date(year, month, day, 0, 0, 0, 0);
 }
-const isEnum = (a) => is.object(a) && Reflect.has(a,"compareTo") && is.function(a.compareTo)
-const hasFunction = (a, b=toString) => !isNU(a) && a[b] && is.function(a[b])
+const isEnum = (a) => is.object(a) && Reflect.has(a, "compareTo") && is.function(a.compareTo)
+const hasFunction = (a, b = toString) => !isNU(a) && a[b] && is.function(a[b])
 
 const stringer = (value) => {
   let func = is.date(value) ? "toISOString" : "toString"
@@ -283,10 +283,19 @@ const stringer = (value) => {
   return is.date(value) ? t.slice(0, 10) : t
 
 }
-export const WHITER = { red: 1, green: 1, blue: 1 }
-export const BLACKER = { red: 0, green: 0, blue: 0 }
-export const BLACK = '#000000'
-export const WHITE = '#ffffff'
+const WHITER = { red: 1, green: 1, blue: 1 }
+const BLACKER = { red: 0, green: 0, blue: 0 }
+const BLACK = '#000000'
+const WHITE = '#ffffff'
+
+const getEnumKeys = (value) => {
+  if (!isEnum(value)) {
+    throw `Expected value to be an Enum but got ${value}`
+  }
+  return Object.keys(value)
+    .filter(f => f !== "UNSUPPORTED" && !is.function(value[f]))
+
+}
 export const Utils = {
   hexToRgb,
   stringToBytes,
@@ -317,5 +326,6 @@ export const Utils = {
   WHITE,
   BLACK,
   BLACKER,
-  WHITER
+  WHITER,
+  getEnumKeys
 }
