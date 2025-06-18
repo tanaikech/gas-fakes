@@ -66,6 +66,7 @@ export const getStuff = (range, funStuff = ()=> Utilities.getUuid()) =>
 export const getRandomBetween = ( max,min=0 ) => Math.floor(Math.random() * (max - min + 1)) + min;
 export const getRandomFromDomain = (domain) => domain[getRandomBetween(domain.length - 1)]
 export const fillRangeFromDomain = (range, domain) => getStuff(range, () => getRandomFromDomain(domain))
+export const isACheckbox = (cell) => is.nonEmptyObject(cell) && cell.getCriteriaType().toString()==="CHECKBOX"
 export const BLACK = '#000000'
 export const RED = '#ff0000'
 
@@ -75,6 +76,7 @@ export const bothEnums = (a, b) => isEnum(a) && isEnum(b)
 export const rangeFix = (a) => isRange(a) ? `=${a.getSheet().getName()}!${a.getA1Notation()}` : a
 export const valuesFix = (a) => is.array(a) ? a.map(stringer) : stringer(a)
 export const stringer = (a) => (is.null(a) || is.undefined(a)) ? a : (isRange(a) ? rangeFix(a) : (is.function(a.toString) ? a.toString() : a))
+export const eString = (a) => isEnum(a) ? a.toString() : a
 
 export const compareValue = (t, a, b, prop) => {
   if (bothEnums(a, b)) {

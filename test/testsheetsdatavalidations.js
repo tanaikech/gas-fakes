@@ -10,7 +10,7 @@ import '../main.js'
 import { initTests } from './testinit.js'
 import { getSheetsPerformance } from '../src/support/sheetscache.js';
 import { getPerformance } from '../src/support/filecache.js';
-import { maketss, trasher , compareValue, addDays, zeroizeTime, getDimensions } from './testassist.js';
+import { isACheckbox, maketss, trasher, compareValue, addDays, zeroizeTime, getDimensions, fillRangeFromDomain } from './testassist.js';
 
 import is from '@sindresorhus/is';
 
@@ -31,7 +31,7 @@ export const testSheetsDataValidations = (pack) => {
     const cbs = cr.getDataValidations()
     t.true(cbs.flat().every(f => f.getCriteriaType().toString() === prop))
     t.is(cbs.length, cr.getNumRows(), prop)
-    t.is(cbs[0].length, cr.getNumColumns(),prop)
+    t.is(cbs[0].length, cr.getNumColumns(), prop)
     t.true(cbs.flat().every(f => is.boolean(f.getAllowInvalid())), prop)
 
     if (values) {
@@ -58,9 +58,9 @@ export const testSheetsDataValidations = (pack) => {
     // check basic results are as expected
     const check = () => {
       const cbs = cr.getDataValidations()
-      t.is(cbs.length, cr.getNumRows(),prop)
-      t.is(cbs[0].length, cr.getNumColumns(),prop)
-      t.true(cbs.flat().every(f => f.getCriteriaType().toString() === prop),prop)
+      t.is(cbs.length, cr.getNumRows(), prop)
+      t.is(cbs[0].length, cr.getNumColumns(), prop)
+      t.true(cbs.flat().every(f => f.getCriteriaType().toString() === prop), prop)
       const cb = cr.getDataValidation()
       t.is(cb.getCriteriaType().toString(), prop)
     }
@@ -110,7 +110,100 @@ export const testSheetsDataValidations = (pack) => {
   }
 
 
+  unit.section("setting data validations", t => {
 
+    const { sheet: sb } = maketss('datavalidation', toTrash, fixes)
+
+    const da = new Date('1920-11-18')
+    const db = new Date('2012-12-31')
+
+
+    const comp = [
+      [[[1, 2], true], [[3, 4, 5], false], [[6, 7], true]],
+      [[['a', 'b'], false], [['c', 'd', 'e'], true], [['f', 'g'], false]]
+    ]
+
+    const vt = [[['foo'], ['bar']], [['bar'], ['foo']]]
+    scritty(t, sb, "a1:b2", "TEXT_EQUAL_TO", 'requireTextEqualTo', vt)
+    scritty(t, sb, "c1:d2", "CHECKBOX", 'requireCheckbox')
+    scritty(t, sb, "e1:f2", "CHECKBOX", 'requireCheckbox', ['foo', 'bar'])
+
+    // now lets try removing all the checkboxes - use a bigger area than was set
+    const remc = sb.getRange("b1:g3")
+    const stuff = fillRangeFromDomain(remc, [true, false])
+    remc.setValues(stuff)
+    // data validation before
+    const remcdv = remc.getDataValidations()
+    remc.removeCheckboxes()
+
+    // data/data validation after
+    const remcafter = remc.getDataValidations()
+    const remcAfterd = remc.getValues()
+
+    // check that checkboxes have gone and their value cleared
+    remcdv.forEach((row, rn) => row.forEach((dvBefore, cn) => {
+      const dvAfter = remcafter[rn][cn]
+      const vAfter = remcAfterd[rn][cn]
+      const vBefore = stuff[rn][cn]
+      if (isACheckbox(dvBefore)) {
+        // should have cleared
+        t.is(dvAfter, null)
+        t.is(vAfter, '')
+      } else if (is.null(dvBefore)) {
+        // should still be null
+        t.is(dvAfter, null)
+        t.is(vAfter, vBefore)
+      } else {
+        // was a different kind of dv so still should be
+        t.is(dvAfter.getCriteriaType().compareTo(dvBefore.getCriteriaType()), 0)
+        t.is(vAfter, vBefore)
+      }
+    }))
+
+
+    scritty(t, sb, "e19:g20", "VALUE_IN_LIST", "requireValueInList", comp, true)
+    scritty(t, sb, "c19:e19", "VALUE_IN_LIST", "requireValueInList", [["foo", "bar", "foobar"], true], true)
+
+    scritty(t, sb, "a19:b19", "VALUE_IN_RANGE", "requireValueInRange", [sb.getRange("$a$1:$b$3"), false])
+    scritty(t, sb, "a19:b19", "VALUE_IN_RANGE", "requireValueInRange", [sb.getRange("$a$1:$b$3"), true])
+
+    scritty(t, sb, "c15:e16", "DATE_BETWEEN", "requireDateBetween", [[[da, db], [db, db], [da, da]], [[da, da], [db, db], [da, db]]])
+    scritty(t, sb, "a15:b15", "DATE_IS_VALID_DATE", "requireDate")
+
+    scritty(t, sb, "a17:b17", "TEXT_CONTAINS", "requireTextContains", ["foo"])
+    scritty(t, sb, "c17:d17", "TEXT_DOES_NOT_CONTAIN", "requireTextDoesNotContain", ["bar"])
+    scritty(t, sb, "e17:f17", "TEXT_IS_VALID_URL", "requireTextIsUrl")
+
+
+    scritty(t, sb, "a3", "CUSTOM_FORMULA", 'requireFormulaSatisfied', ["=F7"])
+    scritty(t, sb, "c3:d4", "CUSTOM_FORMULA", 'requireFormulaSatisfied', ["=Sheet1!$F$7:$F$8"])
+
+    scritty(t, sb, "a5:b6", "NUMBER_NOT_BETWEEN", "requireNumberNotBetween", [20, 40])
+    scritty(t, sb, "c5", "NUMBER_BETWEEN", "requireNumberBetween", [20, 40])
+    scritty(t, sb, "e5:f6", "NUMBER_NOT_EQUAL_TO", "requireNumberNotEqualTo", [20])
+
+    scritty(t, sb, "a7:b8", "NUMBER_EQUAL_TO", "requireNumberEqualTo", [20])
+    scritty(t, sb, "c7:d8", "NUMBER_LESS_THAN_OR_EQUAL_TO", "requireNumberLessThanOrEqualTo", [20])
+    scritty(t, sb, "e7:f8", "NUMBER_LESS_THAN", "requireNumberLessThan", [20])
+
+    scritty(t, sb, "a9:b10", "NUMBER_GREATER_THAN_OR_EQUAL_TO", "requireNumberGreaterThanOrEqualTo", [20])
+    scritty(t, sb, "c9:d10", "NUMBER_GREATER_THAN", "requireNumberGreaterThan", [20])
+    scritty(t, sb, "e9:f10", "NUMBER_BETWEEN", "requireNumberBetween", [[[20, 40], [30, 40]], [[50, 60], [70, 80]]])
+
+
+    scritty(t, sb, "a11:b11", "DATE_NOT_BETWEEN", "requireDateNotBetween", [da, db])
+    scritty(t, sb, "c11:d11", "DATE_BETWEEN", "requireDateBetween", [da, db])
+    scritty(t, sb, "e11:f11", "DATE_ON_OR_AFTER", "requireDateOnOrAfter", [da])
+
+    scritty(t, sb, "a13:b13", "DATE_ON_OR_BEFORE", "requireDateOnOrBefore", [da])
+    scritty(t, sb, "c13:d13", "DATE_BEFORE", "requireDateBefore", [da])
+    scritty(t, sb, "e13:f13", "DATE_EQUAL_TO", "requireDateEqualTo", [db])
+
+    scritty(t, sb, "a15:b15", "DATE_AFTER", "requireDateAfter", [da])
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+
+  })
 
   unit.section("test enum selection", t => {
     t.is(SpreadsheetApp.DataValidationCriteria.DATE_AFTER.toString(), 'DATE_AFTER', "check criteria enum")
@@ -125,7 +218,7 @@ export const testSheetsDataValidations = (pack) => {
     const sp = SpreadsheetApp.openById(fixes.TEST_BORDERS_ID)
     const sb = sp.getSheetByName('dv')
 
-    
+
     critty(t, sb, "b29", "DATE_EQUAL_TO_RELATIVE", [SpreadsheetApp.RelativeDate.TODAY])
     critty(t, sb, "h28:i28", "DATE_AFTER_RELATIVE", [SpreadsheetApp.RelativeDate.TOMORROW])
     critty(t, sb, "k28:k29", "DATE_BEFORE_RELATIVE", [SpreadsheetApp.RelativeDate.PAST_YEAR])
@@ -137,7 +230,7 @@ export const testSheetsDataValidations = (pack) => {
   })
 
   unit.section("data validation basics", t => {
-    const {sheet: sv} = maketss ('datavalidation',toTrash, fixes)
+    const { sheet: sv } = maketss('datavalidation', toTrash, fixes)
 
     const builder = SpreadsheetApp.newDataValidation()
     t.is(builder.toString(), "DataValidationBuilder")
@@ -244,67 +337,8 @@ export const testSheetsDataValidations = (pack) => {
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
   })
 
-  unit.section("setting data validations", t => {
-
-    const {sheet: sb} = maketss ('datavalidation',toTrash, fixes)
-
-    const da = new Date('1920-11-18')
-    const db = new Date('2012-12-31')
 
 
-    const comp = [
-      [[[1,2],true],[[3,4,5],false],[[6,7],true]],
-      [[['a','b'],false],[['c','d','e'],true],[['f','g'],false]]
-    ]
-    scritty(t, sb, "e19:g20", "VALUE_IN_LIST", "requireValueInList", comp, true)
-    scritty(t, sb, "c19:e19", "VALUE_IN_LIST", "requireValueInList", [["foo", "bar", "foobar"],true], true)
-
-    scritty(t, sb, "a19:b19", "VALUE_IN_RANGE", "requireValueInRange", [sb.getRange("$a$1:$b$3"), false])
-    scritty(t, sb, "a19:b19", "VALUE_IN_RANGE", "requireValueInRange", [sb.getRange("$a$1:$b$3"), true])
-
-    scritty(t, sb, "c15:e16", "DATE_BETWEEN", "requireDateBetween", [[[da, db], [db, db], [da, da]], [[da, da], [db, db], [da, db]]])
-    scritty(t, sb, "a15:b15", "DATE_IS_VALID_DATE", "requireDate")
-
-    scritty(t, sb, "a17:b17", "TEXT_CONTAINS", "requireTextContains", ["foo"])
-    scritty(t, sb, "c17:d17", "TEXT_DOES_NOT_CONTAIN", "requireTextDoesNotContain", ["bar"])
-    scritty(t, sb, "e17:f17", "TEXT_IS_VALID_URL", "requireTextIsUrl")
-
-
-    const vt = [[['foo'], ['bar']], [['bar'], ['foo']]]
-    scritty(t, sb, "a1:b2", "TEXT_EQUAL_TO", 'requireTextEqualTo', vt)
-    scritty(t, sb, "c1:d2", "CHECKBOX", 'requireCheckbox')
-    scritty(t, sb, "e1:f2", "CHECKBOX", 'requireCheckbox', ['foo', 'bar'])
-
-    scritty(t, sb, "a3", "CUSTOM_FORMULA", 'requireFormulaSatisfied', ["=F7"])
-    scritty(t, sb, "c3:d4", "CUSTOM_FORMULA", 'requireFormulaSatisfied', ["=Sheet1!$F$7:$F$8"])
-
-    scritty(t, sb, "a5:b6", "NUMBER_NOT_BETWEEN", "requireNumberNotBetween", [20, 40])
-    scritty(t, sb, "c5", "NUMBER_BETWEEN", "requireNumberBetween", [20, 40])
-    scritty(t, sb, "e5:f6", "NUMBER_NOT_EQUAL_TO", "requireNumberNotEqualTo", [20])
-
-    scritty(t, sb, "a7:b8", "NUMBER_EQUAL_TO", "requireNumberEqualTo", [20])
-    scritty(t, sb, "c7:d8", "NUMBER_LESS_THAN_OR_EQUAL_TO", "requireNumberLessThanOrEqualTo", [20])
-    scritty(t, sb, "e7:f8", "NUMBER_LESS_THAN", "requireNumberLessThan", [20])
-
-    scritty(t, sb, "a9:b10", "NUMBER_GREATER_THAN_OR_EQUAL_TO", "requireNumberGreaterThanOrEqualTo", [20])
-    scritty(t, sb, "c9:d10", "NUMBER_GREATER_THAN", "requireNumberGreaterThan", [20])
-    scritty(t, sb, "e9:f10", "NUMBER_BETWEEN", "requireNumberBetween", [[[20, 40], [30, 40]], [[50, 60], [70, 80]]])
-
-
-    scritty(t, sb, "a11:b11", "DATE_NOT_BETWEEN", "requireDateNotBetween", [da, db])
-    scritty(t, sb, "c11:d11", "DATE_BETWEEN", "requireDateBetween", [da, db])
-    scritty(t, sb, "e11:f11", "DATE_ON_OR_AFTER", "requireDateOnOrAfter", [da])
-
-    scritty(t, sb, "a13:b13", "DATE_ON_OR_BEFORE", "requireDateOnOrBefore", [da])
-    scritty(t, sb, "c13:d13", "DATE_BEFORE", "requireDateBefore", [da])
-    scritty(t, sb, "e13:f13", "DATE_EQUAL_TO", "requireDateEqualTo", [db])
-
-    scritty(t, sb, "a15:b15", "DATE_AFTER", "requireDateAfter", [da])
-
-    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-
-  })
-  
 
 
 

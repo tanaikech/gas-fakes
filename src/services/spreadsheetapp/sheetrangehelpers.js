@@ -34,6 +34,7 @@ export const updateCells = ({ range, rows, fields, spreadsheetId }) => {
 export const isRange = (a) => is.object(a) && !is.null(a) && is.function(a.toString) && a.toString() === "Range"
 export const isColor = (a) => is.object(a) && !is.null(a) && is.function(a.toString) && a.toString() === "Color"
 export const isTextRotation = (a) => is.object(a) && !is.null(a) && is.function(a.getAngle) 
+export const isACheckbox = (cell) => is.nonEmptyObject(cell) && cell.getCriteriaType().toString()==="CHECKBOX"
 
 export const isThemeColor = (color) =>{
   if (!isColor(color)) {
@@ -107,7 +108,7 @@ const dateToSerial = (date) => {
 export const batchUpdate = ({ spreadsheetId, requests }) => {
   const bur = Sheets.newBatchUpdateSpreadsheetRequest()
   bur.setRequests(requests)
-  Sheets.Spreadsheets.__batchUpdate(bur, spreadsheetId, null, { ss: true })
+  return Sheets.Spreadsheets.__batchUpdate(bur, spreadsheetId, null, { ss: true })
 }
 export const fillRange = (range, value ) =>{
   return Array.from({ length: range.getNumRows() }).fill(Array.from({ length: range.getNumColumns() }).fill(value))

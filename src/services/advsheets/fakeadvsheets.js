@@ -292,6 +292,7 @@ class FakeAdvSheets {
       newChipRun: ['chip', 'startIndex'],
       newClearBasicFilterRequest: ['sheetId'],
       // this one bugs out https://issuetracker.google.com/issues/423737982
+      // instead use updateCells with userEnteredValue as the fieldmask
       newClearValuesRequest: [],
       newColorStyle: ['rgbColor', 'themeColor'],
       newConditionalFormatRule: ['booleanRule', 'gradientRule', 'ranges'],

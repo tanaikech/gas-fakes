@@ -10,7 +10,7 @@ import '../main.js'
 
 import { initTests } from './testinit.js'
 import { getSheetsPerformance } from '../src/support/sheetscache.js';
-import { maketss, trasher, rgbToHex, getRandomRgb, getRandomHex, getStuff, BLACK, fillRange, fillRangeFromDomain, isEnum } from './testassist.js';
+import { eString, maketss, trasher, rgbToHex, getRandomRgb, getRandomHex, getStuff, BLACK, fillRange, fillRangeFromDomain, isEnum } from './testassist.js';
 
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
@@ -24,37 +24,59 @@ export const testSheets = (pack) => {
 
     const { sheet } = maketss('cellsformats', toTrash, fixes)
 
+    // this a reusable function to do a bunch of tests and check the results on range.setXXX
     const tester = (range, prop, props, domain, nullIs, patcher) => {
       // font weight
       console.log(prop, props)
+
+      // this is source data - will be randomly drawn from a set of acceptable values
       const rd = fillRangeFromDomain(range, domain)
-      range['set' + props](rd)
+
+      // in some cases the api returns different values to those set, so we fix the input data to patch what to expect instead
+      // this is all about makeing the input look like what the api will return in response
       const rdn = rd.map(row => row.map(f => {
         return is.null(f) ? nullIs : f
       }))
-
-      // sometimes the api returns a different value to what was set or what gas expects
-      let rdnCompare = patcher
-        ? rdn.map(row => row.map(f => {
-          return patcher[f] || f
+        // we also may need to stringify enums to compare
+        .map(row => row.map(eString))
+        // sometimes the api returns a different value to what was set or what gas expects
+        .map(row => row.map(f => {
+          return patcher && Reflect.has(patcher, f) ? patcher[f] : f
         }))
-        : rdn
 
-      // now we need to normalize for enums
-      rdnCompare = rdnCompare.map(row => row.map(f => isEnum(f) ? f.toString() : f))
+      // we'lso need to check when the entire range is set to the same value
+      const rdnFill  = fillRange(range, rdn[0][0])
+      
+      // now do a multiple set
+      range['set' + props](rd)
+      
+      // get the result of multiple set
       const cobs = range['get' + props]()
-      const cobsCompare = cobs.map(row => row.map(f => isEnum(f) ? f.toString() : f))
-      t.deepEqual(cobsCompare, rdnCompare, props)
 
-      //set all to the same thing
+      // need to massage the results to normalize enums
+      const cobsn = cobs.map(row => row.map(eString))
+      
+      // finally we can compare results
+      t.deepEqual(cobsn, rdn, props)
+
+      // now test setting the same value on ech member of the range
       range['set' + prop](rd[0][0])
+
+      // get back the entire thing
       const cob = range['get' + props]()
-      const cobCompare = isEnum(cob) ? cob.toString() : cob
-      t.deepEqual(cobCompare, fillRange(range, rdnCompare[0][0]), props)
-      t.is(cobsCompare[0][0], cobCompare[0][0], props)
+      // normalize for enums
+      const cobn = cob.map(row => row.map(eString))
+
+      // check all set to the expexted response
+      t.deepEqual(cobn, rdnFill, prop)
+
+      // do a single get
       const gs = range['get' + prop]()
-      const gsCompare = isEnum(gs) ? gs.toString() : gs
-      t.is(gsCompare, cobsCompare[0][0], props)
+      const gsn = eString(gs)
+
+      t.is(gsn, rdnFill[0][0], props)
+
+      // we can also check that the original enum matches
       if (isEnum(gs)) {
         t.is(gs.compareTo(cobs[0][0]), 0, props)
       }
@@ -70,6 +92,7 @@ export const testSheets = (pack) => {
     t.is(tr0.getDegrees(), Sheets.isFake ? 0 : 45)
     t.is(tr0.isVertical(), false)
     const rotd = fillRangeFromDomain(fr0, [-2, 9, 89, null])
+
     // this also doesnt work in GAS so we'll skipuntil its fixed
     if (Sheets.isFake) {
       fr0.setTextRotations(rotd)
@@ -80,6 +103,8 @@ export const testSheets = (pack) => {
       t.true(r2.flat().every(f => !f.isVertical()))
       // Note that pass TextRotation object rather than degrees throws an error in GAS so we wont be implementing that overload yet.
     }
+    tester(startAt.offset(40, 7), 'TextDirection', 'TextDirections', [SpreadsheetApp.TextDirection.LEFT_TO_RIGHT, SpreadsheetApp.TextDirection.RIGHT_TO_LEFT, null], null)
+
     tester(startAt.offset(0, 0), 'FontWeight', 'FontWeights', ['bold', 'normal', null], "normal")
     tester(startAt.offset(5, 1), 'FontStyle', 'FontStyles', ['italic', 'normal', null], "normal")
     tester(startAt.offset(10, 2), 'FontSize', 'FontSizes', [10, 8, 4, 5, 20, 11, null], 10)
@@ -95,13 +120,8 @@ export const testSheets = (pack) => {
       normal: Sheets.isFake ? "general" : "general-left"
     })
     tester(startAt.offset(35, 6), 'VerticalAlignment', 'VerticalAlignments', ['top', 'middle', 'bottom', null], "bottom")
-    tester(startAt.offset(40, 7), 'TextDirection', 'TextDirections', [SpreadsheetApp.TextDirection.LEFT_TO_RIGHT, SpreadsheetApp.TextDirection.RIGHT_TO_LEFT, null], null)
-
 
     const startAgain = startAt.offset(60, 0)
-
-
-
 
     // fontcolorobjects
     // these are more complex so i wont bother trying to push them thru standard test

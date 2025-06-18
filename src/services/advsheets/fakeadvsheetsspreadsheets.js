@@ -9,8 +9,6 @@ import { notYetImplemented, ssError } from '../../support/helpers.js'
 import { newFakeSheetValues } from './fakeadvvalues.js'
 import { getWorkbookEntry, setWorkbookEntry, clearWorkbookCache } from "../../support/sheetscache.js"
 
-
-
 /**
  * the advanced Sheets Apps Script service faked - Spreadsheets class
  * @class FakeAdvSheetsSpreadsheets
@@ -72,7 +70,8 @@ class FakeAdvSheetsSpreadsheets {
       options
     }
 
-    const { response, data } = Syncit.fxSheets(pack)
+    const result = Syncit.fxSheets(pack)
+    const { response, data } = result
 
     // naive cache - was an update so zap everything
     clearWorkbookCache(spreadsheetId)

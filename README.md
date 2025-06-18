@@ -362,7 +362,9 @@ I've tried to exactly imitate the behavior of the Sheets advanced service (even 
 
 ### Advanced sheets updating cells
 
-The advanced sheets service provides a huge list of builders such as Sheets.newCellData(). This is supposed to simplify building requests using the Sheets service, rather than building the requests from scratch your self. I actually find them more long winded that just making the objects, and I notice that there are no checks on the values that you set using them, so there's not even any validation to proft from. In any case, I've implemented them all (other than one that doesnt work in GAS - (https://issuetracker.google.com/issues/423737982), so you can use them if you want. 
+The advanced sheets service provides a huge list of builders such as Sheets.newCellData(). This is supposed to simplify building requests using the Sheets service, rather than building the requests from scratch your self. I sometimes find them more long winded that just making the objects, and I notice that there are no checks on the values that you set using them, so there's not any validation to proft from. 
+
+In any case, I've implemented them all (note that this one that doesnt actually work in GAS - https://issuetracker.google.com/issues/423737982)
 
 I mainly use them when emulating Apps Script SpreadsheetApp services too as a double check that they are working as intended, but sometimes I build the requests up from scratch if it makes the automation simpler.
 
@@ -422,6 +424,7 @@ Here's Gemini's verdict on textRotation
 There's also a bug in the advanced sheet service - it doesn't return an angle in its response, even though it is set in the UI and even though Range.getTextRotation() correctly returns the angle. See https://issuetracker.google.com/issues/425390984.
 
 Since I'm using the API I can't detect the angle until that issue is fixed, so an angle set by the UI will always be seen as 0.
+
 
 #### Dates and sheets advanced service
 

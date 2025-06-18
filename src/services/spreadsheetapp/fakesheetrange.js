@@ -11,7 +11,8 @@ import {
   makeSheetsGridRange,
   batchUpdate,
   fillRange,
-  arrMatchesRange
+  arrMatchesRange,
+  isACheckbox
 } from "./sheetrangehelpers.js"
 
 const { is, rgbToHex, hexToRgb, stringer, outsideInt, capital, BLACKER } = Utils
@@ -59,7 +60,7 @@ export class FakeSheetRange {
 
     // list of not yet implemented methods
     const props = [
-      'removeDuplicates',
+
       'getMergedRanges',
       'createDataSourcePivotTable',
       'activate',
@@ -111,7 +112,7 @@ export class FakeSheetRange {
       'setTextStyles',
       'uncheck',
       'insertCheckboxes',
-      'removeCheckboxes',
+
       'trimWhitespace',
       'copyTo',
       'setTextStyle',
@@ -341,6 +342,79 @@ export class FakeSheetRange {
 
     return newFakeSheetRange(gr, this.getSheet())
 
+  }
+  /**
+   * removeCheckboxes()
+   * Removes all checkboxes from the range. Clears the data validation of each cell, and additionally clears its value if the cell contains either the checked or unchecked value.
+   * @returns {FakeSheetRange}
+   */
+  removeCheckboxes() {
+    // theres not an api method for this, we need to get all the data validations in the range, see if they are check boxes and batchupdate a series of things
+    const dv = this.getDataValidations()
+    if (!dv) return this
+
+    // now get all the checkboxes and where they are
+    const work = dv.map ((row, rn) => row.map ((cell, cn) =>isACheckbox(cell) ? {rn,cn} : null)).flat().filter(f=>f)
+    if (!work.length) return
+
+    const requests = work.map (f=> ({
+      setDataValidation: Sheets
+      .newSetDataValidationRequest()
+      .setRange(makeSheetsGridRange(this.offset(f.rn, f.cn, 1, 1)))
+      .setRule(null)
+    }))
+    const clearRequests = work.map (f=> ({
+      updateCells: Sheets
+      .newUpdateCellsRequest()
+      .setFields('userEnteredValue')
+      .setRange(makeSheetsGridRange(this.offset(f.rn, f.cn, 1, 1)))
+    }))
+
+    batchUpdate({
+      spreadsheetId: this.__getSpreadsheetId(),
+      requests: requests.concat(clearRequests)
+    })
+    return this
+  }
+
+  /**
+   * removeDuplicates()
+   * https://developers.google.com/apps-script/reference/spreadsheet/range#removeduplicates
+   * Removes rows within this range that contain values that are duplicates of values in any previous row.
+   * @param {Integer[]}	[columnsToCompare]	The columns to analyze for duplicate values. If no columns are provided then all columns are analyzed for duplicates
+   * @returns {FakeSheetRange} adjusted range after duplicates are removed
+   */
+  removeDuplicates(columnsToCompare) {
+
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.setBackgroundRGB")
+    if (nargs > 1) matchThrow()
+    if (nargs) {
+      if (!is.array(columnsToCompare)) matchThrow()
+      if (!columnsToCompare.every(f => is.integer(f) && f > 0 && f <= this.getNumColumns())) matchThrow()
+    }
+
+    const gridIndex = makeSheetsGridRange(this)
+    const request = Sheets.newDeleteDuplicatesRequest()
+      .setRange(gridIndex)
+
+    if (columnsToCompare && columnsToCompare.length) {
+      request.setComparisonColumns(columnsToCompare.map(f=>({
+        dimension: "COLUMNS",
+        startIndex: f - 1 + gridIndex.startColumnIndex,
+        endIndex: f + gridIndex.startColumnIndex,
+        sheetId: this.getSheet().getSheetId()
+      })))
+    }
+    const response = batchUpdate({
+      spreadsheetId: this.__getSpreadsheetId(),
+      requests: [{ deleteDuplicates: request }]
+    })
+    const reply = response?.replies && response.replies[0]
+    if (reply) {
+      const { duplicatesRemovedCount = 0 } = reply.deleteDuplicates
+      return duplicatesRemovedCount ? this.offset(0, 0, this.getNumRows() - duplicatesRemovedCount, this.getNumColumns()) : this
+    }
+    return this
   }
   /**
    * Sets the background color of all cells in the range in CSS notation (such as '#ffffff' or 'white').
@@ -634,6 +708,16 @@ export class FakeSheetRange {
    * @return {FakeSheetRange} this
    */
   setValues(values) {
+    const rows = this.getNumRows()
+    const cols = this.getNumColumns()
+    if (rows !== values.length) {
+      throw new Error(`
+      The number of rows in the data does not match the number of rows in the range. The data has ${values.length} but the range has ${rows}`)
+    }
+    if (!values.every(row => row.length === cols)) {
+      throw new Error(`
+        The number of columns in the data does not match the number of columns in the range. The range has ${cols}`)
+    }
     return this.__setValues({ values })
   }
 

@@ -446,6 +446,7 @@ export const valueGens = (self, target) => {
   // both a single and collection version
   const plural = target.plural || (target.name + 's')
   const getters = (range) => {
+
     const values = getData({ range, options: target.options })
     /// TODO check if we ever get a jagged array back for values as we sometimes do for formats 
     // - if we do, we'll need to populate with the template

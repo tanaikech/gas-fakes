@@ -10,13 +10,61 @@ import '../main.js'
 
 import { initTests } from './testinit.js'
 import { getSheetsPerformance } from '../src/support/sheetscache.js';
-import { maketss, trasher } from './testassist.js';
+import { maketss, trasher} from './testassist.js';
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testSheetsValues = (pack) => {
 
   const { unit, fixes } = pack || initTests()
   const toTrash = []
+
+  unit.section("data manipulation", t=> {
+    const {sheet} = maketss ('datamanip',toTrash, fixes)
+    const startAt = sheet.getRange("a1:b4")
+  
+    // remove duplicates
+    let prop = "removeDuplicates"
+    const rdRange = startAt.offset(0,0)
+    const rdValues = [['foo','bar'],['bar','foo'],['foo','foo'],['bar','foo']]
+    // expect after
+    const xRdValues = rdValues.filter((row,i,a)=> !a.slice(0,i).find(f=>unit.deepEquals(f,row)))
+    rdRange.setValues(rdValues)
+    const xRdRange = rdRange.removeDuplicates()
+    const rdAfter = xRdRange.getValues()
+    t.deepEqual(rdAfter, xRdValues, prop)
+    t.is (xRdRange.getA1Notation(), rdRange.offset(0,0,xRdValues.length,xRdValues[0].length).getA1Notation(),prop)
+
+    // now try if removing nothing
+    const rd1Range = startAt.offset(5,1,xRdValues.length,xRdValues[0].length)
+    rd1Range.setValues(xRdValues)
+    const xRd1Range = rd1Range.removeDuplicates()
+    const rd1After = xRd1Range.getValues()
+    t.deepEqual(rd1After, xRdValues, prop)
+    t.is(xRd1Range.getA1Notation(), rd1Range.getA1Notation(),prop)
+
+    // now lets have some comparison columns
+    const rd2Range = startAt.offset(10,2)
+    // should give same results as without any comparison columns
+    const comparisonColumns = rdValues[0].map((_,i)=>i+1)
+    rd2Range.setValues(rdValues)
+    const xRd2Range = rd2Range.removeDuplicates(comparisonColumns)
+    const rd2After = xRd2Range.getValues()
+    t.deepEqual(rd2After, xRdValues, prop)
+    t.is (xRd2Range.getA1Notation(), rd2Range.offset(0,0,xRdValues.length,xRdValues[0].length).getA1Notation(),prop)
+
+
+    // now a real comparison column
+    const rd3Range = startAt.offset(15,3)
+    const comparisonColumns3 = [2]
+    const xRd3Values = rdValues.filter((row,i,a)=> !a.slice(0,i).find(f=>comparisonColumns3.every(c=>unit.deepEquals(f[c-1],row[c-1]))))
+    rd3Range.setValues(rdValues)
+    const xRd3Range = rd3Range.removeDuplicates(comparisonColumns3)
+    const rd3After = xRd3Range.getValues()
+    t.deepEqual(rd3After, xRd3Values, prop)
+    t.is (xRd3Range.getA1Notation(), rd3Range.offset(0,0,xRd3Values.length,xRd3Values[0].length).getA1Notation(),prop)
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+  })
   unit.section("spreadsheet values - both advanced and app", t => {
 
     // TODO - fails on gas if the fields are dates or numbers because gas automayically detects and converts types
@@ -187,9 +235,6 @@ export const testSheetsValues = (pack) => {
     }
 
   })
-
-
-
 
 
   unit.section("advanced & spreadsheetapp values and ranges", t => {
