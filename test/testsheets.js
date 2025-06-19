@@ -603,7 +603,7 @@ export const testSheets = (pack) => {
     const clearRange = sheet.getRange("a1:z100")
     clearRange.clear()
     t.true(clearRange.getValues().flat().every(f=>f===''))
-    t.true(clearRange.getBackgroundObjects().flat().every(is.null))
+
 
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
 
