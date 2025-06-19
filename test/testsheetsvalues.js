@@ -45,8 +45,9 @@ export const testSheetsValues = (pack) => {
     // now lets have some comparison columns
     const rd2Range = startAt.offset(10,2)
     // should give same results as without any comparison columns
-    const comparisonColumns = rdValues[0].map((_,i)=>i+1)
+    const comparisonColumns = rdValues[0].map((_,i)=>i+rd2Range.getColumn())
     rd2Range.setValues(rdValues)
+
     const xRd2Range = rd2Range.removeDuplicates(comparisonColumns)
     const rd2After = xRd2Range.getValues()
     t.deepEqual(rd2After, xRdValues, prop)
@@ -55,13 +56,21 @@ export const testSheetsValues = (pack) => {
 
     // now a real comparison column
     const rd3Range = startAt.offset(15,3)
-    const comparisonColumns3 = [2]
-    const xRd3Values = rdValues.filter((row,i,a)=> !a.slice(0,i).find(f=>comparisonColumns3.every(c=>unit.deepEquals(f[c-1],row[c-1]))))
+    // dedup on relative column 2
+    const c3 = 2
+    const comparisonColumns3 = [c3+rd3Range.getColumn()-1]
+    const xRd3Values = rdValues.filter((row,i,a)=> !a.slice(0,i).find(f=>unit.deepEquals(row[c3-1], f[c3-1])))
     rd3Range.setValues(rdValues)
     const xRd3Range = rd3Range.removeDuplicates(comparisonColumns3)
     const rd3After = xRd3Range.getValues()
     t.deepEqual(rd3After, xRd3Values, prop)
     t.is (xRd3Range.getA1Notation(), rd3Range.offset(0,0,xRd3Values.length,xRd3Values[0].length).getA1Notation(),prop)
+
+    // check clearing works
+    const clearRange = sheet.getRange("a1:z100")
+    clearRange.clearContent()
+    t.true(clearRange.getValues().flat().every(f=>f===''))
+
 
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
   })

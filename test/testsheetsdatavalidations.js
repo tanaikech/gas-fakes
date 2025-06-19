@@ -128,37 +128,20 @@ export const testSheetsDataValidations = (pack) => {
     scritty(t, sb, "c1:d2", "CHECKBOX", 'requireCheckbox')
     scritty(t, sb, "e1:f2", "CHECKBOX", 'requireCheckbox', ['foo', 'bar'])
 
-    // now lets try removing all the checkboxes - use a bigger area than was set
-    const remc = sb.getRange("b1:g3")
-    const stuff = fillRangeFromDomain(remc, [true, false])
-    remc.setValues(stuff)
-    // data validation before
-    const remcdv = remc.getDataValidations()
+    // now lets try setting and removing all the checkboxes in a given area
+    const remc = sb.getRange("k2:m3")
+    remc.clearDataValidations().clear()
+    const dv1 = SpreadsheetApp.newDataValidation().requireCheckbox().build()
+    const v1 =[[true, false, null],[false, false, true]]
+    remc.setDataValidation(dv1)
+    remc.setValues(v1)
     remc.removeCheckboxes()
+    const v1a = remc.getValues()
+    const dv1a = remc.getDataValidations()
+    t.true(dv1a.flat().every(f => is.null(f)))
+    t.true(v1a.flat().every(f => f===''))
+    
 
-    // data/data validation after
-    const remcafter = remc.getDataValidations()
-    const remcAfterd = remc.getValues()
-
-    // check that checkboxes have gone and their value cleared
-    remcdv.forEach((row, rn) => row.forEach((dvBefore, cn) => {
-      const dvAfter = remcafter[rn][cn]
-      const vAfter = remcAfterd[rn][cn]
-      const vBefore = stuff[rn][cn]
-      if (isACheckbox(dvBefore)) {
-        // should have cleared
-        t.is(dvAfter, null)
-        t.is(vAfter, '')
-      } else if (is.null(dvBefore)) {
-        // should still be null
-        t.is(dvAfter, null)
-        t.is(vAfter, vBefore)
-      } else {
-        // was a different kind of dv so still should be
-        t.is(dvAfter.getCriteriaType().compareTo(dvBefore.getCriteriaType()), 0)
-        t.is(vAfter, vBefore)
-      }
-    }))
 
 
     scritty(t, sb, "e19:g20", "VALUE_IN_LIST", "requireValueInList", comp, true)

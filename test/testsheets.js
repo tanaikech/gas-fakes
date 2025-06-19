@@ -21,7 +21,6 @@ export const testSheets = (pack) => {
 
 
 
-
   unit.section("setting and repeating cell formats", t => {
 
     const { sheet } = maketss('cellsformats', toTrash, fixes)
@@ -169,6 +168,10 @@ export const testSheets = (pack) => {
     t.deepEqual(cobs4, fillRange(fr4, rd3[0][0]))
     const cob4 = fr4.getFontColorObject().asRgbColor().asHexString()
     t.is(cob4, rc3[0][0].asRgbColor().asHexString())
+
+    // check clearing works
+    const clearRange = sheet.getRange("a1:z100")
+    clearRange.clearFormat()
 
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
 
@@ -596,6 +599,11 @@ export const testSheets = (pack) => {
     const srobs = singleRange.getBackgroundObjects()
     t.true(srobs.flat().every(f => f.asRgbColor().asHexString() === singleColor))
     t.deepEqual(back1, back2)
+
+    const clearRange = sheet.getRange("a1:z100")
+    clearRange.clear()
+    t.true(clearRange.getValues().flat().every(f=>f===''))
+    t.true(clearRange.getBackgroundObjects().flat().every(is.null))
 
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
 

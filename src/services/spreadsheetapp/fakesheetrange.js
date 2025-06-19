@@ -126,7 +126,7 @@ export class FakeSheetRange {
       'moveTo',
       'setNotes',
       'setNote',
-      'clearNote',
+
       'createFilter',
       'getDataSourceFormulas',
       'getDataSourceTables',
@@ -134,10 +134,10 @@ export class FakeSheetRange {
 
       'getDataSourceUrl',
       'getDataTable',
-      'clearFormat',
+
       'createDeveloperMetadataFinder',
       'getDataSourcePivotTables',
-      'clear',
+
       'merge',
       'sort',
       'check',
@@ -186,13 +186,72 @@ export class FakeSheetRange {
 
 
   }
+  __clear(fields) {
 
+    const range = makeSheetsGridRange(this)
+    const requests = [{
+      updateCells: Sheets.newUpdateCellsRequest().setFields(fields).setRange(range)
+    }]
+
+    batchUpdate({
+      spreadsheetId: this.__getSpreadsheetId(),
+      requests
+    })
+    return this
+  }
+  /**
+   * clears  (notes) 
+   * @returns {FakeSheetRange} self
+   */
+  clearNote() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.clearNote")
+    if (nargs) matchThrow()
+    return this.__clear("note")
+  }
+  /**
+   * clears  (values) 
+   * @returns {FakeSheetRange} self
+   */
   clearContent() {
-    return this.setValues([])
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.clearContent")
+    if (nargs) matchThrow()
+    return this.__clear("userEnteredValue")
+  }
+  /**
+   * clears  (format) 
+   * @returns {FakeSheetRange} self
+   */
+  clearFormat() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.clearFormat")
+    if (nargs) matchThrow()
+    return this.__clear("userEnteredFormat")
+  }
+
+  /**
+   * clears evertything (notes,formats,values,datavalidations) (except comments)
+   * @returns {FakeSheetRange} self
+   */
+  clear() {
+
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.clear")
+    if (nargs) matchThrow()
+    const range = makeSheetsGridRange(this)
+    const requests = [{
+      updateCells: Sheets.newUpdateCellsRequest().setFields("userEnteredValue,userEnteredFormat,note").setRange(range)
+    }, {
+      setDataValidation: Sheets.newSetDataValidationRequest().setRange(range).setRule(null)
+    }]
+
+    batchUpdate({
+      spreadsheetId: this.__getSpreadsheetId(),
+      requests
+    })
+    return this
   }
 
   clearDataValidations() {
     this.setDataValidations(null)
+    return this
   }
   /**
    * protect() https://developers.google.com/apps-script/reference/spreadsheet/sheet#protect
@@ -387,11 +446,20 @@ export class FakeSheetRange {
    */
   removeDuplicates(columnsToCompare) {
 
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.setBackgroundRGB")
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.removeDuplicates")
+
     if (nargs > 1) matchThrow()
     if (nargs) {
+
       if (!is.array(columnsToCompare)) matchThrow()
-      if (!columnsToCompare.every(f => is.integer(f) && f > 0 && f <= this.getNumColumns())) matchThrow()
+      if (!columnsToCompare.every(f => is.integer(f))) {
+        matchThrow()
+      }
+      columnsToCompare.forEach(f => {
+        if (f > this.getNumColumns() + this.getColumn() || f < this.getColumn()) {
+          throw new Error(`Cell reference ${f} out of range for ${this.getA1Notation()}`)
+        }
+      })
     }
 
     const gridIndex = makeSheetsGridRange(this)
@@ -401,8 +469,8 @@ export class FakeSheetRange {
     if (columnsToCompare && columnsToCompare.length) {
       request.setComparisonColumns(columnsToCompare.map(f => ({
         dimension: "COLUMNS",
-        startIndex: f - 1 + gridIndex.startColumnIndex,
-        endIndex: f + gridIndex.startColumnIndex,
+        startIndex: f - 1,
+        endIndex: f,
         sheetId: this.getSheet().getSheetId()
       })))
     }
@@ -732,7 +800,7 @@ export class FakeSheetRange {
     const { nargs, matchThrow } = signatureArgs(arguments, "Range.splitTextToColumns")
     if (nargs > 1) matchThrow()
     if (this.getNumColumns() !== 1) {
-      throw new Error (`A range in a single column must be provided`)
+      throw new Error(`A range in a single column must be provided`)
     }
     const request = Sheets.newTextToColumnsRequest()
       .setSource(makeSheetsGridRange(this))
@@ -751,7 +819,7 @@ export class FakeSheetRange {
       request.setDelimiterType(TextToColumnsDelimiter.toString())
     }
     // if no delimiter, dont bother mentioning it
-    batchUpdate ({
+    batchUpdate({
       spreadsheetId: this.__getSpreadsheetId(),
       requests: [{ textToColumns: request }]
     })
