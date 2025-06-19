@@ -72,6 +72,12 @@ export const setterList = [{
   // note that apps script ignores upper case versions so this will error out if we spot one
   typeChecker: (value) => ['top', 'middle', 'bottom'].includes(value)
 }, {
+  name: 'formula',
+  type: "string",
+  nullAllowed: true,
+  fields: 'userEnteredValue.formulaValue',
+  maker: (_, value) => Sheets.newCellData().setUserEnteredValue({formulaValue:value})
+},{
   name: 'horizontalAlignment',
   type: "string",
   nullAllowed: true,
@@ -328,8 +334,10 @@ export const setterMaker = ({ self, fields, maker, single, plural, type, nullAll
     const [value] = args
     if (!typeOk(value, nullAllowed, type, typeChecker)) matchThrow()
     const request = makeRepeatRequest(self, maker(apiSetter, value), fields)
+
     const spreadsheetId = self.__getSpreadsheetId()
     const requests = [{ repeatCell: request }]
+    // console.log(JSON.stringify(requests))
     batchUpdate({ spreadsheetId, requests })
     return self
   }

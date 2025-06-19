@@ -73,7 +73,7 @@ export class FakeSheetRange {
       'getFormulasR1C1',
       'getDataSourceFormula',
       'insertCells',
-      'setFormulas',
+
       'setFormulaR1C1',
       'setFormulasR1C1',
       'setBackgroundColors',
@@ -131,7 +131,7 @@ export class FakeSheetRange {
       'getDataSourceFormulas',
       'getDataSourceTables',
       'setBackgroundColor',
-      'setFormula',
+
       'getDataSourceUrl',
       'getDataTable',
       'clearFormat',

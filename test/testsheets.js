@@ -20,13 +20,15 @@ export const testSheets = (pack) => {
   const toTrash = []
 
 
+
+
   unit.section("setting and repeating cell formats", t => {
 
     const { sheet } = maketss('cellsformats', toTrash, fixes)
 
     // this a reusable function to do a bunch of tests and check the results on range.setXXX
     const tester = (range, prop, props, domain, nullIs, patcher) => {
-     
+
       /// console.log(prop, props)
 
       // this is source data - will be randomly drawn from a set of acceptable values
@@ -45,17 +47,17 @@ export const testSheets = (pack) => {
         }))
 
       // we'lso need to check when the entire range is set to the same value
-      const rdnFill  = fillRange(range, rdn[0][0])
-      
+      const rdnFill = fillRange(range, rdn[0][0])
+
       // now do a multiple set
       range['set' + props](rd)
-      
+
       // get the result of multiple set
       const cobs = range['get' + props]()
 
       // need to massage the results to normalize enums
       const cobsn = cobs.map(row => row.map(eString))
-      
+
       // finally we can compare results
       t.deepEqual(cobsn, rdn, props)
 
@@ -81,11 +83,41 @@ export const testSheets = (pack) => {
         t.is(gs.compareTo(cobs[0][0]), 0, props)
       }
     }
-    const startAt = sheet.getRange("h9:k12")
+    const startAt = sheet.getRange("b2:e5")
+
+
+    tester(startAt.offset(0, 0), 'FontWeight', 'FontWeights', ['bold', 'normal', null], "normal")
+    tester(startAt.offset(5, 1), 'FontStyle', 'FontStyles', ['italic', 'normal', null], "normal")
+    // note that fontsize doesnt allow anything other than an integer (ie - there is no null option)
+    tester(startAt.offset(10, 2), 'FontSize', 'FontSizes', [10, 8, 4, 5, 20, 11], null)
+    tester(startAt.offset(10, 2), 'FontSize', 'FontSizes', [10, 8, 4, 5, 20, 11], null)
+    tester(startAt.offset(15, 3), 'FontLine', 'FontLines', ['line-through', 'none', 'underline', null], "none")
+    tester(startAt.offset(20, 4), 'FontFamily', 'FontFamilies',
+      ['Arial,Tahoma,Times New Roman', 'Helvetica', 'Verdana,Sans Serif', 'Courier New'], null)
+    tester(startAt.offset(25, 5), 'NumberFormat', 'NumberFormats', ['0.0000', '#,##0.00', '$#.##0.00', 'general'], null, {
+      // because we set general, but receive this default in return
+      general: "0.###############"
+    })
+    tester(startAt.offset(30, 6), 'HorizontalAlignment', 'HorizontalAlignments', ['left', 'center', 'right', 'normal', null], "general", {
+      // see readme oddities for why this....
+      normal: Sheets.isFake ? "general" : "general-left"
+    })
+    tester(startAt.offset(35, 6), 'VerticalAlignment', 'VerticalAlignments', ['top', 'middle', 'bottom', null], "bottom")
+
+    tester(startAt.offset(40, 7), 'TextDirection', 'TextDirections', [SpreadsheetApp.TextDirection.LEFT_TO_RIGHT, SpreadsheetApp.TextDirection.RIGHT_TO_LEFT, null], null)
+
+    // note that a repeat cell will autoincrement the formulas, so Im using absolute values here 
+    tester(startAt.offset(45, 8), 'Formula', 'Formulas', [null, '=SUM($B$2:$B$4)', '=SUM($C$2:$4)', '=AVERAGE($C$2:$C$4)'], "")
+    // lets do a quick text on autincrement
+    const fr1 = startAt.offset(50, 0, 2, 2)
+    const frv = "=A1"
+    const frr = [["=A1", "=B1"], ["=A2", "=B2"]]
+    fr1.setFormula(frv)
+    t.deepEqual(fr1.getFormulas(), frr)
 
     // TODO can't properly do text rotation because of https://issuetracker.google.com/issues/425390984.
     // revisit this when fixed
-    const fr0 = startAt.offset(0, 0)
+    const fr0 = startAt.offset(50, 9)
     fr0.setTextRotation(45)
     // see https://issuetracker.google.com/issues/425390984 and readme oddities - textRotation
     const tr0 = fr0.getTextRotation()
@@ -103,28 +135,8 @@ export const testSheets = (pack) => {
       t.true(r2.flat().every(f => !f.isVertical()))
       // Note that pass TextRotation object rather than degrees throws an error in GAS so we wont be implementing that overload yet.
     }
-    // note that fontsize doesnt allow anything other than an integer (ie - there is no null option)
-    tester(startAt.offset(10, 2), 'FontSize', 'FontSizes', [10, 8, 4, 5, 20, 11], null)
 
-    tester(startAt.offset(40, 7), 'TextDirection', 'TextDirections', [SpreadsheetApp.TextDirection.LEFT_TO_RIGHT, SpreadsheetApp.TextDirection.RIGHT_TO_LEFT, null], null)
-
-    tester(startAt.offset(0, 0), 'FontWeight', 'FontWeights', ['bold', 'normal', null], "normal")
-    tester(startAt.offset(5, 1), 'FontStyle', 'FontStyles', ['italic', 'normal', null], "normal")
-    tester(startAt.offset(10, 2), 'FontSize', 'FontSizes', [10, 8, 4, 5, 20, 11], null)
-    tester(startAt.offset(15, 3), 'FontLine', 'FontLines', ['line-through', 'none', 'underline', null], "none")
-    tester(startAt.offset(20, 4), 'FontFamily', 'FontFamilies',
-      ['Arial,Tahoma,Times New Roman', 'Helvetica', 'Verdana,Sans Serif', 'Courier New'], null)
-    tester(startAt.offset(25, 5), 'NumberFormat', 'NumberFormats', ['0.0000', '#,##0.00', '$#.##0.00', 'general'], null, {
-      // because we set general, but receive this default in return
-      general: "0.###############"
-    })
-    tester(startAt.offset(30, 6), 'HorizontalAlignment', 'HorizontalAlignments', ['left', 'center', 'right', 'normal', null], "general", {
-      // see readme oddities for why this....
-      normal: Sheets.isFake ? "general" : "general-left"
-    })
-    tester(startAt.offset(35, 6), 'VerticalAlignment', 'VerticalAlignments', ['top', 'middle', 'bottom', null], "bottom")
-
-    const startAgain = startAt.offset(60, 0)
+    const startAgain = startAt.offset(100, 0)
 
     // fontcolorobjects
     // these are more complex so i wont bother trying to push them thru standard test
