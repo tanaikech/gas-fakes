@@ -18,7 +18,8 @@ import { newFakeTextDirection } from '../commonclasses/faketextdirection.js'
 import { makeDataValidationFromApi } from "./fakedatavalidationbuilder.js"
 import { TextDirection } from '../enums/sheetsenums.js'
 
-const { getPlucker, is, robToHex, WHITER, BLACKER, hexToRgb, outsideInt, getEnumKeys } = Utils
+
+const { getPlucker, is, robToHex, WHITER, BLACKER, hexToRgb, getEnumKeys } = Utils
 
 const extractPattern = (response) => {
   // a plain pattern entered by UI, apps script or lax api call
@@ -120,7 +121,7 @@ export const setterList = [{
 }, {
   name: 'fontSize',
   type: "number",
-  nullAllowed: true,
+  nullAllowed: false,
 }, {
   name: 'fontFamily',
   plural: 'setFontFamilies',
@@ -448,9 +449,15 @@ export const valueGens = (self, target) => {
   const getters = (range) => {
 
     const values = getData({ range, options: target.options })
-    /// TODO check if we ever get a jagged array back for values as we sometimes do for formats 
+
     // - if we do, we'll need to populate with the template
-    let v = !values.length ? makeTemplate({ range, defaultValue: target.defaultValue }) : values
+    let v = values
+    const jagged = v && v.length && isJagged({ range, cleaned: v })
+    if (!v.length || jagged) {
+      const template = makeTemplate({ range, defaultValue: target.defaultValue })
+      if (jagged) v = fixJagged({ template, cleaned: v })
+      else v = template
+    }
     if (target.cleaner) v = v.map(target.cleaner)
     if (target.reducer) v = target.reducer(v)
     return v

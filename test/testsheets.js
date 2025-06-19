@@ -26,8 +26,8 @@ export const testSheets = (pack) => {
 
     // this a reusable function to do a bunch of tests and check the results on range.setXXX
     const tester = (range, prop, props, domain, nullIs, patcher) => {
-      // font weight
-      console.log(prop, props)
+     
+      /// console.log(prop, props)
 
       // this is source data - will be randomly drawn from a set of acceptable values
       const rd = fillRangeFromDomain(range, domain)
@@ -103,11 +103,14 @@ export const testSheets = (pack) => {
       t.true(r2.flat().every(f => !f.isVertical()))
       // Note that pass TextRotation object rather than degrees throws an error in GAS so we wont be implementing that overload yet.
     }
+    // note that fontsize doesnt allow anything other than an integer (ie - there is no null option)
+    tester(startAt.offset(10, 2), 'FontSize', 'FontSizes', [10, 8, 4, 5, 20, 11], null)
+
     tester(startAt.offset(40, 7), 'TextDirection', 'TextDirections', [SpreadsheetApp.TextDirection.LEFT_TO_RIGHT, SpreadsheetApp.TextDirection.RIGHT_TO_LEFT, null], null)
 
     tester(startAt.offset(0, 0), 'FontWeight', 'FontWeights', ['bold', 'normal', null], "normal")
     tester(startAt.offset(5, 1), 'FontStyle', 'FontStyles', ['italic', 'normal', null], "normal")
-    tester(startAt.offset(10, 2), 'FontSize', 'FontSizes', [10, 8, 4, 5, 20, 11, null], 10)
+    tester(startAt.offset(10, 2), 'FontSize', 'FontSizes', [10, 8, 4, 5, 20, 11], null)
     tester(startAt.offset(15, 3), 'FontLine', 'FontLines', ['line-through', 'none', 'underline', null], "none")
     tester(startAt.offset(20, 4), 'FontFamily', 'FontFamilies',
       ['Arial,Tahoma,Times New Roman', 'Helvetica', 'Verdana,Sans Serif', 'Courier New'], null)

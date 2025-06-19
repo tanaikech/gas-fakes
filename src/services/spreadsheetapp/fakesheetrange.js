@@ -14,8 +14,9 @@ import {
   arrMatchesRange,
   isACheckbox
 } from "./sheetrangehelpers.js"
+import { TextToColumnsDelimiter } from '../enums/sheetsenums.js'
 
-const { is, rgbToHex, hexToRgb, stringer, outsideInt, capital, BLACKER } = Utils
+const { is, rgbToHex, hexToRgb, stringer, outsideInt, capital, BLACKER, getEnumKeys } = Utils
 
 import { notYetImplemented, signatureArgs } from '../../support/helpers.js'
 import { FakeSpreadsheet } from './fakespreadsheet.js'
@@ -98,7 +99,7 @@ export class FakeSheetRange {
       'setWrapStrategy',
       'applyColumnBanding',
       'applyRowBanding',
-      'splitTextToColumns',
+
       'createPivotTable',
       'createDataSourceTable',
       'shiftRowGroupDepth',
@@ -354,20 +355,20 @@ export class FakeSheetRange {
     if (!dv) return this
 
     // now get all the checkboxes and where they are
-    const work = dv.map ((row, rn) => row.map ((cell, cn) =>isACheckbox(cell) ? {rn,cn} : null)).flat().filter(f=>f)
+    const work = dv.map((row, rn) => row.map((cell, cn) => isACheckbox(cell) ? { rn, cn } : null)).flat().filter(f => f)
     if (!work.length) return
 
-    const requests = work.map (f=> ({
+    const requests = work.map(f => ({
       setDataValidation: Sheets
-      .newSetDataValidationRequest()
-      .setRange(makeSheetsGridRange(this.offset(f.rn, f.cn, 1, 1)))
-      .setRule(null)
+        .newSetDataValidationRequest()
+        .setRange(makeSheetsGridRange(this.offset(f.rn, f.cn, 1, 1)))
+        .setRule(null)
     }))
-    const clearRequests = work.map (f=> ({
+    const clearRequests = work.map(f => ({
       updateCells: Sheets
-      .newUpdateCellsRequest()
-      .setFields('userEnteredValue')
-      .setRange(makeSheetsGridRange(this.offset(f.rn, f.cn, 1, 1)))
+        .newUpdateCellsRequest()
+        .setFields('userEnteredValue')
+        .setRange(makeSheetsGridRange(this.offset(f.rn, f.cn, 1, 1)))
     }))
 
     batchUpdate({
@@ -398,7 +399,7 @@ export class FakeSheetRange {
       .setRange(gridIndex)
 
     if (columnsToCompare && columnsToCompare.length) {
-      request.setComparisonColumns(columnsToCompare.map(f=>({
+      request.setComparisonColumns(columnsToCompare.map(f => ({
         dimension: "COLUMNS",
         startIndex: f - 1 + gridIndex.startColumnIndex,
         endIndex: f + gridIndex.startColumnIndex,
@@ -720,7 +721,44 @@ export class FakeSheetRange {
     }
     return this.__setValues({ values })
   }
+  /**
+   * splitTextToColumns(delimiter) 
+   * https://developers.google.com/apps-script/reference/spreadsheet/range#splittexttocolumnsdelimiter_1
+   * Splits a column of text into multiple columns
+   * @param {string|| TextToColumnsDelimiter} []
+   * @returns {FakeSheetRange} self
+   */
+  splitTextToColumns(delimiter) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.splitTextToColumns")
+    if (nargs > 1) matchThrow()
+    if (this.getNumColumns() !== 1) {
+      throw new Error (`A range in a single column must be provided`)
+    }
+    const request = Sheets.newTextToColumnsRequest()
+      .setSource(makeSheetsGridRange(this))
 
+    if (nargs == 1) {
+      if (isEnum(delimiter)) {
+        if (!getEnumKeys(TextToColumnsDelimiter).includes(delimiter.toString())) matchThrow()
+        request.setDelimiterType(delimiter.toString())
+      } else if (is.string(delimiter)) {
+        request.setDelimiter(delimiter).setDelimiterType("CUSTOM")
+      } else {
+        matchThrow()
+      }
+    } else {
+      // the default
+      request.setDelimiterType(TextToColumnsDelimiter.toString())
+    }
+    // if no delimiter, dont bother mentioning it
+    batchUpdate ({
+      spreadsheetId: this.__getSpreadsheetId(),
+      requests: [{ textToColumns: request }]
+    })
+
+    return this
+
+  }
   toString() {
     return 'Range'
   }
