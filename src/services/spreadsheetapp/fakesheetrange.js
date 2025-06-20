@@ -94,7 +94,7 @@ export class FakeSheetRange {
       'autoFill',
       'autoFillToNeighbor',
       'setShowHyperlink',
-      'setVerticalText',
+
       'setWrapStrategies',
       'setWrapStrategy',
       'applyColumnBanding',
@@ -114,7 +114,6 @@ export class FakeSheetRange {
       'uncheck',
       'insertCheckboxes',
 
-      'trimWhitespace',
       'copyTo',
       'setTextStyle',
       'getComments',
@@ -826,6 +825,20 @@ export class FakeSheetRange {
 
     return this
 
+  }
+
+  trimWhitespace() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.splitTextToColumns")
+    if (nargs > 0) matchThrow()
+    const request = Sheets.newTrimWhitespaceRequest()
+      .setRange(makeSheetsGridRange(this))
+
+    batchUpdate({
+      spreadsheetId: this.__getSpreadsheetId(),
+      requests: [{ trimWhitespace: request }]
+    })
+
+    return this
   }
   toString() {
     return 'Range'

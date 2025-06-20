@@ -11,6 +11,7 @@ import '../main.js'
 import { initTests } from './testinit.js'
 import { getSheetsPerformance } from '../src/support/sheetscache.js';
 import { eString, maketss, trasher, rgbToHex, getRandomRgb, getRandomHex, getStuff, BLACK, fillRange, fillRangeFromDomain, isEnum } from './testassist.js';
+import { firebaseml_v1beta2 } from 'googleapis';
 
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
@@ -122,10 +123,20 @@ export const testSheets = (pack) => {
     const tr0 = fr0.getTextRotation()
     t.is(tr0.getDegrees(), Sheets.isFake ? 0 : 45)
     t.is(tr0.isVertical(), false)
-    const rotd = fillRangeFromDomain(fr0, [-2, 9, 89, null])
+
+    fr0.setVerticalText(true)
+    const tr0v = fr0.getTextRotation()
+    t.is(tr0v.getDegrees(), 0)
+    t.is(tr0v.isVertical(), true)
+
+    fr0.setVerticalText(false)
+    const tr1v = fr0.getTextRotation()
+    t.is(tr1v.getDegrees(), 0)
+    t.is(tr1v.isVertical(), false)
 
     // this also doesnt work in GAS so we'll skipuntil its fixed
     if (Sheets.isFake) {
+      const rotd = fillRangeFromDomain(fr0, [-2, 9, 89, null])
       fr0.setTextRotations(rotd)
       const r2 = fr0.getTextRotations()
       // see https://issuetracker.google.com/issues/425390984 and readme oddities - textRotation

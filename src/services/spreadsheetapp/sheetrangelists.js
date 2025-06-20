@@ -31,6 +31,16 @@ const extractPattern = (response) => {
 
 // this is a list of all range format setters and how to generate them
 export const setterList = [{
+  name: 'verticalText',
+  nullAllowed: true,
+  type: "boolean",
+  maker: (_, value) => {
+    let rot = Sheets.newTextRotation().setVertical(value)
+    return makeCellData('setTextRotation', rot)
+  },
+  fields: 'userEnteredFormat.textRotation',
+  plural: false
+}, {
   name: 'textRotation',
   nullAllowed: true,
   maker: (_, value) => {
@@ -76,8 +86,8 @@ export const setterList = [{
   type: "string",
   nullAllowed: true,
   fields: 'userEnteredValue.formulaValue',
-  maker: (_, value) => Sheets.newCellData().setUserEnteredValue({formulaValue:value})
-},{
+  maker: (_, value) => Sheets.newCellData().setUserEnteredValue({ formulaValue: value })
+}, {
   name: 'horizontalAlignment',
   type: "string",
   nullAllowed: true,
@@ -321,37 +331,39 @@ const typeOk = (value, nullAllowed, type, typeChecker) => {
 
 export const setterMaker = ({ self, fields, maker, single, plural, type, nullAllowed, apiSetter, typeChecker }) => {
 
-  if (self[single]) {
+  if (single && self[single]) {
     throw new Error(`range.${single} already exists`)
   }
-  if (self[plural]) {
+  if (plural && self[plural]) {
     throw new Error(`range.${single} already exists`)
   }
+  if (single) {
+    self[single] = (...args) => {
+      const { matchThrow, nargs } = signatureArgs(args, `Range.${single}`)
+      if (nargs !== 1) matchThrow()
+      const [value] = args
+      if (!typeOk(value, nullAllowed, type, typeChecker)) matchThrow()
+      const request = makeRepeatRequest(self, maker(apiSetter, value), fields)
 
-  self[single] = (...args) => {
-    const { matchThrow, nargs } = signatureArgs(args, `Range.${single}`)
-    if (nargs !== 1) matchThrow()
-    const [value] = args
-    if (!typeOk(value, nullAllowed, type, typeChecker)) matchThrow()
-    const request = makeRepeatRequest(self, maker(apiSetter, value), fields)
-
-    const spreadsheetId = self.__getSpreadsheetId()
-    const requests = [{ repeatCell: request }]
-    // console.log(JSON.stringify(requests))
-    batchUpdate({ spreadsheetId, requests })
-    return self
+      const spreadsheetId = self.__getSpreadsheetId()
+      const requests = [{ repeatCell: request }]
+      // console.log(JSON.stringify(requests))
+      batchUpdate({ spreadsheetId, requests })
+      return self
+    }
   }
-
-  self[plural] = (...args) => {
-    const { matchThrow, nargs } = signatureArgs(args, `Range.${single}`)
-    if (nargs !== 1) matchThrow()
-    const [values] = args
-    if (!arrMatchesRange(self, values, type, nullAllowed)) matchThrow()
-    if (typeChecker && !values.flat().every(value => typeOk(value, nullAllowed, type, typeChecker))) matchThrow()
-    const rows = values.map(row => {
-      return Sheets.newRowData().setValues(row.map(value => maker(apiSetter, value)))
-    })
-    return updateCells({ range: self, rows, fields, spreadsheetId: self.__getSpreadsheetId() })
+  if (plural) {
+    self[plural] = (...args) => {
+      const { matchThrow, nargs } = signatureArgs(args, `Range.${single}`)
+      if (nargs !== 1) matchThrow()
+      const [values] = args
+      if (!arrMatchesRange(self, values, type, nullAllowed)) matchThrow()
+      if (typeChecker && !values.flat().every(value => typeOk(value, nullAllowed, type, typeChecker))) matchThrow()
+      const rows = values.map(row => {
+        return Sheets.newRowData().setValues(row.map(value => maker(apiSetter, value)))
+      })
+      return updateCells({ range: self, rows, fields, spreadsheetId: self.__getSpreadsheetId() })
+    }
   }
 }
 

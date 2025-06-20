@@ -10,7 +10,7 @@ import '../main.js'
 
 import { initTests } from './testinit.js'
 import { getSheetsPerformance } from '../src/support/sheetscache.js';
-import {  maketss, trasher} from './testassist.js';
+import {  maketss, trasher, fillRangeFromDomain} from './testassist.js';
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testSheetsValues = (pack) => {
@@ -65,6 +65,18 @@ export const testSheetsValues = (pack) => {
     const rd3After = xRd3Range.getValues()
     t.deepEqual(rd3After, xRd3Values, prop)
     t.is (xRd3Range.getA1Notation(), rd3Range.offset(0,0,xRd3Values.length,xRd3Values[0].length).getA1Notation(),prop)
+
+    // trim whitespace
+    const trimRange = startAt.offset(20,4)
+    const trimValues = fillRangeFromDomain(trimRange, [
+      ' preceding space',
+      'following space ',
+      'two  middle  spaces',
+      '   =SUM(1,2)',
+    ])
+    trimRange.setValues(trimValues).trimWhitespace()
+    const xTrimValues = trimValues.map(row=>row.map(cell=>cell.trim().replace(/\s+/g, ' ')))
+    t.deepEqual (trimRange.getValues(), xTrimValues)
 
     // check clearing works
     const clearRange = sheet.getRange("a1:z100")
