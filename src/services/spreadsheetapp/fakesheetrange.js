@@ -22,6 +22,7 @@ import { notYetImplemented, signatureArgs } from '../../support/helpers.js'
 import { FakeSpreadsheet } from './fakespreadsheet.js'
 import { FakeDataValidation } from './fakedatavalidation.js'
 import { isEnum } from '../../../test/testassist.js'
+import { match } from 'node:assert'
 
 //TODO - deal with r1c1 style ranges
 
@@ -138,7 +139,7 @@ export class FakeSheetRange {
       'getDataSourcePivotTables',
 
       'merge',
-      'sort',
+
       'check',
       'getFilter',
       // these are not documented, so will skip for now
@@ -827,6 +828,45 @@ export class FakeSheetRange {
 
   }
 
+  sort(sortObj) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.sort")
+    if (nargs !== 1 || is.nullOrUndefined(sortObj)) matchThrow()
+    const sortObjs = (is.array(sortObj) ? sortObj : [sortObj]).map(f => {
+      let ob = {}
+      if (is.nonEmptyObject(f)) {
+        ob = { ...f }
+      } else if (is.integer(f)) {
+        ob.column = f
+      } else {
+        matchThrow()
+      }
+      if (!Reflect.has(ob, "ascending")) ob.ascending = true
+      if (!is.boolean(ob.ascending)) matchThrow()
+      if (!Reflect.has(ob, "column")) matchThrow()
+      if (!is.integer(ob.column)) matchThrow()
+      if (!is.inRange(ob.column, 1, this.getNumColumns())) matchThrow
+      if (Reflect.ownKeys(ob).sort().join(",") !== 'ascending,column')matchThrow()
+
+      return {
+        // note - absolute - not relative 
+        // and will only sort the range contents, not the entire row
+        dimensionIndex: ob.column - 1,
+        sortOrder: ob.ascending ? "ASCENDING" : "DESCENDING"
+      }
+    })
+
+    const request = Sheets.newSortRangeRequest()
+      .setRange(makeSheetsGridRange(this))
+      .setSortSpecs(sortObjs)
+
+    batchUpdate({
+      spreadsheetId: this.__getSpreadsheetId(),
+      requests: [{ sortRange: request }]
+    })
+
+    return this
+
+  }
   trimWhitespace() {
     const { nargs, matchThrow } = signatureArgs(arguments, "Range.splitTextToColumns")
     if (nargs > 0) matchThrow()
@@ -840,6 +880,7 @@ export class FakeSheetRange {
 
     return this
   }
+
   toString() {
     return 'Range'
   }

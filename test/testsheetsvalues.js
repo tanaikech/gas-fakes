@@ -10,7 +10,7 @@ import '../main.js'
 
 import { initTests } from './testinit.js'
 import { getSheetsPerformance } from '../src/support/sheetscache.js';
-import {  maketss, trasher, fillRangeFromDomain} from './testassist.js';
+import { maketss, trasher, fillRangeFromDomain, sort2d, getRandomBetween } from './testassist.js';
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testSheetsValues = (pack) => {
@@ -18,56 +18,119 @@ export const testSheetsValues = (pack) => {
   const { unit, fixes } = pack || initTests()
   const toTrash = []
 
-  unit.section("data manipulation", t=> {
-    const {sheet} = maketss ('datamanip',toTrash, fixes)
-    const startAt = sheet.getRange("a1:b4")
+  unit.section("sorting", t => {
+    const { sheet } = maketss('sorting', toTrash, fixes)
+    const startAt = sheet.getRange("a1:f12")
+
+    
+    const r1 = startAt.offset(0, 0)
+    const now = new Date().getTime()
+    const rd1Fill = fillRangeFromDomain(r1, [
+      now, "foo", Math.random(), Math.random(),getRandomBetween(89, -87), "bar", "bub ble", true, getRandomBetween(98, -99), false, getRandomBetween(75, -69),  "cheese","butter", 120, 8647, 77, "armpit", Math.PI
+    ])
+    r1.setValues(rd1Fill)
+    const rd1before = r1.getValues()
+    t.deepEqual(rd1before, rd1Fill)
+
+    let spec = [1,3]
+    r1.sort(spec)
+    const rd1After1 = r1.getValues()
+    const rd1Sort1 = sort2d(spec, rd1before)
+    t.deepEqual(rd1After1, rd1Sort1)
+
+    spec = [4, 1]
+    r1.sort(spec)
+    const rd1After2 = r1.getValues()
+    const rd1Sort2 = sort2d(spec, rd1before)
+    t.deepEqual(rd1After2, rd1Sort2)
+
+    spec = [2, { column: 3, ascending: true }]
+    r1.sort(spec)
+    const rd1After3 = r1.getValues()
+    const rd1Sort3 = sort2d(spec, rd1before)
+    t.deepEqual(rd1After3, rd1Sort3)
+
+
+    spec = [{ column: 5, ascending: false }, { column: 4 }, 1]
+    r1.sort(spec)
+    const rd1After4 = r1.getValues()
+    const rd1Sort4 = sort2d(spec, rd1before)
+    t.deepEqual(rd1After4, rd1Sort4)
+
+    const data = [[1,2,3,4,5],[6,7,8,9,10],[11,12,13,14,15]]
+    const range = startAt.offset(20,1, data.length, data[0].length)
+    const a = range.setValues (data).getValues()
+    t.deepEqual (a, data)
   
+    range.sort(4 + range.getColumn())
+    const b = range.getValues()
+    t.deepEqual (b, data)
+ 
+  
+    range.sort ([{column: 4+ range.getColumn(), ascending: false }, {column:3+range.getColumn()}, range.getColumn()])
+    const c = range.getValues()
+    t.deepEqual (c.reverse(), data)
+
+
+    const data2 = [[1,2,3,4,false],[6,7,8,9,10],[11,12,13,14,15]]
+    const d = range.setValues (data2).getValues()
+    t.deepEqual(d,data2)
+    range.sort ([{column: 4+ range.getColumn(), ascending: false }, {column:3+range.getColumn()}, range.getColumn()])
+    const e = range.getValues()
+    t.deepEqual (e, [[1,2,3,4,false],[11,12,13,14,15],[6,7,8,9,10]])
+
+  })
+
+  unit.section("assorted data manipulation", t => {
+    const { sheet } = maketss('datamanip', toTrash, fixes)
+    const startAt = sheet.getRange("a1:b4")
+
     // remove duplicates
     let prop = "removeDuplicates"
-    const rdRange = startAt.offset(0,0)
-    const rdValues = [['foo','bar'],['bar','foo'],['foo','foo'],['bar','foo']]
+    const rdRange = startAt.offset(0, 0)
+    const rdValues = [['foo', 'bar'], ['bar', 'foo'], ['foo', 'foo'], ['bar', 'foo']]
     // expect after
-    const xRdValues = rdValues.filter((row,i,a)=> !a.slice(0,i).find(f=>unit.deepEquals(f,row)))
+    const xRdValues = rdValues.filter((row, i, a) => !a.slice(0, i).find(f => unit.deepEquals(f, row)))
     rdRange.setValues(rdValues)
     const xRdRange = rdRange.removeDuplicates()
     const rdAfter = xRdRange.getValues()
     t.deepEqual(rdAfter, xRdValues, prop)
-    t.is (xRdRange.getA1Notation(), rdRange.offset(0,0,xRdValues.length,xRdValues[0].length).getA1Notation(),prop)
+    t.is(xRdRange.getA1Notation(), rdRange.offset(0, 0, xRdValues.length, xRdValues[0].length).getA1Notation(), prop)
 
     // now try if removing nothing
-    const rd1Range = startAt.offset(5,1,xRdValues.length,xRdValues[0].length)
+    const rd1Range = startAt.offset(5, 1, xRdValues.length, xRdValues[0].length)
     rd1Range.setValues(xRdValues)
     const xRd1Range = rd1Range.removeDuplicates()
     const rd1After = xRd1Range.getValues()
     t.deepEqual(rd1After, xRdValues, prop)
-    t.is(xRd1Range.getA1Notation(), rd1Range.getA1Notation(),prop)
+    t.is(xRd1Range.getA1Notation(), rd1Range.getA1Notation(), prop)
 
     // now lets have some comparison columns
-    const rd2Range = startAt.offset(10,2)
+    const rd2Range = startAt.offset(10, 2)
     // should give same results as without any comparison columns
-    const comparisonColumns = rdValues[0].map((_,i)=>i+rd2Range.getColumn())
+    const comparisonColumns = rdValues[0].map((_, i) => i + rd2Range.getColumn())
     rd2Range.setValues(rdValues)
 
     const xRd2Range = rd2Range.removeDuplicates(comparisonColumns)
     const rd2After = xRd2Range.getValues()
     t.deepEqual(rd2After, xRdValues, prop)
-    t.is (xRd2Range.getA1Notation(), rd2Range.offset(0,0,xRdValues.length,xRdValues[0].length).getA1Notation(),prop)
+    t.is(xRd2Range.getA1Notation(), rd2Range.offset(0, 0, xRdValues.length, xRdValues[0].length).getA1Notation(), prop)
 
 
     // now a real comparison column
-    const rd3Range = startAt.offset(15,3)
+    const rd3Range = startAt.offset(15, 3)
     // dedup on relative column 2
     const c3 = 2
-    const comparisonColumns3 = [c3+rd3Range.getColumn()-1]
-    const xRd3Values = rdValues.filter((row,i,a)=> !a.slice(0,i).find(f=>unit.deepEquals(row[c3-1], f[c3-1])))
+    const comparisonColumns3 = [c3 + rd3Range.getColumn() - 1]
+    const xRd3Values = rdValues.filter((row, i, a) => !a.slice(0, i).find(f => unit.deepEquals(row[c3 - 1], f[c3 - 1])))
     rd3Range.setValues(rdValues)
     const xRd3Range = rd3Range.removeDuplicates(comparisonColumns3)
     const rd3After = xRd3Range.getValues()
     t.deepEqual(rd3After, xRd3Values, prop)
-    t.is (xRd3Range.getA1Notation(), rd3Range.offset(0,0,xRd3Values.length,xRd3Values[0].length).getA1Notation(),prop)
+    t.is(xRd3Range.getA1Notation(), rd3Range.offset(0, 0, xRd3Values.length, xRd3Values[0].length).getA1Notation(), prop)
 
     // trim whitespace
-    const trimRange = startAt.offset(20,4)
+    const trimRange = startAt.offset(20, 4)
     const trimValues = fillRangeFromDomain(trimRange, [
       ' preceding space',
       'following space ',
@@ -75,13 +138,13 @@ export const testSheetsValues = (pack) => {
       '   =SUM(1,2)',
     ])
     trimRange.setValues(trimValues).trimWhitespace()
-    const xTrimValues = trimValues.map(row=>row.map(cell=>cell.trim().replace(/\s+/g, ' ')))
-    t.deepEqual (trimRange.getValues(), xTrimValues)
+    const xTrimValues = trimValues.map(row => row.map(cell => cell.trim().replace(/\s+/g, ' ')))
+    t.deepEqual(trimRange.getValues(), xTrimValues)
 
     // check clearing works
     const clearRange = sheet.getRange("a1:z100")
     clearRange.clearContent()
-    t.true(clearRange.getValues().flat().every(f=>f===''))
+    t.true(clearRange.getValues().flat().every(f => f === ''))
 
 
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
@@ -92,13 +155,13 @@ export const testSheetsValues = (pack) => {
     // whereas advanced sheets/node api does not
     // - see https://github.com/brucemcpherson/gas-fakes/issues/15
 
-    const {sheet: fooSheet} = maketss ('foosheet',toTrash, fixes)
+    const { sheet: fooSheet } = maketss('foosheet', toTrash, fixes)
     const fooValues = Array.from({ length: 10 }, (_, i) => Array.from({ length: 6 }, (_, j) => i + j))
     const fooRange = fooSheet.getRange(1, 1, fooValues.length, fooValues[0].length).getA1Notation()
     const cs = fooSheet.getParent()
 
     t.true(fooSheet.getRange(fooRange).isBlank())
-    t.true(fooSheet.getRange(fooRange).offset(1,1,1,1).isBlank())
+    t.true(fooSheet.getRange(fooRange).offset(1, 1, 1, 1).isBlank())
 
     /**
      * Note:
@@ -125,9 +188,9 @@ export const testSheetsValues = (pack) => {
     const barSheet = cs.insertSheet('barsheet')
     const barRange = barSheet.getRange(1, 1, fooValues.length, fooValues[0].length)
     barRange.setValues(fooValues)
-    t.false (barRange.isBlank())
-    t.false (barRange.offset(1,1,1,1).isBlank())
-    t.false (barRange.offset(1,0).isBlank())
+    t.false(barRange.isBlank())
+    t.false(barRange.offset(1, 1, 1, 1).isBlank())
+    t.false(barRange.offset(1, 0).isBlank())
 
     const barValues = barRange.getValues()
     t.deepEqual(barSheet.getDataRange().getValues(), fooValues)
