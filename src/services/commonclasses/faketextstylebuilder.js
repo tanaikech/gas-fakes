@@ -1,11 +1,9 @@
 import { Proxies } from '../../support/proxies.js'
-import { notYetImplemented, signatureArgs } from '../../support/helpers.js'
 import { Utils } from '../../support/utils.js'
 import { newFakeTextStyle } from './faketextstyle.js'
 import { newFakeColorBuilder } from './fakecolorbuilder.js'
-
+import { signatureArgs } from '../../support/helpers.js'
 const { is, validateHex, robToHex, unCapital, BLACK } = Utils
-
 
 
 /**
@@ -27,7 +25,7 @@ export const makeTextStyleFromApi = (apiResult) => {
   const {
     foregroundColor = null,
     foregroundColorStyle = null,
-    fontfamily = null,
+    fontFamily = null,
     fontSize = null,
     bold = null,
     italic = null,
@@ -38,9 +36,9 @@ export const makeTextStyleFromApi = (apiResult) => {
   } = apiResult || {}
 
   const builder = newFakeTextStyleBuilder()
-  
+
   // it seems that the default for everything is null if not specified
-  builder.setFontFamily(fontfamily)
+  builder.setFontFamily(fontFamily)
   builder.setFontSize(fontSize)
 
   builder.setBold(bold)
@@ -53,17 +51,22 @@ export const makeTextStyleFromApi = (apiResult) => {
   // the builder should sort out any conflicts between the hex value and the color object provided
 
   // if we have a foreground color 
-  const rgbPresent = is.nonEmptyObject(foregroundColor) && is.nonEmptyString(foregroundColor.rgbColor)
+  const rgbPresent = is.nonEmptyObject(foregroundColor)
   if (rgbPresent) {
-    builder.setForegroundColor(robToHex(foregroundColor.rgbColor))
+    builder.setForegroundColor(robToHex(foregroundColor))
   }
 
   // if we have a color style 
-  if (is.nonEmptyObject(foregroundColorStyle)){
+  if (is.nonEmptyObject(foregroundColorStyle)) {
     if (foregroundColorStyle.themeColor) {
-      builder.setForegroundColorObject = newFakeColorBuilder().setThemeColor(foregroundColorStyle.themeColor).build()
+      const tc = SpreadsheetApp.ThemeColorType[foregroundColorStyle.themeColor]
+      if (!tc) {
+        throw new Error(`got a bad theme color type ${foregroundColorStyle.themeColor}`)
+      }
+      builder.setForegroundColorObject(newFakeColorBuilder().setThemeColor(tc).build())
     } else if (foregroundColorStyle.rgbColor) {
-      builder.setForegroundColorObject = newFakeColorBuilder().setRgbColor(robToHex(foregroundColorStyle.rgbColor)).build()
+      builder.setForegroundColorObject(
+        newFakeColorBuilder().setRgbColor(robToHex(foregroundColorStyle.rgbColor)).build())
     } else {
       throw new Error("text colorstyle missing both rgbColor and themeColor")
     }
@@ -132,7 +135,7 @@ class FakeTextStyleBuilder {
       } else if (this.__foregroundColorObject.getColorType().toString() === 'RGB') {
         this.__foregroundColor = this.__foregroundColorObject.asRgbColor().asHexString()
       } else {
-        throw new Error (`unexpected color type ${this.__foregroundColorObject.getColorType().toString()}`)
+        throw new Error(`unexpected color type ${this.__foregroundColorObject.getColorType().toString()}`)
       }
     }
 
@@ -141,10 +144,10 @@ class FakeTextStyleBuilder {
       this.__foregroundColorObject = newFakeColorBuilder().setRgbColor(this.__foregroundColor).build()
     }
 
-    if (is.nonEmptyObject(this.__foregroundColorObject) && is.nonEmptyString(this.__foregroundColor))  {
+    if (is.nonEmptyObject(this.__foregroundColorObject) && is.nonEmptyString(this.__foregroundColor)) {
       // both are defined - so foreground color is already set to hex string 
-      // TODO - which takes precedence? - do I need to redefine foreground color based on the color object?
-      // otherwise, nothing to do
+      // TODO - which takes precedence? - assume I need to redefine foreground color based on the color object?
+      defRgbFromCob()
 
     } else if (is.nonEmptyObject(this.__foregroundColorObject)) {
       // only the object is defined, so derive the rgb color from it if it's rgb color type
@@ -262,9 +265,8 @@ class FakeTextStyleBuilder {
     return this
   }
 
-  // this one isnt documented, so I wont implement yet - not sure what it's supposed to do
-  copy() {
-    return notYetImplemented('TextStyleBuilder.copy')
+  __newBuilder() {
+    return newFakeTextStyleBuilder()
   }
 
   toString() {

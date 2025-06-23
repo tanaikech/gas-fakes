@@ -11,7 +11,6 @@ import '../main.js'
 import { initTests } from './testinit.js'
 import { getSheetsPerformance } from '../src/support/sheetscache.js';
 import { eString, maketss, trasher, rgbToHex, getRandomRgb, getRandomHex, getStuff, BLACK, fillRange, fillRangeFromDomain, isEnum } from './testassist.js';
-import { firebaseml_v1beta2 } from 'googleapis';
 
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
@@ -19,14 +18,135 @@ export const testSheets = (pack) => {
 
   const { unit, fixes } = pack || initTests()
   const toTrash = []
+  // this a reusable function to do a bunch of tests and check the results on range.setXXX
 
 
+  unit.section("exotic styles", t => {
+    const { sheet } = maketss('exoticcellformats', toTrash, fixes)
+    const startAt = sheet.getRange("b2:e5")
+
+    const w1 = SpreadsheetApp.WrapStrategy.OVERFLOW
+    const rw1 = startAt.offset(10, 5)
+    rw1.clearFormat()
+    rw1.setWrapStrategy(w1)
+    const wa1 = rw1.getWrapStrategy()
+    t.is(wa1.compareTo(w1), 0)
+    const wa2 = rw1.getWrapStrategies()
+    wa2.flat().forEach(f => t.is(f.toString(), w1.toString()))
+
+    const rw2 = startAt.offset(11, 6)
+    const w2 = fillRangeFromDomain(rw2, [
+      SpreadsheetApp.WrapStrategy.WRAP,
+      SpreadsheetApp.WrapStrategy.OVERFLOW,
+      SpreadsheetApp.WrapStrategy.CLIP
+    ])
+
+    rw2.clearFormat()
+    rw2.setWrapStrategies(w2)
+    const rw2s = rw2.getWrapStrategies()
+    t.deepEqual(rw2s.flat().map(f => f.toString()), w2.flat().map(f => f.toString()))
+
+
+    const rw3 = startAt.offset(12, 7)
+    rw3.clearFormat()
+    rw3.setWrapStrategy(w1)
+    const w3a = rw3.getWrap()
+    t.is(w3a, false)
+    const w3b = rw3.getWrapStrategy ()
+    t.is(w3b.toString(), w1.toString())
+    const rw3sb = rw3.getWrap()
+    t.is(rw3sb, false)
+
+  
+    const rw4 = startAt.offset(14, 8)
+    rw4.clearFormat()
+    const w4a = rw4.getWrap()
+    t.is(w4a, true)
+    const w4 = fillRange (rw4, SpreadsheetApp.WrapStrategy.CLIP)
+    rw4.setWrapStrategies(w4)
+    const rw4sa = rw4.getWrapStrategies()
+    t.deepEqual(rw4sa.flat().map(f => f.toString()), w4.flat().map(f => f.toString()))
+    const rw4sb = rw4.getWraps()
+    t.true(rw4sb.flat().every(f => f === false))
+
+    const rw5 = startAt.offset(16, 9)
+    rw5.clearFormat()
+    const w5a = rw5.getWrap()
+    t.is(w5a, true)
+    const w5 = fillRange (rw4, SpreadsheetApp.WrapStrategy.WRAP)
+    rw5.setWrapStrategies(w5)
+    const rw5sa = rw5.getWrapStrategies()
+    t.deepEqual(rw5sa.flat().map(f => f.toString()), w5.flat().map(f => f.toString()))
+    const rw5sb = rw5.getWraps()
+    t.true(rw5sb.flat().every(f => f === true))
+
+    const rw6 = startAt.offset(18, 11)
+    rw6.clearFormat()
+    const w6 = fillRangeFromDomain (rw6, [true, false])
+    rw6.setWraps(w6)
+    const rw6sa = rw6.getWraps()
+    t.deepEqual(rw6sa,w6)
+    const rw6sb = rw6.getWrapStrategies()
+    t.deepEqual(rw6sb.flat().map(f => f.toString()), w6.flat().map(f=>f ? "WRAP": "OVERFLOW"))
+    t.is(rw6.getWrap(), rw6sa[0][0])
+    rw6.setWrap(true)
+    t.is(rw6.getWrap(), true)
+    t.is(rw6.getWrapStrategy().toString(), "WRAP")
+
+    // set styles
+    const tob = SpreadsheetApp.ThemeColorType.ACCENT1
+    const cob = SpreadsheetApp.newColor().setThemeColor(tob)
+    const t1 = SpreadsheetApp.newTextStyle()
+      .setFontSize(20)
+      .setForegroundColorObject(cob.build())
+      .build()
+    const r1 = startAt.offset(0, 0)
+    r1.clearFormat()
+    r1.setTextStyle(t1)
+    const a1 = r1.getTextStyle()
+    t.is(a1.getFontSize(), 20)
+    t.is(a1.getForegroundColorObject().asThemeColor().getThemeColorType().compareTo(tob), 0)
+
+    const t2 = SpreadsheetApp.newTextStyle()
+      .setFontSize(12)
+      .setFontFamily("helvetica,times new roman,arial")
+      .build()
+    const r2 = startAt.offset(1, 0)
+    r2.clearFormat()
+    r2.setTextStyle(t2)
+    const a2 = r2.getTextStyles()
+    a2.flat().forEach(f => {
+      t.is(f.getFontSize(), 12)
+      t.is(f.getFontFamily(), "helvetica,times new roman,arial")
+    })
+
+    const t3a = SpreadsheetApp.newTextStyle()
+      .setFontSize(32)
+      .setFontFamily("helvetica")
+      .setBold(true)
+      .setUnderline(false)
+      .setForegroundColor('#00ff00')
+      .build()
+
+    // check that copy works
+    const t3 = t3a.copy().build()
+    const r3 = startAt.offset(2, 1)
+    r3.clearFormat()
+    r3.setTextStyle(t3)
+    const a3 = r3.getTextStyles()
+    a3.flat().forEach(f => {
+      t.is(f.getFontSize(), 32)
+      t.is(f.getFontFamily(), "helvetica")
+      t.is(f.isBold(), true)
+      t.is(f.isUnderline(), false)
+      t.is(f.getForegroundColor(), '#00ff00')
+    })
+
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+  })
 
   unit.section("setting and repeating cell formats", t => {
-
-    const { sheet } = maketss('cellsformats', toTrash, fixes)
-
-    // this a reusable function to do a bunch of tests and check the results on range.setXXX
     const tester = (range, prop, props, domain, nullIs, patcher) => {
 
       /// console.log(prop, props)
@@ -83,8 +203,8 @@ export const testSheets = (pack) => {
         t.is(gs.compareTo(cobs[0][0]), 0, props)
       }
     }
+    const { sheet } = maketss('cellsformats', toTrash, fixes)
     const startAt = sheet.getRange("b2:e5")
-
 
     tester(startAt.offset(0, 0), 'FontWeight', 'FontWeights', ['bold', 'normal', null], "normal")
     tester(startAt.offset(5, 1), 'FontStyle', 'FontStyles', ['italic', 'normal', null], "normal")
@@ -179,6 +299,27 @@ export const testSheets = (pack) => {
     t.deepEqual(cobs4, fillRange(fr4, rd3[0][0]))
     const cob4 = fr4.getFontColorObject().asRgbColor().asHexString()
     t.is(cob4, rc3[0][0].asRgbColor().asHexString())
+
+    const fr5 = startAgain.offset(20, 4)
+    const rd5 = fillRange(fr5, getRandomHex)
+    fr5.setBackground(rd5[0][0])
+    const cobs5 = fr5.getBackgrounds()
+    t.deepEqual(cobs5, fillRange(fr5, rd5[0][0]))
+    const cob5 = fr5.getBackground()
+    t.is(cob5, rd5[0][0])
+    fr5.setBackgrounds(rd5)
+    t.deepEqual(fr5.getBackgrounds(), rd5)
+
+    // these are undocumented
+    const fr6 = startAgain.offset(25, 4)
+    fr6.setBackground(rd5[0][0])
+    const cobs6 = fr6.getBackgrounds()
+    t.deepEqual(cobs6, fillRange(fr6, rd5[0][0]))
+    const cob6 = fr6.getBackground()
+    t.is(cob5, rd5[0][0])
+    fr6.setBackgroundColors(rd5)
+    t.deepEqual(fr6.getBackgroundColors(), rd5)
+
 
     // check clearing works
     const clearRange = sheet.getRange("a1:z100")
@@ -613,7 +754,7 @@ export const testSheets = (pack) => {
 
     const clearRange = sheet.getRange("a1:z100")
     clearRange.clear()
-    t.true(clearRange.getValues().flat().every(f=>f===''))
+    t.true(clearRange.getValues().flat().every(f => f === ''))
 
 
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())

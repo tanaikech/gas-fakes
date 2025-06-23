@@ -2,7 +2,7 @@ import { Proxies } from '../../support/proxies.js'
 import { FakeSheet } from './fakesheet.js'
 import { SheetUtils } from '../../support/sheetutils.js'
 import { Utils } from '../../support/utils.js'
-import { setterList, attrGetList, valuesGetList, setterMaker, attrGens, valueGens, makeCellTextFormatData } from './sheetrangelists.js'
+import { setterList, attrGetList, valuesGetList, setterMaker, attrGens, valueGens, makeCellTextFormatData } from './sheetrangemakers.js'
 import {
   getGridRange,
   updateCells,
@@ -22,7 +22,6 @@ import { notYetImplemented, signatureArgs } from '../../support/helpers.js'
 import { FakeSpreadsheet } from './fakespreadsheet.js'
 import { FakeDataValidation } from './fakedatavalidation.js'
 import { isEnum } from '../../../test/testassist.js'
-import { match } from 'node:assert'
 
 //TODO - deal with r1c1 style ranges
 
@@ -77,17 +76,16 @@ export class FakeSheetRange {
 
       'setFormulaR1C1',
       'setFormulasR1C1',
-      'setBackgroundColors',
+
       'mergeAcross',
       'mergeVertically',
       'isPartOfMerge',
       'activateAsCurrentCell',
-      'setWrap',
-      'setWraps',
+
       'copyValuesToRange',
       'copyFormatToRange',
       'setComments',
-      'randomize',
+
       'isStartColumnBounded',
       'isStartRowBounded',
       'isEndColumnBounded',
@@ -96,8 +94,6 @@ export class FakeSheetRange {
       'autoFillToNeighbor',
       'setShowHyperlink',
 
-      'setWrapStrategies',
-      'setWrapStrategy',
       'applyColumnBanding',
       'applyRowBanding',
 
@@ -111,12 +107,12 @@ export class FakeSheetRange {
       'getRichTextValues',
       'setRichTextValue',
       'setRichTextValues',
-      'setTextStyles',
+
       'uncheck',
       'insertCheckboxes',
 
       'copyTo',
-      'setTextStyle',
+
       'getComments',
       'clearComment',
       'getBandings',
@@ -130,7 +126,6 @@ export class FakeSheetRange {
       'createFilter',
       'getDataSourceFormulas',
       'getDataSourceTables',
-      'setBackgroundColor',
 
       'getDataSourceUrl',
       'getDataTable',
@@ -252,6 +247,41 @@ export class FakeSheetRange {
   clearDataValidations() {
     this.setDataValidations(null)
     return this
+  }
+
+  /**
+   * copyValuesToRange(gridId, column, columnEnd, row, rowEnd)  https://developers.google.com/apps-script/reference/spreadsheet/range#copyvaluestorangegridid,-column,-columnend,-row,-rowend
+   * Copy the content of the range to the given location. If the destination is larger or smaller than the source range then the source is repeated or truncated accordingly.
+   * @param {integer|Sheet} gridIdOrSheet	Integer	The unique ID of the sheet within the spreadsheet, irrespective of position or the sheet it is on
+   * @param {integer} column 	The first column of the target range.
+   * @param {integer} columnEnd	The end column of the target range.
+   * @param {integer} row The start row of the target range.
+   * @param {integer} rowEnd The end row of the target range.
+   * @return {FakeSheetRange} self
+   */
+  copyValuesToRange(gridIdOrSheet, column, columnEnd, row, rowEnd) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.copyValuesToRange")
+    if (nargs !== 5) matchThrow()
+    const args = Array.from(arguments)
+    if (!args.slice(1).every(f => is.integer(f) && is.positiveNumber(f))) matchThrow()
+    if (!is.integer(gridIdOrSheet) && !(is.object(gridIdOrSheet) && gridIdOrSheet.toString() === "Sheet" )) matchThrow()
+    
+    const sortOutGridForCopy = (args) => {
+      const gridId = is.object(args[0]) ? args[0].getGridId() : args[0]
+      const gridRange = {
+        sheetId: gridId,
+        startColumnIndex: args[1] - 1,
+        endColumnIndex: args[2],
+        startRowIndex: args[3] - 1,
+        endRowIndex: args[4]
+      }
+      return gridRange
+    }
+    // stopped workon on this one pendingclarification on how its supposed to behave
+    // see this issue 
+    const targetGrid = sortOutGridForCopy(args)
+    const sourceGrid = makeGridRange()
+    return notYetImplemented ("range.copyValuesToRange")
   }
   /**
    * protect() https://developers.google.com/apps-script/reference/spreadsheet/sheet#protect
@@ -438,6 +468,22 @@ export class FakeSheetRange {
   }
 
   /**
+   * randomize() https://developers.google.com/apps-script/reference/spreadsheet/range#randomize
+   * Randomizes the order of the rows in the given range.
+   */
+  randomize() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.randomize")
+    if (nargs) matchThrow()
+    const request = Sheets.newRandomizeRangeRequest()
+      .setRange(makeSheetsGridRange(this))
+    batchUpdate({
+      spreadsheetId: this.__getSpreadsheetId(),
+      requests: [{ randomizeRange: request }]
+    })
+
+    return this
+  }
+  /**
    * removeDuplicates()
    * https://developers.google.com/apps-script/reference/spreadsheet/range#removeduplicates
    * Removes rows within this range that contain values that are duplicates of values in any previous row.
@@ -493,6 +539,14 @@ export class FakeSheetRange {
    */
   setBackground(color) {
     return this.setBackgrounds(fillRange(this, color))
+  }
+
+  // these are undocumented, but appear to be aequivalent to setBackground
+  setBackgroundColor(color) {
+    return this.setBackground(color)
+  }
+  setBackgroundColors(colors) {
+    return this.setBackgrounds(colors)
   }
 
   /**
@@ -845,7 +899,7 @@ export class FakeSheetRange {
       if (!Reflect.has(ob, "column")) matchThrow()
       if (!is.integer(ob.column)) matchThrow()
       if (!is.inRange(ob.column, 1, this.getNumColumns())) matchThrow
-      if (Reflect.ownKeys(ob).sort().join(",") !== 'ascending,column')matchThrow()
+      if (Reflect.ownKeys(ob).sort().join(",") !== 'ascending,column') matchThrow()
 
       return {
         // note - absolute - not relative 

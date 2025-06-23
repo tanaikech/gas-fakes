@@ -19,15 +19,25 @@ class FakeWrapStrategy {
       "CLIP": "CLIP",
       "WRAP": "WRAP"
     }
-    const s = gasWrap[apiResult]
-    if (!s) {
+    this.__strategy = gasWrap[apiResult]
+    if (!this.__strategy) {
       throw new Error (`${apiResult} is not a valid wrap strategy`)
     }
-    return WrapStrategy[s]
   }
+  toString() {
+    return this.__strategy
+  }
+
+
 }
 
-// TODO - check validity of this
+// CLIP & OVERFLOW are not wrapped WRAP is
 export const isWrapped = (strategy) => {
-  return strategy.toString() !== "CLIP"
+  return strategy.toString() === "WRAP" 
+}
+
+export const getWrapApiStrategyProp = (value) => {
+  const m = new Map ([["OVERFLOW","OVERFLOW_CELL"],["WRAP","WRAP"],["CLIP","CLIP"]])
+  if (!m.has(value)) throw new Error (`${value} is not a valid wrap strategy`)
+  return m.get(value)
 }

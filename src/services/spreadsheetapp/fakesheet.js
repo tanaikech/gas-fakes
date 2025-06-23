@@ -34,7 +34,7 @@ export class FakeSheet {
     this.__parent = parent
     this.__sheetId = sheetId
 
-    const props = ['toString',
+    const props = [
       'activate',
       'autoResizeColumns',
       'autoResizeRows',
@@ -156,6 +156,10 @@ export class FakeSheet {
         return notYetImplemented(f)
       }
     })
+  }
+  
+  toString () {
+    return 'Sheet'
   }
 
   get __sheet() {

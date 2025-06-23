@@ -35,7 +35,7 @@ export const isRange = (a) => is.object(a) && !is.null(a) && is.function(a.toStr
 export const isColor = (a) => is.object(a) && !is.null(a) && is.function(a.toString) && a.toString() === "Color"
 export const isTextRotation = (a) => is.object(a) && !is.null(a) && is.function(a.getAngle) 
 export const isACheckbox = (cell) => is.nonEmptyObject(cell) && cell.getCriteriaType().toString()==="CHECKBOX"
-
+export const isTextStyle = (a) => is.object(a) && !is.null(a) && is.function(a.toString) && a.toString() === "TextStyle"
 export const isThemeColor = (color) =>{
   if (!isColor(color)) {
     throw new Error `expected a color but got ${is(color)}`

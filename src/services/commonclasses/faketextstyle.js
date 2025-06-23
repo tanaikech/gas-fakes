@@ -1,9 +1,5 @@
 import { Proxies } from '../../support/proxies.js'
 
-
-
-
-
 /**
  * create a new FakeBorder instance
  * @param  {...any} args 
@@ -16,36 +12,53 @@ export const newFakeTextStyle = (...args) => {
 class FakeTextStyle {
 
   /**
-   * @param {TextFormat} apiResult
+   * @param {FakeTextStyleBuilder} the builder
    * @returns {FakeTextStyle} a fake text style
    */
 
   constructor(builder) {
     this.__builder = builder
   }
-  isBold () {
+  isBold() {
     return this.__builder.__bold
   }
-  isItalic () {
-    return this.__builder.__italic  
-  } 
-  isUnderline () {
+  isItalic() {
+    return this.__builder.__italic
+  }
+  isUnderline() {
     return this.__builder.__underline
   }
-  isStrikethrough () {
+  isStrikethrough() {
     return this.__builder.__strikethrough
   }
-  getFontSize () {
+  getFontSize() {
     return this.__builder.__fontSize
   }
-  getFontFamily () {
+  getFontFamily() {
     return this.__builder.__fontFamily
   }
-  getForegroundColor () {
+  getForegroundColor() {
     return this.__builder.__foregroundColor
   }
-  getForegroundColorObject () {
+  getForegroundColorObject() {
     return this.__builder.__foregroundColorObject
+  }
+  // make a new version of this builder with the same settings
+  copy() {
+
+    const newBuilder = this.__builder.__newBuilder()
+    newBuilder.setItalic(this.isItalic())
+    newBuilder.setBold(this.isBold())
+    newBuilder.setUnderline(this.isUnderline()) 
+    newBuilder.setStrikethrough(this.isStrikethrough()) 
+    newBuilder.setFontSize(this.getFontSize())  
+    newBuilder.setFontFamily(this.getFontFamily())  
+    newBuilder.setForegroundColor(this.getForegroundColor())    
+    newBuilder.setForegroundColorObject(this.getForegroundColorObject())  
+    // TODO - what about link?   
+ 
+    return newBuilder
+
   }
   toString() {
     return 'TextStyle'

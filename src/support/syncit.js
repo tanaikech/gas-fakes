@@ -5,7 +5,9 @@
  * move all caching logic to here so we can forget anbout it higher up
  */
 
-import makeSynchronous from 'make-synchronous';
+// this one is locally patched for now
+// import makeSynchronous from 'make-synchronous';
+import makeSynchronous from './patchedmakesynchronous.js'
 import path from 'path'
 import { Auth } from "./auth.js"
 import { randomUUID } from 'node:crypto'

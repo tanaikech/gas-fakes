@@ -1,6 +1,7 @@
 import { Utils } from '../../support/utils.js'
 import {
   arrMatchesRange,
+  isTextStyle,
   isColor,
   isThemeColor,
   updateCells,
@@ -17,7 +18,7 @@ import { makeTextStyleFromApi } from '../commonclasses/faketextstylebuilder.js'
 import { newFakeTextDirection } from '../commonclasses/faketextdirection.js'
 import { makeDataValidationFromApi } from "./fakedatavalidationbuilder.js"
 import { TextDirection } from '../enums/sheetsenums.js'
-
+import { getWrapApiStrategyProp } from '../commonclasses/fakewrapstrategy.js'
 
 const { getPlucker, is, robToHex, WHITER, BLACKER, hexToRgb, getEnumKeys } = Utils
 
@@ -31,6 +32,35 @@ const extractPattern = (response) => {
 
 // this is a list of all range format setters and how to generate them
 export const setterList = [{
+  name: "wrap",
+  type: "boolean",
+  nullAllowed: true,
+  maker: (_, value) => {
+    const p = is.boolean(value)
+    ? getWrapApiStrategyProp (value ? "WRAP" : "OVERFLOW") 
+    : null
+    return makeCellData('setWrapStrategy', p)
+  },
+  fields: 'userEnteredFormat.wrapStrategy',
+}, {
+  plural: "setWrapStrategies",
+  name: 'wrapStrategy',
+  nullAllowed: true,
+  type: "object",
+  maker: (_, value) => {
+    const p = getWrapApiStrategyProp(value.toString())
+    return makeCellData('setWrapStrategy', p)
+  },
+  fields: 'userEnteredFormat.wrapStrategy'
+}, {
+  name: 'textStyle',
+  nullAllowed: true,
+  maker: (_, value) => makeTextStyle(value),
+  fields: 'userEnteredFormat.textFormat',
+  typeChecker: (value) => {
+    return isTextStyle(value)
+  },
+}, {
   name: 'verticalText',
   nullAllowed: true,
   type: "boolean",
@@ -214,13 +244,21 @@ export const attrGetList = [{
   name: 'getWrapStrategy',
   props: '.userEnteredFormat.wrapStrategy',
   defaultValue: 'OVERFLOW_CELL',
-  cleaner: newFakeWrapStrategy,
+  cleaner: (value) => {
+    const w = SpreadsheetApp.WrapStrategy[newFakeWrapStrategy(value)]
+    if (!w) {
+      throw new Error(`value is not a recognized wrap strategy ${value}`)
+    }
+    return w
+  },
   plural: 'getWrapStrategies'
 }, {
   name: 'getWrap',
   props: '.userEnteredFormat.wrapStrategy',
-  defaultValue: 'OVERFLOW_CELL',
-  cleaner: f => isWrapped(newFakeWrapStrategy(f))
+  defaultValue: 'WRAP',
+  cleaner: f => {
+    return isWrapped(newFakeWrapStrategy(f).toString())
+  }
 }, {
   name: 'getTextRotation',
   props: '.userEnteredFormat.textRotation',
@@ -347,7 +385,7 @@ export const setterMaker = ({ self, fields, maker, single, plural, type, nullAll
 
       const spreadsheetId = self.__getSpreadsheetId()
       const requests = [{ repeatCell: request }]
-      // console.log(JSON.stringify(requests))
+
       batchUpdate({ spreadsheetId, requests })
       return self
     }
@@ -362,6 +400,7 @@ export const setterMaker = ({ self, fields, maker, single, plural, type, nullAll
       const rows = values.map(row => {
         return Sheets.newRowData().setValues(row.map(value => maker(apiSetter, value)))
       })
+
       return updateCells({ range: self, rows, fields, spreadsheetId: self.__getSpreadsheetId() })
     }
   }
@@ -395,7 +434,8 @@ export const attrGens = (self, target) => {
     const plucker = getPlucker(props, defaultValue)
 
     // clean what we did get
-    const cleaned = rowData.map(row => row.values.map(col => cleaner(plucker(col), range)))
+    // sometimes the values property is empty so we'll make it look like a jagged response
+    const cleaned = rowData.map(row => row.values ? row.values.map(col => cleaner(plucker(col), range)) : [])
 
     // if it's not jagged, we dont need to fill any missing values
     if (!isJagged({ cleaned, range })) return cleaned
@@ -548,7 +588,39 @@ const makeCellData = (method, value) => {
   return cellData
 }
 
-const makeColorStyle = (color) => {
+const makeTextStyle = (textStyle) => {
+  const t = Sheets.newTextFormat()
+  if (!is.null(textStyle)) {
+
+    t.setBold(textStyle.isBold())
+    t.setItalic(textStyle.isItalic())
+    t.setFontFamily(textStyle.getFontFamily())
+    t.setFontSize(textStyle.getFontSize())
+    t.setStrikethrough(textStyle.isStrikethrough())
+    t.setUnderline(textStyle.isUnderline())
+    const cr = textStyle.getForegroundColor()
+    if (cr) {
+      t.setForegroundColor(hexToRgb(cr))
+    }
+
+    // TODO - how does link work in apps script - seems to be no set textStyle for that ?
+
+    const cob = textStyle.getForegroundColorObject()
+    if (!is.null(cob)) {
+      t.setForegroundColorStyle(detectColorStyle(cob))
+    } else {
+      // deprecated but support anyway
+      if (!is.null(cr)) {
+        t.setForegroundColorStyle({ rgbColor: t.getForegroundColor() })
+      }
+    }
+
+  }
+  return makeCellData('setTextFormat', t)
+}
+
+const detectColorStyle = (color) => {
+
   const colorStyle = Sheets.newColorStyle()
   const isTheme = isThemeColor(color)
 
@@ -562,7 +634,14 @@ const makeColorStyle = (color) => {
     colorStyle.setRgbColor(hexToRgb(r.asHexString()))
 
   }
-  const textFormat = Sheets.newTextFormat().setForegroundColorStyle(colorStyle)
+  return colorStyle
+}
+
+const makeColorStyle = (color) => {
+  const colorStyle = detectColorStyle(color)
+
+  const textFormat = Sheets.newTextFormat()
+  textFormat.setForegroundColorStyle(colorStyle)
   return makeCellData('setTextFormat', textFormat)
 
 }

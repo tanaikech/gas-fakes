@@ -18,7 +18,7 @@ export const testSheetsValues = (pack) => {
   const { unit, fixes } = pack || initTests()
   const toTrash = []
 
-  unit.section("sorting", t => {
+  unit.section("sorting and randomizing", t => {
     const { sheet } = maketss('sorting', toTrash, fixes)
     const startAt = sheet.getRange("a1:f12")
 
@@ -26,6 +26,7 @@ export const testSheetsValues = (pack) => {
     const r1 = startAt.offset(0, 0)
     const now = new Date().getTime()
     const rd1Fill = fillRangeFromDomain(r1, [
+      "bucket","banana","buckle","red eye",
       now, "foo", Math.random(), Math.random(),getRandomBetween(89, -87), "bar", "bub ble", true, getRandomBetween(98, -99), false, getRandomBetween(75, -69),  "cheese","butter", 120, 8647, 77, "armpit", Math.PI
     ])
     r1.setValues(rd1Fill)
@@ -57,6 +58,17 @@ export const testSheetsValues = (pack) => {
     const rd1Sort4 = sort2d(spec, rd1before)
     t.deepEqual(rd1After4, rd1Sort4)
 
+    // randomize
+    r1.randomize()
+    const rd1After5 = r1.getValues()
+    // slightly possible this might fail if it happens to randomize in same order
+    t.notDeepEqual(rd1After5, rd1After4)
+    // check all is still there
+    const rspec = rd1After5[0].map ((_,i)=>i+1)
+    t.deepEqual(sort2d(rspec,rd1After5), sort2d(rspec,rd1Fill))
+
+    sheet.getDataRange().clear()
+
     const data = [[1,2,3,4,5],[6,7,8,9,10],[11,12,13,14,15]]
     const range = startAt.offset(20,1, data.length, data[0].length)
     const a = range.setValues (data).getValues()
@@ -78,6 +90,7 @@ export const testSheetsValues = (pack) => {
     range.sort ([{column: 4+ range.getColumn(), ascending: false }, {column:3+range.getColumn()}, range.getColumn()])
     const e = range.getValues()
     t.deepEqual (e, [[1,2,3,4,false],[11,12,13,14,15],[6,7,8,9,10]])
+
 
   })
 

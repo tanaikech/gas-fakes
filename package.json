@@ -12,9 +12,9 @@
     "into-stream": "^8.0.1",
     "keyv": "^5.2.3",
     "keyv-file": "^5.1.1",
-    "make-synchronous": "^1.0.0",
     "mime": "^4.0.6",
     "sleep-synchronously": "^2.0.0",
+    "subsume": "^4.0.0",
     "to-readable-stream": "^4.0.0",
     "unzipper": "^0.12.3"
   },

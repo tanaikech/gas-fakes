@@ -209,6 +209,12 @@ The documentId is only meaningful if you are working on a container bound scrip.
 
 As you will have noticed, there are various local support files for props/caching etc. Be careful that these do not get committed to a public repo if you are adding sensitive values to your stores. Note that the real user Id is not used when creating files, but rather an encrypted version of it. This avoids real user ids being revealed in your file system.
 
+## Debugging
+
+For conversion of async to sync, I'm spawing a subprocess using [make-synchronous](https://github.com/sindresorhus/make-synchronous). Out of the box it inherits the Node Options from the main process, so that means it'll try to run each subprocess in debug mode also. Bringing up and down the debugger each time takes forever, so I've temporaily modified my local version of make-synchronous to drop the debug inheritance. 
+
+If this makes it to the repo we can start to use it from there - see issue https://github.com/sindresorhus/make-synchronous/issues/14
+
 ## Noticed differences
 
 I'll make a note in thre repos issues on implementation differences. In the main will be slight differences in error message text, which I'll normalize over time, or where Apps Script has a fundamental obstacle. Please report any differences in behavior you find in the repo issues.
@@ -400,6 +406,22 @@ Unlike other similar functions, `setTextDirection(TextDirection)` takes an enum 
 The documented acceptable values to `range.setHorizontalAlignment()` are left, center, normal, null. However right is also valid so I'm supporting that too. `range.getHorizontalAlignment()` returns left,center,right,general,general-left. Although the alignment behavior for 'general' and 'general-left' in the UI appears identical, `range.setHorizontalAlignment(null)` returns 'general', whereas  `range.setHorizontalAlignment('normal')` returns 'general-left'. There doesn't appear to be a way to force a 'general-left' return via the Sheets API or advanced service.
 
 As with most of these format setting methods, Apps Script will silently ignore invalid arguments. I've generally throw an error if an invalid value argument is sent so, by design, `range.setHorizontalAlignment('foo') will throw an error on FakeGas, but not on Apps Script.
+
+#### Wrap and Wrap strategy
+
+Initially a cell will return OVERFLOW for `getWrapStrategy` and true for `getWrap`. This is wrong as OVERFLOW should be paired with false. Once you set wrapStrategy explicitly to OVERFLOW, it returns the correct value of false.
+
+The Apps Script issue for that is here https://issuetracker.google.com/issues/427134600
+
+#### range.copyValuesToRange
+
+The documentaton for this method says - "Copy the content of the range to the given location. If the destination is larger or smaller than the source range then the source is repeated or truncated accordingly."
+
+This implies that a smaller destination range that the source should only paste a truncated version of the source range. In fact it pastes it all - see issue https://issuetracker.google.com/issues/427192537
+
+I'm pausing implementation on this one till I see what I should actually implement
+
+
 
 #### TextRotation
 
