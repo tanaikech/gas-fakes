@@ -240,6 +240,16 @@ And you eventually have to dig into the docs yourself to track down why somethin
 
 I'm just not bothering with at all now. It wastes more time than it saves.
 
+### Fake classes
+
+Most Apps script classes will map to a separate fake class file - sometimes more than one. Many of the methods in large classes are generated from various specification files, but the more complex ones and the ones with weird behavior are directly written as methods in the class. 
+
+i've tried to avoid adding properties and methods that don't exist in the emulated class, but sometimes it's necessary to have private methods and properties. Since Apps Script doesn't support private properties, I've decided to simply identify these with a leading pair of underscores, eg this.__myProperty.
+
+Although not strictly necessary to avoid real private propertues, since these Fake classes will exist only on Node, I wanted to keep code comaptible with Apps Script.
+
+Most classes have a new method -- eg `newFakeClass(args)`. It's best to use this rather than `new FakeClass(args)`, since they each wrap the instance created in a proxy that detects attempts to access non existent properties, or indeed to set any properties other than private ones. Very handy when debugging.
+
 ### Formats and styles
 
 When getting formats with the sheets API, there are 2 types
@@ -419,8 +429,9 @@ The documentaton for this method says - "Copy the content of the range to the gi
 
 This implies that a smaller destination range that the source should only paste a truncated version of the source range. In fact it pastes it all - see issue https://issuetracker.google.com/issues/427192537
 
-I'm pausing implementation on this one till I see what I should actually implement
-
+So in summary the current behavior of this function in Apps Script doesn't match the documentation in these ways:
+- If the target range is smaller than the source range, it does not truncate, but always copies the entire range even if it violates the dimensions of the target range.
+- If the target range is larger than the source range, it only duplicates enough times where it can fit the entire source data into what's remaining in the target range.
 
 
 #### TextRotation
