@@ -10,7 +10,7 @@ import '../main.js'
 
 import { initTests } from './testinit.js'
 import { getSheetsPerformance } from '../src/support/sheetscache.js';
-import { eString, maketss, trasher, rgbToHex, getRandomRgb, getRandomHex, getStuff, BLACK, fillRange, fillRangeFromDomain, isEnum } from './testassist.js';
+import { prepareTarget, eString, maketss, trasher, rgbToHex, getRandomRgb, getRandomHex, getStuff, fillRange, fillRangeFromDomain, isEnum, BLACK, transpose2DArray } from './testassist.js';
 
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
@@ -18,7 +18,341 @@ export const testSheets = (pack) => {
 
   const { unit, fixes } = pack || initTests()
   const toTrash = []
-  // this a reusable function to do a bunch of tests and check the results on range.setXXX
+
+
+  unit.section("Range.copyTo", t => {
+    const { sheet } = maketss('copyToTests', toTrash, fixes);
+
+    // Source range setup
+    const sourceRange = sheet.getRange("A1:B2");
+    const sourceValues = [['V1', 'V2'], ['V3', 'V4']];
+    const sourceBgColor = '#ff0000'; // Red
+    const sourceFontColor = '#0000ff'; // Blue
+    const sourceFontSize = 14;
+    const sourceFontWeight = 'bold';
+
+    sourceRange.setValues(sourceValues);
+    sourceRange.setBackground(sourceBgColor);
+    sourceRange.setFontColor(sourceFontColor);
+    sourceRange.setFontSize(sourceFontSize);
+    sourceRange.setFontWeight("bold");
+    let targetRange
+    // Helper to verify formats
+    const verifyFormats = (range, expectedBg, expectedFontColor, expectedFontSize, expectedFontWeight, description) => {
+      t.is(range.getBackground(), expectedBg, `${description} - Background`);
+      t.is(range.getFontColor(), expectedFontColor, `${description} - Font Color`);
+      t.is(range.getFontSize(), expectedFontSize, `${description} - Font Size`);
+      t.is(range.getFontWeight(), expectedFontWeight, `${description} - Font Weight`);
+    };
+
+    // Helper to verify values
+    const verifyValues = (range, expectedValues, description) => {
+      t.deepEqual(range.getValues(), expectedValues, `${description} - Values`);
+    };
+
+
+
+    targetRange = sheet.getRange("A1:B2");
+    t.rxMatch(t.threw(() => sourceRange.copyTo()).toString(), /don't match the method signature/);
+    t.rxMatch(t.threw(() => sourceRange.copyTo()).toString(), /don't match the method signature/);
+    t.rxMatch(t.threw(() => sourceRange.copyTo("not a range")).toString(), /don't match the method signature/);
+    // skip this if on GAS since this incorrectly does not throw error - https://issuetracker.google.com/issues/427192537
+    if (SpreadsheetApp.isFake) {
+      t.rxMatch((() => {
+        const v = t.threw(() => sourceRange.copyTo(targetRange, "INVALID_TYPE"))
+        return v ? v.toString() : "t.threw - no error was thrown"
+      })(), /don't match the method signature/);
+
+      t.rxMatch(t.threw(() => sourceRange.copyTo(targetRange, { contentsOnly: true, formatOnly: true })).toString(), /don't match the method signature/, "Should throw error for conflicting options");
+
+      t.rxMatch(t.threw(() => sourceRange.copyTo(targetRange, { someOtherOption: true })).toString(), /don't match the method signature/, "Should throw error for unknown options");
+    }
+    t.rxMatch(t.threw(() => sourceRange.copyTo(targetRange, SpreadsheetApp.CopyPasteType.PASTE_NORMAL, "not a boolean")).toString(), /don't match the method signature/, "Should throw error for invalid transposed type");
+    // --- Test Case 1: copyTo(destination) - PASTE_NORMAL ---
+
+
+    // Target same size as source
+    targetRange = sheet.getRange("D1:E2");
+    sourceRange.copyTo(targetRange);
+    verifyValues(targetRange, sourceValues, "PASTE_NORMAL: Same size - Values");
+    verifyFormats(targetRange, sourceBgColor, sourceFontColor, sourceFontSize, sourceFontWeight, "PASTE_NORMAL: Same size - Formats");
+
+    // Target smaller than source (Apps Script copies full source)
+    targetRange = sheet.getRange("G1:G1"); // 1x1 target
+    sourceRange.copyTo(targetRange);
+    // Expected: G1:H2 should have source values/formats
+    verifyValues(sheet.getRange("G1:H2"), sourceValues, "PASTE_NORMAL: Smaller target - Values");
+    verifyFormats(sheet.getRange("G1:H2"), sourceBgColor, sourceFontColor, sourceFontSize, sourceFontWeight, "PASTE_NORMAL: Smaller target - Formats");
+
+    // Target larger than source (Apps Script repeats source)
+    targetRange = sheet.getRange("J1:L4"); // 4x3 target, source 2x2
+    sourceRange.copyTo(targetRange);
+    let expectedValuesLarger = prepareTarget(sourceValues, targetRange); // prepareTarget handles value repetition
+    verifyValues(sheet.getRange("J1:K4"), expectedValuesLarger, "PASTE_NORMAL: Larger target - Values"); // Only check the repeated part
+    verifyFormats(sheet.getRange("J1:K2"), sourceBgColor, sourceFontColor, sourceFontSize, sourceFontWeight, "PASTE_NORMAL: Larger target - Formats (top-left repeat)");
+    verifyFormats(sheet.getRange("J3:K4"), sourceBgColor, sourceFontColor, sourceFontSize, sourceFontWeight, "PASTE_NORMAL: Larger target - Formats (bottom-left repeat)");
+    t.is(sheet.getRange("L1").getBackground(), '#ffffff', "PASTE_NORMAL: Larger target - Unfilled column should be default background");
+
+
+    // --- Test Case 2: copyTo(destination, {contentsOnly: true}) ---
+
+    // Clear target area first
+    sheet.getRange("D5:F8").clear();
+    sheet.getRange("G5:H6").clear();
+    sheet.getRange("J5:L8").clear();
+
+    // Set some initial format on target to ensure it's not overwritten
+    sheet.getRange("D5:E6").setBackground('#cccccc'); // Grey background
+
+    // Target same size
+    targetRange = sheet.getRange("D5:E6");
+    sourceRange.copyTo(targetRange, { contentsOnly: true });
+    verifyValues(targetRange, sourceValues, "PASTE_VALUES: Same size - Values");
+    t.is(targetRange.getBackground(), '#cccccc', "PASTE_VALUES: Same size - Background should remain"); // Format should not change
+
+    // Target smaller
+    targetRange = sheet.getRange("G5:G5");
+    sheet.getRange("G5:H6").setBackground('#cccccc');
+    sourceRange.copyTo(targetRange, { contentsOnly: true });
+    verifyValues(sheet.getRange("G5:H6"), sourceValues, "PASTE_VALUES: Smaller target - Values");
+    t.is(sheet.getRange("G5").getBackground(), '#cccccc', "PASTE_VALUES: Smaller target - Background should remain");
+
+    // Target larger
+    targetRange = sheet.getRange("J5:L8");
+    sheet.getRange("J5:L8").setBackground('#cccccc');
+    sourceRange.copyTo(targetRange, { contentsOnly: true });
+    expectedValuesLarger = prepareTarget(sourceValues, targetRange);
+    verifyValues(sheet.getRange("J5:K8"), expectedValuesLarger, "PASTE_VALUES: Larger target - Values");
+    t.is(sheet.getRange("J5").getBackground(), '#cccccc', "PASTE_VALUES: Larger target - Background should remain");
+    t.is(sheet.getRange("L5").getBackground(), '#cccccc', "PASTE_VALUES: Larger target - Unfilled column background should remain");
+
+
+
+    // --- Test Case 3: copyTo(destination, {formatOnly: true}) ---
+
+    // Clear target area first
+    sheet.getRange("D9:F12").clear();
+    sheet.getRange("G9:H10").clear();
+    sheet.getRange("J9:L12").clear();
+
+    // Set some initial values on target to ensure they're not overwritten
+    sheet.getRange("D9:E10").setValues([['X1', 'X2'], ['X3', 'X4']]);
+
+    // Target same size
+    targetRange = sheet.getRange("D9:E10");
+    sourceRange.copyTo(targetRange, { formatOnly: true });
+    verifyValues(targetRange, [['X1', 'X2'], ['X3', 'X4']], "PASTE_FORMAT: Same size - Values should remain"); // Values should not change
+    verifyFormats(targetRange, sourceBgColor, sourceFontColor, sourceFontSize, sourceFontWeight, "PASTE_FORMAT: Same size - Formats");
+
+    // Target smaller
+    targetRange = sheet.getRange("G9:G9");
+    sheet.getRange("G9:H10").setValues([['Y1', 'Y2'], ['Y3', 'Y4']]);
+    sourceRange.copyTo(targetRange, { formatOnly: true });
+    verifyValues(sheet.getRange("G9:H10"), [['Y1', 'Y2'], ['Y3', 'Y4']], "PASTE_FORMAT: Smaller target - Values should remain");
+    verifyFormats(sheet.getRange("G9:H10"), sourceBgColor, sourceFontColor, sourceFontSize, sourceFontWeight, "PASTE_FORMAT: Smaller target - Formats");
+
+    // Target larger
+    targetRange = sheet.getRange("J9:L12");
+    sheet.getRange("J9:L12").setValues([['Z1', 'Z2', 'Z3'], ['Z4', 'Z5', 'Z6'], ['Z7', 'Z8', 'Z9'], ['Z10', 'Z11', 'Z12']]);
+    sourceRange.copyTo(targetRange, { formatOnly: true });
+    verifyValues(sheet.getRange("J9:L12"), [['Z1', 'Z2', 'Z3'], ['Z4', 'Z5', 'Z6'], ['Z7', 'Z8', 'Z9'], ['Z10', 'Z11', 'Z12']], "PASTE_FORMAT: Larger target - Values should remain");
+    verifyFormats(sheet.getRange("J9:K10"), sourceBgColor, sourceFontColor, sourceFontSize, sourceFontWeight, "PASTE_FORMAT: Larger target - Formats (top-left repeat)");
+    verifyFormats(sheet.getRange("J11:K12"), sourceBgColor, sourceFontColor, sourceFontSize, sourceFontWeight, "PASTE_FORMAT: Larger target - Formats (bottom-left repeat)");
+    t.is(sheet.getRange("L9").getBackground(), '#ffffff', "PASTE_FORMAT: Larger target - Unfilled column should be default background");
+
+
+
+    // --- Test Case 4: copyTo(destination, SpreadsheetApp.CopyPasteType.PASTE_VALUES) ---
+
+    // Clear target area first
+    sheet.getRange("D13:F16").clear();
+    sheet.getRange("G13:H14").clear();
+    sheet.getRange("J13:L16").clear();
+
+    // Set some initial format on target to ensure it's not overwritten
+    sheet.getRange("D13:E14").setBackground('#cccccc');
+
+    // Target same size
+    targetRange = sheet.getRange("D13:E14");
+    sourceRange.copyTo(targetRange, SpreadsheetApp.CopyPasteType.PASTE_VALUES);
+    verifyValues(targetRange, sourceValues, "PASTE_VALUES enum: Same size - Values");
+    // buggy in GAS so skip - see https://issuetracker.google.com/issues/427192537
+    if (SpreadsheetApp.isFake) {
+      t.is(targetRange.getBackground(), '#cccccc', "PASTE_VALUES enum: Same size - Background should remain");
+    }
+    // Target smaller
+    targetRange = sheet.getRange("G13:G13");
+    sheet.getRange("G13:H14").setBackground('#cccccc');
+    sourceRange.copyTo(targetRange, SpreadsheetApp.CopyPasteType.PASTE_VALUES);
+    verifyValues(sheet.getRange("G13:H14"), sourceValues, "PASTE_VALUES enum: Smaller target - Values");
+    // buggy in GAS so skip - see https://issuetracker.google.com/issues/427192537
+    if (SpreadsheetApp.isFake) {
+      t.is(sheet.getRange("G13").getBackground(), '#cccccc', "PASTE_VALUES enum: Smaller target - Background should remain");
+    }
+
+    // Target larger
+    targetRange = sheet.getRange("J13:L16");
+    sheet.getRange("J13:L16").setBackground('#cccccc');
+    sourceRange.copyTo(targetRange, SpreadsheetApp.CopyPasteType.PASTE_VALUES);
+    expectedValuesLarger = prepareTarget(sourceValues, targetRange);
+    verifyValues(sheet.getRange("J13:K16"), expectedValuesLarger, "PASTE_VALUES enum: Larger target - Values");
+    // buggy in GAS so skip - see https://issuetracker.google.com/issues/427192537
+    if (SpreadsheetApp.isFake) {
+      t.is(sheet.getRange("J13").getBackground(), '#cccccc', "PASTE_VALUES enum: Larger target - Background should remain");
+    }
+    t.is(sheet.getRange("L13").getBackground(), '#cccccc', "PASTE_VALUES enum: Larger target - Unfilled column background should remain");
+
+
+
+    // --- Test Case 5: copyTo(destination, SpreadsheetApp.CopyPasteType.PASTE_NORMAL, true) - Transposed ---
+
+    // Clear target area first
+    sheet.getRange("D17:F20").clear();
+    sheet.getRange("G17:H18").clear();
+    sheet.getRange("J17:L20").clear();
+
+    // Target same size (transposed)
+    targetRange = sheet.getRange("D17:E18"); // Source 2x2, target 2x2
+    const transposedSourceValues = transpose2DArray(sourceValues); // [[V1, V3], [V2, V4]]
+    sourceRange.copyTo(targetRange, SpreadsheetApp.CopyPasteType.PASTE_NORMAL, true);
+    verifyValues(targetRange, transposedSourceValues, "Transposed PASTE_NORMAL: Same size - Values");
+    // Formats also transpose
+    verifyFormats(sheet.getRange("D17"), sourceBgColor, sourceFontColor, sourceFontSize, sourceFontWeight, "Transposed PASTE_NORMAL: Same size - Formats (D17)");
+    verifyFormats(sheet.getRange("E17"), sourceBgColor, sourceFontColor, sourceFontSize, sourceFontWeight, "Transposed PASTE_NORMAL: Same size - Formats (E17)");
+    verifyFormats(sheet.getRange("D18"), sourceBgColor, sourceFontColor, sourceFontSize, sourceFontWeight, "Transposed PASTE_NORMAL: Same size - Formats (D18)");
+    verifyFormats(sheet.getRange("E18"), sourceBgColor, sourceFontColor, sourceFontSize, sourceFontWeight, "Transposed PASTE_NORMAL: Same size - Formats (E18)");
+
+
+    // Target smaller (transposed)
+    targetRange = sheet.getRange("G17:G17"); // 1x1 target
+    sourceRange.copyTo(targetRange, SpreadsheetApp.CopyPasteType.PASTE_NORMAL, true);
+    // Expected: G17:H18 should have transposed source values/formats
+    verifyValues(sheet.getRange("G17:H18"), transposedSourceValues, "Transposed PASTE_NORMAL: Smaller target - Values");
+    verifyFormats(sheet.getRange("G17:H18"), sourceBgColor, sourceFontColor, sourceFontSize, sourceFontWeight, "Transposed PASTE_NORMAL: Smaller target - Formats");
+
+    // Target larger (transposed)
+    targetRange = sheet.getRange("J17:L20"); // 4x3 target, source 2x2
+    sourceRange.copyTo(targetRange, SpreadsheetApp.CopyPasteType.PASTE_NORMAL, true);
+    // Use prepareTarget with the transposed source values
+    const expectedTransposedRepeatedValues = prepareTarget(transposedSourceValues, targetRange);
+    // The target is J17:L20 (4 rows, 3 cols). Transposed source is 2x2.
+    // It will repeat 2 times vertically (4/2) and 1 time horizontally (3/2 = 1.5 -> 1 full repeat)
+    // So the effective copied area is 4x2.
+    verifyValues(sheet.getRange("J17:K20"), expectedTransposedRepeatedValues, "Transposed PASTE_NORMAL: Larger target - Values");
+    verifyFormats(sheet.getRange("J17:K18"), sourceBgColor, sourceFontColor, sourceFontSize, sourceFontWeight, "Transposed PASTE_NORMAL: Larger target - Formats (top-left repeat)");
+    verifyFormats(sheet.getRange("J19:K20"), sourceBgColor, sourceFontColor, sourceFontSize, sourceFontWeight, "Transposed PASTE_NORMAL: Larger target - Formats (bottom-left repeat)");
+    t.is(sheet.getRange("L17").getBackground(), '#ffffff', "Transposed PASTE_NORMAL: Larger target - Unfilled column should be default background");
+
+
+
+    // --- Test Case 6: Empty Source Range ---
+
+    const emptySourceRange = sheet.getRange("A100:B101"); // An empty range
+    targetRange = sheet.getRange("D100:E101");
+    targetRange.setValues([['X', 'Y'], ['Z', 'W']]); // Put some values in target
+    targetRange.setBackground('#00ff00'); // Green background
+
+    emptySourceRange.copyTo(targetRange);
+    // Expect target to be cleared (values and formats)
+    verifyValues(targetRange, [['', ''], ['', '']], "Empty source: Values should be cleared");
+    t.is(targetRange.getBackground(), '#ffffff', "Empty source: Background should be cleared to default");
+
+
+
+    // --- Test Case 7: Invalid arguments ---
+
+
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
+  });
+
+  unit.section("copy values and formats to range", t => {
+    const { sheet } = maketss('prepareTarget', toTrash, fixes)
+
+    const gargs = (target) => {
+      return [
+        target.getSheet(),
+        target.getColumn(),
+        target.getNumColumns() + target.getColumn() - 1,
+        target.getRow(),
+        target.getRow() + target.getNumRows() - 1
+      ]
+    }
+
+
+    const copyToRangeTest = (domain, method, getMethod, setMethod) => {
+
+
+      const s22 = sheet.getRange(1, 1, 2, 2)
+      const v22 = fillRangeFromDomain(s22, domain)
+
+      // Case 1: Target is smaller than source (e.g., 1x1)
+      let t11 = sheet.getRange(101, 11, 1, 1);
+      let p11 = prepareTarget(v22, t11);
+      t.deepEqual(v22, p11, "Target smaller than source should return full source");
+
+      // lets try writing and reading
+      s22[setMethod](p11)
+      s22[method](...gargs(t11))
+      t.deepEqual(t11.offset(0, 0, s22.getNumRows(), s22.getNumColumns())[getMethod](), p11)
+
+      // Case 2: Target is same size as source (2x2)
+      const t22 = sheet.getRange(105, 11, 2, 2);
+      const p22 = prepareTarget(v22, t22);
+      t.deepEqual(p22, v22, "Target same size as source should return source");
+      s22[method](...gargs(t22))
+      t.deepEqual(t22[getMethod](), p22)
+
+
+      // Case 3: Target is an exact multiple of source (e.g., 4x6)
+      const t46 = sheet.getRange(110, 1, 4, 6);
+      const p46 = prepareTarget(v22, t46);
+      s22[method](...gargs(t46))
+      t.deepEqual(t46[getMethod](), p46)
+
+
+      // Case 4: Target is larger but not an exact multiple (e.g., 5x5)
+      const t55 = sheet.getRange(116, 1, 5, 5);
+      const p55 = prepareTarget(v22, t55);
+      s22[method](...gargs(t55))
+      t.deepEqual(t55.offset(0, 0, p55.length, p55[0].length)[getMethod](), p55)
+
+      // Case 5: Target has one dimension smaller, one larger (e.g., 1x3)
+      const t13 = sheet.getRange(122, 1, 1, 3);
+      const p13 = prepareTarget(v22, t13);
+      s22[method](...gargs(t13))
+      t.deepEqual(t13.offset(0, 0, p13.length, p13[0].length)[getMethod](), p13)
+
+
+      // Case 6: Target has one dimension as exact multiple, one not (e.g., 4x3)
+      const t43 = sheet.getRange(128, 1, 4, 3);
+      const p43 = prepareTarget(v22, t43);
+      s22[method](...gargs(t43))
+      t.deepEqual(t43.offset(0, 0, t43.getNumRows(), s22.getNumColumns())[getMethod](), p43)
+
+
+      // Case 7: Non-square source (e.g., 3x2) and non-square target (e.g., 7x5)
+      const s32 = sheet.getRange(11, 1, 3, 2)
+      const v32 = fillRangeFromDomain(s32, domain)
+      const t75 = sheet.getRange(132, 1, 7, 5);
+      const p75 = prepareTarget(v32, t75);
+      s32[setMethod](v32)
+      s32[method](...gargs(t75))
+      t.deepEqual(t75.offset(0, 0, p75.length, p75[0].length)[getMethod](), p75)
+    }
+
+
+    copyToRangeTest(["bar", "foo", 1, 0, true], 'copyValuesToRange', 'getValues', 'setValues')
+    copyToRangeTest(
+      ['Comic Sans MS', 'Helvetica', 'Verdana,Sans Serif'],
+      'copyFormatToRange',
+      'getFontFamilies',
+      'setFontFamilies'
+    )
+    copyToRangeTest([10, 20, 12, 32], 'copyFormatToRange', 'getFontSizes', 'setFontSizes')
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+  });
 
 
   unit.section("exotic styles", t => {
@@ -52,17 +386,17 @@ export const testSheets = (pack) => {
     rw3.setWrapStrategy(w1)
     const w3a = rw3.getWrap()
     t.is(w3a, false)
-    const w3b = rw3.getWrapStrategy ()
+    const w3b = rw3.getWrapStrategy()
     t.is(w3b.toString(), w1.toString())
     const rw3sb = rw3.getWrap()
     t.is(rw3sb, false)
 
-  
+
     const rw4 = startAt.offset(14, 8)
     rw4.clearFormat()
     const w4a = rw4.getWrap()
     t.is(w4a, true)
-    const w4 = fillRange (rw4, SpreadsheetApp.WrapStrategy.CLIP)
+    const w4 = fillRange(rw4, SpreadsheetApp.WrapStrategy.CLIP)
     rw4.setWrapStrategies(w4)
     const rw4sa = rw4.getWrapStrategies()
     t.deepEqual(rw4sa.flat().map(f => f.toString()), w4.flat().map(f => f.toString()))
@@ -73,7 +407,7 @@ export const testSheets = (pack) => {
     rw5.clearFormat()
     const w5a = rw5.getWrap()
     t.is(w5a, true)
-    const w5 = fillRange (rw4, SpreadsheetApp.WrapStrategy.WRAP)
+    const w5 = fillRange(rw4, SpreadsheetApp.WrapStrategy.WRAP)
     rw5.setWrapStrategies(w5)
     const rw5sa = rw5.getWrapStrategies()
     t.deepEqual(rw5sa.flat().map(f => f.toString()), w5.flat().map(f => f.toString()))
@@ -82,12 +416,12 @@ export const testSheets = (pack) => {
 
     const rw6 = startAt.offset(18, 11)
     rw6.clearFormat()
-    const w6 = fillRangeFromDomain (rw6, [true, false])
+    const w6 = fillRangeFromDomain(rw6, [true, false])
     rw6.setWraps(w6)
     const rw6sa = rw6.getWraps()
-    t.deepEqual(rw6sa,w6)
+    t.deepEqual(rw6sa, w6)
     const rw6sb = rw6.getWrapStrategies()
-    t.deepEqual(rw6sb.flat().map(f => f.toString()), w6.flat().map(f=>f ? "WRAP": "OVERFLOW"))
+    t.deepEqual(rw6sb.flat().map(f => f.toString()), w6.flat().map(f => f ? "WRAP" : "OVERFLOW"))
     t.is(rw6.getWrap(), rw6sa[0][0])
     rw6.setWrap(true)
     t.is(rw6.getWrap(), true)

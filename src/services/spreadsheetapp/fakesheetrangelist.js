@@ -62,7 +62,6 @@ export class FakeSheetRangeList {
       'setHorizontalAlignment',
       'clear',
       'setValue',
-      'check',
       'setNumberFormat'
     ]
 
@@ -84,6 +83,11 @@ export class FakeSheetRangeList {
    */
   getRanges() {
     return this.__ranges
+  }
+
+  check() {
+    this.__ranges.forEach(r => r.check())
+    return this
   }
 
   setBackground (color) {

@@ -433,6 +433,40 @@ So in summary the current behavior of this function in Apps Script doesn't match
 - If the target range is smaller than the source range, it does not truncate, but always copies the entire range even if it violates the dimensions of the target range.
 - If the target range is larger than the source range, it only duplicates enough times where it can fit the entire source data into what's remaining in the target range.
 
+#### range.copyTo 
+
+The variant of copyToRange suffers from the same problems as .copyValuesToRange. But there are others too. I've decided to implement them cleanly in the hope that the issues in Apps Script will one day be fixed - see issue https://issuetracker.google.com/issues/427192537
+
+1. I also note that range.copyTo() has the same behavior 
+
+2. the documentation for copyTo says "A destination range to copy to; only the top-left cell position is relevant." - This is not true - since duplication or truncation will happen depending on the size of the output range, just as with range.copyValuesToRange and range.copyFormatToRange().
+
+3. There is no way to pass "transposed" when using the range.copyTo(destination, options) variant.
+
+4. There is no checking on the enum passed as the 2nd argument unless the optional transpose argumment is provided
+````
+range.copyTo (destination) // valid
+range.copyTo (destination, SpreadsheetApp.CopyPasteType.PASTE_VALUES) // valid
+range.copyTo (destination, "FOO", true)  // correctly reports FOO as invalid type
+range.copyTo (destination, "FOO") // ignores FOO and runs without reporting error
+````
+5. There is no conflicting option error thrown for
+````
+range.copyTo(destination, { contentsOnly: true, formatOnly: true }) // should throw error for conflicting options
+````
+
+6. Does not check for invalid options
+````
+range.copyTo(targetRange, { foo: true }) // should throw an error for invalid option
+````
+
+7. Paste values can also reset paste formats (doesnt happen with advanced sheets)
+````
+range.copyTo (destination, SpreadsheetApp.CopyPasteType.PASTE_VALUES)   /// this can also trash formats previously set with PASTE_FORMAT
+````
+
+
+
 
 #### TextRotation
 

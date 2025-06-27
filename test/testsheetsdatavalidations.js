@@ -109,6 +109,85 @@ export const testSheetsDataValidations = (pack) => {
     check()
   }
 
+  unit.section("unchecking checkboxes", t => {
+    const { sheet } = maketss('uncheck_tests', toTrash, fixes);
+
+    // Setup a range with different types of cells
+    const range = sheet.getRange("A1:C3");
+
+    // 1. Default checkbox (no custom values)
+    const dvDefault = SpreadsheetApp.newDataValidation().requireCheckbox().build();
+    sheet.getRange("A1").setDataValidation(dvDefault).setValue(true); // checked
+    sheet.getRange("A2").setDataValidation(dvDefault).setValue(false); // already unchecked
+
+    // 2. Custom value checkbox
+    const dvCustom = SpreadsheetApp.newDataValidation().requireCheckbox("YES", "NO").build();
+    sheet.getRange("B1").setDataValidation(dvCustom).setValue("YES"); // checked
+    sheet.getRange("B2").setDataValidation(dvCustom).setValue("NO"); // already unchecked
+
+    // 3. Non-checkbox cell
+    sheet.getRange("C1").setValue("some text");
+
+    // --- Test uncheck() on a mixed range ---
+    const mixedRange = sheet.getRange("A1:C2");
+    mixedRange.uncheck();
+
+    // Verify results
+    t.is(sheet.getRange("A1").getValue(), false, "Default checkbox should be unchecked to false");
+    t.is(sheet.getRange("A2").getValue(), false, "Already unchecked default checkbox should remain false");
+    t.is(sheet.getRange("B1").getValue(), "NO", "Custom value checkbox should be unchecked to 'NO'");
+    t.is(sheet.getRange("B2").getValue(), "NO", "Already unchecked custom checkbox should remain 'NO'");
+    t.is(sheet.getRange("C1").getValue(), "some text", "Non-checkbox cell should not be affected by uncheck");
+    t.is(sheet.getRange("C2").getValue(), "", "Empty cell should not be affected by uncheck");
+
+    // --- Test uncheck() on a range with no data validations at all ---
+    const noValidationRange = sheet.getRange("A3:C3").setValues([['a', 'b', 'c']]);
+    const beforeNoValidation = noValidationRange.getValues();
+    noValidationRange.uncheck();
+    t.deepEqual(noValidationRange.getValues(), beforeNoValidation, "uncheck() on a range with no data validations should not change values");
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+  });
+
+  unit.section("checking checkboxes", t => {
+    const { sheet } = maketss('check_tests', toTrash, fixes);
+
+    // Setup a range with different types of cells
+    const range = sheet.getRange("A1:C3");
+
+    // 1. Default checkbox (no custom values)
+    const dvDefault = SpreadsheetApp.newDataValidation().requireCheckbox().build();
+    sheet.getRange("A1").setDataValidation(dvDefault).setValue(false); // unchecked
+    sheet.getRange("A2").setDataValidation(dvDefault).setValue(true); // already checked
+
+    // 2. Custom value checkbox
+    const dvCustom = SpreadsheetApp.newDataValidation().requireCheckbox("YES", "NO").build();
+    sheet.getRange("B1").setDataValidation(dvCustom).setValue("NO"); // unchecked
+    sheet.getRange("B2").setDataValidation(dvCustom).setValue("YES"); // already checked
+
+    // 3. Non-checkbox cell
+    sheet.getRange("C1").setValue("some text");
+
+    // --- Test check() on a mixed range ---
+    const mixedRange = sheet.getRange("A1:C2");
+    mixedRange.check();
+
+    // Verify results
+    t.is(sheet.getRange("A1").getValue(), true, "Default checkbox should be checked to true");
+    t.is(sheet.getRange("A2").getValue(), true, "Already checked default checkbox should remain true");
+    t.is(sheet.getRange("B1").getValue(), "YES", "Custom value checkbox should be checked to 'YES'");
+    t.is(sheet.getRange("B2").getValue(), "YES", "Already checked custom checkbox should remain 'YES'");
+    t.is(sheet.getRange("C1").getValue(), "some text", "Non-checkbox cell should not be affected by check");
+    t.is(sheet.getRange("C2").getValue(), "", "Empty cell should not be affected by check");
+
+    // --- Test check() on a range with no data validations at all ---
+    const noValidationRange = sheet.getRange("A3:C3").setValues([['a', 'b', 'c']]);
+    const beforeNoValidation = noValidationRange.getValues();
+    noValidationRange.check();
+    t.deepEqual(noValidationRange.getValues(), beforeNoValidation, "check() on a range with no data validations should not change values");
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+  });
 
   unit.section("setting data validations", t => {
 
@@ -132,15 +211,15 @@ export const testSheetsDataValidations = (pack) => {
     const remc = sb.getRange("k2:m3")
     remc.clearDataValidations().clear()
     const dv1 = SpreadsheetApp.newDataValidation().requireCheckbox().build()
-    const v1 =[[true, false, null],[false, false, true]]
+    const v1 = [[true, false, null], [false, false, true]]
     remc.setDataValidation(dv1)
     remc.setValues(v1)
     remc.removeCheckboxes()
     const v1a = remc.getValues()
     const dv1a = remc.getDataValidations()
     t.true(dv1a.flat().every(f => is.null(f)))
-    t.true(v1a.flat().every(f => f===''))
-    
+    t.true(v1a.flat().every(f => f === ''))
+
 
 
 
@@ -319,6 +398,7 @@ export const testSheetsDataValidations = (pack) => {
 
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
   })
+
 
 
 

@@ -12,7 +12,8 @@ import {
   batchUpdate,
   fillRange,
   arrMatchesRange,
-  isACheckbox
+  isACheckbox,
+  makeExtendedValue
 } from "./sheetrangehelpers.js"
 import { TextToColumnsDelimiter } from '../enums/sheetsenums.js'
 
@@ -37,6 +38,17 @@ export const newFakeSheetRange = (...args) => {
 }
 
 
+const sortOutGridForCopy = (gridIdOrSheet, column, columnEnd, row, rowEnd) => {
+  const sheetId = is.object(gridIdOrSheet) ? gridIdOrSheet.getSheetId() : gridIdOrSheet
+  const gridRange = {
+    sheetId,
+    startColumnIndex: column - 1,
+    endColumnIndex: columnEnd,
+    startRowIndex: row - 1,
+    endRowIndex: rowEnd
+  }
+  return gridRange
+}
 /**
  * basic fake FakeSheetRange
  * @class FakeSheetRange
@@ -81,9 +93,6 @@ export class FakeSheetRange {
       'mergeVertically',
       'isPartOfMerge',
       'activateAsCurrentCell',
-
-      'copyValuesToRange',
-      'copyFormatToRange',
       'setComments',
 
       'isStartColumnBounded',
@@ -108,10 +117,8 @@ export class FakeSheetRange {
       'setRichTextValue',
       'setRichTextValues',
 
-      'uncheck',
       'insertCheckboxes',
 
-      'copyTo',
 
       'getComments',
       'clearComment',
@@ -135,7 +142,6 @@ export class FakeSheetRange {
 
       'merge',
 
-      'check',
       'getFilter',
       // these are not documented, so will skip for now
       'setComment',
@@ -250,6 +256,91 @@ export class FakeSheetRange {
   }
 
   /**
+   * copyTo(destination, copyPasteType, transposed)
+   * Copies the data from a range of cells to another range of cells.
+   * https://developers.google.com/apps-script/reference/spreadsheet/range#copytodestination,-copypastetype,-transposed
+   * @param {FakeSheetRange} destination 	A destination range to copy to; only the top-left cell position is relevant.
+   * @param {CopyPasteType||object} [copyPasteTypeOrOptions] enum SpreadsheetApp.enum A type that specifies how the range contents are pasted to the destination or options
+   * @param {boolean} [transposed] Whether the range should be pasted in its transposed orientation.
+   */
+  copyTo(destination, copyPasteTypeOrOptions, transposed) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.copyTo")
+    if (nargs < 1 || nargs > 3) matchThrow()
+    if (!isRange(destination)) matchThrow()
+
+    // set the defaults
+    const copyPaste = Sheets.newCopyPasteRequest()
+      .setPasteType("PASTE_NORMAL")
+      .setPasteOrientation("NORMAL")
+
+    // the second argument can be with options (modern) or enum + transpose
+    if (nargs > 1) {
+      // we had an old style variant
+      if (isEnum(copyPasteTypeOrOptions)) {
+        copyPaste.setPasteType(copyPasteTypeOrOptions.toString())
+        if (nargs > 2) {
+          if (!is.boolean(transposed)) matchThrow()
+          copyPaste.setPasteOrientation(transposed ? "TRANSPOSE" : "NORMAL")
+        }
+      } else {
+        // modern signature with options
+        if (nargs !== 2 || !is.object(copyPasteTypeOrOptions)) matchThrow()
+        if (Reflect.ownKeys(copyPasteTypeOrOptions).length !== 1) matchThrow()
+        if (copyPasteTypeOrOptions.contentsOnly) copyPaste.setPasteType("PASTE_VALUES")
+        else if (copyPasteTypeOrOptions.formatOnly) copyPaste.setPasteType("PASTE_FORMAT")
+        else matchThrow()
+
+      }
+    }
+
+    copyPaste
+      .setDestination(
+        makeSheetsGridRange(destination)
+      )
+      .setSource(makeSheetsGridRange(this))
+
+
+    const requests = [{ copyPaste }];
+    batchUpdate({ spreadsheetId: this.__getSpreadsheetId(), requests });
+
+    return this;
+
+  }
+
+
+  __copyToRange(pasteType, gridIdOrSheet, column, columnEnd, row, rowEnd) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.copytorange")
+    if (nargs !== 6) matchThrow()
+    const args = Array.from(arguments)
+    if (!args.slice(2).every(f => is.integer(f) && is.positiveNumber(f))) matchThrow()
+    if (!is.integer(gridIdOrSheet) && !(is.object(gridIdOrSheet) && gridIdOrSheet.toString() === "Sheet")) matchThrow()
+
+
+    // this is the behavior observed - different than docs
+    /*
+    So to complete the tests, this time with the Advanced sheets API - we can see it behaves in exactly the same way as he apps script service-
+ 
+    if the target range is less than the source range, it will always copy all of the source range and never truncate.
+    if the target range is greater that the source rang eit will duplicate all of the source range as many times as will fit - but never duplicate and truncate - so if the source range is 3 wide and the tharget range is 5 wide it will only copy the 3 columns. If the target is 7 wide, it will duplicate the source twice, making 6 columns. And ignore the 7th column.
+    there's no need to do anything special here as the sheets api behave the same way as the apps script ervice
+    */
+    const targetGrid = sortOutGridForCopy(gridIdOrSheet, column, columnEnd, row, rowEnd)
+    const sourceGrid = makeGridRange(this)
+
+    const copyPaste = Sheets.newCopyPasteRequest()
+      .setSource(sourceGrid)
+      .setPasteType(pasteType)
+      .setDestination(targetGrid)
+      .setPasteOrientation("NORMAL")
+
+    const requests = [{
+      copyPaste
+    }]
+    Sheets.Spreadsheets.batchUpdate({ requests }, this.__getSpreadsheetId());
+    return this
+  }
+
+  /**
    * copyValuesToRange(gridId, column, columnEnd, row, rowEnd)  https://developers.google.com/apps-script/reference/spreadsheet/range#copyvaluestorangegridid,-column,-columnend,-row,-rowend
    * Copy the content of the range to the given location. If the destination is larger or smaller than the source range then the source is repeated or truncated accordingly.
    * @param {integer|Sheet} gridIdOrSheet	Integer	The unique ID of the sheet within the spreadsheet, irrespective of position or the sheet it is on
@@ -260,29 +351,14 @@ export class FakeSheetRange {
    * @return {FakeSheetRange} self
    */
   copyValuesToRange(gridIdOrSheet, column, columnEnd, row, rowEnd) {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.copyValuesToRange")
-    if (nargs !== 5) matchThrow()
-    const args = Array.from(arguments)
-    if (!args.slice(1).every(f => is.integer(f) && is.positiveNumber(f))) matchThrow()
-    if (!is.integer(gridIdOrSheet) && !(is.object(gridIdOrSheet) && gridIdOrSheet.toString() === "Sheet" )) matchThrow()
-    
-    const sortOutGridForCopy = (args) => {
-      const gridId = is.object(args[0]) ? args[0].getGridId() : args[0]
-      const gridRange = {
-        sheetId: gridId,
-        startColumnIndex: args[1] - 1,
-        endColumnIndex: args[2],
-        startRowIndex: args[3] - 1,
-        endRowIndex: args[4]
-      }
-      return gridRange
-    }
-    // stopped workon on this one pendingclarification on how its supposed to behave
-    // see this issue 
-    const targetGrid = sortOutGridForCopy(args)
-    const sourceGrid = makeGridRange()
-    return notYetImplemented ("range.copyValuesToRange")
+    return this.__copyToRange("PASTE_VALUES", gridIdOrSheet, column, columnEnd, row, rowEnd)
   }
+
+  copyFormatToRange(gridIdOrSheet, column, columnEnd, row, rowEnd) {
+    return this.__copyToRange("PASTE_FORMAT", gridIdOrSheet, column, columnEnd, row, rowEnd)
+  }
+
+
   /**
    * protect() https://developers.google.com/apps-script/reference/spreadsheet/sheet#protect
    * Creates an object that can protect the sheet from being edited except by users who have permission.
@@ -467,6 +543,62 @@ export class FakeSheetRange {
     return this
   }
 
+  /**
+   * check() https://developers.google.com/apps-script/reference/spreadsheet/range#check
+   * Checks the checkbox data validation rule in the range. The range must be composed of cells with a checkbox data validation rule.
+   * @returns {FakeSheetRange} self
+   */
+  check() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.check");
+    if (nargs) matchThrow();
+    return this.__checkUncheck(true);
+  }
+
+  /**
+   * uncheck() https://developers.google.com/apps-script/reference/spreadsheet/range#uncheck
+   * Unchecks the checkbox data validation rule in the range. The range must be composed of cells with a checkbox data validation rule.
+   * @returns {FakeSheetRange} self
+   */
+  uncheck() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.uncheck");
+    if (nargs) matchThrow();
+    return this.__checkUncheck(false);
+  }
+
+  __checkUncheck(isChecked) {
+    const validations = this.getDataValidations();
+    if (!validations) return this;
+
+    const requests = [];
+
+    for (let r = 0; r < this.getNumRows(); r++) {
+      for (let c = 0; c < this.getNumColumns(); c++) {
+        const dv = validations[r][c];
+        if (dv && isACheckbox(dv)) {
+          const criteriaValues = dv.getCriteriaValues();
+          const valueToSet = isChecked
+            ? (criteriaValues && criteriaValues.length >= 1) ? criteriaValues[0] : true
+            : (criteriaValues && criteriaValues.length === 2) ? criteriaValues[1] : false;
+
+          const cellRange = this.offset(r, c, 1, 1);
+          const cellData = Sheets.newCellData().setUserEnteredValue(makeExtendedValue(valueToSet));
+
+          const ucr = Sheets.newUpdateCellsRequest()
+            .setRange(makeSheetsGridRange(cellRange))
+            .setFields('userEnteredValue')
+            .setRows([Sheets.newRowData().setValues([cellData])]);
+
+          requests.push({ updateCells: ucr });
+        }
+      }
+    }
+
+    if (requests.length > 0) {
+      batchUpdate({ spreadsheetId: this.__getSpreadsheetId(), requests });
+    }
+
+    return this;
+  }
   /**
    * randomize() https://developers.google.com/apps-script/reference/spreadsheet/range#randomize
    * Randomizes the order of the rows in the given range.
@@ -993,8 +1125,6 @@ export class FakeSheetRange {
   __getSpreadsheetId() {
     return this.__getSpreadsheet().getId()
   }
-
-
 
   /**
    * sometimes a range has no  grid range so we need to fake one

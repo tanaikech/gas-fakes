@@ -207,52 +207,52 @@ export const arrMatchesRange = (range, arr, itemType) => {
  * @returns {number} -1 if a < b, 0 if a == b, 1 if a > b.
  */
 function compareMixedValues(a, b) {
-    // --- Phase 1: Handle Empty Cells (Always Last) ---
-    // Check for null, undefined, or empty string for both values
-    const isBlankA = (a === null || a === undefined || a === "");
-    const isBlankB = (b === null || b === undefined || b === "");
+  // --- Phase 1: Handle Empty Cells (Always Last) ---
+  // Check for null, undefined, or empty string for both values
+  const isBlankA = (a === null || a === undefined || a === "");
+  const isBlankB = (b === null || b === undefined || b === "");
 
-    if (isBlankA && !isBlankB) return 1;  // A is blank, B is not: A comes AFTER B
-    if (!isBlankA && isBlankB) return -1; // B is blank, A is not: B comes AFTER A
-    if (isBlankA && isBlankB) return 0;   // Both are blank: consider them equal for ordering
+  if (isBlankA && !isBlankB) return 1;  // A is blank, B is not: A comes AFTER B
+  if (!isBlankA && isBlankB) return -1; // B is blank, A is not: B comes AFTER A
+  if (isBlankA && isBlankB) return 0;   // Both are blank: consider them equal for ordering
 
-    // --- Phase 2: Compare Non-Blank Values Based on Spreadsheet Hierarchy ---
+  // --- Phase 2: Compare Non-Blank Values Based on Spreadsheet Hierarchy ---
 
-    // 1. Numbers
-    if (typeof a === 'number' && typeof b === 'number') {
-        return a - b;
-    }
-    if (typeof a === 'number') return -1; // A is number, B is not (and not blank): A is "smaller"
-    if (typeof b === 'number') return 1;  // B is number, A is not (and not blank): B is "smaller"
+  // 1. Numbers
+  if (typeof a === 'number' && typeof b === 'number') {
+    return a - b;
+  }
+  if (typeof a === 'number') return -1; // A is number, B is not (and not blank): A is "smaller"
+  if (typeof b === 'number') return 1;  // B is number, A is not (and not blank): B is "smaller"
 
-    // 2. Dates (NEW ADDITION)
-    // Checks if both are Date objects, then compares their timestamps
-    if (a instanceof Date && b instanceof Date) {
-        return a.getTime() - b.getTime(); // Compare by timestamp
-    }
-    // If one is a Date object and the other is not (and not handled by numbers or blanks)
-    if (a instanceof Date) return -1; // A is Date, B is not: A is "smaller"
-    if (b instanceof Date) return 1;  // B is Date, A is not: B is "smaller"
+  // 2. Dates (NEW ADDITION)
+  // Checks if both are Date objects, then compares their timestamps
+  if (a instanceof Date && b instanceof Date) {
+    return a.getTime() - b.getTime(); // Compare by timestamp
+  }
+  // If one is a Date object and the other is not (and not handled by numbers or blanks)
+  if (a instanceof Date) return -1; // A is Date, B is not: A is "smaller"
+  if (b instanceof Date) return 1;  // B is Date, A is not: B is "smaller"
 
-    // 3. Strings
-    if (typeof a === 'string' && typeof b === 'string') {
-        return a.localeCompare(b, undefined, { sensitivity: 'base' }); // Case/accent-insensitive string compare
-    }
-    if (typeof a === 'string') return -1; // A is string, B is not (and not blank/number/date): A is "smaller"
-    if (typeof b === 'string') return 1;  // B is string, A is not (and not blank/number/date): B is "smaller"
+  // 3. Strings
+  if (typeof a === 'string' && typeof b === 'string') {
+    return a.localeCompare(b, undefined, { sensitivity: 'base' }); // Case/accent-insensitive string compare
+  }
+  if (typeof a === 'string') return -1; // A is string, B is not (and not blank/number/date): A is "smaller"
+  if (typeof b === 'string') return 1;  // B is string, A is not (and not blank/number/date): B is "smaller"
 
-    // 4. Booleans
-    if (typeof a === 'boolean' && typeof b === 'boolean') {
-        return (a === b) ? 0 : (a ? 1 : -1); // false < true
-    }
-    // If 'a' is boolean and 'b' is not (and not handled by earlier types), 'a' is "smaller"
-    if (typeof a === 'boolean') return -1;
-    // If 'b' is boolean and 'a' is not (and not handled by earlier types), 'b' is "smaller"
-    if (typeof b === 'boolean') return 1;
+  // 4. Booleans
+  if (typeof a === 'boolean' && typeof b === 'boolean') {
+    return (a === b) ? 0 : (a ? 1 : -1); // false < true
+  }
+  // If 'a' is boolean and 'b' is not (and not handled by earlier types), 'a' is "smaller"
+  if (typeof a === 'boolean') return -1;
+  // If 'b' is boolean and 'a' is not (and not handled by earlier types), 'b' is "smaller"
+  if (typeof b === 'boolean') return 1;
 
-    // 5. Fallback for other unhandled types (e.g., objects, arrays, functions, Errors).
-    // These typically convert to strings and sort lexicographically.
-    return String(a).localeCompare(String(b), undefined, { sensitivity: 'base' });
+  // 5. Fallback for other unhandled types (e.g., objects, arrays, functions, Errors).
+  // These typically convert to strings and sort lexicographically.
+  return String(a).localeCompare(String(b), undefined, { sensitivity: 'base' });
 }
 
 
@@ -269,3 +269,52 @@ export const sort2d = (spec, arr) => [...arr].sort((a, b) => {
 
   return 0
 })
+
+/**
+* Prepares a 2D array by repeating a source array's values to fit within a target range's dimensions.
+* This mimics the repeating behavior of SpreadsheetApp.Range.copyValuesToRange when the target is larger than the source,
+* and ensures the result is at least the size of the source if the target is smaller.
+*
+* @param {any[][]} sourceValues - The source 2D array of values.
+* @param {FakeSheetRange} targetRange - The target Apps Script Range.
+* @returns {any[][]} A 2D array with the repeated values.
+*/
+export const prepareTarget = (sourceValues, targetRange) => {
+
+  if (!isRange(targetRange)) {
+    throw new Error(`target must be a range - it's a ${is(targetRange)}`)
+  }
+  if (!sourceValues || sourceValues.length === 0 || !sourceValues[0] || sourceValues[0].length === 0) {
+    return [];
+  }
+  const sourceRows = sourceValues.length;
+  const sourceCols = sourceValues[0].length;
+
+  const targetRows = targetRange.getNumRows();
+  const targetCols = targetRange.getNumColumns();
+
+  // Calculate how many full times the source can be repeated within the target.
+  const rowMultiplier = Math.floor(targetRows / sourceRows);
+  const colMultiplier = Math.floor(targetCols / sourceCols);
+
+  // The final dimensions should be at least the source dimensions (multiplier of at least 1).
+  const finalRows = Math.max(1, rowMultiplier) * sourceRows;
+  const finalCols = Math.max(1, colMultiplier) * sourceCols;
+
+  return Array.from({ length: finalRows }, (_, rIndex) =>
+    Array.from({ length: finalCols }, (_, cIndex) => sourceValues[rIndex % sourceRows][cIndex % sourceCols])
+  );
+}
+
+export const transpose2DArray = (arr) => {
+  if (!arr || arr.length === 0 || arr[0].length === 0) return [];
+  const rows = arr.length;
+  const cols = arr[0].length;
+  const transposed = Array.from({ length: cols }, () => Array(rows).fill(undefined));
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      transposed[c][r] = arr[r][c];
+    }
+  }
+  return transposed;
+};
