@@ -46,7 +46,6 @@ export class FakeSheetRangeList {
       'setVerticalText',
       'setWrapStrategy',
       'uncheck',
-      'insertCheckboxes',
       'removeCheckboxes',
       'trimWhitespace',
       'setTextRotation',
@@ -88,6 +87,11 @@ export class FakeSheetRangeList {
   check() {
     this.__ranges.forEach(r => r.check())
     return this
+  }
+
+  insertCheckboxes(...args) {
+    this.__ranges.forEach(r => r.insertCheckboxes(...args));
+    return this;
   }
 
   setBackground (color) {

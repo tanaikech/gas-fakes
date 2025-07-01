@@ -43,6 +43,9 @@ class FakeTextStyle {
   getForegroundColorObject() {
     return this.__builder.__foregroundColorObject
   }
+  getLinkUrl() {
+    return this.__builder.__link?.uri || null
+  }
   // make a new version of this builder with the same settings
   copy() {
 
@@ -54,8 +57,8 @@ class FakeTextStyle {
     newBuilder.setFontSize(this.getFontSize())  
     newBuilder.setFontFamily(this.getFontFamily())  
     newBuilder.setForegroundColor(this.getForegroundColor())    
-    newBuilder.setForegroundColorObject(this.getForegroundColorObject())  
-    // TODO - what about link?   
+    newBuilder.setForegroundColorObject(this.getForegroundColorObject())
+    if (this.getLinkUrl()) newBuilder.__link = { uri: this.getLinkUrl() }
  
     return newBuilder
 

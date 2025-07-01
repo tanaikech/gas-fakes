@@ -31,7 +31,6 @@ export const makeTextStyleFromApi = (apiResult) => {
     italic = null,
     underline = null,
     strikethrough = null,
-    // need to see what's going on here 
     link = null
   } = apiResult || {}
 
@@ -45,7 +44,7 @@ export const makeTextStyleFromApi = (apiResult) => {
   builder.setItalic(italic)
   builder.setUnderline(underline)
   builder.setStrikethrough(strikethrough)
-
+  if (link?.uri) builder.__link = { uri: link.uri }
 
   // the API appears to return both an rgb and a style
   // the builder should sort out any conflicts between the hex value and the color object provided
@@ -105,7 +104,6 @@ class FakeTextStyleBuilder {
     this.__foregroundColor = null
     this.__fontFamily = null
     this.__fontSize = null
-    // doesn't seem to be a way to get this one
     this.__link = null
     this.__foregroundColorObject = null
 
@@ -275,4 +273,3 @@ class FakeTextStyleBuilder {
 
 
 }
-

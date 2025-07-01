@@ -1,5 +1,6 @@
 import { Proxies } from '../../support/proxies.js'
 import { FakeSheet } from './fakesheet.js'
+import { newFakeBanding } from './fakebanding.js';
 import { SheetUtils } from '../../support/sheetutils.js'
 import { Utils } from '../../support/utils.js'
 import { setterList, attrGetList, valuesGetList, setterMaker, attrGens, valueGens, makeCellTextFormatData } from './sheetrangemakers.js'
@@ -13,16 +14,16 @@ import {
   fillRange,
   arrMatchesRange,
   isACheckbox,
-  makeExtendedValue
+  makeExtendedValue,
+  bandingThemeMap
 } from "./sheetrangehelpers.js"
-import { TextToColumnsDelimiter } from '../enums/sheetsenums.js'
 
-const { is, rgbToHex, hexToRgb, stringer, outsideInt, capital, BLACKER, getEnumKeys } = Utils
+import { TextToColumnsDelimiter, Direction, Dimension } from '../enums/sheetsenums.js'
 
+const { is, rgbToHex, hexToRgb, stringer, outsideInt, capital, BLACKER, getEnumKeys, isEnum } = Utils
 import { notYetImplemented, signatureArgs } from '../../support/helpers.js'
 import { FakeSpreadsheet } from './fakespreadsheet.js'
 import { FakeDataValidation } from './fakedatavalidation.js'
-import { isEnum } from '../../../test/testassist.js'
 
 //TODO - deal with r1c1 style ranges
 
@@ -78,13 +79,9 @@ export class FakeSheetRange {
       'createDataSourcePivotTable',
       'activate',
       'breakApart',
-      'deleteCells',
-      'getNextDataCell',
-      'getDataRegion',
       'getFormulaR1C1',
       'getFormulasR1C1',
       'getDataSourceFormula',
-      'insertCells',
 
       'setFormulaR1C1',
       'setFormulasR1C1',
@@ -103,34 +100,20 @@ export class FakeSheetRange {
       'autoFillToNeighbor',
       'setShowHyperlink',
 
-      'applyColumnBanding',
-      'applyRowBanding',
-
       'createPivotTable',
       'createDataSourceTable',
       'shiftRowGroupDepth',
       'shiftColumnGroupDepth',
       'expandGroups',
       'collapseGroups',
-      'getRichTextValue',
-      'getRichTextValues',
-      'setRichTextValue',
-      'setRichTextValues',
-
-      'insertCheckboxes',
-
-
       'getComments',
       'clearComment',
-      'getBandings',
       'addDeveloperMetadata',
       'getDeveloperMetadata',
       'createTextFinder',
       'moveTo',
       'setNotes',
       'setNote',
-
-      'createFilter',
       'getDataSourceFormulas',
       'getDataSourceTables',
 
@@ -165,6 +148,74 @@ export class FakeSheetRange {
         apiSetter: f.apiSetter || 'set' + capital(f.single || f.name)
       })
     })
+  }
+
+  applyRowBanding(bandingTheme, header, footer) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.applyRowBanding");
+    if (nargs > 3) matchThrow();
+    if (nargs >= 1 && !is.undefined(bandingTheme) && !isEnum(bandingTheme)) matchThrow();
+    if (nargs >= 2 && !is.undefined(header) && !is.boolean(header)) matchThrow();
+    if (nargs >= 3 && !is.undefined(footer) && !is.boolean(footer)) matchThrow();
+
+    return this.__applyBanding({
+      dimension: 'ROWS',
+      bandingTheme,
+      header,
+      footer
+    });
+  }
+
+  applyColumnBanding(bandingTheme, header, footer) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.applyColumnBanding");
+    if (nargs > 3) matchThrow();
+    if (nargs >= 1 && !is.undefined(bandingTheme) && !isEnum(bandingTheme)) matchThrow();
+    if (nargs >= 2 && !is.undefined(header) && !is.boolean(header)) matchThrow();
+    if (nargs >= 3 && !is.undefined(footer) && !is.boolean(footer)) matchThrow();
+
+    return this.__applyBanding({
+      dimension: 'COLUMNS',
+      bandingTheme,
+      header,
+      footer
+    });
+  }
+
+  __applyBanding({ dimension, bandingTheme, header, footer }) {
+    const themeName = bandingTheme ? bandingTheme.toString() : 'LIGHT_GREY';
+    const theme = bandingThemeMap[themeName] || bandingThemeMap.LIGHT_GREY;
+
+    const bandedRange = Sheets.newBandedRange().setRange(makeSheetsGridRange(this));
+    const properties = Sheets.newBandingProperties();
+
+    if (header) properties.setHeaderColorStyle(theme.header);
+    if (footer) properties.setFooterColorStyle(theme.footer);
+
+    properties.setFirstBandColorStyle(theme.first);
+    properties.setSecondBandColorStyle(theme.second);
+
+    if (dimension === 'ROWS') {
+      bandedRange.setRowProperties(properties);
+    } else {
+      bandedRange.setColumnProperties(properties);
+    }
+
+    const request = { addBanding: { bandedRange } };
+    const response = batchUpdate({ spreadsheetId: this.__getSpreadsheetId(), requests: [request] });
+    const newBandedRange = response.replies[0].addBanding.bandedRange;
+    this.__getSpreadsheet().__disruption();
+    return newFakeBanding(newBandedRange, this.getSheet());
+  }
+
+  getBandings() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.getBandings");
+    if (nargs > 0) matchThrow();
+    const sheet = this.getSheet();
+    const sheetMeta = sheet.getParent().__getMetaProps(`sheets(bandedRanges,properties.sheetId)`);
+    const thisSheetMeta = sheetMeta.sheets.find(s => s.properties.sheetId === sheet.getSheetId());
+    const allBandingsOnSheet = thisSheetMeta.bandedRanges || [];
+    const thisGridRange = makeGridRange(this);
+    const intersectingBandings = allBandingsOnSheet.filter(b => b.range.sheetId === thisGridRange.sheetId && Math.max(0, Math.min(thisGridRange.endColumnIndex, b.range.endColumnIndex) - Math.max(thisGridRange.startColumnIndex, b.range.startColumnIndex)) > 0 && Math.max(0, Math.min(thisGridRange.endRowIndex, b.range.endRowIndex) - Math.max(thisGridRange.startRowIndex, b.range.startRowIndex)) > 0);
+    return intersectingBandings.map(b => newFakeBanding(b, sheet));
   }
 
   /**
@@ -250,9 +301,79 @@ export class FakeSheetRange {
     return this
   }
 
+  /**
+   * insertCells(shiftDimension) https://developers.google.com/apps-script/reference/spreadsheet/range#insertcellsshiftdimension
+   * Inserts a blank cell or cells into the range, shifting other cells to accommodate the new cells.
+   * @param {Dimension} shiftDimension The dimension to shift the cells.
+   * @returns {FakeSheetRange} self
+   */
+  insertCells(shiftDimension) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.insertCells");
+    if (nargs !== 1 || !isEnum(shiftDimension)) matchThrow();
+
+    const request = Sheets.newInsertRangeRequest()
+      .setRange(makeSheetsGridRange(this))
+      .setShiftDimension(shiftDimension.toString());
+
+    batchUpdate({
+      spreadsheetId: this.__getSpreadsheetId(),
+      requests: [{ insertRange: request }]
+    });
+
+    return this;
+  }
+
+  /**
+   * createFilter() https://developers.google.com/apps-script/reference/spreadsheet/range#createfilter
+   * Creates a new filter and applies it to the range.
+   * @returns {FakeFilter}
+   */
+  createFilter() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.createFilter");
+    if (nargs) matchThrow();
+
+    const sheet = this.getSheet();
+    if (sheet.getFilter()) {
+      throw new Error("You can't create a filter in a sheet that already has a filter.");
+    }
+
+    const request = {
+      setBasicFilter: {
+        filter: {
+          range: makeSheetsGridRange(this)
+        }
+      }
+    };
+
+    batchUpdate({ spreadsheetId: this.__getSpreadsheetId(), requests: [request] });
+    this.__getSpreadsheet().__disruption();
+    return sheet.getFilter();
+  }
   clearDataValidations() {
     this.setDataValidations(null)
     return this
+  }
+
+  /**
+   * deleteCells(shiftDimension) https://developers.google.com/apps-script/reference/spreadsheet/range#deletecellsshiftdimension
+   * Deletes the cells in the range, shifting the remaining cells into the space formerly occupied by the deleted cells.
+   * @param {Dimension} shiftDimension The dimension from which deleted cells will be replaced with.
+   * @returns {FakeSheetRange} self
+   */
+  deleteCells(shiftDimension) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.deleteCells");
+    if (nargs !== 1 || !isEnum(shiftDimension)) matchThrow();
+
+    const request = Sheets.newDeleteRangeRequest()
+      .setRange(makeSheetsGridRange(this))
+      .setShiftDimension(shiftDimension.toString());
+
+    batchUpdate({
+      spreadsheetId: this.__getSpreadsheetId(),
+      requests: [{ deleteRange: request }]
+    });
+
+    return this;
   }
 
   /**
@@ -544,6 +665,182 @@ export class FakeSheetRange {
   }
 
   /**
+   * getDataRegion() https://developers.google.com/apps-script/reference/spreadsheet/range#getdataregion
+   * Returns the data region for a given range. The data region is a range of cells that are considered contiguous and are bounded by empty cells.
+   * @param {Dimension} [dimension] The dimension to search.
+   * @returns {FakeSheetRange} The data region.
+   */
+  getDataRegion(dimension) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.getDataRegion");
+
+    if (nargs > 1) matchThrow();
+    if (nargs === 1 && !isEnum(dimension)) matchThrow();
+
+    const sheet = this.getSheet();
+    const maxRows = sheet.getMaxRows();
+    const maxCols = sheet.getMaxColumns();
+    const allValues = sheet.getRange(1, 1, maxRows, maxCols).getValues();
+
+    const isCellBlank = (r, c) => {
+      if (r < 0 || r >= maxRows || c < 0 || c >= maxCols) return true;
+      if (r >= allValues.length || !allValues[r] || c >= allValues[r].length) return true;
+      const val = allValues[r][c];
+      return val === '' || val === null;
+    };
+
+    let searchR = -1;
+    let searchC = -1;
+
+    const startRow0 = this.getRow() - 1;
+    const endRow0 = this.getLastRow() - 1;
+    const startCol0 = this.getColumn() - 1;
+    const endCol0 = this.getLastColumn() - 1;
+
+    // 1. Search for a cell with data within the given range.
+    for (let r = startRow0; r <= endRow0 && searchR === -1; r++) {
+      for (let c = startCol0; c <= endCol0; c++) {
+        if (!isCellBlank(r, c)) {
+          searchR = r;
+          searchC = c;
+          break;
+        }
+      }
+    }
+    const wasStartingRangeBlank = searchR === -1;
+
+    // 2. If no data in range, search the immediate border of the range.
+    if (searchR === -1) {
+      if (startRow0 > 0) for (let c = startCol0; c <= endCol0; c++) if (!isCellBlank(startRow0 - 1, c)) { searchR = startRow0 - 1; searchC = c; break }
+      if (searchR === -1 && endRow0 < maxRows - 1) for (let c = startCol0; c <= endCol0; c++) if (!isCellBlank(endRow0 + 1, c)) { searchR = endRow0 + 1; searchC = c; break }
+      if (searchR === -1 && startCol0 > 0) for (let r = startRow0; r <= endRow0; r++) if (!isCellBlank(r, startCol0 - 1)) { searchR = r; searchC = startCol0 - 1; break }
+      if (searchR === -1 && endCol0 < maxCols - 1) for (let r = startRow0; r <= endCol0; r++) if (!isCellBlank(r, endCol0 + 1)) { searchR = r; searchC = endCol0 + 1; break }
+    }
+
+    // 3. If still no data found, the range is isolated.
+    if (searchR === -1) {
+      return this.offset(0, 0, 1, 1);
+    }
+
+    // 4. Iteratively expand from the found data cell to find the full contiguous region.
+    let top = searchR; let bottom = searchR; let left = searchC; let right = searchC;
+    let changed = true;
+    while (changed) {
+      changed = false;
+      // expand up
+      if (top > 0 && Array.from({ length: right - left + 1 }, (_, i) => left + i).some(c => !isCellBlank(top - 1, c))) { top--; changed = true; }
+      // expand down
+      if (bottom < maxRows - 1 && Array.from({ length: right - left + 1 }, (_, i) => left + i).some(c => !isCellBlank(bottom + 1, c))) { bottom++; changed = true; }
+      // expand left
+      if (left > 0 && Array.from({ length: bottom - top + 1 }, (_, i) => top + i).some(r => !isCellBlank(r, left - 1))) { left--; changed = true; }
+      // expand right
+      if (right < maxCols - 1 && Array.from({ length: bottom - top + 1 }, (_, i) => top + i).some(r => !isCellBlank(r, right + 1))) { right++; changed = true; }
+    }
+
+    if (!dimension) {
+      if (wasStartingRangeBlank) {
+        const unionTop = Math.min(startRow0, top);
+        const unionLeft = Math.min(startCol0, left);
+        const unionBottom = Math.max(endRow0, bottom);
+        const unionRight = Math.max(endCol0, right);
+        return sheet.getRange(unionTop + 1, unionLeft + 1, unionBottom - unionTop + 1, unionRight - unionLeft + 1);
+      }
+      return sheet.getRange(top + 1, left + 1, bottom - top + 1, right - left + 1);
+    }
+
+    if (dimension === SpreadsheetApp.Dimension.ROWS) {
+      return sheet.getRange(top + 1, this.getColumn(), bottom - top + 1, this.getNumColumns());
+    }
+
+    if (dimension === SpreadsheetApp.Dimension.COLUMNS) {
+      return sheet.getRange(this.getRow(), left + 1, this.getNumRows(), right - left + 1);
+    }
+
+    // should not be reached due to arg checks
+    matchThrow();
+  }
+  /**
+   * getNextDataCell(direction) https://developers.google.com/apps-script/reference/spreadsheet/range#getnextdatacelldirection
+   * Returns the cell a given number of rows and columns away from the current cell.
+   * @param {Direction} direction The direction from the current cell to find the next data cell.
+   * @returns {FakeSheetRange} The next data cell.
+   */
+  getNextDataCell(direction) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.getNextDataCell");
+    if (nargs !== 1 || !isEnum(direction)) matchThrow();
+
+    const sheet = this.getSheet();
+    const startCell = this.offset(0, 0, 1, 1);
+
+    const findNextData = (arr, startIndex) => {
+      const index = arr.slice(startIndex).findIndex(v => v !== '' && v !== null);
+      return index === -1 ? -1 : startIndex + index;
+    };
+    const findNextBlank = (arr, startIndex) => {
+      const index = arr.slice(startIndex).findIndex(v => v === '' || v === null);
+      return index === -1 ? -1 : startIndex + index;
+    };
+
+    const getTargetOffset = (values) => {
+      if (!values || values.length === 0) return 0;
+      const isStartCellEmpty = (values[0] === '' || values[0] === null);
+
+      if (isStartCellEmpty) {
+        const nextDataIndex = findNextData(values, 0);
+        return (nextDataIndex === -1) ? values.length - 1 : nextDataIndex;
+      } else {
+        if (values.length === 1) return 0; // At the edge of the sheet already
+        const nextCellIsEmpty = (values[1] === '' || values[1] === null);
+        if (nextCellIsEmpty) {
+          const nextDataIndex = findNextData(values, 1);
+          return (nextDataIndex === -1) ? values.length - 1 : nextDataIndex;
+        } else {
+          const firstBlankIndex = findNextBlank(values, 1);
+          return (firstBlankIndex === -1) ? values.length - 1 : firstBlankIndex - 1;
+        }
+      }
+    };
+
+    const startRow = startCell.getRow();
+    const startCol = startCell.getColumn();
+
+    switch (direction) {
+      case Direction.DOWN: {
+        const maxRows = sheet.getMaxRows();
+        if (startRow === maxRows) return startCell;
+        const values = sheet.getRange(startRow, startCol, maxRows - startRow + 1, 1).getValues().flat();
+        const offset = getTargetOffset(values);
+        return sheet.getRange(startRow + offset, startCol);
+      }
+
+      case Direction.UP: {
+        if (startRow === 1) return startCell;
+        const values = sheet.getRange(1, startCol, startRow, 1).getValues().flat().reverse();
+        const offset = getTargetOffset(values);
+        return sheet.getRange(startRow - offset, startCol);
+      }
+
+      case Direction.NEXT: {
+        const maxCols = sheet.getMaxColumns();
+        if (startCol === maxCols) return startCell;
+        const values = sheet.getRange(startRow, startCol, 1, maxCols - startCol + 1).getValues()[0];
+        const offset = getTargetOffset(values);
+        return sheet.getRange(startRow, startCol + offset);
+      }
+
+      case Direction.PREVIOUS: {
+        if (startCol === 1) return startCell;
+        const values = sheet.getRange(startRow, 1, 1, startCol).getValues()[0].reverse();
+        const offset = getTargetOffset(values);
+        return sheet.getRange(startRow, startCol - offset);
+      }
+
+      default:
+        // Should be caught by isEnum check, but as a fallback.
+        matchThrow();
+    }
+  }
+
+  /**
    * check() https://developers.google.com/apps-script/reference/spreadsheet/range#check
    * Checks the checkbox data validation rule in the range. The range must be composed of cells with a checkbox data validation rule.
    * @returns {FakeSheetRange} self
@@ -598,6 +895,29 @@ export class FakeSheetRange {
     }
 
     return this;
+  }
+  /**
+   * insertCheckboxes() https://developers.google.com/apps-script/reference/spreadsheet/range#insertcheckboxes
+   * Inserts checkboxes into the range. If the range already has data validation, the data validation is removed.
+   * @param {string} [checkedValue] The custom value for a checked box.
+   * @param {string} [uncheckedValue] The custom value for an unchecked box.
+   * @returns {FakeSheetRange} self
+   */
+  insertCheckboxes(checkedValue, uncheckedValue) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.insertCheckboxes");
+    if (nargs > 2) matchThrow();
+
+    const builder = SpreadsheetApp.newDataValidation();
+
+    if (nargs === 0) {
+      builder.requireCheckbox();
+    } else if (nargs === 1) {
+      builder.requireCheckbox(checkedValue);
+    } else { // nargs === 2
+      builder.requireCheckbox(checkedValue, uncheckedValue);
+    }
+
+    return this.setDataValidation(builder.build());
   }
   /**
    * randomize() https://developers.google.com/apps-script/reference/spreadsheet/range#randomize

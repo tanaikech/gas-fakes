@@ -3,7 +3,9 @@ import { newFakeSpreadsheet } from './fakespreadsheet.js'
 import { notYetImplemented, minSheetFields, signatureArgs } from '../../support/helpers.js'
 import { Utils } from "../../support/utils.js"
 import { newFakeColorBuilder } from '../commonclasses/fakecolorbuilder.js'
+import { newFakeRichTextValueBuilder } from '../commonclasses/fakerichtextvalue.js'
 import { newFakeTextStyleBuilder } from '../commonclasses/faketextstylebuilder.js'
+import { newFakeFilterCriteriaBuilder } from './fakefiltercriteriabuilder.js'
 import { newFakeDataValidationBuilder } from './fakedatavalidationbuilder.js'
 
 
@@ -90,9 +92,6 @@ export class FakeSpreadsheetApp {
       'setCurrentCell',
       'setActiveRange',
       'setActiveRangeList',
-
-      'newRichTextValue',
-      'newFilterCriteria',
       'newDataSourceSpec',
       'newCellImage',
       'getUi',
@@ -203,5 +202,21 @@ export class FakeSpreadsheetApp {
     return newFakeDataValidationBuilder()
   }
 
+  /**
+   * newRichTextValue() https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#newrichtextvalue
+   * Creates a builder for a RichTextValue.
+   * @returns {FakeRichTextValueBuilder}
+   */
+  newRichTextValue () {
+    return newFakeRichTextValueBuilder()
+  }
+
+  /**
+   * newFilterCriteria() https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#newfiltercriteria
+   * @returns {FakeFilterCriteriaBuilder}
+   */
+  newFilterCriteria() {
+    return newFakeFilterCriteriaBuilder();
+  }
 
 }

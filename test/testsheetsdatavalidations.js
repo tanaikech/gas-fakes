@@ -108,6 +108,36 @@ export const testSheetsDataValidations = (pack) => {
     })
     check()
   }
+  unit.section("inserting checkboxes", t => {
+    const { sheet } = maketss('insert_checkbox_tests', toTrash, fixes);
+
+    // --- Test 1: insertCheckboxes() with no arguments ---
+    const range1 = sheet.getRange("A1:A2");
+    range1.insertCheckboxes();
+    const dv1 = range1.getDataValidation();
+    t.is(dv1.getCriteriaType().toString(), "CHECKBOX", "Default checkbox criteria type should be CHECKBOX");
+    t.deepEqual(dv1.getCriteriaValues(), [], "Default checkbox should have no custom values");
+
+    // --- Test 2: insertCheckboxes(checkedValue) ---
+    const range2 = sheet.getRange("B1:B2");
+    range2.insertCheckboxes("DONE");
+    const dv2 = range2.getDataValidation();
+    t.is(dv2.getCriteriaType().toString(), "CHECKBOX", "Custom checked value criteria type should be CHECKBOX");
+    t.deepEqual(dv2.getCriteriaValues(), ["DONE"], "Custom checked value should be set");
+
+    // --- Test 3: insertCheckboxes(checkedValue, uncheckedValue) ---
+    const range3 = sheet.getRange("C1:C2");
+    range3.insertCheckboxes("YES", "NO");
+    const dv3 = range3.getDataValidation();
+    t.is(dv3.getCriteriaType().toString(), "CHECKBOX", "Custom values criteria type should be CHECKBOX");
+    t.deepEqual(dv3.getCriteriaValues(), ["YES", "NO"], "Custom checked and unchecked values should be set");
+
+    // --- Test 4: Overwriting existing validation ---
+    const range4 = sheet.getRange("D1").setDataValidation(SpreadsheetApp.newDataValidation().requireNumberEqualTo(5).build());
+    t.is(range4.insertCheckboxes().getDataValidation().getCriteriaType().toString(), "CHECKBOX", "Should overwrite existing data validation");
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+  });
 
   unit.section("unchecking checkboxes", t => {
     const { sheet } = maketss('uncheck_tests', toTrash, fixes);

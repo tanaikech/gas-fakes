@@ -7,19 +7,130 @@ import {
   updateCells,
   makeSheetsGridRange,
   batchUpdate,
-  isTextRotation
+  isTextRotation,
+  isRichTextValue,
+  makeExtendedValue
 } from "./sheetrangehelpers.js"
 import { signatureArgs } from '../../support/helpers.js'
 import { newFakeBorders } from '../commonclasses/fakeborders.js'
 import { makeColorFromApi } from '../commonclasses/fakecolorbuilder.js'
 import { newFakeWrapStrategy, isWrapped } from '../commonclasses/fakewrapstrategy.js'
+import { newFakeRichTextValue } from '../commonclasses/fakerichtextvalue.js'
+import { newFakeRun } from '../commonclasses/fakerun.js'
 import { newFakeTextRotation } from '../commonclasses/faketextrotation.js'
 import { makeTextStyleFromApi } from '../commonclasses/faketextstylebuilder.js'
+import { newFakeColorBuilder } from '../commonclasses/fakecolorbuilder.js'
 import { newFakeTextDirection } from '../commonclasses/faketextdirection.js'
 import { makeDataValidationFromApi } from "./fakedatavalidationbuilder.js"
 import { TextDirection } from '../enums/sheetsenums.js'
 import { getWrapApiStrategyProp } from '../commonclasses/fakewrapstrategy.js'
 
+const makeRichTextValueFromApi = (cellData, range) => {
+  if (!cellData?.effectiveValue?.stringValue) {
+    return newFakeRichTextValue('', [])
+  }
+  const text = cellData.effectiveValue.stringValue
+  const allApiRuns = cellData.textFormatRuns || []
+
+  // In Apps Script, even plain text has one run with the default style.
+  if (!allApiRuns.length) {
+    const defaultStyle = makeTextStyleFromApi(cellData.effectiveFormat?.textFormat || {})
+    return newFakeRichTextValue(text, text ? [newFakeRun(0, text.length, defaultStyle)] : [])
+  }
+
+  const runs = []
+  for (let i = 0; i < allApiRuns.length; i++) {
+    const apiRun = allApiRuns[i];
+    const startIndex = apiRun.startIndex || 0;
+    const endIndex = (i + 1 < allApiRuns.length) ? allApiRuns[i + 1].startIndex : text.length;
+    // An empty format object means the run has the default cell style.
+    const textStyle = makeTextStyleFromApi(apiRun.format || {});
+    if (startIndex < endIndex) runs.push(newFakeRun(startIndex, endIndex, textStyle));
+  }
+  return newFakeRichTextValue(text, runs)
+}
+
+const makeApiTextFormatFromTextStyle = (textStyle) => {
+  const t = Sheets.newTextFormat();
+  if (is.null(textStyle)) {
+    // An empty format object represents the default style.
+    return {};
+  }
+
+  const bold = textStyle.isBold();
+  if (!is.null(bold)) t.setBold(bold);
+
+  const italic = textStyle.isItalic();
+  if (!is.null(italic)) t.setItalic(italic);
+
+  const fontFamily = textStyle.getFontFamily();
+  if (!is.null(fontFamily)) t.setFontFamily(fontFamily);
+
+  const fontSize = textStyle.getFontSize();
+  if (!is.null(fontSize)) t.setFontSize(fontSize);
+
+  const strikethrough = textStyle.isStrikethrough();
+  if (!is.null(strikethrough)) t.setStrikethrough(strikethrough);
+
+  const underline = textStyle.isUnderline();
+  if (!is.null(underline)) t.setUnderline(underline);
+
+  const linkUrl = textStyle.getLinkUrl();
+  if (linkUrl) t.setLink(Sheets.newLink().setUri(linkUrl));
+
+  const cob = textStyle.getForegroundColorObject()
+  if (!is.null(cob)) {
+    t.setForegroundColorStyle(detectColorStyle(cob));
+    // also set the deprecated field for good measure if it's an RGB color
+    if (cob.getColorType().toString() === 'RGB') {
+      t.setForegroundColor(hexToRgb(cob.asRgbColor().asHexString()));
+    }
+  }
+  return t;
+}
+
+const makeCellDataFromRichTextValue = (richTextValue) => {
+  if (!isRichTextValue(richTextValue)) return Sheets.newCellData()
+
+  const runs = richTextValue.getRuns() || [];
+  const text = richTextValue.getText();
+
+  // If there's a single run covering the entire text, treat it as cell-level formatting.
+  if (runs.length === 1 && runs[0].getStartIndex() === 0 && runs[0].getEndIndex() === text.length) {
+    const textStyle = runs[0].getTextStyle();
+    const textFormat = makeApiTextFormatFromTextStyle(textStyle);
+    return Sheets.newCellData()
+      .setUserEnteredValue(makeExtendedValue(text))
+      .setUserEnteredFormat(Sheets.newCellFormat().setTextFormat(textFormat));
+  }
+
+  // Create a map of indices to formats.
+  // An index with `null` format means "reset to default".
+  const formatChanges = new Map();
+
+  for (const run of runs) {
+    // Don't overwrite an existing format at the same start index
+    if (!formatChanges.has(run.getStartIndex())) {
+      formatChanges.set(run.getStartIndex(), run.getTextStyle());
+    }
+    // Set a reset point at the end of the run, if not already handled
+    if (!formatChanges.has(run.getEndIndex())) {
+      formatChanges.set(run.getEndIndex(), null);
+    }
+  }
+
+  // Get sorted unique indices
+  const sortedIndices = [...formatChanges.keys()].sort((a, b) => a - b);
+
+  const textFormatRuns = sortedIndices
+    .filter(index => index < text.length) // Don't create a run past the end of the text
+    .map(startIndex => {
+      const textStyle = formatChanges.get(startIndex);
+      return Sheets.newTextFormatRun().setFormat(makeApiTextFormatFromTextStyle(textStyle)).setStartIndex(startIndex);
+    });
+
+  return Sheets.newCellData().setUserEnteredValue(makeExtendedValue(richTextValue.getText())).setTextFormatRuns(textFormatRuns);
+}
 const { getPlucker, is, robToHex, WHITER, BLACKER, hexToRgb, getEnumKeys } = Utils
 
 const extractPattern = (response) => {
@@ -37,8 +148,8 @@ export const setterList = [{
   nullAllowed: true,
   maker: (_, value) => {
     const p = is.boolean(value)
-    ? getWrapApiStrategyProp (value ? "WRAP" : "OVERFLOW") 
-    : null
+      ? getWrapApiStrategyProp(value ? "WRAP" : "OVERFLOW")
+      : null
     return makeCellData('setWrapStrategy', p)
   },
   fields: 'userEnteredFormat.wrapStrategy',
@@ -173,6 +284,13 @@ export const setterList = [{
   plural: 'setFontFamilies',
   type: "string",
   nullAllowed: true,
+}, {
+  name: 'richTextValue',
+  type: "object",
+  nullAllowed: true,
+  maker: (_, value) => makeCellDataFromRichTextValue(value),
+  fields: 'userEnteredValue,textFormatRuns,userEnteredFormat',
+  typeChecker: isRichTextValue
 }]
 
 // this is a list of all the range format getters and how to generate them
@@ -334,8 +452,12 @@ export const attrGetList = [{
     // this one allows a null to be returned of there's nothing
     // but it's not what happens in the case of getDataValidations
     return (is.array(a) && a.flat(Infinity).every(f => is.null(f))) ? null : a
-  }
-    */
+  */}, {
+  name: 'getRichTextValue',
+  props: '(effectiveValue,textFormatRuns)', // special case
+  defaultValue: null,
+  cleaner: makeRichTextValueFromApi,
+  plural: 'getRichTextValues'
 }]
 
 export const valuesGetList = [{
@@ -414,6 +536,21 @@ export const attrGens = (self, target) => {
 
   // shared function to get attributes that use spreadsheets.get
   const getRowDataAttribs = ({ range = self, props, defaultValue, cleaner }) => {
+    // special case for rich text
+    if (props === '(effectiveValue,textFormatRuns)') {
+      const { sheets } = Sheets.Spreadsheets.get(spreadsheetId, {
+        ranges: [self.__getRangeWithSheet(range)],
+        fields: `sheets.data.rowData.values(effectiveValue,textFormatRuns,formattedValue,effectiveFormat)`
+      })
+      const { rowData } = sheets[0]?.data[0] || {}
+      if (!rowData) return makeTemplate({ range, defaultValue, cleaner: () => cleaner(null, range) })
+
+      const cleaned = rowData.map(row => (row.values || []).map(col => cleaner(col, range)))
+      if (!isJagged({ cleaned, range })) return cleaned
+
+      const template = makeTemplate({ range, defaultValue, cleaner: () => cleaner(null, range) })
+      return fixJagged({ template, cleaned })
+    }
 
     // get the collection of rows with data for the required properties
     const { sheets } = Sheets.Spreadsheets.get(spreadsheetId, {
@@ -685,4 +822,3 @@ const makeRepeatRequest = (range, cellData, fields) => {
     .setFields(fields)
   return request
 }
-

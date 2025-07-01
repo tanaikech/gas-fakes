@@ -1,6 +1,93 @@
 import { Utils } from '../../support/utils.js'
 const { is, hexToRgb } = Utils
 
+export const bandingThemeMap = {
+  LIGHT_GREY: {
+    header: { rgbColor: hexToRgb('#bdbdbd') },
+    first: { rgbColor: hexToRgb('#ffffff') },
+    second: { rgbColor: hexToRgb('#f3f3f3') },
+    footer: { rgbColor: hexToRgb('#dedede') },
+  },
+  CYAN: {
+    header: { rgbColor: hexToRgb('#4dd0e1') },
+    first: { rgbColor: hexToRgb('#ffffff') },
+    second: { rgbColor: hexToRgb('#e0f7fa') },
+    footer: { rgbColor: hexToRgb('#a2e8f1') },
+  },
+  GREEN: {
+    header: { rgbColor: hexToRgb('#63d297') },
+    first: { rgbColor: hexToRgb('#ffffff') },
+    second: { rgbColor: hexToRgb('#e7f9ef') },
+    footer: { rgbColor: hexToRgb('#afe9ca') },
+  },
+  YELLOW: {
+    header: { rgbColor: hexToRgb('#f7cb4d') },
+    first: { rgbColor: hexToRgb('#ffffff') },
+    second: { rgbColor: hexToRgb('#fef8e3') },
+    footer: { rgbColor: hexToRgb('#fce8b2') },
+  },
+  ORANGE: {
+    header: { rgbColor: hexToRgb('#f46524') },
+    first: { rgbColor: hexToRgb('#ffffff') },
+    second: { rgbColor: hexToRgb('#ffe6dd') },
+    footer: { rgbColor: hexToRgb('#ffccbc') },
+  },
+  BLUE: {
+    header: { rgbColor: hexToRgb('#5b95f9') },
+    first: { rgbColor: hexToRgb('#ffffff') },
+    second: { rgbColor: hexToRgb('#e8f0fe') },
+    footer: { rgbColor: hexToRgb('#acc9fe') },
+  },
+  TEAL: {
+    header: { rgbColor: hexToRgb('#26a69a') },
+    first: { rgbColor: hexToRgb('#ffffff') },
+    second: { rgbColor: hexToRgb('#ddf2f0') },
+    footer: { rgbColor: hexToRgb('#8cd3cd') },
+  },
+  GREY: {
+    header: { rgbColor: hexToRgb('#78909c') },
+    first: { rgbColor: hexToRgb('#ffffff') },
+    second: { rgbColor: hexToRgb('#ebeff1') },
+    footer: { rgbColor: hexToRgb('#bbc8ce') },
+  },
+  BROWN: {
+    header: { rgbColor: hexToRgb('#cca677') },
+    first: { rgbColor: hexToRgb('#ffffff') },
+    second: { rgbColor: hexToRgb('#f8f2eb') },
+    footer: { rgbColor: hexToRgb('#e6d3ba') },
+  },
+  LIGHT_GREEN: {
+    header: { rgbColor: hexToRgb('#8bc34a') },
+    first: { rgbColor: hexToRgb('#ffffff') },
+    second: { rgbColor: hexToRgb('#eef7e3') },
+    footer: { rgbColor: hexToRgb('#c4e2a0') },
+  },
+  INDIGO: {
+    header: { rgbColor: hexToRgb('#8989eb') },
+    first: { rgbColor: hexToRgb('#ffffff') },
+    second: { rgbColor: hexToRgb('#e8e7fc') },
+    footer: { rgbColor: hexToRgb('#c4c3f7') },
+  },
+  PINK: {
+    header: { rgbColor: hexToRgb('#e91d63') },
+    first: { rgbColor: hexToRgb('#ffffff') },
+    second: { rgbColor: hexToRgb('#fddce8') },
+    footer: { rgbColor: hexToRgb('#f68ab0') },
+  },
+};
+
+export const defaultThemeColors = {
+  TEXT: '#000000',
+  BACKGROUND: '#ffffff',
+  ACCENT1: '#4285f4',
+  ACCENT2: '#34a853',
+  ACCENT3: '#fbbc04',
+  ACCENT4: '#ea4335',
+  ACCENT5: '#9c27b0',
+  ACCENT6: '#ff6d00',
+  LINK: '#1a0dab',
+  UNSUPPORTED: null,
+};
 
 export const getGridRange = (range) => {
   if (!isRange(range)) {
@@ -34,6 +121,7 @@ export const updateCells = ({ range, rows, fields, spreadsheetId }) => {
 export const isRange = (a) => is.object(a) && !is.null(a) && is.function(a.toString) && a.toString() === "Range"
 export const isColor = (a) => is.object(a) && !is.null(a) && is.function(a.toString) && a.toString() === "Color"
 export const isTextRotation = (a) => is.object(a) && !is.null(a) && is.function(a.getAngle) 
+export const isRichTextValue = (a) => is.object(a) && !is.null(a) && is.function(a.toString) && a.toString() === "RichTextValue"
 export const isACheckbox = (cell) => is.nonEmptyObject(cell) && cell.getCriteriaType().toString()==="CHECKBOX"
 export const isTextStyle = (a) => is.object(a) && !is.null(a) && is.function(a.toString) && a.toString() === "TextStyle"
 export const isThemeColor = (color) =>{
@@ -122,6 +210,3 @@ export const  arrMatchesRange = (range, arr, itemType, nullOkay = false) => {
   if (itemType && !arr.flat().every(f => is[itemType](f) || (nullOkay && is.null(f)))) return false
   return true
 }
-
-
-

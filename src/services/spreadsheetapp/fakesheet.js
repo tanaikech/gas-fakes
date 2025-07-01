@@ -3,6 +3,8 @@ import { SheetUtils } from '../../support/sheetutils.js'
 import { notYetImplemented, signatureArgs } from '../../support/helpers.js'
 import { newFakeSheetRange } from './fakesheetrange.js'
 import { newFakeSheetRangeList } from './fakesheetrangelist.js'
+import { newFakeBanding } from './fakebanding.js';
+import { newFakeFilter } from './fakefilter.js'
 import { Utils } from "../../support/utils.js"
 import { newFakeProtection } from '../commonclasses/fakeprotection.js'
 const { is } = Utils
@@ -95,15 +97,12 @@ export class FakeSheet {
       'getNamedRanges',
       'getFormUrl',
 
-      'getBandings',
       'createTextFinder',
       'addDeveloperMetadata',
       'getDeveloperMetadata',
       'deleteColumns',
       'copyTo',
-  
       'setName',
-      'getFilter',
       'getImages',
       'getDataSourcePivotTables',
       'getCurrentCell',
@@ -266,6 +265,30 @@ export class FakeSheet {
     return this.clear({ formatOnly: true })
   }
 
+  /**
+   * getBandings() https://developers.google.com/apps-script/reference/spreadsheet/sheet#getbandings
+   * Returns all banded ranges in the sheet.
+   * @returns {FakeBanding[]}
+   */
+  getBandings() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Sheet.getBandings");
+    if (nargs > 0) matchThrow();
+    const allBandingsOnSheet = this.__sheet.bandedRanges || [];
+    return allBandingsOnSheet.map(b => newFakeBanding(b, this));
+  }
+
+  /**
+   * getFilter() https://developers.google.com/apps-script/reference/spreadsheet/sheet#getfilter
+   * Returns the filter for this sheet, or null if the sheet does not have a filter.
+   * @returns {FakeFilter|null}
+   */
+  getFilter() {
+    const { basicFilter } = this.__sheet;
+    if (!basicFilter) {
+      return null;
+    }
+    return newFakeFilter(basicFilter, this);
+  }
   /**
    * gets a grid range as per the api format
    * @returns {GridRange} gridRange 
@@ -435,8 +458,8 @@ export class FakeSheet {
       sheetId: this.getSheetId(),
       startRowIndex: row - 1,
       startColumnIndex: column - 1,
-      endRowIndex: row + (numRows || 0) - 1,
-      endColumnIndex: column + (numColumns || 0) - 1
+      endRowIndex: row + (numRows || 1) - 1,
+      endColumnIndex: column + (numColumns || 1) - 1
     }, this)
 
   }

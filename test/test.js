@@ -17,6 +17,7 @@ import { testUtilities } from './testutilities.js';
 import { testStores } from './teststores.js';
 import { testScriptApp } from './testscriptapp.js';
 import { getPerformance } from '../src/support/filecache.js';
+import { testSheetsDataValidations } from './testsheetsdatavalidations.js';
 import { getSheetsPerformance } from '../src/support/sheetscache.js';
 import { testFiddler } from './testfiddler.js';
 import { testSheetsDataValidations } from './testsheetsdatavalidations.js';
@@ -31,6 +32,8 @@ const testFakes = () => {
   // add one of these for each service being tested
   console.log ('\n----Test Enums----')
   testEnums(pack)
+  console.log ('\n----Test Sheets DataValidations----')
+  testSheetsDataValidations(pack)
   console.log ('\n----Test Sheets compat with UI----')
   testSheetsVui(pack)
   console.log ('\n----Test Sheets Sets----')

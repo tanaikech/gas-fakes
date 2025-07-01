@@ -465,7 +465,11 @@ range.copyTo(targetRange, { foo: true }) // should throw an error for invalid op
 range.copyTo (destination, SpreadsheetApp.CopyPasteType.PASTE_VALUES)   /// this can also trash formats previously set with PASTE_FORMAT
 ````
 
+#### range.banding
 
+This was a fairly convoluted section. I used gemini code assist heavily on this to do the legwork and all in all it mad a pretty decent job of it, although with the endlessly repeated updates and test refactoring it took longer from start to finish than I would have expected it to take had I done it from scratch manually as all the previous classes. I think the right approach going forward is mainly manual with gemini doing the busy work. The tests Gemini came up with were aldo far from exhaustive, and pretty much ignored edge cases, so it needed additional requests to add more robust tests. On the plus side, it very quickly figured out how to reuse functions that already existed.
+
+One big gap was the mismatch between what Apps Script regards as the details of its themes, and what Gemini expected them to be.
 
 
 #### TextRotation

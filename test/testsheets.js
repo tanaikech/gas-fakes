@@ -19,6 +19,388 @@ export const testSheets = (pack) => {
   const { unit, fixes } = pack || initTests()
   const toTrash = []
 
+  unit.section("Range.applyBanding", t => {
+    const { sheet } = maketss('banding_tests', toTrash, fixes);
+    sheet.clear();
+    sheet.getRange("A1:D10").setValues(Array(10).fill(Array(4).fill("data")));
+
+    const range = sheet.getRange("A1:D10");
+
+    // Test applyRowBanding with default theme
+    const rowBanding = range.applyRowBanding();
+    t.is(rowBanding.toString(), "Banding", "applyRowBanding should return a Banding object");
+    t.is(rowBanding.getRange().getA1Notation(), "A1:D10", "Row banding range should be correct");
+
+    // Test getBandings
+    const bandings = sheet.getBandings();
+    t.is(bandings.length, 1, "There should be one banding on the sheet");
+    t.is(bandings[0].getRange().getA1Notation(), "A1:D10", "getBandings should return the correct banding range");
+
+    // Test remove
+    rowBanding.remove();
+    t.is(sheet.getBandings().length, 0, "Banding should be removed");
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
+  });
+
+  unit.section("Range.createFilter", t => {
+    const { sheet } = maketss('filter_tests', toTrash, fixes);
+    sheet.clear();
+    sheet.getRange("A1:C5").setValues([
+      ["Header 1", "Header 2", "Header 3"],
+      ["A", 1, "X"],
+      ["B", 2, "Y"],
+      ["C", 1, "Z"],
+      ["D", 3, "X"]
+    ]);
+
+    const range = sheet.getRange("A1:C5");
+    const filter = range.createFilter();
+
+    t.is(filter.toString(), "Filter", "createFilter should return a Filter object");
+    t.is(filter.getRange().getA1Notation(), "A1:C5", "Filter range should be correct");
+
+    const sheetFilter = sheet.getFilter();
+    t.truthy(sheetFilter, "sheet.getFilter() should return the created filter");
+    t.is(sheetFilter.getRange().getA1Notation(), "A1:C5", "Sheet's filter range should be correct");
+
+    // Test that creating another filter throws an error
+    t.rxMatch(t.threw(() => sheet.getRange("A1:B2").createFilter()).message, /You can't create a filter in a sheet that already has a filter\./, "Should not be able to create a second filter");
+
+    // Test removing the filter
+    filter.remove();
+    t.is(sheet.getFilter(), null, "Filter should be null after removal");
+
+    // Test creating a filter after removing one
+    const newRange = sheet.getRange("B2:C4");
+    const newFilter = newRange.createFilter();
+    t.is(newFilter.getRange().getA1Notation(), "B2:C4", "Should be able to create a new filter after removal");
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
+  });
+
+  unit.section("Filter methods", t => {
+    const { sheet } = maketss('filter_methods_tests', toTrash, fixes);
+    sheet.clear();
+    const initialData = [
+      ["Header 1", "Header 2", "Header 3", "Header 4"],
+      ["A", 10, "X", 50],
+      ["C", 30, "Y", 20],
+      ["B", 20, "Z", 30],
+      ["D", 10, "X", 10]
+    ];
+    sheet.getRange("A1:D5").setValues(initialData);
+
+    const filter = sheet.getRange("A1:D5").createFilter();
+    t.truthy(filter, "Filter should be created");
+
+    // --- Test sort() and getSortSpec() ---
+    filter.sort(2, true); // Sort by column B, ascending
+
+    const sortedDataAsc = sheet.getRange("A2:D5").getValues();
+    const expectedSortedDataAsc = [
+      ["A", 10, "X", 50],
+      ["D", 10, "X", 10],
+      ["B", 20, "Z", 30],
+      ["C", 30, "Y", 20]
+    ];
+    t.deepEqual(sortedDataAsc, expectedSortedDataAsc, "Data should be sorted ascending by column 2");
+
+    let sortSpec = filter.getColumnSortSpec(2);
+    t.truthy(sortSpec, "getColumnSortSpec should return a SortSpec object for column 2");
+    t.is(sortSpec.getDimensionIndex(), 2, "SortSpec dimension index should be 2 (1-based)");
+    t.true(sortSpec.isAscending(), "SortSpec should be ascending");
+    t.is(sortSpec.getSortOrder().toString(), "ASCENDING", "SortSpec order should be ascending");
+    const err1 = t.threw(() => filter.getColumnSortSpec(3).getSortOrder());
+    t.rxMatch(err1.message, /Unexpected error while getting the method or property getSortOrder on object SpreadsheetApp.SortSpec\./, "getSortOrder() on an unsorted column should throw");
+
+    // Test sorting descending
+    filter.sort(3, false); // Sort by column C, descending
+    const sortedDataDesc = sheet.getRange("A2:D5").getValues();
+    const expectedSortedDataDesc = [
+      ["B", 20, "Z", 30],
+      ["C", 30, "Y", 20],
+      ["A", 10, "X", 50],
+      ["D", 10, "X", 10]
+    ];
+    t.deepEqual(sortedDataDesc, expectedSortedDataDesc, "Data should be sorted descending by column 3");
+
+    sortSpec = filter.getColumnSortSpec(3);
+    t.truthy(sortSpec, "getColumnSortSpec should now return a SortSpec object for column 3");
+    t.is(sortSpec.getDimensionIndex(), 3, "SortSpec dimension index should be 3 (1-based)");
+    t.false(sortSpec.isAscending(), "SortSpec should be descending");
+    t.is(sortSpec.getSortOrder().toString(), "DESCENDING", "SortSpec order should be descending");
+    const err2 = t.threw(() => filter.getColumnSortSpec(4).getSortOrder());
+    t.rxMatch(err2?.message || 'no error thrown', /Unexpected error while getting the method or property getSortOrder on object SpreadsheetApp.SortSpec\./, "getSortOrder() on a previously sorted column should now throw");
+
+    // --- Test set/get ColumnFilterCriteria ---
+    const criteria = SpreadsheetApp.newFilterCriteria().whenNumberGreaterThan(25).build();
+    filter.setColumnFilterCriteria(4, criteria);
+
+    const retrievedCriteria = filter.getColumnFilterCriteria(4);
+    t.truthy(retrievedCriteria, "Should retrieve filter criteria for column 4");
+    t.is(retrievedCriteria.getCriteriaType().toString(), "NUMBER_GREATER_THAN", "Criteria type should be NUMBER_GREATER_THAN");
+    t.deepEqual(retrievedCriteria.getCriteriaValues(), [25], "Criteria value should be 25");
+
+    // --- Test removeColumnFilterCriteria() ---
+    filter.removeColumnFilterCriteria(4); // remove filter
+    t.is(filter.getColumnFilterCriteria(4), null, "Post-remove: Filter criteria for column 4 should be gone");
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
+  });
+
+  unit.section("Range.getDataRegion", t => {
+    const { sheet } = maketss('getDataRegion_tests', toTrash, fixes);
+    const Dimension = SpreadsheetApp.Dimension;
+
+    // --- Setup ---
+    sheet.clear();
+    // A 3x3 data block
+    sheet.getRange("B2:D4").setValues([
+      ['B2', 'C2', 'D2'],
+      ['B3', 'C3', 'D3'],
+      ['B4', 'C4', 'D4']
+    ]);
+    // Another separate data block
+    sheet.getRange("F6:G7").setValues([
+      ['F6', 'G6'],
+      ['F7', 'G7']
+    ]);
+
+    // --- Test without dimension argument ---
+    t.is(sheet.getRange("C3").getDataRegion().getA1Notation(), "B2:D4", "From inside data block");
+    t.is(sheet.getRange("B2:D4").getDataRegion().getA1Notation(), "B2:D4", "From the whole data block");
+    t.is(sheet.getRange("A1").getDataRegion().getA1Notation(), "A1", "From an empty cell far away");
+    t.is(sheet.getRange("B1").getDataRegion().getA1Notation(), "B1:D4", "From an adjacent empty cell (above)");
+    t.is(sheet.getRange("E3").getDataRegion().getA1Notation(), "B2:E4", "From an adjacent empty cell (right)");
+    t.is(sheet.getRange("F6").getDataRegion().getA1Notation(), "F6:G7", "From inside the second data block");
+
+    // --- Test with Dimension.ROWS ---
+    t.is(sheet.getRange("C3").getDataRegion(Dimension.ROWS).getA1Notation(), "C2:C4", "ROWS: From inside data block");
+    t.is(sheet.getRange("F7").getDataRegion(Dimension.ROWS).getA1Notation(), "F6:F7", "ROWS: From inside second data block");
+
+    // --- Test with Dimension.COLUMNS ---
+    t.is(sheet.getRange("C3").getDataRegion(Dimension.COLUMNS).getA1Notation(), "B3:D3", "COLUMNS: From inside data block");
+    t.is(sheet.getRange("F7").getDataRegion(Dimension.COLUMNS).getA1Notation(), "F7:G7", "COLUMNS: From inside second data block");
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
+  });
+
+  unit.section("rich text tests", t => {
+    const { sheet } = maketss('rich text tests', toTrash, fixes);
+
+    // Test 1: single rich text value
+    const range1 = sheet.getRange('A1');
+    const boldStyle = SpreadsheetApp.newTextStyle().setBold(true).build();
+    const italicStyle = SpreadsheetApp.newTextStyle().setItalic(true).build();
+
+    const richTextValue = SpreadsheetApp.newRichTextValue()
+      .setText('Bold Italic Link')
+      .setTextStyle(0, 4, boldStyle)
+      .setTextStyle(5, 11, italicStyle)
+      .setLinkUrl(12, 16, 'https://google.com')
+      .build();
+
+    range1.setRichTextValue(richTextValue);
+
+    const result1 = range1.getRichTextValue();
+    t.is(result1.getText(), 'Bold Italic Link', 'Text should match');
+
+    const runs1 = result1.getRuns();
+    t.is(runs1.length, 5, 'Should have 5 runs, including unstyled segments');
+
+    // Check first run (Bold)
+    t.is(runs1[0].getStartIndex(), 0, 'Run 1 (Bold) start index');
+    t.is(runs1[0].getEndIndex(), 4, 'Run 1 (Bold) end index');
+    t.true(runs1[0].getTextStyle().isBold(), 'Run 1 should be bold');
+    t.false(runs1[0].getTextStyle().isItalic(), 'Run 1 should not be italic');
+    t.is(runs1[0].getLinkUrl(), null, 'Run 1 should not have a link');
+
+    // Check second run (space)
+    t.is(runs1[1].getStartIndex(), 4, 'Run 2 (space) start index');
+    t.is(runs1[1].getEndIndex(), 5, 'Run 2 (space) end index');
+    t.false(runs1[1].getTextStyle().isBold(), 'Run 2 should not be bold');
+    t.false(runs1[1].getTextStyle().isItalic(), 'Run 2 should not be italic');
+    t.is(runs1[1].getLinkUrl(), null, 'Run 2 should not have a link');
+
+    // Check third run (Italic)
+    t.is(runs1[2].getStartIndex(), 5, 'Run 3 (Italic) start index');
+    t.is(runs1[2].getEndIndex(), 11, 'Run 3 (Italic) end index');
+    t.false(runs1[2].getTextStyle().isBold(), 'Run 3 should not be bold');
+    t.true(runs1[2].getTextStyle().isItalic(), 'Run 3 should be italic');
+    t.is(runs1[2].getLinkUrl(), null, 'Run 3 should not have a link');
+
+    // Check fourth run (space)
+    t.is(runs1[3].getStartIndex(), 11, 'Run 4 (space) start index');
+    t.is(runs1[3].getEndIndex(), 12, 'Run 4 (space) end index');
+    t.false(runs1[3].getTextStyle().isBold(), 'Run 4 should not be bold');
+    t.false(runs1[3].getTextStyle().isItalic(), 'Run 4 should not be italic');
+    t.is(runs1[3].getLinkUrl(), null, 'Run 4 should not have a link');
+
+    // Check fifth run (Link)
+    t.is(runs1[4].getStartIndex(), 12, 'Run 5 (Link) start index');
+    t.is(runs1[4].getEndIndex(), 16, 'Run 5 (Link) end index');
+    t.is(runs1[4].getLinkUrl(), 'https://google.com', 'Run 5 should have a link');
+
+    // Test 2: array of rich text values
+    const range2 = sheet.getRange('B1:C2');
+    const redColor = SpreadsheetApp.newColor().setRgbColor('#ff0000').build();
+    const redStyle = SpreadsheetApp.newTextStyle().setForegroundColorObject(redColor).build();
+    const blueStyle = SpreadsheetApp.newTextStyle().setForegroundColor('#0000ff').build();
+    const underlineStyle = SpreadsheetApp.newTextStyle().setUnderline(true).build();
+    const strikethroughStyle = SpreadsheetApp.newTextStyle().setStrikethrough(true).build();
+
+    const values = [
+      [
+        SpreadsheetApp.newRichTextValue().setText('Red').setTextStyle(0, 3, redStyle).build(),
+        SpreadsheetApp.newRichTextValue().setText('Blue').setTextStyle(0, 4, blueStyle).build()
+      ],
+      [
+        SpreadsheetApp.newRichTextValue().setText('Underline').setTextStyle(0, 9, underlineStyle).build(),
+        SpreadsheetApp.newRichTextValue().setText('Strikethrough').setTextStyle(0, 13, strikethroughStyle).build()
+      ]
+    ];
+
+    range2.setRichTextValues(values);
+
+    const results2 = range2.getRichTextValues();
+    t.is(results2.length, 2, 'Should have 2 rows');
+    t.is(results2[0].length, 2, 'Should have 2 columns in first row');
+
+    t.is(results2[0][0].getText(), 'Red', 'B1 text');
+    t.is(results2[0][0].getRuns()[0].getTextStyle().getForegroundColor(), '#ff0000', 'B1 color');
+
+    t.is(results2[0][1].getText(), 'Blue', 'C1 text');
+    t.is(results2[0][1].getRuns()[0].getTextStyle().getForegroundColor(), '#0000ff', 'C1 color');
+
+    t.is(results2[1][0].getText(), 'Underline', 'B2 text');
+    t.true(results2[1][0].getRuns()[0].getTextStyle().isUnderline(), 'B2 underline');
+
+    t.is(results2[1][1].getText(), 'Strikethrough', 'C2 text');
+    t.true(results2[1][1].getRuns()[0].getTextStyle().isStrikethrough(), 'C2 strikethrough');
+
+    // Test 3: plain text cell
+    const range3 = sheet.getRange('E5');
+    range3.setValue('Plain text');
+
+    const result3 = range3.getRichTextValue();
+    t.is(result3.getText(), 'Plain text', 'Plain text should be preserved');
+    t.is(result3.getRuns().length, 1, 'Should have one default run for plain text');
+
+    const style3 = result3.getTextStyle();
+    t.false(style3.isBold(), 'Default style should not be bold');
+    t.is(style3.getFontSize(), 10, 'Default font size should be 10');
+  });
+
+  unit.section("Range.deleteCells and Range.insertCells", t => {
+    const { sheet } = maketss('cell_shifting_tests', toTrash, fixes);
+    const Dimension = SpreadsheetApp.Dimension;
+
+    const initialData = [
+      ['A1', 'B1', 'C1', 'D1'],
+      ['A2', 'B2', 'C2', 'D2'],
+      ['A3', 'B3', 'C3', 'D3'],
+      ['A4', 'B4', 'C4', 'D4']
+    ];
+
+    // --- Test deleteCells(Dimension.COLUMNS) ---
+    sheet.getRange("A1:D4").setValues(initialData);
+    sheet.getRange("B2:C3").deleteCells(Dimension.COLUMNS);
+    const expectedAfterColDelete = [
+      ['A1', 'B1', 'C1', 'D1'],
+      ['A2', 'D2', '', ''],
+      ['A3', 'D3', '', ''],
+      ['A4', 'B4', 'C4', 'D4']
+    ];
+    t.deepEqual(sheet.getRange("A1:D4").getValues(), expectedAfterColDelete, "deleteCells(COLUMNS) should shift cells left");
+
+    // --- Test deleteCells(Dimension.ROWS) ---
+    sheet.getRange("A1:D4").setValues(initialData);
+    sheet.getRange("B2:C3").deleteCells(Dimension.ROWS);
+    const expectedAfterRowDelete = [
+      ['A1', 'B1', 'C1', 'D1'],
+      ['A2', 'B4', 'C4', 'D2'],
+      ['A3', '', '', 'D3'],
+      ['A4', '', '', 'D4']
+    ];
+    t.deepEqual(sheet.getRange("A1:D4").getValues(), expectedAfterRowDelete, "deleteCells(ROWS) should shift cells up");
+
+    // --- Test insertCells(Dimension.COLUMNS) ---
+    sheet.getRange("A1:D4").setValues(initialData);
+    sheet.getRange("B2:C2").insertCells(Dimension.COLUMNS);
+    t.deepEqual(sheet.getRange("A1:D4").getValues(), [['A1', 'B1', 'C1', 'D1'], ['A2', '', '', 'B2'], ['A3', 'B3', 'C3', 'D3'], ['A4', 'B4', 'C4', 'D4']], "insertCells(COLUMNS) should shift cells right");
+
+    // --- Test insertCells(Dimension.ROWS) ---
+    sheet.getRange("A1:D4").setValues(initialData);
+    sheet.getRange("B2:B3").insertCells(Dimension.ROWS);
+    t.deepEqual(sheet.getRange("A1:D4").getValues(), [['A1', 'B1', 'C1', 'D1'], ['A2', '', 'C2', 'D2'], ['A3', '', 'C3', 'D3'], ['A4', 'B2', 'C4', 'D4']], "insertCells(ROWS) should shift cells down");
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
+  });
+
+
+
+
+  unit.section("Range.getNextDataCell", t => {
+    const { sheet } = maketss('getNextDataCell_tests', toTrash, fixes);
+    const Direction = SpreadsheetApp.Direction;
+
+    // --- Setup for DOWN/UP tests ---
+    sheet.clear();
+    sheet.getRange("B2").setValue("B2-val");
+    sheet.getRange("B5").setValue("B5-val");
+    sheet.getRange("D2:D4").setValues([["D2-val"], ["D3-val"], ["D4-val"]]);
+    const maxRows = sheet.getMaxRows();
+    sheet.getRange(`F${maxRows}`).setValue("F-last-val");
+
+    // --- Test DOWN ---
+    t.is(sheet.getRange("B1").getNextDataCell(Direction.DOWN).getA1Notation(), "B2", "DOWN: From empty to next data");
+    t.is(sheet.getRange("B2").getNextDataCell(Direction.DOWN).getA1Notation(), "B5", "DOWN: From data, over empty, to next data");
+    t.is(sheet.getRange("D2").getNextDataCell(Direction.DOWN).getA1Notation(), "D4", "DOWN: From data to end of contiguous block");
+    t.is(sheet.getRange("B5").getNextDataCell(Direction.DOWN).getA1Notation(), `B${maxRows}`, "DOWN: From data to end of sheet when no more data");
+    t.is(sheet.getRange("A1").getNextDataCell(Direction.DOWN).getA1Notation(), `A${maxRows}`, "DOWN: From empty with no data below to end of sheet");
+    t.is(sheet.getRange(`F${maxRows}`).getNextDataCell(Direction.DOWN).getA1Notation(), `F${maxRows}`, "DOWN: From last cell stays at last cell");
+    t.is(sheet.getRange("F1").getNextDataCell(Direction.DOWN).getA1Notation(), `F${maxRows}`, "DOWN: From empty cell to last cell with data");
+
+    // --- Test UP ---
+    t.is(sheet.getRange("B4").getNextDataCell(Direction.UP).getA1Notation(), "B2", "UP: From empty to next data");
+    t.is(sheet.getRange("B5").getNextDataCell(Direction.UP).getA1Notation(), "B2", "UP: From data, over empty, to next data");
+    t.is(sheet.getRange("D4").getNextDataCell(Direction.UP).getA1Notation(), "D2", "UP: From data to start of contiguous block");
+    t.is(sheet.getRange("B2").getNextDataCell(Direction.UP).getA1Notation(), "B1", "UP: From first data to top of sheet");
+    t.is(sheet.getRange("A6").getNextDataCell(Direction.UP).getA1Notation(), "A1", "UP: From empty with no data above to top of sheet");
+    t.is(sheet.getRange("A1").getNextDataCell(Direction.UP).getA1Notation(), "A1", "UP: From first cell stays at first cell");
+
+    // --- Setup for NEXT/PREVIOUS tests ---
+    sheet.clear();
+    sheet.getRange("B2").setValue("B2-val");
+    sheet.getRange("E2").setValue("E2-val");
+    sheet.getRange("B4:D4").setValues([["B4-val", "C4-val", "D4-val"]]);
+    const maxCols = sheet.getMaxColumns();
+    const maxColsLetter = sheet.getRange(1, maxCols).getA1Notation().replace(/\d/g, '');
+    sheet.getRange(`${maxColsLetter}6`).setValue("Last-col-val");
+
+    // --- Test NEXT (RIGHT) ---
+    t.is(sheet.getRange("A2").getNextDataCell(Direction.NEXT).getA1Notation(), "B2", "NEXT: From empty to next data");
+    t.is(sheet.getRange("B2").getNextDataCell(Direction.NEXT).getA1Notation(), "E2", "NEXT: From data, over empty, to next data");
+    t.is(sheet.getRange("B4").getNextDataCell(Direction.NEXT).getA1Notation(), "D4", "NEXT: From data to end of contiguous block");
+    t.is(sheet.getRange("E2").getNextDataCell(Direction.NEXT).getA1Notation(), `${maxColsLetter}2`, "NEXT: From data to end of sheet when no more data");
+    t.is(sheet.getRange("A1").getNextDataCell(Direction.NEXT).getA1Notation(), `${maxColsLetter}1`, "NEXT: From empty with no data to the right to end of sheet");
+    t.is(sheet.getRange(`${maxColsLetter}1`).getNextDataCell(Direction.NEXT).getA1Notation(), `${maxColsLetter}1`, "NEXT: From last cell stays at last cell");
+    t.is(sheet.getRange("A6").getNextDataCell(Direction.NEXT).getA1Notation(), `${maxColsLetter}6`, "NEXT: From empty cell to last cell with data");
+
+    // --- Test PREVIOUS (LEFT) ---
+    t.is(sheet.getRange("E4").getNextDataCell(Direction.PREVIOUS).getA1Notation(), "D4", "PREVIOUS: From empty to next data");
+    t.is(sheet.getRange("E2").getNextDataCell(Direction.PREVIOUS).getA1Notation(), "B2", "PREVIOUS: From data, over empty, to next data");
+    t.is(sheet.getRange("D4").getNextDataCell(Direction.PREVIOUS).getA1Notation(), "B4", "PREVIOUS: From data to start of contiguous block");
+    t.is(sheet.getRange("B2").getNextDataCell(Direction.PREVIOUS).getA1Notation(), "A2", "PREVIOUS: From first data to start of sheet");
+    t.is(sheet.getRange("G1").getNextDataCell(Direction.PREVIOUS).getA1Notation(), "A1", "PREVIOUS: From empty with no data to the left to start of sheet");
+    t.is(sheet.getRange("A1").getNextDataCell(Direction.PREVIOUS).getA1Notation(), "A1", "PREVIOUS: From first cell stays at first cell");
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
+  });
+
+
+
 
   unit.section("Range.copyTo", t => {
     const { sheet } = maketss('copyToTests', toTrash, fixes);
@@ -265,6 +647,9 @@ export const testSheets = (pack) => {
 
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
   });
+
+
+
 
   unit.section("copy values and formats to range", t => {
     const { sheet } = maketss('prepareTarget', toTrash, fixes)
@@ -1094,6 +1479,8 @@ export const testSheets = (pack) => {
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
 
   })
+
+
 
   // running standalone
   if (!pack) {

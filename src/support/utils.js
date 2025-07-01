@@ -192,7 +192,7 @@ const robToHex = ({ red, green, blue }) => rgbToHex(red, green, blue)
 
 const rgbToHex = (r, g, b) => {
   const toHex = (c) => {
-    if (!c) return '00';
+    if (is.nullOrUndefined(c) || Number.isNaN(c)) return '00';
     const val = Math.round(c * 255);
     const hex = val.toString(16);
     return hex.length === 1 ? '0' + hex : hex;
@@ -296,6 +296,31 @@ const getEnumKeys = (value) => {
     .filter(f => f !== "UNSUPPORTED" && !is.function(value[f]))
 
 }
+
+const deepEqual = (obj1, obj2) => {
+  if (obj1 === obj2) return true;
+
+  if (is.nullOrUndefined(obj1) || is.nullOrUndefined(obj2) || !is.object(obj1) || !is.object(obj2)) {
+    return obj1 === obj2;
+  }
+
+  if (is.date(obj1) && is.date(obj2)) return obj1.getTime() === obj2.getTime();
+  if (is.regExp(obj1) && is.regExp(obj2)) return obj1.toString() === obj2.toString();
+
+  const keys1 = Object.keys(obj1);
+  const keys2 = Object.keys(obj2);
+
+  if (keys1.length !== keys2.length) return false;
+
+  for (const key of keys1) {
+    if (!Object.prototype.hasOwnProperty.call(obj2, key) || !deepEqual(obj1[key], obj2[key])) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
 export const Utils = {
   hexToRgb,
   stringToBytes,
@@ -327,5 +352,6 @@ export const Utils = {
   BLACK,
   BLACKER,
   WHITER,
-  getEnumKeys
+  getEnumKeys,
+  deepEqual,
 }
