@@ -247,7 +247,9 @@ export const setterList = [{
   name: 'fontColorObject',
   type: "object",
   typeChecker: isColor,
-  maker: (_, value) => makeColorStyle(value),
+  maker: (_, value) => {
+    return makeColorStyle(value)
+  },
   fields: 'userEnteredFormat.textFormat.foregroundColorStyle.themeColor,userEnteredFormat.textFormat.foregroundColorStyle.rgbColor'
 }, {
   name: 'fontLine',

@@ -1,11 +1,12 @@
 import { Proxies } from '../../support/proxies.js'
 import { FakeSheet } from './fakesheet.js'
 import { newFakeBanding } from './fakebanding.js';
+import { newFakeDeveloperMetadata } from './fakedevelopermetadata.js';
+import { newFakeDeveloperMetadataFinder } from './fakedevelopermetadatafinder.js';
 import { SheetUtils } from '../../support/sheetutils.js'
 import { Utils } from '../../support/utils.js'
 import { setterList, attrGetList, valuesGetList, setterMaker, attrGens, valueGens, makeCellTextFormatData } from './sheetrangemakers.js'
 import {
-  getGridRange,
   updateCells,
   isRange,
   makeGridRange,
@@ -20,7 +21,7 @@ import {
 
 import { TextToColumnsDelimiter, Direction, Dimension } from '../enums/sheetsenums.js'
 
-const { is, rgbToHex, hexToRgb, stringer, outsideInt, capital, BLACKER, getEnumKeys, isEnum } = Utils
+const { is, rgbToHex, hexToRgb, stringer, outsideInt, capital, BLACKER, getEnumKeys, isEnum, normalizeColorStringToHex } = Utils
 import { notYetImplemented, signatureArgs } from '../../support/helpers.js'
 import { FakeSpreadsheet } from './fakespreadsheet.js'
 import { FakeDataValidation } from './fakedatavalidation.js'
@@ -85,10 +86,6 @@ export class FakeSheetRange {
 
       'setFormulaR1C1',
       'setFormulasR1C1',
-
-      'mergeAcross',
-      'mergeVertically',
-      'isPartOfMerge',
       'activateAsCurrentCell',
       'setComments',
 
@@ -108,22 +105,16 @@ export class FakeSheetRange {
       'collapseGroups',
       'getComments',
       'clearComment',
-      'addDeveloperMetadata',
-      'getDeveloperMetadata',
       'createTextFinder',
       'moveTo',
       'setNotes',
       'setNote',
-      'getDataSourceFormulas',
-      'getDataSourceTables',
 
       'getDataSourceUrl',
       'getDataTable',
 
-      'createDeveloperMetadataFinder',
       'getDataSourcePivotTables',
 
-      'merge',
 
       'getFilter',
       // these are not documented, so will skip for now
@@ -148,6 +139,80 @@ export class FakeSheetRange {
         apiSetter: f.apiSetter || 'set' + capital(f.single || f.name)
       })
     })
+  }
+
+  addDeveloperMetadata(key, value, visibility) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.addDeveloperMetadata");
+    if (nargs < 1 || nargs > 3) matchThrow();
+    if (!is.string(key)) matchThrow();
+
+    const sheet = this.getSheet();
+    const maxRows = sheet.getMaxRows();
+    const maxCols = sheet.getMaxColumns();
+
+    const isEntireRow = this.getNumRows() === 1 && this.getColumn() === 1 && this.getNumColumns() === maxCols;
+    const isEntireColumn = this.getNumColumns() === 1 && this.getRow() === 1 && this.getNumRows() === maxRows;
+
+    if (!isEntireRow && !isEntireColumn) {
+      throw new Error('Adding developer metadata to arbitrary ranges is not currently supported. ' +
+        'Developer metadata may only be added to the top-level spreadsheet, an individual sheet, ' +
+        'or an entire row or column.');
+    }
+
+    let realValue = null;
+    let realVisibility = SpreadsheetApp.DeveloperMetadataVisibility.DOCUMENT;
+
+    if (nargs === 2) {
+      if (isEnum(value)) {
+        realVisibility = value;
+      } else {
+        realValue = value;
+      }
+    } else if (nargs === 3) {
+      realValue = value;
+      realVisibility = visibility;
+    }
+
+    // Per documentation, if the range is a single column (and not a single cell), metadata is attached to the column.
+    // Otherwise, it's attached to the first row.
+    const dimension = isEntireColumn ? 'COLUMNS' : 'ROWS';
+    const startIndex = dimension === 'ROWS' ? this.getRow() - 1 : this.getColumn() - 1;
+    const endIndex = startIndex + (dimension === 'ROWS' ? this.getNumRows() : this.getNumColumns());
+
+    const metadata = {
+      metadataKey: key,
+      metadataValue: realValue,
+      visibility: realVisibility.toString(),
+      location: {
+        dimensionRange: {
+          sheetId: this.getSheet().getSheetId(),
+          dimension: dimension,
+          startIndex: startIndex,
+          endIndex: endIndex,
+        },
+      },
+    };
+
+    const request = {
+      createDeveloperMetadata: {
+        developerMetadata: metadata,
+      },
+    };
+
+    batchUpdate({ spreadsheetId: this.__getSpreadsheetId(), requests: [request] });
+    return this;
+  }
+
+  createDeveloperMetadataFinder() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.createDeveloperMetadataFinder");
+    if (nargs) matchThrow();
+    return newFakeDeveloperMetadataFinder(this);
+  }
+
+  getDeveloperMetadata() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.getDeveloperMetadata");
+    if (nargs) matchThrow();
+    return this.createDeveloperMetadataFinder().onIntersectingLocations().find();
   }
 
   applyRowBanding(bandingTheme, header, footer) {
@@ -713,7 +778,7 @@ export class FakeSheetRange {
       if (startRow0 > 0) for (let c = startCol0; c <= endCol0; c++) if (!isCellBlank(startRow0 - 1, c)) { searchR = startRow0 - 1; searchC = c; break }
       if (searchR === -1 && endRow0 < maxRows - 1) for (let c = startCol0; c <= endCol0; c++) if (!isCellBlank(endRow0 + 1, c)) { searchR = endRow0 + 1; searchC = c; break }
       if (searchR === -1 && startCol0 > 0) for (let r = startRow0; r <= endRow0; r++) if (!isCellBlank(r, startCol0 - 1)) { searchR = r; searchC = startCol0 - 1; break }
-      if (searchR === -1 && endCol0 < maxCols - 1) for (let r = startRow0; r <= endCol0; r++) if (!isCellBlank(r, endCol0 + 1)) { searchR = r; searchC = endCol0 + 1; break }
+      if (searchR === -1 && endCol0 < maxCols - 1) for (let r = startRow0; r <= endRow0; r++) if (!isCellBlank(r, endCol0 + 1)) { searchR = r; searchC = endCol0 + 1; break }
     }
 
     // 3. If still no data found, the range is isolated.
@@ -1194,14 +1259,21 @@ export class FakeSheetRange {
    */
   setBackgrounds(colors) {
     const { nargs, matchThrow } = signatureArgs(arguments, "Range.setBackgrounds")
-    if (nargs !== 1 || !arrMatchesRange(this, colors, "string")) matchThrow()
+    if (nargs !== 1 || !arrMatchesRange(this, colors, "string", true)) matchThrow()
 
     const rows = colors.map(row => ({
-      values: row.map(c => ({
-        userEnteredFormat: {
-          backgroundColor: hexToRgb(c)
+      values: row.map(c => {
+        if (is.null(c)) {
+          return { userEnteredFormat: { backgroundColor: null } };
         }
-      }))
+        const hex = normalizeColorStringToHex(c);
+        if (!hex) throw new Error(`Invalid color string: "${c}"`);
+        return {
+          userEnteredFormat: {
+            backgroundColor: hexToRgb(hex)
+          }
+        };
+      })
     }))
     const fields = 'userEnteredFormat.backgroundColor'
     return updateCells({ range: this, rows, fields, spreadsheetId: this.__getSpreadsheetId() })
@@ -1261,9 +1333,12 @@ export class FakeSheetRange {
   setFontColors(colors) {
     // we can use the set colorObject here
     const { nargs, matchThrow } = signatureArgs(arguments, "Range.setFontColors")
-    if (nargs !== 1 || !arrMatchesRange(this, colors)) matchThrow()
+    if (nargs !== 1 || !arrMatchesRange(this, colors, 'string', true)) matchThrow()
     return this.setFontColorObjects(colors.map(row => row.map(color => {
-      return is.null(color) ? null : SpreadsheetApp.newColor().setRgbColor(color).build()
+      if (is.null(color)) return null;
+      const hex = normalizeColorStringToHex(color);
+      if (!hex) throw new Error(`Invalid color string: "${color}"`);
+      return SpreadsheetApp.newColor().setRgbColor(hex).build();
     })))
   }
 
@@ -1450,7 +1525,16 @@ export class FakeSheetRange {
    * sometimes a range has no  grid range so we need to fake one
    */
   get __gridRange() {
-    return getGridRange(this)
+    if (this.__hasGrid) {
+      return this.__apiGridRange;
+    }
+    // This case is for a range that represents a whole sheet, which doesn't have a specific gridRange on creation.
+    const sheet = this.getSheet();
+    return {
+      sheetId: sheet.getSheetId(),
+      startRowIndex: 0, startColumnIndex: 0,
+      endRowIndex: sheet.getMaxRows(), endColumnIndex: sheet.getMaxColumns()
+    };
   }
 
   __toGridRange(range = this) {

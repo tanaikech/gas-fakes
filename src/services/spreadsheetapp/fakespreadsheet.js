@@ -389,7 +389,7 @@ export class FakeSpreadsheet {
    * @return {FakeSheets[]} the sheets in the spreadsheet
    */
   getSheets() {
-    return this.__meta.sheets.map(f => newFakeSheet(f.properties.sheetId, this))
+    return this.__meta.sheets.map(f => newFakeSheet(f.properties, this))
   }
   __getSheetMeta(id) {
     return this.__meta.sheets.find(f => f.properties.sheetId === id)
@@ -408,7 +408,7 @@ export class FakeSpreadsheet {
    */
   getSheetById(id) {
     const sheets = this.getSheets()
-    return sheets.find(f => f.__sheetId === id) || null
+    return sheets.find(f => f.getSheetId() === id) || null
   }
   /**
    * Returns a sheet with the given name..
@@ -544,7 +544,7 @@ export class FakeSpreadsheet {
 
     // let sheets handle errors
     const result = Sheets.Spreadsheets.batchUpdate({ requests }, this.getId(), { ss: true })
-    const sheet = new FakeSheet(result.replies[0].addSheet.properties.sheetId, this)
+    const sheet = newFakeSheet(result.replies[0].addSheet.properties, this)
 
     // there will have been disrupton, so we need to reset the spreadsheet metadata
     this.__disruption()

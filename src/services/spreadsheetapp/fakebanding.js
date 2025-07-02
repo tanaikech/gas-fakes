@@ -5,7 +5,7 @@ import { notYetImplemented, signatureArgs } from '../../support/helpers.js';
 import { Utils } from '../../support/utils.js';
 import { BandingTheme } from '../enums/sheetsenums.js';
 
-const { rgbToHex, hexToRgb, is, isEnum } = Utils;
+const { rgbToHex, hexToRgb, is, isEnum, normalizeColorStringToHex } = Utils;
 
 /**
  * @returns {FakeBanding}
@@ -53,7 +53,9 @@ export class FakeBanding {
       return {}; // Clears the color when used with a field mask
     }
     if (is.string(color)) {
-      return { rgbColor: hexToRgb(color) };
+      const hex = normalizeColorStringToHex(color);
+      if (!hex) throw new Error(`Invalid color string: "${color}"`);
+      return { rgbColor: hexToRgb(hex) };
     }
     if (color && color.toString() === 'Color') {
       const colorType = color.getColorType().toString();

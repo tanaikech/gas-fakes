@@ -24,7 +24,7 @@ import { testSheetsDataValidations } from './testsheetsdatavalidations.js';
 import { testEnums } from './testenums.js';
 import { testSheetsSets } from './testsheetssets.js';
 import { testSheetsVui } from './testsheetsvui.js';
-
+import { testSheetsDeveloper } from './testsheetsdeveloper.js';
 const testFakes = () => {
   const pack = initTests()
   const {unit} = pack

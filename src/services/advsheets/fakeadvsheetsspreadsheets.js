@@ -8,6 +8,7 @@ import { Syncit } from '../../support/syncit.js'
 import { notYetImplemented, ssError } from '../../support/helpers.js'
 import { newFakeSheetValues } from './fakeadvvalues.js'
 import { getWorkbookEntry, setWorkbookEntry, clearWorkbookCache } from "../../support/sheetscache.js"
+import { newFakeAdvSheetsDeveloperMetadata } from './fakeadvsheetsdevelopermetadata.js'
 
 /**
  * the advanced Sheets Apps Script service faked - Spreadsheets class
@@ -20,7 +21,6 @@ class FakeAdvSheetsSpreadsheets {
 
     const props = [
       'getByDataFilter',
-      'DeveloperMetadata',
       'Sheets']
 
     props.forEach(f => {
@@ -33,6 +33,10 @@ class FakeAdvSheetsSpreadsheets {
   }
   toString() {
     return this.__sheets.toString()
+  }
+
+  get DeveloperMetadata() {
+    return newFakeAdvSheetsDeveloperMetadata(this.__sheets)
   }
 
   get Values() {
@@ -138,4 +142,3 @@ class FakeAdvSheetsSpreadsheets {
 
 
 export const newFakeAdvSheetsSpreadsheets = (...args) => Proxies.guard(new FakeAdvSheetsSpreadsheets(...args))
-

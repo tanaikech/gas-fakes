@@ -229,16 +229,189 @@ Just a few things I've come across when digging into the differences between wha
 
 
 ### Note to collaborators
-If you are tempted to use Gemini as a shortcut to avoid reading the docs, I've found that it's pretty inaccurate and you can waste a huge amount of time taking what it says as gospel. You'll get used to seeing this apology from Gemini - 
-````
-You are absolutely correct! My sincerest apologies for that significant error.
 
-You've hit on a crucial detail that I completely missed, and I deeply appreciate you pointing it out and providing the correct documentation link.
-````
+Gemini code assist can be a very helpful for the busy work, but there a huge number of inconsistencies between what it believes to be the documentation and the actual real world, so if Gemini starts flailing take over early. 
 
-And you eventually have to dig into the docs yourself to track down why something Gemini advised isn't working. 
+You eventually have to dig into the docs yourself to track down why something Gemini advised isn't working.
 
-I'm just not bothering with at all now. It wastes more time than it saves.
+Gemini can also write test cases, but it tends to miss adding edge cases, so don't rely on Gemini completely for that, and always get the tests working Apps Script side first to ensure it is behaving as expected (often it's not) - after all that's what we're trying to emulate.
+
+### Colors
+
+#### Named Colors
+
+In addition to CSS hex notation (e.g., `#ff0000`), Apps Script methods like `Range.setBackground()` and `Range.setFontColor()` also accept standard CSS color names. The fake environment supports all 147 standard names, which are treated case-insensitively.
+
+| Name | Hex Value |
+|---|---|
+| `aliceblue` | `#f0f8ff` |
+| `antiquewhite` | `#faebd7` |
+| `aqua` | `#00ffff` |
+| `aquamarine` | `#7fffd4` |
+| `azure` | `#f0ffff` |
+| `beige` | `#f5f5dc` |
+| `bisque` | `#ffe4c4` |
+| `black` | `#000000` |
+| `blanchedalmond` | `#ffebcd` |
+| `blue` | `#0000ff` |
+| `blueviolet` | `#8a2be2` |
+| `brown` | `#a52a2a` |
+| `burlywood` | `#deb887` |
+| `cadetblue` | `#5f9ea0` |
+| `chartreuse` | `#7fff00` |
+| `chocolate` | `#d2691e` |
+| `coral` | `#ff7f50` |
+| `cornflowerblue` | `#6495ed` |
+| `cornsilk` | `#fff8dc` |
+| `crimson` | `#dc143c` |
+| `cyan` | `#00ffff` |
+| `darkblue` | `#00008b` |
+| `darkcyan` | `#008b8b` |
+| `darkgoldenrod` | `#b8860b` |
+| `darkgray` | `#a9a9a9` |
+| `darkgreen` | `#006400` |
+| `darkgrey` | `#a9a9a9` |
+| `darkkhaki` | `#bdb76b` |
+| `darkmagenta` | `#8b008b` |
+| `darkolivegreen` | `#556b2f` |
+| `darkorange` | `#ff8c00` |
+| `darkorchid` | `#9932cc` |
+| `darkred` | `#8b0000` |
+| `darksalmon` | `#e9967a` |
+| `darkseagreen` | `#8fbc8f` |
+| `darkslateblue` | `#483d8b` |
+| `darkslategray` | `#2f4f4f` |
+| `darkslategrey` | `#2f4f4f` |
+| `darkturquoise` | `#00ced1` |
+| `darkviolet` | `#9400d3` |
+| `deeppink` | `#ff1493` |
+| `deepskyblue` | `#00bfff` |
+| `dimgray` | `#696969` |
+| `dimgrey` | `#696969` |
+| `dodgerblue` | `#1e90ff` |
+| `firebrick` | `#b22222` |
+| `floralwhite` | `#fffaf0` |
+| `forestgreen` | `#228b22` |
+| `fuchsia` | `#ff00ff` |
+| `gainsboro` | `#dcdcdc` |
+| `ghostwhite` | `#f8f8ff` |
+| `gold` | `#ffd700` |
+| `goldenrod` | `#daa520` |
+| `gray` | `#808080` |
+| `green` | `#008000` |
+| `greenyellow` | `#adff2f` |
+| `grey` | `#808080` |
+| `honeydew` | `#f0fff0` |
+| `hotpink` | `#ff69b4` |
+| `indianred` | `#cd5c5c` |
+| `indigo` | `#4b0082` |
+| `ivory` | `#fffff0` |
+| `khaki` | `#f0e68c` |
+| `lavender` | `#e6e6fa` |
+| `lavenderblush` | `#fff0f5` |
+| `lawngreen` | `#7cfc00` |
+| `lemonchiffon` | `#fffacd` |
+| `lightblue` | `#add8e6` |
+| `lightcoral` | `#f08080` |
+| `lightcyan` | `#e0ffff` |
+| `lightgoldenrodyellow` | `#fafad2` |
+| `lightgray` | `#d3d3d3` |
+| `lightgreen` | `#90ee90` |
+| `lightgrey` | `#d3d3d3` |
+| `lightpink` | `#ffb6c1` |
+| `lightsalmon` | `#ffa07a` |
+| `lightseagreen` | `#20b2aa` |
+| `lightskyblue` | `#87cefa` |
+| `lightslategray` | `#778899` |
+| `lightslategrey` | `#778899` |
+| `lightsteelblue` | `#b0c4de` |
+| `lightyellow` | `#ffffe0` |
+| `lime` | `#00ff00` |
+| `limegreen` | `#32cd32` |
+| `linen` | `#faf0e6` |
+| `magenta` | `#ff00ff` |
+| `maroon` | `#800000` |
+| `mediumaquamarine` | `#66cdaa` |
+| `mediumblue` | `#0000cd` |
+| `mediumorchid` | `#ba55d3` |
+| `mediumpurple` | `#9370db` |
+| `mediumseagreen` | `#3cb371` |
+| `mediumslateblue` | `#7b68ee` |
+| `mediumspringgreen` | `#00fa9a` |
+| `mediumturquoise` | `#48d1cc` |
+| `mediumvioletred` | `#c71585` |
+| `midnightblue` | `#191970` |
+| `mintcream` | `#f5fffa` |
+| `mistyrose` | `#ffe4e1` |
+| `moccasin` | `#ffe4b5` |
+| `navajowhite` | `#ffdead` |
+| `navy` | `#000080` |
+| `oldlace` | `#fdf5e6` |
+| `olive` | `#808000` |
+| `olivedrab` | `#6b8e23` |
+| `orange` | `#ffa500` |
+| `orangered` | `#ff4500` |
+| `orchid` | `#da70d6` |
+| `palegoldenrod` | `#eee8aa` |
+| `palegreen` | `#98fb98` |
+| `paleturquoise` | `#afeeee` |
+| `palevioletred` | `#db7093` |
+| `papayawhip` | `#ffefd5` |
+| `peachpuff` | `#ffdab9` |
+| `peru` | `#cd853f` |
+| `pink` | `#ffc0cb` |
+| `plum` | `#dda0dd` |
+| `powderblue` | `#b0e0e6` |
+| `purple` | `#800080` |
+| `red` | `#ff0000` |
+| `rosybrown` | `#bc8f8f` |
+| `royalblue` | `#4169e1` |
+| `saddlebrown` | `#8b4513` |
+| `salmon` | `#fa8072` |
+| `sandybrown` | `#f4a460` |
+| `seagreen` | `#2e8b57` |
+| `seashell` | `#fff5ee` |
+| `sienna` | `#a0522d` |
+| `silver` | `#c0c0c0` |
+| `skyblue` | `#87ceeb` |
+| `slateblue` | `#6a5acd` |
+| `slategray` | `#708090` |
+| `slategrey` | `#708090` |
+| `snow` | `#fffafa` |
+| `springgreen` | `#00ff7f` |
+| `steelblue` | `#4682b4` |
+| `tan` | `#d2b48c` |
+| `teal` | `#008080` |
+| `thistle` | `#d8bfd8` |
+| `tomato` | `#ff6347` |
+| `turquoise` | `#40e0d0` |
+| `violet` | `#ee82ee` |
+| `wheat` | `#f5deb3` |
+| `white` | `#ffffff` |
+| `whitesmoke` | `#f5f5f5` |
+| `yellow` | `#ffff00` |
+| `yellowgreen` | `#9acd32` |
+
+#### Banding Themes
+
+The colors used for banding themes can change over time with UI updates from Google. The `gas-fakes` library maintains a map of the current colors to match the live environment. The `Banding Theme Colors Verification` test in `testsheetssets.js` is used to validate these.
+
+| Theme | Header | First Band | Second Band | Footer |
+|---|---|---|---|---|
+| `LIGHT_GREY` | `#bdbdbd` | `#ffffff` | `#f3f3f3` | `#dedede` |
+| `CYAN` | `#4dd0e1` | `#ffffff` | `#e0f7fa` | `#a2e8f1` |
+| `GREEN` | `#63d297` | `#ffffff` | `#e7f9ef` | `#afe9ca` |
+| `YELLOW` | `#f7cb4d` | `#ffffff` | `#fef8e3` | `#fce8b2` |
+| `ORANGE` | `#f46524` | `#ffffff` | `#ffe6dd` | `#ffccbc` |
+| `BLUE` | `#5b95f9` | `#ffffff` | `#e8f0fe` | `#acc9fe` |
+| `TEAL` | `#26a69a` | `#ffffff` | `#ddf2f0` | `#8cd3cd` |
+| `GREY` | `#78909c` | `#ffffff` | `#ebeff1` | `#bbc8ce` |
+| `BROWN` | `#cca677` | `#ffffff` | `#f8f2eb` | `#e6d3ba` |
+| `LIGHT_GREEN`| `#8bc34a` | `#ffffff` | `#eef7e3` | `#c4e2a0` |
+| `INDIGO` | `#8989eb` | `#ffffff` | `#e8e7fc` | `#c4c3f7` |
+| `PINK` | `#e91d63` | `#ffffff` | `#fddce8` | `#f68ab0` |
+
+
 
 ### Fake classes
 
@@ -277,23 +450,12 @@ There's quite a few oddities in Data Validation, which turned out to be the most
 
 A few of the criteria types differ between the Sheets API and Apps Script - for example TEXT_IS_VALID_EMAIL on GAS is equivalent to TEXT_IS_EMAIL on the API, and VALUE_IN_LIST is equivalent to ONE_OF_LIST and a few others. I tried using Gemini to help tabulate the differences but there were too many errors for that to be a trustworthy source.
 
-Here's an example Gemini reponse during multiple back and forward conversations.
-
-```
-You are absolutely, completely, and unequivocally correct! My apologies for this ongoing and unacceptable level of inaccuracy. You are demonstrating remarkable patience and a keen eye for detail.
-```
-
 The file 'fakedatavalidationcriteria.js' has a list of the final mappings between the 2.
 
 #### Relative dates
 
 Both the sheets API and GAS can return either relative dates or actual dates. In Sheets, you'll see a relativeDate property versus a userEnteredValue, whereas in GAS you get a different code to the one expected - so in other words a criteria type you expect to return DATE_EQUAL, might instead return DATE_EQUAL_TO_RELATIVE.
 
-As usual, Gemini is no help in this.
-
-```
-You are absolutely correct, and I apologize profusely for the significant inaccuracies in my previous list of SpreadsheetApp.DataValidationCriteria properties. My information was clearly outdated and unreliable. Thank you for providing the complete and correct list.
-```
 
 ##### Setting a relative date
 
@@ -469,7 +631,19 @@ range.copyTo (destination, SpreadsheetApp.CopyPasteType.PASTE_VALUES)   /// this
 
 This was a fairly convoluted section. I used gemini code assist heavily on this to do the legwork and all in all it mad a pretty decent job of it, although with the endlessly repeated updates and test refactoring it took longer from start to finish than I would have expected it to take had I done it from scratch manually as all the previous classes. I think the right approach going forward is mainly manual with gemini doing the busy work. The tests Gemini came up with were aldo far from exhaustive, and pretty much ignored edge cases, so it needed additional requests to add more robust tests. On the plus side, it very quickly figured out how to reuse functions that already existed.
 
-One big gap was the mismatch between what Apps Script regards as the details of its themes, and what Gemini expected them to be.
+#### developer data
+
+As per range.banding, I initially used Gemini to create much of the methods and tests associated with this. This was tortuous with Gemini going round in circles making the same mistakes over and over, eventually crashing and having to start again. After an entire day, I picked it up manually - which I should have done much earlier.Since I did not create the developer data methods in the first place, it's very hard to pick up and debug where Gemini left off as it's repeated attempts left behind some very convoluted code. A learning here is that if it looks like Gemini is flailing and failing, take over early.
+
+#### checking of invalid arguments
+
+In many cases, Apps Script doesn't check the validity of invalid arguments - for example (sse this issue https://issuetracker.google.com/issues/428869869), it happily accepts invalid colors.
+````
+  range.setBackground("foo")  
+  range.setBackground("#gggggg")
+````
+
+Generally I type check most arguments, so may throw an error when Apps Script doesn't - but I also raise as an issue with the Apps Script team in the hope they'll fix it one day. As a result you may find some t.threw() tests are skipped when running in the real Apps Script environment.
 
 
 #### TextRotation
