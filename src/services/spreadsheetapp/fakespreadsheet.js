@@ -3,8 +3,11 @@ import { FakeSheet, newFakeSheet } from './fakesheet.js'
 import { notYetImplemented, minSheetFields, signatureArgs } from '../../support/helpers.js'
 import { Utils } from "../../support/utils.js"
 import { newFakeProtection } from '../commonclasses/fakeprotection.js'
-import { newFakeSheetRange } from '../spreadsheetapp/fakesheetrange.js'
-const { is } = Utils
+import { newFakeSheetRange } from './fakesheetrange.js'
+import { clearWorkbookCache } from '../../support/sheetscache.js';
+import { newFakeDeveloperMetadataFinder } from './fakedevelopermetadatafinder.js';
+import { batchUpdate } from './sheetrangehelpers.js';
+const { is, isEnum } = Utils
 
 
 /**
@@ -32,8 +35,7 @@ export class FakeSpreadsheet {
     // may of these props can be picked up from the Drive API, so we'll look as a file too
     this.__file = DriveApp.getFileById(file.spreadsheetId)
 
-    const props = ['toString',
-      'getSpreadsheetTheme',
+    const props = ['getSpreadsheetTheme',
       'setActiveSheet',
       'getActiveSheet',
       'getBandings',
@@ -52,7 +54,6 @@ export class FakeSpreadsheet {
       'removeCollaborator',
       'getSpreadsheetLocale',
       'setAnonymousAccess',
-      'addDeveloperMetadata',
       'resetSpreadsheetTheme',
       'renameActiveSheet',
       'insertDataSourceSheet',
@@ -74,7 +75,6 @@ export class FakeSpreadsheet {
       'getDataSourceSheets',
       'setSpreadsheetTheme',
       'isAnonymousWrite',
-      'getDeveloperMetadata',
       'addMenu',
       'removeMenu',
       'inputBox',
@@ -90,7 +90,6 @@ export class FakeSpreadsheet {
       'setIterativeCalculationEnabled',
       'isIterativeCalculationEnabled',
       'insertSheetWithDataSourceTable',
-      'createDeveloperMetadataFinder',
       'getDataSourceRefreshSchedules',
       'getPredefinedSpreadsheetThemes',
       'setName',
@@ -169,6 +168,50 @@ export class FakeSpreadsheet {
     })
   }
 
+  addDeveloperMetadata(key, value, visibility) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.addDeveloperMetadata");
+    if (nargs < 1 || nargs > 3) matchThrow();
+    if (!is.string(key)) matchThrow();
+
+    let realValue = null;
+    let realVisibility = SpreadsheetApp.DeveloperMetadataVisibility.DOCUMENT;
+
+    if (nargs === 2) {
+      if (isEnum(value)) {
+        realVisibility = value;
+      } else {
+        realValue = value;
+      }
+    } else if (nargs === 3) {
+      realValue = value;
+      realVisibility = visibility;
+    }
+
+    const metadata = {
+      metadataKey: key,
+      metadataValue: realValue,
+      visibility: realVisibility.toString(),
+      location: {
+        spreadsheet: true,
+      },
+    };
+
+    const request = {
+      createDeveloperMetadata: {
+        developerMetadata: metadata,
+      },
+    };
+
+    batchUpdate({ spreadsheetId: this.getId(), requests: [request] });
+    return this;
+  }
+
+  createDeveloperMetadataFinder() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.createDeveloperMetadataFinder");
+    if (nargs) matchThrow();
+    return newFakeDeveloperMetadataFinder(this);
+  }
+
   __updateMeta(file) {
     this.__meta = file
   }
@@ -200,6 +243,12 @@ export class FakeSpreadsheet {
   __getMetaProps(fields) {
     const data = Sheets.Spreadsheets.get(this.getId(), { fields })
     return data
+  }
+
+  getDeveloperMetadata() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.getDeveloperMetadata");
+    if (nargs) matchThrow();
+    return this.createDeveloperMetadataFinder().find();
   }
 
   /**
@@ -557,6 +606,7 @@ export class FakeSpreadsheet {
   }
 
   __disruption() {
+    // Cache is cleared by the batchUpdate helper. This just re-fetches the local meta for the spreadsheet object.
     this.__updateMeta(Sheets.Spreadsheets.get(this.getId(), { fields: minSheetFields }, { ss: true }))
   }
 
@@ -569,5 +619,9 @@ export class FakeSpreadsheet {
       throw new Error(`Invalid range ${range}`)
     }
     return sheet.getRange(rangePart)
+  }
+
+  toString() {
+    return 'Spreadsheet';
   }
 }

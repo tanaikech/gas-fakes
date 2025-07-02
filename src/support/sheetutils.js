@@ -71,6 +71,31 @@ const fromRange = (range) => {
   /// remove $ from $A$1 style
   cleanRange = cleanRange.replace(/\$/g, "")
   const parts = cleanRange.split(':');
+
+  // Check for row-only range (e.g., "1:3" or "2")
+  if (/^\d+$/.test(parts[0]) && (parts.length === 1 || (parts.length === 2 && /^\d+$/.test(parts[1])))) {
+    const startRow = parseInt(parts[0], 10);
+    const endRow = parts.length > 1 ? parseInt(parts[1], 10) : startRow;
+    // Apps Script silently corrects inverted ranges
+    return {
+      startRowIndex: Math.min(startRow, endRow) - 1,
+      endRowIndex: Math.max(startRow, endRow),
+      // startColumnIndex and endColumnIndex are omitted for unbounded
+    };
+  }
+
+  // Check for column-only range (e.g., "A:C" or "B")
+  if (/^[A-Z]+$/i.test(parts[0]) && (parts.length === 1 || (parts.length === 2 && /^[A-Z]+$/i.test(parts[1])))) {
+    const startColumn = letterToColumn(parts[0].toUpperCase());
+    const endColumn = parts.length > 1 ? letterToColumn(parts[1].toUpperCase()) : startColumn;
+    // Apps Script silently corrects inverted ranges
+    return {
+      startColumnIndex: Math.min(startColumn, endColumn) - 1,
+      endColumnIndex: Math.max(startColumn, endColumn),
+      // startRowIndex and endRowIndex are omitted for unbounded
+    };
+  }
+
   if (!parts.length || parts.length > 2) {
     throw new Error("Invalid range format " + range);
   }
@@ -79,6 +104,11 @@ const fromRange = (range) => {
 
   const startColMatch = startCell.match(/^[A-Z]+/i);
   const startRowMatch = startCell.match(/\d+$/);
+
+  if (!startColMatch || !startRowMatch) {
+    throw new Error("Invalid range format " + range);
+  }
+
   const startColumn = letterToColumn(startColMatch[0].toUpperCase());
   const startRow = parseInt(startRowMatch[0], 10);
   if (!is.positiveNumber(startRow) || !is.positiveNumber(startColumn)) {
@@ -97,6 +127,11 @@ const fromRange = (range) => {
 
   const endColMatch = endCell.match(/^[A-Z]+/i);
   const endRowMatch = endCell.match(/\d+$/);
+
+  if (!endColMatch || !endRowMatch) {
+    throw new Error("Invalid range format " + range);
+  }
+
   const endColumn = letterToColumn(endColMatch[0].toUpperCase());
   const endRow = parseInt(endRowMatch[0], 10);
   if (!is.positiveNumber(endRow) || !is.positiveNumber(endColumn)) {
@@ -107,11 +142,12 @@ const fromRange = (range) => {
   // also endIndex works like slice - so .slice(3,5) selects 0 based columns 4,5  
   // say start = 5 and end = 9 : 1 based (5,6,7,8,9) 
   // startindex = 4 , endindex = 9 : 0 based (4,5,6,7,8)  
+  // Apps Script silently corrects inverted ranges
   const r = {
-    startRowIndex: startRow - 1,
-    endRowIndex: endRow,
-    startColumnIndex: startColumn - 1,
-    endColumnIndex: endColumn
+    startRowIndex: Math.min(startRow, endRow) - 1,
+    endRowIndex: Math.max(startRow, endRow),
+    startColumnIndex: Math.min(startColumn, endColumn) - 1,
+    endColumnIndex: Math.max(startColumn, endColumn)
   }
 
   return r

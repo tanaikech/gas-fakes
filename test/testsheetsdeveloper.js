@@ -108,6 +108,49 @@ export const testSheetsDeveloper = (pack) => {
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
   });
 
+  unit.section("A1 Notation Range Parsing", t => {
+    const { sheet } = maketss('a1_notation_tests', toTrash, fixes);
+    const maxRows = sheet.getMaxRows();
+    const maxCols = sheet.getMaxColumns();
+
+    // Test case 1: Full cell range
+    let range = sheet.getRange("B2:D5");
+    t.is(range.getRow(), 2, "Full range: start row");
+    t.is(range.getColumn(), 2, "Full range: start column");
+    t.is(range.getNumRows(), 4, "Full range: num rows");
+    t.is(range.getNumColumns(), 3, "Full range: num columns");
+    t.is(range.getA1Notation(), "B2:D5", "Full range: A1 notation");
+
+    // Test case 2: Single cell with $
+    range = sheet.getRange("$C$3");
+    t.is(range.getA1Notation(), "C3", "Single cell with $: A1 notation");
+
+    // Test case 3: Row-only range
+    range = sheet.getRange("5:7");
+    t.is(range.getNumRows(), 3, "Row-only: num rows");
+    t.is(range.getNumColumns(), maxCols, "Row-only: num columns");
+    t.is(range.getA1Notation(), "5:7", "Row-only: A1 notation");
+
+    // Test case 4: Column-only range
+    range = sheet.getRange("D:F");
+    t.is(range.getNumRows(), maxRows, "Column-only: num rows");
+    t.is(range.getNumColumns(), 3, "Column-only: num columns");
+    t.is(range.getA1Notation(), "D:F", "Column-only: A1 notation");
+
+    // Test case 5: Sheet name included
+    range = sheet.getRange(`${sheet.getName()}!E10:F12`);
+    t.is(range.getA1Notation(), "E10:F12", "With sheet name: A1 notation");
+
+    // Test case 6: Inverted ranges are auto-corrected
+    range = sheet.getRange("C5:B2");
+    t.is(range.getA1Notation(), "B2:C5", "Inverted cell range should be corrected");
+    range = sheet.getRange("5:2");
+    t.is(range.getA1Notation(), "2:5", "Inverted row-only range should be corrected");
+    range = sheet.getRange("D:B");
+    t.is(range.getA1Notation(), "B:D", "Inverted column-only range should be corrected");
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
+  });
+
 
   // running standalone
   if (!pack) {

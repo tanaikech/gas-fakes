@@ -45,16 +45,23 @@ class FakeDeveloperMetadata {
     if (location.toString() === 'Sheet') {
       newLocation.sheetId = location.getSheetId();
     } else if (location.toString() === 'Range') {
-      const isSingleColumn = location.getNumColumns() === 1;
-      const isSingleRow = location.getNumRows() === 1;
-      const dimension = isSingleColumn && !isSingleRow ? 'COLUMNS' : 'ROWS';
+      const isEntireRow = location.getNumRows() === 1 && location.getColumn() === 1 && location.getNumColumns() === location.getSheet().getMaxColumns();
+      const isEntireColumn = location.getNumColumns() === 1 && location.getRow() === 1 && location.getNumRows() === location.getSheet().getMaxRows();
+
+      if (!isEntireRow && !isEntireColumn) {
+        throw new Error('Adding developer metadata to arbitrary ranges is not currently supported. ' +
+          'Developer metadata may only be added to the top-level spreadsheet, an individual sheet, ' +
+          'or an entire row or column.');
+      }
+      const dimension = isEntireColumn ? 'COLUMNS' : 'ROWS';
       const startIndex = dimension === 'ROWS' ? location.getRow() - 1 : location.getColumn() - 1;
+      const endIndex = startIndex + (dimension === 'ROWS' ? location.getNumRows() : location.getNumColumns());
 
       newLocation.dimensionRange = {
         sheetId: location.getSheet().getSheetId(),
         dimension: dimension,
         startIndex: startIndex,
-        endIndex: startIndex + 1,
+        endIndex: endIndex,
       };
     } else {
       throw new Error('Location must be a Sheet or Range.');
@@ -71,6 +78,10 @@ class FakeDeveloperMetadata {
       },
     };
     batchUpdate({ spreadsheetId: this.__spreadsheet.getId(), requests: [request] });
+
+    // The global API cache is cleared by batchUpdate().
+    // Invalidate this specific object instance so it can't be used again.
+    this.__metadata = {};
   }
 
   setKey(key) {

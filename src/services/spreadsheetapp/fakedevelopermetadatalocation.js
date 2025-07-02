@@ -43,8 +43,9 @@ class FakeDeveloperMetadataLocation {
   }
 
   getSheet() {
-    if (!this.__location.sheetId) return null;
-    return this.__spreadsheet.getSheetById(this.__location.sheetId);
+    const sheetId = this.__location.sheetId || this.__location.dimensionRange?.sheetId;
+    if (!sheetId) return null;
+    return this.__spreadsheet.getSheetById(sheetId);
   }
 
   toString() {

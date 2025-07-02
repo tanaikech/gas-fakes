@@ -392,6 +392,10 @@ In addition to CSS hex notation (e.g., `#ff0000`), Apps Script methods like `Ran
 | `yellow` | `#ffff00` |
 | `yellowgreen` | `#9acd32` |
 
+##### rebeccapurple
+
+This is an interesting html color name that apps script does not support, so I've omitted that from the color name support. To learn more about this color name see - https://medium.com/@valgaze/the-hidden-purple-memorial-in-your-web-browser-7d84813bb416
+
 #### Banding Themes
 
 The colors used for banding themes can change over time with UI updates from Google. The `gas-fakes` library maintains a map of the current colors to match the live environment. The `Banding Theme Colors Verification` test in `testsheetssets.js` is used to validate these.
@@ -631,9 +635,11 @@ range.copyTo (destination, SpreadsheetApp.CopyPasteType.PASTE_VALUES)   /// this
 
 This was a fairly convoluted section. I used gemini code assist heavily on this to do the legwork and all in all it mad a pretty decent job of it, although with the endlessly repeated updates and test refactoring it took longer from start to finish than I would have expected it to take had I done it from scratch manually as all the previous classes. I think the right approach going forward is mainly manual with gemini doing the busy work. The tests Gemini came up with were aldo far from exhaustive, and pretty much ignored edge cases, so it needed additional requests to add more robust tests. On the plus side, it very quickly figured out how to reuse functions that already existed.
 
-#### developer data
+#### developer meta data
 
 As per range.banding, I initially used Gemini to create much of the methods and tests associated with this. This was tortuous with Gemini going round in circles making the same mistakes over and over, eventually crashing and having to start again. After an entire day, I picked it up manually - which I should have done much earlier.Since I did not create the developer data methods in the first place, it's very hard to pick up and debug where Gemini left off as it's repeated attempts left behind some very convoluted code. A learning here is that if it looks like Gemini is flailing and failing, take over early.
+
+As an aside, I find the implementation of developer meta data very messy and inconsistent with the usual Apps Script services. I believe that regular Apps Script developers will find it unfamiliar, restrictive and intimidating (which is maybe why it never really caught on) 
 
 #### checking of invalid arguments
 

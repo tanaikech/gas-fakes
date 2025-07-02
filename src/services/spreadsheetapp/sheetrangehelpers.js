@@ -1,4 +1,5 @@
 import { Utils } from '../../support/utils.js'
+import { clearWorkbookCache } from '../../support/sheetscache.js';
 const { is, hexToRgb } = Utils
 
 export const bandingThemeMap = {
@@ -196,7 +197,9 @@ const dateToSerial = (date) => {
 export const batchUpdate = ({ spreadsheetId, requests }) => {
   const bur = Sheets.newBatchUpdateSpreadsheetRequest()
   bur.setRequests(requests)
-  return Sheets.Spreadsheets.__batchUpdate(bur, spreadsheetId, null, { ss: true })
+  const response = Sheets.Spreadsheets.__batchUpdate(bur, spreadsheetId, null, { ss: true });
+  clearWorkbookCache(spreadsheetId); // Invalidate cache after any write operation
+  return response;
 }
 export const fillRange = (range, value ) =>{
   return Array.from({ length: range.getNumRows() }).fill(Array.from({ length: range.getNumColumns() }).fill(value))

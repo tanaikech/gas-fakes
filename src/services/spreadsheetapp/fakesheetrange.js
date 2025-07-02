@@ -63,11 +63,12 @@ export class FakeSheetRange {
    * @param {FakeSheet} sheet the sheet
    * @returns {FakeSheetRange}
    */
-  constructor(gridRange, sheet) {
+  constructor(gridRange, sheet, a1Notation = null) {
 
     this.__apiGridRange = gridRange
     this.__sheet = sheet
-    this.__hasGrid = Reflect.has(gridRange, "startRowIndex")
+    this.__hasGrid = Reflect.has(gridRange, "startRowIndex") || Reflect.has(gridRange, "startColumnIndex")
+    this.__a1Notation = a1Notation
 
     // make the generatable functions
     attrGetList.forEach(target => attrGens(this, target))
@@ -212,7 +213,8 @@ export class FakeSheetRange {
   getDeveloperMetadata() {
     const { nargs, matchThrow } = signatureArgs(arguments, "Range.getDeveloperMetadata");
     if (nargs) matchThrow();
-    return this.createDeveloperMetadataFinder().onIntersectingLocations().find();
+    // Per documentation, this is an exact match search, not an intersecting one.
+    return this.createDeveloperMetadataFinder().find();
   }
 
   applyRowBanding(bandingTheme, header, footer) {
@@ -555,14 +557,47 @@ export class FakeSheetRange {
   }
 
   getA1Notation() {
-    // a range can have just a sheet with no cells
-    if (!this.__hasGrid) return ""
-    return SheetUtils.toRange(
-      this.__gridRange.startRowIndex + 1,
-      this.__gridRange.startColumnIndex + 1,
-      this.__gridRange.endRowIndex,
-      this.__gridRange.endColumnIndex
-    )
+    // For ranges created via getRange(a1Notation), this.__a1Notation is the most reliable source,
+    // especially for unbounded ranges, as the underlying grid parsing can be buggy.
+    if (this.__a1Notation) {
+      const a1 = this.__a1Notation.split('!').pop();
+
+      // Handle row-only ranges like "5:7" or inverted "7:5"
+      const rowMatch = a1.match(/^(\d+):(\d+)$/);
+      if (rowMatch) {
+        let start = parseInt(rowMatch[1], 10);
+        let end = parseInt(rowMatch[2], 10);
+        if (start > end) [start, end] = [end, start];
+        return `${start}:${end}`;
+      }
+
+      // Handle column-only ranges like "D:F" or inverted "F:D"
+      const colMatch = a1.match(/^([A-Z]+):([A-Z]+)$/i);
+      if (colMatch) {
+        const col1 = colMatch[1].toUpperCase();
+        const col2 = colMatch[2].toUpperCase();
+        // Simple sort for columns: shorter one is smaller, then alphabetical
+        if (col1.length > col2.length || (col1.length === col2.length && col1 > col2)) {
+          return `${col2}:${col1}`;
+        }
+        return `${col1}:${col2}`;
+      }
+
+      // Handle single cells with $ like "$C$3"
+      const singleCellMatch = a1.match(/^\$?([A-Z]+)\$?(\d+)$/i);
+      if (singleCellMatch) {
+        return `${singleCellMatch[1].toUpperCase()}${singleCellMatch[2]}`;
+      }
+    }
+
+    // Fallback for ranges created by other means (e.g., offset) or simple bounded ranges
+    if (this.__hasGrid) {
+      const grid = this.__gridRange; // Use the getter to ensure it's expanded
+      return SheetUtils.toRange(grid.startRowIndex + 1, grid.startColumnIndex + 1, grid.endRowIndex, grid.endColumnIndex);
+    }
+
+    // Default fallback
+    return this.__a1Notation ? this.__a1Notation.split('!').pop() : "";
   }
 
 
@@ -1525,15 +1560,22 @@ export class FakeSheetRange {
    * sometimes a range has no  grid range so we need to fake one
    */
   get __gridRange() {
-    if (this.__hasGrid) {
+    // if we have a full grid, just return it
+    if (this.__hasGrid && Reflect.has(this.__apiGridRange, 'startRowIndex') && Reflect.has(this.__apiGridRange, 'startColumnIndex')) {
       return this.__apiGridRange;
     }
-    // This case is for a range that represents a whole sheet, which doesn't have a specific gridRange on creation.
+
     const sheet = this.getSheet();
+    const maxRows = sheet.getMaxRows();
+    const maxCols = sheet.getMaxColumns();
+
+    // it was a partial range (row-only or column-only), or a whole sheet.
+    // so we need to fill in the blanks with the sheet dimensions
     return {
       sheetId: sheet.getSheetId(),
-      startRowIndex: 0, startColumnIndex: 0,
-      endRowIndex: sheet.getMaxRows(), endColumnIndex: sheet.getMaxColumns()
+      startRowIndex: 0, endRowIndex: maxRows,
+      startColumnIndex: 0, endColumnIndex: maxCols,
+      ...this.__apiGridRange
     };
   }
 

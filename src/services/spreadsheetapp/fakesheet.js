@@ -85,10 +85,12 @@ export class FakeSheet {
     return newFakeDeveloperMetadataFinder(this);
   }
 
+
   getDeveloperMetadata() {
     const { nargs, matchThrow } = signatureArgs(arguments, "Sheet.getDeveloperMetadata");
     if (nargs) matchThrow();
-    return this.createDeveloperMetadataFinder().onIntersectingLocations().find();
+    // This should be a non-intersecting search to match live behavior.
+    return this.createDeveloperMetadataFinder().find();
   }
 
   toString() {
@@ -107,7 +109,7 @@ export class FakeSheet {
       return newFakeSheetRange({
         ...grid,
         sheetId: this.getSheetId()
-      }, this);
+      }, this, rowOrA1);
     }
 
     const row = rowOrA1;
