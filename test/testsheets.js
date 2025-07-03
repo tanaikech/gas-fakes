@@ -921,9 +921,9 @@ export const testSheets = (pack) => {
     // revisit this when fixed
     const fr0 = startAt.offset(50, 9)
     fr0.setTextRotation(45)
-    // see https://issuetracker.google.com/issues/425390984 and readme oddities - textRotation
+    // see https://issuetracker.google.com/issues/425390984 and readme oddities - textRotation. The fake returns 0 because the API doesn't return the angle.
     const tr0 = fr0.getTextRotation()
-    t.is(tr0.getDegrees(), Sheets.isFake ? 0 : 45)
+    t.is(tr0.getDegrees(), SpreadsheetApp.isFake ? 0 : 45)
     t.is(tr0.isVertical(), false)
 
     fr0.setVerticalText(true)
@@ -937,12 +937,12 @@ export const testSheets = (pack) => {
     t.is(tr1v.isVertical(), false)
 
     // this also doesnt work in GAS so we'll skipuntil its fixed
-    if (Sheets.isFake) {
+    if (SpreadsheetApp.isFake) {
       const rotd = fillRangeFromDomain(fr0, [-2, 9, 89, null])
       fr0.setTextRotations(rotd)
       const r2 = fr0.getTextRotations()
-      // see https://issuetracker.google.com/issues/425390984 and readme oddities - textRotation
-      t.deepEqual(r2.flat().map(f => f.getDegrees()), rotd.flat().map(f => Sheets.isFake ? 0 : f))
+      // see https://issuetracker.google.com/issues/425390984 and readme oddities - textRotation. The fake returns 0 because the API doesn't return the angle.
+      t.deepEqual(r2.flat().map(f => f.getDegrees()), rotd.flat().map(f => SpreadsheetApp.isFake ? 0 : f))
       // this should always be false if we've set rotation with a number
       t.true(r2.flat().every(f => !f.isVertical()))
       // Note that pass TextRotation object rather than degrees throws an error in GAS so we wont be implementing that overload yet.

@@ -144,6 +144,57 @@ export const testSheetsSets = (pack) => {
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
   });
 
+  unit.section("FilterCriteriaBuilder methods", t => {
+    const { sheet } = maketss('filter_criteria_tests', toTrash, fixes);
+    let builder, criteria, apiObject;
+
+    // Test each 'when...' method
+    const testCases = [
+      { method: 'whenCellEmpty', args: [], type: 'CELL_EMPTY', values: [] },
+      { method: 'whenCellNotEmpty', args: [], type: 'CELL_NOT_EMPTY', values: [] },
+      { method: 'whenDateAfter', args: [new Date('2023-01-01T00:00:00.000Z')], type: 'DATE_AFTER', values: [new Date('2023-01-01T00:00:00.000Z')] },
+      { method: 'whenDateAfter', args: [SpreadsheetApp.RelativeDate.TODAY], type: 'DATE_AFTER_RELATIVE', values: [SpreadsheetApp.RelativeDate.TODAY] },
+      { method: 'whenDateBefore', args: [new Date('2023-01-15T00:00:00.000Z')], type: 'DATE_BEFORE', values: [new Date('2023-01-15T00:00:00.000Z')] },
+      { method: 'whenDateBefore', args: [SpreadsheetApp.RelativeDate.TOMORROW], type: 'DATE_BEFORE_RELATIVE', values: [SpreadsheetApp.RelativeDate.TOMORROW] },
+      { method: 'whenDateEqualTo', args: [new Date('2023-01-20T00:00:00.000Z')], type: 'DATE_EQUAL_TO', values: [new Date('2023-01-20T00:00:00.000Z')] },
+      { method: 'whenDateEqualTo', args: [SpreadsheetApp.RelativeDate.YESTERDAY], type: 'DATE_EQUAL_TO_RELATIVE', values: [SpreadsheetApp.RelativeDate.YESTERDAY] },
+      { method: 'whenFormulaSatisfied', args: ['=A1>10'], type: 'CUSTOM_FORMULA', values: ['=A1>10'] },
+      { method: 'whenNumberBetween', args: [10, 20], type: 'NUMBER_BETWEEN', values: [10, 20] },
+      { method: 'whenNumberEqualTo', args: [42], type: 'NUMBER_EQUAL_TO', values: [42] },
+      { method: 'whenNumberGreaterThan', args: [100], type: 'NUMBER_GREATER_THAN', values: [100] },
+      { method: 'whenNumberGreaterThanOrEqualTo', args: [100], type: 'NUMBER_GREATER_THAN_OR_EQUAL_TO', values: [100] },
+      { method: 'whenNumberLessThan', args: [5], type: 'NUMBER_LESS_THAN', values: [5] },
+      { method: 'whenNumberLessThanOrEqualTo', args: [5], type: 'NUMBER_LESS_THAN_OR_EQUAL_TO', values: [5] },
+      { method: 'whenNumberNotBetween', args: [10, 20], type: 'NUMBER_NOT_BETWEEN', values: [10, 20] },
+      { method: 'whenNumberNotEqualTo', args: [0], type: 'NUMBER_NOT_EQUAL_TO', values: [0] },
+      { method: 'whenTextContains', args: ['foo'], type: 'TEXT_CONTAINS', values: ['foo'] },
+      { method: 'whenTextDoesNotContain', args: ['bar'], type: 'TEXT_DOES_NOT_CONTAIN', values: ['bar'] },
+      { method: 'whenTextEndsWith', args: ['baz'], type: 'TEXT_ENDS_WITH', values: ['baz'] },
+      { method: 'whenTextEqualTo', args: ['exact'], type: 'TEXT_EQUAL_TO', values: ['exact'] },
+      { method: 'whenTextStartsWith', args: ['start'], type: 'TEXT_STARTS_WITH', values: ['start'] },
+    ];
+
+    testCases.forEach(tc => {
+      builder = SpreadsheetApp.newFilterCriteria();
+      builder[tc.method](...tc.args);
+      criteria = builder.build();
+      t.is(criteria.getCriteriaType().toString(), tc.type, `${tc.method} should set correct criteria type`);
+      t.deepEqual(criteria.getCriteriaValues(), tc.values, `${tc.method} should have correct values`);
+    });
+
+    // Test copy()
+    builder = SpreadsheetApp.newFilterCriteria().whenNumberEqualTo(50);
+    const copiedBuilder = builder.copy();
+    const originalCriteria = builder.build();
+    const copiedCriteria = copiedBuilder.build();
+    t.deepEqual(originalCriteria.getCriteriaValues(), copiedCriteria.getCriteriaValues(), 'Copied criteria should have same values');
+    t.is(originalCriteria.getCriteriaType(), copiedCriteria.getCriteriaType(), 'Copied criteria should have same type');
+    builder.whenNumberEqualTo(100); // Modify original
+    t.deepEqual(copiedCriteria.getCriteriaValues(), [50], 'Copy should be independent of original after modification');
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
+  });
+
   unit.section("Range.getDataRegion", t => {
     const { sheet } = maketss('getDataRegion_tests', toTrash, fixes);
     const Dimension = SpreadsheetApp.Dimension;

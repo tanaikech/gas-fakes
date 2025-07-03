@@ -3,6 +3,7 @@ import { SheetUtils } from '../../support/sheetutils.js'
 import { notYetImplemented, signatureArgs } from '../../support/helpers.js'
 import { newFakeSheetRange } from './fakesheetrange.js'
 import { newFakeSheetRangeList } from './fakesheetrangelist.js'
+import { newFakeBanding } from './fakebanding.js'
 import { newFakeFilter } from './fakefilter.js'
 import { Utils } from "../../support/utils.js"
 import { makeSheetsGridRange, batchUpdate } from './sheetrangehelpers.js';
@@ -95,7 +96,6 @@ export class FakeSheet {
       'getNamedRanges',
       'getFormUrl',
       'getProtections',
-      'getBandings',
       'createTextFinder',
       'addDeveloperMetadata',
       'getDeveloperMetadata',
@@ -217,6 +217,15 @@ export class FakeSheet {
       return newFakeFilter(apiFilter, this);
     }
     return null;
+  }
+
+  getBandings() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Sheet.getBandings');
+    if (nargs > 0) matchThrow();
+
+    // The __sheet property gets the latest sheet metadata.
+    const allBandingsOnSheet = this.__sheet.bandedRanges || [];
+    return allBandingsOnSheet.map(b => newFakeBanding(b, this));
   }
 
   get __sheet () {

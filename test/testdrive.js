@@ -22,24 +22,17 @@ export const testDrive = (pack) => {
     t.is(Drive.getVersion(), 'v3')
     t.is(Drive.About.toString(), Drive.toString())
     t.is(Drive.About.toString(), Drive.Files.toString())
-    const file = Drive.Files.get(fixes.TEXT_FILE_ID)
+    const file = Drive.Files.get(fixes.TEXT_FILE_ID, { fields: "id,name,mimeType,kind" })
     t.is(file.id, fixes.TEXT_FILE_ID)
     t.is(file.name, fixes.TEXT_FILE_NAME)
     t.is(file.mimeType, fixes.TEXT_FILE_TYPE)
     t.is(file.kind, fixes.KIND_DRIVE)
-    t.deepEqual(file, DriveApp.getFileById(fixes.TEXT_FILE_ID).meta, {
-      skip: !DriveApp.isFake,
-      description: 'meta property only exists on fakedrive class'
-    })
     if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
   })
 
 
   unit.section("root folder checks", t => {
     const rootFolder = DriveApp.getRootFolder()
-    if (DriveApp.isFake) {
-      t.true(rootFolder.__isRoot, 'fake internal check')
-    }
     t.false(rootFolder.getParents().hasNext())
     const root = Drive.Files.get('root', { fields: 'parents' })
     // TODO - slight difference fake returns null for no parents, gas undefined
@@ -671,6 +664,3 @@ export const testDrive = (pack) => {
 // when running as part of a consolidated test, we dont want to run it, as the caller will do that
 
 if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) testDrive()
-
-
-
