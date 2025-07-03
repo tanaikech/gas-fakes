@@ -36,6 +36,7 @@
     "testsheetssets": "cp mainlocal.js main.js &&  node --env-file=.env ./test/testsheetssets.js execute",
     "testsheetsvui": "cp mainlocal.js main.js &&  node --env-file=.env ./test/testsheetsvui.js execute",
     "testsheetsdeveloper": "cp mainlocal.js main.js &&  node --env-file=.env ./test/testsheetsdeveloper.js execute",
+    "testsheetsexotics": "cp mainlocal.js main.js &&  node --env-file=.env ./test/testsheetsexotics.js execute",
     "pub": "cp mainlocal.js main.js && npm publish --access public"
   },
   "name": "@mcpher/gas-fakes",

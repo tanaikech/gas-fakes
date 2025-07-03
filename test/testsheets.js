@@ -19,172 +19,32 @@ export const testSheets = (pack) => {
   const { unit, fixes } = pack || initTests()
   const toTrash = []
 
-  unit.section("Range.applyBanding", t => {
-    const { sheet } = maketss('banding_tests', toTrash, fixes);
-    sheet.clear();
-    sheet.getRange("A1:D10").setValues(Array(10).fill(Array(4).fill("data")));
 
-    const range = sheet.getRange("A1:D10");
+  unit.section("notes", t => {
+    const { sheet } = maketss('notes tests', toTrash, fixes);
+    const range = sheet.getRange("c2:g20")
+    const notes = fillRangeFromDomain(range, ["foo", "bar", ""])
 
-    // Test applyRowBanding with default theme
-    const rowBanding = range.applyRowBanding();
-    t.is(rowBanding.toString(), "Banding", "applyRowBanding should return a Banding object");
-    t.is(rowBanding.getRange().getA1Notation(), "A1:D10", "Row banding range should be correct");
+    const strNotes = notes.map(row => row.map(c => {
+      // because set notes adds .0 to integer string conversions
+      // but see issue https://issuetracker.google.com/issues/429373214
+      let v = c?.toString() || ""
+      if (is.number(c) &&  is.integer(c)) v = c.toFixed(1)
+      return v
+    }))
+    range.setNote(notes[0][0])
+    t.is(range.getNote(), strNotes[0][0])
+    t.deepEqual(range.getNotes(), fillRange(range, strNotes[0][0]))
 
-    // Test getBandings
-    const bandings = sheet.getBandings();
-    t.is(bandings.length, 1, "There should be one banding on the sheet");
-    t.is(bandings[0].getRange().getA1Notation(), "A1:D10", "getBandings should return the correct banding range");
+    range.setNotes(notes)
+    t.deepEqual(range.getNotes(), strNotes)
 
-    // Test remove
-    rowBanding.remove();
-    t.is(sheet.getBandings().length, 0, "Banding should be removed");
+    t.rxMatch(t.threw(() => range.setNotes("foo"))?.message || "no throw", /don't match the method signature/)
 
-    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
-  });
-
-  unit.section("Range.createFilter", t => {
-    const { sheet } = maketss('filter_tests', toTrash, fixes);
-    sheet.clear();
-    sheet.getRange("A1:C5").setValues([
-      ["Header 1", "Header 2", "Header 3"],
-      ["A", 1, "X"],
-      ["B", 2, "Y"],
-      ["C", 1, "Z"],
-      ["D", 3, "X"]
-    ]);
-
-    const range = sheet.getRange("A1:C5");
-    const filter = range.createFilter();
-
-    t.is(filter.toString(), "Filter", "createFilter should return a Filter object");
-    t.is(filter.getRange().getA1Notation(), "A1:C5", "Filter range should be correct");
-
-    const sheetFilter = sheet.getFilter();
-    t.truthy(sheetFilter, "sheet.getFilter() should return the created filter");
-    t.is(sheetFilter.getRange().getA1Notation(), "A1:C5", "Sheet's filter range should be correct");
-
-    // Test that creating another filter throws an error
-    t.rxMatch(t.threw(() => sheet.getRange("A1:B2").createFilter()).message, /You can't create a filter in a sheet that already has a filter\./, "Should not be able to create a second filter");
-
-    // Test removing the filter
-    filter.remove();
-    t.is(sheet.getFilter(), null, "Filter should be null after removal");
-
-    // Test creating a filter after removing one
-    const newRange = sheet.getRange("B2:C4");
-    const newFilter = newRange.createFilter();
-    t.is(newFilter.getRange().getA1Notation(), "B2:C4", "Should be able to create a new filter after removal");
 
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
-  });
+  })
 
-  unit.section("Filter methods", t => {
-    const { sheet } = maketss('filter_methods_tests', toTrash, fixes);
-    sheet.clear();
-    const initialData = [
-      ["Header 1", "Header 2", "Header 3", "Header 4"],
-      ["A", 10, "X", 50],
-      ["C", 30, "Y", 20],
-      ["B", 20, "Z", 30],
-      ["D", 10, "X", 10]
-    ];
-    sheet.getRange("A1:D5").setValues(initialData);
-
-    const filter = sheet.getRange("A1:D5").createFilter();
-    t.truthy(filter, "Filter should be created");
-
-    // --- Test sort() and getSortSpec() ---
-    filter.sort(2, true); // Sort by column B, ascending
-
-    const sortedDataAsc = sheet.getRange("A2:D5").getValues();
-    const expectedSortedDataAsc = [
-      ["A", 10, "X", 50],
-      ["D", 10, "X", 10],
-      ["B", 20, "Z", 30],
-      ["C", 30, "Y", 20]
-    ];
-    t.deepEqual(sortedDataAsc, expectedSortedDataAsc, "Data should be sorted ascending by column 2");
-
-    let sortSpec = filter.getColumnSortSpec(2);
-    t.truthy(sortSpec, "getColumnSortSpec should return a SortSpec object for column 2");
-    t.is(sortSpec.getDimensionIndex(), 2, "SortSpec dimension index should be 2 (1-based)");
-    t.true(sortSpec.isAscending(), "SortSpec should be ascending");
-    t.is(sortSpec.getSortOrder().toString(), "ASCENDING", "SortSpec order should be ascending");
-    const err1 = t.threw(() => filter.getColumnSortSpec(3).getSortOrder());
-    t.rxMatch(err1.message, /Unexpected error while getting the method or property getSortOrder on object SpreadsheetApp.SortSpec\./, "getSortOrder() on an unsorted column should throw");
-
-    // Test sorting descending
-    filter.sort(3, false); // Sort by column C, descending
-    const sortedDataDesc = sheet.getRange("A2:D5").getValues();
-    const expectedSortedDataDesc = [
-      ["B", 20, "Z", 30],
-      ["C", 30, "Y", 20],
-      ["A", 10, "X", 50],
-      ["D", 10, "X", 10]
-    ];
-    t.deepEqual(sortedDataDesc, expectedSortedDataDesc, "Data should be sorted descending by column 3");
-
-    sortSpec = filter.getColumnSortSpec(3);
-    t.truthy(sortSpec, "getColumnSortSpec should now return a SortSpec object for column 3");
-    t.is(sortSpec.getDimensionIndex(), 3, "SortSpec dimension index should be 3 (1-based)");
-    t.false(sortSpec.isAscending(), "SortSpec should be descending");
-    t.is(sortSpec.getSortOrder().toString(), "DESCENDING", "SortSpec order should be descending");
-    const err2 = t.threw(() => filter.getColumnSortSpec(4).getSortOrder());
-    t.rxMatch(err2?.message || 'no error thrown', /Unexpected error while getting the method or property getSortOrder on object SpreadsheetApp.SortSpec\./, "getSortOrder() on a previously sorted column should now throw");
-
-    // --- Test set/get ColumnFilterCriteria ---
-    const criteria = SpreadsheetApp.newFilterCriteria().whenNumberGreaterThan(25).build();
-    filter.setColumnFilterCriteria(4, criteria);
-
-    const retrievedCriteria = filter.getColumnFilterCriteria(4);
-    t.truthy(retrievedCriteria, "Should retrieve filter criteria for column 4");
-    t.is(retrievedCriteria.getCriteriaType().toString(), "NUMBER_GREATER_THAN", "Criteria type should be NUMBER_GREATER_THAN");
-    t.deepEqual(retrievedCriteria.getCriteriaValues(), [25], "Criteria value should be 25");
-
-    // --- Test removeColumnFilterCriteria() ---
-    filter.removeColumnFilterCriteria(4); // remove filter
-    t.is(filter.getColumnFilterCriteria(4), null, "Post-remove: Filter criteria for column 4 should be gone");
-
-    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
-  });
-
-  unit.section("Range.getDataRegion", t => {
-    const { sheet } = maketss('getDataRegion_tests', toTrash, fixes);
-    const Dimension = SpreadsheetApp.Dimension;
-
-    // --- Setup ---
-    sheet.clear();
-    // A 3x3 data block
-    sheet.getRange("B2:D4").setValues([
-      ['B2', 'C2', 'D2'],
-      ['B3', 'C3', 'D3'],
-      ['B4', 'C4', 'D4']
-    ]);
-    // Another separate data block
-    sheet.getRange("F6:G7").setValues([
-      ['F6', 'G6'],
-      ['F7', 'G7']
-    ]);
-
-    // --- Test without dimension argument ---
-    t.is(sheet.getRange("C3").getDataRegion().getA1Notation(), "B2:D4", "From inside data block");
-    t.is(sheet.getRange("B2:D4").getDataRegion().getA1Notation(), "B2:D4", "From the whole data block");
-    t.is(sheet.getRange("A1").getDataRegion().getA1Notation(), "A1", "From an empty cell far away");
-    t.is(sheet.getRange("B1").getDataRegion().getA1Notation(), "B1:D4", "From an adjacent empty cell (above)");
-    t.is(sheet.getRange("E3").getDataRegion().getA1Notation(), "B2:E4", "From an adjacent empty cell (right)");
-    t.is(sheet.getRange("F6").getDataRegion().getA1Notation(), "F6:G7", "From inside the second data block");
-
-    // --- Test with Dimension.ROWS ---
-    t.is(sheet.getRange("C3").getDataRegion(Dimension.ROWS).getA1Notation(), "C2:C4", "ROWS: From inside data block");
-    t.is(sheet.getRange("F7").getDataRegion(Dimension.ROWS).getA1Notation(), "F6:F7", "ROWS: From inside second data block");
-
-    // --- Test with Dimension.COLUMNS ---
-    t.is(sheet.getRange("C3").getDataRegion(Dimension.COLUMNS).getA1Notation(), "B3:D3", "COLUMNS: From inside data block");
-    t.is(sheet.getRange("F7").getDataRegion(Dimension.COLUMNS).getA1Notation(), "F7:G7", "COLUMNS: From inside second data block");
-
-    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
-  });
 
   unit.section("rich text tests", t => {
     const { sheet } = maketss('rich text tests', toTrash, fixes);
@@ -290,6 +150,7 @@ export const testSheets = (pack) => {
     const style3 = result3.getTextStyle();
     t.false(style3.isBold(), 'Default style should not be bold');
     t.is(style3.getFontSize(), 10, 'Default font size should be 10');
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
   });
 
   unit.section("Range.deleteCells and Range.insertCells", t => {

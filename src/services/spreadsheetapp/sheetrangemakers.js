@@ -154,6 +154,17 @@ export const setterList = [{
   },
   fields: 'userEnteredFormat.wrapStrategy',
 }, {
+  name: "note",
+  typeChecker: (value) => {
+    return is.number(value) || is.string(value)
+  },
+  maker: (_, value) => {
+    let v = value?.toString() || ""
+    if (is.number(value) && is.integer(value) ) v = value.toFixed(1)
+    return Sheets.newCellData().setNote(v)
+  },
+  fields: "note"
+}, {
   plural: "setWrapStrategies",
   name: 'wrapStrategy',
   nullAllowed: true,

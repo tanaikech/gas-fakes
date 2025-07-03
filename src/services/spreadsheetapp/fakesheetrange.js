@@ -89,27 +89,16 @@ export class FakeSheetRange {
       'setFormulasR1C1',
       'activateAsCurrentCell',
       'setComments',
-
-      'isStartColumnBounded',
-      'isStartRowBounded',
-      'isEndColumnBounded',
-      'isEndRowBounded',
       'autoFill',
       'autoFillToNeighbor',
       'setShowHyperlink',
 
       'createPivotTable',
       'createDataSourceTable',
-      'shiftRowGroupDepth',
-      'shiftColumnGroupDepth',
-      'expandGroups',
-      'collapseGroups',
       'getComments',
       'clearComment',
       'createTextFinder',
       'moveTo',
-      'setNotes',
-      'setNote',
 
       'getDataSourceUrl',
       'getDataTable',
@@ -208,6 +197,166 @@ export class FakeSheetRange {
     const { nargs, matchThrow } = signatureArgs(arguments, "Range.createDeveloperMetadataFinder");
     if (nargs) matchThrow();
     return newFakeDeveloperMetadataFinder(this);
+  }
+
+  collapseGroups() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.collapseGroups");
+    if (nargs) matchThrow();
+
+    const sheet = this.getSheet();
+    const spreadsheet = sheet.getParent();
+    const spreadsheetId = spreadsheet.getId();
+    const sheetId = sheet.getSheetId();
+
+    // Get all groups for the entire spreadsheet to find the ones on our sheet.
+    const meta = spreadsheet.__getMetaProps('sheets(properties.sheetId,rowGroups(range,depth,collapsed),columnGroups(range,depth,collapsed))');
+    const sheetMeta = meta.sheets.find(s => s.properties.sheetId === sheetId);
+
+    if (!sheetMeta) return this;
+
+    const allGroups = [
+      ...(sheetMeta.rowGroups || []).map(g => ({ ...g, dimension: g.range.dimension })),
+      ...(sheetMeta.columnGroups || []).map(g => ({ ...g, dimension: g.range.dimension }))
+    ];
+
+    const thisGridRange = this.__gridRange;
+
+    // Find groups wholly contained within the range
+    const whollyContainedGroups = allGroups.filter(group => {
+      const groupRange = group.range;
+      if (groupRange.sheetId !== sheetId) return false;
+      const dim = group.dimension;
+      const thisStart = dim === 'ROWS' ? thisGridRange.startRowIndex : thisGridRange.startColumnIndex;
+      const thisEnd = dim === 'ROWS' ? thisGridRange.endRowIndex : thisGridRange.endColumnIndex;
+      return groupRange.startIndex >= thisStart && groupRange.endIndex <= thisEnd;
+    });
+
+    let groupsToCollapse = [];
+    if (whollyContainedGroups.length > 0) {
+      // Per observed behavior, only collapse the outermost groups in the selection.
+      const minDepth = Math.min(...whollyContainedGroups.map(g => g.depth));
+      groupsToCollapse = whollyContainedGroups.filter(g => g.depth === minDepth);
+    } else {
+      // "If no group is fully within the range, the deepest expanded group that is partially within the range is collapsed."
+      const intersectingGroups = allGroups.filter(group => {
+        const groupRange = group.range;
+        if (groupRange.sheetId !== sheetId) return false;
+        const dim = group.dimension;
+        const thisStart = dim === 'ROWS' ? thisGridRange.startRowIndex : thisGridRange.startColumnIndex;
+        const thisEnd = dim === 'ROWS' ? thisGridRange.endRowIndex : thisGridRange.endColumnIndex;
+        return Math.max(thisStart, groupRange.startIndex) < Math.min(thisEnd, groupRange.endIndex);
+      });
+
+      const expandedIntersecting = intersectingGroups.filter(g => !g.collapsed);
+      if (expandedIntersecting.length > 0) {
+        const maxDepth = Math.max(...expandedIntersecting.map(g => g.depth));
+        const deepestGroup = expandedIntersecting.find(g => g.depth === maxDepth);
+        if (deepestGroup) {
+          groupsToCollapse.push(deepestGroup);
+        }
+      }
+    }
+
+    if (groupsToCollapse.length === 0) return this;
+
+    const requests = groupsToCollapse.map(group => ({
+      updateDimensionGroup: {
+        dimensionGroup: {
+          range: group.range,
+          depth: group.depth,
+          collapsed: true,
+        },
+        fields: 'collapsed',
+      },
+    }));
+
+    batchUpdate({ spreadsheetId, requests });
+    spreadsheet.__disruption();
+    return this;
+  }
+
+  expandGroups() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.expandGroups");
+    if (nargs) matchThrow();
+
+    const sheet = this.getSheet();
+    const spreadsheet = sheet.getParent();
+    const spreadsheetId = spreadsheet.getId();
+    const sheetId = sheet.getSheetId();
+
+    const meta = spreadsheet.__getMetaProps('sheets(properties.sheetId,rowGroups(range,depth,collapsed),columnGroups(range,depth,collapsed))');
+    const sheetMeta = meta.sheets.find(s => s.properties.sheetId === sheetId);
+    if (!sheetMeta) return this;
+
+    const allGroups = [
+      ...(sheetMeta.rowGroups || []).map(g => ({ ...g, dimension: g.range.dimension })),
+      ...(sheetMeta.columnGroups || []).map(g => ({ ...g, dimension: g.range.dimension }))
+    ];
+
+    const thisGridRange = this.__gridRange;
+
+    // "Expands the collapsed groups whose range or control toggle intersects with this range."
+    const intersectingGroups = allGroups.filter(group => {
+      const groupRange = group.range;
+      if (groupRange.sheetId !== sheetId) return false;
+      const dim = group.dimension;
+      const thisStart = dim === 'ROWS' ? thisGridRange.startRowIndex : thisGridRange.startColumnIndex;
+      const thisEnd = dim === 'ROWS' ? thisGridRange.endRowIndex : thisGridRange.endColumnIndex;
+      return Math.max(thisStart, groupRange.startIndex) < Math.min(thisEnd, groupRange.endIndex);
+    });
+
+    // Per observed behavior, expand all intersecting groups that are currently collapsed.
+    const groupsToExpand = intersectingGroups.filter(g => g.collapsed);
+
+    if (groupsToExpand.length === 0) return this;
+
+    const requests = groupsToExpand.map(group => ({
+      updateDimensionGroup: {
+        dimensionGroup: {
+          range: group.range,
+          depth: group.depth,
+          collapsed: false,
+        },
+        fields: 'collapsed',
+      },
+    }));
+
+    batchUpdate({ spreadsheetId, requests });
+    spreadsheet.__disruption();
+    return this;
+  }
+
+  __shiftGroupDepth(dimension, delta) {
+    const { nargs, matchThrow } = signatureArgs([delta], `Range.shift${dimension === 'ROWS' ? 'Row' : 'Column'}GroupDepth`);
+    if (nargs !== 1 || !is.integer(delta)) matchThrow();
+    if (delta === 0) return this;
+
+    const gridRange = this.__gridRange;
+    const dimensionRange = {
+      sheetId: this.getSheet().getSheetId(),
+      dimension: dimension,
+      startIndex: dimension === 'ROWS' ? gridRange.startRowIndex : gridRange.startColumnIndex,
+      endIndex: dimension === 'ROWS' ? gridRange.endRowIndex : gridRange.endColumnIndex,
+    };
+
+    const requestType = delta > 0 ? 'addDimensionGroup' : 'deleteDimensionGroup';
+    const requestBody = { range: dimensionRange };
+
+    const requests = Array.from({ length: Math.abs(delta) }, () => ({
+      [requestType]: requestBody,
+    }));
+
+    batchUpdate({ spreadsheetId: this.__getSpreadsheetId(), requests });
+    this.__getSpreadsheet().__disruption();
+    return this;
+  }
+
+  shiftRowGroupDepth(delta) {
+    return this.__shiftGroupDepth('ROWS', delta);
+  }
+
+  shiftColumnGroupDepth(delta) {
+    return this.__shiftGroupDepth('COLUMNS', delta);
   }
 
   getDeveloperMetadata() {
@@ -598,6 +747,38 @@ export class FakeSheetRange {
 
     // Default fallback
     return this.__a1Notation ? this.__a1Notation.split('!').pop() : "";
+  }
+
+  /**
+   * Returns true if the range has a starting row index.
+   * @returns {boolean}
+   */
+  isStartRowBounded() {
+    return Reflect.has(this.__apiGridRange, 'startRowIndex');
+  }
+
+  /**
+   * Returns true if the range has an ending row index.
+   * @returns {boolean}
+   */
+  isEndRowBounded() {
+    return Reflect.has(this.__apiGridRange, 'endRowIndex');
+  }
+
+  /**
+   * Returns true if the range has a starting column index.
+   * @returns {boolean}
+   */
+  isStartColumnBounded() {
+    return Reflect.has(this.__apiGridRange, 'startColumnIndex');
+  }
+
+  /**
+   * Returns true if the range has an ending column index.
+   * @returns {boolean}
+   */
+  isEndColumnBounded() {
+    return Reflect.has(this.__apiGridRange, 'endColumnIndex');
   }
 
 

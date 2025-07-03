@@ -534,6 +534,12 @@ I'm leaving these same behaviors in place, and you would need to use the same wo
 
 Since only relative versions of single dates are implemented in GAS, there's no need to handle mixed relative and real dates. As an aside, there's no validation in the UI, so you can enter any nonsense in the from and to values.
 
+#### sheets notes
+
+Normally, range.setNote ("takes a string"). However it does allow a numeric argument as well, which it converts to a string. However a normal toString() - for example 25.toString() would give "25". Apps script however returns "25.0" if we use getNotes() on a range whose notes has been set with setNotes() but "25" if the note was set with setNote().
+
+There's an issue reported here - https://issuetracker.google.com/issues/429373214 - for now I'm returing "25.0" in all cases till we see what the actual resolution of this issue should be
+
 #### Locale of dates
 
 CriteriaValues are stored as a string, exactly as typed by the user. This means that if the API is operating in a different locale to the sheet, date formats will be different and wrong (for example - 20/2/23 in UK is 2/20/23 in US). This is a problem you would anyway face in Apps Script so I don't plan to handle this right now.
@@ -631,6 +637,14 @@ range.copyTo(targetRange, { foo: true }) // should throw an error for invalid op
 range.copyTo (destination, SpreadsheetApp.CopyPasteType.PASTE_VALUES)   /// this can also trash formats previously set with PASTE_FORMAT
 ````
 
+### Some experiences with using Gemini code assist
+
+I tried using Gemini to generate the code and test cases for a number of method types. The results were mixed ranging from 'wow, how did it do that' to endless hallucinatory loops with Gemini insisting it was right despite the evidence. In the end I think it was mildly helpful but probably didnt save me any time or effort. It was just a different kind of effort.
+
+Another annoyance is after deep sessions of back and forwards, code assist is generally unable to make the changes automatically and often reverts to an empty gray sidebar - which means you have to start again. Recalling the history doesn't necessarily reinstate where you were. 
+
+I also dislike the habit gemini has of 'mansplaining' back to me the answer I've just provided to correct some of it's code.
+
 #### range.banding
 
 This was a fairly convoluted section. I used gemini code assist heavily on this to do the legwork and all in all it mad a pretty decent job of it, although with the endlessly repeated updates and test refactoring it took longer from start to finish than I would have expected it to take had I done it from scratch manually as all the previous classes. I think the right approach going forward is mainly manual with gemini doing the busy work. The tests Gemini came up with were aldo far from exhaustive, and pretty much ignored edge cases, so it needed additional requests to add more robust tests. On the plus side, it very quickly figured out how to reuse functions that already existed.
@@ -640,6 +654,14 @@ This was a fairly convoluted section. I used gemini code assist heavily on this 
 As per range.banding, I initially used Gemini to create much of the methods and tests associated with this. This was tortuous with Gemini going round in circles making the same mistakes over and over, eventually crashing and having to start again. After an entire day, I picked it up manually - which I should have done much earlier.Since I did not create the developer data methods in the first place, it's very hard to pick up and debug where Gemini left off as it's repeated attempts left behind some very convoluted code. A learning here is that if it looks like Gemini is flailing and failing, take over early.
 
 As an aside, I find the implementation of developer meta data very messy and inconsistent with the usual Apps Script services. I believe that regular Apps Script developers will find it unfamiliar, restrictive and intimidating (which is maybe why it never really caught on) 
+
+#### grouping and collapsing
+
+Gemini took me down a rabbit hole on this one, where it kept forgetting that the objective was to have the fake environment behave as Apps Script. Up to this point, Gemini was quite good at remembering this, but for some reason for this collection of methods it kept fiddling with the test cases to make them work differently in each environment rather than replicating the Apps Script behavior and having the same tests pass in both environments. 
+
+In particular it started to believe that the Apps Script environment was not atomic and to try to modify tests with Utilities.sleep everywhere and many other false avenues. 
+
+Quite often all that is needed is for you to read the documentation yourself, undo the unnecessary labyrinth of gemini changes, and paste a copy of the documentation into the gemini context to get it back on track. A lesson to take from this is to start the emulation task by providing the more complex parts of the documentaion instead of relying on gemini to look them up.
 
 #### checking of invalid arguments
 

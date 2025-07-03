@@ -19,6 +19,83 @@ export const testSheetsDeveloper = (pack) => {
   const { unit, fixes } = pack || initTests()
   const toTrash = []
 
+
+
+  unit.section("A1 Notation Range Parsing", t => {
+    const { sheet } = maketss('a1_notation_tests', toTrash, fixes);
+    const maxRows = sheet.getMaxRows();
+    const maxCols = sheet.getMaxColumns();
+
+    // Test case 1: Full cell range
+    let range = sheet.getRange("B2:D5");
+    t.is(range.getRow(), 2, "Full range: start row");
+    t.is(range.getColumn(), 2, "Full range: start column");
+    t.is(range.getNumRows(), 4, "Full range: num rows");
+    t.is(range.getNumColumns(), 3, "Full range: num columns");
+    t.is(range.getA1Notation(), "B2:D5", "Full range: A1 notation");
+
+    // Test case 2: Single cell with $
+    range = sheet.getRange("$C$3");
+    t.is(range.getA1Notation(), "C3", "Single cell with $: A1 notation");
+
+    // Test case 3: Row-only range
+    range = sheet.getRange("5:7");
+    t.is(range.getNumRows(), 3, "Row-only: num rows");
+    t.is(range.getNumColumns(), maxCols, "Row-only: num columns");
+    t.is(range.getA1Notation(), "5:7", "Row-only: A1 notation");
+
+    // Test case 4: Column-only range
+    range = sheet.getRange("D:F");
+    t.is(range.getNumRows(), maxRows, "Column-only: num rows");
+    t.is(range.getNumColumns(), 3, "Column-only: num columns");
+    t.is(range.getA1Notation(), "D:F", "Column-only: A1 notation");
+
+    // Test case 5: Sheet name included
+    range = sheet.getRange(`${sheet.getName()}!E10:F12`);
+    t.is(range.getA1Notation(), "E10:F12", "With sheet name: A1 notation");
+
+    // Test case 6: Inverted ranges are auto-corrected
+    range = sheet.getRange("C5:B2");
+    t.is(range.getA1Notation(), "B2:C5", "Inverted cell range should be corrected");
+    range = sheet.getRange("5:2");
+    t.is(range.getA1Notation(), "2:5", "Inverted row-only range should be corrected");
+    range = sheet.getRange("D:B");
+    t.is(range.getA1Notation(), "B:D", "Inverted column-only range should be corrected");
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
+  });
+
+  unit.section("Range Bounded Methods", t => {
+    const { sheet } = maketss('range_bounded_tests', toTrash, fixes);
+
+    // 1. Test a fully bounded range
+    const boundedRange = sheet.getRange("A5:C10");
+    t.is(boundedRange.isStartRowBounded(), true, "Bounded range should have start row bound");
+    t.is(boundedRange.isEndRowBounded(), true, "Bounded range should have end row bound");
+    t.is(boundedRange.isStartColumnBounded(), true, "Bounded range should have start column bound");
+    t.is(boundedRange.isEndColumnBounded(), true, "Bounded range should have end column bound");
+
+    // 2. Test a row-only range
+    const rowRange = sheet.getRange("3:5");
+    t.is(rowRange.isStartRowBounded(), true, "Row-only range should have start row bound");
+    t.is(rowRange.isEndRowBounded(), true, "Row-only range should have end row bound");
+    t.is(rowRange.isStartColumnBounded(), false, "Row-only range should not have start column bound");
+    t.is(rowRange.isEndColumnBounded(), false, "Row-only range should not have end column bound");
+
+    // 3. Test a column-only range
+    const colRange = sheet.getRange("B:D");
+    t.is(colRange.isStartRowBounded(), false, "Column-only range should not have start row bound");
+    t.is(colRange.isEndRowBounded(), false, "Column-only range should not have end row bound");
+    t.is(colRange.isStartColumnBounded(), true, "Column-only range should have start column bound");
+    t.is(colRange.isEndColumnBounded(), true, "Column-only range should have end column bound");
+
+    // 4. Test a single unbounded row
+    const singleRowRange = sheet.getRange("7:7");
+    t.is(singleRowRange.isStartRowBounded(), true, "Single row range should have start row bound");
+    t.is(singleRowRange.isEndRowBounded(), true, "Single row range should have end row bound");
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
+  });
+
   unit.section("Developer Metadata", t => {
     const { ss, sheet } = maketss('dev_metadata_tests', toTrash, fixes);
 
@@ -107,50 +184,6 @@ export const testSheetsDeveloper = (pack) => {
 
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
   });
-
-  unit.section("A1 Notation Range Parsing", t => {
-    const { sheet } = maketss('a1_notation_tests', toTrash, fixes);
-    const maxRows = sheet.getMaxRows();
-    const maxCols = sheet.getMaxColumns();
-
-    // Test case 1: Full cell range
-    let range = sheet.getRange("B2:D5");
-    t.is(range.getRow(), 2, "Full range: start row");
-    t.is(range.getColumn(), 2, "Full range: start column");
-    t.is(range.getNumRows(), 4, "Full range: num rows");
-    t.is(range.getNumColumns(), 3, "Full range: num columns");
-    t.is(range.getA1Notation(), "B2:D5", "Full range: A1 notation");
-
-    // Test case 2: Single cell with $
-    range = sheet.getRange("$C$3");
-    t.is(range.getA1Notation(), "C3", "Single cell with $: A1 notation");
-
-    // Test case 3: Row-only range
-    range = sheet.getRange("5:7");
-    t.is(range.getNumRows(), 3, "Row-only: num rows");
-    t.is(range.getNumColumns(), maxCols, "Row-only: num columns");
-    t.is(range.getA1Notation(), "5:7", "Row-only: A1 notation");
-
-    // Test case 4: Column-only range
-    range = sheet.getRange("D:F");
-    t.is(range.getNumRows(), maxRows, "Column-only: num rows");
-    t.is(range.getNumColumns(), 3, "Column-only: num columns");
-    t.is(range.getA1Notation(), "D:F", "Column-only: A1 notation");
-
-    // Test case 5: Sheet name included
-    range = sheet.getRange(`${sheet.getName()}!E10:F12`);
-    t.is(range.getA1Notation(), "E10:F12", "With sheet name: A1 notation");
-
-    // Test case 6: Inverted ranges are auto-corrected
-    range = sheet.getRange("C5:B2");
-    t.is(range.getA1Notation(), "B2:C5", "Inverted cell range should be corrected");
-    range = sheet.getRange("5:2");
-    t.is(range.getA1Notation(), "2:5", "Inverted row-only range should be corrected");
-    range = sheet.getRange("D:B");
-    t.is(range.getA1Notation(), "B:D", "Inverted column-only range should be corrected");
-    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
-  });
-
 
   // running standalone
   if (!pack) {

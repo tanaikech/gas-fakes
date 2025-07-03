@@ -22,9 +22,11 @@ import { getSheetsPerformance } from '../src/support/sheetscache.js';
 import { testFiddler } from './testfiddler.js';
 import { testSheetsDataValidations } from './testsheetsdatavalidations.js';
 import { testEnums } from './testenums.js';
+import { testSheetsExotics } from './testsheetexotics.js';
 import { testSheetsSets } from './testsheetssets.js';
 import { testSheetsVui } from './testsheetsvui.js';
 import { testSheetsDeveloper } from './testsheetsdeveloper.js';
+
 const testFakes = () => {
   const pack = initTests()
   const {unit} = pack
@@ -46,6 +48,10 @@ const testFakes = () => {
   testSheets(pack)
   console.log ('\n----Test SheetsValues----')
   testSheetsValues(pack)  
+  console.log ('\n----Test SheetsDeveloper----')
+  testSheetsDeveloper(pack)  
+  console.log ('\n----Test SheetsExotics----')
+  testSheetsExotics(pack)  
   console.log ('\n----Test Fiddler----')
   testFiddler(pack)
   console.log ('\n----Test Drive----')
