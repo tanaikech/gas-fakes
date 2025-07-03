@@ -19,6 +19,106 @@ export const testSheets = (pack) => {
   const { unit, fixes } = pack || initTests()
   const toTrash = []
 
+  unit.section("Sheet clearing methods", t => {
+    const { sheet } = maketss('sheet_clearing', toTrash, fixes);
+
+    const setupSheet = () => {
+      const range = sheet.getRange("A1:C3");
+      const values = [
+        ['A1', 'B1', 'C1'],
+        ['A2', 'B2', 'C2'],
+        ['A3', 'B3', 'C3']
+      ];
+      const backgrounds = [
+        ['#ff0000', '#00ff00', '#0000ff'],
+        ['#ffff00', '#00ffff', '#ff00ff'],
+        ['#cccccc', '#999999', '#666666']
+      ];
+      const notes = [
+        ['Note A1', 'Note B1', 'Note C1'],
+        ['Note A2', 'Note B2', 'Note C2'],
+        ['Note A3', 'Note B3', 'Note C3']
+      ];
+      range.setValues(values);
+      range.setBackgrounds(backgrounds);
+      range.setNotes(notes);
+      const validationRule = SpreadsheetApp.newDataValidation().requireNumberEqualTo(5).build();
+      range.setDataValidation(validationRule);
+      return { range, values, backgrounds, notes, validationRule };
+    };
+
+    // --- Test clear() ---
+    let setup = setupSheet();
+    sheet.clear();
+    let testRange = sheet.getRange(setup.range.getA1Notation()); // Re-fetch range to get cleared state
+
+    t.deepEqual(testRange.getValues(), fillRange(testRange, ''), "clear() should clear values");
+    t.deepEqual(testRange.getBackgrounds(), fillRange(testRange, '#ffffff'), "clear() should clear formats");
+    t.deepEqual(testRange.getNotes(), setup.notes, "clear() should NOT clear notes");
+    const validationsAfterClear = testRange.getDataValidations();
+    t.truthy(validationsAfterClear[0][0], "clear() should NOT clear data validations");
+
+    // --- Test clearContents() ---
+    setup = setupSheet();
+    sheet.clearContents();
+    testRange = sheet.getRange(setup.range.getA1Notation());
+    t.deepEqual(testRange.getValues(), fillRange(testRange, ''), "clearContents() should clear values");
+    t.deepEqual(testRange.getBackgrounds(), setup.backgrounds, "clearContents() should NOT clear formats");
+    t.deepEqual(testRange.getNotes(), setup.notes, "clearContents() should NOT clear notes");
+    t.truthy(testRange.getDataValidations()[0][0], "clearContents() should NOT clear data validations");
+
+    // --- Test clearFormats() ---
+    setup = setupSheet();
+    sheet.clearFormats();
+    testRange = sheet.getRange(setup.range.getA1Notation());
+    t.deepEqual(testRange.getValues(), setup.values, "clearFormats() should NOT clear values");
+    t.deepEqual(testRange.getBackgrounds(), fillRange(testRange, '#ffffff'), "clearFormats() should clear formats");
+    t.deepEqual(testRange.getNotes(), setup.notes, "clearFormats() should NOT clear notes");
+    t.truthy(testRange.getDataValidations()[0][0], "clearFormats() should NOT clear data validations");
+
+    // --- Test clearNotes() ---
+    setup = setupSheet();
+    sheet.clearNotes();
+    testRange = sheet.getRange(setup.range.getA1Notation());
+    t.deepEqual(testRange.getValues(), setup.values, "clearNotes() should NOT clear values");
+    t.deepEqual(testRange.getBackgrounds(), setup.backgrounds, "clearNotes() should NOT clear formats");
+    t.deepEqual(testRange.getNotes(), fillRange(testRange, ''), "clearNotes() should clear notes");
+    t.truthy(testRange.getDataValidations()[0][0], "clearNotes() should NOT clear data validations");
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
+  })
+
+  unit.section("Sheet data manipulation", t => {
+    const { sheet } = maketss('sheet_data_manipulation', toTrash, fixes);
+
+    // --- Test sort() ---
+    sheet.clear();
+    let initialData = [
+      ['C', 30, 'Z'],
+      ['A', 10, 'Y'],
+      ['B', 20, 'X']
+    ];
+    sheet.getRange("A1:C3").setValues(initialData);
+    sheet.sort(2); // Sort by column B, ascending (default)
+    let sortedData = sheet.getDataRange().getValues();
+    let expectedSorted = [
+      ['A', 10, 'Y'],
+      ['B', 20, 'X'],
+      ['C', 30, 'Z']
+    ];
+    t.deepEqual(sortedData, expectedSorted, "sort() should sort the data range ascending by column 2");
+
+    sheet.sort(1, false); // Sort by column A, descending
+    sortedData = sheet.getDataRange().getValues();
+    expectedSorted = [
+      ['C', 30, 'Z'],
+      ['B', 20, 'X'],
+      ['A', 10, 'Y'],
+    ];
+    t.deepEqual(sortedData, expectedSorted, "sort() should sort the data range descending");
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
+  });
 
   unit.section("notes", t => {
     const { sheet } = maketss('notes tests', toTrash, fixes);
@@ -29,7 +129,7 @@ export const testSheets = (pack) => {
       // because set notes adds .0 to integer string conversions
       // but see issue https://issuetracker.google.com/issues/429373214
       let v = c?.toString() || ""
-      if (is.number(c) &&  is.integer(c)) v = c.toFixed(1)
+      if (is.number(c) && is.integer(c)) v = c.toFixed(1)
       return v
     }))
     range.setNote(notes[0][0])
@@ -43,7 +143,9 @@ export const testSheets = (pack) => {
 
 
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
-  })
+  });
+
+
 
 
   unit.section("rich text tests", t => {

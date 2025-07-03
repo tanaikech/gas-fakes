@@ -104,9 +104,6 @@ export class FakeSheetRange {
       'getDataTable',
 
       'getDataSourcePivotTables',
-
-
-      'getFilter',
       // these are not documented, so will skip for now
       'setComment',
       'getComment'
@@ -568,6 +565,19 @@ export class FakeSheetRange {
   clearDataValidations() {
     this.setDataValidations(null)
     return this
+  }
+
+  getFilter() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.getFilter");
+    if (nargs) matchThrow();
+
+    const sheetFilter = this.getSheet().getFilter();
+    if (!sheetFilter) {
+      return null;
+    }
+
+    // Per live testing, any range on a sheet with a filter will return that filter.
+    return sheetFilter;
   }
 
   /**

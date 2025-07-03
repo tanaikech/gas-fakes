@@ -1,4 +1,3 @@
-
 // all these imports 
 // this is loaded by npm, but is a library on Apps Script side
 
@@ -20,7 +19,7 @@ export const testSheetsSets = (pack) => {
   const { unit, fixes } = pack || initTests()
   const toTrash = []
 
-  unit.section("Range.createFilter", t => {
+  unit.section("Range.createFilter and getFilter", t => {
     const { sheet } = maketss('filter_tests', toTrash, fixes);
     sheet.clear();
     sheet.getRange("A1:C5").setValues([
@@ -31,15 +30,34 @@ export const testSheetsSets = (pack) => {
       ["D", 3, "X"]
     ]);
 
+    // Test getFilter on a sheet with no filter
+    t.is(sheet.getFilter(), null, "sheet.getFilter() on a sheet with no filter should return null");
+    t.is(sheet.getRange("A1:C5").getFilter(), null, "range.getFilter() on a sheet with no filter should return null");
+
     const range = sheet.getRange("A1:C5");
     const filter = range.createFilter();
 
     t.is(filter.toString(), "Filter", "createFilter should return a Filter object");
     t.is(filter.getRange().getA1Notation(), "A1:C5", "Filter range should be correct");
 
+    // Test sheet.getFilter()
     const sheetFilter = sheet.getFilter();
     t.truthy(sheetFilter, "sheet.getFilter() should return the created filter");
     t.is(sheetFilter.getRange().getA1Notation(), "A1:C5", "Sheet's filter range should be correct");
+    t.is(sheetFilter.toString(), "Filter", "sheet.getFilter() should return a Filter object");
+
+    // Test range.getFilter()
+    const rangeFilter = range.getFilter();
+    t.truthy(rangeFilter, "range.getFilter() on the same range should return the filter");
+    t.is(rangeFilter.getRange().getA1Notation(), "A1:C5", "range.getFilter() on exact range should have correct range");
+
+    const subRangeFilter = sheet.getRange("B2:C4").getFilter();
+    t.truthy(subRangeFilter, "range.getFilter() on a sub-range should return the filter");
+    t.is(subRangeFilter.getRange().getA1Notation(), "A1:C5", "Filter from sub-range has correct range A1 notation");
+
+    const nonIntersectingFilter = sheet.getRange("F1:F5").getFilter();
+    t.truthy(nonIntersectingFilter, "range.getFilter() on non-intersecting range should return the filter object");
+    t.is(nonIntersectingFilter.getRange().getA1Notation(), "A1:C5", "The filter from a non-intersecting range should have the correct range");
 
     // Test that creating another filter throws an error
     t.rxMatch(t.threw(() => sheet.getRange("A1:B2").createFilter()).message, /You can't create a filter in a sheet that already has a filter\./, "Should not be able to create a second filter");
