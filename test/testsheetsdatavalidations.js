@@ -10,7 +10,7 @@ import '../main.js'
 import { initTests } from './testinit.js'
 import { getSheetsPerformance } from '../src/support/sheetscache.js';
 import { getPerformance } from '../src/support/filecache.js';
-import { isACheckbox, maketss, trasher, compareValue, addDays, zeroizeTime, getDimensions, fillRangeFromDomain } from './testassist.js';
+import {  maketss, trasher, compareValue, addDays, zeroizeTime, getDimensions } from './testassist.js';
 
 import is from '@sindresorhus/is';
 

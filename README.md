@@ -663,6 +663,22 @@ In particular it started to believe that the Apps Script environment was not ato
 
 Quite often all that is needed is for you to read the documentation yourself, undo the unnecessary labyrinth of gemini changes, and paste a copy of the documentation into the gemini context to get it back on track. A lesson to take from this is to start the emulation task by providing the more complex parts of the documentaion instead of relying on gemini to look them up.
 
+#### pivot tables
+
+There are many classes and methods required to support pivot table, so I decided to try to have gemini build them all. I found that building a placeholder class at a time, adding checking and correcting methods as we go, was the best approach. By this time Gemini was intuitively building classes that looked the same as the others, using the same shared helper functions and approaches. 
+
+Gemini tends to have its own opinion about which methods should exist in apps script classes and this is almost always wrong. I found it best to supply the list of methods that should exist along with a link to the documenation for best results. There are some undocumented methods in some Apps Script classes, so as a final check I often review the Object.keys() of an instance to see if any are missing from the documentation. 
+
+Despite this Gemini will often create unknown methods, miss known ones, and attempt to reference private functions and methods when creating test cases. There were also quite a few occurrences of gemini introducing bugs in to previously tested material, so I found I needed to re-run not only the tests I was working on, but also other vaguely realated ones too.
+
+In summary, Gemini has achieved a lot of good work with this collection of classes, however I don't yet feel completetly confident that we have a completely robust set of implementations. I think I have to write some more edge case testing manually to properly excercise this. The tests created by Gemini are relatively superficial. 
+
+On the other hand, using these techniques meant that we got the entire pivot table collection of classes and tests to this point in about a day, mainly tracking down filter hallucinations. It would probably have taken me a few days to do it all manually. 
+
+As a general rule, once Gemini starts talking about making sweeping changes and suggesting that the Sheets API has bugs that is causing everything to collapse, it's time to start a new session. We did go down this rabbit hole a few times when working on pivot table filter criteria and as a result we've ended up with a lot of messy, hard to understand and unplesant code in these classes, following many attempts by gemini to diagnose self inflicted issues. I may have to back and take out some of the redundancy at some point.
+
+I haven't worked on the datasource component of this (for example attaching to bigquery etc) - I'll come back to that at a later date.
+
 #### checking of invalid arguments
 
 In many cases, Apps Script doesn't check the validity of invalid arguments - for example (sse this issue https://issuetracker.google.com/issues/428869869), it happily accepts invalid colors.

@@ -98,6 +98,20 @@ export class FakeFilterCriteriaBuilder {
     return this.__setCondition('IS_NOT_BLANK');
   }
 
+  setHiddenValues(values) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "FilterCriteriaBuilder.setHiddenValues");
+    if (nargs !== 1 || !is.array(values)) matchThrow();
+    this.__apiCriteria = { hiddenValues: values.map(String) };
+    return this;
+  }
+
+  setVisibleValues(values) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "FilterCriteriaBuilder.setVisibleValues");
+    if (nargs !== 1 || !is.array(values)) matchThrow();
+    this.__apiCriteria = { visibleValues: values.map(String) };
+    return this;
+  }
+
   whenDateAfter(date) {
     const { nargs, matchThrow } = signatureArgs(arguments, "FilterCriteriaBuilder.whenDateAfter");
     if (nargs !== 1 || (!is.date(date) && !isEnum(date))) matchThrow();

@@ -265,6 +265,14 @@ const zeroizeTime = (date) => {
   const day = date.getDate();
   return new Date(year, month, day, 0, 0, 0, 0);
 }
+
+const serialToDate = (serial) => {
+  const epochCorrection = 2209161600000; // Milliseconds between 1970-01-01 and 1899-12-30
+  const msPerDay = 24 * 60 * 60 * 1000;
+  const adjustedMs = serial * msPerDay;
+  return new Date(adjustedMs - epochCorrection);
+};
+
 const isEnum = (a) => is.object(a) && Reflect.has(a, "compareTo") && is.function(a.compareTo)
 const hasFunction = (a, b = toString) => !isNU(a) && a[b] && is.function(a[b])
 
@@ -388,6 +396,7 @@ export const Utils = {
   outsideInt,
   unCapital,
   zeroizeTime,
+  serialToDate,
   isEnum,
   stringer,
   WHITE,

@@ -4,6 +4,7 @@ import { notYetImplemented, signatureArgs } from '../../support/helpers.js'
 import { newFakeSheetRange } from './fakesheetrange.js'
 import { newFakeSheetRangeList } from './fakesheetrangelist.js'
 import { newFakeBanding } from './fakebanding.js'
+import { newFakePivotTable } from './fakepivottable.js';
 import { newFakeFilter } from './fakefilter.js'
 import { Utils } from "../../support/utils.js"
 import { makeSheetsGridRange, batchUpdate } from './sheetrangehelpers.js';
@@ -70,7 +71,6 @@ export class FakeSheet {
       'showSheet',
       'moveRows',
       'moveColumns',
-      'getPivotTables',
       'getRowGroupDepth',
       'getColumnGroupDepth',
       'getRowGroup',
@@ -228,12 +228,45 @@ export class FakeSheet {
     return allBandingsOnSheet.map(b => newFakeBanding(b, this));
   }
 
+  getPivotTables() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Sheet.getPivotTables');
+    if (nargs) matchThrow();
+
+    const spreadsheetId = this.getParent().getId();
+    const sheetName = this.getName();
+
+    const { sheets } = Sheets.Spreadsheets.get(spreadsheetId, {
+      ranges: [`'${sheetName}'`],
+      fields: 'sheets(data(rowData(values(pivotTable))),properties/title)'
+    });
+
+    const sheetData = sheets.find(s => s.properties.title === sheetName);
+    if (!sheetData || !sheetData.data || !sheetData.data.length || !sheetData.data[0].rowData) {
+      return [];
+    }
+
+    const pivotTables = [];
+    sheetData.data[0].rowData.forEach((row, rIdx) => {
+      if (row.values) {
+        row.values.forEach((cell, cIdx) => {
+          if (cell.pivotTable) {
+            const anchorRange = this.getRange(rIdx + 1, cIdx + 1);
+            pivotTables.push(newFakePivotTable(cell.pivotTable, anchorRange));
+          }
+        });
+      }
+    });
+
+    return pivotTables;
+  }
+
   get __sheet () {
     return this.getParent().__getSheetMeta(this.__sheetId)
   }
 
   getParent() {
-    return this.__parent
+    // Re-fetch the spreadsheet to ensure we have the latest state, avoiding stale object issues.
+    return SpreadsheetApp.openById(this.__parent.getId());
   }
   getIndex() {
     // spreadsheetapp is 1 based, adv is 0 based

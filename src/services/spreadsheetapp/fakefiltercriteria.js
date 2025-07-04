@@ -1,85 +1,97 @@
 import { Proxies } from '../../support/proxies.js';
-import { notYetImplemented } from '../../support/helpers.js';
+import { signatureArgs } from '../../support/helpers.js';
 import { apiCriteriaMap } from './fakefiltercriteriabuilder.js';
-import { BooleanCriteria } from '../enums/sheetsenums.js';
+import { BooleanCriteria, RelativeDate } from '../enums/sheetsenums.js';
 import { Utils } from '../../support/utils.js';
 
-const { is } = Utils;
+const { serialToDate } = Utils;
 
-const serialToDate = (serial) => {
-  const epochCorrection = 2209161600000;
-  const msPerDay = 24 * 60 * 60 * 1000;
-  const ms = (serial * msPerDay) - epochCorrection;
-  return new Date(ms);
-};
-/**
- * @returns {FakeFilterCriteria}
- */
 export const newFakeFilterCriteria = (...args) => {
   return Proxies.guard(new FakeFilterCriteria(...args));
 };
 
 export class FakeFilterCriteria {
-  constructor(builder) {
-    this.__builder = builder;
-    this.__apiCriteria = builder.__getApiObject();
-  }
-
-  getCriteriaType() {
-    const condition = this.__apiCriteria.condition;
-    if (!condition) {
-      // This handles withHiddenValues/withVisibleValues cases
-      return null;
+  constructor(apiCriteria) {
+    // The constructor can receive the raw API object, or a builder.
+    // If it's a builder, get the raw API object from it.
+    if (apiCriteria && apiCriteria.toString() === 'FilterCriteriaBuilder') {
+      this.__apiCriteria = apiCriteria.__getApiObject() || {};
+    } else {
+      this.__apiCriteria = apiCriteria || {};
     }
-    const apiType = condition.type;
-    if (!apiType) return null;
-
-    let appsScriptType = apiCriteriaMap[apiType];
-    if (appsScriptType) {
-      // Check for relative dates, which return a different enum in Apps Script for filters.
-      if ((appsScriptType === 'DATE_AFTER' || appsScriptType === 'DATE_BEFORE' || appsScriptType === 'DATE_EQUAL_TO') &&
-        condition.values && condition.values.length > 0 && condition.values[0].relativeDate) {
-        appsScriptType += '_RELATIVE';
-      }
-      return BooleanCriteria[appsScriptType] || null;
-    }
-    return null;
-  }
-
-  getCriteriaValues() {
-    const values = this.__apiCriteria.condition?.values;
-    if (!values) return [];
-
-    const criteriaType = this.getCriteriaType()?.toString() || '';
-    const isNumericCriteria = criteriaType.startsWith('NUMBER_');
-    const isDateCriteria = criteriaType.startsWith('DATE_');
-
-    return values.map(v => {
-      if (v.relativeDate) {
-        return SpreadsheetApp.RelativeDate[v.relativeDate];
-      }
-      const uev = v.userEnteredValue;
-      // For numeric criteria, parse the string back to a number for Apps Script compatibility.
-      if (isNumericCriteria && uev && !isNaN(uev)) {
-        return parseFloat(uev);
-      }
-      // For dates, convert the serial number string back to a Date object.
-      if (isDateCriteria && uev && !isNaN(uev)) {
-        // Don't convert formulas
-        if (is.string(uev) && uev.startsWith('=')) return uev;
-        return serialToDate(parseFloat(uev));
-      }
-      return uev;
-    });
   }
 
   copy() {
-    return this.__builder.copy().build();
+    const { nargs, matchThrow } = signatureArgs(arguments, 'FilterCriteria.copy');
+    if (nargs) matchThrow();
+    // The API object is a plain object, so a deep copy is needed.
+    return newFakeFilterCriteria(JSON.parse(JSON.stringify(this.__apiCriteria)));
   }
 
-  // This will be used by setColumnFilterCriteria to get the API object
-  __getApiObject() {
-    return this.__apiCriteria;
+  getCriteriaType() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'FilterCriteria.getCriteriaType');
+    if (nargs) matchThrow();
+
+    const condition = this.__apiCriteria.condition;
+    if (!condition) {
+      return null;
+    }
+
+    let gasTypeString = apiCriteriaMap[condition.type];
+    if (!gasTypeString) {
+      return null;
+    }
+
+    // Check for relative dates
+    if (condition.values && condition.values.length > 0 && condition.values[0].relativeDate) {
+      if (gasTypeString === 'DATE_AFTER' || gasTypeString === 'DATE_BEFORE' || gasTypeString === 'DATE_EQUAL_TO') {
+        gasTypeString += '_RELATIVE';
+      }
+    }
+
+    return BooleanCriteria[gasTypeString] || null;
+  }
+
+  getCriteriaValues() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'FilterCriteria.getCriteriaValues');
+    if (nargs) matchThrow();
+
+    const condition = this.__apiCriteria.condition;
+    if (!condition) {
+      return [];
+    }
+    if (!condition.values) {
+      return [];
+    }
+
+    const criteriaType = this.getCriteriaType()?.toString();
+
+    return condition.values.map(v => {
+      if (v.relativeDate) {
+        return RelativeDate[v.relativeDate];
+      }
+      if (Object.prototype.hasOwnProperty.call(v, 'userEnteredValue')) {
+        const userValue = v.userEnteredValue;
+        if (criteriaType) {
+          if (criteriaType.includes('DATE')) return serialToDate(parseFloat(userValue));
+          if (criteriaType.includes('NUMBER')) return parseFloat(userValue);
+        }
+        return userValue;
+      }
+      return null; // Should not happen for valid criteria
+    });
+  }
+
+  getHiddenValues() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'FilterCriteria.getHiddenValues');
+    if (nargs) matchThrow();
+    return this.__apiCriteria.hiddenValues || [];
+  }
+
+  getVisibleValues() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'FilterCriteria.getVisibleValues');
+    if (nargs) matchThrow();
+    return this.__apiCriteria.visibleValues || [];
   }
 
   toString() {

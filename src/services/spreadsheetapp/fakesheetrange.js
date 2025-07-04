@@ -1,7 +1,6 @@
 import { Proxies } from '../../support/proxies.js'
-import { FakeSheet } from './fakesheet.js'
+import { newFakePivotTable } from './fakepivottable.js';
 import { newFakeBanding } from './fakebanding.js';
-import { newFakeDeveloperMetadata } from './fakedevelopermetadata.js';
 import { newFakeDeveloperMetadataFinder } from './fakedevelopermetadatafinder.js';
 import { SheetUtils } from '../../support/sheetutils.js'
 import { Utils } from '../../support/utils.js'
@@ -93,7 +92,6 @@ export class FakeSheetRange {
       'autoFillToNeighbor',
       'setShowHyperlink',
 
-      'createPivotTable',
       'createDataSourceTable',
       'getComments',
       'clearComment',
@@ -565,6 +563,53 @@ export class FakeSheetRange {
   clearDataValidations() {
     this.setDataValidations(null)
     return this
+  }
+
+
+  /**
+   * createPivotTable(sourceData) https://developers.google.com/apps-script/reference/spreadsheet/range#createpivottablesourcedata
+   * Creates a new pivot table from a data source range.
+   * @param {FakeSheetRange} sourceData The range of data to use for the pivot table.
+   * @returns {FakePivotTable} The new pivot table.
+   */
+  createPivotTable(sourceData) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.createPivotTable");
+    if (nargs !== 1 || !isRange(sourceData)) matchThrow();
+
+    const sheet = this.getSheet();
+    const spreadsheetId = this.__getSpreadsheetId();
+
+    // The pivot table is created at the top-left cell of `this` range.
+    const anchorCell = this.offset(0, 0, 1, 1);
+
+    const pivotTableApiObject = {
+      source: makeSheetsGridRange(sourceData),
+      valueLayout: 'HORIZONTAL', // Default layout
+    };
+
+    const cellData = Sheets.newCellData().setPivotTable(pivotTableApiObject);
+    const rowData = Sheets.newRowData().setValues([cellData]);
+
+    const updateCellsRequest = Sheets.newUpdateCellsRequest()
+      .setStart({
+        sheetId: anchorCell.getSheet().getSheetId(),
+        rowIndex: anchorCell.getRow() - 1,
+        columnIndex: anchorCell.getColumn() - 1
+      })
+      .setRows([rowData])
+      .setFields('pivotTable');
+
+    batchUpdate({ spreadsheetId, requests: [{ updateCells: updateCellsRequest }] });
+    this.__getSpreadsheet().__disruption();
+
+    const pivotTables = sheet.getPivotTables();
+    const newPivotTable = pivotTables.find(pt => pt.getAnchorCell().getA1Notation() === anchorCell.getA1Notation());
+
+    if (!newPivotTable) {
+      throw new Error('Failed to create or find pivot table after update.');
+    }
+
+    return newPivotTable;
   }
 
   getFilter() {
