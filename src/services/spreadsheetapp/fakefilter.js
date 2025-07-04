@@ -160,7 +160,7 @@ export class FakeFilter {
     if (filterCriteria === null) {
       delete newCriteria[String(columnPosition - 1)];
     } else {
-      newCriteria[String(columnPosition - 1)] = filterCriteria.__getApiObject();
+      newCriteria[String(columnPosition - 1)] = filterCriteria.__apiCriteria;
     }
 
     if (Object.keys(newCriteria).length > 0) {
