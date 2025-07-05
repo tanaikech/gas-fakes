@@ -107,16 +107,14 @@ export const getGridRange = (range) => {
   }
 }
 
-export const updateCells = ({ range, rows, fields, spreadsheetId }) => {
+export const updateCells = ({ range, rows, fields, spreadsheet }) => {
   const ucr = Sheets.newUpdateCellsRequest()
     .setRange(makeSheetsGridRange(range))
     .setFields(fields)
-    .setRows(rows)
-  const bur = Sheets
-    .newBatchUpdateSpreadsheetRequest()
-    .setRequests([{ updateCells: ucr }])
-  Sheets.Spreadsheets.__batchUpdate(bur, spreadsheetId, null, { ss: true })
-  return range
+    .setRows(rows);
+  const requests = [{ updateCells: ucr }];
+  batchUpdate({ spreadsheet, requests });
+  return range;
 }
 
 export const isRange = (a) => is.object(a) && !is.null(a) && is.function(a.toString) && a.toString() === "Range"
@@ -194,11 +192,12 @@ const dateToSerial = (date) => {
   return adjustedMs / msPerDay
 }
 
-export const batchUpdate = ({ spreadsheetId, requests }) => {
+export const batchUpdate = ({ spreadsheet, requests }) => {
+  const spreadsheetId = spreadsheet.getId();
   const bur = Sheets.newBatchUpdateSpreadsheetRequest()
   bur.setRequests(requests)
   const response = Sheets.Spreadsheets.__batchUpdate(bur, spreadsheetId, null, { ss: true });
-  clearWorkbookCache(spreadsheetId); // Invalidate cache after any write operation
+  spreadsheet.__disruption();
   return response;
 }
 export const fillRange = (range, value ) =>{

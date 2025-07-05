@@ -518,10 +518,8 @@ export const setterMaker = ({ self, fields, maker, single, plural, type, nullAll
       if (!typeOk(value, nullAllowed, type, typeChecker)) matchThrow()
       const request = makeRepeatRequest(self, maker(apiSetter, value), fields)
 
-      const spreadsheetId = self.__getSpreadsheetId()
       const requests = [{ repeatCell: request }]
-
-      batchUpdate({ spreadsheetId, requests })
+      batchUpdate({ spreadsheet: self.__getSpreadsheet(), requests })
       return self
     }
   }
@@ -536,7 +534,7 @@ export const setterMaker = ({ self, fields, maker, single, plural, type, nullAll
         return Sheets.newRowData().setValues(row.map(value => maker(apiSetter, value)))
       })
 
-      return updateCells({ range: self, rows, fields, spreadsheetId: self.__getSpreadsheetId() })
+      return updateCells({ range: self, rows, fields, spreadsheet: self.__getSpreadsheet() })
     }
   }
 }

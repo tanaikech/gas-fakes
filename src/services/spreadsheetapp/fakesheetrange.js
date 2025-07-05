@@ -76,10 +76,8 @@ export class FakeSheetRange {
     // list of not yet implemented methods
     const props = [
 
-      'getMergedRanges',
       'createDataSourcePivotTable',
       'activate',
-      'breakApart',
       'getFormulaR1C1',
       'getFormulasR1C1',
       'getDataSourceFormula',
@@ -122,6 +120,78 @@ export class FakeSheetRange {
     })
   }
 
+  getMergedRanges() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.getMergedRanges");
+    if (nargs) matchThrow();
+
+    // The sheet object associated with this range might be stale after a mutation.
+    // Always get a fresh spreadsheet object to ensure we have the latest metadata.
+    const spreadsheet = this.getSheet().getParent();
+    const sheetId = this.getSheet().getSheetId();
+    const sheetMeta = spreadsheet.__getSheetMeta(sheetId);
+    const allMergesOnSheet = sheetMeta.merges || [];
+    const thisGridRange = this.__gridRange;
+
+    const intersects = (merge) => {
+      // Check if two grid ranges intersect.
+      const r1 = thisGridRange;
+      const r2 = merge;
+      return r1.sheetId === r2.sheetId &&
+        Math.max(r1.startRowIndex, r2.startRowIndex) < Math.min(r1.endRowIndex, r2.endRowIndex) &&
+        Math.max(r1.startColumnIndex, r2.startColumnIndex) < Math.min(r1.endColumnIndex, r2.endColumnIndex);
+    };
+
+    const intersectingMerges = allMergesOnSheet.filter(intersects);
+    const freshSheet = spreadsheet.getSheetById(sheetId);
+    return intersectingMerges.map(m => newFakeSheetRange(m, freshSheet));
+  }
+
+  isPartOfMerge() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.isPartOfMerge");
+    if (nargs) matchThrow();
+    return this.getMergedRanges().length > 0;
+  }
+
+  __merge(mergeType) {
+    const requests = [];
+    if (mergeType === 'MERGE_ACROSS') {
+      for (let i = 0; i < this.getNumRows(); i++) {
+        const rowRange = this.offset(i, 0, 1, this.getNumColumns());
+        requests.push({
+          mergeCells: { range: makeSheetsGridRange(rowRange), mergeType: 'MERGE_ROWS' },
+        });
+      }
+    } else if (mergeType === 'MERGE_VERTICALLY') {
+      for (let i = 0; i < this.getNumColumns(); i++) {
+        const colRange = this.offset(0, i, this.getNumRows(), 1);
+        requests.push({
+          mergeCells: { range: makeSheetsGridRange(colRange), mergeType: 'MERGE_COLUMNS' },
+        });
+      }
+    } else { // MERGE_ALL
+      requests.push({
+        mergeCells: { range: makeSheetsGridRange(this), mergeType: 'MERGE_ALL' },
+      });
+    }
+
+    if (requests.length > 0) {
+      batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests });
+    }
+    return this;
+  }
+
+  merge() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.merge");
+    if (nargs) matchThrow();
+    return this.__merge('MERGE_ALL');
+  }
+
+  mergeAcross() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.mergeAcross");
+    if (nargs) matchThrow();
+    return this.__merge('MERGE_ACROSS');
+  }
+
   moveTo(target) {
     const { nargs, matchThrow } = signatureArgs(arguments, "Range.moveTo");
     if (nargs !== 1 || !isRange(target)) matchThrow();
@@ -138,10 +208,29 @@ export class FakeSheetRange {
       },
     };
 
-    batchUpdate({ spreadsheetId: this.__getSpreadsheetId(), requests: [request] });
-    this.__getSpreadsheet().__disruption();
+    batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests: [request] });
     // The docs don't specify a return, but returning `this` is standard for mutator methods.
     // Note: The original range object is now invalid as its contents have moved.
+    return this;
+  }
+
+  mergeVertically() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.mergeVertically");
+    if (nargs) matchThrow();
+    return this.__merge('MERGE_VERTICALLY');
+  }
+
+  breakApart() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.breakApart");
+    if (nargs) matchThrow();
+
+    const request = {
+      unmergeCells: {
+        range: makeSheetsGridRange(this),
+      },
+    };
+
+    batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests: [request] });
     return this;
   }
 
@@ -199,8 +288,7 @@ export class FakeSheetRange {
       },
     };
 
-    batchUpdate({ spreadsheetId: this.__getSpreadsheetId(), requests: [request] });
-    this.__getSpreadsheet().__disruption();
+    batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests: [request] });
     return this;
   }
 
@@ -305,7 +393,7 @@ export class FakeSheetRange {
       },
     };
 
-    batchUpdate({ spreadsheetId: this.__getSpreadsheetId(), requests: [request] });
+    batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests: [request] });
     return this;
   }
 
@@ -318,7 +406,6 @@ export class FakeSheetRange {
   collapseGroups() {
     const { nargs, matchThrow } = signatureArgs(arguments, "Range.collapseGroups");
     if (nargs) matchThrow();
-
     const sheet = this.getSheet();
     const spreadsheet = sheet.getParent();
     const spreadsheetId = spreadsheet.getId();
@@ -386,8 +473,7 @@ export class FakeSheetRange {
       },
     }));
 
-    batchUpdate({ spreadsheetId, requests });
-    spreadsheet.__disruption();
+    batchUpdate({ spreadsheet, requests });
     return this;
   }
 
@@ -397,7 +483,6 @@ export class FakeSheetRange {
 
     const sheet = this.getSheet();
     const spreadsheet = sheet.getParent();
-    const spreadsheetId = spreadsheet.getId();
     const sheetId = sheet.getSheetId();
 
     const meta = spreadsheet.__getMetaProps('sheets(properties.sheetId,rowGroups(range,depth,collapsed),columnGroups(range,depth,collapsed))');
@@ -437,8 +522,7 @@ export class FakeSheetRange {
       },
     }));
 
-    batchUpdate({ spreadsheetId, requests });
-    spreadsheet.__disruption();
+    batchUpdate({ spreadsheet, requests });
     return this;
   }
 
@@ -462,8 +546,7 @@ export class FakeSheetRange {
       [requestType]: requestBody,
     }));
 
-    batchUpdate({ spreadsheetId: this.__getSpreadsheetId(), requests });
-    this.__getSpreadsheet().__disruption();
+    batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests });
     return this;
   }
 
@@ -532,9 +615,8 @@ export class FakeSheetRange {
     }
 
     const request = { addBanding: { bandedRange } };
-    const response = batchUpdate({ spreadsheetId: this.__getSpreadsheetId(), requests: [request] });
+    const response = batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests: [request] });
     const newBandedRange = response.replies[0].addBanding.bandedRange;
-    this.__getSpreadsheet().__disruption();
     return newFakeBanding(newBandedRange, this.getSheet());
   }
 
@@ -577,10 +659,7 @@ export class FakeSheetRange {
       updateCells: Sheets.newUpdateCellsRequest().setFields(fields).setRange(range)
     }]
 
-    batchUpdate({
-      spreadsheetId: this.__getSpreadsheetId(),
-      requests
-    })
+    batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests });
     return this
   }
   /**
@@ -626,10 +705,7 @@ export class FakeSheetRange {
       setDataValidation: Sheets.newSetDataValidationRequest().setRange(range).setRule(null)
     }]
 
-    batchUpdate({
-      spreadsheetId: this.__getSpreadsheetId(),
-      requests
-    })
+    batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests });
     return this
   }
 
@@ -647,10 +723,7 @@ export class FakeSheetRange {
       .setRange(makeSheetsGridRange(this))
       .setShiftDimension(shiftDimension.toString());
 
-    batchUpdate({
-      spreadsheetId: this.__getSpreadsheetId(),
-      requests: [{ insertRange: request }]
-    });
+    batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests: [{ insertRange: request }] });
 
     return this;
   }
@@ -677,8 +750,7 @@ export class FakeSheetRange {
       }
     };
 
-    batchUpdate({ spreadsheetId: this.__getSpreadsheetId(), requests: [request] });
-    this.__getSpreadsheet().__disruption();
+    batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests: [request] });
     return sheet.getFilter();
   }
   clearDataValidations() {
@@ -698,7 +770,7 @@ export class FakeSheetRange {
     if (nargs !== 1 || !isRange(sourceData)) matchThrow();
 
     const sheet = this.getSheet();
-    const spreadsheetId = this.__getSpreadsheetId();
+    const spreadsheet = this.__getSpreadsheet();
 
     // The pivot table is created at the top-left cell of `this` range.
     const anchorCell = this.offset(0, 0, 1, 1);
@@ -720,8 +792,7 @@ export class FakeSheetRange {
       .setRows([rowData])
       .setFields('pivotTable');
 
-    batchUpdate({ spreadsheetId, requests: [{ updateCells: updateCellsRequest }] });
-    this.__getSpreadsheet().__disruption();
+    batchUpdate({ spreadsheet, requests: [{ updateCells: updateCellsRequest }] });
 
     const pivotTables = sheet.getPivotTables();
     const newPivotTable = pivotTables.find(pt => pt.getAnchorCell().getA1Notation() === anchorCell.getA1Notation());
@@ -760,10 +831,7 @@ export class FakeSheetRange {
       .setRange(makeSheetsGridRange(this))
       .setShiftDimension(shiftDimension.toString());
 
-    batchUpdate({
-      spreadsheetId: this.__getSpreadsheetId(),
-      requests: [{ deleteRange: request }]
-    });
+    batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests: [{ deleteRange: request }] });
 
     return this;
   }
@@ -814,7 +882,7 @@ export class FakeSheetRange {
 
 
     const requests = [{ copyPaste }];
-    batchUpdate({ spreadsheetId: this.__getSpreadsheetId(), requests });
+    batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests });
 
     return this;
 
@@ -849,7 +917,7 @@ export class FakeSheetRange {
     const requests = [{
       copyPaste
     }]
-    Sheets.Spreadsheets.batchUpdate({ requests }, this.__getSpreadsheetId());
+    batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests });
     return this
   }
 
@@ -1114,10 +1182,7 @@ export class FakeSheetRange {
         .setRange(makeSheetsGridRange(this.offset(f.rn, f.cn, 1, 1)))
     }))
 
-    batchUpdate({
-      spreadsheetId: this.__getSpreadsheetId(),
-      requests: requests.concat(clearRequests)
-    })
+    batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests: requests.concat(clearRequests) });
     return this
   }
 
@@ -1348,7 +1413,7 @@ export class FakeSheetRange {
     }
 
     if (requests.length > 0) {
-      batchUpdate({ spreadsheetId: this.__getSpreadsheetId(), requests });
+      batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests });
     }
 
     return this;
@@ -1385,10 +1450,7 @@ export class FakeSheetRange {
     if (nargs) matchThrow()
     const request = Sheets.newRandomizeRangeRequest()
       .setRange(makeSheetsGridRange(this))
-    batchUpdate({
-      spreadsheetId: this.__getSpreadsheetId(),
-      requests: [{ randomizeRange: request }]
-    })
+    batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests: [{ randomizeRange: request }] });
 
     return this
   }
@@ -1429,10 +1491,7 @@ export class FakeSheetRange {
         sheetId: this.getSheet().getSheetId()
       })))
     }
-    const response = batchUpdate({
-      spreadsheetId: this.__getSpreadsheetId(),
-      requests: [{ deleteDuplicates: request }]
-    })
+    const response = batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests: [{ deleteDuplicates: request }] });
     const reply = response?.replies && response.replies[0]
     if (reply) {
       const { duplicatesRemovedCount = 0 } = reply.deleteDuplicates
@@ -1526,10 +1585,7 @@ export class FakeSheetRange {
       ubr.setInnerHorizontal(horizontal ? innerBorder : null)
     }
 
-    batchUpdate({
-      spreadsheetId: this.__getSpreadsheetId(),
-      requests: [{ updateBorders: ubr }]
-    })
+    batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests: [{ updateBorders: ubr }] });
 
     return this
 
@@ -1556,7 +1612,6 @@ export class FakeSheetRange {
 
   __setDataValidations(rules) {
     const { nargs, matchThrow } = signatureArgs(arguments, "Range.setDataValidations")
-    const spreadsheetId = this.__getSpreadsheetId()
 
     // an 'official Sheets objects to do this kind of thing
     // it's actually more long winded than just constructing the requests manually
@@ -1566,7 +1621,7 @@ export class FakeSheetRange {
         .newSetDataValidationRequest()
         .setRange(makeSheetsGridRange(this))
         .setRule(null);
-      batchUpdate({ spreadsheetId, requests: [{ setDataValidation }] })
+      batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests: [{ setDataValidation }] });
       return this
     }
 
@@ -1637,7 +1692,7 @@ export class FakeSheetRange {
         requests.push({ setDataValidation })
       }
     }
-    batchUpdate({ spreadsheetId, requests })
+    batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests });
     return this
 
   }
@@ -1668,7 +1723,7 @@ export class FakeSheetRange {
       })
     }))
     const fields = 'userEnteredFormat.backgroundColor'
-    return updateCells({ range: this, rows, fields, spreadsheetId: this.__getSpreadsheetId() })
+    return updateCells({ range: this, rows, fields, spreadsheet: this.__getSpreadsheet() })
 
   }
 
@@ -1689,7 +1744,7 @@ export class FakeSheetRange {
 
     // see __getColorItem for how this allows mixing of both theme and rgb colors.
     const fields = 'userEnteredFormat.backgroundColorStyle'
-    return updateCells({ range: this, rows, fields, spreadsheetId: this.__getSpreadsheetId() })
+    return updateCells({ range: this, rows, fields, spreadsheet: this.__getSpreadsheet() })
 
   }
 
@@ -1792,10 +1847,7 @@ export class FakeSheetRange {
       request.setDelimiterType(TextToColumnsDelimiter.toString())
     }
     // if no delimiter, dont bother mentioning it
-    batchUpdate({
-      spreadsheetId: this.__getSpreadsheetId(),
-      requests: [{ textToColumns: request }]
-    })
+    batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests: [{ textToColumns: request }] });
 
     return this
 
@@ -1832,10 +1884,7 @@ export class FakeSheetRange {
       .setRange(makeSheetsGridRange(this))
       .setSortSpecs(sortObjs)
 
-    batchUpdate({
-      spreadsheetId: this.__getSpreadsheetId(),
-      requests: [{ sortRange: request }]
-    })
+    batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests: [{ sortRange: request }] });
 
     return this
 
@@ -1846,10 +1895,7 @@ export class FakeSheetRange {
     const request = Sheets.newTrimWhitespaceRequest()
       .setRange(makeSheetsGridRange(this))
 
-    batchUpdate({
-      spreadsheetId: this.__getSpreadsheetId(),
-      requests: [{ trimWhitespace: request }]
-    })
+    batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests: [{ trimWhitespace: request }] });
 
     return this
   }
@@ -1903,7 +1949,7 @@ export class FakeSheetRange {
    * @return {FakeSpreadsheet}
    */
   __getSpreadsheet() {
-    return this.getSheet().getParent()
+    return this.getSheet().__parent;
   }
   /**
    * get the id of the spreadsheet hosting this range

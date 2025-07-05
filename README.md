@@ -681,9 +681,9 @@ I haven't worked on the datasource component of this (for example attaching to b
 
 #### Verdict on using Gemini to generate some of this stuff
 
-I'm torn. On the one hand, it's been great at doing busy work like writing test cases and detecting dependencies that I maight otherwise have missed. On the other hand, if it gets it wrong, it's very hard to get it back on track as it tries bury itself deeper and deeper into previous misconceptions. 
+I'm torn. On the one hand, it's been great at doing busy work like writing test cases and detecting dependencies that I might otherwise have missed. It can often be pretty good at refactoring/renaming things. On the other hand, if it gets it wrong, it's very hard to get it back on track as it tries bury itself deeper and deeper into previous misconceptions. 
 
-Overall it saves time, for sure. However, the result is often suboptimal, wordy, lacking in reusability and not something I would be happy to put my name to. From a personal perspective, the human's role becomes one of specification, debugging, checking and testing. I prefer coding, so I'm not convinced.
+Overall it saves some time, for sure. However, the result is often suboptimal, wordy, lacking in reusability and not something I would be delighted to put my name to. From a coder perspective, the role becomes one of repetetive specification, debugging, checking and testing, while failing to develop a deep understanding of the work in hand. I prefer coding, so from a satisfaction perspective I'm not entirely convinced yet.
 
 
 #### checking of invalid arguments

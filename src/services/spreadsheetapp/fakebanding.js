@@ -90,9 +90,7 @@ export class FakeBanding {
         fields: path,
       },
     };
-    batchUpdate({ spreadsheetId: this.__sheet.getParent().getId(), requests: [request] });
-    this.__sheet.getParent().__disruption();
-
+    batchUpdate({ spreadsheet: this.__sheet.getParent(), requests: [request] });
     // The state has changed in the central store, so we need to update this instance's internal object.
     // If the banding was removed, this will be undefined, which is fine.
     const updatedSheetMeta = this.__sheet.getParent().__getSheetMeta(this.__sheet.getSheetId());
@@ -196,9 +194,8 @@ export class FakeBanding {
       addBanding: { bandedRange: newApiBanding },
     };
 
-    const response = batchUpdate({ spreadsheetId: this.__sheet.getParent().getId(), requests: [request] });
+    const response = batchUpdate({ spreadsheet: this.__sheet.getParent(), requests: [request] });
     const createdBanding = response.replies[0].addBanding.bandedRange;
-    this.__sheet.getParent().__disruption();
     return newFakeBanding(createdBanding, this.__sheet);
   }
 
@@ -272,8 +269,7 @@ export class FakeBanding {
 
   remove() {
     const request = { deleteBanding: { bandedRangeId: this.__apiBandedRange.bandedRangeId } };
-    batchUpdate({ spreadsheetId: this.__sheet.getParent().getId(), requests: [request] });
-    this.__sheet.getParent().__disruption();
+    batchUpdate({ spreadsheet: this.__sheet.getParent(), requests: [request] });
   }
 
   setFooterColumnColor(color) {

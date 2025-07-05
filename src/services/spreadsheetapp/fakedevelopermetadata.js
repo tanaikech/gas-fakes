@@ -77,7 +77,7 @@ class FakeDeveloperMetadata {
         dataFilter: { developerMetadataLookup: { metadataId: this.getId() } },
       },
     };
-    batchUpdate({ spreadsheetId: this.__spreadsheet.getId(), requests: [request] });
+    batchUpdate({ spreadsheet: this.__spreadsheet, requests: [request] });
 
     // The global API cache is cleared by batchUpdate().
     // Invalidate this specific object instance so it can't be used again.
@@ -105,7 +105,7 @@ class FakeDeveloperMetadata {
         fields: fields,
       },
     };
-    batchUpdate({ spreadsheetId: this.__spreadsheet.getId(), requests: [request] });
+    batchUpdate({ spreadsheet: this.__spreadsheet, requests: [request] });
     Object.assign(this.__metadata, metadata);
     return this;
   }

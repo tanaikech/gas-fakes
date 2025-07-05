@@ -53,11 +53,7 @@ export class FakeFilter {
       }
     };
 
-    batchUpdate({
-      spreadsheetId: this.__sheet.getParent().getId(),
-      requests: [request]
-    });
-    this.__sheet.getParent().__disruption();
+    batchUpdate({ spreadsheet: this.__sheet.getParent(), requests: [request] });
   }
 
   /**
@@ -96,13 +92,8 @@ export class FakeFilter {
       },
     };
 
-    batchUpdate({
-      spreadsheetId: this.__sheet.getParent().getId(),
-      requests: [request],
-    });
-
-    this.__sheet.getParent().__disruption();
-
+    batchUpdate({ spreadsheet: this.__sheet.getParent(), requests: [request] });
+    
     return this.__refresh();
   }
 
@@ -168,8 +159,7 @@ export class FakeFilter {
     }
 
     const request = { setBasicFilter: { filter: newFilter } };
-    batchUpdate({ spreadsheetId: this.__sheet.getParent().getId(), requests: [request] });
-    this.__sheet.getParent().__disruption();
+    batchUpdate({ spreadsheet: this.__sheet.getParent(), requests: [request] });
     return this.__refresh();
   }
 

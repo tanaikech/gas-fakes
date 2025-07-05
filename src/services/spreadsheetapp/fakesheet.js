@@ -1,517 +1,285 @@
-import { Proxies } from '../../support/proxies.js'
-import { SheetUtils } from '../../support/sheetutils.js'
-import { notYetImplemented, signatureArgs } from '../../support/helpers.js'
-import { newFakeSheetRange } from './fakesheetrange.js'
-import { newFakeSheetRangeList } from './fakesheetrangelist.js'
-import { newFakeBanding } from './fakebanding.js'
+import { Proxies } from '../../support/proxies.js';
+import { notYetImplemented, signatureArgs } from '../../support/helpers.js';
+import { newFakeSheetRange } from './fakesheetrange.js';
+import { Utils } from '../../support/utils.js';
+import { SheetUtils } from '../../support/sheetutils.js';
+import { batchUpdate, makeSheetsGridRange } from './sheetrangehelpers.js';
+import { newFakeFilter } from './fakefilter.js';
 import { newFakePivotTable } from './fakepivottable.js';
-import { newFakeFilter } from './fakefilter.js'
-import { Utils } from "../../support/utils.js"
-import { makeSheetsGridRange, batchUpdate } from './sheetrangehelpers.js';
-const { is } = Utils
-/**
- * @file
- * @imports ../typedefs.js
- */
+import { newFakeBanding } from './fakebanding.js';
+import { newFakeDeveloperMetadataFinder } from './fakedevelopermetadatafinder.js';
 
-// private properties are identified with leading __
-// this will signal to the proxy handler that it's okay to set them
-/**
- * create a new FakeSheet instance
- * @param  {...any} args 
- * @returns {FakeSheet}
- */
+const { is, isEnum } = Utils;
+
 export const newFakeSheet = (...args) => {
-  return Proxies.guard(new FakeSheet(...args))
-}
+  return Proxies.guard(new FakeSheet(...args));
+};
 
-/**
- * basic fake FakeSheet
- * @class FakeSpreadsheet
- * @returns {FakeSheet}
- */
 export class FakeSheet {
+  constructor(properties, parent) {
+    this.__properties = properties;
+    this.__parent = parent;
 
-  constructor(sheetProperties, parent) {
-    // although the sheet is correct at time of creation
-    // its possible that the sheet content will have changed since it was created
-    // so we store only the sheetID, then accessing the sheet goes via the parent to find
-    // the latest content in the related sheet - see get __sheet later 
-    this.__parent = parent
-    this.__sheetId = sheetProperties.sheetId
-    
     const props = [
-      'activate',
-      'autoResizeColumns',
-      'autoResizeRows',
-      'setRowHeightsForced',
-      'isRightToLeft',
-      'setRightToLeft',
-      'hasHiddenGridlines',
-      'setHiddenGridlines',
-      'setConditionalFormatRules',
-      'getConditionalFormatRules',
-      'getRowGroupControlPosition',
-      'getColumnGroupControlPosition',
-      'setRowGroupControlPosition',
-      'setColumnGroupControlPosition',
-      'expandRowGroupsUpToDepth',
-      'expandColumnGroupsUpToDepth',
-      'collapseAllColumnGroups',      'clearComments',
-      'getTabColor',
-      'getTabColorObject',
-      'setTabColor',
-      'setTabColorObject',
-      'insertRows',
-      'hideColumns',
-      'showColumns',
-      'hideRows',
-      'showRows',
-      'hideSheet',
-      'showSheet',
-      'moveRows',
-      'moveColumns',
-      'getRowGroupDepth',
-      'getColumnGroupDepth',
-      'getRowGroup',
-      'getColumnGroup',
-      'expandAllRowGroups',
-      'collapseAllRowGroups',
-      'expandAllColumnGroups',
-      'asDataSourceSheet',
-      'getSlicers',
-      'insertSlicer',
-      'getDrawings',
-      'insertColumns',
-      'clearConditionalFormatRules',
-      'protect',
-      'insertChart',
-      'removeChart',
-      'updateChart',
-      'newChart',
-      'getCharts',
-      'createDeveloperMetadataFinder',
-      'getDataSourceUrl',
-      'deleteRows',
-      'getNamedRanges',
-      'getFormUrl',
-      'getProtections',
-      'createTextFinder',
-      'addDeveloperMetadata',
-      'getDeveloperMetadata',
-      'deleteColumns',
-      'copyTo',
-      'setName',
-      'getImages',
-      'getDataSourcePivotTables',
-      'getCurrentCell',
-      'getActiveRange',
-      'getActiveRangeList',
-      'getSelection',
-      'setCurrentCell',
-      'setActiveRange',
-      'setActiveRangeList',
-      'insertRowAfter',
-      'deleteColumn',
-      'deleteRow',
-      'getActiveCell',
-      'getActiveSelection',
-      'isRowHiddenByUser',
-      'isColumnHiddenByUser',
-      'getFrozenRows',
-      'getFrozenColumns',
-      'hideColumn',
-      'hideRow',
-      'insertColumnAfter',
-      'insertColumnBefore',
-      'insertColumnsAfter',
-      'insertColumnsBefore',
-      'insertImage',
-      'insertRowBefore',
-      'insertRowsAfter',
-      'insertRowsBefore',
-      'revealColumn',
-      'unhideColumn',
-      'revealRow',
-      'unhideRow',
-      'setActiveCell',
-      'setActiveSelection',
-      'autoResizeColumn',
-      'setFrozenColumns',
-      'setFrozenRows',
-      'getSheetPermissions',
-      'setSheetPermissions',
-      'getSheetProtection',
+      'getCharts', 'insertChart', 'removeChart', 'updateChart',
+      'getImages', 'insertImage', 'removeImage',
+      'getNamedRanges', 'getRangeByName', 'removeNamedRange', 'setNamedRange',
+      'getProtections', 'protect',
+      'getSlicers', 'insertSlicer',
+      'getTables',
+      'hideColumn', 'hideRow', 'unhideColumn', 'unhideRow',
+      'isColumnHiddenByUser', 'isRowHiddenByUser', 'isRowHiddenByFilter',
+      'setColumnWidths', 'setRowHeights',
+      'setFrozenColumns', 'setFrozenRows',
+      'moveRows', 'moveColumns',
+      'insertColumnAfter', 'insertColumnBefore', 'insertColumns', 'insertColumnsAfter', 'insertColumnsBefore',
+      'insertRowAfter', 'insertRowBefore', 'insertRows', 'insertRowsAfter', 'insertRowsBefore',
+      'deleteColumn', 'deleteColumns', 'deleteRow', 'deleteRows',
+      'autoResizeColumn', 'autoResizeColumns', 'autoResizeRow', 'autoResizeRows',
+      'copyTo', 'activate',
+      'getRangeList',
+      'getSheetValues',
       'setSheetProtection',
-      'appendRow',
       'getDataSourceTables',
       'getDataSourceFormulas',
-      'isRowHiddenByFilter',
-      'find']
+      'getDataSourcePivotTables',
+      'sort'
+    ];
+
     props.forEach(f => {
       this[f] = () => {
-        return notYetImplemented(f)
-      }
-    })
+        return notYetImplemented(f);
+      };
+    });
   }
 
-  __getFullRange() {
-    return this.getRange(1, 1, this.getMaxRows(), this.getMaxColumns());
+  getParent() {
+    return this.__parent;
   }
 
-  clear() {
-    const { nargs, matchThrow } = signatureArgs(arguments, 'Sheet.clear');
-    if (nargs) matchThrow();
-    // Per live environment testing, Sheet.clear() only clears content and formats,
-    // not notes or data validations, which is different from Range.clear().
-    const range = makeSheetsGridRange(this.__getFullRange());
-    const requests = [{
-      updateCells: Sheets.newUpdateCellsRequest().setFields("userEnteredValue,userEnteredFormat").setRange(range)
-    }];
+  getName() {
+    return this.__properties.title;
+  }
 
-    batchUpdate({ spreadsheetId: this.getParent().getId(), requests });
-    this.getParent().__disruption();
+  getSheetId() {
+    return this.__properties.sheetId;
+  }
+
+  getIndex() {
+    return this.__properties.index + 1; // 1-based
+  }
+
+  getSheetName() {
+    return this.getName();
+  }
+
+  getMaxRows() {
+    return this.__properties.gridProperties.rowCount;
+  }
+
+  getMaxColumns() {
+    return this.__properties.gridProperties.columnCount;
+  }
+
+  getType() {
+    return SpreadsheetApp.SheetType[this.__properties.sheetType];
+  }
+
+  isSheetHidden() {
+    return !!this.__properties.hidden;
+  }
+
+  getRange(a1NotationOrRow, column, numRows, numColumns) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Sheet.getRange");
+
+    if (nargs === 1 && is.string(a1NotationOrRow)) {
+      const partialGridRange = SheetUtils.fromRange(a1NotationOrRow);
+      return newFakeSheetRange({
+        ...partialGridRange,
+        sheetId: this.getSheetId()
+      }, this, a1NotationOrRow);
+    }
+
+    if (nargs >= 2 && nargs <= 4) {
+      if (!is.integer(a1NotationOrRow) || !is.integer(column)) matchThrow();
+      if (nargs >= 3 && !is.undefined(numRows) && !is.integer(numRows)) matchThrow();
+      if (nargs === 4 && !is.undefined(numColumns) && !is.integer(numColumns)) matchThrow();
+
+      const row = a1NotationOrRow;
+      numRows = numRows || 1;
+      numColumns = numColumns || 1;
+
+      const gridRange = {
+        sheetId: this.getSheetId(),
+        startRowIndex: row - 1,
+        endRowIndex: row + numRows - 1,
+        startColumnIndex: column - 1,
+        endColumnIndex: column + numColumns - 1,
+      };
+      return newFakeSheetRange(gridRange, this);
+    }
+
+    matchThrow();
+  }
+
+  getDataRange() {
+    const { values } = Sheets.Spreadsheets.Values.get(this.getParent().getId(), `'${this.getName()}'`);
+    if (!values || values.length === 0) {
+      return this.getRange(1, 1, 1, 1);
+    }
+    const numRows = values.length;
+    const numCols = Math.max(0, ...values.map(row => row.length));
+    return this.getRange(1, 1, numRows, numCols);
+  }
+
+  getLastRow() {
+    return this.getDataRange().getLastRow();
+  }
+
+  getLastColumn() {
+    return this.getDataRange().getLastColumn();
+  }
+
+  getColumnWidth(columnPosition) {
+    const meta = this.getParent().__getMetaProps(`sheets(properties(sheetId),data(columnMetadata))`);
+    const sheetMeta = meta.sheets.find(s => s.properties.sheetId === this.getSheetId());
+    const colMeta = sheetMeta?.data?.[0]?.columnMetadata?.[columnPosition - 1];
+    return colMeta?.pixelSize || 100; // Default width
+  }
+
+  getRowHeight(rowPosition) {
+    const meta = this.getParent().__getMetaProps(`sheets(properties(sheetId),data(rowMetadata))`);
+    const sheetMeta = meta.sheets.find(s => s.properties.sheetId === this.getSheetId());
+    const rowMeta = sheetMeta?.data?.[0]?.rowMetadata?.[rowPosition - 1];
+    return rowMeta?.pixelSize || 21; // Default height
+  }
+
+  setColumnWidth(columnPosition, width) {
+    // This is a complex operation, for now just a placeholder
     return this;
   }
 
-  clearContents() {
-    const { nargs, matchThrow } = signatureArgs(arguments, 'Sheet.clearContents');
-    if (nargs) matchThrow();
-    this.__getFullRange().clearContent();
-    return this;
-  }
-
-  clearFormats() {
-    const { nargs, matchThrow } = signatureArgs(arguments, 'Sheet.clearFormats');
-    if (nargs) matchThrow();
-    this.__getFullRange().clearFormat();
-    return this;
-  }
-
-  clearNotes() {
-    const { nargs, matchThrow } = signatureArgs(arguments, 'Sheet.clearNotes');
-    if (nargs) matchThrow();
-    this.__getFullRange().clearNote();
-    return this;
-  }
-
-  sort(columnPosition, ascending) {
-    const { nargs, matchThrow } = signatureArgs(arguments, 'Sheet.sort');
-    if (nargs < 1 || nargs > 2) matchThrow();
-    if (!is.integer(columnPosition)) matchThrow();
-    if (nargs === 2 && !is.boolean(ascending)) matchThrow();
-
-    // The default for ascending is true
-    const asc = nargs === 1 ? true : ascending;
-
-    this.getDataRange().sort({ column: columnPosition, ascending: asc });
+  setRowHeight(rowPosition, height) {
+    // This is a complex operation, for now just a placeholder
     return this;
   }
 
   getFilter() {
-    const { nargs, matchThrow } = signatureArgs(arguments, 'Sheet.getFilter');
-    if (nargs) matchThrow();
-
-    const apiFilter = this.__sheet.basicFilter;
-    if (apiFilter) {
-      return newFakeFilter(apiFilter, this);
-    }
-    return null;
-  }
-
-  getBandings() {
-    const { nargs, matchThrow } = signatureArgs(arguments, 'Sheet.getBandings');
-    if (nargs > 0) matchThrow();
-
-    // The __sheet property gets the latest sheet metadata.
-    const allBandingsOnSheet = this.__sheet.bandedRanges || [];
-    return allBandingsOnSheet.map(b => newFakeBanding(b, this));
+    const meta = this.getParent().__getMetaProps(`sheets(basicFilter,properties.sheetId)`);
+    const sheetMeta = meta.sheets.find(s => s.properties.sheetId === this.getSheetId());
+    return sheetMeta?.basicFilter ? newFakeFilter(sheetMeta.basicFilter, this) : null;
   }
 
   getPivotTables() {
-    const { nargs, matchThrow } = signatureArgs(arguments, 'Sheet.getPivotTables');
-    if (nargs) matchThrow();
-
-    const spreadsheetId = this.getParent().getId();
-    const sheetName = this.getName();
-
-    const { sheets } = Sheets.Spreadsheets.get(spreadsheetId, {
-      ranges: [`'${sheetName}'`],
-      fields: 'sheets(data(rowData(values(pivotTable))),properties/title)'
-    });
-
-    const sheetData = sheets.find(s => s.properties.title === sheetName);
-    if (!sheetData || !sheetData.data || !sheetData.data.length || !sheetData.data[0].rowData) {
-      return [];
-    }
-
+    const meta = this.getParent().__getMetaProps(`sheets(data(rowData(values(pivotTable))),properties.sheetId)`);
+    const sheetMeta = meta.sheets.find(s => s.properties.sheetId === this.getSheetId());
     const pivotTables = [];
-    sheetData.data[0].rowData.forEach((row, rIdx) => {
-      if (row.values) {
-        row.values.forEach((cell, cIdx) => {
-          if (cell.pivotTable) {
-            const anchorRange = this.getRange(rIdx + 1, cIdx + 1);
-            pivotTables.push(newFakePivotTable(cell.pivotTable, anchorRange));
-          }
-        });
-      }
+    sheetMeta?.data?.[0]?.rowData?.forEach((row, rIndex) => {
+      row.values?.forEach((cell, cIndex) => {
+        if (cell.pivotTable) {
+          const anchorCell = this.getRange(rIndex + 1, cIndex + 1);
+          pivotTables.push(newFakePivotTable(cell.pivotTable, anchorCell));
+        }
+      });
     });
-
     return pivotTables;
   }
 
-  get __sheet () {
-    return this.getParent().__getSheetMeta(this.__sheetId)
+  getBandings() {
+    const meta = this.getParent().__getMetaProps(`sheets(bandedRanges,properties.sheetId)`);
+    const sheetMeta = meta.sheets.find(s => s.properties.sheetId === this.getSheetId());
+    return (sheetMeta?.bandedRanges || []).map(b => newFakeBanding(b, this));
   }
 
-  getParent() {
-    // Re-fetch the spreadsheet to ensure we have the latest state, avoiding stale object issues.
-    return SpreadsheetApp.openById(this.__parent.getId());
-  }
-  getIndex() {
-    // spreadsheetapp is 1 based, adv is 0 based
-    return this.__sheet.properties.index + 1
-  }
-  getName() {
-    return this.__sheet.properties.title
-  }
-  getSheetId() {
-    return this.__sheet.properties.sheetId
-  }
-  getSheetName() {
-    return this.getName()
-  }
-  getMaxRows() {
-    return this.__sheet.properties.gridProperties.rowCount
-  }
-  getMaxColumns() {
-    return this.__sheet.properties.gridProperties.columnCount
+  getDeveloperMetadata() {
+    return this.createDeveloperMetadataFinder().find();
   }
 
-  getType() {
-    return this.__sheet.properties.sheetType
-  }
+  addDeveloperMetadata(key, value, visibility) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Sheet.addDeveloperMetadata");
+    if (nargs < 1 || nargs > 3) matchThrow();
+    if (!is.string(key)) matchThrow();
 
-  isSheetHidden() {
-    return Boolean(this.__sheet.properties.hidden)
-  }
+    let realValue = null;
+    let realVisibility = SpreadsheetApp.DeveloperMetadataVisibility.DOCUMENT;
 
-
-  /**
-   * gets a grid range as per the api format
-   * @returns {import('../typedefs.js').GridRange} gridRange 
-   */
-  __getGridRange() {
-    let { values } = Sheets.Spreadsheets.Values.get(this.__parent.getId(), this.getName())
-    // no values indicates an empty sheet
-    // in this case the gridrange as far as gas is concerned is A1
-    let maxWidth =1
-    let maxHeight = 1
-    if (values) {
-      maxWidth = values.reduce((p, c) => c.length > p ? c.length : p, 0)
-      maxHeight = values.length
-    }
-
-
-    return {
-      sheetId: this.getSheetId(),
-      startRowIndex: 0,
-      endRowIndex: maxHeight,
-      startColumnIndex: 0,
-      endColumnIndex: maxWidth
-    }
-  }
-
-  /**
-   * gets a grid range as per the api format
-   * @returns {import('../typedefs.js').GridRange} gridRange 
-   */
-  getDataRange() {
-    return newFakeSheetRange(this.__getGridRange(), this)
-  }
-  // 1 based
-  getLastRow() {
-    return this.__getGridRange().endRowIndex
-  }
-  // 1 based
-  getLastColumn() {
-    return this.__getGridRange().endColumnIndex
-  }
-
-  /**
-   * setRowHeights(startRow, numRows, height) https://developers.google.com/apps-script/reference/spreadsheet/sheet#setrowheightsstartrow,-numrows,-height
-   * Sets the height of the given rows in pixels. By default, rows grow to fit cell contents. 
-   * @param {number} startRow 1 based  starting row position to change.
-   * @param {number} numRows 	The number of rows to change.
-   * @param {number} height The height in pixels to set it to.
-   * @returns {FakeSheet} this
-   */
-  setRowHeights(startRow, numRows, height) {
-
-    let requests = [{
-      updateDimensionProperties: {
-        range: {
-          sheetId: this.getSheetId(),
-          dimension: 'ROWS',
-          startIndex: startRow - 1,
-          endIndex: startRow + numRows - 1,
-        },
-        properties: {
-          pixelSize: height,
-        },
-        fields: 'pixelSize',
+    if (nargs === 2) {
+      if (isEnum(value)) {
+        realVisibility = value;
+      } else {
+        realValue = value;
       }
-    }]
-
-    // let sheets handle errors
-    Sheets.Spreadsheets.batchUpdate({requests}, this.__parent.getId(), { ss: true })
-    return this
-
-  }
-
-  /**
-   * setRowHeight(rowPosition, height) https://developers.google.com/apps-script/reference/spreadsheet/sheet#setrowheightrowposition,-height
-   * Sets the row height of the given row in pixels. By default, rows grow to fit cell contents
-   * @param {number} rowPosition 1 based row number
-   * @param {number} height pixels
-   * @returns {FakeSheet} this
-   */
-  setRowHeight(rowPosition, height) {
-    return this.setRowHeights(rowPosition, 1, height)
-  }
-
-  /**
-   * setColumnWidths(startColumn, numColumns, width) https://developers.google.com/apps-script/reference/spreadsheet/sheet#setcolumnwidthsstartcolumn,-numcolumns,-width
-   * Sets the width of the given columns in pixels. 
-   * @param {number} startColumn 1 based  starting column position to change.
-   * @param {number} numColumns 	The number of columns to change.
-   * @param {number} width The width in pixels to set it to.
-   * @returns {FakeSheet} this
-   */
-  setColumnWidths(startColumn, numColumns, width) {
-
-    let requests = [{
-      updateDimensionProperties: {
-        range: {
-          sheetId: this.getSheetId(),
-          dimension: 'COLUMNS',
-          startIndex: startColumn - 1,
-          endIndex: startColumn + numColumns - 1,
-        },
-        properties: {
-          pixelSize: width,
-        },
-        fields: 'pixelSize',
-      }
-    }]
-
-    // let sheets handle errors
-    Sheets.Spreadsheets.batchUpdate({requests}, this.__parent.getId(), { ss: true })
-    return this
-
-  }
-
-  /**
-   * setColumnWidth(columnPosition, width) https://developers.google.com/apps-script/reference/spreadsheet/sheet#setcolumnwidthcolumnposition,-width
-   * Sets the column width of the given column in pixels. 
-   * @param {number} columnPosition 1 based column number
-   * @param {number} width The width in pixels to set it to.
-   * @returns {FakeSheet} this
-   */
-  setColumnWidth(columnPosition, width) {
-    return this.setColumnWidths(columnPosition, 1, width)
-  }
-
-  /**
-   * getColumnWidth(columnPosition) https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet#getcolumnwidthcolumnposition
-   * Gets the width in pixels of the given column.
-   * @param {number} columnPosition 
-   * @returns {number} pixels
-   */
-  getColumnWidth(columnPosition) {
-    // we just need 1 column
-    const ranges = [this.getRange(1, columnPosition, 1, 1).__getWithSheet()]
-    const data = this.getParent().__getSheetMetaProps(ranges, "sheets.data.columnMetadata")
-    return data.sheets[0].data[0].columnMetadata[0].pixelSize
-  }
-
-  /**
-   * getRowHeight(rowPosition) https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet#getrowheightrowposition
-   * Gets the height in pixels of the given row.
-   * @param {number} rowPosition 
-   * @returns {number} pixels
-   */
-  getRowHeight(rowPosition) {
-    // we just need 1 row
-    const ranges = [this.getRange(rowPosition, 1, 1, 1).__getWithSheet()]
-    const data = this.getParent().__getSheetMetaProps(ranges, "sheets.data.rowMetadata")
-    return data.sheets[0].data[0].rowMetadata[0].pixelSize
-  }
-
-  /**
-   * getRangeList(a1Notations)
-   * @param {string[]} a1Notations  a1 notations ranges
-   * @returns {FakeSheetRangeList}
-   */
-  getRangeList(a1Notations) {
-    return newFakeSheetRangeList(a1Notations.map(f => this.getRange(f)))
-  }
-
-  /** 
-   * arguments can be flexible row/column is 1 based
-   * @param {number|string} rowOrA1 can also be a string if its a1 notation
-   * @param {number} column 
-   * @param {number} [numRows] 
-   * @param {number} [numColumns]
-   */
-  getRange(rowOrA1, column, numRows, numColumns) {
-    const nargs = arguments.length
-    const passedTypes = [is(rowOrA1), is(column), is(numRows), is(numColumns)].slice(0, nargs)
-
-    const matchThrow = (mess = "") => {
-      throw new Error(`The parameters (${passedTypes}) don't match the method ${mess}`)
+    } else if (nargs === 3) {
+      realValue = value;
+      realVisibility = visibility;
     }
-    if (nargs > 4 || !nargs) matchThrow()
-    if (nargs === 1) {
-      if (!is.string(rowOrA1)) matchThrow()
-      const grid = SheetUtils.fromRange(rowOrA1)
-      return newFakeSheetRange({
-        ...grid,
-        sheetId: this.getSheetId()
-      }, this)
-    }
-    const row = rowOrA1
-    if (!is.number(column) || !is.number(row)) matchThrow()
 
-    const finalNumRows = is.undefined(numRows) ? 1 : numRows;
-    const finalNumColumns = is.undefined(numColumns) ? 1 : numColumns;
-    const startRowIndex = row - 1;
-    const startColumnIndex = column - 1;
+    const metadata = {
+      metadataKey: key,
+      metadataValue: realValue,
+      visibility: realVisibility.toString(),
+      location: {
+        sheetId: this.getSheetId(),
+      },
+    };
 
-    return newFakeSheetRange({
-      sheetId: this.getSheetId(),
-      startRowIndex: startRowIndex,
-      startColumnIndex: startColumnIndex,
-      endRowIndex: startRowIndex + finalNumRows,
-      endColumnIndex: startColumnIndex + finalNumColumns
-    }, this)
+    const request = {
+      createDeveloperMetadata: {
+        developerMetadata: metadata,
+      },
+    };
 
+    batchUpdate({ spreadsheet: this.getParent(), requests: [request] });
+    return this;
   }
-  /**
-   * getSheetValues(startRow, startColumn, numRows, numColumns) - all 1 based
-   * https://developers.google.com/apps-script/reference/spreadsheet/sheet#getsheetvaluesstartrow,-startcolumn,-numrows,-numcolumns
-   * @param {number} numColumns The number of columns to return values for.
-   * @param {number} numRows The number of rows to return values for.
-   * @param {number} startColumn The position of the starting column.
-   * @param {number} startRow The position of the starting row.
-   * @returns {*[][]}  a two-dimensional array of values
-   */
-  getSheetValues(startRow, startColumn, numRows, numColumns) {
-    const range = this.getRange(startRow, startColumn, numRows, numColumns)
-    return range.getValues()
+
+  createDeveloperMetadataFinder() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Sheet.createDeveloperMetadataFinder");
+    if (nargs) matchThrow();
+    return newFakeDeveloperMetadataFinder(this);
+  }
+
+  __clear(fields) {
+    const range = makeSheetsGridRange(this.getDataRange());
+    const requests = [{
+      updateCells: Sheets.newUpdateCellsRequest().setFields(fields).setRange(range)
+    }];
+    batchUpdate({ spreadsheet: this.getParent(), requests });
+    return this;
+  }
+
+  clear(options) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Sheet.clear");
+    if (nargs > 1 || (nargs === 1 && !is.object(options))) matchThrow();
+
+    const fields = [];
+    // Based on test case, sheet.clear() with no options clears content and format.
+    if (!options || (!options.contentsOnly && !options.formatsOnly)) {
+      fields.push("userEnteredValue", "userEnteredFormat");
+    } else {
+      if (options.contentsOnly) fields.push("userEnteredValue");
+      if (options.formatsOnly) fields.push("userEnteredFormat");
+    }
+    
+    if (fields.length > 0) {
+      return this.__clear(fields.join(','));
+    }
+    return this;
+  }
+
+  clearContents() {
+    return this.__clear("userEnteredValue");
+  }
+
+  clearFormats() {
+    return this.__clear("userEnteredFormat");
+  }
+
+  clearNotes() {
+    return this.__clear("note");
   }
 
   toString() {
-    return 'Sheet'
+    return 'Sheet';
   }
 }

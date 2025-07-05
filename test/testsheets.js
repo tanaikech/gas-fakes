@@ -19,46 +19,6 @@ export const testSheets = (pack) => {
   const { unit, fixes } = pack || initTests()
   const toTrash = []
 
-  unit.section("Range.moveTo", t => {
-    const { sheet } = maketss('moveTo_tests', toTrash, fixes);
-
-    const setupData = () => {
-      sheet.clear();
-      const sourceRange = sheet.getRange("A1:B2");
-      sourceRange.setValues([['A1', 'B1'], ['A2', 'B2']]);
-      sourceRange.setBackground('#ff0000'); // Red
-      sourceRange.setFontWeight('bold');
-      return sourceRange;
-    };
-
-    // Test 1: Simple non-overlapping move
-    let source = setupData();
-    let target = sheet.getRange("D1");
-    source.moveTo(target);
-
-    const newRange = sheet.getRange("D1:E2");
-    t.deepEqual(newRange.getValues(), [['A1', 'B1'], ['A2', 'B2']], "Values should be moved");
-    t.is(newRange.getBackground(), '#ff0000', "Background should be moved");
-    t.is(newRange.getFontWeight(), 'bold', "Font weight should be moved");
-
-    const clearedSource = sheet.getRange("A1:B2");
-    t.deepEqual(clearedSource.getValues(), [['', ''], ['', '']], "Original source values should be cleared");
-    t.is(clearedSource.getBackground(), '#ffffff', "Original source background should be cleared to default");
-    t.is(clearedSource.getFontWeight(), 'normal', "Original source font weight should be cleared to default");
-
-    // Test 2: Overlapping move
-    source = setupData();
-    target = sheet.getRange("B1"); // Overlaps with the source
-    source.moveTo(target);
-
-    const expectedOverlapValues = [['', 'A1', 'B1'], ['', 'A2', 'B2']];
-    const overlapResultRange = sheet.getRange("A1:C2");
-    t.deepEqual(overlapResultRange.getValues(), expectedOverlapValues, "Values should be moved correctly when overlapping");
-    t.is(sheet.getRange("B1:C2").getBackground(), '#ff0000', "Overlapping move should move format");
-    t.is(sheet.getRange("A1").getBackground(), '#ffffff', "Cleared part of overlap should have default format");
-    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
-  });
-
   unit.section("Sheet clearing methods", t => {
     const { sheet } = maketss('sheet_clearing', toTrash, fixes);
 
@@ -128,6 +88,145 @@ export const testSheets = (pack) => {
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
   })
 
+  unit.section("Range Merging Methods", t => {
+    const { sheet } = maketss('merging_tests', toTrash, fixes);
+
+    // Setup: put some values in cells
+    sheet.getRange("A1:F10").setValues(Array(10).fill(0).map((_, r) => Array(6).fill(0).map((_, c) => `R${r + 1}C${c + 1}`)));
+
+    // Test 1: merge() and isPartOfMerge()
+    const mergeRange = sheet.getRange("A1:B2");
+    mergeRange.merge();
+    t.true(sheet.getRange("A1").isPartOfMerge(), "A1 should be part of a merge");
+    t.true(sheet.getRange("B2").isPartOfMerge(), "B2 should be part of a merge");
+    t.true(mergeRange.isPartOfMerge(), "The whole merged range should be part of a merge");
+    t.false(sheet.getRange("C3").isPartOfMerge(), "C3 should not be part of a merge");
+    t.is(mergeRange.getDisplayValue(), "R1C1", "Display value of merged range should be top-left cell's value");
+
+    // Test 2: getMergedRanges()
+    let mergedRanges = sheet.getRange("A1:C3").getMergedRanges();
+    t.is(mergedRanges.length, 1, "getMergedRanges should find one intersecting merge");
+    t.is(mergedRanges[0].getA1Notation(), "A1:B2", "The found merged range should be A1:B2");
+
+    // Test 3: breakApart()
+    mergeRange.breakApart();
+    t.false(sheet.getRange("A1").isPartOfMerge(), "A1 should no longer be part of a merge after breakApart");
+    mergedRanges = sheet.getDataRange().getMergedRanges();
+    t.is(mergedRanges.length, 0, "There should be no merged ranges on the sheet after breakApart");
+
+    // Test 4: mergeAcross()
+    const acrossRange = sheet.getRange("D1:F2");
+    acrossRange.mergeAcross();
+    mergedRanges = sheet.getDataRange().getMergedRanges();
+    t.is(mergedRanges.length, 2, "mergeAcross on a 2-row range should create 2 merged ranges");
+    const notations = mergedRanges.map(r => r.getA1Notation()).sort();
+    t.deepEqual(notations, ["D1:F1", "D2:F2"], "mergeAcross should create correct horizontal merges");
+    t.is(sheet.getRange("D1").getDisplayValue(), "R1C4", "Display value of first across-merge");
+    t.is(sheet.getRange("D2").getDisplayValue(), "R2C4", "Display value of second across-merge");
+    acrossRange.breakApart();
+
+    // Test 5: mergeVertically()
+    const verticalRange = sheet.getRange("A5:B7");
+    verticalRange.mergeVertically();
+    mergedRanges = sheet.getDataRange().getMergedRanges();
+    t.is(mergedRanges.length, 2, "mergeVertically on a 2-column range should create 2 merged ranges");
+    const vertNotations = mergedRanges.map(r => r.getA1Notation()).sort();
+    t.deepEqual(vertNotations, ["A5:A7", "B5:B7"], "mergeVertically should create correct vertical merges");
+    t.is(sheet.getRange("A5").getDisplayValue(), "R5C1", "Display value of first vertical-merge");
+    t.is(sheet.getRange("B5").getDisplayValue(), "R5C2", "Display value of second vertical-merge");
+    verticalRange.breakApart();
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
+  });
+
+  unit.section("Range.moveTo", t => {
+    const { sheet } = maketss('moveTo_tests', toTrash, fixes);
+
+    const setupData = () => {
+      sheet.clear();
+      const sourceRange = sheet.getRange("A1:B2");
+      sourceRange.setValues([['A1', 'B1'], ['A2', 'B2']]);
+      sourceRange.setBackground('#ff0000'); // Red
+      sourceRange.setFontWeight('bold');
+      return sourceRange;
+    };
+
+    // Test 1: Simple non-overlapping move
+    let source = setupData();
+    let target = sheet.getRange("D1");
+    source.moveTo(target);
+
+    const newRange = sheet.getRange("D1:E2");
+    t.deepEqual(newRange.getValues(), [['A1', 'B1'], ['A2', 'B2']], "Values should be moved");
+    t.is(newRange.getBackground(), '#ff0000', "Background should be moved");
+    t.is(newRange.getFontWeight(), 'bold', "Font weight should be moved");
+
+    const clearedSource = sheet.getRange("A1:B2");
+    t.deepEqual(clearedSource.getValues(), [['', ''], ['', '']], "Original source values should be cleared");
+    t.is(clearedSource.getBackground(), '#ffffff', "Original source background should be cleared to default");
+    t.is(clearedSource.getFontWeight(), 'normal', "Original source font weight should be cleared to default");
+
+    // Test 2: Overlapping move
+    source = setupData();
+    target = sheet.getRange("B1"); // Overlaps with the source
+    source.moveTo(target);
+
+    const expectedOverlapValues = [['', 'A1', 'B1'], ['', 'A2', 'B2']];
+    const overlapResultRange = sheet.getRange("A1:C2");
+    t.deepEqual(overlapResultRange.getValues(), expectedOverlapValues, "Values should be moved correctly when overlapping");
+    t.is(sheet.getRange("B1:C2").getBackground(), '#ff0000', "Overlapping move should move format");
+    t.is(sheet.getRange("A1").getBackground(), '#ffffff', "Cleared part of overlap should have default format");
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
+  });
+
+  unit.section("Range.autoFill and autoFillToNeighbor", t => {
+    const { sheet } = maketss('autofill_tests', toTrash, fixes);
+    const AutoFillSeries = SpreadsheetApp.AutoFillSeries;
+
+    // --- Test autoFill ---
+    sheet.clear();
+    sheet.getRange("A1:A4").setValues([[1], [2], [3], [4]]);
+    const sourceRange = sheet.getRange("A1:A4");
+    const destinationRange = sheet.getRange("A1:A10");
+    sourceRange.autoFill(destinationRange, AutoFillSeries.DEFAULT_SERIES);
+
+    const expectedValues = [[1], [2], [3], [4], [5], [6], [7], [8], [9], [10]];
+    t.deepEqual(destinationRange.getValues(), expectedValues, "autoFill should fill down with a number series");
+
+    // Test extending left
+    sheet.clear();
+    sheet.getRange("E1:H1").setValues([[10, 8, 6, 4]]);
+    const sourceRight = sheet.getRange("E1:H1");
+    const destLeft = sheet.getRange("B1:H1");
+    sourceRight.autoFill(destLeft, AutoFillSeries.DEFAULT_SERIES);
+    const expectedLeft = [[16, 14, 12, 10, 8, 6, 4]];
+    t.deepEqual(destLeft.getValues(), expectedLeft, "autoFill should fill left with a decreasing number series");
+
+    // --- Test autoFillToNeighbor ---
+    sheet.clear();
+    const neighborData = Array.from({ length: 20 }, (_, i) => [i + 1]);
+    sheet.getRange("A1:A20").setValues(neighborData);
+    sheet.getRange("B1:B2").setValues([['Jan'], ['Feb']]);
+
+    const neighborSource = sheet.getRange("B1:B2");
+    neighborSource.autoFillToNeighbor(AutoFillSeries.DEFAULT_SERIES);
+
+    const neighborResult = sheet.getRange("B1:B20").getValues().flat();
+    t.is(neighborResult[2], 'Mar', "autoFillToNeighbor should fill month series (Mar)");
+    t.is(neighborResult.length, 20, "autoFillToNeighbor should fill down to the neighbor's extent");
+
+    // Test error conditions for autoFill
+    const invalidDest1 = sheet.getRange("C1:C5"); // Does not contain source
+    t.rxMatch(t.threw(() => sourceRange.autoFill(invalidDest1, AutoFillSeries.DEFAULT_SERIES))?.message || "", /destination range must contain the source range/);
+
+    const invalidDest2 = sheet.getRange("A1:B10"); // Extends in two directions
+    t.rxMatch(t.threw(() => sourceRange.autoFill(invalidDest2, AutoFillSeries.DEFAULT_SERIES))?.message || "", /AutoFill destination range must extend the source range in only one direction./);
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
+  });
+
+
+
   unit.section("Sheet data manipulation", t => {
     const { sheet } = maketss('sheet_data_manipulation', toTrash, fixes);
 
@@ -184,8 +283,6 @@ export const testSheets = (pack) => {
 
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
   });
-
-
 
 
   unit.section("rich text tests", t => {
@@ -1484,50 +1581,6 @@ export const testSheets = (pack) => {
   })
 
 
-
-  unit.section("Range.autoFill and autoFillToNeighbor", t => {
-    const { sheet } = maketss('autofill_tests', toTrash, fixes);
-    const AutoFillSeries = SpreadsheetApp.AutoFillSeries;
-
-    // --- Test autoFill ---
-    sheet.clear();
-    sheet.getRange("A1:A4").setValues([[1], [2], [3], [4]]);
-    const sourceRange = sheet.getRange("A1:A4");
-    const destinationRange = sheet.getRange("A1:A10");
-    sourceRange.autoFill(destinationRange, AutoFillSeries.DEFAULT_SERIES);
-
-    const expectedValues = [[1], [2], [3], [4], [5], [6], [7], [8], [9], [10]];
-    t.deepEqual(destinationRange.getValues(), expectedValues, "autoFill should fill down with a number series");
-
-    // Test extending left
-    sheet.clear();
-    sheet.getRange("E1:H1").setValues([[10, 8, 6, 4]]);
-    const sourceRight = sheet.getRange("E1:H1");
-    const destLeft = sheet.getRange("B1:H1");
-    sourceRight.autoFill(destLeft, AutoFillSeries.DEFAULT_SERIES);
-    const expectedLeft = [[16, 14, 12, 10, 8, 6, 4]];
-    t.deepEqual(destLeft.getValues(), expectedLeft, "autoFill should fill left with a decreasing number series");
-
-    // --- Test autoFillToNeighbor ---
-    sheet.clear();
-    const neighborData = Array.from({ length: 20 }, (_, i) => [i + 1]);
-    sheet.getRange("A1:A20").setValues(neighborData);
-    sheet.getRange("B1:B2").setValues([['Jan'], ['Feb']]);
-
-    const neighborSource = sheet.getRange("B1:B2");
-    neighborSource.autoFillToNeighbor(AutoFillSeries.DEFAULT_SERIES);
-
-    const neighborResult = sheet.getRange("B1:B20").getValues().flat();
-    t.is(neighborResult[2], 'Mar', "autoFillToNeighbor should fill month series (Mar)");
-    t.is(neighborResult.length, 20, "autoFillToNeighbor should fill down to the neighbor's extent");
-
-    // Test error conditions for autoFill
-    const invalidDest1 = sheet.getRange("C1:C5"); // Does not contain source
-    t.rxMatch(t.threw(() => sourceRange.autoFill(invalidDest1, AutoFillSeries.DEFAULT_SERIES))?.message || "", /destination range must contain the source range/);
-
-    const invalidDest2 = sheet.getRange("A1:B10"); // Extends in two directions
-    t.rxMatch(t.threw(() => sourceRange.autoFill(invalidDest2, AutoFillSeries.DEFAULT_SERIES))?.message || "", /AutoFill destination range must extend the source range in only one direction./);
-  });
 
 
   // running standalone

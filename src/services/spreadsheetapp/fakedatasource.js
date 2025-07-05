@@ -27,8 +27,7 @@ export class FakeDataSource {
         fields: fields,
       },
     };
-    batchUpdate({ spreadsheetId: this.__spreadsheet.getId(), requests: [request] });
-    this.__spreadsheet.__disruption();
+    batchUpdate({ spreadsheet: this.__spreadsheet, requests: [request] });
     // update local state
     this.__apiDataSource = newDataSourceApi;
   }
@@ -121,8 +120,7 @@ export class FakeDataSource {
         dataSourceId: this.__apiDataSource.dataSourceId,
       },
     };
-    batchUpdate({ spreadsheetId: this.__spreadsheet.getId(), requests: [request] });
-    this.__spreadsheet.__disruption();
+    batchUpdate({ spreadsheet: this.__spreadsheet, requests: [request] });
   }
 
   updateSpec(spec, refreshAllLinkedObjects) {
@@ -152,8 +150,7 @@ export class FakeDataSource {
       });
     }
 
-    batchUpdate({ spreadsheetId: this.__spreadsheet.getId(), requests });
-    this.__spreadsheet.__disruption();
+    batchUpdate({ spreadsheet: this.__spreadsheet, requests });
     this.__apiDataSource.spec = newDataSourceApi.spec;
     return this;
   }

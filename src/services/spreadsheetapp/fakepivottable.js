@@ -69,9 +69,8 @@ export class FakePivotTable {
       }
     };
 
-    batchUpdate({ spreadsheetId, requests: [updateCellsRequest] });
+    batchUpdate({ spreadsheet, requests: [updateCellsRequest] });
     this.__pivotTable = pivotTable;
-    spreadsheet.__disruption();
   }
 
   addCalculatedPivotValue(name, formula) {

@@ -72,8 +72,7 @@ export class FakeDataSourceColumn {
         fields: fields,
       },
     };
-    batchUpdate({ spreadsheetId: spreadsheet.getId(), requests: [request] });
-    spreadsheet.__disruption();
+    batchUpdate({ spreadsheet, requests: [request] });
   }
 
   remove() {

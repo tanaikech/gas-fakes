@@ -202,7 +202,7 @@ export class FakeSpreadsheet {
       },
     };
 
-    batchUpdate({ spreadsheetId: this.getId(), requests: [request] });
+    batchUpdate({ spreadsheet: this, requests: [request] });
     return this;
   }
 
@@ -592,11 +592,8 @@ export class FakeSpreadsheet {
     }]
 
     // let sheets handle errors
-    const result = Sheets.Spreadsheets.batchUpdate({ requests }, this.getId(), { ss: true })
+    const result = batchUpdate({ spreadsheet: this, requests });
     const sheet = newFakeSheet(result.replies[0].addSheet.properties, this)
-
-    // there will have been disrupton, so we need to reset the spreadsheet metadata
-    this.__disruption()
 
     return sheet
     /* 
@@ -606,7 +603,7 @@ export class FakeSpreadsheet {
   }
 
   __disruption() {
-    // Cache is cleared by the batchUpdate helper. This just re-fetches the local meta for the spreadsheet object.
+    // This re-fetches the local meta for the spreadsheet object.
     this.__updateMeta(Sheets.Spreadsheets.get(this.getId(), { fields: minSheetFields }, { ss: true }))
   }
 
