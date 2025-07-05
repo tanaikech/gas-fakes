@@ -88,15 +88,11 @@ export class FakeSheetRange {
       'setFormulasR1C1',
       'activateAsCurrentCell',
       'setComments',
-      'autoFill',
-      'autoFillToNeighbor',
       'setShowHyperlink',
 
       'createDataSourceTable',
       'getComments',
       'clearComment',
-      'createTextFinder',
-      'moveTo',
 
       'getDataSourceUrl',
       'getDataTable',
@@ -124,6 +120,131 @@ export class FakeSheetRange {
         apiSetter: f.apiSetter || 'set' + capital(f.single || f.name)
       })
     })
+  }
+
+  moveTo(target) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.moveTo");
+    if (nargs !== 1 || !isRange(target)) matchThrow();
+
+    const request = {
+      cutPaste: {
+        source: makeSheetsGridRange(this),
+        destination: {
+          sheetId: target.getSheet().getSheetId(),
+          rowIndex: target.getRow() - 1,
+          columnIndex: target.getColumn() - 1,
+        },
+        pasteType: 'PASTE_NORMAL', // Moves values, formats, etc.
+      },
+    };
+
+    batchUpdate({ spreadsheetId: this.__getSpreadsheetId(), requests: [request] });
+    this.__getSpreadsheet().__disruption();
+    // The docs don't specify a return, but returning `this` is standard for mutator methods.
+    // Note: The original range object is now invalid as its contents have moved.
+    return this;
+  }
+
+  autoFill(destination, series) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.autoFill");
+    if (nargs !== 2 || !isRange(destination) || !isEnum(series)) matchThrow();
+
+    const sourceGrid = this.__gridRange;
+    const destGrid = makeGridRange(destination);
+
+    // Validate destination contains source
+    if (destGrid.sheetId !== sourceGrid.sheetId ||
+      destGrid.startRowIndex > sourceGrid.startRowIndex ||
+      destGrid.endRowIndex < sourceGrid.endRowIndex ||
+      destGrid.startColumnIndex > sourceGrid.startColumnIndex ||
+      destGrid.endColumnIndex < sourceGrid.endColumnIndex) {
+      throw new Error('The destination range must contain the source range.');
+    }
+
+    const extendsDown = destGrid.startRowIndex === sourceGrid.startRowIndex && destGrid.endRowIndex > sourceGrid.endRowIndex;
+    const extendsUp = destGrid.endRowIndex === sourceGrid.endRowIndex && destGrid.startRowIndex < sourceGrid.startRowIndex;
+    const extendsRight = destGrid.startColumnIndex === sourceGrid.startColumnIndex && destGrid.endColumnIndex > sourceGrid.endColumnIndex;
+    const extendsLeft = destGrid.endColumnIndex === sourceGrid.endColumnIndex && destGrid.startColumnIndex < sourceGrid.startColumnIndex;
+
+    const sameCols = destGrid.startColumnIndex === sourceGrid.startColumnIndex && destGrid.endColumnIndex === sourceGrid.endColumnIndex;
+    const sameRows = destGrid.startRowIndex === sourceGrid.startRowIndex && destGrid.endRowIndex === sourceGrid.endRowIndex;
+
+    let dimension;
+    let fillLength;
+
+    if (extendsDown && sameCols) {
+      dimension = 'ROWS';
+      fillLength = destGrid.endRowIndex - sourceGrid.endRowIndex;
+    } else if (extendsUp && sameCols) {
+      dimension = 'ROWS';
+      fillLength = -(sourceGrid.startRowIndex - destGrid.startRowIndex);
+    } else if (extendsRight && sameRows) {
+      dimension = 'COLUMNS';
+      fillLength = destGrid.endColumnIndex - sourceGrid.endColumnIndex;
+    } else if (extendsLeft && sameRows) {
+      dimension = 'COLUMNS';
+      fillLength = -(sourceGrid.startColumnIndex - destGrid.startColumnIndex);
+    } else {
+      throw new Error('AutoFill destination range must extend the source range in only one direction.');
+    }
+
+    const request = {
+      autoFill: {
+        sourceAndDestination: {
+          source: makeSheetsGridRange(this),
+          dimension: dimension,
+          fillLength: fillLength,
+        },
+        useAlternateSeries: series.toString() === 'ALTERNATE_SERIES',
+      },
+    };
+
+    batchUpdate({ spreadsheetId: this.__getSpreadsheetId(), requests: [request] });
+    this.__getSpreadsheet().__disruption();
+    return this;
+  }
+
+  autoFillToNeighbor(series) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.autoFillToNeighbor");
+    if (nargs !== 1 || !isEnum(series)) matchThrow();
+
+    const sheet = this.getSheet();
+    const sourceRows = this.getNumRows();
+    const sourceCols = this.getNumColumns();
+    const startRow = this.getRow();
+    const endRow = this.getLastRow();
+    const startCol = this.getColumn();
+    const endCol = this.getLastColumn();
+
+    // The live API for autoFillToNeighbor only appears to support vertical fills,
+    // looking at data in columns to the left and right.
+    if (this.getNumColumns() > this.getNumRows()) {
+      // If the range is wider than it is tall, it's likely intended for horizontal fill, which is not supported.
+      // The live API does nothing in this case, so we return `this`.
+      return this;
+    }
+
+    let neighborLastRow = 0;
+    const maxRows = sheet.getMaxRows();
+
+    // Check column to the left
+    if (startCol > 1) {
+      const lastDataCell = sheet.getRange(maxRows, startCol - 1).getNextDataCell(Direction.UP);
+      if (lastDataCell.getValue() !== '') neighborLastRow = Math.max(neighborLastRow, lastDataCell.getRow());
+    }
+    // Check column to the right
+    if (endCol < sheet.getMaxColumns()) {
+      const lastDataCell = sheet.getRange(maxRows, endCol + 1).getNextDataCell(Direction.UP);
+      if (lastDataCell.getValue() !== '') neighborLastRow = Math.max(neighborLastRow, lastDataCell.getRow());
+    }
+
+    if (neighborLastRow <= endRow) {
+      return this; // No neighbor data to fill towards, or neighbor is shorter.
+    }
+
+    const destinationRange = sheet.getRange(startRow, startCol, neighborLastRow - startRow + 1, sourceCols);
+
+    return this.autoFill(destinationRange, series);
   }
 
   addDeveloperMetadata(key, value, visibility) {

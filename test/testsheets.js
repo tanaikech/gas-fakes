@@ -19,6 +19,46 @@ export const testSheets = (pack) => {
   const { unit, fixes } = pack || initTests()
   const toTrash = []
 
+  unit.section("Range.moveTo", t => {
+    const { sheet } = maketss('moveTo_tests', toTrash, fixes);
+
+    const setupData = () => {
+      sheet.clear();
+      const sourceRange = sheet.getRange("A1:B2");
+      sourceRange.setValues([['A1', 'B1'], ['A2', 'B2']]);
+      sourceRange.setBackground('#ff0000'); // Red
+      sourceRange.setFontWeight('bold');
+      return sourceRange;
+    };
+
+    // Test 1: Simple non-overlapping move
+    let source = setupData();
+    let target = sheet.getRange("D1");
+    source.moveTo(target);
+
+    const newRange = sheet.getRange("D1:E2");
+    t.deepEqual(newRange.getValues(), [['A1', 'B1'], ['A2', 'B2']], "Values should be moved");
+    t.is(newRange.getBackground(), '#ff0000', "Background should be moved");
+    t.is(newRange.getFontWeight(), 'bold', "Font weight should be moved");
+
+    const clearedSource = sheet.getRange("A1:B2");
+    t.deepEqual(clearedSource.getValues(), [['', ''], ['', '']], "Original source values should be cleared");
+    t.is(clearedSource.getBackground(), '#ffffff', "Original source background should be cleared to default");
+    t.is(clearedSource.getFontWeight(), 'normal', "Original source font weight should be cleared to default");
+
+    // Test 2: Overlapping move
+    source = setupData();
+    target = sheet.getRange("B1"); // Overlaps with the source
+    source.moveTo(target);
+
+    const expectedOverlapValues = [['', 'A1', 'B1'], ['', 'A2', 'B2']];
+    const overlapResultRange = sheet.getRange("A1:C2");
+    t.deepEqual(overlapResultRange.getValues(), expectedOverlapValues, "Values should be moved correctly when overlapping");
+    t.is(sheet.getRange("B1:C2").getBackground(), '#ff0000', "Overlapping move should move format");
+    t.is(sheet.getRange("A1").getBackground(), '#ffffff', "Cleared part of overlap should have default format");
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
+  });
+
   unit.section("Sheet clearing methods", t => {
     const { sheet } = maketss('sheet_clearing', toTrash, fixes);
 
@@ -1443,6 +1483,51 @@ export const testSheets = (pack) => {
 
   })
 
+
+
+  unit.section("Range.autoFill and autoFillToNeighbor", t => {
+    const { sheet } = maketss('autofill_tests', toTrash, fixes);
+    const AutoFillSeries = SpreadsheetApp.AutoFillSeries;
+
+    // --- Test autoFill ---
+    sheet.clear();
+    sheet.getRange("A1:A4").setValues([[1], [2], [3], [4]]);
+    const sourceRange = sheet.getRange("A1:A4");
+    const destinationRange = sheet.getRange("A1:A10");
+    sourceRange.autoFill(destinationRange, AutoFillSeries.DEFAULT_SERIES);
+
+    const expectedValues = [[1], [2], [3], [4], [5], [6], [7], [8], [9], [10]];
+    t.deepEqual(destinationRange.getValues(), expectedValues, "autoFill should fill down with a number series");
+
+    // Test extending left
+    sheet.clear();
+    sheet.getRange("E1:H1").setValues([[10, 8, 6, 4]]);
+    const sourceRight = sheet.getRange("E1:H1");
+    const destLeft = sheet.getRange("B1:H1");
+    sourceRight.autoFill(destLeft, AutoFillSeries.DEFAULT_SERIES);
+    const expectedLeft = [[16, 14, 12, 10, 8, 6, 4]];
+    t.deepEqual(destLeft.getValues(), expectedLeft, "autoFill should fill left with a decreasing number series");
+
+    // --- Test autoFillToNeighbor ---
+    sheet.clear();
+    const neighborData = Array.from({ length: 20 }, (_, i) => [i + 1]);
+    sheet.getRange("A1:A20").setValues(neighborData);
+    sheet.getRange("B1:B2").setValues([['Jan'], ['Feb']]);
+
+    const neighborSource = sheet.getRange("B1:B2");
+    neighborSource.autoFillToNeighbor(AutoFillSeries.DEFAULT_SERIES);
+
+    const neighborResult = sheet.getRange("B1:B20").getValues().flat();
+    t.is(neighborResult[2], 'Mar', "autoFillToNeighbor should fill month series (Mar)");
+    t.is(neighborResult.length, 20, "autoFillToNeighbor should fill down to the neighbor's extent");
+
+    // Test error conditions for autoFill
+    const invalidDest1 = sheet.getRange("C1:C5"); // Does not contain source
+    t.rxMatch(t.threw(() => sourceRange.autoFill(invalidDest1, AutoFillSeries.DEFAULT_SERIES))?.message || "", /destination range must contain the source range/);
+
+    const invalidDest2 = sheet.getRange("A1:B10"); // Extends in two directions
+    t.rxMatch(t.threw(() => sourceRange.autoFill(invalidDest2, AutoFillSeries.DEFAULT_SERIES))?.message || "", /AutoFill destination range must extend the source range in only one direction./);
+  });
 
 
   // running standalone

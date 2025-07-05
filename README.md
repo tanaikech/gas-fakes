@@ -679,6 +679,13 @@ As a general rule, once Gemini starts talking about making sweeping changes and 
 
 I haven't worked on the datasource component of this (for example attaching to bigquery etc) - I'll come back to that at a later date.
 
+#### Verdict on using Gemini to generate some of this stuff
+
+I'm torn. On the one hand, it's been great at doing busy work like writing test cases and detecting dependencies that I maight otherwise have missed. On the other hand, if it gets it wrong, it's very hard to get it back on track as it tries bury itself deeper and deeper into previous misconceptions. 
+
+Overall it saves time, for sure. However, the result is often suboptimal, wordy, lacking in reusability and not something I would be happy to put my name to. From a personal perspective, the human's role becomes one of specification, debugging, checking and testing. I prefer coding, so I'm not convinced.
+
+
 #### checking of invalid arguments
 
 In many cases, Apps Script doesn't check the validity of invalid arguments - for example (sse this issue https://issuetracker.google.com/issues/428869869), it happily accepts invalid colors.
