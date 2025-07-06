@@ -109,7 +109,7 @@ export class FakeFilter {
     const sortSpecs = this.__apiFilter.sortSpecs || [];
     const spec = sortSpecs.find(s => s.dimensionIndex === columnPosition - 1);
 
-    return newFakeSortSpec(spec || null);
+    return newFakeSortSpec(spec || null, columnPosition);
   }
 
   getColumnFilterCriteria(columnPosition) {

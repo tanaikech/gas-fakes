@@ -8,8 +8,9 @@ export const newFakeSortSpec = (...args) => {
 };
 
 export class FakeSortSpec {
-  constructor(apiSortSpec) {
+  constructor(apiSortSpec, columnPosition) {
     this.__apiSortSpec = apiSortSpec || {};
+    this.__columnPosition = columnPosition;
   }
 
   getDataSourceColumnReference() {
@@ -22,7 +23,12 @@ export class FakeSortSpec {
   getDimensionIndex() {
     const { nargs, matchThrow } = signatureArgs(arguments, 'SortSpec.getDimensionIndex');
     if (nargs) matchThrow();
-    // Apps Script is 1-based, API is 0-based
+    // If created from a filter, the column position is passed directly.
+    if (this.__columnPosition) {
+      return this.__columnPosition;
+    }
+    // Otherwise, derive from the API spec (e.g., from a data table).
+    // Apps Script is 1-based, API is 0-based.
     return this.__apiSortSpec.dimensionIndex != null ? this.__apiSortSpec.dimensionIndex + 1 : null;
   }
 
@@ -30,13 +36,17 @@ export class FakeSortSpec {
     const { nargs, matchThrow } = signatureArgs(arguments, 'SortSpec.getSortOrder');
     if (nargs) matchThrow();
     const order = this.__apiSortSpec.sortOrder;
-    return order ? SpreadsheetApp.SortOrder[order] : null;
+    if (!order) {
+      throw new Error("Unexpected error while getting the method or property getSortOrder on object SpreadsheetApp.SortSpec.");
+    }
+    return SpreadsheetApp.SortOrder[order];
   }
 
   isAscending() {
     const { nargs, matchThrow } = signatureArgs(arguments, 'SortSpec.isAscending');
     if (nargs) matchThrow();
-    return this.__apiSortSpec.sortOrder === 'ASCENDING';
+    // If not sorted, default to true as per Apps Script behavior.
+    return this.__apiSortSpec.sortOrder !== 'DESCENDING';
   }
 
   getBackgroundColorStyle() {
