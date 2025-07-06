@@ -9,7 +9,6 @@ import { newFakeFilterCriteriaBuilder } from './fakefiltercriteriabuilder.js'
 import { newFakeDataValidationBuilder } from './fakedatavalidationbuilder.js'
 import { newFakeDataSourceSpecBuilder } from './fakedatasourcespecbuilder.js';
 
-
 import * as Enums from '../enums/sheetsenums.js'
 
 const { is } = Utils
@@ -221,7 +220,7 @@ export class FakeSpreadsheetApp {
    * Creates a builder for a RichTextValue.
    * @returns {FakeRichTextValueBuilder}
    */
-  newRichTextValue () {
+  newRichTextValue() {
     return newFakeRichTextValueBuilder()
   }
 
@@ -242,4 +241,6 @@ export class FakeSpreadsheetApp {
     if (nargs) matchThrow();
     return newFakeDataSourceSpecBuilder();
   }
+
+
 }

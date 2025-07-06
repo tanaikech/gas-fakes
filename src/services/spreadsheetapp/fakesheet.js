@@ -1,5 +1,5 @@
 import { Proxies } from '../../support/proxies.js';
-import { notYetImplemented, signatureArgs } from '../../support/helpers.js';
+import { signatureArgs, notYetImplemented } from '../../support/helpers.js';
 import { newFakeSheetRange } from './fakesheetrange.js';
 import { Utils } from '../../support/utils.js';
 import { SheetUtils } from '../../support/sheetutils.js';
@@ -8,45 +8,20 @@ import { newFakeFilter } from './fakefilter.js';
 import { newFakePivotTable } from './fakepivottable.js';
 import { newFakeBanding } from './fakebanding.js';
 import { newFakeDeveloperMetadataFinder } from './fakedevelopermetadatafinder.js';
+import { newFakeSheetRangeList } from './fakesheetrangelist.js';
 
 const { is, isEnum } = Utils;
 
-export const newFakeSheet = (...args) => {
-  return Proxies.guard(new FakeSheet(...args));
-};
-
-const parseR1C1 = (r1c1) => {
-  // This regex handles R1C1 and R1C1:R2C2 formats. It does not handle relative offsets.
-  const rangeRegex = /^R(\d+)C(\d+)(:R(\d+)C(\d+))?$/i;
-  const match = r1c1.match(rangeRegex);
-
-  if (!match) return null;
-
-  const r1 = parseInt(match[1], 10);
-  const c1 = parseInt(match[2], 10);
-
-  // If it's a range like R1C1:R2C2
-  if (match[3]) {
-    const r2 = parseInt(match[4], 10);
-    const c2 = parseInt(match[5], 10);
-    return {
-      startRowIndex: Math.min(r1, r2) - 1,
-      endRowIndex: Math.max(r1, r2),
-      startColumnIndex: Math.min(c1, c2) - 1,
-      endColumnIndex: Math.max(c1, c2),
-    };
-  }
-
-  // If it's a single cell like R1C1
-  return {
-    startRowIndex: r1 - 1,
-    endRowIndex: r1,
-    startColumnIndex: c1 - 1,
-    endColumnIndex: c1,
-  };
+export const newFakeSheet = (properties, parent) => {
+  return Proxies.guard(new FakeSheet(properties, parent));
 };
 
 export class FakeSheet {
+  /**
+   * @constructor
+   * @param {object} properties The sheet properties object from the Sheets API.
+   * @param {import('./fakespreadsheet.js').FakeSpreadsheet} parent The parent FakeSpreadsheet object.
+   */
   constructor(properties, parent) {
     this.__properties = properties;
     this.__parent = parent;
@@ -57,7 +32,6 @@ export class FakeSheet {
       'getNamedRanges', 'getRangeByName', 'removeNamedRange', 'setNamedRange',
       'getProtections', 'protect',
       'getSlicers', 'insertSlicer',
-      'getTables',
       'hideColumn', 'hideRow', 'unhideColumn', 'unhideRow',
       'isColumnHiddenByUser', 'isRowHiddenByUser', 'isRowHiddenByFilter',
       'setColumnWidths', 'setRowHeights',
@@ -66,10 +40,7 @@ export class FakeSheet {
       'insertColumnAfter', 'insertColumnBefore', 'insertColumns', 'insertColumnsAfter', 'insertColumnsBefore',
       'insertRowAfter', 'insertRowBefore', 'insertRows', 'insertRowsAfter', 'insertRowsBefore',
       'deleteColumn', 'deleteColumns', 'deleteRow', 'deleteRows',
-      'autoResizeColumn', 'autoResizeColumns', 'autoResizeRow', 'autoResizeRows',
-      'copyTo', 'activate',
-      'getRangeList',
-      'getSheetValues',
+      'autoResizeColumn', 'autoResizeColumns', 
       'setSheetProtection',
       'getDataSourceTables',
       'getDataSourceFormulas',
@@ -119,42 +90,68 @@ export class FakeSheet {
     return !!this.__properties.hidden;
   }
 
+  /**
+   * Handles getRange calls with A1 or R1C1 string notation.
+   * @private
+   * @param {string} a1Notation The range notation string.
+   * @returns {import('./fakesheetrange.js').FakeSheetRange}
+   */
+  __handleA1NotationGetRange(a1Notation) {
+    // Check if it looks like R1C1 notation. This is a simple check;
+    // fromRange will handle invalid A1 notations that might slip through.
+    const isR1C1Like = /^[Rr]\d+[Cc]\d/i.test(a1Notation);
+
+    let notationToParse = a1Notation;
+    if (isR1C1Like) {
+      // Convert R1C1 to A1. For a simple address, base row/col don't matter
+      // as there are no relative parts. Using 1,1 for simplicity.
+      // The result will be an absolute A1 reference, e.g., $A$1.
+      notationToParse = SheetUtils.r1c1ToA1(a1Notation, 1, 1);
+    }
+
+    const partialGridRange = SheetUtils.fromRange(notationToParse);
+    return newFakeSheetRange({
+      ...partialGridRange,
+      sheetId: this.getSheetId()
+    }, this, a1Notation); // Pass original notation for preservation
+  }
+
+  /**
+   * Handles getRange calls with numeric row/column arguments.
+   * @private
+   * @param {number} row The starting row.
+   * @param {number} column The starting column.
+   * @param {number} [numRows] The number of rows.
+   * @param {number} [numColumns] The number of columns.
+   * @returns {import('./fakesheetrange.js').FakeSheetRange}
+   */
+  __handleNumericGetRange(row, column, numRows, numColumns) {
+    numRows = numRows || 1;
+    numColumns = numColumns || 1;
+
+    const gridRange = {
+      sheetId: this.getSheetId(),
+      startRowIndex: row - 1,
+      endRowIndex: row + numRows - 1,
+      startColumnIndex: column - 1,
+      endColumnIndex: column + numColumns - 1,
+    };
+    return newFakeSheetRange(gridRange, this);
+  }
+
   getRange(a1NotationOrRow, column, numRows, numColumns) {
     const { nargs, matchThrow } = signatureArgs(arguments, "Sheet.getRange");
 
     if (nargs === 1 && is.string(a1NotationOrRow)) {
-      // Try parsing as R1C1 first, as this is supported by the live API.
-      const r1c1Grid = parseR1C1(a1NotationOrRow);
-      if (r1c1Grid) {
-        r1c1Grid.sheetId = this.getSheetId();
-        return newFakeSheetRange(r1c1Grid, this, a1NotationOrRow);
-      }
-
-      // Fallback to standard A1 notation parsing
-      const partialGridRange = SheetUtils.fromRange(a1NotationOrRow);
-      return newFakeSheetRange({
-        ...partialGridRange,
-        sheetId: this.getSheetId()
-      }, this, a1NotationOrRow);
+      return this.__handleA1NotationGetRange(a1NotationOrRow);
     }
 
     if (nargs >= 2 && nargs <= 4) {
       if (!is.integer(a1NotationOrRow) || !is.integer(column)) matchThrow();
       if (nargs >= 3 && !is.undefined(numRows) && !is.integer(numRows)) matchThrow();
       if (nargs === 4 && !is.undefined(numColumns) && !is.integer(numColumns)) matchThrow();
-
-      const row = a1NotationOrRow;
-      numRows = numRows || 1;
-      numColumns = numColumns || 1;
-
-      const gridRange = {
-        sheetId: this.getSheetId(),
-        startRowIndex: row - 1,
-        endRowIndex: row + numRows - 1,
-        startColumnIndex: column - 1,
-        endColumnIndex: column + numColumns - 1,
-      };
-      return newFakeSheetRange(gridRange, this);
+      
+      return this.__handleNumericGetRange(a1NotationOrRow, column, numRows, numColumns);
     }
 
     matchThrow();
@@ -338,6 +335,13 @@ export class FakeSheet {
 
     // Per live testing, it seems the entire data range is sorted, contrary to documentation.
     return dataRange.sort(sortSpec);
+  }
+
+  getRangeList(a1Notations) {
+    const { matchThrow } = signatureArgs([a1Notations], 'Sheet.getRangeList', 'Sheet');
+    if (!is.array(a1Notations) || !a1Notations.every(is.string)) matchThrow();
+
+    return newFakeSheetRangeList(a1Notations.map(a1 => this.getRange(a1)));
   }
 
   toString() {

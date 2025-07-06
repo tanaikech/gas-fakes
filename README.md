@@ -171,7 +171,7 @@ v1.0.8
 
 ### Testing coverage
 
-Tests for all methods are added as we go to the cumulative unit tests and run on both Apps Script and Node. The goal is to try to get the behavior as exactly equivalent as possible. See/updated the issues section for detected anomalies. There are currently 2560 active tests.
+Tests for all methods are added as we go to the cumulative unit tests and run on both Apps Script and Node. The goal is to try to get the behavior as exactly equivalent as possible. See/updated the issues section for detected anomalies. There are currently almost 4000 active tests.
 
 #### Proxies and globalThis
 

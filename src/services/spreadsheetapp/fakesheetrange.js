@@ -26,27 +26,6 @@ import { notYetImplemented, signatureArgs } from '../../support/helpers.js'
 import { FakeSpreadsheet } from './fakespreadsheet.js'
 import { FakeDataValidation } from './fakedatavalidation.js'
 
-const colA1ToIndex = (a1) => {
-  let index = 0;
-  for (let i = 0; i < a1.length; i++) {
-    index = index * 26 + a1.toUpperCase().charCodeAt(i) - 'A'.charCodeAt(0) + 1;
-  }
-  return index - 1;
-};
-
-const indexToColA1 = (index) => {
-  let col = '';
-  let num = index + 1;
-  while (num > 0) {
-    const remainder = (num - 1) % 26;
-    col = String.fromCharCode(65 + remainder) + col;
-    num = Math.floor((num - 1) / 26);
-  }
-  return col;
-};
-
-//TODO - deal with r1c1 style ranges
-
 // private properties are identified with leading __
 // this will signal to the proxy handler that it's okay to set them
 /**
@@ -148,7 +127,7 @@ export class FakeSheetRange {
         }
         const baseRow = startRow + rIdx;
         const baseCol = startCol + cIdx;
-        return this.__a1ToR1C1(a1Formula, baseRow, baseCol);
+        return SheetUtils.a1ToR1C1(a1Formula, baseRow, baseCol);
       });
     });
   }
@@ -172,7 +151,7 @@ export class FakeSheetRange {
         }
         const baseRow = startRow + rIdx;
         const baseCol = startCol + cIdx;
-        return this.__r1c1ToA1(r1c1Formula, baseRow, baseCol);
+        return SheetUtils.r1c1ToA1(r1c1Formula, baseRow, baseCol);
       });
     });
 
@@ -183,68 +162,8 @@ export class FakeSheetRange {
     const { nargs, matchThrow } = signatureArgs(arguments, "Range.setFormulaR1C1");
     if (nargs !== 1 || !is.string(formula)) matchThrow();
 
-    const a1Formula = this.__r1c1ToA1(formula, this.getRow(), this.getColumn());
+    const a1Formula = SheetUtils.r1c1ToA1(formula, this.getRow(), this.getColumn());
     return this.setFormula(a1Formula);
-  }
-
-  __a1ToR1C1(formula, baseRow, baseCol) {
-    // NOTE: This implementation now handles ranges like A1:B2
-    const a1RefRegex = /(?<![A-Z0-9])(\$?[A-Z]+\$?\d+)(:(\$?[A-Z]+\$?\d+))?(?![A-Z0-9.])/g;
-
-    const parts = formula.split('"');
-    for (let i = 0; i < parts.length; i++) {
-      if (i % 2 === 0) { // Not inside quotes
-        parts[i] = parts[i].replace(a1RefRegex, (match, p1, colon, p2) => {
-          const convertPart = (part) => {
-            const cellRefRegex = /^(\$)?([A-Z]+)(\$)?([1-9][0-9]*)$/;
-            const cellMatch = part.match(cellRefRegex);
-            if (!cellMatch) return part;
-            const [, absCol, colStr, absRow, rowStr] = cellMatch;
-            const col = colA1ToIndex(colStr) + 1;
-            const row = parseInt(rowStr, 10); 
-            const cPart = absCol ? `C${col}` : `C[${col - baseCol}]`;
-            const rPart = absRow ? `R${row}` : `R[${row - baseRow}]`;
-            return rPart + cPart;
-          };
-          const convertedP1 = convertPart(p1);
-          return p2 ? `${convertedP1}:${convertPart(p2)}` : convertedP1;
-        }); 
-      }
-    }
-    return parts.join('"');
-  }
-
-  __r1c1ToA1(formula, baseRow, baseCol) {
-    // NOTE: This implementation now handles ranges like R1C1:R2C2
-    const r1c1RefRegex = /(R\[?-?\d*\]?C\[?-?\d*\]?)(:(R\[?-?\d*\]?C\[?-?\d*\]?))?/gi;
-
-    const parts = formula.split('"');
-    for (let i = 0; i < parts.length; i++) {
-      if (i % 2 === 0) { // Not inside quotes
-        parts[i] = parts[i].replace(r1c1RefRegex, (match, p1, colon, p2) => {
-          const convertPart = (part) => {
-            const singleRefRegex = /R(\[?(-?\d*)\]?)C(\[?(-?\d*)\]?)/i;
-            const singleMatch = part.match(singleRefRegex);
-            if (!singleMatch) return part;
-            const [, rPart, rNum, cPart, cNum] = singleMatch;
-            const rowIsRelative = !rPart || rPart.startsWith('[');
-            const colIsRelative = !cPart || cPart.startsWith('[');
-            const rOffset = parseInt(rNum, 10);
-            const cOffset = parseInt(cNum, 10);
-            const row = !isNaN(rOffset) ? (rowIsRelative ? baseRow + rOffset : rOffset) : baseRow;
-            const col = !isNaN(cOffset) ? (colIsRelative ? baseCol + cOffset : cOffset) : baseCol;
-            if (row < 1 || col < 1) return '#REF!';
-            const colA1 = indexToColA1(col - 1);
-            const colPrefix = colIsRelative || isNaN(cOffset) ? '' : '$';
-            const rowPrefix = rowIsRelative || isNaN(rOffset) ? '' : '$';
-            return `${colPrefix}${colA1}${rowPrefix}${row}`;
-          };
-          const convertedP1 = convertPart(p1);
-          return p2 ? `${convertedP1}:${convertPart(p2)}` : convertedP1;
-        });
-      }
-    }
-    return parts.join('"');
   }
 
   getMergedRanges() {
