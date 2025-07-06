@@ -677,13 +677,21 @@ On the other hand, using these techniques meant that we got the entire pivot tab
 
 As a general rule, once Gemini starts talking about making sweeping changes and suggesting that the Sheets API has bugs that is causing everything to collapse, it's time to start a new session. We did go down this rabbit hole a few times when working on pivot table filter criteria and as a result we've ended up with a lot of messy, hard to understand and unplesant code in these classes, following many attempts by gemini to diagnose self inflicted issues. I may have to back and take out some of the redundancy at some point.
 
-I haven't worked on the datasource component of this (for example attaching to bigquery etc) - I'll come back to that at a later date.
+#### Datasource
 
-#### Verdict on using Gemini to generate some of this stuff
+These have been basicly implemented, but remain untested in any way. I haven't been able to test and refine these as I don't have the right level of an expensive enough workspace license. Will come back to that at a later date - TODO.
 
-I'm torn. On the one hand, it's been great at doing busy work like writing test cases and detecting dependencies that I might otherwise have missed. It can often be pretty good at refactoring/renaming things. On the other hand, if it gets it wrong, it's very hard to get it back on track as it tries bury itself deeper and deeper into previous misconceptions. 
+#### r1c1 style ranges
 
-Overall it saves some time, for sure. However, the result is often suboptimal, wordy, lacking in reusability and not something I would be delighted to put my name to. From a coder perspective, the role becomes one of repetetive specification, debugging, checking and testing, while failing to develop a deep understanding of the work in hand. I prefer coding, so from a satisfaction perspective I'm not entirely convinced yet.
+The Sheets API  doesn't know about these, so all r1c1 style methods such as setFormulasR1C1 include a conversion to a regular range to be able to communicate with the underlying sheets API. This can get pretty complex, so we have rudimentary, mainly Gemini generated functions to handle that.
+
+#### Intial verdict on using Gemini to generate some of this stuff
+
+I'm torn. On the one hand, it's been great at doing busy work like writing test cases and detecting dependencies that I might otherwise have missed. It can often be pretty good at refactoring/renaming things. On the other hand, if it gets it wrong, it's very hard to get it back on track as it tries bury itself deeper and deeper into previous misconceptions. It also has huge difficulty in creating new files, or updating large files no matter the detailed guidance. The usual end game is to restart a fresh context and/or copy and paste the content into a file you create manually. 
+
+There were ocassions when the content Gemini provided content to be copied and pasted that was invalid syntax, or worse, dropped lines of code in sections it didn't plan to make any changes. In particular, code that had something like `ob[method](args)` was regularily truncated to just `ob` 
+
+Overall it saves some time, for sure. However, the result is often suboptimal, wordy, lacking in reusability and not something I would be be happy to put my name to. From a coder perspective, the role becomes one of repetetive specification, debugging, checking and testing, while failing to develop a deep understanding of the work in hand. I like coding, so from a satisfaction perspective, I'm not entirely convinced yet.
 
 
 #### checking of invalid arguments

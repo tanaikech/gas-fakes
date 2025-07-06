@@ -6,6 +6,7 @@ import { newFakeProtection } from '../commonclasses/fakeprotection.js'
 import { newFakeSheetRange } from './fakesheetrange.js'
 import { clearWorkbookCache } from '../../support/sheetscache.js';
 import { newFakeDeveloperMetadataFinder } from './fakedevelopermetadatafinder.js';
+import { newFakeDataSource } from './fakedatasource.js';
 import { batchUpdate } from './sheetrangehelpers.js';
 const { is, isEnum } = Utils
 
@@ -56,7 +57,6 @@ export class FakeSpreadsheet {
       'setAnonymousAccess',
       'resetSpreadsheetTheme',
       'renameActiveSheet',
-      'insertDataSourceSheet',
       'removeNamedRange',
       'getRangeByName',
       'moveChartToObjectSheet',
@@ -600,6 +600,34 @@ export class FakeSpreadsheet {
      {"spreadsheetId":"1i4eEijAwm0b62iL_IEV8NUSZwlWPDP51thgAWQHGols","replies":[{"addSheet":{"properties":{"sheetId":630852383,"title":"Sheet2","index":1,"sheetType":"GRID","gridProperties":{"rowCount":1000,"columnCount":26}}}}]}
  */
 
+  }
+  
+  insertDataSourceSheet(spec) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.insertDataSourceSheet");
+    if (nargs !== 1 || !spec || spec.toString() !== 'DataSourceSpec') matchThrow();
+
+    const request = {
+      addSheet: {
+        properties: {
+          dataSourceSheetProperties: {
+            dataSource: {
+              spec: spec.__getApiObject()
+            }
+          }
+        }
+      }
+    };
+    const response = batchUpdate({ spreadsheet: this, requests: [request] });
+    const newSheetProps = response.replies[0].addSheet.properties;
+    return newFakeSheet(newSheetProps, this);
+  }
+
+  __getDataSourceById(dataSourceId) {
+    // Need to get all data sources from the spreadsheet metadata
+    const meta = this.__getMetaProps('dataSources');
+    const allDataSources = meta.dataSources || [];
+    const apiDataSource = allDataSources.find(ds => ds.dataSourceId === dataSourceId);
+    return apiDataSource ? newFakeDataSource(apiDataSource, this) : null;
   }
 
   __disruption() {

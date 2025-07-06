@@ -19,6 +19,232 @@ export const testSheets = (pack) => {
   const { unit, fixes } = pack || initTests()
   const toTrash = []
 
+
+  unit.section("R1C1 Formula Notation", t => {
+    const { sheet } = maketss('r1c1_formulas', toTrash, fixes);
+    sheet.clear();
+
+    // Test 1: Single cell, relative references
+    const cellA1 = sheet.getRange("A1");
+    cellA1.setFormulaR1C1("=R[1]C[1]"); // Should be =B2
+    t.is(cellA1.getFormula(), "=B2", "A1: setFormulaR1C1 with relative refs should produce correct A1 formula");
+    t.is(cellA1.getFormulaR1C1(), "=R[1]C[1]", "A1: getFormulaR1C1 should return the same relative formula");
+
+    // Test 2: Single cell, absolute references
+    const cellC3 = sheet.getRange("C3");
+    cellC3.setFormulaR1C1("=R1C1"); // Should be =$A$1 
+    t.is(cellC3.getFormula(), "=$A$1", "C3: setFormulaR1C1 with absolute refs should produce correct A1 formula"); 
+    t.is(cellC3.getFormulaR1C1(), "=R1C1", "C3: getFormulaR1C1 for absolute ref should be correct");
+
+    // Test 3: Single cell, mixed references
+    const cellD4 = sheet.getRange("D4");
+    cellD4.setFormulaR1C1("=R[1]C1"); // Relative row, absolute col. From D4, this is row 5, col A. => =$A5
+    t.is(cellD4.getFormula(), "=$A5", "D4: setFormulaR1C1 with mixed refs (R[1]C1) should be correct");
+    t.is(cellD4.getFormulaR1C1(), "=R[1]C1", "D4: getFormulaR1C1 for mixed refs (R[1]C1) should be correct");
+
+    cellD4.setFormulaR1C1("=R1C[1]"); // Absolute row, relative col. From D4, this is row 1, col E. => =E$1
+    t.is(cellD4.getFormula(), "=E$1", "D4: setFormulaR1C1 with mixed refs (R1C[1]) should be correct");
+    t.is(cellD4.getFormulaR1C1(), "=R1C[1]", "D4: getFormulaR1C1 for mixed refs (R1C[1]) should be correct");
+
+    // Test 4: Single cell, negative relative references
+    const cellE5 = sheet.getRange("E5");
+    cellE5.setFormulaR1C1("=R[-2]C[-1]"); // From E5, this is D3. => =D3
+    t.is(cellE5.getFormula(), "=D3", "E5: setFormulaR1C1 with negative relative refs should be correct");
+    t.is(cellE5.getFormulaR1C1(), "=R[-2]C[-1]", "E5: getFormulaR1C1 for negative relative refs should be correct");
+
+    // Test 5: Getting R1C1 from an A1 formula
+    const cellF6 = sheet.getRange("F6");
+    cellF6.setFormula("=G10"); // Relative
+    t.is(cellF6.getFormulaR1C1(), "=R[4]C[1]", "F6: getFormulaR1C1 from relative A1 formula");
+
+    cellF6.setFormula("=$H$12"); // Absolute
+    t.is(cellF6.getFormulaR1C1(), "=R12C8", "F6: getFormulaR1C1 from absolute A1 formula"); 
+
+    // Test 6: Multiple references in one formula
+    const cellG7 = sheet.getRange("G7");
+    cellG7.setFormulaR1C1("=R[-1]C[-1]+R1C1*R[1]C[1]"); // =F6+$A$1*H8
+    t.is(cellG7.getFormula(), "=F6+$A$1*H8", "G7: setFormulaR1C1 with multiple refs");
+    t.is(cellG7.getFormulaR1C1(), "=R[-1]C[-1]+R1C1*R[1]C[1]", "G7: getFormulaR1C1 with multiple refs");
+
+    // Test 7: setFormulasR1C1 and getFormulasR1C1
+    const rangeB10_C11 = sheet.getRange("B10:C11");
+    const r1c1Formulas = [["=R[1]C", "=R1C1"], ["=R[-1]C[-1]", "Value"]];
+    rangeB10_C11.setFormulasR1C1(r1c1Formulas);
+
+    const expectedA1 = [["=B11", "=$A$1"], ["=A10", "=Value"]];
+    t.deepEqual(rangeB10_C11.getFormulas(), expectedA1, "setFormulasR1C1 should produce correct A1 formulas");
+    const expectedR1C1 = [["=R[1]C[0]", "=R1C1"], ["=R[-1]C[-1]", "=Value"]];
+    t.deepEqual(rangeB10_C11.getFormulasR1C1(), expectedR1C1, "getFormulasR1C1 should return correct canonical R1C1 formulas");
+ 
+    // Test 8: Formulas with text and references (to test quote handling)
+    const cellH15 = sheet.getRange("H15");
+    cellH15.setFormulaR1C1('=R[-1]C & " some text R1C1 not a ref"'); // =H14 & "..." 
+    t.is(cellH15.getFormula(), '=H14 & " some text R1C1 not a ref"', "R1C1 formula with quotes should convert correctly to A1");
+    t.is(cellH15.getFormulaR1C1(), '=R[-1]C[0] & " some text R1C1 not a ref"', "getFormulaR1C1 should handle quotes correctly");
+
+    // Test 9: Edge case - reference to self
+    const cellJ20 = sheet.getRange("J20");
+    cellJ20.setFormulaR1C1("=R[0]C[0]"); // =J20
+    t.is(cellJ20.getFormula(), "=J20", "R1C1 self-reference to A1");
+    t.is(cellJ20.getFormulaR1C1(), "=R[0]C[0]", "A1 self-reference to R1C1");
+
+    // Test 10: Range references
+    const cellA2 = sheet.getRange("A2");
+    cellA2.setFormulaR1C1("=SUM(R[-1]C:R[-1]C[2])"); // From A2, this is SUM(A1:C1)
+    t.is(cellA2.getFormula(), "=SUM(A1:C1)", "R1C1 relative range to A1");
+    t.is(cellA2.getFormulaR1C1(), "=SUM(R[-1]C[0]:R[-1]C[2])", "A1 relative range to R1C1 canonical");
+
+    const cellB3 = sheet.getRange("B3");
+    cellB3.setFormula("=SUM($A$1:B$2)"); // Mixed absolute/relative range
+    t.is(cellB3.getFormulaR1C1(), "=SUM(R1C1:R2C[0])", "A1 mixed range to R1C1"); 
+    cellB3.setFormulaR1C1("=SUM(R1C1:R2C[0])");
+    t.is(cellB3.getFormula(), "=SUM($A$1:B$2)", "R1C1 mixed range to A1");
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
+  });
+
+  unit.section("getRange with R1C1 notation", t => {
+    const { sheet } = maketss('getrange_r1c1', toTrash, fixes);
+
+    // Test 1: Single cell R1C1
+    const range1 = sheet.getRange("R5C3");
+    t.is(range1.getA1Notation(), "C5", "getRange with R1C1 single cell");
+    t.is(range1.getRow(), 5, "R1C1 single cell row");
+    t.is(range1.getColumn(), 3, "R1C1 single cell column");
+
+    // Test 2: Range R1C1
+    const range2 = sheet.getRange("R2C2:R4C5");
+    t.is(range2.getA1Notation(), "B2:E4", "getRange with R1C1 range");
+    t.is(range2.getNumRows(), 3, "R1C1 range num rows");
+    t.is(range2.getNumColumns(), 4, "R1C1 range num columns");
+
+    // Test 3: Inverted Range R1C1
+    const range3 = sheet.getRange("R10C5:R1C2");
+    t.is(range3.getA1Notation(), "B1:E10", "getRange with inverted R1C1 range");
+
+    // Test 4: Fallback to A1 for invalid R1C1
+    const range4 = sheet.getRange("RC1"); // Invalid R1C1
+    t.is(range4.getA1Notation(), "RC1", "Should fallback to A1 for invalid R1C1");
+
+    // Test 5: Lowercase R1C1
+    const range5 = sheet.getRange("r1c1:r2c2");
+    t.is(range5.getA1Notation(), "A1:B2", "getRange with lowercase r1c1 range");
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
+  });
+
+
+  unit.section("Sheet.sort()", t => {
+    const { sheet } = maketss('sheet_sort_tests', toTrash, fixes);
+
+    // Test 1: Basic sort ascending, preserving header
+    sheet.clear();
+    let initialData = [
+      ['Header1', 'Header2', 'Header3'],
+      ['C', 30, 'Z'],
+      ['A', 10, 'Y'],
+      ['B', 20, 'X']
+    ];
+    sheet.getRange("A1:C4").setValues(initialData);
+    sheet.sort(2); // Sort by column B, ascending (default)
+    let sortedData = sheet.getDataRange().getValues();
+    let expectedSortedAsc = [
+      ['A', 10, 'Y'],
+      ['B', 20, 'X'],
+      ['C', 30, 'Z'],
+      ['Header1', 'Header2', 'Header3']
+    ];
+    t.deepEqual(sortedData, expectedSortedAsc, "sort() should sort data ascending, including the header");
+
+    // Test 2: Sort descending
+    sheet.getRange("A1:C4").setValues(initialData); // Reset data
+    sheet.sort(1, false); // Sort by column A, descending
+    sortedData = sheet.getDataRange().getValues();
+    const expectedSortedDesc = [
+      ['Header1', 'Header2', 'Header3'],
+      ['C', 30, 'Z'],
+      ['B', 20, 'X'],
+      ['A', 10, 'Y'],
+    ];
+    t.deepEqual(sortedData, expectedSortedDesc, "sort(col, false) should sort descending, including the header");
+
+    // Test 3: Sort an empty sheet
+    sheet.clear();
+    sheet.sort(1);
+    const emptyValues = sheet.getDataRange().getValues();
+    t.deepEqual(emptyValues, [['']], "sort() on an empty sheet should do nothing and not throw an error");
+
+    // Test 4: Sort a sheet with only a header
+    sheet.clear();
+    const headerOnly = [['H1', 'H2', 'H3']];
+    sheet.getRange("A1:C1").setValues(headerOnly);
+    sheet.sort(1);
+    const headerValues = sheet.getDataRange().getValues();
+    t.deepEqual(headerValues, headerOnly, "sort() on a sheet with only a header should do nothing and not throw an error");
+
+    // Test 5: Sort a sheet with a header and one data row
+    sheet.clear();
+    const oneDataRow = [['H1', 'H2', 'H3'], ['B', 'A', 'C']];
+    const expectedOneDataRowSorted = [['B', 'A', 'C'], ['H1', 'H2', 'H3']];
+    sheet.getRange("A1:C2").setValues(oneDataRow);
+    sheet.sort(1);
+    const oneDataRowValues = sheet.getDataRange().getValues();
+    t.deepEqual(oneDataRowValues, expectedOneDataRowSorted, "sort() on a sheet with one data row should sort the header as well");
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
+  });
+
+  unit.section("Range Merging Methods", t => {
+    const { sheet } = maketss('merging_tests', toTrash, fixes);
+
+    // Setup: put some values in cells
+    sheet.getRange("A1:F10").setValues(Array(10).fill(0).map((_, r) => Array(6).fill(0).map((_, c) => `R${r + 1}C${c + 1}`)));
+
+    // Test 1: merge() and isPartOfMerge()
+    const mergeRange = sheet.getRange("A1:B2");
+    mergeRange.merge();
+    t.true(sheet.getRange("A1").isPartOfMerge(), "A1 should be part of a merge");
+    t.true(sheet.getRange("B2").isPartOfMerge(), "B2 should be part of a merge");
+    t.true(mergeRange.isPartOfMerge(), "The whole merged range should be part of a merge");
+    t.false(sheet.getRange("C3").isPartOfMerge(), "C3 should not be part of a merge");
+    t.is(mergeRange.getDisplayValue(), "R1C1", "Display value of merged range should be top-left cell's value");
+
+    // Test 2: getMergedRanges()
+    let mergedRanges = sheet.getRange("A1:C3").getMergedRanges();
+    t.is(mergedRanges.length, 1, "getMergedRanges should find one intersecting merge");
+    t.is(mergedRanges[0].getA1Notation(), "A1:B2", "The found merged range should be A1:B2");
+
+    // Test 3: breakApart()
+    mergeRange.breakApart();
+    t.false(sheet.getRange("A1").isPartOfMerge(), "A1 should no longer be part of a merge after breakApart");
+    mergedRanges = sheet.getDataRange().getMergedRanges();
+    t.is(mergedRanges.length, 0, "There should be no merged ranges on the sheet after breakApart");
+
+    // Test 4: mergeAcross()
+    const acrossRange = sheet.getRange("D1:F2");
+    acrossRange.mergeAcross();
+    mergedRanges = sheet.getDataRange().getMergedRanges();
+    t.is(mergedRanges.length, 2, "mergeAcross on a 2-row range should create 2 merged ranges");
+    const notations = mergedRanges.map(r => r.getA1Notation()).sort();
+    t.deepEqual(notations, ["D1:F1", "D2:F2"], "mergeAcross should create correct horizontal merges");
+    t.is(sheet.getRange("D1").getDisplayValue(), "R1C4", "Display value of first across-merge");
+    t.is(sheet.getRange("D2").getDisplayValue(), "R2C4", "Display value of second across-merge");
+    acrossRange.breakApart();
+
+    // Test 5: mergeVertically()
+    const verticalRange = sheet.getRange("A5:B7");
+    verticalRange.mergeVertically();
+    mergedRanges = sheet.getDataRange().getMergedRanges();
+    t.is(mergedRanges.length, 2, "mergeVertically on a 2-column range should create 2 merged ranges");
+    const vertNotations = mergedRanges.map(r => r.getA1Notation()).sort();
+    t.deepEqual(vertNotations, ["A5:A7", "B5:B7"], "mergeVertically should create correct vertical merges");
+    t.is(sheet.getRange("A5").getDisplayValue(), "R5C1", "Display value of first vertical-merge");
+    t.is(sheet.getRange("B5").getDisplayValue(), "R5C2", "Display value of second vertical-merge");
+    verticalRange.breakApart();
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
+  });
+
   unit.section("Sheet clearing methods", t => {
     const { sheet } = maketss('sheet_clearing', toTrash, fixes);
 
@@ -88,56 +314,6 @@ export const testSheets = (pack) => {
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
   })
 
-  unit.section("Range Merging Methods", t => {
-    const { sheet } = maketss('merging_tests', toTrash, fixes);
-
-    // Setup: put some values in cells
-    sheet.getRange("A1:F10").setValues(Array(10).fill(0).map((_, r) => Array(6).fill(0).map((_, c) => `R${r + 1}C${c + 1}`)));
-
-    // Test 1: merge() and isPartOfMerge()
-    const mergeRange = sheet.getRange("A1:B2");
-    mergeRange.merge();
-    t.true(sheet.getRange("A1").isPartOfMerge(), "A1 should be part of a merge");
-    t.true(sheet.getRange("B2").isPartOfMerge(), "B2 should be part of a merge");
-    t.true(mergeRange.isPartOfMerge(), "The whole merged range should be part of a merge");
-    t.false(sheet.getRange("C3").isPartOfMerge(), "C3 should not be part of a merge");
-    t.is(mergeRange.getDisplayValue(), "R1C1", "Display value of merged range should be top-left cell's value");
-
-    // Test 2: getMergedRanges()
-    let mergedRanges = sheet.getRange("A1:C3").getMergedRanges();
-    t.is(mergedRanges.length, 1, "getMergedRanges should find one intersecting merge");
-    t.is(mergedRanges[0].getA1Notation(), "A1:B2", "The found merged range should be A1:B2");
-
-    // Test 3: breakApart()
-    mergeRange.breakApart();
-    t.false(sheet.getRange("A1").isPartOfMerge(), "A1 should no longer be part of a merge after breakApart");
-    mergedRanges = sheet.getDataRange().getMergedRanges();
-    t.is(mergedRanges.length, 0, "There should be no merged ranges on the sheet after breakApart");
-
-    // Test 4: mergeAcross()
-    const acrossRange = sheet.getRange("D1:F2");
-    acrossRange.mergeAcross();
-    mergedRanges = sheet.getDataRange().getMergedRanges();
-    t.is(mergedRanges.length, 2, "mergeAcross on a 2-row range should create 2 merged ranges");
-    const notations = mergedRanges.map(r => r.getA1Notation()).sort();
-    t.deepEqual(notations, ["D1:F1", "D2:F2"], "mergeAcross should create correct horizontal merges");
-    t.is(sheet.getRange("D1").getDisplayValue(), "R1C4", "Display value of first across-merge");
-    t.is(sheet.getRange("D2").getDisplayValue(), "R2C4", "Display value of second across-merge");
-    acrossRange.breakApart();
-
-    // Test 5: mergeVertically()
-    const verticalRange = sheet.getRange("A5:B7");
-    verticalRange.mergeVertically();
-    mergedRanges = sheet.getDataRange().getMergedRanges();
-    t.is(mergedRanges.length, 2, "mergeVertically on a 2-column range should create 2 merged ranges");
-    const vertNotations = mergedRanges.map(r => r.getA1Notation()).sort();
-    t.deepEqual(vertNotations, ["A5:A7", "B5:B7"], "mergeVertically should create correct vertical merges");
-    t.is(sheet.getRange("A5").getDisplayValue(), "R5C1", "Display value of first vertical-merge");
-    t.is(sheet.getRange("B5").getDisplayValue(), "R5C2", "Display value of second vertical-merge");
-    verticalRange.breakApart();
-
-    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
-  });
 
   unit.section("Range.moveTo", t => {
     const { sheet } = maketss('moveTo_tests', toTrash, fixes);
@@ -227,37 +403,6 @@ export const testSheets = (pack) => {
 
 
 
-  unit.section("Sheet data manipulation", t => {
-    const { sheet } = maketss('sheet_data_manipulation', toTrash, fixes);
-
-    // --- Test sort() ---
-    sheet.clear();
-    let initialData = [
-      ['C', 30, 'Z'],
-      ['A', 10, 'Y'],
-      ['B', 20, 'X']
-    ];
-    sheet.getRange("A1:C3").setValues(initialData);
-    sheet.sort(2); // Sort by column B, ascending (default)
-    let sortedData = sheet.getDataRange().getValues();
-    let expectedSorted = [
-      ['A', 10, 'Y'],
-      ['B', 20, 'X'],
-      ['C', 30, 'Z']
-    ];
-    t.deepEqual(sortedData, expectedSorted, "sort() should sort the data range ascending by column 2");
-
-    sheet.sort(1, false); // Sort by column A, descending
-    sortedData = sheet.getDataRange().getValues();
-    expectedSorted = [
-      ['C', 30, 'Z'],
-      ['B', 20, 'X'],
-      ['A', 10, 'Y'],
-    ];
-    t.deepEqual(sortedData, expectedSorted, "sort() should sort the data range descending");
-
-    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
-  });
 
   unit.section("notes", t => {
     const { sheet } = maketss('notes tests', toTrash, fixes);
@@ -271,6 +416,7 @@ export const testSheets = (pack) => {
       if (is.number(c) && is.integer(c)) v = c.toFixed(1)
       return v
     }))
+
     range.setNote(notes[0][0])
     t.is(range.getNote(), strNotes[0][0])
     t.deepEqual(range.getNotes(), fillRange(range, strNotes[0][0]))
@@ -751,6 +897,8 @@ export const testSheets = (pack) => {
 
 
 
+
+
   unit.section("copy values and formats to range", t => {
     const { sheet } = maketss('prepareTarget', toTrash, fixes)
 
@@ -1147,6 +1295,7 @@ export const testSheets = (pack) => {
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
 
   })
+
 
   // this section is kind of redundant now as I've consolodated most of these tests into setting and repearing cell formats
   // however we'll just leave these here as extra tests in any case
@@ -1593,6 +1742,9 @@ export const testSheets = (pack) => {
   trasher(toTrash)
   return { unit, fixes }
 }
+
+// if we're running this test standalone, on Node - we need to actually kick it off
+// the provess.argv should contain "execute" 
 
 // if we're running this test standalone, on Node - we need to actually kick it off
 // the provess.argv should contain "execute" 

@@ -15,6 +15,37 @@ export const newFakeSheet = (...args) => {
   return Proxies.guard(new FakeSheet(...args));
 };
 
+const parseR1C1 = (r1c1) => {
+  // This regex handles R1C1 and R1C1:R2C2 formats. It does not handle relative offsets.
+  const rangeRegex = /^R(\d+)C(\d+)(:R(\d+)C(\d+))?$/i;
+  const match = r1c1.match(rangeRegex);
+
+  if (!match) return null;
+
+  const r1 = parseInt(match[1], 10);
+  const c1 = parseInt(match[2], 10);
+
+  // If it's a range like R1C1:R2C2
+  if (match[3]) {
+    const r2 = parseInt(match[4], 10);
+    const c2 = parseInt(match[5], 10);
+    return {
+      startRowIndex: Math.min(r1, r2) - 1,
+      endRowIndex: Math.max(r1, r2),
+      startColumnIndex: Math.min(c1, c2) - 1,
+      endColumnIndex: Math.max(c1, c2),
+    };
+  }
+
+  // If it's a single cell like R1C1
+  return {
+    startRowIndex: r1 - 1,
+    endRowIndex: r1,
+    startColumnIndex: c1 - 1,
+    endColumnIndex: c1,
+  };
+};
+
 export class FakeSheet {
   constructor(properties, parent) {
     this.__properties = properties;
@@ -43,7 +74,6 @@ export class FakeSheet {
       'getDataSourceTables',
       'getDataSourceFormulas',
       'getDataSourcePivotTables',
-      'sort'
     ];
 
     props.forEach(f => {
@@ -93,6 +123,14 @@ export class FakeSheet {
     const { nargs, matchThrow } = signatureArgs(arguments, "Sheet.getRange");
 
     if (nargs === 1 && is.string(a1NotationOrRow)) {
+      // Try parsing as R1C1 first, as this is supported by the live API.
+      const r1c1Grid = parseR1C1(a1NotationOrRow);
+      if (r1c1Grid) {
+        r1c1Grid.sheetId = this.getSheetId();
+        return newFakeSheetRange(r1c1Grid, this, a1NotationOrRow);
+      }
+
+      // Fallback to standard A1 notation parsing
       const partialGridRange = SheetUtils.fromRange(a1NotationOrRow);
       return newFakeSheetRange({
         ...partialGridRange,
@@ -277,6 +315,29 @@ export class FakeSheet {
 
   clearNotes() {
     return this.__clear("note");
+  }
+
+  sort(columnPosition, ascending) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Sheet.sort");
+    if (nargs < 1 || nargs > 2) matchThrow();
+    if (!is.integer(columnPosition)) matchThrow();
+    if (nargs === 2 && !is.undefined(ascending) && !is.boolean(ascending)) matchThrow();
+
+    const dataRange = this.getDataRange();
+    // Per documentation, sorting doesn't affect the header row.
+    // If there's only a header or no data, there's nothing to sort.
+    if (dataRange.getNumRows() <= 1) {
+      return this;
+    }
+
+    // The sortSpec object for Range.sort() expects an absolute column position.
+    const sortSpec = {
+      column: columnPosition,
+      ascending: ascending === undefined ? true : ascending,
+    };
+
+    // Per live testing, it seems the entire data range is sorted, contrary to documentation.
+    return dataRange.sort(sortSpec);
   }
 
   toString() {

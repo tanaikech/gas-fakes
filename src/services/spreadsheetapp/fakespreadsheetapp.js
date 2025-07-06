@@ -78,10 +78,6 @@ export class FakeSpreadsheetApp {
 
       'getActive',
       'newConditionalFormatRule',
-      'enableBigQueryExecution',
-      'enableAllDataSourcesExecution',
-
-      'enableLookerExecution',
       'getActiveSpreadsheet',
       'getActiveSheet',
       'getCurrentCell',
@@ -109,6 +105,24 @@ export class FakeSpreadsheetApp {
       }
     })
 
+  }
+
+  enableBigQueryExecution() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "SpreadsheetApp.enableBigQueryExecution");
+    if (nargs) matchThrow();
+    // This is a no-op in the fake environment, as there's no real execution to enable.
+  }
+
+  enableAllDataSourcesExecution() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "SpreadsheetApp.enableAllDataSourcesExecution");
+    if (nargs) matchThrow();
+    // This is a no-op in the fake environment.
+  }
+
+  enableLookerExecution() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "SpreadsheetApp.enableLookerExecution");
+    if (nargs) matchThrow();
+    // This is a no-op in the fake environment.
   }
 
   /**

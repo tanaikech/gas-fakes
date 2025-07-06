@@ -10,6 +10,7 @@ import { initTests } from './testinit.js'
 import { getSheetsPerformance } from '../src/support/sheetscache.js';
 import { getPerformance } from '../src/support/filecache.js';
 import { maketss, trasher, makeSheetsGridRange, makeExtendedValue, dateToSerial, fillRange } from './testassist.js';
+import { batchUpdate } from '../src/services/spreadsheetapp/sheetrangehelpers.js';
 import is from '@sindresorhus/is';
 
 
@@ -19,6 +20,7 @@ export const testSheetsExotics = (pack) => {
 
   const { unit, fixes } = pack || initTests()
   const toTrash = []
+
 
   unit.section("Range Grouping Methods", t => {
     const { sheet, ss } = maketss('grouping_tests', toTrash, fixes);
@@ -102,7 +104,6 @@ export const testSheetsExotics = (pack) => {
 
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
   });
-
   // running standalone
   if (!pack) {
     if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())

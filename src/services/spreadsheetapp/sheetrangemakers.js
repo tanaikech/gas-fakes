@@ -133,6 +133,19 @@ const makeCellDataFromRichTextValue = (richTextValue) => {
 }
 const { getPlucker, is, robToHex, WHITER, BLACKER, hexToRgb, getEnumKeys } = Utils
 
+const makeFormulaExtendedValue = (value) => {
+  const ev = Sheets.newExtendedValue();
+  if (is.null(value) || value === '') {
+    return ev.setFormulaValue(null);
+  }
+  const strValue = String(value);
+  if (strValue.startsWith('=')) {
+    return ev.setFormulaValue(strValue);
+  }
+  // Per live environment behavior, prepend '=' to non-formula strings.
+  return ev.setFormulaValue('=' + strValue);
+};
+
 const extractPattern = (response) => {
   // a plain pattern entered by UI, apps script or lax api call
   if (is.string(response)) return response
@@ -235,10 +248,10 @@ export const setterList = [{
   typeChecker: (value) => ['top', 'middle', 'bottom'].includes(value)
 }, {
   name: 'formula',
-  type: "string",
+  type: 'string',
   nullAllowed: true,
-  fields: 'userEnteredValue.formulaValue',
-  maker: (_, value) => Sheets.newCellData().setUserEnteredValue({ formulaValue: value })
+  fields: 'userEnteredValue', // This field is correct, as we set the whole extendedValue
+  maker: (_, value) => Sheets.newCellData().setUserEnteredValue(makeFormulaExtendedValue(value)),
 }, {
   name: 'horizontalAlignment',
   type: "string",

@@ -56,6 +56,17 @@ export class FakeDataSource {
     return newFakeDataSourceColumn(newColumn, this);
   }
 
+  addCalculatedColumn(name, formula) {
+    // alias for createCalculatedColumn
+    return this.createCalculatedColumn(name, formula);
+  }
+  
+  getDataSourceId() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'DataSource.getDataSourceId');
+    if (nargs) matchThrow();
+    return this.__apiDataSource.dataSourceId;
+  }
+
   getCalculatedColumnByName(columnName) {
     const { nargs, matchThrow } = signatureArgs(arguments, 'DataSource.getCalculatedColumnByName');
     if (nargs !== 1 || !is.string(columnName)) matchThrow();

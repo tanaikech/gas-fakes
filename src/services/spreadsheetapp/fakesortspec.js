@@ -1,58 +1,56 @@
 import { Proxies } from '../../support/proxies.js';
-import { notYetImplemented } from '../../support/helpers.js';
-import { SortOrder } from '../enums/sheetsenums.js';
+import { notYetImplemented, signatureArgs } from '../../support/helpers.js';
+import { newFakeDataSourceColumnReference } from './fakedatasourcecolumnreference.js';
+import { makeColorFromApi } from '../commonclasses/fakecolorbuilder.js';
 
-/**
- * @returns {FakeSortSpec}
- */
 export const newFakeSortSpec = (...args) => {
   return Proxies.guard(new FakeSortSpec(...args));
 };
 
-/**
- * Represents the sorting specification for a column.
- */
 export class FakeSortSpec {
-  /**
-   * @param {object} apiSortSpec The SortSpec object from Sheets API
-   */
   constructor(apiSortSpec) {
-    this.__apiSortSpec = apiSortSpec;
-    // Not implemented yet
-    const props = ['getForegroundColor', 'getBackgroundColor', 'getDataSourceColumn'];
-    props.forEach(f => {
-      this[f] = () => notYetImplemented(f);
-    });
+    this.__apiSortSpec = apiSortSpec || {};
   }
 
-  /**
-   * isAscending() https://developers.google.com/apps-script/reference/spreadsheet/sort-spec#isascending
-   * @returns {boolean}
-   */
-  isAscending() {
-    // The default is ascending, but if there's no spec, it's not sorted.
-    return this.__apiSortSpec ? this.__apiSortSpec.sortOrder !== 'DESCENDING' : false;
+  getDataSourceColumnReference() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'SortSpec.getDataSourceColumnReference');
+    if (nargs) matchThrow();
+    const ref = this.__apiSortSpec.dataSourceColumnReference;
+    return ref ? newFakeDataSourceColumnReference(ref) : null;
   }
 
-  /**
-   * @returns {number} The 1-based index of the column. Returns 0 if no sort spec.
-   */
   getDimensionIndex() {
-    // The real environment returns a 1-based index.
-    // If there's no spec, return 0.
-    return this.__apiSortSpec ? this.__apiSortSpec.dimensionIndex + 1 : 0;
+    const { nargs, matchThrow } = signatureArgs(arguments, 'SortSpec.getDimensionIndex');
+    if (nargs) matchThrow();
+    // Apps Script is 1-based, API is 0-based
+    return this.__apiSortSpec.dimensionIndex != null ? this.__apiSortSpec.dimensionIndex + 1 : null;
   }
 
-  /**
-   * @returns {SortOrder|null} The sort order enum.
-   */
   getSortOrder() {
-    // The real environment returns an enum, but throws if there's no sort.
-    if (!this.__apiSortSpec) {
-      // This error message is based on user feedback for the live environment.
-      throw new Error('Unexpected error while getting the method or property getSortOrder on object SpreadsheetApp.SortSpec.');
-    }
-    return SortOrder[this.__apiSortSpec.sortOrder];
+    const { nargs, matchThrow } = signatureArgs(arguments, 'SortSpec.getSortOrder');
+    if (nargs) matchThrow();
+    const order = this.__apiSortSpec.sortOrder;
+    return order ? SpreadsheetApp.SortOrder[order] : null;
+  }
+
+  isAscending() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'SortSpec.isAscending');
+    if (nargs) matchThrow();
+    return this.__apiSortSpec.sortOrder === 'ASCENDING';
+  }
+
+  getBackgroundColorStyle() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'SortSpec.getBackgroundColorStyle');
+    if (nargs) matchThrow();
+    const style = this.__apiSortSpec.backgroundColorStyle;
+    return style ? makeColorFromApi(style) : null;
+  }
+
+  getForegroundColorStyle() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'SortSpec.getForegroundColorStyle');
+    if (nargs) matchThrow();
+    const style = this.__apiSortSpec.foregroundColorStyle;
+    return style ? makeColorFromApi(style) : null;
   }
 
   toString() {

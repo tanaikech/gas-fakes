@@ -1,5 +1,6 @@
 import { Proxies } from '../../support/proxies.js'
 import { newFakePivotTable } from './fakepivottable.js';
+import { newFakeDataTable } from './fakedatatable.js';
 import { newFakeBanding } from './fakebanding.js';
 import { newFakeDeveloperMetadataFinder } from './fakedevelopermetadatafinder.js';
 import { SheetUtils } from '../../support/sheetutils.js'
@@ -24,6 +25,25 @@ const { is, rgbToHex, hexToRgb, stringer, outsideInt, capital, BLACKER, getEnumK
 import { notYetImplemented, signatureArgs } from '../../support/helpers.js'
 import { FakeSpreadsheet } from './fakespreadsheet.js'
 import { FakeDataValidation } from './fakedatavalidation.js'
+
+const colA1ToIndex = (a1) => {
+  let index = 0;
+  for (let i = 0; i < a1.length; i++) {
+    index = index * 26 + a1.toUpperCase().charCodeAt(i) - 'A'.charCodeAt(0) + 1;
+  }
+  return index - 1;
+};
+
+const indexToColA1 = (index) => {
+  let col = '';
+  let num = index + 1;
+  while (num > 0) {
+    const remainder = (num - 1) % 26;
+    col = String.fromCharCode(65 + remainder) + col;
+    num = Math.floor((num - 1) / 26);
+  }
+  return col;
+};
 
 //TODO - deal with r1c1 style ranges
 
@@ -78,12 +98,7 @@ export class FakeSheetRange {
 
       'createDataSourcePivotTable',
       'activate',
-      'getFormulaR1C1',
-      'getFormulasR1C1',
       'getDataSourceFormula',
-
-      'setFormulaR1C1',
-      'setFormulasR1C1',
       'activateAsCurrentCell',
       'setComments',
       'setShowHyperlink',
@@ -93,7 +108,6 @@ export class FakeSheetRange {
       'clearComment',
 
       'getDataSourceUrl',
-      'getDataTable',
 
       'getDataSourcePivotTables',
       // these are not documented, so will skip for now
@@ -118,6 +132,119 @@ export class FakeSheetRange {
         apiSetter: f.apiSetter || 'set' + capital(f.single || f.name)
       })
     })
+  }
+
+  getFormulasR1C1() {
+    const a1Formulas = this.getFormulas();
+    if (!a1Formulas) return null;
+
+    const startRow = this.getRow();
+    const startCol = this.getColumn();
+
+    return a1Formulas.map((row, rIdx) => {
+      return row.map((a1Formula, cIdx) => {
+        if (!a1Formula || !a1Formula.startsWith('=')) {
+          return a1Formula;
+        }
+        const baseRow = startRow + rIdx;
+        const baseCol = startCol + cIdx;
+        return this.__a1ToR1C1(a1Formula, baseRow, baseCol);
+      });
+    });
+  }
+
+  getFormulaR1C1() {
+    const formulas = this.getFormulasR1C1();
+    return formulas && formulas[0] && formulas[0][0];
+  }
+
+  setFormulasR1C1(formulas) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.setFormulasR1C1");
+    if (nargs !== 1 || !arrMatchesRange(this, formulas, 'string', true)) matchThrow();
+
+    const startRow = this.getRow();
+    const startCol = this.getColumn();
+
+    const a1Formulas = formulas.map((row, rIdx) => {
+      return row.map((r1c1Formula, cIdx) => {
+        if (!r1c1Formula || !r1c1Formula.startsWith('=')) {
+          return r1c1Formula;
+        }
+        const baseRow = startRow + rIdx;
+        const baseCol = startCol + cIdx;
+        return this.__r1c1ToA1(r1c1Formula, baseRow, baseCol);
+      });
+    });
+
+    return this.setFormulas(a1Formulas);
+  }
+
+  setFormulaR1C1(formula) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.setFormulaR1C1");
+    if (nargs !== 1 || !is.string(formula)) matchThrow();
+
+    const a1Formula = this.__r1c1ToA1(formula, this.getRow(), this.getColumn());
+    return this.setFormula(a1Formula);
+  }
+
+  __a1ToR1C1(formula, baseRow, baseCol) {
+    // NOTE: This implementation now handles ranges like A1:B2
+    const a1RefRegex = /(?<![A-Z0-9])(\$?[A-Z]+\$?\d+)(:(\$?[A-Z]+\$?\d+))?(?![A-Z0-9.])/g;
+
+    const parts = formula.split('"');
+    for (let i = 0; i < parts.length; i++) {
+      if (i % 2 === 0) { // Not inside quotes
+        parts[i] = parts[i].replace(a1RefRegex, (match, p1, colon, p2) => {
+          const convertPart = (part) => {
+            const cellRefRegex = /^(\$)?([A-Z]+)(\$)?([1-9][0-9]*)$/;
+            const cellMatch = part.match(cellRefRegex);
+            if (!cellMatch) return part;
+            const [, absCol, colStr, absRow, rowStr] = cellMatch;
+            const col = colA1ToIndex(colStr) + 1;
+            const row = parseInt(rowStr, 10); 
+            const cPart = absCol ? `C${col}` : `C[${col - baseCol}]`;
+            const rPart = absRow ? `R${row}` : `R[${row - baseRow}]`;
+            return rPart + cPart;
+          };
+          const convertedP1 = convertPart(p1);
+          return p2 ? `${convertedP1}:${convertPart(p2)}` : convertedP1;
+        }); 
+      }
+    }
+    return parts.join('"');
+  }
+
+  __r1c1ToA1(formula, baseRow, baseCol) {
+    // NOTE: This implementation now handles ranges like R1C1:R2C2
+    const r1c1RefRegex = /(R\[?-?\d*\]?C\[?-?\d*\]?)(:(R\[?-?\d*\]?C\[?-?\d*\]?))?/gi;
+
+    const parts = formula.split('"');
+    for (let i = 0; i < parts.length; i++) {
+      if (i % 2 === 0) { // Not inside quotes
+        parts[i] = parts[i].replace(r1c1RefRegex, (match, p1, colon, p2) => {
+          const convertPart = (part) => {
+            const singleRefRegex = /R(\[?(-?\d*)\]?)C(\[?(-?\d*)\]?)/i;
+            const singleMatch = part.match(singleRefRegex);
+            if (!singleMatch) return part;
+            const [, rPart, rNum, cPart, cNum] = singleMatch;
+            const rowIsRelative = !rPart || rPart.startsWith('[');
+            const colIsRelative = !cPart || cPart.startsWith('[');
+            const rOffset = parseInt(rNum, 10);
+            const cOffset = parseInt(cNum, 10);
+            const row = !isNaN(rOffset) ? (rowIsRelative ? baseRow + rOffset : rOffset) : baseRow;
+            const col = !isNaN(cOffset) ? (colIsRelative ? baseCol + cOffset : cOffset) : baseCol;
+            if (row < 1 || col < 1) return '#REF!';
+            const colA1 = indexToColA1(col - 1);
+            const colPrefix = colIsRelative || isNaN(cOffset) ? '' : '$';
+            const rowPrefix = rowIsRelative || isNaN(rOffset) ? '' : '$';
+            return `${colPrefix}${colA1}${rowPrefix}${row}`;
+          };
+          const convertedP1 = convertPart(p1);
+          return p2 ? `${convertedP1}:${convertPart(p2)}` : convertedP1;
+        });
+      }
+    }
+    return parts.join('"');
   }
 
   getMergedRanges() {
@@ -1869,9 +1996,11 @@ export class FakeSheetRange {
       if (!is.boolean(ob.ascending)) matchThrow()
       if (!Reflect.has(ob, "column")) matchThrow()
       if (!is.integer(ob.column)) matchThrow()
-      if (!is.inRange(ob.column, 1, this.getNumColumns())) matchThrow
-      if (Reflect.ownKeys(ob).sort().join(",") !== 'ascending,column') matchThrow()
-
+      // The column number is the absolute column position in the sheet, and must be within the range.
+      if (ob.column < this.getColumn() || ob.column > this.getLastColumn()) {
+        throw new Error(`The column to sort by (${ob.column}) is outside the range's columns (${this.getColumn()}-${this.getLastColumn()}).`);
+      }
+      
       return {
         // note - absolute - not relative 
         // and will only sort the range contents, not the entire row
@@ -1898,6 +2027,53 @@ export class FakeSheetRange {
     batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests: [{ trimWhitespace: request }] });
 
     return this
+  }
+
+  getDataTable() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.getDataTable");
+    if (nargs) matchThrow();
+
+    const sheet = this.getSheet();
+    const spreadsheet = sheet.getParent();
+    const sheetId = sheet.getSheetId();
+
+    // Get fresh sheet metadata
+    const meta = spreadsheet.__getMetaProps(`sheets(properties.sheetId,data.rowData.values.dataSourceTable)`);
+    const sheetMeta = meta.sheets.find(s => s.properties.sheetId === sheetId);
+
+    if (!sheetMeta || !sheetMeta.data || !sheetMeta.data[0] || !sheetMeta.data[0].rowData) {
+      return null;
+    }
+
+    const rowData = sheetMeta.data[0].rowData;
+
+    // Find all tables on the sheet and see if our range intersects with any of them.
+    const allTables = [];
+    rowData.forEach((row, rIdx) => {
+      row.values?.forEach((cell, cIdx) => {
+        if (cell.dataSourceTable) {
+          const anchor = sheet.getRange(rIdx + 1, cIdx + 1);
+          allTables.push(newFakeDataTable(cell.dataSourceTable, anchor));
+        }
+      });
+    });
+
+    for (const table of allTables) {
+      const tableRange = table.getRange(); // This uses getDataRegion()
+      const thisRange = this;
+
+      // Check for intersection
+      const r1 = makeGridRange(thisRange);
+      const r2 = makeGridRange(tableRange);
+      const intersects = (
+        Math.max(r1.startRowIndex, r2.startRowIndex) < Math.min(r1.endRowIndex, r2.endRowIndex) &&
+        Math.max(r1.startColumnIndex, r2.startColumnIndex) < Math.min(r1.endColumnIndex, r2.endColumnIndex)
+      );
+
+      if (intersects) return table;
+    }
+
+    return null;
   }
 
   toString() {
