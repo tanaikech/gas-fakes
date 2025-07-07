@@ -18,22 +18,202 @@ export const testSheetsValues = (pack) => {
   const { unit, fixes } = pack || initTests()
   const toTrash = []
 
+  unit.section("creating and updating sheets", t => {
+
+    // create ss with advanced service
+    const bname = fixes.PREFIX + "b-sheet"
+    const bs = Sheets.Spreadsheets.create({
+      properties: {
+        title: bname
+      }
+    })
+    t.is(bs.properties.title, bname)
+
+    // ceate a sheet with specific dimensions
+    const cname = fixes.PREFIX + "c-sheet"
+    const prows = 25
+    const pcols = 10
+    const cs = SpreadsheetApp.create(cname, prows, pcols)
+    t.is(cs.getName(), cname)
+    t.is(cs.getNumSheets(), 1)
+    t.is(cs.getSheets()[0].getMaxRows(), prows)
+    t.is(cs.getSheets()[0].getMaxColumns(), pcols)
+
+    // insert some sheets and test that index is properly updated
+    // the sheets get reordered and the sheetIndex gets updated
+    const s1 = cs.insertSheet('s1') // sheet1,s1
+    const s2 = cs.insertSheet('s2') // sheet1,s1,s2
+    const s3 = cs.insertSheet('s3', 1) // sheet1,s3,s1,s2
+    const s4 = cs.insertSheet('s4', 0) // s4,sheet1,s3,s1,s2
+    const act = cs.getSheets().map(f => [f.getName(), f.getIndex()])
+    const exs = [[s4.getName(), 1], ['Sheet1', 2], [s3.getName(), 3], [s1.getName(), 4], [s2.getName(), 5]]
+    t.deepEqual(act, exs)
+
+
+    t.is(cs.getSheetByName('s1').getIndex(), cs.getSheetById(s1.getSheetId()).getIndex())
+    cs.getSheets().forEach((f, i) => t.is(f.getIndex(), i + 1))
+
+
+    const sheet = cs.getSheets()[1]
+    const col = 2
+    const row = 3
+    const cw = sheet.getColumnWidth(2)
+    const rh = sheet.getRowHeight(3)
+    const cx = 200
+    const rx = 31
+
+    let requests = [{
+      updateDimensionProperties: {
+        range: {
+          sheetId: sheet.getSheetId(),
+          dimension: 'ROWS',
+          startIndex: row - 1,
+          endIndex: row,
+        },
+        properties: {
+          pixelSize: rx,
+        },
+        fields: 'pixelSize',
+      }
+    }, {
+      updateDimensionProperties: {
+        range: {
+          sheetId: sheet.getSheetId(),
+          dimension: 'COLUMNS',
+          startIndex: col - 1,
+          endIndex: col,
+        },
+        properties: {
+          pixelSize: cx,
+        },
+        fields: 'pixelSize',
+      }
+    }]
+    t.true(is.nonEmptyObject(Sheets.Spreadsheets.batchUpdate({ requests }, cs.getId())))
+    t.is(sheet.getColumnWidth(col), cx)
+    t.is(sheet.getRowHeight(row), rx)
+
+    // reset
+    requests[1].updateDimensionProperties.properties.pixelSize = cw
+    requests[0].updateDimensionProperties.properties.pixelSize = rh
+    const reset = Sheets.Spreadsheets.batchUpdate({ requests }, cs.getId())
+    t.is(reset.spreadsheetId, cs.getId())
+    t.is(reset.replies.length, requests.length)
+    t.true(reset.replies.every(f => is.emptyObject(f)))
+    t.is(sheet.getColumnWidth(col), cw)
+    t.is(sheet.getRowHeight(row), rh)
+
+    // lets try that with spreadsheet app
+    sheet.setColumnWidth(col, cx).setRowHeight(row, rx)
+    t.is(sheet.getColumnWidth(col), cx)
+    t.is(sheet.getRowHeight(row), rx)
+
+    const ncols = 3
+    const nrows = 4
+
+    // now try with a few columns/rows
+    sheet.setColumnWidths(col, ncols, cx).setRowHeights(row, nrows, rx)
+
+    for (let r = row; r < nrows + row; r++) {
+      t.is(sheet.getRowHeight(r), rx)
+    }
+    for (let c = col; c < ncols + col; c++) {
+      t.is(sheet.getColumnWidth(c), cx)
+    }
+
+    t.is(sheet.getColumnWidth(col), cx)
+    t.is(sheet.getRowHeight(row), rx)
+
+    // reset everything
+    sheet.setColumnWidths(col, ncols, cw).setRowHeights(row, nrows, rh)
+    t.is(sheet.getColumnWidth(col), cw)
+    t.is(sheet.getRowHeight(row), rh)
+
+    // now test the forced version
+    sheet.setRowHeightsForced(row, nrows, rx);
+    for (let r = row; r < nrows + row; r++) {
+      t.is(sheet.getRowHeight(r), rx, `Forced row height for row ${r} should be ${rx}`);
+    }
+    // reset
+    sheet.setRowHeightsForced(row, nrows, rh);
+    t.is(sheet.getRowHeight(row), rh, "Forced row height should be reset");
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+
+
+    if (fixes.CLEAN) {
+      toTrash.push(DriveApp.getFileById(cs.getId()))
+      toTrash.push(DriveApp.getFileById(bs.spreadsheetId))
+    }
+
+  })
+
+  unit.section("spreadsheet values - both advanced and app", t => {
+
+    // TODO - fails on gas if the fields are dates or numbers because gas automayically detects and converts types
+    // whereas advanced sheets/node api does not
+    // - see https://github.com/brucemcpherson/gas-fakes/issues/15
+
+    const { sheet: fooSheet } = maketss('foosheet', toTrash, fixes)
+    const fooValues = Array.from({ length: 10 }, (_, i) => Array.from({ length: 6 }, (_, j) => i + j))
+    const fooRange = fooSheet.getRange(1, 1, fooValues.length, fooValues[0].length).getA1Notation()
+    const cs = fooSheet.getParent()
+
+    t.true(fooSheet.getRange(fooRange).isBlank())
+    t.true(fooSheet.getRange(fooRange).offset(1, 1, 1, 1).isBlank())
+
+    /**
+     * Note:
+     * the Google Sheets API doesn't guarantee that the data type will be strictly preserved 
+     * but valueInputoption "RAW" has a better success rate then "USER_ENTERED"
+     * need to use in conjunction with valueRenderOption: 'UNFORMATTED_VALUE' on the get
+     * howver it's not clear yet  what behavior to expect from gas
+     */
+    const fooRequest = {
+      valueInputOption: "RAW",
+      data: [{
+        majorDimension: "ROWS",
+        range: `'${fooSheet.getName()}'!${fooRange}`,
+        values: fooValues,
+      }]
+    }
+    const foosh = Sheets.Spreadsheets.Values.batchUpdate(fooRequest, cs.getId())
+
+    t.is(foosh.totalUpdatedCells, fooValues.length * fooValues[0].length)
+    t.is(foosh.totalUpdatedRows, fooValues.length)
+    t.is(foosh.totalUpdatedColumns, fooValues[0].length)
+    t.is(foosh.totalUpdatedSheets, 1)
+
+    const barSheet = cs.insertSheet('barsheet')
+    const barRange = barSheet.getRange(1, 1, fooValues.length, fooValues[0].length)
+    barRange.setValues(fooValues)
+    t.false(barRange.isBlank())
+    t.false(barRange.offset(1, 1, 1, 1).isBlank())
+    t.false(barRange.offset(1, 0).isBlank())
+
+    const barValues = barRange.getValues()
+    t.deepEqual(barSheet.getDataRange().getValues(), fooValues)
+
+    t.deepEqual(fooSheet.getRange(fooRange).getValues(), barValues)
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+  })
+
   unit.section("sorting and randomizing", t => {
     const { sheet } = maketss('sorting', toTrash, fixes)
     const startAt = sheet.getRange("a1:f12")
 
-    
+
     const r1 = startAt.offset(0, 0)
     const now = new Date().getTime()
     const rd1Fill = fillRangeFromDomain(r1, [
-      "bucket","banana","buckle","red eye",
-      now, "foo", Math.random(), Math.random(),getRandomBetween(89, -87), "bar", "bub ble", true, getRandomBetween(98, -99), false, getRandomBetween(75, -69),  "cheese","butter", 120, 8647, 77, "armpit", Math.PI
+      "bucket", "banana", "buckle", "red eye",
+      now, "foo", Math.random(), Math.random(), getRandomBetween(89, -87), "bar", "bub ble", true, getRandomBetween(98, -99), false, getRandomBetween(75, -69), "cheese", "butter", 120, 8647, 77, "armpit", Math.PI
     ])
     r1.setValues(rd1Fill)
     const rd1before = r1.getValues()
     t.deepEqual(rd1before, rd1Fill)
 
-    let spec = [1,3]
+    let spec = [1, 3]
     r1.sort(spec)
     const rd1After1 = r1.getValues()
     const rd1Sort1 = sort2d(spec, rd1before)
@@ -64,32 +244,32 @@ export const testSheetsValues = (pack) => {
     // slightly possible this might fail if it happens to randomize in same order
     t.notDeepEqual(rd1After5, rd1After4)
     // check all is still there
-    const rspec = rd1After5[0].map ((_,i)=>i+1)
-    t.deepEqual(sort2d(rspec,rd1After5), sort2d(rspec,rd1Fill))
+    const rspec = rd1After5[0].map((_, i) => i + 1)
+    t.deepEqual(sort2d(rspec, rd1After5), sort2d(rspec, rd1Fill))
 
     sheet.getDataRange().clear()
 
-    const data = [[1,2,3,4,5],[6,7,8,9,10],[11,12,13,14,15]]
-    const range = startAt.offset(20,1, data.length, data[0].length)
-    const a = range.setValues (data).getValues()
-    t.deepEqual (a, data)
-  
+    const data = [[1, 2, 3, 4, 5], [6, 7, 8, 9, 10], [11, 12, 13, 14, 15]]
+    const range = startAt.offset(20, 1, data.length, data[0].length)
+    const a = range.setValues(data).getValues()
+    t.deepEqual(a, data)
+
     range.sort(4 + range.getColumn())
     const b = range.getValues()
-    t.deepEqual (b, data)
- 
-  
-    range.sort ([{column: 4+ range.getColumn(), ascending: false }, {column:3+range.getColumn()}, range.getColumn()])
+    t.deepEqual(b, data)
+
+
+    range.sort([{ column: 4 + range.getColumn(), ascending: false }, { column: 3 + range.getColumn() }, range.getColumn()])
     const c = range.getValues()
-    t.deepEqual (c.reverse(), data)
+    t.deepEqual(c.reverse(), data)
 
 
-    const data2 = [[1,2,3,4,false],[6,7,8,9,10],[11,12,13,14,15]]
-    const d = range.setValues (data2).getValues()
-    t.deepEqual(d,data2)
-    range.sort ([{column: 4+ range.getColumn(), ascending: false }, {column:3+range.getColumn()}, range.getColumn()])
+    const data2 = [[1, 2, 3, 4, false], [6, 7, 8, 9, 10], [11, 12, 13, 14, 15]]
+    const d = range.setValues(data2).getValues()
+    t.deepEqual(d, data2)
+    range.sort([{ column: 4 + range.getColumn(), ascending: false }, { column: 3 + range.getColumn() }, range.getColumn()])
     const e = range.getValues()
-    t.deepEqual (e, [[1,2,3,4,false],[11,12,13,14,15],[6,7,8,9,10]])
+    t.deepEqual(e, [[1, 2, 3, 4, false], [11, 12, 13, 14, 15], [6, 7, 8, 9, 10]])
 
 
   })
@@ -162,55 +342,7 @@ export const testSheetsValues = (pack) => {
 
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
   })
-  unit.section("spreadsheet values - both advanced and app", t => {
 
-    // TODO - fails on gas if the fields are dates or numbers because gas automayically detects and converts types
-    // whereas advanced sheets/node api does not
-    // - see https://github.com/brucemcpherson/gas-fakes/issues/15
-
-    const { sheet: fooSheet } = maketss('foosheet', toTrash, fixes)
-    const fooValues = Array.from({ length: 10 }, (_, i) => Array.from({ length: 6 }, (_, j) => i + j))
-    const fooRange = fooSheet.getRange(1, 1, fooValues.length, fooValues[0].length).getA1Notation()
-    const cs = fooSheet.getParent()
-
-    t.true(fooSheet.getRange(fooRange).isBlank())
-    t.true(fooSheet.getRange(fooRange).offset(1, 1, 1, 1).isBlank())
-
-    /**
-     * Note:
-     * the Google Sheets API doesn't guarantee that the data type will be strictly preserved 
-     * but valueInputoption "RAW" has a better success rate then "USER_ENTERED"
-     * need to use in conjunction with valueRenderOption: 'UNFORMATTED_VALUE' on the get
-     * howver it's not clear yet  what behavior to expect from gas
-     */
-    const fooRequest = {
-      valueInputOption: "RAW",
-      data: [{
-        majorDimension: "ROWS",
-        range: `'${fooSheet.getName()}'!${fooRange}`,
-        values: fooValues,
-      }]
-    }
-    const foosh = Sheets.Spreadsheets.Values.batchUpdate(fooRequest, cs.getId())
-
-    t.is(foosh.totalUpdatedCells, fooValues.length * fooValues[0].length)
-    t.is(foosh.totalUpdatedRows, fooValues.length)
-    t.is(foosh.totalUpdatedColumns, fooValues[0].length)
-    t.is(foosh.totalUpdatedSheets, 1)
-
-    const barSheet = cs.insertSheet('barsheet')
-    const barRange = barSheet.getRange(1, 1, fooValues.length, fooValues[0].length)
-    barRange.setValues(fooValues)
-    t.false(barRange.isBlank())
-    t.false(barRange.offset(1, 1, 1, 1).isBlank())
-    t.false(barRange.offset(1, 0).isBlank())
-
-    const barValues = barRange.getValues()
-    t.deepEqual(barSheet.getDataRange().getValues(), fooValues)
-
-    t.deepEqual(fooSheet.getRange(fooRange).getValues(), barValues)
-    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-  })
 
   unit.section("creating and updating sheets", t => {
 

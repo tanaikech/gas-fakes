@@ -34,7 +34,6 @@ export class FakeSheet {
       'getSlicers', 'insertSlicer',
       'hideColumn', 'hideRow', 'unhideColumn', 'unhideRow',
       'isColumnHiddenByUser', 'isRowHiddenByUser', 'isRowHiddenByFilter',
-      'setColumnWidths', 'setRowHeights',
       'setFrozenColumns', 'setFrozenRows',
       'moveRows', 'moveColumns',
       'insertColumnAfter', 'insertColumnBefore', 'insertColumns', 'insertColumnsAfter', 'insertColumnsBefore',
@@ -176,27 +175,97 @@ export class FakeSheet {
   }
 
   getColumnWidth(columnPosition) {
-    const meta = this.getParent().__getMetaProps(`sheets(properties(sheetId),data(columnMetadata))`);
-    const sheetMeta = meta.sheets.find(s => s.properties.sheetId === this.getSheetId());
-    const colMeta = sheetMeta?.data?.[0]?.columnMetadata?.[columnPosition - 1];
-    return colMeta?.pixelSize || 100; // Default width
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Sheet.getColumnWidth');
+    if (nargs !== 1 || !is.integer(columnPosition) || columnPosition < 1) matchThrow();
+
+    // we just need 1 column
+    const range = this.getRange(1, columnPosition, 1, 1);
+    // __getWithSheet() is a "private" method on FakeSheetRange that returns 'SheetName!A1'
+    const rangeA1WithSheet = range.__getWithSheet();
+
+    const meta = this.getParent().__getSheetMetaProps([rangeA1WithSheet], "sheets.data.columnMetadata");
+
+    const colMeta = meta?.sheets?.[0]?.data?.[0]?.columnMetadata?.[0];
+
+    // The default width is 100 if not specified.
+    return colMeta?.pixelSize || 100;
   }
 
   getRowHeight(rowPosition) {
-    const meta = this.getParent().__getMetaProps(`sheets(properties(sheetId),data(rowMetadata))`);
-    const sheetMeta = meta.sheets.find(s => s.properties.sheetId === this.getSheetId());
-    const rowMeta = sheetMeta?.data?.[0]?.rowMetadata?.[rowPosition - 1];
-    return rowMeta?.pixelSize || 21; // Default height
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Sheet.getRowHeight');
+    if (nargs !== 1 || !is.integer(rowPosition) || rowPosition < 1) matchThrow();
+
+    // we just need 1 row
+    const range = this.getRange(rowPosition, 1, 1, 1);
+    const rangeA1WithSheet = range.__getWithSheet();
+
+    const meta = this.getParent().__getSheetMetaProps([rangeA1WithSheet], "sheets.data.rowMetadata");
+
+    const rowMeta = meta?.sheets?.[0]?.data?.[0]?.rowMetadata?.[0];
+
+    // The default height is 21 if not specified.
+    return rowMeta?.pixelSize || 21;
+  }
+
+  __setDimensionSize(dimension, start, count, size) {
+    const request = {
+      updateDimensionProperties: {
+        range: {
+          sheetId: this.getSheetId(),
+          dimension,
+          startIndex: start - 1,
+          endIndex: start + count - 1,
+        },
+        properties: { pixelSize: size },
+        fields: 'pixelSize',
+      },
+    };
+
+    batchUpdate({ spreadsheet: this.getParent(), requests: [request] });
+    return this;
+  }
+
+  setRowHeights(startRow, numRows, height) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Sheet.setRowHeights');
+    if (nargs !== 3 || !is.integer(startRow) || !is.integer(numRows) || !is.integer(height)) matchThrow();
+    if (startRow < 1 || numRows < 1) {
+      throw new Error('Row and number of rows must be positive.');
+    }
+    return this.__setDimensionSize('ROWS', startRow, numRows, height);
+  }
+
+  setRowHeightsForced(startRow, numRows, height) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Sheet.setRowHeightsForced');
+    if (nargs !== 3 || !is.integer(startRow) || !is.integer(numRows) || !is.integer(height)) matchThrow();
+    // This method is maintained for backward compatibility and behaves identically to setRowHeights.
+    return this.setRowHeights(startRow, numRows, height);
+  }
+
+  setColumnWidths(startColumn, numColumns, width) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Sheet.setColumnWidths');
+    if (nargs !== 3 || !is.integer(startColumn) || !is.integer(numColumns) || !is.integer(width)) matchThrow();
+    if (startColumn < 1 || numColumns < 1) {
+      throw new Error('Column and number of columns must be positive.');
+    }
+    return this.__setDimensionSize('COLUMNS', startColumn, numColumns, width);
   }
 
   setColumnWidth(columnPosition, width) {
-    // This is a complex operation, for now just a placeholder
-    return this;
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Sheet.setColumnWidth');
+    if (nargs !== 2 || !is.integer(columnPosition) || !is.integer(width)) matchThrow();
+    if (columnPosition < 1) {
+      throw new Error('Column position must be positive.');
+    }
+    return this.setColumnWidths(columnPosition, 1, width);
   }
 
   setRowHeight(rowPosition, height) {
-    // This is a complex operation, for now just a placeholder
-    return this;
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Sheet.setRowHeight');
+    if (nargs !== 2 || !is.integer(rowPosition) || !is.integer(height)) matchThrow();
+    if (rowPosition < 1) {
+      throw new Error('Row position must be positive.');
+    }
+    return this.setRowHeights(rowPosition, 1, height);
   }
 
   getFilter() {
