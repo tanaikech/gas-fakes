@@ -18,6 +18,7 @@ EXTRA_SCOPES=$EXTRA_SCOPES
 SCOPES="${DEFAULT_SCOPES}${EXTRA_SCOPES}"
 
 # clean up anything set from before
+echo "ignore no credentials to revoke error if this is the first time you've done this here"
 gcloud auth revoke --quiet
 gcloud auth application-default revoke --quiet
 
