@@ -9,9 +9,9 @@ import '../main.js'
 //import '@mcpher/gas-fakes/main.js'
 
 import { initTests } from './testinit.js'
-import { getSheetsPerformance } from '../src/support/sheetscache.js';
-import { prepareTarget, eString, maketss, trasher, rgbToHex, getRandomRgb, getRandomHex, getStuff, fillRange, fillRangeFromDomain, isEnum, BLACK, transpose2DArray } from './testassist.js';
 
+import { prepareTarget, eString, maketss, trasher, rgbToHex, getRandomRgb, getRandomHex, getStuff, fillRange, fillRangeFromDomain, isEnum, BLACK, transpose2DArray } from './testassist.js';
+import { getSheetsPerformance } from './testassist.js';
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testSheets = (pack) => {

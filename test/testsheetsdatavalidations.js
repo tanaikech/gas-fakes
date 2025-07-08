@@ -7,11 +7,9 @@ import '../main.js'
 // all the fake services are here
 //import '@mcpher/gas-fakes/main.js'
 
-import { initTests } from './testinit.js'
-import { getSheetsPerformance } from '../src/support/sheetscache.js';
-import { getPerformance } from '../src/support/filecache.js';
+import { initTests } from './testinit.js';
 import {  maketss, trasher, compareValue, addDays, zeroizeTime, getDimensions } from './testassist.js';
-
+import { getPerformance, getSheetsPerformance } from './testassist.js';
 import is from '@sindresorhus/is';
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over

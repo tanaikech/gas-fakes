@@ -2,10 +2,11 @@
 // all these imports 
 // this is loaded by npm, but is a library on Apps Script side
 
-import is from '@sindresorhus/is';
-import { getPerformance } from '../src/support/filecache.js';
-import '../main.js'
 
+
+import '../main.js'
+import { getPerformance } from './testassist.js';
+import is from '@sindresorhus/is';
 // all the fake services are here
 //import '@mcpher/gas-fakes/main.js'
 

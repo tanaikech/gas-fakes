@@ -114,7 +114,7 @@ const getWhat = (item) => getFakeType(item) || Utils.is(item)
  */
 export const argsMatchThrow = ( items, mess = "") => {
   // limit the error message 
-  const passedTypes = items.map(getWhat).map(Utils.capital).join(",")
+  const passedTypes = items.map(getWhat).map(capital).join(",")
   throw new Error(`The parameters (${passedTypes}) don't match the method ${mess}`)
 }
 
@@ -136,14 +136,13 @@ export const signatureArgs = (received, method, objectType = 'Object') => {
   const nargs = args.length
   
   // let's update the passedTypes for the error message to match what GAS does - https://github.com/brucemcpherson/gas-fakes/issues/25
-  // this throws an error if it inspects an ENUM
-  // TODO probably need to remove the guard on fake enums
-  // for now we;ll just catch and ignore
+  // this throws an error if it inspects an ENUM - this was an error in sindre's is() which is now fixed
+  // we'll just catch and ignore
   let passedTypes
   try {
-    passedTypes = args.map(is).map(capital).map(f=>f==='Object' ? objectType : f)
+    passedTypes = args.map(f=>is.null(f) ? 'null' : is(f)).map(f=>f==='null'? f :capital(f)).map(f=>f==='Object' ? objectType : f)
   } catch (err) {
-    console.log ("...warning failed signature check- probably an is. probe of an enum - ignoring", args)
+    console.log ("...warning failed signature check- probably an unsupported probe. probe of an enum - ignoring", args)
     passedTypes=[]
   }
   const matchThrow = (mess = method) => {

@@ -7,10 +7,7 @@ import '../main.js'
 //import '@mcpher/gas-fakes/main.js'
 
 import { initTests } from './testinit.js'
-import { getSheetsPerformance } from '../src/support/sheetscache.js';
-import { getPerformance } from '../src/support/filecache.js';
-import { maketss, trasher, makeSheetsGridRange, makeExtendedValue, dateToSerial, fillRange } from './testassist.js';
-import { batchUpdate } from '../src/services/spreadsheetapp/sheetrangehelpers.js';
+import { maketss, trasher, getPerformance, getSheetsPerformance } from './testassist.js';
 import is from '@sindresorhus/is';
 
 
@@ -21,6 +18,62 @@ export const testSheetsExotics = (pack) => {
   const { unit, fixes } = pack || initTests()
   const toTrash = []
 
+  unit.section('Range.setShowHyperlink', (t) => {
+    const { ss, sheet } = maketss(t.options.description, toTrash, fixes);
+    const range = sheet.getRange('A1');
+    range.setFormula('=HYPERLINK("http://www.google.com","Google")');
+
+    const spreadsheetId = ss.getId();
+    const sheetName = sheet.getName();
+    const fields = 'sheets.data.rowData.values.userEnteredFormat.hyperlinkDisplayType';
+
+    const getDisplayType = (a1Notation) => {
+      const result = Sheets.Spreadsheets.get(spreadsheetId, {
+        ranges: [`'${sheetName}'!${a1Notation}`],
+        fields: fields
+      });
+      return result.sheets?.[0]?.data?.[0]?.rowData?.[0]?.values?.[0]?.userEnteredFormat?.hyperlinkDisplayType;
+    };
+
+    // Default behavior is LINKED. In the API, this is often represented by the property being absent.
+    let displayType = getDisplayType('A1');
+    t.true(displayType === 'LINKED' || is.undefined(displayType), 'Hyperlink should be shown by default (LINKED or undefined)');
+
+
+    range.setShowHyperlink(false);
+    SpreadsheetApp.flush();
+    t.is(getDisplayType('A1'), 'PLAIN_TEXT', 'Hyperlink should be hidden and display as plain text');
+
+    range.setShowHyperlink(true);
+    SpreadsheetApp.flush();
+    t.is(getDisplayType('A1'), 'LINKED', 'Hyperlink should be shown again');
+
+    t.rxMatch(t.threw(() => range.setShowHyperlink(null))?.message || "no error thrown",
+      /The parameters \(null\) don't match the method signature/,
+      "The live environment throws an error for setShowHyperlink(null), so this test sould throw."
+    )
+
+
+    // Test RangeList
+    const rangeList = sheet.getRangeList(['C1', 'D1']);
+    sheet.getRange('C1').setFormula('=HYPERLINK("http://www.example.com","Example")');
+    sheet.getRange('D1').setFormula('=HYPERLINK("http://www.bing.com","Bing")');
+    SpreadsheetApp.flush();
+
+    rangeList.setShowHyperlink(false);
+    SpreadsheetApp.flush();
+    t.is(getDisplayType('C1'), 'PLAIN_TEXT', 'RangeList: C1 hyperlink should be hidden');
+    t.is(getDisplayType('D1'), 'PLAIN_TEXT', 'RangeList: D1 hyperlink should be hidden');
+
+    rangeList.setShowHyperlink(true);
+    SpreadsheetApp.flush();
+    t.is(getDisplayType('C1'), 'LINKED', 'RangeList: C1 hyperlink should be shown');
+    t.is(getDisplayType('D1'), 'LINKED', 'RangeList: D1 hyperlink should be shown');
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance());
+
+
+  });
 
   unit.section("Range Grouping Methods", t => {
     const { sheet, ss } = maketss('grouping_tests', toTrash, fixes);

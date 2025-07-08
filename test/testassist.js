@@ -1,6 +1,9 @@
 import is from '@sindresorhus/is';
 let __mss = null
 
+export const getPerformance = DriveApp.__getPerformance
+export const getSheetsPerformance = SpreadsheetApp.__getSheetsPerformance
+
 export const trasher = (toTrash) => {
   // clean up if necessary
   toTrash.forEach(f => {

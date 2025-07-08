@@ -32,17 +32,17 @@ export class FakeSheetRangeList {
     const props = [
       'clearDataValidations',
       'setFontWeight',
- 
+
       'activate',
       'breakApart',
       'setFormulaR1C1',
- 
+
       'setBorder',
       'setFontColor',
       'setFontLine',
       'setFontStyle',
       'setWrap',
-      'setShowHyperlink',
+
       'setVerticalText',
       'setWrapStrategy',
       'uncheck',
@@ -76,6 +76,11 @@ export class FakeSheetRangeList {
     return 'RangeList'
   }
 
+  setShowHyperlink(showHyperlink) {
+    this.__ranges.forEach(r => r.setShowHyperlink(showHyperlink));
+    return this;
+  }
+
   /**
    * getRanges() https://developers.google.com/apps-script/reference/spreadsheet/range-list#getranges
    * Returns a list of one or more Range instances in the same sheet.
@@ -94,12 +99,12 @@ export class FakeSheetRangeList {
     return this;
   }
 
-  setBackground (color) {
+  setBackground(color) {
     this.__ranges.forEach(r => r.setBackground(color))
     return this
   }
- 
-  setBackgroundRGB (red, green, blue) {
+
+  setBackgroundRGB(red, green, blue) {
     this.__ranges.forEach(r => r.setBackgroundRGB(red, green, blue))
     return this
   }

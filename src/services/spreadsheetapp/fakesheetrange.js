@@ -80,7 +80,6 @@ export class FakeSheetRange {
       'getDataSourceFormula',
       'activateAsCurrentCell',
       'setComments',
-      'setShowHyperlink',
 
       'createDataSourceTable',
       'getComments',
@@ -1310,7 +1309,7 @@ export class FakeSheetRange {
         const unionLeft = Math.min(startCol0, left);
         const unionBottom = Math.max(endRow0, bottom);
         const unionRight = Math.max(endCol0, right);
-        return sheet.getRange(unionTop + 1, unionLeft + 1, unionBottom - unionTop + 1, unionRight - unionLeft + 1);
+        return sheet.getRange(unionTop + 1, unionLeft + 1, unionBottom - unionTop + 1, unionRight - left + 1);
       }
       return sheet.getRange(top + 1, left + 1, bottom - top + 1, right - left + 1);
     }

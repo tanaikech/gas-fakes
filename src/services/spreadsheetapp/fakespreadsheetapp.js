@@ -8,6 +8,8 @@ import { newFakeTextStyleBuilder } from '../commonclasses/faketextstylebuilder.j
 import { newFakeFilterCriteriaBuilder } from './fakefiltercriteriabuilder.js'
 import { newFakeDataValidationBuilder } from './fakedatavalidationbuilder.js'
 import { newFakeDataSourceSpecBuilder } from './fakedatasourcespecbuilder.js';
+import { getSheetsPerformance } from '../../support/sheetscache.js';
+
 
 import * as Enums from '../enums/sheetsenums.js'
 
@@ -90,7 +92,7 @@ export class FakeSpreadsheetApp {
       'setActiveRangeList',
       'newCellImage',
       'getUi',
-      'flush',
+ 
       'open',
 
       'ChartAggregationType',
@@ -105,6 +107,12 @@ export class FakeSpreadsheetApp {
     })
 
   }
+  
+  // exposes cache performance to tests 
+  __getSheetsPerformance() {
+    return getSheetsPerformance()
+  }
+
 
   enableBigQueryExecution() {
     const { nargs, matchThrow } = signatureArgs(arguments, "SpreadsheetApp.enableBigQueryExecution");
@@ -123,7 +131,10 @@ export class FakeSpreadsheetApp {
     if (nargs) matchThrow();
     // This is a no-op in the fake environment.
   }
-
+  // currently no-op - probably not required as all ops are synchronous and currently not bundled
+  flush () {
+    return this
+  }
   /**
    * this one is probably deprecated
    * @param {string} id file id

@@ -8,11 +8,11 @@ import '../main.js'
 //import '@mcpher/gas-fakes/main.js'
 
 import { initTests } from './testinit.js'
-import { getSheetsPerformance } from '../src/support/sheetscache.js';
+import { getSheetsPerformance } from './testassist.js';
 import { Fiddler } from '@mcpher/fiddler'
 
 const hexify = (c) => {
-  return '#' +  c.toString(16).padStart(6, '0')
+  return '#' + c.toString(16).padStart(6, '0')
 };
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
@@ -41,21 +41,21 @@ export const testFiddler = (pack) => {
   }
 
 
-  unit.section ("fiddler basics", t => {
+  unit.section("fiddler basics", t => {
     const airports = SpreadsheetApp.openById(fixes.TEST_AIRPORTS_ID)
     const fiddler = new Fiddler(airports.getSheetByName(fixes.TEST_AIRPORTS_NAME))
-    
+
     const sheet = fiddler.getSheet()
     t.is(sheet.getName(), fixes.TEST_AIRPORTS_NAME, 'correct sheet name')
-    
+
     const dataRange = sheet.getDataRange()
-    t.is (dataRange.getA1Notation(), fiddler.getRange().getA1Notation(), 'correct data range')
-    t.deepEqual(dataRange.offset(0,0,1).getValues()[0], fiddler.getHeaders(), 'correct headers')
-    t.deepEqual (
-      dataRange.offset(1,fiddler.getHeaderIndex('name'),dataRange.getNumRows()-1,1).getValues().flat(), 
-      fiddler.getData().map(f=>f.name),
+    t.is(dataRange.getA1Notation(), fiddler.getRange().getA1Notation(), 'correct data range')
+    t.deepEqual(dataRange.offset(0, 0, 1).getValues()[0], fiddler.getHeaders(), 'correct headers')
+    t.deepEqual(
+      dataRange.offset(1, fiddler.getHeaderIndex('name'), dataRange.getNumRows() - 1, 1).getValues().flat(),
+      fiddler.getData().map(f => f.name),
       'selected data matches offset'
-     )
+    )
   })
 
 
@@ -68,9 +68,9 @@ export const testFiddler = (pack) => {
 
     // get all the unique countries mentioned
     const countries = coloringFiddler.getUniqueValues("iso_country").sort()
-    
+
     // generate a color for each country
-    const colorMap = new Map(countries.map((f, i) => [f, hexify(Math.abs(baseColor - (512 * i)) % 0xffffff )]))
+    const colorMap = new Map(countries.map((f, i) => [f, hexify(Math.abs(baseColor - (512 * i)) % 0xffffff)]))
     // need to transpose to make rowwise
     const backgrounds = coloringFiddler.getData().map(row => colorMap.get(row.iso_country)).reduce((p, c) => {
       p.push([c])
@@ -91,7 +91,7 @@ export const testFiddler = (pack) => {
     // set the backgrounds of each range according to the country
     // rangelists dont have a setbackgrounds function so we have to do each range separately
     rangeList.getRanges().forEach(r => r.setBackgrounds(backgrounds))
-    rangeList.getRanges().forEach(r=>t.deepEqual(r.getBackgrounds(), backgrounds))
+    rangeList.getRanges().forEach(r => t.deepEqual(r.getBackgrounds(), backgrounds))
 
     // now check that all is good using ss methods and a new fiddler
     const checkFiddler = new Fiddler(coloringFiddler.getSheet())

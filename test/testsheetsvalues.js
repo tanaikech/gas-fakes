@@ -9,7 +9,7 @@ import '../main.js'
 //import '@mcpher/gas-fakes/main.js'
 
 import { initTests } from './testinit.js'
-import { getSheetsPerformance } from '../src/support/sheetscache.js';
+import { getSheetsPerformance } from './testassist.js';
 import { maketss, trasher, fillRangeFromDomain, sort2d, getRandomBetween } from './testassist.js';
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over

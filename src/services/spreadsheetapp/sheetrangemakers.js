@@ -317,7 +317,20 @@ export const setterList = [{
   maker: (_, value) => makeCellDataFromRichTextValue(value),
   fields: 'userEnteredValue,textFormatRuns,userEnteredFormat',
   typeChecker: isRichTextValue
-}]
+}, {
+  name: 'showHyperlink',
+  type: "boolean",
+  nullAllowed: false,
+  maker: (_, value) => {
+    // The API uses LINKED for true (show) and PLAIN_TEXT for false (hide).
+    // The live environment throws an error for a null argument, contrary to documentation.
+    const displayType = value ? 'LINKED' : 'PLAIN_TEXT';
+    return makeCellData('setHyperlinkDisplayType', displayType);
+  },
+  fields: 'userEnteredFormat.hyperlinkDisplayType',
+  plural: false
+}
+]
 
 // this is a list of all the range format getters and how to generate them
 export const attrGetList = [{
@@ -743,6 +756,7 @@ const isJagged = ({ range, cleaned }) => {
   return cleaned.length !== nr || cleaned.some(row => row.length !== nc)
 }
 
+
 const makeCellData = (method, value) => {
   const cellFormat = Sheets.newCellFormat()[method](value)
   const cellData = Sheets.newCellData().setUserEnteredFormat(cellFormat)
@@ -813,7 +827,7 @@ export const makeCellTextFormatData = (prop, value) => {
   if (!is.function(textFormat[prop])) {
     throw new Error(`tied to call ${prop} method on textFormat but it's not a function}`)
   }
-  if (!is.null(value)) textFormat[prop](value)
+  if (!is.null(value)) textFormatprop
   return makeCellData('setTextFormat', textFormat)
 }
 

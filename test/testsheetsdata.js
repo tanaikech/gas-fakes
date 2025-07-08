@@ -8,10 +8,8 @@ import '../main.js'
 //import '@mcpher/gas-fakes/main.js'
 
 import { initTests } from './testinit.js'
-import { getSheetsPerformance } from '../src/support/sheetscache.js';
-import { getPerformance } from '../src/support/filecache.js';
 import { maketss, trasher } from './testassist.js';
-
+import { getPerformance, getSheetsPerformance } from './testassist.js';
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testSheetsData = (pack) => {

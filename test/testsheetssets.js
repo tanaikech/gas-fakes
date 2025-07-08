@@ -7,8 +7,7 @@ import '../main.js'
 //import '@mcpher/gas-fakes/main.js'
 
 import { initTests } from './testinit.js'
-import { getSheetsPerformance } from '../src/support/sheetscache.js';
-import { getPerformance } from '../src/support/filecache.js';
+import { getPerformance, getSheetsPerformance } from './testassist.js';
 import { maketss, trasher, makeSheetsGridRange, makeExtendedValue, dateToSerial, fillRange } from './testassist.js';
 import is from '@sindresorhus/is';
 
