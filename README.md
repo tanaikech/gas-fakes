@@ -162,7 +162,7 @@ Although Apps Script supports async/await/promise syntax, it operates in blockin
 
 Since asynchonicity is fundamental to Node, there's no real simple way to convert async to sync. However, there is such a thing as a [child-process](https://nodejs.org/api/child_process.html#child-process) which you can start up to run things, and it features an [execSync](https://nodejs.org/api/child_process.html#child_processexecsynccommand-options) method which delays the return from the child process until the promise queue is all settled. So the simplest solution is to run an async method in a child process, wait till it's done, and return the results synchronously. I found that [Sindre Sorhus](https://github.com/sindresorhus) uses this approach with [make-synchronous](https://github.com/sindresorhus/make-synchronous), so I'm using that.
 
-Runnng up a child process in Node is pretty expensive and slow, so I'll be looking for ways to speed that up when I get to it.
+Runnng up a child process in Node is pretty expensive and slow, so I'll be looking for ways to speed that up when I get to it. My initial implementation picked up Auth from the ADC in the subprocess each time. I'm migrating now to pass an already minted oauth token to the subprocess which shaves about 20% off the elapsed time for all the tests. Next I'll see if I reduce the googleauth library import time which takes about 500ms each time - perhaps even eliminate it all together if I switch form the Node API to the JSON api.
 
 ### Global intialization
 
@@ -754,7 +754,7 @@ I also dislike the habit gemini has of 'mansplaining' back to me the answer I've
 
 #### range.banding
 
-This was a fairly convoluted section. I used gemini code assist heavily on this to do the legwork and all in all it made a pretty decent job of it, although with the endlessly repeated updates and test refactoring it took longer from start to finish than I would have expected it to take had I done it from scratch manually as all the previous classes. I think the right approach going forward is mainly manual with gemini doing the busy work. The tests Gemini came up with were aldo far from exhaustive, and pretty much ignored edge cases, so it needed additional requests to add more robust tests. On the plus side, it very quickly figured out how to reuse functions that already existed.
+This was a fairly convoluted section. I used gemini code assist heavily on this to do the legwork and all in all it made a pretty decent job of it, although with the endlessly repeated updates and test refactoring it took longer from start to finish than I would have expected it to take had I done it from scratch manually as all the previous classes. I think the right approach going forward is mainly manual with gemini doing the busy work. The tests Gemini came up with were also far from exhaustive, and pretty much ignored edge cases, so it needed additional requests to add more robust tests. On the plus side, it very quickly figured out how to reuse functions that already existed.
 
 #### developer meta data
 
@@ -796,7 +796,9 @@ The Sheets API doesn't know about these, so all r1c1 style methods such as setFo
 
 I'm torn. On the one hand, it's been great at doing busy work like writing test cases and detecting dependencies that I might otherwise have missed. It can often be pretty good at refactoring/renaming things. On the other hand, if it gets it wrong, it's very hard to get it back on track as it tries bury itself deeper and deeper into previous misconceptions. It also has huge difficulty in updating large files no matter the detailed guidance. The usual end game is to restart a fresh context and/or copy and paste the content into a file you create manually. 
 
-There were ocassions when the content Gemini provided content to be copied and pasted that was invalid syntax, or worse, dropped lines of code in sections it didn't plan to make any changes. In particular, code that had something like `ob[method](args)` was regularily truncated to just `ob`. Another issue is that Gemini can take 10 mins or more to create the full content for a large class in its chat window, sometimes ending in the gray screen of death. I've found it's best to completely avoid using Gemini to make minor changes, but to just make them manually.
+There were ocassions when the content Gemini provided content to be copied and pasted that was invalid syntax, or worse, dropped lines of code in sections it didn't plan to make any changes. In particular, code that had something like `ob[method](args)` was regularily truncated to just `obmethod`. I've found that if you enter `ob[method](args)` in the code assist chat window it will also interpret it as `obmethod` unless you escape the brackets (which of course you wouldnt do in code). 
+
+Another issue is that Gemini can take 10 mins or more to create the full content for a large class in its chat window, sometimes ending in the gray screen of death. I've found it's best to completely avoid using Gemini to make minor changes, but to just make them manually.
 
 
 Overall it saves some time, for sure. However, the result is often suboptimal, wordy, lacking in reusability and not something I would be be happy to put my name to. From a coder perspective, the role becomes one of repetetive specification, debugging, checking and testing, while failing to develop a deep understanding of the work in hand. I like coding, so from a satisfaction perspective, I'm not entirely convinced yet. I've found it's very impressive when creating small, standalone scripts but deteriorates rapidly both in speed and effectiveness as the codebase and dependencies grows. There's a point at which it becomes more trouble than it's worth.
