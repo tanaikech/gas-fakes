@@ -739,20 +739,38 @@ export class FakeSheetRange {
    * clears evertything (notes,formats,values,datavalidations) (except comments)
    * @returns {FakeSheetRange} self
    */
-  clear() {
+  clear(options) {
+    // options is optional
+    // 
+    // TODO
+    /* 
+commentsOnly	Boolean	Whether to clear only the comments.
+contentsOnly	Boolean	Whether to clear only the contents.
+formatOnly	Boolean	Whether to clear only the format; note that clearing format also clears data validation rules.
+validationsOnly	Boolean	Whether to clear only data validation rules.
+skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
+*/
 
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.clear")
-    if (nargs) matchThrow()
-    const range = makeSheetsGridRange(this)
-    const requests = [{
-      updateCells: Sheets.newUpdateCellsRequest().setFields("userEnteredValue,userEnteredFormat,note").setRange(range)
-    }, {
-      setDataValidation: Sheets.newSetDataValidationRequest().setRange(range).setRule(null)
-    }]
+    const { nargs, matchThrow } = signatureArgs(arguments, "Sheet.clear");
+    if (nargs > 1 || (nargs === 1 && !is.object(options) && !is.undefined(options))) matchThrow();
+    if (nargs === 1 && !is.undefined(options)) {
+      if (!Reflect.ownKeys(options).every(f => ['contentsOnly', 'formatOnly'].includes(f))) matchThrow()
+    }
+    const fields = [];
+    // Based on test case, sheet.clear() with no options clears content and format.
+    if (!options || (!options.contentsOnly && !options.formatsOnly)) {
+      fields.push("userEnteredValue", "userEnteredFormat");
+    } else {
+      if (options.contentsOnly) fields.push("userEnteredValue");
+      if (options.formatsOnly) fields.push("userEnteredFormat");
+    }
 
-    batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests });
-    return this
+    if (fields.length > 0) {
+      return this.__clear(fields.join(','));
+    }
+    return this;
   }
+
 
   /**
    * insertCells(shiftDimension) https://developers.google.com/apps-script/reference/spreadsheet/range#insertcellsshiftdimension
@@ -1590,9 +1608,8 @@ export class FakeSheetRange {
   setBorder(top, left, bottom, right, vertical, horizontal, color = null, style = null) {
     // there are 2 valid variants
     // one with each of the first 6 args
-    // and another with all 8
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.setDataValidations")
-
+    // and another with all 8.
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.setBorder")
     if (nargs < 6) matchThrow()
     // check first 6 args
     const args = Array.from(arguments).slice(0, 6)
@@ -1608,8 +1625,12 @@ export class FakeSheetRange {
     // note that null means leave as it is, and a boolean false means get rid of it
     // in the sheets api, null means get rid of it, and a missing value means leave as it is
     // width is not an option on Apps Script, so we can just do inner or outer
+    const hex = is.string(color) ? normalizeColorStringToHex(color) : null;
+    if (color && !is.null(color) && !hex) {
+      throw new Error(`Invalid color string: "${color}"`);
+    }
     const innerBorder = Sheets.newBorder()
-      .setColor(is.null(color) ? BLACKER : hexToRgb(color))
+      .setColor(is.null(hex) ? BLACKER : hexToRgb(hex))
       .setStyle(is.null(style) ? "SOLID" : style.toString())
 
     // construct the request
@@ -1918,7 +1939,7 @@ export class FakeSheetRange {
       if (ob.column < this.getColumn() || ob.column > this.getLastColumn()) {
         throw new Error(`The column to sort by (${ob.column}) is outside the range's columns (${this.getColumn()}-${this.getLastColumn()}).`);
       }
-      
+
       return {
         // note - absolute - not relative 
         // and will only sort the range contents, not the entire row

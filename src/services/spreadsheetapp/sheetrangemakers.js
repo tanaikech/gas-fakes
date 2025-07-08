@@ -827,7 +827,7 @@ export const makeCellTextFormatData = (prop, value) => {
   if (!is.function(textFormat[prop])) {
     throw new Error(`tied to call ${prop} method on textFormat but it's not a function}`)
   }
-  if (!is.null(value)) textFormatprop
+  if (!is.null(value)) textFormat[prop](value)
   return makeCellData('setTextFormat', textFormat)
 }
 

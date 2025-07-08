@@ -18,6 +18,192 @@ export const testSheetsExotics = (pack) => {
   const { unit, fixes } = pack || initTests()
   const toTrash = []
 
+  unit.section("RangeList exotic methods", t => {
+
+    const { sheet } = maketss(t.options.description, toTrash, fixes);
+
+    sheet.clear();
+
+    const testRanges = ["A1:B2", "D4:E5"];
+    const singleCellRanges = ["A1", "E5"];
+
+    const clearTests = () => {
+      const rangeList = sheet.getRangeList(testRanges);
+      rangeList
+        .getRanges()
+        .forEach((r) => r.setValue("some content").setBackground("red"));
+      rangeList.clear({ contentsOnly: true });
+      rangeList.getRanges().forEach((r) => {
+        t.is(r.isBlank(), true, `range ${r.getA1Notation()} should be blank after clear`);
+        t.is(
+          r.getBackground(),
+          "#ff0000",
+          `range ${r.getA1Notation()} background should still be red`
+        );
+      });
+      rangeList.clear();
+      rangeList.getRanges().forEach((r) => {
+        t.is(
+          r.getBackground(),
+          "#ffffff",
+          `range ${r.getA1Notation()} background should be white after full clear`
+        );
+      });
+    }
+
+    const settersTests = () => {
+      const rangeList = sheet.getRangeList(singleCellRanges);
+      rangeList
+        .setValue("hello")
+        .setBackground("blue")
+        .setFontColor("yellow")
+        .setFontWeight("bold")
+        .setFontStyle("italic")
+        .setFontSize(14)
+        .setFontFamily("Arial")
+        .setFontLine("underline")
+        .setHorizontalAlignment("center")
+        .setVerticalAlignment("middle")
+        .setWrapStrategy(SpreadsheetApp.WrapStrategy.WRAP)
+        .setTextRotation(45)
+        .setNote("a note");
+
+      rangeList.getRanges().forEach((r) => {
+        t.is(r.getValue(), "hello", "value should be set");
+        t.is(r.getBackground(), "#0000ff", "background should be blue");
+        t.is(r.getFontColor(), "#ffff00", "font color should be yellow");
+        t.is(r.getFontWeight(), "bold", "font weight should be bold");
+        t.is(r.getFontStyle(), "italic", "font style should be italic");
+        t.is(r.getFontSize(), 14, "font size should be 14");
+        t.is(r.getFontFamily(), "Arial", "font family should be Arial");
+        t.is(r.getFontLine(), "underline", "font line should be underline");
+        t.is(r.getHorizontalAlignment(), "center", "horizontal alignment should be center");
+        t.is(r.getVerticalAlignment(), "middle", "vertical alignment should be middle");
+        t.is(r.getWrapStrategy(), SpreadsheetApp.WrapStrategy.WRAP, "wrap strategy should be WRAP");
+        // see https://issuetracker.google.com/issues/425390984 and readme oddities - textRotation.
+        // The fake returns 0 because the API doesn't return the angle.
+        const expectedDegrees = SpreadsheetApp.isFake ? 0 : 45;
+        t.is(r.getTextRotation().getDegrees(), expectedDegrees, "text rotation should be 45");
+        t.is(r.getTextRotation().isVertical(), false, "text rotation should not be vertical");
+        t.is(r.getNote(), "a note", "note should be set");
+      });
+
+      rangeList.setFormula("=SUM(1,2)");
+      rangeList.getRanges().forEach((r) => {
+        t.is(r.getFormula(), "=SUM(1,2)", "formula should be set");
+        t.is(r.getValue(), 3, "value from formula should be 3");
+      });
+    }
+
+    const checkboxTests = () => {
+      const rangeList = sheet.getRangeList(singleCellRanges);
+      rangeList.insertCheckboxes();
+      rangeList.getRanges().forEach((r) => {
+        const dv = r.getDataValidation();
+        t.not(dv, null, "should have data validation");
+        t.is(dv.getCriteriaType(), SpreadsheetApp.DataValidationCriteria.CHECKBOX, "criteria should be checkbox");
+      });
+      rangeList.check();
+      rangeList.getRanges().forEach((r) => {
+        t.is(r.isChecked(), true, "should be checked");
+      });
+      rangeList.uncheck();
+      rangeList.getRanges().forEach((r) => {
+        t.is(r.isChecked(), false, "should be unchecked");
+      });
+      rangeList.removeCheckboxes();
+      rangeList.getRanges().forEach((r) => {
+        t.is(r.getDataValidation(), null, "should not have data validation");
+      });
+    }
+
+    const trimTests = () => {
+      const rangeList = sheet.getRangeList(singleCellRanges);
+      rangeList.setValue("  whitespace  ");
+      rangeList.trimWhitespace();
+      rangeList.getRanges().forEach((r) => {
+        t.is(r.getValue(), "whitespace", "whitespace should be trimmed");
+      });
+    }
+
+    const borderTests = () => {
+      const rangeList = sheet.getRangeList(testRanges);
+      rangeList.setBorder(true, true, true, true, true, true, "red", SpreadsheetApp.BorderStyle.DOTTED);
+      rangeList.getRanges().forEach((r) => {
+        const borders = r.getBorder();
+        t.is(borders.getTop().getColor().asRgbColor().asHexString(), "#ff0000", "top border color");
+        t.is(borders.getTop().getBorderStyle(), SpreadsheetApp.BorderStyle.DOTTED, "top border style");
+      });
+    };
+
+    const clearVariantsTests = () => {
+      const rangeList = sheet.getRangeList(testRanges);
+      rangeList.getRanges().forEach(r => r.setValue('a').setNote('b').setDataValidation(SpreadsheetApp.newDataValidation().requireNumberEqualTo(1).build()));
+
+      rangeList.clearNote();
+      rangeList.getRanges().forEach(r => {
+        t.is(r.getNote(), '', 'note should be cleared');
+        t.not(r.getValue(), '', 'value should not be cleared');
+      });
+
+      rangeList.clearDataValidations();
+      rangeList.getRanges().forEach(r => {
+        t.is(r.getDataValidation(), null, 'data validation should be cleared');
+      });
+    };
+
+    const activateTests = () => {
+      const rangeList = sheet.getRangeList(testRanges);
+      rangeList.activate();
+      const activeList = sheet.getParent().getActiveRangeList();
+      t.is(activeList.getRanges().length, rangeList.getRanges().length, 'activated range list should have same number of ranges');
+      t.is(activeList.getRanges()[0].getA1Notation(), rangeList.getRanges()[0].getA1Notation(), 'first range of activated list should match');
+    };
+
+    const breakApartTests = () => {
+      const rangeList = sheet.getRangeList(["A10:B11", "D10:E11"]);
+      rangeList.getRanges().forEach(r => r.merge());
+      rangeList.getRanges().forEach(r => t.is(r.isPartOfMerge(), true, 'range should be merged'));
+
+      rangeList.breakApart();
+      rangeList.getRanges().forEach(r => t.is(r.isPartOfMerge(), false, 'range should be broken apart'));
+    };
+
+    const moreSettersTests = () => {
+      const rangeList = sheet.getRangeList(singleCellRanges);
+      rangeList.setFormulaR1C1("=R[1]C[1]");
+      rangeList.getRanges().forEach(r => {
+        t.is(r.getFormulaR1C1(), "=R[1]C[1]", "R1C1 formula should be set");
+      });
+
+      rangeList.setWrap(true);
+      rangeList.getRanges().forEach(r => {
+        t.is(r.getWrap(), true, "wrap should be set to true");
+      });
+
+      rangeList.setTextDirection(SpreadsheetApp.TextDirection.RIGHT_TO_LEFT);
+      rangeList.getRanges().forEach(r => {
+        t.is(r.getTextDirection().toString(), SpreadsheetApp.TextDirection.RIGHT_TO_LEFT.toString(), "text direction should be set");
+      });
+
+      rangeList.setNumberFormat("0.00");
+      rangeList.getRanges().forEach(r => {
+        t.is(r.getNumberFormat(), "0.00", "number format should be set");
+      });
+    };
+
+    clearTests()
+    settersTests()
+    checkboxTests()
+    trimTests()
+    borderTests()
+    clearVariantsTests();
+    // activateTests(); // this needs getActiveRangeList on spreadsheet to be implemented
+    breakApartTests();
+    moreSettersTests();
+  });
+
+
   unit.section('Range.setShowHyperlink', (t) => {
     const { ss, sheet } = maketss(t.options.description, toTrash, fixes);
     const range = sheet.getRange('A1');

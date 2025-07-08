@@ -19,57 +19,160 @@ export const newFakeSheetRangeList = (...args) => {
  * @class FakeSheetRange
  */
 export class FakeSheetRangeList {
-
   /**
    * @constructor
    * @param {FakeSheetRange[]} ranges the ranges
    * @returns {FakeSheetRangeList}
    */
   constructor(ranges) {
-
     this.__ranges = ranges
+  }
 
-    const props = [
-      'clearDataValidations',
-      'setFontWeight',
+  activate() {
+    if (this.__ranges.length > 0) {
+      this.__ranges[0].getSheet().getParent().setActiveRangeList(this);
+    }
+    return this;
+  }
 
-      'activate',
-      'breakApart',
-      'setFormulaR1C1',
+  breakApart() {
+    this.__ranges.forEach(r => r.breakApart());
+    return this;
+  }
 
-      'setBorder',
-      'setFontColor',
-      'setFontLine',
-      'setFontStyle',
-      'setWrap',
+  clear(options) {
+    this.__ranges.forEach(r => r.clear(options));
+    return this;
+  }
 
-      'setVerticalText',
-      'setWrapStrategy',
-      'uncheck',
-      'removeCheckboxes',
-      'trimWhitespace',
-      'setTextRotation',
-      'setTextDirection',
-      'setVerticalAlignment',
-      'setFontSize',
-      'clearContent',
-      'setFontFamily',
-      'setFormula',
-      'setNote',
-      'clearNote',
-      'clearFormat',
-      'setHorizontalAlignment',
-      'clear',
-      'setValue',
-      'setNumberFormat'
-    ]
+  clearContent() {
+    this.__ranges.forEach(r => r.clearContent());
+    return this;
+  }
 
-    props.forEach(f => {
-      this[f] = () => {
-        return notYetImplemented(f)
-      }
-    })
+  clearDataValidations() {
+    this.__ranges.forEach(r => r.clearDataValidations());
+    return this;
+  }
 
+  clearFormat() {
+    this.__ranges.forEach(r => r.clearFormat());
+    return this;
+  }
+
+  clearNote() {
+    this.__ranges.forEach(r => r.clearNote());
+    return this;
+  }
+
+  removeCheckboxes() {
+    this.__ranges.forEach(r => r.removeCheckboxes());
+    return this;
+  }
+
+  setBorder(...args) {
+    this.__ranges.forEach(r => r.setBorder(...args));
+    return this;
+  }
+
+  setFontColor(color) {
+    this.__ranges.forEach(r => r.setFontColor(color));
+    return this;
+  }
+
+  setFontFamily(fontFamily) {
+    this.__ranges.forEach(r => r.setFontFamily(fontFamily));
+    return this;
+  }
+
+  setFontLine(fontLine) {
+    this.__ranges.forEach(r => r.setFontLine(fontLine));
+    return this;
+  }
+
+  setFontSize(size) {
+    this.__ranges.forEach(r => r.setFontSize(size));
+    return this;
+  }
+
+  setFontStyle(fontStyle) {
+    this.__ranges.forEach(r => r.setFontStyle(fontStyle));
+    return this;
+  }
+
+  setFontWeight(fontWeight) {
+    this.__ranges.forEach(r => r.setFontWeight(fontWeight));
+    return this;
+  }
+
+  setFormula(formula) {
+    this.__ranges.forEach(r => r.setFormula(formula));
+    return this;
+  }
+
+  setFormulaR1C1(formula) {
+    this.__ranges.forEach(r => r.setFormulaR1C1(formula));
+    return this;
+  }
+
+  setHorizontalAlignment(alignment) {
+    this.__ranges.forEach(r => r.setHorizontalAlignment(alignment));
+    return this;
+  }
+
+  setNote(note) {
+    this.__ranges.forEach(r => r.setNote(note));
+    return this;
+  }
+
+  setNumberFormat(numberFormat) {
+    this.__ranges.forEach(r => r.setNumberFormat(numberFormat));
+    return this;
+  }
+
+  setTextDirection(direction) {
+    this.__ranges.forEach(r => r.setTextDirection(direction));
+    return this;
+  }
+
+  setTextRotation(degrees) {
+    this.__ranges.forEach(r => r.setTextRotation(degrees));
+    return this;
+  }
+
+  setValue(value) {
+    this.__ranges.forEach(r => r.setValue(value));
+    return this;
+  }
+
+  setVerticalAlignment(alignment) {
+    this.__ranges.forEach(r => r.setVerticalAlignment(alignment));
+    return this;
+  }
+
+  setVerticalText(isVertical) {
+    this.__ranges.forEach(r => r.setVerticalText(isVertical));
+    return this;
+  }
+
+  setWrap(isWrapEnabled) {
+    this.__ranges.forEach(r => r.setWrap(isWrapEnabled));
+    return this;
+  }
+
+  setWrapStrategy(strategy) {
+    this.__ranges.forEach(r => r.setWrapStrategy(strategy));
+    return this;
+  }
+
+  trimWhitespace() {
+    this.__ranges.forEach(r => r.trimWhitespace());
+    return this;
+  }
+
+  uncheck() {
+    this.__ranges.forEach(r => r.uncheck());
+    return this;
   }
 
   toString() {
