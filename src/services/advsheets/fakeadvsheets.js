@@ -2,57 +2,16 @@
  * Advanced sheets service
  */
 import { Proxies } from '../../support/proxies.js'
-import { notYetImplemented } from '../../support/helpers.js'
+import { advClassMaker } from '../../support/helpers.js'
 import { getAuthedClient } from '../spreadsheetapp/shapis.js'
 import { newFakeAdvSheetsSpreadsheets } from './fakeadvsheetsspreadsheets.js'
 
-import { Utils } from '../../support/utils.js'
-
-
-// these are used to construct calls from the sheets advanced api
-// the toString() function returns a stringified version
-
-const advClassMaker = (props) => {
-
-  // it seems that the properties are not defined until they are set, so we can simply start with an empty object
-  const ob = {}
-  if (!props.length) {
-    return notYetImplemented()
-  }
-  // camel
-  const capped = props.map(Utils.capital)
-  const done = new Set()
-
-  // create property getters and setters
-  capped.map((f, i) => {
-
-    if (done.has(f)) {
-      console.log('....WARNING duplicate property  in advClassMaker', f)
-    }
-    done.add(f)
-    ob['get' + f] = () => ob[props[i]]
-    ob['set' + f] = (arg) => {
-      ob[props[i]] = arg
-      return ob
-    }
-  })
-
-  // tostring is a json stringifier
-  ob.toString = () => JSON.stringify(props.reduce((p, c) => {
-    p[c] = ob[c]
-    return p
-  }, {}))
-
-  return Proxies.guard(ob)
-
-
-}
 
 
 class FakeAdvSheets {
   constructor() {
     this.client = Proxies.guard(getAuthedClient())
-    this.__fakeObjectType = "Sheets"
+    this.__fakeObjectType = "Docs"
 
     const propLists = {
       newGridRange: ['sheetId', 'startRowIndex', 'startColumnIndex', 'endRowIndex', 'endColumnIndex'],
