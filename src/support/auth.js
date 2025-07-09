@@ -8,7 +8,9 @@ const _authScopes = new Set([])
 let _auth = null
 let _projectId = null
 let _tokenInfo = null
-let _accessToken = null
+let _adcPath = null
+let _accessToken = null;
+let _tokenExpiresAt = null;
 let _manifest = null
 let _clasp = null
 
@@ -21,19 +23,26 @@ const getSettings = () => _settings
 const getScriptId = () => getSettings().scriptId
 const getDocumentId = () => getSettings().documentId
 const setProjectId = (projectId) => _projectId = projectId
-const setTokenInfo = (tokenInfo) => _tokenInfo = tokenInfo
+const setAdcPath = (adcPath) => _adcPath = adcPath
+const getAdcPath = () => _adcPath
 const setAccessToken = (accessToken) => _accessToken = accessToken
 const setSettings = (settings) => _settings = settings
 const getCachePath = () => getSettings().cache
 const getPropertiesPath = () => getSettings().properties
+const setTokenExpiresAt = (expiresAt) => _tokenExpiresAt = expiresAt;
+const setTokenInfo = (tokenInfo) => {
+  _tokenInfo = tokenInfo;
+  // set expiry time with a 60 second buffer
+  if (tokenInfo && tokenInfo.expires_in) {
+    setTokenExpiresAt(Date.now() + ((tokenInfo.expires_in - 60) * 1000));
+  } else {
+    // no expiry info, so we'll have to fetch a new one next time
+    setTokenExpiresAt(0);
+  }
+}
 const getTokenInfo = () => {
   if (!_tokenInfo) throw `token info isnt set yet`
   return _tokenInfo
-}
-
-const getAccessToken = () => {
-  if (!_accessToken) throw `access token isnt set yet`
-  return _accessToken
 }
 
 const getTimeZone = () => getManifest().timeZone
@@ -42,6 +51,9 @@ const getTokenScopes = () => getTokenInfo().scope
 const getHashedUserId = () => createHash('md5').update(getUserId() + 'hud').digest().toString('hex')
 
 
+const getAccessToken = () => _accessToken;
+
+const isTokenExpired = () => !_accessToken || !_tokenExpiresAt || Date.now() >= _tokenExpiresAt;
 /**
  * we'll be using adc credentials so no need for any special auth here
  * the idea here is to keep addign scopes to any auth so we have them all
@@ -59,12 +71,13 @@ const setProjectIdFromADC = async (scopes) => {
   return _projectId
 }
 
-const setAuth = (scopes = []) => {
+const setAuth = (scopes = [], keyFile = null) => {
 
   if (!hasAuth() || !scopes.every(s => _authScopes.has(s))) {
     // if we havent yet got a project id, then we need an auth that can get it
     // want to keep this function sync so we'll simply re do auth on being called until somehow we get one
     _auth = new GoogleAuth({
+      keyFile,
       scopes,
       projectId: getProjectId()
     })
@@ -159,9 +172,10 @@ export const Auth = {
   getAuthedScopes,
   googify,
   setProjectId,
+  setAdcPath,
+  getAdcPath,
   getUserId,
   setTokenInfo,
-  setAccessToken,
   getAccessToken,
   getTokenScopes,
   getScriptId,
@@ -176,5 +190,7 @@ export const Auth = {
   getManifest,
   getClasp,
   getTimeZone,
-  setProjectIdFromADC
+  setProjectIdFromADC,
+  setAccessToken,
+  isTokenExpired
 }

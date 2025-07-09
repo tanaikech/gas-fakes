@@ -50,15 +50,14 @@
  * @param {object} [p.params] any extra params
  * @return {DriveResponse} from the drive api
  */
-export const sxStreamUpMedia = async ({ resource, drapisPath, authPath, scopes, bytes, fields, method, mimeType, fileId, params }) => {
+export const sxStreamUpMedia = async ({ resource, drapisPath, authPath, scopes, bytes, fields, method, mimeType, fileId, params, adcPath, projectId }) => {
 
   const { Auth, responseSyncify } = await import(authPath)
   const { getApiClient } = await import(drapisPath)
   const { default: intoStream } = await import('into-stream');
 
-  // the scopes are required to set up an appropriate auth
-  await Auth.setProjectIdFromADC(scopes)
-  Auth.setAuth(scopes)
+  Auth.setProjectId(projectId);
+  Auth.setAuth(scopes, adcPath);
   const auth = Auth.getAuth()
 
   // this is the node drive service
@@ -111,15 +110,14 @@ export const sxStreamUpMedia = async ({ resource, drapisPath, authPath, scopes, 
  * @param { string[]} p.scopes the scopres required for the operation
  * @return {SxResult} from the api
  */
-export const sxDriveMedia = async ({ id, drapisPath, authPath, scopes }) => {
+export const sxDriveMedia = async ({ id, drapisPath, authPath, scopes, adcPath, projectId }) => {
 
   const { Auth, responseSyncify } = await import(authPath)
   const { getApiClient } = await import(drapisPath)
   const { getStreamAsBuffer } = await import('get-stream');
 
-  // the scopes are required to set up an appropriate auth
-  await Auth.setProjectIdFromADC(scopes)
-  Auth.setAuth(scopes)
+  Auth.setProjectId(projectId);
+  Auth.setAuth(scopes, adcPath);
   const auth = Auth.getAuth()
 
   // this is the node drive service

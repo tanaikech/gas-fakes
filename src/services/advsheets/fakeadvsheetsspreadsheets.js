@@ -6,7 +6,7 @@
 import { Proxies } from '../../support/proxies.js'
 import { Syncit } from '../../support/syncit.js'
 import { notYetImplemented, ssError } from '../../support/helpers.js'
-import { newFakeSheetValues } from './fakeadvvalues.js'
+import { newFakeSheetValues } from '../advdrive/fakeadvvalues.js'
 import { getWorkbookEntry, setWorkbookEntry, clearWorkbookCache } from "../../support/sheetscache.js"
 import { newFakeAdvSheetsDeveloperMetadata } from './fakeadvsheetsdevelopermetadata.js'
 

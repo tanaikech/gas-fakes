@@ -3,9 +3,8 @@
  */
 import { Proxies } from '../../support/proxies.js'
 import { advClassMaker, notYetImplemented } from '../../support/helpers.js'
-// TODO
-import { getAuthedClient } from '../driveapp/drapis.js'
-
+import { getAuthedClient } from './docapis.js'
+import { newFakeAdvDocuments } from './fakeadvdocuments.js'
 
 class FakeAdvDocs {
   constructor() {
@@ -26,7 +25,7 @@ class FakeAdvDocs {
     return 'v1'
   }
   get Documents() {
-    return notYetImplemented("Documents")
+    return newFakeAdvDocuments(this)
   }
 }
 

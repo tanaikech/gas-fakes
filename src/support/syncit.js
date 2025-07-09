@@ -15,7 +15,7 @@ import mime from 'mime';
 import { sxStreamUpMedia, sxDriveMedia } from './sxdrive.js';
 import { sxApi } from './sxapi.js';
 import { sxStore } from './sxstore.js'
-import { sxInit } from './sxauth.js'
+import { sxInit, sxRefreshToken } from './sxauth.js'
 import { sxZipper, sxUnzipper } from './sxzip.js';
 import { sxFetch } from './sxfetch.js';
 import { minFields } from './helpers.js'
@@ -25,8 +25,8 @@ import is from '@sindresorhus/is';
 
 
 const authPath = "../support/auth.js"
-const drapisPath = "../services/driveapp/drapis.js"
-const shapisPath = "../services/spreadsheetapp/shapis.js"
+const drapisPath = "../services/advdrive/drapis.js"
+const shapisPath = "../services/advsheets/shapis.js"
 const kvPath = '../support/kv.js'
 const manifestDefaultPath = './appsscript.json'
 const claspDefaultPath = "./.clasp.json"
@@ -36,6 +36,11 @@ const cacheDefaultPath = "/tmp/gas-fakes/cache"
 // note that functions like Sheets.newGridRange() etc create objects that contain get and set functions
 // the makesynchronous functions need data that can be serialized. so we need to string/parse to normlaize them
 const normalizeSerialization = (ob) => is.nullOrUndefined(ob) || !is.object(ob) ? ob : JSON.parse(JSON.stringify(ob))
+
+const fxRunner = (sxFunction, ...args) => {
+  const fx = makeSynchronous(sxFunction);
+  return fx(...args);
+};
 
 /**
  * note that the relpath of exports file 
@@ -50,6 +55,17 @@ const normalizeSerialization = (ob) => is.nullOrUndefined(ob) || !is.object(ob) 
  * @returns {string} the full path
  */
 const getModulePath = (relTarget) => path.resolve(import.meta.dirname, relTarget)
+
+const getAuthPayload = () => {
+  // these are needed to re-establish auth in the subprocess without async calls
+  return {
+    projectId: Auth.getProjectId(),
+    adcPath: Auth.getAdcPath(),
+    // also need the paths to the modules
+    authPath: getModulePath(authPath)
+  }
+}
+
 
 /**
  * check and register a result in cache
@@ -88,15 +104,12 @@ const fxStreamUpMedia = ({ file = {}, blob, fields = "", method = "create", file
   // merge the required fields with the minimum
   fields = mergeParamStrings(minFields, fields)
 
-  // get a sync version of this async function
-  const fx = makeSynchronous(sxStreamUpMedia)
-
   // run in a subprocess
-  const result = fx({
+  const result = fxRunner(sxStreamUpMedia, {
     resource: file,
     bytes: blob ? blob.getBytes() : null,
     drapisPath: getModulePath(drapisPath),
-    authPath: getModulePath(authPath),
+    ...getAuthPayload(),
     scopes,
     fields,
     method,
@@ -123,7 +136,6 @@ const fxDrive = ({ prop, method, params, options }) => {
     prop,
     method,
     apiPath: drapisPath,
-    authPath,
     scopes,
     params,
     options
@@ -149,7 +161,6 @@ const fxSheets = ({ subProp, prop, method, params, options }) => {
     prop,
     method,
     apiPath: shapisPath,
-    authPath,
     scopes,
     params,
     options
@@ -195,7 +206,6 @@ const fxDriveGet = ({ id, params, allow404 = false, allowCache = true ,options})
     prop: "files",
     method: "get",
     apiPath: drapisPath,
-    authPath,
     scopes,
     params,
     options
@@ -219,15 +229,12 @@ const fxApi = ({ subProp, prop, method, params, apiPath, options }) => {
 
   const scopes = Array.from(Auth.getAuthedScopes().keys())
 
-  // get a sync version of this async function
-  const fx = makeSynchronous(sxApi)
-
-  const result = fx({
+  const result = fxRunner(sxApi, {
     subProp,
     prop,
     method,
     apiPath: getModulePath(apiPath),
-    authPath: getModulePath(authPath),
+    ...getAuthPayload(),
     scopes,
     params: normalizeSerialization(params),
     options: normalizeSerialization(options)
@@ -257,9 +264,8 @@ const fxZipper = ({ blobs }) => {
       bytes: f.getBytes()
     }
   })
-  // get a sync version of this async function
-  const fx = makeSynchronous(sxZipper)
-  return fx({
+
+  return fxRunner(sxZipper, {
     blobsContent
   })
 
@@ -276,9 +282,8 @@ const fxUnzipper = ({ blob }) => {
     name: blob.getName(),
     bytes: blob.getBytes()
   }
-  // get a sync version of this async function
-  const fx = makeSynchronous(sxUnzipper)
-  return fx({
+
+  return fxRunner(sxUnzipper, {
     blobContent
   })
 }
@@ -305,11 +310,8 @@ const fxInit = ({
   // this is the path of the runing main process
   const mainDir = path.dirname(process.argv[1])
 
-  // get a sync version of this async function
-  const fx = makeSynchronous(sxInit)
-
   // because this is all run in a synced subprocess it's not an async result
-  const synced = fx({
+  const synced = fxRunner(sxInit, {
     claspPath,
     settingsPath,
     manifestPath,
@@ -324,6 +326,7 @@ const fxInit = ({
     scopes,
     projectId,
     tokenInfo,
+    adcPath,
     accessToken,
     settings,
     manifest,
@@ -334,6 +337,7 @@ const fxInit = ({
   Auth.setProjectId(projectId)
   Auth.setAuth(scopes)
   Auth.setTokenInfo(tokenInfo)
+  Auth.setAdcPath(adcPath)
   Auth.setAccessToken(accessToken)
   Auth.setSettings(settings)
   Auth.setClasp(clasp)
@@ -341,6 +345,7 @@ const fxInit = ({
   return synced
 
 }
+
 
 
 
@@ -353,19 +358,23 @@ const fxInit = ({
  */
 const fxStore = (storeArgs, method = "get", ...kvArgs) => {
 
-  // get a sync version of this async function
-  const fx = makeSynchronous(sxStore)
-
-  const result = fx({
+  return fxRunner(sxStore, {
     kvPath: getModulePath(kvPath),
     method,
     kvArgs,
     storeArgs
   })
 
-  return result
 }
 
+
+const fxRefreshToken = () => {
+  const scopes = Array.from(Auth.getAuthedScopes().keys());
+  return fxRunner(sxRefreshToken, {
+    ...getAuthPayload(),
+    scopes
+  });
+};
 
 
 /**
@@ -381,16 +390,13 @@ const fxDriveMedia = ({ id }) => {
   // this will run a node child process
   // note that nothing is inherited, so consider it as a standalone script
 
-  // get a sync version of this async function
-  const fx = makeSynchronous(sxDriveMedia)
   const scopes = Array.from(Auth.getAuthedScopes().keys())
-  const result = fx({
+  return fxRunner(sxDriveMedia, {
     id,
     drapisPath: getModulePath(drapisPath),
-    authPath: getModulePath(authPath),
+    ...getAuthPayload(),
     scopes
   })
-  return result
 }
 
 
@@ -405,8 +411,7 @@ const fxDriveMedia = ({ id }) => {
  */
 const fxFetch = (url, options, responseFields) => {
   // TODO need to handle muteHttpExceptions
-  const fx = makeSynchronous(sxFetch)
-  return fx(url, options, responseFields)
+  return fxRunner(sxFetch, url, options, responseFields)
 }
 
 export const Syncit = {
@@ -419,5 +424,6 @@ export const Syncit = {
   fxUnzipper,
   fxStreamUpMedia,
   fxDriveGet,
-  fxSheets
+  fxSheets,
+  fxRefreshToken
 }

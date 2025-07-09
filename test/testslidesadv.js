@@ -16,10 +16,19 @@ export const testSlidesAdv = (pack) => {
   const { unit, fixes } = pack || initTests()
   const toTrash = []
 
-  unit.section ("basic adv slides props", t=>{
-    t.is (Slides.toString(), "AdvancedServiceIdentifier{name=slides, version=v1}")
-    t.is (Slides.getVersion(), "v1")
+  unit.section("basic adv slides props", t => {
+    t.is(Slides.toString(), "AdvancedServiceIdentifier{name=slides, version=v1}")
+    t.is(Slides.getVersion(), "v1")
 
+    Reflect.ownKeys(Slides)
+      .filter(f => is.string(f) && f.match(/^new/))
+      .forEach(f => {
+        t.true(is.function(Slides[f]), `check ${f} is a function`)
+        const ob = Slides[f]()
+        t.true(Reflect.ownKeys(ob).every(g => is.function(ob[g])), "all Slides.newsubprops are functions")
+      })
+    t.is (is (Slides.Presentations), "Object")
+    t.is (Slides.toString(), Slides.Presentations.toString())
   })
 
   // running standalone

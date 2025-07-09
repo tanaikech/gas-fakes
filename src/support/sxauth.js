@@ -26,6 +26,37 @@
  */
 export const sxInit = async ({ manifestPath, authPath, claspPath, settingsPath, mainDir, cachePath, propertiesPath, fakeId }) => {
 
+  const findAdcPath = async () => {
+    const { homedir } = await import('os');
+    const { access } = await import('node:fs/promises');
+    const path = await import('path');
+
+    if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+      return process.env.GOOGLE_APPLICATION_CREDENTIALS;
+    }
+    const isWindows = process.platform === 'win32';
+    const home = homedir();
+    let adcPath;
+    if (isWindows) {
+      const appData = process.env.APPDATA;
+      if (appData) {
+        adcPath = path.join(appData, 'gcloud', 'application_default_credentials.json');
+      }
+    } else {
+      adcPath = path.join(home, '.config', 'gcloud', 'application_default_credentials.json');
+    }
+
+    if (adcPath) {
+      try {
+        await access(adcPath);
+        return adcPath;
+      } catch {
+        // file doesn't exist or not accessible
+      }
+    }
+    return null;
+  };
+
   // get the settings and manifest
   const path = await import('path')
   const { readFile, writeFile, mkdir } = await import('node:fs/promises')
@@ -92,11 +123,10 @@ export const sxInit = async ({ manifestPath, authPath, claspPath, settingsPath, 
   // now we can register the scopes and set up a full auth including it
   const auth = Auth.setAuth(scopes)
 
-  // get an access token so we can test it to pick up the authed scopes etc
-  const accessToken = await auth.getAccessToken()
-
+  const adcPath = await findAdcPath();
   // get access token info
   const { default: got } = await import('got')
+  const accessToken = await auth.getAccessToken()
   const tokenInfo = await got(`https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${accessToken}`).json()
 
 
@@ -105,9 +135,21 @@ export const sxInit = async ({ manifestPath, authPath, claspPath, settingsPath, 
     scopes,
     projectId,
     tokenInfo,
-    accessToken,
+    adcPath,
+    accessToken, // also return the token itself
     settings,
     manifest,
     clasp
   }
 }
+
+export const sxRefreshToken = async ({ authPath, scopes, adcPath, projectId }) => {
+  const { Auth } = await import(authPath);
+  // We can re-initialize auth in the subprocess much faster now
+  Auth.setProjectId(projectId);
+  const auth = Auth.setAuth(scopes, adcPath);
+  const accessToken = await auth.getAccessToken();
+  const { default: got } = await import('got');
+  const tokenInfo = await got(`https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${accessToken}`).json();
+  return { accessToken, tokenInfo };
+};

@@ -11,7 +11,12 @@ import { Proxies } from '../../support/proxies.js'
  * @return {string} token
  */
 const getOAuthToken = () => {
-  return Auth.getAccessToken()
+  if (Auth.isTokenExpired()) {
+    const { accessToken, tokenInfo } = Syncit.fxRefreshToken();
+    Auth.setAccessToken(accessToken);
+    Auth.setTokenInfo(tokenInfo); // This will also update the expiry time
+  }
+  return Auth.getAccessToken();
 }
 
 

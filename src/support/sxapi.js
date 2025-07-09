@@ -11,15 +11,14 @@
  * @param {string} p.options additional options to the api call
  * @return {SxResult} from the api
  */
-export const sxApi = async ({ subProp, prop, method, apiPath, authPath, scopes, params, options }) => {
+export const sxApi = async ({ subProp, prop, method, apiPath, authPath, scopes, params, options, adcPath, projectId }) => {
 
   const { Auth, responseSyncify } = await import(authPath)
   const { getAuthedClient } = await import(apiPath)
 
-  // the scopes are required to set up an appropriate auth
-  await Auth.setProjectIdFromADC(scopes)
-  Auth.setAuth(scopes)
-  //console.log ( 'sxapi', { subProp, prop, method, apiPath, authPath, scopes, params, options })
+  // re-initialize auth in the subprocess - this is now fast
+  Auth.setProjectId(projectId);
+  Auth.setAuth(scopes, adcPath);
   // this is the node service api
   const apiClient = getAuthedClient()
   try {

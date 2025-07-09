@@ -3,7 +3,7 @@
  */
 import { Proxies } from '../../support/proxies.js'
 import { advClassMaker } from '../../support/helpers.js'
-import { getAuthedClient } from '../spreadsheetapp/shapis.js'
+import { getAuthedClient } from './shapis.js'
 import { newFakeAdvSheetsSpreadsheets } from './fakeadvsheetsspreadsheets.js'
 
 

@@ -16,10 +16,22 @@ export const testDocsAdv = (pack) => {
   const { unit, fixes } = pack || initTests()
   const toTrash = []
 
-  unit.section ("basic adv docs props", t=>{
-    t.is (Docs.toString(), "AdvancedServiceIdentifier{name=docs, version=v1}")
-    t.is (Docs.getVersion(), "v1")
+  unit.section("basic adv docs props", t => {
+    t.is(Docs.toString(), "AdvancedServiceIdentifier{name=docs, version=v1}")
+    t.is(Docs.getVersion(), "v1")
 
+
+    Reflect.ownKeys(Docs)
+      .filter(f => is.string(f) && f.match(/^new/))
+      .forEach(f => {
+        t.true(is.function(Docs[f]), `check ${f} is a function`)
+        const ob = Docs[f]()
+        t.true(Reflect.ownKeys(ob).every(g => is.function(ob[g])), "all Docs.newsubprops are functions")
+      })
+
+    t.is (is (Docs.Documents), "Object")
+    t.is (Docs.toString(), Docs.Documents.toString())
+ 
   })
 
   // running standalone

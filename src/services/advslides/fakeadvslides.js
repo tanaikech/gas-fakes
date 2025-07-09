@@ -2,10 +2,9 @@
  * Advanced sheets service
  */
 import { Proxies } from '../../support/proxies.js'
-import { advClassMaker, notYetImplemented } from '../../support/helpers.js'
-// TODO
-import { getAuthedClient } from '../driveapp/drapis.js'
-
+import { advClassMaker } from '../../support/helpers.js'
+import { getAuthedClient } from './slapis.js'
+import { newFakeAdvPresentations  } from './fakeadvpresentations.js'
 class FakeAdvSlides {
   constructor() {
     this.client = Proxies.guard(getAuthedClient())
@@ -25,7 +24,7 @@ class FakeAdvSlides {
     return 'v1'
   }
   get Presentations() {
-    return notYetImplemented("Presentations")
+    return newFakeAdvPresentations(this)
   }
 }
 
