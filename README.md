@@ -184,7 +184,13 @@ v1.0.10
 - `Blob` - all
 - `User` - all
 - `Drive (Advanced Service)` - 40%
-- `Sheets (Advanced Service)` - 40%
+- `Sheets (Advanced Service)` - 60%
+- `Slides (Advanced Service)` - 2%
+- `Docs (Advanced Service)` - 2%
+- `DocumentApp` - placeholder
+- `SlidesApp` - placeholder
+
+
 
 ### Testing coverage
 
