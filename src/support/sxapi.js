@@ -11,31 +11,17 @@
  * @param {string} p.options additional options to the api call
  * @return {SxResult} from the api
  */
-export const sxApi = async ({ subProp, prop, method, apiPath, authPath, scopes, params, options, accessToken }) => {
+export const sxApi = async ({ subProp, prop, method, apiPath, authPath, scopes, params, options }) => {
 
   const { Auth, responseSyncify } = await import(authPath)
-  let apiClient;
+  const { getAuthedClient } = await import(apiPath)
 
-  if (accessToken) {
-    const { google } = await import('googleapis');
-    const { OAuth2Client } = await import('google-auth-library');
-    const auth = new OAuth2Client();
-    auth.setCredentials({ access_token: accessToken });
-
-    if (apiPath.includes('drapis')) {
-      apiClient = google.drive({ version: 'v3', auth });
-    } else if (apiPath.includes('shapis')) {
-      apiClient = google.sheets({ version: 'v4', auth });
-    } else {
-      throw new Error(`Unknown apiPath in sxApi: ${apiPath}`);
-    }
-  } else {
-    const { getAuthedClient } = await import(apiPath)
-    await Auth.setProjectIdFromADC(scopes)
-    Auth.setAuth(scopes)
-    apiClient = getAuthedClient()
-  }
-
+  // the scopes are required to set up an appropriate auth
+  await Auth.setProjectIdFromADC(scopes)
+  Auth.setAuth(scopes)
+  //console.log ( 'sxapi', { subProp, prop, method, apiPath, authPath, scopes, params, options })
+  // this is the node service api
+  const apiClient = getAuthedClient()
   try {
 
     const callish = subProp ? apiClient[prop][subProp] : apiClient[prop] 

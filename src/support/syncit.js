@@ -116,7 +116,7 @@ const fxStreamUpMedia = ({ file = {}, blob, fields = "", method = "create", file
  * @param {object} p.params the params to add to the request
  * @return {DriveResponse} from the drive api
  */
-const fxDrive = ({ prop, method, params, options, accessToken }) => {
+const fxDrive = ({ prop, method, params, options }) => {
 
   const scopes = Array.from(Auth.getAuthedScopes().keys())
   return fxApi({
@@ -126,8 +126,7 @@ const fxDrive = ({ prop, method, params, options, accessToken }) => {
     authPath,
     scopes,
     params,
-    options,
-    accessToken
+    options
   })
 
 }
@@ -141,7 +140,7 @@ const fxDrive = ({ prop, method, params, options, accessToken }) => {
  * @param {object} p.params the params to add to the request
  * @return {SheetsResponse} from the sheets api
  */
-const fxSheets = ({ subProp, prop, method, params, options, accessToken }) => {
+const fxSheets = ({ subProp, prop, method, params, options }) => {
 
 
   const scopes = Array.from(Auth.getAuthedScopes().keys())
@@ -153,8 +152,7 @@ const fxSheets = ({ subProp, prop, method, params, options, accessToken }) => {
     authPath,
     scopes,
     params,
-    options,
-    accessToken
+    options
   })
 
 }
@@ -217,7 +215,7 @@ const fxDriveGet = ({ id, params, allow404 = false, allowCache = true ,options})
  * @param {string} p.apiPath where to import the api from
  * @return {DriveResponse} from the drive api
  */
-const fxApi = ({ subProp, prop, method, params, apiPath, options, accessToken }) => {
+const fxApi = ({ subProp, prop, method, params, apiPath, options }) => {
 
   const scopes = Array.from(Auth.getAuthedScopes().keys())
 
@@ -232,8 +230,7 @@ const fxApi = ({ subProp, prop, method, params, apiPath, options, accessToken })
     authPath: getModulePath(authPath),
     scopes,
     params: normalizeSerialization(params),
-    options: normalizeSerialization(options),
-    accessToken
+    options: normalizeSerialization(options)
   })
 
   return result
