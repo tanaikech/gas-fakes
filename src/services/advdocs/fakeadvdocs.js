@@ -3,7 +3,8 @@
  */
 import { Proxies } from '../../support/proxies.js'
 import { advClassMaker, notYetImplemented } from '../../support/helpers.js'
-import { getAuthedClient } from '../spreadsheetapp/shapis.js'
+// TODO
+import { getAuthedClient } from '../driveapp/drapis.js'
 
 
 class FakeAdvDocs {

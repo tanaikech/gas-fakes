@@ -26,12 +26,14 @@ import { testSheetsVui } from './testsheetsvui.js';
 import { testSheetsDeveloper } from './testsheetsdeveloper.js';
 import { testSheetsData } from './testsheetsdata.js';
 import { testDocsAdv } from './testdocsadv.js'
-
+import { testSlidesAdv } from './testslidesadv.js'
 const testFakes = () => {
   const pack = initTests()
   const {unit} = pack
 
   // add one of these for each service being tested
+  console.log ('\n----Test slidesadv----')
+  testSlidesAdv(pack)
   console.log ('\n----Test docsadv----')
   testDocsAdv(pack)
   console.log ('\n----Test Enums----')

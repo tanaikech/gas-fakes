@@ -7,7 +7,6 @@ import { getAuthedClient } from '../spreadsheetapp/shapis.js'
 import { newFakeAdvSheetsSpreadsheets } from './fakeadvsheetsspreadsheets.js'
 
 
-
 class FakeAdvSheets {
   constructor() {
     this.client = Proxies.guard(getAuthedClient())

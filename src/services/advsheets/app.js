@@ -8,7 +8,7 @@
 import { newFakeAdvSheets } from './fakeadvsheets.js'
 import { Proxies } from '../../support/proxies.js'
 
-// This will eventually hold a proxy for DriveApp
+
 let _app = null
 
 /**
