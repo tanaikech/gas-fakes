@@ -44,7 +44,7 @@ class FakeAdvSheetsDeveloperMetadata {
       },
     };
 
-    const { response, data } = Syncit.fxSheets(pack);
+    const { response, data } = Syncit.fxSheets(pack) || {};
     ssError(response, `${pack.prop}.${pack.subProp}.${pack.method}`);
     return data;
   }
@@ -56,7 +56,7 @@ class FakeAdvSheetsDeveloperMetadata {
       method: "search",
       params: { spreadsheetId, requestBody },
     };
-    const { response, data } = Syncit.fxSheets(pack);
+    const { response, data } = Syncit.fxSheets(pack) || {};
     ssError(response, `${pack.prop}.${pack.subProp}.${pack.method}`);
     return data;
   }

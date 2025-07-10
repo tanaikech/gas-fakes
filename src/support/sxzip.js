@@ -1,68 +1,53 @@
 /**
  * ZIPPING/UNZIPPING
- * all these functions run as subprocesses and wait fo completion
+ * all these functions run in the worker
  * thus turning async operations into sync
- * note 
- * - since the subprocess starts afresh it has to reimport all dependecies
- * - there is nocontext inhertiance
+ * note
  * - arguments and returns must be serializable ie. primitives or plain objects
- * 
- * TODO - this slows down debuggng significantly as it has to keep restarting the debugger
- * - need to research how to get over that
  */
+import archiver from 'archiver';
+import unzipper from 'unzipper';
+import { syncLog, syncWarn, syncError } from './workersync/synclogger.js';
+
+const streamToBuffer = (stream) => {
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    stream.on('data', chunk => chunks.push(chunk));
+    stream.on('error', err => reject(err));
+    stream.on('end', () => resolve(Buffer.concat(chunks)));
+  });
+};
+
 /**
  * create a zipped version of multiple files
  * @param {object} p params
  * @param {SerializedBlob[]} blobContent
  * @return  {byte[]} the zipped content
  */
-export const sxZipper = async ({ blobsContent }) => {
+export const sxZipper = async (_Auth, { blobsContent }) => {
+ 
+  const archive = archiver.create('zip', {});
 
-  const { default: archiver } = await import('archiver')
-  const { getStreamAsBuffer } = await import('get-stream')
-  const { PassThrough } = await import('node:stream')
+  try {
+    // It's important to handle warnings, as they don't necessarily reject the promise.
+    archive.on('warning', (err) => syncWarn(`Archiver warning: ${err}`));
 
-  const passthrough = new PassThrough()
+    // Start collecting the buffer in parallel. This promise resolves when the stream ends.
+    const bufferPromise = streamToBuffer(archive);
 
-  // just use the default compression level
-
-  const archive = archiver.create('zip', {})
-
-  const doArchive = async () => {
-
-    // warning could be non destructive
-    archive.on("warning", function (err) {
-      if (err.code === "ENOENT") {
-        console.log("....warning on archiver", err)
-      } else {
-        // throw error
-        return Promise.reject(err)
-      }
+    blobsContent.forEach((f) => {
+      archive.append(Buffer.from(f.bytes), { name: f.name });
     });
 
-    archive.on("error", function (err) {
-      return Promise.reject(err)
-    })
-
-    const result = getStreamAsBuffer(archive.pipe(passthrough))
-
-    blobsContent.forEach(f => {
-      archive.append(Buffer.from(f.bytes), { name: f.name })
-    })
-
-    archive.finalize()
-
-    return result.then(buffer => Array.from(buffer))
-
+    // Wait for BOTH the stream to end (which gives us the buffer) AND
+    // for finalization to be complete. This is the most robust way.
+    const [buffer] = await Promise.all([bufferPromise, archive.finalize()]);
+    return Array.from(buffer);
+  } catch (err) {
+    syncError('sxZipper failed', err);
+    throw err;
   }
-
-  return doArchive()
-    .catch(err => {
-      console.log('...archiver failed with error', err)
-      return Promise.reject(err)
-    })
-
-}
+};
 
 /**
  * create a unzipped version 
@@ -70,22 +55,24 @@ export const sxZipper = async ({ blobsContent }) => {
  * @param {SerializedBlob} blobContent the zipped content
  * @return  {SerializedBlob[]} the unzipped content
  */
-export const sxUnzipper = async ({ blobContent }) => {
-
-  const { default: unzipper } = await import('unzipper')
-  const { getStreamAsBuffer } = await import('get-stream')
+export const sxUnzipper = async (_Auth, { blobContent }) => {
 
   const buffer = Buffer.from(blobContent.bytes)
   const unzipped = await unzipper.Open.buffer(buffer)
 
-  const result = await Promise.all(unzipped.files.map(async file => {
-    const bytes = await getStreamAsBuffer(file.stream())
+  // By wrapping the Promise.all in a try/catch, we ensure that if any
+  // single file stream fails, the entire operation rejects cleanly.
+  try {
+    const result = await Promise.all(
+      unzipped.files.map(async (file) => {
+        const buffer = await streamToBuffer(file.stream());
+        return { bytes: Array.from(buffer), name: file.path };
+      })
+    );
 
-    return {
-      bytes,
-      name: file.path
-    }
-  }))
-
-  return result
+    return result;
+  } catch (err) {
+    syncError('An error occurred while unzipping a file stream inside the archive.', err);
+    throw err; // Re-throw to be caught by the main worker error handler
+  }
 }

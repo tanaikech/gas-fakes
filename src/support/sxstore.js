@@ -1,19 +1,17 @@
 /**
  * STORE functions
- * all these functions run as subprocesses and wait fo completion
+ * all these functions run in the worker
  * thus turning async operations into sync
- * note 
- * - since the subprocess starts afresh it has to reimport all dependecies
- * - there is nocontext inhertiance
+ * note
  * - arguments and returns must be serializable ie. primitives or plain objects
- * 
- * TODO - this slows down debuggng significantly as it has to keep restarting the debugger
- * - need to research how to get over that
  */
+import { newKStore } from './kv.js';
+import { syncLog } from './workersync/synclogger.js';
 
-export const sxStore = async ({ kvPath, kvArgs, storeArgs, method }) => {
-  const { newKStore } = await import(kvPath)
-  const { store } = newKStore(storeArgs)
-  const result = await store[method](...kvArgs)
-  return result
-}
+export const sxStore = async (_Auth, { kvArgs, storeArgs, method }) => {
+  // Auth is passed by the worker but not used for this local operation.
+
+  const { store } = newKStore(storeArgs);
+  const result = await store[method](...kvArgs);
+  return result;
+};

@@ -3,10 +3,10 @@
 I use clasp/vscode to develop Google Apps Script (GAS) applications, but when using GAS native services, there's way too much back and fowards to the GAS IDE going while testing. I set myself the ambition of implementing fake version of the GAS runtime environment on Node so I could at least do some testing locally.
 
 This is a proof of concept so I've implemented a subset of number of services and methods, but the tricky parts are all in place so all that's left is a load of busy work (to which I heartily invite any interested collaborators).
-
 ## progress
 
-This is a pretty huge task, so I'm working on adding services a little bit at a time, with usually just a few methods added in each release.
+This is a pretty huge task, so I'm working on adding services a little bit at a time, with usually just a few methods added in each release. I'm using this readme to report not just on how to use this thing, but also on challenges and things I've learned along the way. So it's going to get pretty long.
+
 
 ## Getting started
 
@@ -160,9 +160,28 @@ Beyond that, implementation is just a lot of busy work. If you are interested, h
 
 Although Apps Script supports async/await/promise syntax, it operates in blocking mode. I didn't really want to have to insist on async coding in code targeted at GAS, so I needed to find a way to emulate what the GAS environment probably does.
 
-Since asynchonicity is fundamental to Node, there's no real simple way to convert async to sync. However, there is such a thing as a [child-process](https://nodejs.org/api/child_process.html#child-process) which you can start up to run things, and it features an [execSync](https://nodejs.org/api/child_process.html#child_processexecsynccommand-options) method which delays the return from the child process until the promise queue is all settled. So the simplest solution is to run an async method in a child process, wait till it's done, and return the results synchronously. I found that [Sindre Sorhus](https://github.com/sindresorhus) uses this approach with [make-synchronous](https://github.com/sindresorhus/make-synchronous), so I'm using that.
+Since asynchonicity is fundamental to Node, there's no real simple way to convert async to sync. However, there is such a thing as a [child-process](https://nodejs.org/api/child_process.html#child-process) which you can start up to run things, and it features an [execSync](https://nodejs.org/api/child_process.html#child_processexecsynccommand-options) method which delays the return from the child process until the promise queue is all settled. So the simplest solution is to run an async method in a child process, wait till it's done, and return the results synchronously. I found that [Sindre Sorhus](https://github.com/sindresorhus) uses this approach with [make-synchronous](https://github.com/sindresorhus/make-synchronous).However, runnng up a child process in Node is pretty expensive and slow, and each subprocess has to reimport the google apis and go through a reauth chain which can take up  to 1.5 secs per call.
 
-Runnng up a child process in Node is pretty expensive and slow, so I'll be looking for ways to speed that up. My initial implementation picked up Auth from the ADC in the subprocess each time. There's probably a way of minimizing the startup time if I migrate from the sheets api to the JSON API with a regular accessToken rather than the Node API/Googleauth combination. Some tests on that when i get to it. 
+#### Worker Update
+
+I'm now upgrading to use a worker thread to handle all activities that need to be performed synchronously. It's a lot more tricky to implement and handle exceptions, but worth the effort. 
+- The worker thread only needs to be authed once on initialization and retains state between each call.
+- Control to shared memory is via [Node Atomics](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics) which gives a mutex style control.
+- Node has built in [worker threads](https://nodejs.org/api/worker_threads.html), so there's no need for any external libraries
+- Only arguments that can be stringified can be passed to and from a worker - but this is the same limitiation as passing arguments to a subprocess
+- To avoid grabbing too much shared memory,I use a temporary file to pass huge amounts of data - but this will be a rarish exception.
+- There are lot of async gotchas with workers so your async handling needs to be very precise. I spent a lot of time trying to track down potentially unsettled promises only to discover that worker.unref() is required to prevent the worker from stopping the main process exiting.
+- console.log doesnt work reliable in a worker, even if you redirect the workers stdout & stder 
+````js
+worker.stdout.pipe(process.stdout);
+worker.stderr.pipe(process.stderr);
+```` 
+This is because console.log is async, and never shows. You need a sync version of console.log - as implemented in `./src/support/workersync/synclogger`
+
+
+The result is a dramatic speed up over the subprocess approach (x5). So much so, that I had to add exponential backup to the worker threads to overcome quota limits on the workspace APIS to be able to run the test suite. Having said that it is still very much slower (x4 but variable) than most of the same calls in Apps Script - which appears to feature some mixture of in memory shadowing, caching and api call bundling - which I don't intend to mimic in this fake enironment (for now anyway) as this is not about improving the speed of Apps Script but about emulating it. 
+
+It's additionally slowed down because there are an unnatural amount of rapid, consecutive calls in the test suite which means that we get an unnatural amount of delay waiting for a quota window (sometimes as much as 15 seconds) added due to exponential back off delays when running the full test suite (I assume Apps script doesn't have the same quota restrictions). In normal operation this is unlikely to be problem.
 
 ### Global intialization
 

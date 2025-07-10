@@ -2,13 +2,13 @@
  * Advanced sheets service
  */
 
-
 import { Proxies } from '../../support/proxies.js'
 import { Syncit } from '../../support/syncit.js'
 import { notYetImplemented, ssError } from '../../support/helpers.js'
-import { newFakeSheetValues } from '../advdrive/fakeadvvalues.js'
-import { getWorkbookEntry, setWorkbookEntry, clearWorkbookCache } from "../../support/sheetscache.js"
+import { newFakeAdvSheetsValues } from './fakeadvsheetsvalues.js'
+import { getWorkbookEntry, setWorkbookEntry, clearWorkbookCache } from '../../support/sheetscache.js'
 import { newFakeAdvSheetsDeveloperMetadata } from './fakeadvsheetsdevelopermetadata.js'
+import path from 'path';
 
 /**
  * the advanced Sheets Apps Script service faked - Spreadsheets class
@@ -16,6 +16,8 @@ import { newFakeAdvSheetsDeveloperMetadata } from './fakeadvsheetsdevelopermetad
  */
 class FakeAdvSheetsSpreadsheets {
   constructor(sheets) {
+
+    this.shapisPath = path.resolve(import.meta.dirname, './shapis.js')
 
     this.__fakeObjectType = "Sheets.Spreadsheets"
 
@@ -40,7 +42,7 @@ class FakeAdvSheetsSpreadsheets {
   }
 
   get Values() {
-    return newFakeSheetValues(this.__sheets)
+    return newFakeAdvSheetsValues(this.__sheets)
   }
 
   /**
@@ -75,8 +77,7 @@ class FakeAdvSheetsSpreadsheets {
     }
 
     const result = Syncit.fxSheets(pack)
-    const { response, data } = result
-
+    const { response, data } = result || {}
     // naive cache - was an update so zap everything
     clearWorkbookCache(spreadsheetId)
 
@@ -106,7 +107,8 @@ class FakeAdvSheetsSpreadsheets {
       return cache
     }
 
-    const { response, data } = Syncit.fxSheets(pack)
+    const result = Syncit.fxSheets(pack)
+    const { response, data } = result || {}
 
     // maybe we need to throw an error
     ssError(response, pack.method, ss)
@@ -131,7 +133,8 @@ class FakeAdvSheetsSpreadsheets {
     }
 
     // create the sheet
-    const { response, data } = Syncit.fxSheets(pack)
+    const result = Syncit.fxSheets(pack)
+    const { response, data } = result || {}
 
     // maybe we need to throw an error
     ssError(response, pack.method, ss)

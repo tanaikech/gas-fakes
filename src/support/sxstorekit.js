@@ -13,7 +13,6 @@
 import {newKStore} from './kv.js'
 // TODO - playing with different syncit
 export const sxStoreKit = async ({ kvPath, kvArgs, storeArgs, method }) => {
-  console.log ('instorekit')
   const { store } = newKStore(storeArgs)
   const result = await store[method](...kvArgs)
   return result

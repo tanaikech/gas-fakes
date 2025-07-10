@@ -1,15 +1,15 @@
 /**
  * DRIVE
- * all these functions run as subprocesses and wait fo completion
+ * all these functions run in the worker
  * thus turning async operations into sync
- * note 
- * - since the subprocess starts afresh it has to reimport all dependecies
- * - there is nocontext inhertiance
+ * note
  * - arguments and returns must be serializable ie. primitives or plain objects
- * 
- * TODO - this slows down debuggng significantly as it has to keep restarting the debugger
- * - need to research how to get over that
  */
+import path from 'path';
+import { responseSyncify } from './auth.js';
+import intoStream from 'into-stream';
+import { getStreamAsBuffer } from 'get-stream';
+import { syncWarn, syncError } from './workersync/synclogger.js';
 
 /**
  * serializable reponse from a sync call
@@ -34,6 +34,52 @@
  * @property {byte[]} bytes 
  */
 
+const drapisPath = "../services/advdrive/drapis.js";
+const getModulePath = (relTarget) => path.resolve(import.meta.dirname, relTarget);
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+export const sxDrive = async (Auth, { prop, method, params, options }) => {
+  const { getApiClient } = await import(getModulePath(drapisPath));
+  const auth = Auth.getAuth();
+  const apiClient = getApiClient(auth);
+
+  const maxRetries = 7;
+  let delay = 1777;
+
+  for (let i = 0; i < maxRetries; i++) {
+    let response;
+    let error;
+
+    try {
+      const callish = apiClient[prop];
+      response = await callish[method](params, options);
+    } catch (err) {
+      error = err;
+      response = err.response;
+    }
+
+    const isQuotaError = response?.status === 429 || error?.code == 429;
+
+    if (isQuotaError && i < maxRetries - 1) {
+      syncWarn(`Quota error on Drive API call ${prop}.${method}. Retrying in ${delay}ms...`);
+      await sleep(delay);
+      delay *= 2;
+      continue;
+    }
+
+    if (error || isQuotaError) {
+      syncError(`Failed in sxDrive for ${prop}.${method}`, error);
+      return {
+        data: null,
+        response: responseSyncify(response)
+      };
+    }
+    return {
+      data: response.data,
+      response: responseSyncify(response)
+    };
+  }
+};
 
 /**
  * Drive api to stream a download
@@ -45,20 +91,13 @@
  * @param {string} [p.mimeType] the mimeType to assign
  * @param {string} [p.fileId] the fileId - required of patching
  * @param {string} [p.drapisPath] the resolved path to the api code
- * @param {string} [p.authPath] the resolved path to the auth code 
- * @param {string[]} [p.scopes] the scopes that the operation will need 
  * @param {object} [p.params] any extra params
  * @return {DriveResponse} from the drive api
  */
-export const sxStreamUpMedia = async ({ resource, drapisPath, authPath, scopes, bytes, fields, method, mimeType, fileId, params, adcPath, projectId }) => {
 
-  const { Auth, responseSyncify } = await import(authPath)
-  const { getApiClient } = await import(drapisPath)
-  const { default: intoStream } = await import('into-stream');
-
-  Auth.setProjectId(projectId);
-  Auth.setAuth(scopes, adcPath);
-  const auth = Auth.getAuth()
+export const sxStreamUpMedia = async (Auth, { resource, bytes, fields, method, mimeType, fileId, params }) => {
+  const { getApiClient } = await import(getModulePath(drapisPath));
+  const auth = Auth.getAuth();
 
   // this is the node drive service
   const drive = getApiClient(auth)
@@ -91,7 +130,7 @@ export const sxStreamUpMedia = async ({ resource, drapisPath, authPath, scopes, 
     }
 
   } catch (err) {
-    console.error('failed in syncit fxStreamUpMedia', err)
+    syncError('failed in syncit fxStreamUpMedia', err);
     const response = err?.response
     return {
       data: null,
@@ -105,23 +144,14 @@ export const sxStreamUpMedia = async ({ resource, drapisPath, authPath, scopes, 
  * sync a call to download data from drive
  * @param {object} p pargs
  * @param {string} p.id file id
- * @param { string} p.drapisPath the import path for the api code
- * @param { string} p.authPath the import path for the auth code
- * @param { string[]} p.scopes the scopres required for the operation
  * @return {SxResult} from the api
  */
-export const sxDriveMedia = async ({ id, drapisPath, authPath, scopes, adcPath, projectId }) => {
-
-  const { Auth, responseSyncify } = await import(authPath)
-  const { getApiClient } = await import(drapisPath)
-  const { getStreamAsBuffer } = await import('get-stream');
-
-  Auth.setProjectId(projectId);
-  Auth.setAuth(scopes, adcPath);
-  const auth = Auth.getAuth()
+export const sxDriveMedia = async (Auth, { id }) => {
+  const { getApiClient } = await import(getModulePath(drapisPath));
+  const auth = Auth.getAuth();
 
   // this is the node drive service
-  const drive = getApiClient(auth)
+  const drive = getApiClient(auth);
   const streamed = await drive.files.get({
     fileId: id,
     alt: 'media'
@@ -146,3 +176,12 @@ export const sxDriveMedia = async ({ id, drapisPath, authPath, scopes, adcPath, 
   }
 
 }
+
+export const sxDriveGet = (Auth, { id, params, options }) => {
+  return sxDrive(Auth, {
+    prop: "files",
+    method: "get",
+    params: { ...params, fileId: id },
+    options
+  });
+};

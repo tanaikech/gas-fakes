@@ -1,33 +1,15 @@
-/**
- * these are utilities to create and run sync versions of services
- * the sx versions are all async in separate files so they can be tested async if necessary
- * they are made sync when called from here
- * move all caching logic to here so we can forget anbout it higher up
- */
-
 // this one is locally patched for now
 // import makeSynchronous from 'make-synchronous';
-import makeSynchronous from './patchedmakesynchronous.js'
 import path from 'path'
 import { Auth } from "./auth.js"
 import { randomUUID } from 'node:crypto'
 import mime from 'mime';
-import { sxStreamUpMedia, sxDriveMedia } from './sxdrive.js';
-import { sxApi } from './sxapi.js';
-import { sxStore } from './sxstore.js'
-import { sxInit, sxRefreshToken } from './sxauth.js'
-import { sxZipper, sxUnzipper } from './sxzip.js';
-import { sxFetch } from './sxfetch.js';
 import { minFields } from './helpers.js'
 import { mergeParamStrings } from './utils.js'
 import { improveFileCache, checkResponse, getFromFileCache } from "./filecache.js"
 import is from '@sindresorhus/is';
+import { callSync } from './workersync/synchronizer.js';
 
-
-const authPath = "../support/auth.js"
-const drapisPath = "../services/advdrive/drapis.js"
-const shapisPath = "../services/advsheets/shapis.js"
-const kvPath = '../support/kv.js'
 const manifestDefaultPath = './appsscript.json'
 const claspDefaultPath = "./.clasp.json"
 const settingsDefaultPath = "./gasfakes.json"
@@ -36,35 +18,6 @@ const cacheDefaultPath = "/tmp/gas-fakes/cache"
 // note that functions like Sheets.newGridRange() etc create objects that contain get and set functions
 // the makesynchronous functions need data that can be serialized. so we need to string/parse to normlaize them
 const normalizeSerialization = (ob) => is.nullOrUndefined(ob) || !is.object(ob) ? ob : JSON.parse(JSON.stringify(ob))
-
-const fxRunner = (sxFunction, ...args) => {
-  const fx = makeSynchronous(sxFunction);
-  return fx(...args);
-};
-
-/**
- * note that the relpath of exports file 
- * is relative from the entrypoint, since all this sync stuff runs in a subprocess
- * @constant
- * @type {string}
- * @default
- */
-
-/**
- * @param {string} [relTarget=relExports] the target module relative to this script 
- * @returns {string} the full path
- */
-const getModulePath = (relTarget) => path.resolve(import.meta.dirname, relTarget)
-
-const getAuthPayload = () => {
-  // these are needed to re-establish auth in the subprocess without async calls
-  return {
-    projectId: Auth.getProjectId(),
-    adcPath: Auth.getAdcPath(),
-    // also need the paths to the modules
-    authPath: getModulePath(authPath)
-  }
-}
 
 
 /**
@@ -97,20 +50,11 @@ const registerSx = (result, allow404 = false, fields) => {
  * @return {import('./sxdrive.js').SxResult} from the drive api
  */
 const fxStreamUpMedia = ({ file = {}, blob, fields = "", method = "create", fileId, params = {} }) => {
-
-  // scopes are already set
-  const scopes = Array.from(Auth.getAuthedScopes().keys())
-
   // merge the required fields with the minimum
   fields = mergeParamStrings(minFields, fields)
-
-  // run in a subprocess
-  const result = fxRunner(sxStreamUpMedia, {
+  const result = callSync('sxStreamUpMedia', {
     resource: file,
     bytes: blob ? blob.getBytes() : null,
-    drapisPath: getModulePath(drapisPath),
-    ...getAuthPayload(),
-    scopes,
     fields,
     method,
     mimeType: file.mimeType || blob?.getContentType(),
@@ -130,17 +74,12 @@ const fxStreamUpMedia = ({ file = {}, blob, fields = "", method = "create", file
  * @return {DriveResponse} from the drive api
  */
 const fxDrive = ({ prop, method, params, options }) => {
-
-  const scopes = Array.from(Auth.getAuthedScopes().keys())
-  return fxApi({
+  return callSync('sxDrive', {
     prop,
     method,
-    apiPath: drapisPath,
-    scopes,
-    params,
-    options
-  })
-
+    params: normalizeSerialization(params),
+    options: normalizeSerialization(options)
+  });
 }
 
 /**
@@ -153,19 +92,13 @@ const fxDrive = ({ prop, method, params, options }) => {
  * @return {SheetsResponse} from the sheets api
  */
 const fxSheets = ({ subProp, prop, method, params, options }) => {
-
-
-  const scopes = Array.from(Auth.getAuthedScopes().keys())
-  return fxApi({
+  return callSync('sxSheets', {
     subProp,
     prop,
     method,
-    apiPath: shapisPath,
-    scopes,
-    params,
-    options
-  })
-
+    params: normalizeSerialization(params),
+    options: normalizeSerialization(options)
+  });
 }
 
 /**
@@ -177,7 +110,7 @@ const fxSheets = ({ subProp, prop, method, params, options }) => {
  * @param {object} p.params the params to add to the request
  * @return {DriveResponse} from the drive api
  */
-const fxDriveGet = ({ id, params, allow404 = false, allowCache = true ,options}) => {
+const fxDriveGet = ({ id, params, allow404 = false, allowCache = true, options }) => {
 
   // fixup the fields param
   // we'll fiddle with the scopes to populate cache
@@ -200,47 +133,14 @@ const fxDriveGet = ({ id, params, allow404 = false, allowCache = true ,options})
   }
 
   // so we have to hit the API
-  // these would have been set from the manifest
-  const scopes = Array.from(Auth.getAuthedScopes().keys())
-  const result = fxApi({
-    prop: "files",
-    method: "get",
-    apiPath: drapisPath,
-    scopes,
-    params,
-    options
-  })
+  const result = callSync('sxDriveGet', {
+    id,
+    params: normalizeSerialization(params),
+    options: normalizeSerialization(options)
+  });
 
   // check result and register in cache
   return registerSx(result, allow404, params.fields)
-}
-
-/**
- * sync a call to google api
- * @param {object} p pargs
- * @param {string} p.subProp sometimes theres an extra prop - eg sheets.spreadsheets.values.get = prop:spreadsheets, subprop: values
- * @param {string} p.prop the prop of drive eg 'files' for drive.files
- * @param {string} p.method the method of drive eg 'list' for drive.files.list
- * @param {object} p.params the params to add to the request
- * @param {string} p.apiPath where to import the api from
- * @return {DriveResponse} from the drive api
- */
-const fxApi = ({ subProp, prop, method, params, apiPath, options }) => {
-
-  const scopes = Array.from(Auth.getAuthedScopes().keys())
-
-  const result = fxRunner(sxApi, {
-    subProp,
-    prop,
-    method,
-    apiPath: getModulePath(apiPath),
-    ...getAuthPayload(),
-    scopes,
-    params: normalizeSerialization(params),
-    options: normalizeSerialization(options)
-  })
-
-  return result
 }
 
 /**
@@ -265,7 +165,7 @@ const fxZipper = ({ blobs }) => {
     }
   })
 
-  return fxRunner(sxZipper, {
+  return callSync('sxZipper', {
     blobsContent
   })
 
@@ -278,12 +178,13 @@ const fxZipper = ({ blobs }) => {
  * @returns {FakeBlob[]} each of the files unzipped
  */
 const fxUnzipper = ({ blob }) => {
+
   const blobContent = {
     name: blob.getName(),
     bytes: blob.getBytes()
   }
 
-  return fxRunner(sxUnzipper, {
+  return callSync('sxUnzipper', {
     blobContent
   })
 }
@@ -311,11 +212,10 @@ const fxInit = ({
   const mainDir = path.dirname(process.argv[1])
 
   // because this is all run in a synced subprocess it's not an async result
-  const synced = fxRunner(sxInit, {
+  const synced = callSync('sxInit', {
     claspPath,
     settingsPath,
     manifestPath,
-    authPath: getModulePath(authPath),
     mainDir,
     cachePath,
     propertiesPath,
@@ -358,22 +258,17 @@ const fxInit = ({
  */
 const fxStore = (storeArgs, method = "get", ...kvArgs) => {
 
-  return fxRunner(sxStore, {
-    kvPath: getModulePath(kvPath),
+  return callSync('sxStore', {
     method,
     kvArgs,
     storeArgs
   })
-
 }
 
 
 const fxRefreshToken = () => {
-  const scopes = Array.from(Auth.getAuthedScopes().keys());
-  return fxRunner(sxRefreshToken, {
-    ...getAuthPayload(),
-    scopes
-  });
+
+  return callSync('sxRefreshToken');
 };
 
 
@@ -387,16 +282,9 @@ const fxRefreshToken = () => {
  */
 const fxDriveMedia = ({ id }) => {
 
-  // this will run a node child process
-  // note that nothing is inherited, so consider it as a standalone script
-
-  const scopes = Array.from(Auth.getAuthedScopes().keys())
-  return fxRunner(sxDriveMedia, {
-    id,
-    drapisPath: getModulePath(drapisPath),
-    ...getAuthPayload(),
-    scopes
-  })
+  return callSync('sxDriveMedia', {
+    id
+  });
 }
 
 
@@ -410,8 +298,8 @@ const fxDriveMedia = ({ id }) => {
  * @returns {reponse} urlfetch style reponse
  */
 const fxFetch = (url, options, responseFields) => {
-  // TODO need to handle muteHttpExceptions
-  return fxRunner(sxFetch, url, options, responseFields)
+
+  return callSync('sxFetch', url, options, responseFields);
 }
 
 export const Syncit = {

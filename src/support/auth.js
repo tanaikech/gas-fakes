@@ -151,11 +151,21 @@ const getAuth = () => {
  * @param {SyncApiResponse} result 
  * @returns 
  */
-export const responseSyncify = (result) => ({
-  status: result.status,
-  statusText: result.statusText,
-  responseUrl: result.request?.responseURL
-})
+export const responseSyncify = (result) => {
+  if (!result) {
+    return {
+      status: 503, // Service Unavailable, a good representation for a worker-level failure
+      statusText: 'Worker Error: No response object received from API call',
+      error: { message: 'Worker Error: No response object received from API call' }
+    };
+  }
+  return {
+    status: result.status,
+    statusText: result.statusText,
+    responseUrl: result.request?.responseURL,
+    error: result.data?.error
+  };
+}
 
 
 /**

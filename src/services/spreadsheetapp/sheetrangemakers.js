@@ -575,11 +575,11 @@ export const attrGens = (self, target) => {
   const getRowDataAttribs = ({ range = self, props, defaultValue, cleaner }) => {
     // special case for rich text
     if (props === '(effectiveValue,textFormatRuns)') {
-      const { sheets } = Sheets.Spreadsheets.get(spreadsheetId, {
+      const result = Sheets.Spreadsheets.get(spreadsheetId, {
         ranges: [self.__getRangeWithSheet(range)],
         fields: `sheets.data.rowData.values(effectiveValue,textFormatRuns,formattedValue,effectiveFormat)`
       })
-      const { rowData } = sheets[0]?.data[0] || {}
+      const { rowData } = result?.sheets?.[0]?.data?.[0] || {}
       if (!rowData) return makeTemplate({ range, defaultValue, cleaner: () => cleaner(null, range) })
 
       const cleaned = rowData.map(row => (row.values || []).map(col => cleaner(col, range)))
@@ -590,12 +590,12 @@ export const attrGens = (self, target) => {
     }
 
     // get the collection of rows with data for the required properties
-    const { sheets } = Sheets.Spreadsheets.get(spreadsheetId, {
+    const result = Sheets.Spreadsheets.get(spreadsheetId, {
       ranges: [self.__getRangeWithSheet(range)],
       fields: `sheets.data.rowData.values${props}`
     })
 
-    const { rowData } = sheets[0]?.data[0]
+    const { rowData } = result?.sheets?.[0]?.data?.[0]
 
     // sometimes we get a jagged array that needs to be padded to the right length with default values
     // if we got nothing, return the template of defaults
@@ -673,7 +673,7 @@ export const valueGens = (self, target) => {
       self.__getRangeWithSheet(range),
       options
     )
-    return result.values || []
+    return result?.values || []
   }
 
   // make a template to handle jagged arrays

@@ -1,15 +1,13 @@
 /**
  * Auth and Init
- * all these functions run as subprocesses and wait fo completion
+ * all these functions run in the worker
  * thus turning async operations into sync
- * note 
- * - since the subprocess starts afresh it has to reimport all dependecies
- * - there is nocontext inhertiance
+ * note
  * - arguments and returns must be serializable ie. primitives or plain objects
- * 
- * TODO - this slows down debuggng significantly as it has to keep restarting the debugger
- * - need to research how to get over that
  */
+import got from 'got';
+import { Auth } from './auth.js';
+import { syncLog } from './workersync/synclogger.js';
 
 /**
  * initialize ke stuff at the beginning such as manifest content and settings
@@ -24,7 +22,7 @@
  * @param {string} p.fakeId a fake script id to use if one isnt in the settings
  * @return {object} the finalized vesions of all the above 
  */
-export const sxInit = async ({ manifestPath, authPath, claspPath, settingsPath, mainDir, cachePath, propertiesPath, fakeId }) => {
+export const sxInit = async ({ manifestPath, claspPath, settingsPath, mainDir, cachePath, propertiesPath, fakeId }) => {
 
   const findAdcPath = async () => {
     const { homedir } = await import('os');
@@ -60,17 +58,16 @@ export const sxInit = async ({ manifestPath, authPath, claspPath, settingsPath, 
   // get the settings and manifest
   const path = await import('path')
   const { readFile, writeFile, mkdir } = await import('node:fs/promises')
-  const { Auth } = await import(authPath)
 
   // get a file and parse if it exists
   const getIfExists = async (file) => {
     try {
       const content = await readFile(file, { encoding: 'utf8' })
-      console.log(`...using ${file}`)
+      syncLog(`...using ${file}`);
       return JSON.parse(content)
 
     } catch (err) {
-      console.log(`...didnt find ${file} ... skipping`)
+      syncLog(`...didnt find ${file} ... skipping`);
       return {}
     }
   }
@@ -103,14 +100,14 @@ export const sxInit = async ({ manifestPath, authPath, claspPath, settingsPath, 
   settings.cache = settings.cache || cachePath
   settings.properties = settings.properties || propertiesPath
 
-  console.log(`...cache will be in ${settings.cache}`)
-  console.log(`...properties will be in ${settings.properties}`)
+  syncLog(`...cache will be in ${settings.cache}`);
+  syncLog(`...properties will be in ${settings.properties}`);
 
   // now update all that if anything has changed
   const strSet = JSON.stringify(settings, null, 2)
   if (JSON.stringify(_settings, null, 2) !== strSet) {
     await mkdir(settingsDir, { recursive: true })
-    console.log('...writing to ', settingsFile)
+    syncLog(`...writing to ${settingsFile}`);
     writeFile(settingsFile, strSet, { flag: 'w' })
   }
 
@@ -124,8 +121,6 @@ export const sxInit = async ({ manifestPath, authPath, claspPath, settingsPath, 
   const auth = Auth.setAuth(scopes)
 
   const adcPath = await findAdcPath();
-  // get access token info
-  const { default: got } = await import('got')
   const accessToken = await auth.getAccessToken()
   const tokenInfo = await got(`https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${accessToken}`).json()
 
@@ -143,13 +138,16 @@ export const sxInit = async ({ manifestPath, authPath, claspPath, settingsPath, 
   }
 }
 
-export const sxRefreshToken = async ({ authPath, scopes, adcPath, projectId }) => {
-  const { Auth } = await import(authPath);
-  // We can re-initialize auth in the subprocess much faster now
-  Auth.setProjectId(projectId);
-  const auth = Auth.setAuth(scopes, adcPath);
+export const sxRefreshToken = async (Auth) => {
+  const auth = Auth.getAuth();
+  // force a refresh by clearing the cached credential
+  auth.cachedCredential = null;
   const accessToken = await auth.getAccessToken();
-  const { default: got } = await import('got');
   const tokenInfo = await got(`https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${accessToken}`).json();
+
+  // update the worker's auth state
+  Auth.setAccessToken(accessToken);
+  Auth.setTokenInfo(tokenInfo);
+
   return { accessToken, tokenInfo };
 };

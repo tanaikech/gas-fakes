@@ -1,14 +1,11 @@
 /**
- * all these functions run as subprocesses and wait fo completion
+ * all these functions run in the worker
  * thus turning async operations into sync
- * note 
- * - since the subprocess starts afresh it has to reimport all dependecies
- * - there is nocontext inhertiance
+ * note
  * - arguments and returns must be serializable ie. primitives or plain objects
- * 
- * TODO - this slows down debuggng significantly as it has to keep restarting the debugger
- * - need to research how to get over that
  */
+import got from 'got';
+import { syncLog } from './workersync/synclogger.js';
 
 /**
  * fetch stomething 
@@ -17,8 +14,9 @@
  * @param {string[]} responseFields which fields to extract from the got response
  * @returns {object} an http type response
  */
-export const sxFetch = async (url, options, responseFields) => {
-  const { default: got } = await import('got')
+export const sxFetch = async (_Auth, url, options, responseFields) => {
+
+  // Auth is passed by the worker but not used for this unauthenticated fetch.
   const response = await got(url, {
     ...options
   })

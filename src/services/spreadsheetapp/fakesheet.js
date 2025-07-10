@@ -157,7 +157,7 @@ export class FakeSheet {
   }
 
   getDataRange() {
-    const { values } = Sheets.Spreadsheets.Values.get(this.getParent().getId(), `'${this.getName()}'`);
+    const { values } = Sheets.Spreadsheets.Values.get(this.getParent().getId(), `'${this.getName()}'`) || {};
     if (!values || values.length === 0) {
       return this.getRange(1, 1, 1, 1);
     }

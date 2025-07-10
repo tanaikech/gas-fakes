@@ -81,7 +81,7 @@ export const getFakeType = (item) => getFakeService(item) && item.__getFakeType 
  * @param {SyncApiResponse} response 
  * @returns {Boolean}
  */
-export const isGood = (response) => Math.floor(response.status / 100) === 2
+export const isGood = (response) => response && Math.floor(response.status / 100) === 2
 
 
 /**
@@ -122,7 +122,7 @@ export const ssError = (response, method, ss) => {
 
   if (!isGood(response)) {
     if (ss) {
-      throw new Error(`Unexpected error while getting the method or property ${method} on object SpreadsheetApp.`)
+      throw new Error(`Unexpected error while getting the method or property ${method} on object SpreadsheetApp. API call failed with error: ${response?.error?.message || response?.statusText}`)
     } else {
       // adv drive throws this one
       throw new Error(`GoogleJsonResponseException: API call to sheets.spreadsheets.${method} failed with error", ${response?.error?.message}`  )
@@ -193,3 +193,11 @@ export const advClassMaker = (props) => {
 
 
 }
+
+/**
+ * note that functions like Sheets.newGridRange() etc create objects that contain get and set functions
+ * the makesynchronous functions need data that can be serialized. so we need to string/parse to normlaize them
+ * @param {object} ob the object to normalize
+ * @returns {object} a plain object
+ */
+export const normalizeSerialization = (ob) => is.nullOrUndefined(ob) || !is.object(ob) ? ob : JSON.parse(JSON.stringify(ob))
