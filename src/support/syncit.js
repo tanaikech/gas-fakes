@@ -102,6 +102,24 @@ const fxSheets = ({ subProp, prop, method, params, options }) => {
 }
 
 /**
+ * sync a call to docs api
+ * @param {object} p pargs
+ * @param {string} p.prop the prop of docs eg 'documents' for docs.documents
+ * @param {string} p.method the method of docs eg 'get' for docs.documents.get
+ * @param {object} p.params the params to add to the request
+ * @param {object} p.options gaxios options
+ * @return {DocsResponse} from the docs api
+ */
+const fxDocs = ({ prop, method, params, options }) => {
+  return callSync('sxDocs', {
+    prop,
+    method,
+    params: normalizeSerialization(params),
+    options: normalizeSerialization(options)
+  });
+}
+
+/**
  * sync a call to Drive api get
  * @param {object} p pargs
  * @param {string} p.id the file id
@@ -313,5 +331,6 @@ export const Syncit = {
   fxStreamUpMedia,
   fxDriveGet,
   fxSheets,
-  fxRefreshToken
+  fxRefreshToken,
+  fxDocs
 }

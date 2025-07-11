@@ -34,6 +34,23 @@ export const testDocsAdv = (pack) => {
  
   })
 
+  unit.section ("basic adv docs", t=> {
+    const docName = fixes.PREFIX + "temp-doc"
+    const resource = Docs.newDocument()
+      .setTitle(docName)
+
+    const doc = Docs.Documents.create (resource)
+    t.true (is.nonEmptyString(doc.documentId))
+    t.true (is.nonEmptyString(doc.revisionId))
+    t.is (doc.title, docName)
+    t.true (is.object(doc.body))
+    t.true (is.object(doc.documentStyle))
+    t.true (is.nonEmptyString(doc.suggestionsViewMode))
+    t.true (is.object(doc.tabs))
+ 
+    if (fixes.CLEAN)toTrash.push(DriveApp.getFileById(doc.documentId))
+
+  })
   // running standalone
   if (!pack) {
     /// if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())

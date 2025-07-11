@@ -5,3 +5,4 @@ export { sxStore } from '../sxstore.js';
 export { sxInit, sxRefreshToken } from '../sxauth.js';
 export { sxZipper, sxUnzipper } from '../sxzip.js';
 export { sxFetch } from '../sxfetch.js';
+export { sxDocs } from '../sxdocs.js';

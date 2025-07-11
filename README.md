@@ -18,9 +18,17 @@ npm i @mcpher/gas-fakes
 
 The idea is that you can run GAS services (so far implemented) locally on Node, and it will use various Google Workspace APIS to emulate what would happen if you were to run the same thing in the GAS environment. Other than logging in with application default credentials (see below) you don't have to do any intitialization and can start using the implemented Apps Script services directly from Node using the same syntax and getting equivalent responses.
 
+### Use exactly the same code as in Apps Script
+
 Just as on Apps Script, everything is executed synchronously so you don't need to bother with handling Promises/async/await. Note that the intended audience is Apps Script developers who want to run the same code and access the same services in both Node and Apps Script.
 
+### Where to use (and not use)
+
 If you don't plan on using Apps Script at all, the Node Workspace APIs (which I use in the background for all these services in any case) will be more efficient when operating in their normal asynchronous mode. On the other hand, if you only casually want to access workspace resources from Node, and can't be bothered digging into how the Node Workspace APIs work, you could still use this as part of your node project. Apps Script services are much simpler than the full API. Apps Script advanced services are also available via gas-fakes if you want a hybrid solution.
+
+### Development schedule
+
+As a background project I'm chipping away at this when I can. There's a mountain of work to do, and I'm not that bothered about the general order I do it in. If you would specifically like some service or method prioritized, let me know and I'll see if I can push it forward. Better still, if you'd like to have a crack at implementing it yourself, let me know and I'll get you started.
 
 ### Cloud project
 
