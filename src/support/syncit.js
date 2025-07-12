@@ -7,6 +7,7 @@ import mime from 'mime';
 import { minFields } from './helpers.js'
 import { mergeParamStrings } from './utils.js'
 import { improveFileCache, checkResponse, getFromFileCache } from "./filecache.js"
+import { docsCacher, checkDocsResponse } from "./docscacher.js"
 import is from '@sindresorhus/is';
 import { callSync } from './workersync/synchronizer.js';
 
@@ -37,6 +38,26 @@ const registerSx = (result, allow404 = false, fields) => {
     return result
   }
 }
+
+/**
+ * check and register a result in docs cache
+ * @param {import('./sxdrive.js').SxResult} the result of a sync api call
+ * @return {import('./sxdrive.js').SxResult} 
+ */
+const registerSxDocs = (result, allow404 = false, params) => {
+  const { data, response } = result;
+  
+  // For docs, the ID is in `documentId`
+  const documentId = data?.documentId;
+  if (checkDocsResponse(documentId, response, allow404) ) {
+    return {
+      ...result,
+      data: docsCacher.setEntry (documentId, params, data),
+    };
+  } else {
+    return result;
+  }
+};
 /**
  * sync a call to Drive api to stream a download
  * @param {object} p pargs
@@ -118,6 +139,47 @@ const fxDocs = ({ prop, method, params, options }) => {
     options: normalizeSerialization(options)
   });
 }
+
+/**
+ * sync a call to Docs api get
+ * @param {object} p pargs
+ * @param {string} p.id the document id
+ * @param {boolean} [p.allowCache=true] whether to allow the result to come from cache
+ * @param {boolean} [p.allow404=false] whether to allow 404 errors
+ * @param {object} p.params queryparams
+ * @return {DocsResponse} from the docs api
+ */
+const fxDocsGet = ({ id, allow404 = false, allowCache = true, params = {} }) => {
+
+  const pathParams = { documentId: id, ...params };
+
+  if (allowCache) {
+
+    const data = docsCacher.getEntry(id, params);
+    if (data) {
+      console.log ('found in cache',id, params)
+      return {
+        data,
+        response: {
+          status: 200,
+          fromCache: true,
+        },
+      };
+
+    }
+  }
+
+
+  // so we have to hit the API
+  const result = callSync('sxDocs', {
+    prop: 'documents',
+    method: 'get',
+    params: normalizeSerialization(pathParams)
+  });
+
+  // check result and register in cache
+  return registerSxDocs(result, allow404, params);
+};
 
 /**
  * sync a call to Drive api get
@@ -332,5 +394,6 @@ export const Syncit = {
   fxDriveGet,
   fxSheets,
   fxRefreshToken,
-  fxDocs
+  fxDocs,
+  fxDocsGet
 }

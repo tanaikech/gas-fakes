@@ -3,10 +3,10 @@
 I use clasp/vscode to develop Google Apps Script (GAS) applications, but when using GAS native services, there's way too much back and fowards to the GAS IDE going while testing. I set myself the ambition of implementing fake version of the GAS runtime environment on Node so I could at least do some testing locally.
 
 This is a proof of concept so I've implemented a subset of number of services and methods, but the tricky parts are all in place so all that's left is a load of busy work (to which I heartily invite any interested collaborators).
+
 ## progress
 
 This is a pretty huge task, so I'm working on adding services a little bit at a time, with usually just a few methods added in each release. I'm using this readme to report not just on how to use this thing, but also on challenges and things I've learned along the way. So it's going to get pretty long.
-
 
 ## Getting started
 
@@ -168,26 +168,28 @@ Beyond that, implementation is just a lot of busy work. If you are interested, h
 
 Although Apps Script supports async/await/promise syntax, it operates in blocking mode. I didn't really want to have to insist on async coding in code targeted at GAS, so I needed to find a way to emulate what the GAS environment probably does.
 
-Since asynchonicity is fundamental to Node, there's no real simple way to convert async to sync. However, there is such a thing as a [child-process](https://nodejs.org/api/child_process.html#child-process) which you can start up to run things, and it features an [execSync](https://nodejs.org/api/child_process.html#child_processexecsynccommand-options) method which delays the return from the child process until the promise queue is all settled. So the simplest solution is to run an async method in a child process, wait till it's done, and return the results synchronously. I found that [Sindre Sorhus](https://github.com/sindresorhus) uses this approach with [make-synchronous](https://github.com/sindresorhus/make-synchronous).However, runnng up a child process in Node is pretty expensive and slow, and each subprocess has to reimport the google apis and go through a reauth chain which can take up  to 1.5 secs per call.
+Since asynchonicity is fundamental to Node, there's no real simple way to convert async to sync. However, there is such a thing as a [child-process](https://nodejs.org/api/child_process.html#child-process) which you can start up to run things, and it features an [execSync](https://nodejs.org/api/child_process.html#child_processexecsynccommand-options) method which delays the return from the child process until the promise queue is all settled. So the simplest solution is to run an async method in a child process, wait till it's done, and return the results synchronously. I found that [Sindre Sorhus](https://github.com/sindresorhus) uses this approach with [make-synchronous](https://github.com/sindresorhus/make-synchronous).However, runnng up a child process in Node is pretty expensive and slow, and each subprocess has to reimport the google apis and go through a reauth chain which can take up to 1.5 secs per call.
 
 #### Worker Update
 
-I'm now upgrading to use a worker thread to handle all activities that need to be performed synchronously. It's a lot more tricky to implement and handle exceptions, but worth the effort. 
+I'm now upgrading to use a worker thread to handle all activities that need to be performed synchronously. It's a lot more tricky to implement and handle exceptions, but worth the effort.
+
 - The worker thread only needs to be authed once on initialization and retains state between each call.
 - Control to shared memory is via [Node Atomics](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Atomics) which gives a mutex style control.
 - Node has built in [worker threads](https://nodejs.org/api/worker_threads.html), so there's no need for any external libraries
 - Only arguments that can be stringified can be passed to and from a worker - but this is the same limitiation as passing arguments to a subprocess
 - To avoid grabbing too much shared memory,I use a temporary file to pass huge amounts of data - but this will be a rarish exception.
 - There are lot of async gotchas with workers so your async handling needs to be very precise. I spent a lot of time trying to track down potentially unsettled promises only to discover that worker.unref() is required to prevent the worker from stopping the main process exiting.
-- console.log doesnt work reliable in a worker, even if you redirect the workers stdout & stder 
-````js
+- console.log doesnt work reliable in a worker, even if you redirect the workers stdout & stder
+
+```js
 worker.stdout.pipe(process.stdout);
 worker.stderr.pipe(process.stderr);
-```` 
+```
+
 This is because console.log is async, and never shows. You need a sync version of console.log - as implemented in `./src/support/workersync/synclogger`
 
-
-The result is a dramatic speed up over the subprocess approach (x5). So much so, that I had to add exponential backup to the worker threads to overcome quota limits on the workspace APIS to be able to run the test suite. Having said that it is still very much slower (x4 but variable) than most of the same calls in Apps Script - which appears to feature some mixture of in memory shadowing, caching and api call bundling - which I don't intend to mimic in this fake enironment (for now anyway) as this is not about improving the speed of Apps Script but about emulating it. 
+The result is a dramatic speed up over the subprocess approach (x5). So much so, that I had to add exponential backup to the worker threads to overcome quota limits on the workspace APIS to be able to run the test suite. Having said that it is still very much slower (x4 but variable) than most of the same calls in Apps Script - which appears to feature some mixture of in memory shadowing, caching and api call bundling - which I don't intend to mimic in this fake enironment (for now anyway) as this is not about improving the speed of Apps Script but about emulating it.
 
 It's additionally slowed down because there are an unnatural amount of rapid, consecutive calls in the test suite which means that we get an unnatural amount of delay waiting for a quota window (sometimes as much as 15 seconds) added due to exponential back off delays when running the full test suite (I assume Apps script doesn't have the same quota restrictions). In normal operation this is unlikely to be problem.
 
@@ -216,8 +218,6 @@ v1.0.10
 - `Docs (Advanced Service)` - 2%
 - `DocumentApp` - placeholder
 - `SlidesApp` - placeholder
-
-
 
 ### Testing coverage
 
@@ -271,7 +271,7 @@ In the main, these will be slight differences in error message text, which I'll 
 
 ### Tradeoffs
 
-I've come across various Apps Script bugs/issues as I work through this which I've reported to the GAS team, and added workarounds in the gas fakes code - not sure at this point whether to duplicate the buggy behavior or simulate what would seem to be the correct one. This is not a complete list, so any things you come across please use the issues in the repo to report. 
+I've come across various Apps Script bugs/issues as I work through this which I've reported to the GAS team, and added workarounds in the gas fakes code - not sure at this point whether to duplicate the buggy behavior or simulate what would seem to be the correct one. This is not a complete list, so any things you come across please use the issues in the repo to report.
 
 ## Oddities
 
@@ -767,6 +767,110 @@ In the Apps Script DataValidation builder, setting showCustomUi is achieved via 
 
 Despite the various defaults, a missing value for these properties returned via the Sheets API always means false, and a missing displayStyle with showCustomUi set to true default is "ARROW".
 
+### Document API
+
+Getting started on the advanced services of the Document API. These notes are for my TIL (things I learned today), but may be useful if you are digging into the Document API yourself.
+
+#### Tabs
+
+Tabs are a recent addition to Docs, and have added a bit of complication to handling Document responses. Here's what they say happens.
+
+```
+[docs](https://developers.google.com/workspace/docs/api/reference/rest/v1/documents/get)
+
+suggestionsViewMode	- enum (SuggestionsViewMode)
+
+The suggestions view mode to apply to the document. This allows viewing the document with all suggestions inline, accepted or rejected. If one is not specified, DEFAULT_FOR_CURRENT_ACCESS is used.
+
+includeTabsContent	- boolean
+
+Whether to populate the Document.tabs field instead of the text content fields like body and documentStyle on Document.
+
+When True: Document content populates in the Document.tabs field instead of the text content fields in Document.
+
+When False: The content of the document's first tab populates the content fields in Document excluding Document.tabs. If a document has only one tab, then that tab is used to populate the document content. Document.tabs will be empty.
+```
+
+It's actually a little more complicated than that - here are the properties of the each response variation.
+
+##### case 1 {includeTabsContent: false}
+
+{ r1k:
+
+r2k:
+[ 'suggestionsViewMode',
+'documentId',
+'tabs',
+'title',
+'revisionId' ],
+r3k:
+[ 'title',
+'body',
+'namedStyles',
+'revisionId',
+'documentId',
+'suggestionsViewMode',
+'documentStyle' ] }
+14:09:40 Info { r1b: [ 'content' ],
+r2b: [ 'documentTab', 'tabProperties' ],
+r3b: [ 'content' ],
+r2tb: [ 'documentStyle', 'body', 'namedStyles' ] }
+
+Response has these properties:
+
+```
+     'revisionId',
+     'documentStyle',
+     'body',
+     'title',
+     'suggestionsViewMode',
+     'documentId',
+     'namedStyles'
+```
+
+The body contains just 1 property - `content`
+
+##### case 2 {includeTabsContent: true}
+
+Response has these properties:
+
+```
+    'suggestionsViewMode',
+    'documentId',
+    'tabs',
+    'title',
+    'revisionId'
+```
+
+The tabs property is an array of tabs, the first of which contains these properties
+
+```
+  documentTab, tabProperties
+```
+
+The documentTab has these properties - so the tab[0] in a document with no tabs isn't exactly the same as the legacy style as implied in the docs, since the document metadata is not repeated in each tab.  
+````
+  'documentStyle', 'body', 'namedStyles'
+````
+The tab properties has these properties
+````
+  'tabId', 'title', 'index'
+````
+
+##### case 3 - default
+
+Response includes thes same keys as case 1. As an aside, the property orders are all unpredictable so you can't just compare stringified versions of the response.
+
+```
+  'title',
+  'body',
+  'namedStyles',
+  'revisionId',
+  'documentId',
+  'suggestionsViewMode',
+  'documentStyle'
+```
+
 ### Enums
 
 All Apps Script enums are imitated using a seperate class 'newFakeGasenum()'. A complete write up of that is in [fakegasenum](https://github.com/brucemcpherson/fakegasenum). The same functionality is also available as an Apps Script library if you'd like to make your own enums over on GAS just like you find in Apps Script.
@@ -775,7 +879,6 @@ All Apps Script enums are imitated using a seperate class 'newFakeGasenum()'. A 
 
 Sometime between v144 and v150 of googleapis library, it appeared to become mandatory to include the project id in the auth pattern for API clients. Since we get the project id from the ADC, we actually have to do double auths. One to get the project id (which is async), and another to get an auth with the scopes required for the sheets, drive etc client (which is not async). All this now taken care of during the init phase, so look at an existing getauthenticated client function for how if you are adding a new service,
 
-
 ## Some experiences with using Gemini code assist
 
 I tried using Gemini to generate the code and test cases for a number of method types. The results were mixed ranging from 'wow, how did it do that' to endless hallucinatory loops with Gemini insisting it was right despite the evidence. In the end I think it was mildly helpful but probably didnt save me any time or effort. It was just a different kind of effort.
@@ -783,7 +886,6 @@ I tried using Gemini to generate the code and test cases for a number of method 
 Another annoyance is after deep sessions of back and forwards, code assist is generally unable to make the changes automatically and often reverts to an empty gray sidebar - which means you have to start again. Recalling the history doesn't necessarily reinstate where you were.
 
 I also dislike the habit gemini has of 'mansplaining' back to me the answer I've just provided to correct some of it's code.
-
 
 #### range.banding
 
@@ -827,15 +929,13 @@ The Sheets API doesn't know about these, so all r1c1 style methods such as setFo
 
 #### Intial verdict on using Gemini to generate some of this stuff
 
-I'm torn. On the one hand, it's been great at doing busy work like writing test cases and detecting dependencies that I might otherwise have missed. It can often be pretty good at refactoring/renaming things. On the other hand, if it gets it wrong, it's very hard to get it back on track as it tries bury itself deeper and deeper into previous misconceptions. It also has huge difficulty in updating large files no matter the detailed guidance. The usual end game is to restart a fresh context and/or copy and paste the content into a file you create manually. 
+I'm torn. On the one hand, it's been great at doing busy work like writing test cases and detecting dependencies that I might otherwise have missed. It can often be pretty good at refactoring/renaming things. On the other hand, if it gets it wrong, it's very hard to get it back on track as it tries bury itself deeper and deeper into previous misconceptions. It also has huge difficulty in updating large files no matter the detailed guidance. The usual end game is to restart a fresh context and/or copy and paste the content into a file you create manually.
 
-There were ocassions when the content Gemini provided content to be copied and pasted that was invalid syntax, or worse, dropped lines of code in sections it didn't plan to make any changes. In particular, code that had something like `ob[method](args)` was regularily truncated to just `obmethod`. I've found that if you enter `ob[method](args)` in the code assist chat window it will also interpret it as `obmethod` unless you escape the brackets (which of course you wouldnt do in code). 
+There were ocassions when the content Gemini provided content to be copied and pasted that was invalid syntax, or worse, dropped lines of code in sections it didn't plan to make any changes. In particular, code that had something like `ob[method](args)` was regularily truncated to just `obmethod`. I've found that if you enter `ob[method](args)` in the code assist chat window it will also interpret it as `obmethod` unless you escape the brackets (which of course you wouldnt do in code).
 
 Another issue is that Gemini can take 10 mins or more to create the full content for a large class in its chat window, sometimes ending in the gray screen of death. I've found it's best to completely avoid using Gemini to make minor changes, but to just make them manually.
 
-
 Overall it saves some time, for sure. However, the result is often suboptimal, wordy, lacking in reusability and not something I would be be happy to put my name to. From a coder perspective, the role becomes one of repetetive specification, debugging, checking and testing, while failing to develop a deep understanding of the work in hand. I like coding, so from a satisfaction perspective, I'm not entirely convinced yet. I've found it's very impressive when creating small, standalone scripts but deteriorates rapidly both in speed and effectiveness as the codebase and dependencies grows. There's a point at which it becomes more trouble than it's worth.
-
 
 ## Testing
 

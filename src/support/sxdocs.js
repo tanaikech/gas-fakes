@@ -7,7 +7,7 @@
  */
 import path from 'path';
 import { responseSyncify } from './auth.js';
-import { syncWarn, syncError } from './workersync/synclogger.js';
+import { syncWarn, syncError, syncLog } from './workersync/synclogger.js';
 
 const docapisPath = "../services/advdocs/docapis.js";
 const getModulePath = (relTarget) => path.resolve(import.meta.dirname, relTarget);
@@ -23,7 +23,7 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
  * @param {object} p.options gaxios options
  * @return {import('./sxdrive.js').SxResult} from the docs api
  */
-export const sxDocs = async (Auth, { prop, method, params, options }) => {
+export const sxDocs = async (Auth, { prop, method, params, options = {} }) => {
   const { getApiClient } = await import(getModulePath(docapisPath));
   const auth = Auth.getAuth();
   const apiClient = getApiClient(auth);
@@ -34,9 +34,9 @@ export const sxDocs = async (Auth, { prop, method, params, options }) => {
   for (let i = 0; i < maxRetries; i++) {
     let response;
     let error;
-
+syncLog(JSON.stringify({prop, method, params, options}))
     try {
-      const callish = apiClient[prop];
+      const callish = apiClient[prop]
       response = await callish[method](params, options);
     } catch (err) {
       error = err;
