@@ -64,10 +64,6 @@ class FakeDocument {
   getBody() {
     return newFakeBody(this.__doc.body);
   }
-  
-  getOwner() {
-    return this.__file.getOwner();
-  }
 
   getViewers() {
     return this.__file.getViewers();

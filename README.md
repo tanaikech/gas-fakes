@@ -127,7 +127,7 @@ Now you can execute this and it will set up your ADC to be able to run any servi
 
 ##### note
 
-Although you may be tempted to add `https://www.googleapis.com/auth/script.external_request`, it's not necessary for the ADC and in fact will generate an error. You will of course need it in your Apps script manifest.
+Although you may be tempted to add `https://www.googleapis.com/auth/script.external_request`, it's not necessary for the ADC and in fact will generate an error. You will of course need it in your Apps script manifest. Same goes for "https://www.googleapis.com/auth/documents"
 
 ### Settings
 

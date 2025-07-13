@@ -39,10 +39,13 @@ export const testDocs = (pack) => {
 
     // test getBody
     const body = doc.getBody();
-    t.is(body.toString(), 'Body', "getBody should return a Body object");
+    // the fake returns 'Body' but the real GAS returns 'DocumentBodySection'
+    const expectedBodyString = ScriptApp.isFake ? 'Body' : 'DocumentBodySection';
+    t.is(body.toString(), expectedBodyString, "getBody should return a Body object");
 
     // test getOwner
-    const owner = doc.getOwner();
+    // Document doesn't have getOwner(), but the underlying file does
+    const owner = DriveApp.getFileById(doc.getId()).getOwner();
     t.is(owner.getEmail(), fixes.EMAIL, "getOwner should return the correct user");
 
     // test permissions
