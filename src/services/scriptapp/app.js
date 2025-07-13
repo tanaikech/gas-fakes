@@ -69,11 +69,19 @@ const checkScopesMatch = (required) => {
 
   // see which ones are missing
   const missing = required.filter(s => {
-    // setting this scope causes gcloud to block - but we dot need it anywat as the default ADC allow it, so we have to skip it
-    const ignore = "https://www.googleapis.com/auth/script.external_request"
+    // setting this scope causes gcloud to block
+    // seem to manage without them anyway
+    const ignores = [
+      "https://www.googleapis.com/auth/script.external_request",
+      "https://www.googleapis.com/auth/documents"
+    ]
+    const hasIgnore = ignores.includes(s)
+    if (hasIgnore) {
+      console.log ('...ignoring requested scope for adc as google blocks it outside apps script' + s)
+    }
     // if drive is authorized and drive.readonly is required that's okay too
     // if drive.readonly is authorized and drive is requested thats not
-    return !(s === ignore || tokened.has(s.replace(/\.readonly$/, "")))
+    return !(hasIgnore|| tokened.has(s.replace(/\.readonly$/, "")))
   })
 
   if (missing.length) {
