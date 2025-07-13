@@ -2,9 +2,9 @@ import { Proxies } from '../../support/proxies.js'
 import { newFakeSpreadsheet } from './fakespreadsheet.js'
 import { notYetImplemented, minSheetFields, signatureArgs } from '../../support/helpers.js'
 import { Utils } from "../../support/utils.js"
-import { newFakeColorBuilder } from '../commonclasses/fakecolorbuilder.js'
-import { newFakeRichTextValueBuilder } from '../commonclasses/fakerichtextvalue.js'
-import { newFakeTextStyleBuilder } from '../commonclasses/faketextstylebuilder.js'
+import { newFakeColorBuilder } from '../common/fakecolorbuilder.js'
+import { newFakeRichTextValueBuilder } from '../common/fakerichtextvalue.js'
+import { newFakeTextStyleBuilder } from '../common/faketextstylebuilder.js'
 import { newFakeFilterCriteriaBuilder } from './fakefiltercriteriabuilder.js'
 import { newFakeDataValidationBuilder } from './fakedatavalidationbuilder.js'
 import { newFakeDataSourceSpecBuilder } from './fakedatasourcespecbuilder.js';

@@ -1,36 +1,56 @@
+import { Proxies } from '../../support/proxies.js';
+import { notYetImplemented, signatureArgs } from '../../support/helpers.js';
+import { FakeAdvResource } from '../common/fakeadvresource.js';
+import { Syncit } from '../../support/syncit.js';
 
-import { Syncit } from '../../support/syncit.js'
-import { checkResponse } from '../../support/filecache.js';
-import { mergeParamStrings } from '../../support/utils.js';
-import { notYetImplemented,  minPermissionFields } from '../../support/helpers.js'
-import { Proxies } from '../../support/proxies.js'
-
-class FakeAdvDrivePermissions {
+class FakeAdvDrivePermissions extends FakeAdvResource {
   constructor(drive) {
-    this.drive = drive
-    this.apiProp = "permissions"
-    this.__fakeObjectType ="Drive.Permissions"
+    // The service name is 'permissions', and it uses the main Drive sync method.
+    super(drive, 'permissions', Syncit.fxDrive);
+    this.__fakeObjectType = "Drive.Permissions";
+
+    const props = ['get', 'update'];
+    props.forEach(f => {
+      if (!this[f]) {
+        this[f] = () => notYetImplemented(f);
+      }
+    });
   }
-  create() {
-    return notYetImplemented('create')
+
+  create(resource, fileId, optionalArgs) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Drive.Permissions.create");
+    if (nargs < 2 || nargs > 3) matchThrow();
+
+    const params = {
+      resource,
+      fileId,
+      ...(optionalArgs || {})
+    };
+    const { data } = this._call('create', params);
+    return data;
   }
-  delete() {
-    return notYetImplemented('delete')
+
+  delete(fileId, permissionId, optionalArgs) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Drive.Permissions.delete");
+    if (nargs < 2 || nargs > 3) matchThrow();
+
+    const params = {
+      fileId,
+      permissionId,
+      ...(optionalArgs || {})
+    };
+    // Delete returns an empty body on success, so we don't need to return anything.
+    this._call('delete', params);
   }
-  get() {
-    return notYetImplemented('get')
-  }
-  list(fileId, params = {}) {
-    params = { ...params, fileId }
-    params.fields = mergeParamStrings(params.fields || "", `permissions(${minPermissionFields})`)
-    const { response, data } = Syncit.fxDrive({ prop: this.apiProp, method: 'list', params })
-    // maybe we need to throw an error
-    checkResponse(fileId, response, false)
-    return data
-  }
-  update() {
-    return notYetImplemented('update')
+
+  list(fileId, optionalArgs) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Drive.Permissions.list");
+    if (nargs < 1 || nargs > 2) matchThrow();
+
+    const params = { fileId, ...(optionalArgs || {}) };
+    const { data } = this._call('list', params);
+    return data;
   }
 }
 
-export const newFakeDrivePermissions = (...args) => Proxies.guard(new FakeAdvDrivePermissions(...args))
+export const newFakeAdvDrivePermissions = (...args) => Proxies.guard(new FakeAdvDrivePermissions(...args));

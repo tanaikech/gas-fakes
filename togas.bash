@@ -32,6 +32,7 @@ sed -i 's/^\s*export\s\s*//g' $(find "${TARGET}" -name "${EXT}" -type f)
 for var in $(grep -oP 'process\.env\.\K\w+' "${TARGET}/test/testinit.js"); do
     value=$(printenv "$var")  # Get the environment variable value
 
+
     # Escape characters for sed, e.g. \n becomes \\n, & becomes \&
     value=$(printf '%q' "$value")
 

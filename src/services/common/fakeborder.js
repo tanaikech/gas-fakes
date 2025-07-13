@@ -1,5 +1,5 @@
 import { Proxies } from '../../support/proxies.js'
-import { newFakeColorBuilder } from '../commonclasses/fakecolorbuilder.js'
+import { newFakeColorBuilder } from '../common/fakecolorbuilder.js'
 import { Utils } from '../../support/utils.js'
 import { BorderStyle } from '../enums/sheetsenums.js'
 const {is, robToHex, BLACK} = Utils

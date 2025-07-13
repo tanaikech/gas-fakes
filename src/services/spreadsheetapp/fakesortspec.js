@@ -1,7 +1,7 @@
 import { Proxies } from '../../support/proxies.js';
 import { notYetImplemented, signatureArgs } from '../../support/helpers.js';
 import { newFakeDataSourceColumnReference } from './fakedatasourcecolumnreference.js';
-import { makeColorFromApi } from '../commonclasses/fakecolorbuilder.js';
+import { makeColorFromApi } from '../common/fakecolorbuilder.js';
 
 export const newFakeSortSpec = (...args) => {
   return Proxies.guard(new FakeSortSpec(...args));

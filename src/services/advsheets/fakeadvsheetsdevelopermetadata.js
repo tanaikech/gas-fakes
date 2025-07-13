@@ -5,15 +5,16 @@
 import { Proxies } from '../../support/proxies.js';
 import { Syncit } from '../../support/syncit.js';
 import { notYetImplemented, ssError } from '../../support/helpers.js';
+import { FakeAdvResource } from '../common/fakeadvresource.js';
 
 /**
  * the advanced Sheets Apps Script service faked - DeveloperMetadata class
  * @class FakeAdvSheetsDeveloperMetadata
  */
-class FakeAdvSheetsDeveloperMetadata {
+class FakeAdvSheetsDeveloperMetadata extends FakeAdvResource {
   constructor(sheets) {
+    super(sheets, 'spreadsheets', Syncit.fxSheets);
     this.__fakeObjectType = "Sheets.Spreadsheets.DeveloperMetadata";
-    this.__sheets = sheets;
 
     const props = [];
     props.forEach(f => {
@@ -23,10 +24,6 @@ class FakeAdvSheetsDeveloperMetadata {
     });
   }
 
-  toString() {
-    return this.__sheets.toString();
-  }
-
   /**
    * get: https://developers.google.com/sheets/api/reference/rest/v4/spreadsheets.developerMetadata/get
    * @param {string} spreadsheetId The ID of the spreadsheet to retrieve metadata from.
@@ -34,30 +31,21 @@ class FakeAdvSheetsDeveloperMetadata {
    * @returns {object} DeveloperMetadata
    */
   get(spreadsheetId, metadataId) {
-    const pack = {
-      subProp: "developerMetadata",
-      prop: "spreadsheets",
-      method: "get",
-      params: {
-        spreadsheetId,
-        metadataId,
-      },
-    };
-
-    const { response, data } = Syncit.fxSheets(pack) || {};
-    ssError(response, `${pack.prop}.${pack.subProp}.${pack.method}`);
+    const { response, data } = this._call("get", {
+      spreadsheetId,
+      metadataId,
+    }, null, 'developerMetadata');
+    ssError(response, `spreadsheets.developerMetadata.get`);
     return data;
   }
 
   search(requestBody, spreadsheetId) {
-    const pack = {
-      subProp: "developerMetadata",
-      prop: "spreadsheets",
-      method: "search",
-      params: { spreadsheetId, requestBody },
-    };
-    const { response, data } = Syncit.fxSheets(pack) || {};
-    ssError(response, `${pack.prop}.${pack.subProp}.${pack.method}`);
+    const { response, data } = this._call("search", {
+      spreadsheetId,
+      requestBody
+    }, null, 'developerMetadata');
+
+    ssError(response, `spreadsheets.developerMetadata.search`);
     return data;
   }
 }

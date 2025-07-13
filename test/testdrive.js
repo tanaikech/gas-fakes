@@ -10,14 +10,56 @@ import is from '@sindresorhus/is';
 // all the fake services are here
 //import '@mcpher/gas-fakes/main.js'
 
-import { initTests }  from  './testinit.js'
+import { initTests } from './testinit.js'
 
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testDrive = (pack) => {
-  const {unit, fixes} = pack || initTests()
+  const { unit, fixes } = pack || initTests()
 
-    unit.section('create and copy files with driveapp and compare content with adv drive and urlfetch', t => {
+  unit.section('driveapp permission management', t => {
+    const toTrash = [];
+    const fname = fixes.PREFIX + "permission-test-file.txt";
+    const file = DriveApp.createFile(fname, "some content");
+    toTrash.push(file);
+
+    const editorEmail = fixes.SCRATCH_EDITOR;
+    const viewerEmail = fixes.SCRATCH_VIEWER;
+    const editorEmail2 = fixes.SCRATCH_B_EDITOR;
+    const viewerEmail2 = fixes.SCRATCH_B_VIEWER;
+    const editorEmails = [editorEmail, editorEmail2];
+    const viewerEmails = [viewerEmail, viewerEmail2];
+
+
+    // Test addEditor
+    file.addEditor(editorEmail);
+    let editors = file.getEditors().map(u => u.getEmail());
+    t.true(editors.includes(editorEmail), "addEditor should add a single editor");
+
+    // Test addViewer
+    file.addViewer(viewerEmail);
+    let viewers = file.getViewers().map(u => u.getEmail());
+    t.true(viewers.includes(viewerEmail), "addViewer should add a single viewer");
+
+    // Test addEditors
+    file.addEditors(editorEmails);
+    editors = file.getEditors().map(u => u.getEmail());
+    t.true(editorEmails.every(e => editors.includes(e)), "addEditors should add multiple editors");
+
+    // Test addViewers
+    file.addViewers(viewerEmails);
+    viewers = file.getViewers().map(u => u.getEmail());
+    t.true(viewerEmails.every(v => viewers.includes(v)), "addViewers should add multiple viewers");
+
+    // Test removals
+    file.removeEditor(editorEmail).removeViewer(viewerEmail);
+    t.false(file.getEditors().map(u => u.getEmail()).includes(editorEmail), "removeEditor should remove a single editor");
+    t.false(file.getViewers().map(u => u.getEmail()).includes(viewerEmail), "removeViewer should remove a single viewer");
+
+    if (fixes.CLEAN) toTrash.forEach(f => f.setTrashed(true));
+  });
+
+  unit.section('create and copy files with driveapp and compare content with adv drive and urlfetch', t => {
 
     const toTrash = []
     const rootFolder = DriveApp.getRootFolder()
@@ -341,6 +383,8 @@ export const testDrive = (pack) => {
     editors.forEach(f => t.true(is.nonEmptyString(f.getName())))
 
   })
+
+
 
   unit.section('create files with driveapp and compare content with adv drive and urlfetch', t => {
 

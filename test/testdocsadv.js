@@ -15,6 +15,39 @@ export const testDocsAdv = (pack) => {
   const { unit, fixes } = pack || initTests()
   const toTrash = []
 
+  unit.section("test batch updates", t => {
+    const docName = fixes.PREFIX + "temp-doc";
+    const resource = Docs.newDocument()
+      .setTitle(docName);
+    const doc = Docs.Documents.create(resource);
+    const ps = Docs.newSize()
+      .setHeight({
+        magnitude: 800,
+        unit: "PT"
+      })
+      .setWidth({
+        magnitude: 400,
+        unit: "PT"
+      });
+
+    const dsp = Docs.newDocumentStyle()
+      .setPageSize(ps)
+
+    const urp1 = {
+      updateDocumentStyle: Docs.newUpdateDocumentStyleRequest()
+        .setDocumentStyle(dsp)
+        .setFields("pageSize")
+    };
+
+
+    const requests = [urp1];
+    const response = Docs.Documents.batchUpdate({requests}, doc.documentId)
+    t.is(response.replies.length, requests.length, "Should have the same number of replies as requests");
+
+    if (fixes.CLEAN) toTrash.push(DriveApp.getFileById(doc.documentId))
+
+  })
+
   unit.section("basic adv docs props", t => {
     t.is(Docs.toString(), "AdvancedServiceIdentifier{name=docs, version=v1}")
     t.is(Docs.getVersion(), "v1")
@@ -87,25 +120,7 @@ export const testDocsAdv = (pack) => {
 
   })
 
-  unit.section("test batch updates", t => {
-    const docName = fixes.PREFIX + "temp-doc";
-    const resource = Docs.newDocument()
-      .setTitle(docName);
-    const doc = Docs.Documents.create(resource);
 
-    // Prepare some dummy requests
-    const requests = [
-      { updateDocumentStyle: { fields: '*', documentStyle: { background: { color: { rgbColor: { red: 1, green: 0, blue: 0 } } } }, } },
-      { updateDocumentStyle: { fields: '*', documentStyle: { foregroundColor: { color: { rgbColor: { red: 0, green: 1, blue: 0 } } } } }, }
-    ];
-
-    // Perform the batch update
-    const response = Docs.Documents.batchUpdate(requests, doc.documentId);
-    t.is(response.replies.length, requests.length, "Should have the same number of replies as requests");
-
-    if (fixes.CLEAN) toTrash.push(DriveApp.getFileById(doc.documentId))
-
-  })
 
 
   // running standalone

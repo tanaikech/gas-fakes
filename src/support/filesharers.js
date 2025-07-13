@@ -1,5 +1,5 @@
 import { getPermissionIterator } from './fileiterators.js';
-import { newFakeUser } from '../services/commonclasses/fakeuser.js';
+import { newFakeUser } from '../services/common/fakeuser.js';
 
 
 /**

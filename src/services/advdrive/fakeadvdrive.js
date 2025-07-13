@@ -7,7 +7,7 @@ import { getAuthedClient } from './drapis.js'
 import { newFakeAdvDriveAbout } from './fakeadvdriveabout.js'
 import { newFakeAdvDriveFiles } from './fakeadvdrivefiles.js';
 import { newFakeAdvDriveApps } from './fakeadvdriveapps.js'
-import { newFakeDrivePermissions } from './fakeadvdrivepermissions.js'
+import { newFakeAdvDrivePermissions } from './fakeadvdrivepermissions.js'
 
 /**
  * the advanced Drive Apps Script service faked
@@ -55,7 +55,7 @@ class FakeAdvDrive {
     )
   }
   get Permissions() {
-    return newFakeDrivePermissions(this)
+    return newFakeAdvDrivePermissions(this)
   }
   get Replies() {
     return notYetImplemented()

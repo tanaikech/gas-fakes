@@ -2,26 +2,22 @@
  * Advanced docs service
  */
 
-
 import { Proxies } from '../../support/proxies.js'
 import {  signatureArgs, ssError } from '../../support/helpers.js'
 import { docsCacher } from '../../support/docscacher.js';
 import { Syncit } from '../../support/syncit.js'
 import is from '@sindresorhus/is'
+import { FakeAdvResource } from '../common/fakeadvresource.js';
 
 /**
  * the advanced docs Apps Script service faked - Documents class
  * @class FakeAdvDocuments
  */
-class FakeAdvDocuments {
+class FakeAdvDocuments extends FakeAdvResource {
   constructor(docs) {
-
-    this.__fakeObjectType = "Docs.Documents"
-
-    const props = []
-    this.__docs = docs
+    super(docs, 'documents', Syncit.fxDocs);
+    this.__fakeObjectType = "Docs.Documents";
   }
-
 
   create (resource, options) {
     const { nargs, matchThrow } = signatureArgs(arguments, "Docs.Documents.create")
@@ -29,46 +25,32 @@ class FakeAdvDocuments {
     if (!is.object(resource) || (nargs > 1 && !is.object(options))) {
       matchThrow("API call to docs.documents.create failed with error: Invalid JSON payload received.")
     }
-
-    const pack = {
-      prop: "documents",
-      method: "create",
-      params: {
-        requestBody: resource
-      },
-      options
-    }
-
-    const { response, data } = Syncit.fxDocs(pack)
+    const { response, data } = this._call("create", {
+      requestBody: resource
+    }, options);
 
     // maybe we need to throw an error
-    ssError(response, pack.method)
+    ssError(response, "create")
 
     return data
   }
 
-  batchUpdate(resource, documentId) {
+  batchUpdate(requests, documentId) {
     const { nargs, matchThrow } = signatureArgs(arguments, "Docs.Documents.batchUpdate");
     if (nargs !== 2) matchThrow('Invalid number of arguments provided. Expected 2 only');
-    if (!is.object(resource) || !is.string(documentId)) {
+    if (!is.object(requests) || !is.string(documentId)) {
       matchThrow("API call to docs.documents.batchUpdate failed with error: Invalid JSON payload received.");
     }
 
     // Invalidate the cache for this document since we are updating it.
     docsCacher.clear(documentId);
 
-    const pack = {
-      prop: "documents",
-      method: "batchUpdate",
-      params: {
-        documentId: documentId,
-        requestBody: resource
-      }
-    };
+    const { response, data } = this._call("batchUpdate", {
+      documentId: documentId,
+      requestBody: requests
+    });
 
-    const { response, data } = Syncit.fxDocs(pack);
-
-    ssError(response, pack.method);
+    ssError(response, "batchUpdate");
 
     return data;
   }
@@ -83,30 +65,27 @@ class FakeAdvDocuments {
    * @returns 
    */
   get(documentId, options) {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Docs.Documents.get")
-    if (nargs < 1 || nargs > 2) matchThrow('Invalid number of arguments provided. Expected 1-2 only')
+    const { nargs, matchThrow } = signatureArgs(arguments, "Docs.Documents.get");
+    if (nargs < 1 || nargs > 2) matchThrow('Invalid number of arguments provided. Expected 1-2 only');
     if (!is.string(documentId) || (nargs > 1 && !is.object(options))) {
-      matchThrow("API call to docs.documents.get failed with error: Invalid JSON payload received.")
+      matchThrow("API call to docs.documents.get failed with error: Invalid JSON payload received.");
     }
-    const optionsSet = new Set(["suggestionsViewMode", "includeTabsContent"])
+    const optionsSet = new Set(["suggestionsViewMode", "includeTabsContent"]);
 
-    if (nargs === 2 && !Reflect.ownKeys(options).every(f=>optionsSet.has (f))) matchThrow()
+    if (nargs === 2 && !Reflect.ownKeys(options || {}).every(f => optionsSet.has(f))) matchThrow();
 
-    const { response, data } = Syncit.fxDocsGet({
-      id: documentId,
-      params: options
-    })
+    const params = { documentId, ...(options || {}) };
+    const cachedData = docsCacher.getEntry(documentId, options || {});
+    if (cachedData) {
+      return cachedData;
+    }
 
-    // maybe we need to throw an error
-    ssError(response, 'get')
+    const { response, data } = this._call("get", params);
+    ssError(response, 'get');
 
-    return data
+    docsCacher.setEntry(documentId, options || {}, data);
+    return data;
   }
-
-  toString() {
-    return this.__docs.toString()
-  }
-
 }
 
 export const newFakeAdvDocuments = (...args) => Proxies.guard(new FakeAdvDocuments(...args))

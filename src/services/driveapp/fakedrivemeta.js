@@ -289,6 +289,34 @@ export class FakeDriveMeta {
     return this.__updateMeta("trashed", value, "boolean", arguments)
   }
 
+  __managePermissions(emails, role, add = true) {
+    const emailAddresses = is.array(emails) ? emails : [emails];
+
+    if (add) {
+      // In Apps Script, this is not atomic. It just loops.
+      emailAddresses.forEach(emailAddress => {
+        const resource = { role, type: 'user', emailAddress };
+        Drive.Permissions.create(resource, this.getId());
+      });
+    } else {
+      // To remove, we need to find the permission ID for each email.
+      const { permissions } = Drive.Permissions.list(this.getId(), {
+        fields: 'permissions(id,role,emailAddress)'
+      });
+
+      emailAddresses.forEach(emailAddress => {
+        const permission = permissions.find(p => p.emailAddress === emailAddress && p.role === role);
+        if (permission) {
+          Drive.Permissions.delete(this.getId(), permission.id);
+        }
+        // Apps Script doesn't throw an error if the user isn't found.
+      });
+    }
+
+    // Invalidate cache for this file since permissions changed.
+    improveFileCache(this.getId(), null);
+    return this;
+  }
   // TODO-----------
 
   getSharingPermission() {
@@ -330,23 +358,46 @@ export class FakeDriveMeta {
   setOwner() {
     return notYetImplemented('setOwner')
   }
+
   addViewers() {
-    return notYetImplemented('addViewers')
+    const { nargs, matchThrow } = signatureArgs(arguments, "addViewers");
+    const [emailAddresses] = arguments;
+    if (nargs !== 1 || !is.array(emailAddresses) || !emailAddresses.every(is.string)) matchThrow();
+    return this.__managePermissions(emailAddresses, 'reader', true);
   }
+
   addViewer() {
-    return notYetImplemented('addViewer')
+    const { nargs, matchThrow } = signatureArgs(arguments, "addViewer");
+    const [emailAddress] = arguments;
+    if (nargs !== 1 || !is.string(emailAddress)) matchThrow();
+    return this.__managePermissions(emailAddress, 'reader', true);
   }
+
   removeEditor() {
-    return notYetImplemented('removeEditor')
+    const { nargs, matchThrow } = signatureArgs(arguments, "removeEditor");
+    const [emailAddress] = arguments;
+    if (nargs !== 1 || !is.string(emailAddress)) matchThrow();
+    return this.__managePermissions(emailAddress, 'writer', false);
   }
+
   addEditor() {
-    return notYetImplemented('addEditor')
+    const { nargs, matchThrow } = signatureArgs(arguments, "addEditor");
+    const [emailAddress] = arguments;
+    if (nargs !== 1 || !is.string(emailAddress)) matchThrow();
+    return this.__managePermissions(emailAddress, 'writer', true);
   }
+
   removeViewer() {
-    return notYetImplemented('removeViewer')
+    const { nargs, matchThrow } = signatureArgs(arguments, "removeViewer");
+    const [emailAddress] = arguments;
+    if (nargs !== 1 || !is.string(emailAddress)) matchThrow();
+    return this.__managePermissions(emailAddress, 'reader', false);
   }
+
   addEditors() {
-    return notYetImplemented('addEditors')
+    const { nargs, matchThrow } = signatureArgs(arguments, "addEditors");
+    const [emailAddresses] = arguments;
+    if (nargs !== 1 || !is.array(emailAddresses) || !emailAddresses.every(is.string)) matchThrow();
+    return this.__managePermissions(emailAddresses, 'writer', true);
   }
 }
-

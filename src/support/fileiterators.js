@@ -24,7 +24,7 @@ export const getPermissionIterator = ({
     do {
       // if nothing in the tank, fill it upFdrive
       if (!tank.length) {
-        const data = Drive.Permissions.list(id, { fields: "nextPageToken,permissions(emailAddress,photoLink,domain,displayName)" })
+        const data = Drive.Permissions.list(id, { fields: "nextPageToken,permissions(role,type,emailAddress,photoLink,domain,displayName)" })
         const { permissions, nextPageToken } = data
 
         // the presence of a nextPageToken is the signal that there's more to come
@@ -50,4 +50,3 @@ export const getPermissionIterator = ({
   // as Apps Script so we'll fake that too
   return newPeeker(fileit)
 }
-

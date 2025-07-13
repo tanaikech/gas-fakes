@@ -12,18 +12,18 @@ import {
   makeExtendedValue
 } from "./sheetrangehelpers.js"
 import { signatureArgs } from '../../support/helpers.js'
-import { newFakeBorders } from '../commonclasses/fakeborders.js'
-import { makeColorFromApi } from '../commonclasses/fakecolorbuilder.js'
-import { newFakeWrapStrategy, isWrapped } from '../commonclasses/fakewrapstrategy.js'
-import { newFakeRichTextValue } from '../commonclasses/fakerichtextvalue.js'
-import { newFakeRun } from '../commonclasses/fakerun.js'
-import { newFakeTextRotation } from '../commonclasses/faketextrotation.js'
-import { makeTextStyleFromApi } from '../commonclasses/faketextstylebuilder.js'
-import { newFakeColorBuilder } from '../commonclasses/fakecolorbuilder.js'
-import { newFakeTextDirection } from '../commonclasses/faketextdirection.js'
+import { newFakeBorders } from '../common/fakeborders.js'
+import { makeColorFromApi } from '../common/fakecolorbuilder.js'
+import { newFakeWrapStrategy, isWrapped } from '../common/fakewrapstrategy.js'
+import { newFakeRichTextValue } from '../common/fakerichtextvalue.js'
+import { newFakeRun } from '../common/fakerun.js'
+import { newFakeTextRotation } from '../common/faketextrotation.js'
+import { makeTextStyleFromApi } from '../common/faketextstylebuilder.js'
+import { newFakeColorBuilder } from '../common/fakecolorbuilder.js'
+import { newFakeTextDirection } from '../common/faketextdirection.js'
 import { makeDataValidationFromApi } from "./fakedatavalidationbuilder.js"
 import { TextDirection } from '../enums/sheetsenums.js'
-import { getWrapApiStrategyProp } from '../commonclasses/fakewrapstrategy.js'
+import { getWrapApiStrategyProp } from '../common/fakewrapstrategy.js'
 
 const makeRichTextValueFromApi = (cellData, range) => {
   if (!cellData?.effectiveValue?.stringValue) {

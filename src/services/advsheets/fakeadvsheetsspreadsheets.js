@@ -9,17 +9,17 @@ import { newFakeAdvSheetsValues } from './fakeadvsheetsvalues.js'
 import { getWorkbookEntry, setWorkbookEntry, clearWorkbookCache } from '../../support/sheetscache.js'
 import { newFakeAdvSheetsDeveloperMetadata } from './fakeadvsheetsdevelopermetadata.js'
 import path from 'path';
+import { FakeAdvResource } from '../common/fakeadvresource.js';
 
 /**
  * the advanced Sheets Apps Script service faked - Spreadsheets class
  * @class FakeAdvSheetsSpreadsheets
  */
-class FakeAdvSheetsSpreadsheets {
+class FakeAdvSheetsSpreadsheets extends FakeAdvResource {
   constructor(sheets) {
-
-    this.shapisPath = path.resolve(import.meta.dirname, './shapis.js')
-
-    this.__fakeObjectType = "Sheets.Spreadsheets"
+    super(sheets, 'spreadsheets', Syncit.fxSheets);
+    this.shapisPath = path.resolve(import.meta.dirname, './shapis.js');
+    this.__fakeObjectType = "Sheets.Spreadsheets";
 
     const props = [
       'getByDataFilter',
@@ -30,19 +30,14 @@ class FakeAdvSheetsSpreadsheets {
         return notYetImplemented()
       }
     })
-    this.__sheets = sheets
-
-  }
-  toString() {
-    return this.__sheets.toString()
   }
 
   get DeveloperMetadata() {
-    return newFakeAdvSheetsDeveloperMetadata(this.__sheets)
+    return newFakeAdvSheetsDeveloperMetadata(this.__mainService)
   }
 
   get Values() {
-    return newFakeAdvSheetsValues(this.__sheets)
+    return newFakeAdvSheetsValues(this.__mainService)
   }
 
   /**
@@ -66,23 +61,16 @@ class FakeAdvSheetsSpreadsheets {
     // this is wrapper for batchupdate so we can alter the behavior depending on whether we're being called by spreadsheetapp
     // note that in GAS adv sheet service doesnt take the requestBody parameter - it just sends requests as the arg
     // so we need to wrap that in requestbody for the Node API
-    const pack = {
-      prop: "spreadsheets",
-      method: "batchUpdate",
-      params: {
-        spreadsheetId,
-        requestBody: requests
-      },
-      options
-    }
+    const { response, data } = this._call("batchUpdate", {
+      spreadsheetId,
+      requestBody: requests
+    }, options);
 
-    const result = Syncit.fxSheets(pack)
-    const { response, data } = result || {}
     // naive cache - was an update so zap everything
     clearWorkbookCache(spreadsheetId)
 
     // maybe we need to throw an error
-    ssError(response, pack.method, ss)
+    ssError(response, "batchUpdate", ss)
 
     return data
   }
@@ -93,29 +81,23 @@ class FakeAdvSheetsSpreadsheets {
    * @param {object} options 
    */
   get(id, options, { ss = false } = {}) {
-
-    const pack = {
-      prop: "spreadsheets",
-      method: "get",
-      params: {
-        spreadsheetId: id,
-        ...options
-      }
-    }
-    const cache = getWorkbookEntry(id, pack)
+    const params = { spreadsheetId: id, ...options };
+    const pack = { prop: "spreadsheets", method: "get", params }; // for cache key
+    const cache = getWorkbookEntry(id, pack);
     if (cache) {
       return cache
     }
 
-    const result = Syncit.fxSheets(pack)
-    const { response, data } = result || {}
+    const { response, data } = this._call("get", params);
 
     // maybe we need to throw an error
-    ssError(response, pack.method, ss)
+    ssError(response, "get", ss)
 
     // all is good so write to cache
-    setWorkbookEntry(id, pack, data)
-    return data
+    if (data) {
+      setWorkbookEntry(id, pack, data);
+    }
+    return data;
   }
 
   /**
@@ -123,21 +105,12 @@ class FakeAdvSheetsSpreadsheets {
    * @return {Spreadsheet} resource
    */
   create(resource, { ss = false } = {}) {
-
-    const pack = {
-      prop: "spreadsheets",
-      method: "create",
-      params: {
-        requestBody: resource
-      }
-    }
-
-    // create the sheet
-    const result = Syncit.fxSheets(pack)
-    const { response, data } = result || {}
+    const { response, data } = this._call("create", {
+      requestBody: resource
+    });
 
     // maybe we need to throw an error
-    ssError(response, pack.method, ss)
+    ssError(response, "create", ss)
 
     return data
   }

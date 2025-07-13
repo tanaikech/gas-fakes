@@ -79,6 +79,10 @@ TEST_SHEET_NAME="sharedlibraries"
 PUBLIC_SHARE_FILE_ID="1OFJk38kW9TRrEf-B9F1gTZk2uLV-ZSpR"
 SHARED_FILE_ID="1uz4cxEDxtQzu0cBb1B4h6fsjgWy7hNFf"
 PDF_ID="1v5kJ5SOY2nu3DI1LKwALb3seaBpF3kWu"
+SCRATCH_VIEWER="viewer@mcpher.com"
+SCRATCH_EDITOR="editor@mcpher.com"
+SCRATCH_B_VIEWER="viewer2@mcpher.com"
+SCRATCH_B_EDITOR="editor2@mcpher.com"
 
 # these are parameters for testing
 MIN_ROOT_PDFS=20
@@ -199,7 +203,7 @@ This was a little problematic to sequence, but I wanted to make sure that any GA
 
 Only a subset of methods are currently available for some of them - the rest are work in progress. My approach is to start with a little bit of each service to prove feasibility and provide a base to build on.
 
-v1.0.10
+v1.0.13
 
 - `DriveApp` - 50%
 - `ScriptApp` - almost all
@@ -215,8 +219,8 @@ v1.0.10
 - `Drive (Advanced Service)` - 40%
 - `Sheets (Advanced Service)` - 60%
 - `Slides (Advanced Service)` - 2%
-- `Docs (Advanced Service)` - 2%
-- `DocumentApp` - placeholder
+- `Docs (Advanced Service)` - 75%
+- `DocumentApp` - 10%
 - `SlidesApp` - placeholder
 
 ### Testing coverage

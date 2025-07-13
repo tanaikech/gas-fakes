@@ -26,6 +26,7 @@ import { testSheetsVui } from './testsheetsvui.js';
 import { testSheetsDeveloper } from './testsheetsdeveloper.js';
 import { testSheetsData } from './testsheetsdata.js';
 import { testDocsAdv } from './testdocsadv.js'
+import { testDocs } from './testdocs.js'
 import { testSlidesAdv } from './testslidesadv.js'
 const testFakes = () => {
   const pack = initTests()
@@ -36,6 +37,8 @@ const testFakes = () => {
   testSlidesAdv(pack)
   console.log ('\n----Test docsadv----')
   testDocsAdv(pack)
+  console.log ('\n----Test docs----')
+  testDocs(pack)
   console.log ('\n----Test Enums----')
   testEnums(pack)
   console.log ('\n----Test Sheets Data----')
@@ -46,8 +49,6 @@ const testFakes = () => {
   testSheetsVui(pack)
   console.log ('\n----Test Sheets Sets----')
   testSheetsSets(pack)
-  console.log ('\n----Test Sheets DataValidations----')
-  testSheetsDataValidations(pack)
   console.log ('\n----Test Sheets Permissions----')
   testSheetsPermissions(pack)
   console.log ('\n----Test Sheets----')

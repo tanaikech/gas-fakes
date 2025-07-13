@@ -6,6 +6,7 @@ import { Proxies } from '../../support/proxies.js'
 import { notYetImplemented, ssError } from '../../support/helpers.js'
 import { Syncit } from '../../support/syncit.js'
 import { getWorkbookEntry, setWorkbookEntry, clearWorkbookCache } from '../../support/sheetscache.js'
+import { FakeAdvResource } from '../common/fakeadvresource.js';
 
 /**
  * create a new FakeSheet instance
@@ -20,14 +21,14 @@ export const newFakeAdvSheetsValues = (...args) => {
 * basic fake FakeSheetValues
 * @class FakeAdvSheetsValues
 */
-class FakeAdvSheetsValues {
+class FakeAdvSheetsValues extends FakeAdvResource {
   /**
    * @constructor
    * @returns {FakeAdvSheetsValues}
    */
   constructor (sheets) {
-    this.__fakeObjectType = 'Sheets.Spreadsheets.Values'
-    this.__sheets = sheets
+    super(sheets, 'spreadsheets', Syncit.fxSheets);
+    this.__fakeObjectType = 'Sheets.Spreadsheets.Values';
     const props = [
       'batchClearByDataFilter',
       'batchUpdateByDataFilter',
@@ -45,45 +46,31 @@ class FakeAdvSheetsValues {
     })
   }
 
-  toString () {
-    return this.__sheets.toString()
-  }
-
   get (spreadsheetId, range, options = {}) {
-    const pack = {
-      subProp: 'values',
-      prop: 'spreadsheets',
-      method: 'get',
-      params: {
-        spreadsheetId,
-        range,
-        ...options
-      }
-    }
-    const cache = getWorkbookEntry(spreadsheetId, pack)
+    const params = { spreadsheetId, range, ...options };
+    const pack = { subProp: 'values', prop: 'spreadsheets', method: 'get', params }; // for cache key
+    const cache = getWorkbookEntry(spreadsheetId, pack);
     if (cache) {
       return cache
     }
 
-    const result = Syncit.fxSheets(pack)
-    const { data } = result || {}
+    const { data } = this._call("get", params, null, 'values');
 
-    setWorkbookEntry(spreadsheetId, pack, data)
+    if (data) {
+      setWorkbookEntry(spreadsheetId, pack, data);
+    }
     return data || null
   }
 
   batchUpdate (requests, spreadsheetId, { ss = false } = {}) {
     const requestBody = requests
-    const pack = {
-      subProp: 'values',
-      prop: 'spreadsheets',
-      method: 'batchUpdate',
-      params: { spreadsheetId, requestBody }
-    }
-    const result = Syncit.fxSheets(pack)
-    const { response, data } = result || {}
+    const { response, data } = this._call("batchUpdate", {
+      spreadsheetId,
+      requestBody
+    }, null, 'values');
+
     clearWorkbookCache(spreadsheetId)
-    ssError(response, pack.method, ss)
+    ssError(response, "batchUpdate", ss)
     return data
   }
 }
