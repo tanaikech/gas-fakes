@@ -51,6 +51,6 @@ class FakeAdvPresentations extends FakeAdvResource {
   }
 
   toString() {
-    return 'Presentations';
+    return 'AdvancedServiceIdentifier{name=slides, version=v1}'
   }
 }

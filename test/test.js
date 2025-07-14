@@ -28,6 +28,7 @@ import { testSheetsData } from './testsheetsdata.js';
 import { testDocsAdv } from './testdocsadv.js'
 import { testDocs } from './testdocs.js'
 import { testSlidesAdv } from './testslidesadv.js'
+import { testSlides } from './testslides.js'
 const testFakes = () => {
   const pack = initTests()
   const {unit} = pack
