@@ -9,7 +9,7 @@ import '../main.js'
 
 import { initTests } from './testinit.js'
 import { getSheetsPerformance } from './testassist.js';
-import {  trasher  } from './testassist.js';
+import { trasher } from './testassist.js';
 import is from '@sindresorhus/is';
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
@@ -18,25 +18,27 @@ export const testEnums = (pack) => {
   const { unit, fixes } = pack || initTests()
   const toTrash = []
 
-  unit.section("check enums", t => {
 
-    const testEnumProp = (prop) => {
-      const p = SpreadsheetApp[prop]
-      t.true(is.nonEmptyObject(p))
-      Object.keys (p).filter(is.object).forEach ((key,i) => {
-        t.true(is.nonEmptyObject(p[key]))
-        t.is (p[key].toString(), key)
-        t.is (p[key].name(), key)
-        t.is (p[key].ordinal(),i)
-        t.is (p[key].compareTo(p[key]), 0)
-        if (!i) {
-          t.is (p[key].name(), p.name())
-        } else {
-          t.not(p[key].compareTo(p.name(), 0))
-        }
-      })
-      
-    }
+  const testEnumProp = (prop, app, t) => {
+    const p = app[prop]
+    t.true(is.nonEmptyObject(p))
+    Object.keys(p).filter(is.object).forEach((key, i) => {
+      t.true(is.nonEmptyObject(p[key]))
+      t.is(p[key].toString(), key)
+      t.is(p[key].name(), key)
+      t.is(p[key].ordinal(), i)
+      t.is(p[key].compareTo(p[key]), 0)
+      if (!i) {
+        t.is(p[key].name(), p.name())
+      } else {
+        t.not(p[key].compareTo(p.name(), 0))
+      }
+    })
+
+  }
+
+  unit.section("check sheets enums", t => {
+
     // test that all directly accessible enums work
     const enumProps = [
       "AutoFillSeries", //	AutoFillSeries	An enumeration of the types of series used to calculate auto-filled values.
@@ -73,11 +75,30 @@ export const testEnums = (pack) => {
       "WrapStrategy", //	WrapStrategy	An enumeration of the strategies used for wrapping cells.  
     ]
 
-    enumProps.forEach(testEnumProp)
+    enumProps.forEach(f => testEnumProp(f, SpreadsheetApp, t))
+  })
+
+  unit.section("check document enums", t => {
+
+    // test that all directly accessible enums work
+    const enumProps = [
+      "Attribute",
+      "ElementType",
+      "FontFamily",
+      "GlyphType",
+      "HorizontalAlignment",
+      "ParagraphHeading",
+      "PositionedLayout",
+      "TabType",
+      "TextAlignment",
+      "VerticalAlignment"
+    ]
+
+    enumProps.forEach(f => testEnumProp(f, DocumentApp, t))
   })
 
 
-  
+
 
   // running standalone
   if (!pack) {

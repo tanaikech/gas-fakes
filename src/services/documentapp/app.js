@@ -11,8 +11,10 @@ let _app = null;
 
 const name = "DocumentApp";
 if (typeof globalThis[name] === typeof undefined) {
+
   const getApp = () => {
     if (!_app) {
+      console.log('...activating proxy for', name)
       _app = newFakeDocumentApp();
     }
     return _app;

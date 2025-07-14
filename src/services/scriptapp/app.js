@@ -77,11 +77,11 @@ const checkScopesMatch = (required) => {
     ]
     const hasIgnore = ignores.includes(s)
     if (hasIgnore) {
-      console.log ('...ignoring requested scope for adc as google blocks it outside apps script' + s)
+      console.log('...ignoring requested scope for adc as google blocks it outside apps script' + s)
     }
     // if drive is authorized and drive.readonly is required that's okay too
     // if drive.readonly is authorized and drive is requested thats not
-    return !(hasIgnore|| tokened.has(s.replace(/\.readonly$/, "")))
+    return !(hasIgnore || tokened.has(s.replace(/\.readonly$/, "")))
   })
 
   if (missing.length) {
@@ -106,10 +106,10 @@ if (typeof globalThis[name] === typeof undefined) {
   Syncit.fxInit()
 
   const getApp = () => {
-    console.log(`setting ${name} to global`)
+
     // if it hasn't been intialized yet then do that
     if (!_app) {
-
+      console.log('...activating proxy for', name)
       _app = {
         getOAuthToken,
         requireAllScopes,

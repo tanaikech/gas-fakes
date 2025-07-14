@@ -1,16 +1,32 @@
 import { Proxies } from '../../support/proxies.js';
 import { newFakeDocument } from './fakedocument.js';
-import { signatureArgs } from '../../support/helpers.js';
+import { notYetImplemented, signatureArgs } from '../../support/helpers.js';
 import is from '@sindresorhus/is';
 import { Auth } from '../../support/auth.js';
-
+import * as Enums from '../enums/docsenums.js'
 export const newFakeDocumentApp = (...args) => {
   return Proxies.guard(new FakeDocumentApp(...args));
 };
 
 class FakeDocumentApp {
   constructor() {
-    // any enums would go here
+   const enumProps = [
+      "Attribute",
+      "ElementType",
+      "FontFamily",
+      "GlyphType",
+      "HorizontalAlignment",
+      "ParagraphHeading",
+      "PositionedLayout",
+      "TabType",
+      "TextAlignment",
+      "VerticalAlignment"
+    ]
+
+    // import all known enums as props of documentapp
+    enumProps.forEach(f => {
+      this[f] = Enums[f]
+    })
   }
 
   create(name) {
@@ -44,7 +60,9 @@ class FakeDocumentApp {
     if (!documentId) return null;
     return this.openById(documentId);
   }
-
+  getUi () {
+    return notYetImplemented ('DocumentApp.getUi')
+  }
   toString() {
     return 'DocumentApp';
   }

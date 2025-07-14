@@ -220,7 +220,7 @@ v1.0.13
 - `Sheets (Advanced Service)` - 60%
 - `Slides (Advanced Service)` - 2%
 - `Docs (Advanced Service)` - 75%
-- `DocumentApp` - 10%
+- `DocumentApp` - 15%
 - `SlidesApp` - placeholder
 
 ### Testing coverage
@@ -799,26 +799,6 @@ It's actually a little more complicated than that - here are the properties of t
 
 ##### case 1 {includeTabsContent: false}
 
-{ r1k:
-
-r2k:
-[ 'suggestionsViewMode',
-'documentId',
-'tabs',
-'title',
-'revisionId' ],
-r3k:
-[ 'title',
-'body',
-'namedStyles',
-'revisionId',
-'documentId',
-'suggestionsViewMode',
-'documentStyle' ] }
-14:09:40 Info { r1b: [ 'content' ],
-r2b: [ 'documentTab', 'tabProperties' ],
-r3b: [ 'content' ],
-r2tb: [ 'documentStyle', 'body', 'namedStyles' ] }
 
 Response has these properties:
 

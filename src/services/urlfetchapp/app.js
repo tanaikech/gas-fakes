@@ -30,7 +30,7 @@ const responsify = (response) => {
   const getContent = () => response.body
 
   // getBlob () FakeBlob the content as a blob
-  const getBlob = () => blobify (response)
+  const getBlob = () => blobify(response)
 
   // got returns lower case headers props, so we have to resort to using rawheaders so we match the case of Apps Script
   // TODO - find an example in apps script where getAllHeaders is not equal to getHeaders
@@ -41,19 +41,19 @@ const responsify = (response) => {
       throw `fixHeaders:invalid number of header value pairs - ${headers.length}`
     }
     // split into pairs and return as object
-    const mapHeaders = new Map(headers.flatMap((_, i, a) => i % 2 ? [] : [a.slice(i, i + 2)])); 
+    const mapHeaders = new Map(headers.flatMap((_, i, a) => i % 2 ? [] : [a.slice(i, i + 2)]));
     return Object.fromEntries(mapHeaders)
   }
   const blobify = (response) => {
-    const headers = fixHeaders (response)
+    const headers = fixHeaders(response)
     if (!headers) return null
     // the name is buried in the Conent-Disposition
     const disp = headers["Content-Disposition"]
-    const filename = disp && disp.replace (/.*filename="([^"]*).*/,"$1")
+    const filename = disp && disp.replace(/.*filename="([^"]*).*/, "$1")
     const name = filename || ""
-    const contentType = headers["Content-Type"].replace (/([^;]*).*/,"$1").trim()
+    const contentType = headers["Content-Type"].replace(/([^;]*).*/, "$1").trim()
     const bytes = response.body || null
-    return Utilities.newBlob (bytes, contentType, name)
+    return Utilities.newBlob(bytes, contentType, name)
   }
 
   /* TODO
@@ -73,7 +73,7 @@ const responsify = (response) => {
 }
 
 // this has been syncified
-const fetch =  (url, options = {}) => {
+const fetch = (url, options = {}) => {
 
   // check options for method and provide default
   options.method = options.method || "get"
@@ -103,7 +103,7 @@ if (typeof globalThis[name] === typeof undefined) {
   const getApp = () => {
     // if it hasne been intialized yet then do that
     if (!_app) {
-      console.log (`setting ${name} to global`)
+      console.log('...activating proxy for', name)
       _app = {
         fetch
       }
@@ -112,7 +112,7 @@ if (typeof globalThis[name] === typeof undefined) {
     return _app
   }
 
-  Proxies.registerProxy (name, getApp)
+  Proxies.registerProxy(name, getApp)
 
 }
 

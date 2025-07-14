@@ -26,7 +26,7 @@ const registerApp = (_app, name, kind) => {
     const getApp = () => {
       // if it hasnt been intialized yet then do that
       if (!_app) {
-        console.log(`setting ${name} to global`)
+        console.log('...activating proxy for', name)
         _app = newFakeService(kind)
       }
       // this is the actual driveApp we'll return from the proxy
@@ -36,6 +36,6 @@ const registerApp = (_app, name, kind) => {
   }
 }
 
-_propertiesApp = registerApp (_propertiesApp , 'PropertiesService', 'PROPERTIES')
-_cacheApp = registerApp (_cacheApp, 'CacheService', 'CACHE')
+_propertiesApp = registerApp(_propertiesApp, 'PropertiesService', 'PROPERTIES')
+_cacheApp = registerApp(_cacheApp, 'CacheService', 'CACHE')
 

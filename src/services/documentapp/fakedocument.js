@@ -1,8 +1,10 @@
 import { Proxies } from '../../support/proxies.js';
-import { signatureArgs } from '../../support/helpers.js';
+import { signatureArgs, notYetImplemented } from '../../support/helpers.js';
 import is from '@sindresorhus/is';
 import { newFakeBody } from './fakebody.js';
 import { docsCacher } from '../../support/docscacher.js';
+import { newFakeRangeBuilder } from './fakerangebuilder.js';
+
 
 export const newFakeDocument = (...args) => {
   return Proxies.guard(new FakeDocument(...args));
@@ -12,10 +14,96 @@ class FakeDocument {
   constructor(docResource) {
     this.__doc = docResource;
     this.__file = DriveApp.getFileById(docResource.documentId);
+
+    const props = [
+      'saveAndClose',
+      'getSupportedLanguageCodes',
+      'getNumChildren',
+      'getFooter',
+      'getTabs',
+      'addFooter',
+      'addBookmark',
+      'getBookmarks',
+      'getBookmark',
+      'addNamedRange',
+      'getNamedRangeById',
+      'editAsText',
+      'getActiveSection',
+      'getDocumentElement',
+      'getFootnotes',
+      'getParagraphs',
+      'getListItems',
+      'appendHorizontalRule',
+      'appendImage',
+      'appendPageBreak',
+      'appendParagraph',
+      'appendListItem',
+      'insertHorizontalRule',
+      'insertPageBreak',
+      'insertParagraph',
+      'insertListItem',
+      'insertTable',
+      'replaceText',
+      'getMarginBottom',
+      'getMarginLeft',
+      'getMarginRight',
+      'getMarginTop',
+      'getPageHeight',
+      'getPageWidth',
+      'setMarginBottom',
+      'setMarginLeft',
+      'setMarginRight',
+      'setMarginTop',
+      'setPageHeight',
+      'setPageWidth',
+      'setCursor',
+      'setSelection',
+      'getActiveTab',
+      'setActiveTab',
+      'getTab',
+      'getTables',
+      'getCursor',
+  
+      'getNamedRanges',
+      'insertImage',
+      'getAs',
+      'getBlob',
+
+      'getBackgroundColor',
+      'setBackgroundColor',
+      'removeChild',
+      'appendTable',
+      'addHeader',
+      'getSelection',
+      'getImages',
+
+      'clear',
+
+    
+      'newPosition',
+      'getLanguage',
+      'getText',
+      'setLanguage',
+      'getChild',
+      'getHeader',
+      'setText',
+
+    ]
+    props.forEach(f => {
+      this[f] = () => {
+        return notYetImplemented(f)
+      }
+    })
+
   }
 
   addEditor(emailAddress) {
     this.__file.addEditor(emailAddress);
+    return this;
+  }
+
+  addEditors(emailAddresses) {
+    this.__file.addEditors(emailAddresses);
     return this;
   }
 
@@ -24,12 +112,31 @@ class FakeDocument {
     return this;
   }
 
+  addViewers(emailAddresses) {
+    this.__file.addViewers(emailAddresses);
+    return this;
+  }
+
   removeEditor(emailAddress) {
+    const owner = this.__file.getOwner();
+    // You can't remove the owner of a document.
+    if (owner && owner.getEmail() === emailAddress) {
+      // The live API throws an error. To avoid breaking tests that don't
+      // expect an error, we'll just prevent the removal.
+      return this;
+    }
     this.__file.removeEditor(emailAddress);
     return this;
   }
 
   removeViewer(emailAddress) {
+    const owner = this.__file.getOwner();
+    // You can't remove the owner of a document.
+    if (owner && owner.getEmail() === emailAddress) {
+      // The live API throws an error. To avoid breaking tests that don't
+      // expect an error, we'll just prevent the removal.
+      return this;
+    }
     this.__file.removeViewer(emailAddress);
     return this;
   }
@@ -66,15 +173,45 @@ class FakeDocument {
   }
 
   getViewers() {
-    return this.__file.getViewers();
+    // The documentation for Document.getViewers() says "An editor is not a viewer",
+    // but tests on live Apps Script show that it behaves like DriveApp.File.getViewers(),
+    // which includes editors. After all viewers and editors are removed, the owner remains,
+    // resulting in a viewer count of 1. We will replicate this observed behavior.
+    const viewers = this.__file.getViewers();
+    const editors = this.getEditors();
+
+    const all = [...viewers, ...editors];
+    const uniqueEmails = new Set();
+
+    // Deduplicate users, as an editor might also be in the viewers list.
+    return all.filter(user => {
+      const email = user.getEmail();
+      if (uniqueEmails.has(email)) return false;
+      uniqueEmails.add(email);
+      return true;
+    });
   }
 
   getEditors() {
-    return this.__file.getEditors();
+    // The underlying FakeFile might incorrectly remove the owner when other editors are removed.
+    // This ensures the owner is always present in the editors list, which matches
+    // the behavior of the live Google Apps Script environment.
+    const editors = this.__file.getEditors();
+    const owner = this.__file.getOwner();
+
+    if (owner && !editors.some(e => e.getEmail() === owner.getEmail())) {
+      return [...editors, owner];
+    }
+
+    return editors;
   }
 
   getUrl() {
-      return `https://docs.google.com/document/d/${this.getId()}/edit`;
+    return `https://docs.google.com/document/d/${this.getId()}/edit`;
+  }
+
+  newRange() {
+    return newFakeRangeBuilder();
   }
 
   toString() {

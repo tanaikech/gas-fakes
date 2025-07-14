@@ -5,7 +5,7 @@
  * We do this by using a proxy, intercepting calls to the 
  * initial sigleton and diverting them to a completed one
  */
-import { newFakeSpreadsheetApp} from './fakespreadsheetapp.js'
+import { newFakeSpreadsheetApp } from './fakespreadsheetapp.js'
 import { Proxies } from '../../support/proxies.js'
 
 // This will eventually hold a proxy for DriveApp
@@ -24,14 +24,13 @@ if (typeof globalThis[name] === typeof undefined) {
   const getApp = () => {
     // if it hasnt been intialized yet then do that
     if (!_app) {
-       console.log (`setting ${name} to global`)
+      console.log('...activating proxy for', name)
       _app = newFakeSpreadsheetApp()
     }
     // this is the actual driveApp we'll return from the proxy
     return _app
   }
 
-
-  Proxies.registerProxy (name, getApp)
+  Proxies.registerProxy(name, getApp)
 
 }

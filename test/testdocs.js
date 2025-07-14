@@ -7,6 +7,38 @@ export const testDocs = (pack) => {
   const { unit, fixes } = pack || initTests();
   const toTrash = [];
 
+    unit.section("newRange and builders", t => {
+    const doc = DocumentApp.create(fixes.PREFIX + "range-doc");
+    toTrash.push(DriveApp.getFileById(doc.getId()));
+
+    const rangeBuilder = doc.newRange();
+    t.is(rangeBuilder.toString(), 'RangeBuilder', 'newRange should return a RangeBuilder');
+
+    // Test with no elements
+    const emptyRange = rangeBuilder.build();
+    t.is(emptyRange.toString(), 'Range', 'build() on empty builder returns a Range');
+    t.is(emptyRange.getRangeElements().length, 0, 'empty range has 0 range elements');
+    
+    // Create some elements to add to the range using the public API
+    const body = doc.getBody();
+    const el1 = body.appendParagraph("p1");
+    const el2 = body.appendParagraph("p2");
+    const el3 = body.appendParagraph("p3");
+
+    // Test addElement, chaining, and build
+    rangeBuilder.addElement(el1).addElement(el2);
+    const builtRange = rangeBuilder.build();
+    t.is(builtRange.getRangeElements().length, 2, 'built range should have 2 range elements');
+    t.deepEqual(builtRange.getRangeElements().map(re => re.getElement().getText()), ["p1", "p2"], 'getText() should return correct text for elements in order');
+
+    // Test addRange
+    const anotherRange = doc.newRange().addElement(el3).build();
+    rangeBuilder.addRange(anotherRange);
+    const finalRange = rangeBuilder.build();
+    t.is(finalRange.getRangeElements().length, 3, 'addRange should add elements from another range');
+    t.deepEqual(finalRange.getRangeElements().map(re => re.getElement().getText()), ["p1", "p2", "p3"], 'final range should contain all elements');
+  });
+
   unit.section("DocumentApp create", t => {
     const docName = fixes.PREFIX + "created-doc";
     const doc = DocumentApp.create(docName);
@@ -25,7 +57,8 @@ export const testDocs = (pack) => {
       toTrash.push(DriveApp.getFileById(doc.getId()));
     }
   });
-  unit.section("Document methods", t => {
+
+  unit.section("Document basic methods", t => {
     const docName = fixes.PREFIX + "doc-methods";
     const doc = DocumentApp.create(docName);
     toTrash.push(DriveApp.getFileById(doc.getId()));
@@ -51,17 +84,34 @@ export const testDocs = (pack) => {
     // test permissions
     const editorEmail = "editor@example.com";
     const viewerEmail = "viewer@example.com";
+    const editorEmails = ["editor2@example.com", "editor3@example.com"];
+    const viewerEmails = ["viewer2@example.com", "viewer3@example.com"];
 
     doc.addEditor(editorEmail).addViewer(viewerEmail);
     t.true(doc.getEditors().map(u => u.getEmail()).includes(editorEmail), "addEditor should add an editor");
     t.true(doc.getViewers().map(u => u.getEmail()).includes(viewerEmail), "addViewer should add a viewer");
 
+    doc.addEditors(editorEmails);
+    let currentEditors = doc.getEditors().map(u => u.getEmail());
+    t.true(editorEmails.every(e => currentEditors.includes(e)), "addEditors should add multiple editors");
+
+    doc.addViewers(viewerEmails);
+    let currentViewers = doc.getViewers().map(u => u.getEmail());
+    t.true(viewerEmails.every(v => currentViewers.includes(v)), "addViewers should add multiple viewers");
+
     doc.removeEditor(editorEmail).removeViewer(viewerEmail);
+    editorEmails.forEach(e => doc.removeEditor(e));
+    viewerEmails.forEach(v => doc.removeViewer(v));
     t.false(doc.getEditors().map(u => u.getEmail()).includes(editorEmail), "removeEditor should remove an editor");
     t.false(doc.getViewers().map(u => u.getEmail()).includes(viewerEmail), "removeViewer should remove a viewer");
+    t.is(doc.getEditors().length, 1, "all editors should be removed except owner");
+    t.is(doc.getViewers().length, 1, "all viewers should be removed except owner, who is also a viewer");
 
     t.is(doc.toString(), 'Document', "toString should return 'Document'");
   });
+
+
+
   if (!pack) {
     unit.report();
   }

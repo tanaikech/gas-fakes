@@ -21,7 +21,7 @@ if (typeof globalThis[name] === typeof undefined) {
   const getApp = () => {
     // if it hasn't been intialized yet then do that
     if (!_app) {
-      console.log(`setting ${name} to global`)
+      console.log('...activating proxy for', name)
       _app = newFakeSession()
     }
     // this is the actual driveApp we'll return from the proxy
