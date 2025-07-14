@@ -36,7 +36,47 @@ export const testEnums = (pack) => {
     })
 
   }
+  unit.section("check slides enums", t => {
 
+    // test that all directly accessible enums work
+    const enumProps = [
+      'AlignmentPosition',
+      'ArrowStyle',
+      'AudioSourceType',
+      'AutoTextType',
+      'AutofitType',
+      'CellMergeState',
+      'ColorType',
+      'ContentAlignment',
+      'DashStyle',
+      'FillType',
+      'LineCategory',
+      'LineFillType',
+      'LineType',
+      'LinkType',
+      'ListPreset',
+      'PageBackgroundType',
+      'PageElementType',
+      'PageType',
+      'ParagraphAlignment',
+      'PlaceholderType',
+      'PredefinedLayout',
+      'RadialGradientCenter',
+      'RectanglePosition',
+      'SelectionType',
+      'ShadowType',
+      'ShapeType',
+      'SheetsChartEmbedType',
+      'SlideLinkingMode',
+      'SlidePosition',
+      'SpacingMode',
+      'TextBaselineOffset',
+      'TextDirection',
+      'ThemeColorType',
+      'VideoSourceType']
+
+    enumProps.forEach(f => testEnumProp(f, SlidesApp, t))
+  })
   unit.section("check sheets enums", t => {
 
     // test that all directly accessible enums work

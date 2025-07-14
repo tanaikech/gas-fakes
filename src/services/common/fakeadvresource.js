@@ -1,7 +1,7 @@
 /**
  * Base class for advanced service resources
  */
-import { Syncit } from '../../support/syncit.js';
+
 
 /**
  * @class FakeAdvResource

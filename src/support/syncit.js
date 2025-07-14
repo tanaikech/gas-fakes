@@ -123,6 +123,24 @@ const fxSheets = ({ subProp, prop, method, params, options }) => {
 }
 
 /**
+ * sync a call to slides api
+ * @param {object} p pargs
+ * @param {string} p.prop the prop of slides eg 'presentations' for slides.presentations
+ * @param {string} p.method the method of slides eg 'get' for slides.presentations.get
+ * @param {object} p.params the params to add to the request
+ * @param {object} p.options gaxios options
+ * @return {SlidesResponse} from the slides api
+ */
+const fxSlides = ({ prop, method, params, options }) => {
+  return callSync('sxSlides', {
+    prop,
+    method,
+    params: normalizeSerialization(params),
+    options: normalizeSerialization(options)
+  });
+}
+
+/**
  * sync a call to docs api
  * @param {object} p pargs
  * @param {string} p.prop the prop of docs eg 'documents' for docs.documents
@@ -393,6 +411,7 @@ export const Syncit = {
   fxStreamUpMedia,
   fxDriveGet,
   fxSheets,
+  fxSlides,
   fxRefreshToken,
   fxDocs,
   fxDocsGet

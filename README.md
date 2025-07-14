@@ -221,7 +221,7 @@ v1.0.13
 - `Slides (Advanced Service)` - 2%
 - `Docs (Advanced Service)` - 75%
 - `DocumentApp` - 15%
-- `SlidesApp` - placeholder
+- `SlidesApp` - 5%
 
 ### Testing coverage
 
