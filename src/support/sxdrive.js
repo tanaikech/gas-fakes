@@ -58,16 +58,16 @@ export const sxDrive = async (Auth, { prop, method, params, options }) => {
       response = err.response;
     }
 
-    const isQuotaError = response?.status === 429 || error?.code == 429;
+    const isRetryable = [429, 500, 503].includes(response?.status) || error?.code == 429;
 
-    if (isQuotaError && i < maxRetries - 1) {
-      syncWarn(`Quota error on Drive API call ${prop}.${method}. Retrying in ${delay}ms...`);
+    if (isRetryable && i < maxRetries - 1) {
+      syncWarn(`Retryable error on Drive API call ${prop}.${method} (status: ${response?.status}). Retrying in ${delay}ms...`);
       await sleep(delay);
       delay *= 2;
       continue;
     }
 
-    if (error || isQuotaError) {
+    if (error || isRetryable) {
       syncError(`Failed in sxDrive for ${prop}.${method}`, error);
       return {
         data: null,
