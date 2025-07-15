@@ -5,7 +5,8 @@ import { Proxies } from '../../support/proxies.js'
 import { advClassMaker } from '../../support/helpers.js'
 import { getAuthedClient } from './shapis.js'
 import { newFakeAdvSheetsSpreadsheets } from './fakeadvsheetsspreadsheets.js'
-
+import { sheetsCacher } from '../../support/sheetscacher.js';
+import { sheets } from 'googleapis/build/src/apis/sheets/index.js';
 
 class FakeAdvSheets {
   constructor() {
@@ -874,6 +875,10 @@ class FakeAdvSheets {
   }
   get Spreadsheets() {
     return newFakeAdvSheetsSpreadsheets(this)
+  }
+  // exposes cache performance to tests 
+  __getSheetsPerformance() {
+    return sheetsCacher.getPerformance()
   }
 }
 

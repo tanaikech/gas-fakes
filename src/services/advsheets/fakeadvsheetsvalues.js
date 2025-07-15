@@ -5,7 +5,6 @@
 import { Proxies } from '../../support/proxies.js'
 import { notYetImplemented, ssError } from '../../support/helpers.js'
 import { Syncit } from '../../support/syncit.js'
-import { getWorkbookEntry, setWorkbookEntry, clearWorkbookCache } from '../../support/sheetscache.js'
 import { FakeAdvResource } from '../common/fakeadvresource.js';
 
 /**
@@ -26,7 +25,7 @@ class FakeAdvSheetsValues extends FakeAdvResource {
    * @constructor
    * @returns {FakeAdvSheetsValues}
    */
-  constructor (sheets) {
+  constructor(sheets) {
     super(sheets, 'spreadsheets', Syncit.fxSheets);
     this.__fakeObjectType = 'Sheets.Spreadsheets.Values';
     const props = [
@@ -46,30 +45,22 @@ class FakeAdvSheetsValues extends FakeAdvResource {
     })
   }
 
-  get (spreadsheetId, range, options = {}) {
+
+  get(spreadsheetId, range, options = {}) {
     const params = { spreadsheetId, range, ...options };
-    const pack = { subProp: 'values', prop: 'spreadsheets', method: 'get', params }; // for cache key
-    const cache = getWorkbookEntry(spreadsheetId, pack);
-    if (cache) {
-      return cache
-    }
-
-    const { data } = this._call("get", params, null, 'values');
-
-    if (data) {
-      setWorkbookEntry(spreadsheetId, pack, data);
-    }
+    const { response, data } = this._call("get", params, null, 'values');
+    // maybe we need to throw an error
+    ssError(response, "get")
     return data || null
   }
 
-  batchUpdate (requests, spreadsheetId, { ss = false } = {}) {
+  batchUpdate(requests, spreadsheetId, { ss = false } = {}) {
     const requestBody = requests
     const { response, data } = this._call("batchUpdate", {
       spreadsheetId,
       requestBody
     }, null, 'values');
 
-    clearWorkbookCache(spreadsheetId)
     ssError(response, "batchUpdate", ss)
     return data
   }

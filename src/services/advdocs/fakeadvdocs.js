@@ -5,6 +5,7 @@ import { Proxies } from '../../support/proxies.js'
 import { advClassMaker, notYetImplemented } from '../../support/helpers.js'
 import { getAuthedClient } from './docapis.js'
 import { newFakeAdvDocuments } from './fakeadvdocuments.js'
+import { docsCacher } from '../../support/docscacher.js';
 
 class FakeAdvDocs {
   constructor() {
@@ -24,8 +25,12 @@ class FakeAdvDocs {
   getVersion() {
     return 'v1'
   }
+
   get Documents() {
     return newFakeAdvDocuments(this)
+  }
+  __getDocsPerformance() {
+    return docsCacher.getPerformance()
   }
 }
 

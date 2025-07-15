@@ -1,5 +1,5 @@
 import { Utils } from '../../support/utils.js'
-import { clearWorkbookCache } from '../../support/sheetscache.js';
+
 const { is, hexToRgb } = Utils
 
 export const bandingThemeMap = {

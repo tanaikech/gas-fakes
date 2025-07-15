@@ -1,7 +1,7 @@
 import is from '@sindresorhus/is';
 import '../main.js';
 import { initTests } from './testinit.js';
-import { trasher } from './testassist.js';
+import { getSlidesPerformance, trasher, getDrivePerformance } from './testassist.js';
 
 export const testSlides = (pack) => {
   const { unit, fixes } = pack || initTests();
@@ -48,6 +48,11 @@ export const testSlides = (pack) => {
     t.is(SlidesApp.PageType.SLIDE.toString(), 'SLIDE', 'should have PageType enum');
     t.is(SlidesApp.ShapeType.TEXT_BOX.toString(), 'TEXT_BOX', 'should have ShapeType enum');
     t.is(SlidesApp.PredefinedLayout.TITLE_AND_BODY.toString(), 'TITLE_AND_BODY', 'should have PredefinedLayout enum');
+
+    if (SlidesApp.isFake) {
+      console.log('...cumulative slides cache performance', getSlidesPerformance())
+      console.log('...cumulative drive cache performance', getDrivePerformance())
+    }
   });
 
 
@@ -63,4 +68,6 @@ export const testSlides = (pack) => {
 
 if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
   testSlides();
+  console.log('...cumulative slides cache performance', getSlidesPerformance())
+  console.log('...cumulative drive cache performance', getDrivePerformance())
 }

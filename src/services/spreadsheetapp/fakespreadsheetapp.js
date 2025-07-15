@@ -8,7 +8,7 @@ import { newFakeTextStyleBuilder } from '../common/faketextstylebuilder.js'
 import { newFakeFilterCriteriaBuilder } from './fakefiltercriteriabuilder.js'
 import { newFakeDataValidationBuilder } from './fakedatavalidationbuilder.js'
 import { newFakeDataSourceSpecBuilder } from './fakedatasourcespecbuilder.js';
-import { getSheetsPerformance } from '../../support/sheetscache.js';
+
 
 
 import * as Enums from '../enums/sheetsenums.js'
@@ -108,10 +108,7 @@ export class FakeSpreadsheetApp {
 
   }
   
-  // exposes cache performance to tests 
-  __getSheetsPerformance() {
-    return getSheetsPerformance()
-  }
+
 
 
   enableBigQueryExecution() {

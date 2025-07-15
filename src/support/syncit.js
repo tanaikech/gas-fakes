@@ -7,9 +7,13 @@ import mime from 'mime';
 import { minFields } from './helpers.js'
 import { mergeParamStrings } from './utils.js'
 import { improveFileCache, checkResponse, getFromFileCache } from "./filecache.js"
-import { docsCacher, checkDocsResponse } from "./docscacher.js"
+import { checkResponseCacher } from './fetchcacher.js';
+import { docsCacher } from "./docscacher.js"
+import { slidesCacher } from './slidescacher.js';
+import { sheetsCacher } from './sheetscacher.js';
 import is from '@sindresorhus/is';
 import { callSync } from './workersync/synchronizer.js';
+
 
 const manifestDefaultPath = './appsscript.json'
 const claspDefaultPath = "./.clasp.json"
@@ -39,25 +43,20 @@ const registerSx = (result, allow404 = false, fields) => {
   }
 }
 
-/**
- * check and register a result in docs cache
- * @param {import('./sxdrive.js').SxResult} the result of a sync api call
- * @return {import('./sxdrive.js').SxResult} 
- */
-const registerSxDocs = (result, allow404 = false, params) => {
+const register = (id, cacher, result, allow404 = false, params) => {
   const { data, response } = result;
-  
-  // For docs, the ID is in `documentId`
-  const documentId = data?.documentId;
-  if (checkDocsResponse(documentId, response, allow404) ) {
+
+  if (checkResponseCacher(id, response, allow404, cacher)) {
     return {
       ...result,
-      data: docsCacher.setEntry (documentId, params, data),
+      data: cacher.setEntry(id, params, data),
     };
   } else {
     return result;
   }
-};
+}
+
+
 /**
  * sync a call to Drive api to stream a download
  * @param {object} p pargs
@@ -103,101 +102,41 @@ const fxDrive = ({ prop, method, params, options }) => {
   });
 }
 
-/**
- * sync a call to sheets api
- * @param {object} p pargs
- * @param {string} p.subProp sometimes theres an extra prop - eg sheets.spreadsheets.values.get = prop:spreadsheets, subprop: values
- * @param {string} p.prop the prop of sheet eg 'spreadsheets' for sheets.spreadsheets
- * @param {string} p.method the method of drive eg 'get' for sheets.spreadsheets.get
- * @param {object} p.params the params to add to the request
- * @return {SheetsResponse} from the sheets api
- */
-const fxSheets = ({ subProp, prop, method, params, options }) => {
-  return callSync('sxSheets', {
+const fxGeneric = ({ serviceName, prop, subProp, method, params, options, cacher, idField }) => {
+  const { [idField]: resourceId, ...otherParams } = params;
+
+  if (method === 'get') {
+    const data = cacher.getEntry(resourceId, otherParams);
+    if (data) {
+      return {
+        data,
+        response: {
+          status: 200,
+          fromCache: true
+        }
+      }
+    }
+  }
+
+  const result = callSync(`sx${serviceName}`, {
     subProp,
     prop,
     method,
     params: normalizeSerialization(params),
     options: normalizeSerialization(options)
-  });
-}
+  })
 
-/**
- * sync a call to slides api
- * @param {object} p pargs
- * @param {string} p.prop the prop of slides eg 'presentations' for slides.presentations
- * @param {string} p.method the method of slides eg 'get' for slides.presentations.get
- * @param {object} p.params the params to add to the request
- * @param {object} p.options gaxios options
- * @return {SlidesResponse} from the slides api
- */
-const fxSlides = ({ prop, method, params, options }) => {
-  return callSync('sxSlides', {
-    prop,
-    method,
-    params: normalizeSerialization(params),
-    options: normalizeSerialization(options)
-  });
-}
-
-/**
- * sync a call to docs api
- * @param {object} p pargs
- * @param {string} p.prop the prop of docs eg 'documents' for docs.documents
- * @param {string} p.method the method of docs eg 'get' for docs.documents.get
- * @param {object} p.params the params to add to the request
- * @param {object} p.options gaxios options
- * @return {DocsResponse} from the docs api
- */
-const fxDocs = ({ prop, method, params, options }) => {
-  return callSync('sxDocs', {
-    prop,
-    method,
-    params: normalizeSerialization(params),
-    options: normalizeSerialization(options)
-  });
-}
-
-/**
- * sync a call to Docs api get
- * @param {object} p pargs
- * @param {string} p.id the document id
- * @param {boolean} [p.allowCache=true] whether to allow the result to come from cache
- * @param {boolean} [p.allow404=false] whether to allow 404 errors
- * @param {object} p.params queryparams
- * @return {DocsResponse} from the docs api
- */
-const fxDocsGet = ({ id, allow404 = false, allowCache = true, params = {} }) => {
-
-  const pathParams = { documentId: id, ...params };
-
-  if (allowCache) {
-
-    const data = docsCacher.getEntry(id, params);
-    if (data) {
-      console.log ('found in cache',id, params)
-      return {
-        data,
-        response: {
-          status: 200,
-          fromCache: true,
-        },
-      };
-
-    }
+  if (method === 'get') {
+    return register(resourceId, cacher, result, false, otherParams)
   }
 
+  if (resourceId) {
+    cacher.clear(resourceId)
+  }
+  return result
+}
 
-  // so we have to hit the API
-  const result = callSync('sxDocs', {
-    prop: 'documents',
-    method: 'get',
-    params: normalizeSerialization(pathParams)
-  });
 
-  // check result and register in cache
-  return registerSxDocs(result, allow404, params);
-};
 
 /**
  * sync a call to Drive api get
@@ -400,19 +339,22 @@ const fxFetch = (url, options, responseFields) => {
   return callSync('sxFetch', url, options, responseFields);
 }
 
+const fxSheets = (args) => fxGeneric({ ...args, serviceName: 'Sheets', cacher: sheetsCacher, idField: 'spreadsheetId' });
+const fxSlides = (args) => fxGeneric({ ...args, serviceName: 'Slides', cacher: slidesCacher, idField: 'presentationId' });
+const fxDocs = (args) => fxGeneric({ ...args, serviceName: 'Docs', cacher: docsCacher, idField: 'documentId' });
+
 export const Syncit = {
   fxFetch,
   fxDrive,
   fxDriveMedia,
+  fxDriveGet,
   fxInit,
   fxStore,
   fxZipper,
   fxUnzipper,
   fxStreamUpMedia,
-  fxDriveGet,
   fxSheets,
   fxSlides,
   fxRefreshToken,
   fxDocs,
-  fxDocsGet
 }

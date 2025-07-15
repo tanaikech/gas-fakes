@@ -8,7 +8,7 @@ import '../main.js'
 //import '@mcpher/gas-fakes/main.js'
 
 import { initTests } from './testinit.js'
-import { trasher } from './testassist.js';
+import { trasher, getDocsPerformance } from './testassist.js';
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testDocsAdv = (pack) => {
 
@@ -62,7 +62,7 @@ export const testDocsAdv = (pack) => {
 
     t.is(is(Docs.Documents), "Object")
     t.is(Docs.toString(), Docs.Documents.toString())
-
+    if (Docs.isFake) console.log('...cumulative docs cache performance', getDocsPerformance())
   })
 
   unit.section("basic adv docs", t => {
@@ -117,7 +117,7 @@ export const testDocsAdv = (pack) => {
     t.is(r1.documentId, r2.documentId)
     t.is(r3.documentId, doc.documentId)
     if (fixes.CLEAN) toTrash.push(DriveApp.getFileById(doc.documentId))
-
+    if (Docs.isFake) console.log('...cumulative docs cache performance', getDocsPerformance())
   })
 
 
@@ -143,4 +143,7 @@ export const testDocsAdv = (pack) => {
 // on apps script we don't want it to run automatically
 // when running as part of a consolidated test, we dont want to run it, as the caller will do that
 
-if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) testDocsAdv()
+if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
+  testDocsAdv()
+  console.log('...cumulative docs cache performance', getDocsPerformance())
+}

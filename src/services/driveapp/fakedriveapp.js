@@ -3,7 +3,7 @@ import { newFakeDriveFile } from './fakedrivefile.js'
 import { newFakeFolderApp } from './fakefolderapp.js'
 import { notYetImplemented, isFolder } from '../../support/helpers.js'
 import { Proxies } from '../../support/proxies.js'
-import { getPerformance } from '../../support/filecache.js';
+
 
 /**
  * basic fake DriveApp
@@ -19,10 +19,7 @@ export class FakeDriveApp {
     this.__settleClass = (file) => isFolder(file) ? newFakeDriveFolder(file) : newFakeDriveFile(file)
   }
 
-  // exposes cache performance to tests 
-  __getPerformance() {
-    return getPerformance()
-  }
+
 
   toString() {
     return 'Drive'

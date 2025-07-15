@@ -1,13 +1,13 @@
 import is from '@sindresorhus/is';
 import '../main.js';
 import { initTests } from './testinit.js';
-import { trasher } from './testassist.js';
+import { trasher, getDocsPerformance } from './testassist.js';
 
 export const testDocs = (pack) => {
   const { unit, fixes } = pack || initTests();
   const toTrash = [];
 
-    unit.section("newRange and builders", t => {
+  unit.section("newRange and builders", t => {
     const doc = DocumentApp.create(fixes.PREFIX + "range-doc");
     toTrash.push(DriveApp.getFileById(doc.getId()));
 
@@ -18,7 +18,7 @@ export const testDocs = (pack) => {
     const emptyRange = rangeBuilder.build();
     t.is(emptyRange.toString(), 'Range', 'build() on empty builder returns a Range');
     t.is(emptyRange.getRangeElements().length, 0, 'empty range has 0 range elements');
-    
+
     // Create some elements to add to the range using the public API
     const body = doc.getBody();
     const el1 = body.appendParagraph("p1");
@@ -37,6 +37,7 @@ export const testDocs = (pack) => {
     const finalRange = rangeBuilder.build();
     t.is(finalRange.getRangeElements().length, 3, 'addRange should add elements from another range');
     t.deepEqual(finalRange.getRangeElements().map(re => re.getElement().getText()), ["p1", "p2", "p3"], 'final range should contain all elements');
+    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance())
   });
 
   unit.section("DocumentApp create", t => {
@@ -56,6 +57,7 @@ export const testDocs = (pack) => {
     if (fixes.CLEAN) {
       toTrash.push(DriveApp.getFileById(doc.getId()));
     }
+    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance())
   });
 
   unit.section("Document basic methods", t => {
@@ -108,6 +110,7 @@ export const testDocs = (pack) => {
     t.is(doc.getViewers().length, 1, "all viewers should be removed except owner, who is also a viewer");
 
     t.is(doc.toString(), 'Document', "toString should return 'Document'");
+    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance())
   });
 
 
@@ -122,4 +125,5 @@ export const testDocs = (pack) => {
 
 if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
   testDocs();
+  console.log('...cumulative docs cache performance', getDocsPerformance())
 }

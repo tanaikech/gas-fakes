@@ -8,6 +8,7 @@ import { newFakeAdvDriveAbout } from './fakeadvdriveabout.js'
 import { newFakeAdvDriveFiles } from './fakeadvdrivefiles.js';
 import { newFakeAdvDriveApps } from './fakeadvdriveapps.js'
 import { newFakeAdvDrivePermissions } from './fakeadvdrivepermissions.js'
+import { getDrivePerformance } from '../../support/filecache.js';
 
 /**
  * the advanced Drive Apps Script service faked
@@ -17,7 +18,7 @@ import { newFakeAdvDrivePermissions } from './fakeadvdrivepermissions.js'
 class FakeAdvDrive {
   constructor() {
     this.client = Proxies.guard(getAuthedClient())
-    this.__fakeObjectType ="Drive"
+    this.__fakeObjectType = "Drive"
   }
   toString() {
     return `AdvancedServiceIdentifier{name=drive, version=v3}`
@@ -65,6 +66,10 @@ class FakeAdvDrive {
   }
   get Teamdrives() {
     return notYetImplemented()
+  }
+  // exposes cache performance to tests 
+  __getDrivePerformance() {
+    return getDrivePerformance()
   }
 
 }

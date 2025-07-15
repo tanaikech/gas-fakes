@@ -8,6 +8,7 @@ export const newFakeDocumentApp = (...args) => {
   return Proxies.guard(new FakeDocumentApp(...args));
 };
 
+
 class FakeDocumentApp {
   constructor() {
    const enumProps = [
@@ -66,4 +67,5 @@ class FakeDocumentApp {
   toString() {
     return 'DocumentApp';
   }
+
 }

@@ -5,7 +5,7 @@
 
 
 import '../main.js'
-import { getPerformance } from './testassist.js';
+import { getDrivePerformance } from './testassist.js';
 import is from '@sindresorhus/is';
 // all the fake services are here
 //import '@mcpher/gas-fakes/main.js'
@@ -57,6 +57,7 @@ export const testDrive = (pack) => {
     t.false(file.getViewers().map(u => u.getEmail()).includes(viewerEmail), "removeViewer should remove a single viewer");
 
     if (fixes.CLEAN) toTrash.forEach(f => f.setTrashed(true));
+    if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
   });
 
   unit.section('create and copy files with driveapp and compare content with adv drive and urlfetch', t => {
@@ -190,7 +191,7 @@ export const testDrive = (pack) => {
     t.rxMatch(t.threw(() => dcfile.makeCopy("yy", "xx")).toString(), /The parameters \(String,String\) don't match/)
 
     if (fixes.CLEAN) toTrash.forEach(f => f.setTrashed(true))
-    if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
+    if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
   })
 
   unit.section("advanced drive basics", t => {
@@ -204,7 +205,7 @@ export const testDrive = (pack) => {
     t.is(file.name, fixes.TEXT_FILE_NAME)
     t.is(file.mimeType, fixes.TEXT_FILE_TYPE)
     t.is(file.kind, fixes.KIND_DRIVE)
-    if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
+    if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
   })
 
 
@@ -219,7 +220,7 @@ export const testDrive = (pack) => {
     // cant set meta data
     t.rxMatch(t.threw(() => rootFolder.setStarred(true)).toString(), /Access denied/)
     //TODO find out whether we can set permissions etc.
-
+    if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
   })
 
 
@@ -270,7 +271,7 @@ export const testDrive = (pack) => {
     // i know i have this number of files in the folder
     t.is(pile.length, fixes.TEST_FOLDER_FILES)
 
-    if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
+    if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
   })
 
   unit.section('updates and moves advdrive and driveapp', t => {
@@ -345,7 +346,7 @@ export const testDrive = (pack) => {
 
     // trash all files
     if (fixes.CLEAN) toTrash.forEach(f => f.setTrashed(true))
-    if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
+    if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
   })
 
 
@@ -381,7 +382,7 @@ export const testDrive = (pack) => {
     const editors = file.getEditors()
     t.is(editors.length, 1)
     editors.forEach(f => t.true(is.nonEmptyString(f.getName())))
-
+    if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
   })
 
 
@@ -462,7 +463,7 @@ export const testDrive = (pack) => {
     t.rxMatch(t.threw(() => DriveApp.createFile(Utilities.newBlob(""))).toString(), /Blob object must have non-null name for this operation./)
 
     if (fixes.CLEAN) toTrash.forEach(f => f.setTrashed(true))
-    if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
+    if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
   })
 
 
@@ -484,6 +485,7 @@ export const testDrive = (pack) => {
     const root = JSON.parse(rootResponse.getContentText())
     t.is(root.name, "My Drive")
     t.is(root.mimeType, "application/vnd.google-apps.folder")
+    if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
   }, { skip: false })
 
 
@@ -509,7 +511,7 @@ export const testDrive = (pack) => {
     t.true(is.array(ublob.getBytes()))
     // this test doesnt work because thumbnail returns a compressed version, whereas the link itself is not compressed
     // t.deepEqual (tblob.getBytes(), ublob.getBytes())
-
+    if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
 
   })
 
@@ -531,7 +533,7 @@ export const testDrive = (pack) => {
 
     t.is(file.getDownloadUrl(), Drive.Files.get(file.getId(), { fields: "webContentLink" }).webContentLink)
 
-    if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
+    if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
 
   })
 
@@ -564,7 +566,7 @@ export const testDrive = (pack) => {
     t.is(blob.getDataAsString(), text)
     t.is(file.getId(), aFile.id)
     t.deepEqual(response.getBlob().getBytes(), blob.getBytes())
-
+    if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
   })
 
   unit.section('check where google doesnt support in adv drive', t => {
@@ -593,7 +595,7 @@ export const testDrive = (pack) => {
     }
 
     t.true(rootPdfPile.length >= fixes.MIN_ROOT_PDFS)
-    if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
+    if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
   })
 
   unit.section("driveapp searching with queries", t => {
@@ -631,7 +633,7 @@ export const testDrive = (pack) => {
       t.is(dapMatches.next().getName(), file.getName())
     })
 
-    if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
+    if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
 
   }, { skip: false })
 
@@ -644,6 +646,7 @@ export const testDrive = (pack) => {
     t.is(file.getParents().next().getId(), folder.getId())
     const blob = file.getBlob()
     t.is(blob.getDataAsString(), fixes.TEXT_FILE_CONTENT)
+    if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
   })
 
   unit.section('extended meta data', t => {
@@ -680,7 +683,7 @@ export const testDrive = (pack) => {
     // dont really know what size to expect for a sheet
     t.true(sheetFile.getSize() > 0)
     t.is(sheetFile.getMimeType(), 'application/vnd.google-apps.spreadsheet')
-
+    if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
   }, {
     skip: false
   })
@@ -697,7 +700,7 @@ export const testDrive = (pack) => {
     skip: true
   })
 
-  if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
+
   if (!pack) {
     unit.report()
   }
@@ -710,4 +713,7 @@ export const testDrive = (pack) => {
 // on apps script we don't want it to run automatically
 // when running as part of a consolidated test, we dont want to run it, as the caller will do that
 
-if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) testDrive()
+if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
+  testDrive()
+  console.log('...cumulative drive cache performance', getDrivePerformance())
+}

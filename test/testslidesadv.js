@@ -9,7 +9,7 @@ import '../main.js'
 //import '@mcpher/gas-fakes/main.js'
 
 import { initTests } from './testinit.js'
-import { trasher } from './testassist.js';
+import { trasher, getSlidesPerformance } from './testassist.js';
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testSlidesAdv = (pack) => {
 
@@ -29,6 +29,7 @@ export const testSlidesAdv = (pack) => {
       })
     t.is (is (Slides.Presentations), "Object")
     t.is (Slides.toString(), Slides.Presentations.toString())
+    if (SlidesApp.isFake) console.log('...cumulative slides cache performance', getSlidesPerformance())
   })
 
   // running standalone
@@ -51,4 +52,7 @@ export const testSlidesAdv = (pack) => {
 // on apps script we don't want it to run automatically
 // when running as part of a consolidated test, we dont want to run it, as the caller will do that
 
-if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) testSlidesAdv()
+if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
+  testSlidesAdv()
+  console.log('...cumulative slides cache performance', getSlidesPerformance())
+}

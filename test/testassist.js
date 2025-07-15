@@ -1,8 +1,11 @@
 import is from '@sindresorhus/is';
 let __mss = null
 
-export const getPerformance = DriveApp.__getPerformance
-export const getSheetsPerformance = SpreadsheetApp.__getSheetsPerformance
+export const getDrivePerformance = Drive.__getDrivePerformance;
+export const getSheetsPerformance = Sheets.__getSheetsPerformance;
+export const getDocsPerformance = Docs.__getDocsPerformance;
+export const getSlidesPerformance = Slides.__getSlidesPerformance
+
 
 export const trasher = (toTrash) => {
   // clean up if necessary
@@ -11,7 +14,7 @@ export const trasher = (toTrash) => {
     f.setTrashed(true)
   })
 }
-// to minimize the number of test sheets created we'll share this with all sheet tests
+// to minimize the number of test sheets created we'll share this across all tests
 export const maketss = (sheetName, toTrash, fixes, { clearContents = true, clearFormats = true } = {}) => {
 
   if (!__mss) {
@@ -95,6 +98,7 @@ export const addDays = (date, daysToAdd = 1) => {
   newDate.setDate(date.getDate() + daysToAdd);
   return newDate;
 }
+
 
 export const zeroizeTime = (date) => {
   const year = date.getFullYear();

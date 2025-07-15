@@ -1,33 +1,67 @@
-/**
- * Advanced slides service
- */
-import { Proxies } from '../../support/proxies.js'
-import { advClassMaker } from '../../support/helpers.js'
-import { getAuthedClient } from './slapis.js'
-import { newFakeAdvPresentations } from './fakeadvpresentations.js'
+import { FakeAdvResource } from '../common/fakeadvresource.js';
 import { Syncit } from '../../support/syncit.js';
-class FakeAdvSlides {
-  constructor() {
-    this.client = Proxies.guard(getAuthedClient())
-    this.__fakeObjectType = "Slides"
-    this.syncit = Syncit;
+import { slidesCacher } from '../../support/slidescacher.js';
+import { Proxies } from '../../support/proxies.js';
 
-   const propLists = {"newOutline":["dashStyle","outlineFill","propertyState","weight"],"newTableBorderRow":["tableBorderCells"],"newShapeProperties":["autofit","contentAlignment","link","outline","shadow","shapeBackgroundFill"],"newCropProperties":["angle","bottomOffset","leftOffset","rightOffset","topOffset"],"newTableCell":["columnSpan","location","rowSpan","tableCellProperties","text"],"newUpdateTableCellPropertiesRequest":["fields","objectId","tableCellProperties","tableRange"],"newTableBorderFill":["solidFill"],"newRequest":["createImage","createLine","createParagraphBullets","createShape","createSheetsChart","createSlide","createTable","createVideo","deleteObject","deleteParagraphBullets","deleteTableColumn","deleteTableRow","deleteText","duplicateObject","groupObjects","insertTableColumns","insertTableRows","insertText","mergeTableCells","refreshSheetsChart","replaceAllShapesWithImage","replaceAllShapesWithSheetsChart","replaceAllText","replaceImage","rerouteLine","ungroupObjects","unmergeTableCells","updateImageProperties","updateLineCategory","updateLineProperties","updatePageElementAltText","updatePageElementTransform","updatePageElementsZOrder","updatePageProperties","updateParagraphStyle","updateShapeProperties","updateSlideProperties","updateSlidesPosition","updateTableBorderProperties","updateTableCellProperties","updateTableColumnProperties","updateTableRowProperties","updateTextStyle","updateVideoProperties"],"newCreateParagraphBulletsRequest":["bulletPreset","cellLocation","objectId","textRange"],"newOpaqueColor":["rgbColor","themeColor"],"newPlaceholder":["index","parentObjectId","type"],"newCreateSheetsChartRequest":["chartId","elementProperties","linkingMode","objectId","spreadsheetId"],"newAffineTransform":["scaleX","scaleY","shearX","shearY","translateX","translateY","unit"],"newSpeakerSpotlight":["speakerSpotlightProperties"],"newRange":["endIndex","startIndex","type"],"newInsertTextRequest":["cellLocation","insertionIndex","objectId","text"],"newShadow":["alignment","alpha","blurRadius","color","propertyState","rotateWithShape","transform","type"],"newVideo":["id","source","url","videoProperties"],"newParagraphStyle":["alignment","direction","indentEnd","indentFirstLine","indentStart","lineSpacing","spaceAbove","spaceBelow","spacingMode"],"newBatchUpdatePresentationRequest":["requests","writeControl"],"newPageProperties":["colorScheme","pageBackgroundFill"],"newTableBorderCell":["location","tableBorderProperties"],"newSubstringMatchCriteria":["matchCase","searchByRegex","text"],"newSlideProperties":["isSkipped","layoutObjectId","masterObjectId","notesPage"],"newUpdatePagePropertiesRequest":["fields","objectId","pageProperties"],"newSize":["height","width"],"newOptionalColor":["opaqueColor"],"newLayoutReference":["layoutId","predefinedLayout"],"newUpdateLineCategoryRequest":["lineCategory","objectId"],"newDeleteTableRowRequest":["cellLocation","tableObjectId"],"newLine":["lineCategory","lineProperties","lineType"],"newNotesProperties":["speakerNotesObjectId"],"newImage":["contentUrl","imageProperties","placeholder","sourceUrl"],"newBullet":["bulletStyle","glyph","listId","nestingLevel"],"newDimension":["magnitude","unit"],"newCreateLineRequest":["category","elementProperties","lineCategory","objectId"],"newUngroupObjectsRequest":["objectIds"],"newTableCellBackgroundFill":["propertyState","solidFill"],"newLineProperties":["dashStyle","endArrow","endConnection","lineFill","link","startArrow","startConnection","weight"],"newLink":["pageObjectId","relativeLink","slideIndex","url"],"newUpdateTableBorderPropertiesRequest":["borderPosition","fields","objectId","tableBorderProperties","tableRange"],"newPageBackgroundFill":["propertyState","solidFill","stretchedPictureFill"],"newDeleteParagraphBulletsRequest":["cellLocation","objectId","textRange"],"newImageProperties":["brightness","contrast","cropProperties","link","outline","recolor","shadow","transparency"],"newReplaceAllShapesWithSheetsChartRequest":["chartId","containsText","linkingMode","pageObjectIds","spreadsheetId"],"newDeleteTextRequest":["cellLocation","objectId","textRange"],"newTableBorderProperties":["dashStyle","tableBorderFill","weight"],"newSheetsChart":["chartId","contentUrl","sheetsChartProperties","spreadsheetId"],"newTextStyle":["backgroundColor","baselineOffset","bold","fontFamily","fontSize","foregroundColor","italic","link","smallCaps","strikethrough","underline","weightedFontFamily"],"newTableRow":["rowHeight","tableCells","tableRowProperties"],"newUpdateSlidePropertiesRequest":["fields","objectId","slideProperties"],"newUpdateImagePropertiesRequest":["fields","imageProperties","objectId"],"newTextContent":["lists","textElements"],"newWordArt":["renderedText"],"newUpdatePageElementsZOrderRequest":["operation","pageElementObjectIds"],"newColorStop":["alpha","color","position"],"newVideoProperties":["autoPlay","end","mute","outline","start"],"newGroupObjectsRequest":["childrenObjectIds","groupObjectId"],"newSolidFill":["alpha","color"],"newGroup":["children"],"newTable":["columns","horizontalBorderRows","rows","tableColumns","tableRows","verticalBorderRows"],"newCreateTableRequest":["columns","elementProperties","objectId","rows"],"newLayoutPlaceholderIdMapping":["layoutPlaceholder","layoutPlaceholderObjectId","objectId"],"newUpdatePageElementAltTextRequest":["description","objectId","title"],"newTextElement":["autoText","endIndex","paragraphMarker","startIndex","textRun"],"newUpdateTextStyleRequest":["cellLocation","fields","objectId","style","textRange"],"newShape":["placeholder","shapeProperties","shapeType","text"],"newReplaceAllTextRequest":["containsText","pageObjectIds","replaceText"],"newUpdateTableColumnPropertiesRequest":["columnIndices","fields","objectId","tableColumnProperties"],"newCreateShapeRequest":["elementProperties","objectId","shapeType"],"newUpdateParagraphStyleRequest":["cellLocation","fields","objectId","style","textRange"],"newAutoText":["content","style","type"],"newUpdateTableRowPropertiesRequest":["fields","objectId","rowIndices","tableRowProperties"],"newInsertTableColumnsRequest":["cellLocation","insertRight","number","tableObjectId"],"newInsertTableRowsRequest":["cellLocation","insertBelow","number","tableObjectId"],"newDuplicateObjectRequest":["objectId","objectIds"],"newRecolor":["name","recolorStops"],"newTableColumnProperties":["columnWidth"],"newReplaceImageRequest":["imageObjectId","imageReplaceMethod","url"],"newCreateImageRequest":["elementProperties","objectId","url"],"newTextRun":["content","style"],"newOutlineFill":["solidFill"],"newAutofit":["autofitType","fontScale","lineSpacingReduction"],"newSpeakerSpotlightProperties":["outline","shadow"],"newUpdateLinePropertiesRequest":["fields","lineProperties","objectId"],"newThemeColorPair":["color","type"],"newUpdatePageElementTransformRequest":["applyMode","objectId","transform"],"newShapeBackgroundFill":["propertyState","solidFill"],"newPage":["layoutProperties","masterProperties","notesProperties","objectId","pageElements","pageProperties","pageType","revisionId","slideProperties"],"newDeleteTableColumnRequest":["cellLocation","tableObjectId"],"newRgbColor":["blue","green","red"],"newColorScheme":["colors"],"newDeleteObjectRequest":["objectId"],"newCreateSlideRequest":["insertionIndex","objectId","placeholderIdMappings","slideLayoutReference"],"newMasterProperties":["displayName"],"newCreateVideoRequest":["elementProperties","id","objectId","source"],"newTableCellProperties":["contentAlignment","tableCellBackgroundFill"],"newSheetsChartProperties":["chartImageProperties"],"newTableRange":["columnSpan","location","rowSpan"],"newUpdateSlidesPositionRequest":["insertionIndex","slideObjectIds"],"newPresentation":["layouts","locale","masters","notesMaster","pageSize","presentationId","revisionId","slides","title"],"newStretchedPictureFill":["contentUrl","size"],"newUpdateShapePropertiesRequest":["fields","objectId","shapeProperties"],"newRerouteLineRequest":["objectId"],"newParagraphMarker":["bullet","style"],"newUpdateVideoPropertiesRequest":["fields","objectId","videoProperties"],"newMergeTableCellsRequest":["objectId","tableRange"],"newRefreshSheetsChartRequest":["objectId"],"newTableRowProperties":["minRowHeight"],"newLineFill":["solidFill"],"newLineConnection":["connectedObjectId","connectionSiteIndex"],"newReplaceAllShapesWithImageRequest":["containsText","imageReplaceMethod","imageUrl","pageObjectIds","replaceMethod"],"newWriteControl":["requiredRevisionId"],"newPageElement":["description","elementGroup","image","line","objectId","shape","sheetsChart","size","speakerSpotlight","table","title","transform","video","wordArt"],"newTableCellLocation":["columnIndex","rowIndex"],"newWeightedFontFamily":["fontFamily","weight"],"newPageElementProperties":["pageObjectId","size","transform"],"newUnmergeTableCellsRequest":["objectId","tableRange"],"newLayoutProperties":["displayName","masterObjectId","name"]}
+/**
+ * @class FakeAdvSlidesPresentations
+ */
+class FakeAdvSlidesPresentations extends FakeAdvResource {
+  constructor(mainService) {
+    super(mainService, 'presentations', Syncit.fxSlides);
+  }
 
-    Reflect.ownKeys(propLists).forEach(p => {
-      this[p] = () => advClassMaker(propLists[p])
-    })
+  // Override 'get' to use the caching-enabled function fxSlidesGet.
+  get(presentationId) {
+    const { data } = this._call('get', { presentationId });
+    return data;
+  }
 
+  // Signature matches Apps Script advanced service.
+  create(presentation) {
+    // The underlying API wants the resource in a 'resource' property.
+    const result = this._call('create', { resource: presentation });
+    return result.data;
   }
-  toString() {
-    return 'AdvancedServiceIdentifier{name=slides, version=v1}'
-  }
-  getVersion() {
-    return 'v1'
-  }
-  get Presentations() {
-    return newFakeAdvPresentations(this)
+
+  // Signature matches Apps Script advanced service.
+  batchUpdate(requests, presentationId) {
+    const result = this._call('batchUpdate', {
+      presentationId,
+      resource: { requests },
+    });
+
+    // Any update should invalidate the cache for that presentation.
+    if (presentationId) {
+      slidesCacher.clear(presentationId);
+    }
+
+    return result.data;
   }
 }
 
-export const newFakeAdvSlides = (...args) => Proxies.guard(new FakeAdvSlides(...args))
+/**
+ * @class FakeAdvSlides
+ * @description The Slides Advanced Service
+ */
+class FakeAdvSlides {
+  constructor() {
+    this.Presentations = Proxies.guard(new FakeAdvSlidesPresentations(this));
+  }
+
+  __getSlidesPerformance() {
+    return slidesCacher.getPerformance();
+  }
+  toString() {
+    return 'AdvancedServiceIdentifier{name=slides, version=v1}';
+  }
+  getVersion() {
+    return 'v1';
+  }
+
+}
+/**
+ * Creates a new fake Slides advanced service instance.
+ * @returns {FakeAdvSlides}
+ */
+export const newFakeAdvSlides = () => Proxies.guard(new FakeAdvSlides());

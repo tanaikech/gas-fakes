@@ -3,8 +3,6 @@ import { FakeSheet, newFakeSheet } from './fakesheet.js'
 import { notYetImplemented, minSheetFields, signatureArgs } from '../../support/helpers.js'
 import { Utils } from "../../support/utils.js"
 import { newFakeProtection } from '../common/fakeprotection.js'
-import { newFakeSheetRange } from './fakesheetrange.js'
-import { clearWorkbookCache } from '../../support/sheetscache.js';
 import { newFakeDeveloperMetadataFinder } from './fakedevelopermetadatafinder.js';
 import { newFakeDataSource } from './fakedatasource.js';
 import { batchUpdate } from './sheetrangehelpers.js';

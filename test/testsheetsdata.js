@@ -9,7 +9,7 @@ import '../main.js'
 
 import { initTests } from './testinit.js'
 import { maketss, trasher } from './testassist.js';
-import { getPerformance, getSheetsPerformance } from './testassist.js';
+import { getDrivePerformance, getSheetsPerformance } from './testassist.js';
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testSheetsData = (pack) => {
@@ -238,7 +238,7 @@ export const testSheetsData = (pack) => {
 
   // running standalone
   if (!pack) {
-    if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
+    if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
     unit.report()
   }

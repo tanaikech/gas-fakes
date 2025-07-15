@@ -4,5 +4,6 @@
  */
 const USE_CACHE = true
 import { newFetchCacher } from "./fetchcacher.js"
-export const docsCacher = newFetchCacher(USE_CACHE)
+export const slidesCacher = newFetchCacher(USE_CACHE)
+
 

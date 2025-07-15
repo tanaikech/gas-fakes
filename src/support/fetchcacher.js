@@ -4,6 +4,10 @@
  */
 const USE_CACHE = true
 import { Proxies } from './proxies.js'
+import { is404, isGood, throwResponse } from './helpers.js'
+import { Utils } from './utils.js'
+const { is } = Utils
+
 
 class FetchCacher {
 
@@ -82,4 +86,29 @@ export const digest = (params) => {
  */
 export const newFetchCacher = (...args) => {
   return Proxies.guard(new FetchCacher(...args))
+}
+
+/**
+ * check response from sync is good, throw an error if requried, and remove anything we have from cache
+ * @param {string} id 
+ * @param {SyncApiResponse} response 
+ * @returns {SyncApiResponse} response 
+ */
+export const checkResponseCacher = (id, response, allow404, cacher) => {
+
+  // sometimes a 404 will be allowed, sometimes not
+  if (!isGood(response)) {
+
+    // scratch for next time
+    if (is.nonEmptyString(id)) cacher.clear(id)
+
+    if (!allow404 && is404(response)) {
+      throwResponse(response)
+    } else {
+      return null
+    }
+  } else if (!is.nonEmptyString(id)) {
+    throw new Error("id was not provided to cache sanitizer checkresponse")
+  }
+  return response
 }

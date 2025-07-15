@@ -6,7 +6,6 @@ import { Proxies } from '../../support/proxies.js'
 import { Syncit } from '../../support/syncit.js'
 import { notYetImplemented, ssError } from '../../support/helpers.js'
 import { newFakeAdvSheetsValues } from './fakeadvsheetsvalues.js'
-import { getWorkbookEntry, setWorkbookEntry, clearWorkbookCache } from '../../support/sheetscache.js'
 import { newFakeAdvSheetsDeveloperMetadata } from './fakeadvsheetsdevelopermetadata.js'
 import path from 'path';
 import { FakeAdvResource } from '../common/fakeadvresource.js';
@@ -66,9 +65,6 @@ class FakeAdvSheetsSpreadsheets extends FakeAdvResource {
       requestBody: requests
     }, options);
 
-    // naive cache - was an update so zap everything
-    clearWorkbookCache(spreadsheetId)
-
     // maybe we need to throw an error
     ssError(response, "batchUpdate", ss)
 
@@ -82,23 +78,13 @@ class FakeAdvSheetsSpreadsheets extends FakeAdvResource {
    */
   get(id, options, { ss = false } = {}) {
     const params = { spreadsheetId: id, ...options };
-    const pack = { prop: "spreadsheets", method: "get", params }; // for cache key
-    const cache = getWorkbookEntry(id, pack);
-    if (cache) {
-      return cache
-    }
-
     const { response, data } = this._call("get", params);
 
     // maybe we need to throw an error
     ssError(response, "get", ss)
-
-    // all is good so write to cache
-    if (data) {
-      setWorkbookEntry(id, pack, data);
-    }
     return data;
   }
+
 
   /**
    * @param {Spreadsheet} resource #https://developers.google.com/workspace/sheets/api/reference/rest/v4/spreadsheets#SpreadsheetProperties

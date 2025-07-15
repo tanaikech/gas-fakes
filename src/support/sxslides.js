@@ -21,7 +21,7 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
  * @param {string} p.method the method of slides eg 'get' for slides.presentations.get
  * @param {object} p.params the params to add to the request
  * @param {object} p.options gaxios options
- * @return {import('./sxdrive.js').SxResult} from the slides api
+ * @return {import('./sxdrive.js').SxResult} from the Slides api
  */
 export const sxSlides = async (Auth, { prop, method, params, options = {} }) => {
   const { getApiClient } = await import(getModulePath(slapisPath));

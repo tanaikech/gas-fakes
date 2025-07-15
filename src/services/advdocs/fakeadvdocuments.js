@@ -75,17 +75,10 @@ class FakeAdvDocuments extends FakeAdvResource {
     if (nargs === 2 && !Reflect.ownKeys(options || {}).every(f => optionsSet.has(f))) matchThrow();
 
     const params = { documentId, ...(options || {}) };
-    const cachedData = docsCacher.getEntry(documentId, options || {});
-    if (cachedData) {
-      return cachedData;
-    }
 
     const { response, data } = this._call("get", params);
     ssError(response, 'get');
-
-    docsCacher.setEntry(documentId, options || {}, data);
     return data;
   }
 }
-
 export const newFakeAdvDocuments = (...args) => Proxies.guard(new FakeAdvDocuments(...args))

@@ -16,7 +16,7 @@ import { testSession } from './testsession.js';
 import { testUtilities } from './testutilities.js';
 import { testStores } from './teststores.js';
 import { testScriptApp } from './testscriptapp.js';
-import { getPerformance, getSheetsPerformance } from './testassist.js';
+import { getDrivePerformance, getSheetsPerformance, getDocsPerformance, getSlidesPerformance } from './testassist.js';
 import { testFiddler } from './testfiddler.js';
 import { testSheetsDataValidations } from './testsheetsdatavalidations.js';
 import { testEnums } from './testenums.js';
@@ -77,10 +77,15 @@ const testFakes = () => {
   console.log ('\n----Test ScriptApp----')
   testScriptApp(pack)
   console.log ('\n----TEST FILES COMPLETE----')
+
   // reports on cache performance
-  if (Drive.isFake) console.log('...cumulative drive cache performance', getPerformance())
-  if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-  
+  if (ScriptApp.isFake) {
+    console.log('...cumulative drive cache performance', getDrivePerformance())
+    console.log('...cumulative sheets cache performance', getSheetsPerformance())
+    console.log('...cumulative docs cache performance', getDocsPerformance())
+    console.log('...cumulative docs cache performance', getSlidesPerformance())
+  }
+
   // all tests cumulative unit report
   unit.report()
 }

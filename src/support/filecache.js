@@ -12,7 +12,7 @@ const _performance = {
   fieldHits: 0,
   fieldMisses: 0
 }
-export const getPerformance = () => _performance
+export const getDrivePerformance = () => _performance
 
 const CACHE_ENABLED = true
 const fileCache = new Map()
