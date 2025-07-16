@@ -3,6 +3,7 @@ import { signatureArgs, notYetImplemented } from '../../support/helpers.js';
 import is from '@sindresorhus/is';
 import { newFakeBody } from './fakebody.js';
 import { docsCacher } from '../../support/docscacher.js';
+import { newFakeTab } from './faketab.js';
 import { newFakeRangeBuilder } from './fakerangebuilder.js';
 
 
@@ -20,7 +21,6 @@ class FakeDocument {
       'getSupportedLanguageCodes',
       'getNumChildren',
       'getFooter',
-      'getTabs',
       'addFooter',
       'addBookmark',
       'getBookmarks',
@@ -60,7 +60,6 @@ class FakeDocument {
       'setSelection',
       'getActiveTab',
       'setActiveTab',
-      'getTab',
       'getTables',
       'getCursor',
   
@@ -87,17 +86,52 @@ class FakeDocument {
       'getChild',
       'getHeader',
       'setText',
-
     ]
     props.forEach(f => {
       this[f] = () => {
         return notYetImplemented(f)
       }
     })
+  }
 
+  getTabs() {
+    // A newly created document via the API might not have a body property,
+    // whereas one from a get will. We can use this to detect if we should
+    // force the fallback for testing a new document in the fake env.
+    if (DocumentApp.isFake && !this.__doc.body) {
+      const tabResource = {
+        documentTab: { body: this.__doc.body }, // body will be undefined here, but that's ok for newFakeBody
+        tabProperties: { tabId: 'default_tab_id', title: this.getName(), index: 0 }
+      };
+      return [newFakeTab(this, tabResource)];
+    }
+
+    const docWithTabs = Docs.Documents.get(this.getId(), { includeTabsContent: true });
+
+    if (docWithTabs.tabs && docWithTabs.tabs.length > 0) {
+      return docWithTabs.tabs.map(tabResource => newFakeTab(this, tabResource, this.getName()));
+    }
+
+    // Fallback for documents without tabs enabled, which the API returns as a single tab.
+    const tabResource = {
+      documentTab: { body: this.__doc.body },
+      tabProperties: { tabId: 'default_tab_id', title: this.getName(), index: 0 }
+    };
+    return [newFakeTab(this, tabResource)];
+  }
+  getTab(tabId) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Document.getTab');
+    if (nargs !== 1 || !is.string(tabId)) matchThrow();
+
+    return this.getTabs().find(tab => tab.getId() === tabId) || null;
+  }
+
+  insertTab(tab) {
+    return notYetImplemented('Document.insertTab()');
   }
 
   addEditor(emailAddress) {
+
     this.__file.addEditor(emailAddress);
     return this;
   }
