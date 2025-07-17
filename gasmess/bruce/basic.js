@@ -14,12 +14,14 @@ if (folders.hasNext()) {
 
 const ss = SpreadsheetApp.create("--gasmess-sheet")
 const file = DriveApp.getFileById(ss.getId())
+file.moveTo(folder)
+
 const sheet = ss.insertSheet()
 const values = [[1,2,3],[4,5,6],[7,8,9]]
 const range = sheet.getRange(1,1,3,3)
 range.setValues(values)
 
 const result = range.getValues()
-console.log (JSON.stringify(result) === JSON.stringify(values))
+console.log (JSON.stringify(result) === JSON.stringify(values) ? 'success' : 'true')
 
 file.setTrashed(true)
