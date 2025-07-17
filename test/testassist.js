@@ -1,5 +1,7 @@
 import is from '@sindresorhus/is';
 let __mss = null
+let __mdoc = null
+let __mfolder = null
 
 export const getDrivePerformance = Drive.__getDrivePerformance;
 export const getSheetsPerformance = Sheets.__getSheetsPerformance;
@@ -14,12 +16,59 @@ export const trasher = (toTrash) => {
     f.setTrashed(true)
   })
 }
+
+const moveToTestFolder = (id) => {
+  const file = DriveApp.getFileById(id)
+  file.moveTo(getTestFolder())
+  return file
+}
+
+const getTestFolder = (fixes) => {
+  if (!__mfolder) {
+    const folderName = fixes.PREFIX + "gassy-mcfakeface"
+    const folders = DriveApp.getFoldersByName(folderName)
+    if (folders.hasNext()) {
+      __mfolder = folders.next()
+    } else {
+      __mfolder = DriveApp.createFolder(folderName)
+    }
+    console.log("...created folder", __mfolder.getName(), __mfolder.getId())
+  }
+  console.log("...test files will be in", __mfolder.getName(), __mfolder.getId())
+  return __mfolder
+}
+export const maketdoc = (toTrash, fixes, clear = true) => {
+  const docName = fixes.PREFIX + "tss-docs"
+  const folder = getTestFolder(fixes)
+  if (!__mdoc) {
+    __mdoc = DocumentApp.create(docName)
+    console.log('...created doc', __mdoc.getName(), __mdoc.getId())
+    moveToTestFolder(__mdoc.getId())
+
+    if (fixes.CLEAN && !toTrash.find(f => f.getId() == __mdoc.getId())) {
+      console.log('...will be deleting it later')
+      toTrash.push(DriveApp.getFileById(__mdoc.getId()))
+    }
+
+  }
+  if (clear) {
+    __mdoc.clear()
+  }
+  return {
+    doc: __mdoc,
+    docName,
+    folder
+  }
+
+}
+
 // to minimize the number of test sheets created we'll share this across all tests
 export const maketss = (sheetName, toTrash, fixes, { clearContents = true, clearFormats = true } = {}) => {
-
+  const folder = getTestFolder(fixes)
   if (!__mss) {
     const aname = fixes.PREFIX + "tss-sheet"
     __mss = SpreadsheetApp.create(aname)
+    moveToTestFolder(__mss.getId())
     console.log('...created ss', __mss.getName(), __mss.getId())
   }
 
@@ -45,8 +94,8 @@ export const maketss = (sheetName, toTrash, fixes, { clearContents = true, clear
   return {
     ss: __mss,
     sheet,
-    sheets: __mss.getSheets()
-
+    sheets: __mss.getSheets(),
+    folder
   }
 }
 

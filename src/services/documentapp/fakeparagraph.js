@@ -14,10 +14,20 @@ export const newFakeParagraph = (...args) => {
  * A fake implementation of the Paragraph class for DocumentApp.
  * @see https://developers.google.com/apps-script/reference/document/paragraph
  */
-class FakeParagraph extends FakeElement {
+export class FakeParagraph extends FakeElement {
   constructor(text) {
     super();
     this.__text = text;
+  }
+
+  /**
+   * Creates and returns a new copy of this element.
+   * @returns {FakeParagraph} A new, detached copy of this element.
+   */
+  copy() {
+    // The new paragraph is a detached copy. In our simple fake,
+    // this means just creating a new instance with the same text.
+    return newFakeParagraph(this.__text);
   }
 
   /**

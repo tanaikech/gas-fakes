@@ -775,6 +775,8 @@ Despite the various defaults, a missing value for these properties returned via 
 
 Getting started on the advanced services of the Document API. These notes are for my TIL (things I learned today), but may be useful if you are digging into the Document API yourself.
 
+
+
 #### Tabs
 
 Tabs are a recent addition to Docs, and have added a bit of complication to handling Document responses. Here's what they say happens.
@@ -920,6 +922,8 @@ There were ocassions when the content Gemini provided content to be copied and p
 Another issue is that Gemini can take 10 mins or more to create the full content for a large class in its chat window, sometimes ending in the gray screen of death. I've found it's best to completely avoid using Gemini to make minor changes, but to just make them manually.
 
 Overall it saves some time, for sure. However, the result is often suboptimal, wordy, lacking in reusability and not something I would be be happy to put my name to. From a coder perspective, the role becomes one of repetetive specification, debugging, checking and testing, while failing to develop a deep understanding of the work in hand. I like coding, so from a satisfaction perspective, I'm not entirely convinced yet. I've found it's very impressive when creating small, standalone scripts but deteriorates rapidly both in speed and effectiveness as the codebase and dependencies grows. There's a point at which it becomes more trouble than it's worth.
+
+When creating the Docs Fakes, I started afresh, letting Gemini have a shot at building the initial templates. After a little while, it kept getting into loops and was mostly unable to produce the code it said it was going to produce - the 'thinking' stage was on the right track, but it either completely failed to produce any code that represented its thinking, or failed to actually apply it. My theory is that, without a body of code (as I already had in sheets), it flails around aimlessly. At the time of writing I'm just at the beginning of Docs so I'll do a lot of work manually and revisit Gemini later on. For now I'm just giving up with it.
 
 ## Testing
 

@@ -1,54 +1,18 @@
 import is from '@sindresorhus/is';
 import '../main.js';
 import { initTests } from './testinit.js';
-import { trasher, getDocsPerformance } from './testassist.js';
+import { trasher, getDocsPerformance, maketdoc } from './testassist.js';
 
 export const testDocs = (pack) => {
   const { unit, fixes } = pack || initTests();
   const toTrash = [];
 
-  unit.section("Document tabs", t => {
-
-
-    const docName = fixes.PREFIX + "tabs-doc";
-    const doc = DocumentApp.create(docName);
-    toTrash.push(DriveApp.getFileById(doc.getId()));
-
-    const tabs = doc.getTabs();
-    t.true(is.array(tabs), 'getTabs() should return an array');
-    t.is(tabs.length, 1, 'A new document should have one default tab');
-    const tab = tabs[0];
-
-    t.is(tab.toString(), 'Tab', 'Tab object should have correct string representation');
-
-    t.is(tab.getIndex(), 0, 'Default tab should have index 0');
-    t.is(tab.getType().toString(), 'DOCUMENT_TAB', 'Tab type should be DOCUMENT');
-
-
-    t.is(tab.getChildTabs().length, 0, 'getChildTabs should return an empty array');
-
-    const docTab = tab.asDocumentTab();
-    t.is(docTab.getBody().getText(), doc.getBody().getText(), 'getBody() on DocumentTab should return a valid body object');
-
-    // Test getTab()
-    const foundTab = doc.getTab(tab.getId());
-    t.truthy(foundTab, 'getTab() should find a tab by its ID');
-    t.is(foundTab.getId(), tab.getId(), 'Found tab should have the same ID as the one from getTabs()');
-    const notFoundTab = doc.getTab('a-non-existent-id');
-    t.is(notFoundTab, null, 'getTab() with a non-existent ID should return null');
-
-
-    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance())
-  });
-
   unit.section("newRange and builders", t => {
 
-    const doc = DocumentApp.create(fixes.PREFIX + "range-doc");
-    toTrash.push(DriveApp.getFileById(doc.getId()));
-
+    const {doc} = maketdoc(toTrash, fixes)
     const rangeBuilder = doc.newRange();
     t.is(rangeBuilder.toString(), 'RangeBuilder', 'newRange should return a RangeBuilder');
-    
+
     // Test with no elements
     const emptyRange = rangeBuilder.build();
     t.is(emptyRange.toString(), 'Range', 'build() on empty builder returns a Range');
@@ -77,9 +41,7 @@ export const testDocs = (pack) => {
 
   unit.section("DocumentApp create", t => {
 
-    const docName = fixes.PREFIX + "created-doc";
-    const doc = DocumentApp.create(docName);
-
+    const {doc, docName} = maketdoc(toTrash, fixes)
     t.is(doc.getName(), docName, "Document should have the correct name");
     t.true(is.nonEmptyString(doc.getId()), "Document should have an ID");
 
@@ -90,17 +52,12 @@ export const testDocs = (pack) => {
     const openedByUrl = DocumentApp.openByUrl(doc.getUrl());
     t.is(openedByUrl.getId(), doc.getId(), "Opened by URL should have correct ID");
 
-    if (fixes.CLEAN) {
-      toTrash.push(DriveApp.getFileById(doc.getId()));
-    }
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance())
   });
 
   unit.section("Document basic methods", t => {
 
-    const docName = fixes.PREFIX + "doc-methods";
-    const doc = DocumentApp.create(docName);
-    toTrash.push(DriveApp.getFileById(doc.getId()));
+    const {doc, docName} = maketdoc(toTrash, fixes)
 
     // test setName
     const newDocName = docName + "-renamed";
@@ -152,6 +109,7 @@ export const testDocs = (pack) => {
 
 
 
+
   if (!pack) {
     unit.report();
   }
@@ -160,7 +118,7 @@ export const testDocs = (pack) => {
   return { unit, fixes };
 };
 
-if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {  
+if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
   testDocs();
   console.log('...cumulative docs cache performance', getDocsPerformance())
 }

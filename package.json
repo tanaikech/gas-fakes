@@ -42,6 +42,7 @@
     "testslidesadv": "cp mainlocal.js main.js &&  node --env-file=.env ./test/testslidesadv.js execute",
     "testdocs": "cp mainlocal.js main.js &&  node --env-file=.env ./test/testdocs.js execute",
     "testslides": "cp mainlocal.js main.js &&  node --env-file=.env ./test/testslides.js execute",
+    "testdocsnext": "cp mainlocal.js main.js &&  node --env-file=.env ./test/testdocsnext.js execute",
     "pub": "cp mainlocal.js main.js && npm publish --access public"
   },
   "name": "@mcpher/gas-fakes",

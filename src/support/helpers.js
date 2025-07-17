@@ -201,3 +201,11 @@ export const advClassMaker = (props) => {
  * @returns {object} a plain object
  */
 export const normalizeSerialization = (ob) => is.nullOrUndefined(ob) || !is.object(ob) ? ob : JSON.parse(JSON.stringify(ob))
+
+export const unimplementedProps = (self, props) => {
+  props.forEach(f => {
+    self[f] = () => {
+      return notYetImplemented(f)
+    }
+  })
+}
