@@ -7,37 +7,7 @@ export const testDocs = (pack) => {
   const { unit, fixes } = pack || initTests();
   const toTrash = [];
 
-  unit.section("newRange and builders", t => {
 
-    const {doc} = maketdoc(toTrash, fixes)
-    const rangeBuilder = doc.newRange();
-    t.is(rangeBuilder.toString(), 'RangeBuilder', 'newRange should return a RangeBuilder');
-
-    // Test with no elements
-    const emptyRange = rangeBuilder.build();
-    t.is(emptyRange.toString(), 'Range', 'build() on empty builder returns a Range');
-    t.is(emptyRange.getRangeElements().length, 0, 'empty range has 0 range elements');
-
-    // Create some elements to add to the range using the public API
-    const body = doc.getBody();
-    const el1 = body.appendParagraph("p1");
-    const el2 = body.appendParagraph("p2");
-    const el3 = body.appendParagraph("p3");
-
-    // Test addElement, chaining, and build
-    rangeBuilder.addElement(el1).addElement(el2);
-    const builtRange = rangeBuilder.build();
-    t.is(builtRange.getRangeElements().length, 2, 'built range should have 2 range elements');
-    t.deepEqual(builtRange.getRangeElements().map(re => re.getElement().getText()), ["p1", "p2"], 'getText() should return correct text for elements in order');
-
-    // Test addRange
-    const anotherRange = doc.newRange().addElement(el3).build();
-    rangeBuilder.addRange(anotherRange);
-    const finalRange = rangeBuilder.build();
-    t.is(finalRange.getRangeElements().length, 3, 'addRange should add elements from another range');
-    t.deepEqual(finalRange.getRangeElements().map(re => re.getElement().getText()), ["p1", "p2", "p3"], 'final range should contain all elements');
-    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance())
-  });
 
   unit.section("DocumentApp create", t => {
 

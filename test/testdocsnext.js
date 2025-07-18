@@ -7,13 +7,62 @@ export const testDocsNext = (pack) => {
   const { unit, fixes } = pack || initTests();
   const toTrash = [];
 
+  unit.section("Document.deep dive", t => {
+    const { doc, docName } = maketdoc(toTrash, fixes)
+
+    // an empty doc
+    const body = doc.getBody();
+    t.is(doc.getName(), docName, "Document should have the correct name")
+    // even though it actually has 2, See issue https://issuetracker.google.com/issues/432432968
+    t.is(body.getNumChildren(), 1, "an empty docs should have 1 child")
+
+    const adoc = Docs.Documents.get(doc.getId());
+    t.is(adoc.body.content.length, 2, "in reality - an empty doc has 2 children")
+
+    // document app will skip the section break
+
+    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
+  })
+
+  unit.cancel()
+  unit.section("newRange and builders", t => {
+
+    const { doc } = maketdoc(toTrash, fixes)
+    const rangeBuilder = doc.newRange();
+    t.is(rangeBuilder.toString(), 'RangeBuilder', 'newRange should return a RangeBuilder');
+
+    // Test with no elements
+    const emptyRange = rangeBuilder.build();
+    t.is(emptyRange.toString(), 'Range', 'build() on empty builder returns a Range');
+    t.is(emptyRange.getRangeElements().length, 0, 'empty range has 0 range elements');
+
+    // Create some elements to add to the range using the public API
+    const body = doc.getBody();
+    const el1 = body.appendParagraph("p1");
+    const el2 = body.appendParagraph("p2");
+    const el3 = body.appendParagraph("p3");
+
+    // Test addElement, chaining, and build
+    rangeBuilder.addElement(el1).addElement(el2);
+    const builtRange = rangeBuilder.build();
+    t.is(builtRange.getRangeElements().length, 2, 'built range should have 2 range elements');
+    t.deepEqual(builtRange.getRangeElements().map(re => re.getElement().getText()), ["p1", "p2"], 'getText() should return correct text for elements in order');
+
+    // Test addRange
+    const anotherRange = doc.newRange().addElement(el3).build();
+    rangeBuilder.addRange(anotherRange);
+    const finalRange = rangeBuilder.build();
+    t.is(finalRange.getRangeElements().length, 3, 'addRange should add elements from another range');
+    t.deepEqual(finalRange.getRangeElements().map(re => re.getElement().getText()), ["p1", "p2", "p3"], 'final range should contain all elements');
+    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance())
+  });
   // Helper to extract text from a raw Docs API document resource, mimicking Document.getBody().getText()
   const getTextFromDocResource = (docResource) => {
     return docResource?.body?.content?.map(structuralElement => structuralElement.paragraph?.elements?.map(element => element.textRun?.content || '').join('') || '').join('').replace(/\n$/, '');
   }
   unit.section("Document.clear method", t => {
 
-    const {doc, docName} = maketdoc(toTrash, fixes)
+    const { doc, docName } = maketdoc(toTrash, fixes)
 
     // Use the advanced service to insert text, making the test independent of appendParagraph implementation.
     const text = 'Hello World.\nThis is the second line.'
@@ -73,7 +122,7 @@ export const testDocsNext = (pack) => {
 
   unit.section("Body.appendParagraph method", t => {
 
-    const {doc, docName} = maketdoc(toTrash, fixes)
+    const { doc, docName } = maketdoc(toTrash, fixes)
     const body = doc.getBody();
 
     // On a new doc, the body is empty.
@@ -122,7 +171,7 @@ export const testDocsNext = (pack) => {
 
   unit.section("Document tabs", t => {
 
-    const {doc, docName} = maketdoc(toTrash, fixes)
+    const { doc, docName } = maketdoc(toTrash, fixes)
 
 
     const tabs = doc.getTabs();

@@ -82,17 +82,19 @@ const propsWaitingRoom = [
 ]
 
 class FakeDocument {
-  constructor(docResource) {
+  constructor(resource) {
+
     // this is the entire resource following a get request
-    this.__doc = docResource;
+    this.__doc = resource
 
     // the file representation is required for some operations
-    this.__file = DriveApp.getFileById(docResource.documentId);
+    this.__file = DriveApp.getFileById(resource.documentId);
 
     // placeholders for props not yet implemented
     unimplementedProps(this, propsWaitingRoom)
 
   }
+
   saveAndClose() {
     // In the live environment, this is sometimes needed to ensure that
     // changes made via one service (e.g., Docs advanced service) are
@@ -168,7 +170,7 @@ class FakeDocument {
   }
 
   getBody() {
-    return newFakeBody(this);
+    return newFakeBody(this, this.__doc.body);
   }
 
   getViewers() {
