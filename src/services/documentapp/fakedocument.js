@@ -82,6 +82,7 @@ const propsWaitingRoom = [
 ]
 
 class FakeDocument {
+  
   constructor(resource) {
 
     // this is the entire resource following a get request
@@ -170,7 +171,7 @@ class FakeDocument {
   }
 
   getBody() {
-    return newFakeBody(this, this.__doc.body);
+    return newFakeBody(this);
   }
 
   getViewers() {

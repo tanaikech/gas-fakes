@@ -1,10 +1,11 @@
 import { Proxies } from '../../support/proxies.js';
 import { signatureArgs, unimplementedProps } from '../../support/helpers.js';
 import { Utils } from '../../support/utils.js';
-import { newFakeParagraph } from './fakeparagraph.js';
 import { FakeParagraph } from './fakeparagraph.js';
+import { FakeElement } from './fakeelement.js';
+import { ElementType } from '../enums/docsenums.js';
 const { is } = Utils
-
+const makeElement = FakeElement.makeElementFromApi
 const propsWaitingRoom = [
   'getHeadingAttributes',
   'setHeadingAttributes',
@@ -35,7 +36,7 @@ const propsWaitingRoom = [
   'getListItems',
   'appendHorizontalRule',
   'appendImage',
-  'appendParagraph',
+
   'appendListItem',
   'insertHorizontalRule',
   'insertParagraph',
@@ -73,10 +74,10 @@ const propsWaitingRoom = [
   'asVariable',
   'asEquationFunctionArgumentSeparator',
 
-  'getChildIndex',
+
   'findElement',
   'clear',
-  'getChild',
+
   'getFontFamily',
   'setFontFamily',
   'getFontSize',
@@ -102,64 +103,114 @@ const propsWaitingRoom = [
   'setAttributes',
   'asCommentSection',
   'asDocumentElement',
-  'asDocumentBodySection',
-  'getParent',
-  'getType',
+  'asDocumentBodySection', // Body is already a DocumentBodySection
   'copy',
   'getAttributes']
 
 
-class FakeBody {
+class FakeBody extends FakeElement {
 
-  constructor(container, body) {
+  constructor(container) {
     // container 
     if (!container) {
       throw new Error('container not sent to body constructor')
     }
+
+    super(container);
+
     this.__container = container;
-    if (!body) {
-      throw new Error('body not sent to body constructor')
-    }
-    this.__body = body;
-    this.__content = this.__body.content
-    if (!this.__content) {
-      throw new Error('body content not sent to body constructor')
-    }
+
+
     unimplementedProps(this, propsWaitingRoom)
   }
 
+  get __content() {
+    const content = this.__body.content
+    if (!content) {
+      throw new Error('body content not sent to body constructor')
+    }
+    return content
+  }
+
+  get __body() {
+    const body = this.__container.__doc?.body || this.__container.body
+    if (!body) {
+      throw new Error('body not sent to body constructor')
+    }
+    return body
+  }
+
+
   get __document() {
-    let doc = this._container
+    let doc = this.__container
     while (Reflect.has(doc, 'getParent')) {
       doc = doc.getParent()
     }
     if (!doc) {
       throw new Error("couldnt find document from body")
     }
+    return doc
+  }
+
+  get __structuralElements() {
+    // The API response can contain elements we don't support in DocumentApp, like sectionBreak.
+    // We filter these out, mimicking the behavior of getNumChildren.
+    return this.__content.filter(f => !f.sectionBreak);
   }
 
   get __children() {
-    // see issue https://issuetracker.google.com/issues/432432968
-    // it seems apps script ignore the initial section break 
-    // TODO - discover what the rules are
-    return this.__content.filter(f => is.undefined(f.sectionBreak))
+    return this.__structuralElements.map(makeElement)
   }
 
+  getChild(index) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Body.getChild');
+    const children = this.__children
+    if (nargs !== 1 || !is.integer(index) || index < 0 || index >= children.length) {
+      matchThrow()
+    }
+    return children[index]
+  }
 
+  getChildIndex(child) {
+    // children don't have a specific id to indentify them so we need to use various strategies depening on the type
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Body.getChildIndex');
+    if (nargs !== 1 || !is.nonEmptyObject(child)) {
+      matchThrow()
+    }
+    // now search through the children
+    const children = this.__children;
+  }
+
+  /**
+   * Gets the element's type.
+   * @returns {GoogleAppsScript.Document.ElementType} The element's type.
+   */
+  getType() {
+    return ElementType.BODY_SECTION;
+  }
   getNumChildren() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Body.getNumChildren');
+    // Can be a string or a Paragraph object``
+    if (nargs) {
+      matchThrow()
+    }
     return this.__children.length
   }
-
+  get __segmentId() {
+    // TODO - for now we'll assume we're ading to the end of the document
+    // if we're appending somewhere else, we need the establish the segment id of the parent
+    return ""
+  }
   /**
    * Appends a paragraph to the document body.
    * @param {string|FakeParagraph} text - The text or Paragraph to append.
    * @returns {FakeParagraph} The created Paragraph.
    */
   appendParagraph(textOrParagraph) {
-
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Body.appendParagraph');
     // Can be a string or a Paragraph object``
-    isText = is.string(textOrParagraph)
-    if (nargs !== 1 || !isText || !(is.object(textOrParagraph) && text.toString() === 'Paragraph')) {
+    const isText = is.string(textOrParagraph)
+    if (nargs !== 1 || (!isText & !(is.object(textOrParagraph) && text.toString() === 'Paragraph'))) {
       matchThrow()
     }
     // if we're adding a paragraph it must not already be attached
@@ -168,8 +219,46 @@ class FakeBody {
       throw new Error('Exception: Element must be detached.');
     }
 
+    // TODO
+    // there isn'tactually a way to make a request that includes all a ready made paragraph's children
+    // so for now we'll just insert its text, but we need to revisit this to handle any para children
+    const text = isText ? textOrParagraph : textOrParagraph.getText()
+    const insertText = Docs.newInsertTextRequest().setText(text)
 
+    // if we're going to append a paragraph, we need to locate the endindex if the current children
+    // TODO we can only handle the main body here - stil need to handle other things
+    const lengthBefore = this.__structuralElements.length
+    const se = this.__structuralElements[lengthBefore - 1]
+    // TODO is it possible to have a doc with no structural elements?
+    if (!se) {
+      throw new Error("couldnt find any structural elements")
+    }
+    const endIndexBefore = se.endIndex || 0
+
+
+    // since we're appending we dont need to calculate the location
+    insertText.setEndOfSegmentLocation(Docs.newEndOfSegmentLocation().setSegmentId(this.__segmentId))
+    const requests = [{ insertText }]
+    Docs.Documents.batchUpdate({ requests }, this.__document.getId());
+
+    // refresh the local copy of the document with the data from the update?
+    this.__document.__doc = DocumentApp.openById(this.__document.getId());
+    this.__container = this.__document.__doc
+
+
+    // how to find the paragraph I just inserted??
+    // it'll match the startIndex of a newly appended paragraph
+    const lengthAfter = this.__structuralElements.length
+    if (lengthAfter !== lengthBefore + requests.length) {
+      throw new Error(`length before ${lengthBefore} should be ${lengthBefore + requests.length} but its ${lengthAfter}`)
+    }
+    const newPara = this.structuralElements.find(f => f.startIndex === endIndexBefore && makeElement(f).getType() === ElementType.PARAGRAPH)
+    if (!newPara) {
+      throw new Error("couldnt find new paragraph")
+    }
+    return makeElement(newPara)
   }
+
   /**
    * Searches the contents of the element for a descendant of the specified type, starting from the optional RangeElement.
    * findElement(elementType, from) This implementation focuses on paragraphs and textRuns within the document body. It iterates through structural elements, then paragraph elements, and finally, textRun elements to locate the first matching element, while taking into account where the search should start (from). It's important to note that this current implementation returns right away the structuralElement.
@@ -194,47 +283,7 @@ class FakeBody {
 
   }
 
-  appendParagraph(text) {
-    // currently a very naive gemini created implementation
-    const { nargs, matchThrow } = signatureArgs(arguments, 'Body.appendParagraph');
-    // Can be a string or a Paragraph object``
-    if (nargs !== 1 || (!is.string(text) && text.toString() !== 'Paragraph')) {
-      matchThrow()
-    }
-    const paragraphText = is.string(text) ? text : text.getText();
 
-    // startIndex is assigned by the api - if it doesnt have one then this is a constructed paragraph``
-    if (text instanceof FakeParagraph && Reflect.has(text, "startIndex")) {
-      // Trying to append an already attached paragraph
-      throw new Error('Exception: Element must be detached.');
-    }
-
-
-    // To create a new paragraph, we must prepend a newline to the text.
-    // This creates a paragraph break before inserting the new content.
-    const textToInsert = "\\n" + paragraphText;
-
-    // Find the insertion point, which is just before the final newline of the body.
-    const content = this.__document.__doc.body?.content;
-    const lastElement = content[content.length - 1];
-    const insertionIndex = lastElement.endIndex - 1;
-
-    const requests = [
-      {
-        insertText: {
-          location: { index: insertionIndex },
-          text: textToInsert,
-        },
-      },];
-
-    // Use the advanced Docs service to perform the update. This also invalidates the document cache.
-    Docs.Documents.batchUpdate({ requests }, this.__document.getId());
-
-    // Refresh the document's internal state to reflect the change
-    this.__document.__doc = Docs.Documents.get(this.__document.getId());
-
-    return newFakeParagraph(paragraphText);
-  }
   /**
    * Gets the text contents of the element as a string.
    * @returns {string} The text content.

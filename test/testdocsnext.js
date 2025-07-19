@@ -7,12 +7,21 @@ export const testDocsNext = (pack) => {
   const { unit, fixes } = pack || initTests();
   const toTrash = [];
 
-  unit.section("Document.deep dive", t => {
+  const getChildren = (body) => {
+    const children = [];
+    for (let i = 0; i < body.getNumChildren(); i++) {
+      children.push(body.getChild(i));
+    }
+    return children;
+  }
+
+  unit.section("Document empty document validation", t => {
     const { doc, docName } = maketdoc(toTrash, fixes)
 
     // an empty doc
     const body = doc.getBody();
     t.is(doc.getName(), docName, "Document should have the correct name")
+
     // even though it actually has 2, See issue https://issuetracker.google.com/issues/432432968
     t.is(body.getNumChildren(), 1, "an empty docs should have 1 child")
 
@@ -20,7 +29,22 @@ export const testDocsNext = (pack) => {
     t.is(adoc.body.content.length, 2, "in reality - an empty doc has 2 children")
 
     // document app will skip the section break
+    const children = getChildren(body);
+    t.is(children.length, 1, "an empty docs should have 1 child")
 
+    // only a paragraph in a blank document
+    const paragraph = children[0];
+    t.is (paragraph.getType(), DocumentApp.ElementType.PARAGRAPH, 'paragraph should be a paragraph')
+    t.is(paragraph.getText(), '', 'paragraph should be empty')
+
+    // append a paragraph
+    const pt ="p1"
+    const p1 = body.appendParagraph(pt);
+    const c2 = getChildren(body);
+    t.is(c2.length, 2, "added a para - now there should be 2")
+    const p1c = c2[1];
+    t.is (p1c.getText(), p1.getText())
+    t.is (p1c.getText(), pt)
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   })
 
