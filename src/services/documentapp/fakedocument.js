@@ -13,7 +13,7 @@ export const newFakeDocument = (...args) => {
 
 // these are the known properties of document, not yet implemented
 const propsWaitingRoom = [
-  
+
   'getSupportedLanguageCodes',
   'getNumChildren',
   'getFooter',
@@ -82,18 +82,32 @@ const propsWaitingRoom = [
 ]
 
 class FakeDocument {
-  
-  constructor(resource) {
 
-    // this is the entire resource following a get request
-    this.__doc = resource
+  constructor(documentBase) {
 
-    // the file representation is required for some operations
-    this.__file = DriveApp.getFileById(resource.documentId);
+    this.__documentBase = documentBase
 
     // placeholders for props not yet implemented
     unimplementedProps(this, propsWaitingRoom)
 
+  }
+
+  // this looks expensive, but the document wil always be in case unless its been updated
+  // in which case we have to get it anyway
+  get __resource() {
+    return this.__documentBase.__resource
+  }
+
+  get __file() {
+    return this.__documentBase.__file
+  }
+
+  get __body() {
+    return this.__resource.body
+  }
+
+  get __content() {
+    return this.__body?.content || []
   }
 
   saveAndClose() {
@@ -104,12 +118,13 @@ class FakeDocument {
     // invalidated immediately, so this is a no-op.
     return this;
   }
+
   clear() {
     const { nargs, matchThrow } = signatureArgs(arguments, 'Document.clear');
     if (nargs !== 0) matchThrow();
 
     // The document's content is represented by an array of structural elements.
-    const content = this.__doc.body?.content;
+    const content = this.__content;
 
     // If there's no content, or only the initial empty paragraph, there's nothing to clear.
     if (!content || content.length === 0) {
@@ -137,14 +152,11 @@ class FakeDocument {
 
     // Use the advanced Docs service to perform the update. This also invalidates the document cache.
     Docs.Documents.batchUpdate({ requests }, this.getId());
-
-    // To ensure the local object is in sync, re-fetch the document.
-    this.__doc = Docs.Documents.get(this.getId());
     return this;
   }
 
   getId() {
-    return this.__doc.documentId;
+    return this.__resource.documentId;
   }
 
   getName() {
@@ -163,10 +175,6 @@ class FakeDocument {
     // Because the document might be cached by the Docs advanced service,
     // we need to invalidate it so the next `get` call fetches the updated title.
     docsCacher.clear(this.getId());
-
-    // Update the in-memory object's title to reflect the change immediately.
-    // This is for consistency, although getName() now gets the name from the Drive file.
-    this.__doc.title = name;
     return this;
   }
 
@@ -214,39 +222,6 @@ class FakeDocument {
 
   newRange() {
     return newFakeRangeBuilder();
-  }
-
-  // these were generate by gemini and are incrrect - i'll need to redo them
-  getTabs() {
-    // A newly created document via the API might not have a body property,
-    // whereas one from a get will. We can use this to detect if we should
-    // force the fallback for testing a new document in the fake env.
-    if (DocumentApp.isFake && !this.__doc.body) {
-      const tabResource = {
-        documentTab: { body: this.__doc.body }, // body will be undefined here, but that's ok for newFakeBody
-        tabProperties: { tabId: 'default_tab_id', title: this.getName(), index: 0 }
-      };
-      return [newFakeTab(this, tabResource)];
-    }
-
-    const docWithTabs = Docs.Documents.get(this.getId(), { includeTabsContent: true });
-
-    if (docWithTabs.tabs && docWithTabs.tabs.length > 0) {
-      return docWithTabs.tabs.map(tabResource => newFakeTab(this, tabResource, this.getName()));
-    }
-
-    // Fallback for documents without tabs enabled, which the API returns as a single tab.
-    const tabResource = {
-      documentTab: { body: this.__doc.body },
-      tabProperties: { tabId: 'default_tab_id', title: this.getName(), index: 0 }
-    };
-    return [newFakeTab(this, tabResource)];
-  }
-  getTab(tabId) {
-    const { nargs, matchThrow } = signatureArgs(arguments, 'Document.getTab');
-    if (nargs !== 1 || !is.string(tabId)) matchThrow();
-
-    return this.getTabs().find(tab => tab.getId() === tabId) || null;
   }
 
 
@@ -297,5 +272,39 @@ class FakeDocument {
 
   toString() {
     return 'Document';
+  }
+
+  // these were generate by gemini and are incrrect - i'll need to redo them
+  // all of the below is rubbish
+  getTabs() {
+    // A newly created document via the API might not have a body property,
+    // whereas one from a get will. We can use this to detect if we should
+    // force the fallback for testing a new document in the fake env.
+    if (DocumentApp.isFake && !this.__body) {
+      const tabResource = {
+        documentTab: { body: this.__doc.body }, // body will be undefined here, but that's ok for newFakeBody
+        tabProperties: { tabId: 'default_tab_id', title: this.getName(), index: 0 }
+      };
+      return [newFakeTab(this, tabResource)];
+    }
+
+    const docWithTabs = Docs.Documents.get(this.getId(), { includeTabsContent: true });
+
+    if (docWithTabs.tabs && docWithTabs.tabs.length > 0) {
+      return docWithTabs.tabs.map(tabResource => newFakeTab(this, tabResource, this.getName()));
+    }
+
+    // Fallback for documents without tabs enabled, which the API returns as a single tab.
+    const tabResource = {
+      documentTab: { body: this.__doc.body },
+      tabProperties: { tabId: 'default_tab_id', title: this.getName(), index: 0 }
+    };
+    return [newFakeTab(this, tabResource)];
+  }
+  getTab(tabId) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Document.getTab');
+    if (nargs !== 1 || !is.string(tabId)) matchThrow();
+
+    return this.getTabs().find(tab => tab.getId() === tabId) || null;
   }
 }

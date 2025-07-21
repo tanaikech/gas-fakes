@@ -4,20 +4,16 @@ import { ElementType, ParagraphHeading } from '../enums/docsenums.js';
 import { unimplementedProps, signatureArgs } from '../../support/helpers.js';
 
 const propsWaitingRoom = [
-  'addPositionedImage', 'appendHorizontalRule', 'appendInlineImage', 'appendPageBreak', 'appendText', 'asAnchoredDrawing',
-  'asBody', 'asCodeSnippet', 'asCommentSection', 'asDate', 'asDocumentBodySection', 'asDocumentElement', 'asEquation',
-  'asEquationFunction', 'asEquationFunctionArgumentSeparator', 'asEquationSymbol', 'asFooterSection', 'asFootnote',
-  'asFootnoteSection', 'asHeaderSection', 'asHorizontalRule', 'asInlineDrawing', 'asInlineImage', 'asListItem',
-  'asPageBreak', 'asParagraph', 'asPerson', 'asRichLink', 'asTable', 'asTableCell', 'asTableOfContents', 'asTableRow', 'asText',
-  'asVariable', 'clear', 'editAsText', 'findElement', 'findText', 'getAlignment', 'getAttributes', 'getBackgroundColor',
-  'getChild', 'getChildIndex', 'getFontFamily', 'getFontSize', 'getForegroundColor', 'getIndentEnd', 'getIndentFirstLine',
+  'addPositionedImage', 'appendHorizontalRule', 'appendInlineImage', 'appendPageBreak', 'appendText', 'clear',
+  'editAsText', 'findElement', 'findText', 'getAlignment', 'getAttributes',  'getChild',
+  'getChildIndex', 'getHeading', 'getIndentEnd', 'getIndentFirstLine',
   'getIndentStart', 'getLineSpacing', 'getLinkUrl', 'getNextSibling', 'getPositionedImage', 'getPositionedImages', 'getPreviousSibling', 'getSpacingAfter',
   'getSpacingBefore', 'getTextAlignment', 'insertHorizontalRule', 'insertInlineImage', 'insertPageBreak', 'insertText',
-  'isAtDocumentEnd', 'isBold', 'isItalic', 'isLeftToRight', 'isStrikethrough', 'isUnderline', 'merge', 'removeChild',
-  'removeFromParent', 'removePositionedImage', 'replaceText', 'setAlignment', 'setAttributes', 'setBackgroundColor',
-  'setBold', 'setFontFamily', 'setFontSize', 'setForegroundColor', 'setIndentEnd', 'setIndentFirstLine',
-  'setIndentStart', 'setItalic', 'setLeftToRight', 'setLineSpacing', 'setLinkUrl', 'setSpacingAfter',
-  'setSpacingBefore', 'setStrikethrough', 'setText', 'setTextAlignment', 'setUnderline',
+   'merge', 'removeChild',
+  'removeFromParent', 'removePositionedImage', 'replaceText', 'setAlignment', 'setAttributes', 'setHeading',
+   'setIndentEnd', 'setIndentFirstLine',
+  'setIndentStart',  'setLeftToRight', 'setLineSpacing', 'setLinkUrl', 'setSpacingAfter',
+  'setSpacingBefore',  'setText', 'setTextAlignment'
 ];
 
 /**
@@ -34,11 +30,19 @@ export const newFakeParagraph = (...args) => {
  * @see https://developers.google.com/apps-script/reference/document/paragraph
  */
 export class FakeParagraph extends FakeElement {
-  constructor(text, parent = null) {
-    super(parent);
+  constructor(text, parent = null, se = null) {
+    super(parent, se);
     this.__text = text || '';
     this.__heading = ParagraphHeading.NORMAL;
     unimplementedProps(this, propsWaitingRoom);
+  }
+
+  /**
+   * Returns this element as a Paragraph.
+   * @returns {FakeParagraph} The element as a Paragraph.
+   */
+  asParagraph() {
+    return this;
   }
 
   /**
@@ -98,6 +102,8 @@ export class FakeParagraph extends FakeElement {
    * @returns {GoogleAppsScript.Document.ElementType} The element's type.
    */
   getType() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.getType');
+    if (nargs !== 0) matchThrow();
     return ElementType.PARAGRAPH;
   }
 

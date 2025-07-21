@@ -1,5 +1,6 @@
 import { Proxies } from '../../support/proxies.js';
 import { newFakeDocument } from './fakedocument.js';
+import { newFakeDocumentBase } from './fakedocumentbase.js';
 import { notYetImplemented, signatureArgs } from '../../support/helpers.js';
 import is from '@sindresorhus/is';
 import { Auth } from '../../support/auth.js';
@@ -38,14 +39,13 @@ class FakeDocumentApp {
       title: name,
     };
     const doc = Docs.Documents.create(resource);
-    return newFakeDocument(doc);
+    return newFakeDocument(newFakeDocumentBase(doc.documentId));
   }
 
   openById(id) {
     const { nargs, matchThrow } = signatureArgs(arguments, "DocumentApp.openById");
     if (nargs !== 1 || !is.string(id)) matchThrow();
-    const doc = Docs.Documents.get(id);
-    return newFakeDocument(doc);
+    return newFakeDocument(newFakeDocumentBase(id));
   }
 
   openByUrl(url) {

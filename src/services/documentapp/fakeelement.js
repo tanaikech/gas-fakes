@@ -1,16 +1,48 @@
 import { Proxies } from '../../support/proxies.js';
 import { ElementType } from '../enums/docsenums.js';
-import { newFakeParagraph } from './fakeparagraph.js';
-import { Utils } from '../../support/utils.js';
-import { signatureArgs } from '../../support/helpers.js';
-const { is } = Utils;
+import { signatureArgs, unimplementedProps } from '../../support/helpers.js';
 
-/**
- * A placeholder for fake Element classes.
- */
+
+// all the specific methods for the subclasses should be set there.
+const propsWaitingRoom = [
+  'asBody',
+  'asDate',
+  'asEquation',
+  'asEquationFunction',
+  'asEquationFunctionArgumentSeparator',
+  'asEquationSymbol',
+  'asFooterSection',
+  'asFootnote',
+  'asFootnoteSection',
+  'asHeaderSection',
+  'asHorizontalRule',
+  'asInlineDrawing',
+  'asInlineImage',
+  'asListItem',
+  'asPageBreak',
+
+  'asPerson',
+  'asRichLink',
+  'asTable',
+  'asTableCell',
+  'asTableOfContents',
+  'asTableRow',
+  'asText',
+  'copy',
+  'getAttributes',
+
+  'getPreviousSibling',
+ 
+  'isAtDocumentEnd',
+  'removeFromParent',
+  'setAttributes',
+  ]
+
 export class FakeElement {
-  constructor(parent = null) {
+  constructor(parent, se) {
     this.__parent = parent;
+    this.__se = se;
+    unimplementedProps(this, propsWaitingRoom)
   }
 
   /**
@@ -24,61 +56,26 @@ export class FakeElement {
   }
 
   /**
-   * Gets the number of children.
-   * @returns {number} The number of children.
+   * Returns this element as a Paragraph. If the element is not a paragraph,
+   * this method returns null.
+   * @returns {import('./fakeparagraph.js').FakeParagraph|null} The element as a Paragraph or null.
    */
-  getNumChildren() {
-    // Most elements don't have children, so default to 0.
-    // Subclasses that can contain children (like Body, Paragraph, TableCell) should override this.
-    return 0;
+  asParagraph() {
+    // This method is overridden by FakeParagraph. A base element is not a paragraph.
+    return null;
   }
+
 
   /**
    * Gets the element's type.
    * @returns {GoogleAppsScript.Document.ElementType} The element's type.
    */
   getType() {
-    // This should be overridden by subclasses.
+    // This will be overridden by subclasses. For a generic element, it's unsupported.
     return ElementType.UNSUPPORTED;
-  }
-
-  /**
-   * Creates a FakeElement from a Docs API structural element.
-   * @param {object} structuralElement - The structural element from the API response.
-   * @param {FakeElement|null} parent - The parent container of this element.
-   * @returns {FakeElement|null} The corresponding fake element, or null if not a supported element type.
-   */
-  static makeElementFromApi(structuralElement, parent = null) {
-    if (is.undefined(structuralElement)) return null;
-
-    // The paragraph object in the API contains elements.
-    if (structuralElement.paragraph) {
-      // The text is in the textRun.content of these elements.
-      // The getText() method for a paragraph in Apps Script does not include the
-      // trailing newline that marks the end of the paragraph in the API response.
-      const text = structuralElement.paragraph.elements?.map(element => {
-        return element.textRun ? element.textRun.content : '';
-      }).join('').replace(/\n$/, '') || '';
-      return newFakeParagraph(text, parent);
-    }
-
-    if (structuralElement.sectionBreak) {
-      // As noted in `fakebody.js` and `oddities.md`, these are often ignored by DocumentApp methods.
-      return null;
-    }
-
-    // TODO: Handle other element types like table, tableOfContents, etc.
-    // For now, return a base element for anything else that is not explicitly handled.
-    // This will allow `getNumChildren` to count it, but it won't have specific functionality.
-    // The base `getType()` returns `UNSUPPORTED`.
-    return newFakeElement(parent);
   }
 
   toString() {
     return 'Element';
   }
 }
-
-export const newFakeElement = (...args) => {
-  return Proxies.guard(new FakeElement(...args));
-};

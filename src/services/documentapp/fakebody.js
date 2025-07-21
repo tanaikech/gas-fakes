@@ -1,11 +1,12 @@
 import { Proxies } from '../../support/proxies.js';
 import { signatureArgs, unimplementedProps } from '../../support/helpers.js';
 import { Utils } from '../../support/utils.js';
-import { FakeParagraph } from './fakeparagraph.js';
 import { FakeElement } from './fakeelement.js';
+import { createElement } from './elementFactory.js';
 import { ElementType } from '../enums/docsenums.js';
+import { newFakeParagraph } from './fakeparagraph.js';
 const { is } = Utils
-const makeElement = FakeElement.makeElementFromApi
+
 const propsWaitingRoom = [
   'getHeadingAttributes',
   'setHeadingAttributes',
@@ -30,6 +31,7 @@ const propsWaitingRoom = [
   'insertImage',
   'getImages',
   'removeChild',
+
   'appendTable',
   'getFootnotes',
   'getParagraphs',
@@ -124,6 +126,10 @@ class FakeBody extends FakeElement {
     unimplementedProps(this, propsWaitingRoom)
   }
 
+  get __documentBase() {
+    return this.__container.__documentBase
+  }
+
   get __content() {
     const content = this.__body.content
     if (!content) {
@@ -133,7 +139,7 @@ class FakeBody extends FakeElement {
   }
 
   get __body() {
-    const body = this.__container.__doc?.body || this.__container.body
+    const body = this.__container.__resource.body
     if (!body) {
       throw new Error('body not sent to body constructor')
     }
@@ -154,12 +160,16 @@ class FakeBody extends FakeElement {
 
   get __structuralElements() {
     // The API response can contain elements we don't support in DocumentApp, like sectionBreak.
-    // We filter these out, mimicking the behavior of getNumChildren.
-    return this.__content.filter(f => !f.sectionBreak);
+    // We filter these out
+    // also assign a serial number for easier identification
+    // if this has come from cache the serial number generated will be the same between calls
+    // if its come from the api, the serial numbers generated could be different
+    return this.__content.filter(f => !f.sectionBreak).map((f, __seIndex) => ({ ...f, __seIndex }));
   }
 
   get __children() {
-    return this.__structuralElements.map(makeElement)
+    // Use the factory to create specific element types (Paragraph, Table, etc.)
+    return this.__structuralElements.map(se => createElement(this, se)).filter(Boolean);
   }
 
   getChild(index) {
@@ -168,17 +178,24 @@ class FakeBody extends FakeElement {
     if (nargs !== 1 || !is.integer(index) || index < 0 || index >= children.length) {
       matchThrow()
     }
-    return children[index]
+    return children[index];
   }
 
   getChildIndex(child) {
-    // children don't have a specific id to indentify them so we need to use various strategies depening on the type
+
     const { nargs, matchThrow } = signatureArgs(arguments, 'Body.getChildIndex');
-    if (nargs !== 1 || !is.nonEmptyObject(child)) {
+    if (nargs !== 1 || !is.object(child) || !Reflect.has(child, 'getParent')) {
       matchThrow()
     }
-    // now search through the children
-    const children = this.__children;
+    // check we have an seIndex
+    if (is.nullOrUndefined(child.__seIndex)) {
+      // TODO check this
+      // This can happen if the child is detached (e.g., from a .copy() call).
+      // The real API returns -1 in this case.
+      return -1;
+    }
+    return child.__seIndex
+
   }
 
   /**
@@ -186,6 +203,8 @@ class FakeBody extends FakeElement {
    * @returns {GoogleAppsScript.Document.ElementType} The element's type.
    */
   getType() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Body.getType');
+    if (nargs !== 0) matchThrow();
     return ElementType.BODY_SECTION;
   }
   getNumChildren() {
@@ -196,16 +215,7 @@ class FakeBody extends FakeElement {
     }
     return this.__children.length
   }
-  get __segmentId() {
-    // TODO - for now we'll assume we're ading to the end of the document
-    // if we're appending somewhere else, we need the establish the segment id of the parent
-    return ""
-  }
-  /**
-   * Appends a paragraph to the document body.
-   * @param {string|FakeParagraph} text - The text or Paragraph to append.
-   * @returns {FakeParagraph} The created Paragraph.
-   */
+
   appendParagraph(textOrParagraph) {
     const { nargs, matchThrow } = signatureArgs(arguments, 'Body.appendParagraph');
     // Can be a string or a Paragraph object``
@@ -241,22 +251,18 @@ class FakeBody extends FakeElement {
     const requests = [{ insertText }]
     Docs.Documents.batchUpdate({ requests }, this.__document.getId());
 
-    // refresh the local copy of the document with the data from the update?
-    this.__document.__doc = DocumentApp.openById(this.__document.getId());
-    this.__container = this.__document.__doc
-
-
     // how to find the paragraph I just inserted??
     // it'll match the startIndex of a newly appended paragraph
     const lengthAfter = this.__structuralElements.length
     if (lengthAfter !== lengthBefore + requests.length) {
       throw new Error(`length before ${lengthBefore} should be ${lengthBefore + requests.length} but its ${lengthAfter}`)
     }
-    const newPara = this.structuralElements.find(f => f.startIndex === endIndexBefore && makeElement(f).getType() === ElementType.PARAGRAPH)
+    const newPara = this.structuralElements.find(f => f.startIndex === endIndexBefore)
     if (!newPara) {
       throw new Error("couldnt find new paragraph")
     }
-    return makeElement(newPara)
+    const element = newFakeElement (newPara, this)
+    return newFakeParagraph(element)
   }
 
   /**
