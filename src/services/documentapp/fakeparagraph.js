@@ -1,5 +1,5 @@
 import { Proxies } from '../../support/proxies.js';
-import { FakeElement } from './fakeelement.js';
+import { FakeContainerElement } from './fakecontainerelement.js';
 import { ElementType, ParagraphHeading } from '../enums/docsenums.js';
 import { unimplementedProps, signatureArgs } from '../../support/helpers.js';
 
@@ -29,8 +29,8 @@ export const newFakeParagraph = (...args) => {
  * A fake implementation of the Paragraph class for DocumentApp.
  * @see https://developers.google.com/apps-script/reference/document/paragraph
  */
-export class FakeParagraph extends FakeElement {
-  constructor(text, parent = null, se = null) {
+export class FakeParagraph extends FakeContainerElement {
+  constructor(text, parent, se) {
     super(parent, se);
     this.__text = text || '';
     this.__heading = ParagraphHeading.NORMAL;
@@ -52,7 +52,7 @@ export class FakeParagraph extends FakeElement {
   copy() {
     // The new paragraph is a detached copy. In our simple fake,
     // this means just creating a new instance with the same text and no parent.
-    return newFakeParagraph(this.__text);
+    return newFakeParagraph(this.getText(), null, JSON.parse(JSON.stringify(this.__se)));
   }
 
   /**
@@ -60,6 +60,8 @@ export class FakeParagraph extends FakeElement {
    * @returns {string} The text.
    */
   getText() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.getText');
+    if (nargs !== 0) matchThrow();
     return this.__text;
   }
 
@@ -85,26 +87,6 @@ export class FakeParagraph extends FakeElement {
     }
     this.__heading = heading;
     return this;
-  }
-
-  /**
-   * Gets the number of children.
-   * A paragraph can contain children like Text, InlineImage, etc.
-   * For now, we'll return 0 as we haven't implemented child elements within a paragraph.
-   * @returns {number} The number of children.
-   */
-  getNumChildren() {
-    // TODO: Implement when child elements like Text and InlineImage are supported within paragraphs.
-    return 0;
-  }
-  /**
-   * Gets the element's type.
-   * @returns {GoogleAppsScript.Document.ElementType} The element's type.
-   */
-  getType() {
-    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.getType');
-    if (nargs !== 0) matchThrow();
-    return ElementType.PARAGRAPH;
   }
 
   toString() {

@@ -1,10 +1,11 @@
 import { Proxies } from '../../support/proxies.js';
 import { signatureArgs, unimplementedProps } from '../../support/helpers.js';
 import is from '@sindresorhus/is';
-import { newFakeBody } from './fakebody.js';
 import { docsCacher } from '../../support/docscacher.js';
 import { newFakeTab } from './faketab.js';
 import { newFakeRangeBuilder } from './fakerangebuilder.js';
+import { newFakeContainerElement } from './fakecontainerelement.js';
+
 
 
 export const newFakeDocument = (...args) => {
@@ -110,6 +111,7 @@ class FakeDocument {
     return this.__body?.content || []
   }
 
+  
   saveAndClose() {
     // In the live environment, this is sometimes needed to ensure that
     // changes made via one service (e.g., Docs advanced service) are
@@ -179,7 +181,7 @@ class FakeDocument {
   }
 
   getBody() {
-    return newFakeBody(this);
+    return newFakeContainerElement(this, this.__content).asBody();
   }
 
   getViewers() {

@@ -1,9 +1,9 @@
-import { Proxies } from '../../support/proxies.js';
-import { FakeElement } from './fakeelement.js';
-import { newFakeParagraph } from './fakeparagraph.js';
-// import other element types as they are created...
 
-const extractText = (se) => {
+import { ElementType } from "../enums/docsenums.js";
+import { Utils } from "../../support/utils.js";
+const { getEnumKeys } = Utils
+
+export const extractText = (se) => {
   if (!se || !se.paragraph || !se.paragraph.elements) return '';
   // The getText() method for a paragraph in Apps Script does not include the
   // trailing newline that marks the end of the paragraph in the API response.
@@ -12,15 +12,17 @@ const extractText = (se) => {
   }).join('').replace(/\n$/, '') || '';
 };
 
-export const createElement = (parent, se) => {
-  if (!se) return null;
 
-  if (se.paragraph) {
-    return newFakeParagraph(extractText(se), parent, se);
+export const getSeType = (se) => {
+  const keys = getEnumKeys(ElementType)
+  const [type] = Reflect.ownKeys(se)
+    .map(f => f.toUpperCase())
+    .filter(key => keys.includes(key))
+
+  if (!type) {
+    throw new Error('couldnt establish structural element type')
   }
+}
 
-  // if (se.table) { ... }
 
-  // Default to a base element for unsupported types
-  return Proxies.guard(new FakeElement(parent, se));
-};
+

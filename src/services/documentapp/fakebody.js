@@ -1,10 +1,8 @@
 import { Proxies } from '../../support/proxies.js';
 import { signatureArgs, unimplementedProps } from '../../support/helpers.js';
 import { Utils } from '../../support/utils.js';
-import { FakeElement } from './fakeelement.js';
-import { createElement } from './elementFactory.js';
 import { ElementType } from '../enums/docsenums.js';
-import { newFakeParagraph } from './fakeparagraph.js';
+
 const { is } = Utils
 
 const propsWaitingRoom = [
@@ -110,7 +108,7 @@ const propsWaitingRoom = [
   'getAttributes']
 
 
-class FakeBody extends FakeElement {
+class FakeBody {
 
   constructor(container) {
     // container 
@@ -118,14 +116,10 @@ class FakeBody extends FakeElement {
       throw new Error('container not sent to body constructor')
     }
 
-    super(container);
-
     this.__container = container;
-
-
-    unimplementedProps(this, propsWaitingRoom)
+    unimplementedProps(this, propsWaitingRoom);
   }
-
+  
   get __documentBase() {
     return this.__container.__documentBase
   }
@@ -158,44 +152,11 @@ class FakeBody extends FakeElement {
     return doc
   }
 
-  get __structuralElements() {
-    // The API response can contain elements we don't support in DocumentApp, like sectionBreak.
-    // We filter these out
-    // also assign a serial number for easier identification
-    // if this has come from cache the serial number generated will be the same between calls
-    // if its come from the api, the serial numbers generated could be different
-    return this.__content.filter(f => !f.sectionBreak).map((f, __seIndex) => ({ ...f, __seIndex }));
-  }
 
-  get __children() {
+
+  getChildren() {
     // Use the factory to create specific element types (Paragraph, Table, etc.)
     return this.__structuralElements.map(se => createElement(this, se)).filter(Boolean);
-  }
-
-  getChild(index) {
-    const { nargs, matchThrow } = signatureArgs(arguments, 'Body.getChild');
-    const children = this.__children
-    if (nargs !== 1 || !is.integer(index) || index < 0 || index >= children.length) {
-      matchThrow()
-    }
-    return children[index];
-  }
-
-  getChildIndex(child) {
-
-    const { nargs, matchThrow } = signatureArgs(arguments, 'Body.getChildIndex');
-    if (nargs !== 1 || !is.object(child) || !Reflect.has(child, 'getParent')) {
-      matchThrow()
-    }
-    // check we have an seIndex
-    if (is.nullOrUndefined(child.__seIndex)) {
-      // TODO check this
-      // This can happen if the child is detached (e.g., from a .copy() call).
-      // The real API returns -1 in this case.
-      return -1;
-    }
-    return child.__seIndex
-
   }
 
   /**
@@ -206,14 +167,6 @@ class FakeBody extends FakeElement {
     const { nargs, matchThrow } = signatureArgs(arguments, 'Body.getType');
     if (nargs !== 0) matchThrow();
     return ElementType.BODY_SECTION;
-  }
-  getNumChildren() {
-    const { nargs, matchThrow } = signatureArgs(arguments, 'Body.getNumChildren');
-    // Can be a string or a Paragraph object``
-    if (nargs) {
-      matchThrow()
-    }
-    return this.__children.length
   }
 
   appendParagraph(textOrParagraph) {
@@ -289,29 +242,6 @@ class FakeBody extends FakeElement {
 
   }
 
-
-  /**
-   * Gets the text contents of the element as a string.
-   * @returns {string} The text content.
-   */
-  getText() {
-    if (!this.__document.__doc?.body || !this.__document.__doc.body.content) return ''
-
-    const text = this.__document.__doc.body.content.map(structuralElement => {
-      if (structuralElement.paragraph) {
-        return structuralElement.paragraph.elements?.map(element => {
-          return element.textRun ? element.textRun.content : '';
-        }).join('');
-      }
-      return '';
-    }).join('');
-
-    // Per documentation, remove the final trailing newline character.
-    if (text.length > 0 && text.endsWith("\\n")) {
-      return text.slice(0, -1);
-    }
-    return text;
-  }
   toString() {
 
     return ScriptApp.isFake ? 'Body' : 'DocumentBodySection';
