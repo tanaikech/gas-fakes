@@ -39,7 +39,8 @@ class FakeDocumentApp {
       title: name,
     };
     const doc = Docs.Documents.create(resource);
-    return newFakeDocument(newFakeDocumentBase(doc.documentId));
+    // TODO need to gasify
+    return newFakeDocument(doc.documentId);
   }
 
   openById(id) {

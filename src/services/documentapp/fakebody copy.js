@@ -2,21 +2,127 @@ import { Proxies } from '../../support/proxies.js';
 import { signatureArgs, unimplementedProps } from '../../support/helpers.js';
 import { Utils } from '../../support/utils.js';
 import { ElementType } from '../enums/docsenums.js';
-import { FakeContainerElement } from './fakecontainerelement.js';
 
 const { is } = Utils
 
-class FakeBody  extends FakeContainerElement  {
+const propsWaitingRoom = [
+  'getHeadingAttributes',
+  'setHeadingAttributes',
+  'getPreviousSibling',
+  'appendPageBreak',
+  'insertPageBreak',
+  'getMarginBottom',
+  'getMarginLeft',
+  'getMarginRight',
+  'getMarginTop',
+  'getPageHeight',
+  'getPageWidth',
+  'setMarginBottom',
+  'setMarginLeft',
+  'setMarginRight',
+  'setMarginTop',
+  'setPageHeight',
+  'setPageWidth',
+  'getNextSibling',
+  'removeFromParent',
+  'getTables',
+  'insertImage',
+  'getImages',
+  'removeChild',
 
-  constructor(shadowDocument) {
-  
-    if (!shadowDocument) {
-      throw new Error('shadowbody not sent to body constructor')
+  'appendTable',
+  'getFootnotes',
+  'getParagraphs',
+  'getListItems',
+  'appendHorizontalRule',
+  'appendImage',
+
+  'appendListItem',
+  'insertHorizontalRule',
+  'insertParagraph',
+  'insertListItem',
+  'insertTable',
+  'getLinkUrl',
+  'setLinkUrl',
+  'isAtDocumentEnd',
+  'merge',
+  'setText',
+  'asListItem',
+  'asDate',
+  'asText',
+  'asBody',
+  'asEquationFunction',
+  'asEquationSymbol',
+  'asFootnote',
+  'asHorizontalRule',
+  'asInlineDrawing',
+  'asInlineImage',
+  'asAnchoredDrawing',
+  'asPageBreak',
+  'asPerson',
+  'asRichLink',
+  'asCodeSnippet',
+  'asEquation',
+  'asFooterSection',
+  'asFootnoteSection',
+  'asHeaderSection',
+  'asParagraph',
+  'asTable',
+  'asTableCell',
+  'asTableOfContents',
+  'asTableRow',
+  'asVariable',
+  'asEquationFunctionArgumentSeparator',
+
+
+  'findElement',
+  'clear',
+
+  'getFontFamily',
+  'setFontFamily',
+  'getFontSize',
+  'setFontSize',
+  'getBackgroundColor',
+  'setBackgroundColor',
+  'getForegroundColor',
+  'setForegroundColor',
+  'isBold',
+  'setUnderline',
+  'setStrikethrough',
+  'setItalic',
+  'setBold',
+  'isItalic',
+  'isStrikethrough',
+  'isUnderline',
+  'findText',
+  'setTextAlignment',
+  'editAsText',
+  'replaceText',
+  'getTextAlignment',
+  'getText',
+  'setAttributes',
+  'asCommentSection',
+  'asDocumentElement',
+  'asDocumentBodySection', // Body is already a DocumentBodySection
+  'copy',
+  'getAttributes']
+
+
+class FakeBody {
+
+  constructor(container) {
+    // container 
+    if (!container) {
+      throw new Error('container not sent to body constructor')
     }
-    super (shadowDocument.shadowBody)
-    this.__shadowDocument = shadowDocument;
+
+    this.__container = container;
+    unimplementedProps(this, propsWaitingRoom);
   }
   
+  get __documentBase() {
+    return this.__container.__documentBase
+  }
 
   get __content() {
     const content = this.__body.content
@@ -27,11 +133,30 @@ class FakeBody  extends FakeContainerElement  {
   }
 
   get __body() {
-    const body = this.___shadowDocument.shadowBody
+    const body = this.__container.__resource.body
     if (!body) {
       throw new Error('body not sent to body constructor')
     }
     return body
+  }
+
+
+  get __document() {
+    let doc = this.__container
+    while (Reflect.has(doc, 'getParent')) {
+      doc = doc.getParent()
+    }
+    if (!doc) {
+      throw new Error("couldnt find document from body")
+    }
+    return doc
+  }
+
+
+
+  getChildren() {
+    // Use the factory to create specific element types (Paragraph, Table, etc.)
+    return this.__structuralElements.map(se => createElement(this, se)).filter(Boolean);
   }
 
   /**

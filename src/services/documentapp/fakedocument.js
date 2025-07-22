@@ -1,170 +1,43 @@
 import { Proxies } from '../../support/proxies.js';
-import { signatureArgs, unimplementedProps } from '../../support/helpers.js';
+import { newShadowDocument } from './shadow/document.js';
+import { signatureArgs } from '../../support/helpers.js';
 import is from '@sindresorhus/is';
 import { docsCacher } from '../../support/docscacher.js';
-import { newFakeTab } from './faketab.js';
-import { newFakeRangeBuilder } from './fakerangebuilder.js';
-import { newFakeContainerElement } from './fakecontainerelement.js';
-
-
+import { newFakeBody } from './fakebody.js';
 
 export const newFakeDocument = (...args) => {
   return Proxies.guard(new FakeDocument(...args));
 };
 
-// these are the known properties of document, not yet implemented
-const propsWaitingRoom = [
-
-  'getSupportedLanguageCodes',
-  'getNumChildren',
-  'getFooter',
-  'addFooter',
-  'addBookmark',
-  'getBookmarks',
-  'getBookmark',
-  'addNamedRange',
-  'getNamedRangeById',
-  'editAsText',
-  'getActiveSection',
-  'getDocumentElement',
-  'getFootnotes',
-  'getParagraphs',
-  'getListItems',
-  'appendHorizontalRule',
-  'appendImage',
-  'appendPageBreak',
-  'appendParagraph',
-  'appendListItem',
-  'insertHorizontalRule',
-  'insertPageBreak',
-  'insertParagraph',
-  'insertListItem',
-  'insertTable',
-  'replaceText',
-  'getMarginBottom',
-  'getMarginLeft',
-  'getMarginRight',
-  'getMarginTop',
-  'getPageHeight',
-  'getPageWidth',
-  'setMarginBottom',
-  'setMarginLeft',
-  'setMarginRight',
-  'setMarginTop',
-  'setPageHeight',
-  'setPageWidth',
-  'setCursor',
-  'setSelection',
-  'getActiveTab',
-  'setActiveTab',
-  'getTables',
-  'getCursor',
-
-  'getNamedRanges',
-  'insertImage',
-  'getAs',
-  'getBlob',
-
-  'getBackgroundColor',
-  'setBackgroundColor',
-  'removeChild',
-  'appendTable',
-  'addHeader',
-  'getSelection',
-  'getImages',
-
-  'newPosition',
-  'getLanguage',
-  'getText',
-  'setLanguage',
-  'getChild',
-  'getHeader',
-  'setText',
-]
 
 class FakeDocument {
 
-  constructor(documentBase) {
-
-    this.__documentBase = documentBase
-
-    // placeholders for props not yet implemented
-    unimplementedProps(this, propsWaitingRoom)
-
+  // passing the id creates a shadow document which maintains the api result
+  constructor(id) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Document");
+    if (nargs !== 1 || !is.nonEmptyString(id)) matchThrow();
+    this.__id = id
   }
 
-  // this looks expensive, but the document wil always be in case unless its been updated
-  // in which case we have to get it anyway
-  get __resource() {
-    return this.__documentBase.__resource
-  }
-
-  get __file() {
-    return this.__documentBase.__file
-  }
-
-  get __body() {
-    return this.__resource.body
-  }
-
-  get __content() {
-    return this.__body?.content || []
-  }
-
-  
-  saveAndClose() {
-    // In the live environment, this is sometimes needed to ensure that
-    // changes made via one service (e.g., Docs advanced service) are
-    // persisted before being read by another (e.g., DocumentApp).
-    // In the fake environment, updates are synchronous and cache is
-    // invalidated immediately, so this is a no-op.
-    return this;
-  }
-
-  clear() {
-    const { nargs, matchThrow } = signatureArgs(arguments, 'Document.clear');
-    if (nargs !== 0) matchThrow();
-
-    // The document's content is represented by an array of structural elements.
-    const content = this.__content;
-
-    // If there's no content, or only the initial empty paragraph, there's nothing to clear.
-    if (!content || content.length === 0) {
-      return this;
+  get __shadowDocument() {
+    if (!this.__id) {
+      throw new Error(`shadow document not initialized`)
     }
+    return newShadowDocument(this.__id)
+  }
 
-    // The last structural element contains the end index of the body's content.
-    // A new/empty document has one structural element (a paragraph) with startIndex 1 and endIndex 2.
-    // We must not delete this final newline character.
-    const lastElement = content[content.length - 1];
-    const endIndex = lastElement.endIndex;
-
-    // If the document is already effectively empty (just one newline), do nothing.
-    // The startIndex of all body content is 1.
-    if (endIndex <= 2) {
-      return this;
-    }
-
-    // We need to delete everything from the start of the body content (index 1)
-    // up to the start of the final newline character. The range for deletion is
-    // [1, endIndex - 1), where the end of the range is exclusive.
-    const requests = [{
-      deleteContentRange: { range: { startIndex: 1, endIndex: endIndex - 1 } }
-    },];
-
-    // Use the advanced Docs service to perform the update. This also invalidates the document cache.
-    Docs.Documents.batchUpdate({ requests }, this.getId());
-    return this;
+  get body () {
+    return newFakeBody(this.__shadowDocument)
   }
 
   getId() {
-    return this.__resource.documentId;
+    return this.__shadowDocument.resource.documentId;
   }
 
   getName() {
     // The file name in Drive is the source of truth for the document's name/title.
     // We use the file's name to avoid eventual consistency issues between Drive and Docs APIs.
-    return this.__file.getName();
+    return this.__shadowDocument.file.getName();
   }
 
   setName(name) {
@@ -172,16 +45,17 @@ class FakeDocument {
     if (nargs !== 1 || !is.string(name)) matchThrow();
 
     // This updates the file name in Drive, which is the source of truth for the title.
-    this.__file.setName(name);
+    this.__shadowDocument.file.setName(name);
 
     // Because the document might be cached by the Docs advanced service,
     // we need to invalidate it so the next `get` call fetches the updated title.
     docsCacher.clear(this.getId());
-    return this;
+    return this.__asGas
   }
-
+  // TODO
+  // this works on the shadow document so any returns to apps script need to be wrapped up in the appropriate apps script class
   getBody() {
-    return newFakeContainerElement(this, this.__content).asBody();
+    return newFakeBody(this.__shadowDocument)
   }
 
   getViewers() {
@@ -189,7 +63,7 @@ class FakeDocument {
     // but tests on live Apps Script show that it behaves like DriveApp.File.getViewers(),
     // which includes editors. After all viewers and editors are removed, the owner remains,
     // resulting in a viewer count of 1. We will replicate this observed behavior.
-    const viewers = this.__file.getViewers();
+    const viewers = this.__shadowDocument.file.getViewers();
     const editors = this.getEditors();
 
     const all = [...viewers, ...editors];
@@ -208,8 +82,8 @@ class FakeDocument {
     // The underlying FakeFile might incorrectly remove the owner when other editors are removed.
     // This ensures the owner is always present in the editors list, which matches
     // the behavior of the live Google Apps Script environment.
-    const editors = this.__file.getEditors();
-    const owner = this.__file.getOwner();
+    const editors = this.__shadowDocument.file.getEditors();
+    const owner = this.__shadowDocument.file.getOwner();
 
     if (owner && !editors.some(e => e.getEmail() === owner.getEmail())) {
       return [...editors, owner];
@@ -229,46 +103,46 @@ class FakeDocument {
 
   // these are all actually preformed by the Drive api
   addEditor(emailAddress) {
-    this.__file.addEditor(emailAddress);
+    this.__shadowDocument.file.addEditor(emailAddress);
     return this;
   }
 
   addEditors(emailAddresses) {
-    this.__file.addEditors(emailAddresses);
+    this.__shadowDocument.file.addEditors(emailAddresses);
     return this;
   }
 
   addViewer(emailAddress) {
-    this.__file.addViewer(emailAddress);
+    this.__shadowDocument.file.addViewer(emailAddress);
     return this;
   }
 
   addViewers(emailAddresses) {
-    this.__file.addViewers(emailAddresses);
+    this.__shadowDocument.file.addViewers(emailAddresses);
     return this;
   }
 
   removeEditor(emailAddress) {
-    const owner = this.__file.getOwner();
+    const owner = this.__shadowDocument.file.getOwner();
     // You can't remove the owner of a document.
     if (owner && owner.getEmail() === emailAddress) {
       // The live API throws an error. To avoid breaking tests that don't
       // expect an error, we'll just prevent the removal.
       return this;
     }
-    this.__file.removeEditor(emailAddress);
+    this.__shadowDocument.file.removeEditor(emailAddress);
     return this;
   }
 
   removeViewer(emailAddress) {
-    const owner = this.__file.getOwner();
+    const owner = this.__shadowDocument.file.getOwner();
     // You can't remove the owner of a document.
     if (owner && owner.getEmail() === emailAddress) {
       // The live API throws an error. To avoid breaking tests that don't
       // expect an error, we'll just prevent the removal.
       return this;
     }
-    this.__file.removeViewer(emailAddress);
+    this.__shadowDocument.file.removeViewer(emailAddress);
     return this;
   }
 
@@ -276,37 +150,4 @@ class FakeDocument {
     return 'Document';
   }
 
-  // these were generate by gemini and are incrrect - i'll need to redo them
-  // all of the below is rubbish
-  getTabs() {
-    // A newly created document via the API might not have a body property,
-    // whereas one from a get will. We can use this to detect if we should
-    // force the fallback for testing a new document in the fake env.
-    if (DocumentApp.isFake && !this.__body) {
-      const tabResource = {
-        documentTab: { body: this.__doc.body }, // body will be undefined here, but that's ok for newFakeBody
-        tabProperties: { tabId: 'default_tab_id', title: this.getName(), index: 0 }
-      };
-      return [newFakeTab(this, tabResource)];
-    }
-
-    const docWithTabs = Docs.Documents.get(this.getId(), { includeTabsContent: true });
-
-    if (docWithTabs.tabs && docWithTabs.tabs.length > 0) {
-      return docWithTabs.tabs.map(tabResource => newFakeTab(this, tabResource, this.getName()));
-    }
-
-    // Fallback for documents without tabs enabled, which the API returns as a single tab.
-    const tabResource = {
-      documentTab: { body: this.__doc.body },
-      tabProperties: { tabId: 'default_tab_id', title: this.getName(), index: 0 }
-    };
-    return [newFakeTab(this, tabResource)];
-  }
-  getTab(tabId) {
-    const { nargs, matchThrow } = signatureArgs(arguments, 'Document.getTab');
-    if (nargs !== 1 || !is.string(tabId)) matchThrow();
-
-    return this.getTabs().find(tab => tab.getId() === tabId) || null;
-  }
 }
