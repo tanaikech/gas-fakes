@@ -27,7 +27,7 @@ class FakeBody  extends FakeContainerElement  {
   }
 
   get __body() {
-    const body = this.___shadowDocument.shadowBody
+    const body = this.__shadowDocument.shadowBody
     if (!body) {
       throw new Error('body not sent to body constructor')
     }
@@ -41,7 +41,7 @@ class FakeBody  extends FakeContainerElement  {
   getType() {
     const { nargs, matchThrow } = signatureArgs(arguments, 'Body.getType');
     if (nargs !== 0) matchThrow();
-    return ElementType.BODY_SECTION;
+    return ElementType[this.__body.containerType]
   }
 
   appendParagraph(textOrParagraph) {

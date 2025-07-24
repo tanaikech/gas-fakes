@@ -11,6 +11,9 @@ class ShadowBody  extends ShadowContainer  {
     this.__shadowDocument = shadowDocument;
     this.__body = body
   }
+  get containerType () {
+    return "BODY_SECTION"
+  }
 
 }
 

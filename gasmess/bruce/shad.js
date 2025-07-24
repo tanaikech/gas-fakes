@@ -13,7 +13,7 @@ const childIndex = shadowBody.getChildIndex(child)
 const body = doc.getBody()
 const bchildren = body.getChildren()
 const bchild = body.getChild(0)
-
+console.log (body.getType().toString())
 // this tests startIndex matching which is probably the wrong test
 const bchildIndex = body.getChildIndex(bchild)
 deleteTempFile(doc.getId())

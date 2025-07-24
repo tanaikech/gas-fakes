@@ -2,8 +2,6 @@ import { Proxies } from '../../support/proxies.js';
 import { FakeContainerElement } from './fakecontainerelement.js';
 import { ElementType, ParagraphHeading } from '../enums/docsenums.js';
 import { unimplementedProps, signatureArgs } from '../../support/helpers.js';
-import { extractText, setParagraphFactory } from './elementFactory.js';
-import { newShadowParagraph } from './shadow/paragraph.js';
 
 const propsWaitingRoom = [
   'addPositionedImage', 'appendHorizontalRule', 'appendInlineImage', 'appendPageBreak', 'appendText', 'clear',
@@ -27,17 +25,15 @@ export const newFakeParagraph = (...args) => {
   return Proxies.guard(new FakeParagraph(...args));
 };
 
-// Resolve the circular dependency by injecting the factory function.
-setParagraphFactory(newFakeParagraph);
-
 /**
  * A fake implementation of the Paragraph class for DocumentApp.
  * @see https://developers.google.com/apps-script/reference/document/paragraph
  */
 export class FakeParagraph extends FakeContainerElement {
-  constructor(shadowContainer,se) {
-    super(shadowContainer);
-    this.__se = se
+  constructor(se) {
+    super(se);
+    this.__text = text || '';
+    this.__heading = ParagraphHeading.NORMAL;
     unimplementedProps(this, propsWaitingRoom);
   }
 
@@ -54,12 +50,9 @@ export class FakeParagraph extends FakeContainerElement {
    * @returns {FakeParagraph} A new, detached copy of this element.
    */
   copy() {
-    // A detached copy needs its own shadow container, created from a copy of the
-    // structural element, but it still needs the context of the original document.
-    const shadowDocument = this.__shadowContainer.__shadowDocument;
-    const newSe = { ...this.__se, startIndex: undefined, endIndex: undefined };
-    const newShadowContainer = newShadowParagraph(shadowDocument, newSe);
-    return newFakeParagraph(newShadowContainer, newSe);
+    // The new paragraph is a detached copy. In our simple fake,
+    // this means just creating a new instance with the same text and no parent.
+    return newFakeParagraph(this.getText(), null, JSON.parse(JSON.stringify(this.__se)));
   }
 
   /**
@@ -69,7 +62,7 @@ export class FakeParagraph extends FakeContainerElement {
   getText() {
     const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.getText');
     if (nargs !== 0) matchThrow();
-    return extractText(this.__se);
+    return this.__text;
   }
 
   /**
@@ -79,14 +72,7 @@ export class FakeParagraph extends FakeContainerElement {
   getHeading() {
     const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.getHeading');
     if (nargs !== 0) matchThrow();
-    // The heading is stored in the paragraphStyle of the structural element.
-    const headingId = this.__se?.paragraph?.paragraphStyle?.headingId;
-    if (!headingId) {
-      return ParagraphHeading.NORMAL;
-    }
-    // The API returns heading IDs like 'HEADING_1', but the enum is 'HEADING1'.
-    const enumKey = headingId.replace('_', '');
-    return ParagraphHeading[enumKey] || ParagraphHeading.NORMAL;
+    return this.__heading;
   }
 
   /**
@@ -99,25 +85,7 @@ export class FakeParagraph extends FakeContainerElement {
     if (nargs !== 1 || !Object.values(ParagraphHeading).includes(heading)) {
       matchThrow();
     }
-    // This should trigger an API update. For now, we'll just modify the
-    // underlying structural element. The persistence is handled by the shadow document model.
-    const headingString = heading.toString();
-    const style = this.__se.paragraph.paragraphStyle || {};
-
-    if (headingString === 'NORMAL') {
-      // In the API, setting a paragraph to NORMAL seems to remove the headingId
-      // and set the namedStyleType to 'NORMAL_TEXT'.
-      delete style.headingId;
-      style.namedStyleType = 'NORMAL_TEXT';
-    } else {
-      let apiHeadingId = headingString;
-      if (headingString.startsWith('HEADING')) {
-        apiHeadingId = `HEADING_${headingString.substring(7)}`;
-      }
-      style.headingId = apiHeadingId;
-      style.namedStyleType = apiHeadingId;
-    }
-    this.__se.paragraph.paragraphStyle = style;
+    this.__heading = heading;
     return this;
   }
 

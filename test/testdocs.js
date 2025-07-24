@@ -11,7 +11,7 @@ export const testDocs = (pack) => {
 
   unit.section("DocumentApp create", t => {
 
-    const {doc, docName} = maketdoc(toTrash, fixes)
+    const { doc, docName } = maketdoc(toTrash, fixes )
     t.is(doc.getName(), docName, "Document should have the correct name");
     t.true(is.nonEmptyString(doc.getId()), "Document should have an ID");
 
@@ -25,9 +25,29 @@ export const testDocs = (pack) => {
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance())
   });
 
+  unit.section("document children", t => {
+    const { doc, docName } = maketdoc(toTrash, fixes)
+
+    const body = doc.getBody()
+    const bchild = body.getChild(0)
+    const bchildIndex = body.getChildIndex(bchild)
+    t.is(body.getType(), DocumentApp.ElementType.BODY_SECTION, "body should be a body")
+    t.is(body.getNumChildren(), 1, "body should have 1 child")
+    t.true(is.object(bchild))
+    t.is(bchildIndex, 0)
+    t.deepEqual(bchild, body.getChild(bchildIndex), {
+      neverUndefined: false
+    })
+    t.is(bchild.getType(), DocumentApp.ElementType.PARAGRAPH)
+
+    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance())
+
+  })
+
+  unit.cancel()
   unit.section("Document basic methods", t => {
 
-    const {doc, docName} = maketdoc(toTrash, fixes)
+    const { doc, docName } = maketdoc(toTrash, fixes)
 
     // test setName
     const newDocName = docName + "-renamed";

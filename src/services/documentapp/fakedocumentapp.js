@@ -46,7 +46,7 @@ class FakeDocumentApp {
   openById(id) {
     const { nargs, matchThrow } = signatureArgs(arguments, "DocumentApp.openById");
     if (nargs !== 1 || !is.string(id)) matchThrow();
-    return newFakeDocument(newFakeDocumentBase(id));
+    return newFakeDocument(id);
   }
 
   openByUrl(url) {

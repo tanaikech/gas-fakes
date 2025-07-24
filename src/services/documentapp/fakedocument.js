@@ -19,6 +19,43 @@ class FakeDocument {
     this.__id = id
   }
 
+  clear() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Document.clear');
+    if (nargs !== 0) matchThrow();
+
+    // The document's content is represented by an array of structural elements.
+    const content = this.__shadowDocument.shadowBody.content;
+
+
+    // If there's no content, or only the initial empty paragraph, there's nothing to clear.
+    if (!content || content.length === 0) {
+      return this;
+    }
+
+    // The last structural element contains the end index of the body's content.
+    // A new/empty document has one structural element (a paragraph) with startIndex 1 and endIndex 2.
+    // We must not delete this final newline character.
+    const lastElement = content[content.length - 1];
+    const endIndex = lastElement.endIndex;
+
+    // If the document is already effectively empty (just one newline), do nothing.
+    // The startIndex of all body content is 1.
+    if (endIndex <= 2) {
+      return this;
+    }
+
+    // We need to delete everything from the start of the body content (index 1)
+    // up to the start of the final newline character. The range for deletion is
+    // [1, endIndex - 1), where the end of the range is exclusive.
+    const requests = [{
+      deleteContentRange: { range: { startIndex: 1, endIndex: endIndex - 1 } }
+    },];
+
+    // Use the advanced Docs service to perform the update. This also invalidates the document cache.
+    Docs.Documents.batchUpdate({ requests }, this.getId());
+    return this;
+  }
+
   get __shadowDocument() {
     if (!this.__id) {
       throw new Error(`shadow document not initialized`)
@@ -26,7 +63,7 @@ class FakeDocument {
     return newShadowDocument(this.__id)
   }
 
-  get body () {
+  get body() {
     return newFakeBody(this.__shadowDocument)
   }
 

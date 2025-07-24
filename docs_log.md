@@ -133,3 +133,16 @@ When the body is cleared, only the appended para (p2) is still accessible by the
     console.log (body.getChildIndex(p2)) // 0
     console.log (body.getChildIndex(p1)) // Exception: Element does not contain the specified child element.
 ````
+
+# another approach
+
+The fundamental problem with all this is that an element in apps script does not have a unique id that can be used to match existing objects with responses from the API. DocumentApp has an internal representation of the document, but one that might get a complete rewrite each time there are changes in the api's view of the doc.So, besides maintaining a shadow document, we also need to be able to match apps script elements to that view. We can't rely on indices as they will be changed on insertions etc. We cant rely on content becuase more than 1 element could have the same content. So that leaves 2 possibilities, assuming that we generate a unique id for each element as we see it for the first time.
+- write some kind of text containing this unique id
+- use named ranges and a local mapping for this named ranges. The api will automatically maintain the ranges associted with a named range in the event of a structural adjustment of the document
+
+The text thing would not work, as it would add extra stuff to the doc and not all elements would accept a text property anyway
+So that leaves using named ranges as the only credible way to rematch elements returned from the api.
+- in order to separate these fake named ranges from user created ones, we'll generate some kind of prefix naming convention - say gas_fake_xxxxx
+- start a new session by assigning named ranges to any elements that don't already have them assigned. the named range actually identifies a location, not an element, but since the api maintains the location according to what else is going on in the document, the startIndex and the the type of the element will uniquely identify the element that is occupying that range
+- since the namedrange id will be enmbedded in each element of my shadow document, and my fake apps script elements only contain the ID of that named range, we can always access the latest state of that element across document refreshes.
+

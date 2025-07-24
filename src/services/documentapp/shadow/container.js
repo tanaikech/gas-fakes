@@ -52,5 +52,8 @@ export class ShadowContainer {
     return this.children.length
   }
 
+  get containerType () {
+    return 'UNSUPPORTED'
+  }
 }
 

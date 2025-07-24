@@ -1,6 +1,5 @@
 import { Proxies } from '../../support/proxies.js';
 import { signatureArgs, unimplementedProps } from '../../support/helpers.js';
-import { getSeType } from './elementFactory.js';
 import { ElementType } from '../enums/docsenums.js';
 
 // the subclasses like paragraph are extensions of element, so we'll implement the shared ones here
@@ -111,17 +110,27 @@ const propsWaitingRoom = [
 export class FakeElement {
   /**
    * the parent will be the containg elemement
+   * @param {DocumentBase} ??
+   * @param {FakeElement} parent 
    * @param {object} se the structural element to build the element from
    * @param {*} se 
    */
   constructor(parent, se) {
+    this.__parent = parent || null;
     this.__se = se || null;
-    this.__parent = parent;
     this.__propsWaitingRoom = propsWaitingRoom;
-    this.__type = getSeType(se)
     unimplementedProps(this, this.__propsWaitingRoom);
   }
 
+  /**
+   * Gets the element's parent element.
+   * @returns {FakeElement|null} The parent element, or null if the element has no parent.
+   */
+  getParent() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Element.getParent');
+    if (nargs !== 0) matchThrow();
+    return this.__parent;
+  }
 
   /**
    * Returns this element as a Paragraph. If the element is not a paragraph,
@@ -129,17 +138,20 @@ export class FakeElement {
    * @returns {import('./fakeparagraph.js').FakeParagraph|null} The element as a Paragraph or null.
    */
   asParagraph() {
-    // A generic element cannot be a paragraph. If it was, the factory
-    // in FakeContainerElement.getChild() would have created a FakeParagraph.
+    // Overridden by FakeParagraph.
     return null;
   }
 
   /**
    * Gets the element's type.
-   * @returns {DocumentApp.ElementType} The element's type.
+   * @returns {GoogleAppsScript.Document.ElementType} The element's type.
    */
   getType() {
-    return ElementType[this.__type]
+    if (this.__se && this.__se.paragraph) {
+      return ElementType.PARAGRAPH;
+    }
+    // Add other types here...
+    return ElementType.UNSUPPORTED;
   }
 
   /**
