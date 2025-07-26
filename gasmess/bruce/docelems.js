@@ -10,7 +10,6 @@ console.log (body.getNumChildren())
 const child = body.getChild(10)
 const childIndex = body.getChildIndex(child)
 const child2 = body.getChild(childIndex)
-console.log (childIndex,body.getChildIndex(child2)===body.getChildIndex(child)===10)
+console.log (childIndex,body.getChildIndex(child2)===body.getChildIndex(child),body.getChildIndex(child)===10)
 const parent = child.getParent()
-
 

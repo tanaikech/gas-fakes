@@ -1,5 +1,5 @@
 import { Proxies } from '../../support/proxies.js';
-import { newShadowDocument } from './shadow/document.js';
+import { newShadowDocument } from './shadowdocument.js';
 import { signatureArgs } from '../../support/helpers.js';
 import is from '@sindresorhus/is';
 import { docsCacher } from '../../support/docscacher.js';
@@ -18,53 +18,28 @@ class FakeDocument {
     if (nargs !== 1 || !is.nonEmptyString(id)) matchThrow();
     this.__id = id
   }
-
+  // todo
   clear() {
     const { nargs, matchThrow } = signatureArgs(arguments, 'Document.clear');
     if (nargs !== 0) matchThrow();
-
-    // The document's content is represented by an array of structural elements.
-    const content = this.__shadowDocument.shadowBody.content;
-
-
-    // If there's no content, or only the initial empty paragraph, there's nothing to clear.
-    if (!content || content.length === 0) {
-      return this;
-    }
-
-    // The last structural element contains the end index of the body's content.
-    // A new/empty document has one structural element (a paragraph) with startIndex 1 and endIndex 2.
-    // We must not delete this final newline character.
-    const lastElement = content[content.length - 1];
-    const endIndex = lastElement.endIndex;
-
-    // If the document is already effectively empty (just one newline), do nothing.
-    // The startIndex of all body content is 1.
-    if (endIndex <= 2) {
-      return this;
-    }
-
-    // We need to delete everything from the start of the body content (index 1)
-    // up to the start of the final newline character. The range for deletion is
-    // [1, endIndex - 1), where the end of the range is exclusive.
-    const requests = [{
-      deleteContentRange: { range: { startIndex: 1, endIndex: endIndex - 1 } }
-    },];
-
-    // Use the advanced Docs service to perform the update. This also invalidates the document cache.
-    Docs.Documents.batchUpdate({ requests }, this.getId());
-    return this;
+    return this
   }
 
   get __shadowDocument() {
     if (!this.__id) {
       throw new Error(`shadow document not initialized`)
     }
+    // this doesnt actually populate anything yet
+    // when any resource is accessed it'll refresh then
     return newShadowDocument(this.__id)
   }
 
-  get body() {
-    return newFakeBody(this.__shadowDocument)
+  get structure () {
+    return this.__shadowDocument.structure
+  }
+
+  getBody() {
+    return newFakeBody(this.structure)
   }
 
   getId() {
@@ -91,9 +66,7 @@ class FakeDocument {
   }
   // TODO
   // this works on the shadow document so any returns to apps script need to be wrapped up in the appropriate apps script class
-  getBody() {
-    return newFakeBody(this.__shadowDocument)
-  }
+
 
   getViewers() {
     // The documentation for Document.getViewers() says "An editor is not a viewer",

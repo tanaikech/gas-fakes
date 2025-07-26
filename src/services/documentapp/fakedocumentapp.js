@@ -1,6 +1,6 @@
 import { Proxies } from '../../support/proxies.js';
 import { newFakeDocument } from './fakedocument.js';
-import { newFakeDocumentBase } from './fakedocumentbase.js';
+
 import { notYetImplemented, signatureArgs } from '../../support/helpers.js';
 import is from '@sindresorhus/is';
 import { Auth } from '../../support/auth.js';

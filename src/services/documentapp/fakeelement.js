@@ -1,11 +1,12 @@
 import { Proxies } from '../../support/proxies.js';
 import { signatureArgs, unimplementedProps } from '../../support/helpers.js';
-import { getSeType } from './elementFactory.js';
-import { ElementType } from '../enums/docsenums.js';
+import { Utils } from '../../support/utils.js';
+const { is } = Utils
+import { makeNrPrefix } from './shadowhelpers.js'
 
 // the subclasses like paragraph are extensions of element, so we'll implement the shared ones here
 // with placeholders for the others which we'll remove as they are implemented in the subclass
-const propsWaitingRoom = [ 
+const propsWaitingRoom = [
   'addPositionedImage',
   'appendHorizontalRule',
   'appendInlineImage',
@@ -114,41 +115,40 @@ export class FakeElement {
    * @param {object} se the structural element to build the element from
    * @param {*} se 
    */
-  constructor(parent, se) {
-    this.__se = se || null;
-    this.__parent = parent;
-    this.__propsWaitingRoom = propsWaitingRoom;
-    this.__type = getSeType(se)
-    unimplementedProps(this, this.__propsWaitingRoom);
+  constructor(structure, name) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'ContainerElement');
+    if (nargs !== 2 || !is.object(structure) || !is.nonEmptyString(name) || !name.startsWith(makeNrPrefix(null))) {
+      matchThrow();
+    }
+    this.__structure = structure
+    this.__name = name;
   }
 
-
-  /**
-   * Returns this element as a Paragraph. If the element is not a paragraph,
-   * this method returns null.
-   * @returns {import('./fakeparagraph.js').FakeParagraph|null} The element as a Paragraph or null.
-   */
-  asParagraph() {
-    // A generic element cannot be a paragraph. If it was, the factory
-    // in FakeContainerElement.getChild() would have created a FakeParagraph.
-    return null;
+  get __elementMapItem() {
+    const item = this.__structure.elementMap.get(this.__name)
+    if (!item) {
+      throw new Error(`element with name ${this.__name} not found`);
+    }
+    return item
   }
 
-  /**
-   * Gets the element's type.
-   * @returns {DocumentApp.ElementType} The element's type.
-   */
-  getType() {
-    return ElementType[this.__type]
+  get __twig() {
+    return this.__elementMapItem.__twig
   }
 
-  /**
-   * Gets the text contents of the element as a string. For most elements, this is empty.
-   * @returns {string} The text content.
-   */
-  getText() {
-    return '';
+  getParent() {
+    // the body doesnt have a parent
+    if (!this.__twig.parent) return null
+
+    const name = this.__twig.parent.name
+    const item = this.__structure.elementMap.get(name)
+    if (!item) {
+      throw new Error(`element with name ${name} not found`);
+    }
+    return newFakeElement(this.__structure, name)
+
   }
+
 
   toString() {
     return 'Element';

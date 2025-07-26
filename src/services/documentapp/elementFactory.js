@@ -2,7 +2,6 @@
 import { ElementType } from "../enums/docsenums.js";
 import { Utils } from "../../support/utils.js";
 import { newFakeElement } from "./fakeelement.js";
-import { newShadowParagraph } from "./shadow/paragraph.js";
 
 const { getEnumKeys } = Utils
 
@@ -40,17 +39,5 @@ export const setParagraphFactory = (factory) => {
 
 export const create = (parent, se) => {
   const type = getSeType(se)
-  switch (type) {
-    case ElementType.PARAGRAPH:
-      {
-        if (!newFakeParagraphFactory) {
-          throw new Error('Circular dependency not resolved: newFakeParagraphFactory is not set.');
-        }
-        const shadowDocument = parent.__shadowContainer.__shadowDocument;
-        const shadowParagraph = newShadowParagraph(shadowDocument, se);
-        return newFakeParagraphFactory(shadowParagraph, se);
-      }
-    default:
-      return newFakeElement(parent, se);
-  }
+
 }
