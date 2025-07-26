@@ -15,15 +15,16 @@ class ShadowDocument {
     this.__id = id
   }
 
-
-  // this looks expensive, but the document wil always be in case unless its been updated
-  // in which case we have to get it anyway this will
-  get resource() {
-    const { data, response } = Docs.Documents.__get(this.__id)
-    const { fromCache } = response
-    if (fromCache) return data
-
-    // if it didn't come from cache, then we're going to need to add some named ranges
+  /**
+   * we may need to do this if we're coming from cache
+   * although the resource may be in cache, the element map might not be defined
+   * why ? because if you create a new Document instance based on the same file as previous document, the document might be in cache,
+   * but not its structure - so why not put the structure in cache - 
+   * the document cache is managed by calls to the api wherever they come from, including the advanced service which knows nothig about
+   * thisdocumentApp emulation.
+   * broadening the scope will mean complicating that currently clean and abstracted process.
+   */
+  makeElementMap(data) {
 
     // get the currently known named ranges
     const currentNr = getCurrentNr(data)
@@ -53,7 +54,6 @@ class ShadowDocument {
 
       if (!elementProp) {
         // This will now catch things like sectionBreak
-        console.log(`...skipping`, element);
         return;
       }
       // the type is the enum text for te type, the prop is where to find it in the element
@@ -66,7 +66,7 @@ class ShadowDocument {
         console.log(element);
         throw new Error(`failed to find endindex/startindex for ${type}`);
       }
-      const name =  findOrCreateNamedRangeName  (element, type, currentNr, addRequests) 
+      const name = findOrCreateNamedRangeName(element, type, currentNr, addRequests)
 
       // embed this stuff in the shadow element
       element.__prop = prop;
@@ -115,24 +115,85 @@ class ShadowDocument {
     return afterData
 
   }
+
+  // this looks expensive, but the document wil always be in case unless its been updated
+  // in which case we have to get it anyway this will
+  get resource() {
+    const { data, response } = Docs.Documents.__get(this.__id)
+    const { fromCache } = response
+    if (fromCache) {
+      if (!this.__elementMap) {
+        // if there are multiple document instances, it could be in cache, but this instance could be lacking an element map
+        return this.makeElementMap(data)
+      }
+      return data
+    }
+    // it wasnt in cache so we'll need a rebuild of the element map
+    return this.makeElementMap(data)
+  }
+
   // the file representation is required for some operations
   get file() {
     return DriveApp.getFileById(this.__id)
   }
 
-  get structure () {
+  get elementMap() {
+    return this.__elementMap
+  }
+
+  get structure() {
     // will always refresh if it needs to
     const resource = this.resource
+    const elementMap = this.elementMap
     return {
-      elementMap: this.__elementMap,
+      elementMap,
       resource,
       shadowDocument: this
     }
   }
+  
+  getId () {
+    return this.resource.documentId
+  }
 
-  getElement (name)  {
+  getElement(name) {
     return this.structure.elementMap.get(name)
   }
-  
 
+  clear () {
+
+  // The document's content is represented by an array of structural elements.
+    const content = this.resource.body?.content;
+
+    // If there's no content, or only the initial empty paragraph, there's nothing to clear.
+    if (!content || content.length === 0) {
+      return this;
+    }
+
+    // The last structural element contains the end index of the body's content.
+    // A new/empty document has one structural element (a paragraph) with startIndex 1 and endIndex 2.
+    // We must not delete this final newline character.
+    const lastElement = content[content.length - 1];
+    const endIndex = lastElement.endIndex;
+
+    // If the document is already effectively empty (just one newline), do nothing.
+    // The startIndex of all body content is 1.
+    if (endIndex <= 2) {
+      return this;
+    }
+
+    // We need to delete everything from the start of the body content (index 1)
+    // up to the start of the final newline character. The range for deletion is
+    // [1, endIndex - 1), where the end of the range is exclusive.
+    const requests = [{
+      deleteContentRange: { range: { startIndex: 1, endIndex: endIndex - 1 } }
+    },];
+
+    // Use the advanced Docs service to perform the update. This also invalidates the document cache.
+    Docs.Documents.batchUpdate({ requests }, this.getId());
+
+  // on the next access to the resource, the cache will be dirty and be refreshed, and the elementmap rebuilt
+
+    return this;
+  }
 }

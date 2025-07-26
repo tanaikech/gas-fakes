@@ -80,12 +80,12 @@ class FakeAdvDocuments extends FakeAdvResource {
   __get(documentId, options) {
     const { nargs, matchThrow } = signatureArgs(arguments, "Docs.Documents.get");
     if (nargs < 1 || nargs > 2) matchThrow('Invalid number of arguments provided. Expected 1-2 only');
-    if (!is.string(documentId) || (nargs > 1 && !is.object(options))) {
+    if (!is.string(documentId)) {
       matchThrow("API call to docs.documents.get failed with error: Invalid JSON payload received.");
     }
     const optionsSet = new Set(["suggestionsViewMode", "includeTabsContent"]);
 
-    if (nargs === 2 && !Reflect.ownKeys(options || {}).every(f => optionsSet.has(f))) matchThrow();
+    if (is.nonEmptyObject(options) && !Reflect.ownKeys(options || {}).every(f => optionsSet.has(f))) matchThrow();
 
     const params = { documentId, ...(options || {}) };
 

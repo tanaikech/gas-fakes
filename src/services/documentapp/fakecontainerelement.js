@@ -67,10 +67,4 @@ export class FakeContainerElement extends FakeElement {
   }
 
 
-
-  getType() {
-    const type = getSeType(this.__shadowContainer)
-    return ElementType[type]
-  }
-
 }

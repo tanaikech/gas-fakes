@@ -44,7 +44,7 @@ export const testDocs = (pack) => {
 
   })
 
-  unit.cancel()
+
   unit.section("Document basic methods", t => {
 
     const { doc, docName } = maketdoc(toTrash, fixes)

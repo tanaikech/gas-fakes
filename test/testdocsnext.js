@@ -48,7 +48,7 @@ export const testDocsNext = (pack) => {
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   })
 
-  unit.cancel()
+
   unit.section("newRange and builders", t => {
 
     const { doc } = maketdoc(toTrash, fixes)

@@ -3,6 +3,7 @@ import { signatureArgs, unimplementedProps } from '../../support/helpers.js';
 import { Utils } from '../../support/utils.js';
 const { is } = Utils
 import { makeNrPrefix } from './shadowhelpers.js'
+import { ElementType } from '../enums/docsenums.js';
 
 // the subclasses like paragraph are extensions of element, so we'll implement the shared ones here
 // with placeholders for the others which we'll remove as they are implemented in the subclass
@@ -147,6 +148,18 @@ export class FakeElement {
     }
     return newFakeElement(this.__structure, name)
 
+  }
+
+
+
+  getType() {
+    const item = this.__elementMapItem
+    const type = item.__type
+    const enumType = ElementType[type]
+    if (!enumType) {
+      throw new Error(`element with type ${type} not found`);
+    }
+    return enumType
   }
 
 

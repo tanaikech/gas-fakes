@@ -17,22 +17,19 @@ class FakeDocument {
     const { nargs, matchThrow } = signatureArgs(arguments, "Document");
     if (nargs !== 1 || !is.nonEmptyString(id)) matchThrow();
     this.__id = id
-  }
-  // todo
-  clear() {
-    const { nargs, matchThrow } = signatureArgs(arguments, 'Document.clear');
-    if (nargs !== 0) matchThrow();
-    return this
+    this.__shadowDocument = newShadowDocument(id)
   }
 
-  get __shadowDocument() {
-    if (!this.__id) {
-      throw new Error(`shadow document not initialized`)
-    }
-    // this doesnt actually populate anything yet
-    // when any resource is accessed it'll refresh then
-    return newShadowDocument(this.__id)
+
+
+ clear() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Document.clear');
+    if (nargs !== 0) matchThrow();
+    this.__shadowDocument.clear()
+    return this
+  
   }
+  
 
   get structure () {
     return this.__shadowDocument.structure
@@ -43,7 +40,7 @@ class FakeDocument {
   }
 
   getId() {
-    return this.__shadowDocument.resource.documentId;
+    return this.__shadowDocument.getId()
   }
 
   getName() {

@@ -100,5 +100,5 @@ export const findOrCreateNamedRangeName = (element, type, currentNr, addRequests
     throw `ambiguous match for named range ${type}`;
   }
 
-  return matchedNr.length ? matchedNr[0].name : addNrRequest(type, element);
+  return matchedNr.length ? matchedNr[0].name : addNrRequest(type, element, addRequests);
 };
