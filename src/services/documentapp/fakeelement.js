@@ -1,9 +1,10 @@
 import { Proxies } from '../../support/proxies.js';
 import { signatureArgs, unimplementedProps } from '../../support/helpers.js';
 import { Utils } from '../../support/utils.js';
-const { is } = Utils
+const { is, capital } = Utils
 import { makeNrPrefix } from './shadowhelpers.js'
 import { ElementType } from '../enums/docsenums.js';
+import { newFakeParagraph } from './fakeparagraph.js'
 
 // the subclasses like paragraph are extensions of element, so we'll implement the shared ones here
 // with placeholders for the others which we'll remove as they are implemented in the subclass
@@ -105,6 +106,14 @@ const propsWaitingRoom = [
   'setUnderline',
 ];
 
+const asCasts = [
+  {
+    type: "PARAGRAPH",
+    method: "asParagraph",
+    make: newFakeParagraph
+  }
+]
+
 /**
  * generic class for an element
  * in docs everything is an element, including the body
@@ -123,10 +132,20 @@ export class FakeElement {
     }
     this.__structure = structure
     this.__name = name;
+
+    // set up how to cast
+    asCasts.forEach(cast => {
+      this[cast.method] = this.__cast.bind(this, cast.type)
+    })
+
   }
 
   get __elementMapItem() {
-    const item = this.__structure.elementMap.get(this.__name)
+    return this.__getElementMapItem(this.__name)
+  }
+
+  __getElementMapItem(name) {
+    const item = this.__structure.elementMap.get(name)
     if (!item) {
       throw new Error(`element with name ${this.__name} not found`);
     }
@@ -150,8 +169,6 @@ export class FakeElement {
 
   }
 
-
-
   getType() {
     const item = this.__elementMapItem
     const type = item.__type
@@ -162,6 +179,20 @@ export class FakeElement {
     return enumType
   }
 
+
+  __cast(asType) {
+    // we'll return an object that matches the type
+    const item = this.__element
+    const type = item.__type
+    if (type !== asType) {
+      throw new Error(`${type} can't be cast as ${asType}`);
+    }
+    const asCast = asCasts.find(cast => cast.type === asType)
+    if (!asCast) {
+      throw new Error(`couldnt find cast for ${asType}`)
+    }
+    return asCast.method.call(this, this.__structure, this.__name)
+  }
 
   toString() {
     return 'Element';

@@ -15,6 +15,55 @@ export const testDocsNext = (pack) => {
     return children;
   }
 
+  unit.section("Body.appendParagraph method", t => {
+
+    const { doc, docName } = maketdoc(toTrash, fixes)
+    const body = doc.getBody();
+
+    // On a new doc, the body is empty.
+    t.is(body.getText(), "", "New document body should be empty.");
+
+    // Test 1: Appending a string.
+    const p1Text = "This is the first paragraph.";
+    const p1 = body.appendParagraph(p1Text);
+
+    const expectedText1 = "\n" + p1Text;
+    t.is(body.getText(), expectedText1, "Body text after first append (string)");
+    t.is(p1.getText(), p1Text, "Returned paragraph object should have correct text");
+    t.is(p1.toString(), 'Paragraph', 'appendParagraph(string) should return a Paragraph object');
+
+    // Test 2: Appending a Paragraph object (the overload).
+
+    // In Apps Script, you cannot append an element that is already part of the document.
+    // You must create a detached copy of it first.
+    body.appendParagraph(p1.copy());
+    const expectedText2 = expectedText1 + "\n" + p1Text;
+    t.is(body.getText(), expectedText2, "Body text after second append (Paragraph object)");
+
+    // Test 3: Ensure that attempting to append an already attached paragraph throws an error
+    const attemptAttachedAppend = () => {
+      body.appendParagraph(p1);
+    };
+
+
+    t.rxMatch(t.threw(attemptAttachedAppend)?.message || 'no error thrown',
+      /Element must be detached/,
+      "Appending an already attached paragraph should throw an \"Element must be detached\" error"
+    )
+    // Test 4: Ensure that the fake throws the correct exception.
+    const attemptAttachedAppend2 = () => {
+      body.appendParagraph(p1);
+    };
+
+    t.rxMatch(t.threw(attemptAttachedAppend2)?.message || 'no error thrown',
+      /Element must be detached/,
+      "Appending an already attached paragraph should throw an \"Element must be detached\" error"
+    )
+
+
+    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
+  });
+
   unit.section("Document empty document validation", t => {
     const { doc, docName } = maketdoc(toTrash, fixes)
 
@@ -34,17 +83,17 @@ export const testDocsNext = (pack) => {
 
     // only a paragraph in a blank document
     const paragraph = children[0];
-    t.is (paragraph.getType(), DocumentApp.ElementType.PARAGRAPH, 'paragraph should be a paragraph')
+    t.is(paragraph.getType(), DocumentApp.ElementType.PARAGRAPH, 'paragraph should be a paragraph')
     t.is(paragraph.getText(), '', 'paragraph should be empty')
 
     // append a paragraph
-    const pt ="p1"
+    const pt = "p1"
     const p1 = body.appendParagraph(pt);
     const c2 = getChildren(body);
     t.is(c2.length, 2, "added a para - now there should be 2")
     const p1c = c2[1];
-    t.is (p1c.getText(), p1.getText())
-    t.is (p1c.getText(), pt)
+    t.is(p1c.getText(), p1.getText())
+    t.is(p1c.getText(), pt)
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   })
 
@@ -144,54 +193,7 @@ export const testDocsNext = (pack) => {
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   });
 
-  unit.section("Body.appendParagraph method", t => {
 
-    const { doc, docName } = maketdoc(toTrash, fixes)
-    const body = doc.getBody();
-
-    // On a new doc, the body is empty.
-    t.is(body.getText(), "", "New document body should be empty.");
-
-    // Test 1: Appending a string.
-    const p1Text = "This is the first paragraph.";
-    const p1 = body.appendParagraph(p1Text);
-
-    const expectedText1 = "\n" + p1Text;
-    t.is(body.getText(), expectedText1, "Body text after first append (string)");
-    t.is(p1.getText(), p1Text, "Returned paragraph object should have correct text");
-    t.is(p1.toString(), 'Paragraph', 'appendParagraph(string) should return a Paragraph object');
-
-    // Test 2: Appending a Paragraph object (the overload).
-
-    // In Apps Script, you cannot append an element that is already part of the document.
-    // You must create a detached copy of it first.
-    body.appendParagraph(p1.copy());
-    const expectedText2 = expectedText1 + "\n" + p1Text;
-    t.is(body.getText(), expectedText2, "Body text after second append (Paragraph object)");
-
-    // Test 3: Ensure that attempting to append an already attached paragraph throws an error
-    const attemptAttachedAppend = () => {
-      body.appendParagraph(p1);
-    };
-
-
-    t.rxMatch(t.threw(attemptAttachedAppend)?.message || 'no error thrown',
-      /Element must be detached/,
-      "Appending an already attached paragraph should throw an \"Element must be detached\" error"
-    )
-    // Test 4: Ensure that the fake throws the correct exception.
-    const attemptAttachedAppend2 = () => {
-      body.appendParagraph(p1);
-    };
-
-    t.rxMatch(t.threw(attemptAttachedAppend2)?.message || 'no error thrown',
-      /Element must be detached/,
-      "Appending an already attached paragraph should throw an \"Element must be detached\" error"
-    )
-
-
-    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
-  });
 
   unit.section("Document tabs", t => {
 

@@ -23,6 +23,7 @@ class ShadowDocument {
    * the document cache is managed by calls to the api wherever they come from, including the advanced service which knows nothig about
    * thisdocumentApp emulation.
    * broadening the scope will mean complicating that currently clean and abstracted process.
+   * 
    */
   makeElementMap(data) {
 
@@ -30,6 +31,10 @@ class ShadowDocument {
     const currentNr = getCurrentNr(data)
     const content = data?.body?.content || []
 
+    if (this.__mapRevisionId !== data.revisionId) {
+      console.log('...revision update remap under way')
+      this.__mapRevisionId = data.revisionId
+    }
     // this will contain all the requests to add new named ranges
     const addRequests = []
 
@@ -122,8 +127,9 @@ class ShadowDocument {
     const { data, response } = Docs.Documents.__get(this.__id)
     const { fromCache } = response
     if (fromCache) {
-      if (!this.__elementMap) {
-        // if there are multiple document instances, it could be in cache, but this instance could be lacking an element map
+      if (!this.__elementMap || !this.__mapRevisionId || this.__mapRevisionId !== data.revisionId) {
+        // if there are multiple document instances, it could be in cache, but this instance could be lacking an element map, or it could
+        // have been updated by something else so we'd need to fiddle with the document map again
         return this.makeElementMap(data)
       }
       return data
@@ -151,8 +157,8 @@ class ShadowDocument {
       shadowDocument: this
     }
   }
-  
-  getId () {
+
+  getId() {
     return this.resource.documentId
   }
 
@@ -160,9 +166,9 @@ class ShadowDocument {
     return this.structure.elementMap.get(name)
   }
 
-  clear () {
+  clear() {
 
-  // The document's content is represented by an array of structural elements.
+    // The document's content is represented by an array of structural elements.
     const content = this.resource.body?.content;
 
     // If there's no content, or only the initial empty paragraph, there's nothing to clear.
@@ -192,7 +198,7 @@ class ShadowDocument {
     // Use the advanced Docs service to perform the update. This also invalidates the document cache.
     Docs.Documents.batchUpdate({ requests }, this.getId());
 
-  // on the next access to the resource, the cache will be dirty and be refreshed, and the elementmap rebuilt
+    // on the next access to the resource, the cache will be dirty and be refreshed, and the elementmap rebuilt
 
     return this;
   }

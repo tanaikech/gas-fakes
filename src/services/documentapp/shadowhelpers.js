@@ -102,3 +102,12 @@ export const findOrCreateNamedRangeName = (element, type, currentNr, addRequests
 
   return matchedNr.length ? matchedNr[0].name : addNrRequest(type, element, addRequests);
 };
+
+export const extractText = (se) => {
+  if (!se || !se.paragraph || !se.paragraph.elements) return '';
+  // The getText() method for a paragraph in Apps Script does not include the
+  // trailing newline that marks the end of the paragraph in the API response.
+  return se.paragraph.elements?.map(element => {
+    return element.textRun ? element.textRun.content : '';
+  }).join('').replace(/\n$/, '') || '';
+};

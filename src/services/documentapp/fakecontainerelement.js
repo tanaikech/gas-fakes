@@ -4,8 +4,7 @@ import { signatureArgs, unimplementedProps } from '../../support/helpers.js';
 import { Utils } from '../../support/utils.js';
 const { is } = Utils;
 import { ElementType } from '../enums/docsenums.js';
-import { getSeType } from './elementFactory.js';
-import { makeNrPrefix } from './shadowhelpers.js';
+import {  extractText } from './shadowhelpers.js';
 import { FakeElement } from './fakeelement.js';
 
 export const newFakeContainerElement = (...args) => {
@@ -18,7 +17,7 @@ export const newFakeContainerElement = (...args) => {
  */
 export class FakeContainerElement extends FakeElement {
   constructor(structure, name) {
-    super (structure, name)
+    super(structure, name)
     this.__structure = structure
     this.__name = name
   }
@@ -65,6 +64,25 @@ export class FakeContainerElement extends FakeElement {
   getNumChildren() {
     return this.__children.length
   }
+  getText() {
+    const item = this.__elementMapItem
 
+
+
+    let text = []
+
+    const extract = (elItem, text) => {
+      if (elItem && elItem.__type === ElementType.PARAGRAPH.toString()) {
+        text.push(extractText(elItem))
+      } else {
+        const leaves = (elItem?.__twig?.children || []).map(leaf => this.__getElementMapItem(leaf.name))
+        leaves.forEach(leaf => {
+          extract(leaf, text)
+        })
+      }
+    }
+    extract(item, text)
+    return text.join('\n')
+  }
 
 }
