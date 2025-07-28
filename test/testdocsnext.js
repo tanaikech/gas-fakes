@@ -32,8 +32,8 @@ export const testDocsNext = (pack) => {
     const p2 = body.appendParagraph(p2Text);
     const p3 = body.appendParagraph(p3Text);
 
-    // The first append populates the initial empty paragraph. Subsequent appends are separated by newlines.
-    const expectedText1 = texts.join('\n');
+    // a concatanated body will prepend each paragraph with a \n
+    const expectedText1 = '\n' + texts.join('\n');
 
     t.is(body.getType(), DocumentApp.ElementType.BODY_SECTION, "body should be a body")
     t.is(body.getText(), expectedText1, "Body text after all appends");
@@ -53,9 +53,7 @@ export const testDocsNext = (pack) => {
 
 
     t.rxMatch(t.threw(attemptAttachedAppend)?.message || 'no error thrown',
-      // This error message is specific to the fake implementation. The real GAS might have a different one.
-      // The important part is that it throws.
-      /Exception: Element must be detached./,
+      /Element must be detached./,
       "Appending an already attached paragraph should throw an \"Element must be detached\" error"
     )
 

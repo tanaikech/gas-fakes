@@ -49,8 +49,11 @@ export const getElementProp = (se) => {
 }
 
 const shadowPrefix = "GAS_FAKE_"
-export const makeNrPrefix = (type) => {
-  if (is.null(type)) return shadowPrefix
+
+export const makeNrPrefix = (type=null) => {
+  if (is.null(type)) {
+    return shadowPrefix
+  }
   if (!is.nonEmptyString(type)) {
     throw `expected a non empty string - got ${type}`
   }
@@ -91,19 +94,22 @@ const addNrRequest = (type, element, addRequests) => {
 // either finds a matching named range, or adds it to the creation queue
 export const findOrCreateNamedRangeName = (element, type, currentNr, addRequests) => {
   const { endIndex, startIndex } = element;
+  const prefix = makeNrPrefix(type);
 
-  const matchedNr = currentNr.filter(nr =>
-    (nr.ranges || []).some(
-      range => range.endIndex === endIndex && range.startIndex === startIndex) &&
-    nr.name.startsWith(makeNrPrefix(type))
+  const bestMatchIndex = currentNr.findIndex(nr =>
+    nr.name.startsWith(prefix) &&
+    (nr.ranges || []).some(range => range.endIndex === endIndex && range.startIndex === startIndex)
   );
 
-  if (matchedNr.length > 1) {
-    console.log(element, matchedNr);
-    throw `ambiguous match for named range ${type}`;
+  if (bestMatchIndex !== -1) {
+    // We found a match (either exact or expanded).
+    // Consume it from the list so it can't be matched to another element.
+    const [foundRange] = currentNr.splice(bestMatchIndex, 1);
+    return foundRange.name;
   }
 
-  return matchedNr.length ? matchedNr[0].name : addNrRequest(type, element, addRequests);
+  // If no match was found, it's a genuinely new element.
+  return addNrRequest(type, element, addRequests);
 };
 
 export const extractText = (se) => {
@@ -120,6 +126,7 @@ export const extractText = (se) => {
  * @param {FakeElement} self 
  * @returns {string} the concacentaed text in all the sub elements
  */
+
 export const getText = (self) => {
   const item = self.__elementMapItem
 
@@ -135,8 +142,10 @@ export const getText = (self) => {
       })
     }
   }
+
   extract(item, text)
-  return text.join('\n')
+  return  text.join('\n');
+  
 }
 
 /**
@@ -153,59 +162,36 @@ export const appendParagraph = (self, textOrParagraph) => {
   ]
   // Can be a string or a Paragraph object``
   const isText = is.string(textOrParagraph)
-  if (!isText & !(is.object(textOrParagraph) && supportedContainers.includes(self.getType()))) {
-    throw new Error('invaliarguments to appendParagraph');
+  if (!isText && !(is.object(textOrParagraph) && supportedContainers.includes(self.getType()))) {
+    throw new Error('invalidarguments to appendParagraph');
   }
-  // TODO once copy is done - copy needs to be able to copy all children elements too
-  // The copy() method creates a detached, deep copy of the element, including all its children and their properties.
-  // if we're adding a paragraph it must not already be attached - so in other words, should be a copy of an existing
-  // a new paragraph made with copy doesnt have a parent so is acceptable
-  //if (!isText && textOrParagraph.getParent()) {
-  //  throw new Error('Exception: Element must be detached.');
-  //}
 
-  // TODO
-  // there isn'tactually a way to make a request that includes all a ready made paragraph's children
-  // so for now we'll just insert its text, but we need to revisit this to handle any para children
+  // A paragraph must be detached before it can be appended.
+  if (!isText && textOrParagraph.getParent()) {
+    throw new Error('Exception: Element must be detached.');
+  }
+
   const text = isText ? textOrParagraph : textOrParagraph.getText()
 
   const shadow = self.__structure.shadowDocument;
   const endIndexBefore = shadow.__endBodyIndex;
   let requests;
   let newParaStartIndex;
- 
-  if (endIndexBefore === 2) {
-    // This is an empty document. The only content is a newline at [1, 2).
-    // To append content without moving the initial paragraph's NamedRange,
-    // we must modify the existing paragraph in-place by inserting text at index 1.
-    // CRUCIALLY, we do NOT include a newline in the text, as that would trigger
-    // the creation of a *new* paragraph, which would prepend it.
-    requests = [{
-      insertText: { location: { index: 1 }, text: text }
-    }];
-    // The paragraph we are "creating" is the one at the start of the document.
-    newParaStartIndex = 1;
-  } else {
-    // This is a non-empty document. To append a new paragraph, we insert a
-    // newline character `\n` followed by the text. This must be done at the
-    // end of the body content, which is at `endIndex - 1` (just before the
-    // final newline of the last paragraph).
-    const insertIndex = endIndexBefore - 1;
-    requests = [{
-      insertText: {
-        location: { index: insertIndex, segmentId: self.__segmentId || null },
-        text: '\n' + text
-      }
-    }];
-    // The API creates the new paragraph element where the `\n` is inserted.
-    newParaStartIndex = insertIndex;
-  }
+
+  const insertIndex = endIndexBefore - 1;
+  requests = [
+    { insertText: { location: { index: insertIndex }, text: text + '\n' } }
+  ];
+  // The new paragraph starts at the old end index.
+  newParaStartIndex = endIndexBefore;
+
   Docs.Documents.batchUpdate({ requests }, shadow.getId());
 
   shadow.refresh()
+
   // we need to get the name of the new paragraph entry
   const et = ElementType.PARAGRAPH.toString()
-  // The new paragraph's content starts at its startIndex, which we calculated.
+
   const newItem = findItem(shadow.__elementMap, et, newParaStartIndex);
   const factory = getElementFactory(et);
   return factory(self.__structure, newItem.__name);

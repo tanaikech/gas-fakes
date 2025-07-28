@@ -44,25 +44,48 @@ class ShadowDocument {
 
     // double check
     if (this.__endBodyIndex !== endIndex) {
-      throw new Error (`expected body length to be ${this.__endBodyIndex} but got ${endIndex}`)
+      throw new Error(`expected body length to be ${this.__endBodyIndex} but got ${endIndex}`)
     }
+
+    // if its an empty doc we need to do special things
+    const isEmptyDoc = endIndex === 2;
+
     // this will contain all the requests to add new named ranges
     const addRequests = []
 
     // we'll need to recursively iterate through the document to create a bookmark for every single one
     this.__elementMap = new Map()
-    const name = makeNrPrefix("BODY_SECTION")
-    const bodyTree = { name, children: [], parent: null }
+    const bodyName = makeNrPrefix("BODY_SECTION");
+    const bodyTree = { name: bodyName, children: [], parent: null }
 
     const bodyElement = {
       __prop: "BODY_SECTION",
       __type: "BODY_SECTION",
-      __name: name,
+      __name: bodyName,
       __twig: bodyTree
     }
-    this.__elementMap.set(name, bodyElement);
+    this.__elementMap.set(bodyName, bodyElement);
 
-    console.log ('named ranges after document fetch', JSON.stringify(currentNr))
+
+
+    // this dummy named range will be needed if its an empty document
+    // this will prevent the api from messing with it
+    // we'll always need one of these 
+    const firstParaNr = {
+      __dummy: true,
+      namedRangeId: 'dp',
+      name: makeNrPrefix("PARAGRAPH") + 'dp',
+      ranges: [{
+        endIndex: 2,
+        startIndex: 1
+      }]
+    }
+    const firstTextNr = { ...firstParaNr, namedRangeId: 'dpt', name: makeNrPrefix("TEXT") + 'dpt' }
+    currentNr.splice(0, 0, firstParaNr, firstTextNr)
+
+
+
+    console.log('named ranges after document fetch', JSON.stringify(currentNr))
     // maps all the elements to their named range
     const mapElements = (element, branch) => {
       // this gets the type and property name to look for for the given element content
@@ -82,13 +105,15 @@ class ShadowDocument {
         console.log(element);
         throw new Error(`failed to find endindex/startindex for ${type}`);
       }
-      const name = findOrCreateNamedRangeName(element, type, currentNr, addRequests)
+      // For an empty document, we use static, non-API names to avoid re-indexing issues.
+      // For all other documents, we use real NamedRanges to track elements.
+      const name = findOrCreateNamedRangeName(element, type, currentNr, addRequests);
 
       // embed this stuff in the shadow element
       element.__prop = prop;
       element.__type = type;
       element.__name = name;
-      const twig = { name, children: [], parent: branch };
+      const twig = { name: name, children: [], parent: branch };
       branch.children.push(twig);
       element.__twig = twig;
       this.__elementMap.set(name, element);
@@ -105,7 +130,8 @@ class ShadowDocument {
 
 
     // delete the named ranges that weren't used
-    const deleteRequests = currentNr.filter(nr => !this.__elementMap.has(nr.name)).map(r => ({
+    // findOrCreate... consumes the currentNr list, so what's left are unused ranges.
+    const deleteRequests = currentNr.map(r => ({
       deleteNamedRange: {
         namedRangeId: r.namedRangeId
       }
