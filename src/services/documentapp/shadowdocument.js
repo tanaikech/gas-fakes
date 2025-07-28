@@ -30,10 +30,21 @@ class ShadowDocument {
     // get the currently known named ranges
     const currentNr = getCurrentNr(data)
     const content = data?.body?.content || []
+    const endIndex = content[content.length - 1]?.endIndex || 0
 
     if (this.__mapRevisionId !== data.revisionId) {
       console.log('...revision update remap under way')
       this.__mapRevisionId = data.revisionId
+      // this will be content length - handy for appending to the body
+      this.__endBodyIndex = endIndex
+      // TODO this undefined for normal - need to work on how to handle tabs etc, and what it looks like
+      this.__segmentId = data.body.segmentId
+
+    }
+
+    // double check
+    if (this.__endBodyIndex !== endIndex) {
+      throw new Error (`expected body length to be ${this.__endBodyIndex} but got ${endIndex}`)
     }
     // this will contain all the requests to add new named ranges
     const addRequests = []
@@ -51,7 +62,7 @@ class ShadowDocument {
     }
     this.__elementMap.set(name, bodyElement);
 
-
+    console.log ('named ranges after document fetch', JSON.stringify(currentNr))
     // maps all the elements to their named range
     const mapElements = (element, branch) => {
       // this gets the type and property name to look for for the given element content
@@ -149,7 +160,7 @@ class ShadowDocument {
 
   get structure() {
     // will always refresh if it needs to
-    const resource = this.resource
+    const resource = this.refresh()
     const elementMap = this.elementMap
     return {
       elementMap,
@@ -165,7 +176,10 @@ class ShadowDocument {
   getElement(name) {
     return this.structure.elementMap.get(name)
   }
-
+  refresh() {
+    // all that's need to refresh everything is to fetch the resource
+    return this.resource
+  }
   clear() {
 
     // The document's content is represented by an array of structural elements.

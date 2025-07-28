@@ -3,8 +3,6 @@ import { newFakeElement } from './fakeelement.js';
 import { signatureArgs, unimplementedProps } from '../../support/helpers.js';
 import { Utils } from '../../support/utils.js';
 const { is } = Utils;
-import { ElementType } from '../enums/docsenums.js';
-import {  extractText } from './shadowhelpers.js';
 import { FakeElement } from './fakeelement.js';
 
 export const newFakeContainerElement = (...args) => {
@@ -20,6 +18,14 @@ export class FakeContainerElement extends FakeElement {
     super(structure, name)
     this.__structure = structure
     this.__name = name
+  }
+
+  get shadowDocument() {
+    return this.__structure.shadowDocument
+  }
+
+  get __segmentId() {
+    return this.__structure.shadowDocument.__segmentId
   }
 
 
@@ -64,25 +70,6 @@ export class FakeContainerElement extends FakeElement {
   getNumChildren() {
     return this.__children.length
   }
-  getText() {
-    const item = this.__elementMapItem
 
-
-
-    let text = []
-
-    const extract = (elItem, text) => {
-      if (elItem && elItem.__type === ElementType.PARAGRAPH.toString()) {
-        text.push(extractText(elItem))
-      } else {
-        const leaves = (elItem?.__twig?.children || []).map(leaf => this.__getElementMapItem(leaf.name))
-        leaves.forEach(leaf => {
-          extract(leaf, text)
-        })
-      }
-    }
-    extract(item, text)
-    return text.join('\n')
-  }
 
 }

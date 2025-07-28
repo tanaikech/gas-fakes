@@ -2,7 +2,7 @@ import { Proxies } from '../../support/proxies.js';
 import { signatureArgs, unimplementedProps } from '../../support/helpers.js';
 import { Utils } from '../../support/utils.js';
 import { FakeContainerElement } from './fakecontainerelement.js';
-import { makeNrPrefix } from './shadowhelpers.js'
+import { makeNrPrefix, getText, appendParagraph } from './shadowhelpers.js'
 const { is } = Utils
 
 class FakeBody extends FakeContainerElement {
@@ -17,6 +17,13 @@ class FakeBody extends FakeContainerElement {
 
   }
 
+  getText() {
+    return getText(this)
+  }
+
+  appendParagraph(textOrParagraph) {
+    return appendParagraph(this, textOrParagraph)
+  }
 
   toString() {
     return 'Body';

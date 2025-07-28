@@ -1,10 +1,10 @@
 import { Proxies } from '../../support/proxies.js';
 import { signatureArgs, unimplementedProps } from '../../support/helpers.js';
 import { Utils } from '../../support/utils.js';
-const { is, capital } = Utils
-import { makeNrPrefix } from './shadowhelpers.js'
+const { is } = Utils;
+import { makeNrPrefix } from './shadowhelpers.js';
 import { ElementType } from '../enums/docsenums.js';
-import { newFakeParagraph } from './fakeparagraph.js'
+import { getElementFactory } from './elementRegistry.js';
 
 // the subclasses like paragraph are extensions of element, so we'll implement the shared ones here
 // with placeholders for the others which we'll remove as they are implemented in the subclass
@@ -109,8 +109,7 @@ const propsWaitingRoom = [
 const asCasts = [
   {
     type: "PARAGRAPH",
-    method: "asParagraph",
-    make: newFakeParagraph
+    method: "asParagraph"
   }
 ]
 
@@ -182,16 +181,13 @@ export class FakeElement {
 
   __cast(asType) {
     // we'll return an object that matches the type
-    const item = this.__element
+    const item = this.__elementMapItem;
     const type = item.__type
     if (type !== asType) {
       throw new Error(`${type} can't be cast as ${asType}`);
     }
-    const asCast = asCasts.find(cast => cast.type === asType)
-    if (!asCast) {
-      throw new Error(`couldnt find cast for ${asType}`)
-    }
-    return asCast.method.call(this, this.__structure, this.__name)
+    const factory = getElementFactory(asType);
+    return factory(this.__structure, this.__name);
   }
 
   toString() {
