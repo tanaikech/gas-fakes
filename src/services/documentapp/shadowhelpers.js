@@ -210,6 +210,10 @@ const _paragraphInserter = (self, textOrParagraph, childIndex) => {
   const item = structure.elementMap.get(self.__name); // Use the fresh item for the container
   const children = item.__twig.children;
 
+  // a protection request is required to remake the named range with the same endindex
+  // this is because inserting/appending will extend existing named ranges, so we wont be able to use
+  // them to identify existing elements - so an inserttext actually becomes
+  // inserttext, deletenamedrange, createnamedrange (with same name and indices as the pre insert nr)
   const makeProtectionRequests = (twig, shift = 0) => {
     const ur = [];
     const stet = (innerTwig) => {
@@ -263,7 +267,8 @@ const _paragraphInserter = (self, textOrParagraph, childIndex) => {
     const shift = textToInsert.length;
     requests = makeProtectionRequests(targetChildTwig, shift);
   }
-
+  
+  // put the insert text at the beginning before any remakes of the anmed ranges
   requests.unshift({
     insertText: {
       location: { index: insertIndex },
