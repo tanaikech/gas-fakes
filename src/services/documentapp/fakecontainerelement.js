@@ -14,17 +14,17 @@ export const newFakeContainerElement = (...args) => {
  * @see https://developers.google.com/apps-script/reference/document/container-element
  */
 export class FakeContainerElement extends FakeElement {
-  constructor(structure, name) {
-    super(structure, name)
-    this.__structure = structure
-    this.__name = name
+  constructor(structure, nameOrItem) {
+    super(structure, nameOrItem)
   }
 
   get shadowDocument() {
+    if (this.__isDetached) return null;
     return this.__structure.shadowDocument
   }
 
   get __segmentId() {
+    if (this.__isDetached) return null;
     return this.__structure.shadowDocument.__segmentId
   }
 

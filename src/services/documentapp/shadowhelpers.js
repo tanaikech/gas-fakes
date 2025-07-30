@@ -130,27 +130,45 @@ export const extractText = (se) => {
  */
 
 export const getText = (self) => {
-  // Always get the latest structure, as the 'self' object could be stale.
-  const shadow = self.__structure.shadowDocument;
-  const structure = shadow.structure;
-  const item = structure.elementMap.get(self.__name);
+  if (self.__isDetached) {
+    // This is a detached element, created by copy().
+    // It holds its own data and is not connected to the live document.
+    const item = self.__elementMapItem;
+    const text = [];
 
-  let text = []
+    const extractDetached = (elItem) => {
+      if (!elItem) return;
+      // The __type was added during the copy() operation.
+      if (elItem.__type === ElementType.PARAGRAPH.toString()) {
+        text.push(extractText(elItem));
+      } else {
+        // The __prop was also added during copy().
+        const prop = elItem.__prop;
+        const children = (prop && elItem[prop]) ? (elItem[prop].content || elItem[prop].elements) : [];
+        children.forEach(extractDetached);
+      }
+    };
 
-  const extract = (elItem, text) => {
-    if (elItem && elItem.__type === ElementType.PARAGRAPH.toString()) {
-      text.push(extractText(elItem))
-    } else {
-      const leaves = (elItem?.__twig?.children || []).map(leaf => structure.elementMap.get(leaf.name))
-      leaves.forEach(leaf => {
-        extract(leaf, text)
-      });
+    extractDetached(item);
+    return text.join('\n');
+  } else {
+    // This is an attached element. Always get the latest structure to avoid stale state.
+    const shadow = self.__structure.shadowDocument;
+    const structure = shadow.structure;
+    const item = structure.elementMap.get(self.__name);
+    const text = [];
+
+    const extractAttached = (elItem) => {
+      if (elItem && elItem.__type === ElementType.PARAGRAPH.toString()) {
+        text.push(extractText(elItem));
+      } else {
+        const leaves = (elItem?.__twig?.children || []).map(leaf => structure.elementMap.get(leaf.name));
+        leaves.forEach(extractAttached);
+      }
     }
+    extractAttached(item);
+    return text.join('\n');
   }
-
-  extract(item, text)
-  return text.join('\n');
-
 }
 
 /**
@@ -252,7 +270,8 @@ export const appendParagraph = (self, textOrParagraph) => {
 
   const newItem = findItem(shadow.__elementMap, et, newParaStartIndex);
   const factory = getElementFactory(et);
-  return factory(self.__structure, newItem.__name);
+  // Pass the refreshed structure from the shadow document, not the stale one from 'self'.
+  return factory(shadow.structure, newItem.__name);
 }
 
 export const findItem = (elementMap, type, startIndex) => {

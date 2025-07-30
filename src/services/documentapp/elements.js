@@ -3,5 +3,6 @@
 // registration code.
 
 import './fakeparagraph.js';
+import './fakebody.js';
 // As you create more element types (e.g., Table, ListItem), import them here.
 // import './faketable.js';

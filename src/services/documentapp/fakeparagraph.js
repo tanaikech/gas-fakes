@@ -18,8 +18,8 @@ export const newFakeParagraph = (...args) => {
  * @see https://developers.google.com/apps-script/reference/document/paragraph
  */
 export class FakeParagraph extends FakeContainerElement {
-  constructor(structure, name) {
-    super(structure, name);
+  constructor(structure, nameOrItem) {
+    super(structure, nameOrItem);
   }
   /*
   The getText() method essentially 

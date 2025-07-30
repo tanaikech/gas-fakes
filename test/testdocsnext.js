@@ -15,6 +15,33 @@ export const testDocsNext = (pack) => {
     return children;
   }
 
+  unit.section("Element.copy() and detached elements", t => {
+    const { doc } = maketdoc(toTrash, fixes);
+    const body = doc.getBody();
+
+    // 1. Append an initial paragraph
+    const p1Text = "This is the first paragraph.";
+    const p1 = body.appendParagraph(p1Text);
+    t.is(body.getText(), '\n' + p1Text, "Body should have the first paragraph");
+
+    // 2. Create a detached copy
+    const p1Copy = p1.copy();
+    t.is(p1Copy.toString(), 'Paragraph', 'The copy should be a Paragraph object');
+    t.is(p1Copy.getText(), p1Text, 'The copy should have the same text content');
+    t.is(p1Copy.getParent(), null, 'A copied element should be detached (no parent)');
+
+    // 3. Append the detached copy
+    body.appendParagraph(p1Copy);
+    const expectedText = '\n' + p1Text + '\n' + p1Text;
+    t.is(body.getText(), expectedText, "Body should contain both original and copied paragraph text");
+
+    // 4. Verify the original element is unchanged and still attached
+    t.truthy(p1.getParent(), "The original element should still be attached to the document");
+    t.is(p1.getText(), p1Text, "The original element's text should be unchanged");
+    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
+  });
+
+
   unit.section("Body.appendParagraph method", t => {
 
     const { doc } = maketdoc(toTrash, fixes)
@@ -39,12 +66,6 @@ export const testDocsNext = (pack) => {
     t.is(body.getText(), expectedText1, "Body text after all appends");
     t.is(p1.getText(), p1Text, "Returned paragraph object should have correct text");
     t.is(p1.toString(), 'Paragraph', 'appendParagraph(string) should return a Paragraph object');
-
-    // In Apps Script, you cannot append an element that is already part of the document.
-    // You must create a detached copy of it first. This is not yet implemented.
-    // body.appendParagraph(p1.copy());
-    const expectedText2 = expectedText1 + "\n" + p1Text;
-    // t.is(body.getText(), expectedText2, "Body text after second append (Paragraph object)");
 
     // Test 3: Ensure that attempting to append an already attached paragraph throws an error
     const attemptAttachedAppend = () => {

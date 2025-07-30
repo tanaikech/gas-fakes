@@ -125,13 +125,30 @@ export class FakeElement {
      * @param {object} se the structural element to build the element from
      * @param {*} se 
      */
-    constructor(structure, name) {
-      const { nargs, matchThrow } = signatureArgs(arguments, 'ContainerElement');
-      if (nargs !== 2 || !is.object(structure) || !is.nonEmptyString(name) || !name.startsWith(makeNrPrefix(null))) {
-        matchThrow();
+    constructor(structure, nameOrItem) {
+      const { nargs, matchThrow } = signatureArgs(arguments, 'FakeElement');
+      if (nargs !== 2) matchThrow();
+
+      // An element is either "attached" (with a structure and a name)
+      // or "detached" (with a structural element but no live structure).
+      // A detached element is created by copy().
+      if (is.string(nameOrItem)) { // Attached
+        if (!is.object(structure) || !nameOrItem.startsWith(makeNrPrefix(null))) {
+          throw new Error("Invalid arguments for attached FakeElement");
+        }
+        this.__isDetached = false;
+        this.__structure = structure;
+        this.__name = nameOrItem;
+        this.__detachedItem = null;
+      } else if (is.object(nameOrItem)) { // Detached
+        if (!is.null(structure)) {
+          throw new Error("Structure must be null for a detached FakeElement");
+        }
+        this.__isDetached = true;
+        this.__structure = null;
+        this.__name = null;
+        this.__detachedItem = nameOrItem;
       }
-      this.__structure = structure
-      this.__name = name;
 
       Reflect.ownKeys (asCasts).forEach(cast => {
         const ob = asCasts[cast]
@@ -141,6 +158,9 @@ export class FakeElement {
     }
 
   get __elementMapItem() {
+    if (this.__isDetached) {
+      return this.__detachedItem;
+    }
   return this.__getElementMapItem(this.__name)
 }
 
@@ -157,6 +177,9 @@ __getElementMapItem(name) {
 }
 
 getParent() {
+  if (this.__isDetached) {
+    return null;
+  }
   // the body doesnt have a parent
   if (!this.__twig.parent) return null
 
@@ -177,6 +200,48 @@ getType() {
     throw new Error(`element with type ${type} not found`);
   }
   return enumType
+}
+
+copy() {
+  const originalItem = this.__elementMapItem;
+
+  // Custom deep clone function to handle the circular reference in __twig.parent.
+  // JSON.stringify cannot handle circular structures.
+  const deepClone = (obj, cache = new WeakMap()) => {
+    if (obj === null || typeof obj !== 'object') {
+      return obj;
+    }
+    if (cache.has(obj)) {
+      return cache.get(obj);
+    }
+
+    const clone = Array.isArray(obj) ? [] : {};
+    cache.set(obj, clone);
+
+    for (const key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        // The __twig property is the one with the circular reference via its 'parent' property.
+        // We clone it, but explicitly set the parent to null to break the cycle for the detached copy.
+        if (key === '__twig') {
+          const twig = obj[key];
+          clone[key] = {
+            name: twig.name,
+            children: deepClone(twig.children, cache), // Recursively clone children twigs
+            parent: null // Break the circular reference
+          };
+        } else {
+          clone[key] = deepClone(obj[key], cache);
+        }
+      }
+    }
+    return clone;
+  };
+
+  const clonedItem = deepClone(originalItem);
+
+  // The factory will create the correct subclass (e.g., FakeParagraph)
+  const factory = getElementFactory(this.getType().toString());
+  return factory(null, clonedItem);
 }
 
 __cast(asType=null) {
