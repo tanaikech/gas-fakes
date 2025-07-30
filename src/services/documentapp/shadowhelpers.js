@@ -50,7 +50,7 @@ export const getElementProp = (se) => {
 
 const shadowPrefix = "GAS_FAKE_"
 
-export const makeNrPrefix = (type=null) => {
+export const makeNrPrefix = (type = null) => {
   if (is.null(type)) {
     return shadowPrefix
   }
@@ -88,7 +88,9 @@ const addNrRequest = (type, element, addRequests) => {
       }
     }
   })
-  return name
+  return {
+    name
+  }
 }
 
 // either finds a matching named range, or adds it to the creation queue
@@ -105,7 +107,7 @@ export const findOrCreateNamedRangeName = (element, type, currentNr, addRequests
     // We found a match (either exact or expanded).
     // Consume it from the list so it can't be matched to another element.
     const [foundRange] = currentNr.splice(bestMatchIndex, 1);
-    return foundRange.name;
+    return foundRange;
   }
 
   // If no match was found, it's a genuinely new element.
@@ -128,7 +130,10 @@ export const extractText = (se) => {
  */
 
 export const getText = (self) => {
-  const item = self.__elementMapItem
+  // Always get the latest structure, as the 'self' object could be stale.
+  const shadow = self.__structure.shadowDocument;
+  const structure = shadow.structure;
+  const item = structure.elementMap.get(self.__name);
 
   let text = []
 
@@ -136,16 +141,16 @@ export const getText = (self) => {
     if (elItem && elItem.__type === ElementType.PARAGRAPH.toString()) {
       text.push(extractText(elItem))
     } else {
-      const leaves = (elItem?.__twig?.children || []).map(leaf => self.__getElementMapItem(leaf.name))
+      const leaves = (elItem?.__twig?.children || []).map(leaf => structure.elementMap.get(leaf.name))
       leaves.forEach(leaf => {
         extract(leaf, text)
-      })
+      });
     }
   }
 
   extract(item, text)
-  return  text.join('\n');
-  
+  return text.join('\n');
+
 }
 
 /**
@@ -173,15 +178,68 @@ export const appendParagraph = (self, textOrParagraph) => {
 
   const text = isText ? textOrParagraph : textOrParagraph.getText()
 
+  // Get the LATEST shadow document state, as the 'self' object could be stale
+  // if multiple appends are chained on the same container object.
   const shadow = self.__structure.shadowDocument;
-  const endIndexBefore = shadow.__endBodyIndex;
+  const structure = shadow.structure; // This will trigger a refresh if needed
+  const item = structure.elementMap.get(self.__name); // Use the fresh item for the container
+  const endIndexBefore = structure.shadowDocument.__endBodyIndex;
+  const insertIndex = endIndexBefore - 1;
+
   let requests;
   let newParaStartIndex;
 
-  const insertIndex = endIndexBefore - 1;
-  requests = [
-    { insertText: { location: { index: insertIndex }, text: text + '\n' } }
-  ];
+  // makeUpdateRange creates requests to delete and re-create a named range with the same bounds,
+  // preventing it from expanding during an insertion.
+  const makeUpdateRange = (element) => {
+    const nr = shadow.nrMap.get(element.__name)
+    if (!nr) {
+      // it might be a new element that doesn't have a registered NR yet, which is fine.
+      return null
+    }
+    const deleteNamedRange = Docs.newDeleteNamedRangeRequest()
+      .setNamedRangeId(nr.namedRangeId)
+
+    const createNamedRange = Docs.newCreateNamedRangeRequest()
+      .setName(element.__name)
+      .setRange(Docs.newRange()
+        .setStartIndex(element.startIndex)
+        .setEndIndex(element.endIndex)
+      )
+    return {
+      deleteNamedRange,
+      createNamedRange
+    }
+  }
+
+  // We only need to protect the last element in the container (and its children) from being expanded by the insertion.
+  // which is the last element in the container.
+  const ur = []
+  const children = item.__twig.children;
+  if (children.length > 0) {
+    const lastChildTwig = children[children.length - 1];
+    const stet = (twig) => {
+      // Use the fresh structure map, not the potentially stale one from 'self'
+      const elItem = structure.elementMap.get(twig.name);
+      if (!elItem) {
+        throw new Error(`stet: element with name ${twig.name} not found in refreshed map`);
+      }
+      const update = makeUpdateRange(elItem);
+      if (update) {
+        ur.push({ deleteNamedRange: update.deleteNamedRange });
+        ur.push({ createNamedRange: update.createNamedRange });
+      }
+      (elItem.__twig?.children || []).forEach(childTwig => {
+        stet(childTwig);
+      });
+    };
+    stet(lastChildTwig);
+  }
+  const insertText = Docs.newInsertTextRequest()
+    .setLocation(Docs.newLocation().setIndex(insertIndex))
+    .setText('\n'+text)
+  requests = [{insertText}].concat (ur)
+
   // The new paragraph starts at the old end index.
   newParaStartIndex = endIndexBefore;
 

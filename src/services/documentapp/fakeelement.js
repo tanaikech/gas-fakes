@@ -106,12 +106,13 @@ const propsWaitingRoom = [
   'setUnderline',
 ];
 
-const asCasts = [
-  {
-    type: "PARAGRAPH",
-    method: "asParagraph"
+const asCasts = {
+  "PARAGRAPH": {
+    method: "asParagraph",
+    element: "newParagraph"
   }
-]
+}
+
 
 /**
  * generic class for an element
@@ -119,80 +120,80 @@ const asCasts = [
  * an elelement can presetn its subclass with methids like asParagraph, asBody etc
  */
 export class FakeElement {
-  /**
-   * the parent will be the containg elemement
-   * @param {object} se the structural element to build the element from
-   * @param {*} se 
-   */
-  constructor(structure, name) {
-    const { nargs, matchThrow } = signatureArgs(arguments, 'ContainerElement');
-    if (nargs !== 2 || !is.object(structure) || !is.nonEmptyString(name) || !name.startsWith(makeNrPrefix(null))) {
-      matchThrow();
+    /**
+     * the parent will be the containg elemement
+     * @param {object} se the structural element to build the element from
+     * @param {*} se 
+     */
+    constructor(structure, name) {
+      const { nargs, matchThrow } = signatureArgs(arguments, 'ContainerElement');
+      if (nargs !== 2 || !is.object(structure) || !is.nonEmptyString(name) || !name.startsWith(makeNrPrefix(null))) {
+        matchThrow();
+      }
+      this.__structure = structure
+      this.__name = name;
+
+      Reflect.ownKeys (asCasts).forEach(cast => {
+        const ob = asCasts[cast]
+        this[ob.method] = this.__cast.bind(this, cast)
+      })
+
     }
-    this.__structure = structure
-    this.__name = name;
-
-    // set up how to cast
-    asCasts.forEach(cast => {
-      this[cast.method] = this.__cast.bind(this, cast.type)
-    })
-
-  }
 
   get __elementMapItem() {
-    return this.__getElementMapItem(this.__name)
-  }
+  return this.__getElementMapItem(this.__name)
+}
 
-  __getElementMapItem(name) {
-    const item = this.__structure.elementMap.get(name)
-    if (!item) {
-      throw new Error(`element with name ${this.__name} not found`);
-    }
-    return item
+__getElementMapItem(name) {
+  const item = this.__structure.elementMap.get(name)
+  if (!item) {
+    throw new Error(`element with name ${name} not found`);
   }
+  return item
+}
 
   get __twig() {
-    return this.__elementMapItem.__twig
+  return this.__elementMapItem.__twig
+}
+
+getParent() {
+  // the body doesnt have a parent
+  if (!this.__twig.parent) return null
+
+  const name = this.__twig.parent.name
+  const item = this.__structure.elementMap.get(name)
+  if (!item) {
+    throw new Error(`element with name ${name} not found`);
   }
+  return newFakeElement(this.__structure, name).__cast()
 
-  getParent() {
-    // the body doesnt have a parent
-    if (!this.__twig.parent) return null
+}
 
-    const name = this.__twig.parent.name
-    const item = this.__structure.elementMap.get(name)
-    if (!item) {
-      throw new Error(`element with name ${name} not found`);
-    }
-    return newFakeElement(this.__structure, name)
-
+getType() {
+  const item = this.__elementMapItem
+  const type = item.__type
+  const enumType = ElementType[type]
+  if (!enumType) {
+    throw new Error(`element with type ${type} not found`);
   }
+  return enumType
+}
 
-  getType() {
-    const item = this.__elementMapItem
-    const type = item.__type
-    const enumType = ElementType[type]
-    if (!enumType) {
-      throw new Error(`element with type ${type} not found`);
-    }
-    return enumType
+__cast(asType=null) {
+  // we'll return an object that matches the type
+  const item = this.__elementMapItem;
+  const type = item.__type
+  asType = asType || type
+  if (type !== asType) {
+    throw new Error(`${type} can't be cast as ${asType}`);
   }
+  const factory = getElementFactory(asType);
+  return factory(this.__structure, this.__name);
+}
 
-
-  __cast(asType) {
-    // we'll return an object that matches the type
-    const item = this.__elementMapItem;
-    const type = item.__type
-    if (type !== asType) {
-      throw new Error(`${type} can't be cast as ${asType}`);
-    }
-    const factory = getElementFactory(asType);
-    return factory(this.__structure, this.__name);
-  }
-
-  toString() {
-    return 'Element';
-  }
+toString() {
+  return 'Element';
+}
 }
 
 export const newFakeElement = (...args) => Proxies.guard(new FakeElement(...args));

@@ -25,13 +25,16 @@ class ShadowDocument {
    * broadening the scope will mean complicating that currently clean and abstracted process.
    * 
    */
+
   makeElementMap(data) {
 
-    // get the currently known named ranges
-    const currentNr = getCurrentNr(data)
     const content = data?.body?.content || []
     const endIndex = content[content.length - 1]?.endIndex || 0
 
+    // get the currently known named ranges
+    const currentNr = getCurrentNr(data)
+
+    // if there's been an update, the revisionId will have changed
     if (this.__mapRevisionId !== data.revisionId) {
       console.log('...revision update remap under way')
       this.__mapRevisionId = data.revisionId
@@ -39,16 +42,12 @@ class ShadowDocument {
       this.__endBodyIndex = endIndex
       // TODO this undefined for normal - need to work on how to handle tabs etc, and what it looks like
       this.__segmentId = data.body.segmentId
-
     }
 
     // double check
     if (this.__endBodyIndex !== endIndex) {
       throw new Error(`expected body length to be ${this.__endBodyIndex} but got ${endIndex}`)
     }
-
-    // if its an empty doc we need to do special things
-    const isEmptyDoc = endIndex === 2;
 
     // this will contain all the requests to add new named ranges
     const addRequests = []
@@ -66,26 +65,8 @@ class ShadowDocument {
     }
     this.__elementMap.set(bodyName, bodyElement);
 
-
-
-    // this dummy named range will be needed if its an empty document
-    // this will prevent the api from messing with it
-    // we'll always need one of these 
-    const firstParaNr = {
-      __dummy: true,
-      namedRangeId: 'dp',
-      name: makeNrPrefix("PARAGRAPH") + 'dp',
-      ranges: [{
-        endIndex: 2,
-        startIndex: 1
-      }]
-    }
-    const firstTextNr = { ...firstParaNr, namedRangeId: 'dpt', name: makeNrPrefix("TEXT") + 'dpt' }
-    currentNr.splice(0, 0, firstParaNr, firstTextNr)
-
-
-
     console.log('named ranges after document fetch', JSON.stringify(currentNr))
+
     // maps all the elements to their named range
     const mapElements = (element, branch) => {
       // this gets the type and property name to look for for the given element content
@@ -107,12 +88,14 @@ class ShadowDocument {
       }
       // For an empty document, we use static, non-API names to avoid re-indexing issues.
       // For all other documents, we use real NamedRanges to track elements.
-      const name = findOrCreateNamedRangeName(element, type, currentNr, addRequests);
+      const { name, namedRangeId } = findOrCreateNamedRangeName(element, type, currentNr, addRequests);
 
       // embed this stuff in the shadow element
       element.__prop = prop;
       element.__type = type;
       element.__name = name;
+
+
       const twig = { name: name, children: [], parent: branch };
       branch.children.push(twig);
       element.__twig = twig;
@@ -125,9 +108,9 @@ class ShadowDocument {
       }
 
     };
+
     // recurse the entire document
     content.forEach(c => mapElements(c, bodyTree))
-
 
     // delete the named ranges that weren't used
     // findOrCreate... consumes the currentNr list, so what's left are unused ranges.
@@ -139,23 +122,18 @@ class ShadowDocument {
 
     // now commit any named range deletions/additions
     const requests = deleteRequests.concat(addRequests)
-    if (!requests.length) {
-      return data
+
+    // always do this because the nr ID may have changed if we had to update it
+    // for new ones, it'll pick those up next refresh
+    this.nrMap = new Map(getCurrentNr(data).map(f => [f.name, f]))
+
+    if (requests.length > 0) {
+      console.log('adding', addRequests.length, 'deleting', deleteRequests.length, 'named ranges')
+      Docs.Documents.batchUpdate({ requests }, this.__id)
+      // we've changed the document, so we need to re-process it to get the latest state, including new namedRangeIds
+      return this.makeElementMap(Docs.Documents.__get(this.__id).data)
     }
-
-    console.log('adding', addRequests.length, 'deleting', deleteRequests.length, 'named ranges')
-    Docs.Documents.batchUpdate({ requests }, this.__id)
-
-    // this should just update the named range data
-    // TODO need to check the content hasnt been changed
-
-    const { data: afterData, response: afterResponse } = Docs.Documents.__get(this.__id)
-    const { fromCache: afterCache } = afterResponse
-    if (afterCache) {
-      throw `didnt expect docs to come from cache after named range update`
-    }
-    return afterData
-
+    return data;
   }
 
   // this looks expensive, but the document wil always be in case unless its been updated

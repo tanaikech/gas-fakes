@@ -4,6 +4,7 @@ import { signatureArgs } from '../../support/helpers.js';
 import is from '@sindresorhus/is';
 import { docsCacher } from '../../support/docscacher.js';
 import { newFakeBody } from './fakebody.js';
+import { newFakeRangeBuilder } from './fakerangebuilder.js';
 
 export const newFakeDocument = (...args) => {
   return Proxies.guard(new FakeDocument(...args));
@@ -30,7 +31,10 @@ class FakeDocument {
   
   }
   
-
+  saveAndClose() {
+    // this is a no-op in fake environment since it is stateless
+  }
+  
   get structure () {
     return this.__shadowDocument.structure
   }

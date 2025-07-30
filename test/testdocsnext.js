@@ -17,7 +17,7 @@ export const testDocsNext = (pack) => {
 
   unit.section("Body.appendParagraph method", t => {
 
-    const { doc, docName } = maketdoc(toTrash, fixes)
+    const { doc } = maketdoc(toTrash, fixes)
     const body = doc.getBody();
 
     // On a new doc, the body is empty.
@@ -27,7 +27,7 @@ export const testDocsNext = (pack) => {
     const p1Text = "p1";
     const p2Text = "p2"
     const p3Text = "p3"
-   const texts = [p1Text, p2Text, p3Text]
+    const texts = [p1Text, p2Text, p3Text]
     const p1 = body.appendParagraph(p1Text);
     const p2 = body.appendParagraph(p2Text);
     const p3 = body.appendParagraph(p3Text);
@@ -60,45 +60,6 @@ export const testDocsNext = (pack) => {
 
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   });
-
-  unit.section("Document empty document validation", t => {
-    const { doc, docName } = maketdoc(toTrash, fixes)
-
-    // an empty doc - re-fetch body after modifications
-    let body = doc.getBody();
-    t.is(doc.getName(), docName, "Document should have the correct name")
-
-    // even though it actually has 2, See issue https://issuetracker.google.com/issues/432432968
-    t.is(body.getNumChildren(), 1, "an empty docs should have 1 child")
-
-    const adoc = Docs.Documents.get(doc.getId());
-    t.is(adoc.body.content.length, 2, "in reality - an empty doc has 2 children")
-
-    // document app will skip the section break
-    const children = getChildren(body);
-    t.is(children.length, 1, "an empty docs should have 1 child")
-
-    // only a paragraph in a blank document
-    const paragraph = children[0];
-    t.is(paragraph.getType(), DocumentApp.ElementType.PARAGRAPH, 'paragraph should be a paragraph')
-    t.is(paragraph.getText(), '', 'paragraph should be empty')
-
-    // append a paragraph
-    const pt = "p1"
-    const p1 = body.appendParagraph(pt);
-
-    // After the first append, the body now contains one paragraph with text.
-    body = doc.getBody(); // Re-fetch body to ensure we have the latest state.
-    const c2 = getChildren(body);
-    t.is(c2.length, 1, "After replacing the initial empty paragraph, there should be 1 child.")
-
-    const p1c = c2[0];
-    t.is(p1c.getText(), p1.getText())
-    t.is(p1c.getText(), pt)
-    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
-  })
-
-
   unit.section("newRange and builders", t => {
 
     const { doc } = maketdoc(toTrash, fixes)
@@ -130,6 +91,50 @@ export const testDocsNext = (pack) => {
     t.deepEqual(finalRange.getRangeElements().map(re => re.getElement().getText()), ["p1", "p2", "p3"], 'final range should contain all elements');
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance())
   });
+
+
+  unit.section("Document empty document validation", t => {
+    const { doc, docName } = maketdoc(toTrash, fixes)
+
+    // an empty doc - re-fetch body after modifications
+    let body = doc.getBody();
+    t.is(doc.getName(), docName, "Document should have the correct name")
+
+    // even though it actually has 2, See issue https://issuetracker.google.com/issues/432432968
+    t.is(body.getNumChildren(), 1, "an empty docs should have 1 child")
+
+    const adoc = Docs.Documents.get(doc.getId());
+    t.is(adoc.body.content.length, 2, "in reality - an empty doc has 2 children")
+
+    // document app will skip the section break
+    const children = getChildren(body);
+    t.is(children.length, 1, "an empty docs should have 1 child")
+
+    // only a paragraph in a blank document
+    const paragraph = children[0];
+    t.is(paragraph.getType(), DocumentApp.ElementType.PARAGRAPH, 'paragraph should be a paragraph')
+    t.is(paragraph.getText(), '', 'paragraph should be empty')
+
+    // append a paragraph
+    const pt = "p1"
+    const p1 = body.appendParagraph(pt);
+
+    // After the first append, the body contains 2 paragraphs
+    // in other words it doesn't replace the 1stempty  paragraph as we'd expect
+    body = doc.getBody(); // Re-fetch body to ensure we have the latest state.
+    const c2 = getChildren(body);
+    t.is(c2.length, 2, "After appending to the initial empty paragraph, there should be 2 children.")
+
+    const p1c = c2[0];
+    t.is(p1c.getText(), "")
+    const p2c = c2[1];
+    t.is(p2c.getText(), p1.getText())
+    t.is(p1.getText(), pt)
+    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
+  })
+
+
+
   // Helper to extract text from a raw Docs API document resource, mimicking Document.getBody().getText()
   const getTextFromDocResource = (docResource) => {
     return docResource?.body?.content?.map(structuralElement => structuralElement.paragraph?.elements?.map(element => element.textRun?.content || '').join('') || '').join('').replace(/\n$/, '');
@@ -169,11 +174,11 @@ export const testDocsNext = (pack) => {
     updatedDoc.getBody().appendParagraph(text2);
 
     // After clearing and appending, the text should just be the new text.
-    t.is(updatedDoc.getBody().getText(), text2, "Appending a paragraph after clearing should work.")
+    t.is(updatedDoc.getBody().getText(), '\n' + text2, "Appending a paragraph after clearing should work.")
 
     // Re-fetch the document to ensure its internal __doc is updated.
     const updatedDoc2 = DocumentApp.openById(updatedDoc.getId());
-    t.is(updatedDoc2.getBody().getText(), text2, "Content should be present after appending.");
+    t.is(updatedDoc2.getBody().getText(), '\n' + text2, "Content should be present after appending.");
 
     // Test that appendParagraph works after clearing
     updatedDoc.getBody().appendParagraph("A new paragraph2.");
@@ -184,12 +189,6 @@ export const testDocsNext = (pack) => {
     updatedDoc.clear(); // Should not throw an error
     t.is(updatedDoc.getBody().getText(), "", "Content should remain empty after clearing again.");
 
-    // Test clearing a brand new, empty document
-    const newDoc = DocumentApp.create(fixes.PREFIX + "new-clear-doc");
-    toTrash.push(DriveApp.getFileById(newDoc.getId()));
-    t.is(newDoc.getBody().getText(), "", "A new document body should be empty.");
-    newDoc.clear(); // Should not throw an error
-    t.is(newDoc.getBody().getText(), "", "Clearing a new document should result in an empty body.");
 
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   });

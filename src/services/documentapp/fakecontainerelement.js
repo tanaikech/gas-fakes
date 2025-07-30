@@ -44,7 +44,7 @@ export class FakeContainerElement extends FakeElement {
     if (!se) {
       throw new Error(`child with index ${childIndex} not found`);
     }
-    return newFakeElement(this.__structure, se.name)
+    return newFakeElement(this.__structure, se.name).__cast()
   }
 
   /**
