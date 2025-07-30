@@ -3,7 +3,7 @@ const { getEnumKeys } = Utils
 import { ElementType } from '../enums/docsenums.js';
 const { is } = Utils
 import { getElementFactory } from './elementRegistry.js'
-
+import { signatureArgs } from "../../support/helpers.js";
 
 export const getElementProp = (se) => {
   // these are the known types
@@ -176,90 +176,102 @@ export const getText = (self) => {
  * @param {FakeContainerElement} self one that supports adding paragraphs - body, tablecell,header, footer
  * @returns {string} the concacentaed text in all the sub elements
  */
-export const appendParagraph = (self, textOrParagraph) => {
-  const supportedContainers = [
-    ElementType.BODY_SECTION,
-    ElementType.TABLE_CELL,
-    ElementType.HEADER_SECTION,
-    ElementType.FOOTER_SECTION
-  ]
-  // Can be a string or a Paragraph object``
-  const isText = is.string(textOrParagraph)
-  if (!isText && !(is.object(textOrParagraph) && supportedContainers.includes(self.getType()))) {
-    throw new Error('invalidarguments to appendParagraph');
+const _paragraphInserter = (self, textOrParagraph, childIndex) => {
+  const isAppend = is.null(childIndex);
+
+  // 1. Validation
+  if (isAppend) {
+    const isText = is.string(textOrParagraph);
+    if (!isText && !(is.object(textOrParagraph) && textOrParagraph.getType() === ElementType.PARAGRAPH)) {
+      throw new Error('invalid arguments to appendParagraph');
+    }
+    if (!isText && textOrParagraph.getParent()) {
+      throw new Error('Element must be detached.');
+    }
+  } else {
+    const { nargs, matchThrow } = signatureArgs([self, childIndex, textOrParagraph], 'Body.insertParagraph');
+    if (nargs !== 3 || !is.integer(childIndex) || !is.object(textOrParagraph)) {
+      matchThrow();
+    }
+    if (textOrParagraph.getType() !== ElementType.PARAGRAPH) {
+      // Match the live Apps Script error for invalid parameter type.
+      throw new Error(`The parameters (number,${textOrParagraph.toString()}) don't match the method signature for DocumentApp.Body.insertParagraph.`);
+    }
+    if (textOrParagraph.getParent()) {
+      // Match the live Apps Script error for attached elements.
+      throw new Error('Element must be detached.');
+    }
   }
 
-  // A paragraph must be detached before it can be appended.
-  if (!isText && textOrParagraph.getParent()) {
-    throw new Error('Exception: Element must be detached.');
-  }
+  const text = is.string(textOrParagraph) ? textOrParagraph : textOrParagraph.getText();
 
-  const text = isText ? textOrParagraph : textOrParagraph.getText()
-
-  // Get the LATEST shadow document state, as the 'self' object could be stale
-  // if multiple appends are chained on the same container object.
   const shadow = self.__structure.shadowDocument;
   const structure = shadow.structure; // This will trigger a refresh if needed
   const item = structure.elementMap.get(self.__name); // Use the fresh item for the container
-  const endIndexBefore = structure.shadowDocument.__endBodyIndex;
-  const insertIndex = endIndexBefore - 1;
-
-  let requests;
-  let newParaStartIndex;
-
-  // makeUpdateRange creates requests to delete and re-create a named range with the same bounds,
-  // preventing it from expanding during an insertion.
-  const makeUpdateRange = (element) => {
-    const nr = shadow.nrMap.get(element.__name)
-    if (!nr) {
-      // it might be a new element that doesn't have a registered NR yet, which is fine.
-      return null
-    }
-    const deleteNamedRange = Docs.newDeleteNamedRangeRequest()
-      .setNamedRangeId(nr.namedRangeId)
-
-    const createNamedRange = Docs.newCreateNamedRangeRequest()
-      .setName(element.__name)
-      .setRange(Docs.newRange()
-        .setStartIndex(element.startIndex)
-        .setEndIndex(element.endIndex)
-      )
-    return {
-      deleteNamedRange,
-      createNamedRange
-    }
-  }
-
-  // We only need to protect the last element in the container (and its children) from being expanded by the insertion.
-  // which is the last element in the container.
-  const ur = []
   const children = item.__twig.children;
-  if (children.length > 0) {
-    const lastChildTwig = children[children.length - 1];
-    const stet = (twig) => {
-      // Use the fresh structure map, not the potentially stale one from 'self'
-      const elItem = structure.elementMap.get(twig.name);
-      if (!elItem) {
-        throw new Error(`stet: element with name ${twig.name} not found in refreshed map`);
-      }
-      const update = makeUpdateRange(elItem);
-      if (update) {
-        ur.push({ deleteNamedRange: update.deleteNamedRange });
-        ur.push({ createNamedRange: update.createNamedRange });
-      }
-      (elItem.__twig?.children || []).forEach(childTwig => {
-        stet(childTwig);
-      });
+
+  let insertIndex;
+  let newParaStartIndex;
+  let requests = [];
+  let textToInsert;
+
+  if (isAppend || childIndex === children.length) {
+    // APPEND LOGIC
+    textToInsert = '\n' + text;
+    const endIndexBefore = structure.shadowDocument.__endBodyIndex;
+    insertIndex = endIndexBefore - 1;
+    newParaStartIndex = endIndexBefore;
+
+    const makeAppendProtectionRequests = (twig) => {
+      const ur = [];
+      const stet = (innerTwig) => {
+        const elItem = structure.elementMap.get(innerTwig.name);
+        if (!elItem) {
+          throw new Error(`stet: element with name ${innerTwig.name} not found in refreshed map`);
+        }
+        const nr = shadow.nrMap.get(elItem.__name);
+        if (nr) {
+          ur.push({ deleteNamedRange: { namedRangeId: nr.namedRangeId } });
+          ur.push({
+            createNamedRange: {
+              name: elItem.__name,
+              range: { // For append, we pin the element to its original range (shift=0)
+                startIndex: elItem.startIndex,
+                endIndex: elItem.endIndex,
+              },
+            },
+          });
+        }
+        (elItem.__twig?.children || []).forEach(childTwig => stet(childTwig));
+      };
+      stet(twig);
+      return ur;
     };
-    stet(lastChildTwig);
+
+    // For append, protect the last element by recreating its range at the *same* location (shift=0).
+    if (children.length > 0) {
+      requests = makeAppendProtectionRequests(children[children.length - 1]);
+    }
+  } else {
+    // INSERT LOGIC
+    if (childIndex < 0 || childIndex > children.length) {
+      // Match the live Apps Script error for out of bounds index.
+      throw new Error(`Child index (${childIndex}) must be less than or equal to the number of child elements (${children.length}).`);
+    }
+    // For insert, we create a new paragraph by inserting the text followed by a newline.
+    // This causes the API to create a new paragraph element and shift subsequent elements,
+    // so no protection is needed.
+    textToInsert = text + '\n';
+    const targetChildTwig = children[childIndex];
+    const targetChildItem = structure.elementMap.get(targetChildTwig.name);
+    insertIndex = targetChildItem.startIndex;
+    newParaStartIndex = insertIndex;
   }
+
   const insertText = Docs.newInsertTextRequest()
     .setLocation(Docs.newLocation().setIndex(insertIndex))
-    .setText('\n'+text)
-  requests = [{insertText}].concat (ur)
-
-  // The new paragraph starts at the old end index.
-  newParaStartIndex = endIndexBefore;
+    .setText(textToInsert)
+  requests.unshift({ insertText }); // put insert first
 
   Docs.Documents.batchUpdate({ requests }, shadow.getId());
 
@@ -272,7 +284,15 @@ export const appendParagraph = (self, textOrParagraph) => {
   const factory = getElementFactory(et);
   // Pass the refreshed structure from the shadow document, not the stale one from 'self'.
   return factory(shadow.structure, newItem.__name);
-}
+};
+
+export const appendParagraph = (self, textOrParagraph) => {
+  return _paragraphInserter(self, textOrParagraph, null);
+};
+
+export const insertParagraph = (self, childIndex, paragraph) => {
+  return _paragraphInserter(self, paragraph, childIndex);
+};
 
 export const findItem = (elementMap, type, startIndex) => {
   const item = Array.from(elementMap.values()).find(f => f.__type === type && f.startIndex === startIndex)

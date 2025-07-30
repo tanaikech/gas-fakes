@@ -14,7 +14,51 @@ export const testDocsNext = (pack) => {
     }
     return children;
   }
+  unit.section("Body.insertParagraph method", t => {
+    // Test 1: Insert in the middle
+    let { doc } = maketdoc(toTrash, fixes);
+    let body = doc.getBody();
+    body.appendParagraph("p1");
+    body.appendParagraph("p3");
+    const p2 = body.appendParagraph("p2").copy(); // Creates a detached copy of a "p2" paragraph
+    // The body has 3 children: [empty, p1, p3]. Index 2 is before p3.
+    body.insertParagraph(2, p2);
+    t.is(body.getText(), "\np1\np2\np3\np2", "Insert in the middle");
 
+    // Test 2: Insert at the beginning
+    ({ doc } = maketdoc(toTrash, fixes));
+    body = doc.getBody();
+    body.appendParagraph("p1");
+    const p0 = body.appendParagraph("p0").copy();
+    // The body has 2 children: [empty, p1]. Index 1 is before p1.
+    body.insertParagraph(1, p0);
+    t.is(body.getText(), "\np0\np1\np0", "Insert at the beginning");
+
+    // Test 3: Insert at the end (should behave like append)
+    ({ doc } = maketdoc(toTrash, fixes));
+    body = doc.getBody();
+    body.appendParagraph("p1");
+    const p2_end = body.appendParagraph("p2").copy();
+    body.insertParagraph(body.getNumChildren(), p2_end);
+    t.is(body.getText(), "\np1\np2\np2", "Insert at the end");
+
+    // Test 4: Error conditions
+    ({ doc } = maketdoc(toTrash, fixes));
+    body = doc.getBody();
+    const p_attached = body.appendParagraph("attached");
+    const p_detached = p_attached.copy();
+
+    const attemptAttachedInsert = () => body.insertParagraph(1, p_attached);
+    t.rxMatch(t.threw(attemptAttachedInsert)?.message || 'no error thrown', /Element must be detached./, "Inserting an already attached paragraph should throw an error");
+
+    const attemptInvalidIndex = () => body.insertParagraph(99, p_detached);
+    t.rxMatch(t.threw(attemptInvalidIndex)?.message || 'no error thrown', /Child index \(99\) must be less than or equal to the number of child elements/, "Inserting at an out-of-bounds index should throw an error");
+
+    const attemptInvalidType = () => body.insertParagraph(1, doc.getBody()); // Not a paragraph
+    t.rxMatch(t.threw(attemptInvalidType)?.message || 'no error thrown', /The parameters \(number,.*\) don't match the method signature for DocumentApp\.Body\.insertParagraph/, "Inserting a non-paragraph element should throw an error");
+    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
+  });
+  
   unit.section("Element.copy() and detached elements", t => {
     const { doc } = maketdoc(toTrash, fixes);
     const body = doc.getBody();

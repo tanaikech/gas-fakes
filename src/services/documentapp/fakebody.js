@@ -2,7 +2,7 @@ import { Proxies } from '../../support/proxies.js';
 import { signatureArgs, unimplementedProps } from '../../support/helpers.js';
 import { Utils } from '../../support/utils.js';
 import { FakeContainerElement } from './fakecontainerelement.js';
-import { makeNrPrefix, getText, appendParagraph } from './shadowhelpers.js'
+import { makeNrPrefix, getText, appendParagraph, insertParagraph } from './shadowhelpers.js'
 import { registerElement } from './elementRegistry.js';
 const { is } = Utils
 
@@ -25,6 +25,10 @@ class FakeBody extends FakeContainerElement {
 
   appendParagraph(textOrParagraph) {
     return appendParagraph(this, textOrParagraph)
+  }
+
+  insertParagraph(childIndex, paragraph) {
+    return insertParagraph(this, childIndex, paragraph);
   }
 
   toString() {
