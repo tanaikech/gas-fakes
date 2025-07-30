@@ -28,6 +28,11 @@ class FakeBody extends FakeContainerElement {
   }
 
   insertParagraph(childIndex, paragraph) {
+    // Per the docs, inserting at an index equal to the number of children
+    // is equivalent to an append operation.
+    if (childIndex === this.getNumChildren()) {
+      return this.appendParagraph(paragraph);
+    }
     return insertParagraph(this, childIndex, paragraph);
   }
 

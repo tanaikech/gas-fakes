@@ -68,7 +68,10 @@ export class FakeContainerElement extends FakeElement {
   }
 
   getNumChildren() {
-    return this.__children.length
+    // Must get the latest structure to return an accurate count,
+    // as the object's internal state might be stale.
+    const item = this.shadowDocument.structure.elementMap.get(this.__name);
+    return item.__twig.children.length;
   }
 
 

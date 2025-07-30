@@ -177,7 +177,7 @@ export const getText = (self) => {
  * @returns {string} the concacentaed text in all the sub elements
  */
 const _paragraphInserter = (self, textOrParagraph, childIndex) => {
-  const isAppend = is.null(childIndex);
+  const isAppend = is.null(childIndex); // This will now only be true when called from appendParagraph
 
   // 1. Validation
   if (isAppend) {
@@ -189,10 +189,6 @@ const _paragraphInserter = (self, textOrParagraph, childIndex) => {
       throw new Error('Element must be detached.');
     }
   } else {
-    const { nargs, matchThrow } = signatureArgs([self, childIndex, textOrParagraph], 'Body.insertParagraph');
-    if (nargs !== 3 || !is.integer(childIndex) || !is.object(textOrParagraph)) {
-      matchThrow();
-    }
     if (textOrParagraph.getType() !== ElementType.PARAGRAPH) {
       // Match the live Apps Script error for invalid parameter type.
       throw new Error(`The parameters (number,${textOrParagraph.toString()}) don't match the method signature for DocumentApp.Body.insertParagraph.`);
@@ -200,6 +196,10 @@ const _paragraphInserter = (self, textOrParagraph, childIndex) => {
     if (textOrParagraph.getParent()) {
       // Match the live Apps Script error for attached elements.
       throw new Error('Element must be detached.');
+    }
+    const { nargs, matchThrow } = signatureArgs([self, childIndex, textOrParagraph], 'Body.insertParagraph');
+    if (nargs !== 3 || !is.integer(childIndex) || !is.object(textOrParagraph)) {
+      matchThrow();
     }
   }
 
@@ -210,79 +210,74 @@ const _paragraphInserter = (self, textOrParagraph, childIndex) => {
   const item = structure.elementMap.get(self.__name); // Use the fresh item for the container
   const children = item.__twig.children;
 
+  const makeProtectionRequests = (twig, shift = 0) => {
+    const ur = [];
+    const stet = (innerTwig) => {
+      const elItem = structure.elementMap.get(innerTwig.name);
+      if (!elItem) {
+        throw new Error(`stet: element with name ${innerTwig.name} not found in refreshed map`);
+      }
+      const nr = shadow.nrMap.get(elItem.__name);
+      if (nr) {
+        ur.push({ deleteNamedRange: { namedRangeId: nr.namedRangeId } });
+        ur.push({
+          createNamedRange: {
+            name: elItem.__name,
+            range: {
+              startIndex: elItem.startIndex + shift,
+              endIndex: elItem.endIndex + shift,
+            },
+          },
+        });
+      }
+      (elItem.__twig?.children || []).forEach(childTwig => stet(childTwig));
+    };
+    stet(twig);
+    return ur;
+  };
+
   let insertIndex;
   let newParaStartIndex;
   let requests = [];
   let textToInsert;
 
-  if (isAppend || childIndex === children.length) {
-    // APPEND LOGIC
+  if (isAppend) {
+    // APPEND LOGIC: Insert '\n' + text at the end. Protect the last element with shift=0.
     textToInsert = '\n' + text;
     const endIndexBefore = structure.shadowDocument.__endBodyIndex;
     insertIndex = endIndexBefore - 1;
     newParaStartIndex = endIndexBefore;
-
-    const makeAppendProtectionRequests = (twig) => {
-      const ur = [];
-      const stet = (innerTwig) => {
-        const elItem = structure.elementMap.get(innerTwig.name);
-        if (!elItem) {
-          throw new Error(`stet: element with name ${innerTwig.name} not found in refreshed map`);
-        }
-        const nr = shadow.nrMap.get(elItem.__name);
-        if (nr) {
-          ur.push({ deleteNamedRange: { namedRangeId: nr.namedRangeId } });
-          ur.push({
-            createNamedRange: {
-              name: elItem.__name,
-              range: { // For append, we pin the element to its original range (shift=0)
-                startIndex: elItem.startIndex,
-                endIndex: elItem.endIndex,
-              },
-            },
-          });
-        }
-        (elItem.__twig?.children || []).forEach(childTwig => stet(childTwig));
-      };
-      stet(twig);
-      return ur;
-    };
-
-    // For append, protect the last element by recreating its range at the *same* location (shift=0).
     if (children.length > 0) {
-      requests = makeAppendProtectionRequests(children[children.length - 1]);
+      requests = makeProtectionRequests(children[children.length - 1], 0);
     }
   } else {
-    // INSERT LOGIC
-    if (childIndex < 0 || childIndex > children.length) {
-      // Match the live Apps Script error for out of bounds index.
+    // INSERT LOGIC: Insert text + '\n' at the target. Protect the target element with a calculated shift.
+    if (childIndex < 0 || childIndex >= children.length) { // Should be strictly less than, as append is handled elsewhere
       throw new Error(`Child index (${childIndex}) must be less than or equal to the number of child elements (${children.length}).`);
     }
-    // For insert, we create a new paragraph by inserting the text followed by a newline.
-    // This causes the API to create a new paragraph element and shift subsequent elements,
-    // so no protection is needed.
     textToInsert = text + '\n';
     const targetChildTwig = children[childIndex];
     const targetChildItem = structure.elementMap.get(targetChildTwig.name);
     insertIndex = targetChildItem.startIndex;
     newParaStartIndex = insertIndex;
+    const shift = textToInsert.length;
+    requests = makeProtectionRequests(targetChildTwig, shift);
   }
 
-  const insertText = Docs.newInsertTextRequest()
-    .setLocation(Docs.newLocation().setIndex(insertIndex))
-    .setText(textToInsert)
-  requests.unshift({ insertText }); // put insert first
+  requests.unshift({
+    insertText: {
+      location: { index: insertIndex },
+      text: textToInsert,
+    },
+  });
 
   Docs.Documents.batchUpdate({ requests }, shadow.getId());
 
-  shadow.refresh()
+  shadow.refresh();
 
-  // we need to get the name of the new paragraph entry
-  const et = ElementType.PARAGRAPH.toString()
-
+  const et = ElementType.PARAGRAPH.toString();
   const newItem = findItem(shadow.__elementMap, et, newParaStartIndex);
   const factory = getElementFactory(et);
-  // Pass the refreshed structure from the shadow document, not the stale one from 'self'.
   return factory(shadow.structure, newItem.__name);
 };
 
