@@ -130,6 +130,7 @@ export const extractText = (se) => {
  */
 
 export const getText = (self) => {
+  // a detached element is one that would have been created by .copy() and is not yet part of the document
   if (self.__isDetached) {
     // This is a detached element, created by copy().
     // It holds its own data and is not connected to the live document.
@@ -177,18 +178,9 @@ export const getText = (self) => {
  * @returns {string} the concacentaed text in all the sub elements
  */
 const _paragraphInserter = (self, textOrParagraph, childIndex) => {
-  const isAppend = is.null(childIndex); // This will now only be true when called from appendParagraph
+  const isAppend = is.null(childIndex);
 
-  // 1. Validation
-  if (isAppend) {
-    const isText = is.string(textOrParagraph);
-    if (!isText && !(is.object(textOrParagraph) && textOrParagraph.getType() === ElementType.PARAGRAPH)) {
-      throw new Error('invalid arguments to appendParagraph');
-    }
-    if (!isText && textOrParagraph.getParent()) {
-      throw new Error('Element must be detached.');
-    }
-  } else {
+  if (!isAppend) {
     if (textOrParagraph.getType() !== ElementType.PARAGRAPH) {
       // Match the live Apps Script error for invalid parameter type.
       throw new Error(`The parameters (number,${textOrParagraph.toString()}) don't match the method signature for DocumentApp.Body.insertParagraph.`);
@@ -201,14 +193,27 @@ const _paragraphInserter = (self, textOrParagraph, childIndex) => {
     if (nargs !== 3 || !is.integer(childIndex) || !is.object(textOrParagraph)) {
       matchThrow();
     }
+  } else {
+    const isText = is.string(textOrParagraph);
+    if (!isText && !(is.object(textOrParagraph) && textOrParagraph.getType() === ElementType.PARAGRAPH)) {
+      throw new Error('invalid arguments to appendParagraph');
+    }
+    if (!isText && textOrParagraph.getParent()) {
+      throw new Error('Element must be detached.');
+    }
   }
 
-  const text = is.string(textOrParagraph) ? textOrParagraph : textOrParagraph.getText();
+  const isDetachedPara = is.object(textOrParagraph) && textOrParagraph.__isDetached;
 
-  const shadow = self.__structure.shadowDocument;
-  const structure = shadow.structure; // This will trigger a refresh if needed
-  const item = structure.elementMap.get(self.__name); // Use the fresh item for the container
-  const children = item.__twig.children;
+  // Determine the text to be inserted first. This is needed for calculating the shift for protection.
+  let baseText;
+  if (isDetachedPara) {
+    const item = textOrParagraph.__elementMapItem;
+    const fullText = (item.paragraph?.elements || []).map(el => el.textRun?.content || '').join('');
+    baseText = fullText.replace(/\n$/, ''); // Remove trailing newline, we'll add it back.
+  } else {
+    baseText = is.string(textOrParagraph) ? textOrParagraph : textOrParagraph.getText();
+  }
 
   // a protection request is required to remake the named range with the same endindex
   // this is because inserting/appending will extend existing named ranges, so we wont be able to use
@@ -240,26 +245,31 @@ const _paragraphInserter = (self, textOrParagraph, childIndex) => {
     return ur;
   };
 
+  const shadow = self.__structure.shadowDocument;
+  const structure = shadow.structure; // This will trigger a refresh if needed
+  const item = structure.elementMap.get(self.__name); // Use the fresh item for the container
+  const children = item.__twig.children;
+
   let insertIndex;
   let newParaStartIndex;
   let requests = [];
   let textToInsert;
 
   if (isAppend) {
-    // APPEND LOGIC: Insert '\n' + text at the end. Protect the last element with shift=0.
-    textToInsert = '\n' + text;
+    // APPEND LOGIC
+    textToInsert = '\n' + baseText; // Prepend newline for append
     const endIndexBefore = structure.shadowDocument.__endBodyIndex;
     insertIndex = endIndexBefore - 1;
     newParaStartIndex = endIndexBefore;
     if (children.length > 0) {
-      requests = makeProtectionRequests(children[children.length - 1], 0);
+      requests = makeProtectionRequests(children[children.length - 1], 0); // No shift for append protection
     }
   } else {
-    // INSERT LOGIC: Insert text + '\n' at the target. Protect the target element with a calculated shift.
+    // INSERT LOGIC
+    textToInsert = baseText + '\n'; // Append newline for insert
     if (childIndex < 0 || childIndex >= children.length) { // Should be strictly less than, as append is handled elsewhere
       throw new Error(`Child index (${childIndex}) must be less than or equal to the number of child elements (${children.length}).`);
     }
-    textToInsert = text + '\n';
     const targetChildTwig = children[childIndex];
     const targetChildItem = structure.elementMap.get(targetChildTwig.name);
     insertIndex = targetChildItem.startIndex;
@@ -267,14 +277,55 @@ const _paragraphInserter = (self, textOrParagraph, childIndex) => {
     const shift = textToInsert.length;
     requests = makeProtectionRequests(targetChildTwig, shift);
   }
-  
-  // put the insert text at the beginning before any remakes of the anmed ranges
+
+  // Add the main text insertion request.
   requests.unshift({
     insertText: {
       location: { index: insertIndex },
       text: textToInsert,
     },
   });
+
+  // If it was a detached paragraph, add styling requests.
+  if (isDetachedPara) {
+    const detachedItem = textOrParagraph.__elementMapItem;
+    const paraElements = detachedItem.paragraph?.elements || [];
+    const paraStyle = detachedItem.paragraph?.paragraphStyle;
+
+    const paraStartIndex = isAppend ? newParaStartIndex : insertIndex;
+    const paraEndIndex = paraStartIndex + textToInsert.length;
+
+    // Add paragraph style request
+    if (paraStyle && Object.keys(paraStyle).length > 0) {
+      const fields = Object.keys(paraStyle).join(',');
+      requests.push({
+        updateParagraphStyle: { range: { startIndex: paraStartIndex, endIndex: paraEndIndex }, paragraphStyle: paraStyle, fields: fields },
+      });
+    }
+
+    // Add text style requests
+    let currentOffset = paraStartIndex;
+    if (isAppend) currentOffset++; // Skip leading '\n'
+
+    paraElements.forEach(el => {
+      if (el.textRun && el.textRun.content) {
+        const content = el.textRun.content;
+        const textStyle = el.textRun.textStyle;
+
+        // The API does not allow styling the structural newline at the end of a paragraph.
+        // We must calculate the styling range based only on the visible text content.
+        const styleableContent = content.replace(/\n$/, '');
+        const styleableLength = styleableContent.length;
+
+        if (textStyle && Object.keys(textStyle).length > 0 && styleableLength > 0) {
+          const fields = Object.keys(textStyle).join(',');
+          requests.push({ updateTextStyle: { range: { startIndex: currentOffset, endIndex: currentOffset + styleableLength }, textStyle: textStyle, fields: fields } });
+        }
+        // Always advance the offset by the full length of the content from the API to keep positions correct.
+        currentOffset += content.length;
+      }
+    });
+  }
 
   Docs.Documents.batchUpdate({ requests }, shadow.getId());
 

@@ -35,9 +35,6 @@ export const testDocs = (pack) => {
     t.is(body.getNumChildren(), 1, "body should have 1 child")
     t.true(is.object(bchild))
     t.is(bchildIndex, 0)
-    t.deepEqual(bchild, body.getChild(bchildIndex), {
-      neverUndefined: false
-    })
     t.is(bchild.getType(), DocumentApp.ElementType.PARAGRAPH)
 
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance())

@@ -50,7 +50,12 @@ export const maketdoc = (toTrash, fixes, clear = true) => {
       toTrash.push(DriveApp.getFileById(__mdoc.getId()))
     }
 
+  } else {
+    // in case there had been a save and close some point
+    __mdoc = DocumentApp.openById(__mdoc.getId())
+    console.log ('...re-opened doc',  __mdoc.getId() )
   }
+
   if (clear) {
     __mdoc.clear()
   }

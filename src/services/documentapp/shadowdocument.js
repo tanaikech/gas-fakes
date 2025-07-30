@@ -36,7 +36,7 @@ class ShadowDocument {
 
     // if there's been an update, the revisionId will have changed
     if (this.__mapRevisionId !== data.revisionId) {
-      console.log('...revision update remap under way')
+      // console.log('...revision update remap under way')
       this.__mapRevisionId = data.revisionId
       // this will be content length - handy for appending to the body
       this.__endBodyIndex = endIndex
@@ -65,7 +65,7 @@ class ShadowDocument {
     }
     this.__elementMap.set(bodyName, bodyElement);
 
-    console.log('named ranges after document fetch', JSON.stringify(currentNr))
+    // console.log('named ranges after document fetch', JSON.stringify(currentNr))
 
     // maps all the elements to their named range
     const mapElements = (element, branch) => {
@@ -128,7 +128,7 @@ class ShadowDocument {
     this.nrMap = new Map(getCurrentNr(data).map(f => [f.name, f]))
 
     if (requests.length > 0) {
-      console.log('adding', addRequests.length, 'deleting', deleteRequests.length, 'named ranges')
+      // console.log('adding', addRequests.length, 'deleting', deleteRequests.length, 'named ranges')
       Docs.Documents.batchUpdate({ requests }, this.__id)
       // we've changed the document, so we need to re-process it to get the latest state, including new namedRangeIds
       return this.makeElementMap(Docs.Documents.__get(this.__id).data)

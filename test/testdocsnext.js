@@ -26,7 +26,7 @@ export const testDocsNext = (pack) => {
     t.is(body.getText(), "\np1\np2\np3\np2", "Insert in the middle");
 
     // Test 2: Insert at the beginning
-    ({ doc } = maketdoc(toTrash, fixes));
+    doc.clear()
     body = doc.getBody();
     body.appendParagraph("p1");
     const p0 = body.appendParagraph("p0").copy();
@@ -35,7 +35,7 @@ export const testDocsNext = (pack) => {
     t.is(body.getText(), "\np0\np1\np0", "Insert at the beginning");
 
     // Test 3: Insert at the end (should behave like append)
-    ({ doc } = maketdoc(toTrash, fixes));
+    doc.clear()
     body = doc.getBody();
     body.appendParagraph("p1");
     const p2_end = body.appendParagraph("p2").copy();
@@ -43,7 +43,7 @@ export const testDocsNext = (pack) => {
     t.is(body.getText(), "\np1\np2\np2", "Insert at the end");
 
     // Test 4: Error conditions
-    ({ doc } = maketdoc(toTrash, fixes));
+    doc.clear()
     body = doc.getBody();
     const p_attached = body.appendParagraph("attached");
     const p_detached = p_attached.copy();
@@ -56,6 +56,100 @@ export const testDocsNext = (pack) => {
 
     const attemptInvalidType = () => body.insertParagraph(1, doc.getBody()); // Not a paragraph
     t.rxMatch(t.threw(attemptInvalidType)?.message || 'no error thrown', /The parameters \(number,.*\) don't match the method signature for DocumentApp\.Body\.insertParagraph/, "Inserting a non-paragraph element should throw an error");
+    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
+  });
+
+  unit.section("Complex paragraph insertion with styles", t => {
+    let { doc } = maketdoc(toTrash, fixes);
+    let body = doc.getBody();
+
+    // 1. Create and style a paragraph to be copied.
+    body.appendParagraph("Bold and Italic");
+
+    // On live GAS, changes made via DocumentApp might not be immediately visible to the Docs API.
+    // We need to save and close the document to ensure the advanced service can see the new paragraph.
+    const docId = doc.getId();
+    doc.saveAndClose();
+
+    // Now, get the document structure using the advanced service to find the paragraph we just added.
+    const docResource = Docs.Documents.get(docId);
+    const content = docResource.body.content;
+    const sourceParaItem = [...content].reverse().find(se =>
+      se.paragraph && se.paragraph.elements.some(e => e.textRun && e.textRun.content.includes("Bold and Italic"))
+    );
+    t.truthy(sourceParaItem, "Should find the newly appended paragraph via advanced service");
+
+    // Use advanced service to style it
+    const requests = [{
+      updateTextStyle: {
+        range: {
+          startIndex: sourceParaItem.startIndex,
+          endIndex: sourceParaItem.endIndex - 1, // -1 to exclude the trailing newline
+        },
+        textStyle: {
+          bold: true,
+          italic: true,
+          foregroundColor: {
+            color: {
+              rgbColor: { red: 1, green: 0, blue: 0 } // Red
+            }
+          }
+        },
+        fields: 'bold,italic,foregroundColor'
+      }
+    }, {
+      updateParagraphStyle: {
+        range: {
+          startIndex: sourceParaItem.startIndex,
+          endIndex: sourceParaItem.endIndex,
+        },
+        paragraphStyle: {
+          alignment: 'CENTER'
+        },
+        fields: 'alignment'
+      }
+    }];
+    Docs.Documents.batchUpdate({ requests }, docId);
+
+    // 2. Get a fresh reference to the styled paragraph and copy it.
+    // On live GAS, changes made via the advanced service might not be immediately visible to DocumentApp.
+    // Re-opening the document is the safest way to get the latest state.
+
+    body = DocumentApp.openById(docId).getBody(); // Re-fetch to get latest state
+    const styledPara = body.getChild(1); // The styled paragraph is now the second child
+    const detachedPara = styledPara.copy();
+
+    // 3. Insert the detached copy at the beginning of the body (after the initial empty para).
+    body.insertParagraph(1, detachedPara);
+
+    // 4. Verification of text content
+    const expectedText = "\nBold and Italic\nBold and Italic";
+    t.is(body.getText(), expectedText, "Text content should include original and inserted complex paragraph");
+
+    // 5. Advanced verification of styles
+    const finalDocResource = Docs.Documents.get(docId);
+    const finalContent = finalDocResource.body.content;
+
+    // The inserted paragraph should be at index 1 (after the initial empty one)
+    // Its start index will be 2, because the first empty para is \n (startIndex: 1, endIndex: 2)
+    const insertedParaElement = finalContent.find(c => c.paragraph && c.startIndex === 2);
+    t.truthy(insertedParaElement, "Inserted paragraph element should be found in the document structure");
+
+    if (insertedParaElement) {
+      // Check paragraph style
+      const paraStyle = insertedParaElement.paragraph.paragraphStyle;
+      t.is(paraStyle.alignment, 'CENTER', "Inserted paragraph should have CENTER alignment");
+
+      // Check text style
+      const textRun = insertedParaElement.paragraph.elements.find(e => e.textRun && e.textRun.content.startsWith('Bold'));
+      t.truthy(textRun, "Inserted paragraph should have a textRun");
+      if (textRun) {
+        const style = textRun.textRun.textStyle;
+        t.is(style.bold, true, "Inserted paragraph text should be bold");
+        t.is(style.italic, true, "Inserted paragraph text should be italic");
+        t.is(style.foregroundColor.color.rgbColor.red, 1, "Inserted paragraph text should be red");
+      }
+    }
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   });
   
@@ -159,7 +253,7 @@ export const testDocsNext = (pack) => {
 
 
   unit.section("Document empty document validation", t => {
-    const { doc, docName } = maketdoc(toTrash, fixes)
+    let { doc, docName } = maketdoc(toTrash, fixes)
 
     // an empty doc - re-fetch body after modifications
     let body = doc.getBody();
@@ -167,6 +261,11 @@ export const testDocsNext = (pack) => {
 
     // even though it actually has 2, See issue https://issuetracker.google.com/issues/432432968
     t.is(body.getNumChildren(), 1, "an empty docs should have 1 child")
+
+    // at this point any changes made by documentapp wont be visible by adv service, so
+    doc.saveAndClose();
+    doc = DocumentApp.openById(doc.getId());
+    body = doc.getBody();
 
     const adoc = Docs.Documents.get(doc.getId());
     t.is(adoc.body.content.length, 2, "in reality - an empty doc has 2 children")
