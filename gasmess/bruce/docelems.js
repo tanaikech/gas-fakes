@@ -1,15 +1,14 @@
 import '../../main.js';
-
-
-// put all this stuff in a temp folder for easy deletion
-const doc = DocumentApp.openById("1uGBfWSm_v_Ur-thjven12B-1Z7z8zFSykHYSt81l8sc")
-
+import { moveToTempFolder, deleteTempFile } from './tempfolder.js';
+const doc = DocumentApp.create("pb");
+moveToTempFolder(doc.getId())
 const body = doc.getBody()
+body.appendParagraph("p1")
+body.appendPageBreak()
+console.log(body.getNumChildren())
+console.log(body.getText())
+doc.saveAndClose()
+const adoc = Docs.Documents.get(doc.getId())
+console.log(JSON.stringify(adoc.body.content.map(f => ({ keys: Object.keys(f).filter(g => !g.startsWith('__')), startIndex: f.startIndex, endIndex: f.endIndex, elements: (f.paragraph?.elements || []).map(g => ({ keys: Object.keys(g).filter(g => !g.startsWith('__')), startIndex: g.startIndex, endIndex: g.endIndex, textRun: g.textRun?.content })) }))))
 
-console.log (body.getNumChildren())
-const child = body.getChild(10)
-const childIndex = body.getChildIndex(child)
-const child2 = body.getChild(childIndex)
-console.log (childIndex,body.getChildIndex(child2)===body.getChildIndex(child),body.getChildIndex(child)===10)
-const parent = child.getParent()
-
+deleteTempFile(doc.getId())

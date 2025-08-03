@@ -2118,7 +2118,7 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
 
 
 
-  __setValues({ values, single = false, options = { valueInputOption: "RAW" } }) {
+  __setValues({ values, single = false, options = { valueInputOption: "USER_ENTERED" } }) {
 
     const range = single ? this.__getRangeWithSheet(this.__getTopLeft()) : this.__getWithSheet()
     const request = {

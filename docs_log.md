@@ -146,3 +146,6 @@ So that leaves using named ranges as the only credible way to rematch elements r
 - start a new session by assigning named ranges to any elements that don't already have them assigned. the named range actually identifies a location, not an element, but since the api maintains the location according to what else is going on in the document, the startIndex and the the type of the element will uniquely identify the element that is occupying that range
 - since the namedrange id will be enmbedded in each element of my shadow document, and my fake apps script elements only contain the ID of that named range, we can always access the latest state of that element across document refreshes.
 
+# Solution
+
+Finally landed on an approach - see [Inside the volatile world of a Google Document](https://ramblings.mcpher.com/inside-the-volatile-world-of-a-google-document/)

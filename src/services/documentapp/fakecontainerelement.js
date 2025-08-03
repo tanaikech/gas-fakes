@@ -35,16 +35,26 @@ export class FakeContainerElement extends FakeElement {
 
 
   getChild(childIndex) {
-    const children = this.__children
     const { nargs, matchThrow } = signatureArgs(arguments, 'ContainerElement.getChild');
-    if (nargs !== 1 || !is.integer(childIndex) || childIndex < 0 || childIndex >= children.length) {
+    if (nargs !== 1 || !is.integer(childIndex) || childIndex < 0) {
       matchThrow();
     }
-    const se = children[childIndex]
-    if (!se) {
+
+    // Get the refreshed structure and the current element from it to ensure we have the latest children.
+    const structure = this.shadowDocument.structure;
+    const item = structure.elementMap.get(this.__name);
+    const children = item.__twig.children;
+
+    if (childIndex >= children.length) {
+      // The index is out of bounds. The live API throws a parameter mismatch error.
+      matchThrow();
+    }
+
+    const childTwig = children[childIndex];
+    if (!childTwig) {
       throw new Error(`child with index ${childIndex} not found`);
     }
-    return newFakeElement(this.__structure, se.name).__cast()
+    return newFakeElement(structure, childTwig.name).__cast();
   }
 
   /**
@@ -57,11 +67,15 @@ export class FakeContainerElement extends FakeElement {
     if (nargs !== 1 || !is.object(child)) {
       matchThrow();
     }
-    // we just need to compare the name here
-    // dont want to look at the content because if child has been defined prior to an update it would be out of date anyway
-    const seIndex = this.__children.findIndex(c => c.name === child.__name)
+    // Get the refreshed structure to find the index within the up-to-date children list.
+    const structure = this.shadowDocument.structure;
+    const item = structure.elementMap.get(this.__name);
+    const children = item.__twig.children;
+
+    // We just need to compare the name here.
+    const seIndex = children.findIndex(c => c.name === child.__name);
     if (seIndex === -1) {
-      console.log(child)
+      // console.log(child); // Kept for potential future debugging
       throw new Error(`child with name ${child.__name} not found`);
     }
     return seIndex

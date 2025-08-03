@@ -7,8 +7,8 @@ import { signatureArgs } from "../../support/helpers.js";
 
 export const getElementProp = (se) => {
   // these are the known types
-  const keys = getEnumKeys(ElementType)
-  const ownKeys = Reflect.ownKeys(se)
+  const keys = getEnumKeys(ElementType);
+  const ownKeys = Reflect.ownKeys(se);
 
   // these are the known unsupported types
   const unsupported = ["sectionBreak"]
@@ -22,6 +22,8 @@ export const getElementProp = (se) => {
         return 'TEXT';
       case 'BODY':
         return 'BODY_SECTION';
+      case 'PAGEBREAK':
+        return 'PAGE_BREAK';
       default:
         return f;
     }
@@ -128,47 +130,29 @@ export const extractText = (se) => {
  * @param {FakeElement} self 
  * @returns {string} the concacentaed text in all the sub elements
  */
-
 export const getText = (self) => {
   // a detached element is one that would have been created by .copy() and is not yet part of the document
   if (self.__isDetached) {
     // This is a detached element, created by copy().
     // It holds its own data and is not connected to the live document.
     const item = self.__elementMapItem;
-    const text = [];
-
-    const extractDetached = (elItem) => {
-      if (!elItem) return;
-      // The __type was added during the copy() operation.
-      if (elItem.__type === ElementType.PARAGRAPH.toString()) {
-        text.push(extractText(elItem));
-      } else {
-        // The __prop was also added during copy().
-        const prop = elItem.__prop;
-        const children = (prop && elItem[prop]) ? (elItem[prop].content || elItem[prop].elements) : [];
-        children.forEach(extractDetached);
-      }
-    };
-
-    extractDetached(item);
-    return text.join('\n');
+    if (item.__type === ElementType.PARAGRAPH.toString()) {
+      return extractText(item);
+    }
+    return '';
   } else {
     // This is an attached element. Always get the latest structure to avoid stale state.
     const shadow = self.__structure.shadowDocument;
     const structure = shadow.structure;
     const item = structure.elementMap.get(self.__name);
-    const text = [];
 
-    const extractAttached = (elItem) => {
-      if (elItem && elItem.__type === ElementType.PARAGRAPH.toString()) {
-        text.push(extractText(elItem));
-      } else {
-        const leaves = (elItem?.__twig?.children || []).map(leaf => structure.elementMap.get(leaf.name));
-        leaves.forEach(extractAttached);
-      }
-    }
-    extractAttached(item);
-    return text.join('\n');
+    const children = (item?.__twig?.children || []).map(twig => {
+      const childItem = structure.elementMap.get(twig.name);
+      const factory = getElementFactory(childItem.__type);
+      return factory(structure, twig.name);
+    });
+
+    return children.map(c => c.getText()).join('\n');
   }
 }
 
@@ -177,48 +161,48 @@ export const getText = (self) => {
  * @param {FakeContainerElement} self one that supports adding paragraphs - body, tablecell,header, footer
  * @returns {string} the concacentaed text in all the sub elements
  */
-const _paragraphInserter = (self, textOrParagraph, childIndex) => {
+const _elementInserter = (self, elementOrText, childIndex, options) => {
+  const {
+    elementType,
+    insertMethodSignature,
+    canAcceptText,
+    getShift,
+    getMainRequest,
+    getStyleRequests,
+    findType,
+  } = options;
+
   const isAppend = is.null(childIndex);
 
+  // --- VALIDATION ---
   if (!isAppend) {
-    if (textOrParagraph.getType() !== ElementType.PARAGRAPH) {
-      // Match the live Apps Script error for invalid parameter type.
-      throw new Error(`The parameters (number,${textOrParagraph.toString()}) don't match the method signature for DocumentApp.Body.insertParagraph.`);
+    if (!elementOrText || elementOrText.getType() !== elementType) {
+      throw new Error(`The parameters (number,${(elementOrText || 'null').toString()}) don't match the method signature for ${insertMethodSignature}.`);
     }
-    if (textOrParagraph.getParent()) {
-      // Match the live Apps Script error for attached elements.
+    if (elementOrText.getParent()) {
       throw new Error('Element must be detached.');
     }
-    const { nargs, matchThrow } = signatureArgs([self, childIndex, textOrParagraph], 'Body.insertParagraph');
-    if (nargs !== 3 || !is.integer(childIndex) || !is.object(textOrParagraph)) {
+    const { nargs, matchThrow } = signatureArgs([self, childIndex, elementOrText], insertMethodSignature);
+    if (nargs !== 3 || !is.integer(childIndex) || !is.object(elementOrText)) {
       matchThrow();
     }
   } else {
-    const isText = is.string(textOrParagraph);
-    if (!isText && !(is.object(textOrParagraph) && textOrParagraph.getType() === ElementType.PARAGRAPH)) {
-      throw new Error('invalid arguments to appendParagraph');
+    const isText = is.string(elementOrText);
+    if (isText && !canAcceptText) {
+      throw new Error(`Invalid argument type for append method.`);
     }
-    if (!isText && textOrParagraph.getParent()) {
+    // for append, element can be null (e.g. appendPageBreak())
+    if (!isText && elementOrText && !(is.object(elementOrText) && elementOrText.getType() === elementType)) {
+      throw new Error(`invalid arguments to append method`);
+    }
+    if (!isText && elementOrText && elementOrText.getParent()) {
       throw new Error('Element must be detached.');
     }
   }
 
-  const isDetachedPara = is.object(textOrParagraph) && textOrParagraph.__isDetached;
+  const isDetached = is.object(elementOrText) && elementOrText.__isDetached;
+  const shift = getShift(elementOrText, isDetached);
 
-  // Determine the text to be inserted first. This is needed for calculating the shift for protection.
-  let baseText;
-  if (isDetachedPara) {
-    const item = textOrParagraph.__elementMapItem;
-    const fullText = (item.paragraph?.elements || []).map(el => el.textRun?.content || '').join('');
-    baseText = fullText.replace(/\n$/, ''); // Remove trailing newline, we'll add it back.
-  } else {
-    baseText = is.string(textOrParagraph) ? textOrParagraph : textOrParagraph.getText();
-  }
-
-  // a protection request is required to remake the named range with the same endindex
-  // this is because inserting/appending will extend existing named ranges, so we wont be able to use
-  // them to identify existing elements - so an inserttext actually becomes
-  // inserttext, deletenamedrange, createnamedrange (with same name and indices as the pre insert nr)
   const makeProtectionRequests = (twig, shift = 0) => {
     const ur = [];
     const stet = (innerTwig) => {
@@ -246,74 +230,119 @@ const _paragraphInserter = (self, textOrParagraph, childIndex) => {
   };
 
   const shadow = self.__structure.shadowDocument;
-  const structure = shadow.structure; // This will trigger a refresh if needed
-  const item = structure.elementMap.get(self.__name); // Use the fresh item for the container
+  const structure = shadow.structure;
+  const segmentId = shadow.__segmentId;
+  const item = structure.elementMap.get(self.__name);
   const children = item.__twig.children;
 
   let insertIndex;
-  let newParaStartIndex;
+  let newElementStartIndex;
   let requests = [];
-  let textToInsert;
 
   if (isAppend) {
-    // APPEND LOGIC
-    textToInsert = '\n' + baseText; // Prepend newline for append
     const endIndexBefore = structure.shadowDocument.__endBodyIndex;
     insertIndex = endIndexBefore - 1;
-    newParaStartIndex = endIndexBefore;
+    // For page breaks (and similar elements), the new element starts AT the insertion point.
+    // For paragraphs, our helper prepends a newline, so the new paragraph effectively
+    // starts at the end of the previous content.
+    const useStartsAtInsertPoint = is.function(options.startsAtInsertPoint) ? options.startsAtInsertPoint(isAppend) : !!options.startsAtInsertPoint;
+    // For append operations, the new element will start at the end of the previous content.
+    // For insert, it starts at the insertion point.
+    newElementStartIndex = isAppend ? endIndexBefore : (useStartsAtInsertPoint ? insertIndex : endIndexBefore);
     if (children.length > 0) {
-      requests = makeProtectionRequests(children[children.length - 1], 0); // No shift for append protection
+      requests = makeProtectionRequests(children[children.length - 1], 0);
     }
   } else {
-    // INSERT LOGIC
-    textToInsert = baseText + '\n'; // Append newline for insert
-    if (childIndex < 0 || childIndex >= children.length) { // Should be strictly less than, as append is handled elsewhere
+    // The case of childIndex === children.length is now handled by the append... methods,
+    // so this check can be strict.
+    if (childIndex < 0 || childIndex >= children.length) {
       throw new Error(`Child index (${childIndex}) must be less than or equal to the number of child elements (${children.length}).`);
     }
     const targetChildTwig = children[childIndex];
     const targetChildItem = structure.elementMap.get(targetChildTwig.name);
     insertIndex = targetChildItem.startIndex;
-    newParaStartIndex = insertIndex;
-    const shift = textToInsert.length;
+    newElementStartIndex = insertIndex;
     requests = makeProtectionRequests(targetChildTwig, shift);
   }
 
-  // Add the main text insertion request.
-  requests.unshift({
-    insertText: {
-      location: { index: insertIndex },
-      text: textToInsert,
-    },
-  });
+  // Use [].concat to ensure we have an array, as getMainRequest might return a single object or an array.
+  const mainRequests = [].concat(getMainRequest(elementOrText, { index: insertIndex, segmentId }, isAppend));
+  requests.unshift(...mainRequests);
 
-  // If it was a detached paragraph, add styling requests.
-  if (isDetachedPara) {
-    const detachedItem = textOrParagraph.__elementMapItem;
+  if (isDetached && getStyleRequests) {
+    requests.push(...getStyleRequests(elementOrText, newElementStartIndex, shift, isAppend));
+  }
+
+  Docs.Documents.batchUpdate({ requests }, shadow.getId());
+  shadow.refresh();
+
+  const findContainerType = (is.function(options.findType) ? options.findType(isAppend) : findType) || elementType.toString();
+  const childTypeToFind = is.function(options.findChildType) ? options.findChildType(isAppend) : options.findChildType;
+
+  const containerItem = findItem(shadow.__elementMap, findContainerType, newElementStartIndex);
+
+  if (childTypeToFind) {
+    const childTwig = (containerItem.__twig.children || []).find(twig => {
+      const childItem = shadow.__elementMap.get(twig.name);
+      return childItem && childItem.__type === childTypeToFind;
+    });
+    if (!childTwig) {
+      throw new Error(`Could not find child of type ${childTypeToFind} in new element`);
+    }
+    const finalItem = shadow.__elementMap.get(childTwig.name);
+    const factory = getElementFactory(childTypeToFind);
+    return factory(shadow.structure, finalItem.__name);
+  }
+  const factory = getElementFactory(findContainerType);
+  return factory(shadow.structure, containerItem.__name);
+};
+
+const paragraphOptions = {
+  elementType: ElementType.PARAGRAPH,
+  insertMethodSignature: 'DocumentApp.Body.insertParagraph',
+  canAcceptText: true,
+  getShift: (textOrParagraph, isDetached) => {
+    if (isDetached) {
+      const item = textOrParagraph.__elementMapItem;
+      const fullText = (item.paragraph?.elements || []).map(el => el.textRun?.content || '').join('');
+      return fullText.length;
+    }
+    const baseText = is.string(textOrParagraph) ? textOrParagraph : textOrParagraph.getText();
+    return baseText.length + 1;
+  },
+  getMainRequest: (textOrParagraph, location, isAppend) => {
+    const isDetachedPara = is.object(textOrParagraph) && textOrParagraph.__isDetached;
+    let baseText;
+    if (isDetachedPara) {
+      const item = textOrParagraph.__elementMapItem;
+      const fullText = (item.paragraph?.elements || []).map(el => el.textRun?.content || '').join('');
+      baseText = fullText.replace(/\n$/, '');
+    } else {
+      baseText = is.string(textOrParagraph) ? textOrParagraph : textOrParagraph.getText();
+    }
+    const textToInsert = isAppend ? '\n' + baseText : baseText + '\n';
+    return { insertText: { location, text: textToInsert } };
+  },
+  getStyleRequests: (paragraph, startIndex, length, isAppend) => {
+    const requests = [];
+    const detachedItem = paragraph.__elementMapItem;
     const paraElements = detachedItem.paragraph?.elements || [];
     const paraStyle = detachedItem.paragraph?.paragraphStyle;
 
-    const paraStartIndex = isAppend ? newParaStartIndex : insertIndex;
-    const paraEndIndex = paraStartIndex + textToInsert.length;
-
-    // Add paragraph style request
     if (paraStyle && Object.keys(paraStyle).length > 0) {
       const fields = Object.keys(paraStyle).join(',');
       requests.push({
-        updateParagraphStyle: { range: { startIndex: paraStartIndex, endIndex: paraEndIndex }, paragraphStyle: paraStyle, fields: fields },
+        updateParagraphStyle: { range: { startIndex, endIndex: startIndex + length }, paragraphStyle: paraStyle, fields: fields },
       });
     }
 
-    // Add text style requests
-    let currentOffset = paraStartIndex;
-    if (isAppend) currentOffset++; // Skip leading '\n'
+    let currentOffset = startIndex;
+    if (isAppend) currentOffset++;
 
     paraElements.forEach(el => {
       if (el.textRun && el.textRun.content) {
         const content = el.textRun.content;
         const textStyle = el.textRun.textStyle;
-
-        // The API does not allow styling the structural newline at the end of a paragraph.
-        // We must calculate the styling range based only on the visible text content.
         const styleableContent = content.replace(/\n$/, '');
         const styleableLength = styleableContent.length;
 
@@ -321,30 +350,54 @@ const _paragraphInserter = (self, textOrParagraph, childIndex) => {
           const fields = Object.keys(textStyle).join(',');
           requests.push({ updateTextStyle: { range: { startIndex: currentOffset, endIndex: currentOffset + styleableLength }, textStyle: textStyle, fields: fields } });
         }
-        // Always advance the offset by the full length of the content from the API to keep positions correct.
         currentOffset += content.length;
       }
     });
-  }
+    return requests;
+  },
+};
 
-  Docs.Documents.batchUpdate({ requests }, shadow.getId());
-
-  shadow.refresh();
-
-  const et = ElementType.PARAGRAPH.toString();
-  const newItem = findItem(shadow.__elementMap, et, newParaStartIndex);
-  const factory = getElementFactory(et);
-  return factory(shadow.structure, newItem.__name);
+const pageBreakOptions = {
+  elementType: ElementType.PAGE_BREAK,
+  insertMethodSignature: 'DocumentApp.Body.insertPageBreak',
+  canAcceptText: false,
+  getShift: (pb, isDetached, isAppend) => isAppend ? 2 : 1, // append is a 2-step request, insert is 1.
+  getMainRequest: (pageBreak, location, isAppend) => {
+    if (isAppend) {
+      // For append, we must first create a new paragraph by inserting a newline,
+      // then insert the page break into that new paragraph. This is the most
+      // reliable way to force the fake API to create a new paragraph at the end.
+      return [
+        { insertText: { location, text: '\n' } },
+        { insertPageBreak: { location: { index: location.index + 1 } } }
+      ];
+    } else {
+      // For insert, a single request is sufficient. The fake API will correctly
+      // split the paragraph. Using a two-step process for insert was creating extra paragraphs.
+      return { insertPageBreak: { location } };
+    }
+  },
+  getStyleRequests: null, // PageBreak styling on copy not supported yet.
+  findType: ElementType.PARAGRAPH.toString(),
+  findChildType: ElementType.PAGE_BREAK.toString(),
+  startsAtInsertPoint: (isAppend) => !isAppend, // For append, the new element starts at endIndexBefore, not the insert point.
 };
 
 export const appendParagraph = (self, textOrParagraph) => {
-  return _paragraphInserter(self, textOrParagraph, null);
+  return _elementInserter(self, textOrParagraph, null, paragraphOptions);
 };
 
 export const insertParagraph = (self, childIndex, paragraph) => {
-  return _paragraphInserter(self, paragraph, childIndex);
+  return _elementInserter(self, paragraph, childIndex, paragraphOptions);
 };
 
+export const appendPageBreak = (self, pageBreak) => {
+  return _elementInserter(self, pageBreak, null, pageBreakOptions);
+};
+
+export const insertPageBreak = (self, childIndex, pageBreak) => {
+  return _elementInserter(self, pageBreak, childIndex, pageBreakOptions);
+};
 export const findItem = (elementMap, type, startIndex) => {
   const item = Array.from(elementMap.values()).find(f => f.__type === type && f.startIndex === startIndex)
   if (!item) {

@@ -40,6 +40,7 @@ const propsWaitingRoom = [
   'asTableCell',
   'asTableOfContents',
   'asTableRow',
+  'asTableRow',
   'asText',
   'asVariable',
   'clear',
@@ -110,6 +111,14 @@ const asCasts = {
   "PARAGRAPH": {
     method: "asParagraph",
     element: "newParagraph"
+  },
+  "PAGE_BREAK": {
+    method: "asPageBreak",
+    element: "newPageBreak"
+  },
+  "TEXT": {
+    method: "asText",
+    element: "newText"
   }
 }
 

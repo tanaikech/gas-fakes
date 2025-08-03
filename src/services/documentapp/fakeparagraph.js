@@ -1,7 +1,7 @@
 import { Proxies } from '../../support/proxies.js';
 import { FakeContainerElement } from './fakecontainerelement.js';
 import { registerElement } from './elementRegistry.js';
-import { getText } from './shadowhelpers.js';
+import { extractText } from './shadowhelpers.js';
 
 /**
  * Creates a new FakeParagraph instance.
@@ -27,7 +27,7 @@ export class FakeParagraph extends FakeContainerElement {
   and its direct text-containing children into a single string.
   */
   getText() {
-    return getText(this)
+    return extractText(this.__elementMapItem);
   }
 
   toString() {

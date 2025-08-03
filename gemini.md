@@ -72,6 +72,8 @@ Overall it saves some time, for sure. However, the result is often suboptimal, w
 
 When creating the Docs Fakes, I started afresh, letting Gemini have a shot at building the initial templates. After a little while, it kept getting into loops and was mostly unable to produce the code it said it was going to produce - the 'thinking' stage was on the right track, but it either completely failed to produce any code that represented its thinking, or failed to actually apply it. My theory is that, without a body of code specific to the service (as I already had in sheets when I started to let Gemini contribute), it flails around aimlessly looping. At the time of writing I'm just at the beginning of Docs, so I'll do a lot of work manually to get a strong architecural backgound and revisit Gemini later on for any repeptive stuff. For now I'm just giving up with it for Docs.
 
+Writing this a bit later - after getting the named range stuff and paragraph appending stuff sorted out as a model to work from, I decided to give Gemini a shot at adding an append pagebreak method, without intervening other than providing debug info after each of it's attempts. We're entering groundhog day 3 - 2 full days of trying to do a fairly straightforward thing - and the code is spaghetti and nothing works. I'm done, and going to fix it up manually.
+
 
 As I mentioned earlier, to take this further, I'm going to need a lot of help to extend the methods and services supported - so if you feel this would be useful to you, and would like to collaborate, please ping me on [bruce@mcpher.com](mailto:bruce@mcpher.com) and we'll talk.
 

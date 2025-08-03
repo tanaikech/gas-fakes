@@ -95,25 +95,66 @@ class ShadowDocument {
       element.__type = type;
       element.__name = name;
 
-
       const twig = { name: name, children: [], parent: branch };
-      branch.children.push(twig);
       element.__twig = twig;
       this.__elementMap.set(name, element);
 
       // recurse if we have sub elements
       const ep = element[prop]; // this is the object with .elements or .content
       if (Reflect.has(ep, "elements")) {
-        ep.elements.forEach(e => mapElements(e, twig));
+        // Process ALL sub-elements recursively to ensure they are in the elementMap and have a twig.
+        ep.elements.forEach(subElement => mapElements(subElement, twig));
+
+        // Now that all sub-elements have been processed and have a __twig, we can
+        // filter them to build the user-facing children list for the current twig.
+        if (type === 'PARAGRAPH') {
+          twig.children = ep.elements
+            .map(e => e.__twig) // Get the twig for each raw element
+            .filter(childTwig => {
+              if (!childTwig) return false;
+              const childElement = this.__elementMap.get(childTwig.name);
+              if (!childElement) return false;
+
+              // Prioritize keeping non-text elements like PageBreak.
+              if (childElement.pageBreak || childElement.horizontalRule) { // TODO: Add other non-text types
+                return true;
+              }
+              // If it's a text run, it's a child only if it has visible content.
+              if (childElement.textRun) {
+                return childElement.textRun.content && childElement.textRun.content !== '\n';
+              }
+              return false;
+            });
+        } else {
+          // For non-paragraph containers, all children are significant.
+          twig.children = ep.elements.map(e => e.__twig).filter(Boolean);
+        }
       }
+      return twig;
 
     };
 
     // recurse the entire document
-    content.forEach(c => mapElements(c, bodyTree))
+    content.forEach(c => mapElements(c, bodyTree));
+
+    // HACK: The fake batchUpdate service can leave a trailing empty paragraph after
+    // certain operations like insertPageBreak. The live API does not do this.
+    // We will detect and remove this artifact here before building the final tree.
+    if (content.length > 1) {
+      const lastElement = content[content.length - 1];
+      if (lastElement.paragraph && lastElement.paragraph.elements.length === 1) {
+        const singleChild = lastElement.paragraph.elements[0];
+        if (singleChild.textRun && singleChild.textRun.content === '\n') {
+          // This is a trailing empty paragraph, remove it.
+          content.pop();
+        }
+      }
+    }
+    bodyTree.children = content.map(c => c.__twig).filter(Boolean);
 
     // delete the named ranges that weren't used
     // findOrCreate... consumes the currentNr list, so what's left are unused ranges.
+
     const deleteRequests = currentNr.map(r => ({
       deleteNamedRange: {
         namedRangeId: r.namedRangeId

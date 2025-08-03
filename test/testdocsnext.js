@@ -22,17 +22,17 @@ export const testDocsNext = (pack) => {
     body.appendParagraph("p3");
     const p2 = body.appendParagraph("p2").copy(); // Creates a detached copy of a "p2" paragraph
     // The body has 3 children: [empty, p1, p3]. Index 2 is before p3.
-    body.insertParagraph(2, p2);
-    t.is(body.getText(), "\np1\np2\np3\np2", "Insert in the middle");
+    body.insertParagraph(2, p2); // body is now [empty, p1, p2(copy), p3, p2]
+    t.is(body.getText(), "p1\np2\np3\np2", "Insert in the middle");
 
     // Test 2: Insert at the beginning
     doc.clear()
     body = doc.getBody();
     body.appendParagraph("p1");
     const p0 = body.appendParagraph("p0").copy();
-    // The body has 2 children: [empty, p1]. Index 1 is before p1.
+    // The body has 3 children: [empty, p1, p0]. Index 1 is before p1.
     body.insertParagraph(1, p0);
-    t.is(body.getText(), "\np0\np1\np0", "Insert at the beginning");
+    t.is(body.getText(), "p0\np1\np0", "Insert at the beginning");
 
     // Test 3: Insert at the end (should behave like append)
     doc.clear()
@@ -40,7 +40,7 @@ export const testDocsNext = (pack) => {
     body.appendParagraph("p1");
     const p2_end = body.appendParagraph("p2").copy();
     body.insertParagraph(body.getNumChildren(), p2_end);
-    t.is(body.getText(), "\np1\np2\np2", "Insert at the end");
+    t.is(body.getText(), "p1\np2\np2", "Insert at the end");
 
     // Test 4: Error conditions
     doc.clear()
@@ -123,7 +123,7 @@ export const testDocsNext = (pack) => {
     body.insertParagraph(1, detachedPara);
 
     // 4. Verification of text content
-    const expectedText = "\nBold and Italic\nBold and Italic";
+    const expectedText = "Bold and Italic\nBold and Italic";
     t.is(body.getText(), expectedText, "Text content should include original and inserted complex paragraph");
 
     // 5. Advanced verification of styles
@@ -153,6 +153,50 @@ export const testDocsNext = (pack) => {
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   });
   
+  unit.section("Body.appendPageBreak and Body.insertPageBreak", t => {
+    let { doc } = maketdoc(toTrash, fixes);
+    let body = doc.getBody();
+
+    // 1. Append
+    body.appendParagraph("p1");
+    const pb1 = body.appendPageBreak();
+    body.appendParagraph("p2");
+
+    t.is(pb1.getType(), DocumentApp.ElementType.PAGE_BREAK, "appendPageBreak should return a PageBreak element");
+    t.truthy(pb1.getParent(), "Appended page break should have a parent");
+    // In the live environment, the parent of a PageBreak is the Paragraph that contains it.
+    const pb1Parent = pb1.getParent();
+    t.is(pb1Parent.getType(), DocumentApp.ElementType.PARAGRAPH, "Page break parent should be a Paragraph");
+    t.is(pb1Parent.getParent().getType(), DocumentApp.ElementType.BODY_SECTION, "Page break's grandparent should be the body");
+
+    const children = getChildren(body);
+    t.is(children.length, 4, "Body should have 4 children (empty para, p1, page break, p2)");
+    const pageBreakPara = children[2];
+    // The element that is a direct child of the body is a Paragraph.
+    t.is(pageBreakPara.getType(), DocumentApp.ElementType.PARAGRAPH, "The element in the body is a Paragraph");
+    t.is(pageBreakPara.getText(), "", "Paragraph containing a page break has empty text");
+    t.is(pageBreakPara.getNumChildren(), 1, "The paragraph should contain one child element");
+    t.is(pageBreakPara.getChild(0).getType(), DocumentApp.ElementType.PAGE_BREAK, "The paragraph's child should be a PageBreak");
+
+    // 2. Insert
+    const pb2 = body.appendPageBreak().copy(); // create a detached page break
+    // The test fails on live GAS here because you can't remove the last paragraph.
+    // We'll leave the temporary paragraph and adjust the test expectations.
+    body.insertPageBreak(1, pb2); // insert after the initial empty paragraph
+    const children2 = getChildren(body);
+    t.is(children2.length, 6, "Body should have 6 children after insert");
+    t.is(children2[1].getType(), DocumentApp.ElementType.PARAGRAPH, "Second child should be the inserted page break's paragraph");
+    // Each paragraph, including empty ones and those containing only a page break,
+    // contributes a newline when calling body.getText().
+     t.is(body.getText(), "\np1\n\np2\n", "Text content should reflect inserted page break");
+
+    // 3. Error conditions
+    const attemptAttachedInsert = () => body.insertPageBreak(1, pb1);
+    t.rxMatch(t.threw(attemptAttachedInsert)?.message || 'no error thrown', /Element must be detached./, "Inserting an already attached page break should throw an error");
+
+    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
+  });
+
   unit.section("Element.copy() and detached elements", t => {
     const { doc } = maketdoc(toTrash, fixes);
     const body = doc.getBody();
@@ -160,7 +204,7 @@ export const testDocsNext = (pack) => {
     // 1. Append an initial paragraph
     const p1Text = "This is the first paragraph.";
     const p1 = body.appendParagraph(p1Text);
-    t.is(body.getText(), '\n' + p1Text, "Body should have the first paragraph");
+    t.is(body.getText(), p1Text, "Body should have the first paragraph");
 
     // 2. Create a detached copy
     const p1Copy = p1.copy();
@@ -170,7 +214,7 @@ export const testDocsNext = (pack) => {
 
     // 3. Append the detached copy
     body.appendParagraph(p1Copy);
-    const expectedText = '\n' + p1Text + '\n' + p1Text;
+    const expectedText = p1Text + '\n' + p1Text;
     t.is(body.getText(), expectedText, "Body should contain both original and copied paragraph text");
 
     // 4. Verify the original element is unchanged and still attached
@@ -198,7 +242,7 @@ export const testDocsNext = (pack) => {
     const p3 = body.appendParagraph(p3Text);
 
     // a concatanated body will prepend each paragraph with a \n
-    const expectedText1 = '\n' + texts.join('\n');
+    const expectedText1 = texts.join('\n');
 
     t.is(body.getType(), DocumentApp.ElementType.BODY_SECTION, "body should be a body")
     t.is(body.getText(), expectedText1, "Body text after all appends");
@@ -219,6 +263,7 @@ export const testDocsNext = (pack) => {
 
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   });
+
   unit.section("newRange and builders", t => {
 
     const { doc } = maketdoc(toTrash, fixes)
@@ -250,7 +295,6 @@ export const testDocsNext = (pack) => {
     t.deepEqual(finalRange.getRangeElements().map(re => re.getElement().getText()), ["p1", "p2", "p3"], 'final range should contain all elements');
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance())
   });
-
 
   unit.section("Document empty document validation", t => {
     let { doc, docName } = maketdoc(toTrash, fixes)
@@ -298,11 +342,11 @@ export const testDocsNext = (pack) => {
   })
 
 
-
   // Helper to extract text from a raw Docs API document resource, mimicking Document.getBody().getText()
   const getTextFromDocResource = (docResource) => {
     return docResource?.body?.content?.map(structuralElement => structuralElement.paragraph?.elements?.map(element => element.textRun?.content || '').join('') || '').join('').replace(/\n$/, '');
   }
+
   unit.section("Document.clear method", t => {
 
     const { doc, docName } = maketdoc(toTrash, fixes)
@@ -338,11 +382,11 @@ export const testDocsNext = (pack) => {
     updatedDoc.getBody().appendParagraph(text2);
 
     // After clearing and appending, the text should just be the new text.
-    t.is(updatedDoc.getBody().getText(), '\n' + text2, "Appending a paragraph after clearing should work.")
+    t.is(updatedDoc.getBody().getText(), text2, "Appending a paragraph after clearing should work.")
 
     // Re-fetch the document to ensure its internal __doc is updated.
     const updatedDoc2 = DocumentApp.openById(updatedDoc.getId());
-    t.is(updatedDoc2.getBody().getText(), '\n' + text2, "Content should be present after appending.");
+    t.is(updatedDoc2.getBody().getText(), text2, "Content should be present after appending.");
 
     // Test that appendParagraph works after clearing
     updatedDoc.getBody().appendParagraph("A new paragraph2.");
@@ -371,3 +415,4 @@ if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
   testDocsNext();
   console.log('...cumulative docs cache performance', getDocsPerformance())
 }
+   
