@@ -2611,7 +2611,7 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
   __setValues({
     values,
     single = false,
-    // options = { valueInputOption: "RAW" },
+    // options = { valueInputOption: "USER_ENTERED" },
     options = { valueInputOption: "USER_ENTERED" },
   }) {
     const range = single
