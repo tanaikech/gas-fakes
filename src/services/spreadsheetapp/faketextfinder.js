@@ -1,8 +1,6 @@
-import { toolresults } from "googleapis/build/src/apis/toolresults/index.js";
+
 import { Proxies } from "../../support/proxies.js";
-import { isNull } from "@sindresorhus/is";
-import { SheetsChartEmbedType } from "../enums/slidesenums.js";
-import { FakeColorBase } from "../common/fakecolorbase.js";
+
 
 /**
  * create a new FakeTextFinder instance
