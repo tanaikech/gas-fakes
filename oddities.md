@@ -164,7 +164,7 @@ Just as with Formats, the actual value rendered might be different than the valu
 Here is how I've implemented getting and setting values.
 
 - getValues() uses { valueRenderOption: 'UNFORMATTED_VALUE' }
-- setValues() uses { valueInputOption: "RAW" } (as opposed to 'USER_ENTERED')
+- setValues() uses { valueInputOption: "USER_ENTERED" } 
 - getDisplayValues() { valueRenderOption: 'FORMATTED_VALUE' }
 
 ### Data Validation
