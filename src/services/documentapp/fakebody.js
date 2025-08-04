@@ -2,7 +2,8 @@ import { Proxies } from '../../support/proxies.js';
 import { signatureArgs, unimplementedProps } from '../../support/helpers.js';
 import { Utils } from '../../support/utils.js';
 import { FakeContainerElement } from './fakecontainerelement.js';
-import { makeNrPrefix, getText, appendParagraph, insertParagraph, appendPageBreak, insertPageBreak } from './shadowhelpers.js'
+import { makeNrPrefix } from './nrhelpers.js'
+import { appendParagraph, insertParagraph, appendPageBreak, insertPageBreak } from './shadowhelpers.js'
 import { registerElement } from './elementRegistry.js';
 const { is } = Utils
 

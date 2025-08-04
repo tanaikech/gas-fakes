@@ -1,5 +1,6 @@
 import { Proxies } from '../../support/proxies.js';
-import { getElementProp, makeNrPrefix, getCurrentNr, findOrCreateNamedRangeName } from './shadowhelpers.js';
+import { makeNrPrefix, getCurrentNr,findOrCreateNamedRangeName } from './nrhelpers.js'
+import { getElementProp } from './shadowhelpers.js';
 import { Utils } from '../../support/utils.js';
 
 

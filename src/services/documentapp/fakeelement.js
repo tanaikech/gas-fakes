@@ -2,7 +2,7 @@ import { Proxies } from '../../support/proxies.js';
 import { signatureArgs, unimplementedProps } from '../../support/helpers.js';
 import { Utils } from '../../support/utils.js';
 const { is } = Utils;
-import { makeNrPrefix } from './shadowhelpers.js';
+import { makeNrPrefix } from './nrhelpers.js'
 import { ElementType } from '../enums/docsenums.js';
 import { getElementFactory } from './elementRegistry.js';
 
