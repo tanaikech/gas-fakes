@@ -27,9 +27,9 @@ import { testSheetsDeveloper } from './testsheetsdeveloper.js';
 import { testSheetsData } from './testsheetsdata.js';
 import { testDocsAdv } from './testdocsadv.js'
 import { testDocs } from './testdocs.js'
-import { testDocsNext } from './testdocsnext.js'
 import { testSlidesAdv } from './testslidesadv.js'
 import { testSlides } from './testslides.js'
+import { testSheetsText  } from './testsheetstext.js'
 const testFakes = () => {
   const pack = initTests()
   const {unit} = pack
@@ -43,10 +43,10 @@ const testFakes = () => {
   testDocsAdv(pack)
   console.log ('\n----Test docs----')
   testDocs(pack)
-  console.log ('\n----Test docs next----')
-  testDocsNext(pack)
   console.log ('\n----Test Enums----')
   testEnums(pack)
+  console.log ('\n----Test Sheets text----')
+  testSheetsText(pack)
   console.log ('\n----Test Sheets Data----')
   testSheetsData(pack)
   console.log ('\n----Test Sheets DataValidations----')
