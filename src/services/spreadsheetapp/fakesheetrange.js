@@ -1,11 +1,19 @@
-import { Proxies } from '../../support/proxies.js'
-import { newFakePivotTable } from './fakepivottable.js';
-import { newFakeDataTable } from './fakedatatable.js';
-import { newFakeBanding } from './fakebanding.js';
-import { newFakeDeveloperMetadataFinder } from './fakedevelopermetadatafinder.js';
-import { SheetUtils } from '../../support/sheetutils.js'
-import { Utils } from '../../support/utils.js'
-import { setterList, attrGetList, valuesGetList, setterMaker, attrGens, valueGens, makeCellTextFormatData } from './sheetrangemakers.js'
+import { Proxies } from "../../support/proxies.js";
+import { newFakePivotTable } from "./fakepivottable.js";
+import { newFakeDataTable } from "./fakedatatable.js";
+import { newFakeBanding } from "./fakebanding.js";
+import { newFakeDeveloperMetadataFinder } from "./fakedevelopermetadatafinder.js";
+import { SheetUtils } from "../../support/sheetutils.js";
+import { Utils } from "../../support/utils.js";
+import {
+  setterList,
+  attrGetList,
+  valuesGetList,
+  setterMaker,
+  attrGens,
+  valueGens,
+  makeCellTextFormatData,
+} from "./sheetrangemakers.js";
 import {
   updateCells,
   isRange,
@@ -16,100 +24,116 @@ import {
   arrMatchesRange,
   isACheckbox,
   makeExtendedValue,
-  bandingThemeMap
-} from "./sheetrangehelpers.js"
+  bandingThemeMap,
+} from "./sheetrangehelpers.js";
 
-import { TextToColumnsDelimiter, Direction, Dimension } from '../enums/sheetsenums.js'
+import {
+  TextToColumnsDelimiter,
+  Direction,
+  Dimension,
+} from "../enums/sheetsenums.js";
+import { FakeTextFinder, newFakeTextFinder } from "./faketextfinder.js";
 
-const { is, rgbToHex, hexToRgb, stringer, outsideInt, capital, BLACKER, getEnumKeys, isEnum, normalizeColorStringToHex } = Utils
-import { notYetImplemented, signatureArgs } from '../../support/helpers.js'
-import { FakeSpreadsheet } from './fakespreadsheet.js'
-import { FakeDataValidation } from './fakedatavalidation.js'
+const {
+  is,
+  rgbToHex,
+  hexToRgb,
+  stringer,
+  outsideInt,
+  capital,
+  BLACKER,
+  getEnumKeys,
+  isEnum,
+  normalizeColorStringToHex,
+} = Utils;
+import { notYetImplemented, signatureArgs } from "../../support/helpers.js";
+import { FakeSpreadsheet } from "./fakespreadsheet.js";
+import { FakeDataValidation } from "./fakedatavalidation.js";
 
 // private properties are identified with leading __
 // this will signal to the proxy handler that it's okay to set them
 /**
  * create a new FakeSheet instance
- * @param  {...any} args 
+ * @param  {...any} args
  * @returns {FakeSheetRange}
  */
 export const newFakeSheetRange = (...args) => {
-  return Proxies.guard(new FakeSheetRange(...args))
-}
-
+  return Proxies.guard(new FakeSheetRange(...args));
+};
 
 const sortOutGridForCopy = (gridIdOrSheet, column, columnEnd, row, rowEnd) => {
-  const sheetId = is.object(gridIdOrSheet) ? gridIdOrSheet.getSheetId() : gridIdOrSheet
+  const sheetId = is.object(gridIdOrSheet)
+    ? gridIdOrSheet.getSheetId()
+    : gridIdOrSheet;
   const gridRange = {
     sheetId,
     startColumnIndex: column - 1,
     endColumnIndex: columnEnd,
     startRowIndex: row - 1,
-    endRowIndex: rowEnd
-  }
-  return gridRange
-}
+    endRowIndex: rowEnd,
+  };
+  return gridRange;
+};
 /**
  * basic fake FakeSheetRange
  * @class FakeSheetRange
  */
 export class FakeSheetRange {
-
   /**
    * @constructor
-   * @param {GridRange} gridRange 
+   * @param {GridRange} gridRange
    * @param {FakeSheet} sheet the sheet
    * @returns {FakeSheetRange}
    */
   constructor(gridRange, sheet, a1Notation = null) {
-
-    this.__apiGridRange = gridRange
-    this.__sheet = sheet
-    this.__hasGrid = Reflect.has(gridRange, "startRowIndex") || Reflect.has(gridRange, "startColumnIndex")
-    this.__a1Notation = a1Notation
+    this.__apiGridRange = gridRange;
+    this.__sheet = sheet;
+    this.__hasGrid =
+      Reflect.has(gridRange, "startRowIndex") ||
+      Reflect.has(gridRange, "startColumnIndex");
+    this.__a1Notation = a1Notation;
 
     // make the generatable functions
-    attrGetList.forEach(target => attrGens(this, target))
-    valuesGetList.forEach(target => valueGens(this, target))
+    attrGetList.forEach((target) => attrGens(this, target));
+    valuesGetList.forEach((target) => valueGens(this, target));
 
     // list of not yet implemented methods
     const props = [
+      "createDataSourcePivotTable",
+      "activate",
+      "getDataSourceFormula",
+      "activateAsCurrentCell",
+      "setComments",
 
-      'createDataSourcePivotTable',
-      'activate',
-      'getDataSourceFormula',
-      'activateAsCurrentCell',
-      'setComments',
+      "createDataSourceTable",
+      "getComments",
+      "clearComment",
 
-      'createDataSourceTable',
-      'getComments',
-      'clearComment',
+      "getDataSourceUrl",
 
-      'getDataSourceUrl',
-
-      'getDataSourcePivotTables',
+      "getDataSourcePivotTables",
       // these are not documented, so will skip for now
-      'setComment',
-      'getComment'
+      "setComment",
+      "getComment",
       //--
-    ]
-    props.forEach(f => {
+    ];
+    props.forEach((f) => {
       this[f] = () => {
-        return notYetImplemented(f)
-      }
-    })
+        return notYetImplemented(f);
+      };
+    });
 
-    setterList.forEach(f => {
+    setterList.forEach((f) => {
       setterMaker({
         self: this,
         ...f,
-        single: 'set' + capital(f.single || f.name),
-        plural: f.plural || ('set' + capital(f.single || f.name) + 's'),
+        single: "set" + capital(f.single || f.name),
+        plural: f.plural || "set" + capital(f.single || f.name) + "s",
         fields: f.fields || `userEnteredFormat.textFormat.${f.name}`,
         maker: f.maker || makeCellTextFormatData,
-        apiSetter: f.apiSetter || 'set' + capital(f.single || f.name)
-      })
-    })
+        apiSetter: f.apiSetter || "set" + capital(f.single || f.name),
+      });
+    });
   }
 
   getFormulasR1C1() {
@@ -121,7 +145,7 @@ export class FakeSheetRange {
 
     return a1Formulas.map((row, rIdx) => {
       return row.map((a1Formula, cIdx) => {
-        if (!a1Formula || !a1Formula.startsWith('=')) {
+        if (!a1Formula || !a1Formula.startsWith("=")) {
           return a1Formula;
         }
         const baseRow = startRow + rIdx;
@@ -137,15 +161,19 @@ export class FakeSheetRange {
   }
 
   setFormulasR1C1(formulas) {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.setFormulasR1C1");
-    if (nargs !== 1 || !arrMatchesRange(this, formulas, 'string', true)) matchThrow();
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Range.setFormulasR1C1"
+    );
+    if (nargs !== 1 || !arrMatchesRange(this, formulas, "string", true))
+      matchThrow();
 
     const startRow = this.getRow();
     const startCol = this.getColumn();
 
     const a1Formulas = formulas.map((row, rIdx) => {
       return row.map((r1c1Formula, cIdx) => {
-        if (!r1c1Formula || !r1c1Formula.startsWith('=')) {
+        if (!r1c1Formula || !r1c1Formula.startsWith("=")) {
           return r1c1Formula;
         }
         const baseRow = startRow + rIdx;
@@ -158,15 +186,25 @@ export class FakeSheetRange {
   }
 
   setFormulaR1C1(formula) {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.setFormulaR1C1");
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Range.setFormulaR1C1"
+    );
     if (nargs !== 1 || !is.string(formula)) matchThrow();
 
-    const a1Formula = SheetUtils.r1c1ToA1(formula, this.getRow(), this.getColumn());
+    const a1Formula = SheetUtils.r1c1ToA1(
+      formula,
+      this.getRow(),
+      this.getColumn()
+    );
     return this.setFormula(a1Formula);
   }
 
   getMergedRanges() {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.getMergedRanges");
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Range.getMergedRanges"
+    );
     if (nargs) matchThrow();
 
     // The sheet object associated with this range might be stale after a mutation.
@@ -181,41 +219,58 @@ export class FakeSheetRange {
       // Check if two grid ranges intersect.
       const r1 = thisGridRange;
       const r2 = merge;
-      return r1.sheetId === r2.sheetId &&
-        Math.max(r1.startRowIndex, r2.startRowIndex) < Math.min(r1.endRowIndex, r2.endRowIndex) &&
-        Math.max(r1.startColumnIndex, r2.startColumnIndex) < Math.min(r1.endColumnIndex, r2.endColumnIndex);
+      return (
+        r1.sheetId === r2.sheetId &&
+        Math.max(r1.startRowIndex, r2.startRowIndex) <
+          Math.min(r1.endRowIndex, r2.endRowIndex) &&
+        Math.max(r1.startColumnIndex, r2.startColumnIndex) <
+          Math.min(r1.endColumnIndex, r2.endColumnIndex)
+      );
     };
 
     const intersectingMerges = allMergesOnSheet.filter(intersects);
     const freshSheet = spreadsheet.getSheetById(sheetId);
-    return intersectingMerges.map(m => newFakeSheetRange(m, freshSheet));
+    return intersectingMerges.map((m) => newFakeSheetRange(m, freshSheet));
   }
 
   isPartOfMerge() {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.isPartOfMerge");
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Range.isPartOfMerge"
+    );
     if (nargs) matchThrow();
     return this.getMergedRanges().length > 0;
   }
 
   __merge(mergeType) {
     const requests = [];
-    if (mergeType === 'MERGE_ACROSS') {
+    if (mergeType === "MERGE_ACROSS") {
       for (let i = 0; i < this.getNumRows(); i++) {
         const rowRange = this.offset(i, 0, 1, this.getNumColumns());
         requests.push({
-          mergeCells: { range: makeSheetsGridRange(rowRange), mergeType: 'MERGE_ROWS' },
+          mergeCells: {
+            range: makeSheetsGridRange(rowRange),
+            mergeType: "MERGE_ROWS",
+          },
         });
       }
-    } else if (mergeType === 'MERGE_VERTICALLY') {
+    } else if (mergeType === "MERGE_VERTICALLY") {
       for (let i = 0; i < this.getNumColumns(); i++) {
         const colRange = this.offset(0, i, this.getNumRows(), 1);
         requests.push({
-          mergeCells: { range: makeSheetsGridRange(colRange), mergeType: 'MERGE_COLUMNS' },
+          mergeCells: {
+            range: makeSheetsGridRange(colRange),
+            mergeType: "MERGE_COLUMNS",
+          },
         });
       }
-    } else { // MERGE_ALL
+    } else {
+      // MERGE_ALL
       requests.push({
-        mergeCells: { range: makeSheetsGridRange(this), mergeType: 'MERGE_ALL' },
+        mergeCells: {
+          range: makeSheetsGridRange(this),
+          mergeType: "MERGE_ALL",
+        },
       });
     }
 
@@ -228,13 +283,13 @@ export class FakeSheetRange {
   merge() {
     const { nargs, matchThrow } = signatureArgs(arguments, "Range.merge");
     if (nargs) matchThrow();
-    return this.__merge('MERGE_ALL');
+    return this.__merge("MERGE_ALL");
   }
 
   mergeAcross() {
     const { nargs, matchThrow } = signatureArgs(arguments, "Range.mergeAcross");
     if (nargs) matchThrow();
-    return this.__merge('MERGE_ACROSS');
+    return this.__merge("MERGE_ACROSS");
   }
 
   moveTo(target) {
@@ -249,7 +304,7 @@ export class FakeSheetRange {
           rowIndex: target.getRow() - 1,
           columnIndex: target.getColumn() - 1,
         },
-        pasteType: 'PASTE_NORMAL', // Moves values, formats, etc.
+        pasteType: "PASTE_NORMAL", // Moves values, formats, etc.
       },
     };
 
@@ -260,9 +315,12 @@ export class FakeSheetRange {
   }
 
   mergeVertically() {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.mergeVertically");
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Range.mergeVertically"
+    );
     if (nargs) matchThrow();
-    return this.__merge('MERGE_VERTICALLY');
+    return this.__merge("MERGE_VERTICALLY");
   }
 
   breakApart() {
@@ -287,39 +345,55 @@ export class FakeSheetRange {
     const destGrid = makeGridRange(destination);
 
     // Validate destination contains source
-    if (destGrid.sheetId !== sourceGrid.sheetId ||
+    if (
+      destGrid.sheetId !== sourceGrid.sheetId ||
       destGrid.startRowIndex > sourceGrid.startRowIndex ||
       destGrid.endRowIndex < sourceGrid.endRowIndex ||
       destGrid.startColumnIndex > sourceGrid.startColumnIndex ||
-      destGrid.endColumnIndex < sourceGrid.endColumnIndex) {
-      throw new Error('The destination range must contain the source range.');
+      destGrid.endColumnIndex < sourceGrid.endColumnIndex
+    ) {
+      throw new Error("The destination range must contain the source range.");
     }
 
-    const extendsDown = destGrid.startRowIndex === sourceGrid.startRowIndex && destGrid.endRowIndex > sourceGrid.endRowIndex;
-    const extendsUp = destGrid.endRowIndex === sourceGrid.endRowIndex && destGrid.startRowIndex < sourceGrid.startRowIndex;
-    const extendsRight = destGrid.startColumnIndex === sourceGrid.startColumnIndex && destGrid.endColumnIndex > sourceGrid.endColumnIndex;
-    const extendsLeft = destGrid.endColumnIndex === sourceGrid.endColumnIndex && destGrid.startColumnIndex < sourceGrid.startColumnIndex;
+    const extendsDown =
+      destGrid.startRowIndex === sourceGrid.startRowIndex &&
+      destGrid.endRowIndex > sourceGrid.endRowIndex;
+    const extendsUp =
+      destGrid.endRowIndex === sourceGrid.endRowIndex &&
+      destGrid.startRowIndex < sourceGrid.startRowIndex;
+    const extendsRight =
+      destGrid.startColumnIndex === sourceGrid.startColumnIndex &&
+      destGrid.endColumnIndex > sourceGrid.endColumnIndex;
+    const extendsLeft =
+      destGrid.endColumnIndex === sourceGrid.endColumnIndex &&
+      destGrid.startColumnIndex < sourceGrid.startColumnIndex;
 
-    const sameCols = destGrid.startColumnIndex === sourceGrid.startColumnIndex && destGrid.endColumnIndex === sourceGrid.endColumnIndex;
-    const sameRows = destGrid.startRowIndex === sourceGrid.startRowIndex && destGrid.endRowIndex === sourceGrid.endRowIndex;
+    const sameCols =
+      destGrid.startColumnIndex === sourceGrid.startColumnIndex &&
+      destGrid.endColumnIndex === sourceGrid.endColumnIndex;
+    const sameRows =
+      destGrid.startRowIndex === sourceGrid.startRowIndex &&
+      destGrid.endRowIndex === sourceGrid.endRowIndex;
 
     let dimension;
     let fillLength;
 
     if (extendsDown && sameCols) {
-      dimension = 'ROWS';
+      dimension = "ROWS";
       fillLength = destGrid.endRowIndex - sourceGrid.endRowIndex;
     } else if (extendsUp && sameCols) {
-      dimension = 'ROWS';
+      dimension = "ROWS";
       fillLength = -(sourceGrid.startRowIndex - destGrid.startRowIndex);
     } else if (extendsRight && sameRows) {
-      dimension = 'COLUMNS';
+      dimension = "COLUMNS";
       fillLength = destGrid.endColumnIndex - sourceGrid.endColumnIndex;
     } else if (extendsLeft && sameRows) {
-      dimension = 'COLUMNS';
+      dimension = "COLUMNS";
       fillLength = -(sourceGrid.startColumnIndex - destGrid.startColumnIndex);
     } else {
-      throw new Error('AutoFill destination range must extend the source range in only one direction.');
+      throw new Error(
+        "AutoFill destination range must extend the source range in only one direction."
+      );
     }
 
     const request = {
@@ -329,7 +403,7 @@ export class FakeSheetRange {
           dimension: dimension,
           fillLength: fillLength,
         },
-        useAlternateSeries: series.toString() === 'ALTERNATE_SERIES',
+        useAlternateSeries: series.toString() === "ALTERNATE_SERIES",
       },
     };
 
@@ -338,7 +412,10 @@ export class FakeSheetRange {
   }
 
   autoFillToNeighbor(series) {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.autoFillToNeighbor");
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Range.autoFillToNeighbor"
+    );
     if (nargs !== 1 || !isEnum(series)) matchThrow();
 
     const sheet = this.getSheet();
@@ -362,26 +439,40 @@ export class FakeSheetRange {
 
     // Check column to the left
     if (startCol > 1) {
-      const lastDataCell = sheet.getRange(maxRows, startCol - 1).getNextDataCell(Direction.UP);
-      if (lastDataCell.getValue() !== '') neighborLastRow = Math.max(neighborLastRow, lastDataCell.getRow());
+      const lastDataCell = sheet
+        .getRange(maxRows, startCol - 1)
+        .getNextDataCell(Direction.UP);
+      if (lastDataCell.getValue() !== "")
+        neighborLastRow = Math.max(neighborLastRow, lastDataCell.getRow());
     }
     // Check column to the right
     if (endCol < sheet.getMaxColumns()) {
-      const lastDataCell = sheet.getRange(maxRows, endCol + 1).getNextDataCell(Direction.UP);
-      if (lastDataCell.getValue() !== '') neighborLastRow = Math.max(neighborLastRow, lastDataCell.getRow());
+      const lastDataCell = sheet
+        .getRange(maxRows, endCol + 1)
+        .getNextDataCell(Direction.UP);
+      if (lastDataCell.getValue() !== "")
+        neighborLastRow = Math.max(neighborLastRow, lastDataCell.getRow());
     }
 
     if (neighborLastRow <= endRow) {
       return this; // No neighbor data to fill towards, or neighbor is shorter.
     }
 
-    const destinationRange = sheet.getRange(startRow, startCol, neighborLastRow - startRow + 1, sourceCols);
+    const destinationRange = sheet.getRange(
+      startRow,
+      startCol,
+      neighborLastRow - startRow + 1,
+      sourceCols
+    );
 
     return this.autoFill(destinationRange, series);
   }
 
   addDeveloperMetadata(key, value, visibility) {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.addDeveloperMetadata");
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Range.addDeveloperMetadata"
+    );
     if (nargs < 1 || nargs > 3) matchThrow();
     if (!is.string(key)) matchThrow();
 
@@ -389,13 +480,21 @@ export class FakeSheetRange {
     const maxRows = sheet.getMaxRows();
     const maxCols = sheet.getMaxColumns();
 
-    const isEntireRow = this.getNumRows() === 1 && this.getColumn() === 1 && this.getNumColumns() === maxCols;
-    const isEntireColumn = this.getNumColumns() === 1 && this.getRow() === 1 && this.getNumRows() === maxRows;
+    const isEntireRow =
+      this.getNumRows() === 1 &&
+      this.getColumn() === 1 &&
+      this.getNumColumns() === maxCols;
+    const isEntireColumn =
+      this.getNumColumns() === 1 &&
+      this.getRow() === 1 &&
+      this.getNumRows() === maxRows;
 
     if (!isEntireRow && !isEntireColumn) {
-      throw new Error('Adding developer metadata to arbitrary ranges is not currently supported. ' +
-        'Developer metadata may only be added to the top-level spreadsheet, an individual sheet, ' +
-        'or an entire row or column.');
+      throw new Error(
+        "Adding developer metadata to arbitrary ranges is not currently supported. " +
+          "Developer metadata may only be added to the top-level spreadsheet, an individual sheet, " +
+          "or an entire row or column."
+      );
     }
 
     let realValue = null;
@@ -414,9 +513,12 @@ export class FakeSheetRange {
 
     // Per documentation, if the range is a single column (and not a single cell), metadata is attached to the column.
     // Otherwise, it's attached to the first row.
-    const dimension = isEntireColumn ? 'COLUMNS' : 'ROWS';
-    const startIndex = dimension === 'ROWS' ? this.getRow() - 1 : this.getColumn() - 1;
-    const endIndex = startIndex + (dimension === 'ROWS' ? this.getNumRows() : this.getNumColumns());
+    const dimension = isEntireColumn ? "COLUMNS" : "ROWS";
+    const startIndex =
+      dimension === "ROWS" ? this.getRow() - 1 : this.getColumn() - 1;
+    const endIndex =
+      startIndex +
+      (dimension === "ROWS" ? this.getNumRows() : this.getNumColumns());
 
     const metadata = {
       metadataKey: key,
@@ -443,13 +545,19 @@ export class FakeSheetRange {
   }
 
   createDeveloperMetadataFinder() {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.createDeveloperMetadataFinder");
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Range.createDeveloperMetadataFinder"
+    );
     if (nargs) matchThrow();
     return newFakeDeveloperMetadataFinder(this);
   }
 
   collapseGroups() {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.collapseGroups");
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Range.collapseGroups"
+    );
     if (nargs) matchThrow();
     const sheet = this.getSheet();
     const spreadsheet = sheet.getParent();
@@ -457,48 +565,79 @@ export class FakeSheetRange {
     const sheetId = sheet.getSheetId();
 
     // Get all groups for the entire spreadsheet to find the ones on our sheet.
-    const meta = spreadsheet.__getMetaProps('sheets(properties.sheetId,rowGroups(range,depth,collapsed),columnGroups(range,depth,collapsed))');
-    const sheetMeta = meta.sheets.find(s => s.properties.sheetId === sheetId);
+    const meta = spreadsheet.__getMetaProps(
+      "sheets(properties.sheetId,rowGroups(range,depth,collapsed),columnGroups(range,depth,collapsed))"
+    );
+    const sheetMeta = meta.sheets.find((s) => s.properties.sheetId === sheetId);
 
     if (!sheetMeta) return this;
 
     const allGroups = [
-      ...(sheetMeta.rowGroups || []).map(g => ({ ...g, dimension: g.range.dimension })),
-      ...(sheetMeta.columnGroups || []).map(g => ({ ...g, dimension: g.range.dimension }))
+      ...(sheetMeta.rowGroups || []).map((g) => ({
+        ...g,
+        dimension: g.range.dimension,
+      })),
+      ...(sheetMeta.columnGroups || []).map((g) => ({
+        ...g,
+        dimension: g.range.dimension,
+      })),
     ];
 
     const thisGridRange = this.__gridRange;
 
     // Find groups wholly contained within the range
-    const whollyContainedGroups = allGroups.filter(group => {
+    const whollyContainedGroups = allGroups.filter((group) => {
       const groupRange = group.range;
       if (groupRange.sheetId !== sheetId) return false;
       const dim = group.dimension;
-      const thisStart = dim === 'ROWS' ? thisGridRange.startRowIndex : thisGridRange.startColumnIndex;
-      const thisEnd = dim === 'ROWS' ? thisGridRange.endRowIndex : thisGridRange.endColumnIndex;
-      return groupRange.startIndex >= thisStart && groupRange.endIndex <= thisEnd;
+      const thisStart =
+        dim === "ROWS"
+          ? thisGridRange.startRowIndex
+          : thisGridRange.startColumnIndex;
+      const thisEnd =
+        dim === "ROWS"
+          ? thisGridRange.endRowIndex
+          : thisGridRange.endColumnIndex;
+      return (
+        groupRange.startIndex >= thisStart && groupRange.endIndex <= thisEnd
+      );
     });
 
     let groupsToCollapse = [];
     if (whollyContainedGroups.length > 0) {
       // Per observed behavior, only collapse the outermost groups in the selection.
-      const minDepth = Math.min(...whollyContainedGroups.map(g => g.depth));
-      groupsToCollapse = whollyContainedGroups.filter(g => g.depth === minDepth);
+      const minDepth = Math.min(...whollyContainedGroups.map((g) => g.depth));
+      groupsToCollapse = whollyContainedGroups.filter(
+        (g) => g.depth === minDepth
+      );
     } else {
       // "If no group is fully within the range, the deepest expanded group that is partially within the range is collapsed."
-      const intersectingGroups = allGroups.filter(group => {
+      const intersectingGroups = allGroups.filter((group) => {
         const groupRange = group.range;
         if (groupRange.sheetId !== sheetId) return false;
         const dim = group.dimension;
-        const thisStart = dim === 'ROWS' ? thisGridRange.startRowIndex : thisGridRange.startColumnIndex;
-        const thisEnd = dim === 'ROWS' ? thisGridRange.endRowIndex : thisGridRange.endColumnIndex;
-        return Math.max(thisStart, groupRange.startIndex) < Math.min(thisEnd, groupRange.endIndex);
+        const thisStart =
+          dim === "ROWS"
+            ? thisGridRange.startRowIndex
+            : thisGridRange.startColumnIndex;
+        const thisEnd =
+          dim === "ROWS"
+            ? thisGridRange.endRowIndex
+            : thisGridRange.endColumnIndex;
+        return (
+          Math.max(thisStart, groupRange.startIndex) <
+          Math.min(thisEnd, groupRange.endIndex)
+        );
       });
 
-      const expandedIntersecting = intersectingGroups.filter(g => !g.collapsed);
+      const expandedIntersecting = intersectingGroups.filter(
+        (g) => !g.collapsed
+      );
       if (expandedIntersecting.length > 0) {
-        const maxDepth = Math.max(...expandedIntersecting.map(g => g.depth));
-        const deepestGroup = expandedIntersecting.find(g => g.depth === maxDepth);
+        const maxDepth = Math.max(...expandedIntersecting.map((g) => g.depth));
+        const deepestGroup = expandedIntersecting.find(
+          (g) => g.depth === maxDepth
+        );
         if (deepestGroup) {
           groupsToCollapse.push(deepestGroup);
         }
@@ -507,14 +646,14 @@ export class FakeSheetRange {
 
     if (groupsToCollapse.length === 0) return this;
 
-    const requests = groupsToCollapse.map(group => ({
+    const requests = groupsToCollapse.map((group) => ({
       updateDimensionGroup: {
         dimensionGroup: {
           range: group.range,
           depth: group.depth,
           collapsed: true,
         },
-        fields: 'collapsed',
+        fields: "collapsed",
       },
     }));
 
@@ -523,47 +662,67 @@ export class FakeSheetRange {
   }
 
   expandGroups() {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.expandGroups");
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Range.expandGroups"
+    );
     if (nargs) matchThrow();
 
     const sheet = this.getSheet();
     const spreadsheet = sheet.getParent();
     const sheetId = sheet.getSheetId();
 
-    const meta = spreadsheet.__getMetaProps('sheets(properties.sheetId,rowGroups(range,depth,collapsed),columnGroups(range,depth,collapsed))');
-    const sheetMeta = meta.sheets.find(s => s.properties.sheetId === sheetId);
+    const meta = spreadsheet.__getMetaProps(
+      "sheets(properties.sheetId,rowGroups(range,depth,collapsed),columnGroups(range,depth,collapsed))"
+    );
+    const sheetMeta = meta.sheets.find((s) => s.properties.sheetId === sheetId);
     if (!sheetMeta) return this;
 
     const allGroups = [
-      ...(sheetMeta.rowGroups || []).map(g => ({ ...g, dimension: g.range.dimension })),
-      ...(sheetMeta.columnGroups || []).map(g => ({ ...g, dimension: g.range.dimension }))
+      ...(sheetMeta.rowGroups || []).map((g) => ({
+        ...g,
+        dimension: g.range.dimension,
+      })),
+      ...(sheetMeta.columnGroups || []).map((g) => ({
+        ...g,
+        dimension: g.range.dimension,
+      })),
     ];
 
     const thisGridRange = this.__gridRange;
 
     // "Expands the collapsed groups whose range or control toggle intersects with this range."
-    const intersectingGroups = allGroups.filter(group => {
+    const intersectingGroups = allGroups.filter((group) => {
       const groupRange = group.range;
       if (groupRange.sheetId !== sheetId) return false;
       const dim = group.dimension;
-      const thisStart = dim === 'ROWS' ? thisGridRange.startRowIndex : thisGridRange.startColumnIndex;
-      const thisEnd = dim === 'ROWS' ? thisGridRange.endRowIndex : thisGridRange.endColumnIndex;
-      return Math.max(thisStart, groupRange.startIndex) < Math.min(thisEnd, groupRange.endIndex);
+      const thisStart =
+        dim === "ROWS"
+          ? thisGridRange.startRowIndex
+          : thisGridRange.startColumnIndex;
+      const thisEnd =
+        dim === "ROWS"
+          ? thisGridRange.endRowIndex
+          : thisGridRange.endColumnIndex;
+      return (
+        Math.max(thisStart, groupRange.startIndex) <
+        Math.min(thisEnd, groupRange.endIndex)
+      );
     });
 
     // Per observed behavior, expand all intersecting groups that are currently collapsed.
-    const groupsToExpand = intersectingGroups.filter(g => g.collapsed);
+    const groupsToExpand = intersectingGroups.filter((g) => g.collapsed);
 
     if (groupsToExpand.length === 0) return this;
 
-    const requests = groupsToExpand.map(group => ({
+    const requests = groupsToExpand.map((group) => ({
       updateDimensionGroup: {
         dimensionGroup: {
           range: group.range,
           depth: group.depth,
           collapsed: false,
         },
-        fields: 'collapsed',
+        fields: "collapsed",
       },
     }));
 
@@ -572,7 +731,10 @@ export class FakeSheetRange {
   }
 
   __shiftGroupDepth(dimension, delta) {
-    const { nargs, matchThrow } = signatureArgs([delta], `Range.shift${dimension === 'ROWS' ? 'Row' : 'Column'}GroupDepth`);
+    const { nargs, matchThrow } = signatureArgs(
+      [delta],
+      `Range.shift${dimension === "ROWS" ? "Row" : "Column"}GroupDepth`
+    );
     if (nargs !== 1 || !is.integer(delta)) matchThrow();
     if (delta === 0) return this;
 
@@ -580,11 +742,16 @@ export class FakeSheetRange {
     const dimensionRange = {
       sheetId: this.getSheet().getSheetId(),
       dimension: dimension,
-      startIndex: dimension === 'ROWS' ? gridRange.startRowIndex : gridRange.startColumnIndex,
-      endIndex: dimension === 'ROWS' ? gridRange.endRowIndex : gridRange.endColumnIndex,
+      startIndex:
+        dimension === "ROWS"
+          ? gridRange.startRowIndex
+          : gridRange.startColumnIndex,
+      endIndex:
+        dimension === "ROWS" ? gridRange.endRowIndex : gridRange.endColumnIndex,
     };
 
-    const requestType = delta > 0 ? 'addDimensionGroup' : 'deleteDimensionGroup';
+    const requestType =
+      delta > 0 ? "addDimensionGroup" : "deleteDimensionGroup";
     const requestBody = { range: dimensionRange };
 
     const requests = Array.from({ length: Math.abs(delta) }, () => ({
@@ -596,55 +763,72 @@ export class FakeSheetRange {
   }
 
   shiftRowGroupDepth(delta) {
-    return this.__shiftGroupDepth('ROWS', delta);
+    return this.__shiftGroupDepth("ROWS", delta);
   }
 
   shiftColumnGroupDepth(delta) {
-    return this.__shiftGroupDepth('COLUMNS', delta);
+    return this.__shiftGroupDepth("COLUMNS", delta);
   }
 
   getDeveloperMetadata() {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.getDeveloperMetadata");
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Range.getDeveloperMetadata"
+    );
     if (nargs) matchThrow();
     // Per documentation, this is an exact match search, not an intersecting one.
     return this.createDeveloperMetadataFinder().find();
   }
 
   applyRowBanding(bandingTheme, header, footer) {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.applyRowBanding");
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Range.applyRowBanding"
+    );
     if (nargs > 3) matchThrow();
-    if (nargs >= 1 && !is.undefined(bandingTheme) && !isEnum(bandingTheme)) matchThrow();
-    if (nargs >= 2 && !is.undefined(header) && !is.boolean(header)) matchThrow();
-    if (nargs >= 3 && !is.undefined(footer) && !is.boolean(footer)) matchThrow();
+    if (nargs >= 1 && !is.undefined(bandingTheme) && !isEnum(bandingTheme))
+      matchThrow();
+    if (nargs >= 2 && !is.undefined(header) && !is.boolean(header))
+      matchThrow();
+    if (nargs >= 3 && !is.undefined(footer) && !is.boolean(footer))
+      matchThrow();
 
     return this.__applyBanding({
-      dimension: 'ROWS',
+      dimension: "ROWS",
       bandingTheme,
       header,
-      footer
+      footer,
     });
   }
 
   applyColumnBanding(bandingTheme, header, footer) {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.applyColumnBanding");
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Range.applyColumnBanding"
+    );
     if (nargs > 3) matchThrow();
-    if (nargs >= 1 && !is.undefined(bandingTheme) && !isEnum(bandingTheme)) matchThrow();
-    if (nargs >= 2 && !is.undefined(header) && !is.boolean(header)) matchThrow();
-    if (nargs >= 3 && !is.undefined(footer) && !is.boolean(footer)) matchThrow();
+    if (nargs >= 1 && !is.undefined(bandingTheme) && !isEnum(bandingTheme))
+      matchThrow();
+    if (nargs >= 2 && !is.undefined(header) && !is.boolean(header))
+      matchThrow();
+    if (nargs >= 3 && !is.undefined(footer) && !is.boolean(footer))
+      matchThrow();
 
     return this.__applyBanding({
-      dimension: 'COLUMNS',
+      dimension: "COLUMNS",
       bandingTheme,
       header,
-      footer
+      footer,
     });
   }
 
   __applyBanding({ dimension, bandingTheme, header, footer }) {
-    const themeName = bandingTheme ? bandingTheme.toString() : 'LIGHT_GREY';
+    const themeName = bandingTheme ? bandingTheme.toString() : "LIGHT_GREY";
     const theme = bandingThemeMap[themeName] || bandingThemeMap.LIGHT_GREY;
 
-    const bandedRange = Sheets.newBandedRange().setRange(makeSheetsGridRange(this));
+    const bandedRange = Sheets.newBandedRange().setRange(
+      makeSheetsGridRange(this)
+    );
     const properties = Sheets.newBandingProperties();
 
     if (header) properties.setHeaderColorStyle(theme.header);
@@ -653,14 +837,17 @@ export class FakeSheetRange {
     properties.setFirstBandColorStyle(theme.first);
     properties.setSecondBandColorStyle(theme.second);
 
-    if (dimension === 'ROWS') {
+    if (dimension === "ROWS") {
       bandedRange.setRowProperties(properties);
     } else {
       bandedRange.setColumnProperties(properties);
     }
 
     const request = { addBanding: { bandedRange } };
-    const response = batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests: [request] });
+    const response = batchUpdate({
+      spreadsheet: this.__getSpreadsheet(),
+      requests: [request],
+    });
     const newBandedRange = response.replies[0].addBanding.bandedRange;
     return newFakeBanding(newBandedRange, this.getSheet());
   }
@@ -669,12 +856,29 @@ export class FakeSheetRange {
     const { nargs, matchThrow } = signatureArgs(arguments, "Range.getBandings");
     if (nargs > 0) matchThrow();
     const sheet = this.getSheet();
-    const sheetMeta = sheet.getParent().__getMetaProps(`sheets(bandedRanges,properties.sheetId)`);
-    const thisSheetMeta = sheetMeta.sheets.find(s => s.properties.sheetId === sheet.getSheetId());
+    const sheetMeta = sheet
+      .getParent()
+      .__getMetaProps(`sheets(bandedRanges,properties.sheetId)`);
+    const thisSheetMeta = sheetMeta.sheets.find(
+      (s) => s.properties.sheetId === sheet.getSheetId()
+    );
     const allBandingsOnSheet = thisSheetMeta.bandedRanges || [];
     const thisGridRange = makeGridRange(this);
-    const intersectingBandings = allBandingsOnSheet.filter(b => b.range.sheetId === thisGridRange.sheetId && Math.max(0, Math.min(thisGridRange.endColumnIndex, b.range.endColumnIndex) - Math.max(thisGridRange.startColumnIndex, b.range.startColumnIndex)) > 0 && Math.max(0, Math.min(thisGridRange.endRowIndex, b.range.endRowIndex) - Math.max(thisGridRange.startRowIndex, b.range.startRowIndex)) > 0);
-    return intersectingBandings.map(b => newFakeBanding(b, sheet));
+    const intersectingBandings = allBandingsOnSheet.filter(
+      (b) =>
+        b.range.sheetId === thisGridRange.sheetId &&
+        Math.max(
+          0,
+          Math.min(thisGridRange.endColumnIndex, b.range.endColumnIndex) -
+            Math.max(thisGridRange.startColumnIndex, b.range.startColumnIndex)
+        ) > 0 &&
+        Math.max(
+          0,
+          Math.min(thisGridRange.endRowIndex, b.range.endRowIndex) -
+            Math.max(thisGridRange.startRowIndex, b.range.startRowIndex)
+        ) > 0
+    );
+    return intersectingBandings.map((b) => newFakeBanding(b, sheet));
   }
 
   /**
@@ -683,56 +887,59 @@ export class FakeSheetRange {
    * @returns {boolean}
    */
   canEdit() {
-
     // we'll need to use the Drive API to get the permissions
-    const owner = this.__getSpreadsheet().getOwner()
-    const user = Session.getEffectiveUser()
+    const owner = this.__getSpreadsheet().getOwner();
+    const user = Session.getEffectiveUser();
 
     // the owner ? - can do anything
-    if (user.getEmail() === owner.getEmail()) return true
+    if (user.getEmail() === owner.getEmail()) return true;
 
     // edit privileges ? if yes then see if the range is protected
-    const editors = this.__getSpreadsheet().getEditors()
-    if (!editors.find(f => f.getEmail() === user.getEmail())) return null
-
-
+    const editors = this.__getSpreadsheet().getEditors();
+    if (!editors.find((f) => f.getEmail() === user.getEmail())) return null;
   }
   __clear(fields) {
-
-    const range = makeSheetsGridRange(this)
-    const requests = [{
-      updateCells: Sheets.newUpdateCellsRequest().setFields(fields).setRange(range)
-    }]
+    const range = makeSheetsGridRange(this);
+    const requests = [
+      {
+        updateCells: Sheets.newUpdateCellsRequest()
+          .setFields(fields)
+          .setRange(range),
+      },
+    ];
 
     batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests });
-    return this
+    return this;
   }
   /**
-   * clears  (notes) 
+   * clears  (notes)
    * @returns {FakeSheetRange} self
    */
   clearNote() {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.clearNote")
-    if (nargs) matchThrow()
-    return this.__clear("note")
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.clearNote");
+    if (nargs) matchThrow();
+    return this.__clear("note");
   }
   /**
-   * clears  (values) 
+   * clears  (values)
    * @returns {FakeSheetRange} self
    */
   clearContent() {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.clearContent")
-    if (nargs) matchThrow()
-    return this.__clear("userEnteredValue")
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Range.clearContent"
+    );
+    if (nargs) matchThrow();
+    return this.__clear("userEnteredValue");
   }
   /**
-   * clears  (format) 
+   * clears  (format)
    * @returns {FakeSheetRange} self
    */
   clearFormat() {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.clearFormat")
-    if (nargs) matchThrow()
-    return this.__clear("userEnteredFormat")
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.clearFormat");
+    if (nargs) matchThrow();
+    return this.__clear("userEnteredFormat");
   }
 
   /**
@@ -741,7 +948,7 @@ export class FakeSheetRange {
    */
   clear(options) {
     // options is optional
-    // 
+    //
     // TODO
     /* 
 commentsOnly	Boolean	Whether to clear only the comments.
@@ -752,9 +959,18 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
 */
 
     const { nargs, matchThrow } = signatureArgs(arguments, "Sheet.clear");
-    if (nargs > 1 || (nargs === 1 && !is.object(options) && !is.undefined(options))) matchThrow();
+    if (
+      nargs > 1 ||
+      (nargs === 1 && !is.object(options) && !is.undefined(options))
+    )
+      matchThrow();
     if (nargs === 1 && !is.undefined(options)) {
-      if (!Reflect.ownKeys(options).every(f => ['contentsOnly', 'formatOnly'].includes(f))) matchThrow()
+      if (
+        !Reflect.ownKeys(options).every((f) =>
+          ["contentsOnly", "formatOnly"].includes(f)
+        )
+      )
+        matchThrow();
     }
     const fields = [];
     // Based on test case, sheet.clear() with no options clears content and format.
@@ -766,11 +982,10 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
     }
 
     if (fields.length > 0) {
-      return this.__clear(fields.join(','));
+      return this.__clear(fields.join(","));
     }
     return this;
   }
-
 
   /**
    * insertCells(shiftDimension) https://developers.google.com/apps-script/reference/spreadsheet/range#insertcellsshiftdimension
@@ -786,7 +1001,10 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
       .setRange(makeSheetsGridRange(this))
       .setShiftDimension(shiftDimension.toString());
 
-    batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests: [{ insertRange: request }] });
+    batchUpdate({
+      spreadsheet: this.__getSpreadsheet(),
+      requests: [{ insertRange: request }],
+    });
 
     return this;
   }
@@ -797,30 +1015,34 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
    * @returns {FakeFilter}
    */
   createFilter() {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.createFilter");
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Range.createFilter"
+    );
     if (nargs) matchThrow();
 
     const sheet = this.getSheet();
     if (sheet.getFilter()) {
-      throw new Error("You can't create a filter in a sheet that already has a filter.");
+      throw new Error(
+        "You can't create a filter in a sheet that already has a filter."
+      );
     }
 
     const request = {
       setBasicFilter: {
         filter: {
-          range: makeSheetsGridRange(this)
-        }
-      }
+          range: makeSheetsGridRange(this),
+        },
+      },
     };
 
     batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests: [request] });
     return sheet.getFilter();
   }
   clearDataValidations() {
-    this.setDataValidations(null)
-    return this
+    this.setDataValidations(null);
+    return this;
   }
-
 
   /**
    * createPivotTable(sourceData) https://developers.google.com/apps-script/reference/spreadsheet/range#createpivottablesourcedata
@@ -829,7 +1051,10 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
    * @returns {FakePivotTable} The new pivot table.
    */
   createPivotTable(sourceData) {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.createPivotTable");
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Range.createPivotTable"
+    );
     if (nargs !== 1 || !isRange(sourceData)) matchThrow();
 
     const sheet = this.getSheet();
@@ -840,7 +1065,7 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
 
     const pivotTableApiObject = {
       source: makeSheetsGridRange(sourceData),
-      valueLayout: 'HORIZONTAL', // Default layout
+      valueLayout: "HORIZONTAL", // Default layout
     };
 
     const cellData = Sheets.newCellData().setPivotTable(pivotTableApiObject);
@@ -850,18 +1075,23 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
       .setStart({
         sheetId: anchorCell.getSheet().getSheetId(),
         rowIndex: anchorCell.getRow() - 1,
-        columnIndex: anchorCell.getColumn() - 1
+        columnIndex: anchorCell.getColumn() - 1,
       })
       .setRows([rowData])
-      .setFields('pivotTable');
+      .setFields("pivotTable");
 
-    batchUpdate({ spreadsheet, requests: [{ updateCells: updateCellsRequest }] });
+    batchUpdate({
+      spreadsheet,
+      requests: [{ updateCells: updateCellsRequest }],
+    });
 
     const pivotTables = sheet.getPivotTables();
-    const newPivotTable = pivotTables.find(pt => pt.getAnchorCell().getA1Notation() === anchorCell.getA1Notation());
+    const newPivotTable = pivotTables.find(
+      (pt) => pt.getAnchorCell().getA1Notation() === anchorCell.getA1Notation()
+    );
 
     if (!newPivotTable) {
-      throw new Error('Failed to create or find pivot table after update.');
+      throw new Error("Failed to create or find pivot table after update.");
     }
 
     return newPivotTable;
@@ -894,7 +1124,10 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
       .setRange(makeSheetsGridRange(this))
       .setShiftDimension(shiftDimension.toString());
 
-    batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests: [{ deleteRange: request }] });
+    batchUpdate({
+      spreadsheet: this.__getSpreadsheet(),
+      requests: [{ deleteRange: request }],
+    });
 
     return this;
   }
@@ -908,57 +1141,57 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
    * @param {boolean} [transposed] Whether the range should be pasted in its transposed orientation.
    */
   copyTo(destination, copyPasteTypeOrOptions, transposed) {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.copyTo")
-    if (nargs < 1 || nargs > 3) matchThrow()
-    if (!isRange(destination)) matchThrow()
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.copyTo");
+    if (nargs < 1 || nargs > 3) matchThrow();
+    if (!isRange(destination)) matchThrow();
 
     // set the defaults
     const copyPaste = Sheets.newCopyPasteRequest()
       .setPasteType("PASTE_NORMAL")
-      .setPasteOrientation("NORMAL")
+      .setPasteOrientation("NORMAL");
 
     // the second argument can be with options (modern) or enum + transpose
     if (nargs > 1) {
       // we had an old style variant
       if (isEnum(copyPasteTypeOrOptions)) {
-        copyPaste.setPasteType(copyPasteTypeOrOptions.toString())
+        copyPaste.setPasteType(copyPasteTypeOrOptions.toString());
         if (nargs > 2) {
-          if (!is.boolean(transposed)) matchThrow()
-          copyPaste.setPasteOrientation(transposed ? "TRANSPOSE" : "NORMAL")
+          if (!is.boolean(transposed)) matchThrow();
+          copyPaste.setPasteOrientation(transposed ? "TRANSPOSE" : "NORMAL");
         }
       } else {
         // modern signature with options
-        if (nargs !== 2 || !is.object(copyPasteTypeOrOptions)) matchThrow()
-        if (Reflect.ownKeys(copyPasteTypeOrOptions).length !== 1) matchThrow()
-        if (copyPasteTypeOrOptions.contentsOnly) copyPaste.setPasteType("PASTE_VALUES")
-        else if (copyPasteTypeOrOptions.formatOnly) copyPaste.setPasteType("PASTE_FORMAT")
-        else matchThrow()
-
+        if (nargs !== 2 || !is.object(copyPasteTypeOrOptions)) matchThrow();
+        if (Reflect.ownKeys(copyPasteTypeOrOptions).length !== 1) matchThrow();
+        if (copyPasteTypeOrOptions.contentsOnly)
+          copyPaste.setPasteType("PASTE_VALUES");
+        else if (copyPasteTypeOrOptions.formatOnly)
+          copyPaste.setPasteType("PASTE_FORMAT");
+        else matchThrow();
       }
     }
 
     copyPaste
-      .setDestination(
-        makeSheetsGridRange(destination)
-      )
-      .setSource(makeSheetsGridRange(this))
-
+      .setDestination(makeSheetsGridRange(destination))
+      .setSource(makeSheetsGridRange(this));
 
     const requests = [{ copyPaste }];
     batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests });
 
     return this;
-
   }
 
-
   __copyToRange(pasteType, gridIdOrSheet, column, columnEnd, row, rowEnd) {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.copytorange")
-    if (nargs !== 6) matchThrow()
-    const args = Array.from(arguments)
-    if (!args.slice(2).every(f => is.integer(f) && is.positiveNumber(f))) matchThrow()
-    if (!is.integer(gridIdOrSheet) && !(is.object(gridIdOrSheet) && gridIdOrSheet.toString() === "Sheet")) matchThrow()
-
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.copytorange");
+    if (nargs !== 6) matchThrow();
+    const args = Array.from(arguments);
+    if (!args.slice(2).every((f) => is.integer(f) && is.positiveNumber(f)))
+      matchThrow();
+    if (
+      !is.integer(gridIdOrSheet) &&
+      !(is.object(gridIdOrSheet) && gridIdOrSheet.toString() === "Sheet")
+    )
+      matchThrow();
 
     // this is the behavior observed - different than docs
     /*
@@ -968,20 +1201,28 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
     if the target range is greater that the source rang eit will duplicate all of the source range as many times as will fit - but never duplicate and truncate - so if the source range is 3 wide and the tharget range is 5 wide it will only copy the 3 columns. If the target is 7 wide, it will duplicate the source twice, making 6 columns. And ignore the 7th column.
     there's no need to do anything special here as the sheets api behave the same way as the apps script ervice
     */
-    const targetGrid = sortOutGridForCopy(gridIdOrSheet, column, columnEnd, row, rowEnd)
-    const sourceGrid = makeGridRange(this)
+    const targetGrid = sortOutGridForCopy(
+      gridIdOrSheet,
+      column,
+      columnEnd,
+      row,
+      rowEnd
+    );
+    const sourceGrid = makeGridRange(this);
 
     const copyPaste = Sheets.newCopyPasteRequest()
       .setSource(sourceGrid)
       .setPasteType(pasteType)
       .setDestination(targetGrid)
-      .setPasteOrientation("NORMAL")
+      .setPasteOrientation("NORMAL");
 
-    const requests = [{
-      copyPaste
-    }]
+    const requests = [
+      {
+        copyPaste,
+      },
+    ];
     batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests });
-    return this
+    return this;
   }
 
   /**
@@ -995,13 +1236,26 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
    * @return {FakeSheetRange} self
    */
   copyValuesToRange(gridIdOrSheet, column, columnEnd, row, rowEnd) {
-    return this.__copyToRange("PASTE_VALUES", gridIdOrSheet, column, columnEnd, row, rowEnd)
+    return this.__copyToRange(
+      "PASTE_VALUES",
+      gridIdOrSheet,
+      column,
+      columnEnd,
+      row,
+      rowEnd
+    );
   }
 
   copyFormatToRange(gridIdOrSheet, column, columnEnd, row, rowEnd) {
-    return this.__copyToRange("PASTE_FORMAT", gridIdOrSheet, column, columnEnd, row, rowEnd)
+    return this.__copyToRange(
+      "PASTE_FORMAT",
+      gridIdOrSheet,
+      column,
+      columnEnd,
+      row,
+      rowEnd
+    );
   }
-
 
   /**
    * protect() https://developers.google.com/apps-script/reference/spreadsheet/sheet#protect
@@ -1009,14 +1263,14 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
    * @return {FakeProtection}
    */
   protect() {
-    return newFakeProtection(SpreadsheetApp.ProtectionType.RANGE, this)
+    return newFakeProtection(SpreadsheetApp.ProtectionType.RANGE, this);
   }
 
   getA1Notation() {
     // For ranges created via getRange(a1Notation), this.__a1Notation is the most reliable source,
     // especially for unbounded ranges, as the underlying grid parsing can be buggy.
     if (this.__a1Notation) {
-      const a1 = this.__a1Notation.split('!').pop();
+      const a1 = this.__a1Notation.split("!").pop();
 
       // Handle row-only ranges like "5:7" or inverted "7:5"
       const rowMatch = a1.match(/^(\d+):(\d+)$/);
@@ -1033,7 +1287,10 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
         const col1 = colMatch[1].toUpperCase();
         const col2 = colMatch[2].toUpperCase();
         // Simple sort for columns: shorter one is smaller, then alphabetical
-        if (col1.length > col2.length || (col1.length === col2.length && col1 > col2)) {
+        if (
+          col1.length > col2.length ||
+          (col1.length === col2.length && col1 > col2)
+        ) {
           return `${col2}:${col1}`;
         }
         return `${col1}:${col2}`;
@@ -1049,11 +1306,16 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
     // Fallback for ranges created by other means (e.g., offset) or simple bounded ranges
     if (this.__hasGrid) {
       const grid = this.__gridRange; // Use the getter to ensure it's expanded
-      return SheetUtils.toRange(grid.startRowIndex + 1, grid.startColumnIndex + 1, grid.endRowIndex, grid.endColumnIndex);
+      return SheetUtils.toRange(
+        grid.startRowIndex + 1,
+        grid.startColumnIndex + 1,
+        grid.endRowIndex,
+        grid.endColumnIndex
+      );
     }
 
     // Default fallback
-    return this.__a1Notation ? this.__a1Notation.split('!').pop() : "";
+    return this.__a1Notation ? this.__a1Notation.split("!").pop() : "";
   }
 
   /**
@@ -1061,7 +1323,7 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
    * @returns {boolean}
    */
   isStartRowBounded() {
-    return Reflect.has(this.__apiGridRange, 'startRowIndex');
+    return Reflect.has(this.__apiGridRange, "startRowIndex");
   }
 
   /**
@@ -1069,7 +1331,7 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
    * @returns {boolean}
    */
   isEndRowBounded() {
-    return Reflect.has(this.__apiGridRange, 'endRowIndex');
+    return Reflect.has(this.__apiGridRange, "endRowIndex");
   }
 
   /**
@@ -1077,7 +1339,7 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
    * @returns {boolean}
    */
   isStartColumnBounded() {
-    return Reflect.has(this.__apiGridRange, 'startColumnIndex');
+    return Reflect.has(this.__apiGridRange, "startColumnIndex");
   }
 
   /**
@@ -1085,18 +1347,17 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
    * @returns {boolean}
    */
   isEndColumnBounded() {
-    return Reflect.has(this.__apiGridRange, 'endColumnIndex');
+    return Reflect.has(this.__apiGridRange, "endColumnIndex");
   }
-
 
   /**
    * these 2 dont exist in the documentation any more - assume they have been renamed as getBackground(s)
    */
   getBackgroundColor() {
-    return this.getBackground()
+    return this.getBackground();
   }
   getBackgroundColors() {
-    return this.getBackgrounds()
+    return this.getBackgrounds();
   }
 
   /**
@@ -1107,116 +1368,114 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
    */
   getCell(row, column) {
     // let offset check args
-    return this.offset(row - 1, column - 1, 1, 1)
+    return this.offset(row - 1, column - 1, 1, 1);
   }
   getColumn() {
-    return this.__gridRange.startColumnIndex + 1
+    return this.__gridRange.startColumnIndex + 1;
   }
   getColumnIndex() {
-    return this.getColumn()
+    return this.getColumn();
   }
-
 
   getEndColumn() {
-    return this.__gridRange.endColumnIndex + 1
+    return this.__gridRange.endColumnIndex + 1;
   }
   getEndRow() {
-    return this.__gridRange.endRowIndex + 1
+    return this.__gridRange.endRowIndex + 1;
   }
 
   /**
    * getGridId() https://developers.google.com/apps-script/reference/spreadsheet/range#getgridid
    * Returns the grid ID of the range's parent sheet. IDs are random non-negative int values.
-   * gridid seems to be the same as the sheetid 
+   * gridid seems to be the same as the sheetid
    * @returns {number}
    */
   getGridId() {
-    return this.getSheet().getSheetId()
+    return this.getSheet().getSheetId();
   }
   /**
    * getHeight() https://developers.google.com/apps-script/reference/spreadsheet/range#getheight
    * appears to be the same as getNumRows()
    * Returns the height of the range.
-   * @returns {number} 
+   * @returns {number}
    */
   getHeight() {
-    return this.getNumRows()
+    return this.getNumRows();
   }
 
   getLastColumn() {
-    return this.__gridRange.endColumnIndex
+    return this.__gridRange.endColumnIndex;
   }
   getLastRow() {
-    return this.__gridRange.endRowIndex
+    return this.__gridRange.endRowIndex;
   }
 
   getNumColumns() {
-    return this.__gridRange.endColumnIndex - this.__gridRange.startColumnIndex
+    return this.__gridRange.endColumnIndex - this.__gridRange.startColumnIndex;
   }
   getNumRows() {
-    return this.__gridRange.endRowIndex - this.__gridRange.startRowIndex
+    return this.__gridRange.endRowIndex - this.__gridRange.startRowIndex;
   }
   getRow() {
-    return this.__gridRange.startRowIndex + 1
+    return this.__gridRange.startRowIndex + 1;
   }
   // row and columnindex are probably now deprecated in apps script
   // in any case, in gas they currently return the 1 based value, not the 0 based value as you'd expect
   // so the same as the getrow and getcolumn
   getRowIndex() {
-    return this.getRow()
+    return this.getRow();
   }
   getSheet() {
-    return this.__sheet
+    return this.__sheet;
   }
 
   /**
    * getWidth() https://developers.google.com/apps-script/reference/spreadsheet/range#getwidth
    * appears to be the same as getNumColumns()
    * Returns the width of the range in columns.
-   * @returns {number} 
+   * @returns {number}
    */
   getWidth() {
-    return this.getNumColumns()
+    return this.getNumColumns();
   }
 
   /**
    * offset(rowOffset, columnOffset) https://developers.google.com/apps-script/reference/spreadsheet/range#offsetrowoffset,-columnoffset
-   * Returns a new range that is offset from this range by the given number of rows and columns (which can be negative). 
+   * Returns a new range that is offset from this range by the given number of rows and columns (which can be negative).
    * The new range is the same size as the original range.
    * offsets are zero based
-   * @param {number} rowOffset 
-   * @param {number} columnOffset 
-   * @param {number} numRows 
-   * @param {number} numColumns 
-   * @returns 
+   * @param {number} rowOffset
+   * @param {number} columnOffset
+   * @param {number} numRows
+   * @param {number} numColumns
+   * @returns
    */
   offset(rowOffset, columnOffset, numRows, numColumns) {
     // get arg types
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.offset")
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.offset");
 
     // basic signature tests
-    if (nargs > 4 || nargs < 2) matchThrow()
-    if (!is.integer(rowOffset) || !is.integer(columnOffset)) matchThrow()
-    if (nargs > 2 && !is.integer(numRows)) matchThrow()
-    if (nargs > 3 && !is.integer(numColumns)) matchThrow()
-    const gr = { ...this.__gridRange }
+    if (nargs > 4 || nargs < 2) matchThrow();
+    if (!is.integer(rowOffset) || !is.integer(columnOffset)) matchThrow();
+    if (nargs > 2 && !is.integer(numRows)) matchThrow();
+    if (nargs > 3 && !is.integer(numColumns)) matchThrow();
+    const gr = { ...this.__gridRange };
 
-    numColumns = is.undefined(numColumns) ? this.getNumColumns() : numColumns
-    numRows = is.undefined(numRows) ? this.getNumRows() : numRows
+    numColumns = is.undefined(numColumns) ? this.getNumColumns() : numColumns;
+    numRows = is.undefined(numRows) ? this.getNumRows() : numRows;
 
     if (!numRows) {
-      throw new Error('The number of rows in the range must be at least 1')
+      throw new Error("The number of rows in the range must be at least 1");
     }
     if (!numColumns) {
-      throw new Error('The number of columns in the range must be at least 1')
+      throw new Error("The number of columns in the range must be at least 1");
     }
-    gr.startRowIndex += rowOffset
-    gr.startColumnIndex += columnOffset
-    gr.endRowIndex = gr.startRowIndex + numRows
-    gr.endColumnIndex = gr.startColumnIndex + numColumns
+    gr.startRowIndex += rowOffset;
+    gr.startColumnIndex += columnOffset;
+    gr.endRowIndex = gr.startRowIndex + numRows;
+    gr.endColumnIndex = gr.startColumnIndex + numColumns;
 
-    return newFakeSheetRange(gr, this.getSheet())
-
+    return newFakeSheetRange(gr, this.getSheet());
   }
   /**
    * removeCheckboxes()
@@ -1225,28 +1484,34 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
    */
   removeCheckboxes() {
     // theres not an api method for this, we need to get all the data validations in the range, see if they are check boxes and batchupdate a series of things
-    const dv = this.getDataValidations()
-    if (!dv) return this
+    const dv = this.getDataValidations();
+    if (!dv) return this;
 
     // now get all the checkboxes and where they are
-    const work = dv.map((row, rn) => row.map((cell, cn) => isACheckbox(cell) ? { rn, cn } : null)).flat().filter(f => f)
-    if (!work.length) return
+    const work = dv
+      .map((row, rn) =>
+        row.map((cell, cn) => (isACheckbox(cell) ? { rn, cn } : null))
+      )
+      .flat()
+      .filter((f) => f);
+    if (!work.length) return;
 
-    const requests = work.map(f => ({
-      setDataValidation: Sheets
-        .newSetDataValidationRequest()
+    const requests = work.map((f) => ({
+      setDataValidation: Sheets.newSetDataValidationRequest()
         .setRange(makeSheetsGridRange(this.offset(f.rn, f.cn, 1, 1)))
-        .setRule(null)
-    }))
-    const clearRequests = work.map(f => ({
-      updateCells: Sheets
-        .newUpdateCellsRequest()
-        .setFields('userEnteredValue')
-        .setRange(makeSheetsGridRange(this.offset(f.rn, f.cn, 1, 1)))
-    }))
+        .setRule(null),
+    }));
+    const clearRequests = work.map((f) => ({
+      updateCells: Sheets.newUpdateCellsRequest()
+        .setFields("userEnteredValue")
+        .setRange(makeSheetsGridRange(this.offset(f.rn, f.cn, 1, 1))),
+    }));
 
-    batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests: requests.concat(clearRequests) });
-    return this
+    batchUpdate({
+      spreadsheet: this.__getSpreadsheet(),
+      requests: requests.concat(clearRequests),
+    });
+    return this;
   }
 
   /**
@@ -1256,7 +1521,10 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
    * @returns {FakeSheetRange} The data region.
    */
   getDataRegion(dimension) {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.getDataRegion");
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Range.getDataRegion"
+    );
 
     if (nargs > 1) matchThrow();
     if (nargs === 1 && !isEnum(dimension)) matchThrow();
@@ -1268,9 +1536,10 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
 
     const isCellBlank = (r, c) => {
       if (r < 0 || r >= maxRows || c < 0 || c >= maxCols) return true;
-      if (r >= allValues.length || !allValues[r] || c >= allValues[r].length) return true;
+      if (r >= allValues.length || !allValues[r] || c >= allValues[r].length)
+        return true;
       const val = allValues[r][c];
-      return val === '' || val === null;
+      return val === "" || val === null;
     };
 
     let searchR = -1;
@@ -1295,10 +1564,34 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
 
     // 2. If no data in range, search the immediate border of the range.
     if (searchR === -1) {
-      if (startRow0 > 0) for (let c = startCol0; c <= endCol0; c++) if (!isCellBlank(startRow0 - 1, c)) { searchR = startRow0 - 1; searchC = c; break }
-      if (searchR === -1 && endRow0 < maxRows - 1) for (let c = startCol0; c <= endCol0; c++) if (!isCellBlank(endRow0 + 1, c)) { searchR = endRow0 + 1; searchC = c; break }
-      if (searchR === -1 && startCol0 > 0) for (let r = startRow0; r <= endRow0; r++) if (!isCellBlank(r, startCol0 - 1)) { searchR = r; searchC = startCol0 - 1; break }
-      if (searchR === -1 && endCol0 < maxCols - 1) for (let r = startRow0; r <= endRow0; r++) if (!isCellBlank(r, endCol0 + 1)) { searchR = r; searchC = endCol0 + 1; break }
+      if (startRow0 > 0)
+        for (let c = startCol0; c <= endCol0; c++)
+          if (!isCellBlank(startRow0 - 1, c)) {
+            searchR = startRow0 - 1;
+            searchC = c;
+            break;
+          }
+      if (searchR === -1 && endRow0 < maxRows - 1)
+        for (let c = startCol0; c <= endCol0; c++)
+          if (!isCellBlank(endRow0 + 1, c)) {
+            searchR = endRow0 + 1;
+            searchC = c;
+            break;
+          }
+      if (searchR === -1 && startCol0 > 0)
+        for (let r = startRow0; r <= endRow0; r++)
+          if (!isCellBlank(r, startCol0 - 1)) {
+            searchR = r;
+            searchC = startCol0 - 1;
+            break;
+          }
+      if (searchR === -1 && endCol0 < maxCols - 1)
+        for (let r = startRow0; r <= endRow0; r++)
+          if (!isCellBlank(r, endCol0 + 1)) {
+            searchR = r;
+            searchC = endCol0 + 1;
+            break;
+          }
     }
 
     // 3. If still no data found, the range is isolated.
@@ -1307,18 +1600,53 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
     }
 
     // 4. Iteratively expand from the found data cell to find the full contiguous region.
-    let top = searchR; let bottom = searchR; let left = searchC; let right = searchC;
+    let top = searchR;
+    let bottom = searchR;
+    let left = searchC;
+    let right = searchC;
     let changed = true;
     while (changed) {
       changed = false;
       // expand up
-      if (top > 0 && Array.from({ length: right - left + 1 }, (_, i) => left + i).some(c => !isCellBlank(top - 1, c))) { top--; changed = true; }
+      if (
+        top > 0 &&
+        Array.from({ length: right - left + 1 }, (_, i) => left + i).some(
+          (c) => !isCellBlank(top - 1, c)
+        )
+      ) {
+        top--;
+        changed = true;
+      }
       // expand down
-      if (bottom < maxRows - 1 && Array.from({ length: right - left + 1 }, (_, i) => left + i).some(c => !isCellBlank(bottom + 1, c))) { bottom++; changed = true; }
+      if (
+        bottom < maxRows - 1 &&
+        Array.from({ length: right - left + 1 }, (_, i) => left + i).some(
+          (c) => !isCellBlank(bottom + 1, c)
+        )
+      ) {
+        bottom++;
+        changed = true;
+      }
       // expand left
-      if (left > 0 && Array.from({ length: bottom - top + 1 }, (_, i) => top + i).some(r => !isCellBlank(r, left - 1))) { left--; changed = true; }
+      if (
+        left > 0 &&
+        Array.from({ length: bottom - top + 1 }, (_, i) => top + i).some(
+          (r) => !isCellBlank(r, left - 1)
+        )
+      ) {
+        left--;
+        changed = true;
+      }
       // expand right
-      if (right < maxCols - 1 && Array.from({ length: bottom - top + 1 }, (_, i) => top + i).some(r => !isCellBlank(r, right + 1))) { right++; changed = true; }
+      if (
+        right < maxCols - 1 &&
+        Array.from({ length: bottom - top + 1 }, (_, i) => top + i).some(
+          (r) => !isCellBlank(r, right + 1)
+        )
+      ) {
+        right++;
+        changed = true;
+      }
     }
 
     if (!dimension) {
@@ -1327,17 +1655,37 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
         const unionLeft = Math.min(startCol0, left);
         const unionBottom = Math.max(endRow0, bottom);
         const unionRight = Math.max(endCol0, right);
-        return sheet.getRange(unionTop + 1, unionLeft + 1, unionBottom - unionTop + 1, unionRight - left + 1);
+        return sheet.getRange(
+          unionTop + 1,
+          unionLeft + 1,
+          unionBottom - unionTop + 1,
+          unionRight - left + 1
+        );
       }
-      return sheet.getRange(top + 1, left + 1, bottom - top + 1, right - left + 1);
+      return sheet.getRange(
+        top + 1,
+        left + 1,
+        bottom - top + 1,
+        right - left + 1
+      );
     }
 
     if (dimension === SpreadsheetApp.Dimension.ROWS) {
-      return sheet.getRange(top + 1, this.getColumn(), bottom - top + 1, this.getNumColumns());
+      return sheet.getRange(
+        top + 1,
+        this.getColumn(),
+        bottom - top + 1,
+        this.getNumColumns()
+      );
     }
 
     if (dimension === SpreadsheetApp.Dimension.COLUMNS) {
-      return sheet.getRange(this.getRow(), left + 1, this.getNumRows(), right - left + 1);
+      return sheet.getRange(
+        this.getRow(),
+        left + 1,
+        this.getNumRows(),
+        right - left + 1
+      );
     }
 
     // should not be reached due to arg checks
@@ -1350,37 +1698,46 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
    * @returns {FakeSheetRange} The next data cell.
    */
   getNextDataCell(direction) {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.getNextDataCell");
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Range.getNextDataCell"
+    );
     if (nargs !== 1 || !isEnum(direction)) matchThrow();
 
     const sheet = this.getSheet();
     const startCell = this.offset(0, 0, 1, 1);
 
     const findNextData = (arr, startIndex) => {
-      const index = arr.slice(startIndex).findIndex(v => v !== '' && v !== null);
+      const index = arr
+        .slice(startIndex)
+        .findIndex((v) => v !== "" && v !== null);
       return index === -1 ? -1 : startIndex + index;
     };
     const findNextBlank = (arr, startIndex) => {
-      const index = arr.slice(startIndex).findIndex(v => v === '' || v === null);
+      const index = arr
+        .slice(startIndex)
+        .findIndex((v) => v === "" || v === null);
       return index === -1 ? -1 : startIndex + index;
     };
 
     const getTargetOffset = (values) => {
       if (!values || values.length === 0) return 0;
-      const isStartCellEmpty = (values[0] === '' || values[0] === null);
+      const isStartCellEmpty = values[0] === "" || values[0] === null;
 
       if (isStartCellEmpty) {
         const nextDataIndex = findNextData(values, 0);
-        return (nextDataIndex === -1) ? values.length - 1 : nextDataIndex;
+        return nextDataIndex === -1 ? values.length - 1 : nextDataIndex;
       } else {
         if (values.length === 1) return 0; // At the edge of the sheet already
-        const nextCellIsEmpty = (values[1] === '' || values[1] === null);
+        const nextCellIsEmpty = values[1] === "" || values[1] === null;
         if (nextCellIsEmpty) {
           const nextDataIndex = findNextData(values, 1);
-          return (nextDataIndex === -1) ? values.length - 1 : nextDataIndex;
+          return nextDataIndex === -1 ? values.length - 1 : nextDataIndex;
         } else {
           const firstBlankIndex = findNextBlank(values, 1);
-          return (firstBlankIndex === -1) ? values.length - 1 : firstBlankIndex - 1;
+          return firstBlankIndex === -1
+            ? values.length - 1
+            : firstBlankIndex - 1;
         }
       }
     };
@@ -1392,14 +1749,21 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
       case Direction.DOWN: {
         const maxRows = sheet.getMaxRows();
         if (startRow === maxRows) return startCell;
-        const values = sheet.getRange(startRow, startCol, maxRows - startRow + 1, 1).getValues().flat();
+        const values = sheet
+          .getRange(startRow, startCol, maxRows - startRow + 1, 1)
+          .getValues()
+          .flat();
         const offset = getTargetOffset(values);
         return sheet.getRange(startRow + offset, startCol);
       }
 
       case Direction.UP: {
         if (startRow === 1) return startCell;
-        const values = sheet.getRange(1, startCol, startRow, 1).getValues().flat().reverse();
+        const values = sheet
+          .getRange(1, startCol, startRow, 1)
+          .getValues()
+          .flat()
+          .reverse();
         const offset = getTargetOffset(values);
         return sheet.getRange(startRow - offset, startCol);
       }
@@ -1407,14 +1771,19 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
       case Direction.NEXT: {
         const maxCols = sheet.getMaxColumns();
         if (startCol === maxCols) return startCell;
-        const values = sheet.getRange(startRow, startCol, 1, maxCols - startCol + 1).getValues()[0];
+        const values = sheet
+          .getRange(startRow, startCol, 1, maxCols - startCol + 1)
+          .getValues()[0];
         const offset = getTargetOffset(values);
         return sheet.getRange(startRow, startCol + offset);
       }
 
       case Direction.PREVIOUS: {
         if (startCol === 1) return startCell;
-        const values = sheet.getRange(startRow, 1, 1, startCol).getValues()[0].reverse();
+        const values = sheet
+          .getRange(startRow, 1, 1, startCol)
+          .getValues()[0]
+          .reverse();
         const offset = getTargetOffset(values);
         return sheet.getRange(startRow, startCol - offset);
       }
@@ -1459,15 +1828,21 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
         if (dv && isACheckbox(dv)) {
           const criteriaValues = dv.getCriteriaValues();
           const valueToSet = isChecked
-            ? (criteriaValues && criteriaValues.length >= 1) ? criteriaValues[0] : true
-            : (criteriaValues && criteriaValues.length === 2) ? criteriaValues[1] : false;
+            ? criteriaValues && criteriaValues.length >= 1
+              ? criteriaValues[0]
+              : true
+            : criteriaValues && criteriaValues.length === 2
+            ? criteriaValues[1]
+            : false;
 
           const cellRange = this.offset(r, c, 1, 1);
-          const cellData = Sheets.newCellData().setUserEnteredValue(makeExtendedValue(valueToSet));
+          const cellData = Sheets.newCellData().setUserEnteredValue(
+            makeExtendedValue(valueToSet)
+          );
 
           const ucr = Sheets.newUpdateCellsRequest()
             .setRange(makeSheetsGridRange(cellRange))
-            .setFields('userEnteredValue')
+            .setFields("userEnteredValue")
             .setRows([Sheets.newRowData().setValues([cellData])]);
 
           requests.push({ updateCells: ucr });
@@ -1489,7 +1864,10 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
    * @returns {FakeSheetRange} self
    */
   insertCheckboxes(checkedValue, uncheckedValue) {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.insertCheckboxes");
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Range.insertCheckboxes"
+    );
     if (nargs > 2) matchThrow();
 
     const builder = SpreadsheetApp.newDataValidation();
@@ -1498,7 +1876,8 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
       builder.requireCheckbox();
     } else if (nargs === 1) {
       builder.requireCheckbox(checkedValue);
-    } else { // nargs === 2
+    } else {
+      // nargs === 2
       builder.requireCheckbox(checkedValue, uncheckedValue);
     }
 
@@ -1509,13 +1888,17 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
    * Randomizes the order of the rows in the given range.
    */
   randomize() {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.randomize")
-    if (nargs) matchThrow()
-    const request = Sheets.newRandomizeRangeRequest()
-      .setRange(makeSheetsGridRange(this))
-    batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests: [{ randomizeRange: request }] });
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.randomize");
+    if (nargs) matchThrow();
+    const request = Sheets.newRandomizeRangeRequest().setRange(
+      makeSheetsGridRange(this)
+    );
+    batchUpdate({
+      spreadsheet: this.__getSpreadsheet(),
+      requests: [{ randomizeRange: request }],
+    });
 
-    return this
+    return this;
   }
   /**
    * removeDuplicates()
@@ -1525,42 +1908,59 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
    * @returns {FakeSheetRange} adjusted range after duplicates are removed
    */
   removeDuplicates(columnsToCompare) {
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Range.removeDuplicates"
+    );
 
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.removeDuplicates")
-
-    if (nargs > 1) matchThrow()
+    if (nargs > 1) matchThrow();
     if (nargs) {
-
-      if (!is.array(columnsToCompare)) matchThrow()
-      if (!columnsToCompare.every(f => is.integer(f))) {
-        matchThrow()
+      if (!is.array(columnsToCompare)) matchThrow();
+      if (!columnsToCompare.every((f) => is.integer(f))) {
+        matchThrow();
       }
-      columnsToCompare.forEach(f => {
-        if (f > this.getNumColumns() + this.getColumn() || f < this.getColumn()) {
-          throw new Error(`Cell reference ${f} out of range for ${this.getA1Notation()}`)
+      columnsToCompare.forEach((f) => {
+        if (
+          f > this.getNumColumns() + this.getColumn() ||
+          f < this.getColumn()
+        ) {
+          throw new Error(
+            `Cell reference ${f} out of range for ${this.getA1Notation()}`
+          );
         }
-      })
+      });
     }
 
-    const gridIndex = makeSheetsGridRange(this)
-    const request = Sheets.newDeleteDuplicatesRequest()
-      .setRange(gridIndex)
+    const gridIndex = makeSheetsGridRange(this);
+    const request = Sheets.newDeleteDuplicatesRequest().setRange(gridIndex);
 
     if (columnsToCompare && columnsToCompare.length) {
-      request.setComparisonColumns(columnsToCompare.map(f => ({
-        dimension: "COLUMNS",
-        startIndex: f - 1,
-        endIndex: f,
-        sheetId: this.getSheet().getSheetId()
-      })))
+      request.setComparisonColumns(
+        columnsToCompare.map((f) => ({
+          dimension: "COLUMNS",
+          startIndex: f - 1,
+          endIndex: f,
+          sheetId: this.getSheet().getSheetId(),
+        }))
+      );
     }
-    const response = batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests: [{ deleteDuplicates: request }] });
-    const reply = response?.replies && response.replies[0]
+    const response = batchUpdate({
+      spreadsheet: this.__getSpreadsheet(),
+      requests: [{ deleteDuplicates: request }],
+    });
+    const reply = response?.replies && response.replies[0];
     if (reply) {
-      const { duplicatesRemovedCount = 0 } = reply.deleteDuplicates
-      return duplicatesRemovedCount ? this.offset(0, 0, this.getNumRows() - duplicatesRemovedCount, this.getNumColumns()) : this
+      const { duplicatesRemovedCount = 0 } = reply.deleteDuplicates;
+      return duplicatesRemovedCount
+        ? this.offset(
+            0,
+            0,
+            this.getNumRows() - duplicatesRemovedCount,
+            this.getNumColumns()
+          )
+        : this;
     }
-    return this
+    return this;
   }
   /**
    * Sets the background color of all cells in the range in CSS notation (such as '#ffffff' or 'white').
@@ -1569,15 +1969,15 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
    * @return {FakeSheetRange} self
    */
   setBackground(color) {
-    return this.setBackgrounds(fillRange(this, color))
+    return this.setBackgrounds(fillRange(this, color));
   }
 
   // these are undocumented, but appear to be aequivalent to setBackground
   setBackgroundColor(color) {
-    return this.setBackground(color)
+    return this.setBackground(color);
   }
   setBackgroundColors(colors) {
-    return this.setBackgrounds(colors)
+    return this.setBackgrounds(colors);
   }
 
   /**
@@ -1585,11 +1985,18 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
    * @returns {FakeSheetRange} self
    */
   setBackgroundRGB(red, green, blue) {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.setBackgroundRGB")
-    if (nargs !== 3) matchThrow()
-    if (outsideInt(red, 0, 255) || outsideInt(green, 0, 255) || outsideInt(blue, 0, 255)) matchThrow()
-    return this.setBackground(rgbToHex(red / 255, green / 255, blue / 255))
-
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Range.setBackgroundRGB"
+    );
+    if (nargs !== 3) matchThrow();
+    if (
+      outsideInt(red, 0, 255) ||
+      outsideInt(green, 0, 255) ||
+      outsideInt(blue, 0, 255)
+    )
+      matchThrow();
+    return this.setBackground(rgbToHex(red / 255, green / 255, blue / 255));
   }
   /**
    * there is no 'setBorders' variant
@@ -1605,21 +2012,30 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
    * @param {Boolean} [SpreadsheetApp.BorderStyle]	A style for the borders, null for default style (solid).
    * @return {FakeSheetRange} self
    */
-  setBorder(top, left, bottom, right, vertical, horizontal, color = null, style = null) {
+  setBorder(
+    top,
+    left,
+    bottom,
+    right,
+    vertical,
+    horizontal,
+    color = null,
+    style = null
+  ) {
     // there are 2 valid variants
     // one with each of the first 6 args
     // and another with all 8.
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.setBorder")
-    if (nargs < 6) matchThrow()
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.setBorder");
+    if (nargs < 6) matchThrow();
     // check first 6 args
-    const args = Array.from(arguments).slice(0, 6)
-    if (!args.every(f => is.boolean(f) || is.null(f))) matchThrow()
+    const args = Array.from(arguments).slice(0, 6);
+    if (!args.every((f) => is.boolean(f) || is.null(f))) matchThrow();
 
     // if we have some other number of args
     if (nargs > 6) {
-      if (nargs !== 8) matchThrow()
-      if (!is.string(color) && !is.null(color)) matchThrow()
-      if (!is.null(style) && !isEnum(style)) matchThrow()
+      if (nargs !== 8) matchThrow();
+      if (!is.string(color) && !is.null(color)) matchThrow();
+      if (!is.null(style) && !isEnum(style)) matchThrow();
     }
 
     // note that null means leave as it is, and a boolean false means get rid of it
@@ -1631,30 +2047,34 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
     }
     const innerBorder = Sheets.newBorder()
       .setColor(is.null(hex) ? BLACKER : hexToRgb(hex))
-      .setStyle(is.null(style) ? "SOLID" : style.toString())
+      .setStyle(is.null(style) ? "SOLID" : style.toString());
 
     // construct the request
-    const ubr = Sheets.newUpdateBordersRequest().setRange(makeSheetsGridRange(this))
+    const ubr = Sheets.newUpdateBordersRequest().setRange(
+      makeSheetsGridRange(this)
+    );
 
-      // if it's mentioned then we have to turn the border either off or on
-      ;['top', 'left', 'bottom', 'right'].forEach((f, i) => {
-        if (!is.null(args[i])) {
-          ubr['set' + capital(f)](args[i] ? innerBorder : null)
-        }
-      })
+    // if it's mentioned then we have to turn the border either off or on
+    ["top", "left", "bottom", "right"].forEach((f, i) => {
+      if (!is.null(args[i])) {
+        ubr["set" + capital(f)](args[i] ? innerBorder : null);
+      }
+    });
 
     // finally the vertical and horizontals
     if (!is.null(vertical)) {
-      ubr.setInnerVertical(vertical ? innerBorder : null)
+      ubr.setInnerVertical(vertical ? innerBorder : null);
     }
     if (!is.null(horizontal)) {
-      ubr.setInnerHorizontal(horizontal ? innerBorder : null)
+      ubr.setInnerHorizontal(horizontal ? innerBorder : null);
     }
 
-    batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests: [{ updateBorders: ubr }] });
+    batchUpdate({
+      spreadsheet: this.__getSpreadsheet(),
+      requests: [{ updateBorders: ubr }],
+    });
 
-    return this
-
+    return this;
   }
 
   /**
@@ -1663,106 +2083,114 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
    * @return {FakeSheetRange} self
    */
   setDataValidation(rule) {
-    return this.__setDataValidations(fillRange(this, rule))
+    return this.__setDataValidations(fillRange(this, rule));
   }
 
   /**
    * setDataValidations(rules)
-   * @param {FakeDataValidation[][]} rules 
+   * @param {FakeDataValidation[][]} rules
    * @return {FakeSheetRange} self
    */
   setDataValidations(rules) {
-    return this.__setDataValidations(rules)
+    return this.__setDataValidations(rules);
   }
 
-
   __setDataValidations(rules) {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.setDataValidations")
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Range.setDataValidations"
+    );
 
     // an 'official Sheets objects to do this kind of thing
     // it's actually more long winded than just constructing the requests manually
     // this is a clear
     if (is.null(rules)) {
-      const setDataValidation = Sheets
-        .newSetDataValidationRequest()
+      const setDataValidation = Sheets.newSetDataValidationRequest()
         .setRange(makeSheetsGridRange(this))
         .setRule(null);
-      batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests: [{ setDataValidation }] });
-      return this
+      batchUpdate({
+        spreadsheet: this.__getSpreadsheet(),
+        requests: [{ setDataValidation }],
+      });
+      return this;
     }
 
     //---
     // this setting some values
-    if (nargs !== 1 || !is.nonEmptyArray(rules)) matchThrow()
+    if (nargs !== 1 || !is.nonEmptyArray(rules)) matchThrow();
     if (!arrMatchesRange(this, rules, "object"))
-      if (!rules.flat().every(f => f instanceof FakeDataValidation)) matchThrow()
+      if (!rules.flat().every((f) => f instanceof FakeDataValidation))
+        matchThrow();
 
     // TODO
     // if the rules are all different we need to create a separate request for each member of the range
     // all the same we can use a single fetch
 
-    const requests = []
+    const requests = [];
 
     for (let offsetRow = 0; offsetRow < this.getNumRows(); offsetRow++) {
-
       for (let offsetCol = 0; offsetCol < this.getNumColumns(); offsetCol++) {
-
-        const range = this.offset(offsetRow, offsetCol, 1, 1)
-        const dv = rules[offsetRow][offsetCol]
-        const critter = dv.__getCritter()
+        const range = this.offset(offsetRow, offsetCol, 1, 1);
+        const dv = rules[offsetRow][offsetCol];
+        const critter = dv.__getCritter();
         if (!critter) {
-          throw new Error('couldnt find sheets api mapping for data validation rule', rule.getCriteriaType())
+          throw new Error(
+            "couldnt find sheets api mapping for data validation rule",
+            rule.getCriteriaType()
+          );
         }
-        const field = critter.apiField || 'userEnteredValue'
-        const type = critter.apiEnum || critter.name
-        let values = dv.getCriteriaValues()
-        let showCustomUi = null
+        const field = critter.apiField || "userEnteredValue";
+        const type = critter.apiEnum || critter.name;
+        let values = dv.getCriteriaValues();
+        let showCustomUi = null;
         // but if its one of these - drop the last arg
-        if (critter.name === "VALUE_IN_LIST" || critter.name === "VALUE_IN_RANGE") {
+        if (
+          critter.name === "VALUE_IN_LIST" ||
+          critter.name === "VALUE_IN_RANGE"
+        ) {
           if (values.length !== 2) {
-            throw new Error(`Expected 2 args for ${critter.name} but got ${values.length}`)
+            throw new Error(
+              `Expected 2 args for ${critter.name} but got ${values.length}`
+            );
           } else {
-            showCustomUi = values[1]
-            values = values.slice(0, -1)
+            showCustomUi = values[1];
+            values = values.slice(0, -1);
           }
           // convert any ranges to formulas
           if (critter.name === "VALUE_IN_RANGE") {
             if (!isRange(values[0])) {
-              throw `expected a range for ${critter.name} but got ${values[0]}`
+              throw `expected a range for ${critter.name} but got ${values[0]}`;
             }
-            values[0] = `=${values[0].__getWithSheet()}`
+            values[0] = `=${values[0].__getWithSheet()}`;
           }
         }
 
-        // all values need to be converted to string 
-        values = values.map(stringer).map(f => ({
-          [field]: f
-        }))
+        // all values need to be converted to string
+        values = values.map(stringer).map((f) => ({
+          [field]: f,
+        }));
 
         const condition = {
           type,
-          values
-        }
+          values,
+        };
 
         const rule = Sheets.newDataValidationRule()
           .setCondition(condition)
-          .setStrict(!dv.getAllowInvalid())
+          .setStrict(!dv.getAllowInvalid());
 
-        if (!is.null(showCustomUi)) rule.setShowCustomUi(showCustomUi)
+        if (!is.null(showCustomUi)) rule.setShowCustomUi(showCustomUi);
 
-        const setDataValidation = Sheets
-          .newSetDataValidationRequest()
+        const setDataValidation = Sheets.newSetDataValidationRequest()
           .setRange(makeSheetsGridRange(range))
           .setRule(rule);
 
-        requests.push({ setDataValidation })
+        requests.push({ setDataValidation });
       }
     }
     batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests });
-    return this
-
+    return this;
   }
-
 
   /**
    * Sets the background color of all cells in the range in CSS notation (such as '#ffffff' or 'white').
@@ -1771,11 +2199,15 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
    * @return {FakeSheetRange} self
    */
   setBackgrounds(colors) {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.setBackgrounds")
-    if (nargs !== 1 || !arrMatchesRange(this, colors, "string", true)) matchThrow()
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Range.setBackgrounds"
+    );
+    if (nargs !== 1 || !arrMatchesRange(this, colors, "string", true))
+      matchThrow();
 
-    const rows = colors.map(row => ({
-      values: row.map(c => {
+    const rows = colors.map((row) => ({
+      values: row.map((c) => {
         if (is.null(c)) {
           return { userEnteredFormat: { backgroundColor: null } };
         }
@@ -1783,14 +2215,18 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
         if (!hex) throw new Error(`Invalid color string: "${c}"`);
         return {
           userEnteredFormat: {
-            backgroundColor: hexToRgb(hex)
-          }
+            backgroundColor: hexToRgb(hex),
+          },
         };
-      })
-    }))
-    const fields = 'userEnteredFormat.backgroundColor'
-    return updateCells({ range: this, rows, fields, spreadsheet: this.__getSpreadsheet() })
-
+      }),
+    }));
+    const fields = "userEnteredFormat.backgroundColor";
+    return updateCells({
+      range: this,
+      rows,
+      fields,
+      spreadsheet: this.__getSpreadsheet(),
+    });
   }
 
   /**
@@ -1800,28 +2236,35 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
    * @returns {FakeSheetRange} self
    */
   setBackgroundObjects(colors) {
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Range.setBackgroundObjects",
+      "Color"
+    );
+    if (nargs !== 1 || !arrMatchesRange(this, colors, "object")) matchThrow();
 
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.setBackgroundObjects", "Color")
-    if (nargs !== 1 || !arrMatchesRange(this, colors, "object")) matchThrow()
-
-    const rows = colors.map(row => ({
-      values: row.map(c => this.__getColorItem(c))
-    }))
+    const rows = colors.map((row) => ({
+      values: row.map((c) => this.__getColorItem(c)),
+    }));
 
     // see __getColorItem for how this allows mixing of both theme and rgb colors.
-    const fields = 'userEnteredFormat.backgroundColorStyle'
-    return updateCells({ range: this, rows, fields, spreadsheet: this.__getSpreadsheet() })
-
+    const fields = "userEnteredFormat.backgroundColorStyle";
+    return updateCells({
+      range: this,
+      rows,
+      fields,
+      spreadsheet: this.__getSpreadsheet(),
+    });
   }
 
   /**
-  * Sets the font color in CSS notation (such as '#ffffff' or 'white')
-  * setBackgroundObject(color) https://developers.google.com/apps-script/reference/spreadsheet/range#setbackgroundobjectcolor
-  * @param {Color} color The background color to set; null value resets the background color.
-  * @return {FakeSheetRange} self
-  */
+   * Sets the font color in CSS notation (such as '#ffffff' or 'white')
+   * setBackgroundObject(color) https://developers.google.com/apps-script/reference/spreadsheet/range#setbackgroundobjectcolor
+   * @param {Color} color The background color to set; null value resets the background color.
+   * @return {FakeSheetRange} self
+   */
   setBackgroundObject(color) {
-    return this.setBackgroundObjects(fillRange(this, color))
+    return this.setBackgroundObjects(fillRange(this, color));
   }
 
   /**
@@ -1833,7 +2276,11 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
   setFontColor(color) {
     // we can use the set colorObject here
     // TODO - handle null
-    return this.setFontColorObject(is.null(color) ? null : SpreadsheetApp.newColor().setRgbColor(color).build())
+    return this.setFontColorObject(
+      is.null(color)
+        ? null
+        : SpreadsheetApp.newColor().setRgbColor(color).build()
+    );
   }
 
   /**
@@ -1845,131 +2292,161 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
    */
   setFontColors(colors) {
     // we can use the set colorObject here
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.setFontColors")
-    if (nargs !== 1 || !arrMatchesRange(this, colors, 'string', true)) matchThrow()
-    return this.setFontColorObjects(colors.map(row => row.map(color => {
-      if (is.null(color)) return null;
-      const hex = normalizeColorStringToHex(color);
-      if (!hex) throw new Error(`Invalid color string: "${color}"`);
-      return SpreadsheetApp.newColor().setRgbColor(hex).build();
-    })))
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Range.setFontColors"
+    );
+    if (nargs !== 1 || !arrMatchesRange(this, colors, "string", true))
+      matchThrow();
+    return this.setFontColorObjects(
+      colors.map((row) =>
+        row.map((color) => {
+          if (is.null(color)) return null;
+          const hex = normalizeColorStringToHex(color);
+          if (!hex) throw new Error(`Invalid color string: "${color}"`);
+          return SpreadsheetApp.newColor().setRgbColor(hex).build();
+        })
+      )
+    );
   }
 
-
-  /** 
+  /**
    * setValue(value) https://developers.google.com/apps-script/reference/spreadsheet/range#setvaluesvalues
    * @param {object} A value
    * @return {FakeSheetRange} this
    */
   setValue(value) {
-    return this.__setValues({ values: [[value]], single: true })
+    return this.__setValues({ values: [[value]], single: true });
   }
 
-  /** 
+  /**
    * setValues(values) https://developers.google.com/apps-script/reference/spreadsheet/range#setvaluesvalues
    * @param {object[][]} A two-dimensional array of values.
    * @return {FakeSheetRange} this
    */
   setValues(values) {
-    const rows = this.getNumRows()
-    const cols = this.getNumColumns()
+    const rows = this.getNumRows();
+    const cols = this.getNumColumns();
     if (rows !== values.length) {
       throw new Error(`
-      The number of rows in the data does not match the number of rows in the range. The data has ${values.length} but the range has ${rows}`)
+      The number of rows in the data does not match the number of rows in the range. The data has ${values.length} but the range has ${rows}`);
     }
-    if (!values.every(row => row.length === cols)) {
+    if (!values.every((row) => row.length === cols)) {
       throw new Error(`
-        The number of columns in the data does not match the number of columns in the range. The range has ${cols}`)
+        The number of columns in the data does not match the number of columns in the range. The range has ${cols}`);
     }
-    return this.__setValues({ values })
+    return this.__setValues({ values });
   }
   /**
-   * splitTextToColumns(delimiter) 
+   * splitTextToColumns(delimiter)
    * https://developers.google.com/apps-script/reference/spreadsheet/range#splittexttocolumnsdelimiter_1
    * Splits a column of text into multiple columns
    * @param {string|| TextToColumnsDelimiter} []
    * @returns {FakeSheetRange} self
    */
   splitTextToColumns(delimiter) {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.splitTextToColumns")
-    if (nargs > 1) matchThrow()
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Range.splitTextToColumns"
+    );
+    if (nargs > 1) matchThrow();
     if (this.getNumColumns() !== 1) {
-      throw new Error(`A range in a single column must be provided`)
+      throw new Error(`A range in a single column must be provided`);
     }
-    const request = Sheets.newTextToColumnsRequest()
-      .setSource(makeSheetsGridRange(this))
+    const request = Sheets.newTextToColumnsRequest().setSource(
+      makeSheetsGridRange(this)
+    );
 
     if (nargs == 1) {
       if (isEnum(delimiter)) {
-        if (!getEnumKeys(TextToColumnsDelimiter).includes(delimiter.toString())) matchThrow()
-        request.setDelimiterType(delimiter.toString())
+        if (!getEnumKeys(TextToColumnsDelimiter).includes(delimiter.toString()))
+          matchThrow();
+        request.setDelimiterType(delimiter.toString());
       } else if (is.string(delimiter)) {
-        request.setDelimiter(delimiter).setDelimiterType("CUSTOM")
+        request.setDelimiter(delimiter).setDelimiterType("CUSTOM");
       } else {
-        matchThrow()
+        matchThrow();
       }
     } else {
       // the default
-      request.setDelimiterType(TextToColumnsDelimiter.toString())
+      request.setDelimiterType(TextToColumnsDelimiter.toString());
     }
     // if no delimiter, dont bother mentioning it
-    batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests: [{ textToColumns: request }] });
+    batchUpdate({
+      spreadsheet: this.__getSpreadsheet(),
+      requests: [{ textToColumns: request }],
+    });
 
-    return this
-
+    return this;
   }
 
   sort(sortObj) {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.sort")
-    if (nargs !== 1 || is.nullOrUndefined(sortObj)) matchThrow()
-    const sortObjs = (is.array(sortObj) ? sortObj : [sortObj]).map(f => {
-      let ob = {}
+    const { nargs, matchThrow } = signatureArgs(arguments, "Range.sort");
+    if (nargs !== 1 || is.nullOrUndefined(sortObj)) matchThrow();
+    const sortObjs = (is.array(sortObj) ? sortObj : [sortObj]).map((f) => {
+      let ob = {};
       if (is.nonEmptyObject(f)) {
-        ob = { ...f }
+        ob = { ...f };
       } else if (is.integer(f)) {
-        ob.column = f
+        ob.column = f;
       } else {
-        matchThrow()
+        matchThrow();
       }
-      if (!Reflect.has(ob, "ascending")) ob.ascending = true
-      if (!is.boolean(ob.ascending)) matchThrow()
-      if (!Reflect.has(ob, "column")) matchThrow()
-      if (!is.integer(ob.column)) matchThrow()
+      if (!Reflect.has(ob, "ascending")) ob.ascending = true;
+      if (!is.boolean(ob.ascending)) matchThrow();
+      if (!Reflect.has(ob, "column")) matchThrow();
+      if (!is.integer(ob.column)) matchThrow();
       // The column number is the absolute column position in the sheet, and must be within the range.
       if (ob.column < this.getColumn() || ob.column > this.getLastColumn()) {
-        throw new Error(`The column to sort by (${ob.column}) is outside the range's columns (${this.getColumn()}-${this.getLastColumn()}).`);
+        throw new Error(
+          `The column to sort by (${
+            ob.column
+          }) is outside the range's columns (${this.getColumn()}-${this.getLastColumn()}).`
+        );
       }
 
       return {
-        // note - absolute - not relative 
+        // note - absolute - not relative
         // and will only sort the range contents, not the entire row
         dimensionIndex: ob.column - 1,
-        sortOrder: ob.ascending ? "ASCENDING" : "DESCENDING"
-      }
-    })
+        sortOrder: ob.ascending ? "ASCENDING" : "DESCENDING",
+      };
+    });
 
     const request = Sheets.newSortRangeRequest()
       .setRange(makeSheetsGridRange(this))
-      .setSortSpecs(sortObjs)
+      .setSortSpecs(sortObjs);
 
-    batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests: [{ sortRange: request }] });
+    batchUpdate({
+      spreadsheet: this.__getSpreadsheet(),
+      requests: [{ sortRange: request }],
+    });
 
-    return this
-
+    return this;
   }
   trimWhitespace() {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.splitTextToColumns")
-    if (nargs > 0) matchThrow()
-    const request = Sheets.newTrimWhitespaceRequest()
-      .setRange(makeSheetsGridRange(this))
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Range.splitTextToColumns"
+    );
+    if (nargs > 0) matchThrow();
+    const request = Sheets.newTrimWhitespaceRequest().setRange(
+      makeSheetsGridRange(this)
+    );
 
-    batchUpdate({ spreadsheet: this.__getSpreadsheet(), requests: [{ trimWhitespace: request }] });
+    batchUpdate({
+      spreadsheet: this.__getSpreadsheet(),
+      requests: [{ trimWhitespace: request }],
+    });
 
-    return this
+    return this;
   }
 
   getDataTable() {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Range.getDataTable");
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Range.getDataTable"
+    );
     if (nargs) matchThrow();
 
     const sheet = this.getSheet();
@@ -1977,10 +2454,17 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
     const sheetId = sheet.getSheetId();
 
     // Get fresh sheet metadata
-    const meta = spreadsheet.__getMetaProps(`sheets(properties.sheetId,data.rowData.values.dataSourceTable)`);
-    const sheetMeta = meta.sheets.find(s => s.properties.sheetId === sheetId);
+    const meta = spreadsheet.__getMetaProps(
+      `sheets(properties.sheetId,data.rowData.values.dataSourceTable)`
+    );
+    const sheetMeta = meta.sheets.find((s) => s.properties.sheetId === sheetId);
 
-    if (!sheetMeta || !sheetMeta.data || !sheetMeta.data[0] || !sheetMeta.data[0].rowData) {
+    if (
+      !sheetMeta ||
+      !sheetMeta.data ||
+      !sheetMeta.data[0] ||
+      !sheetMeta.data[0].rowData
+    ) {
       return null;
     }
 
@@ -2004,10 +2488,11 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
       // Check for intersection
       const r1 = makeGridRange(thisRange);
       const r2 = makeGridRange(tableRange);
-      const intersects = (
-        Math.max(r1.startRowIndex, r2.startRowIndex) < Math.min(r1.endRowIndex, r2.endRowIndex) &&
-        Math.max(r1.startColumnIndex, r2.startColumnIndex) < Math.min(r1.endColumnIndex, r2.endColumnIndex)
-      );
+      const intersects =
+        Math.max(r1.startRowIndex, r2.startRowIndex) <
+          Math.min(r1.endRowIndex, r2.endRowIndex) &&
+        Math.max(r1.startColumnIndex, r2.startColumnIndex) <
+          Math.min(r1.endColumnIndex, r2.endColumnIndex);
 
       if (intersects) return table;
     }
@@ -2016,48 +2501,46 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
   }
 
   toString() {
-    return 'Range'
+    return "Range";
   }
 
   //-- private helpers
 
-
   __getColorItem = (color) => {
     // this can be a little complex since the color objects are allowed to be both rgb color and theme colors mixed
-    const isTheme = (ob) => ob.getColorType().toString() === "THEME"
-    const isRgb = (ob) => ob.getColorType().toString() === "RGB"
+    const isTheme = (ob) => ob.getColorType().toString() === "THEME";
+    const isRgb = (ob) => ob.getColorType().toString() === "RGB";
     const getItem = (ob) => {
       if (isTheme(ob)) {
-        return themed(ob.asThemeColor().getThemeColorType().toString())
+        return themed(ob.asThemeColor().getThemeColorType().toString());
       } else if (isRgb(ob)) {
-        return rgb(ob.asRgbColor().asHexString())
+        return rgb(ob.asRgbColor().asHexString());
       } else {
-        throw new Error('unexpected color value', ob)
+        throw new Error("unexpected color value", ob);
       }
-    }
+    };
     const themed = (value) => ({
       userEnteredFormat: {
         backgroundColorStyle: {
-          themeColor: value
-        }
-      }
-    })
+          themeColor: value,
+        },
+      },
+    });
 
     // although you'd expect this to be background rather than style, we can use backgroundColorStyle to allow the mixing of both theme and color
     const rgb = (value) => ({
       userEnteredFormat: {
         backgroundColorStyle: {
-          rgbColor: hexToRgb(value)
-        }
-      }
-    })
-    return getItem(color)
-  }
+          rgbColor: hexToRgb(value),
+        },
+      },
+    });
+    return getItem(color);
+  };
 
   __getRangeWithSheet(range) {
-    return `${range.getSheet().getName()}!${range.getA1Notation()}`
+    return `${range.getSheet().getName()}!${range.getA1Notation()}`;
   }
-
 
   /**
    * get the spreadsheet hosting this range
@@ -2071,7 +2554,7 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
    * returns {string}
    */
   __getSpreadsheetId() {
-    return this.__getSpreadsheet().getId()
+    return this.__getSpreadsheet().getId();
   }
 
   /**
@@ -2079,7 +2562,11 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
    */
   get __gridRange() {
     // if we have a full grid, just return it
-    if (this.__hasGrid && Reflect.has(this.__apiGridRange, 'startRowIndex') && Reflect.has(this.__apiGridRange, 'startColumnIndex')) {
+    if (
+      this.__hasGrid &&
+      Reflect.has(this.__apiGridRange, "startRowIndex") &&
+      Reflect.has(this.__apiGridRange, "startColumnIndex")
+    ) {
       return this.__apiGridRange;
     }
 
@@ -2091,14 +2578,16 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
     // so we need to fill in the blanks with the sheet dimensions
     return {
       sheetId: sheet.getSheetId(),
-      startRowIndex: 0, endRowIndex: maxRows,
-      startColumnIndex: 0, endColumnIndex: maxCols,
-      ...this.__apiGridRange
+      startRowIndex: 0,
+      endRowIndex: maxRows,
+      startColumnIndex: 0,
+      endColumnIndex: maxCols,
+      ...this.__apiGridRange,
     };
   }
 
   __toGridRange(range = this) {
-    const gr = makeGridRange(range)
+    const gr = makeGridRange(range);
 
     // convert to a sheets style
     return Sheets.newGridRange(gr)
@@ -2106,31 +2595,48 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
       .setStartRowIndex(gr.startRowIndex)
       .setStartColumnIndex(gr.startColumnIndex)
       .setEndRowIndex(gr.endRowIndex)
-      .setEndColumnIndex(gr.endColumnIndex)
+      .setEndColumnIndex(gr.endColumnIndex);
   }
   __getTopLeft() {
-    return this.offset(0, 0, 1, 1)
+    return this.offset(0, 0, 1, 1);
   }
 
   __getWithSheet() {
-    return this.__getRangeWithSheet(this)
+    return this.__getRangeWithSheet(this);
   }
-
-
 
   __setValues({ values, single = false, options = { valueInputOption: "USER_ENTERED" } }) {
 
     const range = single ? this.__getRangeWithSheet(this.__getTopLeft()) : this.__getWithSheet()
+  __setValues({
+    values,
+    single = false,
+    // options = { valueInputOption: "RAW" },
+    options = { valueInputOption: "USER_ENTERED" },
+  }) {
+    const range = single
+      ? this.__getRangeWithSheet(this.__getTopLeft())
+      : this.__getWithSheet();
     const request = {
       ...options,
-      data: [{
-        majorDimension: "ROWS",
-        range,
-        values
-      }]
-    }
-    Sheets.Spreadsheets.Values.batchUpdate(request, this.__getSpreadsheetId())
-    return this
+      data: [
+        {
+          majorDimension: "ROWS",
+          range,
+          values,
+        },
+      ],
+    };
+    Sheets.Spreadsheets.Values.batchUpdate(request, this.__getSpreadsheetId());
+    return this;
   }
 
+  /**
+   * createTextFinder(findText) https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet#createTextFinder(String)
+   * @param {String} text
+   * @returns {FakeTextFinder}
+   */
+  createTextFinder(text) {
+    return newFakeTextFinder(this, text);
+  }
 }
