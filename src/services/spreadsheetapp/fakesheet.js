@@ -1,14 +1,15 @@
-import { Proxies } from '../../support/proxies.js';
-import { signatureArgs, notYetImplemented } from '../../support/helpers.js';
-import { newFakeSheetRange } from './fakesheetrange.js';
-import { Utils } from '../../support/utils.js';
-import { SheetUtils } from '../../support/sheetutils.js';
-import { batchUpdate, makeSheetsGridRange } from './sheetrangehelpers.js';
-import { newFakeFilter } from './fakefilter.js';
-import { newFakePivotTable } from './fakepivottable.js';
-import { newFakeBanding } from './fakebanding.js';
-import { newFakeDeveloperMetadataFinder } from './fakedevelopermetadatafinder.js';
-import { newFakeSheetRangeList } from './fakesheetrangelist.js';
+import { Proxies } from "../../support/proxies.js";
+import { signatureArgs, notYetImplemented } from "../../support/helpers.js";
+import { newFakeSheetRange } from "./fakesheetrange.js";
+import { Utils } from "../../support/utils.js";
+import { SheetUtils } from "../../support/sheetutils.js";
+import { batchUpdate, makeSheetsGridRange } from "./sheetrangehelpers.js";
+import { newFakeFilter } from "./fakefilter.js";
+import { newFakePivotTable } from "./fakepivottable.js";
+import { newFakeBanding } from "./fakebanding.js";
+import { newFakeDeveloperMetadataFinder } from "./fakedevelopermetadatafinder.js";
+import { newFakeSheetRangeList } from "./fakesheetrangelist.js";
+import { FakeTextFinder, newFakeTextFinder } from "./faketextfinder.js";
 
 const { is, isEnum } = Utils;
 
@@ -27,26 +28,55 @@ export class FakeSheet {
     this.__parent = parent;
 
     const props = [
-      'getCharts', 'insertChart', 'removeChart', 'updateChart',
-      'getImages', 'insertImage', 'removeImage',
-      'getNamedRanges', 'getRangeByName', 'removeNamedRange', 'setNamedRange',
-      'getProtections', 'protect',
-      'getSlicers', 'insertSlicer',
-      'hideColumn', 'hideRow', 'unhideColumn', 'unhideRow',
-      'isColumnHiddenByUser', 'isRowHiddenByUser', 'isRowHiddenByFilter',
-      'setFrozenColumns', 'setFrozenRows',
-      'moveRows', 'moveColumns',
-      'insertColumnAfter', 'insertColumnBefore', 'insertColumns', 'insertColumnsAfter', 'insertColumnsBefore',
-      'insertRowAfter', 'insertRowBefore', 'insertRows', 'insertRowsAfter', 'insertRowsBefore',
-      'deleteColumn', 'deleteColumns', 'deleteRow', 'deleteRows',
-      'autoResizeColumn', 'autoResizeColumns', 
-      'setSheetProtection',
-      'getDataSourceTables',
-      'getDataSourceFormulas',
-      'getDataSourcePivotTables',
+      "getCharts",
+      "insertChart",
+      "removeChart",
+      "updateChart",
+      "getImages",
+      "insertImage",
+      "removeImage",
+      "getNamedRanges",
+      "getRangeByName",
+      "removeNamedRange",
+      "setNamedRange",
+      "getProtections",
+      "protect",
+      "getSlicers",
+      "insertSlicer",
+      "hideColumn",
+      "hideRow",
+      "unhideColumn",
+      "unhideRow",
+      "isColumnHiddenByUser",
+      "isRowHiddenByUser",
+      "isRowHiddenByFilter",
+      "setFrozenColumns",
+      "setFrozenRows",
+      "moveRows",
+      "moveColumns",
+      "insertColumnAfter",
+      "insertColumnBefore",
+      "insertColumns",
+      "insertColumnsAfter",
+      "insertColumnsBefore",
+      "insertRowAfter",
+      "insertRowBefore",
+      "insertRows",
+      "insertRowsAfter",
+      "insertRowsBefore",
+      "deleteColumn",
+      "deleteColumns",
+      "deleteRow",
+      "deleteRows",
+      "autoResizeColumn",
+      "autoResizeColumns",
+      "setSheetProtection",
+      "getDataSourceTables",
+      "getDataSourceFormulas",
+      "getDataSourcePivotTables",
     ];
 
-    props.forEach(f => {
+    props.forEach((f) => {
       this[f] = () => {
         return notYetImplemented(f);
       };
@@ -109,10 +139,14 @@ export class FakeSheet {
     }
 
     const partialGridRange = SheetUtils.fromRange(notationToParse);
-    return newFakeSheetRange({
-      ...partialGridRange,
-      sheetId: this.getSheetId()
-    }, this, a1Notation); // Pass original notation for preservation
+    return newFakeSheetRange(
+      {
+        ...partialGridRange,
+        sheetId: this.getSheetId(),
+      },
+      this,
+      a1Notation
+    ); // Pass original notation for preservation
   }
 
   /**
@@ -147,22 +181,33 @@ export class FakeSheet {
 
     if (nargs >= 2 && nargs <= 4) {
       if (!is.integer(a1NotationOrRow) || !is.integer(column)) matchThrow();
-      if (nargs >= 3 && !is.undefined(numRows) && !is.integer(numRows)) matchThrow();
-      if (nargs === 4 && !is.undefined(numColumns) && !is.integer(numColumns)) matchThrow();
-      
-      return this.__handleNumericGetRange(a1NotationOrRow, column, numRows, numColumns);
+      if (nargs >= 3 && !is.undefined(numRows) && !is.integer(numRows))
+        matchThrow();
+      if (nargs === 4 && !is.undefined(numColumns) && !is.integer(numColumns))
+        matchThrow();
+
+      return this.__handleNumericGetRange(
+        a1NotationOrRow,
+        column,
+        numRows,
+        numColumns
+      );
     }
 
     matchThrow();
   }
 
   getDataRange() {
-    const { values } = Sheets.Spreadsheets.Values.get(this.getParent().getId(), `'${this.getName()}'`) || {};
+    const { values } =
+      Sheets.Spreadsheets.Values.get(
+        this.getParent().getId(),
+        `'${this.getName()}'`
+      ) || {};
     if (!values || values.length === 0) {
       return this.getRange(1, 1, 1, 1);
     }
     const numRows = values.length;
-    const numCols = Math.max(0, ...values.map(row => row.length));
+    const numCols = Math.max(0, ...values.map((row) => row.length));
     return this.getRange(1, 1, numRows, numCols);
   }
 
@@ -175,15 +220,22 @@ export class FakeSheet {
   }
 
   getColumnWidth(columnPosition) {
-    const { nargs, matchThrow } = signatureArgs(arguments, 'Sheet.getColumnWidth');
-    if (nargs !== 1 || !is.integer(columnPosition) || columnPosition < 1) matchThrow();
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Sheet.getColumnWidth"
+    );
+    if (nargs !== 1 || !is.integer(columnPosition) || columnPosition < 1)
+      matchThrow();
 
     // we just need 1 column
     const range = this.getRange(1, columnPosition, 1, 1);
     // __getWithSheet() is a "private" method on FakeSheetRange that returns 'SheetName!A1'
     const rangeA1WithSheet = range.__getWithSheet();
 
-    const meta = this.getParent().__getSheetMetaProps([rangeA1WithSheet], "sheets.data.columnMetadata");
+    const meta = this.getParent().__getSheetMetaProps(
+      [rangeA1WithSheet],
+      "sheets.data.columnMetadata"
+    );
 
     const colMeta = meta?.sheets?.[0]?.data?.[0]?.columnMetadata?.[0];
 
@@ -192,14 +244,21 @@ export class FakeSheet {
   }
 
   getRowHeight(rowPosition) {
-    const { nargs, matchThrow } = signatureArgs(arguments, 'Sheet.getRowHeight');
-    if (nargs !== 1 || !is.integer(rowPosition) || rowPosition < 1) matchThrow();
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Sheet.getRowHeight"
+    );
+    if (nargs !== 1 || !is.integer(rowPosition) || rowPosition < 1)
+      matchThrow();
 
     // we just need 1 row
     const range = this.getRange(rowPosition, 1, 1, 1);
     const rangeA1WithSheet = range.__getWithSheet();
 
-    const meta = this.getParent().__getSheetMetaProps([rangeA1WithSheet], "sheets.data.rowMetadata");
+    const meta = this.getParent().__getSheetMetaProps(
+      [rangeA1WithSheet],
+      "sheets.data.rowMetadata"
+    );
 
     const rowMeta = meta?.sheets?.[0]?.data?.[0]?.rowMetadata?.[0];
 
@@ -217,7 +276,7 @@ export class FakeSheet {
           endIndex: start + count - 1,
         },
         properties: { pixelSize: size },
-        fields: 'pixelSize',
+        fields: "pixelSize",
       },
     };
 
@@ -226,57 +285,102 @@ export class FakeSheet {
   }
 
   setRowHeights(startRow, numRows, height) {
-    const { nargs, matchThrow } = signatureArgs(arguments, 'Sheet.setRowHeights');
-    if (nargs !== 3 || !is.integer(startRow) || !is.integer(numRows) || !is.integer(height)) matchThrow();
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Sheet.setRowHeights"
+    );
+    if (
+      nargs !== 3 ||
+      !is.integer(startRow) ||
+      !is.integer(numRows) ||
+      !is.integer(height)
+    )
+      matchThrow();
     if (startRow < 1 || numRows < 1) {
-      throw new Error('Row and number of rows must be positive.');
+      throw new Error("Row and number of rows must be positive.");
     }
-    return this.__setDimensionSize('ROWS', startRow, numRows, height);
+    return this.__setDimensionSize("ROWS", startRow, numRows, height);
   }
 
   setRowHeightsForced(startRow, numRows, height) {
-    const { nargs, matchThrow } = signatureArgs(arguments, 'Sheet.setRowHeightsForced');
-    if (nargs !== 3 || !is.integer(startRow) || !is.integer(numRows) || !is.integer(height)) matchThrow();
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Sheet.setRowHeightsForced"
+    );
+    if (
+      nargs !== 3 ||
+      !is.integer(startRow) ||
+      !is.integer(numRows) ||
+      !is.integer(height)
+    )
+      matchThrow();
     // This method is maintained for backward compatibility and behaves identically to setRowHeights.
     return this.setRowHeights(startRow, numRows, height);
   }
 
   setColumnWidths(startColumn, numColumns, width) {
-    const { nargs, matchThrow } = signatureArgs(arguments, 'Sheet.setColumnWidths');
-    if (nargs !== 3 || !is.integer(startColumn) || !is.integer(numColumns) || !is.integer(width)) matchThrow();
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Sheet.setColumnWidths"
+    );
+    if (
+      nargs !== 3 ||
+      !is.integer(startColumn) ||
+      !is.integer(numColumns) ||
+      !is.integer(width)
+    )
+      matchThrow();
     if (startColumn < 1 || numColumns < 1) {
-      throw new Error('Column and number of columns must be positive.');
+      throw new Error("Column and number of columns must be positive.");
     }
-    return this.__setDimensionSize('COLUMNS', startColumn, numColumns, width);
+    return this.__setDimensionSize("COLUMNS", startColumn, numColumns, width);
   }
 
   setColumnWidth(columnPosition, width) {
-    const { nargs, matchThrow } = signatureArgs(arguments, 'Sheet.setColumnWidth');
-    if (nargs !== 2 || !is.integer(columnPosition) || !is.integer(width)) matchThrow();
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Sheet.setColumnWidth"
+    );
+    if (nargs !== 2 || !is.integer(columnPosition) || !is.integer(width))
+      matchThrow();
     if (columnPosition < 1) {
-      throw new Error('Column position must be positive.');
+      throw new Error("Column position must be positive.");
     }
     return this.setColumnWidths(columnPosition, 1, width);
   }
 
   setRowHeight(rowPosition, height) {
-    const { nargs, matchThrow } = signatureArgs(arguments, 'Sheet.setRowHeight');
-    if (nargs !== 2 || !is.integer(rowPosition) || !is.integer(height)) matchThrow();
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Sheet.setRowHeight"
+    );
+    if (nargs !== 2 || !is.integer(rowPosition) || !is.integer(height))
+      matchThrow();
     if (rowPosition < 1) {
-      throw new Error('Row position must be positive.');
+      throw new Error("Row position must be positive.");
     }
     return this.setRowHeights(rowPosition, 1, height);
   }
 
   getFilter() {
-    const meta = this.getParent().__getMetaProps(`sheets(basicFilter,properties.sheetId)`);
-    const sheetMeta = meta.sheets.find(s => s.properties.sheetId === this.getSheetId());
-    return sheetMeta?.basicFilter ? newFakeFilter(sheetMeta.basicFilter, this) : null;
+    const meta = this.getParent().__getMetaProps(
+      `sheets(basicFilter,properties.sheetId)`
+    );
+    const sheetMeta = meta.sheets.find(
+      (s) => s.properties.sheetId === this.getSheetId()
+    );
+    return sheetMeta?.basicFilter
+      ? newFakeFilter(sheetMeta.basicFilter, this)
+      : null;
   }
 
   getPivotTables() {
-    const meta = this.getParent().__getMetaProps(`sheets(data(rowData(values(pivotTable))),properties.sheetId)`);
-    const sheetMeta = meta.sheets.find(s => s.properties.sheetId === this.getSheetId());
+    const meta = this.getParent().__getMetaProps(
+      `sheets(data(rowData(values(pivotTable))),properties.sheetId)`
+    );
+    const sheetMeta = meta.sheets.find(
+      (s) => s.properties.sheetId === this.getSheetId()
+    );
     const pivotTables = [];
     sheetMeta?.data?.[0]?.rowData?.forEach((row, rIndex) => {
       row.values?.forEach((cell, cIndex) => {
@@ -290,9 +394,13 @@ export class FakeSheet {
   }
 
   getBandings() {
-    const meta = this.getParent().__getMetaProps(`sheets(bandedRanges,properties.sheetId)`);
-    const sheetMeta = meta.sheets.find(s => s.properties.sheetId === this.getSheetId());
-    return (sheetMeta?.bandedRanges || []).map(b => newFakeBanding(b, this));
+    const meta = this.getParent().__getMetaProps(
+      `sheets(bandedRanges,properties.sheetId)`
+    );
+    const sheetMeta = meta.sheets.find(
+      (s) => s.properties.sheetId === this.getSheetId()
+    );
+    return (sheetMeta?.bandedRanges || []).map((b) => newFakeBanding(b, this));
   }
 
   getDeveloperMetadata() {
@@ -300,7 +408,10 @@ export class FakeSheet {
   }
 
   addDeveloperMetadata(key, value, visibility) {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Sheet.addDeveloperMetadata");
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Sheet.addDeveloperMetadata"
+    );
     if (nargs < 1 || nargs > 3) matchThrow();
     if (!is.string(key)) matchThrow();
 
@@ -338,16 +449,23 @@ export class FakeSheet {
   }
 
   createDeveloperMetadataFinder() {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Sheet.createDeveloperMetadataFinder");
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "Sheet.createDeveloperMetadataFinder"
+    );
     if (nargs) matchThrow();
     return newFakeDeveloperMetadataFinder(this);
   }
 
   __clear(fields) {
     const range = makeSheetsGridRange(this.getDataRange());
-    const requests = [{
-      updateCells: Sheets.newUpdateCellsRequest().setFields(fields).setRange(range)
-    }];
+    const requests = [
+      {
+        updateCells: Sheets.newUpdateCellsRequest()
+          .setFields(fields)
+          .setRange(range),
+      },
+    ];
     batchUpdate({ spreadsheet: this.getParent(), requests });
     return this;
   }
@@ -364,9 +482,9 @@ export class FakeSheet {
       if (options.contentsOnly) fields.push("userEnteredValue");
       if (options.formatsOnly) fields.push("userEnteredFormat");
     }
-    
+
     if (fields.length > 0) {
-      return this.__clear(fields.join(','));
+      return this.__clear(fields.join(","));
     }
     return this;
   }
@@ -387,7 +505,8 @@ export class FakeSheet {
     const { nargs, matchThrow } = signatureArgs(arguments, "Sheet.sort");
     if (nargs < 1 || nargs > 2) matchThrow();
     if (!is.integer(columnPosition)) matchThrow();
-    if (nargs === 2 && !is.undefined(ascending) && !is.boolean(ascending)) matchThrow();
+    if (nargs === 2 && !is.undefined(ascending) && !is.boolean(ascending))
+      matchThrow();
 
     const dataRange = this.getDataRange();
     // Per documentation, sorting doesn't affect the header row.
@@ -407,13 +526,26 @@ export class FakeSheet {
   }
 
   getRangeList(a1Notations) {
-    const { matchThrow } = signatureArgs([a1Notations], 'Sheet.getRangeList', 'Sheet');
+    const { matchThrow } = signatureArgs(
+      [a1Notations],
+      "Sheet.getRangeList",
+      "Sheet"
+    );
     if (!is.array(a1Notations) || !a1Notations.every(is.string)) matchThrow();
 
-    return newFakeSheetRangeList(a1Notations.map(a1 => this.getRange(a1)));
+    return newFakeSheetRangeList(a1Notations.map((a1) => this.getRange(a1)));
   }
 
   toString() {
-    return 'Sheet';
+    return "Sheet";
+  }
+
+  /**
+   * createTextFinder(findText) https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet#createTextFinder(String)
+   * @param {String} text
+   * @returns {FakeTextFinder}
+   */
+  createTextFinder(text) {
+    return newFakeTextFinder(this, text);
   }
 }

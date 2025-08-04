@@ -1,30 +1,31 @@
-import { Proxies } from '../../support/proxies.js'
-import { newFakeSpreadsheet } from './fakespreadsheet.js'
-import { notYetImplemented, minSheetFields, signatureArgs } from '../../support/helpers.js'
-import { Utils } from "../../support/utils.js"
-import { newFakeColorBuilder } from '../common/fakecolorbuilder.js'
-import { newFakeRichTextValueBuilder } from '../common/fakerichtextvalue.js'
-import { newFakeTextStyleBuilder } from '../common/faketextstylebuilder.js'
-import { newFakeFilterCriteriaBuilder } from './fakefiltercriteriabuilder.js'
-import { newFakeDataValidationBuilder } from './fakedatavalidationbuilder.js'
-import { newFakeDataSourceSpecBuilder } from './fakedatasourcespecbuilder.js';
+import { Proxies } from "../../support/proxies.js";
+import { newFakeSpreadsheet } from "./fakespreadsheet.js";
+import {
+  notYetImplemented,
+  minSheetFields,
+  signatureArgs,
+} from "../../support/helpers.js";
+import { Utils } from "../../support/utils.js";
+import { newFakeColorBuilder } from "../common/fakecolorbuilder.js";
+import { newFakeRichTextValueBuilder } from "../common/fakerichtextvalue.js";
+import { newFakeTextStyleBuilder } from "../common/faketextstylebuilder.js";
+import { newFakeFilterCriteriaBuilder } from "./fakefiltercriteriabuilder.js";
+import { newFakeDataValidationBuilder } from "./fakedatavalidationbuilder.js";
+import { newFakeDataSourceSpecBuilder } from "./fakedatasourcespecbuilder.js";
+import { FakeTextFinder, newFakeTextFinder } from "./faketextfinder.js";
 
+import * as Enums from "../enums/sheetsenums.js";
 
-
-import * as Enums from '../enums/sheetsenums.js'
-
-const { is } = Utils
-
+const { is } = Utils;
 
 /**
  * create a new FakeSpreadsheetApp instance
- * @param  {...any} args 
+ * @param  {...any} args
  * @returns {FakeSpreadsheetApp}
  */
 export const newFakeSpreadsheetApp = (...args) => {
-  return Proxies.guard(new FakeSpreadsheetApp(...args))
-}
-
+  return Proxies.guard(new FakeSpreadsheetApp(...args));
+};
 
 /**
  * basic fake FakeSpreadsheetApp
@@ -32,9 +33,7 @@ export const newFakeSpreadsheetApp = (...args) => {
  * @returns {FakeSpreadsheetApp}
  */
 export class FakeSpreadsheetApp {
-
   constructor() {
-
     const enumProps = [
       "AutoFillSeries", //	AutoFillSeries	An enumeration of the types of series used to calculate auto-filled values.
       "BandingTheme", //	BandingTheme	An enumeration of the possible banding themes.
@@ -67,70 +66,75 @@ export class FakeSpreadsheetApp {
       "TextToColumnsDelimiter", //	TextToColumnsDelimiter	An enumeration of the preset delimiters for split text to columns.
       "ThemeColorType", //	ThemeColorType	An enumeration of possible theme color types.
       "ValueType", //	ValueType	An enumeration of value types returned by Range.getValue() and Range.getValues() from the Range class of the Spreadsheet service. The enumeration values listed below are in addition to Number, Boolean, Date, or String.
-      "WrapStrategy", //	WrapStrategy	An enumeration of the strategies used for wrapping cells.  
-    ]
+      "WrapStrategy", //	WrapStrategy	An enumeration of the strategies used for wrapping cells.
+    ];
 
     // import all known enums as props of spreadsheetapp
-    enumProps.forEach(f => {
-      this[f] = Enums[f]
-    })
+    enumProps.forEach((f) => {
+      this[f] = Enums[f];
+    });
 
-    const props = ['toString',
+    const props = [
+      "toString",
 
-      'getActive',
-      'newConditionalFormatRule',
-      'getActiveSpreadsheet',
-      'getActiveSheet',
-      'getCurrentCell',
-      'getActiveRange',
-      'getActiveRangeList',
-      'getSelection',
-      'setActiveSpreadsheet',
-      'setActiveSheet',
-      'setCurrentCell',
-      'setActiveRange',
-      'setActiveRangeList',
-      'newCellImage',
-      'getUi',
- 
-      'open',
+      "getActive",
+      "newConditionalFormatRule",
+      "getActiveSpreadsheet",
+      "getActiveSheet",
+      "getCurrentCell",
+      "getActiveRange",
+      "getActiveRangeList",
+      "getSelection",
+      "setActiveSpreadsheet",
+      "setActiveSheet",
+      "setCurrentCell",
+      "setActiveRange",
+      "setActiveRangeList",
+      "newCellImage",
+      "getUi",
 
-      'ChartAggregationType',
-      'ChartTransformationType',
+      "open",
 
-    ]
+      "ChartAggregationType",
+      "ChartTransformationType",
+    ];
 
-    props.forEach(f => {
+    props.forEach((f) => {
       this[f] = () => {
-        return notYetImplemented(f)
-      }
-    })
-
+        return notYetImplemented(f);
+      };
+    });
   }
-  
-
-
 
   enableBigQueryExecution() {
-    const { nargs, matchThrow } = signatureArgs(arguments, "SpreadsheetApp.enableBigQueryExecution");
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "SpreadsheetApp.enableBigQueryExecution"
+    );
     if (nargs) matchThrow();
     // This is a no-op in the fake environment, as there's no real execution to enable.
   }
 
   enableAllDataSourcesExecution() {
-    const { nargs, matchThrow } = signatureArgs(arguments, "SpreadsheetApp.enableAllDataSourcesExecution");
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "SpreadsheetApp.enableAllDataSourcesExecution"
+    );
     if (nargs) matchThrow();
     // This is a no-op in the fake environment.
   }
 
   enableLookerExecution() {
-    const { nargs, matchThrow } = signatureArgs(arguments, "SpreadsheetApp.enableLookerExecution");
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "SpreadsheetApp.enableLookerExecution"
+    );
     if (nargs) matchThrow();
     // This is a no-op in the fake environment.
   }
   // currently no-op - probably not required as all ops are synchronous and currently not bundled
-  flush () {
-    return this
+  flush() {
+    return this;
   }
   /**
    * this one is probably deprecated
@@ -138,7 +142,7 @@ export class FakeSpreadsheetApp {
    * @return {FakeSpreadsheet}
    */
   openByKey(id) {
-    return this.openById(id)
+    return this.openById(id);
   }
 
   /**
@@ -146,8 +150,10 @@ export class FakeSpreadsheetApp {
    * @return {FakeSpreadsheet}
    */
   openById(id) {
-    const result = newFakeSpreadsheet(Sheets.Spreadsheets.get(id, { fields: minSheetFields }, { ss: true }))
-    return result
+    const result = newFakeSpreadsheet(
+      Sheets.Spreadsheets.get(id, { fields: minSheetFields }, { ss: true })
+    );
+    return result;
   }
 
   /**
@@ -158,42 +164,44 @@ export class FakeSpreadsheetApp {
    * @return {FakeSpreadsheet}
    */
   create(name, rows, columns) {
-    const { nargs, matchThrow } = signatureArgs(arguments, "create")
-    if (nargs < 1) matchThrow()
-    if (nargs > 3) matchThrow()
-    if (!is.nonEmptyString(name)) matchThrow()
-    if (nargs > 1 && (!is.positiveNumber(rows) || !is.positiveNumber(columns))) matchThrow()
+    const { nargs, matchThrow } = signatureArgs(arguments, "create");
+    if (nargs < 1) matchThrow();
+    if (nargs > 3) matchThrow();
+    if (!is.nonEmptyString(name)) matchThrow();
+    if (nargs > 1 && (!is.positiveNumber(rows) || !is.positiveNumber(columns)))
+      matchThrow();
     const pack = {
       properties: {
-        title: name
-      }
-    }
+        title: name,
+      },
+    };
 
     // if rows/cols specified we need to fiddle with the first sheet's properties too
     if (nargs > 1) {
-      pack.sheets = [{
-        properties: {
-          sheetType: 'GRID',
-          gridProperties: {
-            rowCount: rows,
-            columnCount: columns
-          }
+      pack.sheets = [
+        {
+          properties: {
+            sheetType: "GRID",
+            gridProperties: {
+              rowCount: rows,
+              columnCount: columns,
+            },
+          },
         },
-      }]
+      ];
     }
 
-    const data = Sheets.Spreadsheets.create(pack, { ss: true })
-    return newFakeSpreadsheet(data)
-
+    const data = Sheets.Spreadsheets.create(pack, { ss: true });
+    return newFakeSpreadsheet(data);
   }
 
   /**
    * url looks like this https://docs.google.com/spreadsheets/d/1lc7YcqMuP1ap23FFW0EqywyLojBmHTKZde_0cYcyPSQ/edit?gid=907032523#gid=907032523
-   * @param {string} url 
+   * @param {string} url
    * @return {FakeSpreadsheet}
    */
   openByUrl(url) {
-    return this.openById(url.replace(/.*\/spreadsheets\/d\/([^\/]*).*/i, "$1"))
+    return this.openById(url.replace(/.*\/spreadsheets\/d\/([^\/]*).*/i, "$1"));
   }
 
   /**
@@ -202,7 +210,7 @@ export class FakeSpreadsheetApp {
    * return {FakeColorBuilder}
    */
   newColor() {
-    return newFakeColorBuilder()
+    return newFakeColorBuilder();
   }
 
   /**
@@ -211,7 +219,7 @@ export class FakeSpreadsheetApp {
    * return {FakeTextStyleBuilder}
    */
   newTextStyle() {
-    return newFakeTextStyleBuilder()
+    return newFakeTextStyleBuilder();
   }
 
   /**
@@ -220,7 +228,7 @@ export class FakeSpreadsheetApp {
    * @returns {FakeDataValidationBuilder}
    */
   newDataValidation() {
-    return newFakeDataValidationBuilder()
+    return newFakeDataValidationBuilder();
   }
 
   /**
@@ -229,7 +237,7 @@ export class FakeSpreadsheetApp {
    * @returns {FakeRichTextValueBuilder}
    */
   newRichTextValue() {
-    return newFakeRichTextValueBuilder()
+    return newFakeRichTextValueBuilder();
   }
 
   /**
@@ -245,10 +253,20 @@ export class FakeSpreadsheetApp {
    * @returns {FakeDataSourceSpecBuilder}
    */
   newDataSourceSpec() {
-    const { nargs, matchThrow } = signatureArgs(arguments, "SpreadsheetApp.newDataSourceSpec");
+    const { nargs, matchThrow } = signatureArgs(
+      arguments,
+      "SpreadsheetApp.newDataSourceSpec"
+    );
     if (nargs) matchThrow();
     return newFakeDataSourceSpecBuilder();
   }
 
-
+  /**
+   * createTextFinder(findText) https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet#createTextFinder(String)
+   * @param {String} text
+   * @returns {FakeTextFinder}
+   */
+  createTextFinder(text) {
+    return newFakeTextFinder(this, text);
+  }
 }
