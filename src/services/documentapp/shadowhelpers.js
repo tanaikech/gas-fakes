@@ -242,13 +242,10 @@ const _elementInserter = (self, elementOrText, childIndex, options) => {
   if (isAppend) {
     const endIndexBefore = structure.shadowDocument.__endBodyIndex;
     insertIndex = endIndexBefore - 1;
-    // For page breaks (and similar elements), the new element starts AT the insertion point.
-    // For paragraphs, our helper prepends a newline, so the new paragraph effectively
-    // starts at the end of the previous content.
     const useStartsAtInsertPoint = is.function(options.startsAtInsertPoint) ? options.startsAtInsertPoint(isAppend) : !!options.startsAtInsertPoint;
-    // For append operations, the new element will start at the end of the previous content.
-    // For insert, it starts at the insertion point.
-    newElementStartIndex = isAppend ? endIndexBefore : (useStartsAtInsertPoint ? insertIndex : endIndexBefore);
+    // For appendParagraph, the new element starts at the end of the previous content (endIndexBefore).
+    // For appendPageBreak and all 'insert' operations, the new element starts at the insertion point (insertIndex).
+    newElementStartIndex = isAppend && !useStartsAtInsertPoint ? endIndexBefore : insertIndex;
     if (children.length > 0) {
       requests = makeProtectionRequests(children[children.length - 1], 0);
     }
@@ -361,26 +358,18 @@ const pageBreakOptions = {
   elementType: ElementType.PAGE_BREAK,
   insertMethodSignature: 'DocumentApp.Body.insertPageBreak',
   canAcceptText: false,
-  getShift: (pb, isDetached, isAppend) => isAppend ? 2 : 1, // append is a 2-step request, insert is 1.
+  getShift: (pb, isDetached, isAppend) => 1, // All inserts are now 1 request.
   getMainRequest: (pageBreak, location, isAppend) => {
-    if (isAppend) {
-      // For append, we must first create a new paragraph by inserting a newline,
-      // then insert the page break into that new paragraph. This is the most
-      // reliable way to force the fake API to create a new paragraph at the end.
-      return [
-        { insertText: { location, text: '\n' } },
-        { insertPageBreak: { location: { index: location.index + 1 } } }
-      ];
-    } else {
-      // For insert, a single request is sufficient. The fake API will correctly
-      // split the paragraph. Using a two-step process for insert was creating extra paragraphs.
-      return { insertPageBreak: { location } };
-    }
+    // The live API handles both append and insert with a single request.
+    // A single insertPageBreak request at a given index will create a new paragraph
+    // to house the page break, splitting an existing paragraph if necessary.
+    // The previous two-step process for append was creating an extra, unwanted paragraph.
+    return { insertPageBreak: { location } };
   },
   getStyleRequests: null, // PageBreak styling on copy not supported yet.
   findType: ElementType.PARAGRAPH.toString(),
   findChildType: ElementType.PAGE_BREAK.toString(),
-  startsAtInsertPoint: (isAppend) => !isAppend, // For append, the new element starts at endIndexBefore, not the insert point.
+  startsAtInsertPoint: true, // A page break always creates a new paragraph at the insertion point.
 };
 
 export const appendParagraph = (self, textOrParagraph) => {
