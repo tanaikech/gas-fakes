@@ -12,7 +12,7 @@ const report = (doc, what) => {
   // drop the section break
   const children = body.content.slice(1)
   what += ` -children:${children.length}`
-  console.log (what)
+  console.log(what)
   let text = '  '
   const typer = (child, text) => {
     const type = whichType(child)
@@ -46,21 +46,26 @@ const pb4 = () => {
   sc()
   console.log(report(Docs.Documents.get(id), `\nEmpty Document`))
 
-  doc.getBody().appendParagraph ("p1")
+  doc.getBody().appendParagraph("p1")
   sc()
   console.log(report(Docs.Documents.get(id), `\nAppend p1 to empty doc`))
-  
-  doc.getBody().appendParagraph ("p2")
+
+  doc.getBody().appendParagraph("p2")
   sc()
   console.log(report(Docs.Documents.get(id), `\nAppend p2 after p1`))
 
-  doc.getBody().insertParagraph (2,"p1a")
+  doc.getBody().insertParagraph(2, "p1a")
   sc()
   console.log(report(Docs.Documents.get(id), `\ninsert para between 1 and 2`))
 
-  doc.getBody().appendPageBreak ()
+  doc.getBody().appendPageBreak()
   sc()
   console.log(report(Docs.Documents.get(id), `\nappend page break to end of document`))
+
+  const p1a = doc.getBody().getChild(2)
+  p1a.appendPageBreak()
+  sc()
+  console.log(report(Docs.Documents.get(id), `\nappend page break to end of of para 1a`))
 
   deleteTempFile(id)
 
