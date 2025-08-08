@@ -134,26 +134,8 @@ class ShadowDocument {
 
     // recurse the entire document
     content.forEach(c => mapElements(c, bodyTree));
-
-    // HACK: The fake batchUpdate service can leave a trailing empty paragraph after
-    // certain operations like insertPageBreak. The live API does not do this.
-    // We will detect and remove this artifact here before building the final tree.
-    if (content.length > 1) {
-      const lastElement = content[content.length - 1];
-      if (lastElement.paragraph && lastElement.paragraph.elements.length === 1) {
-        const singleChild = lastElement.paragraph.elements[0];
-        if (singleChild.textRun && singleChild.textRun.content === '\n') {
-          // This is a trailing empty paragraph. Only remove it if it's not the *only*
-          // paragraph in the document body, as every document must have at least one.
-          const paragraphCount = content.reduce((count, el) => count + (el.paragraph ? 1 : 0), 0);
-          if (paragraphCount > 1) {
-            content.pop();
-          }
-        }
-      }
-    }
     bodyTree.children = content.map(c => c.__twig).filter(Boolean);
-
+    
     // delete the named ranges that weren't used
     // findOrCreate... consumes the currentNr list, so what's left are unused ranges.
 

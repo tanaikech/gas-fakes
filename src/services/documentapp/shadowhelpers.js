@@ -315,21 +315,22 @@ const pageBreakOptions = {
   insertMethodSignature: 'DocumentApp.Body.insertPageBreak',
   canAcceptText: false,
   getMainRequest: (pageBreak, location, isAppend, self) => {
-    // Appending a page break to a paragraph modifies it directly, but the API call
-    // for `insertPageBreak` has a side effect of creating an extra empty paragraph.
-    // We must issue a subsequent delete request to remove this artifact.
-    if (isAppend && self.getType() === ElementType.PARAGRAPH) {
-      const deleteStartIndex = location.index + 1;
-      return [
-        { insertPageBreak: { location } },
-        { deleteContentRange: { range: { startIndex: deleteStartIndex, endIndex: deleteStartIndex + 1 } } }];
+
+    // the only difference between a body append and para append is that we need to insert '\n before if its a body
+    // in both cases, we need to remove the additional \n that inserting a page break causes
+    const reqs = [
+      { insertPageBreak: { location } }
+    ]
+    if (self.getType() === ElementType.BODY_SECTION) {
+      // insert a new par. the origina location will put just before
+      reqs.push({ insertText: { location, text: '\n' } })
     }
-    // For Body.appendPageBreak, we must create a new paragraph at the end.
-    if (isAppend) {
-      return [{ insertText: { location, text: '\n' } }, { insertPageBreak: { location: { ...location, index: location.index + 1 } } }];
-    }
-    // For Body.insertPageBreak, a single request is sufficient to create a new paragraph at the location.
-    return { insertPageBreak: { location } };
+    // now delete the unwanted para the the pagebreak would have inserted
+    reqs.push(
+      { deleteContentRange: { range: { startIndex: location.index + 2, endIndex: location.index + 3 } } })
+
+    return reqs
+
   },
   getStyleRequests: null, // PageBreak styling on copy not supported yet.
   findType: ElementType.PARAGRAPH.toString(),
@@ -354,7 +355,7 @@ export const insertPageBreak = (self, childIndex, pageBreak) => {
 export const findItem = (elementMap, type, startIndex) => {
   const item = Array.from(elementMap.values()).find(f => f.__type === type && f.startIndex === startIndex)
   if (!item) {
-    console.log (elementMap.values())
+    console.log(elementMap.values())
     throw new Error(`Couldnt find element ${type} at ${startIndex}`)
   }
   return item

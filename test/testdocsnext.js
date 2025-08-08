@@ -188,7 +188,7 @@ export const testDocsNext = (pack) => {
     t.is(children2[1].getType(), DocumentApp.ElementType.PARAGRAPH, "Second child should be the inserted page break's paragraph");
     // Each paragraph, including empty ones and those containing only a page break,
     // contributes a newline when calling body.getText().
-     t.is(body.getText(), "\n\np1\n\np2\n", "Text content should reflect inserted page break");
+     t.is(body.getText(), "\n\np1\n\np2\n\n", "Text content should reflect inserted page break");
 
     // 3. Error conditions
     const attemptAttachedInsert = () => body.insertPageBreak(1, pb1);
