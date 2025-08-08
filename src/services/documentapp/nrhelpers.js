@@ -1,3 +1,6 @@
+import { Utils } from "../../support/utils.js";
+const { is } = Utils
+
 // all named ranges are prefixed like this to distinguish from any other that might be user created
 const shadowPrefix = "GAS_FAKE_"
 

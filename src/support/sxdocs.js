@@ -30,7 +30,7 @@ export const sxDocs = async (Auth, { prop, method, params, options = {} }) => {
 
   const maxRetries = 7;
   let delay = 1777;
-
+  syncLog('sxdocs..'+ JSON.stringify(params))
   for (let i = 0; i < maxRetries; i++) {
     let response;
     let error;

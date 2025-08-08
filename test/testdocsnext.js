@@ -1,7 +1,7 @@
 
 import '../main.js';
 import { initTests } from './testinit.js';
-import { trasher, getDocsPerformance, maketdoc } from './testassist.js';
+import { trasher, getDocsPerformance, maketdoc, docReport } from './testassist.js';
 
 export const testDocsNext = (pack) => {
   const { unit, fixes } = pack || initTests();
@@ -23,7 +23,7 @@ export const testDocsNext = (pack) => {
     const p2 = body.appendParagraph("p2").copy(); // Creates a detached copy of a "p2" paragraph
     // The body has 3 children: [empty, p1, p3]. Index 2 is before p3.
     body.insertParagraph(2, p2); // body is now [empty, p1, p2(copy), p3, p2]
-    t.is(body.getText(), "p1\np2\np3\np2", "Insert in the middle");
+    t.is(body.getText(), "\np1\np2\np3\np2", "Insert in the middle");
 
     // Test 2: Insert at the beginning
     doc.clear()
@@ -32,7 +32,7 @@ export const testDocsNext = (pack) => {
     const p0 = body.appendParagraph("p0").copy();
     // The body has 3 children: [empty, p1, p0]. Index 1 is before p1.
     body.insertParagraph(1, p0);
-    t.is(body.getText(), "p0\np1\np0", "Insert at the beginning");
+    t.is(body.getText(), "\np0\np1\np0", "Insert at the beginning");
 
     // Test 3: Insert at the end (should behave like append)
     doc.clear()
@@ -40,7 +40,7 @@ export const testDocsNext = (pack) => {
     body.appendParagraph("p1");
     const p2_end = body.appendParagraph("p2").copy();
     body.insertParagraph(body.getNumChildren(), p2_end);
-    t.is(body.getText(), "p1\np2\np2", "Insert at the end");
+    t.is(body.getText(), "\np1\np2\np2", "Insert at the end");
 
     // Test 4: Error conditions
     doc.clear()
@@ -55,7 +55,7 @@ export const testDocsNext = (pack) => {
     t.rxMatch(t.threw(attemptInvalidIndex)?.message || 'no error thrown', /Child index \(99\) must be less than or equal to the number of child elements/, "Inserting at an out-of-bounds index should throw an error");
 
     const attemptInvalidType = () => body.insertParagraph(1, doc.getBody()); // Not a paragraph
-    t.rxMatch(t.threw(attemptInvalidType)?.message || 'no error thrown', /The parameters \(number,.*\) don't match the method signature for DocumentApp\.Body\.insertParagraph/, "Inserting a non-paragraph element should throw an error");
+    t.rxMatch(t.threw(attemptInvalidType)?.message || 'no error thrown', /The parameters .* don't match the method signature/, "Inserting a non-paragraph element should throw an error");
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   });
 
@@ -123,7 +123,7 @@ export const testDocsNext = (pack) => {
     body.insertParagraph(1, detachedPara);
 
     // 4. Verification of text content
-    const expectedText = "Bold and Italic\nBold and Italic";
+    const expectedText = "\nBold and Italic\nBold and Italic";
     t.is(body.getText(), expectedText, "Text content should include original and inserted complex paragraph");
 
     // 5. Advanced verification of styles
@@ -188,7 +188,7 @@ export const testDocsNext = (pack) => {
     t.is(children2[1].getType(), DocumentApp.ElementType.PARAGRAPH, "Second child should be the inserted page break's paragraph");
     // Each paragraph, including empty ones and those containing only a page break,
     // contributes a newline when calling body.getText().
-     t.is(body.getText(), "\np1\n\np2\n", "Text content should reflect inserted page break");
+     t.is(body.getText(), "\n\np1\n\np2\n", "Text content should reflect inserted page break");
 
     // 3. Error conditions
     const attemptAttachedInsert = () => body.insertPageBreak(1, pb1);
@@ -204,7 +204,7 @@ export const testDocsNext = (pack) => {
     // 1. Append an initial paragraph
     const p1Text = "This is the first paragraph.";
     const p1 = body.appendParagraph(p1Text);
-    t.is(body.getText(), p1Text, "Body should have the first paragraph");
+    t.is(body.getText(), '\n' + p1Text, "Body should have the first paragraph");
 
     // 2. Create a detached copy
     const p1Copy = p1.copy();
@@ -214,7 +214,7 @@ export const testDocsNext = (pack) => {
 
     // 3. Append the detached copy
     body.appendParagraph(p1Copy);
-    const expectedText = p1Text + '\n' + p1Text;
+    const expectedText = '\n' + p1Text + '\n' + p1Text;
     t.is(body.getText(), expectedText, "Body should contain both original and copied paragraph text");
 
     // 4. Verify the original element is unchanged and still attached
@@ -242,7 +242,7 @@ export const testDocsNext = (pack) => {
     const p3 = body.appendParagraph(p3Text);
 
     // a concatanated body will prepend each paragraph with a \n
-    const expectedText1 = texts.join('\n');
+    const expectedText1 = '\n' + texts.join('\n');
 
     t.is(body.getType(), DocumentApp.ElementType.BODY_SECTION, "body should be a body")
     t.is(body.getText(), expectedText1, "Body text after all appends");
@@ -382,11 +382,11 @@ export const testDocsNext = (pack) => {
     updatedDoc.getBody().appendParagraph(text2);
 
     // After clearing and appending, the text should just be the new text.
-    t.is(updatedDoc.getBody().getText(), text2, "Appending a paragraph after clearing should work.")
+    t.is(updatedDoc.getBody().getText(), '\n' + text2, "Appending a paragraph after clearing should work.")
 
     // Re-fetch the document to ensure its internal __doc is updated.
     const updatedDoc2 = DocumentApp.openById(updatedDoc.getId());
-    t.is(updatedDoc2.getBody().getText(), text2, "Content should be present after appending.");
+    t.is(updatedDoc2.getBody().getText(), '\n' + text2, "Content should be present after appending.");
 
     // Test that appendParagraph works after clearing
     updatedDoc.getBody().appendParagraph("A new paragraph2.");

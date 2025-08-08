@@ -39,7 +39,6 @@ class FakeDocumentApp {
       title: name,
     };
     const doc = Docs.Documents.create(resource);
-    // TODO need to gasify
     return newFakeDocument(doc.documentId);
   }
 

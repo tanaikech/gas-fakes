@@ -149,3 +149,28 @@ So that leaves using named ranges as the only credible way to rematch elements r
 # Solution
 
 Finally landed on an approach - see [Inside the volatile world of a Google Document](https://ramblings.mcpher.com/inside-the-volatile-world-of-a-google-document/)
+
+
+# log of what happens in live apps script and fake correctly duplicates this
+
+
+Empty Document -children:1
+   -type:paragraph 1:2 ( -type:textRun 1:2 -text:"\n")
+
+Append p1 to empty doc -children:2
+   -type:paragraph 1:2 ( -type:textRun 1:2 -text:"\n")
+   -type:paragraph 2:5 ( -type:textRun 2:5 -text:"p1\n")
+
+Append p2 after p1 -children:3
+   -type:paragraph 1:2 ( -type:textRun 1:2 -text:"\n")
+   -type:paragraph 2:5 ( -type:textRun 2:5 -text:"p1\n")
+   -type:paragraph 5:8 ( -type:textRun 5:8 -text:"p2\n")
+
+insert para between 1 and 2 -children:4
+   -type:paragraph 1:2 ( -type:textRun 1:2 -text:"\n")
+   -type:paragraph 2:5 ( -type:textRun 2:5 -text:"p1\n")
+   -type:paragraph 5:9 ( -type:textRun 5:9 -text:"p1a\n")
+   -type:paragraph 9:12 ( -type:textRun 9:12 -text:"p2\n")
+
+````
+

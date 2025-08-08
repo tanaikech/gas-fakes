@@ -379,3 +379,35 @@ export const transpose2DArray = (arr) => {
   }
   return transposed;
 };
+
+const whichType = (element) => {
+  const ts = ["paragraph", "pageBreak", "textRun"]
+  const [t] = ts.filter(f => Reflect.has(element, f))
+  if (!t) console.log('skipping element', element)
+  return t
+}
+export const docReport = (id, what='\ndoc report') => {
+  const doc = Docs.Documents.get(id)
+  const content = doc.body.content
+  // drop the section break
+  const children = content.slice(1)
+  what += ` -children:${children.length}`
+  console.log (what)
+  let text = '  '
+  const typer = (child, text) => {
+    const type = whichType(child)
+    if (type) {
+      text += ` -type:${type} ${child.startIndex}:${child.endIndex}`
+      if (type === 'textRun') {
+        text += ` -text:${JSON.stringify(child[type].content)}`
+      }
+      if (Reflect.has(child[type], "elements")) {
+        text += ` (`
+        child[type].elements.forEach(f => text = typer(f, text))
+        text += ')'
+      }
+    }
+    return text
+  }
+  return children.map(f => typer(f, text)).join("\n")
+}

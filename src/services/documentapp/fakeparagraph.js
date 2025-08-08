@@ -1,7 +1,7 @@
 import { Proxies } from '../../support/proxies.js';
 import { FakeContainerElement } from './fakecontainerelement.js';
 import { registerElement } from './elementRegistry.js';
-import { extractText } from './shadowhelpers.js';
+import { appendPageBreak,extractText } from './shadowhelpers.js';
 
 /**
  * Creates a new FakeParagraph instance.
@@ -30,6 +30,9 @@ export class FakeParagraph extends FakeContainerElement {
     return extractText(this.__elementMapItem);
   }
 
+  appendPageBreak(pageBreak) {
+    return appendPageBreak(this, pageBreak || null);
+  }
   toString() {
     return 'Paragraph';
   }

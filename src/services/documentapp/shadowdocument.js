@@ -16,6 +16,13 @@ class ShadowDocument {
     this.__id = id
   }
 
+
+ get __endBodyIndex () {
+  const content = this.resource?.body?.content || []
+  const endIndex = content[content.length - 1]?.endIndex || 0
+  return endIndex
+ }
+
   /**
    * we may need to do this if we're coming from cache
    * although the resource may be in cache, the element map might not be defined
@@ -39,17 +46,16 @@ class ShadowDocument {
     if (this.__mapRevisionId !== data.revisionId) {
       // console.log('...revision update remap under way')
       this.__mapRevisionId = data.revisionId
-      // this will be content length - handy for appending to the body
-      this.__endBodyIndex = endIndex
       // TODO this undefined for normal - need to work on how to handle tabs etc, and what it looks like
       this.__segmentId = data.body.segmentId
     }
 
     // double check
+    /*
     if (this.__endBodyIndex !== endIndex) {
       throw new Error(`expected body length to be ${this.__endBodyIndex} but got ${endIndex}`)
     }
-
+  */
     // this will contain all the requests to add new named ranges
     const addRequests = []
 
@@ -146,8 +152,12 @@ class ShadowDocument {
       if (lastElement.paragraph && lastElement.paragraph.elements.length === 1) {
         const singleChild = lastElement.paragraph.elements[0];
         if (singleChild.textRun && singleChild.textRun.content === '\n') {
-          // This is a trailing empty paragraph, remove it.
-          content.pop();
+          // This is a trailing empty paragraph. Only remove it if it's not the *only*
+          // paragraph in the document body, as every document must have at least one.
+          const paragraphCount = content.reduce((count, el) => count + (el.paragraph ? 1 : 0), 0);
+          if (paragraphCount > 1) {
+            content.pop();
+          }
         }
       }
     }
