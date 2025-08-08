@@ -37,25 +37,16 @@ class ShadowDocument {
   makeElementMap(data) {
 
     const content = data?.body?.content || []
-    const endIndex = content[content.length - 1]?.endIndex || 0
 
     // get the currently known named ranges
     const currentNr = getCurrentNr(data)
 
     // if there's been an update, the revisionId will have changed
     if (this.__mapRevisionId !== data.revisionId) {
-      // console.log('...revision update remap under way')
       this.__mapRevisionId = data.revisionId
-      // TODO this undefined for normal - need to work on how to handle tabs etc, and what it looks like
       this.__segmentId = data.body.segmentId
     }
 
-    // double check
-    /*
-    if (this.__endBodyIndex !== endIndex) {
-      throw new Error(`expected body length to be ${this.__endBodyIndex} but got ${endIndex}`)
-    }
-  */
     // this will contain all the requests to add new named ranges
     const addRequests = []
 
