@@ -67,6 +67,12 @@ const pb4 = () => {
   sc()
   console.log(report(Docs.Documents.get(id), `\nappend page break to end of of para 1a`))
 
+
+  doc.getBody().appendParagraph ("p3")
+  sc()
+  console.log(report(Docs.Documents.get(id), `\nappend paragraph p3 to body`))
+
+
   deleteTempFile(id)
 
 }
