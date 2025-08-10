@@ -75,6 +75,8 @@ When creating the Docs Fakes, I started afresh, letting Gemini have a shot at bu
 Writing this a bit later - after getting the named range stuff and paragraph appending stuff sorted out as a model to work from, I decided to give Gemini a shot at adding an append pagebreak method, without intervening other than providing debug info after each of it's attempts. We're entering groundhog day 3 - 2 full days of trying to do a fairly straightforward thing - and the code is spaghetti and nothing works. I'm done, and going to fix it up manually.
 
 
+A week later and I'm banning gemini from my repo. It's been a complete time wasting failure in everything its done in this very complex index juggling in DocumentApp. Each session generally ends with me saying `you broke everything. Please revert`, and Gemini replying ``
+
 As I mentioned earlier, to take this further, I'm going to need a lot of help to extend the methods and services supported - so if you feel this would be useful to you, and would like to collaborate, please ping me on [bruce@mcpher.com](mailto:bruce@mcpher.com) and we'll talk.
 
 ## Translations and writeups

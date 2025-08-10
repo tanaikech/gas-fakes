@@ -105,70 +105,36 @@ const _elementInserter = (self, elementOrText, childIndex, options) => {
     getMainRequest,
     getStyleRequests,
     findType,
+    packCanBeNull = false
   } = options;
 
+  // identify the type of arguments and how to treat them
   const isAppend = is.null(childIndex);
   const isText = is.string(elementOrText);
   const isObject = is.object(elementOrText);
   const isDetached = isObject && !!elementOrText.__isDetached;
   const typeMatches = isObject && elementOrText.getType() === elementType;
 
+  const { matchThrow } = signatureArgs([childIndex, elementOrText], insertMethodSignature);
   if (isText && !canAcceptText) {
-    throw new Error(`Invalid argument type for method.`);
+    matchThrow()
   }
-  if (isObject && elementOrText.getParent()) {
+  if (isObject && (elementOrText.getParent() || !isDetached)) {
     throw new Error('Element must be detached.');
   }
+  if (!packCanBeNull && is.nullOrUndefined(elementOrText)) {
+    matchThrow();
+  }
+  if (!isAppend && !is.integer(childIndex) || !(packCanBeNull || isText || typeMatches)) {
+    matchThrow();
 
-  // --- Signature Validation ---
-  if (!isAppend) {
-    // This is an insert operation.
-    const { nargs, matchThrow } = signatureArgs([childIndex, elementOrText], insertMethodSignature);
-    if (nargs !== 2 || !is.integer(childIndex) || !(isText || typeMatches)) {
-      matchThrow();
-    }
-  } else {
-    // This is an append operation.
-    // for append, element can be null (e.g. appendPageBreak())
-    if (!isText && !is.null(elementOrText) && !typeMatches) {
-      throw new Error(`invalid arguments to append method`);
-    }
+  }
+  if (isAppend && !is.nullOrUndefined(childIndex)) {
+    matchThrow()
   }
 
 
-  // when we insert an element, its predecessor named range will end up being adjusted, so we need to reset it
-  // there isnt an update named range, so we delete and insert using the same name as before
-  // this means the nr id will change, but it doesnt matter.
-  const makeProtectionRequests = (twig) => {
-    const ur = [];
-    const stet = (innerTwig, endIndex = null) => {
-      const elItem = structure.elementMap.get(innerTwig.name);
-      if (is.null(endIndex)) endIndex = elItem.endIndex;
-      if (!elItem) {
-        throw new Error(`stet: element with name ${innerTwig.name} not found in refreshed map`);
-      }
-      // problem here - when we insert a page break it's before the previous \n
-      // therefore the previous endindex, which contains the \n will be retained
-      // however, we need to remap up to the insertion point in that case.
-      const nr = shadow.nrMap.get(elItem.__name);
-      if (nr) {
-        ur.push({ deleteNamedRange: { namedRangeId: nr.namedRangeId } });
-        ur.push({
-          createNamedRange: {
-            name: elItem.__name,
-            // because we need to preserve the current state of the named range
-            range: {
-              startIndex: elItem.startIndex,
-              endIndex,
-            },
-          },
-        });
-      }
-      (elItem.__twig?.children || []).forEach(childTwig => stet(childTwig));
-    };
-    stet(twig);
-    return ur;
-  };
+  // ------------
 
   // set ourselves up at the current state of the shadow document
   const shadow = self.__structure.shadowDocument;
@@ -179,7 +145,6 @@ const _elementInserter = (self, elementOrText, childIndex, options) => {
 
   let insertIndex;
   let newElementStartIndex;
-  let endIndex = null;
   let requests = [];
 
   // we share this code between insert and append
@@ -190,7 +155,6 @@ const _elementInserter = (self, elementOrText, childIndex, options) => {
       insertIndex = item.endIndex - 1; // Before the paragraph's trailing newline -- agree
       // what's this newElementstartIndex ?
       newElementStartIndex = item.startIndex; // The paragraph being modified is the container.
-      endIndex = insertIndex; // swallow the \n for inline insertions
 
     } else {
       const endIndexBefore = structure.shadowDocument.__endBodyIndex;
@@ -200,7 +164,7 @@ const _elementInserter = (self, elementOrText, childIndex, options) => {
       newElementStartIndex = endIndexBefore;
     }
     const targetChildTwig = children[children.length - 1];
-    requests = children.length ? makeProtectionRequests(targetChildTwig, endIndex) : [];
+    requests = children.length ? makeProtectionRequests(shadow, targetChildTwig) : [];
 
   } else { // it's an insert
     if (childIndex < 0 || childIndex >= children.length) {
@@ -210,7 +174,7 @@ const _elementInserter = (self, elementOrText, childIndex, options) => {
     const targetChildItem = structure.elementMap.get(targetChildTwig.name);
     insertIndex = targetChildItem.startIndex;
     newElementStartIndex = insertIndex;
-    requests = makeProtectionRequests(targetChildTwig);
+    requests = makeProtectionRequests(shadow, targetChildTwig);
   }
 
   // Use [].concat to ensure we have an array, as getMainRequest might return a single object or an array.
@@ -225,6 +189,9 @@ const _elementInserter = (self, elementOrText, childIndex, options) => {
   Docs.Documents.batchUpdate({ requests }, shadow.getId());
   // this will fetch any shadow doc updates
   shadow.refresh();
+  /*
+  
+  */
 
   const findContainerType = (is.function(options.findType) ? options.findType(isAppend) : findType) || elementType.toString();
   const childTypeToFind = is.function(options.findChildType) ? options.findChildType(isAppend) : options.findChildType;
@@ -263,7 +230,7 @@ const paragraphOptions = {
   elementType: ElementType.PARAGRAPH,
   insertMethodSignature: 'DocumentApp.Body.insertParagraph',
   canAcceptText: true,
-  getMainRequest: (textOrParagraph, location, isAppend, self, structure) => {
+  getMainRequest: (textOrParagraph, location, isAppend, self) => {
     const isDetachedPara = is.object(textOrParagraph) && textOrParagraph.__isDetached;
     let baseText;
     if (isDetachedPara) {
@@ -312,22 +279,55 @@ const paragraphOptions = {
 
 const pageBreakOptions = {
   elementType: ElementType.PAGE_BREAK,
-  insertMethodSignature: 'DocumentApp.Body.insertPageBreak',
+  insertMethodSignature: 'DocumentApp.Body.pageBreak',
+  packCanBeNull: true,
   canAcceptText: false,
-  getMainRequest: (pageBreak, location, isAppend, self) => {
+  getMainRequest: (_pageBreak, loc, _isAppend, self) => {
 
-    // the only difference between a body append and para append is that we need to insert '\n before if its a body
+    // the only difference between a body append and para append is that we need to insert 
+    // '\n before if its a body
     // in both cases, we need to remove the additional \n that inserting a page break causes
-    const reqs = [
-      { insertPageBreak: { location } }
-    ]
-    if (self.getType() === ElementType.BODY_SECTION) {
-      // insert a new par. the origina location will put just before
-      reqs.push({ insertText: { location, text: '\n' } })
+    const reqs = []
+    const location = Docs.newLocation()
+      .setSegmentId(loc.segmentId)
+      .setIndex(loc.index)
+
+
+    // th api inserts both a pb and a \n
+    reqs.push({
+      insertPageBreak: Docs.newInsertPageBreakRequest()
+        .setLocation(location)
+    })
+
+    // if an actual append we have to do this stuff
+    // if a body insert we don't need to bother
+    // I THINK!
+    if (_isAppend) {
+      // this is where the additional \n inserted by the page request will end up
+      // if its an append para
+      const range = Docs.newRange()
+        .setStartIndex(loc.index + 1)
+        .setEndIndex(loc.index + 2)
+
+      // only required if we are appending to the body
+      // since we use the same location, it'll be inserted juse before the pagebreak we just inserted
+      if (self.getType() === ElementType.BODY_SECTION) {
+        reqs.push({
+          insertText: Docs.newInsertTextRequest()
+            .setLocation(location)
+            .setText(`\n`)
+        })
+        // the unwanted \n will end up here if its a body append
+        range
+          .setStartIndex(loc.index + 2)
+          .setEndIndex(loc.index + 3)
+      }
+      // this is about getting rid of the extra \n that insert page break creates
+      reqs.push({
+        deleteContentRange: Docs.newDeleteContentRangeRequest()
+          .setRange(range)
+      })
     }
-    // now delete the unwanted para the the pagebreak would have inserted
-    reqs.push(
-      { deleteContentRange: { range: { startIndex: location.index + 2, endIndex: location.index + 3 } } })
 
     return reqs
 
@@ -360,3 +360,39 @@ export const findItem = (elementMap, type, startIndex) => {
   }
   return item
 }
+
+
+// when we insert an element, its predecessor named range will end up being adjusted, so we need to reset it
+// there isnt an update named range, so we delete and insert using the same name as before
+// this means the nr id will change, but it doesnt matter.
+const makeProtectionRequests = (shadow, twig) => {
+  const ur = [];
+  const elementMap = shadow.structure.elementMap;
+  const stet = (innerTwig, endIndex = null) => {
+    const elItem = elementMap.get(innerTwig.name);
+    if (is.null(endIndex)) endIndex = elItem.endIndex;
+    if (!elItem) {
+      throw new Error(`stet: element with name ${innerTwig.name} not found in refreshed map`);
+    }
+    // problem here - when we insert a page break it's before the previous \n
+    // therefore the previous endindex, which contains the \n will be retained
+    // however, we need to remap up to the insertion point in that case.
+    const nr = shadow.nrMap.get(elItem.__name);
+    if (nr) {
+      ur.push({ deleteNamedRange: { namedRangeId: nr.namedRangeId } });
+      ur.push({
+        createNamedRange: {
+          name: elItem.__name,
+          // because we need to preserve the current state of the named range
+          range: {
+            startIndex: elItem.startIndex,
+            endIndex,
+          },
+        },
+      });
+    }
+    (elItem.__twig?.children || []).forEach(childTwig => stet(childTwig));
+  };
+  stet(twig);
+  return ur;
+};

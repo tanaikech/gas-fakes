@@ -14,6 +14,51 @@ export const testDocsNext = (pack) => {
     }
     return children;
   }
+
+  unit.section("Body.appendPageBreak and Body.insertPageBreak", t => {
+    let { doc } = maketdoc(toTrash, fixes);
+    let body = doc.getBody();
+
+    // 1. Append
+    body.appendParagraph("p1");
+    const pb1 = body.appendPageBreak();
+    body.appendParagraph("p2");
+
+    t.is(pb1.getType(), DocumentApp.ElementType.PAGE_BREAK, "appendPageBreak should return a PageBreak element");
+    t.truthy(pb1.getParent(), "Appended page break should have a parent");
+    // In the live environment, the parent of a PageBreak is the Paragraph that contains it.
+    const pb1Parent = pb1.getParent();
+    t.is(pb1Parent.getType(), DocumentApp.ElementType.PARAGRAPH, "Page break parent should be a Paragraph");
+    t.is(pb1Parent.getParent().getType(), DocumentApp.ElementType.BODY_SECTION, "Page break's grandparent should be the body");
+
+    const children = getChildren(body);
+    t.is(children.length, 4, "Body should have 4 children (empty para, p1, page break, p2)");
+    const pageBreakPara = children[2];
+    // The element that is a direct child of the body is a Paragraph.
+    t.is(pageBreakPara.getType(), DocumentApp.ElementType.PARAGRAPH, "The element in the body is a Paragraph");
+    t.is(pageBreakPara.getText(), "", "Paragraph containing a page break has empty text");
+    t.is(pageBreakPara.getNumChildren(), 1, "The paragraph should contain one child element");
+    t.is(pageBreakPara.getChild(0).getType(), DocumentApp.ElementType.PAGE_BREAK, "The paragraph's child should be a PageBreak");
+
+    // 2. Insert
+    const pb2 = body.appendPageBreak().copy(); // create a detached page break
+    // The test fails on live GAS here because you can't remove the last paragraph.
+    // We'll leave the temporary paragraph and adjust the test expectations.
+    body.insertPageBreak(1, pb2); // insert after the initial empty paragraph
+    const children2 = getChildren(body);
+    t.is(children2.length, 6, "Body should have 6 children after insert");
+    t.is(children2[1].getType(), DocumentApp.ElementType.PARAGRAPH, "Second child should be the inserted page break's paragraph");
+    // Each paragraph, including empty ones and those containing only a page break,
+    // contributes a newline when calling body.getText().
+    t.is(body.getText(), "\n\np1\n\np2\n", "Text content should reflect inserted page break");
+
+    // 3. Error conditions
+    const attemptAttachedInsert = () => body.insertPageBreak(1, pb1);
+    t.rxMatch(t.threw(attemptAttachedInsert)?.message || 'no error thrown', /Element must be detached./, "Inserting an already attached page break should throw an error");
+
+    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
+  });
+
   unit.section("Body.insertParagraph method", t => {
     // Test 1: Insert in the middle
     let { doc } = maketdoc(toTrash, fixes);
@@ -152,50 +197,8 @@ export const testDocsNext = (pack) => {
     }
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   });
-  
-  unit.section("Body.appendPageBreak and Body.insertPageBreak", t => {
-    let { doc } = maketdoc(toTrash, fixes);
-    let body = doc.getBody();
 
-    // 1. Append
-    body.appendParagraph("p1");
-    const pb1 = body.appendPageBreak();
-    body.appendParagraph("p2");
 
-    t.is(pb1.getType(), DocumentApp.ElementType.PAGE_BREAK, "appendPageBreak should return a PageBreak element");
-    t.truthy(pb1.getParent(), "Appended page break should have a parent");
-    // In the live environment, the parent of a PageBreak is the Paragraph that contains it.
-    const pb1Parent = pb1.getParent();
-    t.is(pb1Parent.getType(), DocumentApp.ElementType.PARAGRAPH, "Page break parent should be a Paragraph");
-    t.is(pb1Parent.getParent().getType(), DocumentApp.ElementType.BODY_SECTION, "Page break's grandparent should be the body");
-
-    const children = getChildren(body);
-    t.is(children.length, 4, "Body should have 4 children (empty para, p1, page break, p2)");
-    const pageBreakPara = children[2];
-    // The element that is a direct child of the body is a Paragraph.
-    t.is(pageBreakPara.getType(), DocumentApp.ElementType.PARAGRAPH, "The element in the body is a Paragraph");
-    t.is(pageBreakPara.getText(), "", "Paragraph containing a page break has empty text");
-    t.is(pageBreakPara.getNumChildren(), 1, "The paragraph should contain one child element");
-    t.is(pageBreakPara.getChild(0).getType(), DocumentApp.ElementType.PAGE_BREAK, "The paragraph's child should be a PageBreak");
-
-    // 2. Insert
-    const pb2 = body.appendPageBreak().copy(); // create a detached page break
-    // The test fails on live GAS here because you can't remove the last paragraph.
-    // We'll leave the temporary paragraph and adjust the test expectations.
-    body.insertPageBreak(1, pb2); // insert after the initial empty paragraph
-    const children2 = getChildren(body);
-    t.is(children2.length, 6, "Body should have 6 children after insert");
-    t.is(children2[1].getType(), DocumentApp.ElementType.PARAGRAPH, "Second child should be the inserted page break's paragraph");
-    // Each paragraph, including empty ones and those containing only a page break,
-    // contributes a newline when calling body.getText().
-     t.is(body.getText(), "\n\np1\n\np2\n\n", "Text content should reflect inserted page break");
-
-    // 3. Error conditions
-    const attemptAttachedInsert = () => body.insertPageBreak(1, pb1);
-    t.rxMatch(t.threw(attemptAttachedInsert)?.message || 'no error thrown', /Element must be detached./, "Inserting an already attached page break should throw an error");
-
-    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
-  });
 
   unit.section("Element.copy() and detached elements", t => {
     const { doc } = maketdoc(toTrash, fixes);
@@ -415,4 +418,3 @@ if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
   testDocsNext();
   console.log('...cumulative docs cache performance', getDocsPerformance())
 }
-   

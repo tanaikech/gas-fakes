@@ -245,7 +245,7 @@ copy() {
     }
     return clone;
   };
-
+  // at this point we have a cloned item -but all its children/parents/named range names will be wrong
   const clonedItem = deepClone(originalItem);
 
   // The factory will create the correct subclass (e.g., FakeParagraph)
