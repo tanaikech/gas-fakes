@@ -2,8 +2,8 @@
  * @file Provides a fake implementation of the Table class.
  */
 
+import { Proxies } from '../../support/proxies.js';
 import { FakeContainerElement } from './fakecontainerelement.js';
-import { newFakeTableRow } from './faketablerow.js';
 import { registerElement } from './elementRegistry.js';
 
 /**
@@ -29,7 +29,7 @@ export class FakeTable extends FakeContainerElement {
    * @see https://developers.google.com/apps-script/reference/document/table#getNumRows()
    */
   getNumRows() {
-    return this.__element.table?.tableRows?.length || 0;
+    return this.getNumChildren();
   }
 
   /**
@@ -39,14 +39,14 @@ export class FakeTable extends FakeContainerElement {
    * @see https://developers.google.com/apps-script/reference/document/table#getRow(Integer)
    */
   getRow(rowIndex) {
-    return newFakeTableRow({ rowIndex, table: this });
+    return this.getChild(rowIndex);
   }
 }
 
 /**
  * Creates a new fake Table.
- * @param {object} properties The properties for the Table.
- * @returns {FakeTable} The new fake Table.
+ * @param {...any} args The arguments for the FakeTable constructor.
+ * @returns {FakeTable} A new proxied FakeTable instance.
  */
-export const newFakeTable = (properties) => new FakeTable(properties);
+export const newFakeTable = (...args) => Proxies.guard(new FakeTable(...args));
 registerElement('TABLE', newFakeTable);

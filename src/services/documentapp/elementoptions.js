@@ -25,11 +25,84 @@ const deleteTableRowRequest = (tableStartIndex, rowIndex) => {
 const getTableCellLocaton = (tableStartIndex, rowIndex, columnIndex = 0) => {
   return {
     tableCellLocation: Docs.newTableCellLocation()
-      .setTableStartLocation({ index: tableStartIndex })
+      .setTableStartLocation(Docs.newLocation().setIndex(tableStartIndex))
       .setRowIndex(rowIndex)
       .setColumnIndex(columnIndex)
   }
 }
+
+const deleteContentRange = (startIndex, endIndex) => {
+  return {
+    deleteContentRange: Docs.newDeleteContentRangeRequest().setRange(
+      Docs.newRange().setStartIndex(startIndex).setEndIndex(endIndex)
+    )
+  }
+}
+
+const insertText = (index, text) => {
+  return {
+    insertText: Docs.newInsertTextRequest()
+      .setLocation(Docs.newLocation().setIndex(index))
+      // When inserting into a cell, we are replacing content. The paragraph's
+      // structural newline should already exist. We just insert the text.
+      .setText(text)
+  }
+}
+
+
+/**
+ * Updates a table's content, iterating in reverse to handle index shifts.
+ * * @param {string} docId The ID of the Google Doc.
+ * @param {number} tableStartIndex The start index of the table.
+ * @param {Array<Array<string>>} newTableData A 2D array of strings with the new data.
+ */
+const reverseUpdateContent = (content, tableStartIndex, newTableData) => {
+
+  // 1. find the current table
+  const table = content.find(e => e.startIndex === tableStartIndex).table;
+
+  // batch up the requests
+  const requests = [];
+
+  // 2. Iterate through rows and cells in reverse order.
+  for (let rowIndex = table.tableRows.length - 1; rowIndex >= 0; rowIndex--) {
+    const row = table.tableRows[rowIndex];
+
+    for (let cellIndex = row.tableCells.length - 1; cellIndex >= 0; cellIndex--) {
+      const cell = row.tableCells[cellIndex];
+
+      // A cell's content is a paragraph. We want to replace the text within it.
+      const paragraph = cell.content[0];
+      const oldTextStartIndex = paragraph.startIndex;
+      const oldTextEndIndex = paragraph.endIndex;
+
+      // Get the new data for the cell.
+      const newText = newTableData[rowIndex][cellIndex];
+
+      // 3. Create the delete and insert requests.
+      // The range to delete is from the start of the paragraph up to, but not including,
+      // the structural newline at the end.
+      if (oldTextEndIndex - 1 > oldTextStartIndex) {
+        requests.push(deleteContentRange(oldTextStartIndex, oldTextEndIndex - 1));
+      }
+      requests.push(insertText(oldTextStartIndex, newText));
+
+    }
+  }
+  return requests
+}
+
+// Example usage:
+// A table at index 100 with 3 rows and 2 columns.
+// const myDocId = 'your-document-id';
+// const myTableStartIndex = 100;
+// const newData = [
+//   ['Updated Row 0, Cell 0', 'Updated Row 0, Cell 1'],
+//   ['Updated Row 1, Cell 0', 'Updated Row 1, Cell 1'],
+//   ['Updated Row 2, Cell 0', 'Updated Row 2, Cell 1']
+// ];
+// updateTableContentReverse(myDocId, myTableStartIndex, newData);
+
 
 // adding a textless item has some special juggling to do
 const handleTextless = (loc, isAppend, self, type, extras = {}) => {
@@ -191,39 +264,29 @@ export const tableOptions = {
     // issue - https://issuetracker.google.com/issues/438038924
 
     // first request is a table of 1 x n for simplicity
-    const requests = handleTextless(location, isAppend, self, 'TABLE', { rows: 1, columns })
+    let requests = handleTextless(location, isAppend, self, 'TABLE', { rows: 1, columns })
     // allow for +1 para\n the inserttable ting does
     const tableStartIndex = 1 + requests[0].insertTable.location.index;
-    // const shadow = self.__structure.shadowDocument;
-    //Docs.Documents.batchUpdate({ requests: xrequests }, shadow.getId())
-    //shadow.refresh()
-    // next requests are to update rows to the table if we got some cells
 
+    // next requests are to update rows to the table if we got some cells
     if (cells) {
+
       cells.forEach((_, rowIndex) => {
         requests.push(insertTableRowRequest(tableStartIndex, rowIndex));
       });
       // then delete the additional row that the initial request will have made
       requests.push(deleteTableRowRequest(tableStartIndex, 0));
 
-      // to update the text it's easier to work backwards
-      const revCells = cells.reverse().map(r => r.reverse())
+      // now we need a refresh so we can know where everything is
+      const shadow = self.__structure.shadowDocument;
+      Docs.Documents.batchUpdate({ requests: requests }, shadow.getId())
+      shadow.refresh()
 
-      revCells.forEach((row, revRowIndex) => {
-        const rowIndex = cells.length - 1 - revRowIndex;
-        row.forEach((text, revColumnIndex) => {
-          const columnIndex = row.length - 1 - revColumnIndex;
-          const location = getTableCellLocaton(tableStartIndex, rowIndex, columnIndex);
-          requests.push({
-            insertText: {
-              location,
-              text
-            }
-          })
-        })
-      })
+      // a  new set of requests to update the content
+      requests = reverseUpdateContent(shadow.resource.body.content, tableStartIndex, cells)
     }
 
     return requests;
   }
+
 };

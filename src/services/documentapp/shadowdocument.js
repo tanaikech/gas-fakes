@@ -54,7 +54,6 @@ class ShadowDocument {
     this.__elementMap = new Map()
     const bodyName = makeNrPrefix("BODY_SECTION");
     const bodyTree = { name: bodyName, children: [], parent: null }
-
     const bodyElement = {
       __prop: "BODY_SECTION",
       __type: "BODY_SECTION",
@@ -62,13 +61,12 @@ class ShadowDocument {
       __twig: bodyTree
     }
     this.__elementMap.set(bodyName, bodyElement);
-
     // console.log('named ranges after document fetch', JSON.stringify(currentNr))
 
     // maps all the elements to their named range
-    const mapElements = (element, branch) => {
+    const mapElements = (element, branch, knownType = null) => {
       // this gets the type and property name to look for for the given element content
-      const elementProp = getElementProp(element);
+      const elementProp = knownType ? { type: knownType, prop: null } : getElementProp(element);
 
       if (!elementProp) {
         // This will now catch things like sectionBreak
@@ -104,19 +102,25 @@ class ShadowDocument {
 
       // Determine the correct property to iterate over for children
       let childrenArray = [];
+      let childType = null;
+
       if (type === 'TABLE') {
         childrenArray = ep.tableRows || [];
+        childType = 'TABLE_ROW';
       } else if (type === 'TABLE_ROW') {
         childrenArray = ep.tableCells || [];
+        childType = 'TABLE_CELL';
       } else if (type === 'TABLE_CELL') {
         childrenArray = ep.content || [];
+        // childType is null, getElementProp will figure it out
       } else if (ep && Reflect.has(ep, "elements")) { // For Paragraph and others
         childrenArray = ep.elements;
+        // childType is null, getElementProp will figure it out
       }
 
       if (childrenArray.length > 0) {
         // Process ALL sub-elements recursively to ensure they are in the elementMap and have a twig.
-        childrenArray.forEach(subElement => mapElements(subElement, twig));
+        childrenArray.forEach(subElement => mapElements(subElement, twig, childType));
 
         // Now that all sub-elements have been processed and have a __twig, we can
         // filter them to build the user-facing children list for the current twig.

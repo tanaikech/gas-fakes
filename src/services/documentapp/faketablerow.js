@@ -2,6 +2,7 @@
  * @file Provides a fake implementation of the TableRow class.
  */
 import { registerElement } from './elementRegistry.js';
+import { Proxies } from '../../support/proxies.js';
 import { FakeContainerElement } from './fakecontainerelement.js';
 
 /**
@@ -12,15 +13,18 @@ import { FakeContainerElement } from './fakecontainerelement.js';
  * @see https://developers.google.com/apps-script/reference/document/table-row
  */
 export class FakeTableRow extends FakeContainerElement {
+  constructor(structure, nameOrItem) {
+    super(structure, nameOrItem);
+  }
+
   /**
-   * @param {object} properties The properties of the table row.
-   * @param {number} properties.rowIndex The index of this row.
-   * @param {GoogleAppsScript.Document.Table} properties.table The parent table.
-   * @private
-   */
-  constructor({ rowIndex, table }) {
-    // TableRow doesn't have its own type in ElementType enum.
-    super({ element: {}, doc: table.__doc, parent: table, type: null });
+ * Gets the table cell at the given index.
+ * @param {number} cellIndex The index of the cell to retrieve.
+ * @returns {GoogleAppsScript.Document.TableCell} The table cell.
+ * @see https://developers.google.com/apps-script/reference/document/table-row#getCell(Integer)
+ */
+  getCell(cellIndex) {
+    return this.getChild(cellIndex);
   }
 
   /**
@@ -29,14 +33,14 @@ export class FakeTableRow extends FakeContainerElement {
    * @see https://developers.google.com/apps-script/reference/document/table-row#getNumCells()
    */
   getNumCells() {
-    return 0; // Stub implementation
+    return this.getNumChildren();
   }
 }
 
 /**
  * Creates a new fake TableRow.
- * @param {object} properties The properties for the TableRow.
- * @returns {FakeTableRow} The new fake TableRow.
+ * @param {...any} args The arguments for the FakeTableRow constructor.
+ * @returns {FakeTableRow} A new proxied FakeTableRow instance.
  */
-export const newFakeTableRow = (properties) => new FakeTableRow(properties);
+export const newFakeTableRow = (...args) => Proxies.guard(new FakeTableRow(...args));
 registerElement('TABLE_ROW', newFakeTableRow);

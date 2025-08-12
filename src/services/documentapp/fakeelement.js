@@ -20,7 +20,24 @@ import { getElementFactory } from './elementRegistry.js';
 const asCasts = {
   PARAGRAPH: {
     method: 'asParagraph',
-    element: 'newParagraph',
+  },
+  TABLE: {
+    method: 'asTable',
+  },
+  TABLE_ROW: {
+    method: 'asTableRow',
+  },
+  TABLE_CELL: {
+    method: 'asTableCell',
+  },
+  TEXT: {
+    method: 'asText',
+  },
+  PAGE_BREAK: {
+    method: 'asPageBreak',
+  },
+  HORIZONTAL_RULE: {
+    method: 'asHorizontalRule',
   },
 };
 

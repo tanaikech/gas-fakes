@@ -30,10 +30,10 @@ export const getElementProp = (se) => {
         return 'PAGE_BREAK';
       case 'TABLE':
         return 'TABLE';
-      case 'TABLEROW':
+      case 'TABLECELLS': // A TableRow contains TableCells
         return 'TABLE_ROW';
-      case 'TABLECELLS':
-        return 'TABLE_CELL';
+      // A TableCell contains content. This is too generic to be reliable here.
+      // The knownType logic in shadowdocument.js is the correct way to identify TableCells.
       case 'PARAGRAPH':
         return 'PARAGRAPH'
       default:
