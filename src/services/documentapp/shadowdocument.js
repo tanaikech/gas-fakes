@@ -1,6 +1,6 @@
 import { Proxies } from '../../support/proxies.js';
 import { makeNrPrefix, getCurrentNr,findOrCreateNamedRangeName } from './nrhelpers.js'
-import { getElementProp } from './shadowhelpers.js';
+import { getElementProp } from './elementhelpers.js';
 import { Utils } from '../../support/utils.js';
 
 
@@ -97,35 +97,46 @@ class ShadowDocument {
       element.__twig = twig;
       this.__elementMap.set(name, element);
 
-      // recurse if we have sub elements
-      const ep = element[prop]; // this is the object with .elements or .content
-      if (Reflect.has(ep, "elements")) {
+
+      // For most elements, the content is in a sub-property (e.g., element.paragraph).
+      // For TableRow and TableCell, the element itself is the content container.
+      const ep = is.null(prop) ? element : element[prop];
+
+      // Determine the correct property to iterate over for children
+      let childrenArray = [];
+      if (type === 'TABLE') {
+        childrenArray = ep.tableRows || [];
+      } else if (type === 'TABLE_ROW') {
+        childrenArray = ep.tableCells || [];
+      } else if (type === 'TABLE_CELL') {
+        childrenArray = ep.content || [];
+      } else if (ep && Reflect.has(ep, "elements")) { // For Paragraph and others
+        childrenArray = ep.elements;
+      }
+
+      if (childrenArray.length > 0) {
         // Process ALL sub-elements recursively to ensure they are in the elementMap and have a twig.
-        ep.elements.forEach(subElement => mapElements(subElement, twig));
+        childrenArray.forEach(subElement => mapElements(subElement, twig));
 
         // Now that all sub-elements have been processed and have a __twig, we can
         // filter them to build the user-facing children list for the current twig.
         if (type === 'PARAGRAPH') {
-          twig.children = ep.elements
+          twig.children = childrenArray
             .map(e => e.__twig) // Get the twig for each raw element
             .filter(childTwig => {
               if (!childTwig) return false;
               const childElement = this.__elementMap.get(childTwig.name);
               if (!childElement) return false;
 
-              // Prioritize keeping non-text elements like PageBreak.
-              if (childElement.pageBreak || childElement.horizontalRule) { // TODO: Add other non-text types
-                return true;
-              }
-              // If it's a text run, it's a child only if it has visible content.
-              if (childElement.textRun) {
-                return childElement.textRun.content && childElement.textRun.content !== '\n';
-              }
-              return false;
+              // A paragraph's children are its non-text elements (like PageBreak)
+              // and text runs that are not just a newline.
+              return childElement.pageBreak ||
+                childElement.horizontalRule ||
+                (childElement.textRun && childElement.textRun.content && childElement.textRun.content !== '\n');
             });
         } else {
           // For non-paragraph containers, all children are significant.
-          twig.children = ep.elements.map(e => e.__twig).filter(Boolean);
+          twig.children = childrenArray.map(e => e.__twig).filter(Boolean);
         }
       }
       return twig;

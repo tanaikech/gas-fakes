@@ -15,6 +15,66 @@ export const testDocsNext = (pack) => {
     return children;
   }
 
+  unit.section("Body.appendTable and Body.insertTable", t => {
+
+    let { doc } = maketdoc(toTrash, fixes);
+    let body = doc.getBody();
+
+    // we have something here we cant acchieve in the api
+    // apps script can write an empty table stub
+    // the api cant https://github.com/brucemcpherson/gas-fakes/issues/42
+
+    const table0 = body.appendTable ()
+    if (DocumentApp.isFake) {
+      t.is( table0.getNumRows(), 1, "api cant create an empty table")
+    } else {
+      t.is( table0.getNumRows(), 0, "apps script can create an empty")
+    }
+
+    // 1. Append a table with content
+    const cellsData = [
+      ['R1C1', 'R1C2'],
+      ['R2C1', 'R2C2']
+    ];
+    const table1 = body.appendTable(cellsData);
+
+
+    t.is(table1.getType(), DocumentApp.ElementType.TABLE, "appendTable should return a Table element");
+    t.truthy(table1.getParent(), "Appended table should have a parent");
+    t.is(table1.getParent().getType(), DocumentApp.ElementType.BODY_SECTION, "Table's parent should be the body");
+
+    // Verify structure and content
+    t.is(table1.getNumRows(), 2, "Table should have 2 rows");
+    const row1 = table1.getRow(0);
+    t.is(row1.getNumCells(), 2, "Row 0 should have 2 cells");
+    t.is(row1.getCell(0).getText(), 'R1C1', "Cell (0,0) should have correct text");
+    t.is(row1.getCell(1).getText(), 'R1C2', "Cell (0,1) should have correct text");
+
+    // 2. Append an empty table (no arguments)
+
+    const table2 = body.appendTable();
+    t.is(table2.getNumRows(), 1, "Default appended table has 1 row");
+    t.is(table2.getRow(0).getNumCells(), 1, "Default appended table has 1 cell");
+    t.is(table2.getRow(0).getCell(0).getText(), "", "Default appended table cell is empty");
+
+    // 3. Insert a copied table
+    const table3_copy = table1.copy(); // create a detached copy of the first table
+    body.insertTable(1, table3_copy); // insert after the initial empty paragraph
+
+    const children3 = getChildren(body);
+    const insertedTable = children3[1];
+    t.is(insertedTable.getType(), DocumentApp.ElementType.TABLE, "Second child should be the inserted table");
+    t.is(insertedTable.getNumRows(), 2, "Inserted table should have 2 rows (from copy)");
+    // Note: The current implementation of copy() for tables does not copy cell content.
+    t.is(insertedTable.getRow(0).getCell(0).getText(), "", "Copied table cells should be empty");
+
+    // 4. Error conditions
+    const attemptAttachedInsert = () => body.insertTable(1, table1);
+    t.rxMatch(t.threw(attemptAttachedInsert)?.message || 'no error thrown', /Element must be detached./, "Inserting an already attached table should throw an error");
+
+    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
+  });
+
   unit.section("Body.appendPageBreak and Body.insertPageBreak", t => {
     let { doc } = maketdoc(toTrash, fixes);
     let body = doc.getBody();
@@ -22,6 +82,7 @@ export const testDocsNext = (pack) => {
     // 1. Append
     body.appendParagraph("p1");
     const pb1 = body.appendPageBreak();
+
     body.appendParagraph("p2");
 
     t.is(pb1.getType(), DocumentApp.ElementType.PAGE_BREAK, "appendPageBreak should return a PageBreak element");
@@ -48,6 +109,7 @@ export const testDocsNext = (pack) => {
     const children2 = getChildren(body);
     t.is(children2.length, 6, "Body should have 6 children after insert");
     t.is(children2[1].getType(), DocumentApp.ElementType.PARAGRAPH, "Second child should be the inserted page break's paragraph");
+
     // Each paragraph, including empty ones and those containing only a page break,
     // contributes a newline when calling body.getText().
     t.is(body.getText(), "\n\np1\n\np2\n", "Text content should reflect inserted page break");
@@ -59,7 +121,10 @@ export const testDocsNext = (pack) => {
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   });
 
+
+
   unit.section("Body.insertParagraph method", t => {
+
     // Test 1: Insert in the middle
     let { doc } = maketdoc(toTrash, fixes);
     let body = doc.getBody();
@@ -68,6 +133,7 @@ export const testDocsNext = (pack) => {
     const p2 = body.appendParagraph("p2").copy(); // Creates a detached copy of a "p2" paragraph
     // The body has 3 children: [empty, p1, p3]. Index 2 is before p3.
     body.insertParagraph(2, p2); // body is now [empty, p1, p2(copy), p3, p2]
+
     t.is(body.getText(), "\np1\np2\np3\np2", "Insert in the middle");
 
     // Test 2: Insert at the beginning
@@ -76,6 +142,7 @@ export const testDocsNext = (pack) => {
     body.appendParagraph("p1");
     const p0 = body.appendParagraph("p0").copy();
     // The body has 3 children: [empty, p1, p0]. Index 1 is before p1.
+
     body.insertParagraph(1, p0);
     t.is(body.getText(), "\np0\np1\np0", "Insert at the beginning");
 

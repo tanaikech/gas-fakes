@@ -1,63 +1,54 @@
-import { Proxies } from '../../support/proxies.js';
-import { newFakeRange } from './fakerange.js';
-import { newFakeRangeElement } from './fakerangeelement.js';
-
 /**
- * Creates a new FakeRangeBuilder instance.
- * @returns {FakeRangeBuilder} A new FakeRangeBuilder instance.
+ * @file Provides a fake implementation of the RangeBuilder class.
  */
-export const newFakeRangeBuilder = (...args) => {
-  return Proxies.guard(new FakeRangeBuilder(...args));
-};
+
+import { newFakeRange } from './fakerange.js';
 
 /**
- * A fake implementation of the RangeBuilder class for DocumentApp.
+ * A fake implementation of the RangeBuilder class.
+ * @class
+ * @implements {GoogleAppsScript.Document.RangeBuilder}
  * @see https://developers.google.com/apps-script/reference/document/range-builder
  */
-class FakeRangeBuilder {
+export class FakeRangeBuilder {
   constructor() {
-    this.__elements = [];
+    this.elements = [];
   }
 
   /**
    * Adds an element to the range.
-   * @param {import('./fakeelement').FakeElement} element - The element to add.
-   * @returns {FakeRangeBuilder} The builder, for chaining.
+   * @param {GoogleAppsScript.Document.Element} element The element to add.
+   * @returns {GoogleAppsScript.Document.RangeBuilder} The builder, for chaining.
+   * @see https://developers.google.com/apps-script/reference/document/range-builder#addElement(Element)
    */
   addElement(element) {
-    // A real implementation would need to validate the element.
-    this.__elements.push(newFakeRangeElement(element, -1, -1));
+    this.elements.push(element);
     return this;
   }
 
   /**
    * Adds a range of elements to this range.
-   * @param {import('./fakerange').FakeRange} range - The range to add.
-   * @returns {FakeRangeBuilder} The builder, for chaining.
+   * @param {GoogleAppsScript.Document.Range} range The range to add.
+   * @returns {GoogleAppsScript.Document.RangeBuilder} The builder, for chaining.
+   * @see https://developers.google.com/apps-script/reference/document/range-builder#addRange(Range)
    */
   addRange(range) {
-    const rangeElements = range.getRangeElements();
-    this.__elements.push(...rangeElements);
+    this.elements.push(...range.getRangeElements().map(re => re.getElement()));
     return this;
   }
 
   /**
    * Builds the range.
-   * @returns {import('./fakerange').FakeRange} The built range.
+   * @returns {GoogleAppsScript.Document.Range} The built range.
+   * @see https://developers.google.com/apps-script/reference/document/range-builder#build()
    */
   build() {
-    return newFakeRange(this.__elements);
-  }
-
-  /**
-   * Gets the elements in the range.
-   * @returns {Array<import('./fakerangeelement').FakeRangeElement>} The range elements.
-   */
-  getRangeElements() {
-    return this.__elements;
-  }
-
-  toString() {
-    return 'RangeBuilder';
+    return newFakeRange({ elements: this.elements });
   }
 }
+
+/**
+ * Creates a new fake RangeBuilder.
+ * @returns {FakeRangeBuilder} The new fake RangeBuilder.
+ */
+export const newFakeRangeBuilder = () => new FakeRangeBuilder();

@@ -1,9 +1,9 @@
 import { Proxies } from '../../support/proxies.js';
-import { signatureArgs, unimplementedProps } from '../../support/helpers.js';
+import { signatureArgs } from '../../support/helpers.js';
 import { Utils } from '../../support/utils.js';
 import { FakeContainerElement } from './fakecontainerelement.js';
 import { makeNrPrefix } from './nrhelpers.js'
-import { appendParagraph, insertParagraph, appendPageBreak, insertPageBreak } from './shadowhelpers.js'
+import { appendParagraph, insertParagraph, appendPageBreak, insertPageBreak, appendTable, insertTable } from './appenderhelpers.js'
 import { registerElement } from './elementRegistry.js';
 const { is } = Utils
 
@@ -13,7 +13,7 @@ class FakeBody extends FakeContainerElement {
     const { nargs, matchThrow } = signatureArgs(arguments, 'Body');
     if ((nargs < 1 || nargs > 2) || !is.object(structure)) {
       matchThrow();
-    } 
+    }
     // The name from getBody() will be undefined, so we default it. The name from __cast() will be defined.
     super(structure, name || makeNrPrefix('BODY_SECTION'))
     this.__structure = structure
@@ -57,6 +57,19 @@ class FakeBody extends FakeContainerElement {
       return this.appendPageBreak(pageBreak);
     }
     return insertPageBreak(this, childIndex, pageBreak);
+  }
+
+  appendTable(tableOrCells) {
+    return appendTable(this, tableOrCells);
+  }
+
+  insertTable(childIndex, tableOrCells) {
+    // Per the docs, inserting at an index equal to the number of children
+    // is equivalent to an append operation.
+    if (childIndex === this.getNumChildren()) {
+      return this.appendTable(tableOrCells);
+    }
+    return insertTable(this, childIndex, tableOrCells);
   }
 
   toString() {

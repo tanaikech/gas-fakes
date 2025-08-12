@@ -1,138 +1,42 @@
+/**
+ * @file Provides a fake implementation of the base Element class.
+ */
 import { Proxies } from '../../support/proxies.js';
-import { signatureArgs, unimplementedProps } from '../../support/helpers.js';
+import { signatureArgs } from '../../support/helpers.js';
 import { Utils } from '../../support/utils.js';
 const { is } = Utils;
-import { makeNrPrefix } from './nrhelpers.js'
+import { makeNrPrefix } from './nrhelpers.js';
 import { ElementType } from '../enums/docsenums.js';
 import { getElementFactory } from './elementRegistry.js';
 
-// the subclasses like paragraph are extensions of element, so we'll implement the shared ones here
-// with placeholders for the others which we'll remove as they are implemented in the subclass
-const propsWaitingRoom = [
-  'addPositionedImage',
-  'appendHorizontalRule',
-  'appendInlineImage',
-  'appendPageBreak',
-  'appendText',
-  'asAnchoredDrawing',
-  'asBody',
-  'asCodeSnippet',
-  'asCommentSection',
-  'asDate',
-  'asDocumentBodySection',
-  'asDocumentElement',
-  'asEquation',
-  'asEquationFunction',
-  'asEquationFunctionArgumentSeparator',
-  'asEquationSymbol',
-  'asFooterSection',
-  'asFootnote',
-  'asFootnoteSection',
-  'asHeaderSection',
-  'asHorizontalRule',
-  'asInlineDrawing',
-  'asInlineImage',
-  'asListItem',
-  'asPageBreak',
-  'asPerson',
-  'asRichLink',
-  'asTable',
-  'asTableCell',
-  'asTableOfContents',
-  'asTableRow',
-  'asTableRow',
-  'asText',
-  'asVariable',
-  'clear',
-  'copy',
-  'editAsText',
-  'findElement',
-  'findText',
-  'getAlignment',
-  'getAttributes',
-  'getBackgroundColor',
-  'getChild',
-  'getChildIndex',
-  'getFontFamily',
-  'getFontSize',
-  'getForegroundColor',
-  'getIndentEnd',
-  'getIndentFirstLine',
-  'getIndentStart',
-  'getLineSpacing',
-  'getLinkUrl',
-  'getNextSibling',
-  'getNumChildren',
-  'getPositionedImage',
-  'getPositionedImages',
-  'getPreviousSibling',
-  'getSpacingAfter',
-  'getSpacingBefore',
-  'getText',
-  'getTextAlignment',
-  'insertHorizontalRule',
-  'insertInlineImage',
-  'insertPageBreak',
-  'insertText',
-  'isAtDocumentEnd',
-  'isBold',
-  'isItalic',
-  'isLeftToRight',
-  'isStrikethrough',
-  'isUnderline',
-  'merge',
-  'removeChild',
-  'removeFromParent',
-  'removePositionedImage',
-  'replaceText',
-  'setAlignment',
-  'setAttributes',
-  'setBackgroundColor',
-  'setBold',
-  'setFontFamily',
-  'setFontSize',
-  'setForegroundColor',
-  'setIndentEnd',
-  'setIndentFirstLine',
-  'setIndentStart',
-  'setItalic',
-  'setLeftToRight',
-  'setLineSpacing',
-  'setLinkUrl',
-  'setSpacingAfter',
-  'setSpacingBefore',
-  'setStrikethrough',
-  'setText',
-  'setTextAlignment',
-  'setUnderline',
-];
-
-const asCasts = {
-  "PARAGRAPH": {
-    method: "asParagraph",
-    element: "newParagraph"
-  },
-  "PAGE_BREAK": {
-    method: "asPageBreak",
-    element: "newPageBreak"
-  },
-  "TEXT": {
-    method: "asText",
-    element: "newText"
-  }
-}
-
+/**
+ * @typedef {import('./shadow.js').ShadowStructure} ShadowStructure
+ */
 
 /**
- * generic class for an element
- * in docs everything is an element, including the body
- * an elelement can presetn its subclass with methids like asParagraph, asBody etc
+ * A map of element types to their corresponding 'as' methods (e.g., asParagraph).
+ * @private
+ */
+const asCasts = {
+  PARAGRAPH: {
+    method: 'asParagraph',
+    element: 'newParagraph',
+  },
+};
+
+/**
+ * Represents a generic element in a Google Document.
+ * In the Document Service model, almost everything is a type of Element.
+ * This base class provides common functionality like getting the parent, type, and copying.
+ * @class FakeElement
+ * @implements {GoogleAppsScript.Document.Element}
  */
 export class FakeElement {
     /**
-     * the parent will be the containg elemement
-     * @param {object} se the structural element to build the element from
-     * @param {*} se 
+     * The constructor for an element.
+     * @param {ShadowStructure | null} structure - The document's structure manager, or null for a detached element.
+     * @param {string | object} nameOrItem - The unique name of the element within the structure, or the raw element resource for a detached element.
+     * @private
      */
     constructor(structure, nameOrItem) {
       const { nargs, matchThrow } = signatureArgs(arguments, 'FakeElement');
@@ -142,8 +46,8 @@ export class FakeElement {
       // or "detached" (with a structural element but no live structure).
       // A detached element is created by copy().
       if (is.string(nameOrItem)) { // Attached
-        if (!is.object(structure) || !nameOrItem.startsWith(makeNrPrefix(null))) {
-          throw new Error("Invalid arguments for attached FakeElement");
+        if (!is.object(structure) || !nameOrItem.startsWith(makeNrPrefix())) {
+          throw new Error('Invalid arguments for attached FakeElement');
         }
         this.__isDetached = false;
         this.__structure = structure;
@@ -151,7 +55,7 @@ export class FakeElement {
         this.__detachedItem = null;
       } else if (is.object(nameOrItem)) { // Detached
         if (!is.null(structure)) {
-          throw new Error("Structure must be null for a detached FakeElement");
+          throw new Error('Structure must be null for a detached FakeElement');
         }
         this.__isDetached = true;
         this.__structure = null;
@@ -159,64 +63,96 @@ export class FakeElement {
         this.__detachedItem = nameOrItem;
       }
 
-      Reflect.ownKeys (asCasts).forEach(cast => {
-        const ob = asCasts[cast]
-        this[ob.method] = this.__cast.bind(this, cast)
-      })
-
+      // Dynamically add as...() methods like asParagraph()
+      Reflect.ownKeys(asCasts).forEach((cast) => {
+        const ob = asCasts[cast];
+        this[ob.method] = this.__cast.bind(this, cast);
+      });
     }
 
+  /**
+   * Gets the underlying element resource item from the structure map or the detached item.
+   * @type {object}
+   * @private
+   */
   get __elementMapItem() {
     if (this.__isDetached) {
       return this.__detachedItem;
     }
-  return this.__getElementMapItem(this.__name)
-}
-
-__getElementMapItem(name) {
-  const item = this.__structure.elementMap.get(name)
-  if (!item) {
-    throw new Error(`element with name ${name} not found`);
+    return this.__getElementMapItem(this.__name);
   }
-  return item
-}
 
+  /**
+   * Helper to retrieve an item from the structure's element map.
+   * @param {string} name The name of the element to retrieve.
+   * @returns {object} The element map item.
+   * @private
+   */
+  __getElementMapItem(name) {
+    const item = this.__structure.elementMap.get(name);
+    if (!item) {
+      throw new Error(`element with name ${name} not found`);
+    }
+    return item;
+  }
+
+  /**
+   * Gets the hierarchical 'twig' for this element from the element map item.
+   * The twig represents the element's position in the document tree.
+   * @type {object}
+   * @private
+   */
   get __twig() {
-  return this.__elementMapItem.__twig
-}
-
-getParent() {
-  if (this.__isDetached) {
-    return null;
+    return this.__elementMapItem.__twig;
   }
-  // the body doesnt have a parent
-  if (!this.__twig.parent) return null
 
-  const name = this.__twig.parent.name
-  const item = this.__structure.elementMap.get(name)
-  if (!item) {
-    throw new Error(`element with name ${name} not found`);
+  /**
+   * Gets the parent element of this element.
+   * @returns {GoogleAppsScript.Document.ContainerElement | null} The parent element, or null if it has no parent (e.g., it's the Body or is detached).
+   * @see https://developers.google.com/apps-script/reference/document/element#getParent()
+   */
+  getParent() {
+    if (this.__isDetached) {
+      return null;
+    }
+    // The body doesn't have a parent.
+    if (!this.__twig.parent) return null;
+
+    const { name } = this.__twig.parent;
+    const item = this.__structure.elementMap.get(name);
+    if (!item) {
+      throw new Error(`Parent element with name ${name} not found`);
+    }
+    // Create a new element instance for the parent and cast it to its proper type.
+    return newFakeElement(this.__structure, name).__cast();
   }
-  return newFakeElement(this.__structure, name).__cast()
 
-}
-
-getType() {
-  const item = this.__elementMapItem
-  const type = item.__type
-  const enumType = ElementType[type]
-  if (!enumType) {
-    throw new Error(`element with type ${type} not found`);
+  /**
+   * Gets the element's type.
+   * @returns {GoogleAppsScript.Document.ElementType} The element's type.
+   * @see https://developers.google.com/apps-script/reference/document/element#getType()
+   */
+  getType() {
+    const { __type: type } = this.__elementMapItem;
+    const enumType = ElementType[type];
+    if (!enumType) {
+      throw new Error(`Element with type ${type} not found in ElementType enum`);
+    }
+    return enumType;
   }
-  return enumType
-}
 
-copy() {
-  const originalItem = this.__elementMapItem;
+  /**
+   * Creates a detached copy of the element.
+   * The copied element has no parent and is not part of the document until it is inserted.
+   * @returns {GoogleAppsScript.Document.Element} A new, detached copy of the element.
+   * @see https://developers.google.com/apps-script/reference/document/element#copy()
+   */
+  copy() {
+    const originalItem = this.__elementMapItem;
 
-  // Custom deep clone function to handle the circular reference in __twig.parent.
-  // JSON.stringify cannot handle circular structures.
-  const deepClone = (obj, cache = new WeakMap()) => {
+    // Custom deep clone function to handle the circular reference in __twig.parent.
+    // JSON.stringify cannot handle circular structures.
+    const deepClone = (obj, cache = new WeakMap()) => {
     if (obj === null || typeof obj !== 'object') {
       return obj;
     }
@@ -229,45 +165,61 @@ copy() {
 
     for (const key in obj) {
       if (Object.prototype.hasOwnProperty.call(obj, key)) {
-        // The __twig property is the one with the circular reference via its 'parent' property.
-        // We clone it, but explicitly set the parent to null to break the cycle for the detached copy.
+          // The __twig property is the one with the circular reference via its 'parent' property.
+          // We clone it, but explicitly set the parent to null to break the cycle for the detached copy.
         if (key === '__twig') {
           const twig = obj[key];
           clone[key] = {
             name: twig.name,
             children: deepClone(twig.children, cache), // Recursively clone children twigs
-            parent: null // Break the circular reference
+            parent: null, // Break the circular reference
           };
         } else {
           clone[key] = deepClone(obj[key], cache);
         }
       }
     }
-    return clone;
-  };
-  // at this point we have a cloned item -but all its children/parents/named range names will be wrong
-  const clonedItem = deepClone(originalItem);
+      return clone;
+    };
 
-  // The factory will create the correct subclass (e.g., FakeParagraph)
-  const factory = getElementFactory(this.getType().toString());
-  return factory(null, clonedItem);
-}
+    const clonedItem = deepClone(originalItem);
 
-__cast(asType=null) {
-  // we'll return an object that matches the type
-  const item = this.__elementMapItem;
-  const type = item.__type
-  asType = asType || type
-  if (type !== asType) {
-    throw new Error(`${type} can't be cast as ${asType}`);
+    // The factory will create the correct subclass (e.g., FakeParagraph)
+    const factory = getElementFactory(this.getType().toString());
+    return factory(null, clonedItem);
   }
-  const factory = getElementFactory(asType);
-  return factory(this.__structure, this.__name);
+
+  /**
+   * Casts the generic FakeElement to its specific type (e.g., FakeParagraph).
+   * This is used by methods like `asParagraph()`.
+   * @param {string} [asType=null] - The type to cast to. If null, uses the element's own type.
+   * @returns {FakeElement} A new instance of the specific element subclass.
+   * @private
+   */
+  __cast(asType = null) {
+    // We'll return an object that matches the type.
+    const item = this.__elementMapItem;
+    const { __type: type } = item;
+    asType = asType || type;
+    if (type !== asType) {
+      throw new Error(`${type} can't be cast as ${asType}`);
+    }
+    const factory = getElementFactory(asType);
+    return factory(this.__structure, this.__name);
+  }
+
+  /**
+   * Returns the string "Element".
+   * @returns {string}
+   */
+  toString() {
+    return 'Element';
+  }
 }
 
-toString() {
-  return 'Element';
-}
-}
-
+/**
+ * Creates a new proxied FakeElement instance.
+ * @param {...any} args The arguments for the FakeElement constructor.
+ * @returns {FakeElement} A new proxied FakeElement instance.
+ */
 export const newFakeElement = (...args) => Proxies.guard(new FakeElement(...args));

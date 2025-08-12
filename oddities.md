@@ -442,6 +442,24 @@ Despite the various defaults, a missing value for these properties returned via 
 
 Getting started on the advanced services of the Document API. These notes are for my TIL (things I learned today), but may be useful if you are digging into the Document API yourself.
 
+#### Horizonal rule
+
+The api doesnt provide a way to insert a horizontal rule element. Apps Script inserts a specific horizontal rule element, and then uses paragraph styling using a border to create that line. Although we could do all that, we'd still have a missing element. I'm parking this one for now and revisit it later. Here's the reported issue  https://issuetracker.google.com/issues/437825936
+
+https://github.com/brucemcpherson/gas-fakes/issues/43
+
+#### Tables
+
+This is another interoperability issue when using the Docs API and Apps Script together. Althogh you can body.appendTable() with no rows in Apps Script (this creates a table element in the document resource), but the same operation in the docs API returns an execption (rows/columns) must be greater than 0.
+
+Adding a table with one row, then deleting that row works, but the API also deletes the table element, not just the child row elements.
+
+This is yet another point of friction for those who are using the api/advanced services and Apps Script Advanced Docs service interchangeably.
+
+https://issuetracker.google.com/issues/438038924
+https://github.com/brucemcpherson/gas-fakes/issues/42
+
+What this means for gas-fakes is .appendTable() with no arguments will create a 1 cell table - this is a divergence from Apps Script which will create a table stub element only
 
 #### Tabs
 
