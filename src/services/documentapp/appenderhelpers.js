@@ -78,7 +78,7 @@ const calculateInsertionPointsAndInitialRequests = (self, childIndex, isAppend, 
       insertIndex = endIndexBefore - 1;
       newElementStartIndex = endIndexBefore;
     }
-    const targetChildTwig = children[children.length - 1];
+    const targetChildTwig = children.length > 0 ? children[children.length - 1] : item.__twig;
     requests = children.length ? makeProtectionRequests(shadow, targetChildTwig) : [];
   } else { // It's an insert
     if (childIndex < 0 || childIndex >= children.length) {

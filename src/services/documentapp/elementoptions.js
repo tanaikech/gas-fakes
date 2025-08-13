@@ -85,7 +85,10 @@ const reverseUpdateContent = (content, tableStartIndex, newTableData) => {
       if (oldTextEndIndex - 1 > oldTextStartIndex) {
         requests.push(deleteContentRange(oldTextStartIndex, oldTextEndIndex - 1));
       }
-      requests.push(insertText(oldTextStartIndex, newText));
+      // this is only required if the nextText has any length
+      if (newText.length > 0){
+        requests.push(insertText(oldTextStartIndex, newText));
+      }
 
     }
   }
@@ -265,8 +268,9 @@ export const tableOptions = {
 
     // first request is a table of 1 x n for simplicity
     let requests = handleTextless(location, isAppend, self, 'TABLE', { rows: 1, columns })
-    // allow for +1 para\n the inserttable ting does
-    const tableStartIndex = 1 + requests[0].insertTable.location.index;
+
+    // the tableStartIndex will be different depending if it was a body append or not
+    const tableStartIndex = requests[0].insertTable.location.index + (isAppend ? 2 : 1)
 
     // next requests are to update rows to the table if we got some cells
     if (cells) {

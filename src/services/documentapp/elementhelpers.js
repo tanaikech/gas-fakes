@@ -3,10 +3,9 @@
  */
 
 
-import { ElementType } from '../enums/docsenums.js';
 import { Utils } from "../../support/utils.js";
 const { is } = Utils
-const { getEnumKeys } = Utils
+
 
 // figures out what kind of element this is from the properties present
 export const getElementProp = (se) => {

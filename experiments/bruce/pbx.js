@@ -1,5 +1,6 @@
 import '../../main.js';
 import { moveToTempFolder, deleteTempFile } from '../tempfolder.js';
+import is from '@sindresorhus/is';
 const suffix = "-bruce"
 
 const whichType = (element) => {
@@ -16,20 +17,22 @@ const report = (doc, what) => {
   console.log(what)
   let text = '  '
 
-  const childProps = ["elements", "tableRows", "tableCells"]
-  const typer = (child, text) => {
+  const childProps = ["elements", "tableRows", "tableCells","content"]
+  const typer = (child, text, spaces = " ") => {
     const type = whichType(child)
     if (type) {
-      text += ` -type:${type} ${child.startIndex}:${child.endIndex}`
+      text += `\n${spaces}-${type} ${child.startIndex}:${child.endIndex}`
       if (type === 'textRun') {
-        text += ` -text:${JSON.stringify(child[type].content)}`
+        text += ` ${JSON.stringify(child[type].content)}`
       }
-      const key = Reflect.ownKeys(child[type]).find(f => childProps.includes(f))
+      const key = Reflect.ownKeys(child[type]).find (f=>childProps.includes(f))
+      let arr = key && child[type][key] 
+      if (!arr && is.array (child[type])) arr = child[type]
 
-      if (key) {
-        text += ` (`
-        child[type][key].forEach(f => text = typer(f, text))
-        text += ')'
+      if (is.array(arr)) {
+        //text += spaces
+        arr.forEach(f => text = typer(f, text, spaces + "  "))
+        //text += ''
       }
     }
     return text
@@ -52,15 +55,15 @@ const pb5 = () => {
   moveToTempFolder(id, suffix)
 
   // cant append an empty table in fake so do this
-  const body = doc.getBody()
-  if (DocumentApp.isFake) {
-    body.appendTable()
-  } else {
-    body.appendTable([['']])
-  }
+  let body = doc.getBody()
+  body.appendParagraph ('foo')
   doc = scl(doc)
+  console.log(report(Docs.Documents.get(id), `\nappended para`))
 
-  console.log(report(Docs.Documents.get(id), `\nappended table`))
+  body = doc.getBody()
+  body.insertTable(1,[['a', 'b'], ['c', 'd']])
+  doc = scl(doc)
+  console.log(report(Docs.Documents.get(id), `\ninserted table`))
 
   deleteTempFile(id)
 
