@@ -24,11 +24,17 @@ As a background project I'm chipping away at this when I can. There's a mountain
 
 Use the test project included in the repo if you want to do some tests. It uses a Fake services to exercise Auth etc. Just change the fixtures in your own environments by following the instructions in [setup-env.md](https://github.com/brucemcpherson/gas-fakes/blob/main/setup-env.MD), then `npm i && npm test`.
 
+### Create a unit.section for each class method or group of related methods
+
  If you are a collaborator and want to add some additional methods, you need to create a test section and always run a full set of tests on both environments before creating a merge request to ensure your changes havent broken anything. At the time of writing there are about 4,500 active tests.
+
+### Unit tester for both GAS and Node
 
 Note that I use a [unit tester](https://ramblings.mcpher.com/apps-script-test-runner-library-ported-to-node/) that runs in both GAS and Node, so the exact same tests will run in both environments. There are some example tests in the repo. Each test has been proved on both Node and GAS. There's also a shell (togas.sh) which will use clasp to push the test code to Apps Script.
 
 Each test can be run individually (for example `npm run testdrive`) or all with `npm test`
+
+### Test Settings
 
 Test settings and fixtures are in the .env file. Some readonly files are publicly shared and can be left with the example value in .env-template. Most files which are written are created and deleted afterwards on successful completion. They will be named something starting with -- and often centralized into a scratch folder for easy maintentance. In case of failures you may need to delete these yourself. If you want to preserve the testfiles it creates doing a test session, just set the CLEAN parameter in .env to 0.
 
@@ -48,6 +54,14 @@ import '@mcpher/gas-fakes/main.js'
 ```
 
 togas.sh will remove imports and exports on the way to apps script, which doesnt support them.
+
+## Mocking
+
+I haven't found a real need to create many mocks, as the Live Apps Script environment has all you need to check test scripts. I always run all tests on Apps Script first, then strive to get the same result in Node. In principle there should be no 'special exceptions' in the test files, except in the case of outstanding issues reported in buganizer (where apps script is not behaving as it should) and also in the issues of the repo.
+
+## Experiments
+
+There's a folder 'experiments' for this. They don't form part of the project, but can be used for playing around. It can be useful to preservce these for future use. See the readme in the experiments folder for more info.
 
 ## Using Gemini code assist
 
