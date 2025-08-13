@@ -1,6 +1,7 @@
 /**
  * @file Provides a fake implementation of the base ContainerElement class.
  */
+import { getElementFactory } from './elementRegistry.js';
 import { Proxies } from '../../support/proxies.js';
 import { newFakeElement } from './fakeelement.js';
 import { signatureArgs } from '../../support/helpers.js';
@@ -74,13 +75,11 @@ export class FakeContainerElement extends FakeElement {
       matchThrow();
     }
 
-    // Get the refreshed structure and the current element from it to ensure we have the latest children.
     const structure = this.shadowDocument.structure;
     const item = structure.elementMap.get(this.__name);
     const children = item.__twig.children;
 
     if (childIndex >= children.length) {
-      // The index is out of bounds. The live API throws a parameter mismatch error.
       matchThrow();
     }
 

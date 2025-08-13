@@ -23,12 +23,13 @@ export const testDocsNext = (pack) => {
     // we have something here we cant acchieve in the api
     // apps script can write an empty table stub
     // the api cant https://github.com/brucemcpherson/gas-fakes/issues/42
-
-    const table0 = body.appendTable ()
+    const table0 = body.appendTable()
     if (DocumentApp.isFake) {
-      t.is( table0.getNumRows(), 1, "api cant create an empty table")
+      t.is(table0.getNumRows(), 1, "Default appended fake table has 1 row");
+      t.is(table0.getRow(0).getNumCells(), 1, "Default appended table has 1 cell");
+      t.is(table0.getRow(0).getCell(0).getText(), "", "Default appended table cell is empty");
     } else {
-      t.is( table0.getNumRows(), 0, "apps script can create an empty")
+      t.is(table0.getNumRows(), 0, "apps script can create an empty")
     }
 
     // 1. Append a table with content
@@ -38,7 +39,6 @@ export const testDocsNext = (pack) => {
     ];
     const table1 = body.appendTable(cellsData);
 
-
     t.is(table1.getType(), DocumentApp.ElementType.TABLE, "appendTable should return a Table element");
     t.truthy(table1.getParent(), "Appended table should have a parent");
     t.is(table1.getParent().getType(), DocumentApp.ElementType.BODY_SECTION, "Table's parent should be the body");
@@ -47,26 +47,43 @@ export const testDocsNext = (pack) => {
     t.is(table1.getNumRows(), 2, "Table should have 2 rows");
     const row1 = table1.getRow(0);
     t.is(row1.getNumCells(), 2, "Row 0 should have 2 cells");
-    t.is(row1.getCell(0).getText(), 'R1C1', "Cell (0,0) should have correct text");
-    t.is(row1.getCell(1).getText(), 'R1C2', "Cell (0,1) should have correct text");
+    t.is(row1.getCell(0).getText(), cellsData[0][0], "Cell (0,0) should have correct text");
+    const row2 = table1.getRow(1);
+    t.is(row2.getCell(1).getText(), cellsData[1][1], "Cell (1,1) should have correct text");
 
-    // 2. Append an empty table (no arguments)
+    // 2. insert a table with data
+    const cellsData2 = [
+      ['00', '01', '02'],
+      ['10', '11', '12'],
+      ['20', '21', '22']
+    ];
+    const table2 = body.insertTable(1, cellsData2);
 
-    const table2 = body.appendTable();
-    t.is(table2.getNumRows(), 1, "Default appended table has 1 row");
-    t.is(table2.getRow(0).getNumCells(), 1, "Default appended table has 1 cell");
-    t.is(table2.getRow(0).getCell(0).getText(), "", "Default appended table cell is empty");
+    const checkTableContent = (table, data) => {
+      t.is(table.getType(), DocumentApp.ElementType.TABLE, "check should be table");
+      t.is(table.getNumRows(), data.length, "Table should have the correct number of rows")
+      const d2 = data.map((_, r) => {
+        const rx = table.getRow(r);
+        return Array.from({ length: rx.getNumCells() }).map((_, c) => {
+          return rx.getCell(c).getText();
+        })
+      })
+      t.deepEqual(d2, data, "Table cells retrieved successfully")
+    }
+    checkTableContent(table2, cellsData2);
+    const c2 = body.getChild(1);
+    checkTableContent(c2, cellsData2);
+
 
     // 3. Insert a copied table
-    const table3_copy = table1.copy(); // create a detached copy of the first table
-    body.insertTable(1, table3_copy); // insert after the initial empty paragraph
+    const table3_copy = table1.copy(); // create a detached copy of the first table with data
+    checkTableContent(table3_copy, cellsData)
 
+    body.insertTable(1, table3_copy); // insert after the initial empty paragraph
     const children3 = getChildren(body);
-    const insertedTable = children3[1];
-    t.is(insertedTable.getType(), DocumentApp.ElementType.TABLE, "Second child should be the inserted table");
-    t.is(insertedTable.getNumRows(), 2, "Inserted table should have 2 rows (from copy)");
-    // Note: The current implementation of copy() for tables does not copy cell content.
-    t.is(insertedTable.getRow(0).getCell(0).getText(), "", "Copied table cells should be empty");
+    const c3 = children3[1];
+    checkTableContent(c3, cellsData)
+
 
     // 4. Error conditions
     const attemptAttachedInsert = () => body.insertTable(1, table1);

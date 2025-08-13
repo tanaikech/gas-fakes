@@ -10,56 +10,32 @@ const { getEnumKeys } = Utils
 
 // figures out what kind of element this is from the properties present
 export const getElementProp = (se) => {
-  // these are the known types
-  const keys = getEnumKeys(ElementType);
   const ownKeys = Reflect.ownKeys(se);
 
   // these are the known unsupported types
-  const unsupported = ["sectionBreak"]
+  const unsupported = ["sectionBreak"];
   if (ownKeys.some(f => unsupported.includes(f))) {
-    return null
-  }
-  // need to massage the keys to match the apps script props
-  const upperKeys = ownKeys.map(f => f.toUpperCase()).map(f => {
-    switch (f) {
-      case 'TEXTRUN':
-        return 'TEXT';
-      case 'BODY':
-        return 'BODY_SECTION';
-      case 'PAGEBREAK':
-        return 'PAGE_BREAK';
-      case 'TABLE':
-        return 'TABLE';
-      case 'TABLECELLS': // A TableRow contains TableCells
-        return 'TABLE_ROW';
-      // A TableCell contains content. This is too generic to be reliable here.
-      // The knownType logic in shadowdocument.js is the correct way to identify TableCells.
-      case 'PARAGRAPH':
-        return 'PARAGRAPH'
-      default:
-        return f;
-    }
-  })
-
-  // now see any of the props that are in se are known interesting props
-  const idx = upperKeys.findIndex(key => keys.includes(key))
-
-  if (idx === -1) {
-    console.log(se)
-    throw new Error('couldnt establish structural element type')
-  }
-  const prop = ownKeys[idx]
-  const type = keys.find(key => key === upperKeys[idx])
-  if (type === -1) {
-    console.log(se, prop)
-    throw new Error('couldnt establish structural element type')
+    return null;
   }
 
-  return {
-    prop,
-    type
+  // The order of these checks is important to distinguish between container types.
+  // These elements contain their content in a nested property.
+  if (se.table) return { prop: 'table', type: 'TABLE' };
+  if (se.paragraph) return { prop: 'paragraph', type: 'PARAGRAPH' };
+
+  // These elements are "naked" - their children are at the top level.
+  // The prop is null because we don't need to look deeper into the object.
+  if (se.tableCells) return { prop: null, type: 'TABLE_ROW' };
+  if (se.textRun) return { prop: null, type: 'TEXT' };
+  if (se.pageBreak) return { prop: null, type: 'PAGE_BREAK' };
+  if (se.horizontalRule) return { prop: null, type: 'HORIZONTAL_RULE' };
+
+  if (se.body) {
+    return { prop: 'body', type: 'BODY_SECTION' };
   }
 
+  console.log(se);
+  throw new Error('couldnt establish structural element type');
 }
 
 /**
