@@ -5,6 +5,8 @@ import { getElementFactory } from './elementRegistry.js'
 import { signatureArgs } from '../../support/helpers.js';
 import { findItem, makeProtectionRequests } from './elementhelpers.js';
 import { paragraphOptions, pageBreakOptions, tableOptions } from './elementoptions.js';
+import { deleteContentRange, insertText } from './elementblasters.js';
+
 /**
  * Validates arguments for the elementInserter function.
  * @private
@@ -173,7 +175,36 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
   Docs.Documents.batchUpdate({ requests }, shadow.getId());
   shadow.refresh();
 
-  // 6. Find and return the newly created element instance.
+  // finally, if this was a table insert then it'll have created a preceding paragraph that we don't need
+  // so let's clean it up
+  if (options.elementType === ElementType.TABLE && !isAppend) {
+
+    // the extra pragraph will be at content[childIndex +1]
+    // the api doesnt allow the deletion of a paragraph preceding a table
+    // so instead we have to delete the \n from the one preceding all that
+    const extraPara = shadow.resource.body.content[childIndex]
+    const indexToRemove = extraPara.endIndex
+
+    // because we cant remove the very 1st one
+    if (indexToRemove > 1) {
+      if (
+        !extraPara ||
+        extraPara.__type !== 'PARAGRAPH'
+      ) {
+        console.error("wrong para", extraPara)
+        throw new Error(`unexpected element (${extraPara.__type.toString()}) at ${childIndex}`)
+      }
+      // we only want to remove the last character
+      const requests = [
+        deleteContentRange(indexToRemove-1, indexToRemove)
+      ]
+      Docs.Documents.batchUpdate({
+        requests
+      }, shadow.getId());
+      shadow.refresh();
+    }
+  }
+  // 7. Find and return the newly created element instance.
   return findAndReturnNewElement(self, shadow, insertIndex, newElementStartIndex, isAppend, options);
 };
 

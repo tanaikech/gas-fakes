@@ -69,7 +69,8 @@ class FakeBody extends FakeContainerElement {
     if (childIndex === this.getNumChildren()) {
       return this.appendTable(tableOrCells);
     }
-    return insertTable(this, childIndex, tableOrCells);
+    const t =  insertTable(this, childIndex, tableOrCells);
+    return t
   }
 
   toString() {

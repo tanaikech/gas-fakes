@@ -461,6 +461,39 @@ https://github.com/brucemcpherson/gas-fakes/issues/42
 
 What this means for gas-fakes is .appendTable() with no arguments will create a 1 cell table - this is a divergence from Apps Script which will create a table stub element only
 
+##### matching table element indices with apps script
+
+Adding a table always inserts a preceding \n. This is okay when appending, but not okay when inserting as we end up with an unwanted paragraph compared to what Apps Script does. It turns out that a table must always have a preceding paragraph, or the API throws an error. Of course there would already be a preceding paragraph after deleting this one anyway, but the API still won't let you delete a directly preceding paragraph (This seems like a bug but I won't report it on buganizer for now till I figure out the entire picture of tables). So instead we need to delete the \n from the preceding-1 paragraph. So we end up with a bit of hack like this
+````js
+  if (options.elementType === ElementType.TABLE && !isAppend) {
+
+    // the extra paragraph will be at content[childIndex +1]
+    // the api doesnt allow the deletion of a paragraph preceding a table
+    // so instead we have to delete the \n from the one preceding all that
+    const extraPara = shadow.resource.body.content[childIndex]
+    const indexToRemove = extraPara.endIndex
+
+    // because we cant remove the very 1st one
+    if (indexToRemove > 1) {
+      if (
+        !extraPara ||
+        extraPara.__type !== 'PARAGRAPH'
+      ) {
+        console.error("wrong para", extraPara)
+        throw new Error(`unexpected element (${extraPara.__type.toString()}) at ${childIndex}`)
+      }
+      // we only want to remove the last character
+      const requests = [
+        deleteContentRange(indexToRemove-1, indexToRemove)
+      ]
+      Docs.Documents.batchUpdate({
+        requests
+      }, shadow.getId());
+      shadow.refresh();
+    }
+  }
+````
+
 #### Tabs
 
 Tabs are a recent addition to Docs, and have added a bit of complication to handling Document responses. Here's what they say happens.

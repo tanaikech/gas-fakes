@@ -1,110 +1,7 @@
 import { ElementType } from '../enums/docsenums.js';
 import { Utils } from "../../support/utils.js";
 const { is } = Utils
-
-
-/**
- * Adds a new row with data to a table in a Google Doc.
- *
- * @param {number} tableStartIndex The start index of the table to update.
- * @param {number} rowIndex The index where the new row should be inserted (0-based).
- */
-const insertTableRowRequest = (tableStartIndex, rowIndex, insertBelow = true) => {
-  return {
-    insertTableRow: {
-      ...getTableCellLocaton(tableStartIndex, rowIndex),
-      insertBelow
-    }
-  }
-}
-
-const deleteTableRowRequest = (tableStartIndex, rowIndex) => {
-  return { deleteTableRow: getTableCellLocaton(tableStartIndex, rowIndex) }
-}
-
-const getTableCellLocaton = (tableStartIndex, rowIndex, columnIndex = 0) => {
-  return {
-    tableCellLocation: Docs.newTableCellLocation()
-      .setTableStartLocation(Docs.newLocation().setIndex(tableStartIndex))
-      .setRowIndex(rowIndex)
-      .setColumnIndex(columnIndex)
-  }
-}
-
-const deleteContentRange = (startIndex, endIndex) => {
-  return {
-    deleteContentRange: Docs.newDeleteContentRangeRequest().setRange(
-      Docs.newRange().setStartIndex(startIndex).setEndIndex(endIndex)
-    )
-  }
-}
-
-const insertText = (index, text) => {
-  return {
-    insertText: Docs.newInsertTextRequest()
-      .setLocation(Docs.newLocation().setIndex(index))
-      // When inserting into a cell, we are replacing content. The paragraph's
-      // structural newline should already exist. We just insert the text.
-      .setText(text)
-  }
-}
-
-
-/**
- * Updates a table's content, iterating in reverse to handle index shifts.
- * * @param {string} docId The ID of the Google Doc.
- * @param {number} tableStartIndex The start index of the table.
- * @param {Array<Array<string>>} newTableData A 2D array of strings with the new data.
- */
-const reverseUpdateContent = (content, tableStartIndex, newTableData) => {
-
-  // 1. find the current table
-  const table = content.find(e => e.startIndex === tableStartIndex).table;
-
-  // batch up the requests
-  const requests = [];
-
-  // 2. Iterate through rows and cells in reverse order.
-  for (let rowIndex = table.tableRows.length - 1; rowIndex >= 0; rowIndex--) {
-    const row = table.tableRows[rowIndex];
-
-    for (let cellIndex = row.tableCells.length - 1; cellIndex >= 0; cellIndex--) {
-      const cell = row.tableCells[cellIndex];
-
-      // A cell's content is a paragraph. We want to replace the text within it.
-      const paragraph = cell.content[0];
-      const oldTextStartIndex = paragraph.startIndex;
-      const oldTextEndIndex = paragraph.endIndex;
-
-      // Get the new data for the cell.
-      const newText = newTableData[rowIndex][cellIndex];
-
-      // 3. Create the delete and insert requests.
-      // The range to delete is from the start of the paragraph up to, but not including,
-      // the structural newline at the end.
-      if (oldTextEndIndex - 1 > oldTextStartIndex) {
-        requests.push(deleteContentRange(oldTextStartIndex, oldTextEndIndex - 1));
-      }
-      // this is only required if the nextText has any length
-      if (newText.length > 0){
-        requests.push(insertText(oldTextStartIndex, newText));
-      }
-
-    }
-  }
-  return requests
-}
-
-// Example usage:
-// A table at index 100 with 3 rows and 2 columns.
-// const myDocId = 'your-document-id';
-// const myTableStartIndex = 100;
-// const newData = [
-//   ['Updated Row 0, Cell 0', 'Updated Row 0, Cell 1'],
-//   ['Updated Row 1, Cell 0', 'Updated Row 1, Cell 1'],
-//   ['Updated Row 2, Cell 0', 'Updated Row 2, Cell 1']
-// ];
-// updateTableContentReverse(myDocId, myTableStartIndex, newData);
+import {  insertTableRowRequest, deleteTableRowRequest, reverseUpdateContent  } from './elementblasters.js';
 
 
 // adding a textless item has some special juggling to do
@@ -159,7 +56,7 @@ const handleTextless = (loc, isAppend, self, type, extras = {}) => {
       range.setStartIndex(loc.index + 2).setEndIndex(loc.index + 3)
     }
     reqs.push({ deleteContentRange: Docs.newDeleteContentRangeRequest().setRange(range) })
-  }
+  } 
 
   return reqs
 }
@@ -242,7 +139,7 @@ export const tableOptions = {
   canAcceptArray: true,
   canAcceptText: false, // It accepts an array of arrays of strings, not a simple string.
   getMainRequest: (elementOrText, location, isAppend, self) => {
-    let rows = 1, cells, columns = 1;
+    let  rows = 1, cells, columns = 1;
     const isDetached = is.object(elementOrText) && elementOrText.__isDetached;
 
     // this detached is stuff is gemini hallucination nonsense
