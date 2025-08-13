@@ -1,8 +1,9 @@
 import '../../main.js';
-import { moveToTempFolder, deleteTempFile } from './tempfolder.js';
+import { moveToTempFolder, deleteTempFile } from '../tempfolder.js';
+const suffix = "-bruce"
 
 const whichType = (element) => {
-  const ts = ["paragraph", "pageBreak", "textRun","table","tableRow","tableCell"]
+  const ts = ["paragraph", "pageBreak", "textRun", "table", "tableRows", "tableCells"]
   const [t] = ts.filter(f => Reflect.has(element, f))
   if (!t) console.log('skipping element', element)
   return t
@@ -14,6 +15,8 @@ const report = (doc, what) => {
   what += ` -children:${children.length}`
   console.log(what)
   let text = '  '
+
+  const childProps = ["elements", "tableRows", "tableCells"]
   const typer = (child, text) => {
     const type = whichType(child)
     if (type) {
@@ -21,9 +24,11 @@ const report = (doc, what) => {
       if (type === 'textRun') {
         text += ` -text:${JSON.stringify(child[type].content)}`
       }
-      if (Reflect.has(child[type], "elements")) {
+      const key = Reflect.ownKeys(child[type]).find(f => childProps.includes(f))
+
+      if (key) {
         text += ` (`
-        child[type].elements.forEach(f => text = typer(f, text))
+        child[type][key].forEach(f => text = typer(f, text))
         text += ')'
       }
     }
@@ -31,11 +36,41 @@ const report = (doc, what) => {
   }
   return children.map(f => typer(f, text)).join("\n")
 }
+
+const scl = (doc) => {
+  if (!DocumentApp.isFake) {
+    const id = doc.getId()
+    doc.saveAndClose()
+    doc = DocumentApp.openById(id)
+  }
+  return doc
+}
+const pb5 = () => {
+
+  let doc = DocumentApp.create("abc")
+  const id = doc.getId()
+  moveToTempFolder(id, suffix)
+
+  // cant append an empty table in fake so do this
+  const body = doc.getBody()
+  if (DocumentApp.isFake) {
+    body.appendTable()
+  } else {
+    body.appendTable([['']])
+  }
+  doc = scl(doc)
+
+  console.log(report(Docs.Documents.get(id), `\nappended table`))
+
+  deleteTempFile(id)
+
+}
+
 const pb4 = () => {
 
   let doc = DocumentApp.create("abc")
   const id = doc.getId()
-  moveToTempFolder(id)
+  moveToTempFolder(id, suffix)
   const sc = () => {
     if (!DocumentApp.isFake) {
       doc.saveAndClose()
@@ -89,4 +124,4 @@ const pb4 = () => {
 
 }
 
-pb4()
+pb5()
