@@ -184,7 +184,7 @@ export const tableOptions = {
       shadow.refresh()
 
       // a  new set of requests to update the content
-      requests = reverseUpdateContent(shadow.resource.body.content, tableStartIndex, cells)
+  requests = reverseUpdateContent(shadow.resource.body.content, tableStartIndex, cells)
     }
 
     return requests;
