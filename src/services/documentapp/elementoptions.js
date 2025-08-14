@@ -71,7 +71,7 @@ export const paragraphOptions = {
   elementType: ElementType.PARAGRAPH,
   insertMethodSignature: 'DocumentApp.Body.insertParagraph',
   canAcceptText: true,
-  getMainRequest: (textOrParagraph, location, isAppend, self) => {
+  getMainRequest: ({content: textOrParagraph, location, isAppend, self, leading}) => {
     const isDetachedPara = is.object(textOrParagraph) && textOrParagraph.__isDetached;
     let baseText;
     if (isDetachedPara) {
@@ -83,7 +83,7 @@ export const paragraphOptions = {
     }
 
     const isBodyAppend = isAppend && self.getType() !== ElementType.PARAGRAPH;
-    const textToInsert = isBodyAppend ? '\n' + baseText : baseText + '\n';
+    const textToInsert = leading + baseText
     return { insertText: { location, text: textToInsert } };
   },
   getStyleRequests: (paragraph, startIndex, length, isAppend) => {
@@ -128,7 +128,7 @@ export const pageBreakOptions = {
   insertMethodSignature: 'DocumentApp.Body.pageBreak',
   packCanBeNull: true,
   canAcceptText: false,
-  getMainRequest: (_pageBreak, loc, isAppend, self) => {
+  getMainRequest: ({ location: loc, isAppend, self, leading}) => {
     return handleTextless(loc, isAppend, self, 'PAGE_BREAK')
   },
   getStyleRequests: null, // PageBreak styling on copy not supported yet.
@@ -144,7 +144,7 @@ export const tableOptions = {
   insertMethodSignature: 'DocumentApp.Body.insertTable',
   canAcceptArray: true,
   canAcceptText: false, // It accepts an array of arrays of strings, not a simple string.
-  getMainRequest: (elementOrText, location, isAppend, self) => {
+  getMainRequest: ({content: elementOrText, location, isAppend, self}) => {
     let rows = 1, cells, columns = 1;
     const isDetached = is.object(elementOrText) && elementOrText.__isDetached;
 

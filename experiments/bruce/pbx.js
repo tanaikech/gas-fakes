@@ -6,7 +6,7 @@ const suffix = "-bruce"
 const whichType = (element) => {
   const ts = ["paragraph", "pageBreak", "textRun", "table", "tableRows", "tableCells"]
   const [t] = ts.filter(f => Reflect.has(element, f))
- // if (!t) console.log('skipping element', element)
+  // if (!t) console.log('skipping element', element)
   return t
 }
 const report = (doc, what) => {
@@ -17,7 +17,7 @@ const report = (doc, what) => {
   console.log(what)
   let text = '  '
 
-  const childProps = ["elements", "tableRows", "tableCells","content"]
+  const childProps = ["elements", "tableRows", "tableCells", "content"]
   const typer = (child, text, spaces = " ") => {
     const type = whichType(child)
     if (type) {
@@ -25,9 +25,9 @@ const report = (doc, what) => {
       if (type === 'textRun') {
         text += ` ${JSON.stringify(child[type].content)}`
       }
-      const key = Reflect.ownKeys(child[type]).find (f=>childProps.includes(f))
-      let arr = key && child[type][key] 
-      if (!arr && is.array (child[type])) arr = child[type]
+      const key = Reflect.ownKeys(child[type]).find(f => childProps.includes(f))
+      let arr = key && child[type][key]
+      if (!arr && is.array(child[type])) arr = child[type]
 
       if (is.array(arr)) {
         //text += spaces
@@ -48,6 +48,21 @@ const scl = (doc) => {
   }
   return doc
 }
+
+// this is testing the new simplified method
+const pbnew = () => {
+  let doc = DocumentApp.create("abc")
+  const id = doc.getId()
+  moveToTempFolder(id, suffix)
+
+  let body = doc.getBody()
+  body.appendParagraph('foo')
+  doc = scl(doc)
+  console.log(report(Docs.Documents.get(id), `\nappended para`))
+
+  deleteTempFile(id)
+}
+pbnew()
 const pb5 = () => {
 
   let doc = DocumentApp.create("abc")
@@ -56,12 +71,12 @@ const pb5 = () => {
 
   // cant append an empty table in fake so do this
   let body = doc.getBody()
-  body.appendParagraph ('foo')
+  body.appendParagraph('foo')
   doc = scl(doc)
   console.log(report(Docs.Documents.get(id), `\nappended para`))
 
   body = doc.getBody()
-  body.insertTable(1,[['a', 'b'], ['c', 'd']])
+  body.insertTable(1, [['a', 'b'], ['c', 'd']])
   doc = scl(doc)
   console.log(report(Docs.Documents.get(id), `\ninserted table`))
 
@@ -127,4 +142,3 @@ const pb4 = () => {
 
 }
 
-pb5()

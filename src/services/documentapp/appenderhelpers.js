@@ -64,25 +64,46 @@ const validateInserterArgs = (elementOrText, childIndex, options) => {
 const calculateInsertionPointsAndInitialRequests = (self, childIndex, isAppend, shadow) => {
   const structure = shadow.structure;
   const item = structure.elementMap.get(self.__name);
+  // these are the children of the item being affected
   const children = item.__twig.children;
 
   let insertIndex;
   let newElementStartIndex;
   let requests;
+  let leading = ''
 
   if (isAppend) {
+
     const isParaAppend = self.getType() === ElementType.PARAGRAPH;
     if (isParaAppend) {
-      insertIndex = item.endIndex - 1;
+      // appending to a paragraph
+      // insert just before the existing '\n' 
+      // dont add a leading \n
+      // so insert index is -2
+      insertIndex = item.endIndex - 2;
+      // TODO check what this is for - its not a new element
       newElementStartIndex = item.startIndex;
+      // TODO I dont think we need to do a protection request for appending into a paragraph
+
     } else {
+      // appending to a body
+      // insert just before the existing '\n'
+      // add a leading \n
       const endIndexBefore = structure.shadowDocument.__endBodyIndex;
       insertIndex = endIndexBefore - 1;
+      // TODO check this and what it's used for
       newElementStartIndex = endIndexBefore;
+      leading = '\n'
+
+      // an append to the body will accidentally shift the range of the item its inserted into
+      // but we need to retain its original named range - this will take care
+      const targetChildTwig = children.length > 0 ? children[children.length - 1] : item.__twig;
+      requests = children.length ? makeProtectionRequests(shadow, targetChildTwig) : [];
     }
-    const targetChildTwig = children.length > 0 ? children[children.length - 1] : item.__twig;
-    requests = children.length ? makeProtectionRequests(shadow, targetChildTwig) : [];
-  } else { // It's an insert
+
+  } else {
+    // TODO - all this needs reviewd again
+    // It's an insert
     if (childIndex < 0 || childIndex >= children.length) {
       throw new Error(`Child index (${childIndex}) must be less than or equal to the number of child elements (${children.length}).`);
     }
@@ -92,13 +113,13 @@ const calculateInsertionPointsAndInitialRequests = (self, childIndex, isAppend, 
     newElementStartIndex = targetChildItem.startIndex;
     // for an insert, we want to insert before the preceding \n
     // shuffling the \n along
-    insertIndex = newElementStartIndex -1;
+    insertIndex = newElementStartIndex - 1;
     // we're going to need to prevent the named ranges of the preceding element from being adjusted
     // by restoring them to their previous state
     requests = makeProtectionRequests(shadow, targetChildTwig);
   }
 
-  return { insertIndex, newElementStartIndex, requests };
+  return { insertIndex, newElementStartIndex, requests, leading };
 };
 
 /**
@@ -162,13 +183,20 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
   const segmentId = shadow.__segmentId;
 
   // 3. Calculate insertion points and initial "protection" requests for existing elements.
-  const { insertIndex, newElementStartIndex, requests } = calculateInsertionPointsAndInitialRequests(
+  const { insertIndex, newElementStartIndex, requests, leading } = calculateInsertionPointsAndInitialRequests(
     self, childIndex, isAppend, shadow
   );
 
   // 4. Build the main batch update request list.
   const { getMainRequest, getStyleRequests } = options;
-  const mainRequests = [].concat(getMainRequest(elementOrText, { index: insertIndex, segmentId }, isAppend, self, structure));
+  const mainRequests = [].concat(getMainRequest({
+    content: elementOrText,
+    location: { index: insertIndex, segmentId },
+    isAppend,
+    self,
+    structure,
+    leading
+  }));
   requests.unshift(...mainRequests);
 
   // Add styling requests if inserting a copied (detached) element.
