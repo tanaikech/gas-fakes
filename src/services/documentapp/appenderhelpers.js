@@ -5,7 +5,7 @@ import { getElementFactory } from './elementRegistry.js'
 import { signatureArgs } from '../../support/helpers.js';
 import { findItem, makeProtectionRequests } from './elementhelpers.js';
 import { paragraphOptions, pageBreakOptions, tableOptions } from './elementoptions.js';
-import { deleteContentRange, insertText } from './elementblasters.js';
+
 
 /**
  * Validates arguments for the elementInserter function.
@@ -88,8 +88,13 @@ const calculateInsertionPointsAndInitialRequests = (self, childIndex, isAppend, 
     }
     const targetChildTwig = children[childIndex];
     const targetChildItem = structure.elementMap.get(targetChildTwig.name);
-    insertIndex = targetChildItem.startIndex;
-    newElementStartIndex = insertIndex;
+    // the new element will start where the one we are inserting before used to start
+    newElementStartIndex = targetChildItem.startIndex;
+    // for an insert, we want to insert before the preceding \n
+    // shuffling the \n along
+    insertIndex = newElementStartIndex -1;
+    // we're going to need to prevent the named ranges of the preceding element from being adjusted
+    // by restoring them to their previous state
     requests = makeProtectionRequests(shadow, targetChildTwig);
   }
 
@@ -176,7 +181,7 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
   shadow.refresh();
 
   // finally, if this was a table insert then it'll have created a preceding paragraph that we don't need
-  // so let's clean it up
+  /*
   if (options.elementType === ElementType.TABLE && !isAppend) {
 
     // the extra pragraph will be at content[childIndex +1]
@@ -204,6 +209,7 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
       shadow.refresh();
     }
   }
+    */
   // 7. Find and return the newly created element instance.
   return findAndReturnNewElement(self, shadow, insertIndex, newElementStartIndex, isAppend, options);
 };

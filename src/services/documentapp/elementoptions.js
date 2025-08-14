@@ -1,7 +1,7 @@
 import { ElementType } from '../enums/docsenums.js';
 import { Utils } from "../../support/utils.js";
 const { is } = Utils
-import {  insertTableRowRequest, deleteTableRowRequest, reverseUpdateContent  } from './elementblasters.js';
+import { deleteContentRange, insertTableRowRequest, deleteTableRowRequest, reverseUpdateContent } from './elementblasters.js';
 
 
 // adding a textless item has some special juggling to do
@@ -15,48 +15,54 @@ const handleTextless = (loc, isAppend, self, type, extras = {}) => {
     .setSegmentId(loc.segmentId)
     .setIndex(loc.index)
 
-  let init = null
+
   switch (type) {
     case 'PAGE_BREAK':
-      init = {
+      reqs.push({
         insertPageBreak: Docs.newInsertPageBreakRequest()
           .setLocation(location)
+      })
+      // if its an append we need to fiddle with where the \n is for a pagebreak
+      // to emulate apps script behavior
+      if (isAppend) {
+        const range = Docs.newRange()
+          .setStartIndex(loc.index + 1)
+          .setEndIndex(loc.index + 2)
+
+        // when appending to the body we need a leading \n and get rid of the trailing one
+        if (self.getType() === ElementType.BODY_SECTION) {
+          reqs.push({ insertText: { location, text: '\n' } })
+          range.setStartIndex(loc.index + 2).setEndIndex(loc.index + 3)
+        }
+
+        reqs.push({ deleteContentRange: Docs.newDeleteContentRangeRequest().setRange(range) })
       }
       break;
 
     case 'TABLE':
-      init = {
+
+      // since the table content is empty, this is how much space it'll need initially
+      const endTableIndex = location.index + extras.rows * extras.columns + 1
+
+      // for a table the insert request will generate a leading \n
+      reqs.push({
         insertTable: Docs.newInsertTableRequest()
           .setLocation(location)
           .setRows(extras.rows)
           .setColumns(extras.columns)
-      }
+      },
+        // this means we need to get rid of the trailing \n that will now be unnecessary  
+        deleteContentRange(endTableIndex, endTableIndex+1)
+      )
+
       break;
 
     default:
       throw new Error(`unknown type ${type} in handleTextless `)
   }
 
-  // the api inserts both a pb and a \n
-  reqs.push(init)
 
-  // if an actual append we have to do this stuff
-  // if a body insert we don't need to bother
-  // a table inserts its own paragraph \n before, so no need to insert a text 
-  // I THINK!
-  if (isAppend && type !== 'TABLE') {
-    // this is where the additional \n inserted by the page request will end up
-    // if its an append para
-    const range = Docs.newRange()
-      .setStartIndex(loc.index + 1)
-      .setEndIndex(loc.index + 2)
 
-    if (self.getType() === ElementType.BODY_SECTION) {
-      reqs.push({ insertText: { location, text: '\n' } })
-      range.setStartIndex(loc.index + 2).setEndIndex(loc.index + 3)
-    }
-    reqs.push({ deleteContentRange: Docs.newDeleteContentRangeRequest().setRange(range) })
-  } 
 
   return reqs
 }
@@ -139,7 +145,7 @@ export const tableOptions = {
   canAcceptArray: true,
   canAcceptText: false, // It accepts an array of arrays of strings, not a simple string.
   getMainRequest: (elementOrText, location, isAppend, self) => {
-    let  rows = 1, cells, columns = 1;
+    let rows = 1, cells, columns = 1;
     const isDetached = is.object(elementOrText) && elementOrText.__isDetached;
 
     // this detached is stuff is gemini hallucination nonsense
@@ -167,6 +173,7 @@ export const tableOptions = {
     let requests = handleTextless(location, isAppend, self, 'TABLE', { rows: 1, columns })
 
     // the tableStartIndex will be different depending if it was a body append or not
+    // TODO should be newElementStartIndex
     const tableStartIndex = requests[0].insertTable.location.index + (isAppend ? 2 : 1)
 
     // next requests are to update rows to the table if we got some cells
@@ -184,7 +191,7 @@ export const tableOptions = {
       shadow.refresh()
 
       // a  new set of requests to update the content
-  requests = reverseUpdateContent(shadow.resource.body.content, tableStartIndex, cells)
+      requests = reverseUpdateContent(shadow.resource.body.content, tableStartIndex, cells)
     }
 
     return requests;
