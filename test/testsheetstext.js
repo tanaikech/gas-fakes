@@ -8,8 +8,8 @@ import '../main.js'
 
 import { initTests } from './testinit.js'
 import { getDrivePerformance, getSheetsPerformance } from './testassist.js';
-import { maketss, trasher, makeSheetsGridRange, makeExtendedValue, dateToSerial, fillRange } from './testassist.js';
-import is from '@sindresorhus/is';
+import { maketss, trasher } from './testassist.js';
+
 
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
@@ -17,7 +17,6 @@ export const testSheetsText = (pack) => {
 
   const { unit, fixes } = pack || initTests()
   const toTrash = []
-
   unit.section("spreadsheet textfinder", t => {
     const searchText = "sample";
     const values = [
@@ -142,6 +141,151 @@ export const testSheetsText = (pack) => {
 
   })
 
+  unit.section('insert sheets,rows,columns', t => {
+    const { ss: spreadsheet } = maketss('sample', toTrash, fixes);
+    const sheet = spreadsheet.insertSheet("temp");
+
+    /**
+     * appendRow
+     * 
+     */
+    const data = ["sample1", "sample2", "sample3"]
+    sheet.appendRow(data).getSheetId()
+    t.is(sheet.getLastRow(), 1)
+    t.is(sheet.getLastColumn(), data.length)
+    t.deepEqual(sheet.getRange(1, 1, 1, data.length).getValues(), [data])
+
+
+    /**
+     * hideSheet, showSheet
+     */
+    sheet.hideSheet();
+    t.true(sheet.isSheetHidden(), {
+      skip: SpreadsheetApp.isFake,
+      description: 'skip this test until issheethidden works'
+    })
+    sheet.showSheet();
+    t.false(sheet.isSheetHidden())
+
+
+    /**
+     * autoResizeColumn, autoResizeColumns
+     * there's no method to check if this is set to autoresize
+     */
+    sheet.getRange(1, 1, 1, data.length).setValues([data]);
+    sheet.autoResizeColumn(2);
+    sheet.autoResizeColumns(1, 3);
+
+
+    /**
+     * insertColumnAfter,insertColumnBefore,insertColumns,insertColumnsAfter,insertColumnsBefore
+     */
+    let cb = sheet.getLastColumn()
+    sheet.insertColumnAfter(2);
+    t.is(sheet.getLastColumn(), cb + 1)
+    t.is(sheet.getDataRange().offset(0, 2, 1, 1).getValue(), '')
+    sheet.insertColumnBefore(2);
+    t.is(sheet.getLastColumn(), cb + 2)
+    t.is(sheet.getDataRange().offset(0, 1, 1, 1).getValue(), '')
+    sheet.insertColumns(2, 2);
+    t.is(sheet.getLastColumn(), cb + 4)
+    sheet.insertColumnsAfter(2, 2);
+    t.is(sheet.getLastColumn(), cb + 6)
+    sheet.insertColumnsBefore(2, 2);
+    t.is(sheet.getLastColumn(), cb + 8)
+
+    /**
+     * insertRowAfter, insertRowBefore, insertRows, insertRowsAfter, insertRowsBefore
+     */
+    let cr = sheet.getLastRow()
+    sheet.insertRowAfter(2);
+    // blank row so lastrow doesnt increase
+    t.is(sheet.getLastRow(), cr)
+    sheet.insertRowBefore(2);
+    t.is(sheet.getLastRow(), cr )
+    sheet.insertRows(2, 2);
+    t.is(sheet.getLastRow(), cr )
+    sheet.insertRowsAfter(2, 2);
+    t.is(sheet.getLastRow(), cr )
+    sheet.insertRowsBefore(2, 2);
+    t.is(sheet.getLastRow(), cr )
+
+    /**
+     * deleteColumn, deleteColumns, deleteRow, deleteRows
+     */
+    cb = sheet.getLastColumn()
+    cr = sheet.getLastRow()
+    sheet.deleteColumn(2);
+    t.is(sheet.getLastColumn(), cb - 1)
+    sheet.deleteColumns(2, 2);
+    t.is(sheet.getLastColumn(), cb - 3)
+    sheet.deleteRow(2);
+    t.is(sheet.getLastRow(), cr )
+    sheet.deleteRows(2, 2);
+    t.is(sheet.getLastRow(), cr )
+
+    const v = sheet.getDataRange().getValues()
+    t.deepEqual(v.slice(-1), [data.slice(0, 1).concat(['', '', '', ''], data.slice(1, 2), [''], data.slice(-1))])
+
+    /**
+     * TODO iscolumn/row hidden by user needs to be implemented 
+     * and uncomment these tests
+     * hideColumn, hideColumns, hideRow, hideRows, unhideColumn, unhideRow
+     */
+    const r = sheet.getRange("B2")
+    sheet.hideColumn(r);
+    if (!SpreadsheetApp.isFake) {
+      t.true(sheet.isColumnHiddenByUser(2), {
+        skip: SpreadsheetApp.isFake,
+        description: 'skip this test until iscolumnhiddenbyuser works'
+      });
+    }
+    sheet.hideColumns(2, 2);
+    if (!SpreadsheetApp.isFake) {
+      t.true(sheet.isColumnHiddenByUser(2), {
+        skip: SpreadsheetApp.isFake,
+        description: 'skip this test until iscolumnhiddenbyuser works'
+      });
+      t.true(sheet.isColumnHiddenByUser(3), {
+        skip: SpreadsheetApp.isFake,
+        description: 'skip this test until iscolumnhiddenbyuser works'
+      });
+    }
+    sheet.hideRow(r);
+    if (!SpreadsheetApp.isFake) {
+      t.true(sheet.isRowHiddenByUser(2), {
+        skip: SpreadsheetApp.isFake,
+        description: 'skip this test until isrowhiddenbyuser works'
+      });
+    }
+    sheet.hideRows(2, 2);
+    if (!SpreadsheetApp.isFake) {
+      t.true(sheet.isRowHiddenByUser(2), {
+        skip: SpreadsheetApp.isFake,
+        description: 'skip this test until isrowhiddenbyuser works'
+      });
+      t.true(sheet.isRowHiddenByUser(3), {
+        skip: SpreadsheetApp.isFake,
+        description: 'skip this test until isrowhiddenbyuser works'
+      });
+    }
+
+    sheet.unhideColumn(r);
+    if (!SpreadsheetApp.isFake) {
+      t.false(sheet.isColumnHiddenByUser(2), {
+        skip: SpreadsheetApp.isFake,
+        description: 'skip this test until iscolumnhiddenbyuser works'
+      });
+      sheet.unhideRow(r);
+      t.false(sheet.isRowHiddenByUser(2), {
+        skip: SpreadsheetApp.isFake,
+        description: 'skip this test until isrowhiddenbyuser works'
+      });
+    }
+
+    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
+
+  })
 
 
 
