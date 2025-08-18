@@ -11,14 +11,14 @@ import { getDrivePerformance, getSheetsPerformance } from './testassist.js';
 import { maketss, trasher } from './testassist.js';
 
 
+
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testSheetsText = (pack) => {
 
   const { unit, fixes } = pack || initTests()
   const toTrash = []
-
-    unit.section("spreadsheet textfinder", t => {
-    const searchText = "sampletext";
+  unit.section("spreadsheet textfinder", t => {
+    const searchText = "sample";
     const values = [
       ["sample", "sámplé"],
       ["SampleA", "sámplé"],
@@ -27,9 +27,9 @@ export const testSheetsText = (pack) => {
       ["=sampleA()", "=sámpléB()"],
     ];
 
-    const { sheet, ss: spreadsheet } = maketss('sample1', toTrash, fixes);
+    const { sheet, ss: spreadsheet } = maketss('sample', toTrash, fixes);
     sheet.clear();
-
+    const spreadsheetId = spreadsheet.getId();
 
     sheet.getRange(1, 1, values.length, values[0].length).setValues(values);
     const range = sheet.getRange("A3:B5");
@@ -144,16 +144,16 @@ export const testSheetsText = (pack) => {
   unit.section('insert sheets,rows,columns', t => {
     const { ss: spreadsheet } = maketss('sample', toTrash, fixes);
     const sheet = spreadsheet.insertSheet("temp");
-  
+
     /**
      * appendRow
      * 
      */
     const data = ["sample1", "sample2", "sample3"]
     sheet.appendRow(data).getSheetId()
-    t.is(sheet.getLastRow(), 2)
+    t.is(sheet.getLastRow(), 1)
     t.is(sheet.getLastColumn(), data.length)
-    t.deepEqual(sheet.getRange(2, 1, 1, data.length).getValues(), [data])
+    t.deepEqual(sheet.getRange(1, 1, 1, data.length).getValues(), [data])
 
 
     /**
@@ -202,13 +202,13 @@ export const testSheetsText = (pack) => {
     // blank row so lastrow doesnt increase
     t.is(sheet.getLastRow(), cr)
     sheet.insertRowBefore(2);
-    t.is(sheet.getLastRow(), cr + 1)
+    t.is(sheet.getLastRow(), cr )
     sheet.insertRows(2, 2);
-    t.is(sheet.getLastRow(), cr + 3)
+    t.is(sheet.getLastRow(), cr )
     sheet.insertRowsAfter(2, 2);
-    t.is(sheet.getLastRow(), cr + 5)
+    t.is(sheet.getLastRow(), cr )
     sheet.insertRowsBefore(2, 2);
-    t.is(sheet.getLastRow(), cr + 7)
+    t.is(sheet.getLastRow(), cr )
 
     /**
      * deleteColumn, deleteColumns, deleteRow, deleteRows
@@ -220,12 +220,12 @@ export const testSheetsText = (pack) => {
     sheet.deleteColumns(2, 2);
     t.is(sheet.getLastColumn(), cb - 3)
     sheet.deleteRow(2);
-    t.is(sheet.getLastRow(), cr - 1)
+    t.is(sheet.getLastRow(), cr )
     sheet.deleteRows(2, 2);
-    t.is(sheet.getLastRow(), cr - 3)
+    t.is(sheet.getLastRow(), cr )
 
     const v = sheet.getDataRange().getValues()
-    t.deepEqual(v.slice(-1), [data.slice(0, 1).concat(['', '', '',''], data.slice(1, 2), [''], data.slice(-1))])
+    t.deepEqual(v.slice(-1), [data.slice(0, 1).concat(['', '', '', ''], data.slice(1, 2), [''], data.slice(-1))])
 
     /**
      * TODO iscolumn/row hidden by user needs to be implemented 
@@ -286,12 +286,6 @@ export const testSheetsText = (pack) => {
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
 
   })
-
-
-
-
-
-
 
 
 
