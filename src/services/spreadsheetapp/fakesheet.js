@@ -10,6 +10,8 @@ import { newFakeBanding } from "./fakebanding.js";
 import { newFakeDeveloperMetadataFinder } from "./fakedevelopermetadatafinder.js";
 import { newFakeSheetRangeList } from "./fakesheetrangelist.js";
 import { FakeTextFinder, newFakeTextFinder } from "./faketextfinder.js";
+import { toolresults } from "googleapis/build/src/apis/toolresults/index.js";
+import { FakeColorBase } from "../common/fakecolorbase.js";
 
 const { is, isEnum } = Utils;
 
@@ -43,10 +45,10 @@ export class FakeSheet {
       "protect",
       "getSlicers",
       "insertSlicer",
-      "hideColumn",
-      "hideRow",
-      "unhideColumn",
-      "unhideRow",
+      // "hideColumn",
+      // "hideRow",
+      // "unhideColumn",
+      // "unhideRow",
       "isColumnHiddenByUser",
       "isRowHiddenByUser",
       "isRowHiddenByFilter",
@@ -54,22 +56,22 @@ export class FakeSheet {
       "setFrozenRows",
       "moveRows",
       "moveColumns",
-      "insertColumnAfter",
-      "insertColumnBefore",
-      "insertColumns",
-      "insertColumnsAfter",
-      "insertColumnsBefore",
-      "insertRowAfter",
-      "insertRowBefore",
-      "insertRows",
-      "insertRowsAfter",
-      "insertRowsBefore",
-      "deleteColumn",
-      "deleteColumns",
-      "deleteRow",
-      "deleteRows",
-      "autoResizeColumn",
-      "autoResizeColumns",
+      // "insertColumnAfter",
+      // "insertColumnBefore",
+      // "insertColumns",
+      // "insertColumnsAfter",
+      // "insertColumnsBefore",
+      // "insertRowAfter",
+      // "insertRowBefore",
+      // "insertRows",
+      // "insertRowsAfter",
+      // "insertRowsBefore",
+      // "deleteColumn",
+      // "deleteColumns",
+      // "deleteRow",
+      // "deleteRows",
+      // "autoResizeColumn",
+      // "autoResizeColumns",
       "setSheetProtection",
       "getDataSourceTables",
       "getDataSourceFormulas",
@@ -547,5 +549,338 @@ export class FakeSheet {
    */
   createTextFinder(text) {
     return newFakeTextFinder(this, text);
+  }
+
+  /**
+   *
+   * Added the below methods by tanaike
+   */
+
+  appendRow(rowContents) {
+    this.getRange(this.getLastRow() + 1, 1, 1, rowContents.length).setValues([
+      rowContents,
+    ]);
+    return this;
+  }
+
+  showSheet() {
+    const obj = {
+      spreadsheetId: this.getParent().getId(),
+      requests: [
+        {
+          updateSheetProperties: {
+            properties: { sheetId: this.getSheetId(), hidden: false },
+            fields: "hidden",
+          },
+        },
+      ],
+    };
+    this.__batchUpdate(obj);
+    return this;
+  }
+
+  hideSheet() {
+    const obj = {
+      spreadsheetId: this.getParent().getId(),
+      requests: [
+        {
+          updateSheetProperties: {
+            properties: { sheetId: this.getSheetId(), hidden: true },
+            fields: "hidden",
+          },
+        },
+      ],
+    };
+    this.__batchUpdate(obj);
+    return this;
+  }
+
+  autoResizeColumn(columnPosition) {
+    const obj = {
+      spreadsheetId: this.getParent().getId(),
+      requests: [
+        {
+          autoResizeDimensions: {
+            dimensions: {
+              sheetId: this.getSheetId(),
+              startIndex: columnPosition - 1,
+              endIndex: columnPosition,
+              dimension: "COLUMNS",
+            },
+          },
+        },
+      ],
+    };
+    this.__batchUpdate(obj);
+    return this;
+  }
+
+  autoResizeColumns(startColumn, numColumns) {
+    const obj = {
+      spreadsheetId: this.getParent().getId(),
+      requests: [
+        {
+          autoResizeDimensions: {
+            dimensions: {
+              sheetId: this.getSheetId(),
+              startIndex: startColumn - 1,
+              endIndex: startColumn + numColumns - 1,
+              dimension: "COLUMNS",
+            },
+          },
+        },
+      ],
+    };
+    this.__batchUpdate(obj);
+    return this;
+  }
+
+  insertColumnAfter(afterPosition, dimension = "COLUMNS") {
+    const obj = {
+      spreadsheetId: this.getParent().getId(),
+      requests: [
+        {
+          insertDimension: {
+            inheritFromBefore: true,
+            range: {
+              sheetId: this.getSheetId(),
+              startIndex: afterPosition,
+              endIndex: afterPosition + 1,
+              dimension,
+            },
+          },
+        },
+      ],
+    };
+    this.__batchUpdate(obj);
+    return this;
+  }
+
+  insertColumnBefore(beforePosition, dimension = "COLUMNS") {
+    const obj = {
+      spreadsheetId: this.getParent().getId(),
+      requests: [
+        {
+          insertDimension: {
+            inheritFromBefore: false,
+            range: {
+              sheetId: this.getSheetId(),
+              startIndex: beforePosition - 1,
+              endIndex: beforePosition,
+              dimension,
+            },
+          },
+        },
+      ],
+    };
+    this.__batchUpdate(obj);
+    return this;
+  }
+
+  insertColumns(columnIndex, numColumns, dimension = "COLUMNS") {
+    const obj = {
+      spreadsheetId: this.getParent().getId(),
+      requests: [
+        {
+          insertDimension: {
+            inheritFromBefore: false,
+            range: {
+              sheetId: this.getSheetId(),
+              startIndex: columnIndex - 1,
+              endIndex: columnIndex + numColumns - 1,
+              dimension,
+            },
+          },
+        },
+      ],
+    };
+    this.__batchUpdate(obj);
+    return this;
+  }
+
+  insertColumnsAfter(afterPosition, howMany, dimension = "COLUMNS") {
+    const obj = {
+      spreadsheetId: this.getParent().getId(),
+      requests: [
+        {
+          insertDimension: {
+            inheritFromBefore: true,
+            range: {
+              sheetId: this.getSheetId(),
+              startIndex: afterPosition,
+              endIndex: afterPosition + howMany,
+              dimension,
+            },
+          },
+        },
+      ],
+    };
+    this.__batchUpdate(obj);
+    return this;
+  }
+
+  insertColumnsBefore(beforePosition, howMany, dimension = "COLUMNS") {
+    const obj = {
+      spreadsheetId: this.getParent().getId(),
+      requests: [
+        {
+          insertDimension: {
+            inheritFromBefore: false,
+            range: {
+              sheetId: this.getSheetId(),
+              startIndex: beforePosition - 1,
+              endIndex: beforePosition + howMany - 1,
+              dimension,
+            },
+          },
+        },
+      ],
+    };
+    this.__batchUpdate(obj);
+    return this;
+  }
+
+  insertRowAfter(afterPosition) {
+    return this.insertColumnAfter(afterPosition, "ROWS");
+  }
+
+  insertRowBefore(beforePosition) {
+    return this.insertColumnBefore(beforePosition, "ROWS");
+  }
+
+  insertRows(rowIndex, numRows) {
+    return this.insertColumns(rowIndex, numRows, "ROWS");
+  }
+
+  insertRowsAfter(afterPosition, howMany) {
+    return this.insertColumnsAfter(afterPosition, howMany, "ROWS");
+  }
+
+  insertRowsBefore(beforePosition, howMany) {
+    return this.insertColumnsBefore(beforePosition, howMany, "ROWS");
+  }
+
+  deleteColumn(columnPosition, dimension = "COLUMNS") {
+    const obj = {
+      spreadsheetId: this.getParent().getId(),
+      requests: [
+        {
+          deleteDimension: {
+            range: {
+              sheetId: this.getSheetId(),
+              startIndex: columnPosition - 1,
+              endIndex: columnPosition,
+              dimension,
+            },
+          },
+        },
+      ],
+    };
+    this.__batchUpdate(obj);
+    return this;
+  }
+
+  deleteColumns(columnPosition, howMany, dimension = "COLUMNS") {
+    const obj = {
+      spreadsheetId: this.getParent().getId(),
+      requests: [
+        {
+          deleteDimension: {
+            range: {
+              sheetId: this.getSheetId(),
+              startIndex: columnPosition - 1,
+              endIndex: columnPosition + howMany - 1,
+              dimension,
+            },
+          },
+        },
+      ],
+    };
+    this.__batchUpdate(obj);
+    return this;
+  }
+
+  deleteRow(rowPosition) {
+    return this.deleteColumn(rowPosition, "ROWS");
+  }
+
+  deleteRows(columnPosition, howMany) {
+    return this.deleteColumns(columnPosition, howMany, "ROWS");
+  }
+
+  hideColumn(column, hiddenByUser = true, dimension = "COLUMNS") {
+    if (column.toString() == "Range") {
+      column = column.getColumn();
+    }
+    const obj = {
+      spreadsheetId: this.getParent().getId(),
+      requests: [
+        {
+          updateDimensionProperties: {
+            properties: {
+              hiddenByUser,
+            },
+            range: {
+              sheetId: this.getSheetId(),
+              startIndex: column - 1,
+              endIndex: column,
+              dimension,
+            },
+            fields: "hiddenByUser",
+          },
+        },
+      ],
+    };
+    this.__batchUpdate(obj);
+    return this;
+  }
+
+  hideColumns(
+    columnIndex,
+    numColumns,
+    hiddenByUser = true,
+    dimension = "COLUMNS"
+  ) {
+    const obj = {
+      spreadsheetId: this.getParent().getId(),
+      requests: [
+        {
+          updateDimensionProperties: {
+            properties: {
+              hiddenByUser,
+            },
+            range: {
+              sheetId: this.getSheetId(),
+              startIndex: columnIndex - 1,
+              endIndex: columnIndex + numColumns - 1,
+              dimension,
+            },
+            fields: "hiddenByUser",
+          },
+        },
+      ],
+    };
+    this.__batchUpdate(obj);
+    return this;
+  }
+
+  hideRow(row) {
+    return this.hideColumn(row.getRow(), true, "ROWS");
+  }
+
+  hideRows(rowIndex, numRows) {
+    return this.hideColumns(rowIndex, numRows, true, "ROWS");
+  }
+
+  unhideColumn(column) {
+    return this.hideColumn(column.getColumn(), false, "COLUMNS");
+  }
+
+  unhideRow(row) {
+    return this.hideColumn(row.getRow(), false, "ROWS");
+  }
+
+  __batchUpdate({ spreadsheetId, requests }) {
+    Sheets.Spreadsheets.batchUpdate({ requests }, spreadsheetId);
   }
 }
