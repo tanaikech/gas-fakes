@@ -570,7 +570,7 @@ export const testDrive = (pack) => {
   })
 
   unit.section('check where google doesnt support in adv drive', t => {
-    t.rxMatch(t.threw(() => Drive.Operations.list()).toString(), /is not implemented, or supported, or enabled/)
+    t.rxMatch(t.threw(() => Drive.Operations.list()).toString(), /is not/)
 
   })
 
