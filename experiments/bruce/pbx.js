@@ -9,6 +9,7 @@ const whichType = (element) => {
   // if (!t) console.log('skipping element', element)
   return t
 }
+
 const report = (doc, what) => {
   const body = doc.body
   // drop the section break
@@ -17,7 +18,7 @@ const report = (doc, what) => {
   console.log(what)
   let text = '  '
 
-  const childProps = ["elements", "tableRows", "tableCells", "content"]
+  const childProps = ["elements", "tableRows", "tableCells","content"]
   const typer = (child, text, spaces = " ") => {
     const type = whichType(child)
     if (type) {
@@ -25,9 +26,9 @@ const report = (doc, what) => {
       if (type === 'textRun') {
         text += ` ${JSON.stringify(child[type].content)}`
       }
-      const key = Reflect.ownKeys(child[type]).find(f => childProps.includes(f))
-      let arr = key && child[type][key]
-      if (!arr && is.array(child[type])) arr = child[type]
+      const key = Reflect.ownKeys(child[type]).find (f=>childProps.includes(f))
+      let arr = key && child[type][key] 
+      if (!arr && is.array (child[type])) arr = child[type]
 
       if (is.array(arr)) {
         //text += spaces
@@ -39,7 +40,6 @@ const report = (doc, what) => {
   }
   return children.map(f => typer(f, text)).join("\n")
 }
-
 const scl = (doc) => {
   if (!DocumentApp.isFake) {
     const id = doc.getId()
