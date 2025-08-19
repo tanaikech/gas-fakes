@@ -20,6 +20,8 @@ class FakePageBreak extends FakeElement {
   toString() {
     return 'PageBreak';
   }
+
+  
 }
 
 export const newFakePageBreak = (...args) => Proxies.guard(new FakePageBreak(...args));

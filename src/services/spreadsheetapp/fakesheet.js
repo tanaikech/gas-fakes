@@ -10,11 +10,8 @@ import { newFakeBanding } from "./fakebanding.js";
 import { newFakeDeveloperMetadataFinder } from "./fakedevelopermetadatafinder.js";
 import { newFakeSheetRangeList } from "./fakesheetrangelist.js";
 import { FakeTextFinder, newFakeTextFinder } from "./faketextfinder.js";
-<<<<<<< HEAD
-=======
 import { toolresults } from "googleapis/build/src/apis/toolresults/index.js";
 import { FakeColorBase } from "../common/fakecolorbase.js";
->>>>>>> main
 
 const { is, isEnum } = Utils;
 
@@ -48,17 +45,10 @@ export class FakeSheet {
       "protect",
       "getSlicers",
       "insertSlicer",
-<<<<<<< HEAD
-      "hideColumn",
-      "hideRow",
-      "unhideColumn",
-      "unhideRow",
-=======
       // "hideColumn",
       // "hideRow",
       // "unhideColumn",
       // "unhideRow",
->>>>>>> main
       "isColumnHiddenByUser",
       "isRowHiddenByUser",
       "isRowHiddenByFilter",
@@ -66,24 +56,6 @@ export class FakeSheet {
       "setFrozenRows",
       "moveRows",
       "moveColumns",
-<<<<<<< HEAD
-      "insertColumnAfter",
-      "insertColumnBefore",
-      "insertColumns",
-      "insertColumnsAfter",
-      "insertColumnsBefore",
-      "insertRowAfter",
-      "insertRowBefore",
-      "insertRows",
-      "insertRowsAfter",
-      "insertRowsBefore",
-      "deleteColumn",
-      "deleteColumns",
-      "deleteRow",
-      "deleteRows",
-      "autoResizeColumn",
-      "autoResizeColumns",
-=======
       // "insertColumnAfter",
       // "insertColumnBefore",
       // "insertColumns",
@@ -100,7 +72,6 @@ export class FakeSheet {
       // "deleteRows",
       // "autoResizeColumn",
       // "autoResizeColumns",
->>>>>>> main
       "setSheetProtection",
       "getDataSourceTables",
       "getDataSourceFormulas",
@@ -578,8 +549,6 @@ export class FakeSheet {
    */
   createTextFinder(text) {
     return newFakeTextFinder(this, text);
-<<<<<<< HEAD
-=======
   }
 
   /**
@@ -913,6 +882,5 @@ export class FakeSheet {
 
   __batchUpdate({ spreadsheetId, requests }) {
     Sheets.Spreadsheets.batchUpdate({ requests }, spreadsheetId);
->>>>>>> main
   }
 }

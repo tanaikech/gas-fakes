@@ -71,7 +71,7 @@ export const paragraphOptions = {
   elementType: ElementType.PARAGRAPH,
   insertMethodSignature: 'DocumentApp.Body.insertParagraph',
   canAcceptText: true,
-  getMainRequest: ({content: textOrParagraph, location, isAppend, self, leading}) => {
+  getMainRequest: ({content: textOrParagraph, location, isAppend, self, leading, trailing}) => {
     const isDetachedPara = is.object(textOrParagraph) && textOrParagraph.__isDetached;
     let baseText;
     if (isDetachedPara) {
@@ -82,8 +82,60 @@ export const paragraphOptions = {
       baseText = is.string(textOrParagraph) ? textOrParagraph : textOrParagraph.getText();
     }
 
-    const isBodyAppend = isAppend && self.getType() !== ElementType.PARAGRAPH;
-    const textToInsert = leading + baseText
+    const textToInsert = leading + baseText + trailing
+    return { insertText: { location, text: textToInsert } };
+  },
+  getStyleRequests: (paragraph, startIndex, length, isAppend) => {
+    const requests = [];
+    const detachedItem = paragraph.__elementMapItem;
+    const paraElements = detachedItem.paragraph?.elements || [];
+    const paraStyle = detachedItem.paragraph?.paragraphStyle;
+
+    if (paraStyle && Object.keys(paraStyle).length > 0) {
+      const fields = Object.keys(paraStyle).join(',');
+      requests.push({
+        updateParagraphStyle: { range: { startIndex, endIndex: startIndex + length }, paragraphStyle: paraStyle, fields: fields },
+      });
+    }
+
+    let currentOffset = startIndex;
+    paraElements.forEach(el => {
+      if (el.textRun && el.textRun.content) {
+        const content = el.textRun.content;
+        const textStyle = el.textRun.textStyle;
+        const styleableContent = content.replace(/\n$/, '');
+        const styleableLength = styleableContent.length;
+
+        if (textStyle && Object.keys(textStyle).length > 0 && styleableLength > 0) {
+          const fields = Object.keys(textStyle).join(',');
+          requests.push({ updateTextStyle: { range: { startIndex: currentOffset, endIndex: currentOffset + styleableLength }, textStyle: textStyle, fields: fields } });
+        }
+        currentOffset += content.length;
+      }
+    });
+    return requests;
+  },
+};
+
+export const textOptions = {
+  elementType: ElementType.TEXT,
+  insertMethodSignature: 'DocumentApp.Paragraph.appendText',
+  canAcceptText: true,
+  getMainRequest: ({content: textOrTextElement, location}) => {
+    const isDetachedText = is.object(textOrTextElement) && textOrTextElement.__isDetached;
+    let baseText;
+    if (isDetachedText) {
+      const item = textOrTextElement.__elementMapItem;
+      // TODO - check what a text element looks like here
+      const fullText = item.getText()
+      // TODO dont think this is required
+      // baseText = fullText.replace(/\n$/, '');
+      baseText = fullText
+    } else {
+      baseText = is.string(textOrTextElement) ? textOrTextElement : textOrTextElement.getText();
+    }
+    // no leading/trailing in append text
+    const textToInsert = baseText
     return { insertText: { location, text: textToInsert } };
   },
   getStyleRequests: (paragraph, startIndex, length, isAppend) => {

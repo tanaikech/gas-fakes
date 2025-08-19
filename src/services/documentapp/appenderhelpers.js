@@ -4,7 +4,7 @@ const { is } = Utils
 import { getElementFactory } from './elementRegistry.js'
 import { signatureArgs } from '../../support/helpers.js';
 import { findItem, makeProtectionRequests } from './elementhelpers.js';
-import { paragraphOptions, pageBreakOptions, tableOptions } from './elementoptions.js';
+import { paragraphOptions, pageBreakOptions, tableOptions, textOptions } from './elementoptions.js';
 
 
 /**
@@ -69,21 +69,24 @@ const calculateInsertionPointsAndInitialRequests = (self, childIndex, isAppend, 
 
   let insertIndex;
   let newElementStartIndex;
-  let requests;
+  let requests = []
   let leading = ''
-
+  let trailing = ''
   if (isAppend) {
 
     const isParaAppend = self.getType() === ElementType.PARAGRAPH;
     if (isParaAppend) {
       // appending to a paragraph
       // insert just before the existing '\n' 
-      // dont add a leading \n
-      // so insert index is -2
-      insertIndex = item.endIndex - 2;
-      // TODO check what this is for - its not a new element
+      // TODO - is it possible this needs to be -2 under some circumstances.
+      insertIndex =  item.endIndex - 1;
+
       newElementStartIndex = item.startIndex;
-      // TODO I dont think we need to do a protection request for appending into a paragraph
+
+      // TODO - should the newelementstartindex be the start of the container always ?
+      // right now the findAndReturnNewElement  seems overly complex because of choices made here.
+
+      // I dont think we need to do a protection request for appending into a paragraph
 
     } else {
       // appending to a body
@@ -102,7 +105,7 @@ const calculateInsertionPointsAndInitialRequests = (self, childIndex, isAppend, 
     }
 
   } else {
-    // TODO - all this needs reviewd again
+
     // It's an insert
     if (childIndex < 0 || childIndex >= children.length) {
       throw new Error(`Child index (${childIndex}) must be less than or equal to the number of child elements (${children.length}).`);
@@ -111,15 +114,22 @@ const calculateInsertionPointsAndInitialRequests = (self, childIndex, isAppend, 
     const targetChildItem = structure.elementMap.get(targetChildTwig.name);
     // the new element will start where the one we are inserting before used to start
     newElementStartIndex = targetChildItem.startIndex;
-    // for an insert, we want to insert before the preceding \n
-    // shuffling the \n along
-    insertIndex = newElementStartIndex - 1;
+    // unlike append we dont start at -1
+    insertIndex = newElementStartIndex;
+    // inserting  will need a trailing \n
+
+    trailing = '\n'
+
+
     // we're going to need to prevent the named ranges of the preceding element from being adjusted
     // by restoring them to their previous state
-    requests = makeProtectionRequests(shadow, targetChildTwig);
+    // TODO - how does this work with trying to preserve existing during an insert
+    // dont think we need to do this...
+    // requests = makeProtectionRequests(shadow, targetChildTwig);
+  
   }
 
-  return { insertIndex, newElementStartIndex, requests, leading };
+  return { insertIndex, newElementStartIndex, requests, leading, trailing };
 };
 
 /**
@@ -183,7 +193,7 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
   const segmentId = shadow.__segmentId;
 
   // 3. Calculate insertion points and initial "protection" requests for existing elements.
-  const { insertIndex, newElementStartIndex, requests, leading } = calculateInsertionPointsAndInitialRequests(
+  const { insertIndex, newElementStartIndex, requests, leading, trailing } = calculateInsertionPointsAndInitialRequests(
     self, childIndex, isAppend, shadow
   );
 
@@ -195,7 +205,8 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
     isAppend,
     self,
     structure,
-    leading
+    leading,
+    trailing
   }));
   requests.unshift(...mainRequests);
 
@@ -208,36 +219,7 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
   Docs.Documents.batchUpdate({ requests }, shadow.getId());
   shadow.refresh();
 
-  // finally, if this was a table insert then it'll have created a preceding paragraph that we don't need
-  /*
-  if (options.elementType === ElementType.TABLE && !isAppend) {
 
-    // the extra pragraph will be at content[childIndex +1]
-    // the api doesnt allow the deletion of a paragraph preceding a table
-    // so instead we have to delete the \n from the one preceding all that
-    const extraPara = shadow.resource.body.content[childIndex]
-    const indexToRemove = extraPara.endIndex
-
-    // because we cant remove the very 1st one
-    if (indexToRemove > 1) {
-      if (
-        !extraPara ||
-        extraPara.__type !== 'PARAGRAPH'
-      ) {
-        console.error("wrong para", extraPara)
-        throw new Error(`unexpected element (${extraPara.__type.toString()}) at ${childIndex}`)
-      }
-      // we only want to remove the last character
-      const requests = [
-        deleteContentRange(indexToRemove-1, indexToRemove)
-      ]
-      Docs.Documents.batchUpdate({
-        requests
-      }, shadow.getId());
-      shadow.refresh();
-    }
-  }
-    */
   // 7. Find and return the newly created element instance.
   return findAndReturnNewElement(self, shadow, insertIndex, newElementStartIndex, isAppend, options);
 };
@@ -248,6 +230,10 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
 // parking this for now - it'll need to be resurrected if this issue ever gets resolved
 // https://issuetracker.google.com/issues/437825936
 
+
+export const appendText = (self, textOrTextElement) => {
+  return elementInserter(self, textOrTextElement, null, textOptions);
+};
 
 export const appendParagraph = (self, textOrParagraph) => {
   return elementInserter(self, textOrParagraph, null, paragraphOptions);

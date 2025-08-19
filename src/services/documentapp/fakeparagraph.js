@@ -5,6 +5,8 @@ import { Proxies } from '../../support/proxies.js';
 import { FakeContainerElement } from './fakecontainerelement.js';
 import { registerElement } from './elementRegistry.js';
 import { getText } from './elementhelpers.js';
+import { appendText, appendPageBreak } from './appenderhelpers.js';
+
 
 /**
  * Creates a new proxied FakeParagraph instance.
@@ -38,6 +40,14 @@ export class FakeParagraph extends FakeContainerElement {
    */
   getText() {
     return getText(this);
+  }
+
+  appendText(textOrTextElement) {
+    return appendText(this, textOrTextElement)
+  }
+
+  appendPageBreak(pageBreak) {
+    return appendPageBreak(this, pageBreak || null);
   }
 
   /**
