@@ -15,12 +15,7 @@ import { testSession } from "./testsession.js";
 import { testUtilities } from "./testutilities.js";
 import { testStores } from "./teststores.js";
 import { testScriptApp } from "./testscriptapp.js";
-import {
-  getDrivePerformance,
-  getSheetsPerformance,
-  getDocsPerformance,
-  getSlidesPerformance,
-} from "./testassist.js";
+import {getDrivePerformance,getSheetsPerformance,getDocsPerformance,getSlidesPerformance} from "./testassist.js";
 import { testFiddler } from "./testfiddler.js";
 import { testSheetsDataValidations } from "./testsheetsdatavalidations.js";
 import { testEnums } from "./testenums.js";
