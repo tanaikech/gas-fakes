@@ -557,7 +557,22 @@ export class FakeSheet {
    */
 
   appendRow(rowContents) {
-    this.getRange(this.getLastRow() + 1, 1, 1, rowContents.length).setValues([
+    // If Sheets.Spreadsheets.Values.append can be used, the following script can be used.
+    // Sheets.Spreadsheets.Values.append(
+    //   { values: [rowContents] },
+    //   this.getParent().getId(),
+    //   this.getSheetName(),
+    //   {
+    //     valueInputOption: "USER_ENTERED",
+    //   }
+    // );
+
+    const lastRow = this.getLastRow();
+    const maxRow = this.getMaxRows();
+    if (lastRow == maxRow) {
+      this.insertRowAfter(lastRow);
+    }
+    this.getRange(lastRow + 1, 1, 1, rowContents.length).setValues([
       rowContents,
     ]);
     return this;
