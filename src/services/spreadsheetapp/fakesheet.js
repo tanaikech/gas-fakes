@@ -572,9 +572,8 @@ export class FakeSheet {
     if (lastRow == maxRow) {
       this.insertRowAfter(lastRow);
     }
-    this.getRange(lastRow + 1, 1, 1, rowContents.length).setValues([
-      rowContents,
-    ]);
+    const row = lastRow + (lastRow == 1 ? 0 : 1);
+    this.getRange(row, 1, 1, rowContents.length).setValues([rowContents]);
     return this;
   }
 
