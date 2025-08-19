@@ -121,6 +121,7 @@ export const textOptions = {
   elementType: ElementType.TEXT,
   insertMethodSignature: 'DocumentApp.Paragraph.appendText',
   canAcceptText: true,
+  findChildType: ElementType.TEXT.toString(),
   getMainRequest: ({content: textOrTextElement, location}) => {
     const isDetachedText = is.object(textOrTextElement) && textOrTextElement.__isDetached;
     let baseText;

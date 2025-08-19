@@ -61,114 +61,93 @@ const validateInserterArgs = (elementOrText, childIndex, options) => {
  * Calculates insertion points and generates initial protection requests.
  * @private
  */
-const calculateInsertionPointsAndInitialRequests = (self, childIndex, isAppend, shadow) => {
-  const structure = shadow.structure;
-  const item = structure.elementMap.get(self.__name);
-  // these are the children of the item being affected
+const calculateInsertionPointsAndInitialRequests = (self, childIndex, isAppend, shadow, options) => {
+  const { elementMap, shadowDocument } = shadow.structure;
+  const item = elementMap.get(self.__name);
   const children = item.__twig.children;
 
-  let insertIndex;
-  let newElementStartIndex;
-  let requests = []
-  let leading = ''
-  let trailing = ''
-  if (isAppend) {
+  let insertIndex, newElementStartIndex, childStartIndex, requests = [], leading = '', trailing = '';
 
+  if (isAppend) {
     const isParaAppend = self.getType() === ElementType.PARAGRAPH;
     if (isParaAppend) {
-      // appending to a paragraph
-      // insert just before the existing '\n' 
-      // TODO - is it possible this needs to be -2 under some circumstances.
-      insertIndex =  item.endIndex - 1;
+      // Appending to an existing paragraph. The container is modified.
+      insertIndex = item.endIndex - 1;
+      newElementStartIndex = item.startIndex; // The container is the paragraph itself.
 
-      newElementStartIndex = item.startIndex;
+      const lastChildTwig = children.length > 0 ? children[children.length - 1] : null;
+      const lastChildItem = lastChildTwig ? elementMap.get(lastChildTwig.name) : null;
 
-      // TODO - should the newelementstartindex be the start of the container always ?
-      // right now the findAndReturnNewElement  seems overly complex because of choices made here.
-
-      // I dont think we need to do a protection request for appending into a paragraph
-
+      // If we are appending text and the last child is also text, they might merge.
+      // The new text will become part of the existing text element.
+      if (options.elementType === ElementType.TEXT && lastChildItem && lastChildItem.__type === 'TEXT') {
+        childStartIndex = lastChildItem.startIndex;
+      } else {
+        // For other elements (like PageBreak) or when appending to a non-text element,
+        // the new child will start exactly where we insert it.
+        childStartIndex = insertIndex;
+      }
     } else {
-      // appending to a body
-      // insert just before the existing '\n'
-      // add a leading \n
-      const endIndexBefore = structure.shadowDocument.__endBodyIndex;
+      // Appending to the body, creating a new element.
+      const endIndexBefore = shadowDocument.__endBodyIndex;
       insertIndex = endIndexBefore - 1;
-      // TODO check this and what it's used for
-      newElementStartIndex = endIndexBefore;
-      leading = '\n'
-
-      // an append to the body will accidentally shift the range of the item its inserted into
-      // but we need to retain its original named range - this will take care
+      newElementStartIndex = endIndexBefore; // The new element will start after the old content.
+      childStartIndex = null; // Child start index is unknown, must be found within container.
+      leading = '\n';
       const targetChildTwig = children.length > 0 ? children[children.length - 1] : item.__twig;
       requests = children.length ? makeProtectionRequests(shadow, targetChildTwig) : [];
     }
-
   } else {
-
-    // It's an insert
+    // It's an insert operation, creating a new element.
     if (childIndex < 0 || childIndex >= children.length) {
-      throw new Error(`Child index (${childIndex}) must be less than or equal to the number of child elements (${children.length}).`);
+      throw new Error(`Child index (${childIndex}) must be less than the number of child elements (${children.length}).`);
     }
     const targetChildTwig = children[childIndex];
-    const targetChildItem = structure.elementMap.get(targetChildTwig.name);
-    // the new element will start where the one we are inserting before used to start
+    const targetChildItem = elementMap.get(targetChildTwig.name);
     newElementStartIndex = targetChildItem.startIndex;
-    // unlike append we dont start at -1
     insertIndex = newElementStartIndex;
-    // inserting  will need a trailing \n
-
-    trailing = '\n'
-
-
-    // we're going to need to prevent the named ranges of the preceding element from being adjusted
-    // by restoring them to their previous state
-    // TODO - how does this work with trying to preserve existing during an insert
-    // dont think we need to do this...
-    // requests = makeProtectionRequests(shadow, targetChildTwig);
-  
+    childStartIndex = null; // Child start index is unknown, must be found within container.
+    trailing = '\n';
   }
 
-  return { insertIndex, newElementStartIndex, requests, leading, trailing };
+  return { insertIndex, newElementStartIndex, childStartIndex, requests, leading, trailing };
 };
 
 /**
  * Finds and creates the new element instance after a batch update.
  * @private
  */
-const findAndReturnNewElement = (self, shadow, insertIndex, newElementStartIndex, isAppend, options) => {
+const findAndReturnNewElement = (shadow, newElementStartIndex, childStartIndex, isAppend, options) => {
   const { elementType, findType, findChildType } = options;
 
   const findContainerType = (is.function(findType) ? findType(isAppend) : findType) || elementType.toString();
   const childTypeToFind = is.function(findChildType) ? findChildType(isAppend) : findChildType;
+  let finalItem;
 
   // For operations that return a child element (like PageBreak), we need to find it.
   if (childTypeToFind) {
-    // When inserting into a paragraph (append or insert), the new child's start index is the insertion point.
-    if (self.getType() === ElementType.PARAGRAPH) {
-      const finalItem = findItem(shadow.__elementMap, childTypeToFind, insertIndex);
-      const factory = getElementFactory(childTypeToFind);
-      return factory(shadow.structure, finalItem.__name);
+    if (childStartIndex !== null) {
+      // The child's start index was predictable (e.g., appending to an existing paragraph).
+      finalItem = findItem(shadow.elementMap, childTypeToFind, childStartIndex);
+    } else {
+      // A new container was created. Find it, then find the child within it.
+      const containerItem = findItem(shadow.elementMap, findContainerType, newElementStartIndex);
+      const childTwig = (containerItem.__twig.children || []).find(twig => {
+        const childItem = shadow.elementMap.get(twig.name);
+        return childItem && childItem.__type === childTypeToFind;
+      });
+      if (!childTwig) {
+        throw new Error(`Could not find child of type ${childTypeToFind} in new element`);
+      }
+      finalItem = shadow.elementMap.get(childTwig.name);
     }
-
-    // For other cases (body appends, all inserts), find the container first, then the child.
-    const containerItem = findItem(shadow.__elementMap, findContainerType, newElementStartIndex);
-    const childTwig = (containerItem.__twig.children || []).find(twig => {
-      const childItem = shadow.__elementMap.get(twig.name);
-      return childItem && childItem.__type === childTypeToFind;
-    });
-    if (!childTwig) {
-      throw new Error(`Could not find child of type ${childTypeToFind} in new element`);
-    }
-    const finalItem = shadow.__elementMap.get(childTwig.name);
-    const factory = getElementFactory(childTypeToFind);
-    return factory(shadow.structure, finalItem.__name);
+  } else {
+    // For operations that return the container element itself.
+    finalItem = findItem(shadow.elementMap, findContainerType, newElementStartIndex);
   }
 
-  // For operations that return the container element itself.
-  const containerItem = findItem(shadow.__elementMap, findContainerType, newElementStartIndex);
-  const factory = getElementFactory(findContainerType);
-  return factory(shadow.structure, containerItem.__name);
+  const factory = getElementFactory(finalItem.__type);
+  return factory(shadow.structure, finalItem.__name);
 };
 
 /**
@@ -192,9 +171,9 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
   const structure = shadow.structure;
   const segmentId = shadow.__segmentId;
 
-  // 3. Calculate insertion points and initial "protection" requests for existing elements.
-  const { insertIndex, newElementStartIndex, requests, leading, trailing } = calculateInsertionPointsAndInitialRequests(
-    self, childIndex, isAppend, shadow
+  // 3. Calculate insertion points, child start index, and initial "protection" requests.
+  const { insertIndex, newElementStartIndex, childStartIndex, requests, leading, trailing } = calculateInsertionPointsAndInitialRequests(
+    self, childIndex, isAppend, shadow, options
   );
 
   // 4. Build the main batch update request list.
@@ -221,7 +200,7 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
 
 
   // 7. Find and return the newly created element instance.
-  return findAndReturnNewElement(self, shadow, insertIndex, newElementStartIndex, isAppend, options);
+  return findAndReturnNewElement(shadow, newElementStartIndex, childStartIndex, isAppend, options);
 };
 
 
