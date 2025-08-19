@@ -54,8 +54,14 @@ const pbnew = () => {
   let doc = DocumentApp.create("abc")
   const id = doc.getId()
   moveToTempFolder(id, suffix)
+  let body
 
-  let body = doc.getBody()
+  body = doc.getBody()
+  body.appendTable([['']])
+  doc = scl(doc)
+  console.log(report(Docs.Documents.get(id), `\nt1.appended table`))
+
+  body = doc.getBody()
   body.appendParagraph('para append')
   doc = scl(doc)
   console.log(report(Docs.Documents.get(id), `\n1.appended para`))
@@ -71,7 +77,7 @@ const pbnew = () => {
   console.log(report(Docs.Documents.get(id), `\n3.inserted para 2`))
 
   body = doc.getBody()
-  body.insertParagraph(2, 'para 2 insert')
+  body.insertParagraph(2, 'para 2 insert just before table')
   doc = scl(doc)
   console.log(report(Docs.Documents.get(id), `\n4.inserted para 2`))
 

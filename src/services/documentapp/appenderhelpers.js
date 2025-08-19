@@ -93,7 +93,10 @@ const calculateInsertionPointsAndInitialRequests = (self, childIndex, isAppend, 
       insertIndex = endIndexBefore - 1;
       newElementStartIndex = endIndexBefore; // The new element will start after the old content.
       childStartIndex = null; // Child start index is unknown, must be found within container.
-      leading = '\n';
+      
+      // if it's a table type, it will automatically insert a leading \n so we dont need to force it
+      leading = options.elementType === ElementType.TABLE ? '' : '\n';
+
       const targetChildTwig = children.length > 0 ? children[children.length - 1] : item.__twig;
       requests = children.length ? makeProtectionRequests(shadow, targetChildTwig) : [];
     }

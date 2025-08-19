@@ -42,7 +42,8 @@ const handleTextless = (loc, isAppend, self, type, extras = {}) => {
     case 'TABLE':
 
       // since the table content is empty, this is how much space it'll need initially
-      const endTableIndex = location.index + extras.rows * extras.columns + 1
+      // since the startindex is actually going to be the leading \n, we need to accoutn for that
+      ///const endTableIndex = location.index + extras.rows * extras.columns + 1 + 1
 
       // for a table the insert request will generate a leading \n
       reqs.push({
@@ -50,9 +51,9 @@ const handleTextless = (loc, isAppend, self, type, extras = {}) => {
           .setLocation(location)
           .setRows(extras.rows)
           .setColumns(extras.columns)
-      },
-        // this means we need to get rid of the trailing \n that will now be unnecessary  
-        deleteContentRange(endTableIndex, endTableIndex+1)
+      } 
+        // dont think we need this
+        //,deleteContentRange(endTableIndex, endTableIndex+1)
       )
 
       break;
@@ -225,9 +226,9 @@ export const tableOptions = {
     // first request is a table of 1 x n for simplicity
     let requests = handleTextless(location, isAppend, self, 'TABLE', { rows: 1, columns })
 
-    // the tableStartIndex will be different depending if it was a body append or not
-    // TODO should be newElementStartIndex
-    const tableStartIndex = requests[0].insertTable.location.index + (isAppend ? 2 : 1)
+    // TODO the tableStartIndex will be different depending if it was a body append or not?
+    // this accounts for the leading \n
+    const tableStartIndex = requests[0].insertTable.location.index + 1
 
     // next requests are to update rows to the table if we got some cells
     if (cells) {
