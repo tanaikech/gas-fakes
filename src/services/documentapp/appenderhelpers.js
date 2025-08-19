@@ -110,7 +110,14 @@ const calculateInsertionPointsAndInitialRequests = (self, childIndex, isAppend, 
     newElementStartIndex = targetChildItem.startIndex;
     insertIndex = newElementStartIndex;
     childStartIndex = null; // Child start index is unknown, must be found within container.
-    trailing = '\n';
+    // if we're trying to insert before a table, we know that it will be preceded by \n
+    // and we want to insert before that preceding \n, not at the actual table element start
+    if (targetChildItem.__type === ElementType.TABLE.toString()) {
+      insertIndex -= 1;
+      // we need to protect the paragraph before also
+    }
+    leading = '\n'
+    requests = makeProtectionRequests(shadow, targetChildTwig);
   }
 
   return { insertIndex, newElementStartIndex, childStartIndex, requests, leading, trailing };
