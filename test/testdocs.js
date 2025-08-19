@@ -1,7 +1,10 @@
 import is from '@sindresorhus/is';
 import '../main.js';
 import { initTests } from './testinit.js';
-import { trasher, getDocsPerformance, maketdoc } from './testassist.js';
+import { trasher, 
+  getDocsPerformance, maketdoc 
+
+} from './testassist.js';
 
 export const testDocs = (pack) => {
   const { unit, fixes } = pack || initTests();
