@@ -49,13 +49,13 @@ export class FakeSheet {
       // "hideRow",
       // "unhideColumn",
       // "unhideRow",
-      "isColumnHiddenByUser",
-      "isRowHiddenByUser",
-      "isRowHiddenByFilter",
-      "setFrozenColumns",
-      "setFrozenRows",
-      "moveRows",
-      "moveColumns",
+      // "isColumnHiddenByUser",
+      // "isRowHiddenByUser",
+      // "isRowHiddenByFilter",
+      // "setFrozenColumns",
+      // "setFrozenRows",
+      // "moveRows",
+      // "moveColumns",
       // "insertColumnAfter",
       // "insertColumnBefore",
       // "insertColumns",
@@ -572,9 +572,8 @@ export class FakeSheet {
     if (lastRow == maxRow) {
       this.insertRowAfter(lastRow);
     }
-    this.getRange(lastRow + 1, 1, 1, rowContents.length).setValues([
-      rowContents,
-    ]);
+    const row = lastRow + (lastRow == 1 ? 0 : 1);
+    this.getRange(row, 1, 1, rowContents.length).setValues([rowContents]);
     return this;
   }
 
@@ -895,7 +894,89 @@ export class FakeSheet {
     return this.hideColumn(row.getRow(), false, "ROWS");
   }
 
+  setFrozenColumns(columns, __p = "frozenColumnCount") {
+    const obj = {
+      spreadsheetId: this.getParent().getId(),
+      requests: [
+        {
+          updateSheetProperties: {
+            properties: {
+              gridProperties: {
+                [__p]: columns,
+              },
+              sheetId: this.getSheetId(),
+            },
+            fields: `gridProperties.${__p}`,
+          },
+        },
+      ],
+    };
+    this.__batchUpdate(obj);
+    return null;
+  }
+
+  setFrozenRows(rows) {
+    return this.setFrozenColumns(rows, "frozenRowCount");
+  }
+
+  moveColumns(columnSpec, destinationIndex, dimension = "Column") {
+    const startIndex = columnSpec[`get${dimension}`]() - 1;
+    const endIndex = startIndex + columnSpec[`getNum${dimension}s`]();
+    const obj = {
+      spreadsheetId: this.getParent().getId(),
+      requests: [
+        {
+          moveDimension: {
+            source: {
+              sheetId: this.getSheetId(),
+              startIndex,
+              endIndex,
+              dimension: `${dimension.toUpperCase()}S`,
+            },
+            destinationIndex: destinationIndex - 1,
+          },
+        },
+      ],
+    };
+    this.__batchUpdate(obj);
+    return null;
+  }
+
+  moveRows(rowSpec, destinationIndex) {
+    return this.moveColumns(rowSpec, destinationIndex, "Row");
+  }
+
+  isColumnHiddenByUser(
+    columnPosition,
+    dimension = "column",
+    kind = "hiddenByUser"
+  ) {
+    const obj = {
+      spreadsheetId: this.getParent().getId(),
+      ranges: [this.getSheetName()],
+      fields: "sheets(data(rowMetadata,columnMetadata))",
+    };
+    const res = this.__get(obj);
+    const ar = res.sheets[0].data[0][`${dimension}Metadata`];
+    if (!ar[columnPosition - 1]) {
+      throw new Error(`Those ${dimension}s are out of bounds.`);
+    }
+    return ar[columnPosition - 1].hasOwnProperty(kind);
+  }
+
+  isRowHiddenByUser(rowPosition) {
+    return this.isColumnHiddenByUser(rowPosition, "row", "hiddenByUser");
+  }
+
+  isRowHiddenByFilter(rowPosition) {
+    return this.isColumnHiddenByUser(rowPosition, "row", "hiddenByFilter");
+  }
+
   __batchUpdate({ spreadsheetId, requests }) {
     Sheets.Spreadsheets.batchUpdate({ requests }, spreadsheetId);
+  }
+
+  __get({ spreadsheetId, ranges, fields = "*" }) {
+    return Sheets.Spreadsheets.get(spreadsheetId, { ranges, fields });
   }
 }
