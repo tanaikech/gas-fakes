@@ -230,7 +230,6 @@ export const tableOptions = {
     // this accounts for the leading \n
     const tableStartIndex = requests[0].insertTable.location.index + 1
 
-    // next requests are to update rows to the table if we got some cells
     if (cells) {
 
       cells.forEach((_, rowIndex) => {

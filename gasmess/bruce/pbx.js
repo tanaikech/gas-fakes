@@ -4,9 +4,9 @@ import is from '@sindresorhus/is';
 const suffix = "-bruce"
 
 const whichType = (element) => {
-  const ts = ["paragraph", "pageBreak", "textRun", "table", "tableRows", "tableCells"]
+  const ts = ["paragraph", "pageBreak", "textRun","table","tableRows","tableCells","content"]
   const [t] = ts.filter(f => Reflect.has(element, f))
-  // if (!t) console.log('skipping element', element)
+  //if (!t) console.log('skipping element', element)
   return t
 }
 
