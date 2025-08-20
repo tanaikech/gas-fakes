@@ -93,7 +93,7 @@ const calculateInsertionPointsAndInitialRequests = (self, childIndex, isAppend, 
       insertIndex = endIndexBefore - 1;
       newElementStartIndex = endIndexBefore; // The new element will start after the old content.
       childStartIndex = null; // Child start index is unknown, must be found within container.
-      
+
       // if it's a table type, it will automatically insert a leading \n so we dont need to force it
       leading = options.elementType === ElementType.TABLE ? '' : '\n';
 
@@ -112,20 +112,19 @@ const calculateInsertionPointsAndInitialRequests = (self, childIndex, isAppend, 
     if (targetChildItem.__type === "TABLE") {
       insertIndex = targetChildItem.startIndex - 1; // Insert before the table.
       if (childIndex < 1) {
-        // because a table cant be the first child
+        // because a table cant ever be the first child
         throw new Error(`Cannot insert before the first child element table (${targetChildItem.name})`);
       }
-      protectTwig = children[childIndex -1]
+      protectTwig = children[childIndex - 1]
       leading = '\n'
     } else {
       insertIndex = targetChildItem.startIndex
       trailing = '\n'
     }
-    newElementStartIndex = insertIndex
-
+    // account for the leading \n that a table will insert autonatically
+    newElementStartIndex = options.elementType === ElementType.TABLE ? insertIndex + 1 : insertIndex;
+    // TODO validate what this is used for
     childStartIndex = null; // Child start index is unknown, must be found within container.
-
-
     requests = protectTwig ? makeProtectionRequests(shadow, protectTwig) : []
   }
 

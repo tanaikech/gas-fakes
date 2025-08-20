@@ -1,7 +1,7 @@
 import { ElementType } from '../enums/docsenums.js';
 import { Utils } from "../../support/utils.js";
 const { is } = Utils
-import { deleteContentRange, insertTableRowRequest, deleteTableRowRequest, reverseUpdateContent } from './elementblasters.js';
+import { insertTableRowRequest, deleteTableRowRequest, reverseUpdateContent } from './elementblasters.js';
 
 
 // adding a textless item has some special juggling to do
@@ -51,10 +51,7 @@ const handleTextless = (loc, isAppend, self, type, extras = {}) => {
           .setLocation(location)
           .setRows(extras.rows)
           .setColumns(extras.columns)
-      } 
-        // dont think we need this
-        //,deleteContentRange(endTableIndex, endTableIndex+1)
-      )
+      })
 
       break;
 
@@ -72,7 +69,7 @@ export const paragraphOptions = {
   elementType: ElementType.PARAGRAPH,
   insertMethodSignature: 'DocumentApp.Body.insertParagraph',
   canAcceptText: true,
-  getMainRequest: ({content: textOrParagraph, location, isAppend, self, leading, trailing}) => {
+  getMainRequest: ({ content: textOrParagraph, location, isAppend, self, leading, trailing }) => {
     const isDetachedPara = is.object(textOrParagraph) && textOrParagraph.__isDetached;
     let baseText;
     if (isDetachedPara) {
@@ -123,7 +120,7 @@ export const textOptions = {
   insertMethodSignature: 'DocumentApp.Paragraph.appendText',
   canAcceptText: true,
   findChildType: ElementType.TEXT.toString(),
-  getMainRequest: ({content: textOrTextElement, location}) => {
+  getMainRequest: ({ content: textOrTextElement, location }) => {
     const isDetachedText = is.object(textOrTextElement) && textOrTextElement.__isDetached;
     let baseText;
     if (isDetachedText) {
@@ -182,7 +179,7 @@ export const pageBreakOptions = {
   insertMethodSignature: 'DocumentApp.Body.pageBreak',
   packCanBeNull: true,
   canAcceptText: false,
-  getMainRequest: ({ location: loc, isAppend, self, leading}) => {
+  getMainRequest: ({ location: loc, isAppend, self, leading }) => {
     return handleTextless(loc, isAppend, self, 'PAGE_BREAK')
   },
   getStyleRequests: null, // PageBreak styling on copy not supported yet.
@@ -198,7 +195,7 @@ export const tableOptions = {
   insertMethodSignature: 'DocumentApp.Body.insertTable',
   canAcceptArray: true,
   canAcceptText: false, // It accepts an array of arrays of strings, not a simple string.
-  getMainRequest: ({content: elementOrText, location, isAppend, self}) => {
+  getMainRequest: ({ content: elementOrText, location, isAppend, self }) => {
     let rows = 1, cells, columns = 1;
     const isDetached = is.object(elementOrText) && elementOrText.__isDetached;
 
