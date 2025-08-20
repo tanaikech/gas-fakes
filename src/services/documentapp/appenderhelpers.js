@@ -5,7 +5,7 @@ import { getElementFactory } from './elementRegistry.js'
 import { signatureArgs } from '../../support/helpers.js';
 import { findItem, makeProtectionRequests } from './elementhelpers.js';
 import { paragraphOptions, pageBreakOptions, tableOptions, textOptions } from './elementoptions.js';
-
+import { deleteContentRange } from "./elementblasters.js";
 
 /**
  * Validates arguments for the elementInserter function.
@@ -115,17 +115,15 @@ const calculateInsertionPointsAndInitialRequests = (self, childIndex, isAppend, 
         // because a table cant ever be the first child
         throw new Error(`Cannot insert before the first child element table (${targetChildItem.name})`);
       }
-      protectTwig = children[childIndex - 1]
       leading = '\n'
     } else {
       insertIndex = targetChildItem.startIndex
       trailing = '\n'
     }
-    // account for the leading \n that a table will insert autonatically
-    newElementStartIndex = options.elementType === ElementType.TABLE ? insertIndex + 1 : insertIndex;
+    // we don't need to account for the leading \n here because we'll be removing it later
+    newElementStartIndex =  insertIndex;
     // TODO validate what this is used for
     childStartIndex = null; // Child start index is unknown, must be found within container.
-    requests = protectTwig ? makeProtectionRequests(shadow, protectTwig) : []
   }
 
   return { insertIndex, newElementStartIndex, childStartIndex, requests, leading, trailing };
@@ -205,12 +203,18 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
     leading,
     trailing
   }));
+  // if we were inserting a table then there;ll be an unwanted \n to remove - this should be -2 from the insertIndex
+  // TODO we need to check if that index is actually a paragraph or not otherwise this will fail/screw up
+  if (!isAppend && options.elementType === ElementType.TABLE) {
+    mainRequests.push(deleteContentRange(insertIndex - 1,insertIndex ))
+  }
   requests.unshift(...mainRequests);
 
   // Add styling requests if inserting a copied (detached) element.
   if (isDetached && getStyleRequests) {
     requests.push(...getStyleRequests(elementOrText, newElementStartIndex, isAppend));
   }
+
 
   // 5. Execute the update and refresh the document state.
   Docs.Documents.batchUpdate({ requests }, shadow.getId());
