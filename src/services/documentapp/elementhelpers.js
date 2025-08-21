@@ -19,6 +19,8 @@ export const getElementProp = (se) => {
 
   // The order of these checks is important to distinguish between container types.
   // These elements contain their content in a nested property.
+  // A ListItem is a Paragraph with a bullet. Check for this before generic Paragraph.
+  if (se.paragraph && se.paragraph.bullet) return { prop: 'paragraph', type: 'LIST_ITEM' };
   if (se.table) return { prop: 'table', type: 'TABLE' };
   if (se.paragraph) return { prop: 'paragraph', type: 'PARAGRAPH' };
 
@@ -89,7 +91,14 @@ export const getText = (element) => {
   return text.replace(/\n$/, '');
 };
 export const findItem = (elementMap, type, startIndex) => {
-  const item = Array.from(elementMap.values()).find(f => f.__type === type && f.startIndex === startIndex)
+  const item = Array.from(elementMap.values()).find(f => {
+    // A ListItem is a specialized Paragraph. A search for a PARAGRAPH should also find a LIST_ITEM
+    // at the given location.
+    if (type === 'PARAGRAPH') {
+      return (f.__type === 'PARAGRAPH' || f.__type === 'LIST_ITEM') && f.startIndex === startIndex;
+    }
+    return f.__type === type && f.startIndex === startIndex;
+  });
   if (!item) {
     console.log(elementMap.values())
     throw new Error(`Couldnt find element ${type} at ${startIndex}`)

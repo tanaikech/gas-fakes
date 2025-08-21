@@ -3,7 +3,7 @@ import { signatureArgs } from '../../support/helpers.js';
 import { Utils } from '../../support/utils.js';
 import { FakeContainerElement } from './fakecontainerelement.js';
 import { makeNrPrefix } from './nrhelpers.js'
-import { appendParagraph, insertParagraph, appendPageBreak, insertPageBreak, appendTable, insertTable } from './appenderhelpers.js'
+import { appendParagraph, insertParagraph, appendPageBreak, insertPageBreak, appendTable, insertTable, appendListItem, insertListItem } from './appenderhelpers.js'
 import { registerElement } from './elementRegistry.js';
 const { is } = Utils
 
@@ -71,6 +71,22 @@ class FakeBody extends FakeContainerElement {
     }
     const t =  insertTable(this, childIndex, tableOrCells);
     return t
+  }
+
+  appendListItem(listItemOrText) {
+    return appendListItem(this, listItemOrText);
+  }
+
+  insertListItem(childIndex, listItemOrText) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Body.insertListItem');
+    if (nargs !== 2) matchThrow();
+
+    // Per the docs, inserting at an index equal to the number of children
+    // is equivalent to an append operation.
+    if (childIndex === this.getNumChildren()) {
+      return this.appendListItem(listItemOrText);
+    }
+    return insertListItem(this, childIndex, listItemOrText);
   }
 
   toString() {

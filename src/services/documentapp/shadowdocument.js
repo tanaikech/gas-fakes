@@ -75,7 +75,8 @@ class ShadowDocument {
       // the type is the enum text for te type, the prop is where to find it in the element
       const { type, prop } = elementProp;
 
-      // All child elements, are expected to have a range.
+      // All child elements are expected to have a range.
+      // A list item is a paragraph, so its named range should be of type PARAGRAPH.
       const { endIndex, startIndex } = element;
 
       if (!is.integer(endIndex) || !is.integer(startIndex)) {
@@ -84,7 +85,8 @@ class ShadowDocument {
       }
       // For an empty document, we use static, non-API names to avoid re-indexing issues.
       // For all other documents, we use real NamedRanges to track elements.
-      const { name, namedRangeId } = findOrCreateNamedRangeName(element, type, currentNr, addRequests);
+      const nrType = type === 'LIST_ITEM' ? 'PARAGRAPH' : type;
+      const { name, namedRangeId } = findOrCreateNamedRangeName(element, nrType, currentNr, addRequests);
 
       // embed this stuff in the shadow element
       element.__prop = prop;
@@ -160,19 +162,17 @@ class ShadowDocument {
       }
     }))
 
-    // now commit any named range deletions/additions
     const requests = deleteRequests.concat(addRequests)
 
-    // always do this because the nr ID may have changed if we had to update it
-    // for new ones, it'll pick those up next refresh
-    this.nrMap = new Map(getCurrentNr(data).map(f => [f.name, f]))
-
     if (requests.length > 0) {
-      // console.log('adding', addRequests.length, 'deleting', deleteRequests.length, 'named ranges')
+      // If we need to add or delete named ranges, we do the update and then
+      // recursively call this function with the refreshed document state.
+      // This ensures the final elementMap and nrMap are based on the latest version.
       Docs.Documents.batchUpdate({ requests }, this.__id)
-      // we've changed the document, so we need to re-process it to get the latest state, including new namedRangeIds
       return this.makeElementMap(Docs.Documents.__get(this.__id).data)
     }
+    // If there were no named range changes, the document is stable. We can set the map.
+    this.nrMap = new Map(getCurrentNr(data).map(f => [f.name, f]));
     return data;
   }
 

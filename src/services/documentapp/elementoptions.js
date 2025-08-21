@@ -244,3 +244,87 @@ export const tableOptions = {
     return requests;
   }
 };
+
+export const listItemOptions = {
+  elementType: ElementType.LIST_ITEM,
+  insertMethodSignature: 'DocumentApp.Body.insertListItem',
+  canAcceptText: true,
+  getMainRequest: ({ content: textOrListItem, location, isAppend, self, leading, trailing }) => {
+    const isDetached = is.object(textOrListItem) && textOrListItem.__isDetached;
+    let baseText;
+
+    if (isDetached) {
+      const item = textOrListItem.__elementMapItem;
+      const fullText = (item.paragraph?.elements || []).map(el => el.textRun?.content || '').join('');
+      baseText = fullText.replace(/\n$/, '');
+    } else {
+      baseText = is.string(textOrListItem) ? textOrListItem : textOrListItem.getText();
+    }
+
+    const textToInsert = leading + baseText + trailing;
+    const requests = [];
+    requests.push({ insertText: { location, text: textToInsert } });
+
+    // If it's a NEW list item (not a copy), we apply a default bullet right away.
+    if (!isDetached) {
+      requests.push({
+        createParagraphBullets: {
+          range: {
+            // The range just needs to point somewhere inside the new paragraph.
+            // The start of the inserted text is a safe bet.
+            startIndex: location.index + leading.length,
+            endIndex: location.index + leading.length,
+          },
+          bulletPreset: 'BULLET_DISC_CIRCLE_SQUARE',
+        },
+      });
+    }
+
+    return requests;
+  },
+  getStyleRequests: (listItem, startIndex, length, isAppend) => {
+    const requests = [];
+    const detachedItem = listItem.__elementMapItem;
+    const paraElements = detachedItem.paragraph?.elements || [];
+    const paraStyle = detachedItem.paragraph?.paragraphStyle;
+    const bullet = detachedItem.paragraph?.bullet;
+
+    // For a copied item, we must also apply the bullet to make it a list item.
+    if (bullet) {
+      requests.push({
+        createParagraphBullets: {
+          range: {
+            startIndex: startIndex,
+            endIndex: startIndex,
+          },
+          bulletPreset: 'BULLET_DISC_CIRCLE_SQUARE', // Using a default. API will handle list creation/joining.
+        },
+      });
+    }
+
+    if (paraStyle && Object.keys(paraStyle).length > 0) {
+      const fields = Object.keys(paraStyle).join(',');
+      requests.push({
+        updateParagraphStyle: { range: { startIndex, endIndex: startIndex + length }, paragraphStyle: paraStyle, fields: fields },
+      });
+    }
+
+    let currentOffset = startIndex;
+    paraElements.forEach(el => {
+      if (el.textRun && el.textRun.content) {
+        const content = el.textRun.content;
+        const textStyle = el.textRun.textStyle;
+        const styleableContent = content.replace(/\n$/, '');
+        const styleableLength = styleableContent.length;
+
+        if (textStyle && Object.keys(textStyle).length > 0 && styleableLength > 0) {
+          const fields = Object.keys(textStyle).join(',');
+          requests.push({ updateTextStyle: { range: { startIndex: currentOffset, endIndex: currentOffset + styleableLength }, textStyle: textStyle, fields: fields } });
+        }
+        currentOffset += content.length;
+      }
+    });
+    return requests;
+  },
+  findType: 'PARAGRAPH',
+};

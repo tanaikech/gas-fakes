@@ -4,7 +4,7 @@ const { is } = Utils
 import { getElementFactory } from './elementRegistry.js'
 import { signatureArgs } from '../../support/helpers.js';
 import { findItem, makeProtectionRequests } from './elementhelpers.js';
-import { paragraphOptions, pageBreakOptions, tableOptions, textOptions } from './elementoptions.js';
+import { paragraphOptions, pageBreakOptions, tableOptions, textOptions, listItemOptions } from './elementoptions.js';
 import { deleteContentRange } from "./elementblasters.js";
 
 /**
@@ -99,7 +99,11 @@ const calculateInsertionPointsAndInitialRequests = (self, childIndex, isAppend, 
       leading = options.elementType === ElementType.TABLE ? '' : '\n';
 
       const targetChildTwig = children.length > 0 ? children[children.length - 1] : item.__twig;
-      requests = children.length ? makeProtectionRequests(shadow, targetChildTwig) : [];
+      // HACK: Don't generate protection requests if the element being appended is a table,
+      // because its getMainRequest has side-effects (its own batchUpdate) that invalidate
+      // the named ranges of preceding elements before these protection requests can be executed.
+      // This avoids a "named range not found" error.
+      requests = (children.length && options.elementType !== ElementType.TABLE) ? makeProtectionRequests(shadow, targetChildTwig) : [];
     }
   } else {
     // It's an insert operation, creating a new element.
@@ -222,8 +226,10 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
 
 
   // 5. Execute the update and refresh the document state.
-  Docs.Documents.batchUpdate({ requests }, shadow.getId());
-  shadow.refresh();
+  if (requests.length > 0) {
+    Docs.Documents.batchUpdate({ requests }, shadow.getId());
+  }
+  shadow.refresh(); // must always refresh, as getMainRequest might have side effects
 
 
   // 7. Find and return the newly created element instance.
@@ -263,4 +269,12 @@ export const appendTable = (self, cells) => {
 
 export const insertTable = (self, childIndex, table) => {
   return elementInserter(self, table, childIndex, tableOptions);
+};
+
+export const appendListItem = (self, listItemOrText) => {
+  return elementInserter(self, listItemOrText, null, listItemOptions);
+};
+
+export const insertListItem = (self, childIndex, listItemOrText) => {
+  return elementInserter(self, listItemOrText, childIndex, listItemOptions);
 };

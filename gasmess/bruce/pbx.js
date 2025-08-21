@@ -57,6 +57,16 @@ const pbnew = () => {
   let body
 
   body = doc.getBody()
+  body.appendListItem('l0a append')
+  doc = scl(doc)
+  console.log(report(Docs.Documents.get(id), `\nl0a.appended list item l0a`))
+
+  body = doc.getBody()
+  body.appendListItem('l01b append')
+  doc = scl(doc)
+  console.log(report(Docs.Documents.get(id), `\nl0a.appended list item l0b`))
+
+  body = doc.getBody()
   body.appendTable([['']])
   doc = scl(doc)
   console.log(report(Docs.Documents.get(id), `\nt1.appended table`))
@@ -65,6 +75,12 @@ const pbnew = () => {
   body.appendParagraph('para append')
   doc = scl(doc)
   console.log(report(Docs.Documents.get(id), `\n1.appended para`))
+
+  body = doc.getBody()
+  body.appendListItem('l1 append')
+  doc = scl(doc)
+  console.log(report(Docs.Documents.get(id), `\nl1.appended list item l1`))
+
 
   body = doc.getBody()
   body.insertParagraph(0, 'para 0')
