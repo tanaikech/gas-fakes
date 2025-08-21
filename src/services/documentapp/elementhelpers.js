@@ -138,3 +138,28 @@ export const makeProtectionRequests = (shadow, twig) => {
   stet(twig);
   return ur;
 };
+
+/**
+ * Updates the paragraph style for a given element.
+ * @param {import('./fakeelement.js').FakeElement} element The element whose paragraph style to update.
+ * @param {GoogleAppsScript.Document.ParagraphStyle} paragraphStyle The style object to apply.
+ * @param {string} fields The comma-separated string of field names to update.
+ * @returns {import('./fakeelement.js').FakeElement} The element, for chaining.
+ */
+export const updateParagraphStyle = (element, paragraphStyle, fields) => {
+  const shadow = element.shadowDocument;
+  const item = element.__elementMapItem;
+  const range = {
+    startIndex: item.startIndex,
+    endIndex: item.endIndex,
+    segmentId: shadow.__segmentId,
+  };
+
+  const requests = [{
+    updateParagraphStyle: { range, paragraphStyle, fields },
+  }];
+
+  Docs.Documents.batchUpdate({ requests }, shadow.getId());
+  shadow.refresh();
+  return element;
+};

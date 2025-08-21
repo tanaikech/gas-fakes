@@ -248,7 +248,7 @@ export const arrMatchesRange = (range, arr, itemType) => {
   if (arr.length !== range.getNumRows()) return false
   if (arr.some(r => !is.array(r))) return false
   if (arr.some(r => r.length !== range.getNumColumns())) return false
-  if (itemType && !arr.flat().every(f => is[itemType](f))) return false
+  if (itemType && !arr.flat().every(f => isitemType)) return false
   return true
 }
 
