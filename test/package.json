@@ -4,7 +4,7 @@
   },
   "dependencies": {
     "@mcpher/fiddler": "^1.0.1",
-    "@mcpher/gas-fakes": "^1.0.7",
+    "@mcpher/gas-fakes": "^1.0.14",
     "@mcpher/unit": "^1.1.10"
   },
   "type": "module",

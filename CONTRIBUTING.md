@@ -22,7 +22,9 @@ As a background project I'm chipping away at this when I can. There's a mountain
 
 ## Testing
 
-Use the test project included in the repo if you want to do some tests. It uses a Fake services to exercise Auth etc. Just change the fixtures in your own environments by following the instructions in [setup-env.md](https://github.com/brucemcpherson/gas-fakes/blob/main/setup-env.MD), then `npm i && npm test`.
+Use the test project included in the repo if you want to do some tests. It uses a Fake services to exercise Auth etc. Just change the fixtures in your own environments by following the instructions in [setup-env.md](https://github.com/brucemcpherson/gas-fakes/blob/main/setup-env.MD), then `npm i && npm test`. Tests using local files should be run from the top project folder.
+
+You can also run tests using the npm version of gas-fakes set in test/package.json using npm run testnpm - which should be run from the ./test folder.
 
 ### Create a unit.section for each class method or group of related methods
 

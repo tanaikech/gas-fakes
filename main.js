@@ -1,2 +1,3 @@
-// testing locally
-import './src/index.js'
+
+// testing on npm
+import './test/node_modules/@mcpher/gas-fakes/main.js'
