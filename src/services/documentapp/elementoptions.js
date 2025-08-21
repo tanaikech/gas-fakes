@@ -227,7 +227,10 @@ export const tableOptions = {
     const initialRows = rows > 0 ? rows : 1;
 
     let requests = handleTextless(location, isAppend, self, 'TABLE', { rows: initialRows, columns });
-    const tableStartIndex = location.index + (leading ? 1 : 0);
+    // The insertTable API call always creates a paragraph before the table,
+    // so the table's start index will be 1 greater than the insertion location index.
+    // The `leading` variable is for other element types and not applicable here.
+    const tableStartIndex = location.index + 1;
 
     if (rows === 0) {
       requests.push(deleteTableRowRequest(tableStartIndex, 0));

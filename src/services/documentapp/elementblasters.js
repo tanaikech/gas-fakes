@@ -52,9 +52,16 @@ export const insertText = (index, text) => {
  * @param {Array<Array<string>>} newTableData A 2D array of strings with the new data.
  */
 export const reverseUpdateContent = (content, tableStartIndex, newTableData) => {
-
   // 1. find the current table
-  const table = content.find(e => e.startIndex === tableStartIndex).table;
+  const tableElement = content.find(e => e.startIndex === tableStartIndex);
+  if (!tableElement) {
+    // This can happen if the tableStartIndex is calculated incorrectly.
+    throw new Error(`Could not find any element at startIndex ${tableStartIndex}. This is likely an internal error.`);
+  }
+  const table = tableElement.table;
+  if (!table) {
+    throw new Error(`Element at startIndex ${tableStartIndex} is not a table. Found type: ${Object.keys(tableElement).join(', ')}`);
+  }
 
   // batch up the requests
   const requests = [];
