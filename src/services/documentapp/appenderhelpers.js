@@ -23,38 +23,39 @@ const validateInserterArgs = (elementOrText, childIndex, options) => {
   const isAppend = is.null(childIndex);
   const isText = is.string(elementOrText);
   const isArray = is.array(elementOrText);
-  const isObject = !is.array && is.object(elementOrText);
-  const isDetached = isObject && !!elementOrText.__isDetached;
-  const typeMatches = isObject && elementOrText.getType() === elementType;
+  const isObject = !isArray && is.object(elementOrText);
+  let isDetached = false;
 
   const { matchThrow } = signatureArgs([childIndex, elementOrText], insertMethodSignature);
 
-  if (isArray && !canAcceptArray) {
-    matchThrow();
-  }
-  if (isObject && !typeMatches) {
-    matchThrow();
+  // Basic signature checks that don't depend on the element's type yet.
+  if (!isAppend && !is.integer(childIndex)) matchThrow();
+  if (isAppend && !is.nullOrUndefined(childIndex)) matchThrow();
+  if (!packCanBeNull && is.nullOrUndefined(elementOrText)) matchThrow();
+
+  if (isObject) {
+    // For element objects, the live API checks type first, then attached status.
+    const typeMatches = elementOrText.getType() === elementType;
+    if (!typeMatches) {
+      matchThrow();
+    }
+
+    isDetached = !!elementOrText.__isDetached;
+    if (!isDetached) {
+      throw new Error('Element must be detached.');
+    }
+  } else {
+    // Handle non-object arguments (arrays, strings, null)
+    if (isArray && !canAcceptArray) matchThrow();
+    if (isText && !canAcceptText) matchThrow();
+    // is.nullOrUndefined was already checked, so if we get here with another
+    // type (like a number), it's an invalid signature.
+    if (!isArray && !isText && !is.nullOrUndefined(elementOrText)) {
+      matchThrow();
+    }
   }
 
-  if (isObject && (elementOrText.getParent() || !isDetached)) {
-    throw new Error('Element must be detached.');
-  }
-
-  if (isText && !canAcceptText) {
-    matchThrow();
-  }
-
-  if (!packCanBeNull && is.nullOrUndefined(elementOrText)) {
-    matchThrow();
-  }
-  if (!isAppend && (!is.integer(childIndex) || !(packCanBeNull || isText || typeMatches))) {
-    matchThrow();
-  }
-  if (isAppend && !is.nullOrUndefined(childIndex)) {
-    matchThrow();
-  }
-
-  return { isAppend, isDetached };
+  return { isAppend, isDetached: isObject && isDetached };
 };
 
 /**
