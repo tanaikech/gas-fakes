@@ -59,30 +59,33 @@ export const testDocsNext = (pack) => {
     ];
     const table2 = body.insertTable(1, cellsData2);
 
-    const checkTableContent = (table, data) => {
-      t.is(table.getType(), DocumentApp.ElementType.TABLE, "check should be table");
-      t.is(table.getNumRows(), data.length, "Table should have the correct number of rows")
+    const checkTableContent = (table, data, tag ='') => {
+      t.is(table.getType(), DocumentApp.ElementType.TABLE, `${tag}check should be table`);
+      t.is(table.getNumRows(), data.length, `${tag}Table should have the correct number of rows`)
       const d2 = data.map((_, r) => {
         const rx = table.getRow(r);
         return Array.from({ length: rx.getNumCells() }).map((_, c) => {
           return rx.getCell(c).getText();
         })
       })
-      t.deepEqual(d2, data, "Table cells retrieved successfully")
+      t.deepEqual(d2, data, `${tag}Table cells retrieved successfully`)
     }
-    checkTableContent(table2, cellsData2);
+    checkTableContent(table2, cellsData2,"table2:");
     const c2 = body.getChild(1);
-    checkTableContent(c2, cellsData2);
+    checkTableContent(c2, cellsData2,"child2:");
 
 
     // 3. Insert a copied table
     const table3_copy = table1.copy(); // create a detached copy of the first table with data
-    checkTableContent(table3_copy, cellsData)
+    checkTableContent(table3_copy, cellsData,"table3_copy:");
+    body.insertTable(1, table3_copy)
 
     body.insertTable(1, table3_copy); // insert after the initial empty paragraph
     const children3 = getChildren(body);
     const c3 = children3[1];
-    checkTableContent(c3, cellsData)
+    checkTableContent(c3, cellsData,"child3:");
+
+    //
 
 
     // 4. Error conditions

@@ -195,56 +195,49 @@ export const tableOptions = {
   insertMethodSignature: 'DocumentApp.Body.insertTable',
   canAcceptArray: true,
   canAcceptText: false, // It accepts an array of arrays of strings, not a simple string.
-  getMainRequest: ({ content: elementOrText, location, isAppend, self }) => {
-    let rows = 1, cells, columns = 1;
+  getMainRequest: ({ content: elementOrText, location, isAppend, self, leading }) => {
+    let rows, cells, columns;
     const isDetached = is.object(elementOrText) && elementOrText.__isDetached;
 
-    // this detached is stuff is gemini hallucination nonsense
-    // TODO fix all this
     if (isDetached) {
       // This is an insertTable(index, table.copy()) call.
-      // We create a table of the same dimensions. Content/style copy is not yet supported.
-      const tableItem = elementOrText.__elementMapItem;
-      rows = tableItem.table.rows;
-      columns = tableItem.table.tableRows[0].tableCells.length;
-      cells = null;
+      const table = elementOrText;
+      rows = table.getNumRows();
+      columns = rows > 0 ? table.getRow(0).getNumCells() : 0;
+
+      if (rows > 0 && columns > 0) {
+        cells = Array.from({ length: rows }, (_, r) => {
+          const row = table.getRow(r);
+          return Array.from({ length: columns }, (_, c) => {
+            return row.getCell(c).getText();
+          });
+        });
+      } else {
+        cells = []; // Handle empty copied table
+      }
     } else {
       // This is an appendTable() or appendTable(cells) call.
       cells = elementOrText; // Can be null or String[][]
-      rows = cells ? cells.length : 1;
-      columns = cells && cells[0] ? cells[0].length : 1;
     }
 
-    // Apps script can accept a table with no rows
-    // but the api cannnot create a table stub with no rows
-    // so we have to add with at least 1 row
-    // issue - https://issuetracker.google.com/issues/438038924
+    const isEmptyRequest = !cells || cells.length === 0;
+    rows = isEmptyRequest ? (DocumentApp.isFake ? 1 : 0) : cells.length;
+    columns = isEmptyRequest ? (DocumentApp.isFake ? 1 : 0) : (cells[0].length || 1);
 
-    // first request is a table of 1 x n for simplicity
-    let requests = handleTextless(location, isAppend, self, 'TABLE', { rows: 1, columns })
+    const initialRows = rows > 0 ? rows : 1;
 
-    // TODO the tableStartIndex will be different depending if it was a body append or not?
-    // this accounts for the leading \n
-    const tableStartIndex = requests[0].insertTable.location.index + 1
+    let requests = handleTextless(location, isAppend, self, 'TABLE', { rows: initialRows, columns });
+    const tableStartIndex = location.index + (leading ? 1 : 0);
 
-    if (cells) {
-
-      cells.forEach((_, rowIndex) => {
-        requests.push(insertTableRowRequest(tableStartIndex, rowIndex));
-      });
-      // then delete the additional row that the initial request will have made
+    if (rows === 0) {
       requests.push(deleteTableRowRequest(tableStartIndex, 0));
-
-      // now we need a refresh so we can know where everything is
+    } else if (cells) {
       const shadow = self.__structure.shadowDocument;
-      Docs.Documents.batchUpdate({ requests: requests }, shadow.getId())
-      shadow.refresh()
-
-      // a  new set of requests to update the content
-      requests = reverseUpdateContent(shadow.resource.body.content, tableStartIndex, cells)
+      Docs.Documents.batchUpdate({ requests }, shadow.getId());
+      shadow.refresh();
+      requests = reverseUpdateContent(shadow.resource.body.content, tableStartIndex, cells);
     }
 
     return requests;
   }
-
 };

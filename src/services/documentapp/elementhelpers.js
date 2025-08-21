@@ -70,9 +70,18 @@ const getTextRecursive = (twig, structure) => {
  */
 export const getText = (element) => {
   if (!element || element.__isDetached) {
-    // For a detached element, the content is in the cloned item.
     const item = element.__elementMapItem;
-    return item.paragraph?.elements?.map(e => e.textRun?.content || '').join('').replace(/\n$/, '') || '';
+    let text = '';
+
+    if (item.paragraph) { // It's a Paragraph
+      text = item.paragraph.elements?.map(e => e.textRun?.content || '').join('') || '';
+    } else if (item.content) { // It's a TableCell
+      text = item.content.map(structuralElement =>
+        // A cell's content is an array of structural elements (usually paragraphs)
+        structuralElement.paragraph?.elements?.map(e => e.textRun?.content || '').join('') || ''
+      ).join('\n'); // Apps Script joins multiple paragraphs in a cell with a newline
+    }
+    return text.replace(/\n$/, '');
   }
 
   const text = getTextRecursive(element.__twig, element.__structure);

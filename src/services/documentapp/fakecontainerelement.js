@@ -7,6 +7,7 @@ import { newFakeElement } from './fakeelement.js';
 import { signatureArgs } from '../../support/helpers.js';
 import { Utils } from '../../support/utils.js';
 const { is } = Utils;
+import { getElementProp } from './elementhelpers.js';
 import { FakeElement } from './fakeelement.js';
 
 /**
@@ -75,18 +76,55 @@ export class FakeContainerElement extends FakeElement {
       matchThrow();
     }
 
+    // Handle detached elements, which don't have a live shadowDocument.
+    if (this.__isDetached) {
+      const parentItem = this.__elementMapItem;
+      if (childIndex >= this.__twig.children.length) matchThrow();
+
+      let childResource;
+      let childType; // The type of the child element we will create.
+      const parentType = this.getType().toString();
+
+      if (parentType === 'TABLE') {
+        childResource = parentItem.table.tableRows[childIndex];
+        childType = 'TABLE_ROW';
+      } else if (parentType === 'TABLE_ROW') {
+        childResource = parentItem.tableCells[childIndex];
+        childType = 'TABLE_CELL';
+      } else if (parentType === 'TABLE_CELL') {
+        childResource = parentItem.content[childIndex];
+        // For a table cell, the child is a structural element, so we need to determine its type.
+        ({ type: childType } = getElementProp(childResource));
+      } else if (parentType === 'PARAGRAPH') {
+        const visibleChildren = parentItem.paragraph.elements.filter(e =>
+          e.pageBreak || e.horizontalRule || (e.textRun && e.textRun.content && e.textRun.content !== '\n')
+        );
+        childResource = visibleChildren[childIndex];
+        if (childResource) {
+          // For a paragraph, the child is a paragraph element, so we need to determine its type.
+          ({ type: childType } = getElementProp(childResource));
+        }
+      } else {
+        throw new Error(`getChild on detached element of type ${parentType} not supported`);
+      }
+
+      if (!childResource) matchThrow();
+
+      // Create and return the detached child element.
+      const factory = getElementFactory(childType);
+      return factory(null, childResource);
+    }
+
+    // Attached element logic
     const structure = this.shadowDocument.structure;
     const item = structure.elementMap.get(this.__name);
     const children = item.__twig.children;
 
-    if (childIndex >= children.length) {
-      matchThrow();
-    }
+    if (childIndex >= children.length) matchThrow();
 
     const childTwig = children[childIndex];
-    if (!childTwig) {
-      throw new Error(`child with index ${childIndex} not found`);
-    }
+    if (!childTwig) throw new Error(`child with index ${childIndex} not found`);
+
     return newFakeElement(structure, childTwig.name).__cast();
   }
 
@@ -104,18 +142,20 @@ export class FakeContainerElement extends FakeElement {
     if (nargs !== 1 || !is.object(child)) {
       matchThrow();
     }
-    // Get the refreshed structure to find the index within the up-to-date children list.
-    const structure = this.shadowDocument.structure;
-    const item = structure.elementMap.get(this.__name);
-    const children = item.__twig.children;
+
+    let children;
+    if (this.__isDetached) {
+      children = this.__twig.children;
+    } else {
+      // Get the refreshed structure to find the index within the up-to-date children list.
+      const structure = this.shadowDocument.structure;
+      const item = structure.elementMap.get(this.__name);
+      children = item.__twig.children;
+    }
 
     // We just need to compare the name here.
     const seIndex = children.findIndex(c => c.name === child.__name);
-    if (seIndex === -1) {
-      // console.log(child); // Kept for potential future debugging
-      throw new Error(`child with name ${child.__name} not found`);
-    }
-    return seIndex
+    return seIndex;
   }
 
   /**
@@ -124,11 +164,13 @@ export class FakeContainerElement extends FakeElement {
    * @see https://developers.google.com/apps-script/reference/document/container-element#getNumChildren()
    */
   getNumChildren() {
+    if (this.__isDetached) {
+      return this.__twig.children.length;
+    }
     // Must get the latest structure to return an accurate count,
     // as the object's internal state might be stale.
     const item = this.shadowDocument.structure.elementMap.get(this.__name);
     return item.__twig.children.length;
   }
-
 
 }
