@@ -103,8 +103,9 @@ const calculateInsertionPointsAndInitialRequests = (self, childIndex, isAppend, 
     }
   } else {
     // It's an insert operation, creating a new element.
+    // The equality case (childIndex === children.length) is handled by the caller (e.g., FakeBody) by converting to an append.
     if (childIndex < 0 || childIndex >= children.length) {
-      throw new Error(`Child index (${childIndex}) must be less than the number of child elements (${children.length}).`);
+      throw new Error(`Child index (${childIndex}) must be less than or equal to the number of child elements (${children.length}).`);
     }
     const targetChildTwig = children[childIndex];
     const targetChildItem = elementMap.get(targetChildTwig.name);

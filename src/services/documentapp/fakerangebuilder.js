@@ -45,6 +45,14 @@ export class FakeRangeBuilder {
   build() {
     return newFakeRange({ elements: this.elements });
   }
+
+  /**
+   * Returns the string "RangeBuilder".
+   * @returns {string}
+   */
+  toString() {
+    return 'RangeBuilder';
+  }
 }
 
 /**

@@ -23,6 +23,14 @@ export class FakeRange {
   getRangeElements() {
     return this.rangeElements;
   }
+
+  /**
+   * Returns the string "Range".
+   * @returns {string}
+   */
+  toString() {
+    return 'Range';
+  }
 }
 
 /**
