@@ -1,8 +1,9 @@
 import is from '@sindresorhus/is';
 import '../main.js';
 import { initTests } from './testinit.js';
-import { trasher, 
-  getDocsPerformance, maketdoc 
+import {
+  trasher,
+  getDocsPerformance, maketdoc
 
 } from './testassist.js';
 
@@ -14,7 +15,7 @@ export const testDocs = (pack) => {
 
   unit.section("DocumentApp create", t => {
 
-    const { doc, docName } = maketdoc(toTrash, fixes )
+    const { doc, docName } = maketdoc(toTrash, fixes)
     t.is(doc.getName(), docName, "Document should have the correct name");
     t.true(is.nonEmptyString(doc.getId()), "Document should have an ID");
 
@@ -52,7 +53,10 @@ export const testDocs = (pack) => {
     // test setName
     const newDocName = docName + "-renamed";
     doc.setName(newDocName);
+    // There can be a delay in the name change being reflected in both apps script and fake environments.
+    Utilities.sleep(1000); // wait for the name change to propagate
     t.is(doc.getName(), newDocName, "setName should update the document name");
+
     const openedDoc = DocumentApp.openById(doc.getId());
     t.is(openedDoc.getName(), newDocName, "setName should be persistent");
 

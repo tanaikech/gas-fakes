@@ -80,12 +80,10 @@ export const testDocsNext = (pack) => {
     checkTableContent(table3_copy, cellsData,"table3_copy:");
     body.insertTable(1, table3_copy)
 
-    body.insertTable(1, table3_copy); // insert after the initial empty paragraph
+
     const children3 = getChildren(body);
     const c3 = children3[1];
     checkTableContent(c3, cellsData,"child3:");
-
-    //
 
 
     // 4. Error conditions
@@ -390,6 +388,7 @@ export const testDocsNext = (pack) => {
     let { doc, docName } = maketdoc(toTrash, fixes)
 
     // an empty doc - re-fetch body after modifications
+    Utilities.sleep(1000); // wait for the document to be fully initialized
     let body = doc.getBody();
     t.is(doc.getName(), docName, "Document should have the correct name")
 

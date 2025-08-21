@@ -40,7 +40,9 @@ const getTestFolder = (fixes) => {
 export const maketdoc = (toTrash, fixes, clear = true) => {
   const docName = fixes.PREFIX + "tss-docs"
   const folder = getTestFolder(fixes)
-  if (!__mdoc) {
+  // because some test may have renamed it and drive/document service on Apps Script 
+  // might not actually be in sync - doesnt actually happen on Node but we'll leave for consistency.
+  if (!__mdoc || __mdoc.getName() !== docName) {
     __mdoc = DocumentApp.create(docName)
     console.log('...created doc', __mdoc.getName(), __mdoc.getId())
     moveToTestFolder(__mdoc.getId())
@@ -53,7 +55,7 @@ export const maketdoc = (toTrash, fixes, clear = true) => {
   } else {
     // in case there had been a save and close some point
     __mdoc = DocumentApp.openById(__mdoc.getId())
-    console.log ('...re-opened doc',  __mdoc.getId() )
+    console.log('...re-opened doc', __mdoc.getName(), __mdoc.getId(),)
   }
 
   if (clear) {
@@ -70,8 +72,8 @@ export const maketdoc = (toTrash, fixes, clear = true) => {
 // to minimize the number of test sheets created we'll share this across all tests
 export const maketss = (sheetName, toTrash, fixes, { clearContents = true, clearFormats = true } = {}) => {
   const folder = getTestFolder(fixes)
-  if (!__mss) {
-    const aname = fixes.PREFIX + "tss-sheet"
+  const aname = fixes.PREFIX + "tss-sheet"
+  if (!__mss || __mss.getName() !== aname) {
     __mss = SpreadsheetApp.create(aname)
     moveToTestFolder(__mss.getId())
     console.log('...created ss', __mss.getName(), __mss.getId())
@@ -254,11 +256,12 @@ export const arrMatchesRange = (range, arr, itemType) => {
 /**
  * Corrected custom comparison function for sorting different data types,
  * precisely mimicking Google Sheets' range.sort() behavior.
- * Defines the order of precedence (from "smallest" to "largest" for ascending):
+ * Defines the order of precedence (from "smallest" to "largest" for ascending).
+ * This order is based on observed behavior, which may differ from official documentation.
  * 1. Numbers
- * 2. Dates (if actual Date objects are present)
+ * 2. Booleans (false < true)
  * 3. Strings
- * 4. Booleans (false < true)
+ * 4. Dates (if actual Date objects are present)
  * 5. Error Values (e.g., #N/A, #DIV/0!) - treated as larger than Booleans if present
  * 6. Empty Cells (always last)
  * 7. Other types (converted to strings for comparison)
@@ -386,13 +389,13 @@ const whichType = (element) => {
   if (!t) console.log('skipping element', element)
   return t
 }
-export const docReport = (id, what='\ndoc report') => {
+export const docReport = (id, what = '\ndoc report') => {
   const doc = Docs.Documents.get(id)
   const content = doc.body.content
   // drop the section break
   const children = content.slice(1)
   what += ` -children:${children.length}`
-  console.log (what)
+  console.log(what)
   let text = '  '
   const typer = (child, text) => {
     const type = whichType(child)
