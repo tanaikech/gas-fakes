@@ -208,7 +208,7 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
   }));
   // if we were inserting a table then there;ll be an unwanted \n to remove - this should be -2 from the insertIndex
   // TODO we need to check if that index is actually a paragraph or not otherwise this will fail/screw up
-  if (!isAppend && options.elementType === ElementType.TABLE) {
+  if (!isAppend && options.elementType === ElementType.TABLE && insertIndex > 1) {
     mainRequests.push(deleteContentRange(insertIndex - 1,insertIndex ))
   }
   requests.unshift(...mainRequests);

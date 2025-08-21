@@ -82,6 +82,11 @@ const pbnew = () => {
   console.log(report(Docs.Documents.get(id), `\n4.inserted para 2`))
 
   body = doc.getBody()
+  body.insertTable(1, [['eboo', 'fbar']]  )
+  doc = scl(doc)
+  console.log(report(Docs.Documents.get(id), `\nt4.inserted table at child 1`))
+
+  body = doc.getBody()
   body.appendPageBreak()
   doc = scl(doc)
   console.log(report(Docs.Documents.get(id), `\n5.appended pagebreak to body after para2 insert`))
