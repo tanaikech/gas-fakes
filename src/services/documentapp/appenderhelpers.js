@@ -107,7 +107,7 @@ const calculateInsertionPointsAndInitialRequests = (self, childIndex, isAppend, 
     }
     const targetChildTwig = children[childIndex];
     const targetChildItem = elementMap.get(targetChildTwig.name);
-    let protectTwig = null
+    
     // rules with tables mean we have to insert before preceding paragrap
     if (targetChildItem.__type === "TABLE") {
       insertIndex = targetChildItem.startIndex - 1; // Insert before the table.
@@ -116,12 +116,15 @@ const calculateInsertionPointsAndInitialRequests = (self, childIndex, isAppend, 
         throw new Error(`Cannot insert before the first child element table (${targetChildItem.name})`);
       }
       leading = '\n'
+      // in this case the new element startindex will be +1 to the insertIndex
+      newElementStartIndex = insertIndex + 1;
     } else {
       insertIndex = targetChildItem.startIndex
       trailing = '\n'
+      newElementStartIndex =  insertIndex;
     }
-    // we don't need to account for the leading \n here because we'll be removing it later
-    newElementStartIndex =  insertIndex;
+
+
     // TODO validate what this is used for
     childStartIndex = null; // Child start index is unknown, must be found within container.
   }
