@@ -44,6 +44,14 @@ export class FakeTable extends FakeContainerElement {
   getRow(rowIndex) {
     return this.getChild(rowIndex);
   }
+  
+  getValues() {
+    return Array.from({ length: this.getNumRows() }, (_, r) => {
+      const row = this.getRow(r);
+      return Array.from({ length: row.getNumCells() }, (_, c) => row.getCell(c).getText());
+    });
+  }
+
 
   /**
    * Gets the table cell at the given row and cell index.

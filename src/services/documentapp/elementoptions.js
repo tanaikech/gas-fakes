@@ -196,49 +196,30 @@ export const tableOptions = {
   canAcceptArray: true,
   canAcceptText: false, // It accepts an array of arrays of strings, not a simple string.
   getMainRequest: ({ content: elementOrText, location, isAppend, self, leading }) => {
-    let rows, cells, columns;
+    let rows, columns;
     const isDetached = is.object(elementOrText) && elementOrText.__isDetached;
 
     if (isDetached) {
       // This is an insertTable(index, table.copy()) call.
       const table = elementOrText;
       rows = table.getNumRows();
-      columns = rows > 0 ? table.getRow(0).getNumCells() : 0;
-
-      if (rows > 0 && columns > 0) {
-        cells = Array.from({ length: rows }, (_, r) => {
-          const row = table.getRow(r);
-          return Array.from({ length: columns }, (_, c) => {
-            return row.getCell(c).getText();
-          });
-        });
-      } else {
-        cells = []; // Handle empty copied table
-      }
+      columns = rows > 0 ? table.getRow(0).getNumCells() : 1;
     } else {
       // This is an appendTable() or appendTable(cells) call.
-      cells = elementOrText; // Can be null or String[][]
+      const cells = elementOrText; // Can be null or String[][]
+      rows = !cells || cells.length === 0 ? (DocumentApp.isFake ? 1 : 0) : cells.length;
+      columns = !cells || cells.length === 0 || cells[0].length === 0 ? (DocumentApp.isFake ? 1 : 0) : (cells[0].length || 1);
     }
 
-    const isEmptyRequest = !cells || cells.length === 0;
-    rows = isEmptyRequest ? (DocumentApp.isFake ? 1 : 0) : cells.length;
-    columns = isEmptyRequest ? (DocumentApp.isFake ? 1 : 0) : (cells[0].length || 1);
-
     const initialRows = rows > 0 ? rows : 1;
+    const initialColumns = columns > 0 ? columns : 1;
 
-    let requests = handleTextless(location, isAppend, self, 'TABLE', { rows: initialRows, columns });
-    // The insertTable API call always creates a paragraph before the table,
-    // so the table's start index will be 1 greater than the insertion location index.
-    // The `leading` variable is for other element types and not applicable here.
-    const tableStartIndex = location.index + 1;
+    let requests = handleTextless(location, isAppend, self, 'TABLE', { rows: initialRows, columns: initialColumns });
 
     if (rows === 0) {
+      // we need to know where the table will be to delete its row
+      const tableStartIndex = location.index + 1;
       requests.push(deleteTableRowRequest(tableStartIndex, 0));
-    } else if (cells) {
-      const shadow = self.__structure.shadowDocument;
-      Docs.Documents.batchUpdate({ requests }, shadow.getId());
-      shadow.refresh();
-      requests = reverseUpdateContent(shadow.resource.body.content, tableStartIndex, cells);
     }
 
     return requests;

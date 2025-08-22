@@ -3,9 +3,9 @@ import { ElementType } from '../enums/docsenums.js';
 const { is } = Utils
 import { getElementFactory } from './elementRegistry.js'
 import { signatureArgs } from '../../support/helpers.js';
-import { findItem } from './elementhelpers.js';
+import { findItem, makeProtectionRequests } from './elementhelpers.js';
 import { paragraphOptions, pageBreakOptions, tableOptions, textOptions, listItemOptions } from './elementoptions.js';
-import { deleteContentRange, createParagraphBullets } from "./elementblasters.js";
+import { deleteContentRange } from "./elementblasters.js";
 
 /**
  * Validates arguments for the elementInserter function.
@@ -109,7 +109,7 @@ const calculateInsertionPointsAndInitialRequests = (self, childIndex, isAppend, 
     }
     const targetChildTwig = children[childIndex];
     const targetChildItem = elementMap.get(targetChildTwig.name);
-
+    
     // rules with tables mean we have to insert before preceding paragrap
     if (targetChildItem.__type === "TABLE") {
       insertIndex = targetChildItem.startIndex - 1; // Insert before the table.
@@ -123,7 +123,7 @@ const calculateInsertionPointsAndInitialRequests = (self, childIndex, isAppend, 
     } else {
       insertIndex = targetChildItem.startIndex
       trailing = '\n'
-      newElementStartIndex = insertIndex;
+      newElementStartIndex =  insertIndex;
     }
 
 
@@ -211,7 +211,7 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
   // if we were inserting a table then there;ll be an unwanted \n to remove - this should be -2 from the insertIndex
   // TODO we need to check if that index is actually a paragraph or not otherwise this will fail/screw up
   if (!isAppend && options.elementType === ElementType.TABLE && insertIndex > 1) {
-    mainRequests.push(deleteContentRange(insertIndex - 1, insertIndex))
+    mainRequests.push(deleteContentRange(insertIndex - 1,insertIndex ))
   }
   requests.unshift(...mainRequests);
 
@@ -233,6 +233,35 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
   }
   shadow.refresh(); // must always refresh, as getMainRequest might have side effects
 
+  // 6. Handle table content population if necessary. This is a two-phase update
+  // because we need the table to exist before we can get the indices to populate its cells.
+  if (options.elementType === ElementType.TABLE) {
+    const cells = isDetached ? elementOrText.getValues() : elementOrText;
+
+    if (cells && cells.length > 0 && cells[0].length > 0) {
+      // The table was created at newElementStartIndex
+      const populateRequests = reverseUpdateContent(shadow.resource.body.content, newElementStartIndex, cells);
+      if (populateRequests.length > 0) {
+        Docs.Documents.batchUpdate({ requests: populateRequests }, shadow.getId());
+        shadow.refresh();
+      }
+    }
+  }
+
+  // For new list items (not copied ones), we first insert a paragraph, then apply the bullet.
+  // This ensures we don't accidentally apply the bullet to a preceding paragraph by using
+  // the reliable newElementStartIndex.
+  if (options.elementType === ElementType.LIST_ITEM && !isDetached) {
+    requests.push({
+      createParagraphBullets: {
+        range: {
+          startIndex: newElementStartIndex,
+          endIndex: newElementStartIndex,
+        },
+        bulletPreset: 'NUMBERED_DECIMAL_ALPHA_ROMAN',
+      },
+    });
+  }
 
   // 7. Find and return the newly created element instance.
   return findAndReturnNewElement(shadow, newElementStartIndex, childStartIndex, isAppend, options);
