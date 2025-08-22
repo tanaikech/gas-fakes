@@ -5,7 +5,7 @@ import { getElementFactory } from './elementRegistry.js'
 import { signatureArgs } from '../../support/helpers.js';
 import { findItem } from './elementhelpers.js';
 import { paragraphOptions, pageBreakOptions, tableOptions, textOptions, listItemOptions } from './elementoptions.js';
-import { deleteContentRange, createParagraphBullets, reverseUpdateContent } from "./elementblasters.js";
+import { deleteContentRange, createParagraphBullets, reverseUpdateContent, deleteParagraphBullets } from "./elementblasters.js";
 
 /**
  * Validates arguments for the elementInserter function.
@@ -244,6 +244,22 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
       if (populateRequests.length > 0) {
         Docs.Documents.batchUpdate({ requests: populateRequests }, shadow.getId());
         shadow.refresh();
+      }
+    }
+
+    // When the API inserts a table, it automatically adds a paragraph after it.
+    // This new paragraph can sometimes inherit the list style of the element
+    // preceding the table. We need to explicitly remove this bullet formatting.
+    const tableItem = findItem(shadow.elementMap, 'TABLE', newElementStartIndex);
+    if (tableItem) {
+      const paragraphAfterTableIndex = tableItem.endIndex;
+      const paraItem = findItem(shadow.elementMap, 'PARAGRAPH', paragraphAfterTableIndex);
+
+      // findItem for PARAGRAPH will also find LIST_ITEM.
+      // We check if the found item has a bullet, which indicates it wrongly inherited list properties.
+      if (paraItem && paraItem.paragraph && paraItem.paragraph.bullet) {
+        Docs.Documents.batchUpdate({ requests: [deleteParagraphBullets(paraItem.startIndex)] }, shadow.getId());
+        shadow.refresh(); // Refresh again after fixing the paragraph
       }
     }
   }

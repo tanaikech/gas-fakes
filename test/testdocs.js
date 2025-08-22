@@ -130,8 +130,11 @@ export const testDocs = (pack) => {
     const table1 = doc.appendTable([['t1c1', 't1c2']]);
     t.is(table1.getType(), DocumentApp.ElementType.TABLE, "doc.appendTable should return a Table");
     t.is(table1.getCell(0, 0).getText(), "t1c1", "doc.appendTable should create table with correct content");
-    const children2 = doc.getBody().getNumChildren();
-    t.is(doc.getBody().getChild(children2 - 1).getType(), DocumentApp.ElementType.TABLE, "doc.appendTable should add a table to the body");
+    // Appending a table in Apps Script automatically adds an empty paragraph after it.
+    // Therefore, the table is the second-to-last child.
+    const numChildren = doc.getBody().getNumChildren();
+    t.is(doc.getBody().getChild(numChildren - 2).getType(), DocumentApp.ElementType.TABLE, "doc.appendTable should add a table to the body");
+    t.is(doc.getBody().getChild(numChildren - 1).getType(), DocumentApp.ElementType.PARAGRAPH, "doc.appendTable should be followed by a paragraph");
 
     // Test insertTable
     const table0 = doc.appendTable([['t0c1']]).copy();

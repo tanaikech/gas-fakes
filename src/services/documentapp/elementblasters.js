@@ -13,6 +13,13 @@ export const insertTableRowRequest = (tableStartIndex, rowIndex, insertBelow = t
   }
 }
 
+export const deleteParagraphBullets = (startIndex) => {
+  return {
+    deleteParagraphBullets: Docs.newDeleteParagraphBulletsRequest()
+      .setRange(Docs.newRange().setStartIndex(startIndex).setEndIndex(startIndex))
+  }
+}
+
 
 export const createParagraphBullets = (startIndex, bulletPreset = "NUMBERED_DECIMAL_ALPHA_ROMAN") => {
   return {
