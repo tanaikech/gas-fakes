@@ -275,7 +275,7 @@ export const listItemOptions = {
             startIndex: location.index + leading.length,
             endIndex: location.index + leading.length,
           },
-          bulletPreset: 'BULLET_DISC_CIRCLE_SQUARE',
+          bulletPreset: 'NUMBERED_DECIMAL_ALPHA_ROMAN',
         },
       });
     }
@@ -297,7 +297,8 @@ export const listItemOptions = {
             startIndex: startIndex,
             endIndex: startIndex,
           },
-          bulletPreset: 'BULLET_DISC_CIRCLE_SQUARE', // Using a default. API will handle list creation/joining.
+          // Using a default. API will handle list creation/joining.
+          bulletPreset: 'NUMBERED_DECIMAL_ALPHA_ROMAN',
         },
       });
     }

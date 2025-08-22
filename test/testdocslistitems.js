@@ -2,7 +2,7 @@ import '../main.js';
 import { initTests } from './testinit.js';
 import { trasher, getDocsPerformance, maketdoc } from './testassist.js';
 
-export const testDocsListItems = (pack) => {
+const testDocsListItems = (pack) => {
   const { unit, fixes } = pack || initTests();
   const toTrash = [];
 
@@ -33,7 +33,7 @@ export const testDocsListItems = (pack) => {
 
     t.is(li1_reloaded.getListId(), li2.getListId(), "getListId should return the correct list ID");
     t.is(li1_reloaded.getNestingLevel(), 0, "getNestingLevel should return 0 for a top-level item");
-    t.is(li1_reloaded.getGlyphType(), DocumentApp.GlyphType.BULLET, "getGlyphType should return the correct type for a default list");
+    t.is(li1_reloaded.getGlyphType(), DocumentApp.GlyphType.NUMBER, "getGlyphType should return the correct type for a default list");
 
     // Test the paragraph styles by checking the underlying API resource
     const docResource = Docs.Documents.get(doc.getId());
@@ -42,14 +42,16 @@ export const testDocsListItems = (pack) => {
     t.is(para1.paragraphStyle.indentFirstLine.magnitude, -18, "setIndentFirstLine should set the correct indentation");
 
 
-
     // Test the not-implemented methods
-    t.rxMatch(
-      t.threw(() => li1_reloaded.setNestingLevel(1))?.message || 'no error thrown', /not yet implemented/, "setNestingLevel should throw notYetImplemented"
-    )
-    t.rxMatch(
-      t.threw(() => li1_reloaded.setGlyphType(DocumentApp.GlyphType.SQUARE_BULLET))?.message || 'no error thrown', /not yet implemented/, "setGlyphType should throw notYetImplemented");
-
+    // for now skip these on live apps script
+    // TODO see if we can find a workaround to emulate these methhods that dont have an api equivalent
+    if (DocumentApp.isFake) {
+      t.rxMatch(
+        t.threw(() => li1_reloaded.setNestingLevel(1))?.message || 'no error thrown', /not yet implemented/, "setNestingLevel should throw notYetImplemented"
+      )
+      t.rxMatch(
+        t.threw(() => li1_reloaded.setGlyphType(DocumentApp.GlyphType.SQUARE_BULLET))?.message || 'no error thrown', /not yet implemented/, "setGlyphType should throw notYetImplemented");
+    }
 
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance())
   });
@@ -80,6 +82,7 @@ export const testDocsListItems = (pack) => {
     const docResource = Docs.Documents.get(doc.getId());
     const content = docResource.body.content;
     const listItems = content.filter(c => c.paragraph && c.paragraph.bullet);
+
     t.is(listItems.length, 2, "Advanced service should see two list items");
     if (listItems.length === 2) {
       const listId1 = listItems[0].paragraph.bullet.listId;

@@ -75,7 +75,8 @@ export class FakeListItem extends FakeContainerElement {
     // For a default list, the API might not return explicit level properties.
     // If we have a list item, it's safe to assume a default glyph if not specified.
     if (!levelProps) {
-      return DocumentApp.GlyphType.BULLET;
+      // The default list type in Apps Script is numbered.
+      return DocumentApp.GlyphType.NUMBER;
     }
 
     // Map the API's glyph representation to the Apps Script GlyphType enum.

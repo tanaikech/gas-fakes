@@ -17,13 +17,13 @@ export const trasher = (toTrash) => {
   })
 }
 
-const moveToTestFolder = (id) => {
+export const moveToTestFolder = (id) => {
   const file = DriveApp.getFileById(id)
   file.moveTo(getTestFolder())
   return file
 }
 
-const getTestFolder = (fixes) => {
+export const getTestFolder = (fixes) => {
   if (!__mfolder) {
     const folderName = fixes.PREFIX + "gassy-mcfakeface"
     const folders = DriveApp.getFoldersByName(folderName)
@@ -40,6 +40,7 @@ const getTestFolder = (fixes) => {
 export const maketdoc = (toTrash, fixes, clear = true) => {
   const docName = fixes.PREFIX + "tss-docs"
   const folder = getTestFolder(fixes)
+  let reuse = false
   // because some test may have renamed it and drive/document service on Apps Script 
   // might not actually be in sync - doesnt actually happen on Node but we'll leave for consistency.
   if (!__mdoc || __mdoc.getName() !== docName) {
@@ -56,9 +57,13 @@ export const maketdoc = (toTrash, fixes, clear = true) => {
     // in case there had been a save and close some point
     __mdoc = DocumentApp.openById(__mdoc.getId())
     console.log('...re-opened doc', __mdoc.getName(), __mdoc.getId(),)
+    reuse === true
   }
 
   if (clear) {
+    // bug in live apps script you cant clear a doc which has certain kinds of trailing elements, so we'll append a blank para
+    const body = __mdoc.getBody()
+    body.appendParagraph('')
     __mdoc.clear()
   }
   return {
@@ -383,7 +388,7 @@ export const transpose2DArray = (arr) => {
   return transposed;
 };
 
-const whichType = (element) => {
+export const whichType = (element) => {
   const ts = ["paragraph", "pageBreak", "textRun"]
   const [t] = ts.filter(f => Reflect.has(element, f))
   if (!t) console.log('skipping element', element)
