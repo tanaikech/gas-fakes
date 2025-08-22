@@ -3,9 +3,9 @@ import { ElementType } from '../enums/docsenums.js';
 const { is } = Utils
 import { getElementFactory } from './elementRegistry.js'
 import { signatureArgs } from '../../support/helpers.js';
-import { findItem, makeProtectionRequests } from './elementhelpers.js';
+import { findItem } from './elementhelpers.js';
 import { paragraphOptions, pageBreakOptions, tableOptions, textOptions, listItemOptions } from './elementoptions.js';
-import { deleteContentRange } from "./elementblasters.js";
+import { deleteContentRange, createParagraphBullets, reverseUpdateContent } from "./elementblasters.js";
 
 /**
  * Validates arguments for the elementInserter function.
@@ -246,21 +246,6 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
         shadow.refresh();
       }
     }
-  }
-
-  // For new list items (not copied ones), we first insert a paragraph, then apply the bullet.
-  // This ensures we don't accidentally apply the bullet to a preceding paragraph by using
-  // the reliable newElementStartIndex.
-  if (options.elementType === ElementType.LIST_ITEM && !isDetached) {
-    requests.push({
-      createParagraphBullets: {
-        range: {
-          startIndex: newElementStartIndex,
-          endIndex: newElementStartIndex,
-        },
-        bulletPreset: 'NUMBERED_DECIMAL_ALPHA_ROMAN',
-      },
-    });
   }
 
   // 7. Find and return the newly created element instance.
