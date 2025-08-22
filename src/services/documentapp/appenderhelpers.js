@@ -3,9 +3,9 @@ import { ElementType } from '../enums/docsenums.js';
 const { is } = Utils
 import { getElementFactory } from './elementRegistry.js'
 import { signatureArgs } from '../../support/helpers.js';
-import { findItem, makeProtectionRequests } from './elementhelpers.js';
+import { findItem } from './elementhelpers.js';
 import { paragraphOptions, pageBreakOptions, tableOptions, textOptions, listItemOptions } from './elementoptions.js';
-import { deleteContentRange } from "./elementblasters.js";
+import { deleteContentRange, createParagraphBullets } from "./elementblasters.js";
 
 /**
  * Validates arguments for the elementInserter function.
@@ -98,12 +98,8 @@ const calculateInsertionPointsAndInitialRequests = (self, childIndex, isAppend, 
       // if it's a table type, it will automatically insert a leading \n so we dont need to force it
       leading = options.elementType === ElementType.TABLE ? '' : '\n';
 
-      const targetChildTwig = children.length > 0 ? children[children.length - 1] : item.__twig;
-      // HACK: Don't generate protection requests if the element being appended is a table,
-      // because its getMainRequest has side-effects (its own batchUpdate) that invalidate
-      // the named ranges of preceding elements before these protection requests can be executed.
-      // This avoids a "named range not found" error.
-      requests = (children.length && options.elementType !== ElementType.TABLE) ? makeProtectionRequests(shadow, targetChildTwig) : [];
+      // No "protection" requests are needed for appends, as we are not modifying existing elements.
+      // The shadow.refresh() call at the end of elementInserter handles all named range updates correctly.
     }
   } else {
     // It's an insert operation, creating a new element.
@@ -113,7 +109,7 @@ const calculateInsertionPointsAndInitialRequests = (self, childIndex, isAppend, 
     }
     const targetChildTwig = children[childIndex];
     const targetChildItem = elementMap.get(targetChildTwig.name);
-    
+
     // rules with tables mean we have to insert before preceding paragrap
     if (targetChildItem.__type === "TABLE") {
       insertIndex = targetChildItem.startIndex - 1; // Insert before the table.
@@ -127,7 +123,7 @@ const calculateInsertionPointsAndInitialRequests = (self, childIndex, isAppend, 
     } else {
       insertIndex = targetChildItem.startIndex
       trailing = '\n'
-      newElementStartIndex =  insertIndex;
+      newElementStartIndex = insertIndex;
     }
 
 
@@ -215,7 +211,7 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
   // if we were inserting a table then there;ll be an unwanted \n to remove - this should be -2 from the insertIndex
   // TODO we need to check if that index is actually a paragraph or not otherwise this will fail/screw up
   if (!isAppend && options.elementType === ElementType.TABLE && insertIndex > 1) {
-    mainRequests.push(deleteContentRange(insertIndex - 1,insertIndex ))
+    mainRequests.push(deleteContentRange(insertIndex - 1, insertIndex))
   }
   requests.unshift(...mainRequests);
 
@@ -224,6 +220,12 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
     requests.push(...getStyleRequests(elementOrText, newElementStartIndex, isAppend));
   }
 
+  // For new list items (not copied ones), we first insert a paragraph, then apply the bullet.
+  // This ensures we don't accidentally apply the bullet to a preceding paragraph by using
+  // the reliable newElementStartIndex.
+  if (options.elementType === ElementType.LIST_ITEM && !isDetached) {
+    requests.push(createParagraphBullets(newElementStartIndex))
+  }
 
   // 5. Execute the update and refresh the document state.
   if (requests.length > 0) {

@@ -229,10 +229,12 @@ class ShadowDocument {
     // The document's content is represented by an array of structural elements.
     const content = this.resource.body?.content;
 
-    // If there's no content, or only the initial empty paragraph, there's nothing to clear.
+    // If there's no content, there's nothing to clear.
     if (!content || content.length === 0) {
       return this;
     }
+
+    const requests = [];
 
     // The last structural element contains the end index of the body's content.
     // A new/empty document has one structural element (a paragraph) with startIndex 1 and endIndex 2.
@@ -240,21 +242,29 @@ class ShadowDocument {
     const lastElement = content[content.length - 1];
     const endIndex = lastElement.endIndex;
 
-    // If the document is already effectively empty (just one newline), do nothing.
-    // The startIndex of all body content is 1.
-    if (endIndex <= 2) {
-      return this;
+    const hasContentToDelete = endIndex > 2;
+    const firstElement = content.find(c => c.startIndex === 1);
+    const isFirstElementListItem = firstElement?.paragraph?.bullet;
+
+    // If there is content to delete (more than just the initial empty paragraph)...
+    if (hasContentToDelete) {
+      // We need to delete everything from the start of the body content (index 1)
+      // up to the start of the final newline character. The range for deletion is
+      // [1, endIndex - 1), where the end of the range is exclusive.
+      requests.push({
+        deleteContentRange: { range: { startIndex: 1, endIndex: endIndex - 1 } }
+      });
     }
 
-    // We need to delete everything from the start of the body content (index 1)
-    // up to the start of the final newline character. The range for deletion is
-    // [1, endIndex - 1), where the end of the range is exclusive.
-    const requests = [{
-      deleteContentRange: { range: { startIndex: 1, endIndex: endIndex - 1 } }
-    },];
+    // We must remove bullets if we are deleting content (which might merge a list item
+    // into the first paragraph) OR if the first paragraph is already a list item.
+    if (hasContentToDelete || isFirstElementListItem) {
+      requests.push({ deleteParagraphBullets: { range: { startIndex: 1, endIndex: 1 } } });
+    }
 
-    // Use the advanced Docs service to perform the update. This also invalidates the document cache.
-    Docs.Documents.batchUpdate({ requests }, this.getId());
+    if (requests.length > 0) {
+      Docs.Documents.batchUpdate({ requests }, this.getId());
+    }
 
     // on the next access to the resource, the cache will be dirty and be refreshed, and the elementmap rebuilt
 

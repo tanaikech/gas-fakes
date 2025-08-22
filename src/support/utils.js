@@ -371,7 +371,28 @@ const deepEqual = (obj1, obj2) => {
   return true;
 };
 
+// The custom replacer function
+const getCircularReplacer = () => {
+  const seen = new WeakSet(); // Use WeakSet to avoid memory leaks
+  return (key, value) => {
+    // If the value is an object and not null
+    if (typeof value === "object" && value !== null) {
+      // If we have already seen this object, it's a circular reference
+      if (seen.has(value)) {
+        return "[Circular]"; // Replace it with a placeholder
+      }
+      // If it's a new object, add it to our cache
+      seen.add(value);
+    }
+    // Return the value to be serialized
+    return value;
+  };
+};
+
+const stringCircular = (ob) => JSON.stringify(ob, getCircularReplacer());
+
 export const Utils = {
+  stringCircular,
   hexToRgb,
   stringToBytes,
   bytesToString,

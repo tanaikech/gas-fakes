@@ -262,25 +262,8 @@ export const listItemOptions = {
     }
 
     const textToInsert = leading + baseText + trailing;
-    const requests = [];
-    requests.push({ insertText: { location, text: textToInsert } });
-
-    // If it's a NEW list item (not a copy), we apply a default bullet right away.
-    if (!isDetached) {
-      requests.push({
-        createParagraphBullets: {
-          range: {
-            // The range just needs to point somewhere inside the new paragraph.
-            // The start of the inserted text is a safe bet.
-            startIndex: location.index + leading.length,
-            endIndex: location.index + leading.length,
-          },
-          bulletPreset: 'NUMBERED_DECIMAL_ALPHA_ROMAN',
-        },
-      });
-    }
-
-    return requests;
+    // The bulleting is handled separately in elementInserter to ensure it targets the correct, new paragraph.
+    return { insertText: { location, text: textToInsert } };
   },
   getStyleRequests: (listItem, startIndex, length, isAppend) => {
     const requests = [];
