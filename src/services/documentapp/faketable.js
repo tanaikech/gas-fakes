@@ -5,6 +5,9 @@
 import { Proxies } from '../../support/proxies.js';
 import { FakeContainerElement } from './fakecontainerelement.js';
 import { registerElement } from './elementRegistry.js';
+import { signatureArgs } from '../../support/helpers.js';
+import { Utils } from '../../support/utils.js';
+const { is } = Utils;
 
 /**
  * A fake implementation of the Table class.
@@ -40,6 +43,21 @@ export class FakeTable extends FakeContainerElement {
    */
   getRow(rowIndex) {
     return this.getChild(rowIndex);
+  }
+
+  /**
+   * Gets the table cell at the given row and cell index.
+   * @param {number} rowIndex The row index of the cell.
+   * @param {number} cellIndex The cell index within the row.
+   * @returns {GoogleAppsScript.Document.TableCell} The table cell.
+   * @see https://developers.google.com/apps-script/reference/document/table#getCell(Integer,Integer)
+   */
+  getCell(rowIndex, cellIndex) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Table.getCell');
+    if (nargs !== 2 || !is.integer(rowIndex) || !is.integer(cellIndex)) {
+      matchThrow();
+    }
+    return this.getRow(rowIndex).getCell(cellIndex);
   }
 }
 
