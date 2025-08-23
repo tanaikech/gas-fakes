@@ -15,7 +15,12 @@ import { testSession } from "./testsession.js";
 import { testUtilities } from "./testutilities.js";
 import { testStores } from "./teststores.js";
 import { testScriptApp } from "./testscriptapp.js";
-import {getDrivePerformance,getSheetsPerformance,getDocsPerformance,getSlidesPerformance} from "./testassist.js";
+import {
+  getDrivePerformance,
+  getSheetsPerformance,
+  getDocsPerformance,
+  getSlidesPerformance,
+} from "./testassist.js";
 import { testFiddler } from "./testfiddler.js";
 import { testSheetsDataValidations } from "./testsheetsdatavalidations.js";
 import { testEnums } from "./testenums.js";
@@ -31,6 +36,7 @@ import { testDocsListItems } from "./testdocslistitems.js";
 import { testSlidesAdv } from "./testslidesadv.js";
 import { testSlides } from "./testslides.js";
 import { testSheetsText } from "./testsheetstext.js";
+import { testSheetsRange } from "./testsheetsrange.js";
 const testFakes = () => {
   const pack = initTests();
   const { unit } = pack;
@@ -84,6 +90,8 @@ const testFakes = () => {
   testStores(pack);
   console.log("\n----Test ScriptApp----");
   testScriptApp(pack);
+  console.log("\n----Test Sheets Range----");
+  testSheetsRange(pack);
   console.log("\n----TEST FILES COMPLETE----");
 
   // reports on cache performance
