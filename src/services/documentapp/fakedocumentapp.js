@@ -3,6 +3,7 @@ import { newFakeDocument } from './fakedocument.js';
 
 import { notYetImplemented, signatureArgs } from '../../support/helpers.js';
 import is from '@sindresorhus/is';
+import { newFakeUi } from './fakeui.js';
 import { Auth } from '../../support/auth.js';
 import * as Enums from '../enums/docsenums.js'
 export const newFakeDocumentApp = (...args) => {
@@ -62,7 +63,7 @@ class FakeDocumentApp {
     return this.openById(documentId);
   }
   getUi () {
-    return notYetImplemented ('DocumentApp.getUi')
+    return newFakeUi();
   }
   toString() {
     return 'DocumentApp';
