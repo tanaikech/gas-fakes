@@ -11,6 +11,7 @@ import { newFakeDeveloperMetadataFinder } from "./fakedevelopermetadatafinder.js
 import { newFakeDataSource } from "./fakedatasource.js";
 import { batchUpdate } from "./sheetrangehelpers.js";
 import { FakeTextFinder, newFakeTextFinder } from "./faketextfinder.js";
+import { FakeNamedRange, newFakeNamedRange } from "./fakenamedrange.js";
 
 const { is, isEnum } = Utils;
 
@@ -68,9 +69,9 @@ export class FakeSpreadsheet {
       "isAnonymousView",
       "duplicateActiveSheet",
       "getFormUrl",
-      "getNamedRanges",
+      // "getNamedRanges",
       "deleteActiveSheet",
-      "setNamedRange",
+      // "setNamedRange",
 
       "setSpreadsheetLocale",
       "getDataSourceSheets",
@@ -685,5 +686,65 @@ export class FakeSpreadsheet {
    */
   createTextFinder(text) {
     return newFakeTextFinder(this, text);
+  }
+
+  /**
+   * getNamedRange(name, range) https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet#getNamedRanges()
+   * @returns {FakeNamedRange[]}
+   */
+  getNamedRanges() {
+    const obj = {
+      spreadsheetId: this.getId(),
+      fields: "namedRanges",
+    };
+    const res = this.__get(obj).namedRanges;
+    if (res && res.length > 0) {
+      const spreadsheet = this;
+      return res.map((e) => newFakeNamedRange(spreadsheet, e));
+    }
+    return [];
+  }
+
+  /**
+   * setNamedRange(name, range) https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet#setNamedRange(String,Range)
+   * @param {String} name
+   * @param {FakeSheetRange} range
+   * @returns {void}
+   */
+  setNamedRange(name, range) {
+    const sheetId = range.getSheet().getSheetId();
+    const startRowIndex = range.getRow() - 1;
+    const endRowIndex = startRowIndex + range.getNumRows();
+    const startColumnIndex = range.getColumn() - 1;
+    const endColumnIndex = startColumnIndex + range.getNumColumns();
+    const obj = {
+      spreadsheetId: this.getId(),
+      requests: [
+        {
+          addNamedRange: {
+            namedRange: {
+              name,
+              range: {
+                sheetId,
+                startRowIndex,
+                endRowIndex,
+                startColumnIndex,
+                endColumnIndex,
+              },
+            },
+          },
+        },
+      ],
+    };
+    this.__batchUpdate(obj);
+    return null;
+  }
+
+  __batchUpdate({ spreadsheetId, requests }) {
+    Sheets.Spreadsheets.batchUpdate({ requests }, spreadsheetId);
+  }
+
+  __get({ spreadsheetId, ranges, fields = "*" }) {
+    return Sheets.Spreadsheets.get(spreadsheetId, { ranges, fields });
   }
 }

@@ -12,6 +12,7 @@ import { newFakeSheetRangeList } from "./fakesheetrangelist.js";
 import { FakeTextFinder, newFakeTextFinder } from "./faketextfinder.js";
 import { toolresults } from "googleapis/build/src/apis/toolresults/index.js";
 import { FakeColorBase } from "../common/fakecolorbase.js";
+import { FakeNamedRange, newFakeNamedRange } from "./fakenamedrange.js";
 
 const { is, isEnum } = Utils;
 
@@ -37,7 +38,7 @@ export class FakeSheet {
       "getImages",
       "insertImage",
       "removeImage",
-      "getNamedRanges",
+      // "getNamedRanges",
       "getRangeByName",
       "removeNamedRange",
       "setNamedRange",
@@ -970,6 +971,24 @@ export class FakeSheet {
 
   isRowHiddenByFilter(rowPosition) {
     return this.isColumnHiddenByUser(rowPosition, "row", "hiddenByFilter");
+  }
+
+  getNamedRanges() {
+    const obj = {
+      spreadsheetId: this.getParent().getId(),
+      ranges: [this.getSheetName()],
+      fields: "namedRanges",
+    };
+    const res = this.__get(obj).namedRanges;
+    if (res && res.length > 0) {
+      const checkedSheetId = this.getSheetId();
+      const ar = res.filter(
+        ({ range: { sheetId } }) => sheetId == checkedSheetId
+      );
+      const sheet = this;
+      return ar.map((e) => newFakeNamedRange(sheet, e));
+    }
+    return [];
   }
 
   __batchUpdate({ spreadsheetId, requests }) {
