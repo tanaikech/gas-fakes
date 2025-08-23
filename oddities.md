@@ -66,8 +66,7 @@ v1.0.13
 - `ScriptApp` - almost all
 - `UrlFetchApp` - 80%
 - `Utilities` - almost all
-- `Sheets` - 50%
-- `SpreadsheetApp` - 60%
+- `SpreadsheetApp` - 80%
 - `CacheService` - 80%
 - `PropertiesService` - 80%
 - `Session` - almost all
@@ -77,7 +76,7 @@ v1.0.13
 - `Sheets (Advanced Service)` - 60%
 - `Slides (Advanced Service)` - 2%
 - `Docs (Advanced Service)` - 75%
-- `DocumentApp` - 15%
+- `DocumentApp` - 25%
 - `SlidesApp` - 5%
 
 ### Testing coverage
@@ -164,7 +163,7 @@ Just as with Formats, the actual value rendered might be different than the valu
 Here is how I've implemented getting and setting values.
 
 - getValues() uses { valueRenderOption: 'UNFORMATTED_VALUE' }
-- setValues() uses { valueInputOption: "RAW" } (as opposed to 'USER_ENTERED')
+- setValues() uses { valueInputOption: "USER_ENTERED" } 
 - getDisplayValues() { valueRenderOption: 'FORMATTED_VALUE' }
 
 ### Data Validation
@@ -440,9 +439,45 @@ Despite the various defaults, a missing value for these properties returned via 
 
 ### Document API
 
-Getting started on the advanced services of the Document API. These notes are for my TIL (things I learned today), but may be useful if you are digging into the Document API yourself.
+Getting started on the advanced services of the Document API. These notes are for my TIL (things I learned today), but may be useful if you are digging into the Document API yourself. 
+
+A fundamental discovery I've made is that there is no interoperability between Apps Script DocumentApp  and the Document API (and its own Advanced Service). Apps Script maintains its own 'shadow document' and doesn't commit until you save and close the document. Presumably it uses the Document API behind the scenes to update the document, but it must have access to some private methods that are not available directly to API users, since it is able to dump its document containing structures that are invalid to create using the API directly.
+
+#### Fake shadow document
+
+I've taken a different approach while faking the DocumentApp service. I do have a kind of shadow document, but delegate the maintenance of the document to the API. Elements in the Fake shadow are "simply" a named range tag which is used to track their position in the shadow document. For more information on this technique see [Inside the volatile world of a Google Document](https://ramblings.mcpher.com/inside-the-volatile-world-of-a-google-document/
 
 
+
+#### Horizonal rule
+
+The api doesnt provide a way to insert a horizontal rule element. Apps Script inserts a specific horizontal rule element, and then uses paragraph styling using a border to create that line. Although we could do all that, we'd still have a missing element. I'm parking this one for now and revisit it later. Here's the reported issue  https://issuetracker.google.com/issues/437825936
+
+https://github.com/brucemcpherson/gas-fakes/issues/43
+
+#### Tables
+
+This is another interoperability issue when using the Docs API and Apps Script together. Althogh you can body.appendTable() with no rows in Apps Script (this creates a table element in the document resource), but the same operation in the docs API returns an execption (rows/columns) must be greater than 0.
+
+Adding a table with one row, then deleting that row works, but the API also deletes the table element, not just the child row elements.
+
+This is yet another point of friction for those who are using the api/advanced services and Apps Script Advanced Docs service interchangeably.
+
+https://issuetracker.google.com/issues/438038924
+https://github.com/brucemcpherson/gas-fakes/issues/42
+
+What this means for gas-fakes is .appendTable() with no arguments will create a 1 cell table - this is a divergence from Apps Script which is somehow able to create a table stub element only.
+
+##### matching table element indices with apps script
+
+Adding a table always inserts a preceding \n. This is okay when appending, but not okay when inserting as we end up with an unwanted paragraph compared to what Apps Script does. It turns out that a table must always have a preceding paragraph, or the API throws an error. Of course there would already be a preceding paragraph after deleting this one anyway, but the API still won't let you delete a directly preceding paragraph (This seems like a bug but I won't report it on buganizer for now till I figure out the entire picture of tables). 
+
+So instead we need to delete the \n from the preceding-1 paragraph (if indeed there is one). So we end up with a bit of hack, both to insert the table and also any insertions that go before a table. It also means that the technique of using namedranges to track already defined elements becomes tricky when tables are invloved because of the side effect of modifyng elements not directly involved in table operations. 
+
+It's a real mindbender to handle this and of course I'm not entirely sure I've swept up all the edge cases yet.
+
+
+  
 #### Tabs
 
 Tabs are a recent addition to Docs, and have added a bit of complication to handling Document responses. Here's what they say happens.
@@ -554,6 +589,7 @@ If you want to play with the testing suite , then take a look at the [collaborat
 ## Translations and writeups
 
 - [initial idea and thoughts](https://ramblings.mcpher.com/a-proof-of-concept-implementation-of-apps-script-environment-on-node/)
+- [Inside the volatile world of a Google Document](https://ramblings.mcpher.com/inside-the-volatile-world-of-a-google-document/
 - [Apps Script Services on Node – using apps script libraries](https://ramblings.mcpher.com/apps-script-services-on-node-using-apps-script-libraries/)
 - [Apps Script environment on Node – more services](https://ramblings.mcpher.com/apps-script-environment-on-node-more-services/)
 - [Turning async into synch on Node using workers](https://ramblings.mcpher.com/turning-async-into-synch-on-node-using-workers/)

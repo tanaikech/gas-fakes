@@ -30,6 +30,54 @@ class FakeDocument {
     return this
   
   }
+
+  appendListItem(listItemOrText) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Document.appendListItem");
+    if (nargs !== 1) matchThrow();
+    return this.getBody().appendListItem(listItemOrText);
+  }
+
+  appendParagraph(paragraphOrText) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Document.appendParagraph");
+    if (nargs !== 1) matchThrow();
+    return this.getBody().appendParagraph(paragraphOrText);
+  }
+
+  appendPageBreak(pageBreak) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Document.appendPageBreak");
+    if (nargs > 1) matchThrow();
+    return this.getBody().appendPageBreak(pageBreak);
+  }
+
+  appendTable(tableOrCells) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Document.appendTable");
+    if (nargs > 1) matchThrow();
+    return this.getBody().appendTable(tableOrCells);
+  }
+
+  insertListItem(childIndex, listItemOrText) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Document.insertListItem");
+    if (nargs !== 2) matchThrow();
+    return this.getBody().insertListItem(childIndex, listItemOrText);
+  }
+
+  insertParagraph(childIndex, paragraph) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Document.insertParagraph");
+    if (nargs !== 2) matchThrow();
+    return this.getBody().insertParagraph(childIndex, paragraph);
+  }
+
+  insertPageBreak(childIndex, pageBreak) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Document.insertPageBreak");
+    if (nargs < 1 || nargs > 2) matchThrow();
+    return this.getBody().insertPageBreak(childIndex, pageBreak);
+  }
+
+  insertTable(childIndex, table) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Document.insertTable");
+    if (nargs !== 2) matchThrow();
+    return this.getBody().insertTable(childIndex, table);
+  }
   
   saveAndClose() {
     // this is a no-op in fake environment since it is stateless

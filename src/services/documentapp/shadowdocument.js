@@ -1,5 +1,6 @@
 import { Proxies } from '../../support/proxies.js';
-import { getElementProp, makeNrPrefix, getCurrentNr, findOrCreateNamedRangeName } from './shadowhelpers.js';
+import { makeNrPrefix, getCurrentNr,findOrCreateNamedRangeName } from './nrhelpers.js'
+import { getElementProp } from './elementhelpers.js';
 import { Utils } from '../../support/utils.js';
 
 
@@ -15,6 +16,13 @@ class ShadowDocument {
     this.__id = id
   }
 
+
+ get __endBodyIndex () {
+  const content = this.resource?.body?.content || []
+  const endIndex = content[content.length - 1]?.endIndex || 0
+  return endIndex
+ }
+
   /**
    * we may need to do this if we're coming from cache
    * although the resource may be in cache, the element map might not be defined
@@ -29,24 +37,14 @@ class ShadowDocument {
   makeElementMap(data) {
 
     const content = data?.body?.content || []
-    const endIndex = content[content.length - 1]?.endIndex || 0
 
     // get the currently known named ranges
     const currentNr = getCurrentNr(data)
 
     // if there's been an update, the revisionId will have changed
     if (this.__mapRevisionId !== data.revisionId) {
-      // console.log('...revision update remap under way')
       this.__mapRevisionId = data.revisionId
-      // this will be content length - handy for appending to the body
-      this.__endBodyIndex = endIndex
-      // TODO this undefined for normal - need to work on how to handle tabs etc, and what it looks like
       this.__segmentId = data.body.segmentId
-    }
-
-    // double check
-    if (this.__endBodyIndex !== endIndex) {
-      throw new Error(`expected body length to be ${this.__endBodyIndex} but got ${endIndex}`)
     }
 
     // this will contain all the requests to add new named ranges
@@ -56,7 +54,6 @@ class ShadowDocument {
     this.__elementMap = new Map()
     const bodyName = makeNrPrefix("BODY_SECTION");
     const bodyTree = { name: bodyName, children: [], parent: null }
-
     const bodyElement = {
       __prop: "BODY_SECTION",
       __type: "BODY_SECTION",
@@ -64,13 +61,12 @@ class ShadowDocument {
       __twig: bodyTree
     }
     this.__elementMap.set(bodyName, bodyElement);
-
     // console.log('named ranges after document fetch', JSON.stringify(currentNr))
 
     // maps all the elements to their named range
-    const mapElements = (element, branch) => {
+    const mapElements = (element, branch, knownType = null) => {
       // this gets the type and property name to look for for the given element content
-      const elementProp = getElementProp(element);
+      const elementProp = knownType ? { type: knownType, prop: null } : getElementProp(element);
 
       if (!elementProp) {
         // This will now catch things like sectionBreak
@@ -79,7 +75,8 @@ class ShadowDocument {
       // the type is the enum text for te type, the prop is where to find it in the element
       const { type, prop } = elementProp;
 
-      // All child elements, are expected to have a range.
+      // All child elements are expected to have a range.
+      // A list item is a paragraph, so its named range should be of type PARAGRAPH.
       const { endIndex, startIndex } = element;
 
       if (!is.integer(endIndex) || !is.integer(startIndex)) {
@@ -88,51 +85,94 @@ class ShadowDocument {
       }
       // For an empty document, we use static, non-API names to avoid re-indexing issues.
       // For all other documents, we use real NamedRanges to track elements.
-      const { name, namedRangeId } = findOrCreateNamedRangeName(element, type, currentNr, addRequests);
+      const nrType = type === 'LIST_ITEM' ? 'PARAGRAPH' : type;
+      const { name, namedRangeId } = findOrCreateNamedRangeName(element, nrType, currentNr, addRequests);
 
       // embed this stuff in the shadow element
       element.__prop = prop;
       element.__type = type;
       element.__name = name;
 
-
       const twig = { name: name, children: [], parent: branch };
-      branch.children.push(twig);
       element.__twig = twig;
       this.__elementMap.set(name, element);
 
-      // recurse if we have sub elements
-      const ep = element[prop]; // this is the object with .elements or .content
-      if (Reflect.has(ep, "elements")) {
-        ep.elements.forEach(e => mapElements(e, twig));
+
+      // For most elements, the content is in a sub-property (e.g., element.paragraph).
+      // For TableRow and TableCell, the element itself is the content container.
+      const ep = is.null(prop) ? element : element[prop];
+
+      // Determine the correct property to iterate over for children
+      let childrenArray = [];
+      let childType = null;
+
+      if (type === 'TABLE') {
+        childrenArray = ep.tableRows || [];
+        childType = 'TABLE_ROW';
+      } else if (type === 'TABLE_ROW') {
+        childrenArray = ep.tableCells || [];
+        childType = 'TABLE_CELL';
+      } else if (type === 'TABLE_CELL') {
+        childrenArray = ep.content || [];
+        // childType is null, getElementProp will figure it out
+      } else if (ep && Reflect.has(ep, "elements")) { // For Paragraph and others
+        childrenArray = ep.elements;
+        // childType is null, getElementProp will figure it out
       }
+
+      if (childrenArray.length > 0) {
+        // Process ALL sub-elements recursively to ensure they are in the elementMap and have a twig.
+        childrenArray.forEach(subElement => mapElements(subElement, twig, childType));
+
+        // Now that all sub-elements have been processed and have a __twig, we can
+        // filter them to build the user-facing children list for the current twig.
+        if (type === 'PARAGRAPH') {
+          twig.children = childrenArray
+            .map(e => e.__twig) // Get the twig for each raw element
+            .filter(childTwig => {
+              if (!childTwig) return false;
+              const childElement = this.__elementMap.get(childTwig.name);
+              if (!childElement) return false;
+
+              // A paragraph's children are its non-text elements (like PageBreak)
+              // and text runs that are not just a newline.
+              return childElement.pageBreak ||
+                childElement.horizontalRule ||
+                (childElement.textRun && childElement.textRun.content && childElement.textRun.content !== '\n');
+            });
+        } else {
+          // For non-paragraph containers, all children are significant.
+          twig.children = childrenArray.map(e => e.__twig).filter(Boolean);
+        }
+      }
+      return twig;
 
     };
 
     // recurse the entire document
-    content.forEach(c => mapElements(c, bodyTree))
-
+    content.forEach(c => mapElements(c, bodyTree));
+    bodyTree.children = content.map(c => c.__twig).filter(Boolean);
+    
     // delete the named ranges that weren't used
     // findOrCreate... consumes the currentNr list, so what's left are unused ranges.
+
     const deleteRequests = currentNr.map(r => ({
       deleteNamedRange: {
         namedRangeId: r.namedRangeId
       }
     }))
 
-    // now commit any named range deletions/additions
     const requests = deleteRequests.concat(addRequests)
 
-    // always do this because the nr ID may have changed if we had to update it
-    // for new ones, it'll pick those up next refresh
-    this.nrMap = new Map(getCurrentNr(data).map(f => [f.name, f]))
-
     if (requests.length > 0) {
-      // console.log('adding', addRequests.length, 'deleting', deleteRequests.length, 'named ranges')
+      // If we need to add or delete named ranges, we do the update and then
+      // recursively call this function with the refreshed document state.
+      // This ensures the final elementMap and nrMap are based on the latest version.
       Docs.Documents.batchUpdate({ requests }, this.__id)
-      // we've changed the document, so we need to re-process it to get the latest state, including new namedRangeIds
       return this.makeElementMap(Docs.Documents.__get(this.__id).data)
     }
+    // If there were no named range changes, the document is stable. We can set the map.
+    this.nrMap = new Map(getCurrentNr(data).map(f => [f.name, f]));
     return data;
   }
 
@@ -189,10 +229,12 @@ class ShadowDocument {
     // The document's content is represented by an array of structural elements.
     const content = this.resource.body?.content;
 
-    // If there's no content, or only the initial empty paragraph, there's nothing to clear.
+    // If there's no content, there's nothing to clear.
     if (!content || content.length === 0) {
       return this;
     }
+
+    const requests = [];
 
     // The last structural element contains the end index of the body's content.
     // A new/empty document has one structural element (a paragraph) with startIndex 1 and endIndex 2.
@@ -200,21 +242,29 @@ class ShadowDocument {
     const lastElement = content[content.length - 1];
     const endIndex = lastElement.endIndex;
 
-    // If the document is already effectively empty (just one newline), do nothing.
-    // The startIndex of all body content is 1.
-    if (endIndex <= 2) {
-      return this;
+    const hasContentToDelete = endIndex > 2;
+    const firstElement = content.find(c => c.startIndex === 1);
+    const isFirstElementListItem = firstElement?.paragraph?.bullet;
+
+    // If there is content to delete (more than just the initial empty paragraph)...
+    if (hasContentToDelete) {
+      // We need to delete everything from the start of the body content (index 1)
+      // up to the start of the final newline character. The range for deletion is
+      // [1, endIndex - 1), where the end of the range is exclusive.
+      requests.push({
+        deleteContentRange: { range: { startIndex: 1, endIndex: endIndex - 1 } }
+      });
     }
 
-    // We need to delete everything from the start of the body content (index 1)
-    // up to the start of the final newline character. The range for deletion is
-    // [1, endIndex - 1), where the end of the range is exclusive.
-    const requests = [{
-      deleteContentRange: { range: { startIndex: 1, endIndex: endIndex - 1 } }
-    },];
+    // We must remove bullets if we are deleting content (which might merge a list item
+    // into the first paragraph) OR if the first paragraph is already a list item.
+    if (hasContentToDelete || isFirstElementListItem) {
+      requests.push({ deleteParagraphBullets: { range: { startIndex: 1, endIndex: 1 } } });
+    }
 
-    // Use the advanced Docs service to perform the update. This also invalidates the document cache.
-    Docs.Documents.batchUpdate({ requests }, this.getId());
+    if (requests.length > 0) {
+      Docs.Documents.batchUpdate({ requests }, this.getId());
+    }
 
     // on the next access to the resource, the cache will be dirty and be refreshed, and the elementmap rebuilt
 

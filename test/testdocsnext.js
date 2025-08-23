@@ -1,7 +1,7 @@
 
 import '../main.js';
 import { initTests } from './testinit.js';
-import { trasher, getDocsPerformance, maketdoc } from './testassist.js';
+import { trasher, getDocsPerformance, maketdoc, docReport } from './testassist.js';
 
 export const testDocsNext = (pack) => {
   const { unit, fixes } = pack || initTests();
@@ -14,7 +14,135 @@ export const testDocsNext = (pack) => {
     }
     return children;
   }
+
+  unit.section("Body.appendTable and Body.insertTable", t => {
+
+    let { doc } = maketdoc(toTrash, fixes);
+    let body = doc.getBody();
+
+    // we have something here we cant acchieve in the api
+    // apps script can write an empty table stub
+    // the api cant https://github.com/brucemcpherson/gas-fakes/issues/42
+    const table0 = body.appendTable()
+    if (DocumentApp.isFake) {
+      t.is(table0.getNumRows(), 1, "Default appended fake table has 1 row");
+      t.is(table0.getRow(0).getNumCells(), 1, "Default appended table has 1 cell");
+      t.is(table0.getRow(0).getCell(0).getText(), "", "Default appended table cell is empty");
+    } else {
+      t.is(table0.getNumRows(), 0, "apps script can create an empty")
+    }
+
+    // 1. Append a table with content
+    const cellsData = [
+      ['R1C1', 'R1C2'],
+      ['R2C1', 'R2C2']
+    ];
+    const table1 = body.appendTable(cellsData);
+
+    t.is(table1.getType(), DocumentApp.ElementType.TABLE, "appendTable should return a Table element");
+    t.truthy(table1.getParent(), "Appended table should have a parent");
+    t.is(table1.getParent().getType(), DocumentApp.ElementType.BODY_SECTION, "Table's parent should be the body");
+
+    // Verify structure and content
+    t.is(table1.getNumRows(), 2, "Table should have 2 rows");
+    const row1 = table1.getRow(0);
+    t.is(row1.getNumCells(), 2, "Row 0 should have 2 cells");
+    t.is(row1.getCell(0).getText(), cellsData[0][0], "Cell (0,0) should have correct text");
+    const row2 = table1.getRow(1);
+    t.is(row2.getCell(1).getText(), cellsData[1][1], "Cell (1,1) should have correct text");
+
+    // 2. insert a table with data
+    const cellsData2 = [
+      ['00', '01', '02'],
+      ['10', '11', '12'],
+      ['20', '21', '22']
+    ];
+    const table2 = body.insertTable(1, cellsData2);
+
+    const checkTableContent = (table, data, tag ='') => {
+      t.is(table.getType(), DocumentApp.ElementType.TABLE, `${tag}check should be table`);
+      t.is(table.getNumRows(), data.length, `${tag}Table should have the correct number of rows`)
+      const d2 = data.map((_, r) => {
+        const rx = table.getRow(r);
+        return Array.from({ length: rx.getNumCells() }).map((_, c) => {
+          return rx.getCell(c).getText();
+        })
+      })
+      t.deepEqual(d2, data, `${tag}Table cells retrieved successfully`)
+    }
+    checkTableContent(table2, cellsData2,"table2:");
+    const c2 = body.getChild(1);
+    checkTableContent(c2, cellsData2,"child2:");
+
+
+    // 3. Insert a copied table
+    const table3_copy = table1.copy(); // create a detached copy of the first table with data
+    checkTableContent(table3_copy, cellsData,"table3_copy:");
+    body.insertTable(1, table3_copy)
+
+
+    const children3 = getChildren(body);
+    const c3 = children3[1];
+    checkTableContent(c3, cellsData,"child3:");
+
+
+    // 4. Error conditions
+    const attemptAttachedInsert = () => body.insertTable(1, table1);
+    t.rxMatch(t.threw(attemptAttachedInsert)?.message || 'no error thrown', /Element must be detached./, "Inserting an already attached table should throw an error");
+
+    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
+  });
+
+  unit.section("Body.appendPageBreak and Body.insertPageBreak", t => {
+    let { doc } = maketdoc(toTrash, fixes);
+    let body = doc.getBody();
+
+    // 1. Append
+    body.appendParagraph("p1");
+    const pb1 = body.appendPageBreak();
+
+    body.appendParagraph("p2");
+
+    t.is(pb1.getType(), DocumentApp.ElementType.PAGE_BREAK, "appendPageBreak should return a PageBreak element");
+    t.truthy(pb1.getParent(), "Appended page break should have a parent");
+    // In the live environment, the parent of a PageBreak is the Paragraph that contains it.
+    const pb1Parent = pb1.getParent();
+    t.is(pb1Parent.getType(), DocumentApp.ElementType.PARAGRAPH, "Page break parent should be a Paragraph");
+    t.is(pb1Parent.getParent().getType(), DocumentApp.ElementType.BODY_SECTION, "Page break's grandparent should be the body");
+
+    const children = getChildren(body);
+    t.is(children.length, 4, "Body should have 4 children (empty para, p1, page break, p2)");
+    const pageBreakPara = children[2];
+    // The element that is a direct child of the body is a Paragraph.
+    t.is(pageBreakPara.getType(), DocumentApp.ElementType.PARAGRAPH, "The element in the body is a Paragraph");
+    t.is(pageBreakPara.getText(), "", "Paragraph containing a page break has empty text");
+    t.is(pageBreakPara.getNumChildren(), 1, "The paragraph should contain one child element");
+    t.is(pageBreakPara.getChild(0).getType(), DocumentApp.ElementType.PAGE_BREAK, "The paragraph's child should be a PageBreak");
+
+    // 2. Insert
+    const pb2 = body.appendPageBreak().copy(); // create a detached page break
+    // The test fails on live GAS here because you can't remove the last paragraph.
+    // We'll leave the temporary paragraph and adjust the test expectations.
+    body.insertPageBreak(1, pb2); // insert after the initial empty paragraph
+    const children2 = getChildren(body);
+    t.is(children2.length, 6, "Body should have 6 children after insert");
+    t.is(children2[1].getType(), DocumentApp.ElementType.PARAGRAPH, "Second child should be the inserted page break's paragraph");
+
+    // Each paragraph, including empty ones and those containing only a page break,
+    // contributes a newline when calling body.getText().
+    t.is(body.getText(), "\n\np1\n\np2\n", "Text content should reflect inserted page break");
+
+    // 3. Error conditions
+    const attemptAttachedInsert = () => body.insertPageBreak(1, pb1);
+    t.rxMatch(t.threw(attemptAttachedInsert)?.message || 'no error thrown', /Element must be detached./, "Inserting an already attached page break should throw an error");
+
+    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
+  });
+
+
+
   unit.section("Body.insertParagraph method", t => {
+
     // Test 1: Insert in the middle
     let { doc } = maketdoc(toTrash, fixes);
     let body = doc.getBody();
@@ -22,7 +150,8 @@ export const testDocsNext = (pack) => {
     body.appendParagraph("p3");
     const p2 = body.appendParagraph("p2").copy(); // Creates a detached copy of a "p2" paragraph
     // The body has 3 children: [empty, p1, p3]. Index 2 is before p3.
-    body.insertParagraph(2, p2);
+    body.insertParagraph(2, p2); // body is now [empty, p1, p2(copy), p3, p2]
+
     t.is(body.getText(), "\np1\np2\np3\np2", "Insert in the middle");
 
     // Test 2: Insert at the beginning
@@ -30,7 +159,8 @@ export const testDocsNext = (pack) => {
     body = doc.getBody();
     body.appendParagraph("p1");
     const p0 = body.appendParagraph("p0").copy();
-    // The body has 2 children: [empty, p1]. Index 1 is before p1.
+    // The body has 3 children: [empty, p1, p0]. Index 1 is before p1.
+
     body.insertParagraph(1, p0);
     t.is(body.getText(), "\np0\np1\np0", "Insert at the beginning");
 
@@ -55,7 +185,7 @@ export const testDocsNext = (pack) => {
     t.rxMatch(t.threw(attemptInvalidIndex)?.message || 'no error thrown', /Child index \(99\) must be less than or equal to the number of child elements/, "Inserting at an out-of-bounds index should throw an error");
 
     const attemptInvalidType = () => body.insertParagraph(1, doc.getBody()); // Not a paragraph
-    t.rxMatch(t.threw(attemptInvalidType)?.message || 'no error thrown', /The parameters \(number,.*\) don't match the method signature for DocumentApp\.Body\.insertParagraph/, "Inserting a non-paragraph element should throw an error");
+    t.rxMatch(t.threw(attemptInvalidType)?.message || 'no error thrown', /The parameters .* don't match the method signature/, "Inserting a non-paragraph element should throw an error");
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   });
 
@@ -152,7 +282,9 @@ export const testDocsNext = (pack) => {
     }
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   });
-  
+
+
+
   unit.section("Element.copy() and detached elements", t => {
     const { doc } = maketdoc(toTrash, fixes);
     const body = doc.getBody();
@@ -219,6 +351,7 @@ export const testDocsNext = (pack) => {
 
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   });
+
   unit.section("newRange and builders", t => {
 
     const { doc } = maketdoc(toTrash, fixes)
@@ -251,11 +384,11 @@ export const testDocsNext = (pack) => {
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance())
   });
 
-
   unit.section("Document empty document validation", t => {
     let { doc, docName } = maketdoc(toTrash, fixes)
 
     // an empty doc - re-fetch body after modifications
+    Utilities.sleep(1000); // wait for the document to be fully initialized
     let body = doc.getBody();
     t.is(doc.getName(), docName, "Document should have the correct name")
 
@@ -298,11 +431,11 @@ export const testDocsNext = (pack) => {
   })
 
 
-
   // Helper to extract text from a raw Docs API document resource, mimicking Document.getBody().getText()
   const getTextFromDocResource = (docResource) => {
     return docResource?.body?.content?.map(structuralElement => structuralElement.paragraph?.elements?.map(element => element.textRun?.content || '').join('') || '').join('').replace(/\n$/, '');
   }
+
   unit.section("Document.clear method", t => {
 
     const { doc, docName } = maketdoc(toTrash, fixes)

@@ -6,11 +6,19 @@ const ss = SpreadsheetApp.create("--gasmess-sheet")
 moveToTempFolder(ss.getId())
 
 const sheet = ss.insertSheet()
-const values = [[1,2,3],[4,5,6],[7,8,9]]
-const range = sheet.getRange(1,1,3,3)
+const values = [[1,2,3,'=A1+B1'],[4,5,6,'=sum(A2:c2)'],[7,8,9, '=d1+d2']]
+const range = sheet.getRange(1,1,values.length,values[0].length)
 range.setValues(values)
 
-const result = range.getValues()
-console.log (JSON.stringify(result) === JSON.stringify(values) ? 'success' : 'true')
+const result = range.getDisplayValues()
 
+console.log (result)
+
+/* result is correct
+ * [
+  [ '1', '2', '3', '3' ],
+  [ '4', '5', '6', '15' ],
+  [ '7', '8', '9', '18' ]
+]
+ */
 deleteTempFile(ss.getId())

@@ -27,10 +27,10 @@ export const sxDocs = async (Auth, { prop, method, params, options = {} }) => {
   const { getApiClient } = await import(getModulePath(docapisPath));
   const auth = Auth.getAuth();
   const apiClient = getApiClient(auth);
-
+  // rate limit on docs is higher that the others so we may as well have a bigger delay
   const maxRetries = 7;
-  let delay = 1777;
-
+  let delay = 2789;
+  // syncLog('sxdocs..'+ JSON.stringify(params))
   for (let i = 0; i < maxRetries; i++) {
     let response;
     let error;
@@ -46,8 +46,10 @@ export const sxDocs = async (Auth, { prop, method, params, options = {} }) => {
     const isRetryable = [429, 500, 503].includes(response?.status) || error?.code == 429;
 
     if (isRetryable && i < maxRetries - 1) {
-      syncWarn(`Retryable error on Docs API call ${prop}.${method} (status: ${response?.status}). Retrying in ${delay}ms...`);
-      await sleep(delay);
+      // add a random jitter to avoid thundering herd
+      const jitter = Math.floor(Math.random() * 1000);
+      syncWarn(`Retryable error on Docs API call ${prop}.${method} (status: ${response?.status}). Retrying in ${delay + jitter}ms...`);
+      await sleep(delay + jitter);
       delay *= 2;
       continue;
     }

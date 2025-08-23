@@ -9,7 +9,6 @@ Gemini can also write test cases, but it tends to miss adding edge cases, so don
 
 
 
-
 Sometime between v144 and v150 of googleapis library, it appeared to become mandatory to include the project id in the auth pattern for API clients. Since we get the project id from the ADC, we actually have to do double auths. One to get the project id (which is async), and another to get an auth with the scopes required for the sheets, drive etc client (which is not async). All this now taken care of during the init phase, so look at an existing getauthenticated client function for how if you are adding a new service,
 
 ## Some experiences with using Gemini code assist
@@ -72,6 +71,12 @@ Overall it saves some time, for sure. However, the result is often suboptimal, w
 
 When creating the Docs Fakes, I started afresh, letting Gemini have a shot at building the initial templates. After a little while, it kept getting into loops and was mostly unable to produce the code it said it was going to produce - the 'thinking' stage was on the right track, but it either completely failed to produce any code that represented its thinking, or failed to actually apply it. My theory is that, without a body of code specific to the service (as I already had in sheets when I started to let Gemini contribute), it flails around aimlessly looping. At the time of writing I'm just at the beginning of Docs, so I'll do a lot of work manually to get a strong architecural backgound and revisit Gemini later on for any repeptive stuff. For now I'm just giving up with it for Docs.
 
+Writing this a bit later - after getting the named range stuff and paragraph appending stuff sorted out as a model to work from, I decided to give Gemini a shot at adding an append pagebreak method, without intervening other than providing debug info after each of it's attempts. We're entering groundhog day 3 - 2 full days of trying to do a fairly straightforward thing - and the code is spaghetti and nothing works. I'm done, and going to fix it up manually.
+
+
+A week later and I'm banning gemini from my repo. It's been a complete time wasting failure in everything its done in this very complex index juggling in DocumentApp. Each session generally ends with me saying `you broke everything. Please revert`, and Gemini replying ``
+
+So I made the mistake of letting gemini have a shot at at what should have been a non-drestuctive task of adding jsdoc to my repo. I made the other mistake of not committing that day's changes before doing it. It broke everything, and attempting to go back just got us deeper and deeper into the mess with a mixture of crashes and gemini trying to recode stuff. That's it. I'm done.
 
 As I mentioned earlier, to take this further, I'm going to need a lot of help to extend the methods and services supported - so if you feel this would be useful to you, and would like to collaborate, please ping me on [bruce@mcpher.com](mailto:bruce@mcpher.com) and we'll talk.
 

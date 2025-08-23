@@ -1,5 +1,6 @@
-export const getTempFolder = () => {
-  const folderName = "---gasmess-bruce"
+
+const getTempFolder = (suffix = "") => {
+  const folderName = "---gas-fakes-experiments" + suffix
   const folders = DriveApp.getFoldersByName(folderName)
   let folder = null
   if (folders.hasNext()) {
@@ -11,9 +12,9 @@ export const getTempFolder = () => {
   }
   return folder
 }
-export const moveToTempFolder = (id) => {
+export const moveToTempFolder = (id, suffix = "") => {
   const file = DriveApp.getFileById(id)
-  const folder = getTempFolder()
+  const folder = getTempFolder(suffix)
   file.moveTo(folder)
   return {
     folder,
