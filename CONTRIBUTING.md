@@ -22,15 +22,27 @@ As a background project I'm chipping away at this when I can. There's a mountain
 
 ## Testing
 
-Use the test project included in the repo if you want to do some tests. It uses a Fake services to exercise Auth etc. Just change the fixtures in your own environments by following the instructions in [setup-env.md](https://github.com/brucemcpherson/gas-fakes/blob/main/setup-env.MD), then `npm i && npm test`.
+Use the test project included in the repo if you want to do some tests. It uses a Fake services to exercise Auth etc. Just change the fixtures in your own environments by following the instructions in [setup-env.md](https://github.com/brucemcpherson/gas-fakes/blob/main/setup-env.MD), then `npm i && npm test`. Tests using local files should be run from the top project folder.
+
+You can also run tests using the npm version of gas-fakes set in test/package.json using npm run testnpm - which should be run from the ./test folder.
+
+### Create a unit.section for each class method or group of related methods
 
  If you are a collaborator and want to add some additional methods, you need to create a test section and always run a full set of tests on both environments before creating a merge request to ensure your changes havent broken anything. At the time of writing there are about 4,500 active tests.
+
+### Unit tester for both GAS and Node
 
 Note that I use a [unit tester](https://ramblings.mcpher.com/apps-script-test-runner-library-ported-to-node/) that runs in both GAS and Node, so the exact same tests will run in both environments. There are some example tests in the repo. Each test has been proved on both Node and GAS. There's also a shell (togas.sh) which will use clasp to push the test code to Apps Script.
 
 Each test can be run individually (for example `npm run testdrive`) or all with `npm test`
 
+### Test Settings
+
 Test settings and fixtures are in the .env file. Some readonly files are publicly shared and can be left with the example value in .env-template. Most files which are written are created and deleted afterwards on successful completion. They will be named something starting with -- and often centralized into a scratch folder for easy maintentance. In case of failures you may need to delete these yourself. If you want to preserve the testfiles it creates doing a test session, just set the CLEAN parameter in .env to 0.
+
+### cleaning up
+
+Most unit sections are isolated so will create their own files with some easily recognizable nonsense names. Tis can lead to many files appearing in Drive. Test runs are supposed to clean them up afterards, but if you have a failure they won't. Lately I've been adding all test files to a specific folder. If you move that folder to the bin, then all test files will automatocally end up in the bin too.
 
 ### Pushing to GAS
 
@@ -45,6 +57,14 @@ import '@mcpher/gas-fakes/main.js'
 
 togas.sh will remove imports and exports on the way to apps script, which doesnt support them.
 
+## Mocking
+
+I haven't found a real need to create many mocks, as the Live Apps Script environment has all you need to check test scripts. I always run all tests on Apps Script first, then strive to get the same result in Node. In principle there should be no 'special exceptions' in the test files, except in the case of outstanding issues reported in buganizer (where apps script is not behaving as it should) and also in the issues of the repo.
+
+## Experiments
+
+There's a folder 'experiments' for this. They don't form part of the project, but can be used for playing around. It can be useful to preservce these for future use. See the readme in the experiments folder for more info.
+
 ## Using Gemini code assist
 
 I've had mixed result with Gemini on this large project. If you're planning to use Gemini to do some legwork, I have no objections but here's some [notes](gemini.md) - some reflections and experiences on using Gemini to help code large projects on my experience so far.
@@ -56,6 +76,7 @@ As I mentioned earlier, to take this further, I'm going to need a lot of help to
 ## Translations and writeups
 
 - [initial idea and thoughts](https://ramblings.mcpher.com/a-proof-of-concept-implementation-of-apps-script-environment-on-node/)
+- [Inside the volatile world of a Google Document](https://ramblings.mcpher.com/inside-the-volatile-world-of-a-google-document/
 - [Apps Script Services on Node – using apps script libraries](https://ramblings.mcpher.com/apps-script-services-on-node-using-apps-script-libraries/)
 - [Apps Script environment on Node – more services](https://ramblings.mcpher.com/apps-script-environment-on-node-more-services/)
 - [Turning async into synch on Node using workers](https://ramblings.mcpher.com/turning-async-into-synch-on-node-using-workers/)

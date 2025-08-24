@@ -46,8 +46,10 @@ export const sxSlides = async (Auth, { prop, method, params, options = {} }) => 
     const isRetryable = [429, 500, 503].includes(response?.status) || error?.code == 429;
 
     if (isRetryable && i < maxRetries - 1) {
-      syncWarn(`Retryable error on Slides API call ${prop}.${method} (status: ${response?.status}). Retrying in ${delay}ms...`);
-      await sleep(delay);
+      // add a random jitter to avoid thundering herd
+      const jitter = Math.floor(Math.random() * 1000);
+      syncWarn(`Retryable error on Slides API call ${prop}.${method} (status: ${response?.status}). Retrying in ${delay + jitter}ms...`);
+      await sleep(delay + jitter);
       delay *= 2;
       continue;
     }

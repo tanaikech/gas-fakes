@@ -5,9 +5,9 @@
  * initial sigleton and diverting them to a completed one.
  * We also need to make sure all element types are registered.
  */
-import './elements.js'; // This ensures all element types register themselves before DocumentApp is used.
 import { newFakeDocumentApp } from './fakedocumentapp.js';
 import { Proxies } from '../../support/proxies.js';
+import './elements.js'; // This ensures all element types register themselves before DocumentApp is used.
 
 let _app = null;
 
