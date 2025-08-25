@@ -1,5 +1,5 @@
 import { Proxies } from '../../support/proxies.js';
-import { makeNrPrefix, getCurrentNr,findOrCreateNamedRangeName } from './nrhelpers.js'
+import { makeNrPrefix, getCurrentNr, findOrCreateNamedRangeName } from './nrhelpers.js'
 import { getElementProp } from './elementhelpers.js';
 import { Utils } from '../../support/utils.js';
 
@@ -16,13 +16,42 @@ class ShadowDocument {
     this.__id = id
   }
 
+  __fetch() {
+    return Docs.Documents.__get(this.__id, { includeTabsContent: true })
+  }
 
- get __endBodyIndex () {
-  const content = this.resource?.body?.content || []
-  const endIndex = content[content.length - 1]?.endIndex || 0
-  return endIndex
- }
+  get __content() {
+    return this.__unpackDocumentTab(this.resource).body.content
 
+  }
+  get __endBodyIndex() {
+    const content = this.__content
+    if (!content.length) {
+      throw new Error("document has no content")
+    }
+    const endIndex = content[content.length - 1].endIndex
+    if (!endIndex) {
+      throw new Error("cant establish end index for document")
+    }
+    return endIndex
+  }
+
+  __unpackDocumentTab = (data) => {
+    const tabs = data?.tabs
+    const documentTab = tabs?.[0]?.documentTab || data
+    const body = documentTab?.body
+    if (!documentTab) {
+      throw new Error("failed to find document tab in document")
+    }
+    if (!body) {
+      throw new Error("failed to find body in document")
+    }
+    return {
+      tabs,
+      documentTab,
+      body
+    }
+  }
   /**
    * we may need to do this if we're coming from cache
    * although the resource may be in cache, the element map might not be defined
@@ -36,15 +65,21 @@ class ShadowDocument {
 
   makeElementMap(data) {
 
-    const content = data?.body?.content || []
+    // its possible that the document is a tabbed document, in which case the body content is in the first section
+    // TODO support multiple tabs - for now we're just going to support legact docs wrapped in a tab
+    const { documentTab, body, tabs } = this.__unpackDocumentTab(data)
+
+
+    const { content } = body
 
     // get the currently known named ranges
-    const currentNr = getCurrentNr(data)
+    const currentNr = getCurrentNr(documentTab)
 
     // if there's been an update, the revisionId will have changed
     if (this.__mapRevisionId !== data.revisionId) {
       this.__mapRevisionId = data.revisionId
-      this.__segmentId = data.body.segmentId
+      // TODO check this ro see when its not null
+      this.__segmentId = body.segmentId
     }
 
     // this will contain all the requests to add new named ranges
@@ -86,7 +121,7 @@ class ShadowDocument {
       // For an empty document, we use static, non-API names to avoid re-indexing issues.
       // For all other documents, we use real NamedRanges to track elements.
       const nrType = type === 'LIST_ITEM' ? 'PARAGRAPH' : type;
-      const { name, namedRangeId } = findOrCreateNamedRangeName(element, nrType, currentNr, addRequests);
+      const { name } = findOrCreateNamedRangeName(element, nrType, currentNr, addRequests);
 
       // embed this stuff in the shadow element
       element.__prop = prop;
@@ -152,7 +187,7 @@ class ShadowDocument {
     // recurse the entire document
     content.forEach(c => mapElements(c, bodyTree));
     bodyTree.children = content.map(c => c.__twig).filter(Boolean);
-    
+
     // delete the named ranges that weren't used
     // findOrCreate... consumes the currentNr list, so what's left are unused ranges.
 
@@ -169,7 +204,7 @@ class ShadowDocument {
       // recursively call this function with the refreshed document state.
       // This ensures the final elementMap and nrMap are based on the latest version.
       Docs.Documents.batchUpdate({ requests }, this.__id)
-      return this.makeElementMap(Docs.Documents.__get(this.__id).data)
+      return this.makeElementMap(this.__fetch().data)
     }
     // If there were no named range changes, the document is stable. We can set the map.
     this.nrMap = new Map(getCurrentNr(data).map(f => [f.name, f]));
@@ -179,7 +214,7 @@ class ShadowDocument {
   // this looks expensive, but the document wil always be in case unless its been updated
   // in which case we have to get it anyway this will
   get resource() {
-    const { data, response } = Docs.Documents.__get(this.__id)
+    const { data, response } = this.__fetch()
     const { fromCache } = response
     if (fromCache) {
       if (!this.__elementMap || !this.__mapRevisionId || this.__mapRevisionId !== data.revisionId) {

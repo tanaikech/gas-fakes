@@ -19,6 +19,8 @@ class FakeDocument {
     const { nargs, matchThrow } = signatureArgs(arguments, "Document");
     if (nargs !== 1 || !is.nonEmptyString(id)) matchThrow();
     this.__id = id
+    // at this point the only content in shadow document is an id
+    // the rest is lazy loaded
     this.__shadowDocument = newShadowDocument(id)
   }
 

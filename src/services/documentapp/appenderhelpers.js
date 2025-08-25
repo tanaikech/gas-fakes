@@ -240,7 +240,7 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
 
     if (cells && cells.length > 0 && cells[0].length > 0) {
       // The table was created at newElementStartIndex
-      const populateRequests = reverseUpdateContent(shadow.resource.body.content, newElementStartIndex, cells);
+      const populateRequests = reverseUpdateContent(shadow.__content, newElementStartIndex, cells);
       if (populateRequests.length > 0) {
         Docs.Documents.batchUpdate({ requests: populateRequests }, shadow.getId());
         shadow.refresh();
