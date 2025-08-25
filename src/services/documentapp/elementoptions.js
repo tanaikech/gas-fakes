@@ -26,13 +26,13 @@ const handleTextless = (loc, isAppend, self, type, extras = {}) => {
       // to emulate apps script behavior
       if (isAppend) {
         const range = Docs.newRange()
-          .setStartIndex(loc.index + 1)
-          .setEndIndex(loc.index + 2)
+          .setStartIndex(loc.index + 1);
+        if (loc.segmentId) range.setSegmentId(loc.segmentId);
 
         // when appending to the body we need a leading \n and get rid of the trailing one
         if (self.getType() === ElementType.BODY_SECTION) {
           reqs.push({ insertText: { location, text: '\n' } })
-          range.setStartIndex(loc.index + 2).setEndIndex(loc.index + 3)
+          range.setStartIndex(loc.index + 2).setEndIndex(loc.index + 3);
         }
 
         reqs.push({ deleteContentRange: Docs.newDeleteContentRangeRequest().setRange(range) })
@@ -42,7 +42,7 @@ const handleTextless = (loc, isAppend, self, type, extras = {}) => {
     case 'TABLE':
 
       // since the table content is empty, this is how much space it'll need initially
-      // since the startindex is actually going to be the leading \n, we need to accoutn for that
+      // since the startindex is actually going to be the leading \n, we need to account for that
       ///const endTableIndex = location.index + extras.rows * extras.columns + 1 + 1
 
       // for a table the insert request will generate a leading \n
@@ -219,7 +219,7 @@ export const tableOptions = {
     if (rows === 0) {
       // we need to know where the table will be to delete its row
       const tableStartIndex = location.index + 1;
-      requests.push(deleteTableRowRequest(tableStartIndex, 0));
+      requests.push(deleteTableRowRequest(tableStartIndex, 0, location.segmentId));
     }
 
     return requests;

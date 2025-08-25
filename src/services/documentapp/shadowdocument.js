@@ -289,14 +289,14 @@ class ShadowDocument {
       // up to the start of the final newline character. The range for deletion is
       // [1, endIndex - 1), where the end of the range is exclusive.
       requests.push({
-        deleteContentRange: { range: { startIndex: 1, endIndex: endIndex - 1 } }
+        deleteContentRange: { range: { startIndex: 1, endIndex: endIndex - 1, segmentId: this.__segmentId } }
       });
     }
 
     // We must remove bullets if we are deleting content (which might merge a list item
     // into the first paragraph) OR if the first paragraph is already a list item.
     if (hasContentToDelete || isFirstElementListItem) {
-      requests.push({ deleteParagraphBullets: { range: { startIndex: 1, endIndex: 1 } } });
+      requests.push({ deleteParagraphBullets: { range: { startIndex: 1, endIndex: 1, segmentId: this.__segmentId } } });
     }
 
     if (requests.length > 0) {

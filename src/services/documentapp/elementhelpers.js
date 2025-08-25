@@ -129,6 +129,7 @@ export const makeProtectionRequests = (shadow, twig) => {
           range: {
             startIndex: elItem.startIndex,
             endIndex,
+            segmentId: shadow.__segmentId
           },
         },
       });

@@ -211,7 +211,7 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
   // if we were inserting a table then there;ll be an unwanted \n to remove - this should be -2 from the insertIndex
   // TODO we need to check if that index is actually a paragraph or not otherwise this will fail/screw up
   if (!isAppend && options.elementType === ElementType.TABLE && insertIndex > 1) {
-    mainRequests.push(deleteContentRange(insertIndex - 1, insertIndex))
+    mainRequests.push(deleteContentRange(insertIndex - 1, insertIndex, segmentId))
   }
   requests.unshift(...mainRequests);
 
@@ -224,7 +224,7 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
   // This ensures we don't accidentally apply the bullet to a preceding paragraph by using
   // the reliable newElementStartIndex.
   if (options.elementType === ElementType.LIST_ITEM && !isDetached) {
-    requests.push(createParagraphBullets(newElementStartIndex))
+    requests.push(createParagraphBullets(newElementStartIndex, undefined, segmentId))
   }
 
   // 5. Execute the update and refresh the document state.
@@ -242,8 +242,9 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
       // The table was created at newElementStartIndex
       const populateRequests = reverseUpdateContent(
         shadow.__unpackDocumentTab(shadow.resource).body.content,
-        newElementStartIndex, 
-        cells
+        newElementStartIndex,
+        cells,
+        segmentId
       );
       if (populateRequests.length > 0) {
         Docs.Documents.batchUpdate({ requests: populateRequests }, shadow.getId());
@@ -262,7 +263,7 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
       // findItem for PARAGRAPH will also find LIST_ITEM.
       // We check if the found item has a bullet, which indicates it wrongly inherited list properties.
       if (paraItem && paraItem.paragraph && paraItem.paragraph.bullet) {
-        Docs.Documents.batchUpdate({ requests: [deleteParagraphBullets(paraItem.startIndex)] }, shadow.getId());
+        Docs.Documents.batchUpdate({ requests: [deleteParagraphBullets(paraItem.startIndex, segmentId)] }, shadow.getId());
         shadow.refresh(); // Refresh again after fixing the paragraph
       }
     }
