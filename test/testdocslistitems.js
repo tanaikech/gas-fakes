@@ -2,7 +2,7 @@ import '../main.js';
 import { initTests } from './testinit.js';
 import { trasher, getDocsPerformance, maketdoc } from './testassist.js';
 
-const testDocsListItems = (pack) => {
+export const testDocsListItems = (pack) => {
   const { unit, fixes } = pack || initTests();
   const toTrash = [];
 

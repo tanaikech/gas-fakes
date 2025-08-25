@@ -10,8 +10,7 @@ import { initTests } from "./testinit.js";
 import {
   getDrivePerformance,
   getSheetsPerformance,
-  getDocsPerformance,
-  getSlidesPerformance,
+  getDocsPerformance
 } from "./testassist.js";
 
 import { testDocsAdv } from "./testdocsadv.js";
@@ -19,7 +18,7 @@ import { testDocs } from "./testdocs.js";
 import { testDocsNext } from "./testdocsnext.js";
 import { testDocsListItems } from "./testdocslistitems.js";
 
-const testAllDocs = () => {
+const testDocsAll = () => {
   const pack = initTests();
   const { unit } = pack;
 
@@ -52,4 +51,4 @@ const testAllDocs = () => {
 };
 
 // this required on Node but not on Apps Script
-if (ScriptApp.isFake) testAllDocs();
+if (ScriptApp.isFake) testDocsAll();

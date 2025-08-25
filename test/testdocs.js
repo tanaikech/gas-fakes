@@ -11,7 +11,51 @@ export const testDocs = (pack) => {
   const { unit, fixes } = pack || initTests();
   const toTrash = [];
 
+ unit.section("Document level append/insert methods", t => {
+    const { doc } = maketdoc(toTrash, fixes);
 
+    // Test appendParagraph
+    const p1 = doc.appendParagraph("p1");
+    t.is(p1.getType(), DocumentApp.ElementType.PARAGRAPH, "doc.appendParagraph should return a Paragraph");
+    t.is(doc.getBody().getText(), "\np1", "doc.appendParagraph should add the paragraph");
+
+    // Test insertParagraph
+    const p0 = doc.appendParagraph("p0").copy();
+    doc.insertParagraph(1, p0); // after the initial empty paragraph
+    t.is(doc.getBody().getText(), "\np0\np1\np0", "doc.insertParagraph should insert the paragraph");
+
+    // Test appendListItem
+    const li1 = doc.appendListItem("li1");
+    t.is(li1.getType(), DocumentApp.ElementType.LIST_ITEM, "doc.appendListItem should return a ListItem");
+    const children1 = doc.getBody().getNumChildren();
+    t.is(doc.getBody().getChild(children1 - 1).getType(), DocumentApp.ElementType.LIST_ITEM, "doc.appendListItem should add a list item to the body");
+
+    // Test insertListItem
+    const li0 = doc.appendListItem("li0").copy();
+    doc.insertListItem(1, li0);
+    t.is(doc.getBody().getChild(1).getType(), DocumentApp.ElementType.LIST_ITEM, "doc.insertListItem should insert a list item");
+    t.is(doc.getBody().getChild(1).getText(), "li0", "doc.insertListItem should have correct text");
+
+    // Test appendTable
+    const table1 = doc.appendTable([['t1c1', 't1c2']]);
+    t.is(table1.getType(), DocumentApp.ElementType.TABLE, "doc.appendTable should return a Table");
+    t.is(table1.getCell(0, 0).getText(), "t1c1", "doc.appendTable should create table with correct content");
+    // Appending a table in Apps Script automatically adds an empty paragraph after it.
+    // Therefore, the table is the second-to-last child.
+    const numChildren = doc.getBody().getNumChildren();
+    t.is(doc.getBody().getChild(numChildren - 2).getType(), DocumentApp.ElementType.TABLE, "doc.appendTable should add a table to the body");
+    t.is(doc.getBody().getChild(numChildren - 1).getType(), DocumentApp.ElementType.PARAGRAPH, "doc.appendTable should be followed by a paragraph");
+
+    // Test insertTable
+    const table0 = doc.appendTable([['t0c1']]).copy();
+    doc.insertTable(1, table0);
+    const insertedTable = doc.getBody().getChild(1);
+    t.is(insertedTable.getType(), DocumentApp.ElementType.TABLE, "doc.insertTable should insert a Table");
+    t.is(insertedTable.getCell(0, 0).getText(), "t0c1", "doc.insertTable should have correct content");
+
+    // Test appendPageBreak & insertPageBreak are delegated, which is covered by Body tests.
+    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
+  });
 
   unit.section("DocumentApp create", t => {
 
@@ -101,51 +145,7 @@ export const testDocs = (pack) => {
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance())
   });
 
-  unit.section("Document level append/insert methods", t => {
-    const { doc } = maketdoc(toTrash, fixes);
-
-    // Test appendParagraph
-    const p1 = doc.appendParagraph("p1");
-    t.is(p1.getType(), DocumentApp.ElementType.PARAGRAPH, "doc.appendParagraph should return a Paragraph");
-    t.is(doc.getBody().getText(), "\np1", "doc.appendParagraph should add the paragraph");
-
-    // Test insertParagraph
-    const p0 = doc.appendParagraph("p0").copy();
-    doc.insertParagraph(1, p0); // after the initial empty paragraph
-    t.is(doc.getBody().getText(), "\np0\np1\np0", "doc.insertParagraph should insert the paragraph");
-
-    // Test appendListItem
-    const li1 = doc.appendListItem("li1");
-    t.is(li1.getType(), DocumentApp.ElementType.LIST_ITEM, "doc.appendListItem should return a ListItem");
-    const children1 = doc.getBody().getNumChildren();
-    t.is(doc.getBody().getChild(children1 - 1).getType(), DocumentApp.ElementType.LIST_ITEM, "doc.appendListItem should add a list item to the body");
-
-    // Test insertListItem
-    const li0 = doc.appendListItem("li0").copy();
-    doc.insertListItem(1, li0);
-    t.is(doc.getBody().getChild(1).getType(), DocumentApp.ElementType.LIST_ITEM, "doc.insertListItem should insert a list item");
-    t.is(doc.getBody().getChild(1).getText(), "li0", "doc.insertListItem should have correct text");
-
-    // Test appendTable
-    const table1 = doc.appendTable([['t1c1', 't1c2']]);
-    t.is(table1.getType(), DocumentApp.ElementType.TABLE, "doc.appendTable should return a Table");
-    t.is(table1.getCell(0, 0).getText(), "t1c1", "doc.appendTable should create table with correct content");
-    // Appending a table in Apps Script automatically adds an empty paragraph after it.
-    // Therefore, the table is the second-to-last child.
-    const numChildren = doc.getBody().getNumChildren();
-    t.is(doc.getBody().getChild(numChildren - 2).getType(), DocumentApp.ElementType.TABLE, "doc.appendTable should add a table to the body");
-    t.is(doc.getBody().getChild(numChildren - 1).getType(), DocumentApp.ElementType.PARAGRAPH, "doc.appendTable should be followed by a paragraph");
-
-    // Test insertTable
-    const table0 = doc.appendTable([['t0c1']]).copy();
-    doc.insertTable(1, table0);
-    const insertedTable = doc.getBody().getChild(1);
-    t.is(insertedTable.getType(), DocumentApp.ElementType.TABLE, "doc.insertTable should insert a Table");
-    t.is(insertedTable.getCell(0, 0).getText(), "t0c1", "doc.insertTable should have correct content");
-
-    // Test appendPageBreak & insertPageBreak are delegated, which is covered by Body tests.
-    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
-  });
+ 
 
 
 
