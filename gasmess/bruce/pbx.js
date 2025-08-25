@@ -1,53 +1,25 @@
 import '../../main.js';
 import { moveToTempFolder, deleteTempFile } from '../tempfolder.js';
-import is from '@sindresorhus/is';
+import { report, scl } from './dreport.js';
+
 const suffix = "-bruce"
 
-const whichType = (element) => {
-  const ts = ["paragraph", "pageBreak", "textRun","table","tableRows","tableCells","content"]
-  const [t] = ts.filter(f => Reflect.has(element, f))
-  //if (!t) console.log('skipping element', element)
-  return t
+const tabsa = () => {
+
+  let doc = DocumentApp.create("abc")
+  const id = doc.getId()
+  moveToTempFolder(id, suffix)
+
+  let body = doc.getBody()
+  console.log (body)
+  doc = scl(doc)
+  console.log(report(Docs.Documents.get(id, {includeTabsContent: true}), `\n1.empty document`))
+
+  
+  deleteTempFile(id)
 }
 
-const report = (doc, what) => {
-  const body = doc.body
-  // drop the section break
-  const children = body.content.slice(1)
-  what += ` -children:${children.length}`
-  console.log(what)
-  let text = '  '
-
-  const childProps = ["elements", "tableRows", "tableCells","content"]
-  const typer = (child, text, spaces = " ") => {
-    const type = whichType(child)
-    if (type) {
-      text += `\n${spaces}-${type} ${child.startIndex}:${child.endIndex}`
-      if (type === 'textRun') {
-        text += ` ${JSON.stringify(child[type].content)}`
-      }
-      const key = Reflect.ownKeys(child[type]).find (f=>childProps.includes(f))
-      let arr = key && child[type][key] 
-      if (!arr && is.array (child[type])) arr = child[type]
-
-      if (is.array(arr)) {
-        //text += spaces
-        arr.forEach(f => text = typer(f, text, spaces + "  "))
-        //text += ''
-      }
-    }
-    return text
-  }
-  return children.map(f => typer(f, text)).join("\n")
-}
-const scl = (doc) => {
-  if (!DocumentApp.isFake) {
-    const id = doc.getId()
-    doc.saveAndClose()
-    doc = DocumentApp.openById(id)
-  }
-  return doc
-}
+//tabsa()
 
 // this is testing the new simplified method
 const pbnew = () => {
@@ -147,8 +119,8 @@ const pbnew = () => {
 
   deleteTempFile(id)
 }
-pbnew()
 
+pbnew()
 
 
 

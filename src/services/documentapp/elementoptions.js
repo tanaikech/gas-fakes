@@ -11,9 +11,9 @@ const handleTextless = (loc, isAppend, self, type, extras = {}) => {
   // '\n before if its a body
   // if its a pagebreak we need to remove the additional \n that inserting a page break causes
   const reqs = []
-  const location = Docs.newLocation()
-    .setSegmentId(loc.segmentId)
-    .setIndex(loc.index)
+  const location = Docs.newLocation().setIndex(loc.index)
+  if (loc.segmentId) location.setSegmentId(loc.segmentId)
+  if (loc.tabId) location.setTabId(loc.tabId)
 
 
   switch (type) {
@@ -26,13 +26,14 @@ const handleTextless = (loc, isAppend, self, type, extras = {}) => {
       // to emulate apps script behavior
       if (isAppend) {
         const range = Docs.newRange()
-          .setStartIndex(loc.index + 1)
-          .setEndIndex(loc.index + 2)
+          .setStartIndex(loc.index + 1);
+        if (loc.segmentId) range.setSegmentId(loc.segmentId)
+        if (loc.tabId) range.setTabId(loc.tabId)
 
         // when appending to the body we need a leading \n and get rid of the trailing one
         if (self.getType() === ElementType.BODY_SECTION) {
           reqs.push({ insertText: { location, text: '\n' } })
-          range.setStartIndex(loc.index + 2).setEndIndex(loc.index + 3)
+          range.setStartIndex(loc.index + 2).setEndIndex(loc.index + 3);
         }
 
         reqs.push({ deleteContentRange: Docs.newDeleteContentRangeRequest().setRange(range) })
@@ -42,7 +43,7 @@ const handleTextless = (loc, isAppend, self, type, extras = {}) => {
     case 'TABLE':
 
       // since the table content is empty, this is how much space it'll need initially
-      // since the startindex is actually going to be the leading \n, we need to accoutn for that
+      // since the startindex is actually going to be the leading \n, we need to account for that
       ///const endTableIndex = location.index + extras.rows * extras.columns + 1 + 1
 
       // for a table the insert request will generate a leading \n
@@ -83,7 +84,7 @@ export const paragraphOptions = {
     const textToInsert = leading + baseText + trailing
     return { insertText: { location, text: textToInsert } };
   },
-  getStyleRequests: (paragraph, startIndex, length, isAppend) => {
+  getStyleRequests: (paragraph, startIndex, isAppend, segmentId, tabId) => {
     const requests = [];
     const detachedItem = paragraph.__elementMapItem;
     const paraElements = detachedItem.paragraph?.elements || [];
@@ -91,9 +92,8 @@ export const paragraphOptions = {
 
     if (paraStyle && Object.keys(paraStyle).length > 0) {
       const fields = Object.keys(paraStyle).join(',');
-      requests.push({
-        updateParagraphStyle: { range: { startIndex, endIndex: startIndex + length }, paragraphStyle: paraStyle, fields: fields },
-      });
+      const textLength = (paragraph.getText() || '').length;
+      requests.push({ updateParagraphStyle: { range: { startIndex, endIndex: startIndex + textLength, segmentId, tabId }, paragraphStyle: paraStyle, fields } });
     }
 
     let currentOffset = startIndex;
@@ -106,7 +106,7 @@ export const paragraphOptions = {
 
         if (textStyle && Object.keys(textStyle).length > 0 && styleableLength > 0) {
           const fields = Object.keys(textStyle).join(',');
-          requests.push({ updateTextStyle: { range: { startIndex: currentOffset, endIndex: currentOffset + styleableLength }, textStyle: textStyle, fields: fields } });
+          requests.push({ updateTextStyle: { range: { startIndex: currentOffset, endIndex: currentOffset + styleableLength, segmentId, tabId }, textStyle: textStyle, fields: fields } });
         }
         currentOffset += content.length;
       }
@@ -137,7 +137,7 @@ export const textOptions = {
     const textToInsert = baseText
     return { insertText: { location, text: textToInsert } };
   },
-  getStyleRequests: (paragraph, startIndex, length, isAppend) => {
+  getStyleRequests: (paragraph, startIndex, isAppend, segmentId, tabId) => {
     const requests = [];
     const detachedItem = paragraph.__elementMapItem;
     const paraElements = detachedItem.paragraph?.elements || [];
@@ -145,9 +145,8 @@ export const textOptions = {
 
     if (paraStyle && Object.keys(paraStyle).length > 0) {
       const fields = Object.keys(paraStyle).join(',');
-      requests.push({
-        updateParagraphStyle: { range: { startIndex, endIndex: startIndex + length }, paragraphStyle: paraStyle, fields: fields },
-      });
+      const textLength = (paragraph.getText() || '').length;
+      requests.push({ updateParagraphStyle: { range: { startIndex, endIndex: startIndex + textLength, segmentId, tabId }, paragraphStyle: paraStyle, fields } });
     }
 
     let currentOffset = startIndex;
@@ -160,7 +159,7 @@ export const textOptions = {
 
         if (textStyle && Object.keys(textStyle).length > 0 && styleableLength > 0) {
           const fields = Object.keys(textStyle).join(',');
-          requests.push({ updateTextStyle: { range: { startIndex: currentOffset, endIndex: currentOffset + styleableLength }, textStyle: textStyle, fields: fields } });
+          requests.push({ updateTextStyle: { range: { startIndex: currentOffset, endIndex: currentOffset + styleableLength, segmentId, tabId }, textStyle: textStyle, fields: fields } });
         }
         currentOffset += content.length;
       }
@@ -219,7 +218,7 @@ export const tableOptions = {
     if (rows === 0) {
       // we need to know where the table will be to delete its row
       const tableStartIndex = location.index + 1;
-      requests.push(deleteTableRowRequest(tableStartIndex, 0));
+      requests.push(deleteTableRowRequest(tableStartIndex, 0, loc.segmentId, loc.tabId));
     }
 
     return requests;
@@ -246,7 +245,7 @@ export const listItemOptions = {
     // The bulleting is handled separately in elementInserter to ensure it targets the correct, new paragraph.
     return { insertText: { location, text: textToInsert } };
   },
-  getStyleRequests: (listItem, startIndex, length, isAppend) => {
+  getStyleRequests: (listItem, startIndex, isAppend, segmentId, tabId) => {
     const requests = [];
     const detachedItem = listItem.__elementMapItem;
     const paraElements = detachedItem.paragraph?.elements || [];
@@ -260,6 +259,8 @@ export const listItemOptions = {
           range: {
             startIndex: startIndex,
             endIndex: startIndex,
+            segmentId,
+            tabId
           },
           // Using a default. API will handle list creation/joining.
           bulletPreset: 'NUMBERED_DECIMAL_ALPHA_ROMAN',
@@ -269,9 +270,8 @@ export const listItemOptions = {
 
     if (paraStyle && Object.keys(paraStyle).length > 0) {
       const fields = Object.keys(paraStyle).join(',');
-      requests.push({
-        updateParagraphStyle: { range: { startIndex, endIndex: startIndex + length }, paragraphStyle: paraStyle, fields: fields },
-      });
+      const textLength = (listItem.getText() || '').length;
+      requests.push({ updateParagraphStyle: { range: { startIndex, endIndex: startIndex + textLength, segmentId, tabId }, paragraphStyle: paraStyle, fields } });
     }
 
     let currentOffset = startIndex;
@@ -284,7 +284,7 @@ export const listItemOptions = {
 
         if (textStyle && Object.keys(textStyle).length > 0 && styleableLength > 0) {
           const fields = Object.keys(textStyle).join(',');
-          requests.push({ updateTextStyle: { range: { startIndex: currentOffset, endIndex: currentOffset + styleableLength }, textStyle: textStyle, fields: fields } });
+          requests.push({ updateTextStyle: { range: { startIndex: currentOffset, endIndex: currentOffset + styleableLength, segmentId, tabId }, textStyle: textStyle, fields: fields } });
         }
         currentOffset += content.length;
       }

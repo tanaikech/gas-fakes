@@ -1,5 +1,5 @@
 import { Proxies } from '../../support/proxies.js';
-import { makeNrPrefix, getCurrentNr,findOrCreateNamedRangeName } from './nrhelpers.js'
+import { makeNrPrefix, getCurrentNr, findOrCreateNamedRangeName } from './nrhelpers.js'
 import { getElementProp } from './elementhelpers.js';
 import { Utils } from '../../support/utils.js';
 
@@ -16,13 +16,44 @@ class ShadowDocument {
     this.__id = id
   }
 
+  __fetch() {
+    return Docs.Documents.__get(this.__id, { includeTabsContent: true })
+  }
 
- get __endBodyIndex () {
-  const content = this.resource?.body?.content || []
-  const endIndex = content[content.length - 1]?.endIndex || 0
-  return endIndex
- }
 
+
+  get __endBodyIndex() {
+    const content = this.__unpackDocumentTab(this.resource).body.content
+    if (!content.length) {
+      throw new Error("document has no content")
+    }
+    const endIndex = content[content.length - 1].endIndex
+    if (!endIndex) {
+      throw new Error("cant establish end index for document")
+    }
+    return endIndex
+  }
+
+
+  __unpackDocumentTab = (data) => {
+    const tabs = data?.tabs
+    const documentTab = tabs?.[0]?.documentTab || data
+    const body = documentTab?.body
+    if (!documentTab) {
+      throw new Error("failed to find document tab in document")
+    }
+    if (!body) {
+      throw new Error("failed to find body in document")
+    }
+    return {
+      tabs,
+      documentTab,
+      body,
+      lists: documentTab.lists,
+      namedStyles: documentTab.namedStyles,
+      namedRanges: documentTab.namedRanges  
+    }
+  }
   /**
    * we may need to do this if we're coming from cache
    * although the resource may be in cache, the element map might not be defined
@@ -36,15 +67,17 @@ class ShadowDocument {
 
   makeElementMap(data) {
 
-    const content = data?.body?.content || []
+    const {body, documentTab, tabs} = this.__unpackDocumentTab(data)
+    const {content} = body
+
 
     // get the currently known named ranges
-    const currentNr = getCurrentNr(data)
+    const currentNr = getCurrentNr(documentTab)
 
-    // if there's been an update, the revisionId will have changed
     if (this.__mapRevisionId !== data.revisionId) {
       this.__mapRevisionId = data.revisionId
-      this.__segmentId = data.body.segmentId
+      this.__segmentId = body.segmentId
+      this.__tabId = tabs?.[0]?.tabProperties?.tabId
     }
 
     // this will contain all the requests to add new named ranges
@@ -86,7 +119,7 @@ class ShadowDocument {
       // For an empty document, we use static, non-API names to avoid re-indexing issues.
       // For all other documents, we use real NamedRanges to track elements.
       const nrType = type === 'LIST_ITEM' ? 'PARAGRAPH' : type;
-      const { name, namedRangeId } = findOrCreateNamedRangeName(element, nrType, currentNr, addRequests);
+      const { name } = findOrCreateNamedRangeName(element, nrType, currentNr, addRequests);
 
       // embed this stuff in the shadow element
       element.__prop = prop;
@@ -152,7 +185,7 @@ class ShadowDocument {
     // recurse the entire document
     content.forEach(c => mapElements(c, bodyTree));
     bodyTree.children = content.map(c => c.__twig).filter(Boolean);
-    
+
     // delete the named ranges that weren't used
     // findOrCreate... consumes the currentNr list, so what's left are unused ranges.
 
@@ -169,7 +202,7 @@ class ShadowDocument {
       // recursively call this function with the refreshed document state.
       // This ensures the final elementMap and nrMap are based on the latest version.
       Docs.Documents.batchUpdate({ requests }, this.__id)
-      return this.makeElementMap(Docs.Documents.__get(this.__id).data)
+      return this.makeElementMap(this.__fetch().data)
     }
     // If there were no named range changes, the document is stable. We can set the map.
     this.nrMap = new Map(getCurrentNr(data).map(f => [f.name, f]));
@@ -179,7 +212,7 @@ class ShadowDocument {
   // this looks expensive, but the document wil always be in case unless its been updated
   // in which case we have to get it anyway this will
   get resource() {
-    const { data, response } = Docs.Documents.__get(this.__id)
+    const { data, response } = this.__fetch()
     const { fromCache } = response
     if (fromCache) {
       if (!this.__elementMap || !this.__mapRevisionId || this.__mapRevisionId !== data.revisionId) {
@@ -227,7 +260,7 @@ class ShadowDocument {
   clear() {
 
     // The document's content is represented by an array of structural elements.
-    const content = this.resource.body?.content;
+    const content = this.__unpackDocumentTab(this.resource).body.content
 
     // If there's no content, there's nothing to clear.
     if (!content || content.length === 0) {
@@ -252,14 +285,14 @@ class ShadowDocument {
       // up to the start of the final newline character. The range for deletion is
       // [1, endIndex - 1), where the end of the range is exclusive.
       requests.push({
-        deleteContentRange: { range: { startIndex: 1, endIndex: endIndex - 1 } }
+        deleteContentRange: { range: { startIndex: 1, endIndex: endIndex - 1, segmentId: this.__segmentId, tabId: this.__tabId } }
       });
     }
 
     // We must remove bullets if we are deleting content (which might merge a list item
     // into the first paragraph) OR if the first paragraph is already a list item.
     if (hasContentToDelete || isFirstElementListItem) {
-      requests.push({ deleteParagraphBullets: { range: { startIndex: 1, endIndex: 1 } } });
+      requests.push({ deleteParagraphBullets: { range: { startIndex: 1, endIndex: 1, segmentId: this.__segmentId, tabId: this.__tabId } } });
     }
 
     if (requests.length > 0) {

@@ -48,6 +48,7 @@
     "testsheetstext": "cp mainlocal.js main.js &&  node --env-file=.env ./test/testsheetstext.js execute",
     "testsheetsrange": "cp mainlocal.js main.js &&  node --env-file=.env ./test/testsheetsrange.js execute",
     "testdocslistitems": "cp mainlocal.js main.js &&  node --env-file=.env ./test/testdocslistitems.js execute",
+    "testdocsall": "cp mainlocal.js main.js &&  node --env-file=.env ./test/testdocsall.js",
     "pub": "cp mainlocal.js main.js && npm publish --access public"
   },
   "name": "@mcpher/gas-fakes",

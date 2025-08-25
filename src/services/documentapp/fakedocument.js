@@ -3,6 +3,7 @@ import { newShadowDocument } from './shadowdocument.js';
 import { signatureArgs } from '../../support/helpers.js';
 import is from '@sindresorhus/is';
 import { docsCacher } from '../../support/docscacher.js';
+import { newFakeTab } from './faketab.js';
 import { newFakeBody } from './fakebody.js';
 import { newFakeRangeBuilder } from './fakerangebuilder.js';
 
@@ -18,6 +19,8 @@ class FakeDocument {
     const { nargs, matchThrow } = signatureArgs(arguments, "Document");
     if (nargs !== 1 || !is.nonEmptyString(id)) matchThrow();
     this.__id = id
+    // at this point the only content in shadow document is an id
+    // the rest is lazy loaded
     this.__shadowDocument = newShadowDocument(id)
   }
 
@@ -89,6 +92,21 @@ class FakeDocument {
 
   getBody() {
     return newFakeBody(this.structure)
+  }
+
+  getTabs() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Document.getTabs");
+    if (nargs !== 0) matchThrow();
+
+    // The resource getter in shadowDocument now always fetches the tabbed resource.
+    const resource = this.__shadowDocument.resource;
+
+    if (!resource.tabs || resource.tabs.length === 0) {
+      return [];
+    }
+
+    // The FakeTab constructor needs the parent document, the tab resource, and the doc name.
+    return resource.tabs.map(tabResource => newFakeTab(this, tabResource, this.getName()));
   }
 
   getId() {
