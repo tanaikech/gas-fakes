@@ -39,7 +39,7 @@ export class FakeSheet {
       "insertImage",
       "removeImage",
       // "getNamedRanges",
-      "getRangeByName",
+      // "getRangeByName", // <--- This is a method for Class Spreadsheet.
       "removeNamedRange",
       "setNamedRange",
       "getProtections",
@@ -989,6 +989,25 @@ export class FakeSheet {
       return ar.map((e) => newFakeNamedRange(sheet, e));
     }
     return [];
+  }
+
+  setName(name) {
+    const obj = {
+      spreadsheetId: this.getParent().getId(),
+      requests: [
+        {
+          updateSheetProperties: {
+            properties: {
+              sheetId: this.getSheetId(),
+              title: name,
+            },
+            fields: "title",
+          },
+        },
+      ],
+    };
+    this.__batchUpdate(obj);
+    return this;
   }
 
   __batchUpdate({ spreadsheetId, requests }) {

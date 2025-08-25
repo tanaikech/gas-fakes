@@ -60,7 +60,7 @@ export class FakeSpreadsheet {
       "resetSpreadsheetTheme",
       "renameActiveSheet",
       "removeNamedRange",
-      "getRangeByName",
+      // "getRangeByName",
       "moveChartToObjectSheet",
       "deleteRows",
       "addCollaborators",
@@ -737,6 +737,28 @@ export class FakeSpreadsheet {
       ],
     };
     this.__batchUpdate(obj);
+    return null;
+  }
+
+  getRangeByName(name) {
+    const obj = {
+      spreadsheetId: this.getId(),
+      fields: "namedRanges",
+    };
+    const res = this.__get(obj).namedRanges;
+    if (res && res.length > 0) {
+      const spreadsheet = this;
+      const r = res.find((e) => e.name == name);
+      if (r) {
+        const sheet = this.getSheetById(r.range.sheetId);
+        return sheet.getRange(
+          r.range.startRowIndex + 1,
+          r.range.startColumnIndex + 1,
+          r.range.endRowIndex - r.range.startRowIndex,
+          r.range.endColumnIndex - r.range.startColumnIndex
+        );
+      }
+    }
     return null;
   }
 
