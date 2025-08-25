@@ -129,7 +129,8 @@ export const makeProtectionRequests = (shadow, twig) => {
           range: {
             startIndex: elItem.startIndex,
             endIndex,
-            segmentId: shadow.__segmentId
+            segmentId: shadow.__segmentId,
+            tabId: shadow.__tabId
           },
         },
       });
@@ -154,6 +155,7 @@ export const updateParagraphStyle = (element, paragraphStyle, fields) => {
     startIndex: item.startIndex,
     endIndex: item.endIndex,
     segmentId: shadow.__segmentId,
+    tabId: shadow.__tabId,
   };
 
   const requests = [{

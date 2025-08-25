@@ -67,21 +67,17 @@ class ShadowDocument {
 
   makeElementMap(data) {
 
-    // its possible that the document is a tabbed document, in which case the body content is in the first section
-    // TODO support multiple tabs - for now we're just going to support legacy docs wrapped in a tab
-
-    const {body, documentTab} = this.__unpackDocumentTab(data)
+    const {body, documentTab, tabs} = this.__unpackDocumentTab(data)
     const {content} = body
 
 
     // get the currently known named ranges
     const currentNr = getCurrentNr(documentTab)
 
-    // if there's been an update, the revisionId will have changed
     if (this.__mapRevisionId !== data.revisionId) {
       this.__mapRevisionId = data.revisionId
-      // TODO check this ro see when its not null
       this.__segmentId = body.segmentId
+      this.__tabId = tabs?.[0]?.tabProperties?.tabId
     }
 
     // this will contain all the requests to add new named ranges
@@ -289,14 +285,14 @@ class ShadowDocument {
       // up to the start of the final newline character. The range for deletion is
       // [1, endIndex - 1), where the end of the range is exclusive.
       requests.push({
-        deleteContentRange: { range: { startIndex: 1, endIndex: endIndex - 1, segmentId: this.__segmentId } }
+        deleteContentRange: { range: { startIndex: 1, endIndex: endIndex - 1, segmentId: this.__segmentId, tabId: this.__tabId } }
       });
     }
 
     // We must remove bullets if we are deleting content (which might merge a list item
     // into the first paragraph) OR if the first paragraph is already a list item.
     if (hasContentToDelete || isFirstElementListItem) {
-      requests.push({ deleteParagraphBullets: { range: { startIndex: 1, endIndex: 1, segmentId: this.__segmentId } } });
+      requests.push({ deleteParagraphBullets: { range: { startIndex: 1, endIndex: 1, segmentId: this.__segmentId, tabId: this.__tabId } } });
     }
 
     if (requests.length > 0) {

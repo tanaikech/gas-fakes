@@ -13,10 +13,13 @@ export const insertTableRowRequest = (tableStartIndex, rowIndex, insertBelow = t
   }
 }
 
-export const deleteParagraphBullets = (startIndex, segmentId) => {
+export const deleteParagraphBullets = (startIndex, segmentId, tabId) => {
   const range = Docs.newRange().setStartIndex(startIndex).setEndIndex(startIndex);
   if (segmentId) {
     range.setSegmentId(segmentId);
+  }
+  if (tabId) {
+    range.setTabId(tabId);
   }
   return {
     deleteParagraphBullets: Docs.newDeleteParagraphBulletsRequest().setRange(range)
@@ -24,10 +27,13 @@ export const deleteParagraphBullets = (startIndex, segmentId) => {
 }
 
 
-export const createParagraphBullets = (startIndex, bulletPreset = "NUMBERED_DECIMAL_ALPHA_ROMAN", segmentId) => {
+export const createParagraphBullets = (startIndex, bulletPreset = "NUMBERED_DECIMAL_ALPHA_ROMAN", segmentId, tabId) => {
   const range = Docs.newRange().setStartIndex(startIndex).setEndIndex(startIndex);
   if (segmentId) {
     range.setSegmentId(segmentId);
+  }
+  if (tabId) {
+    range.setTabId(tabId);
   }
   return {
     createParagraphBullets: Docs.newCreateParagraphBulletsRequest()
@@ -36,14 +42,17 @@ export const createParagraphBullets = (startIndex, bulletPreset = "NUMBERED_DECI
   }
 }
 
-export const deleteTableRowRequest = (tableStartIndex, rowIndex, segmentId) => {
-  return { deleteTableRow: getTableCellLocaton(tableStartIndex, rowIndex, 0, segmentId) }
+export const deleteTableRowRequest = (tableStartIndex, rowIndex, segmentId, tabId) => {
+  return { deleteTableRow: getTableCellLocaton(tableStartIndex, rowIndex, 0, segmentId, tabId) }
 }
 
-export const getTableCellLocaton = (tableStartIndex, rowIndex, columnIndex = 0, segmentId) => {
+export const getTableCellLocaton = (tableStartIndex, rowIndex, columnIndex = 0, segmentId, tabId) => {
   const location = Docs.newLocation().setIndex(tableStartIndex);
   if (segmentId) {
     location.setSegmentId(segmentId);
+  }
+  if (tabId) {
+    location.setTabId(tabId);
   }
   return {
     tableCellLocation: Docs.newTableCellLocation()
@@ -53,20 +62,26 @@ export const getTableCellLocaton = (tableStartIndex, rowIndex, columnIndex = 0, 
   }
 }
 
-export const deleteContentRange = (startIndex, endIndex, segmentId) => {
+export const deleteContentRange = (startIndex, endIndex, segmentId, tabId) => {
   const range = Docs.newRange().setStartIndex(startIndex).setEndIndex(endIndex);
   if (segmentId) {
     range.setSegmentId(segmentId);
+  }
+  if (tabId) {
+    range.setTabId(tabId);
   }
   return {
     deleteContentRange: Docs.newDeleteContentRangeRequest().setRange(range)
   }
 }
 
-export const insertText = (index, text, segmentId) => {
+export const insertText = (index, text, segmentId, tabId) => {
   const location = Docs.newLocation().setIndex(index);
   if (segmentId) {
     location.setSegmentId(segmentId);
+  }
+  if (tabId) {
+    location.setTabId(tabId);
   }
   return {
     insertText: Docs.newInsertTextRequest()
@@ -84,7 +99,7 @@ export const insertText = (index, text, segmentId) => {
  * @param {number} tableStartIndex The start index of the table.
  * @param {Array<Array<string>>} newTableData A 2D array of strings with the new data.
  */
-export const reverseUpdateContent = (content, tableStartIndex, newTableData, segmentId) => {
+export const reverseUpdateContent = (content, tableStartIndex, newTableData, segmentId, tabId) => {
   // 1. find the current table
   const tableElement = content.find(e => e.startIndex === tableStartIndex);
   if (!tableElement) {
@@ -118,11 +133,11 @@ export const reverseUpdateContent = (content, tableStartIndex, newTableData, seg
       // The range to delete is from the start of the paragraph up to, but not including,
       // the structural newline at the end.
       if (oldTextEndIndex - 1 > oldTextStartIndex) {
-        requests.push(deleteContentRange(oldTextStartIndex, oldTextEndIndex - 1, segmentId));
+        requests.push(deleteContentRange(oldTextStartIndex, oldTextEndIndex - 1, segmentId, tabId));
       }
       // this is only required if the nextText has any length
       if (newText.length > 0){
-        requests.push(insertText(oldTextStartIndex, newText, segmentId));
+        requests.push(insertText(oldTextStartIndex, newText, segmentId, tabId));
       }
 
     }
