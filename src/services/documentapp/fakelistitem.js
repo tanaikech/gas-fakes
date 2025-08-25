@@ -67,9 +67,12 @@ export class FakeListItem extends FakeContainerElement {
     const nestingLevel = this.getNestingLevel();
     // The shadowDocument is only available on attached elements.
     if (this.__isDetached) return null;
-    const docResource = this.shadowDocument.resource;
-    const list = docResource.lists?.[listId];
-    if (!list) return null;
+    const docResource = this.shadowDocument.resource;    
+    // The lists can be at the top level or inside the first tab.
+    const {lists} = this.shadowDocument.__unpackDocumentTab(docResource);
+    // Find the list by ID.
+    const list = lists?.[listId];
+    if (!list) return null;    
 
     const levelProps = list.listProperties?.nestingLevels?.[nestingLevel];
     // For a default list, the API might not return explicit level properties.

@@ -20,12 +20,10 @@ class ShadowDocument {
     return Docs.Documents.__get(this.__id, { includeTabsContent: true })
   }
 
-  get __content() {
-    return this.__unpackDocumentTab(this.resource).body.content
 
-  }
+
   get __endBodyIndex() {
-    const content = this.__content
+    const content = this.__unpackDocumentTab(this.resource).body.content
     if (!content.length) {
       throw new Error("document has no content")
     }
@@ -35,6 +33,7 @@ class ShadowDocument {
     }
     return endIndex
   }
+
 
   __unpackDocumentTab = (data) => {
     const tabs = data?.tabs
@@ -49,7 +48,10 @@ class ShadowDocument {
     return {
       tabs,
       documentTab,
-      body
+      body,
+      lists: documentTab.lists,
+      namedStyles: documentTab.namedStyles,
+      namedRanges: documentTab.namedRanges  
     }
   }
   /**
@@ -66,11 +68,11 @@ class ShadowDocument {
   makeElementMap(data) {
 
     // its possible that the document is a tabbed document, in which case the body content is in the first section
-    // TODO support multiple tabs - for now we're just going to support legact docs wrapped in a tab
-    const { documentTab, body, tabs } = this.__unpackDocumentTab(data)
+    // TODO support multiple tabs - for now we're just going to support legacy docs wrapped in a tab
 
+    const {body, documentTab} = this.__unpackDocumentTab(data)
+    const {content} = body
 
-    const { content } = body
 
     // get the currently known named ranges
     const currentNr = getCurrentNr(documentTab)
@@ -262,7 +264,7 @@ class ShadowDocument {
   clear() {
 
     // The document's content is represented by an array of structural elements.
-    const content = this.resource.body?.content;
+    const content = this.__unpackDocumentTab(this.resource).body.content
 
     // If there's no content, there's nothing to clear.
     if (!content || content.length === 0) {

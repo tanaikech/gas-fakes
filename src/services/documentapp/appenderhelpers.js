@@ -109,7 +109,7 @@ const calculateInsertionPointsAndInitialRequests = (self, childIndex, isAppend, 
     }
     const targetChildTwig = children[childIndex];
     const targetChildItem = elementMap.get(targetChildTwig.name);
-    
+
     // rules with tables mean we have to insert before preceding paragrap
     if (targetChildItem.__type === "TABLE") {
       insertIndex = targetChildItem.startIndex - 1; // Insert before the table.
@@ -123,7 +123,7 @@ const calculateInsertionPointsAndInitialRequests = (self, childIndex, isAppend, 
     } else {
       insertIndex = targetChildItem.startIndex
       trailing = '\n'
-      newElementStartIndex =  insertIndex;
+      newElementStartIndex = insertIndex;
     }
 
 
@@ -211,7 +211,7 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
   // if we were inserting a table then there;ll be an unwanted \n to remove - this should be -2 from the insertIndex
   // TODO we need to check if that index is actually a paragraph or not otherwise this will fail/screw up
   if (!isAppend && options.elementType === ElementType.TABLE && insertIndex > 1) {
-    mainRequests.push(deleteContentRange(insertIndex - 1,insertIndex ))
+    mainRequests.push(deleteContentRange(insertIndex - 1, insertIndex))
   }
   requests.unshift(...mainRequests);
 
@@ -240,7 +240,11 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
 
     if (cells && cells.length > 0 && cells[0].length > 0) {
       // The table was created at newElementStartIndex
-      const populateRequests = reverseUpdateContent(shadow.__content, newElementStartIndex, cells);
+      const populateRequests = reverseUpdateContent(
+        shadow.__unpackDocumentTab(structure.resource).body.content, 
+        newElementStartIndex, 
+        cells
+      );
       if (populateRequests.length > 0) {
         Docs.Documents.batchUpdate({ requests: populateRequests }, shadow.getId());
         shadow.refresh();
