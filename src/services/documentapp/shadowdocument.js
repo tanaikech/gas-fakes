@@ -51,7 +51,10 @@ class ShadowDocument {
       body,
       lists: documentTab.lists,
       namedStyles: documentTab.namedStyles,
-      namedRanges: documentTab.namedRanges  
+      namedRanges: documentTab.namedRanges,
+      headers: documentTab.headers,
+      footers: documentTab.footers,
+      documentStyle: documentTab.documentStyle,
     }
   }
   /**
@@ -67,7 +70,7 @@ class ShadowDocument {
 
   makeElementMap(data) {
 
-    const {body, documentTab, tabs} = this.__unpackDocumentTab(data)
+    const { body, documentTab, tabs, headers, footers } = this.__unpackDocumentTab(data)
     const {content} = body
 
 
@@ -111,8 +114,16 @@ class ShadowDocument {
       // All child elements are expected to have a range.
       // A list item is a paragraph, so its named range should be of type PARAGRAPH.
       const { endIndex, startIndex } = element;
+ 
+      // The API may omit startIndex for the first paragraph in a new header/footer,
+      // and return an endIndex of 1. This seems to represent the initial empty paragraph.
+      // We'll normalize it to match the structure of the main body's initial paragraph.
+      if (is.integer(endIndex) && !is.integer(startIndex) && endIndex === 1) {
+        element.startIndex = 1;
+        element.endIndex = 2;
+      }
 
-      if (!is.integer(endIndex) || !is.integer(startIndex)) {
+      if (!is.integer(element.endIndex) || !is.integer(element.startIndex)) {
         console.log(element);
         throw new Error(`failed to find endindex/startindex for ${type}`);
       }
@@ -186,6 +197,32 @@ class ShadowDocument {
     content.forEach(c => mapElements(c, bodyTree));
     bodyTree.children = content.map(c => c.__twig).filter(Boolean);
 
+    // Now map headers and footers
+    const mapSection = (sectionMap, sectionType) => {
+      if (!sectionMap) return;
+      Reflect.ownKeys(sectionMap).forEach(sectionId => {
+        const section = sectionMap[sectionId];
+        // The name in the element map is constructed from the type and ID.
+        const sectionName = makeNrPrefix(sectionType) + sectionId;
+        const sectionTree = { name: sectionName, children: [], parent: null };
+        const sectionElement = {
+          __prop: null, // a header/footer is a top-level container
+          __type: sectionType,
+          __name: sectionName,
+          __twig: sectionTree,
+          // also store the original resource item
+          ...section,
+        };
+        this.__elementMap.set(sectionName, sectionElement);
+
+        // recurse the content of the section
+        (section.content || []).forEach(c => mapElements(c, sectionTree));
+        sectionTree.children = (section.content || []).map(c => c.__twig).filter(Boolean);
+      });
+    };
+
+    mapSection(headers, 'HEADER_SECTION');
+    mapSection(footers, 'FOOTER_SECTION');
     // delete the named ranges that weren't used
     // findOrCreate... consumes the currentNr list, so what's left are unused ranges.
 

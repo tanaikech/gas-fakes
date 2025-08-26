@@ -6,6 +6,8 @@ import { docsCacher } from '../../support/docscacher.js';
 import { newFakeTab } from './faketab.js';
 import { newFakeBody } from './fakebody.js';
 import { newFakeRangeBuilder } from './fakerangebuilder.js';
+import { newFakeHeaderSection } from './fakeheadersection.js';
+import { makeNrPrefix } from './nrhelpers.js';
 
 export const newFakeDocument = (...args) => {
   return Proxies.guard(new FakeDocument(...args));
@@ -22,6 +24,48 @@ class FakeDocument {
     // at this point the only content in shadow document is an id
     // the rest is lazy loaded
     this.__shadowDocument = newShadowDocument(id)
+  }
+
+  addHeader() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Document.addHeader');
+    if (nargs !== 0) matchThrow();
+
+    const existingHeader = this.getHeader();
+    if (existingHeader) {
+      throw new Error('This document already contains a header.');
+    }
+
+    const shadow = this.__shadowDocument;
+    const requests = [{
+      createHeader: {
+        type: 'DEFAULT',
+        // No sectionBreakLocation means it applies to the DocumentStyle
+      },
+    }];
+
+    Docs.Documents.batchUpdate({ requests }, shadow.getId());
+    shadow.refresh();
+
+    return this.getHeader();
+  }
+
+  getHeader() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Document.getHeader');
+    if (nargs !== 0) matchThrow();
+
+    const shadow = this.__shadowDocument;
+    // Accessing resource will trigger a refresh and element map rebuild if necessary.
+    const resource = shadow.resource;
+    const { documentStyle } = shadow.__unpackDocumentTab(resource);
+
+    const headerId = documentStyle?.defaultHeaderId;
+    if (!headerId) {
+      return null;
+    }
+
+    const headerName = makeNrPrefix('HEADER_SECTION') + headerId;
+    // The structure getter on shadowDocument ensures the map is up to date.
+    return newFakeHeaderSection(shadow.structure, headerName);
   }
 
 

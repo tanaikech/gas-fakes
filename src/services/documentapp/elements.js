@@ -11,5 +11,7 @@ import './faketable.js';
 import './faketablerow.js';
 import './faketablecell.js';
 import './fakelistitem.js';
+import './fakeheadersection.js';
+import './fakefootersection.js';
 // As you create more element types (e.g., Table, ListItem), import them here.
 // import './faketable.js';

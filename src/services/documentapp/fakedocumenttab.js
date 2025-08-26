@@ -43,7 +43,7 @@ class FakeDocumentTab extends FakeElement {
     }
 
     addHeader() {
-        return notYetImplemented('DocumentTab.addHeader()');
+        return this.__document.addHeader();
     }
 
     addNamedRange(name, range) {
@@ -67,7 +67,7 @@ class FakeDocumentTab extends FakeElement {
     }
 
     getHeader() {
-        return notYetImplemented('DocumentTab.getHeader()');
+        return this.__document.getHeader();
     }
 
     getNamedRangeById(id) {

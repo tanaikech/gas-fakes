@@ -52,13 +52,19 @@ export class FakeContainerElement extends FakeElement {
    */
   get __segmentId() {
     if (this.__isDetached) return null;
-    return this.__structure.shadowDocument.__segmentId
+    const item = this.__elementMapItem;
+    // For Body, headerId/footerId will be undefined, so it falls back to the shadow's segmentId (which is null/empty for body).
+    // For Header/Footer, this will return the correct ID.
+    return item.headerId || item.footerId || this.__structure.shadowDocument.__segmentId;
   }
 
 
   get __children() {
     return this.__twig.children;
   }
+
+
+
 
 
   /**

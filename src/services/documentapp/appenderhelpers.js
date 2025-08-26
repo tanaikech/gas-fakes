@@ -88,9 +88,17 @@ const calculateInsertionPointsAndInitialRequests = (self, childIndex, isAppend, 
         // the new child will start exactly where we insert it.
         childStartIndex = insertIndex;
       }
-    } else {
-      // Appending to the body, creating a new element.
-      const endIndexBefore = shadowDocument.__endBodyIndex;
+    } else { // Appending to a container (Body, Header, Footer, TableCell)
+      const children = self.__children;
+      if (children.length === 0) {
+        // This should not happen for a container that exists in the document.
+        // If it does, we have no reference point for the index.
+        throw new Error(`Cannot append to an empty container: ${self.toString()}`);
+      }
+      const lastChildTwig = children[children.length - 1];
+      const lastChildItem = elementMap.get(lastChildTwig.name);
+      const endIndexBefore = lastChildItem.endIndex;
+
       insertIndex = endIndexBefore - 1;
       newElementStartIndex = endIndexBefore; // The new element will start after the old content.
       childStartIndex = null; // Child start index is unknown, must be found within container.
@@ -190,8 +198,8 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
   // 2. Get current document state.
   const shadow = self.__structure.shadowDocument;
   const structure = shadow.structure;
-  const segmentId = shadow.__segmentId;
-  const tabId = shadow.__tabId;
+  const segmentId = self.__segmentId;
+  const tabId = self.__tabId; // TabId is document-wide for now
 
   // 3. Calculate insertion points, child start index, and initial "protection" requests.
   const { insertIndex, newElementStartIndex, childStartIndex, requests, leading, trailing } = calculateInsertionPointsAndInitialRequests(
