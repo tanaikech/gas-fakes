@@ -562,6 +562,11 @@ All this is fine, but although you can get tabs that have been setup by the UI, 
 
 I've set up gas-fakes document app to retrieve tab information and to make requests based on the new 'tab structured' format, but since we can't create them programatically, this makes testing the tab methods impractical. I'm pausing future development on tab related methods until the https://issuetracker.google.com/issues/375867285 issue is resolved.
 
+#### Bookmarks
+
+Rather like various other disconnects between Apps Script and the Docs API, there is no way to create, manage or even detect bookmarks that have been created by Apps Script within the Document resource using the Docs API.
+
+I'm parking the work on Bookmarks until this issue is resolved - https://issuetracker.google.com/issues/441253571
 
 #### Document body
 
