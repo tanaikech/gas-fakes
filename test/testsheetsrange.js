@@ -28,6 +28,10 @@ export const testSheetsRange = (pack) => {
     spreadsheet.setNamedRange(name2, range2);
     t.is(spreadsheet.getNamedRanges().length, 2);
 
+    // Get created named range by getNamedRange
+    const r = spreadsheet.getRangeByName(name1);
+    t.is(r.getA1Notation(), "A1:B2");
+
     // Get created named ranges from Spreadsheet
     const res1 = spreadsheet
       .getNamedRanges()
