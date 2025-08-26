@@ -558,6 +558,11 @@ Response includes thes same keys as case 1. As an aside, the property orders are
   'documentStyle'
 ```
 
+All this is fine, but although you can get tabs that have been setup by the UI, there's actually no way to create Tabs with Apps Script or even via the Docs API. See this feature request issue - https://issuetracker.google.com/issues/375867285 which has been open for going on for a year now.
+
+I've set up gas-fakes document app to retrieve tab information and to make requests based on the new 'tab structured' format, but since we can't create them programatically, this makes testing the tab methods impractical. I'm pausing future development on tab related methods until the https://issuetracker.google.com/issues/375867285 issue is resolved.
+
+
 #### Document body
 
 Some oddities in the document body
