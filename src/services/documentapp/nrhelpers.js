@@ -5,15 +5,18 @@ const { is } = Utils
 const shadowPrefix = "GAS_FAKE_"
 
 // makes a prefix for a named range based on the type of elelemtn
-export const makeNrPrefix = (type = null) => {
+export const makeNrPrefix = (type = null, segmentId = null) => {
+  // A null or empty string segmentId refers to the body.
+  const segmentPart = (is.nonEmptyString(segmentId) ? segmentId : 'body') + '_';
+
   if (is.null(type)) {
-    return shadowPrefix
+    return shadowPrefix + segmentPart;
   }
   if (!is.nonEmptyString(type)) {
     throw `expected a non empty string - got ${type}`
   }
-  return shadowPrefix + type + '_'
-}
+  return shadowPrefix + segmentPart + type + '_';
+};
 
 // get all the relevant named ranges from the current document
 export const getCurrentNr = (data) => {
@@ -34,39 +37,44 @@ export const getCurrentNr = (data) => {
 }
 
 // add a request to the bacth requests to create a new named range
-const addNrRequest = (type, element, addRequests) => {
-  const name = makeNrPrefix(type) + Utilities.getUuid()
+const addNrRequest = (type, element, addRequests, segmentId) => {
+  const name = makeNrPrefix(type, segmentId) + Utilities.getUuid();
   addRequests.push({
     createNamedRange: {
       name,
       range: {
         endIndex: element.endIndex,
-        startIndex: element.startIndex
-      }
-    }
-  })
+        startIndex: element.startIndex,
+        segmentId: segmentId,
+      },
+    },
+  });
   return {
-    name
-  }
-}
+    name,
+  };
+};
 
 // either finds a matching named range, or adds it to the creation queue
-export const findOrCreateNamedRangeName = (element, type, currentNr, addRequests) => {
+export const findOrCreateNamedRangeName = (element, type, currentNr, addRequests, segmentId) => {
   const { endIndex, startIndex } = element;
-  const prefix = makeNrPrefix(type);
+  const prefix = makeNrPrefix(type, segmentId);
 
   const bestMatchIndex = currentNr.findIndex(nr =>
     nr.name.startsWith(prefix) &&
-    (nr.ranges || []).some(range => range.endIndex === endIndex && range.startIndex === startIndex)
+    (nr.ranges || []).some(range =>
+      range.endIndex === endIndex &&
+      range.startIndex === startIndex &&
+      // Also check that the segmentId matches. The API returns an empty string for the body segment.
+      (range.segmentId || '') === (segmentId || '')
+    )
   );
 
   if (bestMatchIndex !== -1) {
-    // We found a match (either exact or expanded).
     // Consume it from the list so it can't be matched to another element.
     const [foundRange] = currentNr.splice(bestMatchIndex, 1);
     return foundRange;
   }
 
   // If no match was found, it's a genuinely new element.
-  return addNrRequest(type, element, addRequests);
+  return addNrRequest(type, element, addRequests, segmentId);
 };

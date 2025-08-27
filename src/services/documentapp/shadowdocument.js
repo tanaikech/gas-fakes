@@ -100,7 +100,7 @@ class ShadowDocument {
     // console.log('named ranges after document fetch', JSON.stringify(currentNr))
 
     // maps all the elements to their named range
-    const mapElements = (element, branch, knownType = null) => {
+    const mapElements = (element, branch, segmentId, knownType = null) => {
       // this gets the type and property name to look for for the given element content
       const elementProp = knownType ? { type: knownType, prop: null } : getElementProp(element);
 
@@ -130,7 +130,7 @@ class ShadowDocument {
       // For an empty document, we use static, non-API names to avoid re-indexing issues.
       // For all other documents, we use real NamedRanges to track elements.
       const nrType = type === 'LIST_ITEM' ? 'PARAGRAPH' : type;
-      const { name } = findOrCreateNamedRangeName(element, nrType, currentNr, addRequests);
+      const { name } = findOrCreateNamedRangeName(element, nrType, currentNr, addRequests, segmentId);
 
       // embed this stuff in the shadow element
       element.__prop = prop;
@@ -166,7 +166,7 @@ class ShadowDocument {
 
       if (childrenArray.length > 0) {
         // Process ALL sub-elements recursively to ensure they are in the elementMap and have a twig.
-        childrenArray.forEach(subElement => mapElements(subElement, twig, childType));
+        childrenArray.forEach(subElement => mapElements(subElement, twig, segmentId, childType));
 
         // Now that all sub-elements have been processed and have a __twig, we can
         // filter them to build the user-facing children list for the current twig.
@@ -194,7 +194,7 @@ class ShadowDocument {
     };
 
     // recurse the entire document
-    content.forEach(c => mapElements(c, bodyTree));
+    content.forEach(c => mapElements(c, bodyTree, body.segmentId));
     bodyTree.children = content.map(c => c.__twig).filter(Boolean);
 
     // Now map headers and footers
@@ -216,7 +216,7 @@ class ShadowDocument {
         this.__elementMap.set(sectionName, sectionElement);
 
         // recurse the content of the section
-        (section.content || []).forEach(c => mapElements(c, sectionTree));
+        (section.content || []).forEach(c => mapElements(c, sectionTree, sectionId));
         sectionTree.children = (section.content || []).map(c => c.__twig).filter(Boolean);
       });
     };

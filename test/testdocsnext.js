@@ -42,7 +42,7 @@ export const testDocsNext = (pack) => {
       // We get the header again to check the content.
       const sameHeader = doc.getHeader();
       t.is(sameHeader.getText(), "\nThis is the header text.", "The header should contain the appended text");
-      t.rxMatch(t.threw(() => doc.addHeader())?.message, /This document already contains a header./, "Calling addHeader again should throw an error");
+      t.rxMatch(t.threw(() => doc.addHeader())?.message, /Document tab already contains a header./, "Calling addHeader again should throw an error");
 
       if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
     });
