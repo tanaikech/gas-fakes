@@ -19,11 +19,11 @@ const { is } = Utils;
 export class FakeTable extends FakeContainerElement {
   /**
    */
-  constructor(structure, nameOrItem) {
+  constructor(shadowDocument, nameOrItem) {
     // A real implementation would build a table resource for the API.
     // Note the oddity: appendTable() with no args creates a 1x1 table in the fake,
     // but a 0-row table in live GAS. The API itself requires rows > 0.
-    super(structure, nameOrItem);
+    super(shadowDocument, nameOrItem);
   }
 
   /**

@@ -27,22 +27,21 @@ export const newFakeContainerElement = (...args) => {
  */
 export class FakeContainerElement extends FakeElement {
   /**
-   * @param {object} structure The document structure manager.
+   * @param {import('./shadowdocument.js').ShadowDocument} shadowDocument The shadow document manager.
    * @param {string|object} nameOrItem The name of the element or the element's API resource.
    * @private
    */
-  constructor(structure, nameOrItem) {
-    super(structure, nameOrItem);
+  constructor(shadowDocument, nameOrItem) {
+    super(shadowDocument, nameOrItem);
   }
 
   /**
    * Gets the shadow document manager associated with this element's structure.
-   * @type {import('./shadow.js').ShadowDocument | null}
+   * @type {import('./shadowdocument.js').ShadowDocument | null}
    * @private
    */
   get shadowDocument() {
-    if (this.__isDetached) return null;
-    return this.__structure.shadowDocument;
+    return this.__shadowDocument;
   }
 
   /**
@@ -55,7 +54,7 @@ export class FakeContainerElement extends FakeElement {
     const item = this.__elementMapItem;
     // For Body, headerId/footerId will be undefined, so it falls back to the shadow's segmentId (which is null/empty for body).
     // For Header/Footer, this will return the correct ID.
-    return item.headerId || item.footerId || this.__structure.shadowDocument.__segmentId;
+    return item.headerId || item.footerId || this.shadowDocument.__segmentId;
   }
 
 
@@ -122,7 +121,7 @@ export class FakeContainerElement extends FakeElement {
     }
 
     // Attached element logic
-    const structure = this.shadowDocument.structure;
+    const structure = this.__structure;
     const item = structure.elementMap.get(this.__name);
     const children = item.__twig.children;
 
@@ -130,8 +129,8 @@ export class FakeContainerElement extends FakeElement {
 
     const childTwig = children[childIndex];
     if (!childTwig) throw new Error(`child with index ${childIndex} not found`);
-
-    return newFakeElement(structure, childTwig.name).__cast();
+    
+    return newFakeElement(this.shadowDocument, childTwig.name).__cast();
   }
 
   /**
@@ -154,7 +153,7 @@ export class FakeContainerElement extends FakeElement {
       children = this.__twig.children;
     } else {
       // Get the refreshed structure to find the index within the up-to-date children list.
-      const structure = this.shadowDocument.structure;
+      const structure = this.__structure;
       const item = structure.elementMap.get(this.__name);
       children = item.__twig.children;
     }
@@ -175,7 +174,7 @@ export class FakeContainerElement extends FakeElement {
     }
     // Must get the latest structure to return an accurate count,
     // as the object's internal state might be stale.
-    const item = this.shadowDocument.structure.elementMap.get(this.__name);
+    const item = this.__structure.elementMap.get(this.__name);
     return item.__twig.children.length;
   }
 

@@ -13,8 +13,8 @@ import { FakeContainerElement } from './fakecontainerelement.js';
  * @see https://developers.google.com/apps-script/reference/document/table-row
  */
 export class FakeTableRow extends FakeContainerElement {
-  constructor(structure, nameOrItem) {
-    super(structure, nameOrItem);
+  constructor(shadowDocument, nameOrItem) {
+    super(shadowDocument, nameOrItem);
   }
 
   /**

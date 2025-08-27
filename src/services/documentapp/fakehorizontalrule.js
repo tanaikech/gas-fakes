@@ -9,8 +9,8 @@ import { registerElement } from './elementRegistry.js';
  * direct child of the Body or other container.
  */
 class FakeHorizontalRule extends FakeElement {
-  constructor(structure, name) {
-    super(structure, name);
+  constructor(shadowDocument, name) {
+    super(shadowDocument, name);
   }
 
   // A HorizontalRule contains no visible text.

@@ -9,15 +9,13 @@ const { is } = Utils
 
 class FakeBody extends FakeContainerElement {
 
-  constructor(structure, name) {
+  constructor(shadowDocument, name) {
     const { nargs, matchThrow } = signatureArgs(arguments, 'Body');
-    if ((nargs < 1 || nargs > 2) || !is.object(structure)) {
+    if ((nargs < 1 || nargs > 2) || !is.object(shadowDocument)) {
       matchThrow();
     }
     // The name from getBody() will be undefined, so we default it. The name from __cast() will be defined.
-    super(structure, name || makeNrPrefix('BODY_SECTION'))
-    this.__structure = structure
-
+    super(shadowDocument, name || makeNrPrefix('BODY_SECTION'))
   }
 
   getText() {

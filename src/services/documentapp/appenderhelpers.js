@@ -176,7 +176,7 @@ const findAndReturnNewElement = (shadow, newElementStartIndex, childStartIndex, 
   }
 
   const factory = getElementFactory(finalItem.__type);
-  return factory(shadow.structure, finalItem.__name);
+  return factory(shadow, finalItem.__name);
 };
 
 /**

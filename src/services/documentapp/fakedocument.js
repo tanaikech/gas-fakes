@@ -65,7 +65,7 @@ class FakeDocument {
 
     const headerName = makeNrPrefix('HEADER_SECTION') + headerId;
     // The structure getter on shadowDocument ensures the map is up to date.
-    return newFakeHeaderSection(shadow.structure, headerName);
+    return newFakeHeaderSection(shadow, headerName);
   }
 
 
@@ -129,13 +129,9 @@ class FakeDocument {
   saveAndClose() {
     // this is a no-op in fake environment since it is stateless
   }
-  
-  get structure () {
-    return this.__shadowDocument.structure
-  }
 
   getBody() {
-    return newFakeBody(this.structure)
+    return newFakeBody(this.__shadowDocument)
   }
 
   getTabs() {

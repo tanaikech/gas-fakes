@@ -7,8 +7,8 @@ import { registerElement } from './elementRegistry.js';
  * @see https://developers.google.com/apps-script/reference/document/text
  */
 class FakeText extends FakeElement {
-  constructor(structure, nameOrItem) {
-    super(structure, nameOrItem);
+  constructor(shadowDocument, nameOrItem) {
+    super(shadowDocument, nameOrItem);
   }
 
   /**

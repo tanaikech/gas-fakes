@@ -24,12 +24,12 @@ export const newFakeFooterSection = (...args) => {
  */
 class FakeFooterSection extends FakeSectionElement {
   /**
-   * @param {object} structure The document structure manager.
+   * @param {import('./shadowdocument.js').ShadowDocument} shadowDocument The shadow document manager.
    * @param {string|object} nameOrItem The name of the element or the element's API resource.
    * @private
    */
-  constructor(structure, nameOrItem) {
-    super(structure, nameOrItem);
+  constructor(shadowDocument, nameOrItem) {
+    super(shadowDocument, nameOrItem);
   }
 
   /**

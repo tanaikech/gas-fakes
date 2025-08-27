@@ -59,7 +59,8 @@ export const findOrCreateNamedRangeName = (element, type, currentNr, addRequests
   const { endIndex, startIndex } = element;
   const prefix = makeNrPrefix(type, segmentId);
 
-  const bestMatchIndex = currentNr.findIndex(nr =>
+  // First, try for an exact match on start and end index. This is the most reliable.
+  let bestMatchIndex = currentNr.findIndex(nr =>
     nr.name.startsWith(prefix) &&
     (nr.ranges || []).some(range =>
       range.endIndex === endIndex &&
@@ -69,9 +70,35 @@ export const findOrCreateNamedRangeName = (element, type, currentNr, addRequests
     )
   );
 
+  let isPartialMatch = false;
+  // If no exact match, try a looser match on just the start index.
+  // This handles cases where an element (like the last paragraph) is modified by an append,
+  // which changes its endIndex but not its startIndex.
+  if (bestMatchIndex === -1) {
+    bestMatchIndex = currentNr.findIndex(nr =>
+      nr.name.startsWith(prefix) &&
+      (nr.ranges || []).some(range => range.startIndex === startIndex && (range.segmentId || '') === (segmentId || ''))
+    );
+    if (bestMatchIndex !== -1) {
+      isPartialMatch = true;
+    }
+  }
+
   if (bestMatchIndex !== -1) {
     // Consume it from the list so it can't be matched to another element.
     const [foundRange] = currentNr.splice(bestMatchIndex, 1);
+
+    // If it was a partial match, it means the element was modified (e.g., endIndex changed).
+    // We need to update its named range by deleting the old one and creating a new one with the same name.
+    if (isPartialMatch) {
+      addRequests.push({ deleteNamedRange: { namedRangeId: foundRange.namedRangeId } });
+      addRequests.push({
+        createNamedRange: {
+          name: foundRange.name,
+          range: { startIndex, endIndex, segmentId },
+        },
+      });
+    }
     return foundRange;
   }
 

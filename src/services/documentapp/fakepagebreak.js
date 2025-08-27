@@ -8,8 +8,8 @@ import { registerElement } from './elementRegistry.js';
  * direct child of the Body.
  */
 class FakePageBreak extends FakeElement {
-  constructor(structure, name) {
-    super(structure, name);
+  constructor(shadowDocument, name) {
+    super(shadowDocument, name);
   }
 
   // A PageBreak contains no visible text.

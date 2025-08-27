@@ -55,7 +55,7 @@ export class FakeElement {
      * @param {string | object} nameOrItem - The unique name of the element within the structure, or the raw element resource for a detached element.
      * @private
      */
-    constructor(structure, nameOrItem) {
+  constructor(shadowDocument, nameOrItem) {
       const { nargs, matchThrow } = signatureArgs(arguments, 'FakeElement');
       if (nargs !== 2) matchThrow();
 
@@ -63,19 +63,19 @@ export class FakeElement {
       // or "detached" (with a structural element but no live structure).
       // A detached element is created by copy().
       if (is.string(nameOrItem)) { // Attached
-        if (!is.object(structure) || !nameOrItem.startsWith(makeNrPrefix())) {
+      if (!is.object(shadowDocument) || !nameOrItem.startsWith(makeNrPrefix())) {
           throw new Error('Invalid arguments for attached FakeElement');
         }
         this.__isDetached = false;
-        this.__structure = structure;
+      this.__shadowDocument = shadowDocument;
         this.__name = nameOrItem;
         this.__detachedItem = null;
       } else if (is.object(nameOrItem)) { // Detached
-        if (!is.null(structure)) {
-          throw new Error('Structure must be null for a detached FakeElement');
+      if (!is.null(shadowDocument)) {
+        throw new Error('shadowDocument must be null for a detached FakeElement');
         }
         this.__isDetached = true;
-        this.__structure = null;
+      this.__shadowDocument = null;
         this.__name = null;
         this.__detachedItem = nameOrItem;
       }
@@ -86,6 +86,11 @@ export class FakeElement {
         this[ob.method] = this.__cast.bind(this, cast);
       });
     }
+
+  get __structure() {
+    if (this.__isDetached) return null;
+    return this.__shadowDocument.structure;
+  }
 
   /**
    * Gets the underlying element resource item from the structure map or the detached item.
@@ -141,7 +146,7 @@ export class FakeElement {
       throw new Error(`Parent element with name ${name} not found`);
     }
     // Create a new element instance for the parent and cast it to its proper type.
-    return newFakeElement(this.__structure, name).__cast();
+    return newFakeElement(this.__shadowDocument, name).__cast();
   }
 
   /**
@@ -222,7 +227,7 @@ export class FakeElement {
       throw new Error(`${type} can't be cast as ${asType}`);
     }
     const factory = getElementFactory(asType);
-    return factory(this.__structure, this.__name);
+    return factory(this.__shadowDocument, this.__name);
   }
 
   /**

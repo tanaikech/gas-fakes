@@ -15,8 +15,8 @@ import { registerElement } from './elementRegistry.js';
  * @see https://developers.google.com/apps-script/reference/document/table-cell
  */
 export class FakeTableCell extends FakeContainerElement {
-  constructor(structure, nameOrItem) {
-    super(structure, nameOrItem);
+  constructor(shadowDocument, nameOrItem) {
+    super(shadowDocument, nameOrItem);
   }
 
   /**
