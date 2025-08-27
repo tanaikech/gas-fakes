@@ -5,12 +5,11 @@
  * note
  * - arguments and returns must be serializable ie. primitives or plain objects
  */
-import path from 'path';
+
 import { responseSyncify } from './auth.js';
 import { syncWarn, syncError } from './workersync/synclogger.js';
+import { getSlidesApiClient } from '../services/advslides/slapis.js';
 
-const slapisPath = "../services/advslides/slapis.js";
-const getModulePath = (relTarget) => path.resolve(import.meta.dirname, relTarget);
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 /**
@@ -24,9 +23,8 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
  * @return {import('./sxdrive.js').SxResult} from the Slides api
  */
 export const sxSlides = async (Auth, { prop, method, params, options = {} }) => {
-  const { getApiClient } = await import(getModulePath(slapisPath));
-  const auth = Auth.getAuth();
-  const apiClient = getApiClient(auth);
+
+  const apiClient = getSlidesApiClient();
 
   const maxRetries = 7;
   let delay = 1777;

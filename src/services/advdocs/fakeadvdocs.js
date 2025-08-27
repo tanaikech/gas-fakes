@@ -2,14 +2,12 @@
  * Advanced sheets service
  */
 import { Proxies } from '../../support/proxies.js'
-import { advClassMaker, notYetImplemented } from '../../support/helpers.js'
-import { getAuthedClient } from './docapis.js'
+import { advClassMaker } from '../../support/helpers.js'
 import { newFakeAdvDocuments } from './fakeadvdocuments.js'
 import { docsCacher } from '../../support/docscacher.js';
 
 class FakeAdvDocs {
   constructor() {
-    this.client = Proxies.guard(getAuthedClient())
     this.__fakeObjectType = "Docs"
 
     const propLists = {

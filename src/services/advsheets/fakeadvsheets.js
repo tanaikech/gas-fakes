@@ -3,15 +3,13 @@
  */
 import { Proxies } from '../../support/proxies.js'
 import { advClassMaker } from '../../support/helpers.js'
-import { getAuthedClient } from './shapis.js'
 import { newFakeAdvSheetsSpreadsheets } from './fakeadvsheetsspreadsheets.js'
 import { sheetsCacher } from '../../support/sheetscacher.js';
-import { sheets } from 'googleapis/build/src/apis/sheets/index.js';
+
 
 class FakeAdvSheets {
   constructor() {
-    this.client = Proxies.guard(getAuthedClient())
-    this.__fakeObjectType = "Docs"
+    this.__fakeObjectType = "Sheets"
 
     const propLists = {
       newGridRange: ['sheetId', 'startRowIndex', 'startColumnIndex', 'endRowIndex', 'endColumnIndex'],
@@ -883,4 +881,3 @@ class FakeAdvSheets {
 }
 
 export const newFakeAdvSheets = (...args) => Proxies.guard(new FakeAdvSheets(...args))
-

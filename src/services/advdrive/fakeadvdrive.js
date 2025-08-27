@@ -3,7 +3,6 @@
  */
 import { Proxies } from '../../support/proxies.js'
 import { notYetImplemented } from '../../support/helpers.js'
-import { getAuthedClient } from './drapis.js'
 import { newFakeAdvDriveAbout } from './fakeadvdriveabout.js'
 import { newFakeAdvDriveFiles } from './fakeadvdrivefiles.js';
 import { newFakeAdvDriveApps } from './fakeadvdriveapps.js'
@@ -17,7 +16,6 @@ import { getDrivePerformance } from '../../support/filecache.js';
 
 class FakeAdvDrive {
   constructor() {
-    this.client = Proxies.guard(getAuthedClient())
     this.__fakeObjectType = "Drive"
   }
   toString() {

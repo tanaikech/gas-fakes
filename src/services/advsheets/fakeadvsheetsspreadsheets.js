@@ -17,7 +17,7 @@ import { FakeAdvResource } from '../common/fakeadvresource.js';
 class FakeAdvSheetsSpreadsheets extends FakeAdvResource {
   constructor(sheets) {
     super(sheets, 'spreadsheets', Syncit.fxSheets);
-    this.shapisPath = path.resolve(import.meta.dirname, './shapis.js');
+
     this.__fakeObjectType = "Sheets.Spreadsheets";
 
     const props = [

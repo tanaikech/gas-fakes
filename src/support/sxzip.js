@@ -7,7 +7,7 @@
  */
 import archiver from 'archiver';
 import unzipper from 'unzipper';
-import { syncLog, syncWarn, syncError } from './workersync/synclogger.js';
+import { syncWarn, syncError } from './workersync/synclogger.js';
 
 const streamToBuffer = (stream) => {
   return new Promise((resolve, reject) => {

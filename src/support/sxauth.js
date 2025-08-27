@@ -8,6 +8,10 @@
 import got from 'got';
 import { Auth } from './auth.js';
 import { syncLog } from './workersync/synclogger.js';
+import { homedir } from 'os';
+import {access, readFile, writeFile, mkdir } from 'fs/promises';
+import path from 'path'
+
 
 /**
  * initialize ke stuff at the beginning such as manifest content and settings
@@ -25,9 +29,7 @@ import { syncLog } from './workersync/synclogger.js';
 export const sxInit = async ({ manifestPath, claspPath, settingsPath, mainDir, cachePath, propertiesPath, fakeId }) => {
 
   const findAdcPath = async () => {
-    const { homedir } = await import('os');
-    const { access } = await import('node:fs/promises');
-    const path = await import('path');
+
 
     if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
       return process.env.GOOGLE_APPLICATION_CREDENTIALS;
@@ -56,8 +58,7 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, mainDir, c
   };
 
   // get the settings and manifest
-  const path = await import('path')
-  const { readFile, writeFile, mkdir } = await import('node:fs/promises')
+
 
   // get a file and parse if it exists
   const getIfExists = async (file) => {

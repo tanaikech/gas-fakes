@@ -10,7 +10,7 @@ import { responseSyncify } from './auth.js';
 import intoStream from 'into-stream';
 import { getStreamAsBuffer } from 'get-stream';
 import { syncWarn, syncError } from './workersync/synclogger.js';
-
+import { getDriveApiClient } from '../services/advdrive/drapis.js';
 /**
  * serializable reponse from a sync call
  * @typedef SxResponse
@@ -34,14 +34,12 @@ import { syncWarn, syncError } from './workersync/synclogger.js';
  * @property {byte[]} bytes 
  */
 
-const drapisPath = "../services/advdrive/drapis.js";
-const getModulePath = (relTarget) => path.resolve(import.meta.dirname, relTarget);
+
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const sxDrive = async (Auth, { prop, method, params, options }) => {
-  const { getApiClient } = await import(getModulePath(drapisPath));
-  const auth = Auth.getAuth();
-  const apiClient = getApiClient(auth);
+
+  const apiClient = getDriveApiClient();
 
   const maxRetries = 7;
   let delay = 1777;
@@ -98,11 +96,9 @@ export const sxDrive = async (Auth, { prop, method, params, options }) => {
  */
 
 export const sxStreamUpMedia = async (Auth, { resource, bytes, fields, method, mimeType, fileId, params }) => {
-  const { getApiClient } = await import(getModulePath(drapisPath));
-  const auth = Auth.getAuth();
 
   // this is the node drive service
-  const drive = getApiClient(auth)
+  const drive = getDriveApiClient()
 
   // set up the media
   // if there is no media, it will create an empty version of the file
@@ -149,11 +145,9 @@ export const sxStreamUpMedia = async (Auth, { resource, bytes, fields, method, m
  * @return {SxResult} from the api
  */
 export const sxDriveMedia = async (Auth, { id }) => {
-  const { getApiClient } = await import(getModulePath(drapisPath));
-  const auth = Auth.getAuth();
 
   // this is the node drive service
-  const drive = getApiClient(auth);
+  const drive = getDriveApiClient();
   const streamed = await drive.files.get({
     fileId: id,
     alt: 'media'

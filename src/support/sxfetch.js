@@ -5,7 +5,7 @@
  * - arguments and returns must be serializable ie. primitives or plain objects
  */
 import got from 'got';
-import { syncLog } from './workersync/synclogger.js';
+
 
 /**
  * fetch stomething 

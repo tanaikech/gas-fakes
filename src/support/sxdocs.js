@@ -5,12 +5,10 @@
  * note
  * - arguments and returns must be serializable ie. primitives or plain objects
  */
-import path from 'path';
 import { responseSyncify } from './auth.js';
-import { syncWarn, syncError, syncLog } from './workersync/synclogger.js';
+import { syncWarn, syncError } from './workersync/synclogger.js';
+import { getDocsApiClient } from '../services/advdocs/docapis.js';
 
-const docapisPath = "../services/advdocs/docapis.js";
-const getModulePath = (relTarget) => path.resolve(import.meta.dirname, relTarget);
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 /**
@@ -24,9 +22,7 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
  * @return {import('./sxdrive.js').SxResult} from the Docs api
  */
 export const sxDocs = async (Auth, { prop, method, params, options = {} }) => {
-  const { getApiClient } = await import(getModulePath(docapisPath));
-  const auth = Auth.getAuth();
-  const apiClient = getApiClient(auth);
+  const apiClient = getDocsApiClient();
   // rate limit on docs is higher that the others so we may as well have a bigger delay
   const maxRetries = 7;
   let delay = 2789;

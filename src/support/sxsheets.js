@@ -5,18 +5,16 @@
  * note
  * - arguments and returns must be serializable ie. primitives or plain objects
  */
-import path from 'path';
+
 import { responseSyncify } from './auth.js';
 import { syncWarn, syncError } from './workersync/synclogger.js';
+import { getSheetsApiClient } from '../services/advsheets/shapis.js';
 
-const shapisPath = "../services/advsheets/shapis.js";
-const getModulePath = (relTarget) => path.resolve(import.meta.dirname, relTarget);
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const sxSheets = async (Auth, { subProp, prop, method, params, options }) => {
-  const { getApiClient } = await import(getModulePath(shapisPath));
-  const auth = Auth.getAuth();
-  const apiClient = getApiClient(auth);
+
+  const apiClient = getSheetsApiClient();
   const maxRetries = 7;
   let delay = 1777;
 
