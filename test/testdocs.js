@@ -11,7 +11,7 @@ export const testDocs = (pack) => {
   const { unit, fixes } = pack || initTests();
   const toTrash = [];
 
- unit.section("Document level append/insert methods", t => {
+  unit.section("Document level append/insert methods", t => {
     const { doc } = maketdoc(toTrash, fixes);
 
     // Test appendParagraph
@@ -145,7 +145,7 @@ export const testDocs = (pack) => {
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance())
   });
 
- 
+
 
 
 
@@ -154,11 +154,11 @@ export const testDocs = (pack) => {
     unit.report();
   }
 
-  trasher(toTrash);
   return { unit, fixes };
 };
 
 if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
   testDocs();
+  ScriptApp.__behavior.trash()
   console.log('...cumulative docs cache performance', getDocsPerformance())
 }

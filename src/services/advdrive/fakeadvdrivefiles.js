@@ -52,6 +52,7 @@ class FakeAdvDriveFiles {
     /// extract out the fieldslist
     const fields = params.fields.replace(/.*files\(([^)]*)\).*/,"$1")
 
+    /// TODO - filter out any files we wouldn't be allowed to see in sandbox mode
     data.files.forEach(f => {
       improveFileCache(f.id, f,fields)
     })
@@ -76,7 +77,7 @@ class FakeAdvDriveFiles {
 
 
     // we'll just do a get to populate cache with any new meta data
-    const file = this.get(fileId, params, { allow404: false })
+    const file = this.get(this.drive.__addAllowed(fileId), params, { allow404: false })
 
     // the download uri us just constructed from the id - doesnt appear to be in any of the properties of file
     return {
@@ -114,7 +115,7 @@ class FakeAdvDriveFiles {
    * @returns {Drive.File}
    */
   get(id, params = {}, { allow404 = true } = {}) {
-    const {data} = Syncit.fxDriveGet ({ id, params, allow404, allowCache: true }) 
+    const {data} = Syncit.fxDriveGet ({ id: this.drive.__allowed(id), prop: apiProp, method: 'get', params, allow404, allowCache: true }) 
     return data
   }
 
@@ -132,7 +133,9 @@ class FakeAdvDriveFiles {
 
     // must have some kind of name so derive if not given
     const name = file.name || blob?.getName() || (isFolder(file) ? "New Folder" : "Untitled")
-    return updateOrCreate ({method: "create", file: { ...file, name }, blob, fields, params })
+    const d = updateOrCreate ({method: "create", file: { ...file, name }, blob, fields, params })
+    this.drive.__addAllowed(d.id);
+    return d
 
   }
 
@@ -153,7 +156,7 @@ class FakeAdvDriveFiles {
     if (!is.nonEmptyString(fileId)) {
       throw new Error(`API call to drive.files.update failed with error: Required`)
     }
-    return updateOrCreate ({method: 'update', file,  blob, fileId , fields, params})
+    return updateOrCreate ({method: 'update', file,  blob, fileId: this.drive.__allowed(fileId) , fields, params})
   }
   /**
    * ceate a file and optionally upload some data
@@ -169,13 +172,13 @@ class FakeAdvDriveFiles {
     const fields = mergeParamStrings(options.fields || "",minFields)
     const params = {
       fields,
-      fileId,
+      fileId: this.drive.__allowed(fileId),
       resource: file
     }
 
     const { response, data } = Syncit.fxDrive({ prop: apiProp, method: 'copy', params, options })
     checkResponse(data?.id, response, false)
-    improveFileCache(data.id, data,fields)
+    improveFileCache(this.drive.__addAllowed(data.id), data,fields)
     return data
 
   }

@@ -25,7 +25,6 @@ import {
   transpose2DArray,
 } from "./testassist.js";
 import { getSheetsPerformance } from "./testassist.js";
-import { FakeDriveApp } from "../src/services/driveapp/fakedriveapp.js";
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testSheets = (pack) => {
@@ -2913,5 +2912,7 @@ export const testSheets = (pack) => {
 // on apps script we don't want it to run automatically
 // when running as part of a consolidated test, we dont want to run it, as the caller will do that
 
-if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute"))
+if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
   testSheets();
+  ScriptApp.__behavior.trash()
+}

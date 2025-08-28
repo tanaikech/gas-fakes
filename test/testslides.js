@@ -68,6 +68,7 @@ export const testSlides = (pack) => {
 
 if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
   testSlides();
+  ScriptApp.__behavior.trash()
   console.log('...cumulative slides cache performance', getSlidesPerformance())
   console.log('...cumulative drive cache performance', getDrivePerformance())
 }

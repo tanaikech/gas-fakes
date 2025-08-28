@@ -9,11 +9,12 @@ import { Proxies } from '../../support/proxies.js';
 class FakeAdvSlidesPresentations extends FakeAdvResource {
   constructor(mainService) {
     super(mainService, 'presentations', Syncit.fxSlides);
+    this.slides = mainService
   }
 
   // Override 'get' to use the caching-enabled function fxSlidesGet.
   get(presentationId) {
-    const { data } = this._call('get', { presentationId });
+    const { data } = this._call('get', { presentationId: this.slides.__allowed(presentationId) }, Syncit.fxSlidesGet);
     return data;
   }
 
@@ -21,13 +22,16 @@ class FakeAdvSlidesPresentations extends FakeAdvResource {
   create(presentation) {
     // The underlying API wants the resource in a 'resource' property.
     const result = this._call('create', { resource: presentation });
+    if (result.data) {
+      this.slides.__addAllowed(result.data.presentationId);
+    }
     return result.data;
   }
 
   // Signature matches Apps Script advanced service.
   batchUpdate(requests, presentationId) {
     const result = this._call('batchUpdate', {
-      presentationId,
+      presentationId: this.slides.__allowed(presentationId),
       resource: { requests },
     });
 
@@ -49,6 +53,20 @@ class FakeAdvSlides {
     this.Presentations = Proxies.guard(new FakeAdvSlidesPresentations(this));
   }
 
+  // in sandbox mode only files created in this instance are
+  __allowed(id) {
+
+    if (!ScriptApp.__behavior.isAccessible(id)) {
+      throw new Error(`Access to slides ${id} is not allowed in sandbox mode`);
+    }
+    return id
+  }
+  __addAllowed(id) {
+    if (ScriptApp.__behavior.sandBoxMode) {
+      ScriptApp.__behavior.addFile(id);
+    }
+    return id
+  }
   __getSlidesPerformance() {
     return slidesCacher.getPerformance();
   }

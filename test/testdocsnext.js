@@ -536,5 +536,6 @@ export const testDocsNext = (pack) => {
 
 if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
   testDocsNext();
+  ScriptApp.__behavior.trash()
   console.log('...cumulative docs cache performance', getDocsPerformance())
 }

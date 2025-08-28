@@ -48,7 +48,9 @@ export const maketdoc = (toTrash, fixes, clear = true) => {
     console.log('...created doc', __mdoc.getName(), __mdoc.getId())
     moveToTestFolder(__mdoc.getId())
 
-    if (fixes.CLEAN && !toTrash.find(f => f.getId() == __mdoc.getId())) {
+    // no need to do this as sandbox mode will take care of it
+
+    if (!ScriptApp.isFake && fixes.CLEAN && !toTrash.find(f => f.getId() == __mdoc.getId())) {
       console.log('...will be deleting it later')
       toTrash.push(DriveApp.getFileById(__mdoc.getId()))
     }
@@ -83,11 +85,12 @@ export const maketss = (sheetName, toTrash, fixes, { clearContents = true, clear
     moveToTestFolder(__mss.getId())
     console.log('...created ss', __mss.getName(), __mss.getId())
   }
-
-  if (fixes.CLEAN && !toTrash.find(f => f.getId() == __mss.getId())) {
+  // no need to do this as sandbox mode will take care of it
+  if (!ScriptApp.isFake && fixes.CLEAN && !toTrash.find(f => f.getId() == __mss.getId())) {
     console.log('...will be deleting it later')
     toTrash.push(DriveApp.getFileById(__mss.getId()))
   }
+
 
   let sheet = null
   if (sheetName) {

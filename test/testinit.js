@@ -19,6 +19,8 @@ export const initTests = () => {
     showErrorsOnly: true
   })
 
+
+
   // apps script can't get from parent without access to the getresource of the parent
   if (unitExports.CodeLocator.isGas) {
     // because a GAS library cant get its caller's code
@@ -74,7 +76,12 @@ export const initTests = () => {
       if (!Reflect.has(process.env, k) && k !== 'PREFIX') throw new Error(`process.env.${k} value is not set`)
     })
   }
-
+  // if we in fake mode, we'll operate in sandbox mode by default
+  if (ScriptApp.isFake) {
+    ScriptApp.__behavior.sandBoxMode = true;
+    console.log('...operating in sandbox mode - only files created in this instance of gas-fakes are accessible')
+    ScriptApp.__behavior.__cleanup = fixes.CLEAN;
+  }
   return {
     unit,
     fixes,

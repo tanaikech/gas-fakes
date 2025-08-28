@@ -7,7 +7,6 @@ import { Syncit } from '../../support/syncit.js'
 import { notYetImplemented, ssError } from '../../support/helpers.js'
 import { newFakeAdvSheetsValues } from './fakeadvsheetsvalues.js'
 import { newFakeAdvSheetsDeveloperMetadata } from './fakeadvsheetsdevelopermetadata.js'
-import path from 'path';
 import { FakeAdvResource } from '../common/fakeadvresource.js';
 
 /**
@@ -17,9 +16,9 @@ import { FakeAdvResource } from '../common/fakeadvresource.js';
 class FakeAdvSheetsSpreadsheets extends FakeAdvResource {
   constructor(sheets) {
     super(sheets, 'spreadsheets', Syncit.fxSheets);
-
+    this.sheets = sheets
     this.__fakeObjectType = "Sheets.Spreadsheets";
-
+    this.sheets = sheets
     const props = [
       'getByDataFilter',
       'Sheets']
@@ -61,7 +60,7 @@ class FakeAdvSheetsSpreadsheets extends FakeAdvResource {
     // note that in GAS adv sheet service doesnt take the requestBody parameter - it just sends requests as the arg
     // so we need to wrap that in requestbody for the Node API
     const { response, data } = this._call("batchUpdate", {
-      spreadsheetId,
+      spreadsheetId: this.sheets.__allowed(spreadsheetId),
       requestBody: requests
     }, options);
 
@@ -77,7 +76,7 @@ class FakeAdvSheetsSpreadsheets extends FakeAdvResource {
    * @param {object} options 
    */
   get(id, options, { ss = false } = {}) {
-    const params = { spreadsheetId: id, ...options };
+    const params = { spreadsheetId: this.sheets.__allowed(id), ...options };
     const { response, data } = this._call("get", params);
 
     // maybe we need to throw an error
@@ -97,7 +96,7 @@ class FakeAdvSheetsSpreadsheets extends FakeAdvResource {
 
     // maybe we need to throw an error
     ssError(response, "create", ss)
-
+    this.sheets.__addAllowed  (data.spreadsheetId);
     return data
   }
 }

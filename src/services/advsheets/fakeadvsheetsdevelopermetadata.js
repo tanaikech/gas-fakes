@@ -14,6 +14,7 @@ import { FakeAdvResource } from '../common/fakeadvresource.js';
 class FakeAdvSheetsDeveloperMetadata extends FakeAdvResource {
   constructor(sheets) {
     super(sheets, 'spreadsheets', Syncit.fxSheets);
+    this.sheets = sheets;
     this.__fakeObjectType = "Sheets.Spreadsheets.DeveloperMetadata";
 
     const props = [];
@@ -32,7 +33,7 @@ class FakeAdvSheetsDeveloperMetadata extends FakeAdvResource {
    */
   get(spreadsheetId, metadataId) {
     const { response, data } = this._call("get", {
-      spreadsheetId,
+      spreadsheetId: this.sheets.__allowed(spreadsheetId),
       metadataId,
     }, null, 'developerMetadata');
     ssError(response, `spreadsheets.developerMetadata.get`);
@@ -41,7 +42,7 @@ class FakeAdvSheetsDeveloperMetadata extends FakeAdvResource {
 
   search(requestBody, spreadsheetId) {
     const { response, data } = this._call("search", {
-      spreadsheetId,
+      spreadsheetId: this.sheets.__allowed(spreadsheetId),
       requestBody
     }, null, 'developerMetadata');
 

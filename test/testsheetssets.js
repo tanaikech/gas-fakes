@@ -624,4 +624,7 @@ export const testSheetsSets = (pack) => {
 // on apps script we don't want it to run automatically
 // when running as part of a consolidated test, we dont want to run it, as the caller will do that
 
-if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) testSheetsSets()
+if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
+  testSheetsSets()
+  ScriptApp.__behavior.trash()
+}

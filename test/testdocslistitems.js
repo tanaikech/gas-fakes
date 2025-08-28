@@ -139,5 +139,6 @@ export const testDocsListItems = (pack) => {
 
 if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
   testDocsListItems();
+  ScriptApp.__behavior.trash()
   console.log('...cumulative docs cache performance', getDocsPerformance());
 }

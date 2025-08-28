@@ -29,7 +29,6 @@ export const testSheetsText = (pack) => {
 
     const { sheet, ss: spreadsheet } = maketss('sample', toTrash, fixes);
     sheet.clear();
-    const spreadsheetId = spreadsheet.getId();
 
     sheet.getRange(1, 1, values.length, values[0].length).setValues(values);
     const range = sheet.getRange("A3:B5");
@@ -202,13 +201,13 @@ export const testSheetsText = (pack) => {
     // blank row so lastrow doesnt increase
     t.is(sheet.getLastRow(), cr)
     sheet.insertRowBefore(2);
-    t.is(sheet.getLastRow(), cr )
+    t.is(sheet.getLastRow(), cr)
     sheet.insertRows(2, 2);
-    t.is(sheet.getLastRow(), cr )
+    t.is(sheet.getLastRow(), cr)
     sheet.insertRowsAfter(2, 2);
-    t.is(sheet.getLastRow(), cr )
+    t.is(sheet.getLastRow(), cr)
     sheet.insertRowsBefore(2, 2);
-    t.is(sheet.getLastRow(), cr )
+    t.is(sheet.getLastRow(), cr)
 
     /**
      * deleteColumn, deleteColumns, deleteRow, deleteRows
@@ -220,9 +219,9 @@ export const testSheetsText = (pack) => {
     sheet.deleteColumns(2, 2);
     t.is(sheet.getLastColumn(), cb - 3)
     sheet.deleteRow(2);
-    t.is(sheet.getLastRow(), cr )
+    t.is(sheet.getLastRow(), cr)
     sheet.deleteRows(2, 2);
-    t.is(sheet.getLastRow(), cr )
+    t.is(sheet.getLastRow(), cr)
 
     const v = sheet.getDataRange().getValues()
     t.deepEqual(v.slice(-1), [data.slice(0, 1).concat(['', '', '', ''], data.slice(1, 2), [''], data.slice(-1))])
@@ -307,4 +306,7 @@ export const testSheetsText = (pack) => {
 // on apps script we don't want it to run automatically
 // when running as part of a consolidated test, we dont want to run it, as the caller will do that
 
-if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) testSheetsText()
+if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
+  testSheetsText()
+  ScriptApp.__behavior.trash()
+}

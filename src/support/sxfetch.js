@@ -14,9 +14,10 @@ import got from 'got';
  * @param {string[]} responseFields which fields to extract from the got response
  * @returns {object} an http type response
  */
-export const sxFetch = async (_Auth, url, options, responseFields) => {
+export const sxFetch = async (Auth, url, options, responseFields) => {
+  // we need special headers if we're calling google apis
+  options = Auth.googify(options)
 
-  // Auth is passed by the worker but not used for this unauthenticated fetch.
   const response = await got(url, {
     ...options
   })

@@ -86,11 +86,16 @@ export const getParentsIterator = ({
   // if its rott folder can be null
   const parents  = is.null (file.parents) ? [] : file.parents
   assert.array(parents)
-
+  // TODO we need to handle allowing access to root when sandbox is on
+  // and would prevent it. - this still needs more thought on whether this is all handled properly
+  // I think we should be ok because the individual file access will be blocked if not allowed
+  // but we need to be able to get root folder if it's a parent of an allowed
+  const rooter = (id) => (!ScriptApp.__behavior.isAccessible(id) && DriveApp.getRootFolder().getId() === id) ?  'root' : id
   function* filesink() {
     // the result tank, we just get them all by id - will return the usual minfields
     // and will also stick them in cache
-    let tank = parents.map(id => Drive.Files.get(id, {}, { allow404: false }))
+
+    let tank = parents.map(id => Drive.Files.get(rooter(id), {}, { allow404: false }))
 
     // let them out, 1 at a time
     while (tank.length) {
@@ -124,6 +129,7 @@ const fileLister = ({
   // enhance any already supplied query params
   qob = Utils.arrify(qob) || []
   if (parentId) {
+    ScriptApp.__behavior.isAccessible(parentId) // will throw if not accessible
     qob.push(`'${parentId}' in parents`)
   }
 

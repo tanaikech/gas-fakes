@@ -69,6 +69,25 @@ class FakeAdvDrive {
   __getDrivePerformance() {
     return getDrivePerformance()
   }
+  // in sandbox mode only files created in this instance are
+  __allowed(id) {
+    // initially we will allow access to root here 
+    // TODO - need to find a way to work without a root required in DriveApp
+    if (id === 'root') {
+      return id
+    }
+
+    if (!ScriptApp.__behavior.isAccessible(id)) {
+      throw new Error(`Access to file ${id} is not allowed in sandbox mode`);
+    }
+    return id
+  }
+  __addAllowed(id) {
+    if (ScriptApp.__behavior.sandBoxMode) {
+      ScriptApp.__behavior.addFile(id);
+    }
+    return id
+  }
 
 }
 

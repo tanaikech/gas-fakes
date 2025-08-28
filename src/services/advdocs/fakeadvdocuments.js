@@ -9,6 +9,7 @@ import { Syncit } from '../../support/syncit.js'
 import is from '@sindresorhus/is'
 import { FakeAdvResource } from '../common/fakeadvresource.js';
 
+
 /**
  * the advanced docs Apps Script service faked - Documents class
  * @class FakeAdvDocuments
@@ -17,6 +18,19 @@ class FakeAdvDocuments extends FakeAdvResource {
   constructor(docs) {
     super(docs, 'documents', Syncit.fxDocs);
     this.__fakeObjectType = "Docs.Documents";
+  }
+  // in sandbox mode only files created in this instance are
+  __allowed(id) {
+    if (!ScriptApp.__behavior.isAccessible(id)) {
+      throw new Error(`Access to document ${id} is not allowed in sandbox mode`);
+    }
+    return id
+  }
+  __addAllowed(id) {
+    if (ScriptApp.__behavior.sandBoxMode) {
+      ScriptApp.__behavior.addFile(id);
+    }
+    return id
   }
 
   create(resource, options) {
@@ -31,7 +45,7 @@ class FakeAdvDocuments extends FakeAdvResource {
 
     // maybe we need to throw an error
     ssError(response, "create")
-
+    this.__addAllowed(data.documentId);
     return data
   }
 
@@ -42,11 +56,12 @@ class FakeAdvDocuments extends FakeAdvResource {
       matchThrow("API call to docs.documents.batchUpdate failed with error: Invalid JSON payload received.");
     }
 
+
     // Invalidate the cache for this document since we are updating it.
     docsCacher.clear(documentId);
     // console.log (JSON.stringify(requests))
     const { response, data } = this._call("batchUpdate", {
-      documentId: documentId,
+      documentId: this.__allowed(documentId),
       requestBody: requests
     });
 
@@ -87,7 +102,7 @@ class FakeAdvDocuments extends FakeAdvResource {
 
     if (is.nonEmptyObject(options) && !Reflect.ownKeys(options || {}).every(f => optionsSet.has(f))) matchThrow();
 
-    const params = { documentId, ...(options || {}) };
+    const params = {documentId: this.__allowed(documentId), ...(options || {}) };
 
     const { response, data } = this._call("get", params);
     ssError(response, 'get');

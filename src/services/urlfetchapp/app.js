@@ -77,7 +77,6 @@ const fetch = (url, options = {}) => {
 
   // check options for method and provide default
   options.method = options.method || "get"
-  options = Auth.googify(options)
 
   const responseFields = [
     'rawHeaders',

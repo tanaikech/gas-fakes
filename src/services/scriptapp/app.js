@@ -1,3 +1,5 @@
+
+
 // fake script app to get oauth token from application default credentials on Apps Script
 // first set up and test ADC with required scopes - see https://ramblings.mcpher.com/application-default-credentials-with-google-cloud-and-workspace-apis
 // Note that all async type functions have been converted to synch to make it Apps Script like
@@ -5,7 +7,7 @@
 import { Syncit } from '../../support/syncit.js'
 import { Auth } from '../../support/auth.js'
 import { Proxies } from '../../support/proxies.js'
-
+import { newFakeBehavior } from './behavior.js'
 /**
  * fake ScriptApp.getOAuthToken 
  * @return {string} token
@@ -118,7 +120,8 @@ if (typeof globalThis[name] === typeof undefined) {
         getScriptId: Auth.getScriptId,
         AuthMode: {
           FULL: 'FULL'
-        }
+        },
+        __behavior: newFakeBehavior(),
       }
 
 

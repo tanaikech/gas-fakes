@@ -8,13 +8,12 @@ import '../main.js'
 //import '@mcpher/gas-fakes/main.js'
 
 import { initTests } from './testinit.js'
-import { trasher, getDocsPerformance } from './testassist.js';
+import {  getDocsPerformance, trasher } from './testassist.js';
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testDocsAdv = (pack) => {
 
   const { unit, fixes } = pack || initTests()
   const toTrash = []
-
   unit.section("test batch updates", t => {
     const docName = fixes.PREFIX + "temp-doc";
     const resource = Docs.newDocument()
@@ -145,5 +144,6 @@ export const testDocsAdv = (pack) => {
 
 if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
   testDocsAdv()
+  ScriptApp.__behavior.trash()
   console.log('...cumulative docs cache performance', getDocsPerformance())
 }

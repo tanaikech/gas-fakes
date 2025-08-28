@@ -14,6 +14,13 @@ import { Fiddler } from '@mcpher/fiddler'
 const hexify = (c) => {
   return '#' + c.toString(16).padStart(6, '0')
 };
+// we're using a known file, so we need to turn off strict sandboxing
+// otherwise the DriveApp access will be blocked
+let strb = false
+if (ScriptApp.isFake) {
+  strb = ScriptApp.__behavior.strictSandbox
+  ScriptApp.__behavior.strictSandbox = false
+}
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testFiddler = (pack) => {
@@ -130,6 +137,9 @@ export const testFiddler = (pack) => {
   if (!pack) {
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
     unit.report()
+  }
+  if (ScriptApp.isFake) {
+    ScriptApp.__behavior.strictSandbox = strb
   }
   return { unit, fixes }
 }

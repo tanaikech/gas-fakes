@@ -206,7 +206,7 @@ export const testSheetsValues = (pack) => {
     const r1 = startAt.offset(0, 0)
     const now = new Date().getTime()
     const rd1Fill = fillRangeFromDomain(r1, [
-      "bucket", "banana", "buckle", "red eye","orange", "apple","pear", "kiwi", "grape", "melon", "peach", "plum", "cherry",
+      "bucket", "banana", "buckle", "red eye", "orange", "apple", "pear", "kiwi", "grape", "melon", "peach", "plum", "cherry",
       now, "foo", Math.random(), Math.random(), getRandomBetween(89, -87), "bar", "bub ble", true, getRandomBetween(98, -99), false, getRandomBetween(75, -69), "cheese", "butter", 120, 8647, 77, "armpit", Math.PI
     ])
     r1.setValues(rd1Fill)
@@ -605,4 +605,7 @@ export const testSheetsValues = (pack) => {
 // on apps script we don't want it to run automatically
 // when running as part of a consolidated test, we dont want to run it, as the caller will do that
 
-if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) testSheetsValues()
+if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
+  testSheetsValues()
+  ScriptApp.__behavior.trash()
+}

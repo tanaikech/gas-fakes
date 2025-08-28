@@ -8,7 +8,7 @@ class FakeAdvDrivePermissions extends FakeAdvResource {
     // The service name is 'permissions', and it uses the main Drive sync method.
     super(drive, 'permissions', Syncit.fxDrive);
     this.__fakeObjectType = "Drive.Permissions";
-
+    this.drive = drive;
     const props = ['get', 'update'];
     props.forEach(f => {
       if (!this[f]) {
@@ -23,7 +23,7 @@ class FakeAdvDrivePermissions extends FakeAdvResource {
 
     const params = {
       resource,
-      fileId,
+      fileId: this.drive.__allowed(fileId),
       ...(optionalArgs || {})
     };
     const { data } = this._call('create', params);
@@ -35,7 +35,7 @@ class FakeAdvDrivePermissions extends FakeAdvResource {
     if (nargs < 2 || nargs > 3) matchThrow();
 
     const params = {
-      fileId,
+      fileId: this.drive.__allowed(fileId),
       permissionId,
       ...(optionalArgs || {})
     };
@@ -47,7 +47,7 @@ class FakeAdvDrivePermissions extends FakeAdvResource {
     const { nargs, matchThrow } = signatureArgs(arguments, "Drive.Permissions.list");
     if (nargs < 1 || nargs > 2) matchThrow();
 
-    const params = { fileId, ...(optionalArgs || {}) };
+    const params = { fileId: this.drive.__allowed(fileId), ...(optionalArgs || {}) };
     const { data } = this._call('list', params);
     return data;
   }

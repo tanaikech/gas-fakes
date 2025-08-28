@@ -8,7 +8,7 @@ import '../main.js'
 //import '@mcpher/gas-fakes/main.js'
 
 import { initTests } from './testinit.js';
-import {  maketss, trasher, compareValue, addDays, zeroizeTime, getDimensions } from './testassist.js';
+import { maketss, trasher, compareValue, addDays, zeroizeTime, getDimensions } from './testassist.js';
 import { getDrivePerformance, getSheetsPerformance } from './testassist.js';
 import is from '@sindresorhus/is';
 
@@ -305,6 +305,14 @@ export const testSheetsDataValidations = (pack) => {
 
 
   unit.section("getting relative dates and formulas with requires - these can only be set by the UI", t => {
+
+    // this is an existing test sheet so we need to turn off strict sandbox mode temporarily
+let strb = false
+if (ScriptApp.isFake) {
+    strb = ScriptApp.__behavior.strictSandbox
+    ScriptApp.__behavior.strictSandbox = false
+}
+
     const sp = SpreadsheetApp.openById(fixes.TEST_BORDERS_ID)
     const sb = sp.getSheetByName('dv')
 
@@ -316,6 +324,11 @@ export const testSheetsDataValidations = (pack) => {
     // what if value is a formula
     critty(t, sb, "g24", "DATE_EQUAL_TO", ['=I1'])
     critty(t, sb, "f24", "TEXT_CONTAINS", ['=F7'])
+    // reset
+if (ScriptApp.isFake) {
+     ScriptApp.__behavior.strictSandbox = strb
+}
+
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
   })
 
@@ -460,4 +473,7 @@ export const testSheetsDataValidations = (pack) => {
 // on apps script we don't want it to run automatically
 // when running as part of a consolidated test, we dont want to run it, as the caller will do that
 
-if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) testSheetsDataValidations()
+if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
+  testSheetsDataValidations()
+  ScriptApp.__behavior.trash()
+}

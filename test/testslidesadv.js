@@ -27,8 +27,8 @@ export const testSlidesAdv = (pack) => {
         const ob = Slides[f]()
         t.true(Reflect.ownKeys(ob).every(g => is.function(ob[g])), "all Slides.newsubprops are functions")
       })
-    t.is (is (Slides.Presentations), "Object")
-    t.is (Slides.toString(), Slides.Presentations.toString())
+    t.is(is(Slides.Presentations), "Object")
+    t.is(Slides.toString(), Slides.Presentations.toString())
     if (SlidesApp.isFake) console.log('...cumulative slides cache performance', getSlidesPerformance())
   })
 
@@ -54,5 +54,6 @@ export const testSlidesAdv = (pack) => {
 
 if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
   testSlidesAdv()
+  ScriptApp.__behavior.trash()
   console.log('...cumulative slides cache performance', getSlidesPerformance())
 }

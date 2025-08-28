@@ -32,7 +32,7 @@ const testDocsAll = () => {
   testDocsNext(pack);
   console.log("\n----Test docs list items----");
   testDocsListItems(pack);
- 
+
   console.log("\n----TEST ALL DOCS COMPLETE----");
 
   // reports on cache performance
@@ -51,4 +51,7 @@ const testDocsAll = () => {
 };
 
 // this required on Node but not on Apps Script
-if (ScriptApp.isFake) testDocsAll();
+if (ScriptApp.isFake) {
+  testDocsAll();
+  ScriptApp.__behavior.trash()
+}

@@ -16,50 +16,6 @@ import { initTests } from './testinit.js'
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testDrive = (pack) => {
   const { unit, fixes } = pack || initTests()
-
-  unit.section('driveapp permission management', t => {
-    const toTrash = [];
-    const fname = fixes.PREFIX + "permission-test-file.txt";
-    const file = DriveApp.createFile(fname, "some content");
-    toTrash.push(file);
-
-    const editorEmail = fixes.SCRATCH_EDITOR;
-    const viewerEmail = fixes.SCRATCH_VIEWER;
-    const editorEmail2 = fixes.SCRATCH_B_EDITOR;
-    const viewerEmail2 = fixes.SCRATCH_B_VIEWER;
-    const editorEmails = [editorEmail, editorEmail2];
-    const viewerEmails = [viewerEmail, viewerEmail2];
-
-
-    // Test addEditor
-    file.addEditor(editorEmail);
-    let editors = file.getEditors().map(u => u.getEmail());
-    t.true(editors.includes(editorEmail), "addEditor should add a single editor");
-
-    // Test addViewer
-    file.addViewer(viewerEmail);
-    let viewers = file.getViewers().map(u => u.getEmail());
-    t.true(viewers.includes(viewerEmail), "addViewer should add a single viewer");
-
-    // Test addEditors
-    file.addEditors(editorEmails);
-    editors = file.getEditors().map(u => u.getEmail());
-    t.true(editorEmails.every(e => editors.includes(e)), "addEditors should add multiple editors");
-
-    // Test addViewers
-    file.addViewers(viewerEmails);
-    viewers = file.getViewers().map(u => u.getEmail());
-    t.true(viewerEmails.every(v => viewers.includes(v)), "addViewers should add multiple viewers");
-
-    // Test removals
-    file.removeEditor(editorEmail).removeViewer(viewerEmail);
-    t.false(file.getEditors().map(u => u.getEmail()).includes(editorEmail), "removeEditor should remove a single editor");
-    t.false(file.getViewers().map(u => u.getEmail()).includes(viewerEmail), "removeViewer should remove a single viewer");
-
-    if (fixes.CLEAN) toTrash.forEach(f => f.setTrashed(true));
-    if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
-  });
-
   unit.section('create and copy files with driveapp and compare content with adv drive and urlfetch', t => {
 
     const toTrash = []
@@ -193,8 +149,58 @@ export const testDrive = (pack) => {
     if (fixes.CLEAN) toTrash.forEach(f => f.setTrashed(true))
     if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
   })
+  unit.section('driveapp permission management', t => {
+    const toTrash = [];
+    const fname = fixes.PREFIX + "permission-test-file.txt";
+    const file = DriveApp.createFile(fname, "some content");
+    toTrash.push(file);
+
+    const editorEmail = fixes.SCRATCH_EDITOR;
+    const viewerEmail = fixes.SCRATCH_VIEWER;
+    const editorEmail2 = fixes.SCRATCH_B_EDITOR;
+    const viewerEmail2 = fixes.SCRATCH_B_VIEWER;
+    const editorEmails = [editorEmail, editorEmail2];
+    const viewerEmails = [viewerEmail, viewerEmail2];
+
+
+    // Test addEditor
+    file.addEditor(editorEmail);
+    let editors = file.getEditors().map(u => u.getEmail());
+    t.true(editors.includes(editorEmail), "addEditor should add a single editor");
+
+    // Test addViewer
+    file.addViewer(viewerEmail);
+    let viewers = file.getViewers().map(u => u.getEmail());
+    t.true(viewers.includes(viewerEmail), "addViewer should add a single viewer");
+
+    // Test addEditors
+    file.addEditors(editorEmails);
+    editors = file.getEditors().map(u => u.getEmail());
+    t.true(editorEmails.every(e => editors.includes(e)), "addEditors should add multiple editors");
+
+    // Test addViewers
+    file.addViewers(viewerEmails);
+    viewers = file.getViewers().map(u => u.getEmail());
+    t.true(viewerEmails.every(v => viewers.includes(v)), "addViewers should add multiple viewers");
+
+    // Test removals
+    file.removeEditor(editorEmail).removeViewer(viewerEmail);
+    t.false(file.getEditors().map(u => u.getEmail()).includes(editorEmail), "removeEditor should remove a single editor");
+    t.false(file.getViewers().map(u => u.getEmail()).includes(viewerEmail), "removeViewer should remove a single viewer");
+
+    if (fixes.CLEAN) toTrash.forEach(f => f.setTrashed(true));
+    if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
+  });
+
+
 
   unit.section("advanced drive basics", t => {
+    let strb = false
+    if (ScriptApp.isFake) {
+      strb = ScriptApp.__behavior.strictSandbox
+      ScriptApp.__behavior.strictSandbox = false
+    }
+
     t.true(is.nonEmptyString(Drive.toString()))
     t.true(is.nonEmptyString(Drive.Files.toString()))
     t.is(Drive.getVersion(), 'v3')
@@ -206,6 +212,9 @@ export const testDrive = (pack) => {
     t.is(file.mimeType, fixes.TEXT_FILE_TYPE)
     t.is(file.kind, fixes.KIND_DRIVE)
     if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
+    if (ScriptApp.isFake) {
+      ScriptApp.__behavior.strictSandbox = strb
+    }
   })
 
 
@@ -225,7 +234,11 @@ export const testDrive = (pack) => {
 
 
   unit.section("driveapp searches", t => {
-
+    let strb = false
+    if (ScriptApp.isFake) {
+      strb = ScriptApp.__behavior.strictSandbox
+      ScriptApp.__behavior.strictSandbox = false
+    }
     // driveapp itself isnt actually a folder although it shares many of the methods
     // this is the folder that DriveApp represents
     const root = DriveApp.getRootFolder()
@@ -272,10 +285,17 @@ export const testDrive = (pack) => {
     t.is(pile.length, fixes.TEST_FOLDER_FILES)
 
     if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
+    if (ScriptApp.isFake) {
+      ScriptApp.__behavior.strictSandbox = strb
+    }
   })
 
   unit.section('updates and moves advdrive and driveapp', t => {
-
+    let strb = false
+    if (ScriptApp.isFake) {
+      strb = ScriptApp.__behavior.strictSandbox
+      ScriptApp.__behavior.strictSandbox = false
+    }
     const toTrash = []
 
     // create a text file with nothing in it
@@ -347,12 +367,20 @@ export const testDrive = (pack) => {
     // trash all files
     if (fixes.CLEAN) toTrash.forEach(f => f.setTrashed(true))
     if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
+
+    if (ScriptApp.isFake) {
+      ScriptApp.__behavior.strictSandbox = strb
+    }
   })
 
 
 
   unit.section('driveapp and adv permissions', t => {
-
+    let strb = false
+    if (ScriptApp.isFake) {
+      strb = ScriptApp.__behavior.strictSandbox
+      ScriptApp.__behavior.strictSandbox = false
+    }
     const { permissions } = Drive.Permissions.list(fixes.TEXT_FILE_ID)
     t.is(permissions.length, 1)
     const [p0] = permissions
@@ -383,6 +411,9 @@ export const testDrive = (pack) => {
     t.is(editors.length, 1)
     editors.forEach(f => t.true(is.nonEmptyString(f.getName())))
     if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
+    if (ScriptApp.isFake) {
+      ScriptApp.__behavior.strictSandbox = strb
+    }
   })
 
 
@@ -490,7 +521,11 @@ export const testDrive = (pack) => {
 
 
   unit.section('drive thumbnails', t => {
-
+    let strb = false
+    if (ScriptApp.isFake) {
+      strb = ScriptApp.__behavior.strictSandbox
+      ScriptApp.__behavior.strictSandbox = false
+    }
     const df = Drive.Files.get(fixes.TEXT_FILE_ID, { fields: "id,hasThumbnail,thumbnailLink" })
     const af = DriveApp.getFileById(fixes.TEXT_FILE_ID)
     t.is(df.id, af.getId())
@@ -513,9 +548,17 @@ export const testDrive = (pack) => {
     // t.deepEqual (tblob.getBytes(), ublob.getBytes())
     if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
 
+    if (ScriptApp.isFake) {
+      ScriptApp.__behavior.strictSandbox = strb
+    }
   })
 
   unit.section('driveapp basics and Drive equivalence', t => {
+    let strb = false
+    if (ScriptApp.isFake) {
+      strb = ScriptApp.__behavior.strictSandbox
+      ScriptApp.__behavior.strictSandbox = false
+    }
     t.is(DriveApp.toString(), "Drive")
     t.is(DriveApp.getRootFolder().toString(), "My Drive")
 
@@ -534,10 +577,17 @@ export const testDrive = (pack) => {
     t.is(file.getDownloadUrl(), Drive.Files.get(file.getId(), { fields: "webContentLink" }).webContentLink)
 
     if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
-
+    if (ScriptApp.isFake) {
+      ScriptApp.__behavior.strictSandbox = strb
+    }
   })
 
   unit.section('adv drive downloads', t => {
+    let strb = false
+    if (ScriptApp.isFake) {
+      strb = ScriptApp.__behavior.strictSandbox
+      ScriptApp.__behavior.strictSandbox = false
+    }
     const r = Drive.Files.download(fixes.TEXT_FILE_ID)
     t.true(is.object(r.metadata))
     t.true(is.nonEmptyString(r.name))
@@ -567,6 +617,9 @@ export const testDrive = (pack) => {
     t.is(file.getId(), aFile.id)
     t.deepEqual(response.getBlob().getBytes(), blob.getBytes())
     if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
+    if (ScriptApp.isFake) {
+      ScriptApp.__behavior.strictSandbox = strb
+    }
   })
 
   unit.section('check where google doesnt support in adv drive', t => {
@@ -599,7 +652,11 @@ export const testDrive = (pack) => {
   })
 
   unit.section("driveapp searching with queries", t => {
-
+    let strb = false
+    if (ScriptApp.isFake) {
+      strb = ScriptApp.__behavior.strictSandbox
+      ScriptApp.__behavior.strictSandbox = false
+    }
     const root = DriveApp.getRootFolder()
 
     // this gets the folders directly under root folder with given name
@@ -634,11 +691,18 @@ export const testDrive = (pack) => {
     })
 
     if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
-
+    if (ScriptApp.isFake) {
+      ScriptApp.__behavior.strictSandbox = strb
+    }
   }, { skip: false })
 
 
   unit.section('getting content', t => {
+    let strb = false
+    if (ScriptApp.isFake) {
+      strb = ScriptApp.__behavior.strictSandbox
+      ScriptApp.__behavior.strictSandbox = false
+    }
     const file = DriveApp.getFileById(fixes.TEXT_FILE_ID)
     const folder = DriveApp.getFolderById(fixes.TEST_FOLDER_ID)
     t.is(file.getMimeType(), 'text/plain')
@@ -647,9 +711,17 @@ export const testDrive = (pack) => {
     const blob = file.getBlob()
     t.is(blob.getDataAsString(), fixes.TEXT_FILE_CONTENT)
     if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
+    if (ScriptApp.isFake) {
+      ScriptApp.__behavior.strictSandbox = strb
+    }
   })
 
   unit.section('extended meta data', t => {
+    let strb = false
+    if (ScriptApp.isFake) {
+      strb = ScriptApp.__behavior.strictSandbox
+      ScriptApp.__behavior.strictSandbox = false
+    }
     const file = DriveApp.getFileById(fixes.TEXT_FILE_ID)
     t.true(is.date(file.getLastUpdated()))
     t.true(is.date(file.getDateCreated()))
@@ -684,6 +756,9 @@ export const testDrive = (pack) => {
     t.true(sheetFile.getSize() > 0)
     t.is(sheetFile.getMimeType(), 'application/vnd.google-apps.spreadsheet')
     if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
+    if (ScriptApp.isFake) {
+      ScriptApp.__behavior.strictSandbox = strb
+    }
   }, {
     skip: false
   })
@@ -715,5 +790,6 @@ export const testDrive = (pack) => {
 
 if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
   testDrive()
+  ScriptApp.__behavior.trash()
   console.log('...cumulative drive cache performance', getDrivePerformance())
 }
