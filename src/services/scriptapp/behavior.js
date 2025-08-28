@@ -32,6 +32,12 @@ class FakeBehavior {
   get strictSandbox() {
     return this.__strictSandbox;
   }
+  set cleanup(value) {
+    this.__cleanup = value;
+  }
+  get cleanup() {
+    return this.__cleanup;
+  }
   set sandBoxMode(value) {
     this.__sandBoxMode = value;
   }
@@ -39,11 +45,14 @@ class FakeBehavior {
     return this.__sandBoxMode;
   }
   addFile(id) {
-    console.log(`...adding file ${id} to sandbox allowed list`)
-    if (!is.nonEmptyString(id)) {
-      throw new Error(`Invalid sandbox id parameter (${id}) - must be a non-empty string`);
+    if (this.sandBoxMode) {
+      console.log(`...adding file ${id} to sandbox allowed list`)
+      if (!is.nonEmptyString(id)) {
+        throw new Error(`Invalid sandbox id parameter (${id}) - must be a non-empty string`);
+      }
+      this.__createdIds.add(id);
     }
-    this.__createdIds.add(id);
+    return id
   }
   isAccessible(id) {
     if (!is.nonEmptyString(id)) {

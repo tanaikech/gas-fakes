@@ -80,7 +80,7 @@ export const initTests = () => {
   if (ScriptApp.isFake) {
     ScriptApp.__behavior.sandBoxMode = true;
     console.log('...operating in sandbox mode - only files created in this instance of gas-fakes are accessible')
-    ScriptApp.__behavior.__cleanup = fixes.CLEAN;
+    ScriptApp.__behavior.cleanup = fixes.CLEAN;
   }
   return {
     unit,

@@ -77,7 +77,7 @@ class FakeAdvDriveFiles {
 
 
     // we'll just do a get to populate cache with any new meta data
-    const file = this.get(this.drive.__addAllowed(fileId), params, { allow404: false })
+    const file = this.get(fileId, params, { allow404: false })
 
     // the download uri us just constructed from the id - doesnt appear to be in any of the properties of file
     return {

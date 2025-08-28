@@ -26,10 +26,7 @@ const limitMode = (mode) => {
   if (mode !== ScriptApp.AuthMode.FULL) {
     throw new Error(`only ${ScriptApp.AuthMode.FULL} is supported as mode for now`)
   }
-  // the scopes from the manifest should have been set
-  if (!Auth.hasAuth()) {
-    throw new Error(`manifest hasnt been initialized`)
-  }
+
   return mode
 }
 
