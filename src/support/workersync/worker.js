@@ -90,8 +90,10 @@ parentPort.on('message', async (task) => {
 
       // Configure the worker's persistent Auth object.
       Auth.setAdcPath(result.adcPath);
-      Auth.setProjectId(result.projectId);
-      Auth.setAuth(result.scopes);
+      // The projectId is already discovered and set within the initial `sxInit` -> `setAuth` call.
+      // This subsequent call is redundant, so it is removed for clarity.
+      // Auth.setProjectId(result.projectId);
+      await Auth.setAuth(result.scopes);
       Auth.setAccessToken(result.accessToken);
       Auth.setSettings(result.settings);
       Auth.setClasp(result.clasp);

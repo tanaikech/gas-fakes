@@ -1,6 +1,7 @@
 import { GoogleAuth } from 'google-auth-library'
 import is from '@sindresorhus/is'
 import { createHash } from 'node:crypto'
+import { syncLog } from './workersync/synclogger.js'
 
 const _authScopes = new Set([])
 
@@ -61,32 +62,26 @@ const isTokenExpired = () => !_accessToken || !_tokenExpiresAt || Date.now() >= 
  * @returns {GoogleAuth.auth}
  */
 
-// initial call is just to set the project id using a simple auth
-const setProjectIdFromADC = async (scopes) => {
-  const auth = new GoogleAuth({
-    scopes,
-  })
-  _projectId = await auth.getProjectId()
-  if (!_projectId) throw new Error('failed to get project id from adc')
-  return _projectId
-}
-
-const setAuth = (scopes = [], keyFile = null) => {
-
+const setAuth = async (scopes = [], keyFile = null) => {
   if (!hasAuth() || !scopes.every(s => _authScopes.has(s))) {
-    // if we havent yet got a project id, then we need an auth that can get it
-    // want to keep this function sync so we'll simply re do auth on being called until somehow we get one
+    syncLog(`...initializing auth and discovering project ID with scopes ${scopes.join(',')}`);
     _auth = new GoogleAuth({
       keyFile,
       scopes,
-      projectId: getProjectId()
-    })
+      // projectId is not needed; it will be discovered automatically.
+    });
 
-    scopes.forEach(s => _authScopes.add(s))
+    // Discover and cache the project ID. This also serves as validation.
+    _projectId = await _auth.getProjectId();
+    if (!_projectId) {
+      throw new Error('Failed to get project ID from Application Default Credentials.');
+    }
+    syncLog(`...discovered and set projectId to ${_projectId}`);
 
+    scopes.forEach(s => _authScopes.add(s));
   }
-  return getAuth()
-}
+  return getAuth();
+};
 
 
 /**
@@ -200,7 +195,6 @@ export const Auth = {
   getManifest,
   getClasp,
   getTimeZone,
-  setProjectIdFromADC,
   setAccessToken,
   isTokenExpired
 }

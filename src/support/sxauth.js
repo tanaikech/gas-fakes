@@ -115,12 +115,9 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, mainDir, c
   // get the required scopes and set them
   const scopes = manifest.oauthScopes || []
 
-  // first set up the projectId which is actually async
-  const projectId = await Auth.setProjectIdFromADC(scopes)
-
-  // now we can register the scopes and set up a full auth including it
-  const auth = Auth.setAuth(scopes)
-
+  // Initialize auth. This is async and will discover the project ID.
+  const auth = await Auth.setAuth(scopes);
+  const projectId = Auth.getProjectId();
   const adcPath = await findAdcPath();
   const accessToken = await auth.getAccessToken()
   const tokenInfo = await got(`https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${accessToken}`).json()
