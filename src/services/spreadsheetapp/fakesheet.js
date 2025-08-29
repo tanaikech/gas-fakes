@@ -40,8 +40,8 @@ export class FakeSheet {
       "removeImage",
       // "getNamedRanges",
       // "getRangeByName", // <--- This is a method for Class Spreadsheet.
-      "removeNamedRange",
-      "setNamedRange",
+      // "removeNamedRange", // <--- This is a method for Class Spreadsheet.
+      // "setNamedRange", // <--- This is a method for Class Spreadsheet.
       "getProtections",
       "protect",
       "getSlicers",
