@@ -308,25 +308,42 @@ export const createFootnote = (parent, text) => {
     throw new Error('Cannot append to a detached element.');
   }
   const shadow = parent.shadowDocument;
+  const segmentId = parent.__segmentId;
+  const tabId = parent.__tabId;
 
-  const request = {
+  // Find the insertion point at the end of the parent container.
+  const parentItem = shadow.getElement(parent.__name);
+  const children = parentItem.__twig.children;
+  const lastChild = children.length > 0 ? shadow.getElement(children[children.length - 1].name) : parentItem;
+  const insertIndex = lastChild.endIndex - 1;
+
+  const requests = [{
+    // Create a new paragraph for the footnote reference by inserting a newline at the end of the parent.
+    insertText: {
+      text: '\n',
+      location: { index: insertIndex, segmentId, tabId },
+    },
+  }, {
+    // Create the footnote and its reference at the start of the new paragraph.
     createFootnote: {
-      endOfSegmentLocation: {
-        segmentId: parent.__segmentId,
+      location: {
+        index: insertIndex + 1,
+        segmentId,
+        tabId,
       },
     },
-  };
+  }];
 
-  const response = Docs.Documents.batchUpdate({ requests: [request] }, shadow.getId());
-  const footnoteId = response.replies[0].createFootnote.footnoteId;
+  const response = Docs.Documents.batchUpdate({ requests }, shadow.getId());
+  const footnoteId = response.replies[1].createFootnote.footnoteId;
 
   if (text) {
     const textRequest = {
       insertText: {
         text,
         location: {
-          segmentId: footnoteId,
-          index: 1,
+          segmentId: footnoteId, // The footnote content is its own segment
+          index: 1, // Insert at the beginning of the footnote content
         },
       },
     };
