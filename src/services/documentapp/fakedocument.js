@@ -32,7 +32,7 @@ class FakeDocument {
 
     const existingHeader = this.getHeader();
     if (existingHeader) {
-      throw new Error('This document already contains a header.');
+      throw new Error('Document tab already contains a header.');
     }
 
     const shadow = this.__shadowDocument;

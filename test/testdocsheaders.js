@@ -7,6 +7,48 @@ export const testDocsHeaders = (pack) => {
   const { unit, fixes } = pack || initTests();
   const toTrash = [];
 
+  unit.section("HeaderSection append/insert methods", t => {
+    const { doc } = maketdoc(toTrash, fixes);
+    const header = doc.addHeader();
+    // A new header has one empty paragraph.
+
+    // Test appendTable
+    const tableData = [['h_t1c1', 'h_t1c2']];
+    const table1 = header.appendTable(tableData);
+    t.is(table1.getType(), DocumentApp.ElementType.TABLE, "header.appendTable should return a Table");
+    t.is(table1.getCell(0, 0).getText(), 'h_t1c1', "header.appendTable should create table with correct content");
+
+    // Appending a table adds an empty paragraph after it.
+    // Header starts with 1 child (empty para). appendTable adds table + para. So 3 children.
+    let numChildren = header.getNumChildren();
+    t.is(numChildren, 3, "Header should have 3 children after appendTable");
+    t.is(header.getChild(1).getType(), DocumentApp.ElementType.TABLE, "header.appendTable should add a table to the header");
+    t.is(header.getChild(2).getType(), DocumentApp.ElementType.PARAGRAPH, "header.appendTable should be followed by a paragraph");
+
+    // Test insertTable
+    const tableData2 = [['h_t0c1']];
+    // Create a detached table. It's easier to create it in the body and copy it.
+    const table2_copy = doc.getBody().appendTable(tableData2).copy();
+    header.insertTable(1, table2_copy); // Insert after the initial empty paragraph
+    const insertedTable = header.getChild(1);
+    t.is(insertedTable.getType(), DocumentApp.ElementType.TABLE, "header.insertTable should insert a Table");
+    t.is(insertedTable.getCell(0, 0).getText(), 'h_t0c1', "header.insertTable should have correct content");
+
+    // Test appendListItem
+    const li1 = header.appendListItem("h_li1");
+    t.is(li1.getType(), DocumentApp.ElementType.LIST_ITEM, "header.appendListItem should return a ListItem");
+    t.is(header.getChild(header.getNumChildren() - 1).getType(), DocumentApp.ElementType.LIST_ITEM, "header.appendListItem should add a list item to the header");
+
+    // Test insertListItem
+    const li0_copy = doc.getBody().appendListItem("h_li0").copy();
+    header.insertListItem(1, li0_copy); // Insert after initial empty paragraph
+    t.is(header.getChild(1).getType(), DocumentApp.ElementType.LIST_ITEM, "header.insertListItem should insert a list item");
+    t.is(header.getChild(1).getText(), "h_li0", "header.insertListItem should have correct text");
+
+    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
+  });
+
+
   unit.section("Document.addHeader and getHeader", t => {
     const { doc } = maketdoc(toTrash, fixes);
 
