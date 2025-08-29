@@ -302,27 +302,7 @@ class ShadowDocument {
   clear() {
     const { body, headers, footers } = this.__unpackDocumentTab(this.resource);
     const content = body.content;
-
     const requests = [];
-
-    // Clear headers
-    if (headers) {
-      Object.keys(headers).forEach(headerId => {
-        requests.push({
-          deleteHeader: { headerId }
-        });
-      });
-    }
-
-    // Clear footers
-    if (footers) {
-      Object.keys(footers).forEach(footerId => {
-        requests.push({
-          deleteFooter: { footerId }
-        });
-      });
-    }
-
     // Clear body content, if it exists
     if (content && content.length > 0) {
       // The last structural element contains the end index of the body's content.

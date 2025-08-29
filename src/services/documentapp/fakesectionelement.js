@@ -2,7 +2,7 @@
  * @file Provides a base class for HeaderSection and FooterSection.
  */
 import { FakeContainerElement } from './fakecontainerelement.js';
-import { notYetImplemented } from '../../support/helpers.js';
+import { notYetImplemented, signatureArgs } from '../../support/helpers.js';
 import { getText } from './elementhelpers.js';
 import {
   appendParagraph,
@@ -12,6 +12,7 @@ import {
   appendListItem,
   insertListItem,
 } from './appenderhelpers.js';
+import { ElementType } from '../enums/docsenums.js';
 
 /**
  * A base class for HeaderSection and FooterSection.
@@ -77,7 +78,33 @@ export class FakeSectionElement extends FakeContainerElement {
    * @returns {FakeSectionElement} The section.
    */
   clear() {
-    return notYetImplemented(`${this.toString()}.clear`);
+    const { nargs, matchThrow } = signatureArgs(arguments, `${this.toString()}.clear`);
+    if (nargs !== 0) matchThrow();
+
+    const shadow = this.shadowDocument;
+    const item = this.__elementMapItem;
+    const content = item.content || [];
+
+    if (content.length === 0) {
+      return this;
+    }
+
+    const lastElement = content[content.length - 1];
+    const endIndex = lastElement.endIndex;
+
+    // A new section has one empty paragraph with range [0,1).
+    // We must not delete this final newline character.
+    if (endIndex <= 1) {
+      return this;
+    }
+
+    const requests = [{
+      deleteContentRange: { range: { startIndex: 0, endIndex: endIndex - 1, segmentId: this.__segmentId, tabId: shadow.__tabId } }
+    }];
+
+    Docs.Documents.batchUpdate({ requests }, shadow.getId());
+    shadow.refresh();
+    return this;
   }
 
   /**
@@ -152,5 +179,31 @@ export class FakeSectionElement extends FakeContainerElement {
       return this.appendTable(table);
     }
     return insertTable(this, childIndex, table);
+  }
+
+  /**
+   * Removes the element from its parent.
+   * @returns {FakeSectionElement} The element, for chaining.
+   */
+  removeFromParent() {
+    const { nargs, matchThrow } = signatureArgs(arguments, `${this.toString()}.removeFromParent`);
+    if (nargs !== 0) matchThrow();
+
+    const shadow = this.shadowDocument;
+    const type = this.getType();
+    const segmentId = this.__segmentId;
+    let request;
+
+    if (type === ElementType.HEADER_SECTION) {
+      request = { deleteHeader: { headerId: segmentId } };
+    } else if (type === ElementType.FOOTER_SECTION) {
+      request = { deleteFooter: { footerId: segmentId } };
+    } else {
+      throw new Error(`removeFromParent() is not supported for type ${type}`);
+    }
+
+    Docs.Documents.batchUpdate({ requests: [request] }, shadow.getId());
+    shadow.refresh();
+    return this;
   }
 }

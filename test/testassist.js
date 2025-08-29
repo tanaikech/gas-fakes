@@ -63,10 +63,19 @@ export const maketdoc = (toTrash, fixes, clear = true) => {
   }
 
   if (clear) {
-    // bug in live apps script you cant clear a doc which has certain kinds of trailing elements, so we'll append a blank para
-    const body = __mdoc.getBody()
-    body.appendParagraph('')
-    __mdoc.clear()
+    // In the live environment, doc.clear() only clears the body.
+    // For tests, we often need a completely clean slate.
+    // So, we explicitly remove headers/footers first.
+    const header = __mdoc.getHeader();
+    if (header) header.removeFromParent();
+
+    const footer = __mdoc.getFooter();
+    if (footer) footer.removeFromParent();
+
+    // Now clear the body using the emulated doc.clear(), which only affects the body.
+    // The appendParagraph is a workaround for a live bug where clearing a doc with certain trailing elements fails.
+    __mdoc.getBody().appendParagraph('');
+    __mdoc.clear();
   }
   return {
     doc: __mdoc,
