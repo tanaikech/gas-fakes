@@ -116,11 +116,12 @@ class ShadowDocument {
       const { endIndex, startIndex } = element;
  
       // The API may omit startIndex for the first paragraph in a new header/footer,
-      // and return an endIndex of 1. This seems to represent the initial empty paragraph.
-      // We'll normalize it to match the structure of the main body's initial paragraph.
+      // and return an endIndex of 1. This represents the initial empty paragraph.
+      // Unlike the main body, a new header/footer segment's content starts at index 0.
+      // The segment itself has a length of 1 (the initial newline).
       if (is.integer(endIndex) && !is.integer(startIndex) && endIndex === 1) {
-        element.startIndex = 1;
-        element.endIndex = 2;
+        element.startIndex = 0;
+        // endIndex is already 1, which is correct for a range of [0, 1).
       }
 
       if (!is.integer(element.endIndex) || !is.integer(element.startIndex)) {

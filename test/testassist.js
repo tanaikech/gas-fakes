@@ -441,3 +441,11 @@ const getCircularReplacer = () => {
 };
 
 export const stringCircular = (ob) => JSON.stringify(ob, getCircularReplacer());
+
+export const getChildren = (body) => {
+  const children = [];
+  for (let i = 0; i < body.getNumChildren(); i++) {
+    children.push(body.getChild(i));
+  }
+  return children;
+}

@@ -42,6 +42,8 @@ const testFakes = () => {
   const { unit } = pack;
 
   // add one of these for each service being tested
+  console.log("\n----Test docs headers----");
+  testDocsHeaders(pack);
   console.log("\n----Test slides----");
   testSlides(pack);
   console.log("\n----Test slidesadv----");

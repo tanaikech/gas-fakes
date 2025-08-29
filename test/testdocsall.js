@@ -17,6 +17,7 @@ import { testDocsAdv } from "./testdocsadv.js";
 import { testDocs } from "./testdocs.js";
 import { testDocsNext } from "./testdocsnext.js";
 import { testDocsListItems } from "./testdocslistitems.js";
+import { testDocsHeaders } from "./testdocsheaders.js";
 
 const testDocsAll = () => {
   const pack = initTests();
@@ -32,7 +33,8 @@ const testDocsAll = () => {
   testDocsNext(pack);
   console.log("\n----Test docs list items----");
   testDocsListItems(pack);
-
+  console.log("\n----Test docs headers----");
+  testDocsHeaders(pack);
   console.log("\n----TEST ALL DOCS COMPLETE----");
 
   // reports on cache performance
