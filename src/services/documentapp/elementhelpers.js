@@ -90,8 +90,15 @@ export const getText = (element) => {
   // Paragraphs in the Docs API have a trailing newline. The Apps Script getText() method removes it.
   return text.replace(/\n$/, '');
 };
-export const findItem = (elementMap, type, startIndex) => {
+export const findItem = (elementMap, type, startIndex, segmentId) => {
   const item = Array.from(elementMap.values()).find(f => {
+    // segmentId from API is empty string for body, but we might pass null. Normalize.
+    const itemSegmentId = f.__segmentId || '';
+    const searchSegmentId = segmentId || '';
+    if (itemSegmentId !== searchSegmentId) {
+      return false;
+    }
+
     // A ListItem is a specialized Paragraph. A search for a PARAGRAPH should also find a LIST_ITEM
     // at the given location.
     if (type === 'PARAGRAPH') {
@@ -101,7 +108,7 @@ export const findItem = (elementMap, type, startIndex) => {
   });
   if (!item) {
     console.log(elementMap.values())
-    throw new Error(`Couldnt find element ${type} at ${startIndex}`)
+    throw new Error(`Couldnt find element ${type} at ${startIndex} in segment ${segmentId || 'body'}`)
   }
   return item
 }

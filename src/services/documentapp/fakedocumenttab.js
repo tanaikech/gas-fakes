@@ -42,6 +42,10 @@ class FakeDocumentTab extends FakeElement {
         return notYetImplemented('DocumentTab.addFooter()');
     }
 
+    addFooter() {
+        return this.__document.addFooter();
+    }
+
     addHeader() {
         return this.__document.addHeader();
     }
@@ -60,6 +64,10 @@ class FakeDocumentTab extends FakeElement {
 
     getFooter() {
         return notYetImplemented('DocumentTab.getFooter()');
+    }
+
+    getFooter() {
+        return this.__document.getFooter();
     }
 
     getFootnotes() {

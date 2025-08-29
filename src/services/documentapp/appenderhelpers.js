@@ -146,7 +146,7 @@ const calculateInsertionPointsAndInitialRequests = (self, childIndex, isAppend, 
  * Finds and creates the new element instance after a batch update.
  * @private
  */
-const findAndReturnNewElement = (shadow, newElementStartIndex, childStartIndex, isAppend, options) => {
+const findAndReturnNewElement = (shadow, newElementStartIndex, childStartIndex, isAppend, options, segmentId) => {
   const { elementType, findType, findChildType } = options;
 
   const findContainerType = (is.function(findType) ? findType(isAppend) : findType) || elementType.toString();
@@ -157,10 +157,10 @@ const findAndReturnNewElement = (shadow, newElementStartIndex, childStartIndex, 
   if (childTypeToFind) {
     if (childStartIndex !== null) {
       // The child's start index was predictable (e.g., appending to an existing paragraph).
-      finalItem = findItem(shadow.elementMap, childTypeToFind, childStartIndex);
+      finalItem = findItem(shadow.elementMap, childTypeToFind, childStartIndex, segmentId);
     } else {
       // A new container was created. Find it, then find the child within it.
-      const containerItem = findItem(shadow.elementMap, findContainerType, newElementStartIndex);
+      const containerItem = findItem(shadow.elementMap, findContainerType, newElementStartIndex, segmentId);
       const childTwig = (containerItem.__twig.children || []).find(twig => {
         const childItem = shadow.elementMap.get(twig.name);
         return childItem && childItem.__type === childTypeToFind;
@@ -172,7 +172,7 @@ const findAndReturnNewElement = (shadow, newElementStartIndex, childStartIndex, 
     }
   } else {
     // For operations that return the container element itself.
-    finalItem = findItem(shadow.elementMap, findContainerType, newElementStartIndex);
+    finalItem = findItem(shadow.elementMap, findContainerType, newElementStartIndex, segmentId);
   }
 
   const factory = getElementFactory(finalItem.__type);
@@ -249,13 +249,27 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
 
     if (cells && cells.length > 0 && cells[0].length > 0) {
       // The table was created at newElementStartIndex
-      const populateRequests = reverseUpdateContent(
-        shadow.__unpackDocumentTab(shadow.resource).body.content,
-        newElementStartIndex,
-        cells,
-        segmentId,
-        tabId
-      );
+      const { body, headers, footers } = shadow.__unpackDocumentTab(shadow.resource);
+      let containerContent;
+
+      // Determine the correct content array based on the container type and segmentId
+      if (self.getType() === ElementType.BODY_SECTION) {
+        containerContent = body.content;
+      } else if (self.getType() === ElementType.HEADER_SECTION) {
+        containerContent = headers[segmentId]?.content;
+      } else if (self.getType() === ElementType.FOOTER_SECTION) {
+        containerContent = footers[segmentId]?.content;
+      } else {
+        // This logic is for top-level containers. TableCell would need a different approach.
+        // For now, this covers the failing case.
+        throw new Error(`Table population not supported in container of type: ${self.getType()}`);
+      }
+
+      if (!containerContent) {
+        throw new Error(`Could not find content for segmentId: ${segmentId}`);
+      }
+
+      const populateRequests = reverseUpdateContent(containerContent, newElementStartIndex, cells, segmentId, tabId);
       if (populateRequests.length > 0) {
         Docs.Documents.batchUpdate({ requests: populateRequests }, shadow.getId());
         shadow.refresh();
@@ -265,10 +279,10 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
     // When the API inserts a table, it automatically adds a paragraph after it.
     // This new paragraph can sometimes inherit the list style of the element
     // preceding the table. We need to explicitly remove this bullet formatting.
-    const tableItem = findItem(shadow.elementMap, 'TABLE', newElementStartIndex);
+    const tableItem = findItem(shadow.elementMap, 'TABLE', newElementStartIndex, segmentId);
     if (tableItem) {
       const paragraphAfterTableIndex = tableItem.endIndex;
-      const paraItem = findItem(shadow.elementMap, 'PARAGRAPH', paragraphAfterTableIndex);
+      const paraItem = findItem(shadow.elementMap, 'PARAGRAPH', paragraphAfterTableIndex, segmentId);
 
       // findItem for PARAGRAPH will also find LIST_ITEM.
       // We check if the found item has a bullet, which indicates it wrongly inherited list properties.
@@ -280,7 +294,7 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
   }
 
   // 7. Find and return the newly created element instance.
-  return findAndReturnNewElement(shadow, newElementStartIndex, childStartIndex, isAppend, options);
+  return findAndReturnNewElement(shadow, newElementStartIndex, childStartIndex, isAppend, options, segmentId);
 };
 
 

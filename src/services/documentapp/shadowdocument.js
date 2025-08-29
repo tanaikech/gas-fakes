@@ -1,5 +1,5 @@
 import { Proxies } from '../../support/proxies.js';
-import { makeNrPrefix, getCurrentNr, findOrCreateNamedRangeName } from './nrhelpers.js'
+import { makeNrPrefix, getCurrentNr, findOrCreateNamedRangeName, shadowPrefix } from './nrhelpers.js'
 import { getElementProp } from './elementhelpers.js';
 import { Utils } from '../../support/utils.js';
 
@@ -88,7 +88,8 @@ class ShadowDocument {
 
     // we'll need to recursively iterate through the document to create a bookmark for every single one
     this.__elementMap = new Map()
-    const bodyName = makeNrPrefix("BODY_SECTION");
+    // The body's name is fixed as it's the top-level container for the main content.
+    const bodyName = shadowPrefix + "BODY_SECTION_";
     const bodyTree = { name: bodyName, children: [], parent: null }
     const bodyElement = {
       __prop: "BODY_SECTION",
@@ -103,6 +104,9 @@ class ShadowDocument {
     const mapElements = (element, branch, segmentId, knownType = null) => {
       // this gets the type and property name to look for for the given element content
       const elementProp = knownType ? { type: knownType, prop: null } : getElementProp(element);
+
+      // Tag the element with its segment ID for later lookups.
+      element.__segmentId = segmentId;
 
       if (!elementProp) {
         // This will now catch things like sectionBreak
@@ -204,7 +208,7 @@ class ShadowDocument {
       Reflect.ownKeys(sectionMap).forEach(sectionId => {
         const section = sectionMap[sectionId];
         // The name in the element map is constructed from the type and ID.
-        const sectionName = makeNrPrefix(sectionType) + sectionId;
+        const sectionName = shadowPrefix + sectionType + '_' + sectionId;
         const sectionTree = { name: sectionName, children: [], parent: null };
         const sectionElement = {
           __prop: null, // a header/footer is a top-level container
@@ -296,41 +300,50 @@ class ShadowDocument {
     return this.resource
   }
   clear() {
-
-    // The document's content is represented by an array of structural elements.
-    const content = this.__unpackDocumentTab(this.resource).body.content
-
-    // If there's no content, there's nothing to clear.
-    if (!content || content.length === 0) {
-      return this;
-    }
+    const { body, headers, footers } = this.__unpackDocumentTab(this.resource);
+    const content = body.content;
 
     const requests = [];
 
-    // The last structural element contains the end index of the body's content.
-    // A new/empty document has one structural element (a paragraph) with startIndex 1 and endIndex 2.
-    // We must not delete this final newline character.
-    const lastElement = content[content.length - 1];
-    const endIndex = lastElement.endIndex;
-
-    const hasContentToDelete = endIndex > 2;
-    const firstElement = content.find(c => c.startIndex === 1);
-    const isFirstElementListItem = firstElement?.paragraph?.bullet;
-
-    // If there is content to delete (more than just the initial empty paragraph)...
-    if (hasContentToDelete) {
-      // We need to delete everything from the start of the body content (index 1)
-      // up to the start of the final newline character. The range for deletion is
-      // [1, endIndex - 1), where the end of the range is exclusive.
-      requests.push({
-        deleteContentRange: { range: { startIndex: 1, endIndex: endIndex - 1, segmentId: this.__segmentId, tabId: this.__tabId } }
+    // Clear headers
+    if (headers) {
+      Object.keys(headers).forEach(headerId => {
+        requests.push({
+          deleteHeader: { headerId }
+        });
       });
     }
 
-    // We must remove bullets if we are deleting content (which might merge a list item
-    // into the first paragraph) OR if the first paragraph is already a list item.
-    if (hasContentToDelete || isFirstElementListItem) {
-      requests.push({ deleteParagraphBullets: { range: { startIndex: 1, endIndex: 1, segmentId: this.__segmentId, tabId: this.__tabId } } });
+    // Clear footers
+    if (footers) {
+      Object.keys(footers).forEach(footerId => {
+        requests.push({
+          deleteFooter: { footerId }
+        });
+      });
+    }
+
+    // Clear body content, if it exists
+    if (content && content.length > 0) {
+      // The last structural element contains the end index of the body's content.
+      // A new/empty document has one structural element (a paragraph) with startIndex 1 and endIndex 2.
+      // We must not delete this final newline character.
+      const lastElement = content[content.length - 1];
+      const endIndex = lastElement.endIndex;
+
+      const hasContentToDelete = endIndex > 2;
+      const firstElement = content.find(c => c.startIndex === 1);
+      const isFirstElementListItem = firstElement?.paragraph?.bullet;
+
+      if (hasContentToDelete) {
+        requests.push({
+          deleteContentRange: { range: { startIndex: 1, endIndex: endIndex - 1, segmentId: this.__segmentId, tabId: this.__tabId } }
+        });
+      }
+
+      if (hasContentToDelete || isFirstElementListItem) {
+        requests.push({ deleteParagraphBullets: { range: { startIndex: 1, endIndex: 1, segmentId: this.__segmentId, tabId: this.__tabId } } });
+      }
     }
 
     if (requests.length > 0) {

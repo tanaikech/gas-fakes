@@ -2,7 +2,7 @@ import { Proxies } from '../../support/proxies.js';
 import { signatureArgs } from '../../support/helpers.js';
 import { Utils } from '../../support/utils.js';
 import { FakeContainerElement } from './fakecontainerelement.js';
-import { makeNrPrefix } from './nrhelpers.js'
+import { shadowPrefix } from './nrhelpers.js'
 import { appendParagraph, insertParagraph, appendPageBreak, insertPageBreak, appendTable, insertTable, appendListItem, insertListItem } from './appenderhelpers.js'
 import { registerElement } from './elementRegistry.js';
 const { is } = Utils
@@ -15,7 +15,7 @@ class FakeBody extends FakeContainerElement {
       matchThrow();
     }
     // The name from getBody() will be undefined, so we default it. The name from __cast() will be defined.
-    super(shadowDocument, name || makeNrPrefix('BODY_SECTION'))
+    super(shadowDocument, name || shadowPrefix + 'BODY_SECTION_')
   }
 
   getText() {

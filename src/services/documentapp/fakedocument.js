@@ -7,7 +7,8 @@ import { newFakeTab } from './faketab.js';
 import { newFakeBody } from './fakebody.js';
 import { newFakeRangeBuilder } from './fakerangebuilder.js';
 import { newFakeHeaderSection } from './fakeheadersection.js';
-import { makeNrPrefix } from './nrhelpers.js';
+import { newFakeFooterSection } from './fakefootersection.js';
+import { shadowPrefix } from './nrhelpers.js';
 
 export const newFakeDocument = (...args) => {
   return Proxies.guard(new FakeDocument(...args));
@@ -49,6 +50,28 @@ class FakeDocument {
     return this.getHeader();
   }
 
+  addFooter() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Document.addFooter');
+    if (nargs !== 0) matchThrow();
+
+    const existingFooter = this.getFooter();
+    if (existingFooter) {
+      throw new Error('Document tab already contains a footer.');
+    }
+
+    const shadow = this.__shadowDocument;
+    const requests = [{
+      createFooter: {
+        type: 'DEFAULT',
+      },
+    }];
+
+    Docs.Documents.batchUpdate({ requests }, shadow.getId());
+    shadow.refresh();
+
+    return this.getFooter();
+  }
+
   getHeader() {
     const { nargs, matchThrow } = signatureArgs(arguments, 'Document.getHeader');
     if (nargs !== 0) matchThrow();
@@ -63,10 +86,30 @@ class FakeDocument {
       return null;
     }
 
-    const headerName = makeNrPrefix('HEADER_SECTION') + headerId;
+    const headerName = shadowPrefix + 'HEADER_SECTION_' + headerId;
     // The structure getter on shadowDocument ensures the map is up to date.
     return newFakeHeaderSection(shadow, headerName);
   }
+
+  getFooter() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Document.getFooter');
+    if (nargs !== 0) matchThrow();
+
+    const shadow = this.__shadowDocument;
+    // Accessing resource will trigger a refresh and element map rebuild if necessary.
+    const resource = shadow.resource;
+    const { documentStyle } = shadow.__unpackDocumentTab(resource);
+
+    const footerId = documentStyle?.defaultFooterId;
+    if (!footerId) {
+      return null;
+    }
+
+    const footerName = shadowPrefix + 'FOOTER_SECTION_' + footerId;
+    // The structure getter on shadowDocument ensures the map is up to date.
+    return newFakeFooterSection(shadow, footerName);
+  }
+
 
 
 
