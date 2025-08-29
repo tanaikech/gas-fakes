@@ -100,6 +100,17 @@ class ShadowDocument {
       __twig: bodyTree
     }
     this.__elementMap.set(bodyName, bodyElement);
+
+    // Add a single FootnoteSection element. It's a virtual container for all footnotes.
+    const footnoteSectionName = shadowPrefix + "FOOTNOTE_SECTION_";
+    const footnoteSectionTree = { name: footnoteSectionName, children: [], parent: null };
+    const footnoteSectionElement = {
+      __prop: null,
+      __type: "FOOTNOTE_SECTION",
+      __name: footnoteSectionName,
+      __twig: footnoteSectionTree,
+    };
+    this.__elementMap.set(footnoteSectionName, footnoteSectionElement);
     // console.log('named ranges after document fetch', JSON.stringify(currentNr))
 
     // maps all the elements to their named range
@@ -240,12 +251,24 @@ class ShadowDocument {
 
     // Now map footnotes
     const mapFootnotes = (footnoteMap) => {
-      if (!footnoteMap) return;
+      const footnoteSectionElement = this.getElement(shadowPrefix + "FOOTNOTE_SECTION_");
+      if (!footnoteSectionElement) {
+        // This should not happen as we created it above.
+        throw new Error('Internal error: FootnoteSection element not found in map.');
+      }
+      const footnoteSectionTree = footnoteSectionElement.__twig;
+      const footnoteTwigs = [];
+
+      if (!footnoteMap) {
+        footnoteSectionTree.children = [];
+        return;
+      }
+
       Reflect.ownKeys(footnoteMap).forEach(footnoteId => {
         const footnote = footnoteMap[footnoteId];
         // The name in the element map is constructed from the type and ID.
         const footnoteName = shadowPrefix + 'FOOTNOTE_' + footnoteId;
-        const footnoteTree = { name: footnoteName, children: [], parent: null }; // Footnotes are top-level containers, no parent in the main tree.
+        const footnoteTree = { name: footnoteName, children: [], parent: footnoteSectionTree }; // Parent is the virtual FootnoteSection
         const footnoteElement = {
           __prop: null,
           __type: 'FOOTNOTE',
@@ -257,7 +280,9 @@ class ShadowDocument {
 
         (footnote.content || []).forEach(c => mapElements(c, footnoteTree, footnoteId));
         footnoteTree.children = (footnote.content || []).map(c => c.__twig).filter(Boolean);
+        footnoteTwigs.push(footnoteTree);
       });
+      footnoteSectionTree.children = footnoteTwigs;
     };
     mapFootnotes(footnotes);
     // delete the named ranges that weren't used

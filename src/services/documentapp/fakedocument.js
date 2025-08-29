@@ -9,6 +9,7 @@ import { newFakeRangeBuilder } from './fakerangebuilder.js';
 import { newFakeHeaderSection } from './fakeheadersection.js';
 import { newFakeFooterSection } from './fakefootersection.js';
 import { shadowPrefix } from './nrhelpers.js';
+import { createFootnote } from './appenderhelpers.js';
 
 export const newFakeDocument = (...args) => {
   return Proxies.guard(new FakeDocument(...args));
@@ -166,9 +167,10 @@ class FakeDocument {
   }
 
   appendFootnote(text) {
-    const { nargs, matchThrow } = signatureArgs(arguments, "Document.appendFootnote");
-    if (nargs !== 1) matchThrow();
-    return this.getBody().appendFootnote(text);
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Document.appendFootnote');
+    if (nargs !== 1 || !is.string(text)) matchThrow();
+    // This method exists on Document, not Body. It creates the footnote in the body.
+    return createFootnote(this.getBody(), text);
   }
 
   insertListItem(childIndex, listItemOrText) {

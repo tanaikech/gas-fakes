@@ -3,6 +3,7 @@ import { signatureArgs } from '../../support/helpers.js';
 import { Utils } from '../../support/utils.js';
 import { FakeContainerElement } from './fakecontainerelement.js';
 import { shadowPrefix } from './nrhelpers.js'
+import { newFakeFootnoteSection } from './fakefootnotesection.js';
 import { appendParagraph, insertParagraph, appendPageBreak, insertPageBreak, appendTable, insertTable, appendListItem, insertListItem } from './appenderhelpers.js'
 import { registerElement } from './elementRegistry.js';
 const { is } = Utils
@@ -85,6 +86,17 @@ class FakeBody extends FakeContainerElement {
       return this.appendListItem(listItemOrText);
     }
     return insertListItem(this, childIndex, listItemOrText);
+  }
+
+  /**
+   * Gets the footnote section of the document.
+   * @returns {GoogleAppsScript.Document.FootnoteSection} The footnote section.
+   * @see https://developers.google.com/apps-script/reference/document/body#getFootnoteSection()
+   */
+  getFootnoteSection() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Body.getFootnoteSection');
+    if (nargs !== 0) matchThrow();
+    return newFakeFootnoteSection(this.__shadowDocument, shadowPrefix + 'FOOTNOTE_SECTION_');
   }
 
   toString() {

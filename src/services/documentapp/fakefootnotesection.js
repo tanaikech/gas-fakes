@@ -4,7 +4,6 @@
 import { Proxies } from '../../support/proxies.js';
 import { FakeContainerElement } from './fakecontainerelement.js';
 import { registerElement } from './elementRegistry.js';
-import { appendParagraph, insertParagraph, appendTable, insertTable, appendListItem, insertListItem } from './appenderhelpers.js';
 import { getText } from './elementhelpers.js';
 
 /**
@@ -33,63 +32,89 @@ class FakeFootnoteSection extends FakeContainerElement {
     super(shadowDocument, nameOrItem);
   }
 
+  /**
+   * Appends a new paragraph to the last footnote in the section.
+   * @param {string|GoogleAppsScript.Document.Paragraph} paragraphOrText The paragraph or text to append.
+   * @returns {GoogleAppsScript.Document.Paragraph} The appended paragraph.
+   */
   appendParagraph(paragraphOrText) {
-    return appendParagraph(this, paragraphOrText);
+    const footnotes = this.getFootnotes();
+    if (footnotes.length === 0) {
+      throw new Error('Cannot append a paragraph to a document with no footnotes.');
+    }
+    return footnotes[footnotes.length - 1].appendParagraph(paragraphOrText);
   }
 
+  /**
+   * Appends a new table to the last footnote in the section.
+   * @param {string[][]|GoogleAppsScript.Document.Table} tableOrCells The table or cells to append.
+   * @returns {GoogleAppsScript.Document.Table} The appended table.
+   */
   appendTable(tableOrCells) {
-    return appendTable(this, tableOrCells);
+    const footnotes = this.getFootnotes();
+    if (footnotes.length === 0) {
+      throw new Error('Cannot append a table to a document with no footnotes.');
+    }
+    return footnotes[footnotes.length - 1].appendTable(tableOrCells);
   }
 
+  /**
+   * Appends a new list item to the last footnote in the section.
+   * @param {string|GoogleAppsScript.Document.ListItem} listItemOrText The list item or text to append.
+   * @returns {GoogleAppsScript.Document.ListItem} The appended list item.
+   */
   appendListItem(listItemOrText) {
-    return appendListItem(this, listItemOrText);
+    const footnotes = this.getFootnotes();
+    if (footnotes.length === 0) {
+      throw new Error('Cannot append a list item to a document with no footnotes.');
+    }
+    return footnotes[footnotes.length - 1].appendListItem(listItemOrText);
   }
 
+  /**
+   * Clears the contents of all footnotes in the section. This does not remove the footnotes themselves.
+   * @returns {FakeFootnoteSection} The section, for chaining.
+   */
   clear() {
-    const shadow = this.shadowDocument;
-    const item = this.__elementMapItem;
-    const content = item.content || [];
-
-    if (content.length === 0) return this;
-
-    const lastElement = content[content.length - 1];
-    const endIndex = lastElement.endIndex;
-
-    if (endIndex <= 2) return this;
-
-    const requests = [{
-      deleteContentRange: { range: { startIndex: 1, endIndex: endIndex - 1, segmentId: this.__segmentId, tabId: shadow.__tabId } }
-    }];
-
-    Docs.Documents.batchUpdate({ requests }, shadow.getId());
-    shadow.refresh();
+    this.getFootnotes().forEach(fn => fn.clear());
     return this;
   }
 
+  /**
+   * Gets all the footnotes in the section.
+   * @returns {GoogleAppsScript.Document.Footnote[]} An array of all footnotes.
+   */
+  getFootnotes() {
+    // The children of the FootnoteSection are the Footnote elements.
+    // We must build the array manually as there is no public getChildren() method.
+    const children = [];
+    for (let i = 0; i < this.getNumChildren(); i++) {
+      children.push(this.getChild(i));
+    }
+    return children;
+  }
+
+  /**
+   * Gets the concatenated text of all footnotes in the section.
+   * @returns {string} The text content.
+   */
   getText() {
-    return getText(this);
+    return this.getFootnotes().map(fn => fn.getText()).join('\n');
   }
 
-  insertParagraph(childIndex, paragraph) {
-    return insertParagraph(this, childIndex, paragraph);
-  }
-
-  insertTable(childIndex, table) {
-    return insertTable(this, childIndex, table);
-  }
-
-  insertListItem(childIndex, listItem) {
-    return insertListItem(this, childIndex, listItem);
-  }
-
+  /**
+   * Sets the text content of the footnote section. This clears all existing footnotes' content
+   * and sets the text of the first footnote. Throws an error if there are no footnotes.
+   * @param {string} text The new text content.
+   * @returns {FakeFootnoteSection} The section, for chaining.
+   */
   setText(text) {
     this.clear();
-    if (text) {
-      const requests = [{
-        insertText: { location: { index: 1, segmentId: this.__segmentId }, text }
-      }];
-      Docs.Documents.batchUpdate({ requests }, this.shadowDocument.getId());
-      this.shadowDocument.refresh();
+    const footnotes = this.getFootnotes();
+    if (text && footnotes.length > 0) {
+      footnotes[0].setText(text);
+    } else if (text && footnotes.length === 0) {
+      throw new Error('Cannot set text for a document with no footnotes.');
     }
     return this;
   }
@@ -100,4 +125,3 @@ class FakeFootnoteSection extends FakeContainerElement {
 }
 
 registerElement('FOOTNOTE_SECTION', newFakeFootnoteSection);
-

@@ -15,7 +15,7 @@ export const testDocsFootnotes = (pack) => {
 
     // 2. Append a footnote
     const footnoteText = "This is the first footnote.";
-    const fn1 = body.appendFootnote(footnoteText);
+    const fn1 = doc.appendFootnote(footnoteText);
 
     t.is(fn1.toString(), 'Footnote', "appendFootnote should return a Footnote object");
     t.is(fn1.getText(), footnoteText, "Footnote should have the correct text");
@@ -39,7 +39,7 @@ export const testDocsFootnotes = (pack) => {
     t.is(refElement.toString(), 'FootnoteReference', "The child element should be a FootnoteReference");
 
     // 4. Append another footnote
-    const fn2 = body.appendFootnote("Second footnote.");
+    const fn2 = doc.appendFootnote("Second footnote.");
     t.is(doc.getFootnotes().length, 2, "Document should have two footnotes after second append");
     t.is(doc.getFootnote(fn1.getId()).getText(), footnoteText, "Can retrieve first footnote by ID");
     t.is(doc.getFootnote(fn2.getId()).getText(), "Second footnote.", "Can retrieve second footnote by ID");
@@ -50,7 +50,7 @@ export const testDocsFootnotes = (pack) => {
   unit.section("Footnote methods", t => {
     const { doc } = maketdoc(toTrash, fixes);
     const body = doc.getBody();
-    const fn = body.appendFootnote("Initial text.");
+    const fn = doc.appendFootnote("Initial text.");
 
     // Test getFootnoteContents()
     const contents = fn.getFootnoteContents();
@@ -69,6 +69,40 @@ export const testDocsFootnotes = (pack) => {
     t.is(p1.getParent().toString(), 'Footnote', "Paragraph parent should be the footnote");
 
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
+  });
+
+  unit.section("FootnoteSection methods", t => {
+    const { doc } = maketdoc(toTrash, fixes);
+    const body = doc.getBody();
+
+    // 1. Test on a doc with no footnotes
+    const fsEmpty = body.getFootnoteSection();
+    t.is(fsEmpty.toString(), 'FootnoteSection', "getFootnoteSection should return a FootnoteSection object");
+    t.is(fsEmpty.getNumChildren(), 0, "FootnoteSection should have 0 children initially");
+    t.is(fsEmpty.getText(), "", "FootnoteSection text should be empty initially");
+    t.rxMatch(t.threw(() => fsEmpty.appendParagraph("test"))?.message, /Cannot append a paragraph to a document with no footnotes./, "Should throw when appending to empty section");
+
+    // 2. Add some footnotes
+    const fn1 = doc.appendFootnote("Footnote one.");
+    const fn2 = doc.appendFootnote("Footnote two.");
+
+    const fs = body.getFootnoteSection();
+    t.is(fs.getNumChildren(), 2, "FootnoteSection should have 2 children");
+    t.is(fs.getChild(0).getId(), fn1.getId(), "First child should be the first footnote");
+    t.is(fs.getChild(1).getId(), fn2.getId(), "Second child should be the second footnote");
+    t.is(fs.getFootnotes().length, 2, "getFootnotes should return both footnotes");
+
+    // 3. Test getText()
+    t.is(fs.getText(), "Footnote one.\nFootnote two.", "getText should concatenate footnote texts");
+
+    // 4. Test appendParagraph()
+    fs.appendParagraph("Appended to two.");
+    t.is(fn2.getText(), "Footnote two.\nAppended to two.", "appendParagraph should add to the last footnote");
+
+    // 5. Test clear() and setText()
+    fs.setText("New text for all.");
+    t.is(fn1.getText(), "New text for all.", "setText should set text of the first footnote and clear others");
+    t.is(fn2.getText(), "", "setText should clear subsequent footnotes");
   });
 
   if (!pack) {

@@ -65,36 +65,6 @@ export class FakeContainerElement extends FakeElement {
   }
 
   /**
-   * Appends a new footnote to the element.
-   * @param {string} text The text for the footnote.
-   * @returns {GoogleAppsScript.Document.Footnote} The new footnote.
-   * @see https://developers.google.com/apps-script/reference/document/body#appendFootnote(String)
-   */
-  appendFootnote(text) {
-    const { nargs, matchThrow } = signatureArgs(arguments, `${this.toString()}.appendFootnote`);
-    if (nargs !== 1 || !is.string(text)) {
-      matchThrow();
-    }
-    return createFootnote(this, text);
-  }
-
-  /**
-   * Inserts a new footnote at the specified index.
-   * @param {number} childIndex The index at which to insert.
-   * @param {string} text The text for the footnote.
-   * @returns {GoogleAppsScript.Document.Footnote} The new footnote.
-   * @see https://developers.google.com/apps-script/reference/document/body#insertFootnote(Integer,String)
-   */
-  insertFootnote(childIndex, text) {
-    // The API does not support inserting a footnote at a specific child index, only at a text index.
-    // This is a simplification.
-    return this.appendFootnote(text);
-  }
-
-
-
-
-  /**
    * Retrieves the child element at the specified index.
    * @param {number} childIndex The zero-based index of the child element to retrieve.
    * @returns {GoogleAppsScript.Document.Element} The child element at the specified index.
