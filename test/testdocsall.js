@@ -19,6 +19,7 @@ import { testDocsNext } from "./testdocsnext.js";
 import { testDocsListItems } from "./testdocslistitems.js";
 import { testDocsHeaders } from "./testdocsheaders.js";
 import { testDocsFooters } from "./testdocsfooters.js";
+import { testDocsFootnotes } from "./testdocsfootnotes.js";
 const testDocsAll = () => {
   const pack = initTests();
   const { unit } = pack;
@@ -37,6 +38,8 @@ const testDocsAll = () => {
   testDocsHeaders(pack);
   console.log("\n----Test docs footers----");
   testDocsFooters(pack);
+  console.log("\n----Test docs footnotes----");
+  testDocsFootnotes(pack);
   console.log("\n----TEST ALL DOCS COMPLETE----");
 
   // reports on cache performance

@@ -297,6 +297,44 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
   return findAndReturnNewElement(shadow, newElementStartIndex, childStartIndex, isAppend, options, segmentId);
 };
 
+/**
+ * Creates a footnote and a reference to it.
+ * @param {FakeContainerElement} parent The parent container.
+ * @param {string} text The text for the footnote.
+ * @returns {GoogleAppsScript.Document.Footnote} The new footnote element.
+ */
+export const createFootnote = (parent, text) => {
+  if (parent.__isDetached) {
+    throw new Error('Cannot append to a detached element.');
+  }
+  const shadow = parent.shadowDocument;
+
+  const request = {
+    createFootnote: {
+      endOfSegmentLocation: {
+        segmentId: parent.__segmentId,
+      },
+    },
+  };
+
+  const response = Docs.Documents.batchUpdate({ requests: [request] }, shadow.getId());
+  const footnoteId = response.replies[0].createFootnote.footnoteId;
+
+  if (text) {
+    const textRequest = {
+      insertText: {
+        text,
+        location: {
+          segmentId: footnoteId,
+          index: 1,
+        },
+      },
+    };
+    Docs.Documents.batchUpdate({ requests: [textRequest] }, shadow.getId());
+  }
+  shadow.refresh();
+  return shadow.getFootnoteById(footnoteId);
+};
 
 
 // THE API has no way of inserting a horizontal rule

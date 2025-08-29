@@ -110,6 +110,26 @@ class FakeDocument {
     return newFakeFooterSection(shadow, footerName);
   }
 
+  /**
+   * Gets the footnote with the given ID.
+   * @param {string} id The footnote ID.
+   * @returns {GoogleAppsScript.Document.Footnote} The footnote, or null if not found.
+   * @see https://developers.google.com/apps-script/reference/document/document#getFootnote(String)
+   */
+  getFootnote(id) {
+    return this.__shadowDocument.getFootnoteById(id);
+  }
+
+  /**
+   * Gets all footnotes in the document.
+   * @returns {GoogleAppsScript.Document.Footnote[]} An array of footnotes.
+   * @see https://developers.google.com/apps-script/reference/document/document#getFootnotes()
+   */
+  getFootnotes() {
+    return this.__shadowDocument.getFootnotes();
+  }
+
+
 
 
 
@@ -143,6 +163,12 @@ class FakeDocument {
     const { nargs, matchThrow } = signatureArgs(arguments, "Document.appendTable");
     if (nargs > 1) matchThrow();
     return this.getBody().appendTable(tableOrCells);
+  }
+
+  appendFootnote(text) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Document.appendFootnote");
+    if (nargs !== 1) matchThrow();
+    return this.getBody().appendFootnote(text);
   }
 
   insertListItem(childIndex, listItemOrText) {

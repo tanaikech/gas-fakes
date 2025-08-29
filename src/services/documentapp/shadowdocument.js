@@ -2,6 +2,7 @@ import { Proxies } from '../../support/proxies.js';
 import { makeNrPrefix, getCurrentNr, findOrCreateNamedRangeName, shadowPrefix } from './nrhelpers.js'
 import { getElementProp } from './elementhelpers.js';
 import { Utils } from '../../support/utils.js';
+import { newFakeFootnote } from './fakefootnote.js';
 
 
 const { is } = Utils;
@@ -54,6 +55,7 @@ class ShadowDocument {
       namedRanges: documentTab.namedRanges,
       headers: documentTab.headers,
       footers: documentTab.footers,
+      footnotes: documentTab.footnotes,
       documentStyle: documentTab.documentStyle,
     }
   }
@@ -70,7 +72,7 @@ class ShadowDocument {
 
   makeElementMap(data) {
 
-    const { body, documentTab, tabs, headers, footers } = this.__unpackDocumentTab(data)
+    const { body, documentTab, tabs, headers, footers, footnotes } = this.__unpackDocumentTab(data)
     const {content} = body
 
 
@@ -123,9 +125,15 @@ class ShadowDocument {
       // and return an endIndex of 1. This represents the initial empty paragraph.
       // Unlike the main body, a new header/footer segment's content starts at index 0.
       // The segment itself has a length of 1 (the initial newline).
-      if (is.integer(endIndex) && !is.integer(startIndex) && endIndex === 1) {
-        element.startIndex = 0;
-        // endIndex is already 1, which is correct for a range of [0, 1).
+      if (is.integer(endIndex) && !is.integer(startIndex)) {
+        if (segmentId && segmentId.startsWith('kix.')) {
+          // The first paragraph in a footnote segment is the only one that will be missing
+          // a startIndex. Its startIndex is always 1.
+          element.startIndex = 1;
+        } else if (endIndex === 1) {
+          // This handles the first paragraph in a new header/footer.
+          element.startIndex = 0;
+        }
       }
 
       if (!is.integer(element.endIndex) || !is.integer(element.startIndex)) {
@@ -187,6 +195,7 @@ class ShadowDocument {
               // and text runs that are not just a newline.
               return childElement.pageBreak ||
                 childElement.horizontalRule ||
+                childElement.footnoteReference ||
                 (childElement.textRun && childElement.textRun.content && childElement.textRun.content !== '\n');
             });
         } else {
@@ -228,6 +237,29 @@ class ShadowDocument {
 
     mapSection(headers, 'HEADER_SECTION');
     mapSection(footers, 'FOOTER_SECTION');
+
+    // Now map footnotes
+    const mapFootnotes = (footnoteMap) => {
+      if (!footnoteMap) return;
+      Reflect.ownKeys(footnoteMap).forEach(footnoteId => {
+        const footnote = footnoteMap[footnoteId];
+        // The name in the element map is constructed from the type and ID.
+        const footnoteName = shadowPrefix + 'FOOTNOTE_' + footnoteId;
+        const footnoteTree = { name: footnoteName, children: [], parent: null }; // Footnotes are top-level containers, no parent in the main tree.
+        const footnoteElement = {
+          __prop: null,
+          __type: 'FOOTNOTE',
+          __name: footnoteName,
+          __twig: footnoteTree,
+          ...footnote,
+        };
+        this.__elementMap.set(footnoteName, footnoteElement);
+
+        (footnote.content || []).forEach(c => mapElements(c, footnoteTree, footnoteId));
+        footnoteTree.children = (footnote.content || []).map(c => c.__twig).filter(Boolean);
+      });
+    };
+    mapFootnotes(footnotes);
     // delete the named ranges that weren't used
     // findOrCreate... consumes the currentNr list, so what's left are unused ranges.
 
@@ -251,6 +283,29 @@ class ShadowDocument {
     return data;
   }
 
+  /**
+   * Gets a footnote by its ID.
+   * @param {string} id The footnote ID.
+   * @returns {FakeFootnote|null} The footnote, or null if not found.
+   */
+  getFootnoteById(id) {
+    // The name in the element map is prefixed.
+    const footnoteName = shadowPrefix + 'FOOTNOTE_' + id;
+    const item = this.getElement(footnoteName);
+    if (item) {
+      return newFakeFootnote(this, footnoteName);
+    }
+    return null;
+  }
+
+  /**
+   * Gets all footnotes in the document.
+   * @returns {FakeFootnote[]} An array of footnotes.
+   */
+  getFootnotes() {
+    const { footnotes } = this.__unpackDocumentTab(this.resource);
+    return footnotes ? Object.keys(footnotes).map(id => this.getFootnoteById(id)) : [];
+  }
   // this looks expensive, but the document wil always be in case unless its been updated
   // in which case we have to get it anyway this will
   get resource() {
@@ -293,7 +348,8 @@ class ShadowDocument {
   }
 
   getElement(name) {
-    return this.structure.elementMap.get(name)
+    // The element map now contains body, headers, footers, AND footnotes.
+    return this.structure.elementMap.get(name);
   }
   refresh() {
     // all that's need to refresh everything is to fetch the resource

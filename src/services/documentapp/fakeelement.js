@@ -40,6 +40,9 @@ const asCasts = {
   HORIZONTAL_RULE: {
     method: 'asHorizontalRule',
   },
+  FOOTNOTE_REFERENCE: {
+    method: 'asFootnoteReference',
+  },
 };
 
 /**
@@ -65,7 +68,7 @@ export class FakeElement {
       // A detached element is created by copy().
       if (is.string(nameOrItem)) { // Attached
       if (!is.object(shadowDocument) || !nameOrItem.startsWith(shadowPrefix)) {
-          throw new Error('Invalid arguments for attached FakeElement');
+          throw new Error(`Invalid arguments for attached FakeElement: ${nameOrItem}. Name must start with '${shadowPrefix}'.`);
         }
         this.__isDetached = false;
       this.__shadowDocument = shadowDocument;
@@ -112,7 +115,7 @@ export class FakeElement {
    * @private
    */
   __getElementMapItem(name) {
-    const item = this.__structure.elementMap.get(name);
+    const item = this.__shadowDocument.getElement(name);
     if (!item) {
       throw new Error(`element with name ${name} not found`);
     }
@@ -142,7 +145,7 @@ export class FakeElement {
     if (!this.__twig.parent) return null;
 
     const { name } = this.__twig.parent;
-    const item = this.__structure.elementMap.get(name);
+    const item = this.__getElementMapItem(name);
     if (!item) {
       throw new Error(`Parent element with name ${name} not found`);
     }

@@ -51,6 +51,7 @@
     "testdocsall": "cp mainlocal.js main.js &&  node --env-file=.env ./test/testdocsall.js",
     "testdocsheaders": "cp mainlocal.js main.js &&  node --env-file=.env ./test/testdocsheaders.js execute",
     "testdocsfooters": "cp mainlocal.js main.js &&  node --env-file=.env ./test/testdocsfooters.js execute",
+    "testdocsfootnotes": "cp mainlocal.js main.js &&  node --env-file=.env ./test/testdocsfootnotes.js execute",
     "pub": "cp mainlocal.js main.js && npm publish --access public"
   },
   "name": "@mcpher/gas-fakes",

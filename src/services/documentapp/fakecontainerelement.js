@@ -9,6 +9,7 @@ import { Utils } from '../../support/utils.js';
 const { is } = Utils;
 import { getElementProp } from './elementhelpers.js';
 import { FakeElement } from './fakeelement.js';
+import { createFootnote } from './appenderhelpers.js';
 
 /**
  * Creates a new proxied FakeContainerElement instance.
@@ -54,7 +55,8 @@ export class FakeContainerElement extends FakeElement {
     const item = this.__elementMapItem;
     // For Body, headerId/footerId will be undefined, so it falls back to the shadow's segmentId (which is null/empty for body).
     // For Header/Footer, this will return the correct ID.
-    return item.headerId || item.footerId || this.shadowDocument.__segmentId;
+    // For Footnote, it will have a footnoteId.
+    return item.headerId || item.footerId || item.footnoteId || this.shadowDocument.__segmentId;
   }
 
 
@@ -62,6 +64,32 @@ export class FakeContainerElement extends FakeElement {
     return this.__twig.children;
   }
 
+  /**
+   * Appends a new footnote to the element.
+   * @param {string} text The text for the footnote.
+   * @returns {GoogleAppsScript.Document.Footnote} The new footnote.
+   * @see https://developers.google.com/apps-script/reference/document/body#appendFootnote(String)
+   */
+  appendFootnote(text) {
+    const { nargs, matchThrow } = signatureArgs(arguments, `${this.toString()}.appendFootnote`);
+    if (nargs !== 1 || !is.string(text)) {
+      matchThrow();
+    }
+    return createFootnote(this, text);
+  }
+
+  /**
+   * Inserts a new footnote at the specified index.
+   * @param {number} childIndex The index at which to insert.
+   * @param {string} text The text for the footnote.
+   * @returns {GoogleAppsScript.Document.Footnote} The new footnote.
+   * @see https://developers.google.com/apps-script/reference/document/body#insertFootnote(Integer,String)
+   */
+  insertFootnote(childIndex, text) {
+    // The API does not support inserting a footnote at a specific child index, only at a text index.
+    // This is a simplification.
+    return this.appendFootnote(text);
+  }
 
 
 
