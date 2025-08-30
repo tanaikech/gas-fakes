@@ -32,6 +32,7 @@ import { testSheetsData } from "./testsheetsdata.js";
 import { testDocsAdv } from "./testdocsadv.js";
 import { testDocs } from "./testdocs.js";
 import { testDocsNext } from "./testdocsnext.js";
+import { testDocsHeaders } from "./testdocsheaders.js";
 import { testDocsFooters } from "./testdocsfooters.js";
 import { testDocsFootnotes } from "./testdocsfootnotes.js";
 import { testDocsListItems } from "./testdocslistitems.js";
