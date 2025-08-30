@@ -9,6 +9,7 @@ import { Utils } from '../../support/utils.js';
 const { is } = Utils;
 import { getElementProp } from './elementhelpers.js';
 import { FakeElement } from './fakeelement.js';
+import { createFootnote } from './appenderhelpers.js';
 
 /**
  * Creates a new proxied FakeContainerElement instance.
@@ -54,17 +55,14 @@ export class FakeContainerElement extends FakeElement {
     const item = this.__elementMapItem;
     // For Body, headerId/footerId will be undefined, so it falls back to the shadow's segmentId (which is null/empty for body).
     // For Header/Footer, this will return the correct ID.
-    return item.headerId || item.footerId || this.shadowDocument.__segmentId;
+    // For Footnote/FootnoteSection, it will have a footnoteId.
+    return item.headerId || item.footerId || item.footnoteId || this.shadowDocument.__segmentId;
   }
 
 
   get __children() {
     return this.__twig.children;
   }
-
-
-
-
 
   /**
    * Retrieves the child element at the specified index.

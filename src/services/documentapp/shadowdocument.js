@@ -1,7 +1,8 @@
 import { Proxies } from '../../support/proxies.js';
-import { makeNrPrefix, getCurrentNr, findOrCreateNamedRangeName } from './nrhelpers.js'
+import { makeNrPrefix, getCurrentNr, findOrCreateNamedRangeName, shadowPrefix } from './nrhelpers.js'
 import { getElementProp } from './elementhelpers.js';
 import { Utils } from '../../support/utils.js';
+import { newFakeFootnote } from './fakefootnote.js';
 
 
 const { is } = Utils;
@@ -54,6 +55,7 @@ class ShadowDocument {
       namedRanges: documentTab.namedRanges,
       headers: documentTab.headers,
       footers: documentTab.footers,
+      footnotes: documentTab.footnotes,
       documentStyle: documentTab.documentStyle,
     }
   }
@@ -70,7 +72,7 @@ class ShadowDocument {
 
   makeElementMap(data) {
 
-    const { body, documentTab, tabs, headers, footers } = this.__unpackDocumentTab(data)
+    const { body, documentTab, tabs, headers, footers, footnotes } = this.__unpackDocumentTab(data)
     const {content} = body
 
 
@@ -88,7 +90,8 @@ class ShadowDocument {
 
     // we'll need to recursively iterate through the document to create a bookmark for every single one
     this.__elementMap = new Map()
-    const bodyName = makeNrPrefix("BODY_SECTION");
+    // The body's name is fixed as it's the top-level container for the main content.
+    const bodyName = shadowPrefix + "BODY_SECTION_";
     const bodyTree = { name: bodyName, children: [], parent: null }
     const bodyElement = {
       __prop: "BODY_SECTION",
@@ -97,12 +100,26 @@ class ShadowDocument {
       __twig: bodyTree
     }
     this.__elementMap.set(bodyName, bodyElement);
+
+    // Add a single FootnoteSection element. It's a virtual container for all footnotes.
+    const footnoteSectionName = shadowPrefix + "FOOTNOTE_SECTION_";
+    const footnoteSectionTree = { name: footnoteSectionName, children: [], parent: null };
+    const footnoteSectionElement = {
+      __prop: null,
+      __type: "FOOTNOTE_SECTION",
+      __name: footnoteSectionName,
+      __twig: footnoteSectionTree,
+    };
+    this.__elementMap.set(footnoteSectionName, footnoteSectionElement);
     // console.log('named ranges after document fetch', JSON.stringify(currentNr))
 
     // maps all the elements to their named range
     const mapElements = (element, branch, segmentId, knownType = null) => {
       // this gets the type and property name to look for for the given element content
       const elementProp = knownType ? { type: knownType, prop: null } : getElementProp(element);
+
+      // Tag the element with its segment ID for later lookups.
+      element.__segmentId = segmentId;
 
       if (!elementProp) {
         // This will now catch things like sectionBreak
@@ -116,11 +133,18 @@ class ShadowDocument {
       const { endIndex, startIndex } = element;
  
       // The API may omit startIndex for the first paragraph in a new header/footer,
-      // and return an endIndex of 1. This seems to represent the initial empty paragraph.
-      // We'll normalize it to match the structure of the main body's initial paragraph.
-      if (is.integer(endIndex) && !is.integer(startIndex) && endIndex === 1) {
-        element.startIndex = 1;
-        element.endIndex = 2;
+      // and return an endIndex of 1. This represents the initial empty paragraph.
+      // Unlike the main body, a new header/footer segment's content starts at index 0.
+      // The segment itself has a length of 1 (the initial newline).
+      if (is.integer(endIndex) && !is.integer(startIndex)) {
+        if (segmentId && segmentId.startsWith('kix.')) {
+          // The first paragraph in a footnote segment is the only one that will be missing
+          // a startIndex. Its startIndex is always 1.
+          element.startIndex = 1;
+        } else if (endIndex === 1) {
+          // This handles the first paragraph in a new header/footer.
+          element.startIndex = 0;
+        }
       }
 
       if (!is.integer(element.endIndex) || !is.integer(element.startIndex)) {
@@ -182,6 +206,7 @@ class ShadowDocument {
               // and text runs that are not just a newline.
               return childElement.pageBreak ||
                 childElement.horizontalRule ||
+                childElement.footnoteReference ||
                 (childElement.textRun && childElement.textRun.content && childElement.textRun.content !== '\n');
             });
         } else {
@@ -203,7 +228,7 @@ class ShadowDocument {
       Reflect.ownKeys(sectionMap).forEach(sectionId => {
         const section = sectionMap[sectionId];
         // The name in the element map is constructed from the type and ID.
-        const sectionName = makeNrPrefix(sectionType) + sectionId;
+        const sectionName = shadowPrefix + sectionType + '_' + sectionId;
         const sectionTree = { name: sectionName, children: [], parent: null };
         const sectionElement = {
           __prop: null, // a header/footer is a top-level container
@@ -223,6 +248,43 @@ class ShadowDocument {
 
     mapSection(headers, 'HEADER_SECTION');
     mapSection(footers, 'FOOTER_SECTION');
+
+    // Now map footnotes
+    const mapFootnotes = (footnoteMap) => {
+      const footnoteSectionElement = this.getElement(shadowPrefix + "FOOTNOTE_SECTION_");
+      if (!footnoteSectionElement) {
+        // This should not happen as we created it above.
+        throw new Error('Internal error: FootnoteSection element not found in map.');
+      }
+      const footnoteSectionTree = footnoteSectionElement.__twig;
+      const footnoteTwigs = [];
+
+      if (!footnoteMap) {
+        footnoteSectionTree.children = [];
+        return;
+      }
+
+      Reflect.ownKeys(footnoteMap).forEach(footnoteId => {
+        const footnote = footnoteMap[footnoteId];
+        // The name in the element map is constructed from the type and ID.
+        const footnoteName = shadowPrefix + 'FOOTNOTE_' + footnoteId;
+        const footnoteTree = { name: footnoteName, children: [], parent: footnoteSectionTree }; // Parent is the virtual FootnoteSection
+        const footnoteElement = {
+          __prop: null,
+          __type: 'FOOTNOTE',
+          __name: footnoteName,
+          __twig: footnoteTree,
+          ...footnote,
+        };
+        this.__elementMap.set(footnoteName, footnoteElement);
+
+        (footnote.content || []).forEach(c => mapElements(c, footnoteTree, footnoteId));
+        footnoteTree.children = (footnote.content || []).map(c => c.__twig).filter(Boolean);
+        footnoteTwigs.push(footnoteTree);
+      });
+      footnoteSectionTree.children = footnoteTwigs;
+    };
+    mapFootnotes(footnotes);
     // delete the named ranges that weren't used
     // findOrCreate... consumes the currentNr list, so what's left are unused ranges.
 
@@ -246,6 +308,29 @@ class ShadowDocument {
     return data;
   }
 
+  /**
+   * Gets a footnote by its ID.
+   * @param {string} id The footnote ID.
+   * @returns {FakeFootnote|null} The footnote, or null if not found.
+   */
+  getFootnoteById(id) {
+    // The name in the element map is prefixed.
+    const footnoteName = shadowPrefix + 'FOOTNOTE_' + id;
+    const item = this.getElement(footnoteName);
+    if (item) {
+      return newFakeFootnote(this, footnoteName);
+    }
+    return null;
+  }
+
+  /**
+   * Gets all footnotes in the document.
+   * @returns {FakeFootnote[]} An array of footnotes.
+   */
+  getFootnotes() {
+    const { footnotes } = this.__unpackDocumentTab(this.resource);
+    return footnotes ? Object.keys(footnotes).map(id => this.getFootnoteById(id)) : [];
+  }
   // this looks expensive, but the document wil always be in case unless its been updated
   // in which case we have to get it anyway this will
   get resource() {
@@ -288,48 +373,38 @@ class ShadowDocument {
   }
 
   getElement(name) {
-    return this.structure.elementMap.get(name)
+    // The element map now contains body, headers, footers, AND footnotes.
+    return this.structure.elementMap.get(name);
   }
   refresh() {
     // all that's need to refresh everything is to fetch the resource
     return this.resource
   }
   clear() {
-
-    // The document's content is represented by an array of structural elements.
-    const content = this.__unpackDocumentTab(this.resource).body.content
-
-    // If there's no content, there's nothing to clear.
-    if (!content || content.length === 0) {
-      return this;
-    }
-
+    const { body, headers, footers } = this.__unpackDocumentTab(this.resource);
+    const content = body.content;
     const requests = [];
+    // Clear body content, if it exists
+    if (content && content.length > 0) {
+      // The last structural element contains the end index of the body's content.
+      // A new/empty document has one structural element (a paragraph) with startIndex 1 and endIndex 2.
+      // We must not delete this final newline character.
+      const lastElement = content[content.length - 1];
+      const endIndex = lastElement.endIndex;
 
-    // The last structural element contains the end index of the body's content.
-    // A new/empty document has one structural element (a paragraph) with startIndex 1 and endIndex 2.
-    // We must not delete this final newline character.
-    const lastElement = content[content.length - 1];
-    const endIndex = lastElement.endIndex;
+      const hasContentToDelete = endIndex > 2;
+      const firstElement = content.find(c => c.startIndex === 1);
+      const isFirstElementListItem = firstElement?.paragraph?.bullet;
 
-    const hasContentToDelete = endIndex > 2;
-    const firstElement = content.find(c => c.startIndex === 1);
-    const isFirstElementListItem = firstElement?.paragraph?.bullet;
+      if (hasContentToDelete) {
+        requests.push({
+          deleteContentRange: { range: { startIndex: 1, endIndex: endIndex - 1, segmentId: this.__segmentId, tabId: this.__tabId } }
+        });
+      }
 
-    // If there is content to delete (more than just the initial empty paragraph)...
-    if (hasContentToDelete) {
-      // We need to delete everything from the start of the body content (index 1)
-      // up to the start of the final newline character. The range for deletion is
-      // [1, endIndex - 1), where the end of the range is exclusive.
-      requests.push({
-        deleteContentRange: { range: { startIndex: 1, endIndex: endIndex - 1, segmentId: this.__segmentId, tabId: this.__tabId } }
-      });
-    }
-
-    // We must remove bullets if we are deleting content (which might merge a list item
-    // into the first paragraph) OR if the first paragraph is already a list item.
-    if (hasContentToDelete || isFirstElementListItem) {
-      requests.push({ deleteParagraphBullets: { range: { startIndex: 1, endIndex: 1, segmentId: this.__segmentId, tabId: this.__tabId } } });
+      if (hasContentToDelete || isFirstElementListItem) {
+        requests.push({ deleteParagraphBullets: { range: { startIndex: 1, endIndex: 1, segmentId: this.__segmentId, tabId: this.__tabId } } });
+      }
     }
 
     if (requests.length > 0) {
