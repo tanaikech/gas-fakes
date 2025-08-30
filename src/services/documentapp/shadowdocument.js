@@ -57,6 +57,7 @@ class ShadowDocument {
       footers: documentTab.footers,
       footnotes: documentTab.footnotes,
       documentStyle: documentTab.documentStyle,
+      inlineObjects: documentTab.inlineObjects,
     }
   }
   /**
@@ -206,6 +207,7 @@ class ShadowDocument {
               return childElement.pageBreak ||
                 childElement.horizontalRule ||
                 childElement.footnoteReference ||
+                childElement.inlineObjectElement ||
                 (childElement.textRun && childElement.textRun.content && childElement.textRun.content !== '\n');
             });
         } else {

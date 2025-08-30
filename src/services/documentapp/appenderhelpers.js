@@ -1,10 +1,10 @@
 import { Utils } from "../../support/utils.js";
 import { ElementType } from '../enums/docsenums.js';
-const { is } = Utils
+const { is, isBlob } = Utils
 import { getElementFactory } from './elementRegistry.js'
 import { signatureArgs } from '../../support/helpers.js';
 import { findItem } from './elementhelpers.js';
-import { paragraphOptions, pageBreakOptions, tableOptions, textOptions, listItemOptions } from './elementoptions.js';
+import { paragraphOptions, pageBreakOptions, tableOptions, textOptions, listItemOptions, imageOptions } from './elementoptions.js';
 import { deleteContentRange, createParagraphBullets, reverseUpdateContent, deleteParagraphBullets } from "./elementblasters.js";
 
 /**
@@ -34,15 +34,21 @@ const validateInserterArgs = (elementOrText, childIndex, options) => {
   if (!packCanBeNull && is.nullOrUndefined(elementOrText)) matchThrow();
 
   if (isObject) {
-    // For element objects, the live API checks type first, then attached status.
-    const typeMatches = elementOrText.getType() === elementType;
-    if (!typeMatches) {
-      matchThrow();
-    }
+    // A blob is an object, but doesn't have getType().
+    // Other elements (Paragraph, Table, etc.) do.
+    if (is.function(elementOrText.getType)) {
+      const typeMatches = elementOrText.getType() === elementType;
+      if (!typeMatches) {
+        matchThrow();
+      }
 
-    isDetached = !!elementOrText.__isDetached;
-    if (!isDetached) {
-      throw new Error('Element must be detached.');
+      isDetached = !!elementOrText.__isDetached;
+      if (!isDetached) {
+        throw new Error('Element must be detached.');
+      }
+    } else if (!isBlob(elementOrText)) {
+      // It's an object, but not a blob and doesn't have getType(). Invalid.
+      matchThrow();
     }
   } else {
     // Handle non-object arguments (arrays, strings, null)
@@ -208,7 +214,7 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
 
   // 4. Build the main batch update request list.
   const { getMainRequest, getStyleRequests } = options;
-  const mainRequests = [].concat(getMainRequest({
+  const mainRequestResult = getMainRequest({
     content: elementOrText,
     location: { index: insertIndex, segmentId, tabId },
     isAppend,
@@ -216,7 +222,17 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
     structure,
     leading,
     trailing
-  }));
+  });
+
+  let mainRequests;
+  let cleanup = null;
+
+  if (is.plainObject(mainRequestResult) && mainRequestResult.requests) {
+    mainRequests = [].concat(mainRequestResult.requests);
+    cleanup = mainRequestResult.cleanup;
+  } else {
+    mainRequests = [].concat(mainRequestResult);
+  }
   // if we were inserting a table then there;ll be an unwanted \n to remove - this should be -2 from the insertIndex
   // TODO we need to check if that index is actually a paragraph or not otherwise this will fail/screw up
   if (!isAppend && options.elementType === ElementType.TABLE && insertIndex > 1) {
@@ -237,10 +253,16 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
   }
 
   // 5. Execute the update and refresh the document state.
-  if (requests.length > 0) {
-    Docs.Documents.batchUpdate({ requests }, shadow.getId());
+  try {
+    if (requests.length > 0) {
+      Docs.Documents.batchUpdate({ requests }, shadow.getId());
+    }
+    shadow.refresh(); // must always refresh, as getMainRequest might have side effects
+  } finally {
+    if (cleanup) {
+      cleanup();
+    }
   }
-  shadow.refresh(); // must always refresh, as getMainRequest might have side effects
 
   // 6. Handle table content population if necessary. This is a two-phase update
   // because we need the table to exist before we can get the indices to populate its cells.
@@ -393,4 +415,12 @@ export const appendListItem = (self, listItemOrText) => {
 
 export const insertListItem = (self, childIndex, listItemOrText) => {
   return elementInserter(self, listItemOrText, childIndex, listItemOptions);
+};
+
+export const appendImage = (self, image) => {
+  return elementInserter(self, image, null, imageOptions);
+};
+
+export const insertImage = (self, childIndex, image) => {
+  return elementInserter(self, image, childIndex, imageOptions);
 };

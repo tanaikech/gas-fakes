@@ -1,12 +1,121 @@
 
-import '../main.js';
-import { initTests } from './testinit.js';
-import { trasher, getDocsPerformance, maketdoc, docReport, getChildren } from './testassist.js';
+import "../main.js";
+import { initTests } from "./testinit.js";
+import { trasher, getDocsPerformance, maketdoc, docReport, getChildren } from "./testassist.js";
 
 export const testDocsNext = (pack) => {
   const { unit, fixes } = pack || initTests();
   const toTrash = [];
 
+  unit.section("Body.appendImage and Body.insertImage", t => {
+    let { doc } = maketdoc(toTrash, fixes);
+    let body = doc.getBody();
+
+    // 1. We need an image to copy. Let's append one using the advanced service.
+    // This is a known public image URL.
+    const imageUrl = 'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png';
+    const requests = [{
+      insertInlineImage: {
+        location: { index: 1 },
+        uri: imageUrl,
+        objectSize: {
+          height: { magnitude: 50, unit: 'PT' },
+          width: { magnitude: 136, unit: 'PT' }
+        }
+      }
+    }];
+    Docs.Documents.batchUpdate({ requests }, doc.getId());
+    doc.saveAndClose(); // Ensure changes are saved
+
+    // 2. Re-open and get the image to copy it
+    doc = DocumentApp.openById(doc.getId());
+    body = doc.getBody();
+    // The image is in the first paragraph (which was the initial empty one)
+    const sourceImagePara = body.getChild(0);
+    const sourceImage = sourceImagePara.getChild(0);
+    t.is(sourceImage.getType(), DocumentApp.ElementType.INLINE_IMAGE, "Should have an image to copy");
+
+    const detachedImage = sourceImage.copy();
+    t.is(detachedImage.getParent(), null, "Copied image should be detached");
+    // The API may adjust dimensions to maintain aspect ratio. For this image, 136 / 272 * 92 = 46.
+    t.is(detachedImage.getWidth(), 136, "Detached image should retain its width property from source");
+    t.is(detachedImage.getHeight(), 46, "Detached image should retain its height property (adjusted by API)");
+
+    // Test setters on the attached source image
+    // Setters are not implemented due to API limitations. See https://issuetracker.google.com/issues/172423234
+    t.rxMatch(t.threw(() => sourceImage.setWidth(150))?.message || 'no error thrown', /not yet implemented/, "setWidth should throw not implemented");
+
+    // 3. Append the copied image
+    body.appendParagraph("Some text before.");
+    const appendedImage = body.appendImage(detachedImage);
+
+    t.is(appendedImage.getType(), DocumentApp.ElementType.INLINE_IMAGE, "appendImage should return an InlineImage");
+    t.truthy(appendedImage.getParent(), "Appended image should have a parent paragraph");
+    t.is(appendedImage.getParent().getType(), DocumentApp.ElementType.PARAGRAPH, "Appended image's parent should be a paragraph");
+    t.is(appendedImage.getParent().getParent().getType(), DocumentApp.ElementType.BODY_SECTION, "Appended image's grandparent should be the body");
+    // The appended image is a copy of the *original* source image.
+    t.is(appendedImage.getHeight(), 46, "Appended image should have the original (API-adjusted) height");
+
+    const children = getChildren(body);
+    // [source_img_para, text_para, appended_img_para]
+    t.is(children.length, 3, "Body should have 3 children after appendImage");
+    const appendedImagePara = children[2];
+    t.is(appendedImagePara.getNumChildren(), 1, "Paragraph for appended image should have 1 child");
+    t.is(appendedImagePara.getChild(0).getType(), DocumentApp.ElementType.INLINE_IMAGE, "Child of paragraph should be the image");
+
+    // 4. Insert the copied image
+    const detachedImage2 = sourceImage.copy(); // This is a copy of the *original* source image
+    body.insertImage(1, detachedImage2); // Insert after source_img_para
+
+    const children2 = getChildren(body);
+    // [source_img_para, inserted_img_para, text_para, appended_img_para]
+    t.is(children2.length, 4, "Body should have 4 children after insertImage");
+    const insertedImagePara = children2[1];
+    t.is(insertedImagePara.getChild(0).getType(), DocumentApp.ElementType.INLINE_IMAGE, "Inserted image should be in the correct position");
+    const insertedImage = insertedImagePara.getChild(0);
+    t.is(insertedImage.getHeight(), 46, "Inserted image should have the original height");
+    t.is(insertedImage.getWidth(), 136, "Inserted image should have the original width");
+
+    // 5. Error conditions
+    const attemptAttachedInsert = () => body.insertImage(1, sourceImage);
+    t.rxMatch(t.threw(attemptAttachedInsert)?.message || 'no error thrown', /Element must be detached./, "Inserting an already attached image should throw an error");
+    t.rxMatch(t.threw(() => detachedImage.setWidth(100))?.message || 'no error thrown', /Cannot modify a detached element./, "Setting width on a detached image should still throw the correct error");
+
+    // 6. Test appending a blob
+    //const blobUrl = 'https://www.gstatic.com/images/branding/product/1x/drive_2020q4_48dp.png';
+    const blobUrl = "https://picsum.photos/200"
+    const imageBlob = UrlFetchApp.fetch(blobUrl).getBlob();
+    imageBlob.setName('drive_logo.png'); // Blobs need a name for some operations
+
+    const appendedFromBlob = body.appendImage(imageBlob);
+    t.is(appendedFromBlob.getType(), DocumentApp.ElementType.INLINE_IMAGE, "appendImage(blob) should return an InlineImage");
+    t.truthy(appendedFromBlob.getParent(), "Image from blob should have a parent paragraph");
+
+    const children3 = getChildren(body);
+    t.is(children3.length, 5, "Body should have 5 children after appendImage(blob)");
+    const blobPara = children3[4];
+    t.is(blobPara.getChild(0).getType(), DocumentApp.ElementType.INLINE_IMAGE, "Paragraph for blob image should contain an image");
+    t.truthy(blobPara.getChild(0).getWidth() > 0, "Image from blob should have a width");
+
+    // 7. Test blob validation
+    const invalidTypeBlob = Utilities.newBlob("not an image", "text/plain", "invalid.txt");
+    t.rxMatch(
+      t.threw(() => body.appendImage(invalidTypeBlob))?.message || 'no error thrown',
+      /Unsupported image type: text\/plain/,
+      "Should throw error for unsupported blob MIME type"
+    );
+
+    // Create a large blob ( > 50MB)
+    const largeBlobBytes = new Array(51 * 1024 * 1024).fill(0);
+    const largeBlob = Utilities.newBlob(largeBlobBytes, 'image/png', 'large.png');
+    t.rxMatch(
+      t.threw(() => body.appendImage(largeBlob))?.message || 'no error thrown',
+      /exceeds the 50 MB limit/,
+      "Should throw error for oversized blob"
+    );
+
+    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
+  });
 
   unit.section("Body.appendTable and Body.insertTable", t => {
 
@@ -131,6 +240,8 @@ export const testDocsNext = (pack) => {
 
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   });
+
+
 
 
 

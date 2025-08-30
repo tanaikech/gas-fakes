@@ -31,6 +31,7 @@ export const getElementProp = (se) => {
   if (se.pageBreak) return { prop: null, type: 'PAGE_BREAK' };
   if (se.horizontalRule) return { prop: null, type: 'HORIZONTAL_RULE' };
   if (se.footnoteReference) return { prop: null, type: 'FOOTNOTE_REFERENCE' };
+  if (se.inlineObjectElement) return { prop: null, type: 'INLINE_IMAGE' };
 
   if (se.body) {
     return { prop: 'body', type: 'BODY_SECTION' };

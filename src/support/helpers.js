@@ -125,7 +125,7 @@ export const ssError = (response, method, ss) => {
       throw new Error(`Unexpected error while getting the method or property ${method} on object SpreadsheetApp. API call failed with error: ${response?.error?.message || response?.statusText}`)
     } else {
       // adv drive throws this one
-      throw new Error(`GoogleJsonResponseException: API call to sheets.spreadsheets.${method} failed with error", ${response?.error?.message}`  )
+      throw new Error(`GoogleJsonResponseException: API call to sheets.spreadsheets.${method} failed with error: ${response?.error?.message}`  )
     }
   }
   return response
@@ -209,3 +209,11 @@ export const unimplementedProps = (self, props) => {
     }
   })
 }
+
+export const gError = (response, service, method) => {
+  if (response && response.error) {
+    if (response.error.code !== 404) {
+      throw new Error(`GoogleJsonResponseException: API call to ${service}.${method} failed with error: ${response?.error?.message}`);
+    }
+  }
+};
