@@ -7,7 +7,9 @@ import { newFakeTab } from './faketab.js';
 import { newFakeBody } from './fakebody.js';
 import { newFakeRangeBuilder } from './fakerangebuilder.js';
 import { newFakeHeaderSection } from './fakeheadersection.js';
-import { makeNrPrefix } from './nrhelpers.js';
+import { newFakeFooterSection } from './fakefootersection.js';
+import { shadowPrefix } from './nrhelpers.js';
+import { createFootnote } from './appenderhelpers.js';
 
 export const newFakeDocument = (...args) => {
   return Proxies.guard(new FakeDocument(...args));
@@ -32,7 +34,7 @@ class FakeDocument {
 
     const existingHeader = this.getHeader();
     if (existingHeader) {
-      throw new Error('This document already contains a header.');
+      throw new Error('Document tab already contains a header.');
     }
 
     const shadow = this.__shadowDocument;
@@ -49,6 +51,28 @@ class FakeDocument {
     return this.getHeader();
   }
 
+  addFooter() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Document.addFooter');
+    if (nargs !== 0) matchThrow();
+
+    const existingFooter = this.getFooter();
+    if (existingFooter) {
+      throw new Error('Document tab already contains a footer.');
+    }
+
+    const shadow = this.__shadowDocument;
+    const requests = [{
+      createFooter: {
+        type: 'DEFAULT',
+      },
+    }];
+
+    Docs.Documents.batchUpdate({ requests }, shadow.getId());
+    shadow.refresh();
+
+    return this.getFooter();
+  }
+
   getHeader() {
     const { nargs, matchThrow } = signatureArgs(arguments, 'Document.getHeader');
     if (nargs !== 0) matchThrow();
@@ -63,10 +87,50 @@ class FakeDocument {
       return null;
     }
 
-    const headerName = makeNrPrefix('HEADER_SECTION') + headerId;
+    const headerName = shadowPrefix + 'HEADER_SECTION_' + headerId;
     // The structure getter on shadowDocument ensures the map is up to date.
     return newFakeHeaderSection(shadow, headerName);
   }
+
+  getFooter() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Document.getFooter');
+    if (nargs !== 0) matchThrow();
+
+    const shadow = this.__shadowDocument;
+    // Accessing resource will trigger a refresh and element map rebuild if necessary.
+    const resource = shadow.resource;
+    const { documentStyle } = shadow.__unpackDocumentTab(resource);
+
+    const footerId = documentStyle?.defaultFooterId;
+    if (!footerId) {
+      return null;
+    }
+
+    const footerName = shadowPrefix + 'FOOTER_SECTION_' + footerId;
+    // The structure getter on shadowDocument ensures the map is up to date.
+    return newFakeFooterSection(shadow, footerName);
+  }
+
+  /**
+   * Gets the footnote with the given ID.
+   * @param {string} id The footnote ID.
+   * @returns {GoogleAppsScript.Document.Footnote} The footnote, or null if not found.
+   * @see https://developers.google.com/apps-script/reference/document/document#getFootnote(String)
+   */
+  getFootnote(id) {
+    return this.__shadowDocument.getFootnoteById(id);
+  }
+
+  /**
+   * Gets all footnotes in the document.
+   * @returns {GoogleAppsScript.Document.Footnote[]} An array of footnotes.
+   * @see https://developers.google.com/apps-script/reference/document/document#getFootnotes()
+   */
+  getFootnotes() {
+    return this.__shadowDocument.getFootnotes();
+  }
+
+
 
 
 
@@ -100,6 +164,13 @@ class FakeDocument {
     const { nargs, matchThrow } = signatureArgs(arguments, "Document.appendTable");
     if (nargs > 1) matchThrow();
     return this.getBody().appendTable(tableOrCells);
+  }
+
+  appendFootnote(text) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Document.appendFootnote');
+    if (nargs !== 1 || !is.string(text)) matchThrow();
+    // This method exists on Document, not Body. It creates the footnote in the body.
+    return createFootnote(this.getBody(), text);
   }
 
   insertListItem(childIndex, listItemOrText) {

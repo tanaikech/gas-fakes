@@ -2,7 +2,7 @@ import { Utils } from "../../support/utils.js";
 const { is } = Utils
 
 // all named ranges are prefixed like this to distinguish from any other that might be user created
-const shadowPrefix = "GAS_FAKE_"
+export const shadowPrefix = "GAS_FAKE_"
 
 // makes a prefix for a named range based on the type of elelemtn
 export const makeNrPrefix = (type = null, segmentId = null) => {

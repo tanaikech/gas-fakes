@@ -32,6 +32,8 @@ import { testSheetsData } from "./testsheetsdata.js";
 import { testDocsAdv } from "./testdocsadv.js";
 import { testDocs } from "./testdocs.js";
 import { testDocsNext } from "./testdocsnext.js";
+import { testDocsFooters } from "./testdocsfooters.js";
+import { testDocsFootnotes } from "./testdocsfootnotes.js";
 import { testDocsListItems } from "./testdocslistitems.js";
 import { testSlidesAdv } from "./testslidesadv.js";
 import { testSlides } from "./testslides.js";
@@ -42,6 +44,12 @@ const testFakes = () => {
   const { unit } = pack;
 
   // add one of these for each service being tested
+  console.log("\n----Test docs headers----");
+  testDocsHeaders(pack);
+  console.log("\n----Test docs footers----");
+  testDocsFooters(pack);
+  console.log("\n----Test docs footnotes----");
+  testDocsFootnotes(pack);
   console.log("\n----Test slides----");
   testSlides(pack);
   console.log("\n----Test slidesadv----");

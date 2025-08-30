@@ -5,13 +5,14 @@ import { Proxies } from '../../support/proxies.js';
 import { signatureArgs } from '../../support/helpers.js';
 import { Utils } from '../../support/utils.js';
 const { is } = Utils;
-import { makeNrPrefix } from './nrhelpers.js';
 import { ElementType } from '../enums/docsenums.js';
 import { getElementFactory } from './elementRegistry.js';
 
 /**
  * @typedef {import('./shadow.js').ShadowStructure} ShadowStructure
  */
+
+const shadowPrefix = "GAS_FAKE_";
 
 /**
  * A map of element types to their corresponding 'as' methods (e.g., asParagraph).
@@ -39,6 +40,9 @@ const asCasts = {
   HORIZONTAL_RULE: {
     method: 'asHorizontalRule',
   },
+  FOOTNOTE_REFERENCE: {
+    method: 'asFootnoteReference',
+  },
 };
 
 /**
@@ -63,8 +67,8 @@ export class FakeElement {
       // or "detached" (with a structural element but no live structure).
       // A detached element is created by copy().
       if (is.string(nameOrItem)) { // Attached
-      if (!is.object(shadowDocument) || !nameOrItem.startsWith(makeNrPrefix())) {
-          throw new Error('Invalid arguments for attached FakeElement');
+      if (!is.object(shadowDocument) || !nameOrItem.startsWith(shadowPrefix)) {
+          throw new Error(`Invalid arguments for attached FakeElement: ${nameOrItem}. Name must start with '${shadowPrefix}'.`);
         }
         this.__isDetached = false;
       this.__shadowDocument = shadowDocument;
@@ -111,7 +115,7 @@ export class FakeElement {
    * @private
    */
   __getElementMapItem(name) {
-    const item = this.__structure.elementMap.get(name);
+    const item = this.__shadowDocument.getElement(name);
     if (!item) {
       throw new Error(`element with name ${name} not found`);
     }
@@ -141,7 +145,7 @@ export class FakeElement {
     if (!this.__twig.parent) return null;
 
     const { name } = this.__twig.parent;
-    const item = this.__structure.elementMap.get(name);
+    const item = this.__getElementMapItem(name);
     if (!item) {
       throw new Error(`Parent element with name ${name} not found`);
     }

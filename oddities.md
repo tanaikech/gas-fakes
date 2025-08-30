@@ -476,6 +476,80 @@ So instead we need to delete the \n from the preceding-1 paragraph (if indeed th
 
 It's a real mindbender to handle this and of course I'm not entirely sure I've swept up all the edge cases yet.
 
+#### Align `Document.clear()` Behavior with Live Apps Script and Refactor Test Cleanup
+
+**Labels**: `enhancement`, `emulation-accuracy`, `document-app`, `behavior`
+
+###### Summary
+
+The undocumented `Document.clear()` method in the live Google Apps Script environment only clears the content of the document's `Body`, leaving `HeaderSection` and `FooterSection` elements intact. The `gas-fakes` implementation was initially clearing the entire document, leading to inconsistencies. This has been corrected, and the test cleanup process has been refactored to accommodate this behavior.
+
+##### Live Apps Script Behavior
+
+When `DocumentApp.getActiveDocument().clear()` is called in a live script, only the body content is removed. Any existing headers or footers remain in the document. This method is not officially documented but is present in the live environment.
+
+###### Problem in `gas-fakes`
+
+The initial implementation of `Document.clear()` in `gas-fakes` was designed to provide a completely empty document by deleting the body, headers, and footers. This was useful for test isolation but did not accurately emulate the live environment.
+
+This discrepancy caused tests that relied on re-using documents (like those in `testdocsheaders.js` and `testdocsfooters.js`) to fail, as they expected `doc.clear()` to remove the header/footer from a previous test run.
+
+##### Resolution
+
+To align with the live API and maintain robust test cleanup, the following changes were made:
+
+1.  **`Document.clear()` Refactored**: The `clear()` method in `shadowdocument.js` was modified to only generate `deleteContentRange` requests for the document's body. The logic for deleting headers and footers was removed.
+
+    ```javascript
+    // src/services/documentapp/shadowdocument.js
+    clear() {
+      const { body } = this.__unpackDocumentTab(this.resource);
+      const content = body.content;
+      const requests = [];
+      // ... logic to generate deleteContentRange requests for body ...
+      // ... NO logic to delete headers or footers ...
+    }
+    ```
+
+2.  **`removeFromParent()` Added to Sections**: The live `HeaderSection` and `FooterSection` APIs do not have a `remove()` method. The correct method is `removeFromParent()`. This was implemented on the `FakeSectionElement` base class to generate the appropriate `deleteHeader` or `deleteFooter` API request.
+
+    ```javascript
+    // src/services/documentapp/fakesectionelement.js
+    removeFromParent() {
+      // ...
+      if (type === ElementType.HEADER_SECTION) {
+        request = { deleteHeader: { headerId: segmentId } };
+      } else if (type === ElementType.FOOTER_SECTION) {
+        request = { deleteFooter: { footerId: segmentId } };
+      }
+      // ...
+    }
+    ```
+
+3.  **Test Helper `maketdoc` Updated**: The `maketdoc` test helper in `testassist.js` was updated to be the single source of truth for creating a "clean" document for tests. It now explicitly removes headers and footers before clearing the body.
+
+    ```javascript
+    // test/testassist.js
+    export const maketdoc = (toTrash, fixes, clear = true) => {
+      // ...
+      if (clear) {
+        // Explicitly remove headers and footers to ensure a clean slate for tests.
+        const header = __mdoc.getHeader();
+        if (header) header.removeFromParent();
+
+        const footer = __mdoc.getFooter();
+        if (footer) footer.removeFromParent();
+
+        // Now call the emulated doc.clear(), which only affects the body.
+        __mdoc.getBody().appendParagraph(''); // Workaround for live bug
+        __mdoc.clear();
+      }
+      // ...
+    }
+    ```
+
+This approach ensures that `Document.clear()` in `gas-fakes` accurately mimics the live behavior, while the testing framework can still achieve complete document cleanup for reliable, isolated tests.
+
 
   
 #### Tabs
