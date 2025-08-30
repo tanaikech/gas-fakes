@@ -337,18 +337,9 @@ export const imageOptions = {
       }
       // Note: Pixel limit (25 megapixels) check is not implemented as it would require a full image processing library.
 
-      // Adding a file extension is crucial for Google's servers to recognize the file type.
-      // The mime package should provide this, but we'll have a fallback.
       let extension = mime.getExtension(contentType);
-      if (!extension && contentType) {
-        // Fallback for common types if mime.getExtension fails for some reason.
-        const simpleType = contentType.split('/').pop();
-        if (['png', 'jpeg', 'gif'].includes(simpleType)) {
-          extension = simpleType;
-        }
-      }
       const tempFileName = `gas-fakes-temp-image-${Utilities.getUuid()}${extension ? '.' + extension : ''}`;
-      console.log('Creating temp image with contentType:', contentType, 'and filename:', tempFileName);
+
       // 1. Upload to Drive
       blob.setName (tempFileName)
       const file = DriveApp.createFile (blob)
@@ -406,7 +397,7 @@ export const imageOptions = {
     if (size) {
       imageRequest.insertInlineImage.objectSize = size;
     }
-    console.log (imageRequest)
+
     let finalRequests;
     if (leading) { // Append case
       const textRequest = { insertText: { text: leading, location } }; // leading is '\n'
