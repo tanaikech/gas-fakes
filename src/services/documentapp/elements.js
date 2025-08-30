@@ -16,5 +16,6 @@ import './fakefootersection.js';
 import './fakefootnote.js';
 import './fakeinlineimage.js';
 import './fakefootnotesection.js';
+import './fakepositionedimage.js';
 // As you create more element types (e.g., Table, ListItem), import them here.
 // import './faketable.js';

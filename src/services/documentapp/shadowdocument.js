@@ -58,6 +58,7 @@ class ShadowDocument {
       footnotes: documentTab.footnotes,
       documentStyle: documentTab.documentStyle,
       inlineObjects: documentTab.inlineObjects,
+      positionedObjects: documentTab.positionedObjects,
     }
   }
   /**

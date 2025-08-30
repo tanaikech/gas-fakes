@@ -4,9 +4,9 @@
 import { Proxies } from '../../support/proxies.js';
 import { FakeContainerElement } from './fakecontainerelement.js';
 import { registerElement } from './elementRegistry.js';
-import { getText } from './elementhelpers.js';
-import { appendText, appendPageBreak } from './appenderhelpers.js';
-
+import { getText, updateParagraphStyle } from './elementhelpers.js';
+import { appendText, appendPageBreak, appendImage, insertImage, appendPositionedImage, insertPositionedImage } from './appenderhelpers.js';
+import { signatureArgs } from '../../support/helpers.js';
 
 /**
  * Creates a new proxied FakeParagraph instance.
@@ -42,12 +42,37 @@ export class FakeParagraph extends FakeContainerElement {
     return getText(this);
   }
 
-  appendText(textOrTextElement) {
-    return appendText(this, textOrTextElement)
+  appendText(textOrTextElement) { // eslint-disable-line no-unused-vars
+    appendText(this, textOrTextElement);
+    return this;
   }
 
   appendPageBreak(pageBreak) {
-    return appendPageBreak(this, pageBreak || null);
+    return appendPageBreak(this, pageBreak);
+  }
+
+  appendInlineImage(image) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.appendInlineImage');
+    if (nargs !== 1) matchThrow();
+    return appendImage(this, image);
+  }
+
+  insertInlineImage(childIndex, image) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.insertInlineImage');
+    if (nargs !== 2) matchThrow();
+    return insertImage(this, childIndex, image);
+  }
+
+  appendPositionedImage(image) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.appendPositionedImage');
+    if (nargs !== 1) matchThrow();
+    return appendPositionedImage(this, image);
+  }
+
+  insertPositionedImage(childIndex, image) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.insertPositionedImage');
+    if (nargs !== 2) matchThrow();
+    return insertPositionedImage(this, childIndex, image);
   }
 
   /**

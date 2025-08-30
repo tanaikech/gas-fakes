@@ -429,3 +429,103 @@ export const imageOptions = {
   findType: 'PARAGRAPH', // We are creating a paragraph to hold the image.
   findChildType: 'INLINE_IMAGE', // The element we want to return is the image.
 };
+
+export const positionedImageOptions = {
+  elementType: ElementType.POSITIONED_IMAGE,
+  insertMethodSignature: 'DocumentApp.Paragraph.insertPositionedImage',
+  canAcceptText: false,
+  getMainRequest: ({ content: image, location, isAppend, self }) => {
+    // Positioned images can only be inserted into paragraphs.
+    if (self.getType() !== ElementType.PARAGRAPH) {
+      throw new Error('Positioned images can only be added to a Paragraph.');
+    }
+
+    const isDetachedImage = is.object(image) && is.function(image.getType) && image.getType() === ElementType.POSITIONED_IMAGE;
+    const isBlobSource = isBlob(image);
+
+    let uri, size, fileId, positionedObjectProperties;
+
+    if (isDetachedImage) {
+      if (!image.__isDetached) throw new Error('Element must be detached.');
+      const { object: positionedObject } = image.__getPositionedObject();
+      if (!positionedObject) {
+        throw new Error('Detached PositionedImage is missing its properties. Was it created with .copy()?');
+      }
+      const embeddedObject = positionedObject.positionedObjectProperties.embeddedObject;
+      uri = embeddedObject.imageProperties.contentUri;
+      size = embeddedObject.size;
+      // Also copy the positioning properties
+      positionedObjectProperties = positionedObject.positionedObjectProperties;
+    } else if (isBlobSource) {
+      // For blobs, we must upload them to Drive to get a public URI for the Docs API.
+      const blob = image;
+      const MAX_IMAGE_BYTES = 50 * 1024 * 1024; // 50 MB
+      const SUPPORTED_MIME_TYPES = ['image/png', 'image/jpeg', 'image/gif'];
+      const contentType = blob.getContentType();
+      if (!SUPPORTED_MIME_TYPES.includes(contentType)) {
+        throw new Error(`Unsupported image type: ${contentType}. Only PNG, JPEG, and GIF are supported.`);
+      }
+      const sizeInBytes = blob.getBytes().length;
+      if (sizeInBytes > MAX_IMAGE_BYTES) {
+        throw new Error(`Image size (${(sizeInBytes / 1024 / 1024).toFixed(2)} MB) exceeds the 50 MB limit.`);
+      }
+      const extension = mime.getExtension(contentType);
+      const tempFileName = `gas-fakes-temp-image-${Utilities.getUuid()}${extension ? '.' + extension : ''}`;
+
+      blob.setName(tempFileName);
+      const file = DriveApp.createFile(blob);
+      fileId = file.getId();
+
+      try {
+        Drive.Permissions.create({ type: 'anyone', role: 'reader' }, fileId);
+        Utilities.sleep(2000);
+        const fileWithLink = Drive.Files.get(fileId, { fields: 'webContentLink' });
+        if (!fileWithLink || !fileWithLink.webContentLink) {
+          throw new Error('Failed to get public link for temporary image.');
+        }
+        uri = fileWithLink.webContentLink;
+
+        size = {
+          height: { magnitude: 100, unit: 'PT' },
+          width: { magnitude: 100, unit: 'PT' },
+        };
+        // Set default positioning for new blobs
+        positionedObjectProperties = {
+          positioning: {
+            layout: 'WRAP_TEXT',
+            leftOffset: { magnitude: 36, unit: 'PT' },
+            topOffset: { magnitude: 36, unit: 'PT' },
+          }
+        };
+      } catch (e) {
+        try { Drive.Files.update({ trashed: true }, fileId); } catch (trashError) { console.warn(`Failed to cleanup temp file ${fileId} after setup error.`, trashError); }
+        throw e;
+      }
+    } else {
+      throw new Error('Only inserting a Blob or a copied (detached) PositionedImage is supported at this time.');
+    }
+
+    if (!uri) throw new Error('Could not determine image URI for insertion.');
+
+    const imageRequest = {
+      insertPositionedImage: {
+        uri,
+        location,
+        objectSize: size,
+        positionedObjectProperties, // Use the copied or default properties
+      },
+    };
+
+    const finalRequests = [imageRequest];
+
+    if (isBlobSource) {
+      const cleanup = () => { try { Drive.Files.update({ trashed: true }, fileId); } catch (e) { console.warn(`Failed to cleanup temporary image file ${fileId}:`, e.message); } };
+      return { requests: finalRequests, cleanup };
+    }
+
+    return finalRequests;
+  },
+  getStyleRequests: null,
+  findType: 'PARAGRAPH',
+  findChildType: 'POSITIONED_IMAGE',
+};

@@ -145,6 +145,89 @@ export const testDocsNext = (pack) => {
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   });
 
+  unit.section("Paragraph.appendInlineImage and Paragraph.insertInlineImage", t => {
+    const { doc } = maketdoc(toTrash, fixes);
+    const body = doc.getBody();
+
+    // 1. Create a source image and a paragraph to work with
+    const imageUrl = 'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png';
+    const imageBlob = UrlFetchApp.fetch(imageUrl).getBlob();
+    const sourceImage = body.appendImage(imageBlob); // body.appendImage returns an InlineImage
+    const para = body.appendParagraph("Some text. ");
+
+    // 2. Test appendInlineImage
+    const detachedImage1 = sourceImage.copy();
+    const appendedImage = para.appendInlineImage(detachedImage1);
+
+    // Paragraph should now have 2 children: a Text element and an InlineImage element.
+    t.is(para.getNumChildren(), 2, "Paragraph should have 2 children after appendImage");
+    t.is(para.getChild(0).getType(), DocumentApp.ElementType.TEXT, "First child should be Text");
+    t.is(para.getChild(1).getType(), DocumentApp.ElementType.INLINE_IMAGE, "Second child should be an InlineImage");
+    t.is(appendedImage.getType(), DocumentApp.ElementType.INLINE_IMAGE, "appendInlineImage should return an InlineImage");
+    t.is(para.getText(), "Some text. ", "Text content of paragraph should not include image");
+
+    // 3. Test insertInlineImage
+    const detachedImage2 = sourceImage.copy();
+    const insertedImage = para.insertInlineImage(0, detachedImage2); // Insert at the beginning
+
+    t.is(para.getNumChildren(), 3, "Paragraph should have 3 children after insertImage");
+    t.is(para.getChild(0).getType(), DocumentApp.ElementType.INLINE_IMAGE, "First child should now be the inserted image");
+    t.is(para.getChild(1).getType(), DocumentApp.ElementType.TEXT, "Second child should be the original text");
+    t.is(para.getChild(2).getType(), DocumentApp.ElementType.INLINE_IMAGE, "Third child should be the appended image");
+    t.is(insertedImage.getType(), DocumentApp.ElementType.INLINE_IMAGE, "insertInlineImage should return an InlineImage");
+
+    // 4. Test chaining
+    const para2 = body.appendParagraph("Chain test. ");
+    const detachedImage3 = sourceImage.copy();
+    const returnedImage = para2.appendInlineImage(detachedImage3);
+    t.is(returnedImage.toString(), 'InlineImage', "appendInlineImage should return the InlineImage");
+    t.is(para2.getChild(1), returnedImage, "The returned image should be the new child of the paragraph");
+
+    // 5. Error conditions
+    const attachedImage = para.getChild(0);
+    t.rxMatch(t.threw(() => para.appendInlineImage(attachedImage))?.message || 'no error thrown', /Element must be detached./, "Appending an already attached image should throw an error");
+  });
+
+  unit.section("Paragraph.appendPositionedImage and Paragraph.insertPositionedImage", t => {
+    const { doc } = maketdoc(toTrash, fixes);
+    const body = doc.getBody();
+    const para = body.appendParagraph("This paragraph has a positioned image.");
+
+    const imageUrl = 'https://www.gstatic.com/images/branding/product/1x/drive_2020q4_48dp.png';
+    const imageBlob = UrlFetchApp.fetch(imageUrl).getBlob();
+
+    // 1. Test appendPositionedImage
+    const posImage1 = para.appendPositionedImage(imageBlob);
+    t.is(posImage1.toString(), 'PositionedImage', "appendPositionedImage should return a PositionedImage");
+    t.truthy(posImage1.getWidth() > 0, "Positioned image should have a width");
+    t.is(posImage1.getLayout().toString(), 'WRAP_TEXT', "Positioned image should have a default layout");
+
+    // Per docs, appendPositionedImage anchors to the beginning of the paragraph.
+    // The image itself is not a 'child' in the same way an inline image is.
+    // The paragraph's child count should remain 1 (the Text element).
+    t.is(para.getNumChildren(), 1, "Paragraph child count should not change after adding a positioned image");
+
+    // 2. Test insertPositionedImage
+    const para2 = body.appendParagraph("Another paragraph");
+    para2.appendText(" with more text.");
+    const posImage2 = para2.insertPositionedImage(8, imageBlob); // insert after "Another "
+    t.is(posImage2.toString(), 'PositionedImage', "insertPositionedImage should return a PositionedImage");
+    t.is(para2.getNumChildren(), 1, "Paragraph child count should not change after inserting a positioned image");
+
+    // 3. Test copying a positioned image
+    const copiedPosImage = posImage1.copy();
+    t.is(copiedPosImage.toString(), 'PositionedImage', 'Copied object should be a PositionedImage');
+    t.is(copiedPosImage.getParent(), null, 'Copied positioned image should be detached');
+    t.is(copiedPosImage.getWidth(), posImage1.getWidth(), 'Copied positioned image should retain width');
+
+    // 4. Append the copied positioned image
+    const para3 = body.appendParagraph("Paragraph with copied image.");
+    const appendedCopiedImage = para3.appendPositionedImage(copiedPosImage);
+    t.is(appendedCopiedImage.toString(), 'PositionedImage', 'Appending a copied PositionedImage should work');
+    t.is(appendedCopiedImage.getWidth(), posImage1.getWidth(), 'Appended copy should have the correct width');
+    t.is(para3.getNumChildren(), 1, "Paragraph child count should not change after appending a copied positioned image");
+  });
+
   unit.section("Body.appendTable and Body.insertTable", t => {
 
     let { doc } = maketdoc(toTrash, fixes);

@@ -2,9 +2,9 @@ import { Utils } from "../../support/utils.js";
 import { ElementType } from '../enums/docsenums.js';
 const { is, isBlob } = Utils
 import { getElementFactory } from './elementRegistry.js'
-import { signatureArgs } from '../../support/helpers.js';
+import { signatureArgs, notYetImplemented } from '../../support/helpers.js';
 import { findItem } from './elementhelpers.js';
-import { paragraphOptions, pageBreakOptions, tableOptions, textOptions, listItemOptions, imageOptions } from './elementoptions.js';
+import { paragraphOptions, pageBreakOptions, tableOptions, textOptions, listItemOptions, imageOptions, positionedImageOptions } from './elementoptions.js';
 import { deleteContentRange, createParagraphBullets, reverseUpdateContent, deleteParagraphBullets } from "./elementblasters.js";
 
 /**
@@ -116,33 +116,46 @@ const calculateInsertionPointsAndInitialRequests = (self, childIndex, isAppend, 
       // The shadow.refresh() call at the end of elementInserter handles all named range updates correctly.
     }
   } else {
-    // It's an insert operation, creating a new element.
-    // The equality case (childIndex === children.length) is handled by the caller (e.g., FakeBody) by converting to an append.
-    if (childIndex < 0 || childIndex >= children.length) {
-      throw new Error(`Child index (${childIndex}) must be less than or equal to the number of child elements (${children.length}).`);
-    }
-    const targetChildTwig = children[childIndex];
-    const targetChildItem = elementMap.get(targetChildTwig.name);
-
-    // rules with tables mean we have to insert before preceding paragrap
-    if (targetChildItem.__type === "TABLE") {
-      insertIndex = targetChildItem.startIndex - 1; // Insert before the table.
-      if (childIndex < 1) {
-        // because a table cant ever be the first child
-        throw new Error(`Cannot insert before the first child element table (${targetChildItem.name})`);
+    // It's an insert operation.
+    const isParaInsert = self.getType() === ElementType.PARAGRAPH;
+    if (isParaInsert) {
+      // Inserting into an existing paragraph. No newlines needed.
+      if (childIndex < 0 || childIndex > children.length) {
+        throw new Error(`Child index (${childIndex}) must be between 0 and the number of child elements (${children.length}).`);
       }
-      leading = '\n'
-      // in this case the new element startindex will be +1 to the insertIndex
-      newElementStartIndex = insertIndex + 1;
+      if (children.length === 0 || childIndex === children.length) {
+        // Inserting into an empty paragraph or at the end.
+        insertIndex = item.endIndex - 1;
+      } else {
+        // Inserting before an existing child.
+        const targetChildTwig = children[childIndex];
+        const targetChildItem = elementMap.get(targetChildTwig.name);
+        insertIndex = targetChildItem.startIndex;
+      }
+      newElementStartIndex = item.startIndex; // The container is the paragraph itself.
+      childStartIndex = insertIndex; // The new child will start where we insert it.
     } else {
-      insertIndex = targetChildItem.startIndex
-      trailing = '\n'
-      newElementStartIndex = insertIndex;
+      // It's an insert operation, creating a new element in a Body/Header/etc.
+      if (childIndex < 0 || childIndex >= children.length) {
+        throw new Error(`Child index (${childIndex}) must be less than or equal to the number of child elements (${children.length}).`);
+      }
+      const targetChildTwig = children[childIndex];
+      const targetChildItem = elementMap.get(targetChildTwig.name);
+
+      if (targetChildItem.__type === "TABLE") {
+        insertIndex = targetChildItem.startIndex - 1; // Insert before the table.
+        if (childIndex < 1) {
+          throw new Error(`Cannot insert before the first child element table (${targetChildItem.name})`);
+        }
+        leading = '\n'
+        newElementStartIndex = insertIndex + 1;
+      } else {
+        insertIndex = targetChildItem.startIndex
+        trailing = '\n'
+        newElementStartIndex = insertIndex;
+      }
+      childStartIndex = null; // Child start index is unknown, must be found within container.
     }
-
-
-    // TODO validate what this is used for
-    childStartIndex = null; // Child start index is unknown, must be found within container.
   }
 
   return { insertIndex, newElementStartIndex, childStartIndex, requests, leading, trailing };
@@ -198,6 +211,11 @@ const findAndReturnNewElement = (shadow, newElementStartIndex, childStartIndex, 
  * @private
  */
 const elementInserter = (self, elementOrText, childIndex, options) => {
+  // Before the mutation, record the container's identity.
+  const selfName = self.__name;
+  const selfStartIndex = self.__elementMapItem.startIndex;
+  const selfType = self.getType().toString();
+
   // 1. Validate arguments and determine operation type.
   const { isAppend, isDetached } = validateInserterArgs(elementOrText, childIndex, options);
 
@@ -262,6 +280,14 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
     if (cleanup) {
       cleanup();
     }
+  }
+
+  // After the refresh, the 'self' object is stale. We need to find its new representation
+  // in the updated element map and update its internal name. This "revives" the object
+  // for subsequent method calls in the user's script.
+  const newSelfItem = findItem(shadow.elementMap, selfType, selfStartIndex, segmentId);
+  if (newSelfItem && newSelfItem.__name !== selfName) {
+    self.__name = newSelfItem.__name;
   }
 
   // 6. Handle table content population if necessary. This is a two-phase update
@@ -415,6 +441,15 @@ export const appendListItem = (self, listItemOrText) => {
 
 export const insertListItem = (self, childIndex, listItemOrText) => {
   return elementInserter(self, listItemOrText, childIndex, listItemOptions);
+};
+
+export const appendPositionedImage = (self, image) => {
+  // Per the docs, this anchors the image to the beginning of the paragraph.
+  return elementInserter(self, image, 0, positionedImageOptions);
+};
+
+export const insertPositionedImage = (self, childIndex, image) => {
+  return elementInserter(self, image, childIndex, positionedImageOptions);
 };
 
 export const appendImage = (self, image) => {
