@@ -1,7 +1,7 @@
 
 
 import is from '@sindresorhus/is';
-import { assert } from '@sindresorhus/is';
+import { assert } from '@sindresorhus/is'
 
 const isNU = (item) => is.null(item) || is.undefined(item)
 
@@ -79,8 +79,15 @@ const settleAsBytes = (data, charset) => {
   } else if (is.buffer(data)) {
     return Array.from(data)
   } else {
-    assert.array(data)
-    return data
+    // Workaround for an issue where an array of bytes passed from a worker
+    // can be deserialized as a plain object with numeric keys.
+    if (is.object(data) && !is.array(data)) {
+      const values = Object.values(data);
+      // Check if the object's values look like a valid byte array.
+      if (isByteArray(values)) return values;
+    }
+    assert.array(data);
+    return data;
   }
 
 }
@@ -121,7 +128,7 @@ export const mergeParamStrings = (...args) => {
       }
       const [_, key, items] = match
       if (!itemMap.has(key)) itemMap.set(key, new Set())
-      const item = itemMap.get(key)
+      const item = itemMap.get(key)      
       assert.set(item)
       items.split(",").forEach(f => itemMap.get(key).add(f))
     })
