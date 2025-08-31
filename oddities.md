@@ -476,6 +476,15 @@ So instead we need to delete the \n from the preceding-1 paragraph (if indeed th
 
 It's a real mindbender to handle this and of course I'm not entirely sure I've swept up all the edge cases yet.
 
+#### `Body.appendFootnote()`
+
+The `Body.appendFootnote()` method does not exist in the live Google Apps Script environment, despite being a logical counterpart to other `Body.append...()` methods and the existence of `Document.getFootnotes()`. This prevents the programmatic creation of footnotes directly via `DocumentApp`.
+
+This has been reported on the Google Issue Tracker: https://issuetracker.google.com/issues/441940310
+
+`gas-fakes` implements `Body.appendFootnote()` to allow for local development and testing of footnote-related features. Tests that use this method are skipped when run against the live environment. The fake implementation will be maintained pending a resolution from Google.
+
+
 #### Align `Document.clear()` Behavior with Live Apps Script and Refactor Test Cleanup
 
 **Labels**: `enhancement`, `emulation-accuracy`, `document-app`, `behavior`
