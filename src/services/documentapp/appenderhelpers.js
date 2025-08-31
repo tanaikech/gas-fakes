@@ -443,13 +443,9 @@ export const insertListItem = (self, childIndex, listItemOrText) => {
   return elementInserter(self, listItemOrText, childIndex, listItemOptions);
 };
 
-export const appendPositionedImage = (self, image) => {
+export const addPositionedImage = (self, image) => {
   // Per the docs, this anchors the image to the beginning of the paragraph.
   return elementInserter(self, image, 0, positionedImageOptions);
-};
-
-export const insertPositionedImage = (self, childIndex, image) => {
-  return elementInserter(self, image, childIndex, positionedImageOptions);
 };
 
 export const appendImage = (self, image) => {

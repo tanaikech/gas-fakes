@@ -203,6 +203,10 @@ class ShadowDocument {
               const childElement = this.__elementMap.get(childTwig.name);
               if (!childElement) return false;
 
+              // A positioned image is not a "child" in the Apps Script sense (it doesn't affect getNumChildren).
+              // It is anchored to the paragraph but lives in a separate collection.
+              if (childElement.__type === 'POSITIONED_IMAGE') return false;
+
               // A paragraph's children are its non-text elements (like PageBreak)
               // and text runs that are not just a newline.
               return childElement.pageBreak ||

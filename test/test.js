@@ -40,6 +40,9 @@ import { testSlidesAdv } from "./testslidesadv.js";
 import { testSlides } from "./testslides.js";
 import { testSheetsText } from "./testsheetstext.js";
 import { testSheetsRange } from "./testsheetsrange.js";
+import { testDocsImages } from "./testdocsimages.js";
+
+
 const testFakes = () => {
   const pack = initTests();
   const { unit } = pack;
@@ -59,6 +62,8 @@ const testFakes = () => {
   testDocsAdv(pack);
   console.log("\n----Test docs----");
   testDocs(pack);
+  console.log("\n----Test docs images----");
+  testDocsImages(pack);
   console.log("\n----Test docs next----");
   testDocsNext(pack);
   console.log("\n----Test docs list items----");

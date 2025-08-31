@@ -1,5 +1,6 @@
 import { ElementType } from '../enums/docsenums.js';
 import { Utils } from "../../support/utils.js";
+import { notYetImplemented } from '../../support/helpers.js';
 const { is, isBlob } = Utils
 import { insertTableRowRequest, deleteTableRowRequest, reverseUpdateContent } from './elementblasters.js';
 import mime from 'mime';
@@ -432,31 +433,25 @@ export const imageOptions = {
 
 export const positionedImageOptions = {
   elementType: ElementType.POSITIONED_IMAGE,
-  insertMethodSignature: 'DocumentApp.Paragraph.insertPositionedImage',
+  insertMethodSignature: 'DocumentApp.Paragraph.addPositionedImage',
   canAcceptText: false,
   getMainRequest: ({ content: image, location, isAppend, self }) => {
+    // There is no public API to create a positioned image.
+    // This method is not emulatable.
+    if (DocumentApp.isFake) {
+      notYetImplemented('Paragraph.addPositionedImage');
+    }
+
     // Positioned images can only be inserted into paragraphs.
     if (self.getType() !== ElementType.PARAGRAPH) {
       throw new Error('Positioned images can only be added to a Paragraph.');
     }
 
-    const isDetachedImage = is.object(image) && is.function(image.getType) && image.getType() === ElementType.POSITIONED_IMAGE;
     const isBlobSource = isBlob(image);
 
     let uri, size, fileId, positionedObjectProperties;
 
-    if (isDetachedImage) {
-      if (!image.__isDetached) throw new Error('Element must be detached.');
-      const { object: positionedObject } = image.__getPositionedObject();
-      if (!positionedObject) {
-        throw new Error('Detached PositionedImage is missing its properties. Was it created with .copy()?');
-      }
-      const embeddedObject = positionedObject.positionedObjectProperties.embeddedObject;
-      uri = embeddedObject.imageProperties.contentUri;
-      size = embeddedObject.size;
-      // Also copy the positioning properties
-      positionedObjectProperties = positionedObject.positionedObjectProperties;
-    } else if (isBlobSource) {
+    if (isBlobSource) {
       // For blobs, we must upload them to Drive to get a public URI for the Docs API.
       const blob = image;
       const MAX_IMAGE_BYTES = 50 * 1024 * 1024; // 50 MB
@@ -489,12 +484,18 @@ export const positionedImageOptions = {
           height: { magnitude: 100, unit: 'PT' },
           width: { magnitude: 100, unit: 'PT' },
         };
-        // Set default positioning for new blobs
+        // Set default properties for new blobs
         positionedObjectProperties = {
           positioning: {
             layout: 'WRAP_TEXT',
             leftOffset: { magnitude: 36, unit: 'PT' },
             topOffset: { magnitude: 36, unit: 'PT' },
+          },
+          embeddedObject: {
+            imageProperties: {
+              contentUri: uri,
+            },
+            size: size,
           }
         };
       } catch (e) {
@@ -502,16 +503,14 @@ export const positionedImageOptions = {
         throw e;
       }
     } else {
-      throw new Error('Only inserting a Blob or a copied (detached) PositionedImage is supported at this time.');
+      throw new Error('Only inserting a Blob is supported for PositionedImage at this time.');
     }
 
     if (!uri) throw new Error('Could not determine image URI for insertion.');
 
     const imageRequest = {
-      insertPositionedImage: {
-        uri,
+      createPositionedObject: {
         location,
-        objectSize: size,
         positionedObjectProperties, // Use the copied or default properties
       },
     };

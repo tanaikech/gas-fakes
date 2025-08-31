@@ -20,6 +20,8 @@ import { testDocsListItems } from "./testdocslistitems.js";
 import { testDocsHeaders } from "./testdocsheaders.js";
 import { testDocsFooters } from "./testdocsfooters.js";
 import { testDocsFootnotes } from "./testdocsfootnotes.js";
+import { testDocsImages } from "./testdocsimages.js";
+
 const testDocsAll = () => {
   const pack = initTests();
   const { unit } = pack;
@@ -30,6 +32,8 @@ const testDocsAll = () => {
   testDocsAdv(pack);
   console.log("\n----Test docs----");
   testDocs(pack);
+  console.log("\n----Test docs images----");
+  testDocsImages(pack);
   console.log("\n----Test docs next----");
   testDocsNext(pack);
   console.log("\n----Test docs list items----");

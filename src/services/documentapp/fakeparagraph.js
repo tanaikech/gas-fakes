@@ -3,9 +3,9 @@
  */
 import { Proxies } from '../../support/proxies.js';
 import { FakeContainerElement } from './fakecontainerelement.js';
-import { registerElement } from './elementRegistry.js';
-import { getText, updateParagraphStyle } from './elementhelpers.js';
-import { appendText, appendPageBreak, appendImage, insertImage, appendPositionedImage, insertPositionedImage } from './appenderhelpers.js';
+import { getElementFactory, registerElement } from './elementRegistry.js';
+import { getText } from './elementhelpers.js';
+import { appendText, appendPageBreak, appendImage, insertImage, addPositionedImage } from './appenderhelpers.js';
 import { signatureArgs } from '../../support/helpers.js';
 
 /**
@@ -63,16 +63,33 @@ export class FakeParagraph extends FakeContainerElement {
     return insertImage(this, childIndex, image);
   }
 
-  appendPositionedImage(image) {
-    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.appendPositionedImage');
+  addPositionedImage(image) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.addPositionedImage');
     if (nargs !== 1) matchThrow();
-    return appendPositionedImage(this, image);
+    return addPositionedImage(this, image);
   }
 
-  insertPositionedImage(childIndex, image) {
-    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.insertPositionedImage');
-    if (nargs !== 2) matchThrow();
-    return insertPositionedImage(this, childIndex, image);
+  getPositionedImages() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.getPositionedImages');
+    if (nargs !== 0) matchThrow();
+
+    if (this.__isDetached) {
+      // The live API would likely throw an error here.
+      throw new Error('Cannot get positioned images from a detached paragraph.');
+    }
+
+    const paraItem = this.__elementMapItem;
+    const paraElements = paraItem.paragraph?.elements || [];
+    const imageFactory = getElementFactory('POSITIONED_IMAGE');
+
+    return paraElements
+      .filter(el => el.positionedObjectElement)
+      .map(el => {
+        if (!el.__name) {
+          throw new Error('Internal error: Positioned image element in paragraph is missing its mapped name.');
+        }
+        return imageFactory(this.shadowDocument, el.__name);
+      });
   }
 
   /**
