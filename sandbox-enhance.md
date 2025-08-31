@@ -2,6 +2,7 @@
 
 It would be useful to further refine the sandbox with more precise restriction capabilites. Currently sandbox can have theses states
 
+| Property          | Type      | Default | Description                                                                                                                                                           |
 | ----------------- | --------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `sandboxMode`     | `boolean` | `false` | When set to `true`, file access is restricted to files created within the current session.                                                                                |
 | `cleanup`         | `boolean` | `true`  | If `true`, calling the `trash()` method will move all files created during the session to the Google Drive trash. Set to `false` to leave test artifacts for inspection. |
@@ -11,12 +12,14 @@ It would be useful to further refine the sandbox with more precise restriction c
 
 Some new features that would be useful
 
-Add some more finegrained values to a new property sandboxService. sandboxMode would still turn the sandbox service completely on or off for all services, and strictSandbox would to do the same for turning off or on all behavior for all services. 
+Add some more finegrained values to a new property sandboxService. sandboxMode would provide the default value for sandbox service completely, and strictSandbox and cleanup would to do the same for default behavior for all services. Specific sandboxService values would override these for the given service.
 
 With these properties 
 - enabled - if not enabled, any attempt to access the service will be denied - default true
 - sandboxStrict - same as sandboxStrict, but only applying to the given service - default true
 - sandboxMode - same as sandboxMode, but only applying to the given service - default true
+- cleanup - same as cleanup, but only applying to the given service - default true
+
 
 These services would be covered - these are the default values
 ````
@@ -25,6 +28,7 @@ sandboxService: {
     enabled: true,
     sandboxStrict: true,
     sandboxMode: true,
+    cleanup: true
   },
   ...etc for the others
   SheetsApp: {
@@ -38,6 +42,7 @@ sandboxService: {
 ... etc for all supported services
 
 }
+````
 
 ### even more fine grained
 
@@ -48,7 +53,7 @@ For example
 ````
   DriveApp: {
     enabled: true,
-    sandboxStrict: true,
+    sandboxStrict: false,
     sandboxMode: true,
     methods: ['createFile','getFileById'],
     ids: ['xx','yy']
