@@ -102,6 +102,12 @@ export const findItem = (elementMap, type, startIndex, segmentId) => {
       return false;
     }
 
+    // For container elements that don't have a startIndex (like Header, Footer, Footnote),
+    // we can find them by type and segmentId alone.
+    if (is.undefined(startIndex)) {
+      return f.__type === type;
+    }
+
     // A ListItem is a specialized Paragraph. A search for a PARAGRAPH should also find a LIST_ITEM
     // at the given location.
     if (type === 'PARAGRAPH') {

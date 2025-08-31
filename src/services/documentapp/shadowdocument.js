@@ -242,6 +242,7 @@ class ShadowDocument {
           __name: sectionName,
           __twig: sectionTree,
           // also store the original resource item
+          __segmentId: sectionId,
           ...section,
         };
         this.__elementMap.set(sectionName, sectionElement);
@@ -280,6 +281,7 @@ class ShadowDocument {
           __type: 'FOOTNOTE',
           __name: footnoteName,
           __twig: footnoteTree,
+          __segmentId: footnoteId,
           ...footnote,
         };
         this.__elementMap.set(footnoteName, footnoteElement);
