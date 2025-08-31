@@ -4,3 +4,5 @@ testongas
 **/.gas-fakes/store
 .env
 ghissues
+.gemini
+**/.gemini
