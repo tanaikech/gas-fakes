@@ -98,7 +98,7 @@ class FakeBehavior {
     // this is to emulate the behavior of a drive.file scope
     this.__sandboxMode = false;
     // if you want the created files to be cleaned up on wrapup 
-    this.__cleanup = true
+    this.__cleanup = true;
     // to strictly enforce sandbox mode
     this.__strictSandbox = true;
 

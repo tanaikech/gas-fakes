@@ -7,6 +7,11 @@ export const testSandbox = (pack) => {
   const { unit, fixes } = pack || initTests();
   const toTrash = [];
 
+  if (!ScriptApp.isFake) {
+    console.log ('Running in live apps script - skipping sandbox tests')
+    return { unit, fixes }
+  }
+  
   unit.section("sandbox behavior", t => {
     const behavior = ScriptApp.__behavior;
 
