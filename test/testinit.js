@@ -65,7 +65,7 @@ export const initTests = () => {
     API_TYPE: process.env.API_TYPE,
     PREFIX: Drive.isFake ? "--f" : "--g",
     PDF_ID: process.env.PDF_ID,
-    CLEAN: process.env.CLEAN,
+    CLEAN: process.env.CLEAN === '1' || process.env.CLEAN === 'true',
     SCRATCH_VIEWER: process.env.SCRATCH_VIEWER,
     SCRATCH_EDITOR: process.env.SCRATCH_EDITOR,
     SCRATCH_B_VIEWER: process.env.SCRATCH_B_VIEWER,

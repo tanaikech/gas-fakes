@@ -8,7 +8,7 @@ In sandbox mode, you can only access files you've created in the same session. T
 
 In summary, you just do this at the beginning of your script to enable the default behavior. There are more options documented later.
 ````
-ScriptApp.__behavior.sandBoxMode = true;
+ScriptApp.__behavior.sandboxMode = true;
 ````
 
 ### tests
@@ -36,15 +36,15 @@ You can configure the behavior of the sandbox through these properties on the `S
 
 | Property          | Type      | Default | Description                                                                                                                                                           |
 | ----------------- | --------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sandBoxMode`     | `boolean` | `false` | When set to `true`, file access is restricted to files created within the current session.                                                                                |
+| `sandboxMode`     | `boolean` | `false` | When set to `true`, file access is restricted to files created within the current session.                                                                                |
 | `cleanup`         | `boolean` | `true`  | If `true`, calling the `trash()` method will move all files created during the session to the Google Drive trash. Set to `false` to leave test artifacts for inspection. |
-| `strictSandbox`   | `boolean` | `true`  | When `true` and `sandBoxMode` is active, any attempt to access a file not created in the session will throw an error. If `false`, it allows access, which can be useful for debugging but does not strictly emulate the `drive.file` scope. |
+| `strictSandbox`   | `boolean` | `true`  | When `true` and `sandboxMode` is active, any attempt to access a file not created in the session will throw an error. If `false`, it allows access, which can be useful for debugging but does not strictly emulate the `drive.file` scope. |
 
 ### Example Usage:
 
 ```javascript
 // Enable sandbox mode for a test
-ScriptApp.__behavior.sandBoxMode = true;
+ScriptApp.__behavior.sandboxMode = true;
 
 
 // Your test code here...

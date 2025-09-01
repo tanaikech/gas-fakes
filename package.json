@@ -52,10 +52,11 @@
     "testdocsfooters": "cp mainlocal.js main.js &&  node --env-file=.env ./test/testdocsfooters.js execute",
     "testdocsfootnotes": "cp mainlocal.js main.js &&  node --env-file=.env ./test/testdocsfootnotes.js execute",
     "testdocsimages": "cp mainlocal.js main.js &&  node --env-file=.env ./test/testdocsimages.js execute",
+    "testsandbox": "cp mainlocal.js main.js &&  node --env-file=.env ./test/testsandbox.js execute",
     "pub": "cp mainlocal.js main.js && npm publish --access public"
   },
   "name": "@mcpher/gas-fakes",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "license": "MIT",
   "main": "main.js",
   "description": "A proof of concept implementation of Apps Script Environment on Node",

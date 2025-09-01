@@ -41,13 +41,15 @@ import { testSlides } from "./testslides.js";
 import { testSheetsText } from "./testsheetstext.js";
 import { testSheetsRange } from "./testsheetsrange.js";
 import { testDocsImages } from "./testdocsimages.js";
-
+import { testSandbox } from "./testsandbox.js";
 
 const testFakes = () => {
   const pack = initTests();
   const { unit } = pack;
 
   // add one of these for each service being tested
+  console.log("\n----Test sandbox----");
+  testSandbox(pack);
   console.log("\n----Test docs headers----");
   testDocsHeaders(pack);
   console.log("\n----Test docs footers----");
