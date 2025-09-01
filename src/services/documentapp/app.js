@@ -11,13 +11,35 @@ import './elements.js'; // This ensures all element types register themselves be
 
 let _app = null;
 
-const name = "DocumentApp";
+const name = 'DocumentApp';
+const serviceName = 'DocumentApp';
+
 if (typeof globalThis[name] === typeof undefined) {
   // By importing this, we ensure all element types register themselves.
   const getApp = () => {
     if (!_app) {
-      console.log('...activating proxy for', name)
-      _app = newFakeDocumentApp();
+      const realApp = newFakeDocumentApp();
+
+      _app = new Proxy(realApp, {
+        get(target, prop, receiver) {
+          if (prop === 'toString') {
+            return () => name;
+          }
+
+          const serviceBehavior = ScriptApp.__behavior.sandBoxService[serviceName];
+
+          if (!serviceBehavior.enabled) {
+            throw new Error(`${name} service is disabled by sandbox settings.`);
+          }
+
+          const allowedMethods = serviceBehavior.methods;
+          if (allowedMethods && typeof target[prop] === 'function' && !allowedMethods.includes(prop)) {
+            throw new Error(`Method ${name}.${prop} is not allowed by sandbox settings.`);
+          }
+
+          return Reflect.get(...arguments);
+        },
+      });
     }
     return _app;
   };

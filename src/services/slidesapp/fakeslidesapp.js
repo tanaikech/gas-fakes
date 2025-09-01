@@ -63,6 +63,7 @@ class FakeSlidesApp {
     const presentation = Slides.Presentations.create({
       title: name,
     });
+    ScriptApp.__behavior.addFile(presentation.presentationId);
     return newFakePresentation(presentation);
   }
 
@@ -85,6 +86,9 @@ class FakeSlidesApp {
    * @returns {import('./fakepresentation.js').FakePresentation} The presentation.
    */
   openById(id) {
+    if (!ScriptApp.__behavior.isAccessible(id, 'SlidesApp')) {
+      throw new Error(`Access to presentation "${id}" is denied by sandbox rules.`);
+    }
     // use the advanced service which handles synchronization
     const presentation = Slides.Presentations.get(id);
     return newFakePresentation(presentation);

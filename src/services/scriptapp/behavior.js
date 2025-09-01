@@ -103,7 +103,7 @@ class FakeBehavior {
     this.__strictSandbox = true;
 
     // individually settable services
-    const services = ['DriveApp', 'SheetsApp', 'SlidesApp', 'UrlFetchApp',"Drive","Sheets","Slides"]
+    const services = ['DocumentApp','DriveApp', 'SheetsApp', 'SlidesApp']
     this.__sandBoxService = {}
     services.forEach (f=>this.__sandBoxService[f] = newFakeSandboxService(this, f))
 
@@ -138,11 +138,13 @@ class FakeBehavior {
   }
   addFile(id) {
     if (this.sandboxMode) {
-      console.log(`...adding file ${id} to sandbox allowed list`)
       if (!is.nonEmptyString(id)) {
         throw new Error(`Invalid sandbox id parameter (${id}) - must be a non-empty string`);
       }
-      this.__createdIds.add(id);
+      if (!this.isKnown(id)) {
+        console.log(`...adding file ${id} to sandbox allowed list`);
+        this.__createdIds.add(id);
+      }
     }
     return id
   }

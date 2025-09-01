@@ -1,12 +1,12 @@
 
 import "../main.js";
 import { initTests } from "./testinit.js";
-import { trasher } from "./testassist.js";
+import { trasher, getDrivePerformance, getSheetsPerformance } from "./testassist.js";
 
 export const testSandbox = (pack) => {
   const { unit, fixes } = pack || initTests();
   const toTrash = [];
- 
+
   unit.section("sandbox behavior", t => {
     const behavior = ScriptApp.__behavior;
 
@@ -33,7 +33,7 @@ export const testSandbox = (pack) => {
 
   unit.section("sandbox service behavior", t => {
     const behavior = ScriptApp.__behavior;
-    const services = ['DriveApp', 'SheetsApp', 'SlidesApp', 'UrlFetchApp', "Drive", "Sheets", "Slides"];
+    const services = ['DocumentApp', 'DriveApp', 'SheetsApp', 'SlidesApp'];
 
     // Check that sandBoxService exists and has the right services
     t.truthy(behavior.sandBoxService, "sandBoxService should exist");
@@ -98,6 +98,7 @@ export const testSandbox = (pack) => {
 
     err = t.threw(() => { driveService.ids = {} });
     t.rxMatch(err.message, /DriveApp expected array but got \[object Object\]/, "Setting ids to non-array should throw with correct message");
+    if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
   });
 
   unit.section("DriveApp sandbox restrictions", t => {
@@ -117,6 +118,7 @@ export const testSandbox = (pack) => {
 
     const newFile = DriveApp.createFile('sandbox-session-file.txt', 'content');
     toTrash.push(newFile);
+
     // This should succeed because the file was created in this session
     t.truthy(DriveApp.getFileById(newFile.getId()), "File created in session should be accessible in strict mode");
 
@@ -140,6 +142,164 @@ export const testSandbox = (pack) => {
 
   });
 
+  unit.section("SpreadsheetApp sandbox restrictions", t => {
+    const behavior = ScriptApp.__behavior;
+    const sheetsService = behavior.sandBoxService.SheetsApp;
+
+    // Store initial state to restore at the end
+    const initial = {
+      sandboxMode: behavior.sandboxMode,
+      strictSandbox: behavior.strictSandbox
+    };
+
+    // --- Test 1: 'enabled' property ---
+    sheetsService.enabled = false;
+    let err = t.threw(() => SpreadsheetApp.create("disabled-test"));
+    t.rxMatch(err.message, /SpreadsheetApp service is disabled by sandbox settings./, "Should throw when service is disabled");
+
+    sheetsService.enabled = true;
+    const ssEnabled = SpreadsheetApp.create("enabled-test");
+    toTrash.push(DriveApp.getFileById(ssEnabled.getId()));
+    t.truthy(ssEnabled);
+    t.truthy(ssEnabled, "Should succeed when service is enabled");
+
+    // --- Test 2: 'methods' property ---
+    sheetsService.methods = ['create'];
+    const ssMethods = SpreadsheetApp.create("methods-test");
+    toTrash.push(DriveApp.getFileById(ssMethods.getId()));
+    t.truthy(ssMethods, "Should allow whitelisted method 'create'");
+
+    err = t.threw(() => SpreadsheetApp.openById(fixes.TEST_SHEET_ID));
+    t.rxMatch(err.message, /Method SpreadsheetApp.openById is not allowed by sandbox settings./, "Should throw for non-whitelisted method 'openById'");
+
+    // --- Test 3: 'ids' property ---
+    behavior.sandboxMode = true;
+    behavior.strictSandbox = true;
+    sheetsService.clear(); // ensure no lingering 'ids' setting
+    err = t.threw(() => SpreadsheetApp.openById(fixes.TEST_SHEET_ID));
+    t.rxMatch(err.message, /Access to spreadsheet ".*" is denied by sandbox rules./, "Strict mode should deny access to external files");
+
+    // --- Cleanup ---
+    sheetsService.clear();
+    behavior.sandboxMode = initial.sandboxMode;
+    behavior.strictSandbox = initial.strictSandbox;
+    if (SpreadsheetApp.isFake) {
+      console.log(
+        "...cumulative sheets cache performance",
+        getSheetsPerformance()
+      );
+    }
+  });
+
+  unit.section("DocumentApp sandbox restrictions", t => {
+    const behavior = ScriptApp.__behavior;
+    const docService = behavior.sandBoxService.DocumentApp;
+
+    // --- Create a temporary "external" document for testing ---
+    // Turn off sandbox to create a file that is not "known" to the session
+    // once we turn sandbox back on.
+    const sbMode = behavior.sandboxMode;
+    behavior.sandboxMode = false;
+    const externalDoc = DocumentApp.create("sandbox-external-test-doc");
+    const externalDocId = externalDoc.getId();
+    // Turn sandbox back on for the tests
+    behavior.sandboxMode = sbMode;
+
+    // Store initial state to restore at the end
+    const initial = {
+      sandboxMode: behavior.sandboxMode,
+      strictSandbox: behavior.strictSandbox
+    };
+
+    // --- Test 1: 'enabled' property ---
+    docService.enabled = false;
+    let err = t.threw(() => DocumentApp.create("disabled-test-doc"));
+    t.rxMatch(err.message, /DocumentApp service is disabled by sandbox settings./, "Should throw when service is disabled");
+
+    docService.enabled = true;
+    const docEnabled = DocumentApp.create("enabled-test-doc");
+    toTrash.push(DriveApp.getFileById(docEnabled.getId()));
+    t.truthy(docEnabled, "Should succeed when service is enabled");
+
+    // --- Test 2: 'methods' property ---
+    docService.methods = ['create'];
+    const docMethods = DocumentApp.create("methods-test-doc");
+    toTrash.push(DriveApp.getFileById(docMethods.getId()));
+    t.truthy(docMethods, "Should allow whitelisted method 'create'");
+
+    err = t.threw(() => DocumentApp.openById(externalDocId));
+    t.rxMatch(err.message, /Method DocumentApp.openById is not allowed by sandbox settings./, "Should throw for non-whitelisted method 'openById'");
+
+    // --- Test 3: 'ids' property ---
+    behavior.sandboxMode = true;
+    behavior.strictSandbox = true;
+    docService.clear(); // ensure no lingering 'ids' setting
+    err = t.threw(() => DocumentApp.openById(externalDocId));
+    t.rxMatch(err.message, /Access to document ".*" is denied by sandbox rules./, "Strict mode should deny access to external files");
+
+    // --- Cleanup ---
+    docService.clear();
+    behavior.sandboxMode = initial.sandboxMode;
+    behavior.strictSandbox = initial.strictSandbox;
+
+    // Manually trash the external doc since it wasn't created in sandbox mode
+    behavior.sandboxMode = false;
+    DriveApp.getFileById(externalDocId).setTrashed(true);
+    behavior.sandboxMode = initial.sandboxMode; // restore
+  });
+
+  unit.section("SlidesApp sandbox restrictions", t => {
+    const behavior = ScriptApp.__behavior;
+    const slidesService = behavior.sandBoxService.SlidesApp;
+
+    // --- Create a temporary "external" presentation for testing ---
+    const sbMode = behavior.sandboxMode;
+    behavior.sandboxMode = false;
+    const externalPres = SlidesApp.create("sandbox-external-test-pres");
+    const externalPresId = externalPres.getId();
+    behavior.sandboxMode = sbMode;
+
+    // Store initial state to restore at the end
+    const initial = {
+      sandboxMode: behavior.sandboxMode,
+      strictSandbox: behavior.strictSandbox
+    };
+
+    // --- Test 1: 'enabled' property ---
+    slidesService.enabled = false;
+    let err = t.threw(() => SlidesApp.create("disabled-test-pres"));
+    t.rxMatch(err.message, /SlidesApp service is disabled by sandbox settings./, "Should throw when service is disabled");
+
+    slidesService.enabled = true;
+    const presEnabled = SlidesApp.create("enabled-test-pres");
+    toTrash.push(DriveApp.getFileById(presEnabled.getId()));
+    t.truthy(presEnabled, "Should succeed when service is enabled");
+
+    // --- Test 2: 'methods' property ---
+    slidesService.methods = ['create'];
+    const presMethods = SlidesApp.create("methods-test-pres");
+    toTrash.push(DriveApp.getFileById(presMethods.getId()));
+    t.truthy(presMethods, "Should allow whitelisted method 'create'");
+
+    err = t.threw(() => SlidesApp.openById(externalPresId));
+    t.rxMatch(err.message, /Method SlidesApp.openById is not allowed by sandbox settings./, "Should throw for non-whitelisted method 'openById'");
+
+    // --- Test 3: 'ids' property ---
+    behavior.sandboxMode = true;
+    behavior.strictSandbox = true;
+    slidesService.clear(); // ensure no lingering 'ids' setting
+    err = t.threw(() => SlidesApp.openById(externalPresId));
+    t.rxMatch(err.message, /Access to presentation ".*" is denied by sandbox rules./, "Strict mode should deny access to external files");
+
+    // --- Cleanup ---
+    slidesService.clear();
+    behavior.sandboxMode = initial.sandboxMode;
+    behavior.strictSandbox = initial.strictSandbox;
+    behavior.sandboxMode = false;
+    DriveApp.getFileById(externalPresId).setTrashed(true);
+    behavior.sandboxMode = initial.sandboxMode; // restore
+  });
+
   if (!pack) {
     unit.report();
   }
@@ -151,5 +311,11 @@ export const testSandbox = (pack) => {
 if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
   testSandbox();
   ScriptApp.__behavior.trash()
-
+  if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
+  if (SpreadsheetApp.isFake) {
+    console.log(
+      "...cumulative sheets cache performance",
+      getSheetsPerformance()
+    );
+  }
 }

@@ -9,13 +9,34 @@ import { Proxies } from '../../support/proxies.js';
 
 let _app = null;
 
-const name = "SlidesApp";
-if (typeof globalThis[name] === typeof undefined) {
+const name = 'SlidesApp';
+const serviceName = 'SlidesApp';
 
+if (typeof globalThis[name] === typeof undefined) {
   const getApp = () => {
     if (!_app) {
-      console.log('...activating proxy for', name)
-      _app = newFakeSlidesApp();
+      const realApp = newFakeSlidesApp();
+
+      _app = new Proxy(realApp, {
+        get(target, prop, receiver) {
+          if (prop === 'toString') {
+            return () => name;
+          }
+
+          const serviceBehavior = ScriptApp.__behavior.sandBoxService[serviceName];
+
+          if (!serviceBehavior.enabled) {
+            throw new Error(`${name} service is disabled by sandbox settings.`);
+          }
+
+          const allowedMethods = serviceBehavior.methods;
+          if (allowedMethods && typeof target[prop] === 'function' && !allowedMethods.includes(prop)) {
+            throw new Error(`Method ${name}.${prop} is not allowed by sandbox settings.`);
+          }
+
+          return Reflect.get(...arguments);
+        },
+      });
     }
     return _app;
   };
