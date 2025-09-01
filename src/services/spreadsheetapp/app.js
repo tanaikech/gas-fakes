@@ -30,7 +30,7 @@ if (typeof globalThis[name] === typeof undefined) {
             return () => name;
           }
 
-          const serviceBehavior = ScriptApp.__behavior.sandBoxService[serviceName];
+          const serviceBehavior = ScriptApp.__behavior.sandboxService[serviceName];
 
           if (!serviceBehavior.enabled) {
             throw new Error(`${name} service is disabled by sandbox settings.`);

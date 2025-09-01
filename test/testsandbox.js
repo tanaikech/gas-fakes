@@ -35,14 +35,14 @@ export const testSandbox = (pack) => {
     const behavior = ScriptApp.__behavior;
     const services = ['DocumentApp', 'DriveApp', 'SheetsApp', 'SlidesApp'];
 
-    // Check that sandBoxService exists and has the right services
-    t.truthy(behavior.sandBoxService, "sandBoxService should exist");
+    // Check that sandboxService exists and has the right services
+    t.truthy(behavior.sandboxService, "sandboxService should exist");
     services.forEach(serviceName => {
-      t.truthy(behavior.sandBoxService[serviceName], `Service ${serviceName} should exist in sandBoxService`);
+      t.truthy(behavior.sandboxService[serviceName], `Service ${serviceName} should exist in sandboxService`);
     });
 
     // Test a single service (DriveApp)
-    const driveService = behavior.sandBoxService.DriveApp;
+    const driveService = behavior.sandboxService.DriveApp;
 
     // Test defaults and fallbacks
     // Set global properties to known values
@@ -103,7 +103,7 @@ export const testSandbox = (pack) => {
 
   unit.section("DriveApp sandbox restrictions", t => {
     const behavior = ScriptApp.__behavior;
-    const driveService = behavior.sandBoxService.DriveApp;
+    const driveService = behavior.sandboxService.DriveApp;
 
     // Store initial state to restore at the end
     const initial = {
@@ -144,7 +144,7 @@ export const testSandbox = (pack) => {
 
   unit.section("SpreadsheetApp sandbox restrictions", t => {
     const behavior = ScriptApp.__behavior;
-    const sheetsService = behavior.sandBoxService.SheetsApp;
+    const sheetsService = behavior.sandboxService.SheetsApp;
 
     // Store initial state to restore at the end
     const initial = {
@@ -193,7 +193,7 @@ export const testSandbox = (pack) => {
 
   unit.section("DocumentApp sandbox restrictions", t => {
     const behavior = ScriptApp.__behavior;
-    const docService = behavior.sandBoxService.DocumentApp;
+    const docService = behavior.sandboxService.DocumentApp;
 
     // --- Create a temporary "external" document for testing ---
     // Turn off sandbox to create a file that is not "known" to the session
@@ -250,7 +250,7 @@ export const testSandbox = (pack) => {
 
   unit.section("SlidesApp sandbox restrictions", t => {
     const behavior = ScriptApp.__behavior;
-    const slidesService = behavior.sandBoxService.SlidesApp;
+    const slidesService = behavior.sandboxService.SlidesApp;
 
     // --- Create a temporary "external" presentation for testing ---
     const sbMode = behavior.sandboxMode;

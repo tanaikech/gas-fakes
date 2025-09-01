@@ -11,13 +11,13 @@ const { is } = Utils
 export const newFakeBehavior = (...args) => {
   return Proxies.guard(new FakeBehavior(...args))
 }
-const newFakeSandboxService = (...args) => {
-  return Proxies.guard(new FakeSandboxService(...args))
+const newFakesandboxService = (...args) => {
+  return Proxies.guard(new FakesandboxService(...args))
 }
 /**
  * this can modify sandbox behaior for each individual service
  */
-class FakeSandboxService {
+class FakesandboxService {
   constructor(behavior, name) {
     this.__model = {
       enabled: null,
@@ -104,12 +104,12 @@ class FakeBehavior {
 
     // individually settable services
     const services = ['DocumentApp','DriveApp', 'SheetsApp', 'SlidesApp']
-    this.__sandBoxService = {}
-    services.forEach (f=>this.__sandBoxService[f] = newFakeSandboxService(this, f))
+    this.__sandboxService = {}
+    services.forEach (f=>this.__sandboxService[f] = newFakesandboxService(this, f))
 
   }
-  get sandBoxService() {
-    return this.__sandBoxService
+  get sandboxService() {
+    return this.__sandboxService
   }
   set strictSandbox(value) {
     this.__strictSandbox = value;
@@ -153,7 +153,7 @@ class FakeBehavior {
       throw new Error(`Invalid sandbox id parameter (${id}) - must be a non-empty string`);
     }
 
-    const serviceBehavior = this.sandBoxService[serviceName];
+    const serviceBehavior = this.sandboxService[serviceName];
     // If the service isn't in the sandbox service map, we can't apply per-service rules.
     // Fall back to the original global logic. This is a safe fallback.
     if (!serviceBehavior) {
