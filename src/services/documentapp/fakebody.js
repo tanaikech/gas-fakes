@@ -4,7 +4,7 @@ import { Utils } from '../../support/utils.js';
 import { FakeContainerElement } from './fakecontainerelement.js';
 import { shadowPrefix } from './nrhelpers.js'
 import { newFakeFootnoteSection } from './fakefootnotesection.js';
-import { appendParagraph, insertParagraph, appendPageBreak, insertPageBreak, appendTable, insertTable, appendListItem, insertListItem } from './appenderhelpers.js'
+import { appendParagraph, insertParagraph, appendPageBreak, insertPageBreak, appendTable, insertTable, appendListItem, insertListItem, appendImage, insertImage } from './appenderhelpers.js'
 import { registerElement } from './elementRegistry.js';
 const { is } = Utils
 
@@ -37,6 +37,9 @@ class FakeBody extends FakeContainerElement {
   }
 
   insertParagraph(childIndex, paragraph) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Body.insertParagraph');
+    if (nargs !== 2) matchThrow();
+
     // Per the docs, inserting at an index equal to the number of children
     // is equivalent to an append operation.
     if (childIndex === this.getNumChildren()) {
@@ -50,6 +53,9 @@ class FakeBody extends FakeContainerElement {
   }
 
   insertPageBreak(childIndex, pageBreak) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Body.insertPageBreak');
+    if (nargs < 1 || nargs > 2) matchThrow();
+
     // Per the docs, inserting at an index equal to the number of children
     // is equivalent to an append operation.
     if (childIndex === this.getNumChildren()) {
@@ -63,6 +69,9 @@ class FakeBody extends FakeContainerElement {
   }
 
   insertTable(childIndex, tableOrCells) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Body.insertTable');
+    if (nargs !== 2) matchThrow();
+
     // Per the docs, inserting at an index equal to the number of children
     // is equivalent to an append operation.
     if (childIndex === this.getNumChildren()) {
@@ -86,6 +95,22 @@ class FakeBody extends FakeContainerElement {
       return this.appendListItem(listItemOrText);
     }
     return insertListItem(this, childIndex, listItemOrText);
+  }
+
+  appendImage(image) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Body.appendImage');
+    if (nargs !== 1) matchThrow();
+    return appendImage(this, image);
+  }
+
+  insertImage(childIndex, image) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Body.insertImage');
+    if (nargs !== 2) matchThrow();
+
+    if (childIndex === this.getNumChildren()) {
+      return this.appendImage(image);
+    }
+    return insertImage(this, childIndex, image);
   }
 
   /**

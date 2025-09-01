@@ -31,6 +31,8 @@ export const getElementProp = (se) => {
   if (se.pageBreak) return { prop: null, type: 'PAGE_BREAK' };
   if (se.horizontalRule) return { prop: null, type: 'HORIZONTAL_RULE' };
   if (se.footnoteReference) return { prop: null, type: 'FOOTNOTE_REFERENCE' };
+  if (se.inlineObjectElement) return { prop: null, type: 'INLINE_IMAGE' };
+  if (se.positionedObjectElement) return { prop: null, type: 'POSITIONED_IMAGE' };
 
   if (se.body) {
     return { prop: 'body', type: 'BODY_SECTION' };
@@ -98,6 +100,12 @@ export const findItem = (elementMap, type, startIndex, segmentId) => {
     const searchSegmentId = segmentId || '';
     if (itemSegmentId !== searchSegmentId) {
       return false;
+    }
+
+    // For container elements that don't have a startIndex (like Header, Footer, Footnote),
+    // we can find them by type and segmentId alone.
+    if (is.undefined(startIndex)) {
+      return f.__type === type;
     }
 
     // A ListItem is a specialized Paragraph. A search for a PARAGRAPH should also find a LIST_ITEM

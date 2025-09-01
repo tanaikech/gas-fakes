@@ -1,12 +1,11 @@
 
-import '../main.js';
-import { initTests } from './testinit.js';
-import { trasher, getDocsPerformance, maketdoc, docReport, getChildren } from './testassist.js';
+import "../main.js";
+import { initTests } from "./testinit.js";
+import { trasher, getDocsPerformance, maketdoc, docReport, getChildren } from "./testassist.js";
 
 export const testDocsNext = (pack) => {
   const { unit, fixes } = pack || initTests();
   const toTrash = [];
-
 
   unit.section("Body.appendTable and Body.insertTable", t => {
 
@@ -131,6 +130,8 @@ export const testDocsNext = (pack) => {
 
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   });
+
+
 
 
 

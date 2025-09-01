@@ -485,6 +485,16 @@ This has been reported on the Google Issue Tracker: https://issuetracker.google.
 `gas-fakes` implements `Body.appendFootnote()` to allow for local development and testing of footnote-related features. Tests that use this method are skipped when run against the live environment. The fake implementation will be maintained pending a resolution from Google.
 
 
+#### `Paragraph.addPositionedImage()`
+
+The `Paragraph.addPositionedImage()` method exists in the live Google Apps Script environment, allowing for the creation of positioned images anchored to a paragraph. However, as of May 2024, there is no corresponding public endpoint in the Google Docs API v1 to programmatically create a `PositionedObject`.
+
+This has been a requested feature, but it appears that the Apps Script service uses a private, non-public API to achieve this functionality.
+
+Because `gas-fakes` relies exclusively on the public Google Workspace APIs, it is not possible to emulate this method. Tests that use `addPositionedImage` are skipped when run in the fake environment.
+
+See this related issue tracker for the API feature request - https://issuetracker.google.com/issues/442065544
+
 #### Align `Document.clear()` Behavior with Live Apps Script and Refactor Test Cleanup
 
 **Labels**: `enhancement`, `emulation-accuracy`, `document-app`, `behavior`
