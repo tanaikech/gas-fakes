@@ -99,8 +99,8 @@ class FakeFootnote extends FakeContainerElement {
     const lastElement = content[content.length - 1];
     const endIndex = lastElement.endIndex;
 
-    // A footnote's content starts at index 1 and has a mandatory newline.
-    // Don't delete if it's just the newline.
+    // A new footnote has one empty paragraph with range [1,2).
+    // We must not delete this final newline character.
     if (endIndex <= 2) return this;
 
     const requests = [{

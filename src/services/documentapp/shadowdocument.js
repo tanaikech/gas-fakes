@@ -134,16 +134,15 @@ class ShadowDocument {
  
       // The API may omit startIndex for the first paragraph in a new header/footer,
       // and return an endIndex of 1. This represents the initial empty paragraph.
-      // Unlike the main body, a new header/footer segment's content starts at index 0.
-      // The segment itself has a length of 1 (the initial newline).
       if (is.integer(endIndex) && !is.integer(startIndex)) {
-        if (segmentId && segmentId.startsWith('kix.')) {
-          // The first paragraph in a footnote segment is the only one that will be missing
-          // a startIndex. Its startIndex is always 1.
+        // This is likely the first paragraph in a new segment. We infer the startIndex
+        // from the endIndex, which differs between segment types.
+        // Headers/Footers have endIndex: 1, so their content starts at 0.
+        // Body/Footnotes have endIndex: 2, so their content starts at 1.
+        if (endIndex === 1) {
+          element.startIndex = 0; // For new Headers/Footers
+        } else {
           element.startIndex = 1;
-        } else if (endIndex === 1) {
-          // This handles the first paragraph in a new header/footer.
-          element.startIndex = 0;
         }
       }
 
