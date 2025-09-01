@@ -100,6 +100,46 @@ export const testSandbox = (pack) => {
     t.rxMatch(err.message, /DriveApp expected array but got \[object Object\]/, "Setting ids to non-array should throw with correct message");
   });
 
+  unit.section("DriveApp sandbox restrictions", t => {
+    const behavior = ScriptApp.__behavior;
+    const driveService = behavior.sandBoxService.DriveApp;
+
+    // Store initial state to restore at the end
+    const initial = {
+      sandboxMode: behavior.sandboxMode,
+      strictSandbox: behavior.strictSandbox
+    };
+
+    // --- Test 1: File created in session should be accessible ---
+    behavior.sandboxMode = true;
+    behavior.strictSandbox = true;
+    driveService.clear(); // Ensure no leftover settings
+
+    const newFile = DriveApp.createFile('sandbox-session-file.txt', 'content');
+    toTrash.push(newFile);
+    // This should succeed because the file was created in this session
+    t.truthy(DriveApp.getFileById(newFile.getId()), "File created in session should be accessible in strict mode");
+
+    // --- Test 2: Strict mode should deny access to external files ---
+    let err = t.threw(() => DriveApp.getFileById(fixes.TEXT_FILE_ID));
+    t.rxMatch(err.message, /Access to file ".*" is denied by sandbox rules./, "Strict mode should deny access to external files");
+
+    // --- Test 3: Non-strict mode with an 'ids' whitelist ---
+    behavior.strictSandbox = false;
+    driveService.ids = [fixes.TEXT_FILE_ID];
+    t.truthy(DriveApp.getFileById(fixes.TEXT_FILE_ID), "Non-strict with ID whitelist should allow access to whitelisted file");
+
+    // --- Test 4: Non-strict mode should deny non-whitelisted files ---
+    err = t.threw(() => DriveApp.getFileById(fixes.PDF_ID));
+    t.rxMatch(err.message, /Access to file ".*" is denied by sandbox rules./, "Non-strict with ID whitelist should deny access to non-whitelisted file");
+
+    // --- Cleanup ---
+    driveService.clear();
+    behavior.sandboxMode = initial.sandboxMode;
+    behavior.strictSandbox = initial.strictSandbox;
+
+  });
+
   if (!pack) {
     unit.report();
   }

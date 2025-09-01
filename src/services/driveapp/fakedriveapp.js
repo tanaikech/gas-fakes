@@ -42,17 +42,22 @@ export class FakeDriveApp {
    * @returns {newFakeDriveFile|null}
    */
   getFileById(id) {
+    if (!ScriptApp.__behavior.isAccessible(id, 'DriveApp')) {
+      throw new Error(`Access to file "${id}" is denied by sandbox rules.`);
+    }
     const file = Drive.Files.get(id, {}, { allow404: true })
     return file ? newFakeDriveFile(file) : null
   }
 
   /**
    * get folder by Id
-   * folders can get files
    * @param {string} id 
    * @returns {FakeDriveFolder|null}
    */
   getFolderById(id) {
+    if (!ScriptApp.__behavior.isAccessible(id, 'DriveApp')) {
+      throw new Error(`Access to folder "${id}" is denied by sandbox rules.`);
+    }
     const file = Drive.Files.get(id, {}, { allow404: true })
     return file ? newFakeDriveFolder(file) : null
   }

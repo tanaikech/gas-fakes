@@ -143,7 +143,7 @@ class FakeFolderApp {
     const result = Syncit.fxStreamUpMedia({ fields: minFields, blob, file: { mimeType, name, ...file } })
     const { data, response } = result
     checkResponse(data?.id, response, false)
-    Drive.__addAllowed(data.id)
+    ScriptApp.__behavior.addFile(data.id)
     improveFileCache(data.id, data)
     return DriveApp.__settleClass(result.data)
 

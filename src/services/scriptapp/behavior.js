@@ -146,11 +146,37 @@ class FakeBehavior {
     }
     return id
   }
-  isAccessible(id) {
+  isAccessible(id, serviceName) {
     if (!is.nonEmptyString(id)) {
       throw new Error(`Invalid sandbox id parameter (${id}) - must be a non-empty string`);
     }
-    return !this.__sandboxMode || !this.__strictSandbox || this.__createdIds.has(id);
+
+    const serviceBehavior = this.sandBoxService[serviceName];
+    // If the service isn't in the sandbox service map, we can't apply per-service rules.
+    // Fall back to the original global logic. This is a safe fallback.
+    if (!serviceBehavior) {
+      return !this.__sandboxMode || !this.__strictSandbox || this.isKnown(id);
+    }
+
+    // If sandbox mode is disabled for this service, access is granted.
+    if (!serviceBehavior.sandboxMode) {
+      return true;
+    }
+
+    // If the file was created in this session, access is granted.
+    if (this.isKnown(id)) {
+      return true;
+    }
+
+    // At this point, sandbox is ON and the file is EXTERNAL.
+    // In strict mode, external files are forbidden.
+    if (serviceBehavior.sandboxStrict) {
+      return false;
+    }
+
+    // In non-strict mode, check the 'ids' whitelist.
+    // If no whitelist is provided, access is granted.
+    return serviceBehavior.ids ? serviceBehavior.ids.includes(id) : true;
   }
   trash() {
     // this is where we would trash all the created files
