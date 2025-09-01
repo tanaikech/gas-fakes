@@ -57,6 +57,8 @@ class ShadowDocument {
       footers: documentTab.footers,
       footnotes: documentTab.footnotes,
       documentStyle: documentTab.documentStyle,
+      inlineObjects: documentTab.inlineObjects,
+      positionedObjects: documentTab.positionedObjects,
     }
   }
   /**
@@ -201,11 +203,16 @@ class ShadowDocument {
               const childElement = this.__elementMap.get(childTwig.name);
               if (!childElement) return false;
 
+              // A positioned image is not a "child" in the Apps Script sense (it doesn't affect getNumChildren).
+              // It is anchored to the paragraph but lives in a separate collection.
+              if (childElement.__type === 'POSITIONED_IMAGE') return false;
+
               // A paragraph's children are its non-text elements (like PageBreak)
               // and text runs that are not just a newline.
               return childElement.pageBreak ||
                 childElement.horizontalRule ||
                 childElement.footnoteReference ||
+                childElement.inlineObjectElement ||
                 (childElement.textRun && childElement.textRun.content && childElement.textRun.content !== '\n');
             });
         } else {
@@ -235,6 +242,7 @@ class ShadowDocument {
           __name: sectionName,
           __twig: sectionTree,
           // also store the original resource item
+          __segmentId: sectionId,
           ...section,
         };
         this.__elementMap.set(sectionName, sectionElement);
@@ -273,6 +281,7 @@ class ShadowDocument {
           __type: 'FOOTNOTE',
           __name: footnoteName,
           __twig: footnoteTree,
+          __segmentId: footnoteId,
           ...footnote,
         };
         this.__elementMap.set(footnoteName, footnoteElement);

@@ -27,7 +27,7 @@ const responsify = (response) => {
   const getHeaders = () => fixHeaders(response)
 
   // getContent() Bytes[] the data as byte array
-  const getContent = () => response.body
+  const getContent = () => response.rawBody || response.body
 
   // getBlob () FakeBlob the content as a blob
   const getBlob = () => blobify(response)
@@ -51,8 +51,8 @@ const responsify = (response) => {
     const disp = headers["Content-Disposition"]
     const filename = disp && disp.replace(/.*filename="([^"]*).*/, "$1")
     const name = filename || ""
-    const contentType = headers["Content-Type"].replace(/([^;]*).*/, "$1").trim()
-    const bytes = response.body || null
+    const contentType = headers["Content-Type"]?.replace(/([^;]*).*/, "$1").trim()
+    const bytes = response.rawBody || response.body || null
     return Utilities.newBlob(bytes, contentType, name)
   }
 
@@ -82,7 +82,8 @@ const fetch = (url, options = {}) => {
     'rawHeaders',
     'statusCode',
     'body',
-    'headers'
+    'headers',
+    'rawBody'
   ]
 
   const response = Syncit.fxFetch(url, options, responseFields)

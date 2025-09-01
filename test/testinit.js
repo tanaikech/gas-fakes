@@ -34,6 +34,7 @@ export const initTests = () => {
   const fixes = {
     SHARED_FILE_OWNER: process.env.SHARED_FILE_OWNER,
     TEST_BORDERS_ID: process.env.TEST_BORDERS_ID,
+    TEST_DOC_WITH_POS_IMAGE_ID: process.env.TEST_DOC_WITH_POS_IMAGE_ID,
     TEST_AIRPORTS_ID: process.env.TEST_AIRPORTS_ID,
     TEST_AIRPORTS_NAME: process.env.TEST_AIRPORTS_NAME,
     MIN_ROOT_PDFS: Number(process.env.MIN_ROOT_PDFS),
@@ -72,7 +73,7 @@ export const initTests = () => {
   }
   // double check all is defined in process.env if on node
   if (!unitExports.CodeLocator.isGas) {
-    Reflect.ownKeys(fixes).forEach(k => {
+    Reflect.ownKeys(fixes).filter(k=>fixes[k]).forEach(k => {
       if (!Reflect.has(process.env, k) && k !== 'PREFIX') throw new Error(`process.env.${k} value is not set`)
     })
   }
@@ -90,4 +91,3 @@ export const initTests = () => {
   }
 
 }
-

@@ -165,6 +165,18 @@ class FakeDocument {
     return this.getBody().appendTable(tableOrCells);
   }
 
+  appendImage(image) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Document.appendImage");
+    if (nargs !== 1) matchThrow();
+    return this.getBody().appendImage(image);
+  }
+
+  insertImage(childIndex, image) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Document.insertImage");
+    if (nargs !== 2) matchThrow();
+    return this.getBody().insertImage(childIndex, image);
+  }
+
   insertListItem(childIndex, listItemOrText) {
     const { nargs, matchThrow } = signatureArgs(arguments, "Document.insertListItem");
     if (nargs !== 2) matchThrow();

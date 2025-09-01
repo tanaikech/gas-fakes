@@ -1,9 +1,8 @@
 /**
  * Advanced docs service
  */
-
 import { Proxies } from '../../support/proxies.js'
-import { signatureArgs, ssError } from '../../support/helpers.js'
+import { signatureArgs, gError } from '../../support/helpers.js'
 import { docsCacher } from '../../support/docscacher.js';
 import { Syncit } from '../../support/syncit.js'
 import is from '@sindresorhus/is'
@@ -44,7 +43,7 @@ class FakeAdvDocuments extends FakeAdvResource {
     }, options);
 
     // maybe we need to throw an error
-    ssError(response, "create")
+    gError(response, 'docs.documents', "create")
     this.__addAllowed(data.documentId);
     return data
   }
@@ -65,7 +64,7 @@ class FakeAdvDocuments extends FakeAdvResource {
       requestBody: requests
     });
 
-    ssError(response, "batchUpdate");
+    gError(response, 'docs.documents', "batchUpdate");
 
     return data;
   }
@@ -105,7 +104,7 @@ class FakeAdvDocuments extends FakeAdvResource {
     const params = {documentId: this.__allowed(documentId), ...(options || {}) };
 
     const { response, data } = this._call("get", params);
-    ssError(response, 'get');
+    gError(response, 'docs.documents', 'get');
     return {
       data,
       response

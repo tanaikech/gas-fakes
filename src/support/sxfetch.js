@@ -18,13 +18,26 @@ export const sxFetch = async (Auth, url, options, responseFields) => {
   // we need special headers if we're calling google apis
   options = Auth.googify(options)
 
+  // Always fetch as a buffer to prevent corruption of binary data like images.
+  // The caller (UrlFetchApp/HttpResponse) will be responsible for decoding to text if needed.
   const response = await got(url, {
-    ...options
+    ...options,
+    responseType: 'buffer'
   })
   // we cant return the response from this as it cant be serialized
   // so we;ll extract oout the fields required
-  return responseFields.reduce((p, c) => {
+  const result = responseFields.reduce((p, c) => {
     p[c] = response[c]
     return p
   }, {})
+
+  // The rawBody is a Buffer. Convert it to a byte array for proper serialization across the worker boundary.
+  if (result.rawBody) {
+    result.rawBody = Array.from(result.rawBody);
+  }
+  // The body will also be a buffer
+  if (result.body && Buffer.isBuffer(result.body)) {
+    result.body = Array.from(result.body);
+  }
+  return result;
 }

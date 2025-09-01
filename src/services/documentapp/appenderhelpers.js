@@ -1,10 +1,10 @@
 import { Utils } from "../../support/utils.js";
 import { ElementType } from '../enums/docsenums.js';
-const { is } = Utils
+const { is, isBlob } = Utils
 import { getElementFactory } from './elementRegistry.js'
-import { signatureArgs } from '../../support/helpers.js';
+import { signatureArgs, notYetImplemented } from '../../support/helpers.js';
 import { findItem } from './elementhelpers.js';
-import { paragraphOptions, pageBreakOptions, tableOptions, textOptions, listItemOptions } from './elementoptions.js';
+import { paragraphOptions, pageBreakOptions, tableOptions, textOptions, listItemOptions, imageOptions, positionedImageOptions } from './elementoptions.js';
 import { deleteContentRange, createParagraphBullets, reverseUpdateContent, deleteParagraphBullets } from "./elementblasters.js";
 
 /**
@@ -34,15 +34,21 @@ const validateInserterArgs = (elementOrText, childIndex, options) => {
   if (!packCanBeNull && is.nullOrUndefined(elementOrText)) matchThrow();
 
   if (isObject) {
-    // For element objects, the live API checks type first, then attached status.
-    const typeMatches = elementOrText.getType() === elementType;
-    if (!typeMatches) {
-      matchThrow();
-    }
+    // A blob is an object, but doesn't have getType().
+    // Other elements (Paragraph, Table, etc.) do.
+    if (is.function(elementOrText.getType)) {
+      const typeMatches = elementOrText.getType() === elementType;
+      if (!typeMatches) {
+        matchThrow();
+      }
 
-    isDetached = !!elementOrText.__isDetached;
-    if (!isDetached) {
-      throw new Error('Element must be detached.');
+      isDetached = !!elementOrText.__isDetached;
+      if (!isDetached) {
+        throw new Error('Element must be detached.');
+      }
+    } else if (!isBlob(elementOrText)) {
+      // It's an object, but not a blob and doesn't have getType(). Invalid.
+      matchThrow();
     }
   } else {
     // Handle non-object arguments (arrays, strings, null)
@@ -110,33 +116,46 @@ const calculateInsertionPointsAndInitialRequests = (self, childIndex, isAppend, 
       // The shadow.refresh() call at the end of elementInserter handles all named range updates correctly.
     }
   } else {
-    // It's an insert operation, creating a new element.
-    // The equality case (childIndex === children.length) is handled by the caller (e.g., FakeBody) by converting to an append.
-    if (childIndex < 0 || childIndex >= children.length) {
-      throw new Error(`Child index (${childIndex}) must be less than or equal to the number of child elements (${children.length}).`);
-    }
-    const targetChildTwig = children[childIndex];
-    const targetChildItem = elementMap.get(targetChildTwig.name);
-
-    // rules with tables mean we have to insert before preceding paragrap
-    if (targetChildItem.__type === "TABLE") {
-      insertIndex = targetChildItem.startIndex - 1; // Insert before the table.
-      if (childIndex < 1) {
-        // because a table cant ever be the first child
-        throw new Error(`Cannot insert before the first child element table (${targetChildItem.name})`);
+    // It's an insert operation.
+    const isParaInsert = self.getType() === ElementType.PARAGRAPH;
+    if (isParaInsert) {
+      // Inserting into an existing paragraph. No newlines needed.
+      if (childIndex < 0 || childIndex > children.length) {
+        throw new Error(`Child index (${childIndex}) must be between 0 and the number of child elements (${children.length}).`);
       }
-      leading = '\n'
-      // in this case the new element startindex will be +1 to the insertIndex
-      newElementStartIndex = insertIndex + 1;
+      if (children.length === 0 || childIndex === children.length) {
+        // Inserting into an empty paragraph or at the end.
+        insertIndex = item.endIndex - 1;
+      } else {
+        // Inserting before an existing child.
+        const targetChildTwig = children[childIndex];
+        const targetChildItem = elementMap.get(targetChildTwig.name);
+        insertIndex = targetChildItem.startIndex;
+      }
+      newElementStartIndex = item.startIndex; // The container is the paragraph itself.
+      childStartIndex = insertIndex; // The new child will start where we insert it.
     } else {
-      insertIndex = targetChildItem.startIndex
-      trailing = '\n'
-      newElementStartIndex = insertIndex;
+      // It's an insert operation, creating a new element in a Body/Header/etc.
+      if (childIndex < 0 || childIndex >= children.length) {
+        throw new Error(`Child index (${childIndex}) must be less than or equal to the number of child elements (${children.length}).`);
+      }
+      const targetChildTwig = children[childIndex];
+      const targetChildItem = elementMap.get(targetChildTwig.name);
+
+      if (targetChildItem.__type === "TABLE") {
+        insertIndex = targetChildItem.startIndex - 1; // Insert before the table.
+        if (childIndex < 1) {
+          throw new Error(`Cannot insert before the first child element table (${targetChildItem.name})`);
+        }
+        leading = '\n'
+        newElementStartIndex = insertIndex + 1;
+      } else {
+        insertIndex = targetChildItem.startIndex
+        trailing = '\n'
+        newElementStartIndex = insertIndex;
+      }
+      childStartIndex = null; // Child start index is unknown, must be found within container.
     }
-
-
-    // TODO validate what this is used for
-    childStartIndex = null; // Child start index is unknown, must be found within container.
   }
 
   return { insertIndex, newElementStartIndex, childStartIndex, requests, leading, trailing };
@@ -192,6 +211,11 @@ const findAndReturnNewElement = (shadow, newElementStartIndex, childStartIndex, 
  * @private
  */
 const elementInserter = (self, elementOrText, childIndex, options) => {
+  // Before the mutation, record the container's identity.
+  const selfName = self.__name;
+  const selfStartIndex = self.__elementMapItem.startIndex;
+  const selfType = self.getType().toString();
+
   // 1. Validate arguments and determine operation type.
   const { isAppend, isDetached } = validateInserterArgs(elementOrText, childIndex, options);
 
@@ -208,7 +232,7 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
 
   // 4. Build the main batch update request list.
   const { getMainRequest, getStyleRequests } = options;
-  const mainRequests = [].concat(getMainRequest({
+  const mainRequestResult = getMainRequest({
     content: elementOrText,
     location: { index: insertIndex, segmentId, tabId },
     isAppend,
@@ -216,7 +240,17 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
     structure,
     leading,
     trailing
-  }));
+  });
+
+  let mainRequests;
+  let cleanup = null;
+
+  if (is.plainObject(mainRequestResult) && mainRequestResult.requests) {
+    mainRequests = [].concat(mainRequestResult.requests);
+    cleanup = mainRequestResult.cleanup;
+  } else {
+    mainRequests = [].concat(mainRequestResult);
+  }
   // if we were inserting a table then there;ll be an unwanted \n to remove - this should be -2 from the insertIndex
   // TODO we need to check if that index is actually a paragraph or not otherwise this will fail/screw up
   if (!isAppend && options.elementType === ElementType.TABLE && insertIndex > 1) {
@@ -237,10 +271,24 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
   }
 
   // 5. Execute the update and refresh the document state.
-  if (requests.length > 0) {
-    Docs.Documents.batchUpdate({ requests }, shadow.getId());
+  try {
+    if (requests.length > 0) {
+      Docs.Documents.batchUpdate({ requests }, shadow.getId());
+    }
+    shadow.refresh(); // must always refresh, as getMainRequest might have side effects
+  } finally {
+    if (cleanup) {
+      cleanup();
+    }
   }
-  shadow.refresh(); // must always refresh, as getMainRequest might have side effects
+
+  // After the refresh, the 'self' object is stale. We need to find its new representation
+  // in the updated element map and update its internal name. This "revives" the object
+  // for subsequent method calls in the user's script.
+  const newSelfItem = findItem(shadow.elementMap, selfType, selfStartIndex, segmentId);
+  if (newSelfItem && newSelfItem.__name !== selfName) {
+    self.__name = newSelfItem.__name;
+  }
 
   // 6. Handle table content population if necessary. This is a two-phase update
   // because we need the table to exist before we can get the indices to populate its cells.
@@ -393,4 +441,17 @@ export const appendListItem = (self, listItemOrText) => {
 
 export const insertListItem = (self, childIndex, listItemOrText) => {
   return elementInserter(self, listItemOrText, childIndex, listItemOptions);
+};
+
+export const addPositionedImage = (self, image) => {
+  // Per the docs, this anchors the image to the beginning of the paragraph.
+  return elementInserter(self, image, 0, positionedImageOptions);
+};
+
+export const appendImage = (self, image) => {
+  return elementInserter(self, image, null, imageOptions);
+};
+
+export const insertImage = (self, childIndex, image) => {
+  return elementInserter(self, image, childIndex, imageOptions);
 };
