@@ -173,15 +173,15 @@ export class FakeProtection {
           endRowIndex = 0,
           startColumnIndex = 0,
           endColumnIndex = 0,
-        }) =>
-          this.spreadsheet
-            .getSheetById(sheetId)
-            .getRange(
-              startRowIndex + 1,
-              startColumnIndex + 1,
-              endRowIndex - startRowIndex,
-              endColumnIndex - startColumnIndex
-            )
+        }) => {
+          const sheet = this.spreadsheet.getSheetById(sheetId);
+          return sheet.getRange(
+            startRowIndex + 1,
+            startColumnIndex + 1,
+            endRowIndex - startRowIndex || sheet.getMaxRows(),
+            endColumnIndex - startColumnIndex || sheet.getMaxColumns()
+          );
+        }
       );
     }
     return [];
