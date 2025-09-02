@@ -10,6 +10,7 @@ import { Exports as unitExports } from '@mcpher/unit'
 import '../main.js'
 
 
+
 export const initTests = () => {
 
   // on node this will have come from the imports that get stripped when mocing to gas
@@ -65,7 +66,7 @@ export const initTests = () => {
     API_TYPE: process.env.API_TYPE,
     PREFIX: Drive.isFake ? "--f" : "--g",
     PDF_ID: process.env.PDF_ID,
-    CLEAN: process.env.CLEAN,
+    CLEAN: process.env.CLEAN === '1' || process.env.CLEAN === 'true',
     SCRATCH_VIEWER: process.env.SCRATCH_VIEWER,
     SCRATCH_EDITOR: process.env.SCRATCH_EDITOR,
     SCRATCH_B_VIEWER: process.env.SCRATCH_B_VIEWER,
@@ -79,9 +80,27 @@ export const initTests = () => {
   }
   // if we in fake mode, we'll operate in sandbox mode by default
   if (ScriptApp.isFake) {
-    ScriptApp.__behavior.sandBoxMode = true;
+    const behavior = ScriptApp.__behavior;
+    behavior.sandboxMode = true;
     console.log('...operating in sandbox mode - only files created in this instance of gas-fakes are accessible')
-    ScriptApp.__behavior.cleanup = fixes.CLEAN;
+    behavior.strictSandbox = true;
+    behavior.cleanup = fixes.CLEAN;
+
+    // Automatically whitelist all test file IDs for read access
+    // This allows tests to access fixture files without needing to disable the sandbox.
+    Object.keys(fixes).forEach(key => {
+      if (key.endsWith('_ID') && fixes[key]) {
+        console.log(`...whitelisting test file ${key}: ${fixes[key]}`);
+        behavior.addIdWhitelist(behavior.newIdWhitelistItem(fixes[key]));
+      }
+    });
+
+    // The root folder should always be accessible for read operations.
+    // We'll add its ID to the whitelist to ensure tests that traverse
+    // up to the root folder don't fail in sandbox mode.
+    const rootFolderId = DriveApp.getRootFolder().getId();
+    console.log(`...whitelisting test file ROOT_FOLDER_ID: ${rootFolderId}`);
+    behavior.addIdWhitelist(behavior.newIdWhitelistItem(rootFolderId));
   }
   return {
     unit,

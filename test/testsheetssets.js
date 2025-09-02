@@ -6,17 +6,15 @@ import '../main.js'
 // all the fake services are here
 //import '@mcpher/gas-fakes/main.js'
 
-import { initTests } from './testinit.js'
+import { initTests } from './testinit.js';
 import { getDrivePerformance, getSheetsPerformance } from './testassist.js';
-import { maketss, trasher, makeSheetsGridRange, makeExtendedValue, dateToSerial, fillRange } from './testassist.js';
+import { maketss, wrapupTest, makeSheetsGridRange, makeExtendedValue, dateToSerial, fillRange, trasher } from './testassist.js';
 import is from '@sindresorhus/is';
-
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testSheetsSets = (pack) => {
-
-  const { unit, fixes } = pack || initTests()
-  const toTrash = []
+  const toTrash = [];
+  const { unit, fixes } = pack || initTests();
 
   unit.section("Range.createFilter and getFilter", t => {
     const { sheet } = maketss('filter_tests', toTrash, fixes);
@@ -613,18 +611,9 @@ export const testSheetsSets = (pack) => {
     unit.report()
 
   }
-
-  trasher(toTrash)
+  if (fixes.CLEAN) trasher(toTrash);
   return { unit, fixes }
 }
 
-// if we're running this test standalone, on Node - we need to actually kick it off
-// the provess.argv should contain "execute" 
-// for example node testdrive.js execute
-// on apps script we don't want it to run automatically
-// when running as part of a consolidated test, we dont want to run it, as the caller will do that
 
-if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
-  testSheetsSets()
-  ScriptApp.__behavior.trash()
-}
+wrapupTest(testSheetsSets);

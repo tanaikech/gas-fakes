@@ -878,13 +878,6 @@ class FakeAdvSheets {
   __getSheetsPerformance() {
     return sheetsCacher.getPerformance()
   }
-    // in sandbox mode only files created in this instance are
-  __allowed(id) {
-    if (!ScriptApp.__behavior.isAccessible(id)) {
-      throw new Error(`Access to document ${id} is not allowed in sandbox mode`);
-    }
-    return id
-  }
   __addAllowed(id) {
     if (ScriptApp.__behavior.sandBoxMode) {
       ScriptApp.__behavior.addFile(id);

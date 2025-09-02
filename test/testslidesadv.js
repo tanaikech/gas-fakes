@@ -9,12 +9,14 @@ import '../main.js'
 //import '@mcpher/gas-fakes/main.js'
 
 import { initTests } from './testinit.js'
-import { trasher, getSlidesPerformance } from './testassist.js';
+import { wrapupTest, getSlidesPerformance, trasher } from './testassist.js';
 // this can run standalone, or as part of combined tests if result of inittests is passed over
+
 export const testSlidesAdv = (pack) => {
 
+  const toTrash = [];
   const { unit, fixes } = pack || initTests()
-  const toTrash = []
+
 
   unit.section("basic adv slides props", t => {
     t.is(Slides.toString(), "AdvancedServiceIdentifier{name=slides, version=v1}")
@@ -38,22 +40,9 @@ export const testSlidesAdv = (pack) => {
     unit.report()
 
   }
-
-  trasher(toTrash)
+  if (fixes.CLEAN) trasher(toTrash);
   return { unit, fixes }
 }
 
-// if we're running this test standalone, on Node - we need to actually kick it off
-// the provess.argv should contain "execute" 
 
-// if we're running this test standalone, on Node - we need to actually kick it off
-// the provess.argv should contain "execute" 
-// for example node testdrive.js execute
-// on apps script we don't want it to run automatically
-// when running as part of a consolidated test, we dont want to run it, as the caller will do that
-
-if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
-  testSlidesAdv()
-  ScriptApp.__behavior.trash()
-  console.log('...cumulative slides cache performance', getSlidesPerformance())
-}
+wrapupTest(testSlidesAdv);

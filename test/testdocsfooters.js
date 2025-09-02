@@ -1,29 +1,26 @@
 import '../main.js';
 import { initTests } from './testinit.js';
-import { trasher, getDocsPerformance } from './testassist.js';
+import { wrapupTest, trasher } from './testassist.js';
 import { testDocsSection } from './testdocssections.js';
 
 export const testDocsFooters = (pack) => {
+  const toTrash = [];
   const testPack = pack || initTests();
   const { unit, fixes } = testPack;
 
-  const { toTrash } = testDocsSection(testPack, {
+  const { toTrash: sectionTrash } = testDocsSection(testPack, {
     sectionType: 'Footer',
     addMethod: 'addFooter',
     getMethod: 'getFooter',
     dataPrefix: 'f'
   });
+  toTrash.push(...sectionTrash);
 
   if (!pack) {
     unit.report();
   }
-
-  trasher(toTrash);
+  if (fixes.CLEAN) trasher(toTrash);
   return { unit, fixes };
 };
 
-if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
-  testDocsFooters();
-  ScriptApp.__behavior.trash()
-  console.log('...cumulative docs cache performance', getDocsPerformance())
-}
+wrapupTest(testDocsFooters);

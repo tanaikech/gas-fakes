@@ -150,6 +150,9 @@ export class FakeSpreadsheetApp {
    * @return {FakeSpreadsheet}
    */
   openById(id) {
+    if (!ScriptApp.__behavior.isAccessible(id, 'SpreadsheetApp')) {
+      throw new Error(`Access to spreadsheet "${id}" is denied by sandbox rules.`);
+    }
     const result = newFakeSpreadsheet(
       Sheets.Spreadsheets.get(id, { fields: minSheetFields }, { ss: true })
     );
@@ -192,6 +195,7 @@ export class FakeSpreadsheetApp {
     }
 
     const data = Sheets.Spreadsheets.create(pack, { ss: true });
+    ScriptApp.__behavior.addFile(data.spreadsheetId);
     return newFakeSpreadsheet(data);
   }
 
@@ -201,7 +205,11 @@ export class FakeSpreadsheetApp {
    * @return {FakeSpreadsheet}
    */
   openByUrl(url) {
-    return this.openById(url.replace(/.*\/spreadsheets\/d\/([^\/]*).*/i, "$1"));
+    const match = url.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+    if (!match || !match[1]) {
+      throw new Error(`Invalid spreadsheet URL: ${url}`);
+    }
+    return this.openById(match[1]);
   }
 
   /**

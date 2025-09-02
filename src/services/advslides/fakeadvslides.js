@@ -1,5 +1,6 @@
 import { FakeAdvResource } from '../common/fakeadvresource.js';
 import { Syncit } from '../../support/syncit.js';
+import { gError } from '../../support/helpers.js';
 import { slidesCacher } from '../../support/slidescacher.js';
 import { Proxies } from '../../support/proxies.js';
 
@@ -13,9 +14,11 @@ class FakeAdvSlidesPresentations extends FakeAdvResource {
   }
 
   // Override 'get' to use the caching-enabled function fxSlidesGet.
-  get(presentationId) {
-    const { data } = this._call('get', { presentationId: this.slides.__allowed(presentationId) }, Syncit.fxSlidesGet);
-    return data;
+  get(presentationId, options) {
+    ScriptApp.__behavior.isAccessible(presentationId, 'Slides', 'read');
+    const { response, data } = this._call('get', { presentationId, ...options }, Syncit.fxSlidesGet);
+    gError(response, 'slides.presentations', 'get');
+    return data;    
   }
 
   // Signature matches Apps Script advanced service.
@@ -30,10 +33,13 @@ class FakeAdvSlidesPresentations extends FakeAdvResource {
 
   // Signature matches Apps Script advanced service.
   batchUpdate(requests, presentationId) {
+    // for slides, any batch update is a write
+    ScriptApp.__behavior.isAccessible(presentationId, 'Slides', 'write');
     const result = this._call('batchUpdate', {
-      presentationId: this.slides.__allowed(presentationId),
+      presentationId,
       resource: { requests },
     });
+    gError(result.response, 'slides.presentations', 'batchUpdate');
 
     // Any update should invalidate the cache for that presentation.
     if (presentationId) {
@@ -53,14 +59,6 @@ class FakeAdvSlides {
     this.Presentations = Proxies.guard(new FakeAdvSlidesPresentations(this));
   }
 
-  // in sandbox mode only files created in this instance are
-  __allowed(id) {
-
-    if (!ScriptApp.__behavior.isAccessible(id)) {
-      throw new Error(`Access to slides ${id} is not allowed in sandbox mode`);
-    }
-    return id
-  }
   __addAllowed(id) {
     if (ScriptApp.__behavior.sandBoxMode) {
       ScriptApp.__behavior.addFile(id);

@@ -147,9 +147,8 @@ class FakeDriveFile extends FakeDriveMeta {
       name
     }, this.getId())
 
-
-    return newFakeDriveFile(data)
-
+    ScriptApp.__behavior.addFile(data.id);
+    return newFakeDriveFile(data);
   }
 
 }

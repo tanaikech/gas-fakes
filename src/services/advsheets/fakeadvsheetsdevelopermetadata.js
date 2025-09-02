@@ -32,8 +32,9 @@ class FakeAdvSheetsDeveloperMetadata extends FakeAdvResource {
    * @returns {object} DeveloperMetadata
    */
   get(spreadsheetId, metadataId) {
+    ScriptApp.__behavior.isAccessible(spreadsheetId, 'Sheets', 'read');
     const { response, data } = this._call("get", {
-      spreadsheetId: this.sheets.__allowed(spreadsheetId),
+      spreadsheetId,
       metadataId,
     }, null, 'developerMetadata');
     ssError(response, `spreadsheets.developerMetadata.get`);
@@ -41,8 +42,9 @@ class FakeAdvSheetsDeveloperMetadata extends FakeAdvResource {
   }
 
   search(requestBody, spreadsheetId) {
+    ScriptApp.__behavior.isAccessible(spreadsheetId, 'Sheets', 'read');
     const { response, data } = this._call("search", {
-      spreadsheetId: this.sheets.__allowed(spreadsheetId),
+      spreadsheetId,
       requestBody
     }, null, 'developerMetadata');
 

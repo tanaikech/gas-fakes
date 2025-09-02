@@ -9,14 +9,16 @@ import '../main.js'
 //import '@mcpher/gas-fakes/main.js'
 
 import { initTests } from './testinit.js'
-import { getSheetsPerformance } from './testassist.js';
-import { maketss, trasher, fillRangeFromDomain, sort2d, getRandomBetween } from './testassist.js';
+import { getSheetsPerformance, wrapupTest } from './testassist.js';
+import { maketss, fillRangeFromDomain, sort2d, getRandomBetween, trasher } from './testassist.js';
+
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testSheetsValues = (pack) => {
 
+  const toTrash = [];
   const { unit, fixes } = pack || initTests()
-  const toTrash = []
+
 
   unit.section("creating and updating sheets", t => {
 
@@ -592,20 +594,9 @@ export const testSheetsValues = (pack) => {
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
     unit.report()
   }
-
-  // clean up if necessary
-  trasher(toTrash)
+  if (fixes.CLEAN) trasher(toTrash);
 
   return { unit, fixes }
 }
 
-// if we're running this test standalone, on Node - we need to actually kick it off
-// the provess.argv should contain "execute" 
-// for example node testdrive.js execute
-// on apps script we don't want it to run automatically
-// when running as part of a consolidated test, we dont want to run it, as the caller will do that
-
-if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
-  testSheetsValues()
-  ScriptApp.__behavior.trash()
-}
+wrapupTest(testSheetsValues);

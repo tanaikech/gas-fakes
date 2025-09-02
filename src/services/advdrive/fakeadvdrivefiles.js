@@ -115,7 +115,8 @@ class FakeAdvDriveFiles {
    * @returns {Drive.File}
    */
   get(id, params = {}, { allow404 = true } = {}) {
-    const {data} = Syncit.fxDriveGet ({ id: this.drive.__allowed(id), prop: apiProp, method: 'get', params, allow404, allowCache: true }) 
+    ScriptApp.__behavior.isAccessible(id, 'Drive', 'read');
+    const {data} = Syncit.fxDriveGet ({ id, prop: apiProp, method: 'get', params, allow404, allowCache: true });
     return data
   }
 
@@ -156,7 +157,15 @@ class FakeAdvDriveFiles {
     if (!is.nonEmptyString(fileId)) {
       throw new Error(`API call to drive.files.update failed with error: Required`)
     }
-    return updateOrCreate ({method: 'update', file,  blob, fileId: this.drive.__allowed(fileId) , fields, params})
+    // sandbox checks
+    const isMetadataWrite = file && Object.keys(file).some(k => k !== 'trashed');
+    if (blob || isMetadataWrite) {
+      ScriptApp.__behavior.isAccessible(fileId, 'Drive', 'write');
+    }
+    if (file && typeof file.trashed === 'boolean') {
+      ScriptApp.__behavior.isAccessible(fileId, 'Drive', 'trash');
+    }
+    return updateOrCreate ({method: 'update', file,  blob, fileId, fields, params})
   }
   /**
    * ceate a file and optionally upload some data
@@ -169,10 +178,11 @@ class FakeAdvDriveFiles {
     if (!is.nonEmptyString(fileId)) {
       throw new Error(`API call to drive.files.copy failed with error: Required`)
     }
+    ScriptApp.__behavior.isAccessible(fileId, 'Drive', 'read');
     const fields = mergeParamStrings(options.fields || "",minFields)
     const params = {
       fields,
-      fileId: this.drive.__allowed(fileId),
+      fileId,
       resource: file
     }
 

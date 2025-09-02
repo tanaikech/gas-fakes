@@ -1,11 +1,12 @@
 
 import "../main.js";
 import { initTests } from "./testinit.js";
-import { trasher, getDocsPerformance, maketdoc, docReport, getChildren } from "./testassist.js";
-
+import { wrapupTest, getDocsPerformance, maketdoc, docReport, getChildren, trasher } from "./testassist.js";
+;
 export const testDocsNext = (pack) => {
-  const { unit, fixes } = pack || initTests();
   const toTrash = [];
+  const { unit, fixes } = pack || initTests();
+
 
   unit.section("Body.appendTable and Body.insertTable", t => {
 
@@ -490,13 +491,8 @@ export const testDocsNext = (pack) => {
   if (!pack) {
     unit.report();
   }
-
-  trasher(toTrash);
+  if (fixes.CLEAN) trasher(toTrash);
   return { unit, fixes };
 };
 
-if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
-  testDocsNext();
-  ScriptApp.__behavior.trash()
-  console.log('...cumulative docs cache performance', getDocsPerformance())
-}
+wrapupTest(testDocsNext);

@@ -1,5 +1,6 @@
 import '../main.js';
 import { maketdoc, getDocsPerformance } from './testassist.js';
+;
 
 /**
  * A generic test suite for Document sections (HeaderSection, FooterSection).
@@ -13,7 +14,7 @@ import { maketdoc, getDocsPerformance } from './testassist.js';
  */
 export const testDocsSection = (pack, { sectionType, addMethod, getMethod, dataPrefix }) => {
   const { unit } = pack;
-  const toTrash = [];
+  const toTrash = []
   const sectionClassName = `${sectionType}Section`;
   const lcSectionType = sectionType.toLowerCase();
 

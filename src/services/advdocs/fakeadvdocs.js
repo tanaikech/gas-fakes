@@ -628,7 +628,12 @@ class FakeAdvDocs {
   __getDocsPerformance() {
     return docsCacher.getPerformance()
   }
+  __addAllowed(id) {
+    if (ScriptApp.__behavior.sandBoxMode) {
+      ScriptApp.__behavior.addFile(id);
+    }
+    return id
+  }
 }
 
 export const newFakeAdvDocs = (...args) => Proxies.guard(new FakeAdvDocs(...args))
-

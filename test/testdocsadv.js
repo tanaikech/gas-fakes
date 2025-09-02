@@ -7,13 +7,15 @@ import '../main.js'
 // all the fake services are here
 //import '@mcpher/gas-fakes/main.js'
 
-import { initTests } from './testinit.js'
-import {  getDocsPerformance, trasher } from './testassist.js';
+import { initTests } from './testinit.js';
+import { getDocsPerformance, wrapupTest, trasher } from './testassist.js';
+
+
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testDocsAdv = (pack) => {
-
+  const toTrash = [];
   const { unit, fixes } = pack || initTests()
-  const toTrash = []
+
   unit.section("test batch updates", t => {
     const docName = fixes.PREFIX + "temp-doc";
     const resource = Docs.newDocument()
@@ -40,10 +42,10 @@ export const testDocsAdv = (pack) => {
 
 
     const requests = [urp1];
-    const response = Docs.Documents.batchUpdate({requests}, doc.documentId)
+    const response = Docs.Documents.batchUpdate({ requests }, doc.documentId)
     t.is(response.replies.length, requests.length, "Should have the same number of replies as requests");
 
-    if (fixes.CLEAN) toTrash.push(DriveApp.getFileById(doc.documentId))
+    if (fixes.CLEAN) toTrash.push(DriveApp.getFileById(doc.documentId));
 
   })
 
@@ -115,10 +117,9 @@ export const testDocsAdv = (pack) => {
 
     t.is(r1.documentId, r2.documentId)
     t.is(r3.documentId, doc.documentId)
-    if (fixes.CLEAN) toTrash.push(DriveApp.getFileById(doc.documentId))
+    if (fixes.CLEAN) toTrash.push(DriveApp.getFileById(doc.documentId));
     if (Docs.isFake) console.log('...cumulative docs cache performance', getDocsPerformance())
   })
-
 
 
 
@@ -128,22 +129,9 @@ export const testDocsAdv = (pack) => {
     unit.report()
 
   }
-
-  trasher(toTrash)
+  if (fixes.CLEAN) trasher(toTrash);
   return { unit, fixes }
 }
 
-// if we're running this test standalone, on Node - we need to actually kick it off
-// the provess.argv should contain "execute" 
 
-// if we're running this test standalone, on Node - we need to actually kick it off
-// the provess.argv should contain "execute" 
-// for example node testdrive.js execute
-// on apps script we don't want it to run automatically
-// when running as part of a consolidated test, we dont want to run it, as the caller will do that
-
-if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
-  testDocsAdv()
-  ScriptApp.__behavior.trash()
-  console.log('...cumulative docs cache performance', getDocsPerformance())
-}
+wrapupTest(testDocsAdv);

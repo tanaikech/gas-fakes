@@ -7,11 +7,7 @@
 import "../main.js";
 import { initTests } from "./testinit.js";
 
-import {
-  getDrivePerformance,
-  getSheetsPerformance,
-  getDocsPerformance
-} from "./testassist.js";
+import { wrapupTest, cachePerformance } from "./testassist.js";
 
 import { testDocsAdv } from "./testdocsadv.js";
 import { testDocs } from "./testdocs.js";
@@ -46,23 +42,15 @@ const testDocsAll = () => {
   testDocsFootnotes(pack);
   console.log("\n----TEST ALL DOCS COMPLETE----");
 
-  // reports on cache performance
-  if (ScriptApp.isFake) {
-    console.log("...cumulative drive cache performance", getDrivePerformance());
-    console.log(
-      "...cumulative sheets cache performance",
-      getSheetsPerformance()
-    );
-    console.log("...cumulative docs cache performance", getDocsPerformance());
 
-  }
 
   // all tests cumulative unit report
   unit.report();
 };
 
-// this required on Node but not on Apps Script
+cachePerformance()
 if (ScriptApp.isFake) {
-  testDocsAll();
-  ScriptApp.__behavior.trash()
+  testDocsAll()
 }
+
+

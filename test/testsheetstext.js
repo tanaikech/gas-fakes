@@ -8,15 +8,16 @@ import '../main.js'
 
 import { initTests } from './testinit.js'
 import { getDrivePerformance, getSheetsPerformance } from './testassist.js';
-import { maketss, trasher } from './testassist.js';
+import { maketss, wrapupTest, trasher } from './testassist.js';
 
 
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testSheetsText = (pack) => {
 
+  const toTrash = [];
   const { unit, fixes } = pack || initTests()
-  const toTrash = []
+
   unit.section("spreadsheet textfinder", t => {
     const searchText = "sample";
     const values = [
@@ -295,18 +296,8 @@ export const testSheetsText = (pack) => {
     unit.report()
 
   }
-
-  trasher(toTrash)
+  if (fixes.CLEAN) trasher(toTrash);
   return { unit, fixes }
 }
 
-// if we're running this test standalone, on Node - we need to actually kick it off
-// the provess.argv should contain "execute" 
-// for example node testdrive.js execute
-// on apps script we don't want it to run automatically
-// when running as part of a consolidated test, we dont want to run it, as the caller will do that
-
-if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
-  testSheetsText()
-  ScriptApp.__behavior.trash()
-}
+wrapupTest(testSheetsText);

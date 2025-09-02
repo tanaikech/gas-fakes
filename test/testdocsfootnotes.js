@@ -1,7 +1,9 @@
 import '../main.js';
 import { initTests } from './testinit.js';
-import { trasher, getDocsPerformance, maketdoc, getChildren } from './testassist.js';
+import { wrapupTest, getDocsPerformance, maketdoc, getChildren, trasher } from './testassist.js';
 
+
+;
 export const testDocsFootnotes = (pack) => {
   const { unit, fixes } = pack || initTests();
   const toTrash = [];
@@ -114,13 +116,10 @@ export const testDocsFootnotes = (pack) => {
   if (!pack) {
     unit.report();
   }
+  if (fixes.CLEAN) trasher(toTrash);
 
-  trasher(toTrash);
   return { unit, fixes };
 };
 
-if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
-  testDocsFootnotes();
-  ScriptApp.__behavior.trash();
-  console.log('...cumulative docs cache performance', getDocsPerformance());
-}
+
+wrapupTest(testDocsFootnotes);

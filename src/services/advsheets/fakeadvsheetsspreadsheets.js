@@ -18,10 +18,9 @@ class FakeAdvSheetsSpreadsheets extends FakeAdvResource {
     super(sheets, 'spreadsheets', Syncit.fxSheets);
     this.sheets = sheets
     this.__fakeObjectType = "Sheets.Spreadsheets";
-    this.sheets = sheets
     const props = [
       'getByDataFilter',
-      'Sheets']
+    ]
 
     props.forEach(f => {
       this[f] = () => {
@@ -56,11 +55,24 @@ class FakeAdvSheetsSpreadsheets extends FakeAdvResource {
    */
   __batchUpdate(requests, spreadsheetId, options, { ss = true } = {}) {
 
+    // sandbox check
+    if (requests && requests.requests) {
+      const hasWriteRequest = requests.requests.some(r => !r.deleteSheet);
+      const hasTrashRequest = requests.requests.some(r => r.deleteSheet);
+
+      if (hasWriteRequest) {
+        ScriptApp.__behavior.isAccessible(spreadsheetId, 'Sheets', 'write');
+      }
+      if (hasTrashRequest) {
+        ScriptApp.__behavior.isAccessible(spreadsheetId, 'Sheets', 'trash');
+      }
+    }
+
     // this is wrapper for batchupdate so we can alter the behavior depending on whether we're being called by spreadsheetapp
     // note that in GAS adv sheet service doesnt take the requestBody parameter - it just sends requests as the arg
     // so we need to wrap that in requestbody for the Node API
     const { response, data } = this._call("batchUpdate", {
-      spreadsheetId: this.sheets.__allowed(spreadsheetId),
+      spreadsheetId,
       requestBody: requests
     }, options);
 
@@ -76,7 +88,8 @@ class FakeAdvSheetsSpreadsheets extends FakeAdvResource {
    * @param {object} options 
    */
   get(id, options, { ss = false } = {}) {
-    const params = { spreadsheetId: this.sheets.__allowed(id), ...options };
+    ScriptApp.__behavior.isAccessible(id, 'Sheets', 'read');
+    const params = { spreadsheetId: id, ...options };
     const { response, data } = this._call("get", params);
 
     // maybe we need to throw an error
@@ -96,7 +109,7 @@ class FakeAdvSheetsSpreadsheets extends FakeAdvResource {
 
     // maybe we need to throw an error
     ssError(response, "create", ss)
-    this.sheets.__addAllowed  (data.spreadsheetId);
+    this.sheets.__addAllowed(data.spreadsheetId);
     return data
   }
 }

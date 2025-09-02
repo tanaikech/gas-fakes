@@ -40,21 +40,29 @@ class FakeDocumentApp {
       title: name,
     };
     const doc = Docs.Documents.create(resource);
+    ScriptApp.__behavior.addFile(doc.documentId);
     return newFakeDocument(doc.documentId);
   }
 
   openById(id) {
     const { nargs, matchThrow } = signatureArgs(arguments, "DocumentApp.openById");
     if (nargs !== 1 || !is.string(id)) matchThrow();
+
+    if (!ScriptApp.__behavior.isAccessible(id, 'DocumentApp')) {
+      throw new Error(`Access to document "${id}" is denied by sandbox rules.`);
+    }
+
     return newFakeDocument(id);
   }
 
   openByUrl(url) {
     const { nargs, matchThrow } = signatureArgs(arguments, "DocumentApp.openByUrl");
     if (nargs !== 1 || !is.string(url)) matchThrow();
-    const id = url.match(/\/d\/(.+?)\//)[1];
-    if (!id) throw new Error("Invalid document URL");
-    return this.openById(id);
+    const match = url.match(/\/document\/d\/([a-zA-Z0-9-_]+)/);
+    if (!match || !match[1]) {
+      throw new Error(`Invalid document URL: ${url}`);
+    }
+    return this.openById(match[1]);
   }
 
   getActiveDocument() {

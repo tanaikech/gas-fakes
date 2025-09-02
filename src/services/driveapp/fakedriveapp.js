@@ -46,12 +46,6 @@ export class FakeDriveApp {
     return file ? newFakeDriveFile(file) : null
   }
 
-  /**
-   * get folder by Id
-   * folders can get files
-   * @param {string} id 
-   * @returns {FakeDriveFolder|null}
-   */
   getFolderById(id) {
     const file = Drive.Files.get(id, {}, { allow404: true })
     return file ? newFakeDriveFolder(file) : null

@@ -1,11 +1,12 @@
 import is from '@sindresorhus/is';
 import '../main.js';
 import { initTests } from './testinit.js';
-import { getSlidesPerformance, trasher, getDrivePerformance } from './testassist.js';
+import { getSlidesPerformance, wrapupTest, getDrivePerformance, trasher } from './testassist.js';
 
+;
 export const testSlides = (pack) => {
-  const { unit, fixes } = pack || initTests();
   const toTrash = [];
+  const { unit, fixes } = pack || initTests();
 
   unit.section('SlidesApp basics', (t) => {
     // Test create()
@@ -56,19 +57,13 @@ export const testSlides = (pack) => {
   });
 
 
-  // Cleanup created presentations
-  trasher(toTrash);
 
   if (!pack) {
     unit.report();
   }
-
+  if (fixes.CLEAN) trasher(toTrash);
   return { unit, fixes };
 };
 
-if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
-  testSlides();
-  ScriptApp.__behavior.trash()
-  console.log('...cumulative slides cache performance', getSlidesPerformance())
-  console.log('...cumulative drive cache performance', getDrivePerformance())
-}
+
+wrapupTest(testSlides);
