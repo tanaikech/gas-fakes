@@ -49,6 +49,13 @@ class FakeIdWhitelistItem {
   setWrite(value) {
     this.__model.write = checkArgs(value)
     return this
+  }
+  get trash() {
+    return this.__model.trash
+  }
+  setTrash(value) {
+    this.__model.trash = checkArgs(value)
+    return this
   } 
 }
 /**
@@ -89,16 +96,19 @@ class FakeSandboxService {
     this.__state.sandboxMode = checkArgs(value)
   }
   set methodWhitelist(value) {
-    this.__state.methodWhitelist = checkArgs(value, "array")
-    this.__state.methodWhitelist.forEach (f=>{
-      if (!is.nonEmptyString(f) ) throw new Error(`expected an array of nonEmptyStrings for methodWhitelist`)
-    })
+    if (!is.null(value)) {
+      checkArgs(value, "array")
+      value.forEach(f => {
+        if (!is.nonEmptyString(f)) throw new Error(`expected an array of nonEmptyStrings for methodWhitelist`)
+      })
+    }
+    this.__state.methodWhitelist = value
   }
   set enabled(value) {
     this.__state.enabled = checkArgs(value)
   }
   get methodWhitelist() {
-    return is.nullOrUndefined(this.__state.methodWhitelist) ? null : this.__state.methods
+    return is.nullOrUndefined(this.__state.methodWhitelist) ? null : this.__state.methodWhitelist
   }
   get enabled() {
     return is.nullOrUndefined(this.__state.enabled) ? true : this.__state.enabled
@@ -128,7 +138,7 @@ class FakeBehavior {
     this.__idWhitelist = null
 
     // individually settable services
-    const services = ['DocumentApp', 'DriveApp', 'SpreadsheetApp', 'SlidesApp']
+    const services = ['DocumentApp', 'DriveApp', 'SpreadsheetApp', 'SlidesApp', 'Docs', 'Sheets', 'Drive', 'Slides']
     this.__sandboxService = {}
     services.forEach(f => this.__sandboxService[f] = newFakeSandboxService(this, f))
 
@@ -142,8 +152,8 @@ class FakeBehavior {
   set idWhitelist(value) {
     if (!is.null(value)){
       checkArgs(value, "array")
-      value.forEach (f=>{
-        if (!is.function(f.toString) && f.toString() === "IdWhitelistItem") throw new Error(`expected an IdWhitelistItem`)
+      value.forEach(f => {
+        if (!f || f.toString() !== "IdWhitelistItem") throw new Error(`expected an IdWhitelistItem`)
       })
     }
     this.__idWhitelist = value
@@ -189,46 +199,69 @@ class FakeBehavior {
     }
     return id
   }
-  isAccessible(id, serviceName) {
+  isAccessible(id, serviceName, accessType = 'read') {
     if (!is.nonEmptyString(id)) {
       throw new Error(`Invalid sandbox id parameter (${id}) - must be a non-empty string`);
     }
 
     // Advanced services should inherit sandbox rules from their App counterparts.
     const serviceMapping = {
-      'Drive': 'DriveApp',
-      'Sheets': 'SpreadsheetApp',
-      'Docs': 'DocumentApp',
-      'Slides': 'SlidesApp'
+      Drive: "DriveApp",
+      Sheets: "SpreadsheetApp",
+      Docs: "DocumentApp",
+      Slides: "SlidesApp",
     };
     const effectiveServiceName = serviceMapping[serviceName] || serviceName;
-
     const serviceBehavior = this.sandboxService[effectiveServiceName];
-    // If the service isn't in the sandbox service map, we can't apply per-service rules.
-    // Fall back to the original global logic. This is a safe fallback.
-    if (!serviceBehavior) {
-      return !this.__sandboxMode || !this.__strictSandbox || this.isKnown(id);
+
+    // 1. Check if service is enabled
+    if (serviceBehavior && !serviceBehavior.enabled) {
+      throw new Error(`${effectiveServiceName} service is disabled by sandbox settings`);
     }
 
-    // If sandbox mode is disabled for this service, access is granted.
-    if (!serviceBehavior.sandboxMode) {
+    // Determine effective sandbox mode and strictness
+    const sandboxMode = serviceBehavior ? serviceBehavior.sandboxMode : this.sandboxMode;
+    const strictSandbox = serviceBehavior ? serviceBehavior.sandboxStrict : this.strictSandbox;
+
+    // 2. If not in sandbox mode, access is allowed.
+    if (!sandboxMode) {
       return true;
     }
 
-    // If the file was created in this session, access is granted.
+    // 3. If in sandbox mode, check if it's a session file.
     if (this.isKnown(id)) {
       return true;
     }
 
-    // At this point, sandbox is ON and the file is EXTERNAL.
-    // In strict mode, external files are forbidden.
-    if (serviceBehavior.sandboxStrict) {
-      return false;
+    // 4. It's an external file. Check whitelist.
+    if (this.idWhitelist) {
+      const whitelistItem = this.idWhitelist.find(item => item.id === id);
+      if (whitelistItem) {
+        if (whitelistItem[accessType]) {
+          return true;
+        } else {
+          throw new Error(`${accessType.charAt(0).toUpperCase() + accessType.slice(1)} access to file ${id} is denied by sandbox rules`);
+        }
+      }
     }
 
-    // In non-strict mode, check the 'ids' whitelist.
-    // If no whitelist is provided, access is granted.
-    return serviceBehavior.ids ? serviceBehavior.ids.includes(id) : true;
+    // 5. Not in whitelist. Check strictness.
+    if (strictSandbox) {
+      throw new Error(`Access to file ${id} is denied by sandbox rules`);
+    }
+
+    // 6. Not strict, so access is allowed.
+    return true;
+  }
+  checkMethod(serviceName, methodName) {
+    const serviceBehavior = this.sandboxService[serviceName];
+    if (serviceBehavior && !serviceBehavior.enabled) {
+      throw new Error(`${serviceName} service is disabled by sandbox settings`);
+    }
+    if (serviceBehavior && serviceBehavior.methodWhitelist && !serviceBehavior.methodWhitelist.includes(methodName)) {
+      throw new Error(`Method ${serviceName}.${methodName} is not allowed by sandbox settings`);
+    }
+    return true;
   }
   trash() {
     // this is where we would trash all the created files
