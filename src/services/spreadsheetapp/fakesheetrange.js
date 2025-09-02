@@ -33,6 +33,7 @@ import {
   Dimension,
 } from "../enums/sheetsenums.js";
 import { FakeTextFinder, newFakeTextFinder } from "./faketextfinder.js";
+import { newFakeProtection } from "./fakeprotection.js";
 
 const {
   is,
@@ -2635,5 +2636,29 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
    */
   createTextFinder(text) {
     return newFakeTextFinder(this, text);
+  }
+
+  protect() {
+    const obj = {
+      spreadsheetId: this.getSheet().getParent().getId(),
+      requests: [
+        {
+          addProtectedRange: {
+            protectedRange: { range: makeGridRange(this) },
+          },
+        },
+      ],
+    };
+    const res = this.__batchUpdate(obj);
+    const o = res.replies[0]?.addProtectedRange?.protectedRange || {};
+    return newFakeProtection(this, o);
+  }
+
+  __batchUpdate({ spreadsheetId, requests }) {
+    return Sheets.Spreadsheets.batchUpdate({ requests }, spreadsheetId);
+  }
+
+  __get({ spreadsheetId, ranges, fields = "*" }) {
+    return Sheets.Spreadsheets.get(spreadsheetId, { ranges, fields });
   }
 }

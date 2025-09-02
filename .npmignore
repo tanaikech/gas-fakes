@@ -10,3 +10,5 @@ shells
 .env*
 mainlocal.js
 mainnpm.js
+/.gemini/
+/.gemini

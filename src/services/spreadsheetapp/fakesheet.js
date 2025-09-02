@@ -10,7 +10,13 @@ import { newFakeBanding } from "./fakebanding.js";
 import { newFakeDeveloperMetadataFinder } from "./fakedevelopermetadatafinder.js";
 import { newFakeSheetRangeList } from "./fakesheetrangelist.js";
 import { FakeTextFinder, newFakeTextFinder } from "./faketextfinder.js";
-import {  newFakeNamedRange } from "./fakenamedrange.js";
+
+import { toolresults } from "googleapis/build/src/apis/toolresults/index.js";
+import { FakeColorBase } from "../common/fakecolorbase.js";
+import { FakeNamedRange, newFakeNamedRange } from "./fakenamedrange.js";
+import { newFakeProtection } from "./fakeprotection.js";
+import { isNull } from "@sindresorhus/is";
+
 
 const { is, isEnum } = Utils;
 
@@ -38,10 +44,10 @@ export class FakeSheet {
       "removeImage",
       // "getNamedRanges",
       // "getRangeByName", // <--- This is a method for Class Spreadsheet.
-      "removeNamedRange",
-      "setNamedRange",
-      "getProtections",
-      "protect",
+      // "removeNamedRange", // <--- This is a method for Class Spreadsheet.
+      // "setNamedRange", // <--- This is a method for Class Spreadsheet.
+      // "getProtections",
+      // "protect",
       "getSlicers",
       "insertSlicer",
       // "hideColumn",
@@ -1005,11 +1011,63 @@ export class FakeSheet {
       ],
     };
     this.__batchUpdate(obj);
-    return this;
+    return this.getParent().getSheetByName(name);
+  }
+
+  protect() {
+    const obj = {
+      spreadsheetId: this.getParent().getId(),
+      requests: [
+        {
+          addProtectedRange: {
+            protectedRange: { range: { sheetId: this.getSheetId() } },
+          },
+        },
+      ],
+    };
+    const res = this.__batchUpdate(obj);
+    const o = res.replies[0]?.addProtectedRange?.protectedRange || {};
+    return newFakeProtection(this, o);
+  }
+
+  getProtections(type) {
+    if (!type) {
+      throw new Error("Please set protection type.");
+    }
+    const obj = {
+      spreadsheetId: this.getParent().getId(),
+      ranges: [this.getSheetName()],
+      fields: "sheets(protectedRanges)",
+    };
+    const res = this.__get(obj).sheets;
+    if (
+      res &&
+      res.length > 0 &&
+      res[0].protectedRanges &&
+      res[0].protectedRanges.length > 0
+    ) {
+      const checkKeys = [
+        "startRowIndex",
+        "endRowIndex",
+        "startColumnIndex",
+        "endColumnIndex",
+      ];
+      const ar = res[0].protectedRanges.filter((r) => {
+        if (type == "RANGE") {
+          return checkKeys.every((k) => r.range.hasOwnProperty(k));
+        } else if (type == "SHEET") {
+          return checkKeys.every((k) => !r.range.hasOwnProperty(k));
+        }
+        return false;
+      });
+      const sheet = this;
+      return ar.map((e) => newFakeProtection(sheet, e));
+    }
+    return [];
   }
 
   __batchUpdate({ spreadsheetId, requests }) {
-    Sheets.Spreadsheets.batchUpdate({ requests }, spreadsheetId);
+    return Sheets.Spreadsheets.batchUpdate({ requests }, spreadsheetId);
   }
 
   __get({ spreadsheetId, ranges, fields = "*" }) {

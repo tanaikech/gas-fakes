@@ -6,12 +6,14 @@ import {
   signatureArgs,
 } from "../../support/helpers.js";
 import { Utils } from "../../support/utils.js";
-import { newFakeProtection } from "../common/fakeprotection.js";
 import { newFakeDeveloperMetadataFinder } from "./fakedevelopermetadatafinder.js";
 import { newFakeDataSource } from "./fakedatasource.js";
 import { batchUpdate } from "./sheetrangehelpers.js";
 import { FakeTextFinder, newFakeTextFinder } from "./faketextfinder.js";
-import { FakeNamedRange, newFakeNamedRange } from "./fakenamedrange.js";
+import { newFakeNamedRange } from "./fakenamedrange.js";
+
+// import { newFakeProtection } from "../common/fakeprotection.js";
+import { newFakeProtection } from "./fakeprotection.js";
 
 const { is, isEnum } = Utils;
 
@@ -760,6 +762,43 @@ export class FakeSpreadsheet {
       }
     }
     return null;
+  }
+
+  getProtections(type) {
+    if (!type) {
+      throw new Error("Please set protection type.");
+    }
+    const obj = {
+      spreadsheetId: this.getId(),
+      fields: "sheets(protectedRanges)",
+    };
+    const res = this.__get(obj).sheets;
+    if (res && res.length > 0) {
+      const checkKeys = [
+        "startRowIndex",
+        "endRowIndex",
+        "startColumnIndex",
+        "endColumnIndex",
+      ];
+      const ar = res.reduce((arr, o) => {
+        if (o.protectedRanges && o.protectedRanges.length > 0) {
+          arr.push(
+            ...o.protectedRanges.filter((r) => {
+              if (type == "RANGE") {
+                return checkKeys.every((k) => r.range.hasOwnProperty(k));
+              } else if (type == "SHEET") {
+                return checkKeys.every((k) => !r.range.hasOwnProperty(k));
+              }
+              return false;
+            })
+          );
+        }
+        return arr;
+      }, []);
+      const spreadsheet = this;
+      return ar.map((e) => newFakeProtection(spreadsheet, e));
+    }
+    return [];
   }
 
   __batchUpdate({ spreadsheetId, requests }) {
