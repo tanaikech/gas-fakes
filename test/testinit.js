@@ -94,6 +94,13 @@ export const initTests = () => {
         behavior.addIdWhitelist(behavior.newIdWhitelistItem(fixes[key]));
       }
     });
+
+    // The root folder should always be accessible for read operations.
+    // We'll add its ID to the whitelist to ensure tests that traverse
+    // up to the root folder don't fail in sandbox mode.
+    const rootFolderId = DriveApp.getRootFolder().getId();
+    console.log(`...whitelisting test file ROOT_FOLDER_ID: ${rootFolderId}`);
+    behavior.addIdWhitelist(behavior.newIdWhitelistItem(rootFolderId));
   }
   return {
     unit,

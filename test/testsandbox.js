@@ -101,12 +101,22 @@ export const testSandbox = (pack) => {
       "Should be able to read whitelisted file"
     );
 
-    const writeErr = t.threw(() => readFile.setContent("new content"));
+    // Create a temporary file to test write-denial without modifying a shared fixture.
+    const tempFile = DriveApp.createFile('sandbox-write-test.txt', 'original temp content');
+    const tempFileId = tempFile.getId();
+
+    // Add the new file to the whitelist with read-only permissions (the default).
+    behavior.addIdWhitelist(behavior.newIdWhitelistItem(tempFileId));
+
+    const writeErr = t.threw(() => tempFile.setContent("new content"));
     t.rxMatch(
       writeErr?.message,
-      /Write access to file .* is denied by sandbox rules/,
+      /Access to file .* is denied by sandbox rules/,
       "Should deny write access to read-only whitelisted file"
     );
+
+    // Verify the content was not changed.
+    t.is(DriveApp.getFileById(tempFileId).getBlob().getDataAsString(), 'original temp content', 'File content should not have changed after denied write.');
 
     // 2. Whitelist a spreadsheet for writing
     const sheetId = fixes.TEST_SHEET_ID;
