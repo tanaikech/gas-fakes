@@ -468,6 +468,20 @@ https://github.com/brucemcpherson/gas-fakes/issues/42
 
 What this means for gas-fakes is .appendTable() with no arguments will create a 1 cell table - this is a divergence from Apps Script which is somehow able to create a table stub element only.
 
+#### Image insertion sizing
+
+There is a significant and inconsistent discrepancy in how the live `DocumentApp` service handles the dimensions of an image when it is inserted using `body.insertImage(image.copy())` or `body.appendImage(image.copy())`.
+
+Our testing has revealed several conflicting behaviors from the live API:
+
+1.  **Intrinsic Size:** Sometimes, the API ignores the dimensions of the copied `InlineImage` object and re-fetches the image from its source URI, using its original intrinsic dimensions (e.g., `544x184` for the Google logo).
+2.  **Copied Object Size:** At other times, the API correctly respects the dimensions of the copied `InlineImage` object (e.g., `61x181` in our tests).
+3.  **Default/Fixed Size:** On at least one occasion, the API appeared to resize the image to a seemingly arbitrary fixed size (e.g., `240x80`).
+4.  **State-Dependent:** The behavior seems to be dependent on the state of the document. A brand-new document might exhibit one behavior, while a reused document (even after `doc.clear()`) exhibits another.
+
+The `gas-fakes` test suite (`testdocsimages.js`) now contains a workaround for this. It forces the creation of a new document for image insertion tests and, for the live environment, verifies the image's **aspect ratio** within a tolerance rather than asserting a brittle, fixed dimension. This is a recommended pattern when dealing with such unpredictable API behavior.
+
+
 ##### matching table element indices with apps script
 
 Adding a table always inserts a preceding \n. This is okay when appending, but not okay when inserting as we end up with an unwanted paragraph compared to what Apps Script does. It turns out that a table must always have a preceding paragraph, or the API throws an error. Of course there would already be a preceding paragraph after deleting this one anyway, but the API still won't let you delete a directly preceding paragraph (This seems like a bug but I won't report it on buganizer for now till I figure out the entire picture of tables). 

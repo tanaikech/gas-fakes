@@ -111,7 +111,7 @@ export const testSandbox = (pack) => {
     const writeErr = t.threw(() => tempFile.setContent("new content"));
     t.rxMatch(
       writeErr?.message,
-      /Access to file .* is denied by sandbox rules/,
+      /Write access to file .* is denied by sandbox whitelist rules/,
       "Should deny write access to read-only whitelisted file"
     );
 
@@ -212,7 +212,7 @@ export const testSandbox = (pack) => {
     // 3. Test write/trash permissions
     t.rxMatch(
       t.threw(() => openedDoc.getBody().appendParagraph("no write access"))?.message,
-      /Write access to file .* is denied by sandbox rules/,
+      /Write access to file .* is denied by sandbox whitelist rules/,
       "Should deny write access to read-only whitelisted Doc"
     );
 
@@ -231,7 +231,7 @@ export const testSandbox = (pack) => {
     // Test trashing the presentation (should fail)
     t.rxMatch(
       t.threw(() => DriveApp.getFileById(presId).setTrashed(true))?.message,
-      /Trash access to file .* is denied by sandbox rules/,
+      /Trash access to file .* is denied by sandbox whitelist rules/,
       "Should deny trash access to read-only whitelisted Presentation"
     );
 

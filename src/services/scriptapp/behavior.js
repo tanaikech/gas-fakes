@@ -280,35 +280,35 @@ class FakeBehavior {
     const sandboxMode = serviceBehavior ? serviceBehavior.sandboxMode : this.sandboxMode;
     const strictSandbox = serviceBehavior ? serviceBehavior.sandboxStrict : this.strictSandbox;
 
-    // 2. If not in sandbox mode, access is allowed.
+    // If not in sandbox mode, access is allowed.
     if (!sandboxMode) {
       return true;
     }
 
-    // In sandbox mode, read access to the root folder is always required for DriveApp initialization.
-    // The real ID will be added to the known files list by DriveApp itself when it's discovered.
+    // In sandbox mode, read access to the root folder is always allowed for DriveApp initialization.
     if (id === 'root' && accessType === 'read') {
       return true;
     }
 
-    // 3. If in sandbox mode, check if it's a session file.
-    if (this.isKnown(id)) {
-      return true;
-    }
-
-    // 4. It's an external file. Check whitelist.
+    // The whitelist is the highest authority. If an ID is on it, its rules are final.
     if (this.idWhitelist) {
       const whitelistItem = this.idWhitelist.find(item => item.id === id);
       if (whitelistItem) {
         if (whitelistItem[accessType]) {
           return true;
         } else {
-          throw new Error(`${accessType.charAt(0).toUpperCase() + accessType.slice(1)} access to file ${id} is denied by sandbox rules`);
+          throw new Error(`${accessType.charAt(0).toUpperCase() + accessType.slice(1)} access to file ${id} is denied by sandbox whitelist rules`);
         }
       }
     }
 
-    // 5. Not in whitelist. Check strictness.
+    // If not on the whitelist, check if it's a session-created file.
+    // Session files are granted full access by default (unless overridden by a more restrictive whitelist entry).
+    if (this.isKnown(id)) {
+      return true;
+    }
+
+    // It's an external file not on the whitelist. Check strictness.
     if (strictSandbox) {
       throw new Error(`Access to file ${id} is denied by sandbox rules`);
     }
