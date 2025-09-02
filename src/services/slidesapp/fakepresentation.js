@@ -16,7 +16,9 @@ export class FakePresentation {
   constructor(resource) {
     this.__resource = resource;
   }
-
+  saveAndClose() {
+    // this is a no-op in fake environment since it is stateless
+  }
   /**
    * Gets the ID of the presentation.
    * @returns {string} The presentation ID.

@@ -140,13 +140,19 @@ export const testSandbox = (pack) => {
     resetSandbox();
     const behavior = ScriptApp.__behavior;
 
-    // Turn off strict mode temporarily to create test files we can use IDs from
-    behavior.strictSandbox = false;
+    // Turn off sandbox mode temporarily to create test files we can use IDs from.
+    // This prevents them from being added to the session's "known files" list.
+    const wasSandbox = behavior.sandboxMode;
+    behavior.sandboxMode = false;
     const doc = DocumentApp.create(fixes.PREFIX + "sandbox-doc-test");
     const pres = SlidesApp.create(fixes.PREFIX + "sandbox-slides-test");
     const docId = doc.getId();
     const presId = pres.getId();
-    behavior.strictSandbox = true; // Turn it back on for testing
+    // We need to save and close to ensure the fakes framework commits the new files
+    // before we try to open them by ID.
+    doc.saveAndClose();
+    pres.saveAndClose();
+    behavior.sandboxMode = wasSandbox; // Restore sandbox mode for testing
 
     // 1. Test access is denied without whitelisting
     t.rxMatch(
@@ -175,7 +181,7 @@ export const testSandbox = (pack) => {
 
     // 3. Test write/trash permissions
     t.rxMatch(
-      t.threw(() => openedDoc.getBody().setText("no write access"))?.message,
+      t.threw(() => openedDoc.getBody().appendParagraph("no write access"))?.message,
       /Write access to file .* is denied by sandbox rules/,
       "Should deny write access to read-only whitelisted Doc"
     );
@@ -185,7 +191,7 @@ export const testSandbox = (pack) => {
       behavior.newIdWhitelistItem(docId).setWrite(true),
       behavior.newIdWhitelistItem(presId), // keep this one read-only
     ];
-    openedDoc.getBody().setText("write access granted");
+    openedDoc.getBody().appendParagraph("write access granted");
     t.is(
       DocumentApp.openById(docId).getBody().getText(),
       "\nwrite access granted",
