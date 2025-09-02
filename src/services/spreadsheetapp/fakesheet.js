@@ -13,7 +13,8 @@ import { FakeTextFinder, newFakeTextFinder } from "./faketextfinder.js";
 import { toolresults } from "googleapis/build/src/apis/toolresults/index.js";
 import { FakeColorBase } from "../common/fakecolorbase.js";
 import { FakeNamedRange, newFakeNamedRange } from "./fakenamedrange.js";
-import { FakeProtection, newFakeProtection } from "./fakeprotection.js";
+import { newFakeProtection } from "./fakeprotection.js";
+import { isNull } from "@sindresorhus/is";
 
 const { is, isEnum } = Utils;
 
@@ -1028,6 +1029,9 @@ export class FakeSheet {
   }
 
   getProtections(type) {
+    if (!type) {
+      throw new Error("Please set protection type.");
+    }
     const obj = {
       spreadsheetId: this.getParent().getId(),
       ranges: [this.getSheetName()],

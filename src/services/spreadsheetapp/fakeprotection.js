@@ -1,7 +1,7 @@
 import { Proxies } from "../../support/proxies.js";
 import { makeGridRange } from "./sheetrangehelpers.js";
 import { newFakeUser } from "../common/fakeuser.js";
-import { FakeNamedRange, newFakeNamedRange } from "./fakenamedrange.js";
+import { newFakeNamedRange } from "./fakenamedrange.js";
 
 /**
  * create a new FakeProtection instance
@@ -74,12 +74,8 @@ export class FakeProtection {
           includeSpreadsheetInResponse: true,
         },
       };
-      const res1 = this.__batchUpdate(obj);
-      const pr = res1?.updatedSpreadsheet?.sheets[0]?.protectedRanges || [];
-      const res2 = pr.find(
-        (e) => e.protectedRangeId == this.object.protectedRangeId
-      );
-      this.object = res2;
+      const res = this.__batchUpdate(obj);
+      this.object = this.__getProtectedRangeFromResponseOfBatchUpdate(res);
     }
     return this;
   }
@@ -126,9 +122,10 @@ export class FakeProtection {
   }
 
   getRange() {
+    const sheetId = this.object.range?.sheetId || 0;
     if (this.getProtectionType().toString() == "RANGE") {
       return this.spreadsheet
-        .getSheetById(this.object.range.sheetId)
+        .getSheetById(sheetId)
         .getRange(
           this.object.range.startRowIndex + 1,
           this.object.range.startColumnIndex + 1,
@@ -136,7 +133,7 @@ export class FakeProtection {
           this.object.range.endColumnIndex - this.object.range.startColumnIndex
         );
     } else if (this.getProtectionType().toString() == "SHEET") {
-      const sheet = this.spreadsheet.getSheetById(this.object.range.sheetId);
+      const sheet = this.spreadsheet.getSheetById(sheetId);
       return sheet.getRange(1, 1, sheet.getMaxRows(), sheet.getMaxColumns());
     }
     return null;
@@ -171,11 +168,11 @@ export class FakeProtection {
     if (res.unprotectedRanges && res.unprotectedRanges.length > 0) {
       return res.unprotectedRanges.map(
         ({
-          sheetId,
-          startRowIndex,
-          endRowIndex,
-          startColumnIndex,
-          endColumnIndex,
+          sheetId = 0,
+          startRowIndex = 0,
+          endRowIndex = 0,
+          startColumnIndex = 0,
+          endColumnIndex = 0,
         }) =>
           this.spreadsheet
             .getSheetById(sheetId)
@@ -253,12 +250,8 @@ export class FakeProtection {
           includeSpreadsheetInResponse: true,
         },
       };
-      const res1 = this.__batchUpdate(obj);
-      const pr = res1?.updatedSpreadsheet?.sheets[0]?.protectedRanges || [];
-      const res2 = pr.find(
-        (e) => e.protectedRangeId == this.object.protectedRangeId
-      );
-      this.object = res2;
+      const res = this.__batchUpdate(obj);
+      this.object = this.__getProtectedRangeFromResponseOfBatchUpdate(res);
     }
     return this;
   }
@@ -288,12 +281,8 @@ export class FakeProtection {
           includeSpreadsheetInResponse: true,
         },
       };
-      const res1 = this.__batchUpdate(obj);
-      const pr = res1?.updatedSpreadsheet?.sheets[0]?.protectedRanges || [];
-      const res2 = pr.find(
-        (e) => e.protectedRangeId == this.object.protectedRangeId
-      );
-      this.object = res2;
+      const res = this.__batchUpdate(obj);
+      this.object = this.__getProtectedRangeFromResponseOfBatchUpdate(res);
     }
     return this;
   }
@@ -321,12 +310,8 @@ export class FakeProtection {
         includeSpreadsheetInResponse: true,
       },
     };
-    const res1 = this.__batchUpdate(obj);
-    const pr = res1?.updatedSpreadsheet?.sheets[0]?.protectedRanges || [];
-    const res2 = pr.find(
-      (e) => e.protectedRangeId == this.object.protectedRangeId
-    );
-    this.object = res2;
+    const res = this.__batchUpdate(obj);
+    this.object = this.__getProtectedRangeFromResponseOfBatchUpdate(res);
     return this;
   }
 
@@ -357,12 +342,8 @@ export class FakeProtection {
             includeSpreadsheetInResponse: true,
           },
         };
-        const res1 = this.__batchUpdate(obj);
-        const pr = res1?.updatedSpreadsheet?.sheets[0]?.protectedRanges || [];
-        const res2 = pr.find(
-          (e) => e.protectedRangeId == this.object.protectedRangeId
-        );
-        this.object = res2;
+        const res = this.__batchUpdate(obj);
+        this.object = this.__getProtectedRangeFromResponseOfBatchUpdate(res);
       } else {
         throw new Error(`No named range of ${rangeName}.`);
       }
@@ -392,12 +373,8 @@ export class FakeProtection {
           includeSpreadsheetInResponse: true,
         },
       };
-      const res1 = this.__batchUpdate(obj);
-      const pr = res1?.updatedSpreadsheet?.sheets[0]?.protectedRanges || [];
-      const res2 = pr.find(
-        (e) => e.protectedRangeId == this.object.protectedRangeId
-      );
-      this.object = res2;
+      const res = this.__batchUpdate(obj);
+      this.object = this.__getProtectedRangeFromResponseOfBatchUpdate(res);
     }
     return this;
   }
@@ -420,23 +397,29 @@ export class FakeProtection {
         includeSpreadsheetInResponse: true,
       },
     };
-    const res1 = this.__batchUpdate(obj);
-    const pr = res1?.updatedSpreadsheet?.sheets[0]?.protectedRanges || [];
-    const res2 = pr.find(
-      (e) => e.protectedRangeId == this.object.protectedRangeId
-    );
-    this.object = res2;
-
-    // this.object.warningOnly = warningOnly;
+    const res = this.__batchUpdate(obj);
+    this.object = this.__getProtectedRangeFromResponseOfBatchUpdate(res);
     return this;
+  }
+
+  __getProtectedRangeFromResponseOfBatchUpdate(res) {
+    const sheet = res?.updatedSpreadsheet?.sheets.find(
+      (s) => s.properties.sheetId == this.sheetId
+    );
+    const pr = sheet?.protectedRanges || [];
+    return (
+      pr.find((e) => e.protectedRangeId == this.object.protectedRangeId) || {}
+    );
   }
 
   __getProtections(id) {
     const obj = {
       spreadsheetId: this.spreadsheetId,
-      ranges: [this.sheet.getSheetName()],
       fields: "sheets(protectedRanges)",
     };
+    if (this.sheet?.getSheetName()) {
+      obj.ranges = [this.sheet.getSheetName()];
+    }
     const res = this.__get(obj).sheets;
     if (
       res &&

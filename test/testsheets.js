@@ -2889,6 +2889,72 @@ export const testSheets = (pack) => {
       );
   });
 
+  unit.section("Protection", (t) => {
+    const { sheet, ss: spreadsheet } = maketss("sample", toTrash, fixes);
+
+    // Create protected sheet.
+    // For Class Sheet
+    const unprotectedRanges = [sheet.getRange("A1:B1")];
+    const p1 = sheet
+      .protect()
+      .setDescription("sample1")
+      .setWarningOnly(true)
+      .setUnprotectedRanges(unprotectedRanges);
+    t.is(p1.getDescription(), "sample1");
+    t.is(p1.getUnprotectedRanges()[0].getA1Notation(), "A1:B1");
+    t.is(p1.canEdit(), true);
+    t.is(p1.getEditors().length, 1);
+    t.is(p1.getProtectionType().toString(), "SHEET");
+    t.is(p1.isWarningOnly(), true);
+
+    // For Class Spreadsheet
+    const protections = spreadsheet.getProtections(
+      SpreadsheetApp.ProtectionType.SHEET
+    );
+    t.is(
+      protections.some((p) => p.getDescription() == "sample1"),
+      true
+    );
+
+    p1.remove();
+
+    // Create protected range with a range.
+    // For Class Range
+    const p2 = sheet.getRange("A1:D5").protect().setDescription("sample2");
+    p2.setRange(sheet.getRange("B2:E6"));
+    t.is(p2.getRange().getA1Notation(), "B2:E6");
+    t.is(p2.getProtectionType().toString(), "RANGE");
+    p2.remove();
+
+    // Create named range.
+    const rangeName = "sampleNamedRange1";
+    const range1 = sheet.getRange("C3:F7");
+    spreadsheet.setNamedRange(rangeName, range1);
+    const namedRange = spreadsheet
+      .getNamedRanges()
+      .find((e) => e.getName() == rangeName);
+
+    // Create protected range with named range 1.
+    const p3 = sheet.getRange("A1:D5").protect().setDescription("sample2");
+    p3.setRangeName(rangeName);
+    t.is(p3.getRangeName(), "sampleNamedRange1");
+    p3.remove();
+
+    // Create protected range with named range 2.
+    const p4 = sheet.getRange("A1:D5").protect().setDescription("sample2");
+    p4.setNamedRange(namedRange);
+    t.is(p4.getRangeName(), "sampleNamedRange1");
+    p4.remove();
+
+    namedRange.remove();
+
+    if (SpreadsheetApp.isFake)
+      console.log(
+        "...cumulative sheets cache performance",
+        getSheetsPerformance()
+      );
+  });
+
   // running standalone
   if (!pack) {
     if (SpreadsheetApp.isFake)
@@ -2914,5 +2980,5 @@ export const testSheets = (pack) => {
 
 if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
   testSheets();
-  ScriptApp.__behavior.trash()
+  ScriptApp.__behavior.trash();
 }
