@@ -123,6 +123,11 @@ const testFakes = () => {
 
   // all tests cumulative unit report
   unit.report();
+
+  // final cleanup of all files created during the test run
+  if (ScriptApp.isFake) {
+    ScriptApp.__behavior.trash();
+  }
 };
 
 // this required on Node but not on Apps Script

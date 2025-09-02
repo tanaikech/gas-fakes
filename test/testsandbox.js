@@ -15,6 +15,27 @@ export const testSandbox = (pack) => {
     return { unit, fixes };
   }
 
+  // Save the initial state of the sandbox to restore it later, ensuring these tests don't affect others.
+  const behavior = ScriptApp.__behavior;
+  const initialState = {
+    sandboxMode: behavior.sandboxMode,
+    strictSandbox: behavior.strictSandbox,
+    cleanup: behavior.cleanup,
+    // a shallow copy is sufficient as the items themselves are not modified
+    idWhitelist: behavior.idWhitelist ? [...behavior.idWhitelist] : null,
+    serviceStates: {}
+  };
+
+  if (behavior.sandboxService) {
+    Object.keys(behavior.sandboxService).forEach(serviceName => {
+      const service = behavior.sandboxService[serviceName];
+      // a bit naughty to access private property, but it's the only way to preserve state
+      if (service && service.__state) {
+        initialState.serviceStates[serviceName] = JSON.parse(JSON.stringify(service.__state));
+      }
+    });
+  }
+
   // Helper to reset sandbox to the default state defined in testinit.js for each section
   const resetSandbox = () => {
     const behavior = ScriptApp.__behavior;
@@ -252,6 +273,22 @@ export const testSandbox = (pack) => {
     t.is(driveService.methodWhitelist, null, "clearMethodWhitelist should clear the list");
   });
 
+  // Restore the initial sandbox state
+  behavior.sandboxMode = initialState.sandboxMode;
+  behavior.strictSandbox = initialState.strictSandbox;
+  behavior.cleanup = initialState.cleanup;
+  behavior.setIdWhitelist(initialState.idWhitelist);
+
+  if (behavior.sandboxService) {
+    Object.keys(initialState.serviceStates).forEach(serviceName => {
+      const service = behavior.sandboxService[serviceName];
+      if (service) {
+        // a bit naughty, but necessary to restore private state
+        service.__state = initialState.serviceStates[serviceName];
+      }
+    });
+  }
+
   if (!pack) {
     unit.report();
   }
@@ -261,7 +298,7 @@ export const testSandbox = (pack) => {
 
 if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
   testSandbox();
-  ScriptApp.__behavior.trash();
+
   if (Drive.isFake)
     console.log("...cumulative drive cache performance", getDrivePerformance());
   if (SpreadsheetApp.isFake) {
@@ -282,4 +319,5 @@ if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
       getSlidesPerformance()
     );
   }
+  ScriptApp.__behavior.trash();
 }

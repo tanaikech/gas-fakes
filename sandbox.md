@@ -1,263 +1,131 @@
-# Sandbox mode
+# `gas-fakes` Sandbox Mode
 
-Gas-fakes has a sandbox mode which allows you to specifiy which files (and even services and methods) it is allowed to access. This gives much better control than you can achieve with oauth scopes only. First we'll look at the overall sandbox mode.
+`gas-fakes` includes a powerful sandbox feature that allows you to control file access and manage test artifacts, ensuring your tests are isolated, predictable, and clean.
 
-## How it works
+## The `ScriptApp.__behavior` Object
 
-In sandbox mode, you can only access files you've created in the same session. This will be an emulation of the effect of the drive.file scope. In addition it also provides a handy clean up opportunity for writing tests, as you can specify that any files you create get trashed on completion. 
+All sandbox configurations are managed through the global `ScriptApp.__behavior` object. This object is your central point for enabling, disabling, and fine-tuning the sandbox environment.
 
-In summary, you just do this at the beginning of your script to enable the default behavior. There are more options documented later.
-````
-ScriptApp.__behavior.sandboxMode = true;
-````
+## Global Sandbox Controls
 
+You can set the overall behavior of the sandbox using these top-level properties.
 
-# `ScriptApp.__behavior` Object
+| Property | Type | Default | Description |
+|---|---|---|---|
+| `sandboxMode` | `boolean` | `false` | When `true`, file access is restricted. By default, only files created during the current session are accessible. |
+| `strictSandbox` | `boolean` | `true` | When `true` (and `sandboxMode` is active), any attempt to access a non-whitelisted, non-session file will throw an error. If `false`, access is allowed, which is useful for debugging but doesn't strictly emulate the `drive.file` scope. |
+| `cleanup` | `boolean` | `true` | If `true`, calling `ScriptApp.__behavior.trash()` will move all files created during the session to the Google Drive trash. Set to `false` to leave test artifacts for inspection. |
 
-The `ScriptApp.__behavior` object is a special feature within the `gas-fakes` environment designed to control file access and manage test artifacts. Its primary purpose is to protect against the accidental access of Drive file and to provide a robust cleanup mechanism for automated tests.
-
-## Sandbox Mode
-
-The core concept of the `__behavior` object is **Sandbox Mode**. When enabled, it restricts all file operations to only those files and folders that have been created during the current execution session. This closely mimics how the `drive.file` scope works in a real Apps Script environment, where a script can only access files it has created.
-
-This is particularly useful for:
-1.  **Testing with `drive.file` scope:** It allows you to test your script's logic under similar constraints as the `drive.file` scope without needing to change your local development credentials from the more permissive `drive` scope, which is required for `gas-fakes` to initialize.
-2.  **Test Isolation:** It ensures that tests do not accidentally access or modify files outside of their intended scope, leading to more reliable and predictable test runs.
-3. **Whitelisting Files:** Individual files can be marked as 'ok' for access, even in sandbox mode, and the type of access limited to, for example readonly
-3. **Disabling/enabling specific services:** Individual services can be disabled to ensure your script does not accidentally require services you don't want to use.
-4. **Automatic cleanup:** To avoid a build up of temporary files during testing phases, optionally the sandbox can remove all the files it created while operational. By default, the tests included with `gas-fakes` have sandbox mode enabled to automatically dispose of files created in test mode
-
-
-## Properties
-
-You can configure the behavior of the sandbox through these properties on the `ScriptApp.__behavior` object.
-
-| Property          | Type      | Default | Description                                                                                                                                                           |
-| ----------------- | --------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `sandboxMode`     | `boolean` | `false` | When set to `true`, file access is restricted to files created within the current session.                                                                                |
-| `cleanup`         | `boolean` | `true`  | If `true`, calling the `trash()` method will move all files created during the session to the Google Drive trash. Set to `false` to leave test artifacts for inspection. |
-| `strictSandbox`   | `boolean` | `true`  | When `true` and `sandboxMode` is active, any attempt to access a file not created in the session will throw an error. If `false`, it allows access, which can be useful for debugging but does not strictly emulate the `drive.file` scope. |
-| `idWhitelist`     | `array`   | `null`  | (Read-only) Returns the current ID whitelist. Use the methods below to modify it.                                                                                       |
-
-### Example Usage:
+### Basic Usage
 
 ```javascript
-// Enable sandbox mode for a test
+// Enable sandbox mode at the start of your test suite
 ScriptApp.__behavior.sandboxMode = true;
 
-
-// Your test code here...
+// Your test code...
 const myFile = DriveApp.createFile('test.txt', 'hello');
 
-// This will succeed because the file was created in the session
+// This will succeed because the file was created in the current session
 const retrievedFile = DriveApp.getFileById(myFile.getId());
 
-// This would fail (if the file wasn't created in this session)
+// This would fail because the file ID was not created in this session and is not whitelisted
 // const otherFile = DriveApp.getFileById('some-other-id');
 
-// Clean up created files at the end of a test run
+// At the end of your test run, clean up all created files
 ScriptApp.__behavior.trash();
 ```
-## Whitelisting specific files
 
-The `idWhitelist` property is an array of `IdWhiteListItems` that can be accessed, along with what access is allowed - even when sandboxStrict is true. By default the accesses below are applied.
+## File Access Control: The Whitelist
 
-```javascript
-[{
-  id: "xxx",
-  read: true,
-  write: false,
-  trash: false
-}] 
-``` 
+When you need to access specific, pre-existing files (like templates or test data fixtures) in strict sandbox mode, you can add their IDs to a whitelist.
 
-A white list item ican be created and configured from the behavior object - for example:
+### `IdWhitelistItem`
 
-```javascript
-const behavior = ScriptApp.__behavior;
-behavior.idWhitelist = [
-  behavior.newIdWhitelistItem('someid').setRead(true),
-  behavior.newIdWhitelistItem('someotherid').setWrite(true).setTrash(true),
-];
-````
+You create whitelist entries using `behavior.newIdWhitelistItem(id)`. Each item can be configured with specific permissions.
 
+| Method | Description |
+|---|---|
+| `setRead(boolean)` | Allows read operations (e.g., `openById`, `getName`). Defaults to `true`. |
+| `setWrite(boolean)` | Allows write operations (e.g., `setContent`, `appendParagraph`). Defaults to `false`. |
+| `setTrash(boolean)` | Allows the file to be trashed (`setTrashed(true)`). Defaults to `false`. |
 
-# Granular Sandbox Controls with `sandboxService`
+### Whitelist Management Methods
 
-While the global `sandboxMode` provides a powerful way to isolate tests, `gas-fakes` offers even more fine-grained control through the `sandboxService` object. This feature allows you to define specific sandbox behaviors for individual Google Workspace services like `DriveApp`, `SpreadsheetApp`, `DocumentApp`, and `SlidesApp`. The related advanced services such as Drive, Sheets etc share the same controls as their counterparts. 
+| Method | Description |
+|---|---|
+| `addIdWhitelist(item)` | Adds an `IdWhitelistItem` to the list. |
+| `removeIdWhitelist(id)` | Removes an item from the list by its ID. |
+| `clearIdWhitelist()` | Clears all items from the whitelist. |
+| `setIdWhitelist(items)` | Replaces the entire whitelist with a new array of `IdWhitelistItem`s. |
 
-## How it works
-
-The `sandboxService` object, accessible via `ScriptApp.__behavior.sandboxService`, contains a separate configuration object for each supported service. By modifying the properties of these service-specific objects, you can override the global sandbox settings. If a per-service setting is not explicitly set, it will automatically fall back to the global setting defined on `ScriptApp.__behavior`.
-
-This is ideal for complex testing scenarios, such as:
--   Disabling `SpreadsheetApp` while allowing `DriveApp` to function normally.
--   Restricting `DriveApp` to only allow the `createFile` method.
-
-
-## Accessing Service Settings
-
-You can access the settings for a specific service by using its name as a property on the `sandboxService` object:
-
-```javascript
-// Access the settings for SpreadsheetApp
-const sheetServiceSettings = ScriptApp.__behavior.sandboxService.SpreadsheetApp;
-
-// Disable the SpreadsheetApp service
-sheetServiceSettings.enabled = false;
-
-// Allow only the 'getFileById' method for DriveApp
-ScriptApp.__behavior.sandboxService.SpreadsheetApp.methods = ['getFileById'];
-```
-
-## Configuration Properties
-
-Each service object within `sandboxService` has the following properties. By default, all properties are `null`, which means they inherit their behavior from the global `ScriptApp.__behavior` settings.
-
-| Property          | Type      | Default (Effective) | Description                                                                                                                                                           |
-| ----------------- | --------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `enabled`         | `boolean` | `true`                | Set to `false` to completely disable all methods of this service. An error will be thrown if any method is called.                                                      |
-| `sandboxMode`     | `boolean` | Global `sandboxMode`  | Overrides the global `sandboxMode` setting for this service only.                                                                                                     |
-| `sandboxStrict`   | `boolean` | Global `strictSandbox`| Overrides the global `strictSandbox` setting for this service only.                                                                                                   |
-| `methodWhitelist`   | `array` | null (all methods available) | Provide a list of methods can be accessed in the given service. Only the final method name is relevant - so DriveApp.File.getById would be 'getById'. |
-
-
-    ```
-
-## Example Scenarios
-
-### Disabling a Service
-
-Note that the DriveApp service is generally required by any other service to work. For example, the SpreasheetApp service delegates many operations to the DriveApp service. Effectively then, if any other service is enabled, disabling the DriveApp service will be ignored.
-
-```javascript
-// Disable DocumentApp, but allow other services to work
-ScriptApp.__behavior.sandboxService.DocumentApp.enabled = false;
-
-// This will throw an error
-try {
-  DocumentApp.openById('abc');
-} catch (e) {
-  console.log(e.message); // "DocumentApp service is disabled by sandbox settings."
-}
-
-// This will still work (assuming SpreadsheetApp is enabled)
-const ss = SpreadsheetApp.create("My Sheet");
-```
-
-### Restricting Methods
-
-Note that some methods are required for the service to work at all (for example getFileById) and will always be allowed whenever the service is enabled.
-
-```javascript
-// Only allow creating files and folders in DriveApp
-ScriptApp.__behavior.sandboxService.DriveApp.methodWhitelist = ['createFile', 'createFolder'];
-
-// This will succeed
-const newFolder = DriveApp.createFolder("My Test Folder");
-
-// This will throw an error
-try {
-  const root = DriveApp.openById('some-other-id');
-} catch (e) {
-  console.log(e.message); // "Method DriveApp.getRootFolder is not allowed by sandbox settings."
-}
-```
-
-### Allowing Access to Specific External Files
-
-This is useful for tests that need to read from a known template file without disabling the sandbox entirely.
+### Whitelist Example
 
 ```javascript
 const behavior = ScriptApp.__behavior;
-
-// Enable sandbox mode globally
 behavior.sandboxMode = true;
+behavior.strictSandbox = true;
 
-// allow granular access type to specific files, ignoring the setting of strictSandbox for these
+const TEMPLATE_DOC_ID = 'your-template-doc-id';
+const LOG_SHEET_ID = 'your-log-sheet-id';
 
-behavior.idWhitelist = [
-  behavior.newIdWhitelistItem('input_id'),
-  behavior.newIdWhitelistItem('update-id').setWrite(true),
-];
+// Whitelist a document for reading only
+const readOnlyItem = behavior.newIdWhitelistItem(TEMPLATE_DOC_ID);
 
-// These will all succeed because the ID is whitelisted, and read access is allowed
-const input = DriveApp.getFileById('input-id');
-const ss = SpreadsheetApp.openById("sheet-id");
-input.getName();
-const sheet = ss.getSheets()[0]
+// Whitelist a spreadsheet for reading, writing, and trashing
+const readWriteItem = behavior.newIdWhitelistItem(LOG_SHEET_ID)
+  .setWrite(true)
+  .setTrash(true);
 
-// this will fail because only read access is allowed
-input.setContent('foo');
+behavior.setIdWhitelist([readOnlyItem, readWriteItem]);
 
-// this will succeed because read/write is allowed
-sheet.getRange("a1:b1").setValues([['foo','bar']]);
+// --- Accessing whitelisted files ---
 
-// these will fail because trash access is not allowed
-input.setTrashed(true);
-DriveApp.getFileById(output.getId()).setTrashed(true);
+// This succeeds (read is allowed)
+const doc = DocumentApp.openById(TEMPLATE_DOC_ID);
+console.log(doc.getName());
 
-
-// This will fail because it's not whitelisted and not created in the session, and sandboxStrict is true by default
+// This fails (write is not allowed for the doc)
 try {
-  const otherFile = DriveApp.getFileById('some-other-id');
+  doc.getBody().appendParagraph('This will fail.');
 } catch (e) {
-  console.log(e.message); // 'Access to file "some-other-id" is denied by sandbox rules.'
+  console.error(e.message); // Write access to file ... is denied
 }
 
+// This succeeds (write is allowed for the sheet)
+const sheet = SpreadsheetApp.openById(LOG_SHEET_ID);
+sheet.getRange('A1').setValue('Log entry');
 
-## How it works
-
-The `sandboxService` object, accessible via `ScriptApp.__behavior.sandboxService`, contains a separate configuration object for each supported service. By modifying the properties of these service-specific objects, you can override the global sandbox settings. If a per-service setting is not explicitly set, it will automatically fall back to the global setting defined on `ScriptApp.__behavior`.
-
-This is ideal for complex testing scenarios, such as:
--   Disabling `SpreadsheetApp` whilst allowing `DriveApp` to function normally.
--   Restricting `DriveApp` to only allow the `createFile` method.
--   Allowing access to a specific, known spreadsheet by its ID while keeping the rest of the environment in strict sandbox mode.
-
-
-## Accessing Service Settings
-
-You can access the settings for a specific service by using its name as a property on the `sandboxService` object:
-
-```javascript
-// Access the settings for SpreadsheetApp
-const sheetServiceSettings = ScriptApp.__behavior.sandboxService.SpreadsheetApp;
-
-// Disable the SpreadsheetApp service
-sheetServiceSettings.enabled = false;
-
-// Allow only the 'getFileById' method for DriveApp
-ScriptApp.__behavior.sandboxService.SpreadsheetApp.methods = ['getFileById'];
+// This succeeds (trash is allowed for the sheet)
+DriveApp.getFileById(LOG_SHEET_ID).setTrashed(true);
 ```
 
-## Configuration Properties
+## Granular Per-Service Controls
 
-Each service object within `sandboxService` has the following properties. By default, all properties are `null`, which means they inherit their behavior from the global `ScriptApp.__behavior` settings.
+For even more fine-grained control, you can define specific sandbox behaviors for individual services (`DriveApp`, `SpreadsheetApp`, `DocumentApp`, `SlidesApp`, and their advanced service counterparts). Per-service settings override the global settings.
 
-| Property          | Type      | Default (Effective) | Description                                                                                                                                                           |
-| ----------------- | --------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `enabled`         | `boolean` | `true`                | Set to `false` to completely disable all methods of this service. An error will be thrown if any method is called.                                                      |
-| `sandboxMode`     | `boolean` | Global `sandboxMode`  | Overrides the global `sandboxMode` setting for this service only.                                                                                                     |
-| `sandboxStrict`   | `boolean` | Global `strictSandbox`| Overrides the global `strictSandbox` setting for this service only.|
-| `methodWhitelist`         | `string[]`| `null` (all allowed)  | A whitelist of method names that are permitted for this service. If set, any call to a method not in this array will throw an error.                                     |
+Settings for a service are accessed via `ScriptApp.__behavior.sandboxService.<ServiceName>`.
 
+| Property | Type | Default (Effective) | Description |
+|---|---|---|---|
+| `enabled` | `boolean` | `true` | Set to `false` to completely disable all methods of this service. |
+| `sandboxMode` | `boolean` | Global `sandboxMode` | Overrides the global `sandboxMode` for this service only. |
+| `strictSandbox` | `boolean` | Global `strictSandbox` | Overrides the global `strictSandbox` for this service only. |
+| `methodWhitelist` | `string[]` | `null` (all allowed) | An array of method names that are permitted. If set, any call to a method not in this array will throw an error. |
 
-## Configuration Methods
+### Per-Service Configuration Methods
 
-### `clear()`
+| Method | Description |
+|---|---|
+| `clear()` | Resets all settings for a specific service, causing it to inherit from the global configuration again. |
+| `addMethodWhitelist(name)` | Adds a method name to the service's whitelist. |
+| `removeMethodWhitelist(name)` | Removes a method name from the whitelist. |
+| `clearMethodWhitelist()` | Clears the method whitelist for the service. |
 
-*   **Description:** Resets all per-service settings for a specific service back to their default state. This effectively removes any overrides and makes the service fall back to the global `ScriptApp.__behavior` settings.
-*   **Example:**
-    ```javascript
-    const driveSettings = ScriptApp.__behavior.sandboxService.DriveApp;
-    driveSettings.enabled = false; // Disable DriveApp
-    driveSettings.clear(); // Re-enable DriveApp by clearing the override
-    ```
+### Advanced Examples
 
-## Example Scenarios
+#### Disabling a Service
 
-### Disabling a Service
+**Note:** Most services (`SpreadsheetApp`, `DocumentApp`, etc.) depend on `DriveApp` for file operations. Disabling `DriveApp` while other services are enabled will have no effect.
 
 ```javascript
 // Disable DocumentApp, but allow other services to work
@@ -265,20 +133,23 @@ ScriptApp.__behavior.sandboxService.DocumentApp.enabled = false;
 
 // This will throw an error
 try {
-  DocumentApp.openById('abc');
+  DocumentApp.create('wont-work');
 } catch (e) {
-  console.log(e.message); // "DocumentApp service is disabled by sandbox settings."
+  console.error(e.message); // "DocumentApp service is disabled..."
 }
 
-// This will still work (assuming SpreadsheetApp is enabled)
+// This will still work
 const ss = SpreadsheetApp.create("My Sheet");
 ```
 
-### Restricting Methods
+#### Restricting Methods
+
+**Note:** Certain core methods (like `getFileById`) are essential for a service to function and may be implicitly allowed even if not in the whitelist.
 
 ```javascript
-// Only allow creating files and folders in DriveApp
-ScriptApp.__behavior.sandboxService.DriveApp.methodWhitelist = ['createFile', 'createFolder'];
+// In DriveApp, only allow creating folders and getting files by name.
+const driveSettings = ScriptApp.__behavior.sandboxService.DriveApp;
+driveSettings.setMethodWhitelist(['createFolder', 'getFilesByName']);
 
 // This will succeed
 const newFolder = DriveApp.createFolder("My Test Folder");
@@ -287,50 +158,7 @@ const newFolder = DriveApp.createFolder("My Test Folder");
 try {
   const root = DriveApp.getRootFolder();
 } catch (e) {
-  console.log(e.message); // "Method DriveApp.getRootFolder is not allowed by sandbox settings."
+  console.error(e.message); // "Method DriveApp.getRootFolder is not allowed..."
 }
 ```
 
-### Allowing Access to Specific External Files
-
-This is useful for tests that need to read from a known template file without disabling the sandbox entirely.
-
-```javascript
-// Enable sandbox mode globally
-ScriptApp.__behavior.sandboxMode = true;
-
-// Make the sandbox non-strict for DriveApp
-ScriptApp.__behavior.sandboxService.DriveApp.sandboxStrict = false;
-
-// Whitelist a specific template file ID
-const TEMPLATE_FILE_ID = 'your-template-file-id-here';
-ScriptApp.__behavior.sandboxService.DriveApp.ids = [TEMPLATE_FILE_ID];
-
-// This will succeed because the ID is whitelisted
-const templateFile = DriveApp.getFileById(TEMPLATE_FILE_ID);
-
-// This will fail because it's not whitelisted and not created in the session
-try {
-  const otherFile = DriveApp.getFileById('some-other-id');
-} catch (e) {
-  console.log(e.message); // 'Access to file "some-other-id" is denied by sandbox rules.'
-}
-```
-
-## Translations and writeups
-
-- [initial idea and thoughts](https://ramblings.mcpher.com/a-proof-of-concept-implementation-of-apps-script-environment-on-node/)
-- [Inside the volatile world of a Google Document](https://ramblings.mcpher.com/inside-the-volatile-world-of-a-google-document/
-- [Apps Script Services on Node – using apps script libraries](https://ramblings.mcpher.com/apps-script-services-on-node-using-apps-script-libraries/)
-- [Apps Script environment on Node – more services](https://ramblings.mcpher.com/apps-script-environment-on-node-more-services/)
-- [Turning async into synch on Node using workers](https://ramblings.mcpher.com/turning-async-into-synch-on-node-using-workers/)
-- [All about Apps Script Enums and how to fake them](https://ramblings.mcpher.com/all-about-apps-script-enums-and-how-to-fake-them/)
-- [Russian version](README.RU.md) ([credit Alex Ivanov](https://github.com/oshliaer)) - needs updating
-- [colaborators](collaborators.md) - additional information for collaborators
-- [oddities](oddities.md) - a collection of oddities uncovered during this project
-- [gemini](gemini.md) - some reflections and experiences on using gemini to help code large projects
-- [named colors](named-colors.md) - colors supported by Apps Script
-- [setup env](setup-env.md) - ([credit Eric Shapiro] - additional info on contents of .env file
-- [this file](README.md)
-- [named colors](named-colors.md)
-- [sandbox](sandbox.md)

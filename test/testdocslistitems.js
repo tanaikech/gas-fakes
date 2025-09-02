@@ -1,10 +1,12 @@
 import '../main.js';
 import { initTests } from './testinit.js';
-import { trasher, getDocsPerformance, maketdoc } from './testassist.js';
+import { wrapupTest, getDocsPerformance, maketdoc, trasher } from './testassist.js';
+
 
 export const testDocsListItems = (pack) => {
-  const { unit, fixes } = pack || initTests();
   const toTrash = [];
+  const { unit, fixes } = pack || initTests();
+
 
   const getChildren = (body) => {
     const children = [];
@@ -132,13 +134,10 @@ export const testDocsListItems = (pack) => {
   if (!pack) {
     unit.report();
   }
-
-  trasher(toTrash);
+  if (fixes.CLEAN) trasher(toTrash);
   return { unit, fixes };
 };
 
-if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
-  testDocsListItems();
-  ScriptApp.__behavior.trash()
-  console.log('...cumulative docs cache performance', getDocsPerformance());
-}
+
+
+wrapupTest(testDocsListItems);

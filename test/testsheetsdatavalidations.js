@@ -8,15 +8,15 @@ import '../main.js'
 //import '@mcpher/gas-fakes/main.js'
 
 import { initTests } from './testinit.js';
-import { maketss, trasher, compareValue, addDays, zeroizeTime, getDimensions } from './testassist.js';
+import { maketss, wrapupTest, compareValue, addDays, zeroizeTime, getDimensions, trasher } from './testassist.js';
 import { getDrivePerformance, getSheetsPerformance } from './testassist.js';
 import is from '@sindresorhus/is';
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testSheetsDataValidations = (pack) => {
+  const toTrash = [];
+  const { unit, fixes } = pack || initTests();
 
-  const { unit, fixes } = pack || initTests()
-  const toTrash = []
 
   // for debugging
   const noisy = false
@@ -307,11 +307,7 @@ export const testSheetsDataValidations = (pack) => {
   unit.section("getting relative dates and formulas with requires - these can only be set by the UI", t => {
 
     // this is an existing test sheet so we need to turn off strict sandbox mode temporarily
-let strb = false
-if (ScriptApp.isFake) {
-    strb = ScriptApp.__behavior.strictSandbox
-    ScriptApp.__behavior.strictSandbox = false
-}
+
 
     const sp = SpreadsheetApp.openById(fixes.TEST_BORDERS_ID)
     const sb = sp.getSheetByName('dv')
@@ -324,10 +320,7 @@ if (ScriptApp.isFake) {
     // what if value is a formula
     critty(t, sb, "g24", "DATE_EQUAL_TO", ['=I1'])
     critty(t, sb, "f24", "TEXT_CONTAINS", ['=F7'])
-    // reset
-if (ScriptApp.isFake) {
-     ScriptApp.__behavior.strictSandbox = strb
-}
+
 
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
   })
@@ -462,18 +455,9 @@ if (ScriptApp.isFake) {
     unit.report()
 
   }
-
-  trasher(toTrash)
+  if (fixes.CLEAN) trasher(toTrash);
   return { unit, fixes }
 }
 
-// if we're running this test standalone, on Node - we need to actually kick it off
-// the provess.argv should contain "execute" 
-// for example node testdrive.js execute
-// on apps script we don't want it to run automatically
-// when running as part of a consolidated test, we dont want to run it, as the caller will do that
 
-if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
-  testSheetsDataValidations()
-  ScriptApp.__behavior.trash()
-}
+wrapupTest(testSheetsDataValidations);

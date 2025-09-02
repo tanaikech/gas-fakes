@@ -2,14 +2,16 @@ import is from '@sindresorhus/is';
 import '../main.js';
 import { initTests } from './testinit.js';
 import {
-  trasher,
-  getDocsPerformance, maketdoc
+  wrapupTest,
+  getDocsPerformance, maketdoc, trasher
 
 } from './testassist.js';
 
+;
 export const testDocs = (pack) => {
-  const { unit, fixes } = pack || initTests();
   const toTrash = [];
+  const { unit, fixes } = pack || initTests();
+
 
   unit.section("Document level append/insert methods", t => {
     const { doc } = maketdoc(toTrash, fixes);
@@ -147,18 +149,11 @@ export const testDocs = (pack) => {
 
 
 
-
-
-
   if (!pack) {
     unit.report();
   }
-
+  if (fixes.CLEAN) trasher(toTrash);
   return { unit, fixes };
 };
 
-if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
-  testDocs();
-  ScriptApp.__behavior.trash()
-  console.log('...cumulative docs cache performance', getDocsPerformance())
-}
+wrapupTest(testDocs);

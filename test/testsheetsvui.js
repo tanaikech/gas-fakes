@@ -9,15 +9,14 @@ import '../main.js'
 //import '@mcpher/gas-fakes/main.js'
 
 import { initTests } from './testinit.js'
-import { getSheetsPerformance } from './testassist.js';
-import { trasher, getRandomHex } from './testassist.js';
+import { getSheetsPerformance, wrapupTest , getRandomHex} from './testassist.js';
+
 
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testSheetsVui = (pack) => {
 
   const { unit, fixes } = pack || initTests()
-  const toTrash = []
 
 
   unit.section("TODO - currently skipped - range.getBorder() does work on GAS although it's not documented", t => {
@@ -52,11 +51,7 @@ export const testSheetsVui = (pack) => {
 
   unit.section("text style extracts, reducers and other exotics", t => {
     // this is an existing test sheet so we need to turn off strict sandbox mode temporarily
-let strb = false
-if (ScriptApp.isFake) {
-    strb = ScriptApp.__behavior.strictSandbox
-    ScriptApp.__behavior.strictSandbox = false
-}
+
 
     const sp = SpreadsheetApp.openById(fixes.TEST_BORDERS_ID)
     const sb = sp.getSheets()[0]
@@ -137,9 +132,7 @@ if (ScriptApp.isFake) {
     t.is(flrss[0].length, flr.getNumColumns())
     t.deepEqual(flrss, flExpect)
     t.is(flrs, flrss[0][0])
-if (ScriptApp.isFake) {
-     ScriptApp.__behavior.strictSandbox = strb
-}
+
   })
 
   unit.section("color objects and builders", t => {
@@ -186,11 +179,7 @@ if (ScriptApp.isFake) {
   unit.section("uses testsheet - checks UI compatible with API sets - spreadsheet ranges method tests", t => {
     // careful with confusion of combining 0 (offset,array indices) and 1 start (range methods)
     // this is an existing test sheet so we need to turn off strict sandbox mode temporarily
-let strb = false
-if (ScriptApp.isFake) {
-    strb = ScriptApp.__behavior.strictSandbox
-    ScriptApp.__behavior.strictSandbox = false
-}
+
     const ss = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
     const sheet = ss.getSheets()[1]
     const range = sheet.getRange("c2:$d$4")
@@ -253,18 +242,12 @@ if (ScriptApp.isFake) {
     t.is(range.getFormulas()[0].length, atv[0].length)
 
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-if (ScriptApp.isFake) {
-     ScriptApp.__behavior.strictSandbox = strb
-}
+
   })
 
   unit.section("uses testsheet - checks UI compatible with API sets -  basic adv sheets cell formatting fetch fix", t => {
     // this section will work with the testsheet where we have some horizonatl alignment (as opposed to the default which returns nothing)
-let strb = false
-if (ScriptApp.isFake) {
-    strb = ScriptApp.__behavior.strictSandbox
-    ScriptApp.__behavior.strictSandbox = false
-}
+
 
     const spreadsheetId = fixes.TEST_SHEET_ID
     const ss = Sheets.Spreadsheets.get(spreadsheetId)
@@ -282,17 +265,11 @@ if (ScriptApp.isFake) {
     t.is(rowData.length, 3)
     t.is(rowData[0].values.length, 2)
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-if (ScriptApp.isFake) {
-     ScriptApp.__behavior.strictSandbox = strb
-}
+
   })
 
   unit.section("uses testsheet - checks UI compatible with API sets - need to update to use batchupdate spreadsheetapp rangelists", t => {
-let strb = false
-if (ScriptApp.isFake) {
-    strb = ScriptApp.__behavior.strictSandbox
-    ScriptApp.__behavior.strictSandbox = false
-}
+
 
     const ss = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
     const sheet = ss.getSheets()[1]
@@ -302,17 +279,11 @@ if (ScriptApp.isFake) {
     rl.getRanges().forEach((f, i) => t.is(f.getA1Notation(), rltests[i].toUpperCase()))
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
 
-if (ScriptApp.isFake) {
-     ScriptApp.__behavior.strictSandbox = strb
-}
+
   })
 
   unit.section("uses testsheet - checks UI compatible with API sets -  spreadsheet exotics", t => {
-let strb = false
-if (ScriptApp.isFake) {
-    strb = ScriptApp.__behavior.strictSandbox
-    ScriptApp.__behavior.strictSandbox = false
-}
+
 
     const ss = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
     const sheet = ss.getSheets()[0]
@@ -336,19 +307,13 @@ if (ScriptApp.isFake) {
 
 
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-if (ScriptApp.isFake) {
-     ScriptApp.__behavior.strictSandbox = strb
-}
+
   })
 
   unit.section("uses testsheet - checks UI compatible with API sets - advanced sheet basics", t => {
     // we're using a known file, so we need to turn off strict sandboxing
     // otherwise the DriveApp access will be blocked
-let strb = false
-if (ScriptApp.isFake) {
-    strb = ScriptApp.__behavior.strictSandbox
-    ScriptApp.__behavior.strictSandbox = false
-}
+
     t.true(is.nonEmptyString(Sheets.toString()))
     t.is(Sheets.getVersion(), 'v4')
     t.is(Drive.isFake, Sheets.isFake, {
@@ -366,18 +331,12 @@ if (ScriptApp.isFake) {
     t.truthy(ss.sheets.length)
     t.true(is.nonEmptyString(ss.spreadsheetUrl))
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-if (ScriptApp.isFake) {
-     ScriptApp.__behavior.strictSandbox = strb
-}
+
   })
 
   unit.section("uses testsheet - checks UI compatible with API sets - spreadsheetapp basics", t => {
 
-let strb = false
-if (ScriptApp.isFake) {
-    strb = ScriptApp.__behavior.strictSandbox
-    ScriptApp.__behavior.strictSandbox = false
-}
+
 
     const ass = Sheets.Spreadsheets.get(fixes.TEST_SHEET_ID)
     const ss = SpreadsheetApp.openById(fixes.TEST_SHEET_ID)
@@ -416,30 +375,13 @@ if (ScriptApp.isFake) {
     t.is(SpreadsheetApp.openByKey(ss.getId()).getId(), ss.getId())
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
 
-if (ScriptApp.isFake) {
-     ScriptApp.__behavior.strictSandbox = strb
-}
+
 
   })
 
-  // running standalone
-  if (!pack) {
-    if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
-    unit.report()
 
-  }
-
-  trasher(toTrash)
   return { unit, fixes }
 }
 
-// if we're running this test standalone, on Node - we need to actually kick it off
-// the provess.argv should contain "execute" 
-// for example node testdrive.js execute
-// on apps script we don't want it to run automatically
-// when running as part of a consolidated test, we dont want to run it, as the caller will do that
 
-if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
-  testSheetsVui()
-  ScriptApp.__behavior.trash()
-}
+wrapupTest(testSheetsVui)

@@ -2,35 +2,25 @@
 // all these imports 
 // this is loaded by npm, but is a library on Apps Script side
 
-import '../main.js'
-
-// all the fake services are here
-//import '@mcpher/gas-fakes/main.js'
-
-import { initTests } from './testinit.js'
-import { getSheetsPerformance } from './testassist.js';
-import { Fiddler } from '@mcpher/fiddler'
+import '../main.js';
+import { initTests } from './testinit.js';
+import { getSheetsPerformance, wrapupTest, trasher } from './testassist.js';
+import { Fiddler } from '@mcpher/fiddler';
 
 const hexify = (c) => {
   return '#' + c.toString(16).padStart(6, '0')
 };
-// we're using a known file, so we need to turn off strict sandboxing
-// otherwise the DriveApp access will be blocked
-let strb = false
-if (ScriptApp.isFake) {
-  strb = ScriptApp.__behavior.strictSandbox
-  ScriptApp.__behavior.strictSandbox = false
-}
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testFiddler = (pack) => {
+  const toTrash = [];
   const { unit, fixes } = pack || initTests()
 
   let copyFiddler = null
   let copyAirports = null
   let airports = null
   let fiddler = null
-  const toTrash = []
+
 
   const getCopy = () => {
     if (!copyAirports) {
@@ -138,16 +128,9 @@ export const testFiddler = (pack) => {
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
     unit.report()
   }
-  if (ScriptApp.isFake) {
-    ScriptApp.__behavior.strictSandbox = strb
-  }
+  if (fixes.CLEAN) trasher(toTrash);
   return { unit, fixes }
 }
 
-// if we're running this test standalone, on Node - we need to actually kick it off
-// the provess.argv should contain "execute" 
-// for example node testdrive.js execute
-// on apps script we don't want it to run automatically
-// when running as part of a consolidated test, we dont want to run it, as the caller will do that
 
-if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) testFiddler()
+wrapupTest(testFiddler);

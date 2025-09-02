@@ -4,15 +4,18 @@
 
 import is from '@sindresorhus/is';
 import '../main.js'
-
-// all the fake services are here
-//import '@mcpher/gas-fakes/main.js'
-
+import { wrapupTest } from './testassist.js';
 import { initTests }  from  './testinit.js'
+
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testSession = (pack) => {
   const {unit, fixes} = pack || initTests()
+
+  // It's possible that the session information (which depends on the OAuth token)
+  // isn't ready when the tests run. Let's explicitly get the token first to ensure
+  // the authentication flow, including fetching user info, is complete.
+  ScriptApp.getOAuthToken();
 
   unit.section("session properties", t => {
     t.is(Session.getActiveUser().toString(), fixes.EMAIL)
@@ -31,10 +34,5 @@ export const testSession = (pack) => {
   return { unit, fixes }
 }
 
-// if we're running this test standalone, on Node - we need to actually kick it off
-// the provess.argv should contain "execute" 
-// for example node testdrive.js execute
-// on apps script we don't want it to run automatically
-// when running as part of a consolidated test, we dont want to run it, as the caller will do that
 
-if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) testSession()
+wrapupTest(testSession)

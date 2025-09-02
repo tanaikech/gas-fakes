@@ -10,29 +10,16 @@ import '../main.js'
 
 import { initTests } from './testinit.js'
 import { getDrivePerformance, getSheetsPerformance } from './testassist.js';
-import { trasher } from './testassist.js';
-import { FakeDataSourceColumnReference } from '../src/services/spreadsheetapp/fakedatasourcecolumnreference.js';
+import { wrapupTest } from './testassist.js';
+
 
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testSheetsPermissions = (pack) => {
-
   const { unit, fixes } = pack || initTests()
-  const toTrash = []
+
 
   unit.section("protected cells", t => {
-    let shs = null
-    let dhs = null
-    const sss = ScriptApp.__behavior?.__sandboxService
-    
-    if (sss) {
-      shs = sss.SpreadsheetApp.sandboxStrict
-      dhs = sss.DriveApp.sandboxStrict
-      sss.DriveApp.sandboxStrict = false
-      sss.SpreadsheetApp.sandboxStrict = false
-    } else {
-      t.not (SpreadsheetApp.isFake,'SpreadsheetApp is fake but didnt find sandbox service')
-    }
 
     const sp = SpreadsheetApp.openById(fixes.TEST_BORDERS_ID)
     t.is(SpreadsheetApp.ProtectionType.SHEET.toString(), 'SHEET')
@@ -66,12 +53,8 @@ export const testSheetsPermissions = (pack) => {
     // shared files are owned by me
     protections.forEach(f => t.deepEqual(f.getEditors().map(f => f.getEmail()), [fixes.SHARED_FILE_OWNER]))
     pss.forEach(f => t.deepEqual(f.getEditors().map(f => f.getEmail()), [fixes.SHARED_FILE_OWNER]))
-    if (sss) {
-      sss.SpreadsheetApp.sandboxStrict = shs
-      sss.DriveApp.sandboxStrict = dhs
-    }
-  })
 
+  })
 
 
   // running standalone
@@ -82,17 +65,8 @@ export const testSheetsPermissions = (pack) => {
 
   }
 
-  trasher(toTrash)
+
   return { unit, fixes }
 }
 
-// if we're running this test standalone, on Node - we need to actually kick it off
-// the provess.argv should contain "execute" 
-// for example node testdrive.js execute
-// on apps script we don't want it to run automatically
-// when running as part of a consolidated test, we dont want to run it, as the caller will do that
-
-if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
-  testSheetsPermissions()
-  ScriptApp.__behavior.trash()
-}
+wrapupTest(testSheetsPermissions)

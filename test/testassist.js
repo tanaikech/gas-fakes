@@ -8,9 +8,28 @@ export const getSheetsPerformance = Sheets.__getSheetsPerformance;
 export const getDocsPerformance = Docs.__getDocsPerformance;
 export const getSlidesPerformance = Slides.__getSlidesPerformance
 
+export const cachePerformance = () => {
+  if (ScriptApp.isFake) {
+    console.log('...cumulative drive cache performance', getDrivePerformance());
+    console.log('...cumulative docs cache performance', getDocsPerformance());
+    console.log('...cumulative sheets cache performance', getSheetsPerformance());
+    console.log('...cumulative slides cache performance', getSlidesPerformance());
+  }
+}
+export const wrapupTest = (func) => {
+  if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
+    func()
+    cachePerformance()
+    // actually most of these should already have been trashed
+
+    ScriptApp.__behavior.trash();
+    console.log('...its a wrap')
+  }
+
+
+}
 
 export const trasher = (toTrash) => {
-  // clean up if necessary
   toTrash.forEach(f => {
     console.log('trashing temp file', f.getId())
     f.setTrashed(true)
@@ -37,13 +56,13 @@ export const getTestFolder = (fixes) => {
   console.log("...test files will be in", __mfolder.getName(), __mfolder.getId())
   return __mfolder
 }
-export const maketdoc = (toTrash, fixes, clear = true) => {
+export const maketdoc = (toTrash, fixes, { clear = true, forceNew = false } = {}) => {
   const docName = fixes.PREFIX + "tss-docs"
   const folder = getTestFolder(fixes)
   let reuse = false
   // because some test may have renamed it and drive/document service on Apps Script 
   // might not actually be in sync - doesnt actually happen on Node but we'll leave for consistency.
-  if (!__mdoc || __mdoc.getName() !== docName) {
+  if (forceNew || !__mdoc || __mdoc.getName() !== docName) {
     __mdoc = DocumentApp.create(docName)
     console.log('...created doc', __mdoc.getName(), __mdoc.getId())
     moveToTestFolder(__mdoc.getId())

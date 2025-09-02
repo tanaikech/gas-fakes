@@ -5,7 +5,7 @@
 
 
 import '../main.js'
-import { getDrivePerformance } from './testassist.js';
+import { getDrivePerformance, wrapupTest } from './testassist.js';
 import is from '@sindresorhus/is';
 // all the fake services are here
 //import '@mcpher/gas-fakes/main.js'
@@ -18,7 +18,7 @@ export const testDrive = (pack) => {
   const { unit, fixes } = pack || initTests()
   unit.section('create and copy files with driveapp and compare content with adv drive and urlfetch', t => {
 
-    const toTrash = []
+
     const rootFolder = DriveApp.getRootFolder()
     t.is(rootFolder.toString(), "My Drive")
 
@@ -146,11 +146,10 @@ export const testDrive = (pack) => {
     t.rxMatch(t.threw(() => dcfile.makeCopy(folder, "xx")).toString(), /The parameters \(DriveApp.Folder,String\) don't match/)
     t.rxMatch(t.threw(() => dcfile.makeCopy("yy", "xx")).toString(), /The parameters \(String,String\) don't match/)
 
-    if (fixes.CLEAN) toTrash.forEach(f => f.setTrashed(true))
     if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
   })
   unit.section('driveapp permission management', t => {
-    const toTrash = [];
+
     const fname = fixes.PREFIX + "permission-test-file.txt";
     const file = DriveApp.createFile(fname, "some content");
     toTrash.push(file);
@@ -188,18 +187,13 @@ export const testDrive = (pack) => {
     t.false(file.getEditors().map(u => u.getEmail()).includes(editorEmail), "removeEditor should remove a single editor");
     t.false(file.getViewers().map(u => u.getEmail()).includes(viewerEmail), "removeViewer should remove a single viewer");
 
-    if (fixes.CLEAN) toTrash.forEach(f => f.setTrashed(true));
     if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
   });
 
 
 
   unit.section("advanced drive basics", t => {
-    let strb = false
-    if (ScriptApp.isFake) {
-      strb = ScriptApp.__behavior.strictSandbox
-      ScriptApp.__behavior.strictSandbox = false
-    }
+
 
     t.true(is.nonEmptyString(Drive.toString()))
     t.true(is.nonEmptyString(Drive.Files.toString()))
@@ -212,9 +206,7 @@ export const testDrive = (pack) => {
     t.is(file.mimeType, fixes.TEXT_FILE_TYPE)
     t.is(file.kind, fixes.KIND_DRIVE)
     if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
-    if (ScriptApp.isFake) {
-      ScriptApp.__behavior.strictSandbox = strb
-    }
+
   })
 
 
@@ -234,11 +226,8 @@ export const testDrive = (pack) => {
 
 
   unit.section("driveapp searches", t => {
-    let strb = false
-    if (ScriptApp.isFake) {
-      strb = ScriptApp.__behavior.strictSandbox
-      ScriptApp.__behavior.strictSandbox = false
-    }
+
+
     // driveapp itself isnt actually a folder although it shares many of the methods
     // this is the folder that DriveApp represents
     const root = DriveApp.getRootFolder()
@@ -285,18 +274,12 @@ export const testDrive = (pack) => {
     t.is(pile.length, fixes.TEST_FOLDER_FILES)
 
     if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
-    if (ScriptApp.isFake) {
-      ScriptApp.__behavior.strictSandbox = strb
-    }
+
   })
 
   unit.section('updates and moves advdrive and driveapp', t => {
-    let strb = false
-    if (ScriptApp.isFake) {
-      strb = ScriptApp.__behavior.strictSandbox
-      ScriptApp.__behavior.strictSandbox = false
-    }
-    const toTrash = []
+
+
 
     // create a text file with nothing in it
     const aname = fixes.PREFIX + "u-afile---.txt"
@@ -364,23 +347,15 @@ export const testDrive = (pack) => {
     t.rxMatch(t.threw(() => mfile.moveTo()).toString(), /The parameters \(\) don't match/)
     t.rxMatch(t.threw(() => mfile.moveTo("rubbish")).toString(), /The parameters \(String\)/)
 
-    // trash all files
-    if (fixes.CLEAN) toTrash.forEach(f => f.setTrashed(true))
     if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
 
-    if (ScriptApp.isFake) {
-      ScriptApp.__behavior.strictSandbox = strb
-    }
+
   })
 
 
 
   unit.section('driveapp and adv permissions', t => {
-    let strb = false
-    if (ScriptApp.isFake) {
-      strb = ScriptApp.__behavior.strictSandbox
-      ScriptApp.__behavior.strictSandbox = false
-    }
+
     const { permissions } = Drive.Permissions.list(fixes.TEXT_FILE_ID)
     t.is(permissions.length, 1)
     const [p0] = permissions
@@ -411,16 +386,12 @@ export const testDrive = (pack) => {
     t.is(editors.length, 1)
     editors.forEach(f => t.true(is.nonEmptyString(f.getName())))
     if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
-    if (ScriptApp.isFake) {
-      ScriptApp.__behavior.strictSandbox = strb
-    }
+
   })
 
 
 
   unit.section('create files with driveapp and compare content with adv drive and urlfetch', t => {
-
-    const toTrash = []
 
     const rootFolder = DriveApp.getRootFolder()
     t.is(rootFolder.toString(), "My Drive")
@@ -493,7 +464,6 @@ export const testDrive = (pack) => {
     t.rxMatch(t.threw(() => DriveApp.createFile(mname)).toString(), /The parameters \(String\)/)
     t.rxMatch(t.threw(() => DriveApp.createFile(Utilities.newBlob(""))).toString(), /Blob object must have non-null name for this operation./)
 
-    if (fixes.CLEAN) toTrash.forEach(f => f.setTrashed(true))
     if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
   })
 
@@ -521,11 +491,8 @@ export const testDrive = (pack) => {
 
 
   unit.section('drive thumbnails', t => {
-    let strb = false
-    if (ScriptApp.isFake) {
-      strb = ScriptApp.__behavior.strictSandbox
-      ScriptApp.__behavior.strictSandbox = false
-    }
+
+
     const df = Drive.Files.get(fixes.TEXT_FILE_ID, { fields: "id,hasThumbnail,thumbnailLink" })
     const af = DriveApp.getFileById(fixes.TEXT_FILE_ID)
     t.is(df.id, af.getId())
@@ -548,17 +515,12 @@ export const testDrive = (pack) => {
     // t.deepEqual (tblob.getBytes(), ublob.getBytes())
     if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
 
-    if (ScriptApp.isFake) {
-      ScriptApp.__behavior.strictSandbox = strb
-    }
+
   })
 
   unit.section('driveapp basics and Drive equivalence', t => {
-    let strb = false
-    if (ScriptApp.isFake) {
-      strb = ScriptApp.__behavior.strictSandbox
-      ScriptApp.__behavior.strictSandbox = false
-    }
+
+
     t.is(DriveApp.toString(), "Drive")
     t.is(DriveApp.getRootFolder().toString(), "My Drive")
 
@@ -577,17 +539,12 @@ export const testDrive = (pack) => {
     t.is(file.getDownloadUrl(), Drive.Files.get(file.getId(), { fields: "webContentLink" }).webContentLink)
 
     if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
-    if (ScriptApp.isFake) {
-      ScriptApp.__behavior.strictSandbox = strb
-    }
+
   })
 
   unit.section('adv drive downloads', t => {
-    let strb = false
-    if (ScriptApp.isFake) {
-      strb = ScriptApp.__behavior.strictSandbox
-      ScriptApp.__behavior.strictSandbox = false
-    }
+
+
     const r = Drive.Files.download(fixes.TEXT_FILE_ID)
     t.true(is.object(r.metadata))
     t.true(is.nonEmptyString(r.name))
@@ -617,9 +574,7 @@ export const testDrive = (pack) => {
     t.is(file.getId(), aFile.id)
     t.deepEqual(response.getBlob().getBytes(), blob.getBytes())
     if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
-    if (ScriptApp.isFake) {
-      ScriptApp.__behavior.strictSandbox = strb
-    }
+
   })
 
   unit.section('check where google doesnt support in adv drive', t => {
@@ -652,11 +607,8 @@ export const testDrive = (pack) => {
   })
 
   unit.section("driveapp searching with queries", t => {
-    let strb = false
-    if (ScriptApp.isFake) {
-      strb = ScriptApp.__behavior.strictSandbox
-      ScriptApp.__behavior.strictSandbox = false
-    }
+
+
     const root = DriveApp.getRootFolder()
 
     // this gets the folders directly under root folder with given name
@@ -691,18 +643,13 @@ export const testDrive = (pack) => {
     })
 
     if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
-    if (ScriptApp.isFake) {
-      ScriptApp.__behavior.strictSandbox = strb
-    }
+
   }, { skip: false })
 
 
   unit.section('getting content', t => {
-    let strb = false
-    if (ScriptApp.isFake) {
-      strb = ScriptApp.__behavior.strictSandbox
-      ScriptApp.__behavior.strictSandbox = false
-    }
+
+
     const file = DriveApp.getFileById(fixes.TEXT_FILE_ID)
     const folder = DriveApp.getFolderById(fixes.TEST_FOLDER_ID)
     t.is(file.getMimeType(), 'text/plain')
@@ -711,17 +658,11 @@ export const testDrive = (pack) => {
     const blob = file.getBlob()
     t.is(blob.getDataAsString(), fixes.TEXT_FILE_CONTENT)
     if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
-    if (ScriptApp.isFake) {
-      ScriptApp.__behavior.strictSandbox = strb
-    }
+
   })
 
   unit.section('extended meta data', t => {
-    let strb = false
-    if (ScriptApp.isFake) {
-      strb = ScriptApp.__behavior.strictSandbox
-      ScriptApp.__behavior.strictSandbox = false
-    }
+
     const file = DriveApp.getFileById(fixes.TEXT_FILE_ID)
     t.true(is.date(file.getLastUpdated()))
     t.true(is.date(file.getDateCreated()))
@@ -756,9 +697,7 @@ export const testDrive = (pack) => {
     t.true(sheetFile.getSize() > 0)
     t.is(sheetFile.getMimeType(), 'application/vnd.google-apps.spreadsheet')
     if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
-    if (ScriptApp.isFake) {
-      ScriptApp.__behavior.strictSandbox = strb
-    }
+
   }, {
     skip: false
   })
@@ -779,17 +718,9 @@ export const testDrive = (pack) => {
   if (!pack) {
     unit.report()
   }
+  if (fixes.CLEAN) trasher(toTrash);
   return { unit, fixes }
 }
 
-// if we're running this test standalone, on Node - we need to actually kick it off
-// the provess.argv should contain "execute" 
-// for example node testdrive.js execute
-// on apps script we don't want it to run automatically
-// when running as part of a consolidated test, we dont want to run it, as the caller will do that
 
-if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
-  testDrive()
-  ScriptApp.__behavior.trash()
-  console.log('...cumulative drive cache performance', getDrivePerformance())
-}
+wrapupTest(testDrive);
