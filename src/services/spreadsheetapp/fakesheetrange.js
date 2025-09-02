@@ -33,6 +33,7 @@ import {
   Dimension,
 } from "../enums/sheetsenums.js";
 import { FakeTextFinder, newFakeTextFinder } from "./faketextfinder.js";
+import { FakeProtection, newFakeProtection } from "./fakeprotection.js";
 
 const {
   is,
@@ -2635,5 +2636,62 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
    */
   createTextFinder(text) {
     return newFakeTextFinder(this, text);
+  }
+
+  protect() {
+    const obj = {
+      spreadsheetId: this.getSheet().getParent().getId(),
+      requests: [
+        {
+          addProtectedRange: {
+            protectedRange: { range: makeGridRange(this) },
+          },
+        },
+      ],
+    };
+    const res = this.__batchUpdate(obj);
+    const o = res.replies[0]?.addProtectedRange?.protectedRange || {};
+    return newFakeProtection(this, o);
+  }
+
+  getProtections(type) {
+    const obj = {
+      spreadsheetId: this.getSheet().getParent().getId(),
+      ranges: [this.getSheet().getSheetName()],
+      fields: "sheets(protectedRanges)",
+    };
+    const res = this.__get(obj).sheets;
+    if (
+      res &&
+      res.length > 0 &&
+      res[0].protectedRanges &&
+      res[0].protectedRanges.length > 0
+    ) {
+      const checkKeys = [
+        "startRowIndex",
+        "endRowIndex",
+        "startColumnIndex",
+        "endColumnIndex",
+      ];
+      const ar = res[0].protectedRanges.filter((r) => {
+        if (type == "RANGE") {
+          return checkKeys.every((k) => r.range.hasOwnProperty(k));
+        } else if (type == "SHEET") {
+          return checkKeys.every((k) => !r.range.hasOwnProperty(k));
+        }
+        return false;
+      });
+      const sheet = this;
+      return ar.map((e) => newFakeProtection(sheet, e));
+    }
+    return [];
+  }
+
+  __batchUpdate({ spreadsheetId, requests }) {
+    return Sheets.Spreadsheets.batchUpdate({ requests }, spreadsheetId);
+  }
+
+  __get({ spreadsheetId, ranges, fields = "*" }) {
+    return Sheets.Spreadsheets.get(spreadsheetId, { ranges, fields });
   }
 }

@@ -1,12 +1,7 @@
 import { Proxies } from "../../support/proxies.js";
-// import {
-//   makeGridRange,
-//   getGridRange,
-//   makeSheetsGridRange,
-//   batchUpdate,
-// } from "./sheetrangehelpers.js";
+import { makeGridRange } from "./sheetrangehelpers.js";
 import { newFakeUser } from "../common/fakeuser.js";
-import { isNull } from "@sindresorhus/is";
+import { FakeNamedRange, newFakeNamedRange } from "./fakenamedrange.js";
 
 /**
  * create a new FakeProtection instance
@@ -133,7 +128,7 @@ export class FakeProtection {
   getRange() {
     if (this.getProtectionType().toString() == "RANGE") {
       return this.spreadsheet
-        .getSheetById(this.object.sheetId)
+        .getSheetById(this.object.range.sheetId)
         .getRange(
           this.object.range.startRowIndex + 1,
           this.object.range.startColumnIndex + 1,
@@ -141,19 +136,59 @@ export class FakeProtection {
           this.object.range.endColumnIndex - this.object.range.startColumnIndex
         );
     } else if (this.getProtectionType().toString() == "SHEET") {
-      const sheet = this.spreadsheet.getSheetById(this.object.sheetId);
+      const sheet = this.spreadsheet.getSheetById(this.object.range.sheetId);
       return sheet.getRange(1, 1, sheet.getMaxRows(), sheet.getMaxColumns());
     }
     return null;
   }
 
-  getRangeName() {}
+  getRangeName() {
+    const res1 = this.__getProtections(this.object.protectedRangeId);
+    if (res1.namedRangeId) {
+      const obj = {
+        spreadsheetId: this.spreadsheetId,
+        fields: "namedRanges",
+      };
+      const res2 = this.__get(obj).namedRanges;
+      if (res2 && res2.length > 0) {
+        const nr = res2.find(
+          ({ namedRangeId }) => namedRangeId == res1.namedRangeId
+        );
+        if (nr) {
+          return nr.name;
+        }
+      }
+    }
+    return null;
+  }
 
   getTargetAudiences() {
     // Cannot test
   }
 
-  getUnprotectedRanges() {}
+  getUnprotectedRanges() {
+    const res = this.__getProtections(this.object.protectedRangeId);
+    if (res.unprotectedRanges && res.unprotectedRanges.length > 0) {
+      return res.unprotectedRanges.map(
+        ({
+          sheetId,
+          startRowIndex,
+          endRowIndex,
+          startColumnIndex,
+          endColumnIndex,
+        }) =>
+          this.spreadsheet
+            .getSheetById(sheetId)
+            .getRange(
+              startRowIndex + 1,
+              startColumnIndex + 1,
+              endRowIndex - startRowIndex,
+              endColumnIndex - startColumnIndex
+            )
+      );
+    }
+    return [];
+  }
 
   isWarningOnly() {
     return this.object.warningOnly || false;
@@ -233,27 +268,136 @@ export class FakeProtection {
     return this;
   }
 
-  setNamedRange() {
+  setNamedRange(namedRange) {
+    if (namedRange?.object?.namedRangeId) {
+      const namedRangeId = namedRange.object.namedRangeId;
+      const obj = {
+        spreadsheetId: this.spreadsheetId,
+        requestObj: {
+          requests: [
+            {
+              updateProtectedRange: {
+                protectedRange: {
+                  protectedRangeId: this.object.protectedRangeId,
+                  namedRangeId,
+                },
+                fields: "namedRangeId",
+              },
+            },
+          ],
+          includeSpreadsheetInResponse: true,
+        },
+      };
+      const res1 = this.__batchUpdate(obj);
+      const pr = res1?.updatedSpreadsheet?.sheets[0]?.protectedRanges || [];
+      const res2 = pr.find(
+        (e) => e.protectedRangeId == this.object.protectedRangeId
+      );
+      this.object = res2;
+    }
     return this;
   }
 
-  setRange() {
-    if (this.kind == "Sheet") {
+  setRange(range) {
+    if (this.kind == "Spreadsheet" || this.kind == "Sheet") {
       throw new Error(
         "Exception: Cannot change sheet protection to range protection (or vice versa)."
       );
     }
-    //
+    const obj = {
+      spreadsheetId: this.spreadsheetId,
+      requestObj: {
+        requests: [
+          {
+            updateProtectedRange: {
+              protectedRange: {
+                protectedRangeId: this.object.protectedRangeId,
+                range: makeGridRange(range),
+              },
+              fields: "range",
+            },
+          },
+        ],
+        includeSpreadsheetInResponse: true,
+      },
+    };
+    const res1 = this.__batchUpdate(obj);
+    const pr = res1?.updatedSpreadsheet?.sheets[0]?.protectedRanges || [];
+    const res2 = pr.find(
+      (e) => e.protectedRangeId == this.object.protectedRangeId
+    );
+    this.object = res2;
     return this;
   }
 
-  setRangeName() {
+  setRangeName(rangeName) {
+    const obj = {
+      spreadsheetId: this.spreadsheetId,
+      fields: "namedRanges",
+    };
+    const res = this.__get(obj).namedRanges;
+    if (res && res.length > 0) {
+      const nr = res.find(({ name }) => name == rangeName);
+      if (nr) {
+        const namedRangeId = nr.namedRangeId;
+        const obj = {
+          spreadsheetId: this.spreadsheetId,
+          requestObj: {
+            requests: [
+              {
+                updateProtectedRange: {
+                  protectedRange: {
+                    protectedRangeId: this.object.protectedRangeId,
+                    namedRangeId,
+                  },
+                  fields: "namedRangeId",
+                },
+              },
+            ],
+            includeSpreadsheetInResponse: true,
+          },
+        };
+        const res1 = this.__batchUpdate(obj);
+        const pr = res1?.updatedSpreadsheet?.sheets[0]?.protectedRanges || [];
+        const res2 = pr.find(
+          (e) => e.protectedRangeId == this.object.protectedRangeId
+        );
+        this.object = res2;
+      } else {
+        throw new Error(`No named range of ${rangeName}.`);
+      }
+    } else {
+      throw new Error(`No named range of ${rangeName}.`);
+    }
     return this;
   }
 
-  // 20250831 今ここを作成中
   setUnprotectedRanges(ranges) {
-    if (range && Array.isArray(range) && range.length > 0) {
+    if (ranges && Array.isArray(ranges) && ranges.length > 0) {
+      const unprotectedRanges = ranges.map((r) => makeGridRange(r));
+      const obj = {
+        spreadsheetId: this.spreadsheetId,
+        requestObj: {
+          requests: [
+            {
+              updateProtectedRange: {
+                protectedRange: {
+                  protectedRangeId: this.object.protectedRangeId,
+                  unprotectedRanges,
+                },
+                fields: "unprotectedRanges",
+              },
+            },
+          ],
+          includeSpreadsheetInResponse: true,
+        },
+      };
+      const res1 = this.__batchUpdate(obj);
+      const pr = res1?.updatedSpreadsheet?.sheets[0]?.protectedRanges || [];
+      const res2 = pr.find(
+        (e) => e.protectedRangeId == this.object.protectedRangeId
+      );
+      this.object = res2;
     }
     return this;
   }
@@ -282,6 +426,8 @@ export class FakeProtection {
       (e) => e.protectedRangeId == this.object.protectedRangeId
     );
     this.object = res2;
+
+    // this.object.warningOnly = warningOnly;
     return this;
   }
 
