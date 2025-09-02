@@ -48,7 +48,8 @@ class FakeAdvSheetsValues extends FakeAdvResource {
 
 
   get(spreadsheetId, range, options = {}) {
-    const params = { spreadsheetId: this.sheets.__allowed(spreadsheetId), range, ...options };
+    ScriptApp.__behavior.isAccessible(spreadsheetId, 'Sheets', 'read');
+    const params = { spreadsheetId, range, ...options };
     const { response, data } = this._call("get", params, null, 'values');
     // maybe we need to throw an error
     ssError(response, "get")
@@ -56,9 +57,10 @@ class FakeAdvSheetsValues extends FakeAdvResource {
   }
 
   batchUpdate(requests, spreadsheetId, { ss = false } = {}) {
+    ScriptApp.__behavior.isAccessible(spreadsheetId, 'Sheets', 'write');
     const requestBody = requests
     const { response, data } = this._call("batchUpdate", {
-      spreadsheetId: this.sheets.__allowed(spreadsheetId),
+      spreadsheetId,
       requestBody
     }, null, 'values');
 

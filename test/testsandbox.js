@@ -1,6 +1,11 @@
 import "../main.js";
 import { initTests } from "./testinit.js";
-import { getDrivePerformance, getSheetsPerformance } from "./testassist.js";
+import {
+  getDrivePerformance,
+  getSheetsPerformance,
+  getDocsPerformance,
+  getSlidesPerformance,
+} from "./testassist.js";
 
 export const testSandbox = (pack) => {
   const { unit, fixes } = pack || initTests();
@@ -131,6 +136,81 @@ export const testSandbox = (pack) => {
     );
   });
 
+  unit.section("Sandbox with DocumentApp and SlidesApp", (t) => {
+    resetSandbox();
+    const behavior = ScriptApp.__behavior;
+
+    // Turn off strict mode temporarily to create test files we can use IDs from
+    behavior.strictSandbox = false;
+    const doc = DocumentApp.create(fixes.PREFIX + "sandbox-doc-test");
+    const pres = SlidesApp.create(fixes.PREFIX + "sandbox-slides-test");
+    const docId = doc.getId();
+    const presId = pres.getId();
+    behavior.strictSandbox = true; // Turn it back on for testing
+
+    // 1. Test access is denied without whitelisting
+    t.rxMatch(
+      t.threw(() => DocumentApp.openById(docId))?.message,
+      /Access to file .* is denied by sandbox rules/,
+      "Should deny access to external Doc without whitelist"
+    );
+
+    t.rxMatch(
+      t.threw(() => SlidesApp.openById(presId))?.message,
+      /Access to file .* is denied by sandbox rules/,
+      "Should deny access to external Presentation without whitelist"
+    );
+
+    // 2. Test read access with whitelisting
+    behavior.idWhitelist = [
+      behavior.newIdWhitelistItem(docId),
+      behavior.newIdWhitelistItem(presId),
+    ];
+
+    const openedDoc = DocumentApp.openById(docId);
+    t.is(openedDoc.getId(), docId, "Should open whitelisted Doc");
+
+    const openedPres = SlidesApp.openById(presId);
+    t.is(openedPres.getId(), presId, "Should open whitelisted Presentation");
+
+    // 3. Test write/trash permissions
+    t.rxMatch(
+      t.threw(() => openedDoc.getBody().setText("no write access"))?.message,
+      /Write access to file .* is denied by sandbox rules/,
+      "Should deny write access to read-only whitelisted Doc"
+    );
+
+    // Now allow writing to the doc
+    behavior.idWhitelist = [
+      behavior.newIdWhitelistItem(docId).setWrite(true),
+      behavior.newIdWhitelistItem(presId), // keep this one read-only
+    ];
+    openedDoc.getBody().setText("write access granted");
+    t.is(
+      DocumentApp.openById(docId).getBody().getText(),
+      "\nwrite access granted",
+      "Should allow writing to whitelisted Doc"
+    );
+
+    // Test trashing the presentation (should fail)
+    t.rxMatch(
+      t.threw(() => DriveApp.getFileById(presId).setTrashed(true))?.message,
+      /Trash access to file .* is denied by sandbox rules/,
+      "Should deny trash access to read-only whitelisted Presentation"
+    );
+
+    // Now allow trashing the presentation
+    behavior.idWhitelist = [
+      behavior.newIdWhitelistItem(docId).setWrite(true),
+      behavior.newIdWhitelistItem(presId).setTrash(true),
+    ];
+    DriveApp.getFileById(presId).setTrashed(true);
+    t.true(
+      DriveApp.getFileById(presId).isTrashed(),
+      "Should allow trashing of whitelisted Presentation"
+    );
+  });
+
   if (!pack) {
     unit.report();
   }
@@ -147,6 +227,18 @@ if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
     console.log(
       "...cumulative sheets cache performance",
       getSheetsPerformance()
+    );
+  }
+  if (DocumentApp.isFake) {
+    console.log(
+      "...cumulative docs cache performance",
+      getDocsPerformance()
+    );
+  }
+  if (SlidesApp.isFake) {
+    console.log(
+      "...cumulative slides cache performance",
+      getSlidesPerformance()
     );
   }
 }

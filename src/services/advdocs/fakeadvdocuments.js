@@ -17,19 +17,7 @@ class FakeAdvDocuments extends FakeAdvResource {
   constructor(docs) {
     super(docs, 'documents', Syncit.fxDocs);
     this.__fakeObjectType = "Docs.Documents";
-  }
-  // in sandbox mode only files created in this instance are
-  __allowed(id) {
-    if (!ScriptApp.__behavior.isAccessible(id)) {
-      throw new Error(`Access to document ${id} is not allowed in sandbox mode`);
-    }
-    return id
-  }
-  __addAllowed(id) {
-    if (ScriptApp.__behavior.sandBoxMode) {
-      ScriptApp.__behavior.addFile(id);
-    }
-    return id
+    this.docs = docs;
   }
 
   create(resource, options) {
@@ -44,7 +32,7 @@ class FakeAdvDocuments extends FakeAdvResource {
 
     // maybe we need to throw an error
     gError(response, 'docs.documents', "create")
-    this.__addAllowed(data.documentId);
+    this.docs.__addAllowed(data.documentId);
     return data
   }
 
@@ -55,12 +43,14 @@ class FakeAdvDocuments extends FakeAdvResource {
       matchThrow("API call to docs.documents.batchUpdate failed with error: Invalid JSON payload received.");
     }
 
+    // any update to a doc is a write
+    ScriptApp.__behavior.isAccessible(documentId, 'Docs', 'write');
 
     // Invalidate the cache for this document since we are updating it.
     docsCacher.clear(documentId);
     // console.log (JSON.stringify(requests))
     const { response, data } = this._call("batchUpdate", {
-      documentId: this.__allowed(documentId),
+      documentId,
       requestBody: requests
     });
 
@@ -101,7 +91,8 @@ class FakeAdvDocuments extends FakeAdvResource {
 
     if (is.nonEmptyObject(options) && !Reflect.ownKeys(options || {}).every(f => optionsSet.has(f))) matchThrow();
 
-    const params = {documentId: this.__allowed(documentId), ...(options || {}) };
+    ScriptApp.__behavior.isAccessible(documentId, 'Docs', 'read');
+    const params = {documentId, ...(options || {}) };
 
     const { response, data } = this._call("get", params);
     gError(response, 'docs.documents', 'get');

@@ -21,9 +21,10 @@ class FakeAdvDrivePermissions extends FakeAdvResource {
     const { nargs, matchThrow } = signatureArgs(arguments, "Drive.Permissions.create");
     if (nargs < 2 || nargs > 3) matchThrow();
 
+    ScriptApp.__behavior.isAccessible(fileId, 'Drive', 'write');
     const params = {
       resource,
-      fileId: this.drive.__allowed(fileId),
+      fileId,
       ...(optionalArgs || {})
     };
     const { data } = this._call('create', params);
@@ -34,8 +35,9 @@ class FakeAdvDrivePermissions extends FakeAdvResource {
     const { nargs, matchThrow } = signatureArgs(arguments, "Drive.Permissions.delete");
     if (nargs < 2 || nargs > 3) matchThrow();
 
+    ScriptApp.__behavior.isAccessible(fileId, 'Drive', 'write');
     const params = {
-      fileId: this.drive.__allowed(fileId),
+      fileId,
       permissionId,
       ...(optionalArgs || {})
     };
@@ -47,7 +49,8 @@ class FakeAdvDrivePermissions extends FakeAdvResource {
     const { nargs, matchThrow } = signatureArgs(arguments, "Drive.Permissions.list");
     if (nargs < 1 || nargs > 2) matchThrow();
 
-    const params = { fileId: this.drive.__allowed(fileId), ...(optionalArgs || {}) };
+    ScriptApp.__behavior.isAccessible(fileId, 'Drive', 'read');
+    const params = { fileId, ...(optionalArgs || {}) };
     const { data } = this._call('list', params);
     return data;
   }

@@ -1,3 +1,4 @@
+import { Utils } from './utils.js';
 
 
 /**
@@ -8,9 +9,19 @@
 const getAppHandler = (getApp, name) => {
   return {
 
-    get(_, prop) {
-      // this will let the caller know we're not really running in Apps Script 
-      return (prop === 'isFake')  ? true : Reflect.get(getApp(), prop);
+    get(_, prop, receiver) {
+      // this will let the caller know we're not really running in Apps Script
+      if (prop === 'isFake') return true;
+
+      const app = getApp();
+      const member = Reflect.get(app, prop, receiver);
+
+      // Check method whitelist if it's a function call on a service
+      if (Utils.is.function(member) && name && globalThis.ScriptApp?.__behavior) {
+        globalThis.ScriptApp.__behavior.checkMethod(name, prop);
+      }
+
+      return member;
     },
 
     set(_, prop, value) {

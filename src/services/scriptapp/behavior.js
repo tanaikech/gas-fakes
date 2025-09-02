@@ -228,6 +228,12 @@ class FakeBehavior {
       return true;
     }
 
+    // In sandbox mode, read access to the root folder is always required for DriveApp initialization.
+    // The real ID will be added to the known files list by DriveApp itself when it's discovered.
+    if (id === 'root' && accessType === 'read') {
+      return true;
+    }
+
     // 3. If in sandbox mode, check if it's a session file.
     if (this.isKnown(id)) {
       return true;
@@ -258,6 +264,20 @@ class FakeBehavior {
     if (serviceBehavior && !serviceBehavior.enabled) {
       throw new Error(`${serviceName} service is disabled by sandbox settings`);
     }
+
+    // internal methods are always allowed
+    if (methodName.startsWith('__')) {
+      return true;
+    }
+
+    // some methods are essential for other services to work, so they are always allowed
+    if (serviceName === 'DriveApp') {
+      const essentialMethods = new Set(['getRootFolder', 'getFileById', 'getFolderById', 'setTrashed']);
+      if (essentialMethods.has(methodName)) {
+        return true;
+      }
+    }
+
     if (serviceBehavior && serviceBehavior.methodWhitelist && !serviceBehavior.methodWhitelist.includes(methodName)) {
       throw new Error(`Method ${serviceName}.${methodName} is not allowed by sandbox settings`);
     }
