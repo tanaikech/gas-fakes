@@ -150,7 +150,7 @@ export class FakeSpreadsheetApp {
    * @return {FakeSpreadsheet}
    */
   openById(id) {
-    if (!ScriptApp.__behavior.isAccessible(id, 'SheetsApp')) {
+    if (!ScriptApp.__behavior.isAccessible(id, 'SpreadsheetApp')) {
       throw new Error(`Access to spreadsheet "${id}" is denied by sandbox rules.`);
     }
     const result = newFakeSpreadsheet(

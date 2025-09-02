@@ -31,7 +31,7 @@ sandboxService: {
     cleanup: true
   },
   ...etc for the others
-  SheetsApp: {
+  SpreadsheetApp: {
   },
   DriveApp: {
 

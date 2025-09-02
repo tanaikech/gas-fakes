@@ -15,7 +15,7 @@ let _app = null;
  * adds to global space to mimic Apps Script behavior
  */
 const name = "SpreadsheetApp";
-const serviceName = "SheetsApp";
+const serviceName = "SpreadsheetApp";
 
 if (typeof globalThis[name] === typeof undefined) {
   const getApp = () => {
