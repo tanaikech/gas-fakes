@@ -95,7 +95,8 @@ class FakeSandboxService {
   set sandboxMode(value) {
     this.__state.sandboxMode = checkArgs(value)
   }
-  set methodWhitelist(value) {
+
+  setMethodWhitelist(value) {
     if (!is.null(value)) {
       checkArgs(value, "array")
       value.forEach(f => {
@@ -103,7 +104,35 @@ class FakeSandboxService {
       })
     }
     this.__state.methodWhitelist = value
+    return this
   }
+
+  addMethodWhitelist(methodName) {
+    if (!is.nonEmptyString(methodName)) throw new Error(`expected a nonEmptyString for methodName`)
+    if (!this.__state.methodWhitelist) {
+      this.__state.methodWhitelist = []
+    }
+    if (!this.__state.methodWhitelist.includes(methodName)) {
+      this.__state.methodWhitelist.push(methodName)
+    }
+    return this
+  }
+
+  removeMethodWhitelist(methodName) {
+    if (this.__state.methodWhitelist) {
+      this.__state.methodWhitelist = this.__state.methodWhitelist.filter(m => m !== methodName)
+      if (this.__state.methodWhitelist.length === 0) {
+        this.__state.methodWhitelist = null
+      }
+    }
+    return this
+  }
+
+  clearMethodWhitelist() {
+    this.__state.methodWhitelist = null
+    return this
+  }
+
   set enabled(value) {
     this.__state.enabled = checkArgs(value)
   }
@@ -149,16 +178,44 @@ class FakeBehavior {
   get idWhitelist() {
     return this.__idWhitelist
   }
-  set idWhitelist(value) {
-    if (!is.null(value)){
+
+  setIdWhitelist(value) {
+    if (!is.null(value)) {
       checkArgs(value, "array")
       value.forEach(f => {
         if (!f || f.toString() !== "IdWhitelistItem") throw new Error(`expected an IdWhitelistItem`)
       })
     }
     this.__idWhitelist = value
+    return this
   }
 
+  addIdWhitelist(item) {
+    if (!item || item.toString() !== "IdWhitelistItem") throw new Error(`expected an IdWhitelistItem`)
+    if (!this.__idWhitelist) {
+      this.__idWhitelist = []
+    }
+    // avoid duplicates by id
+    if (!this.__idWhitelist.find(i => i.id === item.id)) {
+      this.__idWhitelist.push(item)
+    }
+    return this
+  }
+
+  removeIdWhitelist(id) {
+    if (this.__idWhitelist) {
+      this.__idWhitelist = this.__idWhitelist.filter(item => item.id !== id)
+      if (this.__idWhitelist.length === 0) {
+        this.__idWhitelist = null
+      }
+    }
+    return this
+  }
+
+  clearIdWhitelist() {
+    this.__idWhitelist = null
+    return this
+  }
   get sandboxService() {
     return this.__sandboxService
   }

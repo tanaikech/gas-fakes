@@ -79,10 +79,20 @@ export const initTests = () => {
   }
   // if we in fake mode, we'll operate in sandbox mode by default
   if (ScriptApp.isFake) {
-    ScriptApp.__behavior.sandBoxMode = true;
+    const behavior = ScriptApp.__behavior;
+    behavior.sandboxMode = true;
     console.log('...operating in sandbox mode - only files created in this instance of gas-fakes are accessible')
-    ScriptApp.__behavior.strictSandbox = true;
-    ScriptApp.__behavior.cleanup = fixes.CLEAN;
+    behavior.strictSandbox = true;
+    behavior.cleanup = fixes.CLEAN;
+
+    // Automatically whitelist all test file IDs for read access
+    // This allows tests to access fixture files without needing to disable the sandbox.
+    Object.keys(fixes).forEach(key => {
+      if (key.endsWith('_ID') && fixes[key]) {
+        console.log(`...whitelisting test file ${key}: ${fixes[key]}`);
+        behavior.addIdWhitelist(behavior.newIdWhitelistItem(fixes[key]));
+      }
+    });
   }
   return {
     unit,

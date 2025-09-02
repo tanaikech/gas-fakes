@@ -37,7 +37,7 @@ You can configure the behavior of the sandbox through these properties on the `S
 | `sandboxMode`     | `boolean` | `false` | When set to `true`, file access is restricted to files created within the current session.                                                                                |
 | `cleanup`         | `boolean` | `true`  | If `true`, calling the `trash()` method will move all files created during the session to the Google Drive trash. Set to `false` to leave test artifacts for inspection. |
 | `strictSandbox`   | `boolean` | `true`  | When `true` and `sandboxMode` is active, any attempt to access a file not created in the session will throw an error. If `false`, it allows access, which can be useful for debugging but does not strictly emulate the `drive.file` scope. |
-| `idWhitelist`   | `array` | null  | an array of `IdWhitelistItem` to allow access to, even when strictSandbox is turned on. |
+| `idWhitelist`     | `array`   | `null`  | (Read-only) Returns the current ID whitelist. Use the methods below to modify it.                                                                                       |
 
 ### Example Usage:
 
@@ -334,4 +334,3 @@ try {
 - [this file](README.md)
 - [named colors](named-colors.md)
 - [sandbox](sandbox.md)
-

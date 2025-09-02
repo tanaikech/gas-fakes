@@ -22,7 +22,7 @@ export const testSandbox = (pack) => {
     behavior.sandboxMode = true;
     behavior.strictSandbox = true;
     behavior.cleanup = fixes.CLEAN;
-    behavior.idWhitelist = null;
+    behavior.clearIdWhitelist();
 
     // Reset per-service properties
     if (behavior.sandboxService) {
@@ -71,7 +71,7 @@ export const testSandbox = (pack) => {
     const behavior = ScriptApp.__behavior;
 
     // 1. Whitelist a file for reading only (default)
-    behavior.idWhitelist = [behavior.newIdWhitelistItem(fixes.TEXT_FILE_ID)];
+    behavior.addIdWhitelist(behavior.newIdWhitelistItem(fixes.TEXT_FILE_ID));
 
     const readFile = DriveApp.getFileById(fixes.TEXT_FILE_ID);
     t.is(
@@ -89,9 +89,9 @@ export const testSandbox = (pack) => {
 
     // 2. Whitelist a spreadsheet for writing
     const sheetId = fixes.TEST_SHEET_ID;
-    behavior.idWhitelist = [
-      behavior.newIdWhitelistItem(sheetId).setRead(true).setWrite(true),
-    ];
+    behavior
+      .clearIdWhitelist()
+      .addIdWhitelist(behavior.newIdWhitelistItem(sheetId).setRead(true).setWrite(true));
 
     const ss = SpreadsheetApp.openById(sheetId);
     t.is(ss.getId(), sheetId, "Should be able to open whitelisted spreadsheet");
@@ -120,7 +120,7 @@ export const testSandbox = (pack) => {
     t.is(ss.getName(), "will work", "Other services should remain enabled");
 
     // 2. Method Whitelist
-    behavior.sandboxService.DriveApp.methodWhitelist = ["createFolder"];
+    behavior.sandboxService.DriveApp.setMethodWhitelist(["createFolder"]);
     const folder = DriveApp.createFolder(fixes.PREFIX + "whitelist-folder");
     t.is(
       folder.getName(),
@@ -168,10 +168,9 @@ export const testSandbox = (pack) => {
     );
 
     // 2. Test read access with whitelisting
-    behavior.idWhitelist = [
-      behavior.newIdWhitelistItem(docId),
-      behavior.newIdWhitelistItem(presId),
-    ];
+    behavior
+      .addIdWhitelist(behavior.newIdWhitelistItem(docId))
+      .addIdWhitelist(behavior.newIdWhitelistItem(presId));
 
     const openedDoc = DocumentApp.openById(docId);
     t.is(openedDoc.getId(), docId, "Should open whitelisted Doc");
@@ -187,10 +186,10 @@ export const testSandbox = (pack) => {
     );
 
     // Now allow writing to the doc
-    behavior.idWhitelist = [
+    behavior.setIdWhitelist([
       behavior.newIdWhitelistItem(docId).setWrite(true),
       behavior.newIdWhitelistItem(presId), // keep this one read-only
-    ];
+    ]);
     openedDoc.getBody().appendParagraph("write access granted");
     t.is(
       DocumentApp.openById(docId).getBody().getText(),
@@ -206,15 +205,51 @@ export const testSandbox = (pack) => {
     );
 
     // Now allow trashing the presentation
-    behavior.idWhitelist = [
+    behavior.setIdWhitelist([
       behavior.newIdWhitelistItem(docId).setWrite(true),
       behavior.newIdWhitelistItem(presId).setTrash(true),
-    ];
+    ]);
     DriveApp.getFileById(presId).setTrashed(true);
     t.true(
       DriveApp.getFileById(presId).isTrashed(),
       "Should allow trashing of whitelisted Presentation"
     );
+  });
+
+  unit.section("Whitelist add/remove methods", (t) => {
+    resetSandbox();
+    const behavior = ScriptApp.__behavior;
+
+    // Test ID whitelist methods
+    behavior.addIdWhitelist(behavior.newIdWhitelistItem('id1'));
+    t.is(behavior.idWhitelist.length, 1, "addIdWhitelist should add one item");
+    t.is(behavior.idWhitelist[0].id, 'id1', "addIdWhitelist should add correct item");
+
+    behavior.addIdWhitelist(behavior.newIdWhitelistItem('id2'));
+    t.is(behavior.idWhitelist.length, 2, "addIdWhitelist should add a second item");
+
+    behavior.removeIdWhitelist('id1');
+    t.is(behavior.idWhitelist.length, 1, "removeIdWhitelist should remove an item");
+    t.is(behavior.idWhitelist[0].id, 'id2', "removeIdWhitelist should leave correct item");
+
+    behavior.clearIdWhitelist();
+    t.is(behavior.idWhitelist, null, "clearIdWhitelist should clear the list");
+
+    // Test method whitelist methods
+    const driveService = behavior.sandboxService.DriveApp;
+    driveService.addMethodWhitelist('method1');
+    t.is(driveService.methodWhitelist.length, 1, "addMethodWhitelist should add one method");
+    t.is(driveService.methodWhitelist[0], 'method1', "addMethodWhitelist should add correct method");
+
+    driveService.addMethodWhitelist('method2');
+    t.is(driveService.methodWhitelist.length, 2, "addMethodWhitelist should add a second method");
+
+    driveService.removeMethodWhitelist('method1');
+    t.is(driveService.methodWhitelist.length, 1, "removeMethodWhitelist should remove a method");
+    t.is(driveService.methodWhitelist[0], 'method2', "removeMethodWhitelist should leave correct method");
+
+    driveService.clearMethodWhitelist();
+    t.is(driveService.methodWhitelist, null, "clearMethodWhitelist should clear the list");
   });
 
   if (!pack) {
