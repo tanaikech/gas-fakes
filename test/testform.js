@@ -62,6 +62,85 @@ export const testForm = (pack) => {
     }
   });
 
+  unit.section('Form item methods', (t) => {
+    // This test can only run in the fake environment because it uses the advanced Forms service
+    // to add items to the form, which is not available in live Apps Script.
+    if (!FormApp.isFake) {
+      console.log('...skipping Form item methods test on live Apps Script');
+      return;
+    }
+
+    const form = FormApp.create('Form with Items');
+    toTrash.push(DriveApp.getFileById(form.getId()));
+
+    // Use advanced service to add items, as FormApp doesn't have add*Item methods yet.
+    const createItemRequest1 = Forms.newRequest().setCreateItem(
+      Forms.newCreateItemRequest()
+        .setItem(
+          Forms.newItem()
+            .setTitle('First Question')
+            .setQuestionItem(
+              Forms.newQuestionItem().setQuestion(
+                Forms.newQuestion().setTextQuestion(Forms.newTextQuestion())
+              )
+            )
+        )
+        .setLocation(Forms.newLocation().setIndex(0))
+    );
+
+    const createItemRequest2 = Forms.newRequest().setCreateItem(
+      Forms.newCreateItemRequest()
+        .setItem(
+          Forms.newItem()
+            .setTitle('Second Question')
+            .setQuestionItem(
+              Forms.newQuestionItem().setQuestion(
+                Forms.newQuestion().setChoiceQuestion(
+                  Forms.newChoiceQuestion()
+                    .setType('CHECKBOX')
+                    .setOptions([Forms.newOption().setValue('Option 1')])
+                )
+              )
+            )
+        )
+        .setLocation(Forms.newLocation().setIndex(1))
+    );
+
+    const batchRequest = Forms.newBatchUpdateFormRequest()
+      .setRequests([createItemRequest1, createItemRequest2])
+      .setIncludeFormInResponse(true);
+
+    const batchResponse = Forms.Form.batchUpdate(batchRequest, form.getId());
+    t.is(batchResponse.replies.length, 2, 'Batch update should have two replies');
+
+    const item1Id = batchResponse.replies[0].createItem.itemId;
+    t.true(is.nonEmptyString(item1Id), 'First created item should have an ID');
+
+    // Re-open the form to test getItems and getItemById
+    const updatedForm = FormApp.openById(form.getId());
+
+    // Test getItems()
+    const items = updatedForm.getItems();
+    t.is(items.length, 2, 'getItems() should return two items');
+    t.is(items[0].toString(), 'Item', 'First item should be of type Item');
+    t.is(items[0].getTitle(), 'First Question', 'First item should have correct title');
+    t.is(items[1].getTitle(), 'Second Question', 'Second item should have correct title');
+
+    // Test getItemById()
+    const item1 = updatedForm.getItemById(item1Id);
+    t.truthy(item1, 'getItemById() should find the first item');
+    t.is(item1.getId(), item1Id, 'Found item should have the correct ID');
+    t.is(item1.getTitle(), 'First Question', 'Found item should have the correct title');
+
+    // Test getItemById() with a non-existent ID
+    const nonExistentItem = updatedForm.getItemById('non-existent-id');
+    t.is(nonExistentItem, null, 'getItemById() with a non-existent ID should return null');
+
+    if (FormApp.isFake) {
+      console.log('...cumulative forms cache performance', getFormsPerformance());
+    }
+  });
+
   if (!pack) {
     unit.report();
   }
