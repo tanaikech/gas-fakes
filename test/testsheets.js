@@ -22,15 +22,13 @@ import {
   isEnum,
   BLACK,
   transpose2DArray,
-  trasher
+  trasher,
 } from "./testassist.js";
 import { getSheetsPerformance, wrapupTest } from "./testassist.js";
-;
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testSheets = (pack) => {
   const toTrash = [];
   const { unit, fixes } = pack || initTests();
-
 
   unit.section("R1C1 Formula Notation", (t) => {
     const { sheet } = maketss("r1c1_formulas", toTrash, fixes);
@@ -2970,7 +2968,4 @@ export const testSheets = (pack) => {
   return { unit, fixes };
 };
 
-
-
 wrapupTest(testSheets);
-

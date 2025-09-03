@@ -2,6 +2,7 @@ import { Proxies } from "../../support/proxies.js";
 import { makeGridRange } from "./sheetrangehelpers.js";
 import { newFakeUser } from "../common/fakeuser.js";
 import { newFakeNamedRange } from "./fakenamedrange.js";
+import { FakeSheetRange } from "../spreadsheetapp/fakesheetrange.js";
 
 /**
  * create a new FakeProtection instance
@@ -91,10 +92,7 @@ export class FakeProtection {
   }
 
   canEdit() {
-    if (this.object.requestingUserCanEdit) {
-      return this.object.requestingUserCanEdit;
-    }
-    return false;
+    return this.object.requestingUserCanEdit || false;
   }
 
   getDescription() {
@@ -105,7 +103,7 @@ export class FakeProtection {
     if (this.object.editors?.users && this.object.editors?.users.length > 0) {
       return this.object.editors.users.map((email) => newFakeUser({ email }));
     }
-    return null;
+    return [];
   }
 
   getProtectionType() {
@@ -123,20 +121,8 @@ export class FakeProtection {
 
   getRange() {
     const sheetId = this.object.range?.sheetId || 0;
-    if (this.getProtectionType().toString() == "RANGE") {
-      return this.spreadsheet
-        .getSheetById(sheetId)
-        .getRange(
-          this.object.range.startRowIndex + 1,
-          this.object.range.startColumnIndex + 1,
-          this.object.range.endRowIndex - this.object.range.startRowIndex,
-          this.object.range.endColumnIndex - this.object.range.startColumnIndex
-        );
-    } else if (this.getProtectionType().toString() == "SHEET") {
-      const sheet = this.spreadsheet.getSheetById(sheetId);
-      return sheet.getRange(1, 1, sheet.getMaxRows(), sheet.getMaxColumns());
-    }
-    return null;
+    const sheet = this.spreadsheet.getSheetById(sheetId);
+    return new FakeSheetRange(this.object.range, sheet);
   }
 
   getRangeName() {
@@ -166,23 +152,28 @@ export class FakeProtection {
   getUnprotectedRanges() {
     const res = this.__getProtections(this.object.protectedRangeId);
     if (res.unprotectedRanges && res.unprotectedRanges.length > 0) {
-      return res.unprotectedRanges.map(
-        ({
-          sheetId = 0,
-          startRowIndex = 0,
-          endRowIndex = 0,
-          startColumnIndex = 0,
-          endColumnIndex = 0,
-        }) => {
-          const sheet = this.spreadsheet.getSheetById(sheetId);
-          return sheet.getRange(
-            startRowIndex + 1,
-            startColumnIndex + 1,
-            endRowIndex - startRowIndex || sheet.getMaxRows(),
-            endColumnIndex - startColumnIndex || sheet.getMaxColumns()
-          );
-        }
-      );
+      return res.unprotectedRanges.map((r) => {
+        const sheet = this.spreadsheet.getSheetById(r.sheetId || 0);
+        return new FakeSheetRange(r, sheet);
+      });
+
+      // return res.unprotectedRanges.map(
+      //   ({
+      //     sheetId = 0,
+      //     startRowIndex = 0,
+      //     endRowIndex = 0,
+      //     startColumnIndex = 0,
+      //     endColumnIndex = 0,
+      //   }) => {
+      //     const sheet = this.spreadsheet.getSheetById(sheetId);
+      //     return sheet.getRange(
+      //       startRowIndex + 1,
+      //       startColumnIndex + 1,
+      //       endRowIndex - startRowIndex || sheet.getMaxRows(),
+      //       endColumnIndex - startColumnIndex || sheet.getMaxColumns()
+      //     );
+      //   }
+      // );
     }
     return [];
   }
@@ -402,6 +393,10 @@ export class FakeProtection {
     return this;
   }
 
+  toString() {
+    return "Protection";
+  }
+
   __getProtectedRangeFromResponseOfBatchUpdate(res) {
     const sheet = res?.updatedSpreadsheet?.sheets.find(
       (s) => s.properties.sheetId == this.sheetId
@@ -417,7 +412,7 @@ export class FakeProtection {
       spreadsheetId: this.spreadsheetId,
       fields: "sheets(protectedRanges)",
     };
-    if (this.sheet?.getSheetName()) {
+    if (this.sheet && this.sheet.getSheetName()) {
       obj.ranges = [this.sheet.getSheetName()];
     }
     const res = this.__get(obj).sheets;
