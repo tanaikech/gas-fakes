@@ -419,6 +419,13 @@ const value = Sheets.newExtendedValue().setNumberValue(dateToSerial(value));
 
 Note that this simply enters the numeric value of the dateSerial, without mentioning that it actually a date. To fix it as a date, you'll need to follow up with an userEnterFormat request to set the type to a date along with a custom format if required.
 
+#### Protection.getEditors() and the Owner
+
+When you programmatically create a new protection using `sheet.protect()` or `range.protect()`, the spreadsheet owner can always edit the protected range (`protection.canEdit()` will return `true` for the owner).
+
+However, the owner is **not** automatically included in the array of `User` objects returned by `protection.getEditors()`. Therefore, for a newly created protection, `protection.getEditors().length` will correctly be `0`. See this issue - https://issuetracker.google.com/issues/442636162
+
+
 #### UI settings
 
 Some of the options available in the GAS UI for setting or examining data validation are not available via GAS, and may not be available via Sheets. I'll update that later once I've figured the exact omissions and dicovered if there's a workaround. Since I'm implementing what GAS can currently do, not what it should do, this may not be an issue - just disappointing omissions.
