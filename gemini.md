@@ -59,6 +59,10 @@ These have been basicly implemented, but remain untested in any way. I haven't b
 
 The Sheets API doesn't know about these, so all r1c1 style methods such as setFormulasR1C1 include a conversion to a regular range to be able to communicate with the underlying sheets API. This can get pretty complex, so we have rudimentary, mainly Gemini generated functions to handle that.
 
+#### progress documentation
+
+I gave gemini the task of generating [progress reports](./progress) for the entire emulation using [this prompt](./progress/whatisthis.MD). After many false starts it manged to knock something up which is quote comprehensive, not entirely accurate, but more realistic than trying to maintain it manually. I'll keep banging away at this from time to time. It will be very useful when correct.
+
 #### Intial overall verdict on using Gemini to generate some of this stuff
 
 I'm torn. On the one hand, it's been great at doing busy work like writing test cases and detecting dependencies that I might otherwise have missed. It can often be pretty good at refactoring/renaming things. On the other hand, if it gets it wrong, it's very hard to get it back on track as it tries bury itself deeper and deeper into previous misconceptions. It also has huge difficulty in updating large files no matter the detailed guidance. The usual end game is to restart a fresh context and/or copy and paste the content into a file you create manually.

@@ -58,26 +58,7 @@ There's an article here, if you want to read more on this [Apps Script environme
 
 This was a little problematic to sequence, but I wanted to make sure that any GAS services being imitated were available and initialized on the Node side, just as they are in GAS. At the time of writing these services and classes are partially implemented.
 
-Only a subset of methods are currently available for some of them - the rest are work in progress. My approach is to start with a little bit of each service to prove feasibility and provide a base to build on.
-
-v1.0.13
-
-- `DriveApp` - 50%
-- `ScriptApp` - almost all
-- `UrlFetchApp` - 80%
-- `Utilities` - almost all
-- `SpreadsheetApp` - 80%
-- `CacheService` - 80%
-- `PropertiesService` - 80%
-- `Session` - almost all
-- `Blob` - all
-- `User` - all
-- `Drive (Advanced Service)` - 40%
-- `Sheets (Advanced Service)` - 60%
-- `Slides (Advanced Service)` - 2%
-- `Docs (Advanced Service)` - 75%
-- `DocumentApp` - 25%
-- `SlidesApp` - 5%
+Only a subset of methods are currently available for some of them - the rest are work in progress. You can see the progress by service and method in the [progress folder](./progress)
 
 ### Testing coverage
 
