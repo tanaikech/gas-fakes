@@ -1,6 +1,7 @@
 import { Proxies } from '../../support/proxies.js';
 import { newFakeFormItem } from './fakeformitem.js';
 import './formitems.js'; // Import for side effects (item class registration)
+import { newFakeCheckboxItem } from './fakecheckboxitem.js';
 
 export const newFakeForm = (...args) => {
   return Proxies.guard(new FakeForm(...args));
@@ -27,6 +28,50 @@ export class FakeForm {
   saveAndClose() {
     // this is a no-op in fake environment since it is stateless
   }
+
+  _addItem(itemResource, itemFactory) {
+    const createRequest = Forms.newRequest().setCreateItem({
+      item: itemResource,
+      location: {
+        index: this.__resource.items?.length || 0,
+      },
+    });
+
+    const batchRequest = Forms.newBatchUpdateFormRequest()
+      .setIncludeFormInResponse(true)
+      .setRequests([createRequest]);
+
+    const response = Forms.Form.batchUpdate(batchRequest, this.getId());
+
+    const createdItemReply = response.replies.find(r => r.createItem);
+    if (createdItemReply && createdItemReply.createItem.itemId) {
+      const newItemId = createdItemReply.createItem.itemId;
+      return itemFactory(this, newItemId);
+    }
+
+    throw new Error(`Could not find created item in batchUpdate response.`);
+  }
+
+  /**
+   * Adds a new checkbox item to the form.
+   * @returns {import('./fakecheckboxitem.js').FakeCheckboxItem} The new checkbox item.
+   */
+  addCheckboxItem() {
+    const itemResource = {
+      questionItem: {
+        question: {
+          choiceQuestion: {
+            type: 'CHECKBOX',
+            // The API requires at least one non-empty option. Live Apps Script creates one with an empty value.
+            // We'll emulate by creating a default "Option 1" in the fake environment.
+            options: [{ value: 'Option 1' }],
+          },
+        },
+      },
+    };
+    return this._addItem(itemResource, newFakeCheckboxItem);
+  }
+
   /**
    * Gets the ID of the form.
    * @returns {string} The form ID.

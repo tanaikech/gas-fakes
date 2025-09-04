@@ -166,14 +166,19 @@ export class FakeFormItem {
     const { nargs, matchThrow } = signatureArgs(arguments, 'Item.setHelpText');
     if (nargs !== 1 || !is.string(text)) matchThrow('Invalid arguments');
 
+    // The Forms API requires the full item resource in an update request to
+    // avoid ambiguity about item type changes. We fetch the current resource,
+    // update its description, and send the whole object back with an updateMask.
+    const updatedResource = JSON.parse(JSON.stringify(this.__resource));
+    updatedResource.description = text;
+
     const updateRequest = Forms.newRequest().setUpdateItem({
-      item: { // This item object is for the update request, not the dynamic resource
-        itemId: this.getId(),
-        description: text,
-      },
+      // Use the full, updated resource object.
+      item: updatedResource,
       location: {
         index: this.getIndex(),
       },
+      // Crucially, only ask the API to update the description field.
       updateMask: 'description',
     });
 
@@ -186,14 +191,19 @@ export class FakeFormItem {
     const { nargs, matchThrow } = signatureArgs(arguments, 'Item.setTitle');
     if (nargs !== 1 || !is.string(title)) matchThrow('Invalid arguments');
 
+    // The Forms API requires the full item resource in an update request to
+    // avoid ambiguity about item type changes. We fetch the current resource,
+    // update its title, and send the whole object back with an updateMask.
+    const updatedResource = JSON.parse(JSON.stringify(this.__resource));
+    updatedResource.title = title;
+
     const updateRequest = Forms.newRequest().setUpdateItem({
-      item: { // This item object is for the update request, not the dynamic resource
-        itemId: this.getId(),
-        title: title,
-      },
+      // Use the full, updated resource object.
+      item: updatedResource,
       location: {
         index: this.getIndex(),
       },
+      // Crucially, only ask the API to update the title field.
       updateMask: 'title',
     });
 

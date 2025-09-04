@@ -4,6 +4,7 @@ import { signatureArgs } from '../../support/helpers.js';
 import { Utils } from '../../support/utils.js';
 const { is } = Utils;
 import { registerFormItem } from './formitemregistry.js';
+import { newFakeChoice } from './fakechoice.js';
 import { ItemType } from '../enums/formsenums.js';
 
 export const newFakeCheckboxItem = (...args) => {
@@ -25,29 +26,46 @@ export class FakeCheckboxItem extends FakeFormItem {
   }
 
   /**
+   * Creates a new choice for this item.
+   * @param {string} value The value of the choice.
+   * @param {boolean} [isCorrect] Whether the choice is correct.
+   * @returns {import('./fakechoice.js').FakeChoice} The new choice.
+   */
+  createChoice(value, isCorrect) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'CheckboxItem.createChoice');
+    if (nargs < 1 || nargs > 2 || !is.string(value) || (nargs === 2 && !is.boolean(isCorrect))) {
+      matchThrow('Invalid arguments');
+    }
+    // For now, navigation is not supported.
+    return newFakeChoice(value, isCorrect || false, null, null);
+  }
+
+  /**
    * Gets the choices for this item.
-   * @returns {string[]} An array of strings representing the choices.
+   * @returns {import('./fakechoice.js').FakeChoice[]} An array of Choice objects.
    */
   getChoices() {
     const choiceQuestion = this.__resource.questionItem?.question?.choiceQuestion;
     if (!choiceQuestion || !choiceQuestion.options) {
       return [];
     }
-    return choiceQuestion.options.map(option => option.value);
+    return choiceQuestion.options.map(option => {
+      return newFakeChoice(option.value, false, null, null);
+    });
   }
 
   /**
    * Sets the choices for this item.
-   * @param {string[]} choices An array of strings representing the choices.
+   * @param {import('./fakechoice.js').FakeChoice[]} choices An array of Choice objects.
    * @returns {FakeCheckboxItem} This item, for chaining.
    */
   setChoices(choices) {
     const { nargs, matchThrow } = signatureArgs(arguments, 'CheckboxItem.setChoices');
-    if (nargs !== 1 || !is.array(choices) || !choices.every(is.string)) {
-      matchThrow('Invalid arguments: expected an array of strings.');
+    if (nargs !== 1 || !is.array(choices) || !choices.every(c => c.toString() === 'Choice')) {
+      matchThrow('Invalid arguments: expected an array of Choice objects.');
     }
 
-    const newOptions = choices.map(value => Forms.newOption().setValue(value));
+    const newOptions = choices.map(choice => Forms.newOption().setValue(choice.getValue()));
     const currentIndex = this._getCurrentIndex();
 
     const updateRequest = Forms.newRequest().setUpdateItem({

@@ -141,6 +141,102 @@ export const testForm = (pack) => {
     }
   });
 
+  unit.section('CheckboxItem methods', (t) => {
+    // This test can only run in the fake environment because it uses the advanced Forms service
+    // to add items to the form, which is not available in live Apps Script.
+    if (!FormApp.isFake) {
+      console.log('...skipping CheckboxItem methods test on live Apps Script');
+      return;
+    }
+
+    const form = FormApp.create('CheckboxItem Test Form');
+    toTrash.push(DriveApp.getFileById(form.getId()));
+
+    // Use advanced service to add a checkbox item.
+    const createCheckboxRequest = Forms.newRequest().setCreateItem(
+      Forms.newCreateItemRequest()
+        .setItem(
+          Forms.newItem()
+            .setTitle('Checkbox Question')
+            .setQuestionItem(
+              Forms.newQuestionItem().setQuestion(
+                Forms.newQuestion().setChoiceQuestion(
+                  Forms.newChoiceQuestion()
+                    .setType('CHECKBOX')
+                    .setOptions([
+                      Forms.newOption().setValue('Option A'),
+                      Forms.newOption().setValue('Option B')
+                    ])
+                )
+              )
+            )
+        )
+        .setLocation(Forms.newLocation().setIndex(0))
+    );
+
+    const batchRequest = Forms.newBatchUpdateFormRequest()
+      .setRequests([createCheckboxRequest])
+      .setIncludeFormInResponse(true);
+
+    const batchResponse = Forms.Form.batchUpdate(batchRequest, form.getId());
+    const itemId = batchResponse.replies[0].createItem.itemId;
+
+    // Re-open the form to get the item
+    const updatedForm = FormApp.openById(form.getId());
+    const item = updatedForm.getItemById(itemId);
+
+    t.is(item.getType(), FormApp.ItemType.CHECKBOX, 'Item type should be CHECKBOX');
+
+    // Test asCheckboxItem()
+    const checkboxItem = item.asCheckboxItem();
+    t.is(checkboxItem.toString(), 'CheckboxItem', 'asCheckboxItem() should return a CheckboxItem');
+
+    // Test isRequired() and setRequired()
+    t.false(checkboxItem.isRequired(), 'Checkbox should not be required by default');
+    checkboxItem.setRequired(true);
+    t.true(checkboxItem.isRequired(), 'isRequired() should be true after setRequired(true)');
+    checkboxItem.setRequired(false);
+    t.false(checkboxItem.isRequired(), 'isRequired() should be false after setRequired(false)');
+
+    // Test getChoices() and setChoices()
+    t.deepEqual(checkboxItem.getChoices().map(c => c.getValue()), ['Option A', 'Option B'], 'getChoices() should return initial choices');
+
+    const newChoiceValues = ['Choice 1', 'Choice 2', 'Choice 3'];
+    const newChoices = newChoiceValues.map(val => checkboxItem.createChoice(val));
+    checkboxItem.setChoices(newChoices);
+    t.deepEqual(checkboxItem.getChoices().map(c => c.getValue()), newChoiceValues, 'getChoices() should return new choices after setChoices()');
+
+    if (FormApp.isFake) {
+      console.log('...cumulative forms cache performance', getFormsPerformance());
+    }
+  });
+
+  unit.section('Form.addCheckboxItem', (t) => {
+    const form = FormApp.create('Add Item Test Form');
+    toTrash.push(DriveApp.getFileById(form.getId()));
+
+    const checkboxItem = form.addCheckboxItem();
+    t.is(checkboxItem.toString(), 'CheckboxItem', 'addCheckboxItem should return a CheckboxItem');
+    t.is(checkboxItem.getIndex(), 0, 'The first added item should be at index 0');
+
+    const defaultChoices = checkboxItem.getChoices();
+    t.is(defaultChoices.length, 1, 'A new checkbox item should have one choice by default');
+    const expectedDefaultValue = FormApp.isFake ? 'Option 1' : '';
+    t.is(defaultChoices[0].getValue(), expectedDefaultValue, 'The default choice should have the correct value for the environment');
+
+    checkboxItem.setTitle('What are your favorite colors?');
+
+    const newChoiceValues = ['Red', 'Green', 'Blue'];
+    const newChoices = newChoiceValues.map(val => checkboxItem.createChoice(val));
+    checkboxItem.setChoices(newChoices);
+
+    const retrievedItem = form.getItemById(checkboxItem.getId()).asCheckboxItem();
+    t.is(retrievedItem.getTitle(), 'What are your favorite colors?', 'Title should be set correctly');
+    t.deepEqual(retrievedItem.getChoices().map(c => c.getValue()), newChoiceValues, 'Choices should be set correctly');
+
+    if (FormApp.isFake) console.log('...cumulative forms cache performance', getFormsPerformance());
+  });
+
   if (!pack) {
     unit.report();
   }
