@@ -1,5 +1,4 @@
 import { Proxies } from "../../support/proxies.js";
-import { newFakePivotTable } from "./fakepivottable.js";
 import { newFakeDataTable } from "./fakedatatable.js";
 import { newFakeBanding } from "./fakebanding.js";
 import { newFakeDeveloperMetadataFinder } from "./fakedevelopermetadatafinder.js";

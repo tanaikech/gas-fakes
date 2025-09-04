@@ -11,11 +11,9 @@ import { newFakeDeveloperMetadataFinder } from "./fakedevelopermetadatafinder.js
 import { newFakeSheetRangeList } from "./fakesheetrangelist.js";
 import { FakeTextFinder, newFakeTextFinder } from "./faketextfinder.js";
 
-import { toolresults } from "googleapis/build/src/apis/toolresults/index.js";
-import { FakeColorBase } from "../common/fakecolorbase.js";
-import { FakeNamedRange, newFakeNamedRange } from "./fakenamedrange.js";
+import {  newFakeNamedRange } from "./fakenamedrange.js";
 import { newFakeProtection } from "./fakeprotection.js";
-import { isNull } from "@sindresorhus/is";
+
 
 
 const { is, isEnum } = Utils;
