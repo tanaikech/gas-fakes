@@ -1,6 +1,7 @@
 # Forms Service Progress
 **Documentation:** [Forms Service](https://developers.google.com/apps-script/reference/forms)
 ---
+Overall Service Completion: 13% completed
 ## [Alignment](https://developers.google.com/apps-script/reference/forms/alignment)
 An enum representing the supported types of image alignment.
 
@@ -15,24 +16,24 @@ An enum representing the supported types of image alignment.
 ## [CheckboxGridItem](https://developers.google.com/apps-script/reference/forms/checkbox-grid-item)
 A question item that allows the respondent to select one or more checkboxes per row in a grid.
 
-0% completed
+40% completed
 
 | method | return | status | comments |
 |---|---|---|---|
 | [clearValidation()](https://developers.google.com/apps-script/reference/forms/checkbox-grid-item#clearValidation()) | [CheckboxGridItem](#checkboxgriditem) | Not Started | |
 | [createResponse(responses)](https://developers.google.com/apps-script/reference/forms/checkbox-grid-item#createResponse(String[])) | [ItemResponse](#itemresponse) | Not Started | |
-| [getColumns()](https://developers.google.com/apps-script/reference/forms/checkbox-grid-item#getColumns()) | String[] | Not Started | |
+| [getColumns()](https://developers.google.com/apps-script/reference/forms/checkbox-grid-item#getColumns()) | String[] | Completed | |
 | [getFeedbackForCorrect()](https://developers.google.com/apps-script/reference/forms/checkbox-grid-item#getFeedbackForCorrect()) | [QuizFeedback](#quizfeedback) | Not Started | |
 | [getFeedbackForIncorrect()](https://developers.google.com/apps-script/reference/forms/checkbox-grid-item#getFeedbackForIncorrect()) | [QuizFeedback](#quizfeedback) | Not Started | |
 | [getPoints()](https://developers.google.com/apps-script/reference/forms/checkbox-grid-item#getPoints()) | Integer | Not Started | |
-| [getRows()](https://developers.google.com/apps-script/reference/forms/checkbox-grid-item#getRows()) | String[] | Not Started | |
-| [isRequired()](https://developers.google.com/apps-script/reference/forms/checkbox-grid-item#isRequired()) | Boolean | Not Started | |
-| [setColumns(columns)](https://developers.google.com/apps-script/reference/forms/checkbox-grid-item#setColumns(String[])) | [CheckboxGridItem](#checkboxgriditem) | Not Started | |
+| [getRows()](https://developers.google.com/apps-script/reference/forms/checkbox-grid-item#getRows()) | String[] | Completed | |
+| [isRequired()](https://developers.google.com/apps-script/reference/forms/checkbox-grid-item#isRequired()) | Boolean | Completed | |
+| [setColumns(columns)](https://developers.google.com/apps-script/reference/forms/checkbox-grid-item#setColumns(String[])) | [CheckboxGridItem](#checkboxgriditem) | Completed | |
 | [setFeedbackForCorrect(feedback)](https://developers.google.com/apps-script/reference/forms/checkbox-grid-item#setFeedbackForCorrect(QuizFeedback)) | [CheckboxGridItem](#checkboxgriditem) | Not Started | |
 | [setFeedbackForIncorrect(feedback)](https://developers.google.com/apps-script/reference/forms/checkbox-grid-item#setFeedbackForIncorrect(QuizFeedback)) | [CheckboxGridItem](#checkboxgriditem) | Not Started | |
 | [setPoints(points)](https://developers.google.com/apps-script/reference/forms/checkbox-grid-item#setPoints(Integer)) | [CheckboxGridItem](#checkboxgriditem) | Not Started | |
-| [setRequired(enabled)](https://developers.google.com/apps-script/reference/forms/checkbox-grid-item#setRequired(Boolean)) | [CheckboxGridItem](#checkboxgriditem) | Not Started | |
-| [setRows(rows)](https://developers.google.com/apps-script/reference/forms/checkbox-grid-item#setRows(String[])) | [CheckboxGridItem](#checkboxgriditem) | Not Started | |
+| [setRequired(enabled)](https://developers.google.com/apps-script/reference/forms/checkbox-grid-item#setRequired(Boolean)) | [CheckboxGridItem](#checkboxgriditem) | Completed | |
+| [setRows(rows)](https://developers.google.com/apps-script/reference/forms/checkbox-grid-item#setRows(String[])) | [CheckboxGridItem](#checkboxgriditem) | Completed | |
 | [setValidation(validation)](https://developers.google.com/apps-script/reference/forms/checkbox-grid-item#setValidation(GridValidation)) | [CheckboxGridItem](#checkboxgriditem) | Not Started | |
 ---
 ## [CheckboxItem](https://developers.google.com/apps-script/reference/forms/checkbox-item)
@@ -96,7 +97,7 @@ A choice for a multiple-choice, checkbox, or list item.
 ## [DateItem](https://developers.google.com/apps-script/reference/forms/date-item)
 A question item that allows the respondent to indicate a date.
 
-0% completed
+22% completed
 
 | method | return | status | comments |
 |---|---|---|---|
@@ -104,16 +105,16 @@ A question item that allows the respondent to indicate a date.
 | [getGeneralFeedback()](https://developers.google.com/apps-script/reference/forms/date-item#getGeneralFeedback()) | [QuizFeedback](#quizfeedback) | Not Started | |
 | [getPoints()](https://developers.google.com/apps-script/reference/forms/date-item#getPoints()) | Integer | Not Started | |
 | [includesYear()](https://developers.google.com/apps-script/reference/forms/date-item#includesYear()) | Boolean | Not Started | |
-| [isRequired()](https://developers.google.com/apps-script/reference/forms/date-item#isRequired()) | Boolean | Not Started | |
+| [isRequired()](https://developers.google.com/apps-script/reference/forms/date-item#isRequired()) | Boolean | Completed | |
 | [setGeneralFeedback(feedback)](https://developers.google.com/apps-script/reference/forms/date-item#setGeneralFeedback(QuizFeedback)) | [DateItem](#dateitem) | Not Started | |
 | [setIncludesYear(enableYear)](https://developers.google.com/apps-script/reference/forms/date-item#setIncludesYear(Boolean)) | [DateItem](#dateitem) | Not Started | |
 | [setPoints(points)](https://developers.google.com/apps-script/reference/forms/date-item#setPoints(Integer)) | [DateItem](#dateitem) | Not Started | |
-| [setRequired(enabled)](https://developers.google.com/apps-script/reference/forms/date-item#setRequired(Boolean)) | [DateItem](#dateitem) | Not Started | |
+| [setRequired(enabled)](https://developers.google.com/apps-script/reference/forms/date-item#setRequired(Boolean)) | [DateItem](#dateitem) | Completed | |
 ---
 ## [DateTimeItem](https://developers.google.com/apps-script/reference/forms/date-time-item)
 A question item that allows the respondent to indicate a date and time.
 
-0% completed
+22% completed
 
 | method | return | status | comments |
 |---|---|---|---|
@@ -121,11 +122,11 @@ A question item that allows the respondent to indicate a date and time.
 | [getGeneralFeedback()](https://developers.google.com/apps-script/reference/forms/date-time-item#getGeneralFeedback()) | [QuizFeedback](#quizfeedback) | Not Started | |
 | [getPoints()](https://developers.google.com/apps-script/reference/forms/date-time-item#getPoints()) | Integer | Not Started | |
 | [includesYear()](https://developers.google.com/apps-script/reference/forms/date-time-item#includesYear()) | Boolean | Not Started | |
-| [isRequired()](https://developers.google.com/apps-script/reference/forms/date-time-item#isRequired()) | Boolean | Not Started | |
+| [isRequired()](https://developers.google.com/apps-script/reference/forms/date-time-item#isRequired()) | Boolean | Completed | |
 | [setGeneralFeedback(feedback)](https://developers.google.com/apps-script/reference/forms/date-time-item#setGeneralFeedback(QuizFeedback)) | [DateTimeItem](#datetimeitem) | Not Started | |
 | [setIncludesYear(enableYear)](https://developers.google.com/apps-script/reference/forms/date-time-item#setIncludesYear(Boolean)) | [DateTimeItem](#datetimeitem) | Not Started | |
 | [setPoints(points)](https://developers.google.com/apps-script/reference/forms/date-time-item#setPoints(Integer)) | [DateTimeItem](#datetimeitem) | Not Started | |
-| [setRequired(enabled)](https://developers.google.com/apps-script/reference/forms/date-time-item#setRequired(Boolean)) | [DateTimeItem](#datetimeitem) | Not Started | |
+| [setRequired(enabled)](https://developers.google.com/apps-script/reference/forms/date-time-item#setRequired(Boolean)) | [DateTimeItem](#datetimeitem) | Completed | |
 ---
 ## [DestinationType](https://developers.google.com/apps-script/reference/forms/destination-type)
 An enum representing the type of form-response destination.
@@ -139,43 +140,43 @@ An enum representing the type of form-response destination.
 ## [DurationItem](https://developers.google.com/apps-script/reference/forms/duration-item)
 A question item that allows the respondent to indicate a length of time.
 
-0% completed
+29% completed
 
 | method | return | status | comments |
 |---|---|---|---|
 | [createResponse(hours, minutes, seconds)](https://developers.google.com/apps-script/reference/forms/duration-item#createResponse(Integer,Integer,Integer)) | [ItemResponse](#itemresponse) | Not Started | |
 | [getGeneralFeedback()](https://developers.google.com/apps-script/reference/forms/duration-item#getGeneralFeedback()) | [QuizFeedback](#quizfeedback) | Not Started | |
 | [getPoints()](https://developers.google.com/apps-script/reference/forms/duration-item#getPoints()) | Integer | Not Started | |
-| [isRequired()](https://developers.google.com/apps-script/reference/forms/duration-item#isRequired()) | Boolean | Not Started | |
+| [isRequired()](https://developers.google.com/apps-script/reference/forms/duration-item#isRequired()) | Boolean | Completed | |
 | [setGeneralFeedback(feedback)](https://developers.google.com/apps-script/reference/forms/duration-item#setGeneralFeedback(QuizFeedback)) | [DurationItem](#durationitem) | Not Started | |
 | [setPoints(points)](https://developers.google.com/apps-script/reference/forms/duration-item#setPoints(Integer)) | [DurationItem](#durationitem) | Not Started | |
-| [setRequired(enabled)](https://developers.google.com/apps-script/reference/forms/duration-item#setRequired(Boolean)) | [DurationItem](#durationitem) | Not Started | |
+| [setRequired(enabled)](https://developers.google.com/apps-script/reference/forms/duration-item#setRequired(Boolean)) | [DurationItem](#durationitem) | Completed | |
 ---
 ## [Form](https://developers.google.com/apps-script/reference/forms/form)
 A form that can be sent to users and record their responses.
 
-9% completed
+20% completed
 
 | method | return | status | comments |
 |---|---|---|---|
-| [addCheckboxGridItem()](https://developers.google.com/apps-script/reference/forms/form#addCheckboxGridItem()) | [CheckboxGridItem](#checkboxgriditem) | Not Started | |
+| [addCheckboxGridItem()](https://developers.google.com/apps-script/reference/forms/form#addCheckboxGridItem()) | [CheckboxGridItem](#checkboxgriditem) | Completed | |
 | [addCheckboxItem()](https://developers.google.com/apps-script/reference/forms/form#addCheckboxItem()) | [CheckboxItem](#checkboxitem) | Completed | |
-| [addDateItem()](https://developers.google.com/apps-script/reference/forms/form#addDateItem()) | [DateItem](#dateitem) | Not Started | |
-| [addDateTimeItem()](https://developers.google.com/apps-script/reference/forms/form#addDateTimeItem()) | [DateTimeItem](#datetimeitem) | Not Started | |
-| [addDurationItem()](https://developers.google.com/apps-script/reference/forms/form#addDurationItem()) | [DurationItem](#durationitem) | Not Started | |
+| [addDateItem()](https://developers.google.com/apps-script/reference/forms/form#addDateItem()) | [DateItem](#dateitem) | Completed | |
+| [addDateTimeItem()](https://developers.google.com/apps-script/reference/forms/form#addDateTimeItem()) | [DateTimeItem](#datetimeitem) | Completed | |
+| [addDurationItem()](https://developers.google.com/apps-script/reference/forms/form#addDurationItem()) | [DurationItem](#durationitem) | Completed | |
 | [addEditor(emailAddress)](https://developers.google.com/apps-script/reference/forms/form#addEditor(String)) | [Form](#form) | Not Started | |
 | [addEditor(user)](https://developers.google.com/apps-script/reference/forms/form#addEditor(User)) | [Form](#form) | Not Started | |
 | [addEditors(emailAddresses)](https://developers.google.com/apps-script/reference/forms/form#addEditors(String[])) | [Form](#form) | Not Started | |
-| [addGridItem()](https://developers.google.com/apps-script/reference/forms/form#addGridItem()) | [GridItem](#griditem) | Not Started | |
-| [addImageItem()](https://developers.google.com/apps-script/reference/forms/form#addImageItem()) | [ImageItem](#imageitem) | Not Started | |
-| [addListItem()](https://developers.google.com/apps-script/reference/forms/form#addListItem()) | [ListItem](#listitem) | Not Started | |
-| [addMultipleChoiceItem()](https://developers.google.com/apps-script/reference/forms/form#addMultipleChoiceItem()) | [MultipleChoiceItem](#multiplechoiceitem) | Not Started | |
-| [addPageBreakItem()](https://developers.google.com/apps-script/reference/forms/form#addPageBreakItem()) | [PageBreakItem](#pagebreakitem) | Not Started | |
-| [addParagraphTextItem()](https://developers.google.com/apps-script/reference/forms/form#addParagraphTextItem()) | [ParagraphTextItem](#paragraphtextitem) | Not Started | |
-| [addScaleItem()](https://developers.google.com/apps-script/reference/forms/form#addScaleItem()) | [ScaleItem](#scaleitem) | Not Started | |
-| [addSectionHeaderItem()](https://developers.google.com/apps-script/reference/forms/form#addSectionHeaderItem()) | [SectionHeaderItem](#sectionheaderitem) | Not Started | |
-| [addTextItem()](https://developers.google.com/apps-script/reference/forms/form#addTextItem()) | [TextItem](#textitem) | Not Started | |
-| [addVideoItem()](https://developers.google.com/apps-script/reference/forms/form#addVideoItem()) | [VideoItem](#videoitem) | Not Started | |
+| [addGridItem()](https://developers.google.com/apps-script/reference/forms/form#addGridItem()) | [GridItem](#griditem) | Completed | |
+| [addImageItem()](https://developers.google.com/apps-script/reference/forms/form#addImageItem()) | [ImageItem](#imageitem) | Completed | |
+| [addListItem()](https://developers.google.com/apps-script/reference/forms/form#addListItem()) | [ListItem](#listitem) | Completed | |
+| [addMultipleChoiceItem()](https://developers.google.com/apps-script/reference/forms/form#addMultipleChoiceItem()) | [MultipleChoiceItem](#multiplechoiceitem) | Completed | |
+| [addPageBreakItem()](https://developers.google.com/apps-script/reference/forms/form#addPageBreakItem()) | [PageBreakItem](#pagebreakitem) | Completed | |
+| [addParagraphTextItem()](https://developers.google.com/apps-script/reference/forms/form#addParagraphTextItem()) | [ParagraphTextItem](#paragraphtextitem) | Completed | |
+| [addScaleItem()](https://developers.google.com/apps-script/reference/forms/form#addScaleItem()) | [ScaleItem](#scaleitem) | Completed | |
+| [addSectionHeaderItem()](https://developers.google.com/apps-script/reference/forms/form#addSectionHeaderItem()) | [SectionHeaderItem](#sectionheaderitem) | Completed | |
+| [addTextItem()](https://developers.google.com/apps-script/reference/forms/form#addTextItem()) | [TextItem](#textitem) | Completed | |
+| [addVideoItem()](https://developers.google.com/apps-script/reference/forms/form#addVideoItem()) | [VideoItem](#videoitem) | Completed | |
 | [canEditResponse()](https://developers.google.com/apps-script/reference/forms/form#canEditResponse()) | Boolean | Not Started | |
 | [collectsEmail()](https://developers.google.com/apps-script/reference/forms/form#collectsEmail()) | Boolean | Not Started | |
 | [createResponse()](https://developers.google.com/apps-script/reference/forms/form#createResponse()) | [FormResponse](#formresponse) | Not Started | |
@@ -193,7 +194,7 @@ A form that can be sent to users and record their responses.
 | [getId()](https://developers.google.com/apps-script/reference/forms/form#getId()) | String | Completed | |
 | [getItemById(id)](https://developers.google.com/apps-script/reference/forms/form#getItemById(Integer)) | [Item](#item) | Completed | |
 | [getItems()](https://developers.google.com/apps-script/reference/forms/form#getItems()) | [Item[]](#item) | Completed | |
-| [getItems(itemType)](https://developers.google.com/apps-script/reference/forms/form#getItems(ItemType)) | [Item[]](#item) | Not Started | |
+| [getItems(itemType)](https://developers.google.com/apps-script/reference/forms/form#getItems(ItemType)) | [Item[]](#item) | Completed | |
 | [getPublishedUrl()](https://developers.google.com/apps-script/reference/forms/form#getPublishedUrl()) | String | Not Started | |
 | [getRespondentViewers()](https://developers.google.com/apps-script/reference/forms/form#getRespondentViewers()) | [User[]](https://developers.google.com/apps-script/reference/base/user) | Not Started | |
 | [getResponse(responseId)](https://developers.google.com/apps-script/reference/forms/form#getResponse(String)) | [FormResponse](#formresponse) | Not Started | |
@@ -242,7 +243,7 @@ The main class for accessing and creating Forms.
 
 | method | return | status | comments |
 |---|---|---|---|
-| [create(title)](https://developers.google.com/apps-script/reference/forms/form-app#create(String)) | [Form](#form) | Completed | |
+| [create(title)](https://developers.google.com/apps-script/reference/forms/form-app#create(String)) | [Form](#form) | Completed | Live version sets Drive file name but leaves internal form title blank. API emulation cannot replicate this. See issue [442747794](https://issuetracker.google.com/issues/442747794). |
 | [getActiveForm()](https://developers.google.com/apps-script/reference/forms/form-app#getActiveForm()) | [Form](#form) | Completed | |
 | [getUi()](https://developers.google.com/apps-script/reference/forms/form-app#getUi()) | [Ui](https://developers.google.com/apps-script/reference/base/ui) | Not Started | |
 | [openById(id)](https://developers.google.com/apps-script/reference/forms/form-app#openById(String)) | [Form](#form) | Completed | |
@@ -272,17 +273,17 @@ A response to the form as a whole.
 ## [GridItem](https://developers.google.com/apps-script/reference/forms/grid-item)
 A question item that allows the respondent to select one choice per row from a grid of choices.
 
-0% completed
+71% completed
 
 | method | return | status | comments |
 |---|---|---|---|
 | [createResponse(responses)](https://developers.google.com/apps-script/reference/forms/grid-item#createResponse(String[])) | [ItemResponse](#itemresponse) | Not Started | |
-| [getColumns()](https://developers.google.com/apps-script/reference/forms/grid-item#getColumns()) | String[] | Not Started | |
-| [getRows()](https://developers.google.com/apps-script/reference/forms/grid-item#getRows()) | String[] | Not Started | |
-| [isRequired()](https://developers.google.com/apps-script/reference/forms/grid-item#isRequired()) | Boolean | Not Started | |
-| [setColumns(columns)](https://developers.google.com/apps-script/reference/forms/grid-item#setColumns(String[])) | [GridItem](#griditem) | Not Started | |
-| [setRequired(enabled)](https://developers.google.com/apps-script/reference/forms/grid-item#setRequired(Boolean)) | [GridItem](#griditem) | Not Started | |
-| [setRows(rows)](https://developers.google.com/apps-script/reference/forms/grid-item#setRows(String[])) | [GridItem](#griditem) | Not Started | |
+| [getColumns()](https://developers.google.com/apps-script/reference/forms/grid-item#getColumns()) | String[] | Completed | |
+| [getRows()](https://developers.google.com/apps-script/reference/forms/grid-item#getRows()) | String[] | Completed | |
+| [isRequired()](https://developers.google.com/apps-script/reference/forms/grid-item#isRequired()) | Boolean | Completed | |
+| [setColumns(columns)](https://developers.google.com/apps-script/reference/forms/grid-item#setColumns(String[])) | [GridItem](#griditem) | Completed | |
+| [setRequired(enabled)](https://developers.google.com/apps-script/reference/forms/grid-item#setRequired(Boolean)) | [GridItem](#griditem) | Completed | |
+| [setRows(rows)](https://developers.google.com/apps-script/reference/forms/grid-item#setRows(String[])) | [GridItem](#griditem) | Completed | |
 ---
 ## [GridValidation](https://developers.google.com/apps-script/reference/forms/grid-validation)
 A validation rule for a GridItem that requires the user to select one choice per row.
@@ -308,47 +309,47 @@ A builder for a grid validation rule.
 ## [ImageItem](https://developers.google.com/apps-script/reference/forms/image-item)
 A layout item that displays an image.
 
-0% completed
+83% completed
 
 | method | return | status | comments |
 |---|---|---|---|
-| [getAlignment()](https://developers.google.com/apps-script/reference/forms/image-item#getAlignment()) | [Alignment](#alignment) | Not Started | |
+| [getAlignment()](https://developers.google.com/apps-script/reference/forms/image-item#getAlignment()) | [Alignment](#alignment) | Completed | |
 | [getImage()](https://developers.google.com/apps-script/reference/forms/image-item#getImage()) | [Blob](https://developers.google.com/apps-script/reference/base/blob) | Not Started | |
-| [getWidth()](https://developers.google.com/apps-script/reference/forms/image-item#getWidth()) | Integer | Not Started | |
-| [setAlignment(alignment)](https://developers.google.com/apps-script/reference/forms/image-item#setAlignment(Alignment)) | [ImageItem](#imageitem) | Not Started | |
-| [setImage(image)](https://developers.google.com/apps-script/reference/forms/image-item#setImage(BlobSource)) | [ImageItem](#imageitem) | Not Started | |
-| [setWidth(width)](https://developers.google.com/apps-script/reference/forms/image-item#setWidth(Integer)) | [ImageItem](#imageitem) | Not Started | |
+| [getWidth()](https://developers.google.com/apps-script/reference/forms/image-item#getWidth()) | Integer | Completed | |
+| [setAlignment(alignment)](https://developers.google.com/apps-script/reference/forms/image-item#setAlignment(Alignment)) | [ImageItem](#imageitem) | Completed | |
+| [setImage(image)](https://developers.google.com/apps-script/reference/forms/image-item#setImage(BlobSource)) | [ImageItem](#imageitem) | Completed | |
+| [setWidth(width)](https://developers.google.com/apps-script/reference/forms/image-item#setWidth(Integer)) | [ImageItem](#imageitem) | Completed | |
 ---
 ## [Item](https://developers.google.com/apps-script/reference/forms/item)
 A generic form item that can be converted to a specific type, like a CheckboxItem or a PageBreakItem.
 
-21% completed
+54% completed
 
 | method | return | status | comments |
 |---|---|---|---|
-| [asCheckboxGridItem()](https://developers.google.com/apps-script/reference/forms/item#asCheckboxGridItem()) | [CheckboxGridItem](#checkboxgriditem) | Not Started | |
+| [asCheckboxGridItem()](https://developers.google.com/apps-script/reference/forms/item#asCheckboxGridItem()) | [CheckboxGridItem](#checkboxgriditem) | Completed | |
 | [asCheckboxItem()](https://developers.google.com/apps-script/reference/forms/item#asCheckboxItem()) | [CheckboxItem](#checkboxitem) | Completed | |
-| [asDateItem()](https://developers.google.com/apps-script/reference/forms/item#asDateItem()) | [DateItem](#dateitem) | Not Started | |
-| [asDateTimeItem()](https://developers.google.com/apps-script/reference/forms/item#asDateTimeItem()) | [DateTimeItem](#datetimeitem) | Not Started | |
-| [asDurationItem()](https://developers.google.com/apps-script/reference/forms/item#asDurationItem()) | [DurationItem](#durationitem) | Not Started | |
-| [asGridItem()](https://developers.google.com/apps-script/reference/forms/item#asGridItem()) | [GridItem](#griditem) | Not Started | |
-| [asImageItem()](https://developers.google.com/apps-script/reference/forms/item#asImageItem()) | [ImageItem](#imageitem) | Not Started | |
-| [asListItem()](https://developers.google.com/apps-script/reference/forms/item#asListItem()) | [ListItem](#listitem) | Not Started | |
-| [asMultipleChoiceItem()](https://developers.google.com/apps-script/reference/forms/item#asMultipleChoiceItem()) | [MultipleChoiceItem](#multiplechoiceitem) | Not Started | |
-| [asPageBreakItem()](https://developers.google.com/apps-script/reference/forms/item#asPageBreakItem()) | [PageBreakItem](#pagebreakitem) | Not Started | |
-| [asParagraphTextItem()](https://developers.google.com/apps-script/reference/forms/item#asParagraphTextItem()) | [ParagraphTextItem](#paragraphtextitem) | Not Started | |
-| [asScaleItem()](https://developers.google.com/apps-script/reference/forms/item#asScaleItem()) | [ScaleItem](#scaleitem) | Not Started | |
-| [asSectionHeaderItem()](https://developers.google.com/apps-script/reference/forms/item#asSectionHeaderItem()) | [SectionHeaderItem](#sectionheaderitem) | Not Started | |
-| [asTextItem()](https://developers.google.com/apps-script/reference/forms/item#asTextItem()) | [TextItem](#textitem) | Not Started | |
-| [asTimeItem()](https://developers.google.com/apps-script/reference/forms/item#asTimeItem()) | [TimeItem](#timeitem) | Not Started | |
-| [asVideoItem()](https://developers.google.com/apps-script/reference/forms/item#asVideoItem()) | [VideoItem](#videoitem) | Not Started | |
+| [asDateItem()](https://developers.google.com/apps-script/reference/forms/item#asDateItem()) | [DateItem](#dateitem) | Completed | |
+| [asDateTimeItem()](https://developers.google.com/apps-script/reference/forms/item#asDateTimeItem()) | [DateTimeItem](#datetimeitem) | Completed | |
+| [asDurationItem()](https://developers.google.com/apps-script/reference/forms/item#asDurationItem()) | [DurationItem](#durationitem) | Completed | |
+| [asGridItem()](https://developers.google.com/apps-script/reference/forms/item#asGridItem()) | [GridItem](#griditem) | Completed | |
+| [asImageItem()](https://developers.google.com/apps-script/reference/forms/item#asImageItem()) | [ImageItem](#imageitem) | Completed | |
+| [asListItem()](https://developers.google.com/apps-script/reference/forms/item#asListItem()) | [ListItem](#listitem) | Completed | |
+| [asMultipleChoiceItem()](https://developers.google.com/apps-script/reference/forms/item#asMultipleChoiceItem()) | [MultipleChoiceItem](#multiplechoiceitem) | Completed | |
+| [asPageBreakItem()](https://developers.google.com/apps-script/reference/forms/item#asPageBreakItem()) | [PageBreakItem](#pagebreakitem) | Completed | |
+| [asParagraphTextItem()](https://developers.google.com/apps-script/reference/forms/item#asParagraphTextItem()) | [ParagraphTextItem](#paragraphtextitem) | Completed | |
+| [asScaleItem()](https://developers.google.com/apps-script/reference/forms/item#asScaleItem()) | [ScaleItem](#scaleitem) | Completed | |
+| [asSectionHeaderItem()](https://developers.google.com/apps-script/reference/forms/item#asSectionHeaderItem()) | [SectionHeaderItem](#sectionheaderitem) | Completed | |
+| [asTextItem()](https://developers.google.com/apps-script/reference/forms/item#asTextItem()) | [TextItem](#textitem) | Completed | |
+| [asTimeItem()](https://developers.google.com/apps-script/reference/forms/item#asTimeItem()) | [TimeItem](#timeitem) | Completed | |
+| [asVideoItem()](https://developers.google.com/apps-script/reference/forms/item#asVideoItem()) | [VideoItem](#videoitem) | Completed | |
 | [duplicate()](https://developers.google.com/apps-script/reference/forms/item#duplicate()) | [Item](#item) | Not Started | |
-| [getHelpText()](https://developers.google.com/apps-script/reference/forms/item#getHelpText()) | String | Not Started | |
+| [getHelpText()](https://developers.google.com/apps-script/reference/forms/item#getHelpText()) | String | Completed | |
 | [getId()](https://developers.google.com/apps-script/reference/forms/item#getId()) | Integer | Completed | |
 | [getIndex()](https://developers.google.com/apps-script/reference/forms/item#getIndex()) | Integer | Completed | |
 | [getTitle()](https://developers.google.com/apps-script/reference/forms/item#getTitle()) | String | Completed | |
 | [getType()](https://developers.google.com/apps-script/reference/forms/item#getType()) | [ItemType](#itemtype) | Completed | |
-| [setHelpText(text)](https://developers.google.com/apps-script/reference/forms/item#setHelpText(String)) | [Item](#item) | Not Started | |
+| [setHelpText(text)](https://developers.google.com/apps-script/reference/forms/item#setHelpText(String)) | [Item](#item) | Completed | |
 | [setTitle(title)](https://developers.google.com/apps-script/reference/forms/item#setTitle(String)) | [Item](#item) | Completed | |
 ---
 ## [ItemResponse](https://developers.google.com/apps-script/reference/forms/item-response)
@@ -392,52 +393,52 @@ An enum representing the different types of items that can be added to a form.
 ## [ListItem](https://developers.google.com/apps-script/reference/forms/list-item)
 A question item that allows the respondent to select one choice from a list of presented options.
 
-0% completed
+31% completed
 
 | method | return | status | comments |
 |---|---|---|---|
-| [createChoice(value)](https://developers.google.com/apps-script/reference/forms/list-item#createChoice(String)) | [Choice](#choice) | Not Started | |
-| [createChoice(value, isCorrect)](https://developers.google.com/apps-script/reference/forms/list-item#createChoice(String,Boolean)) | [Choice](#choice) | Not Started | |
-| [createChoice(value, navigationType)](https://developers.google.com/apps-script/reference/forms/list-item#createChoice(String,PageNavigationType)) | [Choice](#choice) | Not Started | |
-| [createChoice(value, page)](https://developers.google.com/apps-script/reference/forms/list-item#createChoice(String,PageBreakItem)) | [Choice](#choice) | Not Started | |
+| [createChoice(value)](https://developers.google.com/apps-script/reference/forms/list-item#createChoice(String)) | [Choice](#choice) | Completed | |
+| [createChoice(value, isCorrect)](https://developers.google.com/apps-script/reference/forms/list-item#createChoice(String,Boolean)) | [Choice](#choice) | Completed | |
+| [createChoice(value, navigationType)](https://developers.google.com/apps-script/reference/forms/list-item#createChoice(String,PageNavigationType)) | [Choice](#choice) | Completed | |
+| [createChoice(value, page)](https://developers.google.com/apps-script/reference/forms/list-item#createChoice(String,PageBreakItem)) | [Choice](#choice) | Completed | |
 | [createResponse(response)](https://developers.google.com/apps-script/reference/forms/list-item#createResponse(String)) | [ItemResponse](#itemresponse) | Not Started | |
-| [getChoices()](https://developers.google.com/apps-script/reference/forms/list-item#getChoices()) | [Choice[]](#choice) | Not Started | |
+| [getChoices()](https://developers.google.com/apps-script/reference/forms/list-item#getChoices()) | [Choice[]](#choice) | Completed | |
 | [getFeedbackForCorrect()](https://developers.google.com/apps-script/reference/forms/list-item#getFeedbackForCorrect()) | [QuizFeedback](#quizfeedback) | Not Started | |
 | [getFeedbackForIncorrect()](https://developers.google.com/apps-script/reference/forms/list-item#getFeedbackForIncorrect()) | [QuizFeedback](#quizfeedback) | Not Started | |
 | [getPoints()](https://developers.google.com/apps-script/reference/forms/list-item#getPoints()) | Integer | Not Started | |
-| [isRequired()](https://developers.google.com/apps-script/reference/forms/list-item#isRequired()) | Boolean | Not Started | |
-| [setChoiceValues(values)](https://developers.google.com/apps-script/reference/forms/list-item#setChoiceValues(String[])) | [ListItem](#listitem) | Not Started | |
-| [setChoices(choices)](https://developers.google.com/apps-script/reference/forms/list-item#setChoices(Choice[])) | [ListItem](#listitem) | Not Started | |
+| [isRequired()](https://developers.google.com/apps-script/reference/forms/list-item#isRequired()) | Boolean | Completed | |
+| [setChoiceValues(values)](https://developers.google.com/apps-script/reference/forms/list-item#setChoiceValues(String[])) | [ListItem](#listitem) | Completed | |
+| [setChoices(choices)](https://developers.google.com/apps-script/reference/forms/list-item#setChoices(Choice[])) | [ListItem](#listitem) | Completed | |
 | [setFeedbackForCorrect(feedback)](https://developers.google.com/apps-script/reference/forms/list-item#setFeedbackForCorrect(QuizFeedback)) | [ListItem](#listitem) | Not Started | |
 | [setFeedbackForIncorrect(feedback)](https://developers.google.com/apps-script/reference/forms/list-item#setFeedbackForIncorrect(QuizFeedback)) | [ListItem](#listitem) | Not Started | |
 | [setPoints(points)](https://developers.google.com/apps-script/reference/forms/list-item#setPoints(Integer)) | [ListItem](#listitem) | Not Started | |
-| [setRequired(enabled)](https://developers.google.com/apps-script/reference/forms/list-item#setRequired(Boolean)) | [ListItem](#listitem) | Not Started | |
+| [setRequired(enabled)](https://developers.google.com/apps-script/reference/forms/list-item#setRequired(Boolean)) | [ListItem](#listitem) | Completed | |
 ---
 ## [MultipleChoiceItem](https://developers.google.com/apps-script/reference/forms/multiple-choice-item)
 A question item that allows the respondent to select one choice from a list of presented options.
 
-0% completed
+50% completed
 
 | method | return | status | comments |
 |---|---|---|---|
-| [createChoice(value)](https://developers.google.com/apps-script/reference/forms/multiple-choice-item#createChoice(String)) | [Choice](#choice) | Not Started | |
-| [createChoice(value, isCorrect)](https://developers.google.com/apps-script/reference/forms/multiple-choice-item#createChoice(String,Boolean)) | [Choice](#choice) | Not Started | |
-| [createChoice(value, navigationType)](https://developers.google.com/apps-script/reference/forms/multiple-choice-item#createChoice(String,PageNavigationType)) | [Choice](#choice) | Not Started | |
-| [createChoice(value, page)](https://developers.google.com/apps-script/reference/forms/multiple-choice-item#createChoice(String,PageBreakItem)) | [Choice](#choice) | Not Started | |
+| [createChoice(value)](https://developers.google.com/apps-script/reference/forms/multiple-choice-item#createChoice(String)) | [Choice](#choice) | Completed | |
+| [createChoice(value, isCorrect)](https://developers.google.com/apps-script/reference/forms/multiple-choice-item#createChoice(String,Boolean)) | [Choice](#choice) | Completed | |
+| [createChoice(value, navigationType)](https://developers.google.com/apps-script/reference/forms/multiple-choice-item#createChoice(String,PageNavigationType)) | [Choice](#choice) | Completed | |
+| [createChoice(value, page)](https://developers.google.com/apps-script/reference/forms/multiple-choice-item#createChoice(String,PageBreakItem)) | [Choice](#choice) | Completed | |
 | [createResponse(response)](https://developers.google.com/apps-script/reference/forms/multiple-choice-item#createResponse(String)) | [ItemResponse](#itemresponse) | Not Started | |
-| [getChoices()](https://developers.google.com/apps-script/reference/forms/multiple-choice-item#getChoices()) | [Choice[]](#choice) | Not Started | |
+| [getChoices()](https://developers.google.com/apps-script/reference/forms/multiple-choice-item#getChoices()) | [Choice[]](#choice) | Completed | |
 | [getFeedbackForCorrect()](https://developers.google.com/apps-script/reference/forms/multiple-choice-item#getFeedbackForCorrect()) | [QuizFeedback](#quizfeedback) | Not Started | |
 | [getFeedbackForIncorrect()](https://developers.google.com/apps-script/reference/forms/multiple-choice-item#getFeedbackForIncorrect()) | [QuizFeedback](#quizfeedback) | Not Started | |
 | [getPoints()](https://developers.google.com/apps-script/reference/forms/multiple-choice-item#getPoints()) | Integer | Not Started | |
-| [hasOtherOption()](https://developers.google.com/apps-script/reference/forms/multiple-choice-item#hasOtherOption()) | Boolean | Not Started | |
-| [isRequired()](https://developers.google.com/apps-script/reference/forms/multiple-choice-item#isRequired()) | Boolean | Not Started | |
-| [setChoiceValues(values)](https://developers.google.com/apps-script/reference/forms/multiple-choice-item#setChoiceValues(String[])) | [MultipleChoiceItem](#multiplechoiceitem) | Not Started | |
-| [setChoices(choices)](https://developers.google.com/apps-script/reference/forms/multiple-choice-item#setChoices(Choice[])) | [MultipleChoiceItem](#multiplechoiceitem) | Not Started | |
+| [hasOtherOption()](https://developers.google.com/apps-script/reference/forms/multiple-choice-item#hasOtherOption()) | Boolean | Completed | |
+| [isRequired()](https://developers.google.com/apps-script/reference/forms/multiple-choice-item#isRequired()) | Boolean | Completed | |
+| [setChoiceValues(values)](https://developers.google.com/apps-script/reference/forms/multiple-choice-item#setChoiceValues(String[])) | [MultipleChoiceItem](#multiplechoiceitem) | Completed | |
+| [setChoices(choices)](https://developers.google.com/apps-script/reference/forms/multiple-choice-item#setChoices(Choice[])) | [MultipleChoiceItem](#multiplechoiceitem) | Completed | |
 | [setFeedbackForCorrect(feedback)](https://developers.google.com/apps-script/reference/forms/multiple-choice-item#setFeedbackForCorrect(QuizFeedback)) | [MultipleChoiceItem](#multiplechoiceitem) | Not Started | |
 | [setFeedbackForIncorrect(feedback)](https://developers.google.com/apps-script/reference/forms/multiple-choice-item#setFeedbackForIncorrect(QuizFeedback)) | [MultipleChoiceItem](#multiplechoiceitem) | Not Started | |
 | [setPoints(points)](https://developers.google.com/apps-script/reference/forms/multiple-choice-item#setPoints(Integer)) | [MultipleChoiceItem](#multiplechoiceitem) | Not Started | |
-| [setRequired(enabled)](https://developers.google.com/apps-script/reference/forms/multiple-choice-item#setRequired(Boolean)) | [MultipleChoiceItem](#multiplechoiceitem) | Not Started | |
-| [showOtherOption(enabled)](https://developers.google.com/apps-script/reference/forms/multiple-choice-item#showOtherOption(Boolean)) | [MultipleChoiceItem](#multiplechoiceitem) | Not Started | |
+| [setRequired(enabled)](https://developers.google.com/apps-script/reference/forms/multiple-choice-item#setRequired(Boolean)) | [MultipleChoiceItem](#multiplechoiceitem) | Completed | |
+| [showOtherOption(enabled)](https://developers.google.com/apps-script/reference/forms/multiple-choice-item#showOtherOption(Boolean)) | [MultipleChoiceItem](#multiplechoiceitem) | Completed | |
 ---
 ## [PageBreakItem](https://developers.google.com/apps-script/reference/forms/page-break-item)
 A layout item that marks the start of a new page in a form.
@@ -466,17 +467,17 @@ An enum representing the supported types of page navigation.
 ## [ParagraphTextItem](https://developers.google.com/apps-script/reference/forms/paragraph-text-item)
 A question item that allows the respondent to enter a block of text.
 
-0% completed
+25% completed
 
 | method | return | status | comments |
 |---|---|---|---|
 | [createResponse(response)](https://developers.google.com/apps-script/reference/forms/paragraph-text-item#createResponse(String)) | [ItemResponse](#itemresponse) | Not Started | |
 | [getGeneralFeedback()](https://developers.google.com/apps-script/reference/forms/paragraph-text-item#getGeneralFeedback()) | [QuizFeedback](#quizfeedback) | Not Started | |
 | [getPoints()](https://developers.google.com/apps-script/reference/forms/paragraph-text-item#getPoints()) | Integer | Not Started | |
-| [isRequired()](https://developers.google.com/apps-script/reference/forms/paragraph-text-item#isRequired()) | Boolean | Not Started | |
+| [isRequired()](https://developers.google.com/apps-script/reference/forms/paragraph-text-item#isRequired()) | Boolean | Completed | |
 | [setGeneralFeedback(feedback)](https://developers.google.com/apps-script/reference/forms/paragraph-text-item#setGeneralFeedback(QuizFeedback)) | [ParagraphTextItem](#paragraphtextitem) | Not Started | |
 | [setPoints(points)](https://developers.google.com/apps-script/reference/forms/paragraph-text-item#setPoints(Integer)) | [ParagraphTextItem](#paragraphtextitem) | Not Started | |
-| [setRequired(enabled)](https://developers.google.com/apps-script/reference/forms/paragraph-text-item#setRequired(Boolean)) | [ParagraphTextItem](#paragraphtextitem) | Not Started | |
+| [setRequired(enabled)](https://developers.google.com/apps-script/reference/forms/paragraph-text-item#setRequired(Boolean)) | [ParagraphTextItem](#paragraphtextitem) | Completed | |
 | [setValidation(validation)](https://developers.google.com/apps-script/reference/forms/paragraph-text-item#setValidation(ParagraphTextValidation)) | [ParagraphTextItem](#paragraphtextitem) | Not Started | |
 ---
 ## [ParagraphTextValidation](https://developers.google.com/apps-script/reference/forms/paragraph-text-validation)
@@ -531,28 +532,28 @@ Builds a QuizFeedback object.
 ## [ScaleItem](https://developers.google.com/apps-script/reference/forms/scale-item)
 A question item that allows the respondent to choose one option from a numbered scale.
 
-0% completed
+58% completed
 
 | method | return | status | comments |
 |---|---|---|---|
 | [createResponse(response)](https://developers.google.com/apps-script/reference/forms/scale-item#createResponse(Integer)) | [ItemResponse](#itemresponse) | Not Started | |
 | [getGeneralFeedback()](https://developers.google.com/apps-script/reference/forms/scale-item#getGeneralFeedback()) | [QuizFeedback](#quizfeedback) | Not Started | |
-| [getLeftLabel()](https://developers.google.com/apps-script/reference/forms/scale-item#getLeftLabel()) | String | Not Started | |
-| [getLowerBound()](https://developers.google.com/apps-script/reference/forms/scale-item#getLowerBound()) | Integer | Not Started | |
+| [getLeftLabel()](https://developers.google.com/apps-script/reference/forms/scale-item#getLeftLabel()) | String | Completed | |
+| [getLowerBound()](https://developers.google.com/apps-script/reference/forms/scale-item#getLowerBound()) | Integer | Completed | |
 | [getPoints()](https://developers.google.com/apps-script/reference/forms/scale-item#getPoints()) | Integer | Not Started | |
-| [getRightLabel()](https://developers.google.com/apps-script/reference/forms/scale-item#getRightLabel()) | String | Not Started | |
-| [getUpperBound()](https://developers.google.com/apps-script/reference/forms/scale-item#getUpperBound()) | Integer | Not Started | |
-| [isRequired()](https://developers.google.com/apps-script/reference/forms/scale-item#isRequired()) | Boolean | Not Started | |
-| [setBounds(lower, upper)](https://developers.google.com/apps-script/reference/forms/scale-item#setBounds(Integer,Integer)) | [ScaleItem](#scaleitem) | Not Started | |
+| [getRightLabel()](https://developers.google.com/apps-script/reference/forms/scale-item#getRightLabel()) | String | Completed | |
+| [getUpperBound()](https://developers.google.com/apps-script/reference/forms/scale-item#getUpperBound()) | Integer | Completed | |
+| [isRequired()](https://developers.google.com/apps-script/reference/forms/scale-item#isRequired()) | Boolean | Completed | |
+| [setBounds(lower, upper)](https://developers.google.com/apps-script/reference/forms/scale-item#setBounds(Integer,Integer)) | [ScaleItem](#scaleitem) | Completed | |
 | [setGeneralFeedback(feedback)](https://developers.google.com/apps-script/reference/forms/scale-item#setGeneralFeedback(QuizFeedback)) | [ScaleItem](#scaleitem) | Not Started | |
-| [setLabels(lower, upper)](https://developers.google.com/apps-script/reference/forms/scale-item#setLabels(String,String)) | [ScaleItem](#scaleitem) | Not Started | |
+| [setLabels(lower, upper)](https://developers.google.com/apps-script/reference/forms/scale-item#setLabels(String,String)) | [ScaleItem](#scaleitem) | Completed | |
 | [setPoints(points)](https://developers.google.com/apps-script/reference/forms/scale-item#setPoints(Integer)) | [ScaleItem](#scaleitem) | Not Started | |
-| [setRequired(enabled)](https://developers.google.com/apps-script/reference/forms/scale-item#setRequired(Boolean)) | [ScaleItem](#scaleitem) | Not Started | |
+| [setRequired(enabled)](https://developers.google.com/apps-script/reference/forms/scale-item#setRequired(Boolean)) | [ScaleItem](#scaleitem) | Completed | |
 ---
 ## [SectionHeaderItem](https://developers.google.com/apps-script/reference/forms/section-header-item)
 A layout item that displays a title and description.
 
-0% completed
+100% completed
 
 | method | return | status | comments |
 |---|---|---|---|
@@ -560,17 +561,17 @@ A layout item that displays a title and description.
 ## [TextItem](https://developers.google.com/apps-script/reference/forms/text-item)
 A question item that allows the respondent to enter a single line of text.
 
-0% completed
+25% completed
 
 | method | return | status | comments |
 |---|---|---|---|
 | [createResponse(response)](https://developers.google.com/apps-script/reference/forms/text-item#createResponse(String)) | [ItemResponse](#itemresponse) | Not Started | |
 | [getGeneralFeedback()](https://developers.google.com/apps-script/reference/forms/text-item#getGeneralFeedback()) | [QuizFeedback](#quizfeedback) | Not Started | |
 | [getPoints()](https://developers.google.com/apps-script/reference/forms/text-item#getPoints()) | Integer | Not Started | |
-| [isRequired()](https://developers.google.com/apps-script/reference/forms/text-item#isRequired()) | Boolean | Not Started | |
+| [isRequired()](https://developers.google.com/apps-script/reference/forms/text-item#isRequired()) | Boolean | Completed | |
 | [setGeneralFeedback(feedback)](https://developers.google.com/apps-script/reference/forms/text-item#setGeneralFeedback(QuizFeedback)) | [TextItem](#textitem) | Not Started | |
 | [setPoints(points)](https://developers.google.com/apps-script/reference/forms/text-item#setPoints(Integer)) | [TextItem](#textitem) | Not Started | |
-| [setRequired(enabled)](https://developers.google.com/apps-script/reference/forms/text-item#setRequired(Boolean)) | [TextItem](#textitem) | Not Started | |
+| [setRequired(enabled)](https://developers.google.com/apps-script/reference/forms/text-item#setRequired(Boolean)) | [TextItem](#textitem) | Completed | |
 | [setValidation(validation)](https://developers.google.com/apps-script/reference/forms/text-item#setValidation(TextValidation)) | [TextItem](#textitem) | Not Started | |
 ---
 ## [TextValidation](https://developers.google.com/apps-script/reference/forms/text-validation)
@@ -609,29 +610,28 @@ A builder for a text validation rule.
 ## [TimeItem](https://developers.google.com/apps-script/reference/forms/time-item)
 A question item that allows the respondent to indicate a time of day.
 
-0% completed
+29% completed
 
 | method | return | status | comments |
 |---|---|---|---|
 | [createResponse(hour, minute)](https://developers.google.com/apps-script/reference/forms/time-item#createResponse(Integer,Integer)) | [ItemResponse](#itemresponse) | Not Started | |
 | [getGeneralFeedback()](https://developers.google.com/apps-script/reference/forms/time-item#getGeneralFeedback()) | [QuizFeedback](#quizfeedback) | Not Started | |
 | [getPoints()](https://developers.google.com/apps-script/reference/forms/time-item#getPoints()) | Integer | Not Started | |
-| [isRequired()](https://developers.google.com/apps-script/reference/forms/time-item#isRequired()) | Boolean | Not Started | |
+| [isRequired()](https://developers.google.com/apps-script/reference/forms/time-item#isRequired()) | Boolean | Completed | |
 | [setGeneralFeedback(feedback)](https://developers.google.com/apps-script/reference/forms/time-item#setGeneralFeedback(QuizFeedback)) | [TimeItem](#timeitem) | Not Started | |
 | [setPoints(points)](https://developers.google.com/apps-script/reference/forms/time-item#setPoints(Integer)) | [TimeItem](#timeitem) | Not Started | |
-| [setRequired(enabled)](https://developers.google.com/apps-script/reference/forms/time-item#setRequired(Boolean)) | [TimeItem](#timeitem) | Not Started | |
+| [setRequired(enabled)](https://developers.google.com/apps-script/reference/forms/time-item#setRequired(Boolean)) | [TimeItem](#timeitem) | Completed | |
 ---
 ## [VideoItem](https://developers.google.com/apps-script/reference/forms/video-item)
 A layout item that displays a video.
 
-0% completed
+83% completed
 
 | method | return | status | comments |
 |---|---|---|---|
-| [getAlignment()](https://developers.google.com/apps-script/reference/forms/video-item#getAlignment()) | [Alignment](#alignment) | Not Started | |
+| [getAlignment()](https://developers.google.com/apps-script/reference/forms/video-item#getAlignment()) | [Alignment](#alignment) | Completed | |
 | [getVideoUrl()](https://developers.google.com/apps-script/reference/forms/video-item#getVideoUrl()) | String | Not Started | |
-| [getWidth()](https://developers.google.com/apps-script/reference/forms/video-item#getWidth()) | Integer | Not Started | |
-| [setAlignment(alignment)](https://developers.google.com/apps-script/reference/forms/video-item#setAlignment(Alignment)) | [VideoItem](#videoitem) | Not Started | |
-| [setVideoUrl(youtubeUrl)](https://developers.google.com/apps-script/reference/forms/video-item#setVideoUrl(String)) | [VideoItem](#videoitem) | Not Started | |
-| [setWidth(width)](https://developers.google.com/apps-script/reference/forms/video-item#setWidth(Integer)) | [VideoItem](#videoitem) | Not Started | |
-
+| [getWidth()](https://developers.google.com/apps-script/reference/forms/video-item#getWidth()) | Integer | Completed | |
+| [setAlignment(alignment)](https://developers.google.com/apps-script/reference/forms/video-item#setAlignment(Alignment)) | [VideoItem](#videoitem) | Completed | |
+| [setVideoUrl(youtubeUrl)](https://developers.google.com/apps-script/reference/forms/video-item#setVideoUrl(String)) | [VideoItem](#videoitem) | Completed | |
+| [setWidth(width)](https://developers.google.com/apps-script/reference/forms/video-item#setWidth(Integer)) | [VideoItem](#videoitem) | Completed | |

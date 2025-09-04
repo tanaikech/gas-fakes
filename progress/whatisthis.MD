@@ -34,7 +34,7 @@ To accurately regenerate the Forms Service progress documentation in `/home/bruc
         *   If it's an external class (e.g., `Ui`), link to its official documentation. Example: `Ui`.
         *   For primitive types (`String`, `Boolean`, `Integer`), use plain text.
         *   **Do NOT use backticks (`)** around return types.
-    *   **`status` column**: Determine the status (`Completed`, `In Progress`, `Not Started`) by checking the implementation in `src/services/*. Note that many classes inherit methods as an extension of other classes. To determine if a method is completete, you'll need to search through the classes inhertance chain. 
+    *   **`status` column**: Determine the status (`Completed`, `In Progress`, `Not Started`) by checking the implementation in `src/services/*. Note that many classes inherit methods as an extension of other classes. To determine if a method is completete, you'll need to search through the classes inhertance chain and only mark it as completed if a concrete implementation of the method is found.
     *   **`comments` column**: Leave empty unless there is a specific issue to reference.
 
 6.  **Assemble the Final File**:
