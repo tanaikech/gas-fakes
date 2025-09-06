@@ -1,3 +1,4 @@
+#!/bin/bash
 # load in environment variables from root folder
 ROOT_DIRECTORY=$(git rev-parse --show-toplevel)
 source "$ROOT_DIRECTORY/.env"

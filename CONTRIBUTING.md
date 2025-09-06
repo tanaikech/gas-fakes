@@ -51,7 +51,7 @@ In principle test files specified in the .env file should belong to you, althoug
 | TEST_FOLDER_NAME | your own folder name | you | a folder in the top Drive level you create |
 | TEST_FOLDER_FILES | the number of files | your value | the number of files we should expect to find in TEST_FOLDER_NAME | 
 | TEST_FOLDER_ID | your own folder id | you | a folder you have write access to - its used to move files into |
-| TEST_FILE_ID | your own file id | you | a file you have read access to - it's used to test you have authenticated properly |
+| DRIVE_TEST_FILE_ID | your own file id | you | a file you have read access to - token.sh uses it to check authenticated properly |
 | TEXT_FILE_NAME | fake.txt | shared | the name of a known file we'll check for content can be your own or shared |
 | TEXT_FILE_ID | 1142Vn7W-pGl5nWLpUSkpOB82JDiz9R6p | shared | the id of the TEXT_FILE_NAME |
 | TEXT_FILE_TYPE | text/plain | shared | the type of the TEXT_FILE_ID |

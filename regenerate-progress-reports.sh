@@ -1,4 +1,5 @@
 #!/bin/bash
+ 
 
 # This script contains the prompts to regenerate the progress reports for all services.
 # Execute this script and paste the output to the Gemini agent.

@@ -8,7 +8,7 @@ To accurately regenerate the progress documentation for any Apps Script service,
 
 1.  **Identify all classes** listed in the official Google Apps Script documentation for the service. Include all classes, regardless of their current implementation status in `gas-fakes`.
 
-2.  **Locate the source code** for the service implementation. The primary location is `/home/bruce/gas-fakes/src/services/<service-name>`. Also, check for relevant files in `/home/bruce/gas-fakes/src/services/common/`.
+2.  **Locate the source code** for the service implementation. The primary location is `./src/services/<service-name>`. Also, check for relevant files in `./src/services/common/`.
 
 3.  **Process one class at a time** to ensure accuracy.
 
@@ -34,7 +34,9 @@ To accurately regenerate the progress documentation for any Apps Script service,
         *   If it's an external class (e.g., `Ui`), link to its official documentation. Example: `[Ui](https://developers.google.com/apps-script/reference/base/ui)`.
         *   For primitive types (`String`, `Boolean`, `Integer`), use plain text.
         *   **Do NOT use backticks (`)** around return types.
-    *   **`status` column**: Determine the status (`Completed`, `In Progress`, `Not Started`) by checking the implementation in the source code. Note that many classes inherit methods as an extension of other classes. To determine if a method is complete, you'll need to search through the class's inheritance chain and only mark it as completed if a concrete implementation of the method is found. Some methods are also created via a factory approach so are not explicitly set in the class, but rather are generated in the constructor. These type of methods must also be included.
+    *   **`status` column**: Determine the status (`Completed`, `In Progress`, `Not Started`) by checking the implementation in the source code. Note that many classes inherit methods as an extension of other classes. To determine if a method is complete, you'll need to search through the class's inheritance chain and only mark it as completed if a concrete implementation of the method is found. 
+    Some methods are also created via a factory approach so are not explicitly set in the class, but rather are generated in the constructor. 
+    These type of methods must also be included. For example, in the fakesheetrange constructor, the setterMaker constucts methods for all the variants of the values in the "name" property of setterlist (for example name: "formula" could generate getFormula, setFormula, getFormulas and setFormulas).  Other examples of this factory style setting of methods in the constructor are valueGens and attrGens functions. Other factory style generators add "notYetImplemented" to methods. These should be classified as "not started".
     *   **`comments` column**: Leave empty unless there is a specific issue to reference.
 
 7.  **Assemble the Final File**:
