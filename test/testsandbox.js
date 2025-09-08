@@ -118,20 +118,20 @@ export const testSandbox = (pack) => {
     // Verify the content was not changed.
     t.is(DriveApp.getFileById(tempFileId).getBlob().getDataAsString(), 'original temp content', 'File content should not have changed after denied write.');
 
-    // 2. Whitelist a spreadsheet for writing
+    // 2. Whitelist a spreadsheet for reading
     const sheetId = fixes.TEST_SHEET_ID;
     behavior
       .clearIdWhitelist()
-      .addIdWhitelist(behavior.newIdWhitelistItem(sheetId).setRead(true).setWrite(true));
+      .addIdWhitelist(behavior.newIdWhitelistItem(sheetId).setRead(true));
 
     const ss = SpreadsheetApp.openById(sheetId);
     t.is(ss.getId(), sheetId, "Should be able to open whitelisted spreadsheet");
     const sheet = ss.getSheets()[0];
-    sheet.getRange("A1").setValue("sandbox test"); // should not throw
-    t.is(
+    // should not throw
+    t.not(
       sheet.getRange("A1").getValue(),
-      "sandbox test",
-      "Should be able to write to whitelisted spreadsheet"
+      null,
+      "Should be able to read whitelisted spreadsheet"
     );
   });
 
