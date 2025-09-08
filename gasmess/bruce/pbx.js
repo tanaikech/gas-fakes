@@ -4,6 +4,34 @@ import { report, scl } from './dreport.js';
 
 const suffix = "-bruce"
 
+const tx1 = () => {
+  let doc = DocumentApp.create("abc")
+  const id = doc.getId()
+  moveToTempFolder(id, suffix)
+
+  let body = doc.getBody()
+
+  doc = scl(doc)
+  let d = Docs.Documents.get(id)
+  console.log (d)
+  console.log (JSON.stringify (d.body))
+  //console.log(report(Docs.Documents.get(id), `\nblank`))
+/*
+  const p1 = body.appendParagraph("p1")
+  p1.appendText ('apresp1')
+  doc = scl(doc)
+  console.log(report(Docs.Documents.get(id), `\nappended text to p1`))
+  
+  body = doc.getBody()
+  const p2 = body.appendParagraph("p2") /// 'p2'
+  console.log (p2.getText())
+  p2.insertText(0,'p2t')
+  doc = scl(doc)
+  console.log(report(Docs.Documents.get(id), `\ninserted p1`))
+*/
+  deleteTempFile(id)
+}
+tx1()
 const tabsa = () => {
 
   let doc = DocumentApp.create("abc")
@@ -120,7 +148,7 @@ const pbnew = () => {
   deleteTempFile(id)
 }
 
-pbnew()
+
 
 
 
