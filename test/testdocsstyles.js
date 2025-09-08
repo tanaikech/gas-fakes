@@ -1,4 +1,4 @@
-
+// /home/bruce/gas-fakes/test/testdocsstyles.js
 import "../main.js";
 import { initTests } from "./testinit.js";
 import { wrapupTest, getDocsPerformance, maketdoc, docReport, getChildren, trasher } from "./testassist.js";
@@ -104,6 +104,91 @@ export const testDocsStyles = (pack) => {
     t.truthy(sourcePara.getParent(), "Original paragraph should still be attached");
     // We compare text content instead of object identity, as getChildren() may return new object instances.
     t.is(children[1].getText(), "Source Paragraph", "The second child should be the original paragraph");
+
+    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
+  });
+
+  unit.section("Document.clear() style persistence validation", t => {
+    // This test validates that doc.clear() RESETS named styles.
+    // It uses a fresh document to avoid pollution from previous tests.
+    let { doc } = maketdoc(toTrash, fixes, { forceNew: true });
+    let body = doc.getBody();
+
+    // 1. Set a default style on the body using setAttributes, which modifies the NORMAL_TEXT named style.
+    const initialAttrs = { [DocumentApp.Attribute.FONT_FAMILY]: 'Impact' };
+    body.setAttributes(initialAttrs);
+
+    // 2. Clear the document.
+    doc.clear();
+
+    // 3. Append a new paragraph after clearing.
+    const p2 = body.appendParagraph("Paragraph after clear");
+    const p2Attrs = p2.getAttributes();
+
+    // 4. Check if the new paragraph inherited the style from before the clear. It should NOT.
+    t.not(p2Attrs[DocumentApp.Attribute.FONT_FAMILY], 'Impact', "Post-clear: Font family set via setAttributes should NOT persist through doc.clear()");
+
+    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
+  });
+
+  unit.section("Body style and attribute methods", t => {
+    // Force a new document to ensure no style pollution from previous tests,
+    // as we've established that doc.clear() does not reset named styles.
+    let { doc } = maketdoc(toTrash, fixes, { forceNew: true });
+    let body = doc.getBody();
+
+    // Test margin setters (requires advanced service to verify)
+    body.setMarginLeft(90);
+    body.setMarginTop(100);
+    doc.saveAndClose();
+    let docResource = Docs.Documents.get(doc.getId());
+    t.is(docResource.documentStyle.marginLeft.magnitude, 90, "setMarginLeft should update document style");
+    t.is(docResource.documentStyle.marginTop.magnitude, 100, "setMarginTop should update document style");
+    doc = DocumentApp.openById(doc.getId());
+    body = doc.getBody();
+
+    // Test page size setters (requires advanced service to verify)
+    body.setPageWidth(500);
+    body.setPageHeight(700);
+    doc.saveAndClose();
+    docResource = Docs.Documents.get(doc.getId());
+    t.is(docResource.documentStyle.pageSize.width.magnitude, 500, "setPageWidth should update page size");
+    t.is(docResource.documentStyle.pageSize.height.magnitude, 700, "setPageHeight should update page size");
+    doc = DocumentApp.openById(doc.getId());
+    body = doc.getBody();
+
+    // Test setText
+    body.setText("New body text.");
+    t.is(body.getText(), "New body text.", "setText should replace body content");
+
+    // Test setAttributes on Body, which applies attributes to all existing paragraphs.
+    const p1 = body.getChild(0); // The paragraph created by setText()
+    const p1InitialAttrs = p1.getAttributes();
+    t.is(p1InitialAttrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], DocumentApp.HorizontalAlignment.LEFT, "Initial paragraph should have default LEFT alignment");
+    // On live GAS, an unset boolean attribute like ITALIC returns null from getAttributes().
+    t.is(p1InitialAttrs[DocumentApp.Attribute.ITALIC], null, "Initial paragraph should not be italic (returns null)");
+
+    const attributesToSet = {
+      [DocumentApp.Attribute.HORIZONTAL_ALIGNMENT]: DocumentApp.HorizontalAlignment.CENTER,
+      [DocumentApp.Attribute.ITALIC]: true,
+      [DocumentApp.Attribute.FONT_FAMILY]: 'Comic Sans MS'
+    };
+    body.setAttributes(attributesToSet);
+
+    // Re-fetch attributes of the existing paragraph to confirm it WAS changed.
+    const p1AfterSetAttrs = p1.getAttributes();
+
+    // Verify that setAttributes DOES affect existing paragraphs
+    t.is(p1AfterSetAttrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], DocumentApp.HorizontalAlignment.CENTER, "setAttributes should affect alignment of existing paragraphs");
+    t.is(p1AfterSetAttrs[DocumentApp.Attribute.ITALIC], true, "setAttributes should affect italic of existing paragraphs");
+    t.is(p1AfterSetAttrs[DocumentApp.Attribute.FONT_FAMILY], 'Comic Sans MS', "setAttributes should affect font family of existing paragraphs");
+
+    // Verify that setAttributes does NOT affect newly appended paragraphs
+    const p2 = body.appendParagraph("A new paragraph");
+    const p2Attrs = p2.getAttributes();
+    t.is(p2Attrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], DocumentApp.HorizontalAlignment.LEFT, "setAttributes should not affect alignment of new paragraphs");
+    t.is(p2Attrs[DocumentApp.Attribute.ITALIC], null, "setAttributes should not affect italic of new paragraphs (returns null)");
+    t.not(p2Attrs[DocumentApp.Attribute.FONT_FAMILY], 'Comic Sans MS', "setAttributes should not affect font family of new paragraphs");
 
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   });
