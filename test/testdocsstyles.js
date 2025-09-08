@@ -118,6 +118,37 @@ export const testDocsStyles = (pack) => {
 
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   });
+
+  unit.section("Appending a detached styled paragraph", t => {
+    let { doc } = maketdoc(toTrash, fixes);
+    const body = doc.getBody();
+
+    // 1. Create a source paragraph and a detached copy with a specific style
+    const sourcePara = body.appendParagraph("Source Paragraph");
+    sourcePara.setHeading(DocumentApp.ParagraphHeading.HEADING1);
+    const detachedPara = sourcePara.copy();
+
+    // 2. Append another paragraph to ensure we're not just inserting at the end of the source
+    body.appendParagraph("Middle Paragraph");
+
+    // 3. Append the detached copy
+    const appendedPara = body.appendParagraph(detachedPara);
+
+    t.is(appendedPara.getText(), "Source Paragraph", "Appended detached paragraph should have correct text");
+    t.is(appendedPara.getHeading(), DocumentApp.ParagraphHeading.HEADING1, "Appended detached paragraph should have copied style");
+
+    // 4. Verify the document structure
+    const children = getChildren(body);
+    // [initial empty, "Source Paragraph", "Middle Paragraph", "Source Paragraph" (appended)]
+    t.is(children.length, 4, "Body should have 4 children after appending detached paragraph");
+    t.is(children[3].getText(), "Source Paragraph", "The last child should be the appended paragraph");
+
+    // 5. Verify the original paragraph is untouched
+    t.truthy(sourcePara.getParent(), "Original paragraph should still be attached");
+    t.is(children[1], sourcePara, "The second child should be the original paragraph");
+
+    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
+  });
   if (!pack) {
     unit.report();
   }
