@@ -7,7 +7,7 @@
 import "../main.js";
 import { initTests } from "./testinit.js";
 
-import { wrapupTest, cachePerformance } from "./testassist.js";
+import { cachePerformance } from "./testassist.js";
 
 import { testDocsAdv } from "./testdocsadv.js";
 import { testDocs } from "./testdocs.js";
@@ -17,13 +17,15 @@ import { testDocsHeaders } from "./testdocsheaders.js";
 import { testDocsFooters } from "./testdocsfooters.js";
 import { testDocsFootnotes } from "./testdocsfootnotes.js";
 import { testDocsImages } from "./testdocsimages.js";
+import { testDocsStyles } from "./testdocsstyles.js";
 
 const testDocsAll = () => {
   const pack = initTests();
   const { unit } = pack;
 
   // add one of these for each service being tested
-
+  console.log("\n----Test docsstyles----");
+  testDocsStyles(pack);
   console.log("\n----Test docsadv----");
   testDocsAdv(pack);
   console.log("\n----Test docs----");

@@ -33,7 +33,9 @@ class FakeBody extends FakeContainerElement {
   }
 
   appendParagraph(textOrParagraph) {
-    return appendParagraph(this, textOrParagraph)
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Body.appendParagraph');
+    if (nargs !== 1) matchThrow();
+    return appendParagraph(this, textOrParagraph);
   }
 
   insertParagraph(childIndex, paragraph) {

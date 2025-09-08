@@ -44,6 +44,7 @@ import { testSheetsText } from "./testsheetstext.js";
 import { testSheetsRange } from "./testsheetsrange.js";
 import { testDocsImages } from "./testdocsimages.js";
 import { testSandbox } from "./testsandbox.js";
+import { testDocsStyles } from "./testdocsstyles.js";
 
 const testFakes = () => {
   const pack = initTests();
@@ -52,6 +53,8 @@ const testFakes = () => {
   // add one of these for each service being tested
   console.log("\n----Test sandbox----");
   testSandbox(pack);
+  console.log("\n----Test docs styles----");
+  testDocsStyles(pack);
   console.log("\n----Test docs headers----");
   testDocsHeaders(pack);
   console.log("\n----Test docs footers----");
@@ -63,7 +66,7 @@ const testFakes = () => {
   console.log("\n----Test slidesadv----");
   testSlidesAdv(pack);
   console.log("\n----Test form----");
-  testForm (pack);
+  testForm(pack);
   console.log("\n----Test formsadv----");
   testFormsAdv(pack);
   console.log("\n----Test docsadv----");

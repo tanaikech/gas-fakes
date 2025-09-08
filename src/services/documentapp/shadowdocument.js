@@ -13,6 +13,48 @@ export const newShadowDocument = (...args) => {
 };
 
 class ShadowDocument {
+  /**
+   * Creates a new document and ensures its initial state matches a document
+   * created by the live Apps Script environment.
+   * @param {string} title The title for the new document.
+   * @returns {ShadowDocument} A shadow document instance for the new document.
+   */
+  static create(title) {
+    // 1. Create the document via the API. The API only uses the title.
+    const { data: doc } = Docs.Documents.__create({ title });
+    const docId = doc.documentId;
+
+    // 2. The API creates a document with its own defaults. We need to adjust it
+    // to match the defaults of a document created by the live Apps Script environment.
+    // The body content from the API (a section break and a paragraph) is already
+    // correct, so we only need to enforce the documentStyle.
+    const requests = [{
+      updateDocumentStyle: {
+        documentStyle: {
+          background: { color: {} },
+          pageNumberStart: 1,
+          useCustomHeaderFooterMargins: true,
+          marginHeader: { magnitude: 36, unit: 'PT' },
+          marginFooter: { magnitude: 36, unit: 'PT' },
+          marginTop: { magnitude: 72, unit: 'PT' },
+          marginBottom: { magnitude: 72, unit: 'PT' },
+          marginRight: { magnitude: 72, unit: 'PT' },
+          marginLeft: { magnitude: 72, unit: 'PT' },
+        },
+        // We only specify fields that are part of the standard Apps Script default.
+        // Page size is left to the API's default, which may be locale-dependent.
+        fields: 'background,pageNumberStart,useCustomHeaderFooterMargins,marginHeader,marginFooter,marginTop,marginBottom,marginRight,marginLeft'
+      }
+    }];
+
+    // Apply the style updates.
+    if (requests.length > 0) {
+      Docs.Documents.batchUpdate({ requests }, docId);
+    }
+
+    return newShadowDocument(docId);
+  }
+
   constructor(id) {
     this.__id = id
   }

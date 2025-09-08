@@ -3,18 +3,18 @@ import { moveToTempFolder, deleteTempFile } from '../tempfolder.js';
 import { report, scl } from './dreport.js';
 
 const suffix = "-bruce"
-
 const tx1 = () => {
   let doc = DocumentApp.create("abc")
   const id = doc.getId()
   moveToTempFolder(id, suffix)
 
   let body = doc.getBody()
-
+  const p1 = body.appendParagraph("p1")
   doc = scl(doc)
   let d = Docs.Documents.get(id)
-  console.log (d)
-  console.log (JSON.stringify (d.body))
+  console.log (JSON.stringify(d.body))  
+
+
   //console.log(report(Docs.Documents.get(id), `\nblank`))
 /*
   const p1 = body.appendParagraph("p1")

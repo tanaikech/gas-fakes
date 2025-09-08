@@ -72,18 +72,61 @@ export const paragraphOptions = {
   elementType: ElementType.PARAGRAPH,
   insertMethodSignature: 'DocumentApp.Body.insertParagraph',
   canAcceptText: true,
-  getMainRequest: ({ content: textOrParagraph, location, isAppend, self, leading, trailing }) => {
+  getMainRequest: ({ content: textOrParagraph, location, leading, trailing }) => {
     const isDetachedPara = is.object(textOrParagraph) && textOrParagraph.__isDetached;
-    let baseText;
+
+    // Case 1: Appending/inserting a detached paragraph object.
+    // Just insert its text. Styling is handled by getStyleRequests.
     if (isDetachedPara) {
       const item = textOrParagraph.__elementMapItem;
       const fullText = (item.paragraph?.elements || []).map(el => el.textRun?.content || '').join('');
-      baseText = fullText.replace(/\n$/, '');
-    } else {
-      baseText = is.string(textOrParagraph) ? textOrParagraph : textOrParagraph.getText();
+      const baseText = fullText.replace(/\n$/, '');
+      const textToInsert = leading + baseText + trailing;
+      return { insertText: { location, text: textToInsert } };
     }
 
-    const textToInsert = leading + baseText + trailing
+    // Case 2: Appending/inserting a string.
+    // This requires a special combined request to match live Apps Script behavior,
+    // which returns a fully-resolved style for new paragraphs.
+    if (is.string(textOrParagraph)) {
+      const textToInsert = leading + textOrParagraph + trailing;
+      const requests = [
+        {
+          insertText: {
+            location,
+            text: textToInsert,
+          },
+        },
+        {
+          updateParagraphStyle: {
+            range: {
+              startIndex: location.index + leading.length,
+              endIndex: location.index + leading.length + textOrParagraph.length,
+              segmentId: location.segmentId,
+              tabId: location.tabId,
+            },
+            paragraphStyle: {
+              namedStyleType: 'NORMAL_TEXT', direction: 'LEFT_TO_RIGHT', alignment: 'START',
+              lineSpacing: 115, spacingMode: 'COLLAPSE_LISTS', spaceAbove: { unit: 'PT' },
+              spaceBelow: { unit: 'PT' }, borderBetween: { color: {}, width: { unit: 'PT' }, padding: { unit: 'PT' }, dashStyle: 'SOLID' },
+              borderTop: { color: {}, width: { unit: 'PT' }, padding: { unit: 'PT' }, dashStyle: 'SOLID' },
+              borderBottom: { color: {}, width: { unit: 'PT' }, padding: { unit: 'PT' }, dashStyle: 'SOLID' },
+              borderLeft: { color: {}, width: { unit: 'PT' }, padding: { unit: 'PT' }, dashStyle: 'SOLID' },
+              borderRight: { color: {}, width: { unit: 'PT' }, padding: { unit: 'PT' }, dashStyle: 'SOLID' },
+              indentFirstLine: { unit: 'PT' }, indentStart: { unit: 'PT' }, indentEnd: { unit: 'PT' },
+              keepLinesTogether: false, keepWithNext: false, pageBreakBefore: false, avoidWidowAndOrphan: false,
+              shading: { backgroundColor: {} }
+            },
+            fields: '*',
+          },
+        },
+      ];
+      return requests;
+    }
+
+    // Fallback for other cases, though they shouldn't typically occur with appendParagraph.
+    const baseText = textOrParagraph.getText();
+    const textToInsert = leading + baseText + trailing;
     return { insertText: { location, text: textToInsert } };
   },
   getStyleRequests: (paragraph, startIndex, isAppend, segmentId, tabId) => {

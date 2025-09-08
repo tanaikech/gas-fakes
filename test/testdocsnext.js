@@ -426,6 +426,53 @@ export const testDocsNext = (pack) => {
   })
 
 
+
+  unit.section("Document initial namedStyles validation", t => {
+    let { doc } = maketdoc(toTrash, fixes);
+
+    // Re-fetch the document using the advanced Docs service to get the full document structure
+    const docResource = Docs.Documents.get(doc.getId());
+    const styles = docResource.namedStyles.styles;
+
+    t.truthy(styles, "Document should have a namedStyles.styles property");
+    t.is(styles.length, 9, "There should be 9 default named styles");
+
+    // Helper to find a style by its type
+    const findStyle = (type) => styles.find(s => s.namedStyleType === type);
+
+    // Validate NORMAL_TEXT
+    const normalText = findStyle('NORMAL_TEXT');
+    t.truthy(normalText, "Should find NORMAL_TEXT style");
+    t.is(normalText.textStyle.fontSize.magnitude, 11, "NORMAL_TEXT font size should be 11");
+    t.is(normalText.textStyle.weightedFontFamily.fontFamily, 'Arial', "NORMAL_TEXT font family should be Arial");
+    t.is(normalText.paragraphStyle.lineSpacing, 115, "NORMAL_TEXT line spacing should be 115");
+
+    // Validate HEADING_1
+    const heading1 = findStyle('HEADING_1');
+    t.truthy(heading1, "Should find HEADING_1 style");
+    t.is(heading1.textStyle.fontSize.magnitude, 20, "HEADING_1 font size should be 20");
+    t.is(heading1.paragraphStyle.spaceAbove.magnitude, 20, "HEADING_1 spaceAbove should be 20 PT");
+
+    // Validate HEADING_3
+    const heading3 = findStyle('HEADING_3');
+    t.truthy(heading3, "Should find HEADING_3 style");
+    const h3Color = heading3.textStyle.foregroundColor.color.rgbColor;
+    // Use t.is with a tolerance for floating point comparisons
+    t.is(h3Color.red.toPrecision(7), '0.2627451', "HEADING_3 red color should be correct");
+
+    // Validate HEADING_6
+    const heading6 = findStyle('HEADING_6');
+    t.truthy(heading6, "Should find HEADING_6 style");
+    t.true(heading6.textStyle.italic, "HEADING_6 should be italic");
+
+    // Validate TITLE
+    const titleStyle = findStyle('TITLE');
+    t.truthy(titleStyle, "Should find TITLE style");
+    t.is(titleStyle.textStyle.fontSize.magnitude, 26, "TITLE font size should be 26");
+
+    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
+  });
+
   // Helper to extract text from a raw Docs API document resource, mimicking Document.getBody().getText()
   const getTextFromDocResource = (docResource) => {
     return docResource?.body?.content?.map(structuralElement => structuralElement.paragraph?.elements?.map(element => element.textRun?.content || '').join('') || '').join('').replace(/\n$/, '');
