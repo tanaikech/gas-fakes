@@ -35,13 +35,41 @@ class FakeDocumentApp {
   create(name) {
     const { nargs, matchThrow } = signatureArgs(arguments, "DocumentApp.create");
     if (nargs !== 1 || !is.string(name)) matchThrow();
-
+ 
+    // 1. Create the document via the API. The API only uses the title.
     const resource = {
       title: name,
     };
     const doc = Docs.Documents.create(resource);
-    ScriptApp.__behavior.addFile(doc.documentId);
-    return newFakeDocument(doc.documentId);
+    const docId = doc.documentId;
+    ScriptApp.__behavior.addFile(docId);
+ 
+    // 2. The API creates a document with its own defaults. We need to adjust it
+    // to match the defaults of a document created by the live Apps Script environment.
+    // The body content from the API (a section break and a paragraph) is already
+    // correct, so we only need to enforce the documentStyle.
+    const requests = [{
+      updateDocumentStyle: {
+        documentStyle: {
+          pageNumberStart: 1,
+          marginHeader: { magnitude: 36, unit: 'PT' },
+          marginFooter: { magnitude: 36, unit: 'PT' },
+          marginTop: { magnitude: 72, unit: 'PT' },
+          marginBottom: { magnitude: 72, unit: 'PT' },
+          marginRight: { magnitude: 72, unit: 'PT' },
+          marginLeft: { magnitude: 72, unit: 'PT' },
+        },
+        // We only specify fields that are part of the standard Apps Script default.
+        // Page size is left to the API's default, which may be locale-dependent.
+        fields: 'pageNumberStart,marginHeader,marginFooter,marginTop,marginBottom,marginRight,marginLeft'
+      }
+    }];
+ 
+    // Apply the style updates.
+    Docs.Documents.batchUpdate({ requests }, docId);
+ 
+    // 3. Return the new FakeDocument instance.
+    return newFakeDocument(docId);
   }
 
   openById(id) {
