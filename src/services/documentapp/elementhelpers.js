@@ -93,6 +93,81 @@ export const getText = (element) => {
   // Paragraphs in the Docs API have a trailing newline. The Apps Script getText() method removes it.
   return text.replace(/\n$/, '');
 };
+
+/**
+ * Gets the attributes of an element like a Paragraph or ListItem.
+ * @param {import('./fakeelement.js').FakeElement} element The element to get attributes from.
+ * @returns {object} The attributes.
+ */
+export const getAttributes = (element) => {
+  const item = element.__elementMapItem;
+  const paraStyle = item.paragraph?.paragraphStyle || {};
+
+  // A full implementation would check for mixed styles across text runs.
+  // This simplified version takes styles from the first text run.
+  const firstTextRun = item.paragraph?.elements?.find(e => e.textRun);
+  const textStyle = firstTextRun?.textRun?.textStyle || {};
+
+  const attributes = {};
+  const Attribute = DocumentApp.Attribute;
+
+  const getColorString = (colorObject) => {
+    if (!colorObject || !colorObject.rgbColor) return null;
+    const { red = 0, green = 0, blue = 0 } = colorObject.rgbColor;
+    const toHex = (c) => Math.round((c || 0) * 255).toString(16).padStart(2, '0');
+    return `#${toHex(red)}${toHex(green)}${toHex(blue)}`;
+  };
+
+  // --- Paragraph Attributes ---
+  if (element.getHeading) {
+    attributes[Attribute.HEADING] = element.getHeading();
+  }
+
+  if (paraStyle.alignment) {
+    const alignmentMap = {
+      'START': DocumentApp.HorizontalAlignment.LEFT,
+      'CENTER': DocumentApp.HorizontalAlignment.CENTER,
+      'END': DocumentApp.HorizontalAlignment.RIGHT,
+      'JUSTIFY': DocumentApp.HorizontalAlignment.JUSTIFIED,
+    };
+    attributes[Attribute.HORIZONTAL_ALIGNMENT] = alignmentMap[paraStyle.alignment];
+  }
+
+  if (paraStyle.direction) {
+    attributes[Attribute.LEFT_TO_RIGHT] = paraStyle.direction === 'LEFT_TO_RIGHT';
+  }
+
+  if (paraStyle.lineSpacing) {
+    attributes[Attribute.LINE_SPACING] = paraStyle.lineSpacing / 100;
+  }
+
+  if (!is.undefined(paraStyle.indentStart?.magnitude)) attributes[Attribute.INDENT_START] = paraStyle.indentStart.magnitude;
+  if (!is.undefined(paraStyle.indentEnd?.magnitude)) attributes[Attribute.INDENT_END] = paraStyle.indentEnd.magnitude;
+  if (!is.undefined(paraStyle.indentFirstLine?.magnitude)) attributes[Attribute.INDENT_FIRST_LINE] = paraStyle.indentFirstLine.magnitude;
+  if (!is.undefined(paraStyle.spaceAbove?.magnitude)) attributes[Attribute.SPACING_BEFORE] = paraStyle.spaceAbove.magnitude;
+  if (!is.undefined(paraStyle.spaceBelow?.magnitude)) attributes[Attribute.SPACING_AFTER] = paraStyle.spaceBelow.magnitude;
+
+  // --- Text Attributes ---
+  if (textStyle.backgroundColor) attributes[Attribute.BACKGROUND_COLOR] = getColorString(textStyle.backgroundColor.color);
+  if (!is.undefined(textStyle.bold)) attributes[Attribute.BOLD] = textStyle.bold;
+  if (textStyle.fontFamily) attributes[Attribute.FONT_FAMILY] = textStyle.fontFamily;
+  if (textStyle.fontSize?.magnitude) attributes[Attribute.FONT_SIZE] = textStyle.fontSize.magnitude;
+  if (textStyle.foregroundColor) attributes[Attribute.FOREGROUND_COLOR] = getColorString(textStyle.foregroundColor.color);
+  if (!is.undefined(textStyle.italic)) attributes[Attribute.ITALIC] = textStyle.italic;
+  if (!is.undefined(textStyle.strikethrough)) attributes[Attribute.STRIKETHROUGH] = textStyle.strikethrough;
+  if (!is.undefined(textStyle.underline)) attributes[Attribute.UNDERLINE] = textStyle.underline;
+  if (textStyle.link?.url) attributes[Attribute.LINK_URL] = textStyle.link.url;
+
+  // --- List Item Attributes ---
+  if (item.paragraph?.bullet) {
+    if (element.getListId) attributes[Attribute.LIST_ID] = element.getListId();
+    if (element.getNestingLevel) attributes[Attribute.NESTING_LEVEL] = element.getNestingLevel();
+    if (element.getGlyphType) attributes[Attribute.GLYPH_TYPE] = element.getGlyphType();
+  }
+
+  return attributes;
+};
+
 export const findItem = (elementMap, type, startIndex, segmentId) => {
   const item = Array.from(elementMap.values()).find(f => {
     // segmentId from API is empty string for body, but we might pass null. Normalize.

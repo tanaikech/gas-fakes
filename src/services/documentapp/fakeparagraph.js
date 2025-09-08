@@ -3,8 +3,8 @@ import { signatureArgs } from '../../support/helpers.js';
 import { Utils } from '../../support/utils.js';
 import { FakeContainerElement } from './fakecontainerelement.js';
 import { registerElement } from './elementRegistry.js';
-import { appendText, addPositionedImage } from './appenderhelpers.js';
-import { getText as getTextHelper } from './elementhelpers.js';
+import { appendText, addPositionedImage, appendImage, insertImage } from './appenderhelpers.js';
+import { getText as getTextHelper, getAttributes as getAttributesHelper } from './elementhelpers.js';
 
 const { is } = Utils;
 
@@ -40,6 +40,27 @@ class FakeParagraph extends FakeContainerElement {
   addPositionedImage(image) {
     const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.addPositionedImage');
     if (nargs !== 1) matchThrow();
+    return addPositionedImage(this, image);
+  }
+
+  getAttributes() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.getAttributes');
+    if (nargs !== 0) matchThrow();
+    return getAttributesHelper(this);
+  }
+
+  appendInlineImage(image) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.appendInlineImage');
+    if (nargs !== 1) matchThrow();
+    // This uses the generic appendImage helper, which is designed to handle insertions into paragraphs.
+    return appendImage(this, image);
+  }
+
+  insertInlineImage(childIndex, image) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.insertInlineImage');
+    if (nargs !== 2) matchThrow();
+    // This uses the generic insertImage helper.
+    return insertImage(this, childIndex, image);
   }
 
   setHeading(heading) {

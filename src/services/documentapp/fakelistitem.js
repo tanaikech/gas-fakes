@@ -4,7 +4,7 @@
 import { Proxies } from '../../support/proxies.js';
 import { FakeContainerElement } from './fakecontainerelement.js';
 import { registerElement } from './elementRegistry.js';
-import { getText, updateParagraphStyle } from './elementhelpers.js';
+import { getText, updateParagraphStyle, getAttributes as getAttributesHelper } from './elementhelpers.js';
 import { appendText } from './appenderhelpers.js';
 import { notYetImplemented, signatureArgs } from '../../support/helpers.js';
 import { Utils } from '../../support/utils.js';
@@ -53,6 +53,16 @@ export class FakeListItem extends FakeContainerElement {
   appendText(textOrTextElement) {
     appendText(this, textOrTextElement);
     return this;
+  }
+
+  /**
+   * Gets a copy of the element's attributes.
+   * @returns {object} The attributes.
+   */
+  getAttributes() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'ListItem.getAttributes');
+    if (nargs !== 0) matchThrow();
+    return getAttributesHelper(this);
   }
 
   /**
@@ -127,6 +137,67 @@ export class FakeListItem extends FakeContainerElement {
     // The API returns a zero-based nesting level. If it's undefined, it defaults to 0.
     return item.paragraph?.bullet?.nestingLevel ?? 0;
   }
+
+  /**
+   * Gets the paragraph heading type.
+   * @returns {GoogleAppsScript.Document.ParagraphHeading} The heading type.
+   */
+  getHeading() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'ListItem.getHeading');
+    if (nargs !== 0) matchThrow();
+
+    const item = this.__elementMapItem;
+    const namedStyleType = item.paragraph?.paragraphStyle?.namedStyleType;
+
+    const apiToEnumMap = {
+      'NORMAL_TEXT': DocumentApp.ParagraphHeading.NORMAL,
+      'HEADING_1': DocumentApp.ParagraphHeading.HEADING1,
+      'HEADING_2': DocumentApp.ParagraphHeading.HEADING2,
+      'HEADING_3': DocumentApp.ParagraphHeading.HEADING3,
+      'HEADING_4': DocumentApp.ParagraphHeading.HEADING4,
+      'HEADING_5': DocumentApp.ParagraphHeading.HEADING5,
+      'HEADING_6': DocumentApp.ParagraphHeading.HEADING6,
+      'TITLE': DocumentApp.ParagraphHeading.TITLE,
+      'SUBTITLE': DocumentApp.ParagraphHeading.SUBTITLE
+    };
+
+    return apiToEnumMap[namedStyleType] || DocumentApp.ParagraphHeading.NORMAL;
+  }
+
+  /**
+   * Sets the paragraph heading type.
+   * @param {GoogleAppsScript.Document.ParagraphHeading} heading The heading type.
+   * @returns {ListItem} The list item, for chaining.
+   */
+  setHeading(heading) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'ListItem.setHeading');
+    if (nargs !== 1) matchThrow();
+
+    const headingMap = {
+      'NORMAL': 'NORMAL_TEXT',
+      'HEADING1': 'HEADING_1',
+      'HEADING2': 'HEADING_2',
+      'HEADING3': 'HEADING_3',
+      'HEADING4': 'HEADING_4',
+      'HEADING5': 'HEADING_5',
+      'HEADING6': 'HEADING_6',
+      'TITLE': 'TITLE',
+      'SUBTITLE': 'SUBTITLE'
+    };
+
+    const apiHeading = headingMap[heading];
+    if (!apiHeading) {
+      throw new Error(`Invalid argument: ${heading}`);
+    }
+
+    const paragraphStyle = { namedStyleType: apiHeading };
+    const fields = 'namedStyleType';
+
+    // Since ListItem is a paragraph, we can use the paragraph style updater.
+    updateParagraphStyle(this, paragraphStyle, fields);
+    return this;
+  }
+
 
   /**
    * Sets the glyph type of the list item.
