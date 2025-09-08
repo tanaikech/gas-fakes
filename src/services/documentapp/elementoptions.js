@@ -189,9 +189,16 @@ export const textOptions = {
     const paraStyle = detachedItem.paragraph?.paragraphStyle;
 
     if (paraStyle && Object.keys(paraStyle).length > 0) {
-      const fields = Object.keys(paraStyle).join(',');
-      const textLength = (paragraph.getText() || '').length;
-      requests.push({ updateParagraphStyle: { range: { startIndex, endIndex: startIndex + textLength, segmentId, tabId }, paragraphStyle: paraStyle, fields } });
+      // The 'headingId' property is read-only and cannot be part of an update request.
+      // We must create a copy of the style object and remove it before building the request.
+      const styleToApply = { ...paraStyle };
+      delete styleToApply.headingId;
+
+      const fields = Object.keys(styleToApply).join(',');
+      if (fields) { // Only send a request if there are fields to update.
+        const textLength = (paragraph.getText() || '').length;
+        requests.push({ updateParagraphStyle: { range: { startIndex, endIndex: startIndex + textLength, segmentId, tabId }, paragraphStyle: styleToApply, fields } });
+      }
     }
 
     let currentOffset = startIndex;
@@ -314,9 +321,16 @@ export const listItemOptions = {
     }
 
     if (paraStyle && Object.keys(paraStyle).length > 0) {
-      const fields = Object.keys(paraStyle).join(',');
-      const textLength = (listItem.getText() || '').length;
-      requests.push({ updateParagraphStyle: { range: { startIndex, endIndex: startIndex + textLength, segmentId, tabId }, paragraphStyle: paraStyle, fields } });
+      // The 'headingId' property is read-only and cannot be part of an update request.
+      // We must create a copy of the style object and remove it before building the request.
+      const styleToApply = { ...paraStyle };
+      delete styleToApply.headingId;
+
+      const fields = Object.keys(styleToApply).join(',');
+      if (fields) { // Only send a request if there are fields to update.
+        const textLength = (listItem.getText() || '').length;
+        requests.push({ updateParagraphStyle: { range: { startIndex, endIndex: startIndex + textLength, segmentId, tabId }, paragraphStyle: styleToApply, fields } });
+      }
     }
 
     let currentOffset = startIndex;

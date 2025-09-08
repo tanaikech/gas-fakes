@@ -1,104 +1,121 @@
-/**
- * @file Provides a fake implementation of the Paragraph class.
- */
 import { Proxies } from '../../support/proxies.js';
-import { FakeContainerElement } from './fakecontainerelement.js';
-import { getElementFactory, registerElement } from './elementRegistry.js';
-import { getText } from './elementhelpers.js';
-import { appendText, appendPageBreak, appendImage, insertImage, addPositionedImage } from './appenderhelpers.js';
 import { signatureArgs } from '../../support/helpers.js';
+import { Utils } from '../../support/utils.js';
+import { FakeContainerElement } from './fakecontainerelement.js';
+import { registerElement } from './elementRegistry.js';
+import { appendText, addPositionedImage } from './appenderhelpers.js';
+import { getText as getTextHelper } from './elementhelpers.js';
+
+const { is } = Utils;
 
 /**
- * Creates a new proxied FakeParagraph instance.
- * @param {...any} args The arguments for the FakeParagraph constructor.
- * @returns {FakeParagraph} A new proxied FakeParagraph instance.
+ * @implements {GoogleAppsScript.Document.Paragraph}
  */
-export const newFakeParagraph = (...args) => {
-  return Proxies.guard(new FakeParagraph(...args));
-};
+class FakeParagraph extends FakeContainerElement {
+  constructor(shadowDocument, name) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph');
+    // An attached element has a shadowDocument and a string name (its ID).
+    // A detached element (from .copy()) has a null shadowDocument and an object for its 'name' (which is actually its data).
+    const isAttached = is.object(shadowDocument) && is.string(name);
+    const isDetached = is.null(shadowDocument) && is.object(name);
 
-/**
- * A fake implementation of the Paragraph class for DocumentApp.
- * @class FakeParagraph
- * @extends {FakeContainerElement}
- * @see https://developers.google.com/apps-script/reference/document/paragraph
- */
-export class FakeParagraph extends FakeContainerElement {
-  /**
-   * @param {import('./shadowdocument.js').ShadowDocument} shadowDocument The shadow document manager.
-   * @param {string|object} nameOrItem The name of the element or the element's API resource.
-   * @private
-   */
-  constructor(shadowDocument, nameOrItem) {
-    super(shadowDocument, nameOrItem);
+    if (nargs !== 2 || (!isAttached && !isDetached)) {
+      matchThrow();
+    }
+    super(shadowDocument, name);
   }
 
-  /**
-   * Gets the text content of the paragraph, flattening all child text elements.
-   * @returns {string} The text content.
-   * @see https://developers.google.com/apps-script/reference/document/paragraph#getText()
-   */
   getText() {
-    return getText(this);
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.getText');
+    if (nargs !== 0) matchThrow();
+    return getTextHelper(this);
   }
 
-  appendText(textOrTextElement) { // eslint-disable-line no-unused-vars
-    appendText(this, textOrTextElement);
-    return this;
-  }
-
-  appendPageBreak(pageBreak) {
-    return appendPageBreak(this, pageBreak);
-  }
-
-  appendInlineImage(image) {
-    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.appendInlineImage');
+  appendText(text) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.appendText');
     if (nargs !== 1) matchThrow();
-    return appendImage(this, image);
-  }
-
-  insertInlineImage(childIndex, image) {
-    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.insertInlineImage');
-    if (nargs !== 2) matchThrow();
-    return insertImage(this, childIndex, image);
+    return appendText(this, text);
   }
 
   addPositionedImage(image) {
     const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.addPositionedImage');
     if (nargs !== 1) matchThrow();
-    return addPositionedImage(this, image);
   }
 
-  getPositionedImages() {
-    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.getPositionedImages');
-    if (nargs !== 0) matchThrow();
+  setHeading(heading) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.setHeading');
+    if (nargs !== 1) matchThrow();
 
-    if (this.__isDetached) {
-      // The live API would likely throw an error here.
-      throw new Error('Cannot get positioned images from a detached paragraph.');
+    // The enum values are strings, so we just need to map them to the API format.
+    const headingMap = {
+      'NORMAL': 'NORMAL_TEXT',
+      'HEADING1': 'HEADING_1',
+      'HEADING2': 'HEADING_2',
+      'HEADING3': 'HEADING_3',
+      'HEADING4': 'HEADING_4',
+      'HEADING5': 'HEADING_5',
+      'HEADING6': 'HEADING_6',
+      'TITLE': 'TITLE',
+      'SUBTITLE': 'SUBTITLE'
+    };
+
+    const apiHeading = headingMap[heading];
+    if (!apiHeading) {
+      // Apps Script throws a specific error for invalid enum values.
+      throw new Error(`Invalid argument: ${heading}`);
     }
 
-    const paraItem = this.__elementMapItem;
-    const paraElements = paraItem.paragraph?.elements || [];
-    const imageFactory = getElementFactory('POSITIONED_IMAGE');
+    const item = this.__elementMapItem;
+    const requests = [{
+      updateParagraphStyle: {
+        range: {
+          startIndex: item.startIndex,
+          endIndex: item.endIndex,
+          segmentId: this.__segmentId,
+          tabId: this.__tabId
+        },
+        paragraphStyle: {
+          namedStyleType: apiHeading
+        },
+        fields: 'namedStyleType'
+      }
+    }];
 
-    return paraElements
-      .filter(el => el.positionedObjectElement)
-      .map(el => {
-        if (!el.__name) {
-          throw new Error('Internal error: Positioned image element in paragraph is missing its mapped name.');
-        }
-        return imageFactory(this.shadowDocument, el.__name);
-      });
+    Docs.Documents.batchUpdate({ requests }, this.__shadowDocument.getId());
+    this.__shadowDocument.refresh();
+    return this;
   }
 
-  /**
-   * Returns the string "Paragraph".
-   * @returns {string}
-   */
+  getHeading() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.getHeading');
+    if (nargs !== 0) matchThrow();
+
+    const item = this.__elementMapItem;
+    const namedStyleType = item.paragraph?.paragraphStyle?.namedStyleType;
+
+    // The enum values are just strings, so we can reverse the map.
+    const apiToEnumMap = {
+      'NORMAL_TEXT': DocumentApp.ParagraphHeading.NORMAL,
+      'HEADING_1': DocumentApp.ParagraphHeading.HEADING1,
+      'HEADING_2': DocumentApp.ParagraphHeading.HEADING2,
+      'HEADING_3': DocumentApp.ParagraphHeading.HEADING3,
+      'HEADING_4': DocumentApp.ParagraphHeading.HEADING4,
+      'HEADING_5': DocumentApp.ParagraphHeading.HEADING5,
+      'HEADING_6': DocumentApp.ParagraphHeading.HEADING6,
+      'TITLE': DocumentApp.ParagraphHeading.TITLE,
+      'SUBTITLE': DocumentApp.ParagraphHeading.SUBTITLE
+    };
+
+    // If the style is not a named style, it's considered NORMAL.
+    return apiToEnumMap[namedStyleType] || DocumentApp.ParagraphHeading.NORMAL;
+  }
+
   toString() {
     return 'Paragraph';
   }
 }
 
+export const newFakeParagraph = (...args) => Proxies.guard(new FakeParagraph(...args));
+
 registerElement('PARAGRAPH', newFakeParagraph);
+registerElement('LIST_ITEM', newFakeParagraph); // ListItems are also paragraphs
