@@ -444,10 +444,19 @@ export const docReport = (id, what = '\ndoc report') => {
   let text = '  '
   const typer = (child, text) => {
     const type = whichType(child)
+
     if (type) {
+
       text += ` -type:${type} ${child.startIndex}:${child.endIndex}`
       if (type === 'textRun') {
         text += ` -text:${JSON.stringify(child[type].content)}`
+      }
+
+      if (Reflect.has(child[type], 'textStyle')) {
+        text += ` -textStyle:${JSON.stringify(child[type].textStyle)}\n  `
+      }
+      if (Reflect.has(child[type], 'paragraphStyle')) {
+        text += ` -paragraphStyle:${JSON.stringify(child[type].paragraphStyle)}\n  `
       }
       if (Reflect.has(child[type], "elements")) {
         text += ` (`

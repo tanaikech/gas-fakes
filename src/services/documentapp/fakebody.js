@@ -35,7 +35,9 @@ class FakeBody extends FakeContainerElement {
   clear() {
     const { nargs, matchThrow } = signatureArgs(arguments, 'Body.clear');
     if (nargs !== 0) matchThrow();
-    this.__shadowDocument.clear();
+    // Live behavior: clear() deletes body content AND resets all named styles to their defaults.
+    // The shadowDocument.clear() method handles both of these actions.
+    this.__shadowDocument.clear(); 
     return this;
   }
 
@@ -212,10 +214,50 @@ class FakeBody extends FakeContainerElement {
   setAttributes(attributes) {
     const { nargs, matchThrow } = signatureArgs(arguments, 'Body.setAttributes');
     if (nargs !== 1 || !is.object(attributes)) matchThrow();
-
-    const requests = this.__buildStyleUpdateRequests('NORMAL_TEXT', attributes);
+ 
+    // Live behavior is strange:
+    // 1. It applies TEXT attributes (e.g. FONT_FAMILY, ITALIC) to all paragraphs (existing and new).
+    // 2. It does NOT apply PARAGRAPH attributes (e.g. HORIZONTAL_ALIGNMENT) to any paragraphs.
+    // To emulate this, we need to do two things in a batch update:
+    // a) Update the text style for the entire range of the body.
+    // b) Update the text style for the 'NORMAL_TEXT' named style so new paragraphs inherit it.
+ 
+    const shadow = this.__shadowDocument;
+    const requests = [];
+ 
+    // Step 1: Build the text style update object from the given attributes.
+    // We can reuse __buildStyleUpdateRequests and extract just the textStyle part.
+    const styleRequests = this.__buildStyleUpdateRequests('DUMMY', attributes);
+    const textStyleUpdateRequest = styleRequests.find(req => req.updateTextStyle);
+ 
+    // If there are no text attributes to apply, do nothing.
+    if (!textStyleUpdateRequest) {
+      return this;
+    }
+ 
+    const { textStyle, fields } = textStyleUpdateRequest.updateTextStyle;
+ 
+    // Step 2: Create a request to update the style for all existing content in the body.
+    const { body } = shadow.__unpackDocumentTab(shadow.resource);
+    const bodyContent = body.content;
+    const lastElement = bodyContent[bodyContent.length - 1];
+ 
+    // Only update if there's content beyond the initial newline of an empty doc.
+    if (lastElement.endIndex > 1) {
+      requests.push({
+        updateTextStyle: {
+          range: { startIndex: 1, endIndex: lastElement.endIndex, segmentId: body.segmentId || '' },
+          textStyle,
+          fields,
+        },
+      });
+    }
+ 
+    // Step 3: Create a request to update the 'NORMAL_TEXT' named style for future paragraphs.
+    requests.push({ updateTextStyle: { namedStyleType: 'NORMAL_TEXT', textStyle, fields } });
+ 
+    // Step 4: Execute the batch update.
     if (requests.length > 0) {
-      const shadow = this.__shadowDocument;
       Docs.Documents.batchUpdate({ requests }, shadow.getId());
       shadow.refresh();
     }
@@ -290,9 +332,18 @@ class FakeBody extends FakeContainerElement {
   setText(text) {
     const { nargs, matchThrow } = signatureArgs(arguments, 'Body.setText');
     if (nargs !== 1 || !is.string(text)) matchThrow();
+    // clear() leaves one empty paragraph, which is what we want to replace.
     this.clear();
     if (text) {
-      this.appendParagraph(text);
+      // Instead of appending a new paragraph (which would create a leading newline in getText()),
+      // we insert the text into the existing empty paragraph that clear() leaves behind.
+      // The location is index 1, which is right after the initial section break.
+      const requests = [{
+        insertText: { location: { index: 1 }, text }
+      }];
+      const shadow = this.__shadowDocument;
+      Docs.Documents.batchUpdate({ requests }, shadow.getId());
+      shadow.refresh();
     }
     return this;
   }

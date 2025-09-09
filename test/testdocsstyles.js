@@ -1,11 +1,36 @@
-// /home/bruce/gas-fakes/test/testdocsstyles.js
-//import "../main.js";
-//import { initTests } from "./testinit.js";
-//import { wrapupTest, getDocsPerformance, maketdoc, docReport, getChildren, trasher } from "./testassist.js";
+
+import "../main.js";
+import { initTests } from "./testinit.js";
+import { wrapupTest, getDocsPerformance, maketdoc, docReport, getChildren, trasher } from "./testassist.js";
 ;
-const testDocsStyles = (pack) => {
+export const testDocsStyles = (pack) => {
   const toTrash = [];
   const { unit, fixes } = pack || initTests();
+
+    unit.section("Document.clear() style persistence validation", t => {
+    // This test validates that doc.clear() RESETS named styles.
+    // It uses a fresh document to avoid pollution from previous tests.
+    let { doc } = maketdoc(toTrash, fixes, { forceNew: true });
+    let body = doc.getBody();
+
+    // 1. Set a default style on the body using setHeadingAttributes, which modifies the NORMAL_TEXT named style.
+    const initialAttrs = { [DocumentApp.Attribute.FONT_FAMILY]: 'Impact' };
+    body.setHeadingAttributes(DocumentApp.ParagraphHeading.NORMAL, initialAttrs);
+
+    // 2. Clear the document.
+    doc.clear();
+
+    // 3. Append a new paragraph after clearing.
+    const p2 = body.appendParagraph("Paragraph after clear");
+    const p2Attrs = p2.getAttributes();
+
+    // 4. Check if the new paragraph inherited the style from before the clear. It should NOT.
+    t.not(p2Attrs[DocumentApp.Attribute.FONT_FAMILY], 'Impact', "Post-clear: Font family set via setHeadingAttributes should NOT persist through doc.clear()");
+
+
+    console.log(docReport (doc.getId()))
+    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
+  });
 
   unit.section("Document initial documentStyle validation", t => {
     let { doc, docName } = maketdoc(toTrash, fixes);
@@ -95,30 +120,7 @@ const testDocsStyles = (pack) => {
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   });
 
-  unit.section("Document.clear() style persistence validation", t => {
-    // This test validates that doc.clear() RESETS named styles.
-    // It uses a fresh document to avoid pollution from previous tests.
-    let { doc } = maketdoc(toTrash, fixes, { forceNew: true });
-    let body = doc.getBody();
 
-    // 1. Set a default style on the body using setHeadingAttributes, which modifies the NORMAL_TEXT named style.
-    const initialAttrs = { [DocumentApp.Attribute.FONT_FAMILY]: 'Impact' };
-    body.setHeadingAttributes(DocumentApp.ParagraphHeading.NORMAL, initialAttrs);
-
-    // 2. Clear the document.
-    doc.clear();
-
-    // 3. Append a new paragraph after clearing.
-    const p2 = body.appendParagraph("Paragraph after clear");
-    const p2Attrs = p2.getAttributes();
-
-    // 4. Check if the new paragraph inherited the style from before the clear. It should NOT.
-    t.not(p2Attrs[DocumentApp.Attribute.FONT_FAMILY], 'Impact', "Post-clear: Font family set via setHeadingAttributes should NOT persist through doc.clear()");
-
-
-
-    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
-  });
 
   unit.section("Body style and attribute methods", t => {
     // Force a new document to ensure no style pollution from previous tests,

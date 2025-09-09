@@ -100,13 +100,28 @@ export const getText = (element) => {
  * @returns {object} The attributes.
  */
 export const getAttributes = (element) => {
+  // cannot get attributes from a detached element as it has no context
+  if (element.__isDetached) return {};
+
   const item = element.__elementMapItem;
   const paraStyle = item.paragraph?.paragraphStyle || {};
 
-  // A full implementation would check for mixed styles across text runs.
-  // This simplified version takes styles from the first text run.
+  // --- Style Resolution ---
+  // 1. Start with the named style as the base.
+  const namedStyleType = paraStyle.namedStyleType || 'NORMAL_TEXT';
+  const namedStyles = element.shadowDocument.resource.namedStyles?.styles || [];
+  const namedStyle = namedStyles.find(s => s.namedStyleType === namedStyleType);
+  const baseTextStyle = namedStyle?.textStyle || {};
+  const baseParaStyle = namedStyle?.paragraphStyle || {};
+
+  // 2. Merge the paragraph-level style overrides.
+  const finalParaStyle = { ...baseParaStyle, ...paraStyle };
+
+  // 3. Merge the text-run-level style overrides.
+  const paraTextStyle = item.paragraph?.textStyle || {};
   const firstTextRun = item.paragraph?.elements?.find(e => e.textRun);
-  const textStyle = firstTextRun?.textRun?.textStyle || {};
+  const textRunTextStyle = firstTextRun?.textRun?.textStyle || {};
+  const finalTextStyle = { ...baseTextStyle, ...paraTextStyle, ...textRunTextStyle };
 
   const attributes = {};
   const Attribute = DocumentApp.Attribute;
@@ -118,45 +133,45 @@ export const getAttributes = (element) => {
     return `#${toHex(red)}${toHex(green)}${toHex(blue)}`;
   };
 
-  // --- Paragraph Attributes ---
+  // --- Paragraph Attributes from finalParaStyle ---
   if (element.getHeading) {
     attributes[Attribute.HEADING] = element.getHeading();
   }
 
-  if (paraStyle.alignment) {
+  if (finalParaStyle.alignment) {
     const alignmentMap = {
       'START': DocumentApp.HorizontalAlignment.LEFT,
       'CENTER': DocumentApp.HorizontalAlignment.CENTER,
       'END': DocumentApp.HorizontalAlignment.RIGHT,
       'JUSTIFY': DocumentApp.HorizontalAlignment.JUSTIFIED,
     };
-    attributes[Attribute.HORIZONTAL_ALIGNMENT] = alignmentMap[paraStyle.alignment];
+    attributes[Attribute.HORIZONTAL_ALIGNMENT] = alignmentMap[finalParaStyle.alignment];
   }
 
-  if (paraStyle.direction) {
-    attributes[Attribute.LEFT_TO_RIGHT] = paraStyle.direction === 'LEFT_TO_RIGHT';
+  if (finalParaStyle.direction) {
+    attributes[Attribute.LEFT_TO_RIGHT] = finalParaStyle.direction === 'LEFT_TO_RIGHT';
   }
 
-  if (paraStyle.lineSpacing) {
-    attributes[Attribute.LINE_SPACING] = paraStyle.lineSpacing / 100;
+  if (finalParaStyle.lineSpacing) {
+    attributes[Attribute.LINE_SPACING] = finalParaStyle.lineSpacing / 100;
   }
 
-  if (!is.undefined(paraStyle.indentStart?.magnitude)) attributes[Attribute.INDENT_START] = paraStyle.indentStart.magnitude;
-  if (!is.undefined(paraStyle.indentEnd?.magnitude)) attributes[Attribute.INDENT_END] = paraStyle.indentEnd.magnitude;
-  if (!is.undefined(paraStyle.indentFirstLine?.magnitude)) attributes[Attribute.INDENT_FIRST_LINE] = paraStyle.indentFirstLine.magnitude;
-  if (!is.undefined(paraStyle.spaceAbove?.magnitude)) attributes[Attribute.SPACING_BEFORE] = paraStyle.spaceAbove.magnitude;
-  if (!is.undefined(paraStyle.spaceBelow?.magnitude)) attributes[Attribute.SPACING_AFTER] = paraStyle.spaceBelow.magnitude;
+  if (!is.undefined(finalParaStyle.indentStart?.magnitude)) attributes[Attribute.INDENT_START] = finalParaStyle.indentStart.magnitude;
+  if (!is.undefined(finalParaStyle.indentEnd?.magnitude)) attributes[Attribute.INDENT_END] = finalParaStyle.indentEnd.magnitude;
+  if (!is.undefined(finalParaStyle.indentFirstLine?.magnitude)) attributes[Attribute.INDENT_FIRST_LINE] = finalParaStyle.indentFirstLine.magnitude;
+  if (!is.undefined(finalParaStyle.spaceAbove?.magnitude)) attributes[Attribute.SPACING_BEFORE] = finalParaStyle.spaceAbove.magnitude;
+  if (!is.undefined(finalParaStyle.spaceBelow?.magnitude)) attributes[Attribute.SPACING_AFTER] = finalParaStyle.spaceBelow.magnitude;
 
-  // --- Text Attributes ---
-  if (textStyle.backgroundColor) attributes[Attribute.BACKGROUND_COLOR] = getColorString(textStyle.backgroundColor.color);
-  if (!is.undefined(textStyle.bold)) attributes[Attribute.BOLD] = textStyle.bold;
-  if (textStyle.fontFamily) attributes[Attribute.FONT_FAMILY] = textStyle.fontFamily;
-  if (textStyle.fontSize?.magnitude) attributes[Attribute.FONT_SIZE] = textStyle.fontSize.magnitude;
-  if (textStyle.foregroundColor) attributes[Attribute.FOREGROUND_COLOR] = getColorString(textStyle.foregroundColor.color);
-  if (!is.undefined(textStyle.italic)) attributes[Attribute.ITALIC] = textStyle.italic;
-  if (!is.undefined(textStyle.strikethrough)) attributes[Attribute.STRIKETHROUGH] = textStyle.strikethrough;
-  if (!is.undefined(textStyle.underline)) attributes[Attribute.UNDERLINE] = textStyle.underline;
-  if (textStyle.link?.url) attributes[Attribute.LINK_URL] = textStyle.link.url;
+  // --- Text Attributes from finalTextStyle ---
+  if (finalTextStyle.backgroundColor) attributes[Attribute.BACKGROUND_COLOR] = getColorString(finalTextStyle.backgroundColor.color);
+  if (!is.undefined(finalTextStyle.bold)) attributes[Attribute.BOLD] = finalTextStyle.bold;
+  if (finalTextStyle.weightedFontFamily?.fontFamily) attributes[Attribute.FONT_FAMILY] = finalTextStyle.weightedFontFamily.fontFamily;
+  if (finalTextStyle.fontSize?.magnitude) attributes[Attribute.FONT_SIZE] = finalTextStyle.fontSize.magnitude;
+  if (finalTextStyle.foregroundColor) attributes[Attribute.FOREGROUND_COLOR] = getColorString(finalTextStyle.foregroundColor.color);
+  if (!is.undefined(finalTextStyle.italic)) attributes[Attribute.ITALIC] = finalTextStyle.italic;
+  if (!is.undefined(finalTextStyle.strikethrough)) attributes[Attribute.STRIKETHROUGH] = finalTextStyle.strikethrough;
+  if (!is.undefined(finalTextStyle.underline)) attributes[Attribute.UNDERLINE] = finalTextStyle.underline;
+  if (finalTextStyle.link?.url) attributes[Attribute.LINK_URL] = finalTextStyle.link.url;
 
   // --- List Item Attributes ---
   if (item.paragraph?.bullet) {
@@ -164,6 +179,14 @@ export const getAttributes = (element) => {
     if (element.getNestingLevel) attributes[Attribute.NESTING_LEVEL] = element.getNestingLevel();
     if (element.getGlyphType) attributes[Attribute.GLYPH_TYPE] = element.getGlyphType();
   }
+
+  // Ensure boolean attributes are null if not explicitly set, to match live behavior.
+  const booleanTextAttributes = [Attribute.BOLD, Attribute.ITALIC, Attribute.STRIKETHROUGH, Attribute.UNDERLINE];
+  booleanTextAttributes.forEach(attr => {
+    if (attributes[attr] === undefined) {
+      attributes[attr] = null;
+    }
+  });
 
   return attributes;
 };
@@ -256,4 +279,5 @@ export const updateParagraphStyle = (element, paragraphStyle, fields) => {
   Docs.Documents.batchUpdate({ requests }, shadow.getId());
   shadow.refresh();
   return element;
+  
 };
