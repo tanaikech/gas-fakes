@@ -11,30 +11,28 @@ export const testDocsStyles = (pack) => {
     // This test validates that doc.clear() RESETS named styles.
     // It uses a fresh document to avoid pollution from previous tests.
     let { doc } = maketdoc(toTrash, fixes, { forceNew: true });
-
-    const { mess, gasdoc } = docReport(doc)
-    console.log(mess)
-    doc = gasdoc
     let body = doc.getBody();
 
-    // 1. Set a default style on the body using setHeadingAttributes, which modifies the NORMAL_TEXT named style.
+    // 1. Set a custom style on the NORMAL_TEXT named style.
     const initialAttrs = { [DocumentApp.Attribute.FONT_FAMILY]: 'Impact' };
     body.setHeadingAttributes(DocumentApp.ParagraphHeading.NORMAL, initialAttrs);
 
-    // 2. Clear the document.
+    // Verify the style was set on a new paragraph.
+    const p1 = body.appendParagraph("Paragraph before clear");
+    const p1Attrs = p1.getAttributes();
+    t.is(p1Attrs[DocumentApp.Attribute.FONT_FAMILY], 'Impact', "Pre-clear: Font family should be Impact");
+
+    // 2. Clear the document. This should reset the named styles.
     doc.clear();
-    const { mess:m2, gasdoc: d2 } = docReport(doc)
-    doc = d2
-    body = doc.getBody();
 
     // 3. Append a new paragraph after clearing.
     const p2 = body.appendParagraph("Paragraph after clear");
     const p2Attrs = p2.getAttributes();
 
-    // 4. Check if the new paragraph inherited the style from before the clear. It should NOT.
-    t.not(p2Attrs[DocumentApp.Attribute.FONT_FAMILY], 'Impact', "Post-clear: Font family set via setHeadingAttributes should NOT persist through doc.clear()");
-
-
+    // 4. Check if the new paragraph inherited the custom style. It should NOT.
+    // The font family should have reverted to the default (Arial).
+    t.not(p2Attrs[DocumentApp.Attribute.FONT_FAMILY], 'Impact', "Post-clear: Font family should NOT be Impact");
+    t.is(p2Attrs[DocumentApp.Attribute.FONT_FAMILY], 'Arial', "Post-clear: Font family should be reset to default Arial");
 
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   });

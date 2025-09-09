@@ -19,7 +19,7 @@ To accurately regenerate the progress documentation for any Apps Script service,
     *   **Class Summary**:
         *   On a new line, add the brief summary of the class's purpose from the official documentation.
     *   **Completion Percentage**:
-        *   On a new line, add the calculated completion percentage, formatted exactly as `XX% completed`. The percentage is calculated as `(number of completed methods / total number of methods) * 100`.
+        *   On a new line, add the raw values and calculated completion percentage formatted exactly as `(n methods out of n (XX%) completed`. The percentage is calculated as `(number of completed methods / total number of methods) * 100`.
 
 5.  **Create a Markdown Table** immediately following the header with these columns: `method`, `return`, `status`, `comments`.
 

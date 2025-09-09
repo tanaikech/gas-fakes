@@ -1,9 +1,9 @@
 import { Proxies } from '../../support/proxies.js';
-import { makeNrPrefix, getCurrentNr, findOrCreateNamedRangeName, shadowPrefix } from './nrhelpers.js'
+import {  getCurrentNr, findOrCreateNamedRangeName, shadowPrefix } from './nrhelpers.js'
 import { getElementProp } from './elementhelpers.js';
 import { Utils } from '../../support/utils.js';
 import { newFakeFootnote } from './fakefootnote.js';
-
+import { defaultDocumentStyleRequests } from './elementblasters.js';
 
 const { is } = Utils;
 
@@ -414,6 +414,9 @@ class ShadowDocument {
         requests.push({ deleteParagraphBullets: { range: { startIndex: 1, endIndex: 1, segmentId: this.__segmentId, tabId: this.__tabId } } });
       }
     }
+
+    // we also need to reset the styles back to intial
+    requests.push(...defaultDocumentStyleRequests())
 
     if (requests.length > 0) {
       Docs.Documents.batchUpdate({ requests }, this.getId());

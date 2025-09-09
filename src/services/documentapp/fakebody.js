@@ -96,7 +96,7 @@ class FakeBody extends FakeContainerElement {
         // Text Styles
         case Attribute.BACKGROUND_COLOR: textStyle.backgroundColor = { color: { rgbColor: colorToRgb(value) } }; textFields.push('backgroundColor'); break;
         case Attribute.BOLD: textStyle.bold = value; textFields.push('bold'); break;
-        case Attribute.FONT_FAMILY: textStyle.weightedFontFamily = { fontFamily: value }; textFields.push('weightedFontFamily.fontFamily'); break;
+        case Attribute.FONT_FAMILY: textStyle.weightedFontFamily = { fontFamily: value }; textFields.push('weightedFontFamily'); break;
         case Attribute.FONT_SIZE: textStyle.fontSize = { magnitude: value, unit: 'PT' }; textFields.push('fontSize'); break;
         case Attribute.FOREGROUND_COLOR: textStyle.foregroundColor = { color: { rgbColor: colorToRgb(value) } }; textFields.push('foregroundColor'); break;
         case Attribute.ITALIC: textStyle.italic = value; textFields.push('italic'); break;
