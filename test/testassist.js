@@ -434,8 +434,12 @@ export const whichType = (element) => {
   if (!t) console.log('skipping element', element)
   return t
 }
-export const docReport = (id, what = '\ndoc report') => {
+export const docReport = (gasdoc, what = '\ndoc report') => {
+  
+  const id = gasdoc.getId()
+  gasdoc.saveAndClose()
   const doc = Docs.Documents.get(id)
+  console.log (JSON.stringify(doc))
   const content = doc.body.content
   // drop the section break
   const children = content.slice(1)
@@ -466,7 +470,12 @@ export const docReport = (id, what = '\ndoc report') => {
     }
     return text
   }
-  return children.map(f => typer(f, text)).join("\n")
+  const mess = children.map(f => typer(f, text)).join("\n")
+  return {
+    mess,
+    gasdoc: DocumentApp.openById(id)
+  }
+
 }
 // The custom replacer function
 const getCircularReplacer = () => {

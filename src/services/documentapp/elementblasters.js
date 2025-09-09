@@ -1,3 +1,4 @@
+
 /**
  * Adds a new row with data to a table in a Google Doc.
  *
@@ -136,11 +137,61 @@ export const reverseUpdateContent = (content, tableStartIndex, newTableData, seg
         requests.push(deleteContentRange(oldTextStartIndex, oldTextEndIndex - 1, segmentId, tabId));
       }
       // this is only required if the nextText has any length
-      if (newText.length > 0){
+      if (newText.length > 0) {
         requests.push(insertText(oldTextStartIndex, newText, segmentId, tabId));
       }
 
     }
   }
+  return requests
+}
+
+
+export const defaultDocumentStyleRequests = () => {
+  // The API creates a document with its own defaults. We need to adjust it
+  // to match the defaults of a document created by the live Apps Script environment.
+  // The body content from the API (a section break and a paragraph) is already
+  // correct, so we only need to enforce the documentStyle.
+
+  const mt = { magnitude: 72, unit: 'PT' }
+  const mb = { magnitude: 36, unit: 'PT' }
+
+  // this sets the overall document styles to match live apps script
+  const documentStyle = Docs.newDocumentStyle()
+    .setPageNumberStart(1)
+    .setMarginHeader(mb)
+    .setMarginFooter(mb)
+    .setMarginTop(mt)
+    .setMarginBottom(mt)
+    .setMarginRight(mt)
+    .setMarginLeft(mt)
+
+
+  const updateDocumentStyle = Docs.newUpdateDocumentStyleRequest()
+    .setDocumentStyle(documentStyle)
+    .setFields('pageNumberStart,marginHeader,marginFooter,marginTop,marginBottom,marginRight,marginLeft')
+
+  // this also sets the default avoid widowandorphan setting for normal text to match live apps script
+  const range = Docs.newRange().setStartIndex(1).setEndIndex(2);
+
+  const requests = [{
+    updateDocumentStyle
+  }, {
+    updateParagraphStyle: Docs.newUpdateParagraphStyleRequest()
+      .setParagraphStyle(Docs.newParagraphStyle()
+        .setAvoidWidowAndOrphan(false)
+        .setNamedStyleType("NORMAL_TEXT"))
+      .setFields('avoidWidowAndOrphan')
+      .setRange(range)
+  }, {
+    updateParagraphStyle: Docs.newUpdateParagraphStyleRequest()
+      .setParagraphStyle(Docs.newParagraphStyle()
+        .setAvoidWidowAndOrphan(false)
+        .setNamedStyleType("HEADING_1"))
+      .setFields('avoidWidowAndOrphan')
+      .setRange(range)
+  }
+  ]
+
   return requests
 }

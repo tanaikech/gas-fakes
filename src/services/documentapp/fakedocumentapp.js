@@ -6,6 +6,8 @@ import is from '@sindresorhus/is';
 import { newFakeUi } from './fakeui.js';
 import { Auth } from '../../support/auth.js';
 import * as Enums from '../enums/docsenums.js'
+import { defaultDocumentStyleRequests } from './elementblasters.js';
+
 export const newFakeDocumentApp = (...args) => {
   return Proxies.guard(new FakeDocumentApp(...args));
 };
@@ -44,29 +46,8 @@ class FakeDocumentApp {
     const docId = doc.documentId;
     ScriptApp.__behavior.addFile(docId);
  
-    // 2. The API creates a document with its own defaults. We need to adjust it
-    // to match the defaults of a document created by the live Apps Script environment.
-    // The body content from the API (a section break and a paragraph) is already
-    // correct, so we only need to enforce the documentStyle.
-    const requests = [{
-      updateDocumentStyle: {
-        documentStyle: {
-          pageNumberStart: 1,
-          marginHeader: { magnitude: 36, unit: 'PT' },
-          marginFooter: { magnitude: 36, unit: 'PT' },
-          marginTop: { magnitude: 72, unit: 'PT' },
-          marginBottom: { magnitude: 72, unit: 'PT' },
-          marginRight: { magnitude: 72, unit: 'PT' },
-          marginLeft: { magnitude: 72, unit: 'PT' },
-        },
-        // We only specify fields that are part of the standard Apps Script default.
-        // Page size is left to the API's default, which may be locale-dependent.
-        fields: 'pageNumberStart,marginHeader,marginFooter,marginTop,marginBottom,marginRight,marginLeft'
-      }
-    }];
- 
     // Apply the style updates.
-    Docs.Documents.batchUpdate({ requests }, docId);
+    Docs.Documents.batchUpdate({ requests: defaultDocumentStyleRequests() }, docId);
  
     // 3. Return the new FakeDocument instance.
     return newFakeDocument(docId);

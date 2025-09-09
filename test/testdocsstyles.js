@@ -7,10 +7,14 @@ export const testDocsStyles = (pack) => {
   const toTrash = [];
   const { unit, fixes } = pack || initTests();
 
-    unit.section("Document.clear() style persistence validation", t => {
+  unit.section("Document.clear() style persistence validation", t => {
     // This test validates that doc.clear() RESETS named styles.
     // It uses a fresh document to avoid pollution from previous tests.
     let { doc } = maketdoc(toTrash, fixes, { forceNew: true });
+
+    const { mess, gasdoc } = docReport(doc)
+    console.log(mess)
+    doc = gasdoc
     let body = doc.getBody();
 
     // 1. Set a default style on the body using setHeadingAttributes, which modifies the NORMAL_TEXT named style.
@@ -28,7 +32,7 @@ export const testDocsStyles = (pack) => {
     t.not(p2Attrs[DocumentApp.Attribute.FONT_FAMILY], 'Impact', "Post-clear: Font family set via setHeadingAttributes should NOT persist through doc.clear()");
 
 
-    console.log(docReport (doc.getId()))
+    docReport(doc)
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   });
 
@@ -152,7 +156,7 @@ export const testDocsStyles = (pack) => {
     // Test setText
     body.setText("Initial paragraph.");
     t.is(body.getText(), "Initial paragraph.", "setText should replace body content");
- 
+
     // Test setAttributes on Body. Live behavior is strange:
     // It applies TEXT attributes (e.g. FONT_FAMILY, ITALIC) to all paragraphs (existing and new).
     // It does NOT apply PARAGRAPH attributes (e.g. HORIZONTAL_ALIGNMENT) to any paragraphs.
@@ -161,22 +165,22 @@ export const testDocsStyles = (pack) => {
     t.is(p1InitialAttrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], DocumentApp.HorizontalAlignment.LEFT, "Initial paragraph should have default LEFT alignment");
     // On live GAS, an unset boolean attribute like ITALIC returns null from getAttributes().
     t.is(p1InitialAttrs[DocumentApp.Attribute.ITALIC], null, "Initial paragraph should not be italic (returns null)");
- 
+
     const attributesToSet = {
       [DocumentApp.Attribute.HORIZONTAL_ALIGNMENT]: DocumentApp.HorizontalAlignment.CENTER,
       [DocumentApp.Attribute.ITALIC]: true,
       [DocumentApp.Attribute.FONT_FAMILY]: 'Comic Sans MS'
     };
     body.setAttributes(attributesToSet);
- 
+
     // Re-fetch attributes of the existing paragraph to confirm the mixed changes.
     const p1AfterSetAttrs = p1.getAttributes();
- 
+
     // Verify changes to the EXISTING paragraph
     t.is(p1AfterSetAttrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], DocumentApp.HorizontalAlignment.LEFT, "setAttributes should NOT affect alignment of existing paragraphs");
     t.is(p1AfterSetAttrs[DocumentApp.Attribute.ITALIC], true, "setAttributes SHOULD affect italic of existing paragraphs");
     t.is(p1AfterSetAttrs[DocumentApp.Attribute.FONT_FAMILY], 'Comic Sans MS', "setAttributes SHOULD affect font family of existing paragraphs");
- 
+
     // Verify changes to a NEWLY appended paragraph
     const p2 = body.appendParagraph("A new paragraph");
     const p2Attrs = p2.getAttributes();
