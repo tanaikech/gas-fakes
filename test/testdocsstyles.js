@@ -23,6 +23,9 @@ export const testDocsStyles = (pack) => {
 
     // 2. Clear the document.
     doc.clear();
+    const { mess:m2, gasdoc: d2 } = docReport(doc)
+    doc = d2
+    body = doc.getBody();
 
     // 3. Append a new paragraph after clearing.
     const p2 = body.appendParagraph("Paragraph after clear");
@@ -32,7 +35,7 @@ export const testDocsStyles = (pack) => {
     t.not(p2Attrs[DocumentApp.Attribute.FONT_FAMILY], 'Impact', "Post-clear: Font family set via setHeadingAttributes should NOT persist through doc.clear()");
 
 
-    docReport(doc)
+
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   });
 
