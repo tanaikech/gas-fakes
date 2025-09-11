@@ -428,6 +428,34 @@ export const transpose2DArray = (arr) => {
   return transposed;
 };
 
+export const unpackedDoc = (id) => {
+  return unpackDocumentTab(Docs.Documents.get(id, { includeTabsContent: true }))?.documentTab
+}
+export const unpackDocumentTab = (data) => {
+  const tabs = data?.tabs
+  const documentTab = tabs?.[0]?.documentTab || data
+  const body = documentTab?.body
+  if (!documentTab) {
+    throw new Error("failed to find document tab in document")
+  }
+  if (!body) {
+    throw new Error("failed to find body in document")
+  }
+  return {
+    tabs,
+    documentTab,
+    body,
+    lists: documentTab.lists,
+    namedStyles: documentTab.namedStyles,
+    namedRanges: documentTab.namedRanges,
+    headers: documentTab.headers,
+    footers: documentTab.footers,
+    footnotes: documentTab.footnotes,
+    documentStyle: documentTab.documentStyle,
+    inlineObjects: documentTab.inlineObjects,
+    positionedObjects: documentTab.positionedObjects,
+  }
+}
 export const whichType = (element) => {
   const ts = ["paragraph", "pageBreak", "textRun"]
   const [t] = ts.filter(f => Reflect.has(element, f))
@@ -435,11 +463,11 @@ export const whichType = (element) => {
   return t
 }
 export const docReport = (gasdoc, what = '\ndoc report') => {
-  
+
   const id = gasdoc.getId()
   gasdoc.saveAndClose()
-  const doc = Docs.Documents.get(id)
-  console.log (JSON.stringify(doc))
+  const doc = Docs.Documents.get(id, { includeTabsContent: true });
+  console.log(JSON.stringify(doc))
   const content = doc.body.content
   // drop the section break
   const children = content.slice(1)

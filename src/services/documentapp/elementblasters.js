@@ -146,6 +146,31 @@ export const reverseUpdateContent = (content, tableStartIndex, newTableData, seg
   return requests
 }
 
+export const unpackDocumentTab = (data) => {
+  const tabs = data?.tabs
+  const documentTab = tabs?.[0]?.documentTab || data
+  const body = documentTab?.body
+  if (!documentTab) {
+    throw new Error("failed to find document tab in document")
+  }
+  if (!body) {
+    throw new Error("failed to find body in document")
+  }
+  return {
+    tabs,
+    documentTab,
+    body,
+    lists: documentTab.lists,
+    namedStyles: documentTab.namedStyles,
+    namedRanges: documentTab.namedRanges,
+    headers: documentTab.headers,
+    footers: documentTab.footers,
+    footnotes: documentTab.footnotes,
+    documentStyle: documentTab.documentStyle,
+    inlineObjects: documentTab.inlineObjects,
+    positionedObjects: documentTab.positionedObjects,
+  }
+}
 
 export const defaultDocumentStyleRequests = () => {
   // The API creates a document with its own defaults. We need to adjust it
@@ -181,9 +206,12 @@ export const defaultDocumentStyleRequests = () => {
         .setIndentStart({ unit: 'PT' })
         .setIndentFirstLine({ unit: 'PT' })
         .setAlignment('START')
-        .setLineSpacing(115)
+        .setLineSpacing(115) // This was added in a previous fix
         .setNamedStyleType("NORMAL_TEXT"))
-      .setFields('avoidWidowAndOrphan,spacingMode,indentStart,indentFirstLine,alignment,lineSpacing')
+      // Use a wildcard to update all specified fields. This is the most reliable way
+      // to ensure the API updates the named style definition itself, rather than just
+      // applying an inline style to the range.
+      .setFields('*')
       .setRange(range)
   }, {
     updateParagraphStyle: Docs.newUpdateParagraphStyleRequest()

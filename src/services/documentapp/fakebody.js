@@ -298,16 +298,13 @@ class FakeBody extends FakeContainerElement {
     }
 
     // Step 3: Create a request to update the 'NORMAL_TEXT' named style for future paragraphs.
-    // This is done via an updateParagraphStyle request, targeting the anchor range.
-    // The textStyle changes are nested inside the paragraphStyle, and the fields are prefixed.
+    // This is done via an updateTextStyle request, targeting the anchor range of the first paragraph.
+    // The API infers that the named style definition for that range ('NORMAL_TEXT') should be updated.
     requests.push({
-      updateParagraphStyle: {
+      updateTextStyle: {
         range: { startIndex: 1, endIndex: 2 }, // Anchor range for named style update
-        paragraphStyle: {
-          namedStyleType: 'NORMAL_TEXT',
-          textStyle: textStyle,
-        },
-        fields: `namedStyleType,${textFields.map(f => `textStyle.${f}`).join(',')}`,
+        textStyle: textStyle,
+        fields: fields,
       },
     });
 

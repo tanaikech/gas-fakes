@@ -117,6 +117,7 @@ const fxGeneric = ({ serviceName, prop, subProp, method, params, options, cacher
         }
       }
     }
+
   }
 
   const result = callSync(`sx${serviceName}`, {

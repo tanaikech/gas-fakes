@@ -3,10 +3,9 @@ import {  getCurrentNr, findOrCreateNamedRangeName, shadowPrefix } from './nrhel
 import { getElementProp } from './elementhelpers.js';
 import { Utils } from '../../support/utils.js';
 import { newFakeFootnote } from './fakefootnote.js';
-import { defaultDocumentStyleRequests } from './elementblasters.js';
+import { defaultDocumentStyleRequests, unpackDocumentTab } from './elementblasters.js';
 
 const { is } = Utils;
-
 
 export const newShadowDocument = (...args) => {
   return Proxies.guard(new ShadowDocument(...args));
@@ -36,31 +35,10 @@ class ShadowDocument {
   }
 
 
-  __unpackDocumentTab = (data) => {
-    const tabs = data?.tabs
-    const documentTab = tabs?.[0]?.documentTab || data
-    const body = documentTab?.body
-    if (!documentTab) {
-      throw new Error("failed to find document tab in document")
-    }
-    if (!body) {
-      throw new Error("failed to find body in document")
-    }
-    return {
-      tabs,
-      documentTab,
-      body,
-      lists: documentTab.lists,
-      namedStyles: documentTab.namedStyles,
-      namedRanges: documentTab.namedRanges,
-      headers: documentTab.headers,
-      footers: documentTab.footers,
-      footnotes: documentTab.footnotes,
-      documentStyle: documentTab.documentStyle,
-      inlineObjects: documentTab.inlineObjects,
-      positionedObjects: documentTab.positionedObjects,
-    }
+  __unpackDocumentTab (data)  { 
+    return unpackDocumentTab (data)
   }
+
   /**
    * we may need to do this if we're coming from cache
    * although the resource may be in cache, the element map might not be defined

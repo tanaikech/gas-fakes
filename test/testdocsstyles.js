@@ -1,7 +1,7 @@
 
 import "../main.js";
 import { initTests } from "./testinit.js";
-import { wrapupTest, getDocsPerformance, maketdoc, docReport, getChildren, trasher } from "./testassist.js";
+import { wrapupTest, getDocsPerformance, maketdoc, docReport, getChildren, trasher , unpackedDoc} from "./testassist.js";
 ;
 export const testDocsStyles = (pack) => {
   const toTrash = [];
@@ -19,7 +19,7 @@ export const testDocsStyles = (pack) => {
 
     // Verify the style was set by checking the underlying document resource.
     doc.saveAndClose(); // Ensure changes are persisted
-    let docResource = Docs.Documents.get(docId);
+    let docResource = unpackedDoc(docId);
     t.is(docResource.documentStyle.marginTop.magnitude, 144, "Pre-clear: marginTop should be 144");
 
     // 2. Clear the document. This should NOT reset the document styles on the live environment.
@@ -28,7 +28,7 @@ export const testDocsStyles = (pack) => {
 
     // 3. Verify the style has NOT been reset.
     doc.saveAndClose();
-    docResource = Docs.Documents.get(docId);
+    docResource = unpackedDoc(docId)
     t.is(docResource.documentStyle.marginTop.magnitude, 144, "Post-clear: marginTop should NOT be reset and remain 144");
 
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
@@ -45,7 +45,7 @@ export const testDocsStyles = (pack) => {
 
     // Re-fetch the document using the advanced Docs service to get the full document structure
     // including documentStyle.
-    const docResource = Docs.Documents.get(docId);
+    const docResource =unpackedDoc (docId) 
     const documentStyle = docResource.documentStyle;
 
     t.truthy(documentStyle, "Document should have a documentStyle property");
@@ -137,7 +137,7 @@ export const testDocsStyles = (pack) => {
     body.setMarginLeft(90);
     body.setMarginTop(100);
     doc.saveAndClose();
-    let docResource = Docs.Documents.get(docId);
+    let docResource =unpackedDoc (docId) 
     t.is(docResource.documentStyle.marginLeft.magnitude, 90, "setMarginLeft should update document style");
     t.is(docResource.documentStyle.marginTop.magnitude, 100, "setMarginTop should update document style");
     doc = DocumentApp.openById(docId);
@@ -147,7 +147,7 @@ export const testDocsStyles = (pack) => {
     body.setPageWidth(500);
     body.setPageHeight(700);
     doc.saveAndClose();
-    docResource = Docs.Documents.get(docId);
+    docResource =unpackedDoc (docId) 
     t.is(docResource.documentStyle.pageSize.width.magnitude, 500, "setPageWidth should update page size");
     t.is(docResource.documentStyle.pageSize.height.magnitude, 700, "setPageHeight should update page size");
     doc = DocumentApp.openById(docId);

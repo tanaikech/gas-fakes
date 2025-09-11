@@ -1,6 +1,6 @@
 import '../main.js';
 import { initTests } from './testinit.js';
-import { wrapupTest, getDocsPerformance, maketdoc, trasher } from './testassist.js';
+import { wrapupTest, getDocsPerformance, maketdoc, trasher, unpackedDoc } from './testassist.js';
 
 
 export const testDocsListItems = (pack) => {
@@ -37,8 +37,8 @@ export const testDocsListItems = (pack) => {
     t.is(li1_reloaded.getNestingLevel(), 0, "getNestingLevel should return 0 for a top-level item");
     t.is(li1_reloaded.getGlyphType(), DocumentApp.GlyphType.NUMBER, "getGlyphType should return the correct type for a default list");
 
-    // Test the paragraph styles by checking the underlying API resource
-    const docResource = Docs.Documents.get(doc.getId());
+    // Test the paragraph styles by checking the underlying API resource    
+    const docResource = unpackedDoc(doc.getId())
     const para1 = docResource.body.content.find(p => p.paragraph?.elements?.[0]?.textRun?.content === 'Item 1\n').paragraph;
     t.is(para1.paragraphStyle.indentStart.magnitude, 36, "setIndentStart should set the correct indentation");
     t.is(para1.paragraphStyle.indentFirstLine.magnitude, -18, "setIndentFirstLine should set the correct indentation");
@@ -81,7 +81,7 @@ export const testDocsListItems = (pack) => {
 
     // Check with advanced service that they are in the same list
     doc.saveAndClose();
-    const docResource = Docs.Documents.get(doc.getId());
+    const docResource = unpackedDoc(doc.getId())
     const content = docResource.body.content;
     const listItems = content.filter(c => c.paragraph && c.paragraph.bullet);
 

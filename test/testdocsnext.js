@@ -1,7 +1,7 @@
 
 import "../main.js";
 import { initTests } from "./testinit.js";
-import { wrapupTest, getDocsPerformance, maketdoc, docReport, getChildren, trasher } from "./testassist.js";
+import { wrapupTest, getDocsPerformance, maketdoc, docReport, getChildren, trasher, unpackedDoc } from "./testassist.js";
 ;
 export const testDocsNext = (pack) => {
   const toTrash = [];
@@ -196,8 +196,8 @@ export const testDocsNext = (pack) => {
     const docId = doc.getId();
     doc.saveAndClose();
 
-    // Now, get the document structure using the advanced service to find the paragraph we just added.
-    const docResource = Docs.Documents.get(docId);
+    // Now, get the document structure using the advanced service to find the paragraph we just added.    
+    const docResource = unpackedDoc(docId)
     const content = docResource.body.content;
     const sourceParaItem = [...content].reverse().find(se =>
       se.paragraph && se.paragraph.elements.some(e => e.textRun && e.textRun.content.includes("Bold and Italic"))
@@ -252,7 +252,7 @@ export const testDocsNext = (pack) => {
     t.is(body.getText(), expectedText, "Text content should include original and inserted complex paragraph");
 
     // 5. Advanced verification of styles
-    const finalDocResource = Docs.Documents.get(docId);
+    const finalDocResource = unpackedDoc(doc.getId())
     const finalContent = finalDocResource.body.content;
 
     // The inserted paragraph should be at index 1 (after the initial empty one)
@@ -395,7 +395,7 @@ export const testDocsNext = (pack) => {
     doc = DocumentApp.openById(doc.getId());
     body = doc.getBody();
 
-    const adoc = Docs.Documents.get(doc.getId());
+    const adoc = unpackedDoc(doc.getId())
     t.is(adoc.body.content.length, 2, "in reality - an empty doc has 2 children")
 
     // document app will skip the section break
@@ -431,7 +431,8 @@ export const testDocsNext = (pack) => {
     let { doc } = maketdoc(toTrash, fixes);
 
     // Re-fetch the document using the advanced Docs service to get the full document structure
-    const docResource = Docs.Documents.get(doc.getId());
+    const docResource = unpackedDoc(doc.getId())
+
     const styles = docResource.namedStyles.styles;
 
     t.truthy(styles, "Document should have a namedStyles.styles property");
@@ -497,7 +498,7 @@ export const testDocsNext = (pack) => {
     doc.saveAndClose();
 
     // Re-fetch the document using the advanced Docs service to ensure the changes are applied.
-    const fetchedDoc = Docs.Documents.get(doc.getId());
+    const fetchedDoc = unpackedDoc(doc.getId())
     t.is(getTextFromDocResource(fetchedDoc), text, 'checking that adv applied the change')
 
     // Re-fetch the DocumentApp object to ensure its internal __doc is updated.
