@@ -37,7 +37,7 @@ class FakeBody extends FakeContainerElement {
     if (nargs !== 0) matchThrow();
     // Live behavior: clear() deletes body content AND resets all named styles to their defaults.
     // The shadowDocument.clear() method handles both of these actions.
-    this.__shadowDocument.clear(); 
+    this.__shadowDocument.clear();
     return this;
   }
 
@@ -73,9 +73,9 @@ class FakeBody extends FakeContainerElement {
       const value = attributes[key];
       if (value === null) continue;
 
-      switch (key) {
+      switch (String(key)) {
         // Paragraph Styles
-        case Attribute.HORIZONTAL_ALIGNMENT:
+        case String(Attribute.HORIZONTAL_ALIGNMENT):
           const alignmentMap = {
             [DocumentApp.HorizontalAlignment.LEFT]: 'START',
             [DocumentApp.HorizontalAlignment.CENTER]: 'CENTER',
@@ -85,46 +85,64 @@ class FakeBody extends FakeContainerElement {
           paraStyle.alignment = alignmentMap[value];
           paraFields.push('alignment');
           break;
-        case Attribute.INDENT_FIRST_LINE: paraStyle.indentFirstLine = { magnitude: value, unit: 'PT' }; paraFields.push('indentFirstLine'); break;
-        case Attribute.INDENT_START: paraStyle.indentStart = { magnitude: value, unit: 'PT' }; paraFields.push('indentStart'); break;
-        case Attribute.INDENT_END: paraStyle.indentEnd = { magnitude: value, unit: 'PT' }; paraFields.push('indentEnd'); break;
-        case Attribute.LINE_SPACING: paraStyle.lineSpacing = value * 100; paraFields.push('lineSpacing'); break;
-        case Attribute.SPACING_AFTER: paraStyle.spaceBelow = { magnitude: value, unit: 'PT' }; paraFields.push('spaceBelow'); break;
-        case Attribute.SPACING_BEFORE: paraStyle.spaceAbove = { magnitude: value, unit: 'PT' }; paraFields.push('spaceAbove'); break;
-        case Attribute.LEFT_TO_RIGHT: paraStyle.direction = value ? 'LEFT_TO_RIGHT' : 'RIGHT_TO_LEFT'; paraFields.push('direction'); break;
+        case String(Attribute.INDENT_FIRST_LINE): paraStyle.indentFirstLine = { magnitude: value, unit: 'PT' }; paraFields.push('indentFirstLine'); break;
+        case String(Attribute.INDENT_START): paraStyle.indentStart = { magnitude: value, unit: 'PT' }; paraFields.push('indentStart'); break;
+        case String(Attribute.INDENT_END): paraStyle.indentEnd = { magnitude: value, unit: 'PT' }; paraFields.push('indentEnd'); break;
+        case String(Attribute.LINE_SPACING): paraStyle.lineSpacing = value * 100; paraFields.push('lineSpacing'); break;
+        case String(Attribute.SPACING_AFTER): paraStyle.spaceBelow = { magnitude: value, unit: 'PT' }; paraFields.push('spaceBelow'); break;
+        case String(Attribute.SPACING_BEFORE): paraStyle.spaceAbove = { magnitude: value, unit: 'PT' }; paraFields.push('spaceAbove'); break;
+        case String(Attribute.LEFT_TO_RIGHT): paraStyle.direction = value ? 'LEFT_TO_RIGHT' : 'RIGHT_TO_LEFT'; paraFields.push('direction'); break;
 
         // Text Styles
-        case Attribute.BACKGROUND_COLOR: textStyle.backgroundColor = { color: { rgbColor: colorToRgb(value) } }; textFields.push('backgroundColor'); break;
-        case Attribute.BOLD: textStyle.bold = value; textFields.push('bold'); break;
-        case Attribute.FONT_FAMILY: textStyle.weightedFontFamily = { fontFamily: value }; textFields.push('weightedFontFamily'); break;
-        case Attribute.FONT_SIZE: textStyle.fontSize = { magnitude: value, unit: 'PT' }; textFields.push('fontSize'); break;
-        case Attribute.FOREGROUND_COLOR: textStyle.foregroundColor = { color: { rgbColor: colorToRgb(value) } }; textFields.push('foregroundColor'); break;
-        case Attribute.ITALIC: textStyle.italic = value; textFields.push('italic'); break;
-        case Attribute.LINK_URL: textStyle.link = { url: value }; textFields.push('link'); break;
-        case Attribute.STRIKETHROUGH: textStyle.strikethrough = value; textFields.push('strikethrough'); break;
-        case Attribute.UNDERLINE: textStyle.underline = value; textFields.push('underline'); break;
+        case String(Attribute.BACKGROUND_COLOR): textStyle.backgroundColor = { color: { rgbColor: colorToRgb(value) } }; textFields.push('backgroundColor'); break;
+        case String(Attribute.BOLD): textStyle.bold = value; textFields.push('bold'); break;
+        case String(Attribute.FONT_FAMILY): textStyle.weightedFontFamily = { fontFamily: value }; textFields.push('weightedFontFamily'); break;
+        case String(Attribute.FONT_SIZE): textStyle.fontSize = { magnitude: value, unit: 'PT' }; textFields.push('fontSize'); break;
+        case String(Attribute.FOREGROUND_COLOR): textStyle.foregroundColor = { color: { rgbColor: colorToRgb(value) } }; textFields.push('foregroundColor'); break;
+        case String(Attribute.ITALIC): textStyle.italic = value; textFields.push('italic'); break;
+        case String(Attribute.LINK_URL): textStyle.link = { url: value }; textFields.push('link'); break;
+        case String(Attribute.STRIKETHROUGH): textStyle.strikethrough = value; textFields.push('strikethrough'); break;
+        case String(Attribute.UNDERLINE): textStyle.underline = value; textFields.push('underline'); break;
+        default:
+          // This should not happen if all attributes are handled.
+          throw new Error(`Unhandled attribute key in __buildStyleUpdateRequests: ${key}`);
       }
     }
 
     const requests = [];
+
+    // To update a named style, we must target a range that uses that style. The API then updates the style definition.
+    // For NORMAL_TEXT, the first paragraph `[1, 2)` is a reliable anchor.
+    // A more robust solution for other heading types would search the document for a paragraph with the given heading.
+    const anchorRange = { startIndex: 1, endIndex: 2 };
+
     if (paraFields.length > 0) {
+      // For paragraph attributes, we also need to tell the API which named style
+      // is being applied to the range. This is done by including namedStyleType
+      // in the paragraphStyle object and the fields mask.
+      paraStyle.namedStyleType = namedStyleType;
+      paraFields.push('namedStyleType');
       requests.push({
         updateParagraphStyle: {
-          namedStyleType,
+          range: anchorRange,
           paragraphStyle: paraStyle,
           fields: paraFields.join(','),
         },
       });
     }
+
     if (textFields.length > 0) {
+      // For text attributes, we use a separate updateTextStyle request.
+      // The API infers the named style update from the range.
       requests.push({
         updateTextStyle: {
-          namedStyleType,
+          range: anchorRange,
           textStyle: textStyle,
           fields: textFields.join(','),
         },
       });
     }
+
     return requests;
   }
 
@@ -214,34 +232,60 @@ class FakeBody extends FakeContainerElement {
   setAttributes(attributes) {
     const { nargs, matchThrow } = signatureArgs(arguments, 'Body.setAttributes');
     if (nargs !== 1 || !is.object(attributes)) matchThrow();
- 
+
     // Live behavior is strange:
     // 1. It applies TEXT attributes (e.g. FONT_FAMILY, ITALIC) to all paragraphs (existing and new).
     // 2. It does NOT apply PARAGRAPH attributes (e.g. HORIZONTAL_ALIGNMENT) to any paragraphs.
     // To emulate this, we need to do two things in a batch update:
     // a) Update the text style for the entire range of the body.
     // b) Update the text style for the 'NORMAL_TEXT' named style so new paragraphs inherit it.
- 
+
     const shadow = this.__shadowDocument;
     const requests = [];
- 
+
     // Step 1: Build the text style update object from the given attributes.
-    // We can reuse __buildStyleUpdateRequests and extract just the textStyle part.
-    const styleRequests = this.__buildStyleUpdateRequests('DUMMY', attributes);
-    const textStyleUpdateRequest = styleRequests.find(req => req.updateTextStyle);
- 
-    // If there are no text attributes to apply, do nothing.
-    if (!textStyleUpdateRequest) {
+    // We only care about text attributes for this method.
+    const textStyle = {};
+    const textFields = [];
+    const Attribute = DocumentApp.Attribute;
+
+    // Re-implementing the text style part of __buildStyleUpdateRequests's switch statement
+    // to avoid applying paragraph attributes.
+    const colorToRgb = (hex) => {
+      if (!hex || !hex.startsWith('#') || hex.length !== 7) return null;
+      const r = parseInt(hex.slice(1, 3), 16) / 255;
+      const g = parseInt(hex.slice(3, 5), 16) / 255;
+      const b = parseInt(hex.slice(5, 7), 16) / 255;
+      return { red: r, green: g, blue: b };
+    };
+
+    for (const key in attributes) {
+      const value = attributes[key];
+      if (value === null) continue;
+      switch (String(key)) {
+        case String(Attribute.BACKGROUND_COLOR): textStyle.backgroundColor = { color: { rgbColor: colorToRgb(value) } }; textFields.push('backgroundColor'); break;
+        case String(Attribute.BOLD): textStyle.bold = value; textFields.push('bold'); break;
+        case String(Attribute.FONT_FAMILY): textStyle.weightedFontFamily = { fontFamily: value }; textFields.push('weightedFontFamily'); break;
+        case String(Attribute.FONT_SIZE): textStyle.fontSize = { magnitude: value, unit: 'PT' }; textFields.push('fontSize'); break;
+        case String(Attribute.FOREGROUND_COLOR): textStyle.foregroundColor = { color: { rgbColor: colorToRgb(value) } }; textFields.push('foregroundColor'); break;
+        case String(Attribute.ITALIC): textStyle.italic = value; textFields.push('italic'); break;
+        case String(Attribute.LINK_URL): textStyle.link = { url: value }; textFields.push('link'); break;
+        case String(Attribute.STRIKETHROUGH): textStyle.strikethrough = value; textFields.push('strikethrough'); break;
+        case String(Attribute.UNDERLINE): textStyle.underline = value; textFields.push('underline'); break;
+      }
+    }
+
+    if (textFields.length === 0) {
       return this;
     }
- 
-    const { textStyle, fields } = textStyleUpdateRequest.updateTextStyle;
- 
+
+    const fields = textFields.join(',');
+
     // Step 2: Create a request to update the style for all existing content in the body.
     const { body } = shadow.__unpackDocumentTab(shadow.resource);
     const bodyContent = body.content;
     const lastElement = bodyContent[bodyContent.length - 1];
- 
+
     // Only update if there's content beyond the initial newline of an empty doc.
     if (lastElement.endIndex > 1) {
       requests.push({
@@ -252,10 +296,21 @@ class FakeBody extends FakeContainerElement {
         },
       });
     }
- 
+
     // Step 3: Create a request to update the 'NORMAL_TEXT' named style for future paragraphs.
-    requests.push({ updateTextStyle: { namedStyleType: 'NORMAL_TEXT', textStyle, fields } });
- 
+    // This is done via an updateParagraphStyle request, targeting the anchor range.
+    // The textStyle changes are nested inside the paragraphStyle, and the fields are prefixed.
+    requests.push({
+      updateParagraphStyle: {
+        range: { startIndex: 1, endIndex: 2 }, // Anchor range for named style update
+        paragraphStyle: {
+          namedStyleType: 'NORMAL_TEXT',
+          textStyle: textStyle,
+        },
+        fields: `namedStyleType,${textFields.map(f => `textStyle.${f}`).join(',')}`,
+      },
+    });
+
     // Step 4: Execute the batch update.
     if (requests.length > 0) {
       Docs.Documents.batchUpdate({ requests }, shadow.getId());

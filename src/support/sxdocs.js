@@ -6,7 +6,7 @@
  * - arguments and returns must be serializable ie. primitives or plain objects
  */
 import { responseSyncify } from './auth.js';
-import { syncWarn, syncError } from './workersync/synclogger.js';
+import { syncWarn, syncError, syncLog } from './workersync/synclogger.js';
 import { getDocsApiClient } from '../services/advdocs/docapis.js';
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -30,7 +30,7 @@ export const sxDocs = async (Auth, { prop, method, params, options = {} }) => {
   for (let i = 0; i < maxRetries; i++) {
     let response;
     let error;
-    // syncLog(JSON.stringify({ prop, method, params, options }))
+    syncLog(JSON.stringify({ prop, method, params, options }))
     try {
       const callish = apiClient[prop]
       response = await callish[method](params, options);

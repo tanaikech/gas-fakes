@@ -8,37 +8,36 @@ export const testDocsStyles = (pack) => {
   const { unit, fixes } = pack || initTests();
 
   unit.section("Document.clear() style persistence validation", t => {
-    // This test validates that doc.clear() RESETS named styles.
+    // This test validates that doc.clear() does NOT reset document-level styles on the live environment.
     // It uses a fresh document to avoid pollution from previous tests.
     let { doc } = maketdoc(toTrash, fixes, { forceNew: true });
     let body = doc.getBody();
+    const docId = doc.getId();
 
-    // 1. Set a custom style on the NORMAL_TEXT named style.
-    const initialAttrs = { [DocumentApp.Attribute.FONT_FAMILY]: 'Impact' };
-    body.setHeadingAttributes(DocumentApp.ParagraphHeading.NORMAL, initialAttrs);
+    // 1. Set a custom document-level style.
+    body.setMarginTop(144); // Default is 72
 
-    // Verify the style was set on a new paragraph.
-    const p1 = body.appendParagraph("Paragraph before clear");
-    const p1Attrs = p1.getAttributes();
-    t.is(p1Attrs[DocumentApp.Attribute.FONT_FAMILY], 'Impact', "Pre-clear: Font family should be Impact");
+    // Verify the style was set by checking the underlying document resource.
+    doc.saveAndClose(); // Ensure changes are persisted
+    let docResource = Docs.Documents.get(docId);
+    t.is(docResource.documentStyle.marginTop.magnitude, 144, "Pre-clear: marginTop should be 144");
 
-    // 2. Clear the document. This should reset the named styles.
+    // 2. Clear the document. This should NOT reset the document styles on the live environment.
+    doc = DocumentApp.openById(docId); // Re-open to get a fresh handle
     doc.clear();
 
-    // 3. Append a new paragraph after clearing.
-    const p2 = body.appendParagraph("Paragraph after clear");
-    const p2Attrs = p2.getAttributes();
-
-    // 4. Check if the new paragraph inherited the custom style. It should NOT.
-    // The font family should have reverted to the default (Arial).
-    t.not(p2Attrs[DocumentApp.Attribute.FONT_FAMILY], 'Impact', "Post-clear: Font family should NOT be Impact");
-    t.is(p2Attrs[DocumentApp.Attribute.FONT_FAMILY], 'Arial', "Post-clear: Font family should be reset to default Arial");
+    // 3. Verify the style has NOT been reset.
+    doc.saveAndClose();
+    docResource = Docs.Documents.get(docId);
+    t.is(docResource.documentStyle.marginTop.magnitude, 144, "Post-clear: marginTop should NOT be reset and remain 144");
 
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   });
 
   unit.section("Document initial documentStyle validation", t => {
-    let { doc, docName } = maketdoc(toTrash, fixes);
+    // Force a new document to ensure we are testing the initial styles of a
+    // truly new document, not one that has been modified by a previous test.
+    let { doc, docName } = maketdoc(toTrash, fixes, { forceNew: true });
 
     // Save and close to synchronize changes made by DocumentApp (like clear()) before using the advanced service.
     const docId = doc.getId();

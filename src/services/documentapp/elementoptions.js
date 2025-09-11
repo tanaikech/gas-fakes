@@ -106,18 +106,9 @@ export const paragraphOptions = {
               tabId: location.tabId,
             },
             paragraphStyle: {
-              namedStyleType: 'NORMAL_TEXT', direction: 'LEFT_TO_RIGHT', alignment: 'START',
-              lineSpacing: 115, spacingMode: 'COLLAPSE_LISTS', spaceAbove: { unit: 'PT' },
-              spaceBelow: { unit: 'PT' }, borderBetween: { color: {}, width: { unit: 'PT' }, padding: { unit: 'PT' }, dashStyle: 'SOLID' },
-              borderTop: { color: {}, width: { unit: 'PT' }, padding: { unit: 'PT' }, dashStyle: 'SOLID' },
-              borderBottom: { color: {}, width: { unit: 'PT' }, padding: { unit: 'PT' }, dashStyle: 'SOLID' },
-              borderLeft: { color: {}, width: { unit: 'PT' }, padding: { unit: 'PT' }, dashStyle: 'SOLID' },
-              borderRight: { color: {}, width: { unit: 'PT' }, padding: { unit: 'PT' }, dashStyle: 'SOLID' },
-              indentFirstLine: { unit: 'PT' }, indentStart: { unit: 'PT' }, indentEnd: { unit: 'PT' },
-            keepLinesTogether: false, keepWithNext: false, pageBreakBefore: false,
-              shading: { backgroundColor: {} }
+              namedStyleType: 'NORMAL_TEXT',
             },
-            fields: '*',
+            fields: 'namedStyleType',
           },
         },
       ];
@@ -406,8 +397,8 @@ export const imageOptions = {
       const tempFileName = `gas-fakes-temp-image-${Utilities.getUuid()}${extension ? '.' + extension : ''}`;
 
       // 1. Upload to Drive
-      blob.setName (tempFileName)
-      const file = DriveApp.createFile (blob)
+      blob.setName(tempFileName)
+      const file = DriveApp.createFile(blob)
       fileId = file.getId()
 
       try {

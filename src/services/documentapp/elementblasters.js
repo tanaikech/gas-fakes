@@ -166,7 +166,6 @@ export const defaultDocumentStyleRequests = () => {
     .setMarginRight(mt)
     .setMarginLeft(mt)
 
-
   const updateDocumentStyle = Docs.newUpdateDocumentStyleRequest()
     .setDocumentStyle(documentStyle)
     .setFields('pageNumberStart,marginHeader,marginFooter,marginTop,marginBottom,marginRight,marginLeft')
@@ -175,13 +174,16 @@ export const defaultDocumentStyleRequests = () => {
   const range = Docs.newRange().setStartIndex(1).setEndIndex(2);
 
   const requests = [{
-    updateDocumentStyle
-  }, {
     updateParagraphStyle: Docs.newUpdateParagraphStyleRequest()
       .setParagraphStyle(Docs.newParagraphStyle()
-        .setAvoidWidowAndOrphan(false)
+        .setAvoidWidowAndOrphan(true)
+        .setSpacingMode("COLLAPSE_LISTS")
+        .setIndentStart({ unit: 'PT' })
+        .setIndentFirstLine({ unit: 'PT' })
+        .setAlignment('START')
+        .setLineSpacing(115)
         .setNamedStyleType("NORMAL_TEXT"))
-      .setFields('avoidWidowAndOrphan')
+      .setFields('avoidWidowAndOrphan,spacingMode,indentStart,indentFirstLine,alignment,lineSpacing')
       .setRange(range)
   }, {
     updateParagraphStyle: Docs.newUpdateParagraphStyleRequest()

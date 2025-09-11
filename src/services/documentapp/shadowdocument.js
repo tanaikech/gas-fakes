@@ -117,16 +117,16 @@ class ShadowDocument {
 
     // maps all the elements to their named range
     const mapElements = (element, branch, segmentId, knownType = null) => {
-      // this gets the type and property name to look for for the given element content
-      const elementProp = knownType ? { type: knownType, prop: null } : getElementProp(element);
-
       // Tag the element with its segment ID for later lookups.
       element.__segmentId = segmentId;
 
+      // this gets the type and property name to look for for the given element content
+      const elementProp = knownType ? { type: knownType, prop: null } : getElementProp(element);
       if (!elementProp) {
         // This will now catch things like sectionBreak
         return;
       }
+
       // the type is the enum text for te type, the prop is where to find it in the element
       const { type, prop } = elementProp;
 
@@ -415,7 +415,8 @@ class ShadowDocument {
       }
     }
 
-    // we also need to reset the styles back to intial
+    // We also need to reset the named paragraph styles back to their initial state.
+    // Note that on the live environment, doc.clear() does NOT reset document-level styles (e.g., margins).
     requests.push(...defaultDocumentStyleRequests())
 
     if (requests.length > 0) {
