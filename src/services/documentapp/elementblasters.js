@@ -203,8 +203,6 @@ export const defaultDocumentStyleRequests = () => {
       .setParagraphStyle(Docs.newParagraphStyle()
         .setAvoidWidowAndOrphan(true)
         .setSpacingMode("COLLAPSE_LISTS")
-        .setIndentStart({ unit: 'PT' })
-        .setIndentFirstLine({ unit: 'PT' })
         .setAlignment('START')
         .setLineSpacing(115) // This was added in a previous fix
         .setNamedStyleType("NORMAL_TEXT"))
