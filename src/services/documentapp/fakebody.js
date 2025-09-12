@@ -233,24 +233,19 @@ class FakeBody extends FakeContainerElement {
     const { nargs, matchThrow } = signatureArgs(arguments, 'Body.setAttributes');
     if (nargs !== 1 || !is.object(attributes)) matchThrow();
 
-    // Live behavior is strange:
-    // 1. It applies TEXT attributes (e.g. FONT_FAMILY, ITALIC) to all paragraphs (existing and new).
-    // 2. It does NOT apply PARAGRAPH attributes (e.g. HORIZONTAL_ALIGNMENT) to any paragraphs.
-    // To emulate this, we need to do two things in a batch update:
-    // a) Update the text style for the entire range of the body.
-    // b) Update the text style for the 'NORMAL_TEXT' named style so new paragraphs inherit it.
+    // Live behavior:
+    // 1. It applies TEXT attributes (e.g. FONT_FAMILY, ITALIC) as an inline override to all existing paragraphs.
+    // 2. It does NOT apply PARAGRAPH attributes (e.g. HORIZONTAL_ALIGNMENT).
+    // 3. It does NOT modify the 'NORMAL_TEXT' named style definition.
 
     const shadow = this.__shadowDocument;
     const requests = [];
 
     // Step 1: Build the text style update object from the given attributes.
-    // We only care about text attributes for this method.
     const textStyle = {};
     const textFields = [];
     const Attribute = DocumentApp.Attribute;
 
-    // Re-implementing the text style part of __buildStyleUpdateRequests's switch statement
-    // to avoid applying paragraph attributes.
     const colorToRgb = (hex) => {
       if (!hex || !hex.startsWith('#') || hex.length !== 7) return null;
       const r = parseInt(hex.slice(1, 3), 16) / 255;
@@ -281,12 +276,12 @@ class FakeBody extends FakeContainerElement {
 
     const fields = textFields.join(',');
 
-    // Step 2: Create a request to update the style for all existing content in the body.
+    // Step 2: Create a single request to update the text style for all existing content in the body.
     const { body } = shadow.__unpackDocumentTab(shadow.resource);
     const bodyContent = body.content;
     const lastElement = bodyContent[bodyContent.length - 1];
 
-    // Only update if there's content beyond the initial newline of an empty doc.
+    // The range should cover all content from the start of the body to the end.
     if (lastElement.endIndex > 1) {
       requests.push({
         updateTextStyle: {
@@ -297,18 +292,6 @@ class FakeBody extends FakeContainerElement {
       });
     }
 
-    // Step 3: Create a request to update the 'NORMAL_TEXT' named style for future paragraphs.
-    // This is done via an updateTextStyle request, targeting the anchor range of the first paragraph.
-    // The API infers that the named style definition for that range ('NORMAL_TEXT') should be updated.
-    requests.push({
-      updateTextStyle: {
-        range: { startIndex: 1, endIndex: 2 }, // Anchor range for named style update
-        textStyle: textStyle,
-        fields: fields,
-      },
-    });
-
-    // Step 4: Execute the batch update.
     if (requests.length > 0) {
       Docs.Documents.batchUpdate({ requests }, shadow.getId());
       shadow.refresh();

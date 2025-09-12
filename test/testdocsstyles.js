@@ -7,6 +7,73 @@ export const testDocsStyles = (pack) => {
   const toTrash = [];
   const { unit, fixes } = pack || initTests();
 
+
+  unit.section("Body style and attribute methods", t => {
+    // Force a new document to ensure no style pollution from previous tests,
+    // as we've established that doc.clear() does not reset named styles.
+    let { doc } = maketdoc(toTrash, fixes, { forceNew: true });
+    let body = doc.getBody();
+    const docId = doc.getId();
+
+    // Test margin setters (requires advanced service to verify)
+    body.setMarginLeft(90);
+    body.setMarginTop(100);
+    doc.saveAndClose();
+    let docResource = unpackedDoc(docId)
+    t.is(docResource.documentStyle.marginLeft.magnitude, 90, "setMarginLeft should update document style");
+    t.is(docResource.documentStyle.marginTop.magnitude, 100, "setMarginTop should update document style");
+    doc = DocumentApp.openById(docId);
+    body = doc.getBody();
+
+    // Test page size setters (requires advanced service to verify)
+    body.setPageWidth(500);
+    body.setPageHeight(700);
+    doc.saveAndClose();
+    docResource = unpackedDoc(docId)
+    t.is(docResource.documentStyle.pageSize.width.magnitude, 500, "setPageWidth should update page size");
+    t.is(docResource.documentStyle.pageSize.height.magnitude, 700, "setPageHeight should update page size");
+    doc = DocumentApp.openById(docId);
+    body = doc.getBody();
+
+    // Test setText
+    body.setText("Initial paragraph.");
+    t.is(body.getText(), "Initial paragraph.", "setText should replace body content");
+
+    // Test setAttributes on Body. Live behavior is strange:
+    // It applies TEXT attributes (e.g. FONT_FAMILY, ITALIC) to all paragraphs (existing and new).
+    // It does NOT apply PARAGRAPH attributes (e.g. HORIZONTAL_ALIGNMENT) to any paragraphs.
+    const p1 = body.getChild(0); // The paragraph created by setText()
+    const p1InitialAttrs = p1.getAttributes();
+    t.is(p1InitialAttrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], DocumentApp.HorizontalAlignment.LEFT, "Initial paragraph should have default LEFT alignment");
+    // On live GAS, an unset boolean attribute like ITALIC returns null from getAttributes().
+    t.is(p1InitialAttrs[DocumentApp.Attribute.ITALIC], null, "Initial paragraph should not be italic (returns null)");
+
+    const attributesToSet = {
+      [DocumentApp.Attribute.HORIZONTAL_ALIGNMENT]: DocumentApp.HorizontalAlignment.CENTER,
+      [DocumentApp.Attribute.ITALIC]: true,
+      [DocumentApp.Attribute.FONT_FAMILY]: 'Comic Sans MS'
+    };
+    body.setAttributes(attributesToSet);
+
+    // Re-fetch attributes of the existing paragraph to confirm the mixed changes.
+    const p1AfterSetAttrs = p1.getAttributes();
+
+    // Verify changes to the EXISTING paragraph
+    t.is(p1AfterSetAttrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], DocumentApp.HorizontalAlignment.LEFT, "setAttributes should NOT affect alignment of existing paragraphs");
+    t.is(p1AfterSetAttrs[DocumentApp.Attribute.ITALIC], true, "setAttributes SHOULD affect italic of existing paragraphs");
+    t.is(p1AfterSetAttrs[DocumentApp.Attribute.FONT_FAMILY], 'Comic Sans MS', "setAttributes SHOULD affect font family of existing paragraphs");
+
+    // Verify changes to a NEWLY appended paragraph
+    const p2 = body.appendParagraph("A new paragraph");
+    const p2Attrs = p2.getAttributes();
+    t.is(p2Attrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], DocumentApp.HorizontalAlignment.LEFT, "setAttributes should NOT affect alignment of new paragraphs");
+    t.is(p2Attrs[DocumentApp.Attribute.ITALIC], true, "setAttributes SHOULD affect italic of new paragraphs");
+    t.is(p2Attrs[DocumentApp.Attribute.FONT_FAMILY], 'Comic Sans MS', "setAttributes SHOULD affect font family of new paragraphs");
+
+
+    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
+  });
+
   unit.section("Appended paragraph style validation", t => {
     let { doc } = maketdoc(toTrash, fixes, { forceNew: true });
     const body = doc.getBody();
@@ -19,9 +86,9 @@ export const testDocsStyles = (pack) => {
 
     const paraToTest = body.getChild(1);
     t.is(paraToTest.getText(), paraText, "Appended paragraph has correct text");
-    
+
     const attributes = paraToTest.getAttributes();
-    t.deepEqual (attributes, appendedPara.getAttributes())
+    t.deepEqual(attributes, appendedPara.getAttributes())
     t.is(attributes[DocumentApp.Attribute.HEADING], DocumentApp.ParagraphHeading.NORMAL, "Named style type should be NORMAL_TEXT");
     t.is(attributes[DocumentApp.Attribute.LEFT_TO_RIGHT], true, "Direction should be LEFT_TO_RIGHT");
     t.is(attributes[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], DocumentApp.HorizontalAlignment.LEFT, "Alignment should be START/LEFT");
@@ -128,71 +195,7 @@ export const testDocsStyles = (pack) => {
 
 
 
-  unit.section("Body style and attribute methods", t => {
-    // Force a new document to ensure no style pollution from previous tests,
-    // as we've established that doc.clear() does not reset named styles.
-    let { doc } = maketdoc(toTrash, fixes, { forceNew: true });
-    let body = doc.getBody();
-    const docId = doc.getId();
 
-    // Test margin setters (requires advanced service to verify)
-    body.setMarginLeft(90);
-    body.setMarginTop(100);
-    doc.saveAndClose();
-    let docResource = unpackedDoc(docId)
-    t.is(docResource.documentStyle.marginLeft.magnitude, 90, "setMarginLeft should update document style");
-    t.is(docResource.documentStyle.marginTop.magnitude, 100, "setMarginTop should update document style");
-    doc = DocumentApp.openById(docId);
-    body = doc.getBody();
-
-    // Test page size setters (requires advanced service to verify)
-    body.setPageWidth(500);
-    body.setPageHeight(700);
-    doc.saveAndClose();
-    docResource = unpackedDoc(docId)
-    t.is(docResource.documentStyle.pageSize.width.magnitude, 500, "setPageWidth should update page size");
-    t.is(docResource.documentStyle.pageSize.height.magnitude, 700, "setPageHeight should update page size");
-    doc = DocumentApp.openById(docId);
-    body = doc.getBody();
-
-    // Test setText
-    body.setText("Initial paragraph.");
-    t.is(body.getText(), "Initial paragraph.", "setText should replace body content");
-
-    // Test setAttributes on Body. Live behavior is strange:
-    // It applies TEXT attributes (e.g. FONT_FAMILY, ITALIC) to all paragraphs (existing and new).
-    // It does NOT apply PARAGRAPH attributes (e.g. HORIZONTAL_ALIGNMENT) to any paragraphs.
-    const p1 = body.getChild(0); // The paragraph created by setText()
-    const p1InitialAttrs = p1.getAttributes();
-    t.is(p1InitialAttrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], DocumentApp.HorizontalAlignment.LEFT, "Initial paragraph should have default LEFT alignment");
-    // On live GAS, an unset boolean attribute like ITALIC returns null from getAttributes().
-    t.is(p1InitialAttrs[DocumentApp.Attribute.ITALIC], null, "Initial paragraph should not be italic (returns null)");
-
-    const attributesToSet = {
-      [DocumentApp.Attribute.HORIZONTAL_ALIGNMENT]: DocumentApp.HorizontalAlignment.CENTER,
-      [DocumentApp.Attribute.ITALIC]: true,
-      [DocumentApp.Attribute.FONT_FAMILY]: 'Comic Sans MS'
-    };
-    body.setAttributes(attributesToSet);
-
-    // Re-fetch attributes of the existing paragraph to confirm the mixed changes.
-    const p1AfterSetAttrs = p1.getAttributes();
-
-    // Verify changes to the EXISTING paragraph
-    t.is(p1AfterSetAttrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], DocumentApp.HorizontalAlignment.LEFT, "setAttributes should NOT affect alignment of existing paragraphs");
-    t.is(p1AfterSetAttrs[DocumentApp.Attribute.ITALIC], true, "setAttributes SHOULD affect italic of existing paragraphs");
-    t.is(p1AfterSetAttrs[DocumentApp.Attribute.FONT_FAMILY], 'Comic Sans MS', "setAttributes SHOULD affect font family of existing paragraphs");
-
-    // Verify changes to a NEWLY appended paragraph
-    const p2 = body.appendParagraph("A new paragraph");
-    const p2Attrs = p2.getAttributes();
-    t.is(p2Attrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], DocumentApp.HorizontalAlignment.LEFT, "setAttributes should NOT affect alignment of new paragraphs");
-    t.is(p2Attrs[DocumentApp.Attribute.ITALIC], true, "setAttributes SHOULD affect italic of new paragraphs");
-    t.is(p2Attrs[DocumentApp.Attribute.FONT_FAMILY], 'Comic Sans MS', "setAttributes SHOULD affect font family of new paragraphs");
-
-
-    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
-  });
 
   if (!pack) {
     unit.report();

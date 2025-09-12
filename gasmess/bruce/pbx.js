@@ -5,6 +5,36 @@ import { report, scl } from './dreport.js';
 
 
 const suffix = "-bruce"
+
+const tx2 = () => {
+  let doc = DocumentApp.create("abc")
+  const id = doc.getId()
+  moveToTempFolder(id, suffix)
+
+  let body = doc.getBody()
+
+  const p1 = body.appendParagraph("p1")
+  doc = scl(doc)
+  let d = Docs.Documents.get(id)
+  console.log(JSON.stringify(d))
+  
+  const attributesToSet = {
+    [DocumentApp.Attribute.HORIZONTAL_ALIGNMENT]: DocumentApp.HorizontalAlignment.CENTER,
+    [DocumentApp.Attribute.ITALIC]: true,
+    [DocumentApp.Attribute.FONT_FAMILY]: 'Comic Sans MS'
+  };
+
+  body = doc.getBody()
+  body.setAttributes(attributesToSet);
+  doc = scl(doc)
+  d = Docs.Documents.get(id)
+  console.log(JSON.stringify(d))
+
+
+  deleteTempFile(id)
+}
+
+tx2()
 const tx1 = () => {
   let doc = DocumentApp.create("abc")
   const id = doc.getId()

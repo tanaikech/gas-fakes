@@ -72,11 +72,10 @@ export const paragraphOptions = {
   elementType: ElementType.PARAGRAPH,
   insertMethodSignature: 'DocumentApp.Body.insertParagraph',
   canAcceptText: true,
-  getMainRequest: ({ content: textOrParagraph, location, leading, trailing, structure }) => {
+  getMainRequest: ({ content: textOrParagraph, location, leading, trailing, structure, self }) => {
     const isDetachedPara = is.object(textOrParagraph) && textOrParagraph.__isDetached;
 
     // Case 1: Appending/inserting a detached paragraph object.
-    // Just insert its text. Styling is handled by getStyleRequests.
     if (isDetachedPara) {
       const item = textOrParagraph.__elementMapItem;
       const fullText = (item.paragraph?.elements || []).map(el => el.textRun?.content || '').join('');
@@ -86,49 +85,78 @@ export const paragraphOptions = {
     }
 
     // Case 2: Appending/inserting a string.
-    // This requires a special combined request to match live Apps Script behavior,
-    // which applies the fully-resolved named style to the new paragraph.
     if (is.string(textOrParagraph)) {
       const textToInsert = leading + textOrParagraph + trailing;
+      const requests = [{ insertText: { location, text: textToInsert } }];
 
-      // Get the NORMAL_TEXT style definition from the document resource to use as a template.
-      const { resource, shadowDocument } = structure;
+      const { resource, shadowDocument, elementMap } = structure;
       const { namedStyles } = shadowDocument.__unpackDocumentTab(resource);
-      const normalTextStyle = (namedStyles?.styles || []).find(s => s.namedStyleType === 'NORMAL_TEXT');
 
-      // Create a complete paragraphStyle object, inheriting from the named style.
-      const styleToApply = { ...(normalTextStyle?.paragraphStyle || {}) };
-      styleToApply.namedStyleType = 'NORMAL_TEXT'; // Ensure this is set.
+      // Find the last paragraph in the container to use as a style template.
+      const parentItem = elementMap.get(self.__name);
+      const children = parentItem.__twig.children;
+      const lastChildTwig = children.length > 0 ? children[children.length - 1] : null;
+      const lastChildItem = lastChildTwig ? elementMap.get(lastChildTwig.name) : null;
 
-      // The API will reject requests with read-only fields like 'headingId'.
-      delete styleToApply.headingId;
-      const fields = Object.keys(styleToApply).join(',');
+      // --- Resolve the style of the template paragraph ---
+      let templateParaStyle = {};
+      let templateTextStyle = {};
 
-      const requests = [
-        {
-          insertText: {
-            location,
-            text: textToInsert,
-          },
-        },
-        {
+      if (lastChildItem && lastChildItem.paragraph) {
+        // It's a real paragraph, resolve its full style.
+        const lastChildNamedStyleType = lastChildItem.paragraph.paragraphStyle?.namedStyleType || 'NORMAL_TEXT';
+        const namedStyleDef = (namedStyles?.styles || []).find(s => s.namedStyleType === lastChildNamedStyleType);
+        const baseParaStyle = namedStyleDef?.paragraphStyle || {};
+        const baseTextStyle = namedStyleDef?.textStyle || {};
+        const inlineParaStyle = lastChildItem.paragraph.paragraphStyle || {};
+        const lastTextRun = lastChildItem.paragraph.elements?.find(e => e.textRun);
+        const inlineTextStyle = lastTextRun?.textRun?.textStyle || {};
+        templateParaStyle = { ...baseParaStyle, ...inlineParaStyle };
+        templateTextStyle = { ...baseTextStyle, ...inlineTextStyle };
+      } else {
+        // If there's no last child (e.g., appending to an empty header), or it's not a paragraph,
+        // use the NORMAL_TEXT definition as the base.
+        const normalTextStyleDef = (namedStyles?.styles || []).find(s => s.namedStyleType === 'NORMAL_TEXT');
+        templateParaStyle = normalTextStyleDef?.paragraphStyle || {};
+        templateTextStyle = normalTextStyleDef?.textStyle || {};
+      }
+
+      const newParaStartIndex = location.index + leading.length;
+      const newContentEndIndex = newParaStartIndex + textOrParagraph.length;
+      const newParaEndIndex = newContentEndIndex + 1;
+
+      // --- Build style requests from the resolved template styles ---
+      const paraStyleToApply = { ...templateParaStyle };
+      paraStyleToApply.namedStyleType = 'NORMAL_TEXT'; // appendParagraph always creates a NORMAL_TEXT paragraph
+      delete paraStyleToApply.headingId;
+      const paraFields = Object.keys(paraStyleToApply).join(',');
+
+      if (paraFields) {
+        requests.push({
           updateParagraphStyle: {
-            range: {
-              startIndex: location.index + leading.length,
-              // The new paragraph's content is the text + a newline, so its length is text length + 1.
-              endIndex: location.index + leading.length + textOrParagraph.length + 1,
-              segmentId: location.segmentId,
-              tabId: location.tabId,
-            },
-            paragraphStyle: styleToApply,
-            fields: fields,
+            range: { startIndex: newParaStartIndex, endIndex: newParaEndIndex, segmentId: location.segmentId, tabId: location.tabId },
+            paragraphStyle: paraStyleToApply,
+            fields: paraFields,
           },
-        },
-      ];
+        });
+      }
+
+      const textStyleToApply = { ...templateTextStyle };
+      const textFields = Object.keys(textStyleToApply).join(',');
+
+      if (textFields && textOrParagraph.length > 0) {
+        requests.push({
+          updateTextStyle: {
+            range: { startIndex: newParaStartIndex, endIndex: newContentEndIndex, segmentId: location.segmentId, tabId: location.tabId },
+            textStyle: textStyleToApply,
+            fields: textFields,
+          },
+        });
+      }
       return requests;
     }
 
-    // Fallback for other cases, though they shouldn't typically occur with appendParagraph.
+    // Fallback for other cases
     const baseText = textOrParagraph.getText();
     const textToInsert = leading + baseText + trailing;
     return { insertText: { location, text: textToInsert } };
@@ -148,7 +176,8 @@ export const paragraphOptions = {
       const fields = Object.keys(styleToApply).join(',');
       if (fields) { // Only send a request if there are fields to update.
         const textLength = (paragraph.getText() || '').length;
-        requests.push({ updateParagraphStyle: { range: { startIndex, endIndex: startIndex + textLength, segmentId, tabId }, paragraphStyle: styleToApply, fields } });
+        const paraLength = textLength + 1; // Paragraph includes the newline
+        requests.push({ updateParagraphStyle: { range: { startIndex, endIndex: startIndex + paraLength, segmentId, tabId }, paragraphStyle: styleToApply, fields } });
       }
     }
 
@@ -340,7 +369,8 @@ export const listItemOptions = {
       const fields = Object.keys(styleToApply).join(',');
       if (fields) { // Only send a request if there are fields to update.
         const textLength = (listItem.getText() || '').length;
-        requests.push({ updateParagraphStyle: { range: { startIndex, endIndex: startIndex + textLength, segmentId, tabId }, paragraphStyle: styleToApply, fields } });
+        const paraLength = textLength + 1; // Paragraph includes the newline
+        requests.push({ updateParagraphStyle: { range: { startIndex, endIndex: startIndex + paraLength, segmentId, tabId }, paragraphStyle: styleToApply, fields } });
       }
     }
 
