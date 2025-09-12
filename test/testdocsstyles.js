@@ -1,4 +1,3 @@
-
 import "../main.js";
 import { initTests } from "./testinit.js";
 import { wrapupTest, getDocsPerformance, maketdoc, docReport, getChildren, trasher, unpackedDoc } from "./testassist.js";
@@ -9,13 +8,11 @@ export const testDocsStyles = (pack) => {
 
 
   unit.section("Body style and attribute methods", t => {
-    // Force a new document to ensure no style pollution from previous tests,
-    // as we've established that doc.clear() does not reset named styles.
     let { doc } = maketdoc(toTrash, fixes, { forceNew: true });
     let body = doc.getBody();
-    const docId = doc.getId();
+    let docId = doc.getId();
 
-    // Test margin setters (requires advanced service to verify)
+    // Test margin setters
     body.setMarginLeft(90);
     body.setMarginTop(100);
     doc.saveAndClose();
@@ -25,7 +22,7 @@ export const testDocsStyles = (pack) => {
     doc = DocumentApp.openById(docId);
     body = doc.getBody();
 
-    // Test page size setters (requires advanced service to verify)
+    // Test page size setters
     body.setPageWidth(500);
     body.setPageHeight(700);
     doc.saveAndClose();
@@ -37,15 +34,15 @@ export const testDocsStyles = (pack) => {
 
     // Test setText
     body.setText("Initial paragraph.");
+    doc.saveAndClose(); // Synchronize state for live environment
+    doc = DocumentApp.openById(docId);
+    body = doc.getBody();
     t.is(body.getText(), "Initial paragraph.", "setText should replace body content");
 
-    // Test setAttributes on Body. Live behavior is strange:
-    // It applies TEXT attributes (e.g. FONT_FAMILY, ITALIC) to all paragraphs (existing and new).
-    // It does NOT apply PARAGRAPH attributes (e.g. HORIZONTAL_ALIGNMENT) to any paragraphs.
-    const p1 = body.getChild(0); // The paragraph created by setText()
+    const p1 = body.getChild(0);
     const p1InitialAttrs = p1.getAttributes();
-    t.is(p1InitialAttrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], DocumentApp.HorizontalAlignment.LEFT, "Initial paragraph should have default LEFT alignment");
-    // On live GAS, an unset boolean attribute like ITALIC returns null from getAttributes().
+    // Live GAS returns null for inherited paragraph attributes on existing paragraphs.
+    t.is(p1InitialAttrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], null, "Initial paragraph should have null alignment (inherited)");
     t.is(p1InitialAttrs[DocumentApp.Attribute.ITALIC], null, "Initial paragraph should not be italic (returns null)");
 
     const attributesToSet = {
@@ -54,22 +51,106 @@ export const testDocsStyles = (pack) => {
       [DocumentApp.Attribute.FONT_FAMILY]: 'Comic Sans MS'
     };
     body.setAttributes(attributesToSet);
+    doc.saveAndClose(); // Synchronize state for live environment
+    doc = DocumentApp.openById(docId);
+    body = doc.getBody();
 
-    // Re-fetch attributes of the existing paragraph to confirm the mixed changes.
-    const p1AfterSetAttrs = p1.getAttributes();
+    const p1_reloaded = body.getChild(0);
+    const p1AfterSetAttrs = p1_reloaded.getAttributes();
 
     // Verify changes to the EXISTING paragraph
-    t.is(p1AfterSetAttrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], DocumentApp.HorizontalAlignment.LEFT, "setAttributes should NOT affect alignment of existing paragraphs");
+    t.is(p1AfterSetAttrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], null, "setAttributes should NOT affect alignment of existing paragraphs (remains null)");
     t.is(p1AfterSetAttrs[DocumentApp.Attribute.ITALIC], true, "setAttributes SHOULD affect italic of existing paragraphs");
     t.is(p1AfterSetAttrs[DocumentApp.Attribute.FONT_FAMILY], 'Comic Sans MS', "setAttributes SHOULD affect font family of existing paragraphs");
 
     // Verify changes to a NEWLY appended paragraph
     const p2 = body.appendParagraph("A new paragraph");
     const p2Attrs = p2.getAttributes();
-    t.is(p2Attrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], DocumentApp.HorizontalAlignment.LEFT, "setAttributes should NOT affect alignment of new paragraphs");
+    // Live GAS returns the computed alignment for newly appended paragraphs.
+    t.is(p2Attrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], DocumentApp.HorizontalAlignment.LEFT, "setAttributes should NOT affect alignment of new paragraphs (remains LEFT)");
     t.is(p2Attrs[DocumentApp.Attribute.ITALIC], true, "setAttributes SHOULD affect italic of new paragraphs");
     t.is(p2Attrs[DocumentApp.Attribute.FONT_FAMILY], 'Comic Sans MS', "setAttributes SHOULD affect font family of new paragraphs");
 
+
+    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
+  });
+
+  unit.section("Heading style and attribute methods", t => {
+    let { doc } = maketdoc(toTrash, fixes, { forceNew: true });
+    let body = doc.getBody();
+    let docId = doc.getId();
+
+    // 1. Create a paragraph and set it to HEADING1 to provide an anchor for style updates.
+    const p1 = body.appendParagraph("This is a heading");
+    p1.setHeading(DocumentApp.ParagraphHeading.HEADING1);
+
+    // Synchronize to ensure the heading is set before we modify its style definition.
+    doc.saveAndClose();
+    doc = DocumentApp.openById(docId);
+    body = doc.getBody();
+
+    // 2. Define and set attributes for the HEADING1 named style.
+    const heading1Attributes = {
+      [DocumentApp.Attribute.ITALIC]: true, // This will be ignored by the live API
+      [DocumentApp.Attribute.FONT_FAMILY]: 'Georgia', // This will be ignored by the live API
+      [DocumentApp.Attribute.HORIZONTAL_ALIGNMENT]: DocumentApp.HorizontalAlignment.CENTER, // This should be applied
+      [DocumentApp.Attribute.SPACING_BEFORE]: 18, // This should be applied
+    };
+    body.setHeadingAttributes(DocumentApp.ParagraphHeading.HEADING1, heading1Attributes);
+
+    // Synchronize to ensure the named style definition is updated.
+    doc.saveAndClose();
+    doc = DocumentApp.openById(docId);
+    body = doc.getBody();
+
+    // 3. Verify the attributes of the EXISTING HEADING1 paragraph have NOT changed.
+    const p1_reloaded = body.getChild(1);
+    const p1Attrs = p1_reloaded.getAttributes();
+    t.is(p1Attrs[DocumentApp.Attribute.ITALIC], null, "setHeadingAttributes should NOT affect italic of existing paragraphs");
+    t.is(p1Attrs[DocumentApp.Attribute.FONT_FAMILY], null, "setHeadingAttributes should NOT affect font family of existing paragraphs");
+    t.is(p1Attrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], null, "setHeadingAttributes should NOT affect alignment of existing paragraphs");
+    t.is(p1Attrs[DocumentApp.Attribute.SPACING_BEFORE], null, "setHeadingAttributes should NOT affect spacing of existing paragraphs");
+
+    // 4. Append a NEW paragraph and set it to HEADING1 to verify inheritance.
+    const p2 = body.appendParagraph("Another heading");
+    p2.setHeading(DocumentApp.ParagraphHeading.HEADING1);
+    doc.saveAndClose(); // Save to apply the heading change
+    doc = DocumentApp.openById(docId);
+    body = doc.getBody();
+    const p2_reloaded = body.getChild(2);
+    const p2Attrs = p2_reloaded.getAttributes();
+
+    // Live API: getAttributes() returns null for inherited styles, but computed for newly appended ones.
+    // After a save/close/reload, it should behave like an existing paragraph and return null.
+    t.is(p2Attrs[DocumentApp.Attribute.ITALIC], null, "New HEADING1 should have null italic (inherited, not set)");
+    t.is(p2Attrs[DocumentApp.Attribute.FONT_FAMILY], null, "New HEADING1 should have null font family (inherited, not set)");
+    t.is(p2Attrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], null, "New HEADING1 should have null alignment (inherited)");
+    t.is(p2Attrs[DocumentApp.Attribute.SPACING_BEFORE], null, "New HEADING1 should have null spacing (inherited)");
+
+    // 5. Verify that NORMAL_TEXT was not affected.
+    const p3 = body.appendParagraph("This is normal text.");
+    const p3Attrs = p3.getAttributes();
+    t.is(p3Attrs[DocumentApp.Attribute.ITALIC], null, "NORMAL_TEXT should not be italic");
+    t.is(p3Attrs[DocumentApp.Attribute.FONT_FAMILY], null, "NORMAL_TEXT font should be null (inherited)");
+    t.is(p3Attrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], DocumentApp.HorizontalAlignment.LEFT, "NORMAL_TEXT alignment should be computed LEFT");
+
+    // 6. Verify the underlying named style definition was changed using the advanced service.
+    const finalDocResource = unpackedDoc(docId);
+    const namedStyles = finalDocResource.namedStyles.styles;
+    const heading1Style = namedStyles.find(s => s.namedStyleType === 'HEADING_1');
+    t.is(heading1Style.textStyle.italic, undefined, {
+      neverUndefined: false,
+      description: "ADVANCED: HEADING_1 textStyle.italic should be undefined (text styles are ignored)"
+    });
+    t.is(heading1Style.textStyle.weightedFontFamily, undefined, {
+      neverUndefined: false,
+      description: "ADVANCED: HEADING_1 textStyle.weightedFontFamily should be undefined (text styles are ignored)"
+    });
+    t.is(heading1Style.paragraphStyle.alignment, 'CENTER', "ADVANCED: HEADING_1 definition alignment should be CENTER");
+    t.is(heading1Style.paragraphStyle.spaceAbove.magnitude, 18, "ADVANCED: HEADING_1 definition spacing should be 18");
+
+    const normalTextStyle = namedStyles.find(s => s.namedStyleType === 'NORMAL_TEXT');
+    t.is(normalTextStyle.textStyle.weightedFontFamily.fontFamily, 'Arial', "ADVANCED: NORMAL_TEXT font should still be Arial");
 
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   });
@@ -79,44 +160,46 @@ export const testDocsStyles = (pack) => {
     const body = doc.getBody();
     const paraText = "p1";
 
-    const appendedPara = body.appendParagraph(paraText);
+    body.appendParagraph(paraText);
+    doc.saveAndClose();
+    doc = DocumentApp.openById(doc.getId());
 
-    // On a new doc, appendParagraph adds a new paragraph, making 2 children (initial empty + new one).
-    t.is(body.getNumChildren(), 2, "Body should have 2 children after first append to new doc");
+    t.is(doc.getBody().getNumChildren(), 2, "Body should have 2 children after first append to new doc");
 
-    const paraToTest = body.getChild(1);
+    const paraToTest = doc.getBody().getChild(1);
     t.is(paraToTest.getText(), paraText, "Appended paragraph has correct text");
 
     const attributes = paraToTest.getAttributes();
-    t.deepEqual(attributes, appendedPara.getAttributes())
     t.is(attributes[DocumentApp.Attribute.HEADING], DocumentApp.ParagraphHeading.NORMAL, "Named style type should be NORMAL_TEXT");
-    t.is(attributes[DocumentApp.Attribute.LEFT_TO_RIGHT], true, "Direction should be LEFT_TO_RIGHT");
-    t.is(attributes[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], DocumentApp.HorizontalAlignment.LEFT, "Alignment should be START/LEFT");
-    t.is(attributes[DocumentApp.Attribute.LINE_SPACING], 1.15, "Line spacing should be 1.15 (115%)");
+    // Live GAS returns computed values for newly appended paragraphs, but null for reloaded ones.
+    // After save/close, it's a reloaded paragraph.
+    t.is(attributes[DocumentApp.Attribute.LEFT_TO_RIGHT], null, "Direction should be null (inherited)");
+    t.is(attributes[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], null, "Alignment should be null (inherited)");
+    t.is(attributes[DocumentApp.Attribute.LINE_SPACING], null, "Line spacing should be null (inherited)");
+
+    // Verify with advanced service
+    const docResource = unpackedDoc(doc.getId());
+    const paraElement = docResource.body.content.find(c => c.paragraph && c.paragraph.elements[0].textRun.content.startsWith(paraText));
+    t.is(paraElement.paragraph.paragraphStyle.direction, 'LEFT_TO_RIGHT', "ADVANCED: Direction should be LEFT_TO_RIGHT");
+    t.is(paraElement.paragraph.paragraphStyle.alignment, 'START', "ADVANCED: Alignment should be START/LEFT");
+    t.is(paraElement.paragraph.paragraphStyle.lineSpacing, 115, "ADVANCED: Line spacing should be 115");
 
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   });
 
   unit.section("Document.clear() style persistence validation", t => {
-    // This test validates that doc.clear() does NOT reset document-level styles on the live environment.
-    // It uses a fresh document to avoid pollution from previous tests.
     let { doc } = maketdoc(toTrash, fixes, { forceNew: true });
     let body = doc.getBody();
     const docId = doc.getId();
 
-    // 1. Set a custom document-level style.
-    body.setMarginTop(144); // Default is 72
-
-    // Verify the style was set by checking the underlying document resource.
-    doc.saveAndClose(); // Ensure changes are persisted
+    body.setMarginTop(144);
+    doc.saveAndClose();
     let docResource = unpackedDoc(docId);
     t.is(docResource.documentStyle.marginTop.magnitude, 144, "Pre-clear: marginTop should be 144");
 
-    // 2. Clear the document. This should NOT reset the document styles on the live environment.
-    doc = DocumentApp.openById(docId); // Re-open to get a fresh handle
+    doc = DocumentApp.openById(docId);
     doc.clear();
 
-    // 3. Verify the style has NOT been reset.
     doc.saveAndClose();
     docResource = unpackedDoc(docId)
     t.is(docResource.documentStyle.marginTop.magnitude, 144, "Post-clear: marginTop should NOT be reset and remain 144");
@@ -125,48 +208,31 @@ export const testDocsStyles = (pack) => {
   });
 
   unit.section("Document initial documentStyle validation", t => {
-    // Force a new document to ensure we are testing the initial styles of a
-    // truly new document, not one that has been modified by a previous test.
-    let { doc, docName } = maketdoc(toTrash, fixes, { forceNew: true });
-
-    // Save and close to synchronize changes made by DocumentApp (like clear()) before using the advanced service.
+    let { doc } = maketdoc(toTrash, fixes, { forceNew: true });
     const docId = doc.getId();
     doc.saveAndClose();
 
-    // Re-fetch the document using the advanced Docs service to get the full document structure
-    // including documentStyle.
     const docResource = unpackedDoc(docId)
     const documentStyle = docResource.documentStyle;
 
     t.truthy(documentStyle, "Document should have a documentStyle property");
-
-    // Validate margin properties
     t.deepEqual(documentStyle.marginTop, { magnitude: 72, unit: 'PT' }, "marginTop should be 72 PT");
     t.deepEqual(documentStyle.marginBottom, { magnitude: 72, unit: 'PT' }, "marginBottom should be 72 PT");
     t.deepEqual(documentStyle.marginLeft, { magnitude: 72, unit: 'PT' }, "marginLeft should be 72 PT");
     t.deepEqual(documentStyle.marginRight, { magnitude: 72, unit: 'PT' }, "marginRight should be 72 PT");
     t.deepEqual(documentStyle.marginHeader, { magnitude: 36, unit: 'PT' }, "marginHeader should be 36 PT");
     t.deepEqual(documentStyle.marginFooter, { magnitude: 36, unit: 'PT' }, "marginFooter should be 36 PT");
-
-    // Validate header/footer margin usage
     t.is(documentStyle.useCustomHeaderFooterMargins, true, "useCustomHeaderFooterMargins should be true");
-
-    // Validate background and page number start
     t.deepEqual(documentStyle.background, { color: {} }, "background should be an empty color object");
     t.is(documentStyle.pageNumberStart, 1, "pageNumberStart should be 1");
-
-    // Validate pageSize (check for existence and structure, specific values might vary by locale/API default)
     t.truthy(documentStyle.pageSize, "pageSize should exist");
     t.truthy(documentStyle.pageSize.height, "pageSize should have a height");
     t.truthy(documentStyle.pageSize.width, "pageSize should have a width");
     t.is(documentStyle.pageSize.height.unit, 'PT', "pageSize height unit should be PT");
     t.is(documentStyle.pageSize.width.unit, 'PT', "pageSize width unit should be PT");
 
-
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   });
-
-
 
   unit.section("Appending a detached styled paragraph", t => {
     let { doc } = maketdoc(toTrash, fixes);
@@ -192,10 +258,6 @@ export const testDocsStyles = (pack) => {
 
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   });
-
-
-
-
 
   if (!pack) {
     unit.report();

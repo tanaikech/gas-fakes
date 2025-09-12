@@ -110,18 +110,31 @@ class FakeBody extends FakeContainerElement {
     }
 
     const requests = [];
+    const shadow = this.__shadowDocument;
 
-    // To update a named style, we must target a range that uses that style. The API then updates the style definition.
-    // For NORMAL_TEXT, the first paragraph `[1, 2)` is a reliable anchor.
-    // A more robust solution for other heading types would search the document for a paragraph with the given heading.
-    const anchorRange = { startIndex: 1, endIndex: 2 };
+    // To update a named style, we must target a range that uses that style.
+    // The API then infers that the style definition should be updated.
+    let anchorRange;
+
+    if (namedStyleType === 'NORMAL_TEXT') {
+      anchorRange = { startIndex: 1, endIndex: 2 };
+    } else {
+      const elementMap = shadow.elementMap;
+      const targetElement = Array.from(elementMap.values()).find(item =>
+        item.paragraph?.paragraphStyle?.namedStyleType === namedStyleType
+      );
+      if (!targetElement) {
+        // This is a known limitation of the fake. The live API can handle this.
+        // To make tests pass, we must create a paragraph with the heading first.
+        throw new Error(`gas-fakes limitation: Cannot update named style "${namedStyleType}" because no paragraph with that style exists in the document. Please create one first.`);
+      }
+      anchorRange = { startIndex: targetElement.startIndex, endIndex: targetElement.endIndex };
+    }
 
     if (paraFields.length > 0) {
-      // For paragraph attributes, we also need to tell the API which named style
-      // is being applied to the range. This is done by including namedStyleType
-      // in the paragraphStyle object and the fields mask.
-      paraStyle.namedStyleType = namedStyleType;
-      paraFields.push('namedStyleType');
+      // When updating a named style definition, we apply the changes to the anchor paragraph.
+      // We do NOT include 'namedStyleType' in the fields, as we are not changing the paragraph's base style,
+      // but rather the definition of the style it already has.
       requests.push({
         updateParagraphStyle: {
           range: anchorRange,
@@ -132,8 +145,6 @@ class FakeBody extends FakeContainerElement {
     }
 
     if (textFields.length > 0) {
-      // For text attributes, we use a separate updateTextStyle request.
-      // The API infers the named style update from the range.
       requests.push({
         updateTextStyle: {
           range: anchorRange,
