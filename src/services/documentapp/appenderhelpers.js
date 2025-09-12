@@ -106,7 +106,6 @@ const calculateInsertionPointsAndInitialRequests = (self, childIndex, isAppend, 
       const endIndexBefore = lastChildItem.endIndex;
 
       insertIndex = endIndexBefore - 1;
-      insertIndex = endIndexBefore;
       newElementStartIndex = endIndexBefore; // The new element will start after the old content.
       childStartIndex = null; // Child start index is unknown, must be found within container.
 

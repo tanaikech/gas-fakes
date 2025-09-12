@@ -72,7 +72,7 @@ export const paragraphOptions = {
   elementType: ElementType.PARAGRAPH,
   insertMethodSignature: 'DocumentApp.Body.insertParagraph',
   canAcceptText: true,
-  getMainRequest: ({ content: textOrParagraph, location, leading, trailing }) => {
+  getMainRequest: ({ content: textOrParagraph, location, leading, trailing, structure }) => {
     const isDetachedPara = is.object(textOrParagraph) && textOrParagraph.__isDetached;
 
     // Case 1: Appending/inserting a detached paragraph object.
@@ -87,9 +87,23 @@ export const paragraphOptions = {
 
     // Case 2: Appending/inserting a string.
     // This requires a special combined request to match live Apps Script behavior,
-    // which returns a fully-resolved style for new paragraphs.
+    // which applies the fully-resolved named style to the new paragraph.
     if (is.string(textOrParagraph)) {
       const textToInsert = leading + textOrParagraph + trailing;
+
+      // Get the NORMAL_TEXT style definition from the document resource to use as a template.
+      const { resource, shadowDocument } = structure;
+      const { namedStyles } = shadowDocument.__unpackDocumentTab(resource);
+      const normalTextStyle = (namedStyles?.styles || []).find(s => s.namedStyleType === 'NORMAL_TEXT');
+
+      // Create a complete paragraphStyle object, inheriting from the named style.
+      const styleToApply = { ...(normalTextStyle?.paragraphStyle || {}) };
+      styleToApply.namedStyleType = 'NORMAL_TEXT'; // Ensure this is set.
+
+      // The API will reject requests with read-only fields like 'headingId'.
+      delete styleToApply.headingId;
+      const fields = Object.keys(styleToApply).join(',');
+
       const requests = [
         {
           insertText: {
@@ -101,14 +115,13 @@ export const paragraphOptions = {
           updateParagraphStyle: {
             range: {
               startIndex: location.index + leading.length,
-              endIndex: location.index + leading.length + textOrParagraph.length,
+              // The new paragraph's content is the text + a newline, so its length is text length + 1.
+              endIndex: location.index + leading.length + textOrParagraph.length + 1,
               segmentId: location.segmentId,
               tabId: location.tabId,
             },
-            paragraphStyle: {
-              namedStyleType: 'NORMAL_TEXT',
-            },
-            fields: 'namedStyleType',
+            paragraphStyle: styleToApply,
+            fields: fields,
           },
         },
       ];

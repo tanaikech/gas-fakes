@@ -376,18 +376,19 @@ class ShadowDocument {
       // A new/empty document has one structural element (a paragraph) with startIndex 1 and endIndex 2.
       // We must not delete this final newline character.
       const lastElement = content[content.length - 1];
-      const endIndex = lastElement.endIndex;
+      const endIndex = lastElement.endIndex;      
 
       const hasContentToDelete = endIndex > 2;
       const firstElement = content.find(c => c.startIndex === 1);
       const isFirstElementListItem = firstElement?.paragraph?.bullet;
-
+      
+      // Only delete content if there's more than just the initial empty paragraph.
       if (hasContentToDelete) {
         requests.push({
           deleteContentRange: { range: { startIndex: 1, endIndex: endIndex - 1, segmentId: this.__segmentId, tabId: this.__tabId } }
         });
       }
-
+      
       if (hasContentToDelete || isFirstElementListItem) {
         requests.push({ deleteParagraphBullets: { range: { startIndex: 1, endIndex: 1, segmentId: this.__segmentId, tabId: this.__tabId } } });
       }

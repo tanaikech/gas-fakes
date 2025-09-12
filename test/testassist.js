@@ -66,52 +66,46 @@ export const getTestFolder = (fixes) => {
   return __mfolder
 }
 export const maketdoc = (toTrash, fixes, { clear = true, forceNew = false } = {}) => {
-  const docName = fixes.PREFIX + "tss-docs"
-  const folder = getTestFolder(fixes)
-  let reuse = false
+  const docName = fixes.PREFIX + "tss-docs";
+  const folder = getTestFolder(fixes);
+  let reuse = false;
   // because some test may have renamed it and drive/document service on Apps Script 
   // might not actually be in sync - doesnt actually happen on Node but we'll leave for consistency.
   if (forceNew || !__mdoc || __mdoc.getName() !== docName) {
-    __mdoc = DocumentApp.create(docName)
-    console.log('...created doc', __mdoc.getName(), __mdoc.getId())
-    moveToTestFolder(__mdoc.getId())
+    __mdoc = DocumentApp.create(docName);
+    console.log('...created doc', __mdoc.getName(), __mdoc.getId());
+    moveToTestFolder(__mdoc.getId());
 
     // no need to do this as sandbox mode will take care of it
-
     if (!ScriptApp.isFake && fixes.CLEAN && !toTrash.find(f => f.getId() == __mdoc.getId())) {
-      console.log('...will be deleting it later')
-      toTrash.push(DriveApp.getFileById(__mdoc.getId()))
+      console.log('...will be deleting it later');
+      toTrash.push(DriveApp.getFileById(__mdoc.getId()));
     }
 
   } else {
     // in case there had been a save and close some point
-    __mdoc = DocumentApp.openById(__mdoc.getId())
-    console.log('...re-opened doc', __mdoc.getName(), __mdoc.getId(),)
-    reuse === true
+    __mdoc = DocumentApp.openById(__mdoc.getId());
+    console.log('...re-opened doc', __mdoc.getName(), __mdoc.getId());
+    reuse = true;
   }
 
-  if (clear) {
-    // In the live environment, doc.clear() only clears the body.
-    // For tests, we often need a completely clean slate.
-    // So, we explicitly remove headers/footers first.
+  // A new document is already clear. Only clear if we are reusing an old one.
+  if (clear && reuse) {
     const header = __mdoc.getHeader();
     if (header) header.removeFromParent();
 
     const footer = __mdoc.getFooter();
     if (footer) footer.removeFromParent();
 
-    // Now clear the body using the emulated doc.clear(), which only affects the body.
-    // The appendParagraph is a workaround for a live bug where clearing a doc with certain trailing elements fails.
-    __mdoc.getBody().appendParagraph('');
+    // The clear() method in the fake environment also resets named styles.
     __mdoc.clear();
   }
   return {
     doc: __mdoc,
     docName,
-    folder
-  }
-
-}
+    reuse
+  };
+};
 
 // to minimize the number of test sheets created we'll share this across all tests
 export const maketss = (sheetName, toTrash, fixes, { clearContents = true, clearFormats = true } = {}) => {

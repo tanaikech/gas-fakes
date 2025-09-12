@@ -206,10 +206,10 @@ export const defaultDocumentStyleRequests = () => {
         .setAlignment('START')
         .setLineSpacing(115) // This was added in a previous fix
         .setNamedStyleType("NORMAL_TEXT"))
-      // Use a wildcard to update all specified fields. This is the most reliable way
-      // to ensure the API updates the named style definition itself, rather than just
-      // applying an inline style to the range.
-      .setFields('*')
+      // Explicitly list the fields to update. The wildcard '*' is not being correctly
+      // processed, resulting in an empty fields mask and a failed style update.
+      // This ensures the API applies the alignment, spacing, and other defaults.
+      .setFields('avoidWidowAndOrphan,spacingMode,alignment,lineSpacing,namedStyleType')
       .setRange(range)
   }, {
     updateParagraphStyle: Docs.newUpdateParagraphStyleRequest()
