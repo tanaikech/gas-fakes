@@ -114,8 +114,15 @@ export const getAttributes = (element) => {
   const baseTextStyle = namedStyle?.textStyle || {};
   const baseParaStyle = namedStyle?.paragraphStyle || {};
 
+  // Filter out null/undefined values from the inline paragraph style to prevent
+  // them from incorrectly overriding inherited values from the named style.
+  const cleanParaStyle = Object.entries(paraStyle).reduce((acc, [key, value]) => {
+    if (value !== null && value !== undefined) acc[key] = value;
+    return acc;
+  }, {});
+
   // 2. Merge the paragraph-level style overrides.
-  const finalParaStyle = { ...baseParaStyle, ...paraStyle };
+  const finalParaStyle = { ...baseParaStyle, ...cleanParaStyle };
 
   // 3. Merge the text-run-level style overrides.
   const paraTextStyle = item.paragraph?.textStyle || {};

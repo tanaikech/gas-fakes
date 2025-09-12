@@ -20,6 +20,7 @@ import {
   getSheetsPerformance,
   getDocsPerformance,
   getSlidesPerformance,
+  getFormsPerformance
 } from "./testassist.js";
 import { testFiddler } from "./testfiddler.js";
 import { testSheetsDataValidations } from "./testsheetsdatavalidations.js";

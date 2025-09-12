@@ -1,11 +1,34 @@
 
 import "../main.js";
 import { initTests } from "./testinit.js";
-import { wrapupTest, getDocsPerformance, maketdoc, docReport, getChildren, trasher , unpackedDoc} from "./testassist.js";
+import { wrapupTest, getDocsPerformance, maketdoc, docReport, getChildren, trasher, unpackedDoc } from "./testassist.js";
 ;
 export const testDocsStyles = (pack) => {
   const toTrash = [];
   const { unit, fixes } = pack || initTests();
+
+  unit.section("Appended paragraph style validation", t => {
+    let { doc } = maketdoc(toTrash, fixes, { forceNew: true });
+    const body = doc.getBody();
+    const paraText = "p1";
+
+    const appendedPara = body.appendParagraph(paraText);
+
+    // On a new doc, appendParagraph adds a new paragraph, making 2 children (initial empty + new one).
+    t.is(body.getNumChildren(), 2, "Body should have 2 children after first append to new doc");
+
+    const paraToTest = body.getChild(1);
+    t.is(paraToTest.getText(), paraText, "Appended paragraph has correct text");
+    
+    const attributes = paraToTest.getAttributes();
+    t.deepEqual (attributes, appendedPara.getAttributes())
+    t.is(attributes[DocumentApp.Attribute.HEADING], DocumentApp.ParagraphHeading.NORMAL, "Named style type should be NORMAL_TEXT");
+    t.is(attributes[DocumentApp.Attribute.LEFT_TO_RIGHT], true, "Direction should be LEFT_TO_RIGHT");
+    t.is(attributes[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], DocumentApp.HorizontalAlignment.LEFT, "Alignment should be START/LEFT");
+    t.is(attributes[DocumentApp.Attribute.LINE_SPACING], 1.15, "Line spacing should be 1.15 (115%)");
+
+    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
+  });
 
   unit.section("Document.clear() style persistence validation", t => {
     // This test validates that doc.clear() does NOT reset document-level styles on the live environment.
@@ -45,7 +68,7 @@ export const testDocsStyles = (pack) => {
 
     // Re-fetch the document using the advanced Docs service to get the full document structure
     // including documentStyle.
-    const docResource =unpackedDoc (docId) 
+    const docResource = unpackedDoc(docId)
     const documentStyle = docResource.documentStyle;
 
     t.truthy(documentStyle, "Document should have a documentStyle property");
@@ -76,28 +99,7 @@ export const testDocsStyles = (pack) => {
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   });
 
-  unit.section("Appended paragraph style validation", t => {
-    let { doc } = maketdoc(toTrash, fixes);
-    const body = doc.getBody();
-    const paraText = "p1";
 
-    const appendedPara = body.appendParagraph(paraText);
-
-    // On a new doc, appendParagraph adds a new paragraph, making 2 children (initial empty + new one).
-    t.is(body.getNumChildren(), 2, "Body should have 2 children after first append to new doc");
-
-    const paraToTest = body.getChild(1);
-    t.is(paraToTest.getText(), paraText, "Appended paragraph has correct text");
-
-    const attributes = paraToTest.getAttributes();
-
-    t.is(attributes[DocumentApp.Attribute.HEADING], DocumentApp.ParagraphHeading.NORMAL, "Named style type should be NORMAL_TEXT");
-    t.is(attributes[DocumentApp.Attribute.LEFT_TO_RIGHT], true, "Direction should be LEFT_TO_RIGHT");
-    t.is(attributes[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], DocumentApp.HorizontalAlignment.LEFT, "Alignment should be START/LEFT");
-    t.is(attributes[DocumentApp.Attribute.LINE_SPACING], 1.15, "Line spacing should be 1.15 (115%)");
-
-    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
-  });
 
   unit.section("Appending a detached styled paragraph", t => {
     let { doc } = maketdoc(toTrash, fixes);
@@ -137,7 +139,7 @@ export const testDocsStyles = (pack) => {
     body.setMarginLeft(90);
     body.setMarginTop(100);
     doc.saveAndClose();
-    let docResource =unpackedDoc (docId) 
+    let docResource = unpackedDoc(docId)
     t.is(docResource.documentStyle.marginLeft.magnitude, 90, "setMarginLeft should update document style");
     t.is(docResource.documentStyle.marginTop.magnitude, 100, "setMarginTop should update document style");
     doc = DocumentApp.openById(docId);
@@ -147,7 +149,7 @@ export const testDocsStyles = (pack) => {
     body.setPageWidth(500);
     body.setPageHeight(700);
     doc.saveAndClose();
-    docResource =unpackedDoc (docId) 
+    docResource = unpackedDoc(docId)
     t.is(docResource.documentStyle.pageSize.width.magnitude, 500, "setPageWidth should update page size");
     t.is(docResource.documentStyle.pageSize.height.magnitude, 700, "setPageHeight should update page size");
     doc = DocumentApp.openById(docId);

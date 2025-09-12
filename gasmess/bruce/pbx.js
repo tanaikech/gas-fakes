@@ -2,33 +2,25 @@ import '../../main.js';
 import { moveToTempFolder, deleteTempFile } from '../tempfolder.js';
 import { report, scl } from './dreport.js';
 
+
+
 const suffix = "-bruce"
 const tx1 = () => {
   let doc = DocumentApp.create("abc")
   const id = doc.getId()
   moveToTempFolder(id, suffix)
 
-  let body = doc.getBody()
-  const p1 = body.appendParagraph("p1")
-  doc = scl(doc)
-  let d = Docs.Documents.get(id)
-  console.log (JSON.stringify(d.body))  
 
 
-  //console.log(report(Docs.Documents.get(id), `\nblank`))
-/*
-  const p1 = body.appendParagraph("p1")
-  p1.appendText ('apresp1')
+  const body = doc.getBody();
+  const paraText = "p1";
+
+  const appendedPara = body.appendParagraph(paraText);
+  const paraToTest = body.getChild(1);
   doc = scl(doc)
-  console.log(report(Docs.Documents.get(id), `\nappended text to p1`))
-  
-  body = doc.getBody()
-  const p2 = body.appendParagraph("p2") /// 'p2'
-  console.log (p2.getText())
-  p2.insertText(0,'p2t')
-  doc = scl(doc)
-  console.log(report(Docs.Documents.get(id), `\ninserted p1`))
-*/
+  console.log(report(Docs.Documents.get(id, { includeTabsContent: true }), `\n1.empty document`))
+  const attributes = paraToTest.getAttributes();
+
   deleteTempFile(id)
 }
 tx1()
@@ -39,11 +31,11 @@ const tabsa = () => {
   moveToTempFolder(id, suffix)
 
   let body = doc.getBody()
-  console.log (body)
+  console.log(body)
   doc = scl(doc)
-  console.log(report(Docs.Documents.get(id, {includeTabsContent: true}), `\n1.empty document`))
+  console.log(report(Docs.Documents.get(id, { includeTabsContent: true }), `\n1.empty document`))
 
-  
+
   deleteTempFile(id)
 }
 
@@ -98,7 +90,7 @@ const pbnew = () => {
   console.log(report(Docs.Documents.get(id), `\n4.inserted para 2`))
 
   body = doc.getBody()
-  body.insertTable(1, [['eboo', 'fbar']]  )
+  body.insertTable(1, [['eboo', 'fbar']])
   doc = scl(doc)
   console.log(report(Docs.Documents.get(id), `\nt4.inserted table at child 1`))
 
@@ -109,12 +101,12 @@ const pbnew = () => {
 
   body = doc.getBody()
   let c = body.getChild(2)
-  c.appendText( 'p2 appended text')
+  c.appendText('p2 appended text')
   doc = scl(doc)
   console.log(report(Docs.Documents.get(id), `\n6.appended text to para 2`))
 
   body = doc.getBody()
-  body.insertTable(3, [['bar', 'foo'], ['barfoo', 'foobar'], ['eboo', 'fbar']]  )
+  body.insertTable(3, [['bar', 'foo'], ['barfoo', 'foobar'], ['eboo', 'fbar']])
   doc = scl(doc)
   console.log(report(Docs.Documents.get(id), `\nt6.inserted table at child 3`))
 
@@ -135,7 +127,7 @@ const pbnew = () => {
   console.log(report(Docs.Documents.get(id), `\n9.inserted page break in para 3`))
 
   body = doc.getBody()
-  c=body.getChild(3)
+  c = body.getChild(3)
   c.appendText('after pagebreak in 3')
   doc = scl(doc)
   console.log(report(Docs.Documents.get(id), `\n10.inserted text after pagebreak in 3`))

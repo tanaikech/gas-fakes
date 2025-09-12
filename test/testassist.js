@@ -297,87 +297,78 @@ export const arrMatchesRange = (range, arr, itemType) => {
   return true
 }
 
-
 /**
- * Corrected custom comparison function for sorting different data types,
- * precisely mimicking Google Sheets' range.sort() behavior.
- * Defines the order of precedence (from "smallest" to "largest" for ascending).
- * This order is based on observed behavior, which may differ from official documentation.
- * 1. Numbers
- * 2. Booleans (false < true)
- * 3. Strings
- * 4. Dates (if actual Date objects are present)
- * 5. Error Values (e.g., #N/A, #DIV/0!) - treated as larger than Booleans if present
- * 6. Empty Cells (always last)
- * 7. Other types (converted to strings for comparison)
- *
- * @param {*} a The first value to compare.
- * @param {*} b The second value to compare.
- * @returns {number} -1 if a < b, 0 if a == b, 1 if a > b.
+ * Compares two values using Google Sheets' ascending sort logic.
+ * @param {*} a first value to compare
+ * @param {*} b second value to compare
+ * @returns {number} a<b: -1, a===b: 0, a>b: 1
  */
-function compareMixedValues(a, b) {
-  // --- Phase 1: Handle Empty Cells (Always Last) ---
-  // Check for null, undefined, or empty string for both values
+const compareMixedValues = (a, b) => {
   const isBlankA = (a === null || a === undefined || a === "");
   const isBlankB = (b === null || b === undefined || b === "");
 
-  if (isBlankA && !isBlankB) return 1;  // A is blank, B is not: A comes AFTER B
-  if (!isBlankA && isBlankB) return -1; // B is blank, A is not: B comes AFTER A
-  if (isBlankA && isBlankB) return 0;   // Both are blank: consider them equal for ordering
+  // Handle blanks - always sorted to the top in this ascending comparator
+  if (isBlankA && !isBlankB) return -1;
+  if (!isBlankA && isBlankB) return 1;
+  if (isBlankA && isBlankB) return 0;
 
-  // --- Phase 2: Compare Non-Blank Values Based on Spreadsheet Hierarchy ---
+  // Get type priorities (lower number = sorts first)
+  const getTypePriority = (val) => {
+    // Correct Google Sheets ascending priority
+    if (typeof val === 'number') return 1;
+    if (typeof val === 'string') return 2;
+    if (typeof val === 'boolean') return 3;
+    if (val instanceof Date) return 4;
+    return 5;
+  };
 
-  // 1. Numbers
+  const priorityA = getTypePriority(a);
+  const priorityB = getTypePriority(b);
+
+  // If different types, sort by type priority
+  if (priorityA !== priorityB) {
+    return priorityA < priorityB ? -1 : 1;
+  }
+
+  // Same types - compare values
   if (typeof a === 'number' && typeof b === 'number') {
     return a - b;
   }
-  if (typeof a === 'number') return -1; // A is number, B is not (and not blank): A is "smaller"
-  if (typeof b === 'number') return 1;  // B is number, A is not (and not blank): B is "smaller"
-
-  // 2. Dates (NEW ADDITION)
-  // Checks if both are Date objects, then compares their timestamps
-  if (a instanceof Date && b instanceof Date) {
-    return a.getTime() - b.getTime(); // Compare by timestamp
-  }
-  // If one is a Date object and the other is not (and not handled by numbers or blanks)
-  if (a instanceof Date) return -1; // A is Date, B is not: A is "smaller"
-  if (b instanceof Date) return 1;  // B is Date, A is not: B is "smaller"
-
-  // 3. Strings
   if (typeof a === 'string' && typeof b === 'string') {
-    return a.localeCompare(b, undefined, { sensitivity: 'base' }); // Case/accent-insensitive string compare
+    return a.localeCompare(b, undefined, { sensitivity: 'base', numeric: true });
   }
-  if (typeof a === 'string') return -1; // A is string, B is not (and not blank/number/date): A is "smaller"
-  if (typeof b === 'string') return 1;  // B is string, A is not (and not blank/number/date): B is "smaller"
-
-  // 4. Booleans
   if (typeof a === 'boolean' && typeof b === 'boolean') {
-    return (a === b) ? 0 : (a ? 1 : -1); // false < true
+    return (a === b) ? 0 : (a ? 1 : -1); 
   }
-  // If 'a' is boolean and 'b' is not (and not handled by earlier types), 'a' is "smaller"
-  if (typeof a === 'boolean') return -1;
-  // If 'b' is boolean and 'a' is not (and not handled by earlier types), 'b' is "smaller"
-  if (typeof b === 'boolean') return 1;
+  if (a instanceof Date && b instanceof Date) {
+    return a.getTime() - b.getTime();
+  }
 
-  // 5. Fallback for other unhandled types (e.g., objects, arrays, functions, Errors).
-  // These typically convert to strings and sort lexicographically.
-  return String(a).localeCompare(String(b), undefined, { sensitivity: 'base' });
-}
+  // Fallback for other types
+  const strA = String(a);
+  const strB = String(b);
+  return strA.localeCompare(strB, undefined, { sensitivity: 'base' });
+};
 
-
-export const sort2d = (spec, arr) => [...arr].sort((a, b) => {
-  for (const s of spec) {
-    const index = is.object(s) ? s.column - 1 : s - 1
-    let c = compareMixedValues(a[index], b[index])
-    if (is.object(s) ? s.ascending === false : false) c *= -1
-    if (c) {
-      return c
+export const sort2d = (spec, arr) => {
+  const deepCopy = arr.map(row => [...row]);
+  return deepCopy.sort((a, b) => {
+    for (const s of spec) {
+      const index = (typeof s === 'object' && s !== null) ? s.column - 1 : s - 1;
+      const ascending = (typeof s === 'object' && s !== null) ? s.ascending !== false : true;
+      let result = compareMixedValues(a[index], b[index]);
+      if (!ascending) {
+          result = -result;
+      }
+      if (result !== 0) {
+          return result;
+      }
     }
-  }
-  // rows were equal
+    return 0;
+  });
+};
 
-  return 0
-})
+
 
 /**
 * Prepares a 2D array by repeating a source array's values to fit within a target range's dimensions.
