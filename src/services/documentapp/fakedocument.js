@@ -145,18 +145,19 @@ class FakeDocument {
     const lastElement = body.content[body.content.length - 1];
 
     const requests = [];
-    // 1. Delete all content from after the initial section break to the end of the document.
-    // The API will automatically leave a single empty paragraph.
-    if (lastElement.endIndex > 1) {
+    // 1. Delete all content from after the initial section break up to the final newline.
+    // This leaves one empty paragraph, which is the correct state for a cleared doc.
+    if (lastElement.endIndex > 2) { // A cleared doc has endIndex 2.
       requests.push({
         deleteContentRange: {
-          range: { startIndex: 1, endIndex: lastElement.endIndex }
+          range: { startIndex: 1, endIndex: lastElement.endIndex - 1 }
         }
       });
     }
 
     // 2. Get only the style-resetting requests, excluding the document-level style request.
     const styleRequests = defaultDocumentStyleRequests();
+    // The live API resets named styles to their default definitions when clear() is called.
     const namedStyleResetRequests = styleRequests.filter(req => req.updateParagraphStyle);
     requests.push(...namedStyleResetRequests);
 
