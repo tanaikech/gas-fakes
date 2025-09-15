@@ -119,7 +119,8 @@ export const testDocsStyles = (pack) => {
     } else {
       t.is(p3Attrs[DocumentApp.Attribute.ITALIC], null, "Live: NORMAL_TEXT should not be italic");
       t.is(p3Attrs[DocumentApp.Attribute.FONT_FAMILY], null, "Live: NORMAL_TEXT font is inherited, so getAttributes returns null");
-      t.is(p3Attrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], null, "Live: NORMAL_TEXT alignment is inherited, so getAttributes returns null");
+      // Live API returns computed value for alignment on NORMAL_TEXT paragraphs
+      t.is(p3Attrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], DocumentApp.HorizontalAlignment.LEFT, "Live: NORMAL_TEXT alignment is computed LEFT");
     }
 
     // 6. Verify the underlying named style definition was changed using the advanced service.
@@ -151,8 +152,11 @@ export const testDocsStyles = (pack) => {
       t.is(attributes[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], DocumentApp.HorizontalAlignment.LEFT, "Alignment should be START/LEFT");
       t.is(attributes[DocumentApp.Attribute.LINE_SPACING], 1.15, "Line spacing should be 1.15 (115%)");
     } else {
-      t.is(attributes[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], null, "Live: Alignment is inherited, so getAttributes returns null");
-      t.is(attributes[DocumentApp.Attribute.LINE_SPACING], null, "Live: Line spacing is inherited, so getAttributes returns null");
+      // Live API returns computed values for NORMAL_TEXT paragraph styles, but null for text styles.
+      t.is(attributes[DocumentApp.Attribute.HEADING], DocumentApp.ParagraphHeading.NORMAL, "Live: Named style type should be NORMAL_TEXT");
+      t.is(attributes[DocumentApp.Attribute.LEFT_TO_RIGHT], true, "Live: Direction should be LEFT_TO_RIGHT");
+      t.is(attributes[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], DocumentApp.HorizontalAlignment.LEFT, "Live: Alignment is computed for NORMAL_TEXT");
+      t.is(attributes[DocumentApp.Attribute.LINE_SPACING], 1.15, "Live: Line spacing is computed for NORMAL_TEXT");
     }
 
     // Now check the underlying resource to be sure
