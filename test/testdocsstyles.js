@@ -22,14 +22,10 @@ export const testDocsStyles = (pack) => {
 
     // Test setText and re-open
     body.setText("Initial paragraph.");
-    doc = scl(doc);
-    body = doc.getBody();
     t.is(body.getText(), "Initial paragraph.", "setText should replace body content");
-    console.log (JSON.stringify(Docs.Documents.get (doc.getId())))
 
     const p1 = body.getChild(0);
     const p1InitialAttrs = p1.getAttributes();
-    console.log (JSON.stringify(p1InitialAttrs))
 
     // Live GAS returns null for inherited paragraph attributes on existing/reloaded paragraphs.
     t.is(p1InitialAttrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], null, "Initial reloaded paragraph should have null alignment (inherited)");
@@ -41,12 +37,9 @@ export const testDocsStyles = (pack) => {
       [DocumentApp.Attribute.FONT_FAMILY]: 'Comic Sans MS'
     };
     body.setAttributes(attributesToSet);
-    doc = scl(doc);
-    body = doc.getBody();
 
     const p1_reloaded = body.getChild(0);
     const p1AfterSetAttrs = p1_reloaded.getAttributes();
-    console.log (JSON.stringify(p1AfterSetAttrs))
 
     // Verify changes to the EXISTING paragraph
     t.is(p1AfterSetAttrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], null, "setAttributes should NOT affect alignment of existing paragraphs (remains null)");
@@ -93,7 +86,7 @@ export const testDocsStyles = (pack) => {
     const p1_reloaded = body.getChild(1);
     const p1Attrs = p1_reloaded.getAttributes();
     console.log (JSON.stringify(p1Attrs))
-    
+
     t.is(p1Attrs[DocumentApp.Attribute.ITALIC], null, "setHeadingAttributes should NOT affect italic of existing paragraphs");
     t.is(p1Attrs[DocumentApp.Attribute.FONT_FAMILY], null, "setHeadingAttributes should NOT affect font family of existing paragraphs");
     t.is(p1Attrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], null, "setHeadingAttributes should NOT affect alignment of existing paragraphs");
@@ -102,13 +95,17 @@ export const testDocsStyles = (pack) => {
     // 4. Append a NEW paragraph and set it to HEADING1.
     const p2 = body.appendParagraph("Another heading");
     p2.setHeading(DocumentApp.ParagraphHeading.HEADING1);
-    
+
     // On live GAS, getAttributes() returns null for any attribute inherited from a named style (except for some paragraph styles on NORMAL_TEXT).
     const p2Attrs = p2.getAttributes();
+    console.log (JSON.stringify(p2Attrs))
     t.is(p2Attrs[DocumentApp.Attribute.ITALIC], null, "New HEADING1 should have null italic (inherited)");
     t.is(p2Attrs[DocumentApp.Attribute.FONT_FAMILY], null, "New HEADING1 font is inherited, so getAttributes returns null");
     t.is(p2Attrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], null, "New HEADING1 alignment is inherited, so getAttributes returns null");
     t.is(p2Attrs[DocumentApp.Attribute.SPACING_BEFORE], null, "New HEADING1 spacing is inherited, so getAttributes returns null");
+    doc = scl(doc);
+    body = doc.getBody();
+    console.log (JSON.stringify(Docs.Documents.get (doc.getId())))
 
     // 5. Verify that NORMAL_TEXT was not affected.
     const p3 = body.appendParagraph("This is normal text.");
@@ -172,6 +169,7 @@ export const testDocsStyles = (pack) => {
     doc.clear();
     doc = scl(doc);
     docResource = unpackedDoc(docId)
+    console.log (JSON.stringify(docResource))
     t.is(docResource.documentStyle.marginTop.magnitude, 144, "Post-clear: marginTop should NOT be reset and remain 144");
 
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
