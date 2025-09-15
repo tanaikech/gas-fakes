@@ -324,19 +324,60 @@ class FakeBody extends FakeContainerElement {
       throw new Error(`Invalid paragraph heading: ${paragraphHeading}`);
     }
 
-    // Emulate live behavior: only a subset of paragraph attributes are applied, and text attributes are ignored.
-    const liveAttributes = {};
-    if (attributes[DocumentApp.Attribute.SPACING_BEFORE]) {
-      liveAttributes[DocumentApp.Attribute.SPACING_BEFORE] = attributes[DocumentApp.Attribute.SPACING_BEFORE];
-    }
-    // Live API ignores HORIZONTAL_ALIGNMENT, and all text attributes like ITALIC, FONT_FAMILY.
+    const shadow = this.__shadowDocument;
+    // This is the key to fixing the crash. We must ensure the shadow document's
+    // internal resource is up-to-date before we try to find elements or styles in it.
+    shadow.refresh();
 
-    const requests = this.__buildStyleUpdateRequests(namedStyleType, liveAttributes);
-    if (requests && requests.length > 0) {
-      const shadow = this.__shadowDocument;
-      Docs.Documents.batchUpdate({ requests }, shadow.getId());
-      shadow.refresh();
+    // Emulate live behavior: only a subset of paragraph attributes are applied.
+    const paraStyle = {};
+    const paraFields = [];
+    if (attributes[DocumentApp.Attribute.SPACING_BEFORE]) {
+      paraStyle.spaceAbove = { magnitude: attributes[DocumentApp.Attribute.SPACING_BEFORE], unit: 'PT' };
+      paraFields.push('spaceAbove');
     }
+    // Live API ignores HORIZONTAL_ALIGNMENT, and all text attributes.
+
+    if (paraFields.length === 0) {
+      return this; // Nothing to do
+    }
+
+    // Find an anchor paragraph to target.
+    const elementMap = shadow.elementMap;
+    const targetElement = Array.from(elementMap.values()).find(item =>
+      item.paragraph?.paragraphStyle?.namedStyleType === namedStyleType
+    );
+    if (!targetElement) {
+      throw new Error(`gas-fakes limitation: Cannot update named style "${namedStyleType}" because no paragraph with that style exists in the document. Please create one first.`);
+    }
+
+    const anchorRange = { startIndex: targetElement.startIndex, endIndex: targetElement.endIndex, segmentId: shadow.__segmentId, tabId: shadow.__tabId };
+    const fields = paraFields.join(',');
+
+    const requests = [
+      // Request A: Apply the style. In the live API, this updates the definition.
+      // We assume the fake processor does this but also adds an unwanted inline style.
+      {
+        updateParagraphStyle: {
+          range: anchorRange,
+          paragraphStyle: paraStyle,
+          fields: fields,
+        },
+      },
+      // Request B: Immediately clear the inline style that was just applied.
+      // This works around the fake processor's flaw, leaving only the definition updated.
+      {
+        updateParagraphStyle: {
+          range: anchorRange,
+          paragraphStyle: {}, // An empty style object...
+          fields: fields,     // ...with the same fields mask clears the inline properties.
+        },
+      },
+    ];
+
+    Docs.Documents.batchUpdate({ requests }, shadow.getId());
+    shadow.refresh();
+
     return this;
   }
 

@@ -9,6 +9,7 @@ import { newFakeRangeBuilder } from './fakerangebuilder.js';
 import { newFakeHeaderSection } from './fakeheadersection.js';
 import { newFakeFooterSection } from './fakefootersection.js';
 import { shadowPrefix } from './nrhelpers.js';
+import { defaultDocumentStyleRequests } from './elementblasters.js';
 
 export const newFakeDocument = (...args) => {
   return Proxies.guard(new FakeDocument(...args));
@@ -136,9 +137,34 @@ class FakeDocument {
  clear() {
     const { nargs, matchThrow } = signatureArgs(arguments, 'Document.clear');
     if (nargs !== 0) matchThrow();
-    this.__shadowDocument.clear()
-    return this
-  
+
+    // Live behavior: clear() deletes body content and resets named styles, but NOT document styles (margins, etc.).
+    // The default shadowDocument.clear() resets everything, which is incorrect for this context.
+    const shadow = this.__shadowDocument;
+    const { body } = shadow.__unpackDocumentTab(shadow.resource);
+    const lastElement = body.content[body.content.length - 1];
+
+    const requests = [];
+    // 1. Delete all content from after the initial section break to the end of the document.
+    // The API will automatically leave a single empty paragraph.
+    if (lastElement.endIndex > 1) {
+      requests.push({
+        deleteContentRange: {
+          range: { startIndex: 1, endIndex: lastElement.endIndex }
+        }
+      });
+    }
+
+    // 2. Get only the style-resetting requests, excluding the document-level style request.
+    const styleRequests = defaultDocumentStyleRequests();
+    const namedStyleResetRequests = styleRequests.filter(req => req.updateParagraphStyle);
+    requests.push(...namedStyleResetRequests);
+
+    if (requests.length > 0) {
+      Docs.Documents.batchUpdate({ requests }, shadow.getId());
+      shadow.refresh();
+    }
+    return this;
   }
 
   appendListItem(listItemOrText) {
