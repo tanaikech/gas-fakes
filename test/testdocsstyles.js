@@ -66,7 +66,8 @@ export const testDocsStyles = (pack) => {
     // 1. Create a paragraph and set it to HEADING1.
     const p1 = body.appendParagraph("This is a heading");
     p1.setHeading(DocumentApp.ParagraphHeading.HEADING1);
-
+    doc = scl(doc);
+    body = doc.getBody();
 
     // 2. Define and set attributes for the HEADING1 named style.
     const heading1Attributes = {
@@ -76,7 +77,8 @@ export const testDocsStyles = (pack) => {
       [DocumentApp.Attribute.SPACING_BEFORE]: 18, // This should be applied
     };
     body.setHeadingAttributes(DocumentApp.ParagraphHeading.HEADING1, heading1Attributes);
-
+    doc = scl(doc);
+    body = doc.getBody();
 
     // 3. Verify the attributes of the EXISTING HEADING1 paragraph have NOT changed.
     const p1_reloaded = body.getChild(1);
@@ -97,7 +99,8 @@ export const testDocsStyles = (pack) => {
     t.is(p2Attrs[DocumentApp.Attribute.FONT_FAMILY], null, "New HEADING1 font is inherited, so getAttributes returns null");
     t.is(p2Attrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], null, "New HEADING1 alignment is inherited, so getAttributes returns null");
     t.is(p2Attrs[DocumentApp.Attribute.SPACING_BEFORE], null, "New HEADING1 spacing is inherited, so getAttributes returns null");
-
+    doc = scl(doc);
+    body = doc.getBody();
 
     // 5. Verify that NORMAL_TEXT was not affected.
     const p3 = body.appendParagraph("This is normal text.");
@@ -138,7 +141,7 @@ export const testDocsStyles = (pack) => {
     t.is(attributes[DocumentApp.Attribute.LINE_SPACING], 1.15, "Line spacing is computed for NORMAL_TEXT");
 
     // Now check the underlying resource to be sure
-
+    doc = scl(doc);
     const docResource = unpackedDoc(doc.getId());
     const paraElement = docResource.body.content.find(c => c.paragraph && c.paragraph.elements[0].textRun.content.startsWith(paraText));
     t.truthy(paraElement, "ADVANCED: Paragraph element should be found");
@@ -155,11 +158,11 @@ export const testDocsStyles = (pack) => {
     const docId = doc.getId();
 
     body.setMarginTop(144);
-
+    doc = scl(doc);
     let docResource = unpackedDoc(docId);
     t.is(docResource.documentStyle.marginTop.magnitude, 144, "Pre-clear: marginTop should be 144");
     doc.clear();
-
+    doc = scl(doc);
     docResource = unpackedDoc(docId)
     t.is(docResource.documentStyle.marginTop.magnitude, 144, "Post-clear: marginTop should NOT be reset and remain 144");
 
@@ -169,8 +172,7 @@ export const testDocsStyles = (pack) => {
   unit.section("Document initial documentStyle validation", t => {
     let { doc } = maketdoc(toTrash, fixes, { forceNew: true });
     const docId = doc.getId();
- 
-
+    doc = scl(doc);
     const docResource = unpackedDoc(docId)
     const documentStyle = docResource.documentStyle;
 

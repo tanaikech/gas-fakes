@@ -97,6 +97,9 @@ export const maketdoc = (toTrash, fixes, { clear = true, forceNew = false } = {}
     const footer = __mdoc.getFooter();
     if (footer) footer.removeFromParent();
 
+    // Workaround for live GAS bug where clear() fails on a document with only one paragraph.
+    __mdoc.getBody().appendParagraph('');
+
     // The clear() method in the fake environment also resets named styles.
     __mdoc.clear();
   }

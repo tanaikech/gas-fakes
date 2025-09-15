@@ -157,9 +157,23 @@ class FakeDocument {
 
     // 2. Get only the style-resetting requests, excluding the document-level style request.
     const styleRequests = defaultDocumentStyleRequests();
-    // The live API resets named styles to their default definitions when clear() is called.
     const namedStyleResetRequests = styleRequests.filter(req => req.updateParagraphStyle);
-    requests.push(...namedStyleResetRequests);
+
+    // Filter out pageBreakBefore from all style reset requests.
+    // This property is not something clear() should be touching, and it causes
+    // errors when headers/footers are present in the live API.
+    const safeNamedStyleResetRequests = namedStyleResetRequests.map(req => {
+      const newReq = JSON.parse(JSON.stringify(req)); // deep copy
+      const pStyle = newReq.updateParagraphStyle.paragraphStyle;
+      if (pStyle && pStyle.pageBreakBefore !== undefined) {
+        delete pStyle.pageBreakBefore;
+        let fields = newReq.updateParagraphStyle.fields.split(',');
+        const newFields = fields.filter(f => f !== 'pageBreakBefore');
+        newReq.updateParagraphStyle.fields = newFields.join(',');
+      }
+      return newReq;
+    }).filter(req => req.updateParagraphStyle.fields); // Don't send empty requests
+    requests.push(...safeNamedStyleResetRequests);
 
     if (requests.length > 0) {
       Docs.Documents.batchUpdate({ requests }, shadow.getId());
