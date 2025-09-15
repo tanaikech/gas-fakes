@@ -92,34 +92,14 @@ export const paragraphOptions = {
       const { resource, shadowDocument, elementMap } = structure;
       const { namedStyles } = shadowDocument.__unpackDocumentTab(resource);
 
-      // Find the last paragraph in the container to use as a style template.
-      const parentItem = elementMap.get(self.__name);
-      const children = parentItem.__twig.children;
-      const lastChildTwig = children.length > 0 ? children[children.length - 1] : null;
-      const lastChildItem = lastChildTwig ? elementMap.get(lastChildTwig.name) : null;
-
-      // --- Resolve the style of the template paragraph ---
+      // --- Resolve the style for the new paragraph ---
+      // Live behavior: A newly appended paragraph always gets its base style from the
+      // NORMAL_TEXT definition, and these are applied as inline styles.
       let templateParaStyle = {};
       let templateTextStyle = {};
-
-      if (lastChildItem && lastChildItem.paragraph) {
-        // It's a real paragraph, resolve its full style.
-        const lastChildNamedStyleType = lastChildItem.paragraph.paragraphStyle?.namedStyleType || 'NORMAL_TEXT';
-        const namedStyleDef = (namedStyles?.styles || []).find(s => s.namedStyleType === lastChildNamedStyleType);
-        const baseParaStyle = namedStyleDef?.paragraphStyle || {};
-        const baseTextStyle = namedStyleDef?.textStyle || {};
-        const inlineParaStyle = lastChildItem.paragraph.paragraphStyle || {};
-        const lastTextRun = lastChildItem.paragraph.elements?.find(e => e.textRun);
-        const inlineTextStyle = lastTextRun?.textRun?.textStyle || {};
-        templateParaStyle = { ...baseParaStyle, ...inlineParaStyle };
-        templateTextStyle = { ...baseTextStyle, ...inlineTextStyle };
-      } else {
-        // If there's no last child (e.g., appending to an empty header), or it's not a paragraph,
-        // use the NORMAL_TEXT definition as the base.
-        const normalTextStyleDef = (namedStyles?.styles || []).find(s => s.namedStyleType === 'NORMAL_TEXT');
-        templateParaStyle = normalTextStyleDef?.paragraphStyle || {};
-        templateTextStyle = normalTextStyleDef?.textStyle || {};
-      }
+      const normalTextStyleDef = (namedStyles?.styles || []).find(s => s.namedStyleType === 'NORMAL_TEXT');
+      templateParaStyle = normalTextStyleDef?.paragraphStyle || {};
+      templateTextStyle = normalTextStyleDef?.textStyle || {};
 
       const newParaStartIndex = location.index + leading.length;
       const newContentEndIndex = newParaStartIndex + textOrParagraph.length;
@@ -141,7 +121,10 @@ export const paragraphOptions = {
         });
       }
 
-      const textStyleToApply = { ...templateTextStyle };
+      // Live behavior: New paragraphs inherit text styles set by body.setAttributes().
+      // We retrieve these from the shadow document.
+      const defaultTextAttributes = shadowDocument.__defaultTextAttributes || {};
+      const textStyleToApply = { ...templateTextStyle, ...defaultTextAttributes };
       const textFields = Object.keys(textStyleToApply).join(',');
 
       if (textFields && textOrParagraph.length > 0) {

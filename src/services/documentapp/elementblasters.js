@@ -1,4 +1,3 @@
-
 /**
  * Adds a new row with data to a table in a Google Doc.
  *
@@ -203,13 +202,10 @@ export const defaultDocumentStyleRequests = () => {
       .setParagraphStyle(Docs.newParagraphStyle()
         .setAvoidWidowAndOrphan(true)
         .setSpacingMode("COLLAPSE_LISTS")
-        .setAlignment('START')
-        .setLineSpacing(115) // This was added in a previous fix
         .setNamedStyleType("NORMAL_TEXT"))
-      // Explicitly list the fields to update. The wildcard '*' is not being correctly
-      // processed, resulting in an empty fields mask and a failed style update.
-      // This ensures the API applies the alignment, spacing, and other defaults.
-      .setFields('avoidWidowAndOrphan,spacingMode,alignment,lineSpacing,namedStyleType')
+      // The initial paragraph should NOT have inline styles for alignment or line spacing.
+      // It should inherit them from the NORMAL_TEXT definition.
+      .setFields('avoidWidowAndOrphan,spacingMode,namedStyleType')
       .setRange(range)
   }, {
     updateParagraphStyle: Docs.newUpdateParagraphStyleRequest()
@@ -218,7 +214,8 @@ export const defaultDocumentStyleRequests = () => {
         .setNamedStyleType("HEADING_1"))
       .setFields('avoidWidowAndOrphan')
       .setRange(range)
-  }
+  },
+  { updateDocumentStyle }
   ]
 
   return requests

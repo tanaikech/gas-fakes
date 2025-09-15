@@ -100,37 +100,15 @@ export const getText = (element) => {
  * @returns {object} The attributes.
  */
 export const getAttributes = (element) => {
-  // cannot get attributes from a detached element as it has no context
   if (element.__isDetached) return {};
 
   const item = element.__elementMapItem;
-  const paraStyle = item.paragraph?.paragraphStyle || {};
-
-  // --- Style Resolution ---
-  // 1. Start with the named style as the base.
-  const namedStyleType = paraStyle.namedStyleType || 'NORMAL_TEXT';
-  const namedStyles = element.shadowDocument.resource.namedStyles?.styles || [];
-  const namedStyle = namedStyles.find(s => s.namedStyleType === namedStyleType);
-  const baseTextStyle = namedStyle?.textStyle || {};
-  const baseParaStyle = namedStyle?.paragraphStyle || {};
-
-  // Filter out null/undefined values from the inline paragraph style to prevent
-  // them from incorrectly overriding inherited values from the named style.
-  const cleanParaStyle = Object.entries(paraStyle).reduce((acc, [key, value]) => {
-    if (value !== null && value !== undefined) acc[key] = value;
-    return acc;
-  }, {});
-
-  // 2. Merge the paragraph-level style overrides.
-  const finalParaStyle = { ...baseParaStyle, ...cleanParaStyle };
-
-  // 3. Merge the text-run-level style overrides.
-  const paraTextStyle = item.paragraph?.textStyle || {};
+  const inlineParaStyle = item.paragraph?.paragraphStyle || {};
   const firstTextRun = item.paragraph?.elements?.find(e => e.textRun);
   const textRunTextStyle = firstTextRun?.textRun?.textStyle || {};
-  const finalTextStyle = { ...baseTextStyle, ...paraTextStyle, ...textRunTextStyle };
 
   const attributes = {};
+  const namedStyleType = inlineParaStyle.namedStyleType || 'NORMAL_TEXT';
   const Attribute = DocumentApp.Attribute;
 
   const getColorString = (colorObject) => {
@@ -140,45 +118,67 @@ export const getAttributes = (element) => {
     return `#${toHex(red)}${toHex(green)}${toHex(blue)}`;
   };
 
-  // --- Paragraph Attributes from finalParaStyle ---
+  // Helper to convert a style object to attributes.
+  const styleToAttributes = (styleObj, isParaStyle) => {
+    const tempAttrs = {};
+    if (isParaStyle) {
+      if (styleObj.alignment) {
+        const alignmentMap = {
+          'START': DocumentApp.HorizontalAlignment.LEFT,
+          'CENTER': DocumentApp.HorizontalAlignment.CENTER,
+          'END': DocumentApp.HorizontalAlignment.RIGHT,
+          'JUSTIFY': DocumentApp.HorizontalAlignment.JUSTIFIED,
+        };
+        tempAttrs[Attribute.HORIZONTAL_ALIGNMENT] = alignmentMap[styleObj.alignment];
+      }
+      if (styleObj.direction) tempAttrs[Attribute.LEFT_TO_RIGHT] = styleObj.direction === 'LEFT_TO_RIGHT';
+      if (styleObj.lineSpacing) tempAttrs[Attribute.LINE_SPACING] = styleObj.lineSpacing / 100;
+      if (!is.undefined(styleObj.indentStart?.magnitude)) tempAttrs[Attribute.INDENT_START] = styleObj.indentStart.magnitude;
+      if (!is.undefined(styleObj.indentEnd?.magnitude)) tempAttrs[Attribute.INDENT_END] = styleObj.indentEnd.magnitude;
+      if (!is.undefined(styleObj.indentFirstLine?.magnitude)) tempAttrs[Attribute.INDENT_FIRST_LINE] = styleObj.indentFirstLine.magnitude;
+      if (!is.undefined(styleObj.spaceAbove?.magnitude)) tempAttrs[Attribute.SPACING_BEFORE] = styleObj.spaceAbove.magnitude;
+      if (!is.undefined(styleObj.spaceBelow?.magnitude)) tempAttrs[Attribute.SPACING_AFTER] = styleObj.spaceBelow.magnitude;
+    } else { // isTextStyle
+      if (styleObj.backgroundColor) tempAttrs[Attribute.BACKGROUND_COLOR] = getColorString(styleObj.backgroundColor.color);
+      if (!is.undefined(styleObj.bold)) tempAttrs[Attribute.BOLD] = styleObj.bold;
+      if (styleObj.weightedFontFamily?.fontFamily) tempAttrs[Attribute.FONT_FAMILY] = styleObj.weightedFontFamily.fontFamily;
+      if (styleObj.fontSize?.magnitude) tempAttrs[Attribute.FONT_SIZE] = styleObj.fontSize.magnitude;
+      if (styleObj.foregroundColor) tempAttrs[Attribute.FOREGROUND_COLOR] = getColorString(styleObj.foregroundColor.color);
+      if (!is.undefined(styleObj.italic)) tempAttrs[Attribute.ITALIC] = styleObj.italic;
+      if (!is.undefined(styleObj.strikethrough)) tempAttrs[Attribute.STRIKETHROUGH] = styleObj.strikethrough;
+      if (!is.undefined(styleObj.underline)) tempAttrs[Attribute.UNDERLINE] = styleObj.underline;
+      if (styleObj.link?.url) tempAttrs[Attribute.LINK_URL] = styleObj.link.url;
+    }
+    return tempAttrs;
+  };
+
+  // 1. Get attributes from INLINE styles ONLY. This matches live behavior.
+  const inlineParaAttrs = styleToAttributes(inlineParaStyle, true);
+  const inlineTextAttrs = styleToAttributes(textRunTextStyle, false);
+  Object.assign(attributes, inlineParaAttrs, inlineTextAttrs);
+
+  // 2. Handle the NORMAL_TEXT exception: computed paragraph styles are returned.
+  // This mimics the live behavior where newly appended NORMAL_TEXT paragraphs
+  // report their computed paragraph styles.
+  if (namedStyleType === 'NORMAL_TEXT') {
+    const namedStyles = element.shadowDocument.resource.namedStyles?.styles || [];
+    const normalTextStyleDef = namedStyles.find(s => s.namedStyleType === 'NORMAL_TEXT');
+    if (normalTextStyleDef) {
+      const baseParaStyle = normalTextStyleDef.paragraphStyle || {};
+      const baseParaAttrs = styleToAttributes(baseParaStyle, true);
+      // Merge base attributes, but give precedence to inline attributes already set.
+      for (const key in baseParaAttrs) {
+        if (attributes[key] === undefined) {
+          attributes[key] = baseParaAttrs[key];
+        }
+      }
+    }
+  }
+
+  // 3. Add HEADING and LIST attributes which are always present.
   if (element.getHeading) {
     attributes[Attribute.HEADING] = element.getHeading();
   }
-
-  if (finalParaStyle.alignment) {
-    const alignmentMap = {
-      'START': DocumentApp.HorizontalAlignment.LEFT,
-      'CENTER': DocumentApp.HorizontalAlignment.CENTER,
-      'END': DocumentApp.HorizontalAlignment.RIGHT,
-      'JUSTIFY': DocumentApp.HorizontalAlignment.JUSTIFIED,
-    };
-    attributes[Attribute.HORIZONTAL_ALIGNMENT] = alignmentMap[finalParaStyle.alignment];
-  }
-
-  if (finalParaStyle.direction) {
-    attributes[Attribute.LEFT_TO_RIGHT] = finalParaStyle.direction === 'LEFT_TO_RIGHT';
-  }
-
-  if (finalParaStyle.lineSpacing) {
-    attributes[Attribute.LINE_SPACING] = finalParaStyle.lineSpacing / 100;
-  }
-
-  if (!is.undefined(finalParaStyle.indentStart?.magnitude)) attributes[Attribute.INDENT_START] = finalParaStyle.indentStart.magnitude;
-  if (!is.undefined(finalParaStyle.indentEnd?.magnitude)) attributes[Attribute.INDENT_END] = finalParaStyle.indentEnd.magnitude;
-  if (!is.undefined(finalParaStyle.indentFirstLine?.magnitude)) attributes[Attribute.INDENT_FIRST_LINE] = finalParaStyle.indentFirstLine.magnitude;
-  if (!is.undefined(finalParaStyle.spaceAbove?.magnitude)) attributes[Attribute.SPACING_BEFORE] = finalParaStyle.spaceAbove.magnitude;
-  if (!is.undefined(finalParaStyle.spaceBelow?.magnitude)) attributes[Attribute.SPACING_AFTER] = finalParaStyle.spaceBelow.magnitude;
-
-  // --- Text Attributes from finalTextStyle ---
-  if (finalTextStyle.backgroundColor) attributes[Attribute.BACKGROUND_COLOR] = getColorString(finalTextStyle.backgroundColor.color);
-  if (!is.undefined(finalTextStyle.bold)) attributes[Attribute.BOLD] = finalTextStyle.bold;
-  if (finalTextStyle.weightedFontFamily?.fontFamily) attributes[Attribute.FONT_FAMILY] = finalTextStyle.weightedFontFamily.fontFamily;
-  if (finalTextStyle.fontSize?.magnitude) attributes[Attribute.FONT_SIZE] = finalTextStyle.fontSize.magnitude;
-  if (finalTextStyle.foregroundColor) attributes[Attribute.FOREGROUND_COLOR] = getColorString(finalTextStyle.foregroundColor.color);
-  if (!is.undefined(finalTextStyle.italic)) attributes[Attribute.ITALIC] = finalTextStyle.italic;
-  if (!is.undefined(finalTextStyle.strikethrough)) attributes[Attribute.STRIKETHROUGH] = finalTextStyle.strikethrough;
-  if (!is.undefined(finalTextStyle.underline)) attributes[Attribute.UNDERLINE] = finalTextStyle.underline;
-  if (finalTextStyle.link?.url) attributes[Attribute.LINK_URL] = finalTextStyle.link.url;
 
   // --- List Item Attributes ---
   if (item.paragraph?.bullet) {
@@ -187,12 +187,11 @@ export const getAttributes = (element) => {
     if (element.getGlyphType) attributes[Attribute.GLYPH_TYPE] = element.getGlyphType();
   }
 
-  // Ensure boolean attributes are null if not explicitly set, to match live behavior.
-  const booleanTextAttributes = [Attribute.BOLD, Attribute.ITALIC, Attribute.STRIKETHROUGH, Attribute.UNDERLINE];
-  booleanTextAttributes.forEach(attr => {
-    if (attributes[attr] === undefined) {
-      attributes[attr] = null;
-    }
+  // 4. Ensure all other attributes are null if not set.
+  // This is the key to mimicking the live behavior where inherited attributes are null.
+  const allAttrs = Object.values(DocumentApp.Attribute);
+  allAttrs.forEach(attrKey => {
+    if (attributes[attrKey] === undefined) attributes[attrKey] = null;
   });
 
   return attributes;

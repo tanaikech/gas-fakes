@@ -114,27 +114,18 @@ class FakeBody extends FakeContainerElement {
 
     // To update a named style, we must target a range that uses that style.
     // The API then infers that the style definition should be updated.
-    let anchorRange;
-
-    if (namedStyleType === 'NORMAL_TEXT') {
-      anchorRange = { startIndex: 1, endIndex: 2 };
-    } else {
-      const elementMap = shadow.elementMap;
-      const targetElement = Array.from(elementMap.values()).find(item =>
-        item.paragraph?.paragraphStyle?.namedStyleType === namedStyleType
-      );
-      if (!targetElement) {
-        // This is a known limitation of the fake. The live API can handle this.
-        // To make tests pass, we must create a paragraph with the heading first.
-        throw new Error(`gas-fakes limitation: Cannot update named style "${namedStyleType}" because no paragraph with that style exists in the document. Please create one first.`);
-      }
-      anchorRange = { startIndex: targetElement.startIndex, endIndex: targetElement.endIndex };
+    const elementMap = shadow.elementMap;
+    const targetElement = Array.from(elementMap.values()).find(item =>
+      item.paragraph?.paragraphStyle?.namedStyleType === namedStyleType
+    );
+    if (!targetElement) {
+      // This is a known limitation of the fake. The live API can handle this.
+      // To make tests pass, we must create a paragraph with the heading first.
+      throw new Error(`gas-fakes limitation: Cannot update named style "${namedStyleType}" because no paragraph with that style exists in the document. Please create one first.`);
     }
+    const anchorRange = { startIndex: targetElement.startIndex, endIndex: targetElement.endIndex };
 
     if (paraFields.length > 0) {
-      // When updating a named style definition, we apply the changes to the anchor paragraph.
-      // We do NOT include 'namedStyleType' in the fields, as we are not changing the paragraph's base style,
-      // but rather the definition of the style it already has.
       requests.push({
         updateParagraphStyle: {
           range: anchorRange,
@@ -306,6 +297,9 @@ class FakeBody extends FakeContainerElement {
     if (requests.length > 0) {
       Docs.Documents.batchUpdate({ requests }, shadow.getId());
       shadow.refresh();
+      // Store the text attributes on the shadow document so that new paragraphs can inherit them.
+      // This mimics the live behavior where setAttributes affects subsequent appends.
+      shadow.__defaultTextAttributes = textStyle;
     }
     return this;
   }
@@ -330,8 +324,15 @@ class FakeBody extends FakeContainerElement {
       throw new Error(`Invalid paragraph heading: ${paragraphHeading}`);
     }
 
-    const requests = this.__buildStyleUpdateRequests(namedStyleType, attributes);
-    if (requests.length > 0) {
+    // Emulate live behavior: only a subset of paragraph attributes are applied, and text attributes are ignored.
+    const liveAttributes = {};
+    if (attributes[DocumentApp.Attribute.SPACING_BEFORE]) {
+      liveAttributes[DocumentApp.Attribute.SPACING_BEFORE] = attributes[DocumentApp.Attribute.SPACING_BEFORE];
+    }
+    // Live API ignores HORIZONTAL_ALIGNMENT, and all text attributes like ITALIC, FONT_FAMILY.
+
+    const requests = this.__buildStyleUpdateRequests(namedStyleType, liveAttributes);
+    if (requests && requests.length > 0) {
       const shadow = this.__shadowDocument;
       Docs.Documents.batchUpdate({ requests }, shadow.getId());
       shadow.refresh();

@@ -25,9 +25,12 @@ export const testDocsStyles = (pack) => {
     doc = scl(doc);
     body = doc.getBody();
     t.is(body.getText(), "Initial paragraph.", "setText should replace body content");
+    console.log (JSON.stringify(Docs.Documents.get (doc.getId())))
 
     const p1 = body.getChild(0);
     const p1InitialAttrs = p1.getAttributes();
+    console.log (JSON.stringify(p1InitialAttrs))
+
     // Live GAS returns null for inherited paragraph attributes on existing/reloaded paragraphs.
     t.is(p1InitialAttrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], null, "Initial reloaded paragraph should have null alignment (inherited)");
     t.is(p1InitialAttrs[DocumentApp.Attribute.ITALIC], null, "Initial paragraph should not be italic (returns null)");
@@ -43,6 +46,7 @@ export const testDocsStyles = (pack) => {
 
     const p1_reloaded = body.getChild(0);
     const p1AfterSetAttrs = p1_reloaded.getAttributes();
+    console.log (JSON.stringify(p1AfterSetAttrs))
 
     // Verify changes to the EXISTING paragraph
     t.is(p1AfterSetAttrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], null, "setAttributes should NOT affect alignment of existing paragraphs (remains null)");
@@ -71,6 +75,7 @@ export const testDocsStyles = (pack) => {
     p1.setHeading(DocumentApp.ParagraphHeading.HEADING1);
     doc = scl(doc);
     body = doc.getBody();
+    console.log (JSON.stringify(Docs.Documents.get (doc.getId())))
 
     // 2. Define and set attributes for the HEADING1 named style.
     const heading1Attributes = {
@@ -82,10 +87,13 @@ export const testDocsStyles = (pack) => {
     body.setHeadingAttributes(DocumentApp.ParagraphHeading.HEADING1, heading1Attributes);
     doc = scl(doc);
     body = doc.getBody();
+    console.log (JSON.stringify(Docs.Documents.get (doc.getId())))
 
     // 3. Verify the attributes of the EXISTING HEADING1 paragraph have NOT changed.
     const p1_reloaded = body.getChild(1);
     const p1Attrs = p1_reloaded.getAttributes();
+    console.log (JSON.stringify(p1Attrs))
+    
     t.is(p1Attrs[DocumentApp.Attribute.ITALIC], null, "setHeadingAttributes should NOT affect italic of existing paragraphs");
     t.is(p1Attrs[DocumentApp.Attribute.FONT_FAMILY], null, "setHeadingAttributes should NOT affect font family of existing paragraphs");
     t.is(p1Attrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], null, "setHeadingAttributes should NOT affect alignment of existing paragraphs");
@@ -95,33 +103,20 @@ export const testDocsStyles = (pack) => {
     const p2 = body.appendParagraph("Another heading");
     p2.setHeading(DocumentApp.ParagraphHeading.HEADING1);
     
-    // For a newly appended paragraph with its heading set, getAttributes() returns computed values in the fake, but null for inherited values on live.
+    // On live GAS, getAttributes() returns null for any attribute inherited from a named style (except for some paragraph styles on NORMAL_TEXT).
     const p2Attrs = p2.getAttributes();
-    if (DocumentApp.isFake) {
-      t.is(p2Attrs[DocumentApp.Attribute.ITALIC], null, "New HEADING1 should have null italic (text style was ignored by setHeadingAttributes)");
-      t.is(p2Attrs[DocumentApp.Attribute.FONT_FAMILY], 'Arial', "New HEADING1 should have default font (text style was ignored)");
-      t.is(p2Attrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], DocumentApp.HorizontalAlignment.CENTER, "New HEADING1 should inherit alignment");
-      t.is(p2Attrs[DocumentApp.Attribute.SPACING_BEFORE], 18, "New HEADING1 should inherit spacing");
-    } else {
-      t.is(p2Attrs[DocumentApp.Attribute.ITALIC], null, "Live: New HEADING1 should have null italic (inherited)");
-      t.is(p2Attrs[DocumentApp.Attribute.FONT_FAMILY], null, "Live: New HEADING1 font is inherited, so getAttributes returns null");
-      t.is(p2Attrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], null, "Live: New HEADING1 alignment is inherited, so getAttributes returns null");
-      t.is(p2Attrs[DocumentApp.Attribute.SPACING_BEFORE], null, "Live: New HEADING1 spacing is inherited, so getAttributes returns null");
-    }
+    t.is(p2Attrs[DocumentApp.Attribute.ITALIC], null, "New HEADING1 should have null italic (inherited)");
+    t.is(p2Attrs[DocumentApp.Attribute.FONT_FAMILY], null, "New HEADING1 font is inherited, so getAttributes returns null");
+    t.is(p2Attrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], null, "New HEADING1 alignment is inherited, so getAttributes returns null");
+    t.is(p2Attrs[DocumentApp.Attribute.SPACING_BEFORE], null, "New HEADING1 spacing is inherited, so getAttributes returns null");
 
     // 5. Verify that NORMAL_TEXT was not affected.
     const p3 = body.appendParagraph("This is normal text.");
     const p3Attrs = p3.getAttributes();
-    if (DocumentApp.isFake) {
-      t.is(p3Attrs[DocumentApp.Attribute.ITALIC], null, "NORMAL_TEXT should not be italic");
-      t.is(p3Attrs[DocumentApp.Attribute.FONT_FAMILY], 'Arial', "NORMAL_TEXT font should still be Arial");
-      t.is(p3Attrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], DocumentApp.HorizontalAlignment.LEFT, "NORMAL_TEXT alignment should be computed LEFT");
-    } else {
-      t.is(p3Attrs[DocumentApp.Attribute.ITALIC], null, "Live: NORMAL_TEXT should not be italic");
-      t.is(p3Attrs[DocumentApp.Attribute.FONT_FAMILY], null, "Live: NORMAL_TEXT font is inherited, so getAttributes returns null");
-      // Live API returns computed value for alignment on NORMAL_TEXT paragraphs
-      t.is(p3Attrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], DocumentApp.HorizontalAlignment.LEFT, "Live: NORMAL_TEXT alignment is computed LEFT");
-    }
+    // The NORMAL_TEXT exception: paragraph styles are computed, text styles are not.
+    t.is(p3Attrs[DocumentApp.Attribute.ITALIC], null, "NORMAL_TEXT should not be italic (inherited)");
+    t.is(p3Attrs[DocumentApp.Attribute.FONT_FAMILY], null, "NORMAL_TEXT font is inherited, so getAttributes returns null");
+    t.is(p3Attrs[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], DocumentApp.HorizontalAlignment.LEFT, "NORMAL_TEXT alignment is computed LEFT");
 
     // 6. Verify the underlying named style definition was changed using the advanced service.
     const finalDocResource = unpackedDoc(docId);
@@ -146,18 +141,11 @@ export const testDocsStyles = (pack) => {
 
     // For a newly appended paragraph, getAttributes() returns the computed style from the named style.
     const attributes = appendedPara.getAttributes();
-    if (DocumentApp.isFake) {
-      t.is(attributes[DocumentApp.Attribute.HEADING], DocumentApp.ParagraphHeading.NORMAL, "Named style type should be NORMAL_TEXT");
-      t.is(attributes[DocumentApp.Attribute.LEFT_TO_RIGHT], true, "Direction should be LEFT_TO_RIGHT");
-      t.is(attributes[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], DocumentApp.HorizontalAlignment.LEFT, "Alignment should be START/LEFT");
-      t.is(attributes[DocumentApp.Attribute.LINE_SPACING], 1.15, "Line spacing should be 1.15 (115%)");
-    } else {
-      // Live API returns computed values for NORMAL_TEXT paragraph styles, but null for text styles.
-      t.is(attributes[DocumentApp.Attribute.HEADING], DocumentApp.ParagraphHeading.NORMAL, "Live: Named style type should be NORMAL_TEXT");
-      t.is(attributes[DocumentApp.Attribute.LEFT_TO_RIGHT], true, "Live: Direction should be LEFT_TO_RIGHT");
-      t.is(attributes[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], DocumentApp.HorizontalAlignment.LEFT, "Live: Alignment is computed for NORMAL_TEXT");
-      t.is(attributes[DocumentApp.Attribute.LINE_SPACING], 1.15, "Live: Line spacing is computed for NORMAL_TEXT");
-    }
+    // The NORMAL_TEXT exception: paragraph styles are computed, text styles are not.
+    t.is(attributes[DocumentApp.Attribute.HEADING], DocumentApp.ParagraphHeading.NORMAL, "Named style type should be NORMAL_TEXT");
+    t.is(attributes[DocumentApp.Attribute.LEFT_TO_RIGHT], true, "Direction should be LEFT_TO_RIGHT");
+    t.is(attributes[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT], DocumentApp.HorizontalAlignment.LEFT, "Alignment is computed for NORMAL_TEXT");
+    t.is(attributes[DocumentApp.Attribute.LINE_SPACING], 1.15, "Line spacing is computed for NORMAL_TEXT");
 
     // Now check the underlying resource to be sure
     doc = scl(doc);

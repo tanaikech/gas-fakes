@@ -26,11 +26,11 @@ export const sxDocs = async (Auth, { prop, method, params, options = {} }) => {
   // rate limit on docs is higher that the others so we may as well have a bigger delay
   const maxRetries = 7;
   let delay = 2789;
-  // syncLog('sxdocs..'+ JSON.stringify(params))
+    //syncLog(JSON.stringify({ prop, method, params, options }))
   for (let i = 0; i < maxRetries; i++) {
     let response;
     let error;
-    syncLog(JSON.stringify({ prop, method, params, options }))
+
     try {
       const callish = apiClient[prop]
       response = await callish[method](params, options);

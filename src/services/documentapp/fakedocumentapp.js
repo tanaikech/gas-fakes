@@ -45,7 +45,7 @@ class FakeDocumentApp {
     const doc = Docs.Documents.create(resource);
     const docId = doc.documentId;
     ScriptApp.__behavior.addFile(docId);
- 
+
     // Apply the style updates.
     Docs.Documents.batchUpdate({ requests: defaultDocumentStyleRequests() }, docId);
  
@@ -67,7 +67,7 @@ class FakeDocumentApp {
   openByUrl(url) {
     const { nargs, matchThrow } = signatureArgs(arguments, "DocumentApp.openByUrl");
     if (nargs !== 1 || !is.string(url)) matchThrow();
-    const match = url.match(/\/document\/d\/([a-zA-Z0-9-_]+)/);
+    const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
     if (!match || !match[1]) {
       throw new Error(`Invalid document URL: ${url}`);
     }
