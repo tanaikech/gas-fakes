@@ -226,7 +226,7 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
   const tabId = self.__tabId; // TabId is document-wide for now
 
   // 3. Calculate insertion points, child start index, and initial "protection" requests.
-  const { insertIndex, newElementStartIndex, childStartIndex, requests, leading, trailing } = calculateInsertionPointsAndInitialRequests(
+  let { insertIndex, newElementStartIndex, childStartIndex, requests, leading, trailing } = calculateInsertionPointsAndInitialRequests(
     self, childIndex, isAppend, shadow, options
   );
 
@@ -268,6 +268,25 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
   // the reliable newElementStartIndex.
   if (options.elementType === ElementType.LIST_ITEM && !isDetached) {
     requests.push(createParagraphBullets(newElementStartIndex, undefined, segmentId, tabId))
+  }
+
+  // The live API forbids setting pageBreakBefore in a header, footer, or footnote.
+  // We must remove it from any style requests before sending them.
+  const parentType = self.getType();
+  if (parentType === ElementType.HEADER_SECTION || parentType === ElementType.FOOTER_SECTION || parentType === ElementType.FOOTNOTE) {
+    requests.forEach(req => {
+      if (req.updateParagraphStyle) {
+        const pStyle = req.updateParagraphStyle.paragraphStyle;
+        if (pStyle && pStyle.pageBreakBefore !== undefined) {
+          delete pStyle.pageBreakBefore;
+          const fields = req.updateParagraphStyle.fields.split(',');
+          const newFields = fields.filter(f => f !== 'pageBreakBefore');
+          req.updateParagraphStyle.fields = newFields.join(',');
+        }
+      }
+    });
+    // Filter out any requests that became empty
+    requests = requests.filter(req => !req.updateParagraphStyle || req.updateParagraphStyle.fields);
   }
 
   // 5. Execute the update and refresh the document state.
@@ -376,6 +395,17 @@ export const createFootnote = (parent, text) => {
     createFootnote: {
       location: {
         index: insertIndex + 1,
+        segmentId,
+        tabId,
+      },
+    },
+  }, {
+    // Ensure the new paragraph is not a list item by removing any inherited bullet.
+    // This prevents the paragraph holding the footnote reference from being misidentified.
+    deleteParagraphBullets: {
+      range: {
+        startIndex: insertIndex + 1,
+        endIndex: insertIndex + 1, // A single point is sufficient
         segmentId,
         tabId,
       },

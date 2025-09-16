@@ -54,6 +54,7 @@ export const ElementType = newFakeGasenum([
   "RICH_LINK",
   "FOOTER_SECTION",
   "FOOTNOTE",
+  "FOOTNOTE_REFERENCE",
   "FOOTNOTE_SECTION",
   "HEADER_SECTION",
   "HORIZONTAL_RULE",

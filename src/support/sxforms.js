@@ -18,7 +18,7 @@ export const sxForms = async (Auth, { prop, method, params, options = {} }) => {
 
   const maxRetries = 7;
   let delay = 1777;
-  syncLog (`in sxforms  ${prop} ${method} ${JSON.stringify(params)}}`)
+  //syncLog (`in sxforms  ${prop} ${method} ${JSON.stringify(params)}}`)
   for (let i = 0; i < maxRetries; i++) {
     let response;
     let error;

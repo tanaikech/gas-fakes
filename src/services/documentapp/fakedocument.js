@@ -139,15 +139,15 @@ class FakeDocument {
     if (nargs !== 0) matchThrow();
 
     // Live behavior: clear() deletes body content and resets named styles, but NOT document styles (margins, etc.).
-    // The default shadowDocument.clear() resets everything, which is incorrect for this context.
     const shadow = this.__shadowDocument;
     const { body } = shadow.__unpackDocumentTab(shadow.resource);
     const lastElement = body.content[body.content.length - 1];
+    const firstElement = body.content.find(c => c.startIndex === 1);
 
     const requests = [];
     // 1. Delete all content from after the initial section break up to the final newline.
-    // This leaves one empty paragraph, which is the correct state for a cleared doc.
-    if (lastElement.endIndex > 2) { // A cleared doc has endIndex 2.
+    const hasContentToDelete = lastElement.endIndex > 2;
+    if (hasContentToDelete) {
       requests.push({
         deleteContentRange: {
           range: { startIndex: 1, endIndex: lastElement.endIndex - 1 }
@@ -155,8 +155,18 @@ class FakeDocument {
       });
     }
 
-    // 2. Get only the style-resetting requests, excluding the document-level style request.
+    // 2. Explicitly remove any bullet from the paragraph that will remain.
+    // This is crucial if the document previously ended with a list item.
+    const isFirstElementListItem = firstElement?.paragraph?.bullet;
+    if (hasContentToDelete || isFirstElementListItem) {
+      requests.push({
+        deleteParagraphBullets: { range: { startIndex: 1, endIndex: 1, segmentId: shadow.__segmentId, tabId: shadow.__tabId } }
+      });
+    }
+
+    // 3. Get only the style-resetting requests, excluding the document-level style request.
     const styleRequests = defaultDocumentStyleRequests();
+    // The live API resets named styles to their default definitions when clear() is called.
     const namedStyleResetRequests = styleRequests.filter(req => req.updateParagraphStyle);
 
     // Filter out pageBreakBefore from all style reset requests.

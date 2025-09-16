@@ -573,7 +573,7 @@ This approach ensures that `Document.clear()` in `gas-fakes` accurately mimics t
 
 #### Learnings on Google Apps Script DocumentApp Style Behavior
 
-Through extensive testing and debugging of `testdocsstyles.js` against the live Google Apps Script (GAS) environment, several key behavioral differences and oddities were discovered compared to the `gas-fakes` emulator and general developer expectations. This document summarizes these findings.
+Through extensive testing and debugging of `testdocsstyles.js` against the live Google Apps Script (GAS) environment, several key behavioral differences and oddities were discovered compared to the `gas-fakes` emulator and general developer expectations.
 
 ##### 1. `Element.getAttributes()`
 

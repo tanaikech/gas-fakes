@@ -174,12 +174,23 @@ class ShadowDocument {
         // Now that all sub-elements have been processed and have a __twig, we can
         // filter them to build the user-facing children list for the current twig.
         if (type === 'PARAGRAPH') {
+          const hasFootnoteRef = childrenArray.some(e => e.footnoteReference);
           twig.children = childrenArray
             .map(e => e.__twig) // Get the twig for each raw element
             .filter(childTwig => {
               if (!childTwig) return false;
               const childElement = this.__elementMap.get(childTwig.name);
               if (!childElement) return false;
+
+              // If a footnote reference exists in the paragraph, the Apps Script model
+              // abstracts away the visual text run for the number. We need to filter it out.
+              // The text run for a footnote number has a superscript style.
+              if (hasFootnoteRef && childElement.textRun) {
+                if (childElement.textRun.textStyle && childElement.textRun.textStyle.baselineOffset === 'SUPERSCRIPT') {
+                  // This is likely the footnote number's text run, so we exclude it from the children list.
+                  return false;
+                }
+              }
 
               // A positioned image is not a "child" in the Apps Script sense (it doesn't affect getNumChildren).
               // It is anchored to the paragraph but lives in a separate collection.
