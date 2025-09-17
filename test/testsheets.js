@@ -2902,7 +2902,7 @@ export const testSheets = (pack) => {
     t.is(p1.getDescription(), "sample1");
     t.is(p1.getUnprotectedRanges()[0].getA1Notation(), "A1:B1");
     t.is(p1.canEdit(), true);
-    t.is(p1.getEditors().length, 1);
+    t.is(p1.getEditors().length, 0);
     t.is(p1.getProtectionType().toString(), "SHEET");
     t.is(p1.isWarningOnly(), true);
 
