@@ -3,6 +3,7 @@ import { makeGridRange } from "./sheetrangehelpers.js";
 import { newFakeUser } from "../common/fakeuser.js";
 import { newFakeNamedRange } from "./fakenamedrange.js";
 import { FakeSheetRange } from "../spreadsheetapp/fakesheetrange.js";
+import { FakeDriveApp } from "../driveapp/fakedriveapp.js";
 
 /**
  * create a new FakeProtection instance
@@ -101,7 +102,12 @@ export class FakeProtection {
 
   getEditors() {
     if (this.object.editors?.users && this.object.editors?.users.length > 0) {
-      return this.object.editors.users.map((email) => newFakeUser({ email }));
+      const owner = DriveApp.getFileById(this.spreadsheetId)
+        .getOwner()
+        .getEmail();
+      return this.object.editors.users
+        .filter((email) => email != owner)
+        .map((email) => newFakeUser({ email }));
     }
     return [];
   }
