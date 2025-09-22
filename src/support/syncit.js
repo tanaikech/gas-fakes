@@ -9,6 +9,7 @@ import { mergeParamStrings } from './utils.js'
 import { improveFileCache, checkResponse, getFromFileCache } from "./filecache.js"
 import { checkResponseCacher } from './fetchcacher.js';
 import { docsCacher } from "./docscacher.js"
+import { gmailCacher } from './gmailcacher.js';
 import { formsCacher } from './formscacher.js';
 import { slidesCacher } from './slidescacher.js';
 import { sheetsCacher } from './sheetscacher.js';
@@ -345,6 +346,7 @@ const fxSheets = (args) => fxGeneric({ ...args, serviceName: 'Sheets', cacher: s
 const fxSlides = (args) => fxGeneric({ ...args, serviceName: 'Slides', cacher: slidesCacher, idField: 'presentationId' });
 const fxDocs = (args) => fxGeneric({ ...args, serviceName: 'Docs', cacher: docsCacher, idField: 'documentId' });
 const fxForms = (args) => fxGeneric({ ...args, serviceName: 'Forms', cacher: formsCacher, idField: 'formId' });
+const fxGmail = (args) => fxGeneric({ ...args, serviceName: 'Gmail', cacher: gmailCacher, idField: 'id' });
 
 export const Syncit = {
   fxFetch,
@@ -361,4 +363,5 @@ export const Syncit = {
   fxRefreshToken,
   fxDocs,
   fxForms,
+  fxGmail,
 }

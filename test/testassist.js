@@ -5,7 +5,7 @@ let __mfolder = null
 
 export let getDrivePerformance
 export let getSheetsPerformance
-export let getDocsPerformance
+export let getDocsPerformancetest/testform.js
 export let getSlidesPerformance
 export let getFormsPerformance
 
@@ -15,6 +15,7 @@ if (ScriptApp.isFake) {
   getDocsPerformance = Docs.__getDocsPerformance;
   getSlidesPerformance = Slides.__getSlidesPerformance;
   getFormsPerformance = Forms.__getFormsPerformance;
+  getGmailPerformance = Gmail.__getGmailPerformance;
 }
 export const cachePerformance = () => {
   if (ScriptApp.isFake) {
@@ -23,6 +24,7 @@ export const cachePerformance = () => {
     console.log('...cumulative sheets cache performance', getSheetsPerformance());
     console.log('...cumulative slides cache performance', getSlidesPerformance());
     console.log('...cumulative forms cache performance', getFormsPerformance());
+    console.log('...cumulative gmail cache performance', getGmailPerformance());
   }
 }
 export const wrapupTest = (func) => {
