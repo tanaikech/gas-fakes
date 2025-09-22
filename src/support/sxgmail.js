@@ -17,6 +17,7 @@ export const sxGmail = async (Auth, { subProp, prop, method, params, options }) 
   const apiClient = getGmailApiClient();
   const maxRetries = 7;
   let delay = 1777;
+  const methodName = subProp ? `${prop}.${subProp}.${method}` : `${prop}.${method}`;
 
   for (let i = 0; i < maxRetries; i++) {
     let response;
@@ -32,16 +33,18 @@ export const sxGmail = async (Auth, { subProp, prop, method, params, options }) 
     const isRetryable = [429, 500, 503].includes(response?.status) || error?.code == 429;
     
     if (isRetryable && i < maxRetries - 1) {
-      // add a random jitter to avoid thundering herd
       const jitter = Math.floor(Math.random() * 1000);
-      syncWarn(`Retryable error on Gmail API call ${prop}.${method} (status: ${response?.status}). Retrying in ${delay + jitter}ms...`);
+      syncWarn(`Retryable error on Gmail API call ${methodName} (status: ${response?.status}). Retrying in ${delay + jitter}ms...`);
       await sleep(delay + jitter);
       delay *= 2;
       continue;
     }
 
     if (error || isRetryable) {
-      syncError(`Failed in sxGmail for ${prop}.${method}`, error);
+      // Don't log 404 as an error, it's an expected outcome for some tests (e.g., get deleted item)
+      if (response?.status !== 404) {
+        syncError(`Failed in sxGmail for ${methodName}`, error);
+      }
       return { data: null, response: responseSyncify(response) };
     }
     return {

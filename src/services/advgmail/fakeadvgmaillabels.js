@@ -7,7 +7,7 @@ export const newFakeAdvGmailLabels = (...args) => Proxies.guard(new FakeAdvGmail
 
 class FakeAdvGmailLabels extends FakeAdvResource {
   constructor(mainService) {
-    super(mainService, 'gmail', Syncit.fxGmail);
+    super(mainService, 'users', Syncit.fxGmail);
     this.gmail = mainService;
     this.__fakeObjectType = 'Gmail.Users.Labels';
   }
@@ -20,12 +20,12 @@ class FakeAdvGmailLabels extends FakeAdvResource {
    * @returns {object} The created label resource.
    */
   create(params, resource) {
-    const { data, response } = this.callSrv_({
-      prop: 'users',
-      subProp: 'labels',
-      method: 'create',
-      params: { ...params, requestBody: normalizeSerialization(resource) }
-    });
+    const { data, response } = this._call(
+      'create',
+      { ...params, requestBody: normalizeSerialization(resource) },
+      null,
+      'labels'
+    );
     gError(response, 'gmail', 'users.labels.create');
     return data;
   }
@@ -37,12 +37,12 @@ class FakeAdvGmailLabels extends FakeAdvResource {
    * @param {string} params.id - The ID of the label to delete.
    */
   delete(params) {
-    const { data, response } = this.callSrv_({
-      prop: 'users',
-      subProp: 'labels',
-      method: 'delete',
-      params
-    });
+    const { data, response } = this._call(
+      'delete',
+      params,
+      null,
+      'labels'
+    );
     gError(response, 'gmail', 'users.labels.delete');
     return data;
   }
@@ -55,12 +55,13 @@ class FakeAdvGmailLabels extends FakeAdvResource {
    * @returns {object} The label resource.
    */
   get(params) {
-    const { data } = this.callSrv_({
-      prop: 'users',
-      subProp: 'labels',
-      method: 'get',
-      params
-    });
+    const { data, response } = this._call(
+      'get',
+      params,
+      null,
+      'labels'
+    );
+    gError(response, 'gmail', 'users.labels.get', true);
     return data;
   }
 
@@ -71,13 +72,51 @@ class FakeAdvGmailLabels extends FakeAdvResource {
    * @returns {object} A list of labels.
    */
   list(params) {
-    const { data, response } = this.callSrv_({
-      prop: 'users',
-      subProp: 'labels',
-      method: 'list',
-      params
-    });
+    const { data, response } = this._call(
+      'list',
+      params,
+      null,
+      'labels'
+    );
     gError(response, 'gmail', 'users.labels.list');
+    return data;
+  }
+
+  /**
+   * Updates the specified label. This method supports patch semantics.
+   * @param {object} params - The parameters for the request.
+   * @param {string} params.userId - The user's email address. The special value me can be used to indicate the authenticated user.
+   * @param {string} params.id - The ID of the label to update.
+   * @param {object} resource - The label resource to update.
+   * @returns {object} The updated label resource.
+   */
+  patch(params, resource) {
+    const { data, response } = this._call(
+      'patch',
+      { ...params, requestBody: normalizeSerialization(resource) },
+      null,
+      'labels'
+    );
+    gError(response, 'gmail', 'users.labels.patch');
+    return data;
+  }
+
+  /**
+   * Updates the specified label.
+   * @param {object} params - The parameters for the request.
+   * @param {string} params.userId - The user's email address. The special value me can be used to indicate the authenticated user.
+   * @param {string} params.id - The ID of the label to update.
+   * @param {object} resource - The label resource to update.
+   * @returns {object} The updated label resource.
+   */
+  update(params, resource) {
+    const { data, response } = this._call(
+      'update',
+      { ...params, requestBody: normalizeSerialization(resource) },
+      null,
+      'labels'
+    );
+    gError(response, 'gmail', 'users.labels.update');
     return data;
   }
 }
