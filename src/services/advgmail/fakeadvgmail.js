@@ -3,6 +3,7 @@
  * Advanced gmail service
  */
 import { Proxies } from '../../support/proxies.js';
+import { newFakeAdvGmailUsers } from './fakeadvgmailusers.js';
 import { advClassMaker } from '../../support/helpers.js';
 import { gmailCacher } from '../../support/gmailcacher.js';
 
@@ -13,8 +14,8 @@ class FakeAdvGmail {
   constructor() {
     this.__fakeObjectType = "Gmail"
 
-    Reflect.ownKeys(propLists).forEach(p => {
-      this[p] = () => advClassMaker(propLists[p])
+    Reflect.ownKeys(propsList).forEach(p => {
+      this[p] = () => advClassMaker(propsList[p])
     })
 
   }
@@ -26,8 +27,8 @@ class FakeAdvGmail {
     return 'v1'
   }
 
-  get Form() {
-    return newFakeAdvFormsForm(this)
+  get Users() {
+    return newFakeAdvGmailUsers(this)
   }
 
   __getGmailPerformance() {

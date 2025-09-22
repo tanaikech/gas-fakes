@@ -1,6 +1,7 @@
 import { FakeAdvResource } from '../common/fakeadvresource.js';
 import { Syncit } from '../../support/syncit.js';
 import { signatureArgs, ssError, gError } from '../../support/helpers.js';
+import { newFakeAdvGmailLabels } from './fakeadvgmaillabels.js';
 
 import { Proxies } from '../../support/proxies.js';
 import { Utils } from '../../support/utils.js';
@@ -13,6 +14,10 @@ class FakeAdvGmailUsers extends FakeAdvResource {
     super(mainService, 'gmail', Syncit.fxGmail);
     this.gmail = mainService;
     this.__fakeObjectType = 'Gmail.Users';
+  }
+
+  get Labels() {
+    return newFakeAdvGmailLabels(this.gmail);
   }
 
 }

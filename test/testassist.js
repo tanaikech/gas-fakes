@@ -5,9 +5,11 @@ let __mfolder = null
 
 export let getDrivePerformance
 export let getSheetsPerformance
-export let getDocsPerformancetest/testform.js
+export let getDocsPerformance
 export let getSlidesPerformance
 export let getFormsPerformance
+export let getGmailPerformance
+
 
 if (ScriptApp.isFake) {
   getDrivePerformance = Drive.__getDrivePerformance;

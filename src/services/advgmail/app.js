@@ -6,6 +6,7 @@
  * initial sigleton and diverting them to a completed one
  */
 import { newFakeAdvGmail } from './fakeadvgmail.js'
+import './fakeadvgmaillabels.js'
 import { Proxies } from '../../support/proxies.js'
 
 // This will eventually hold a proxy for DriveApp

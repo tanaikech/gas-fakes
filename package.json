@@ -57,6 +57,7 @@
     "testdocsimages": "cp mainlocal.js main.js &&  node --env-file=.env ./test/testdocsimages.js execute",
     "testdocsstyles": "cp mainlocal.js main.js &&  node --env-file=.env ./test/testdocsstyles.js execute",
     "testsandbox": "cp mainlocal.js main.js &&  node --env-file=.env ./test/testsandbox.js execute",
+    "testgmail": "cp mainlocal.js main.js &&  node --env-file=.env ./test/testgmail.js execute",
     "pub": "cp mainlocal.js main.js && npm publish --access public"
   },
   "name": "@mcpher/gas-fakes",
