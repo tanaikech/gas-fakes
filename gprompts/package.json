@@ -1,0 +1,17 @@
+{
+  "name": "gas-inventory",
+  "version": "1.0.0",
+  "description": "Scrapes Google Apps Script documentation",
+  "main": "gas-inventory.js",
+  "type": "module",
+  "scripts": {
+    "start": "node gas-inventory.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "jsdom": "^24.0.0",
+    "node-fetch": "^3.3.2"
+  }
+}

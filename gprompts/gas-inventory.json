@@ -1,0 +1,80 @@
+{
+  "Base Service": {
+    "name": "Base Service",
+    "link": "https://developers.google.com/apps-script/reference/base",
+    "classes": {
+      "Classes": {
+        "methods": {},
+        "properties": {}
+      },
+      "Blob": {
+        "methods": {},
+        "properties": {}
+      },
+      "BlobSource": {
+        "methods": {},
+        "properties": {}
+      },
+      "Browser": {
+        "methods": {},
+        "properties": {}
+      },
+      "Button": {
+        "methods": {},
+        "properties": {}
+      },
+      "ButtonSet": {
+        "methods": {},
+        "properties": {}
+      },
+      "ColorType": {
+        "methods": {},
+        "properties": {}
+      },
+      "Logger": {
+        "methods": {},
+        "properties": {}
+      },
+      "Menu": {
+        "methods": {},
+        "properties": {}
+      },
+      "MimeType": {
+        "methods": {},
+        "properties": {}
+      },
+      "Month": {
+        "methods": {},
+        "properties": {}
+      },
+      "PromptResponse": {
+        "methods": {},
+        "properties": {}
+      },
+      "RgbColor": {
+        "methods": {},
+        "properties": {}
+      },
+      "Session": {
+        "methods": {},
+        "properties": {}
+      },
+      "Ui": {
+        "methods": {},
+        "properties": {}
+      },
+      "User": {
+        "methods": {},
+        "properties": {}
+      },
+      "Weekday": {
+        "methods": {},
+        "properties": {}
+      },
+      "console": {
+        "methods": {},
+        "properties": {}
+      }
+    }
+  }
+}
