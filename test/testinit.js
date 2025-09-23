@@ -7,7 +7,8 @@ import { Exports as unitExports } from '@mcpher/unit'
 // all the fake services are here
 //import '@mcpher/gas-fakes/main.js'
 
-import '../main.js'
+import '../main.js';
+import { Proxies } from '../src/support/proxies.js';
 
 
 
@@ -85,6 +86,17 @@ export const initTests = () => {
     console.log('...operating in sandbox mode - only files created in this instance of gas-fakes are accessible')
     behavior.strictSandbox = true;
     behavior.cleanup = fixes.CLEAN;
+
+    // Proactively initialize sandbox behaviors for all registered services.
+    // This prevents crashes in services that check for their sandbox config
+    // before a test has had a chance to set it up.
+    console.log('...proactively initializing sandbox service behaviors');
+    Proxies.getRegisteredServices().forEach(serviceName => {
+      // Just accessing the property is enough to trigger the lazy-creation
+      // of the default sandbox behavior object for that service.
+      // This ensures `ScriptApp.__behavior.sandboxService[serviceName]` is never undefined.
+      const _ = behavior.sandboxService[serviceName];
+    });
 
     // Automatically whitelist all test file IDs for read access
     // This allows tests to access fixture files without needing to disable the sandbox.

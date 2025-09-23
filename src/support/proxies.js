@@ -1,5 +1,6 @@
 import { Utils } from './utils.js';
 
+const serviceRegistry = new Set();
 
 /**
  * diverts the property get to another object returned by the getApp function
@@ -37,6 +38,7 @@ const getAppHandler = (getApp, name) => {
 }
 
 const registerProxy = (name, getApp) => {
+  serviceRegistry.add(name);
   const value = new Proxy({}, getAppHandler(getApp, name))
   // add it to the global space to mimic what apps script does
   // console.log (`setting ${name} to global`)
@@ -97,5 +99,6 @@ export const Proxies = {
   getAppHandler,
   registerProxy,
   guard,
-  blanketProxy
+  blanketProxy,
+  getRegisteredServices: () => Array.from(serviceRegistry),
 }
