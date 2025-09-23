@@ -1,5 +1,4 @@
 import { Proxies } from '../../support/proxies.js';
-import { notYetImplemented } from '../../support/helpers.js';
 
 export const newFakeGmailLabel = (...args) => Proxies.guard(new FakeGmailLabel(...args));
 
@@ -16,7 +15,7 @@ class FakeGmailLabel {
    * Deletes this label.
    */
   deleteLabel() {
-    return notYetImplemented('GmailLabel.deleteLabel');
+    Gmail.Users.Labels.remove('me', this.getId());
   }
 
   /**
@@ -40,6 +39,6 @@ class FakeGmailLabel {
    * @returns {string} The name of the label.
    */
   toString() {
-    return this.getName();
+    return 'GmailLabel';
   }
 }

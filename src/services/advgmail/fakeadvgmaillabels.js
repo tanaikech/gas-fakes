@@ -14,15 +14,14 @@ class FakeAdvGmailLabels extends FakeAdvResource {
 
   /**
    * Creates a new label.
-   * @param {object} params - The parameters for the request.
-   * @param {string} params.userId - The user's email address. The special value me can be used to indicate the authenticated user.
    * @param {object} resource - The label resource to create.
+   * @param {string} userId - The user's email address. The special value me can be used to indicate the authenticated user.
    * @returns {object} The created label resource.
    */
-  create(params, resource) {
+  create(resource, userId) {
     const { data, response } = this._call(
       'create',
-      { ...params, requestBody: normalizeSerialization(resource) },
+      { userId, requestBody: normalizeSerialization(resource) },
       null,
       'labels'
     );
@@ -32,14 +31,13 @@ class FakeAdvGmailLabels extends FakeAdvResource {
 
   /**
    * Deletes the specified label.
-   * @param {object} params - The parameters for the request.
-   * @param {string} params.userId - The user's email address. The special value me can be used to indicate the authenticated user.
-   * @param {string} params.id - The ID of the label to delete.
+   * @param {string} userId - The user's email address. The special value me can be used to indicate the authenticated user.
+   * @param {string} id - The ID of the label to delete.
    */
-  delete(params) {
+  remove(userId, id) {
     const { data, response } = this._call(
       'delete',
-      params,
+      { userId, id },
       null,
       'labels'
     );
@@ -49,15 +47,14 @@ class FakeAdvGmailLabels extends FakeAdvResource {
 
   /**
    * Gets the specified label.
-   * @param {object} params - The parameters for the request.
-   * @param {string} params.userId - The user's email address. The special value me can be used to indicate the authenticated user.
-   * @param {string} params.id - The ID of the label to retrieve.
+   * @param {string} userId - The user's email address. The special value me can be used to indicate the authenticated user.
+   * @param {string} id - The ID of the label to retrieve.
    * @returns {object} The label resource.
    */
-  get(params) {
+  get(userId, id) {
     const { data, response } = this._call(
       'get',
-      params,
+      { userId, id },
       null,
       'labels'
     );
@@ -67,14 +64,14 @@ class FakeAdvGmailLabels extends FakeAdvResource {
 
   /**
    * Lists all labels in the user's mailbox.
+   * @param {string} userId - The user's email address. The special value me can be used to indicate the authenticated user.
    * @param {object} params - The parameters for the request.
-   * @param {string} params.userId - The user's email address. The special value me can be used to indicate the authenticated user.
    * @returns {object} A list of labels.
    */
-  list(params) {
+  list(userId, params = {}) {
     const { data, response } = this._call(
       'list',
-      params,
+      { ...params, userId },
       null,
       'labels'
     );
@@ -84,16 +81,16 @@ class FakeAdvGmailLabels extends FakeAdvResource {
 
   /**
    * Updates the specified label. This method supports patch semantics.
-   * @param {object} params - The parameters for the request.
-   * @param {string} params.userId - The user's email address. The special value me can be used to indicate the authenticated user.
-   * @param {string} params.id - The ID of the label to update.
+   * @param {string} userId - The user's email address. The special value me can be used to indicate the authenticated user.
    * @param {object} resource - The label resource to update.
+   * @param {object} [params={}] - The parameters for the request.
+   * @param {string} params.id - The ID of the label to update.
    * @returns {object} The updated label resource.
    */
-  patch(params, resource) {
+  patch(userId, resource, params = {}) {
     const { data, response } = this._call(
       'patch',
-      { ...params, requestBody: normalizeSerialization(resource) },
+      { ...params, userId, requestBody: normalizeSerialization(resource) },
       null,
       'labels'
     );
@@ -103,16 +100,16 @@ class FakeAdvGmailLabels extends FakeAdvResource {
 
   /**
    * Updates the specified label.
-   * @param {object} params - The parameters for the request.
-   * @param {string} params.userId - The user's email address. The special value me can be used to indicate the authenticated user.
-   * @param {string} params.id - The ID of the label to update.
+   * @param {string} userId - The user's email address. The special value me can be used to indicate the authenticated user.
    * @param {object} resource - The label resource to update.
+   * @param {object} [params={}] - The parameters for the request.
+   * @param {string} params.id - The ID of the label to update.
    * @returns {object} The updated label resource.
    */
-  update(params, resource) {
+  update(userId, resource, params = {}) {
     const { data, response } = this._call(
       'update',
-      { ...params, requestBody: normalizeSerialization(resource) },
+      { ...params, userId, requestBody: normalizeSerialization(resource) },
       null,
       'labels'
     );

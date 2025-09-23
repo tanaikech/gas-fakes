@@ -10,14 +10,25 @@ class FakeGmailApp {
   }
 
   /**
+   * Creates a new user label.
+   * @param {string} name The name of the new label.
+   * @returns {GmailLabel} The new label.
+   */
+  createLabel(name) {
+    const newLabelResource = Gmail.newLabel().setName(name);
+    const createdLabelResource = Gmail.Users.Labels.create(newLabelResource, 'me');
+    return newFakeGmailLabel(createdLabelResource);
+  }
+
+  /**
    * Gets a list of user-created labels.
    * @returns {GmailLabel[]} An array of user-created labels.
    */
-  getLabels() {
-    const { labels } = Gmail.Users.Labels.list({ userId: 'me' });
-    // The API returns all labels, including system labels. The documentation for GmailApp.getLabels()
-    // says "user-created labels", but in practice it returns system labels as well. We will mimic this.
-    return labels ? labels.map(labelResource => newFakeGmailLabel(labelResource)) : [];
+  getUserLabels() {
+    const { labels } = Gmail.Users.Labels.list('me');
+    // The documentation for GmailApp.getUserLabels() says "user-created labels".
+    // The live environment follows this, so we will filter for type 'user'.
+    return labels ? labels.filter(l => l.type === 'user').map(labelResource => newFakeGmailLabel(labelResource)) : [];
   }
 }
 
