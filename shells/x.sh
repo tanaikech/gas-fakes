@@ -10,10 +10,13 @@ P=$GCP_PROJECT_ID
 # here we're working on the default project configuration
 AC=default
 
-# Combine scopes from the .env file.
-# The values from .env can sometimes be misinterpreted by the shell,
-# leading to spaces in the scopes string. This sanitizes the string.
-SCOPES=$(echo "$DEFAULT_SCOPES$EXTRA_SCOPES" | tr -d '[:space:]')
+# these are the ones it sets by default - take some of these out if you want to minimize access
+DEFAULT_SCOPES=$DEFAULT_SCOPES
+
+# these are the ones we want to add (note comma at beginning)
+EXTRA_SCOPES=$EXTRA_SCOPES
+
+SCOPES="${DEFAULT_SCOPES}${EXTRA_SCOPES}"
 
 # clean up anything set from before
 echo "ignore no credentials to revoke error if this is the first time you've done this here"

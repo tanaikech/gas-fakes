@@ -33,12 +33,24 @@ In order to duplicate the OAuth management handled by GAS, we'll use Application
 
 #### Application default credentials
 
-At the very least you need to add the gcp project id you'll be using for testing, plus the id of some file you have access to - this'll be used to check that you have set up ADC properly.
+In order to avoid a bunch of Node specific code and credentials, yet still handle OAuth, I figured that we could simply rely on ADC. This is a problem I already wrote about here [Application Default Credentials with Google Cloud and Workspace APIs](https://ramblings.mcpher.com/application-default-credentials-with-google-cloud-and-workspace-apis/)
 
-There are other things in the .env-template you can ignore unless you're planning to run the test suite. More information on that is in [collaborators info](collaborators.md)
+At the very least you need to add the gcp project id and optionally the id of some file you have access to - this'll be used to check that you have set up ADC properly.
 
+#### Option 1 - automated setup
 
-These should be in your .env file to enable ADC authentication. The purpose of the DRIVE_TEST_FILE_ID is so that the script can check you've enabled ADC correctly by pinging a file you have access to. The GCP_PROJECT_ID is required as it will be used by gas-fakes to access the workspace apis on your behalf.
+In the shells folder run
+```sh
+bash setup.sh
+```
+This will prompt you for project id and a file id to test with. It will also ask it you want to set up all the parameters needed for testing. If you answer yes, this will set up other things from the .env-template you can ignore unless you're planning to run the test suite. More information on that is in [collaborators info](collaborators.md) 
+
+Running set up will enhance your .env file and auth you in ADC with the required scopes
+
+#### Option 2 - manual setup
+
+You can setup the .env file your self using the .env.template as a guide.
+
 ```
 # must set these
 GCP_PROJECT_ID="add your gcp project id here"
@@ -55,25 +67,6 @@ EXTRA_SCOPES=",https://www.googleapis.com/auth/drive,https://www.googleapis.com/
 
 - goto ./shells and execute sp.sh
 
-### OAuth
-
-There's 2 pieces to this solution.
-
-#### Application default credentials (ADC)
-
-In order to avoid a bunch of Node specific code and credentials, yet still handle OAuth, I figured that we could simply rely on ADC. This is a problem I already wrote about here [Application Default Credentials with Google Cloud and Workspace APIs](https://ramblings.mcpher.com/application-default-credentials-with-google-cloud-and-workspace-apis/)
-
-This section in your env file controls which scopes you plan to use.
-
-```
-we'll use the default config for application default credentials
-AC=default
-# these are the scopes set by default - take some of these out if you want to minimize access
-DEFAULT_SCOPES="https://www.googleapis.com/auth/userinfo.email,openid,https://www.googleapis.com/auth/cloud-platform,https://www.googleapis.com/auth/sqlservice.login"
-EXTRA_SCOPES=",https://www.googleapis.com/auth/drive,https://www.googleapis.com/auth/spreadsheets"
-
-.....etc
-```
 
 #### Manifest file
 
