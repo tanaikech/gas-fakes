@@ -3,6 +3,7 @@
 testongas
 **/.gas-fakes/store
 .env
+.env-bruce
 ghissues
 **/.gemini
 
