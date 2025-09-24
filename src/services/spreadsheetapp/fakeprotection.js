@@ -101,13 +101,12 @@ export class FakeProtection {
   }
 
   getEditors() {
-    if (this.object.editors?.users && this.object.editors?.users.length > 0) {
-      const owner = DriveApp.getFileById(this.spreadsheetId)
-        .getOwner()
-        .getEmail();
-      return this.object.editors.users
-        .filter((email) => email != owner)
-        .map((email) => newFakeUser({ email }));
+    if (
+      this.object.editors?.users &&
+      this.object.editors?.users.length > 0 &&
+      !this.object.warningOnly
+    ) {
+      return this.object.editors.users.map((email) => newFakeUser({ email }));
     }
     return [];
   }
