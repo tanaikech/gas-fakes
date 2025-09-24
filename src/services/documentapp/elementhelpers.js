@@ -285,5 +285,4 @@ export const updateParagraphStyle = (element, paragraphStyle, fields) => {
   Docs.Documents.batchUpdate({ requests }, shadow.getId());
   shadow.refresh();
   return element;
-  
 };
