@@ -2,6 +2,8 @@
  * @file Provides a fake implementation of the TableRow class.
  */
 import { registerElement } from './elementRegistry.js';
+import { newFakeElement } from './fakeelement.js';
+import { signatureArgs } from '../../support/helpers.js';
 import { Proxies } from '../../support/proxies.js';
 import { FakeContainerElement } from './fakecontainerelement.js';
 
@@ -34,6 +36,19 @@ export class FakeTableRow extends FakeContainerElement {
    */
   getNumCells() {
     return this.getNumChildren();
+  }
+
+  /**
+   * Gets the text content of the table row.
+   * @returns {string} The text content.
+   */
+  getText() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'TableRow.getText');
+    if (nargs !== 0) matchThrow();
+    // Live Apps Script joins cell text with a newline character.
+    return this.__children      
+      .map(childTwig => newFakeElement(this.shadowDocument, childTwig.name).__cast().getText())
+      .join('\n');
   }
 }
 

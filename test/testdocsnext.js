@@ -7,6 +7,30 @@ export const testDocsNext = (pack) => {
   const toTrash = [];
   const { unit, fixes } = pack || initTests();
 
+  unit.section("Table.getText()", t => {
+    let { doc } = maketdoc(toTrash, fixes);
+    let body = doc.getBody();
+
+    const cellsData = [
+      ['R1C1', 'R1C2'],
+      ['R2C1', 'R2C2']
+    ];
+    const table = body.appendTable(cellsData);
+
+    // The live behavior is that cells in a row are joined by \n, and rows are joined by \n.
+    const expectedText = 'R1C1\nR1C2\nR2C1\nR2C2';
+    t.is(table.getText(), expectedText, "getText() should return concatenated text of all cells, separated by newlines");
+    const row = table.getRow(0); // This is a TableRow object
+    t.is(row.getText(), 'R1C1\nR1C2', "TableRow.getText() should join cell text with newlines");
+    const cell = row.getCell(1);
+    t.is(cell.getText(), 'R1C2', "TableCell.getText() should return the cell's text");
+
+    // Test with an empty table
+    const emptyTable = body.appendTable();
+    t.is(emptyTable.getText(), "", "getText() on an empty table should return an empty string");
+
+    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
+  });
 
   unit.section("Body.appendTable and Body.insertTable", t => {
 

@@ -5,6 +5,7 @@
 import { Proxies } from '../../support/proxies.js';
 import { FakeContainerElement } from './fakecontainerelement.js';
 import { registerElement } from './elementRegistry.js';
+import { newFakeElement } from './fakeelement.js';
 import { signatureArgs } from '../../support/helpers.js';
 import { Utils } from '../../support/utils.js';
 const { is } = Utils;
@@ -45,6 +46,21 @@ export class FakeTable extends FakeContainerElement {
     return this.getChild(rowIndex);
   }
   
+  /**
+   * Gets the text content of the table.
+   * @returns {string} The text content.
+   * @see https://developers.google.com/apps-script/reference/document/table#getText()
+   */
+  getText() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Table.getText');
+    if (nargs !== 0) matchThrow();
+    // Live behavior: A Table's text is the concatenation of its non-empty rows' text, separated by newlines.
+    return this.__children
+      .map(childTwig => newFakeElement(this.shadowDocument, childTwig.name).__cast().getText())
+      .filter(text => text.length > 0) // Ignore empty rows
+      .join('\n');
+  }
+
   getValues() {
     return Array.from({ length: this.getNumRows() }, (_, r) => {
       const row = this.getRow(r);
