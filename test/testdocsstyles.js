@@ -16,6 +16,42 @@ export const testDocsStyles = (pack) => {
     return doc;
   };
 
+  unit.section("Paragraph attribute methods", t => {
+    let { doc } = maketdoc(toTrash, fixes, { forceNew: true });
+    let body = doc.getBody();
+    const p = body.appendParagraph("This is a test paragraph for attributes.");
+
+    // Test Alignment
+    p.setAlignment(DocumentApp.HorizontalAlignment.CENTER);
+    t.is(p.getAlignment(), DocumentApp.HorizontalAlignment.CENTER, "get/set Alignment should work");
+
+    // Test IndentEnd
+    p.setIndentEnd(50);
+    t.is(p.getIndentEnd(), 50, "get/set IndentEnd should work");
+
+    // Test IndentFirstLine
+    p.setIndentFirstLine(25);
+    t.is(p.getIndentFirstLine(), 25, "get/set IndentFirstLine should work");
+
+    // Test IndentStart
+    p.setIndentStart(75);
+    t.is(p.getIndentStart(), 75, "get/set IndentStart should work");
+
+    // Test LineSpacing
+    p.setLineSpacing(1.5);
+    t.is(p.getLineSpacing(), 1.5, "get/set LineSpacing should work");
+
+    // Test SpacingAfter
+    p.setSpacingAfter(10);
+    t.is(p.getSpacingAfter(), 10, "get/set SpacingAfter should work");
+
+    // Test SpacingBefore
+    p.setSpacingBefore(20);
+    t.is(p.getSpacingBefore(), 20, "get/set SpacingBefore should work");
+
+    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
+  });
+
   unit.section("Body style and attribute methods", t => {
     let { doc } = maketdoc(toTrash, fixes, { forceNew: true });
     let body = doc.getBody();

@@ -4,7 +4,7 @@ import { Utils } from '../../support/utils.js';
 import { FakeContainerElement } from './fakecontainerelement.js';
 import { registerElement } from './elementRegistry.js';
 import { appendText, addPositionedImage, appendImage, insertImage } from './appenderhelpers.js';
-import { getText as getTextHelper, getAttributes as getAttributesHelper } from './elementhelpers.js';
+import { getText as getTextHelper, getAttributes as getAttributesHelper, updateParagraphStyle } from './elementhelpers.js';
 
 const { is } = Utils;
 
@@ -129,6 +129,103 @@ class FakeParagraph extends FakeContainerElement {
 
     // If the style is not a named style, it's considered NORMAL.
     return apiToEnumMap[namedStyleType] || DocumentApp.ParagraphHeading.NORMAL;
+  }
+
+  getAlignment() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.getAlignment');
+    if (nargs !== 0) matchThrow();
+    return this.getAttributes()[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT];
+  }
+
+  setAlignment(alignment) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.setAlignment');
+    if (nargs !== 1) matchThrow();
+
+    const alignmentMap = {
+      [DocumentApp.HorizontalAlignment.LEFT]: 'START',
+      [DocumentApp.HorizontalAlignment.CENTER]: 'CENTER',
+      [DocumentApp.HorizontalAlignment.RIGHT]: 'END',
+      [DocumentApp.HorizontalAlignment.JUSTIFIED]: 'JUSTIFY',
+    };
+
+    const apiAlignment = alignmentMap[alignment];
+    if (!apiAlignment) {
+      throw new Error(`Invalid argument: ${alignment}`);
+    }
+
+    return updateParagraphStyle(this, { alignment: apiAlignment }, 'alignment');
+  }
+
+  getIndentEnd() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.getIndentEnd');
+    if (nargs !== 0) matchThrow();
+    return this.getAttributes()[DocumentApp.Attribute.INDENT_END];
+  }
+
+  setIndentEnd(indentEnd) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.setIndentEnd');
+    if (nargs !== 1 || !is.number(indentEnd)) matchThrow();
+    return updateParagraphStyle(this, { indentEnd: { magnitude: indentEnd, unit: 'PT' } }, 'indentEnd');
+  }
+
+  getIndentFirstLine() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.getIndentFirstLine');
+    if (nargs !== 0) matchThrow();
+    return this.getAttributes()[DocumentApp.Attribute.INDENT_FIRST_LINE];
+  }
+
+  setIndentFirstLine(indentFirstLine) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.setIndentFirstLine');
+    if (nargs !== 1 || !is.number(indentFirstLine)) matchThrow();
+    return updateParagraphStyle(this, { indentFirstLine: { magnitude: indentFirstLine, unit: 'PT' } }, 'indentFirstLine');
+  }
+
+  getIndentStart() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.getIndentStart');
+    if (nargs !== 0) matchThrow();
+    return this.getAttributes()[DocumentApp.Attribute.INDENT_START];
+  }
+
+  setIndentStart(indentStart) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.setIndentStart');
+    if (nargs !== 1 || !is.number(indentStart)) matchThrow();
+    return updateParagraphStyle(this, { indentStart: { magnitude: indentStart, unit: 'PT' } }, 'indentStart');
+  }
+
+  getLineSpacing() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.getLineSpacing');
+    if (nargs !== 0) matchThrow();
+    return this.getAttributes()[DocumentApp.Attribute.LINE_SPACING];
+  }
+
+  setLineSpacing(multiplier) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.setLineSpacing');
+    if (nargs !== 1 || !is.number(multiplier)) matchThrow();
+    return updateParagraphStyle(this, { lineSpacing: multiplier * 100 }, 'lineSpacing');
+  }
+
+  getSpacingAfter() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.getSpacingAfter');
+    if (nargs !== 0) matchThrow();
+    return this.getAttributes()[DocumentApp.Attribute.SPACING_AFTER];
+  }
+
+  setSpacingAfter(spacingAfter) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.setSpacingAfter');
+    if (nargs !== 1 || !is.number(spacingAfter)) matchThrow();
+    return updateParagraphStyle(this, { spaceBelow: { magnitude: spacingAfter, unit: 'PT' } }, 'spaceBelow');
+  }
+
+  getSpacingBefore() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.getSpacingBefore');
+    if (nargs !== 0) matchThrow();
+    return this.getAttributes()[DocumentApp.Attribute.SPACING_BEFORE];
+  }
+
+  setSpacingBefore(spacingBefore) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.setSpacingBefore');
+    if (nargs !== 1 || !is.number(spacingBefore)) matchThrow();
+    return updateParagraphStyle(this, { spaceAbove: { magnitude: spacingBefore, unit: 'PT' } }, 'spaceAbove');
   }
 
   toString() {
