@@ -7,6 +7,31 @@ export const testDocsNext = (pack) => {
   const toTrash = [];
   const { unit, fixes } = pack || initTests();
 
+  unit.section("Body.getText() with mixed elements", t => {
+    let { doc } = maketdoc(toTrash, fixes);
+    let body = doc.getBody();
+
+    // 1. Append a variety of elements
+    body.appendParagraph("First paragraph.");
+    body.appendTable([
+      ['R1C1', 'R1C2'],
+      ['R2C1', 'R2C2']
+    ]);
+    body.appendListItem("A list item.");
+    body.appendParagraph("Final paragraph.");
+
+    // 2. Define the expected text output
+    const expected = '\n' + // From the initial empty paragraph
+      'First paragraph.\n' +
+      'R1C1\nR1C2\nR2C1\nR2C2\n\n' + // Table text, with cells and rows joined by newlines, followed by an extra newline from Body.getText() joining
+      'A list item.\n' +
+      'Final paragraph.';
+
+    t.is(body.getText(), expected, "Body.getText() should correctly concatenate text from mixed elements");
+
+    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
+  });
+
   unit.section("Table.getText()", t => {
     let { doc } = maketdoc(toTrash, fixes);
     let body = doc.getBody();
