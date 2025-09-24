@@ -228,6 +228,22 @@ class FakeParagraph extends FakeContainerElement {
     return updateParagraphStyle(this, { spaceAbove: { magnitude: spacingBefore, unit: 'PT' } }, 'spaceAbove');
   }
 
+  isLeftToRight() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.isLeftToRight');
+    if (nargs !== 0) matchThrow();
+    // The getAttributes helper will return true/false/null.
+    const ltr = this.getAttributes()[DocumentApp.Attribute.LEFT_TO_RIGHT];
+    // Default to true if null, which matches live behavior for new paragraphs.
+    return ltr === null ? true : ltr;
+  }
+
+  setLeftToRight(leftToRight) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.setLeftToRight');
+    if (nargs !== 1 || !is.boolean(leftToRight)) matchThrow();
+    const direction = leftToRight ? 'LEFT_TO_RIGHT' : 'RIGHT_TO_LEFT';
+    return updateParagraphStyle(this, { direction }, 'direction');
+  }
+
   toString() {
     return 'Paragraph';
   }

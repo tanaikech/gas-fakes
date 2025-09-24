@@ -49,6 +49,12 @@ export const testDocsStyles = (pack) => {
     p.setSpacingBefore(20);
     t.is(p.getSpacingBefore(), 20, "get/set SpacingBefore should work");
 
+    // Test LeftToRight
+    p.setLeftToRight(false);
+    t.is(p.isLeftToRight(), false, "get/set LeftToRight should work");
+    p.setLeftToRight(true);
+    t.is(p.isLeftToRight(), true, "isLeftToRight should revert to true");
+
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   });
 

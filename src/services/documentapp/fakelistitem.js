@@ -4,8 +4,8 @@
 import { Proxies } from '../../support/proxies.js';
 import { FakeContainerElement } from './fakecontainerelement.js';
 import { registerElement } from './elementRegistry.js';
-import { getText, updateParagraphStyle, getAttributes as getAttributesHelper } from './elementhelpers.js';
-import { appendText } from './appenderhelpers.js';
+import { getText, updateParagraphStyle, getAttributes as getAttributesHelper, findItem } from './elementhelpers.js';
+import { appendText, appendImage, insertImage } from './appenderhelpers.js';
 import { notYetImplemented, signatureArgs } from '../../support/helpers.js';
 import { Utils } from '../../support/utils.js';
 const { is } = Utils;
@@ -53,6 +53,20 @@ export class FakeListItem extends FakeContainerElement {
   appendText(textOrTextElement) {
     appendText(this, textOrTextElement);
     return this;
+  }
+
+  appendInlineImage(image) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'ListItem.appendInlineImage');
+    if (nargs !== 1) matchThrow();
+    // This uses the generic appendImage helper.
+    return appendImage(this, image);
+  }
+
+  insertInlineImage(childIndex, image) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'ListItem.insertInlineImage');
+    if (nargs !== 2) matchThrow();
+    // This uses the generic insertImage helper.
+    return insertImage(this, childIndex, image);
   }
 
   /**
@@ -198,6 +212,107 @@ export class FakeListItem extends FakeContainerElement {
     return this;
   }
 
+  getAlignment() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'ListItem.getAlignment');
+    if (nargs !== 0) matchThrow();
+    return this.getAttributes()[DocumentApp.Attribute.HORIZONTAL_ALIGNMENT];
+  }
+
+  setAlignment(alignment) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'ListItem.setAlignment');
+    if (nargs !== 1) matchThrow();
+
+    const alignmentMap = {
+      [DocumentApp.HorizontalAlignment.LEFT]: 'START',
+      [DocumentApp.HorizontalAlignment.CENTER]: 'CENTER',
+      [DocumentApp.HorizontalAlignment.RIGHT]: 'END',
+      [DocumentApp.HorizontalAlignment.JUSTIFIED]: 'JUSTIFY',
+    };
+
+    const apiAlignment = alignmentMap[alignment];
+    if (!apiAlignment) {
+      throw new Error(`Invalid argument: ${alignment}`);
+    }
+
+    return updateParagraphStyle(this, { alignment: apiAlignment }, 'alignment');
+  }
+
+  getIndentEnd() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'ListItem.getIndentEnd');
+    if (nargs !== 0) matchThrow();
+    return this.getAttributes()[DocumentApp.Attribute.INDENT_END];
+  }
+
+  setIndentEnd(indentEnd) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'ListItem.setIndentEnd');
+    if (nargs !== 1 || !is.number(indentEnd)) matchThrow();
+    return updateParagraphStyle(this, { indentEnd: { magnitude: indentEnd, unit: 'PT' } }, 'indentEnd');
+  }
+
+  getIndentFirstLine() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'ListItem.getIndentFirstLine');
+    if (nargs !== 0) matchThrow();
+    return this.getAttributes()[DocumentApp.Attribute.INDENT_FIRST_LINE];
+  }
+
+  getIndentStart() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'ListItem.getIndentStart');
+    if (nargs !== 0) matchThrow();
+    return this.getAttributes()[DocumentApp.Attribute.INDENT_START];
+  }
+
+  getLineSpacing() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'ListItem.getLineSpacing');
+    if (nargs !== 0) matchThrow();
+    return this.getAttributes()[DocumentApp.Attribute.LINE_SPACING];
+  }
+
+  setLineSpacing(multiplier) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'ListItem.setLineSpacing');
+    if (nargs !== 1 || !is.number(multiplier)) matchThrow();
+    return updateParagraphStyle(this, { lineSpacing: multiplier * 100 }, 'lineSpacing');
+  }
+
+  getSpacingAfter() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'ListItem.getSpacingAfter');
+    if (nargs !== 0) matchThrow();
+    return this.getAttributes()[DocumentApp.Attribute.SPACING_AFTER];
+  }
+
+  setSpacingAfter(spacingAfter) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'ListItem.setSpacingAfter');
+    if (nargs !== 1 || !is.number(spacingAfter)) matchThrow();
+    return updateParagraphStyle(this, { spaceBelow: { magnitude: spacingAfter, unit: 'PT' } }, 'spaceBelow');
+  }
+
+  getSpacingBefore() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'ListItem.getSpacingBefore');
+    if (nargs !== 0) matchThrow();
+    return this.getAttributes()[DocumentApp.Attribute.SPACING_BEFORE];
+  }
+
+  setSpacingBefore(spacingBefore) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'ListItem.setSpacingBefore');
+    if (nargs !== 1 || !is.number(spacingBefore)) matchThrow();
+    return updateParagraphStyle(this, { spaceAbove: { magnitude: spacingBefore, unit: 'PT' } }, 'spaceAbove');
+  }
+
+  isLeftToRight() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'ListItem.isLeftToRight');
+    if (nargs !== 0) matchThrow();
+    // The getAttributes helper will return true/false/null.
+    const ltr = this.getAttributes()[DocumentApp.Attribute.LEFT_TO_RIGHT];
+    // Default to true if null, which matches live behavior for new paragraphs.
+    return ltr === null ? true : ltr;
+  }
+
+  setLeftToRight(leftToRight) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'ListItem.setLeftToRight');
+    if (nargs !== 1 || !is.boolean(leftToRight)) matchThrow();
+    const direction = leftToRight ? 'LEFT_TO_RIGHT' : 'RIGHT_TO_LEFT';
+    return updateParagraphStyle(this, { direction }, 'direction');
+  }
+
 
   /**
    * Sets the glyph type of the list item.
@@ -234,6 +349,45 @@ export class FakeListItem extends FakeContainerElement {
     const { nargs, matchThrow } = signatureArgs(arguments, 'ListItem.setIndentStart');
     if (nargs !== 1 || !is.number(indentStart)) matchThrow();
     return updateParagraphStyle(this, { indentStart: { magnitude: indentStart, unit: 'PT' } }, 'indentStart');
+  }
+
+  clear() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'ListItem.clear');
+    if (nargs !== 0) matchThrow();
+
+    const item = this.__elementMapItem;
+    // A paragraph always ends with a newline. Clearing it means deleting all content
+    // *before* that final newline.
+    const start = item.startIndex;
+    const end = item.endIndex - 1;
+
+    if (end > start) {
+      const requests = [{
+        deleteContentRange: {
+          range: { startIndex: start, endIndex: end, segmentId: this.__segmentId, tabId: this.__tabId }
+        }
+      }];
+      Docs.Documents.batchUpdate({ requests }, this.shadowDocument.getId());
+      this.shadowDocument.refresh();
+    }
+    return this;
+  }
+
+  setText(text) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'ListItem.setText');
+    if (nargs !== 1 || !is.string(text)) matchThrow();
+
+    // First, clear existing content.
+    this.clear();
+
+    // After clearing, the insertion point is at the start of the now-empty paragraph.
+    const refreshedItem = findItem(this.shadowDocument.elementMap, 'LIST_ITEM', this.__elementMapItem.startIndex, this.__segmentId);
+    const insertIndex = refreshedItem.startIndex;
+
+    const requests = [{ insertText: { location: { index: insertIndex, segmentId: this.__segmentId }, text } }];
+    Docs.Documents.batchUpdate({ requests }, this.shadowDocument.getId());
+    this.shadowDocument.refresh();
+    // setText returns void.
   }
 
   /**

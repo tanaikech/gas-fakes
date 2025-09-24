@@ -24,6 +24,8 @@ export const testDocsListItems = (pack) => {
     const li2 = body.appendListItem("Item 2");
     li1.setIndentStart(36);
     li1.setIndentFirstLine(-18);
+    t.is(li1.getIndentStart(), 36, "getIndentStart should return the correct value");
+    t.is(li1.getIndentFirstLine(), -18, "getIndentFirstLine should return the correct value");
 
     // this is not necessary for Node, but if we want to mix advanced service and Apps Script API, we need to ensure the document is saved
     // and reloaded to get the latest state.
@@ -56,6 +58,56 @@ export const testDocsListItems = (pack) => {
     }
 
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance())
+  });
+
+  unit.section("ListItem attribute and content methods", t => {
+    const { doc } = maketdoc(toTrash, fixes, { forceNew: true });
+    let body = doc.getBody();
+    const li = body.appendListItem("Initial list item text.");
+
+    // Test Alignment
+    li.setAlignment(DocumentApp.HorizontalAlignment.RIGHT);
+    t.is(li.getAlignment(), DocumentApp.HorizontalAlignment.RIGHT, "get/set Alignment should work");
+
+    // Test IndentEnd
+    li.setIndentEnd(40);
+    t.is(li.getIndentEnd(), 40, "get/set IndentEnd should work");
+
+    // Test LineSpacing
+    li.setLineSpacing(2.0);
+    t.is(li.getLineSpacing(), 2.0, "get/set LineSpacing should work");
+
+    // Test SpacingAfter
+    li.setSpacingAfter(12);
+    t.is(li.getSpacingAfter(), 12, "get/set SpacingAfter should work");
+
+    // Test SpacingBefore
+    li.setSpacingBefore(6);
+    t.is(li.getSpacingBefore(), 6, "get/set SpacingBefore should work");
+
+    // Test LeftToRight
+    li.setLeftToRight(false);
+    t.is(li.isLeftToRight(), false, "get/set LeftToRight should work");
+    li.setLeftToRight(true);
+    t.is(li.isLeftToRight(), true, "isLeftToRight should revert to true");
+
+    // Test clear() and setText()
+    li.clear();
+    t.is(li.getText(), "", "clear() should remove the text from the list item");
+    li.setText("New text after clear.");
+    t.is(li.getText(), "New text after clear.", "setText() should set new text");
+
+    // Test append/insert image
+    const imageUrl = 'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png';
+    const imageBlob = UrlFetchApp.fetch(imageUrl).getBlob();
+    li.setText("Image test: ").appendInlineImage(imageBlob.copy());
+    t.is(li.getNumChildren(), 2, "appendInlineImage should add a child");
+    t.is(li.getChild(1).getType(), DocumentApp.ElementType.INLINE_IMAGE, "appended child should be an image");
+    li.insertInlineImage(0, imageBlob.copy());
+    t.is(li.getNumChildren(), 3, "insertInlineImage should add another child");
+    t.is(li.getChild(0).getType(), DocumentApp.ElementType.INLINE_IMAGE, "inserted child should be an image at the start");
+
+    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   });
 
   unit.section("Body.appendListItem", t => {
