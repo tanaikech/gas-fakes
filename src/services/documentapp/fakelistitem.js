@@ -1,6 +1,7 @@
 /**
  * @file Provides a fake implementation of the ListItem class.
  */
+import { imageOptions } from './elementoptions.js';
 import { Proxies } from '../../support/proxies.js';
 import { FakeContainerElement } from './fakecontainerelement.js';
 import { registerElement } from './elementRegistry.js';
@@ -58,8 +59,27 @@ export class FakeListItem extends FakeContainerElement {
   appendInlineImage(image) {
     const { nargs, matchThrow } = signatureArgs(arguments, 'ListItem.appendInlineImage');
     if (nargs !== 1) matchThrow();
-    // This uses the generic appendImage helper.
-    return appendImage(this, image);
+
+    // The generic helpers are for top-level containers. For appending to a paragraph,
+    // we need to build the request directly to insert at the correct index.
+    const insertIndex = this.__elementMapItem.endIndex - 1; // Before the trailing newline
+
+    // The imageOptions helper correctly gets the URI for a blob or detached image.
+    // We pass `isAppend: false` to prevent it from adding extra newlines.
+    const { requests, cleanup } = imageOptions.getMainRequest({
+      content: image,
+      location: { index: insertIndex, segmentId: this.__segmentId },
+      isAppend: false,
+      self: this,
+    });
+
+    try {
+      Docs.Documents.batchUpdate({ requests }, this.shadowDocument.getId());
+      this.shadowDocument.refresh();
+      return this.getChild(this.getNumChildren() - 1);
+    } finally {
+      if (cleanup) cleanup();
+    }
   }
 
   insertInlineImage(childIndex, image) {
@@ -358,6 +378,8 @@ export class FakeListItem extends FakeContainerElement {
     const item = this.__elementMapItem;
     const requests = [];
 
+    //lobify(this.__shadowDocument.namedRanges, 'before clear:')
+
     // Find the named range associated with this element to protect it.
 
     const nr = this.__getNr(item.__name);
@@ -374,11 +396,11 @@ export class FakeListItem extends FakeContainerElement {
       requests.push({
         createNamedRange: { name: nr.name, range: { startIndex: item.startIndex, endIndex: item.startIndex + 1, segmentId: this.__segmentId } },
       });
-      lobify(requests, "clear requests:")
-      lobify(this.__shadowDocument.namedRanges, 'before clear:')
+      //lobify(requests, "clear requests:")
+
       Docs.Documents.batchUpdate({ requests }, this.shadowDocument.getId());
       this.shadowDocument.refresh();
-      lobify(this.__shadowDocument.namedRanges, 'after clear:')
+      //lobify(this.__shadowDocument.namedRanges, 'after clear:')
     }
     return this;
   }
@@ -395,11 +417,10 @@ export class FakeListItem extends FakeContainerElement {
   setText(text) {
     const { nargs, matchThrow } = signatureArgs(arguments, 'ListItem.setText');
     if (nargs !== 1 || !is.string(text)) matchThrow();
-
+    //lobify(this.__shadowDocument.namedRanges, 'before settext:')
     const item = this.__elementMapItem;
     const requests = [];
     const nr = this.__getNr(item.__name);
-
 
     // This is now a single, atomic operation that replaces the content
     // and protects the named range.
@@ -420,11 +441,11 @@ export class FakeListItem extends FakeContainerElement {
       },
     });
 
-    lobify(requests, "settext requests:")
-    lobify(this.__shadowDocument.namedRanges, 'before settext:')
+    //lobify(requests, "settext requests:")
+ 
     Docs.Documents.batchUpdate({ requests }, this.shadowDocument.getId());
     this.shadowDocument.refresh();
-    lobify(this.__shadowDocument.namedRanges, 'after settext')
+    //lobify(this.__shadowDocument.namedRanges, 'after settext')
   }
 
   /**
