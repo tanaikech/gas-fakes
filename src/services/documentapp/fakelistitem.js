@@ -8,7 +8,7 @@ import { getText, updateParagraphStyle, getAttributes as getAttributesHelper, fi
 import { appendText, appendImage, insertImage } from './appenderhelpers.js';
 import { notYetImplemented, signatureArgs } from '../../support/helpers.js';
 import { Utils } from '../../support/utils.js';
-const { is } = Utils;
+const { is, lobify } = Utils;
 
 /**
  * Creates a new proxied FakeListItem instance.
@@ -91,12 +91,12 @@ export class FakeListItem extends FakeContainerElement {
     const nestingLevel = this.getNestingLevel();
     // The shadowDocument is only available on attached elements.
     if (this.__isDetached) return null;
-    const docResource = this.shadowDocument.resource;    
+    const docResource = this.shadowDocument.resource;
     // The lists can be at the top level or inside the first tab.
-    const {lists} = this.shadowDocument.__unpackDocumentTab(docResource);
+    const { lists } = this.shadowDocument.__unpackDocumentTab(docResource);
     // Find the list by ID.
     const list = lists?.[listId];
-    if (!list) return null;    
+    if (!list) return null;
 
     const levelProps = list.listProperties?.nestingLevels?.[nestingLevel];
     // For a default list, the API might not return explicit level properties.
@@ -356,38 +356,75 @@ export class FakeListItem extends FakeContainerElement {
     if (nargs !== 0) matchThrow();
 
     const item = this.__elementMapItem;
-    // A paragraph always ends with a newline. Clearing it means deleting all content
-    // *before* that final newline.
-    const start = item.startIndex;
-    const end = item.endIndex - 1;
+    const requests = [];
 
-    if (end > start) {
-      const requests = [{
+    // Find the named range associated with this element to protect it.
+
+    const nr = this.__getNr(item.__name);
+    // Delete the content, but not the final newline that defines the paragraph.
+    if (item.endIndex - 1 > item.startIndex) {
+      requests.push({
         deleteContentRange: {
-          range: { startIndex: start, endIndex: end, segmentId: this.__segmentId, tabId: this.__tabId }
+          range: { startIndex: item.startIndex, endIndex: item.endIndex - 1, segmentId: this.__segmentId }
         }
-      }];
+      });
+
+      // Protect the named range by deleting the old one and recreating it with the same name but the new, smaller range.
+      requests.push({ deleteNamedRange: { namedRangeId: nr.namedRangeId } });
+      requests.push({
+        createNamedRange: { name: nr.name, range: { startIndex: item.startIndex, endIndex: item.startIndex + 1, segmentId: this.__segmentId } },
+      });
+      lobify(requests, "clear requests:")
+      lobify(this.__shadowDocument.namedRanges, 'before clear:')
       Docs.Documents.batchUpdate({ requests }, this.shadowDocument.getId());
       this.shadowDocument.refresh();
+      lobify(this.__shadowDocument.namedRanges, 'after clear:')
     }
     return this;
+  }
+  __getNr(name) {
+    // Find the named range associated with this element
+    // early warning if it's all going to the dogs
+    const nr = this.shadowDocument.getNamedRange(name);
+    if (!nr) {
+      throw new Error(`Internal error: Could not find named range for element ${name}`);
+    }
+    return nr;
   }
 
   setText(text) {
     const { nargs, matchThrow } = signatureArgs(arguments, 'ListItem.setText');
     if (nargs !== 1 || !is.string(text)) matchThrow();
 
-    // First, clear existing content.
-    this.clear();
+    const item = this.__elementMapItem;
+    const requests = [];
+    const nr = this.__getNr(item.__name);
 
-    // After clearing, the insertion point is at the start of the now-empty paragraph.
-    const refreshedItem = findItem(this.shadowDocument.elementMap, 'LIST_ITEM', this.__elementMapItem.startIndex, this.__segmentId);
-    const insertIndex = refreshedItem.startIndex;
 
-    const requests = [{ insertText: { location: { index: insertIndex, segmentId: this.__segmentId }, text } }];
+    // This is now a single, atomic operation that replaces the content
+    // and protects the named range.
+    if (item.endIndex - 1 > item.startIndex) {
+      requests.push({ deleteContentRange: { range: { startIndex: item.startIndex, endIndex: item.endIndex - 1, segmentId: this.__segmentId } } });
+    }
+    if (text) {
+      requests.push({ insertText: { location: { index: item.startIndex, segmentId: this.__segmentId }, text } });
+    }
+
+    // As you correctly pointed out, we must protect the named range.
+    // Delete the old one and recreate it with the same name but the new, updated range.
+    requests.push({ deleteNamedRange: { namedRangeId: nr.namedRangeId } });
+    requests.push({
+      createNamedRange: {
+        name: nr.name,
+        range: { startIndex: item.startIndex, endIndex: item.startIndex + (text ? text.length : 0) + 1, segmentId: this.__segmentId },
+      },
+    });
+
+    lobify(requests, "settext requests:")
+    lobify(this.__shadowDocument.namedRanges, 'before settext:')
     Docs.Documents.batchUpdate({ requests }, this.shadowDocument.getId());
     this.shadowDocument.refresh();
-    // setText returns void.
+    lobify(this.__shadowDocument.namedRanges, 'after settext')
   }
 
   /**

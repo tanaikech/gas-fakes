@@ -320,6 +320,16 @@ class ShadowDocument {
     return null;
   }
 
+  get namedRanges () {
+    return this.__unpackDocumentTab(this.resource).documentTab.namedRanges || {}
+  }
+
+  getNamedRange (name) {
+    const nrs = this.namedRanges
+    if (!nrs) return null
+    return nrs[name]?.namedRanges?.[0] || null
+  }
+
   /**
    * Gets all footnotes in the document.
    * @returns {FakeFootnote[]} An array of footnotes.

@@ -55,6 +55,7 @@ const addNrRequest = (type, element, addRequests, segmentId) => {
 };
 
 // either finds a matching named range, or adds it to the creation queue
+
 export const findOrCreateNamedRangeName = (element, type, currentNr, addRequests, segmentId) => {
   const { endIndex, startIndex } = element;
   const prefix = makeNrPrefix(type, segmentId);

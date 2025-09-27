@@ -2,7 +2,7 @@
 
 import is from '@sindresorhus/is';
 import { assert } from '@sindresorhus/is'
-import stringify from 'json-stable-stringify';
+
 
 const isNU = (item) => is.null(item) || is.undefined(item)
 
@@ -129,7 +129,7 @@ export const mergeParamStrings = (...args) => {
       }
       const [_, key, items] = match
       if (!itemMap.has(key)) itemMap.set(key, new Set())
-      const item = itemMap.get(key)      
+      const item = itemMap.get(key)
       assert.set(item)
       items.split(",").forEach(f => itemMap.get(key).add(f))
     })
@@ -377,13 +377,23 @@ const deepEqual = (obj1, obj2) => {
   }
 
   return true;
-};
+}
 
 
-// With replacer for circular references
-function stringCircular(obj) {
+function stringCircular(obj, space = null) {
+  // First pass: remove circular references
+  const withoutCircular = removeCircularReferences(obj);
+
+  // Second pass: stabilize key order
+  const stabilized = stabilizeKeyOrder(withoutCircular);
+
+  return JSON.stringify(stabilized, null, space);
+}
+
+function removeCircularReferences(obj) {
   const seen = new WeakSet();
-  return stringify(obj, function(key, value) {
+
+  return JSON.parse(JSON.stringify(obj, (key, value) => {
     if (typeof value === 'object' && value !== null) {
       if (seen.has(value)) {
         return '[Circular]';
@@ -391,10 +401,35 @@ function stringCircular(obj) {
       seen.add(value);
     }
     return value;
-  });
+  }));
 }
 
+function stabilizeKeyOrder(obj) {
+  if (obj === null || typeof obj !== 'object') {
+    return obj;
+  }
+
+  if (Array.isArray(obj)) {
+    return obj.map(stabilizeKeyOrder);
+  }
+
+  const sortedKeys = Object.keys(obj).sort();
+  const result = {};
+
+  for (const key of sortedKeys) {
+    result[key] = stabilizeKeyOrder(obj[key]);
+  }
+
+  return result;
+}
+const lobify = (ob, mess = '') => {
+  let lob = ob
+  if (is.object(lob)) lob = stringCircular(lob)
+  console.log(mess, lob)
+  return ob
+}
 export const Utils = {
+  lobify,
   stringCircular,
   hexToRgb,
   stringToBytes,
