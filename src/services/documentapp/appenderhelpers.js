@@ -136,23 +136,29 @@ const calculateInsertionPointsAndInitialRequests = (self, childIndex, isAppend, 
       childStartIndex = insertIndex; // The new child will start where we insert it.
     } else {
       // It's an insert operation, creating a new element in a Body/Header/etc.
-      if (childIndex < 0 || childIndex >= children.length) {
-        throw new Error(`Child index (${childIndex}) must be less than or equal to the number of child elements (${children.length}).`);
+      if (childIndex < 0 || childIndex > children.length) {
+        throw new Error(`Child index (${childIndex}) must be between 0 and the number of child elements (${children.length}).`);
       }
-      const targetChildTwig = children[childIndex];
-      const targetChildItem = elementMap.get(targetChildTwig.name);
-
-      if (targetChildItem.__type === "TABLE") {
-        insertIndex = targetChildItem.startIndex - 1; // Insert before the table.
-        if (childIndex < 1) {
-          throw new Error(`Cannot insert before the first child element table (${targetChildItem.name})`);
-        }
-        leading = '\n'
-        newElementStartIndex = insertIndex + 1;
+      // Handle the case where we are inserting at the end (which is like an append).
+      if (childIndex === children.length) {
+        const lastChildTwig = children.length > 0 ? children[children.length - 1] : null;
+        const lastChildItem = lastChildTwig ? elementMap.get(lastChildTwig.name) : item;
+        insertIndex = lastChildItem.endIndex - 1;
+        newElementStartIndex = lastChildItem.endIndex;
+        leading = '\n';
       } else {
-        insertIndex = targetChildItem.startIndex
-        trailing = '\n'
-        newElementStartIndex = insertIndex;
+        const targetChildTwig = children[childIndex];
+        const targetChildItem = elementMap.get(targetChildTwig.name);
+
+        if (targetChildItem.__type === "TABLE") {
+          insertIndex = targetChildItem.startIndex - 1; // Insert before the table.
+          leading = '\n';
+          newElementStartIndex = insertIndex + 1;
+        } else {
+          insertIndex = targetChildItem.startIndex;
+          trailing = '\n';
+          newElementStartIndex = insertIndex;
+        }
       }
       childStartIndex = null; // Child start index is unknown, must be found within container.
     }

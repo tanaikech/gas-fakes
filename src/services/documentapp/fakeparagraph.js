@@ -1,6 +1,7 @@
 import { Proxies } from '../../support/proxies.js';
 import { signatureArgs } from '../../support/helpers.js';
 import { Utils } from '../../support/utils.js';
+import { imageOptions } from './elementoptions.js';
 import { FakeContainerElement } from './fakecontainerelement.js';
 import { registerElement } from './elementRegistry.js';
 import { appendText, addPositionedImage, appendImage, insertImage } from './appenderhelpers.js';
@@ -52,14 +53,28 @@ class FakeParagraph extends FakeContainerElement {
   appendInlineImage(image) {
     const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.appendInlineImage');
     if (nargs !== 1) matchThrow();
-    // This uses the generic appendImage helper, which is designed to handle insertions into paragraphs.
-    return appendImage(this, image);
-    // This was incorrect as appendImage creates a new paragraph. We need to append to the existing one.
-    const insertIndex = this.__elementMapItem.endIndex - 1;
-    const requests = [{ insertInlineImage: { location: { index: insertIndex, segmentId: this.__segmentId }, uri: image.getBlob().getDownloadUrl(), objectSize: { height: { magnitude: image.getHeight(), unit: 'PT' }, width: { magnitude: image.getWidth(), unit: 'PT' } } } }];
-    Docs.Documents.batchUpdate({ requests }, this.shadowDocument.getId());
-    this.__shadowDocument.refresh();
-    return this.getChild(this.getNumChildren() - 1);
+
+    // The generic helpers are for top-level containers. For appending to a paragraph,
+    // we need to build the request directly to insert at the correct index.
+    const insertIndex = this.__elementMapItem.endIndex - 1; // Before the trailing newline
+
+    // The imageOptions helper correctly gets the URI for a blob or detached image.
+    // We pass `isAppend: false` to prevent it from adding extra newlines.
+    const { requests, cleanup } = imageOptions.getMainRequest({
+      content: image,
+      location: { index: insertIndex, segmentId: this.__segmentId },
+      isAppend: false,
+      self: this,
+    });
+
+    try {
+      Docs.Documents.batchUpdate({ requests }, this.shadowDocument.getId());
+      this.shadowDocument.refresh();
+      // The new image is now the last child.
+      return this.getChild(this.getNumChildren() - 1);
+    } finally {
+      if (cleanup) cleanup();
+    }
   }
 
   insertInlineImage(childIndex, image) {
