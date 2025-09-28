@@ -54,25 +54,9 @@ export class FakeParagraph extends FakeContainerElement {
     const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.appendInlineImage');
     if (nargs !== 1) matchThrow();
 
-    // The generic appendImage helper creates a *new* paragraph. For Paragraph.appendInlineImage,
-    // we need to insert the image into the *existing* paragraph.
-    // The insertion point is just before the paragraph's trailing newline.
-    const insertIndex = this.__elementMapItem.endIndex - 1; // Before the trailing newline
-
-    const { requests, cleanup } = imageOptions.getMainRequest({
-      content: image,
-      location: { index: insertIndex, segmentId: this.__segmentId },
-      isAppend: false,
-      self: this,
-    });
-    try {
-      Docs.Documents.batchUpdate({ requests }, this.shadowDocument.getId());
-      this.shadowDocument.refresh();
-      // The new image is now the last child.
-      return this.getChild(this.getNumChildren() - 1);
-    } finally {
-      if (cleanup) cleanup();
-    }
+    // The generic appendImage helper creates a new paragraph. We need to insert into the existing one.
+    // We can use the insertImage helper, which inserts at a specific child index.
+    return insertImage(this, this.getNumChildren(), image);
   }
 
   insertInlineImage(childIndex, image) {
@@ -80,7 +64,11 @@ export class FakeParagraph extends FakeContainerElement {
     if (nargs !== 2) matchThrow();
 
     // The generic insertImage helper is for top-level containers. We need a specific implementation.
-    const children = this.getChildren();
+    const children = [];
+    for (let i = 0; i < this.getNumChildren(); i++) {
+      children.push(this.getChild(i));
+    }
+
     if (childIndex < 0 || childIndex > children.length) {
       throw new Error(`Child index (${childIndex}) must be between 0 and the number of child elements (${children.length}).`);
     }

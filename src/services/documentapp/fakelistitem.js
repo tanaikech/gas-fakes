@@ -5,7 +5,7 @@ import { Proxies } from '../../support/proxies.js';
 import { FakeParagraph } from './fakeparagraph.js';
 import { registerElement } from './elementRegistry.js';
 import { getText, updateParagraphStyle, getAttributes as getAttributesHelper, findItem } from './elementhelpers.js';
-import { appendText, appendImage, insertImage } from './appenderhelpers.js';
+import { appendText, insertImage } from './appenderhelpers.js';
 import { notYetImplemented, signatureArgs } from '../../support/helpers.js';
 import { Utils } from '../../support/utils.js';
 const { is, lobify } = Utils;
@@ -34,6 +34,18 @@ export class FakeListItem extends FakeParagraph {
    */
   constructor(shadowDocument, nameOrItem) {
     super(shadowDocument, nameOrItem);
+  }
+
+  appendInlineImage(image) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'ListItem.appendInlineImage');
+    if (nargs !== 1) matchThrow();
+    return insertImage(this, this.getNumChildren(), image);
+  }
+
+  insertInlineImage(childIndex, image) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'ListItem.insertInlineImage');
+    if (nargs !== 2) matchThrow();
+    return insertImage(this, childIndex, image);
   }
 
   /**
