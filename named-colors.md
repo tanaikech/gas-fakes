@@ -196,3 +196,4 @@ The colors used for banding themes can change over time with UI updates from Goo
 - [this file](README.md)
 - [named colors](named-colors.md)
 - [sandbox](sandbox.md)
+- [named range identity](named-range-identity.md)

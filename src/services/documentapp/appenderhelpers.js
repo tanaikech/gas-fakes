@@ -307,14 +307,6 @@ const elementInserter = (self, elementOrText, childIndex, options) => {
     }
   }
 
-  // After the refresh, the 'self' object is stale. We need to find its new representation
-  // in the updated element map and update its internal name. This "revives" the object
-  // for subsequent method calls in the user's script.
-  const newSelfItem = findItem(shadow.elementMap, selfType, selfStartIndex, segmentId);
-  if (newSelfItem && newSelfItem.__name !== selfName) {
-    self.__name = newSelfItem.__name;
-  }
-
   // 6. Handle table content population if necessary. This is a two-phase update
   // because we need the table to exist before we can get the indices to populate its cells.
   if (options.elementType === ElementType.TABLE) {

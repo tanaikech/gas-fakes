@@ -7,6 +7,7 @@ import { Utils } from '../../support/utils.js';
 const { is } = Utils;
 import { ElementType } from '../enums/docsenums.js';
 import { getElementFactory } from './elementRegistry.js';
+import { findItem } from './elementhelpers.js';
 
 /**
  * @typedef {import('./shadow.js').ShadowStructure} ShadowStructure
@@ -71,7 +72,11 @@ export class FakeElement {
           throw new Error(`Invalid arguments for attached FakeElement: ${nameOrItem}. Name must start with '${shadowPrefix}'.`);
         }
         this.__isDetached = false;
-      this.__shadowDocument = shadowDocument;
+        this.__shadowDocument = shadowDocument;
+        // Cache the element's initial position. This is the key to "reviving" the element.
+        const initialItem = this.__getElementMapItem(nameOrItem);
+        this.__initialStartIndex = initialItem.startIndex;
+        this.__initialSegmentId = initialItem.__segmentId;
         this.__name = nameOrItem;
         this.__detachedItem = null;
       } else if (is.object(nameOrItem)) { // Detached
@@ -105,7 +110,18 @@ export class FakeElement {
     if (this.__isDetached) {
       return this.__detachedItem;
     }
-    return this.__getElementMapItem(this.__name);
+
+    // 1. Try the last known name. This is fast if nothing has changed.
+    const lastKnownItem = this.__getElementMapItem(this.__name, true); // noThrow = true
+    if (lastKnownItem) {
+      return lastKnownItem;
+    }
+
+    // 2. If the last name was stale, find the element by its initial position.
+    const revivedItem = findItem(this.__shadowDocument.elementMap, this.getType().toString(), this.__initialStartIndex, this.__initialSegmentId);
+    // 3. Update the internal name so the next lookup is fast again.
+    this.__name = revivedItem.__name;
+    return revivedItem;
   }
 
   /**
@@ -114,9 +130,10 @@ export class FakeElement {
    * @returns {object} The element map item.
    * @private
    */
-  __getElementMapItem(name) {
+  __getElementMapItem(name, noThrow = false) {
     const item = this.__shadowDocument.getElement(name);
     if (!item) {
+      if (noThrow) return null;
       throw new Error(`element with name ${name} not found`);
     }
     return item;

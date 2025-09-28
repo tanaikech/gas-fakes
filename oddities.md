@@ -825,3 +825,4 @@ If you want to play with the testing suite , then take a look at the [collaborat
 - [setup env](setup-env.md) - ([credit Eric Shapiro] - additional info on contents of .env file
 - [this file](README.md)
 - [named colors](named-colors.md)
+- [named range identity](named-range-identity.md)

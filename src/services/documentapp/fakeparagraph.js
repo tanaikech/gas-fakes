@@ -274,6 +274,12 @@ export class FakeParagraph extends FakeContainerElement {
    * @private
    */
   __insertImageAtIndex(image, index) {
+    // As you correctly pointed out, we must protect the named range of the parent paragraph.
+    const item = this.__elementMapItem;
+    const nr = this.shadowDocument.getNamedRange(item.__name);
+    if (!nr) {
+      throw new Error(`Internal error: Could not find named range for element ${item.__name}`);
+    }
     // This is a simplified and corrected version of the logic in imageOptions.getMainRequest.
     // It directly creates the insertInlineImage request without the complex logic
     // for adding new paragraphs, which was causing the empty request array.
@@ -287,6 +293,16 @@ export class FakeParagraph extends FakeContainerElement {
       },
     }];
 
+    // Add the protection requests to the batch update.
+    // This tells the API to preserve the identity of the paragraph being modified.
+    requests.push({ deleteNamedRange: { namedRangeId: nr.namedRangeId } });
+    requests.push({
+      createNamedRange: {
+        name: nr.name,
+        // The new range will be expanded by 1 character for the inserted image.
+        range: { startIndex: item.startIndex, endIndex: item.endIndex + 1, segmentId: this.__segmentId },
+      },
+    });
     try {
       Docs.Documents.batchUpdate({ requests }, this.shadowDocument.getId());
       this.shadowDocument.refresh();
