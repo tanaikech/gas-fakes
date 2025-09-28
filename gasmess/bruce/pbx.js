@@ -5,6 +5,58 @@ import { report, scl } from './dreport.js';
 
 
 const suffix = "-bruce"
+const tli = () => {
+  let doc = DocumentApp.create("abc")
+  const id = doc.getId()
+  moveToTempFolder(id, suffix)
+  let body = doc.getBody();
+  let li = body.appendListItem("Initial list item text.");
+
+  doc = scl(doc)
+  let d = Docs.Documents.get(id)
+  console.log('after append item', doc.getBody().getNumChildren())
+  console.log(JSON.stringify(d.body.content))
+
+  body = doc.getBody()
+  li = body.getChild(1)
+  li.clear();
+
+  doc = scl(doc)
+  d = Docs.Documents.get(id)
+  console.log('after clear', doc.getBody().getNumChildren())
+  console.log(JSON.stringify(d.body.content))
+
+  body = doc.getBody()
+  li = body.getChild(1)
+  li.setText("New text after clear.");
+  doc = scl(doc)
+  d = Docs.Documents.get(id)
+  console.log('after new text', doc.getBody().getNumChildren())
+  console.log(JSON.stringify(d.body.content))
+
+  body = doc.getBody()
+  li = body.getChild(1)
+  li.setText("Image test: "); // setText returns void, so we can't chain.
+
+  doc = scl(doc)
+  d = Docs.Documents.get(id)
+  console.log('after image text', doc.getBody().getNumChildren())
+  console.log(JSON.stringify(d.body.content))
+
+
+  const imageUrl = 'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png';
+  const imageBlob = UrlFetchApp.fetch(imageUrl).getBlob();
+  body = doc.getBody()
+  li = body.getChild(1)
+  li.appendInlineImage(imageBlob.copyBlob());
+
+  console.log('after inlinr image', doc.getBody().getNumChildren())
+  console.log(JSON.stringify(d.body.content))
+
+  deleteTempFile(id)
+
+}
+tli()
 
 const tx2 = () => {
   let doc = DocumentApp.create("abc")
@@ -34,7 +86,6 @@ const tx2 = () => {
   deleteTempFile(id)
 }
 
-tx2()
 const tx1 = () => {
   let doc = DocumentApp.create("abc")
   const id = doc.getId()
@@ -53,7 +104,7 @@ const tx1 = () => {
 
   deleteTempFile(id)
 }
-tx1()
+
 const tabsa = () => {
 
   let doc = DocumentApp.create("abc")

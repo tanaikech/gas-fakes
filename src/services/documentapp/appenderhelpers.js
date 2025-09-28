@@ -1,6 +1,6 @@
 import { Utils } from "../../support/utils.js";
 import { ElementType } from '../enums/docsenums.js';
-const { is, isBlob } = Utils
+const { is, isBlob , stringCircular, lobify} = Utils
 import { getElementFactory } from './elementRegistry.js'
 import { signatureArgs, notYetImplemented } from '../../support/helpers.js';
 import { findItem } from './elementhelpers.js';

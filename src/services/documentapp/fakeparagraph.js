@@ -12,7 +12,7 @@ const { is } = Utils;
 /**
  * @implements {GoogleAppsScript.Document.Paragraph}
  */
-class FakeParagraph extends FakeContainerElement {
+export class FakeParagraph extends FakeContainerElement {
   constructor(shadowDocument, name) {
     const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph');
     // An attached element has a shadowDocument and a string name (its ID).
@@ -54,19 +54,17 @@ class FakeParagraph extends FakeContainerElement {
     const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.appendInlineImage');
     if (nargs !== 1) matchThrow();
 
-    // The generic helpers are for top-level containers. For appending to a paragraph,
-    // we need to build the request directly to insert at the correct index.
+    // The generic appendImage helper creates a *new* paragraph. For Paragraph.appendInlineImage,
+    // we need to insert the image into the *existing* paragraph.
+    // The insertion point is just before the paragraph's trailing newline.
     const insertIndex = this.__elementMapItem.endIndex - 1; // Before the trailing newline
 
-    // The imageOptions helper correctly gets the URI for a blob or detached image.
-    // We pass `isAppend: false` to prevent it from adding extra newlines.
     const { requests, cleanup } = imageOptions.getMainRequest({
       content: image,
       location: { index: insertIndex, segmentId: this.__segmentId },
       isAppend: false,
       self: this,
     });
-
     try {
       Docs.Documents.batchUpdate({ requests }, this.shadowDocument.getId());
       this.shadowDocument.refresh();
@@ -80,8 +78,19 @@ class FakeParagraph extends FakeContainerElement {
   insertInlineImage(childIndex, image) {
     const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.insertInlineImage');
     if (nargs !== 2) matchThrow();
-    // This uses the generic insertImage helper.
-    return insertImage(this, childIndex, image);
+
+    // The generic insertImage helper is for top-level containers. We need a specific implementation.
+    const children = this.getChildren();
+    if (childIndex < 0 || childIndex > children.length) {
+      throw new Error(`Child index (${childIndex}) must be between 0 and the number of child elements (${children.length}).`);
+    }
+
+    // Determine the character index for insertion.
+    const insertIndex = (childIndex === children.length)
+      ? this.__elementMapItem.endIndex - 1 // Append before the final newline
+      : children[childIndex].__elementMapItem.startIndex; // Insert before the specified child
+
+    return this.__insertImageAtIndex(image, insertIndex);
   }
 
   setHeading(heading) {
@@ -267,6 +276,31 @@ class FakeParagraph extends FakeContainerElement {
 
   toString() {
     return 'Paragraph';
+  }
+
+  /**
+   * Helper to insert an image at a specific character index.
+   * @param {GoogleAppsScript.Base.BlobSource} image The image to insert.
+   * @param {number} index The character index.
+   * @returns {GoogleAppsScript.Document.InlineImage} The new image.
+   * @private
+   */
+  __insertImageAtIndex(image, index) {
+    const { requests, cleanup } = imageOptions.getMainRequest({
+      content: image,
+      location: { index, segmentId: this.__segmentId },
+      isAppend: false, // We are inserting within a paragraph, not appending a new one.
+      self: this,
+    });
+
+    try {
+      Docs.Documents.batchUpdate({ requests }, this.shadowDocument.getId());
+      this.shadowDocument.refresh();
+      // The new image is now a child. We need to find it to return it.
+      return this.findText(image.getName())?.getElement().getParent().getChild(1);
+    } finally {
+      if (cleanup) cleanup();
+    }
   }
 }
 

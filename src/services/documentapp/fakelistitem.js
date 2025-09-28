@@ -1,9 +1,8 @@
 /**
  * @file Provides a fake implementation of the ListItem class.
  */
-import { imageOptions } from './elementoptions.js';
 import { Proxies } from '../../support/proxies.js';
-import { FakeContainerElement } from './fakecontainerelement.js';
+import { FakeParagraph } from './fakeparagraph.js';
 import { registerElement } from './elementRegistry.js';
 import { getText, updateParagraphStyle, getAttributes as getAttributesHelper, findItem } from './elementhelpers.js';
 import { appendText, appendImage, insertImage } from './appenderhelpers.js';
@@ -27,7 +26,7 @@ export const newFakeListItem = (...args) => {
  * @implements {GoogleAppsScript.Document.ListItem}
  * @see https://developers.google.com/apps-script/reference/document/list-item
  */
-export class FakeListItem extends FakeContainerElement {
+export class FakeListItem extends FakeParagraph {
   /**
    * @param {import('./shadowdocument.js').ShadowDocument} shadowDocument The shadow document manager.
    * @param {string|object} nameOrItem The name of the element or the element's API resource.
@@ -35,58 +34,6 @@ export class FakeListItem extends FakeContainerElement {
    */
   constructor(shadowDocument, nameOrItem) {
     super(shadowDocument, nameOrItem);
-  }
-
-  /**
-   * Gets the text content of the list item, flattening all child text elements.
-   * @returns {string} The text content.
-   * @see https://developers.google.com/apps-script/reference/document/list-item#getText()
-   */
-  getText() {
-    return getText(this);
-  }
-
-  /**
-   * Appends text to the list item.
-   * @param {string|GoogleAppsScript.Document.Text} textOrTextElement The text to append.
-   * @returns {GoogleAppsScript.Document.ListItem} The list item, for chaining.
-   */
-  appendText(textOrTextElement) {
-    appendText(this, textOrTextElement);
-    return this;
-  }
-
-  appendInlineImage(image) {
-    const { nargs, matchThrow } = signatureArgs(arguments, 'ListItem.appendInlineImage');
-    if (nargs !== 1) matchThrow();
-
-    // The generic helpers are for top-level containers. For appending to a paragraph,
-    // we need to build the request directly to insert at the correct index.
-    const insertIndex = this.__elementMapItem.endIndex - 1; // Before the trailing newline
-
-    // The imageOptions helper correctly gets the URI for a blob or detached image.
-    // We pass `isAppend: false` to prevent it from adding extra newlines.
-    const { requests, cleanup } = imageOptions.getMainRequest({
-      content: image,
-      location: { index: insertIndex, segmentId: this.__segmentId },
-      isAppend: false,
-      self: this,
-    });
-
-    try {
-      Docs.Documents.batchUpdate({ requests }, this.shadowDocument.getId());
-      this.shadowDocument.refresh();
-      return this.getChild(this.getNumChildren() - 1);
-    } finally {
-      if (cleanup) cleanup();
-    }
-  }
-
-  insertInlineImage(childIndex, image) {
-    const { nargs, matchThrow } = signatureArgs(arguments, 'ListItem.insertInlineImage');
-    if (nargs !== 2) matchThrow();
-    // This uses the generic insertImage helper.
-    return insertImage(this, childIndex, image);
   }
 
   /**
@@ -378,11 +325,12 @@ export class FakeListItem extends FakeContainerElement {
     const item = this.__elementMapItem;
     const requests = [];
 
-    //lobify(this.__shadowDocument.namedRanges, 'before clear:')
-
     // Find the named range associated with this element to protect it.
+    const nr = this.shadowDocument.getNamedRange(item.__name);
+    if (!nr) {
+      throw new Error(`Internal error: Could not find named range for element ${item.__name}`);
+    }
 
-    const nr = this.__getNr(item.__name);
     // Delete the content, but not the final newline that defines the paragraph.
     if (item.endIndex - 1 > item.startIndex) {
       requests.push({
@@ -396,34 +344,26 @@ export class FakeListItem extends FakeContainerElement {
       requests.push({
         createNamedRange: { name: nr.name, range: { startIndex: item.startIndex, endIndex: item.startIndex + 1, segmentId: this.__segmentId } },
       });
-      //lobify(requests, "clear requests:")
 
       Docs.Documents.batchUpdate({ requests }, this.shadowDocument.getId());
       this.shadowDocument.refresh();
-      //lobify(this.__shadowDocument.namedRanges, 'after clear:')
     }
     return this;
-  }
-  __getNr(name) {
-    // Find the named range associated with this element
-    // early warning if it's all going to the dogs
-    const nr = this.shadowDocument.getNamedRange(name);
-    if (!nr) {
-      throw new Error(`Internal error: Could not find named range for element ${name}`);
-    }
-    return nr;
   }
 
   setText(text) {
     const { nargs, matchThrow } = signatureArgs(arguments, 'ListItem.setText');
     if (nargs !== 1 || !is.string(text)) matchThrow();
-    //lobify(this.__shadowDocument.namedRanges, 'before settext:')
+
     const item = this.__elementMapItem;
     const requests = [];
-    const nr = this.__getNr(item.__name);
 
-    // This is now a single, atomic operation that replaces the content
-    // and protects the named range.
+    // Find the named range associated with this element to protect it.
+    const nr = this.shadowDocument.getNamedRange(item.__name);
+    if (!nr) {
+      throw new Error(`Internal error: Could not find named range for element ${item.__name}`);
+    }
+
     if (item.endIndex - 1 > item.startIndex) {
       requests.push({ deleteContentRange: { range: { startIndex: item.startIndex, endIndex: item.endIndex - 1, segmentId: this.__segmentId } } });
     }
@@ -440,12 +380,9 @@ export class FakeListItem extends FakeContainerElement {
         range: { startIndex: item.startIndex, endIndex: item.startIndex + (text ? text.length : 0) + 1, segmentId: this.__segmentId },
       },
     });
-
-    //lobify(requests, "settext requests:")
  
     Docs.Documents.batchUpdate({ requests }, this.shadowDocument.getId());
     this.shadowDocument.refresh();
-    //lobify(this.__shadowDocument.namedRanges, 'after settext')
   }
 
   /**
