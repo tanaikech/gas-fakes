@@ -56,7 +56,7 @@ export class FakeParagraph extends FakeContainerElement {
 
     // The generic appendImage helper creates a new paragraph. We need to insert into the existing one.
     // We can use the insertImage helper, which inserts at a specific child index.
-    return insertImage(this, this.getNumChildren(), image);
+    return this.insertInlineImage(this.getNumChildren(), image);
   }
 
   insertInlineImage(childIndex, image) {
@@ -293,8 +293,14 @@ export class FakeParagraph extends FakeContainerElement {
       // After refresh, find the newly created image element to return it.
       // This is a simplification; a more robust solution would find the image
       // based on its new objectId from the batchUpdate response.
-      const children = this.getChildren();
-      return children.find(c => c.getType() === DocumentApp.ElementType.INLINE_IMAGE && c.getBlob().getName() === image.getName());
+      const children = [];
+      for (let i = 0; i < this.getNumChildren(); i++) {
+        children.push(this.getChild(i));
+      }
+      // The source 'image' can be a Blob or a detached InlineImage.
+      // We need to get the name from the underlying blob in either case.
+      const sourceImageName = image.getName ? image.getName() : image.getBlob().getName();
+      return children.find(c => c.getType() === DocumentApp.ElementType.INLINE_IMAGE && c.getBlob().getName() === sourceImageName);
     } finally {
       if (cleanup) cleanup();
     }

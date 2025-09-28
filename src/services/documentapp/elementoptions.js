@@ -381,11 +381,13 @@ export const imageOptions = {
   elementType: ElementType.INLINE_IMAGE,
   insertMethodSignature: 'DocumentApp.Body.insertImage',
   canAcceptText: false,
-  getMainRequest: ({ content: image, location, isAppend, self, leading, trailing }) => {
+  // This internal helper is extracted so it can be used by Paragraph.appendInlineImage
+  // without invoking the complex request-building logic of getMainRequest.
+  __getImageUriAndSize: (image) => {
     const isDetachedImage = is.object(image) && is.function(image.getType) && image.getType() === ElementType.INLINE_IMAGE;
     const isBlobSource = isBlob(image);
 
-    let uri, size, fileId;
+    let uri, size, fileId, cleanup = null;
 
     if (isDetachedImage) {
       if (!image.__isDetached) throw new Error('Element must be detached.');
@@ -446,13 +448,14 @@ export const imageOptions = {
         }
         uri = fileWithLink.webContentLink;
 
-
-        // We can get the byte size, but not the height/width for a blob.
-        // The API seems to require an objectSize, so we'll provide a default.
-        // This is the desired size in the document, not the intrinsic image size.
         size = {
-          height: { magnitude: 100, unit: 'PT' },
-          width: { magnitude: 100, unit: 'PT' },
+          height: { magnitude: image.getHeight ? image.getHeight() : 100, unit: 'PT' },
+          width: { magnitude: image.getWidth ? image.getWidth() : 100, unit: 'PT' },
+        };
+
+        cleanup = () => {
+          try { Drive.Files.update({ trashed: true }, fileId); }
+          catch (e) { console.warn(`Failed to cleanup temporary image file ${fileId}:`, e.message); }
         };
       } catch (e) {
         // if something fails during setup, trash the file immediately
@@ -466,9 +469,15 @@ export const imageOptions = {
     } else {
       throw new Error('Only inserting a copied (detached) InlineImage or a Blob is supported at this time.');
     }
+    return { uri, size, cleanup };
+  },
+  getMainRequest: ({ content: image, location, isAppend, self, leading, trailing }) => {
+    const { uri, size, cleanup } = imageOptions.__getImageUriAndSize(image);
+
     if (!uri) {
       throw new Error('Could not determine image URI for insertion.');
     }
+
     const imageRequest = {
       insertInlineImage: {
         uri,
@@ -480,32 +489,13 @@ export const imageOptions = {
       imageRequest.insertInlineImage.objectSize = size;
     }
 
-    let finalRequests;
-    if (leading) { // Append case
-      const textRequest = { insertText: { text: leading, location } }; // leading is '\n'
-      // The image needs to be inserted into the new paragraph created by the leading newline.
-      // The new paragraph will start at location.index + 1.
-      const imageLocation = { ...location, index: location.index + 1 };
-      const imageRequestWithCorrectedLocation = { ...imageRequest, insertInlineImage: { ...imageRequest.insertInlineImage, location: imageLocation } };
-      finalRequests = [textRequest, imageRequestWithCorrectedLocation];
-    } else if (trailing) { // Insert case
-      const textRequest = { insertText: { text: trailing, location } };
-      // Insert a newline, then the image at the same location. The API inserts the image after the newline.
-      finalRequests = [textRequest, imageRequest];
-    } else {
-      // This case is for inserting into an existing paragraph (e.g., Paragraph.appendImage).
-      finalRequests = [imageRequest];
-    }
+    const textRequest = (leading || trailing) ? { insertText: { text: leading || trailing, location } } : null;
+    const imageLocation = (leading) ? { ...location, index: location.index + 1 } : location;
+    const imageRequestWithCorrectedLocation = { ...imageRequest, insertInlineImage: { ...imageRequest.insertInlineImage, location: imageLocation } };
 
-    if (isBlobSource) {
-      const cleanup = () => {
-        try { Drive.Files.update({ trashed: true }, fileId); }
-        catch (e) { console.warn(`Failed to cleanup temporary image file ${fileId}:`, e.message); }
-      };
-      return { requests: finalRequests, cleanup };
-    }
+    const finalRequests = textRequest ? [textRequest, imageRequestWithCorrectedLocation] : [imageRequestWithCorrectedLocation];
 
-    return finalRequests;
+    return { requests: finalRequests, cleanup };
   },
   getStyleRequests: null, // Styling is part of the image object itself.
   findType: 'PARAGRAPH', // We are creating a paragraph to hold the image.

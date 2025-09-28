@@ -22,7 +22,7 @@ export const newFakeListItem = (...args) => {
 /**
  * A fake implementation of the ListItem class for DocumentApp.
  * @class FakeListItem
- * @extends {FakeContainerElement}
+ * @extends {FakeParagraph}
  * @implements {GoogleAppsScript.Document.ListItem}
  * @see https://developers.google.com/apps-script/reference/document/list-item
  */
