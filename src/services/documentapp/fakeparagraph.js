@@ -274,18 +274,27 @@ export class FakeParagraph extends FakeContainerElement {
    * @private
    */
   __insertImageAtIndex(image, index) {
-    const { requests, cleanup } = imageOptions.getMainRequest({
-      content: image,
-      location: { index, segmentId: this.__segmentId },
-      isAppend: false, // We are inserting within a paragraph, not appending a new one.
-      self: this,
-    });
+    // This is a simplified and corrected version of the logic in imageOptions.getMainRequest.
+    // It directly creates the insertInlineImage request without the complex logic
+    // for adding new paragraphs, which was causing the empty request array.
+    const { uri, size, cleanup } = imageOptions.__getImageUriAndSize(image);
+
+    const requests = [{
+      insertInlineImage: {
+        uri,
+        location: { index, segmentId: this.__segmentId },
+        objectSize: size,
+      },
+    }];
 
     try {
       Docs.Documents.batchUpdate({ requests }, this.shadowDocument.getId());
       this.shadowDocument.refresh();
-      // The new image is now a child. We need to find it to return it.
-      return this.findText(image.getName())?.getElement().getParent().getChild(1);
+      // After refresh, find the newly created image element to return it.
+      // This is a simplification; a more robust solution would find the image
+      // based on its new objectId from the batchUpdate response.
+      const children = this.getChildren();
+      return children.find(c => c.getType() === DocumentApp.ElementType.INLINE_IMAGE && c.getBlob().getName() === image.getName());
     } finally {
       if (cleanup) cleanup();
     }

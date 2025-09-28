@@ -36,18 +36,6 @@ export class FakeListItem extends FakeParagraph {
     super(shadowDocument, nameOrItem);
   }
 
-  appendInlineImage(image) {
-    const { nargs, matchThrow } = signatureArgs(arguments, 'ListItem.appendInlineImage');
-    if (nargs !== 1) matchThrow();
-    return insertImage(this, this.getNumChildren(), image);
-  }
-
-  insertInlineImage(childIndex, image) {
-    const { nargs, matchThrow } = signatureArgs(arguments, 'ListItem.insertInlineImage');
-    if (nargs !== 2) matchThrow();
-    return insertImage(this, childIndex, image);
-  }
-
   /**
    * Gets a copy of the element's attributes.
    * @returns {object} The attributes.
