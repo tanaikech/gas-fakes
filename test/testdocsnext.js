@@ -223,7 +223,7 @@ export const testDocsNext = (pack) => {
     const p_detached = p_attached.copy();
 
     const attemptInvalidIndex = () => body.insertParagraph(99, p_detached);
-    t.rxMatch(t.threw(attemptInvalidIndex)?.message || 'no error thrown', /Child index \(99\) must be between 0 and the number of child elements/, "Inserting at an out-of-bounds index should throw an error");
+    t.rxMatch(t.threw(attemptInvalidIndex)?.message || 'no error thrown', /must be less than or equal to the number of child elements/, "Inserting at an out-of-bounds index should throw an error");
 
     const attemptInvalidType = () => body.insertParagraph(1, doc.getBody()); // Not a paragraph
     t.rxMatch(t.threw(attemptInvalidType)?.message || 'no error thrown', /The parameters .* don't match the method signature/, "Inserting a non-paragraph element should throw an error");

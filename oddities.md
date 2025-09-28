@@ -1,4 +1,4 @@
-# Approach, and oddities I've found in gas-fakes
+# Approach, and oddities I've found while creating gas-fakes
 
 
 Just as on Apps Script, everything is executed synchronously so you don't need to bother with handling Promises/async/await. Note that the intended audience is Apps Script developers who want to run the same code and access the same services in both Node and Apps Script. However I've uncovered quite a few behavioral oddities, inconsistencies (and bugs) in the Apps Script services I've dug into. I'm using this file as a record what I've found and discuss the dilemma of whether I should actually emulate dubious behavior.
