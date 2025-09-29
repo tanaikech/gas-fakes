@@ -17,4 +17,5 @@ import './services/formapp/app.js'
 import './services/slidesapp/app.js'
 
 // force initilialization of scriptApp - which is always needed
+// scriptapp will always be fake here
 ScriptApp.isFake

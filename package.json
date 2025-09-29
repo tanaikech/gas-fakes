@@ -62,7 +62,7 @@
     "pub": "cp mainlocal.js main.js && npm publish --access public"
   },
   "name": "@mcpher/gas-fakes",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "license": "MIT",
   "main": "main.js",
   "description": "A proof of concept implementation of Apps Script Environment on Node",
