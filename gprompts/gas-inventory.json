@@ -1,77 +1,173 @@
 {
-  "Base Service": {
-    "name": "Base Service",
-    "link": "https://developers.google.com/apps-script/reference/base",
+  "Forms Service": {
+    "name": "Forms Service",
+    "link": "https://developers.google.com/apps-script/reference/forms",
     "classes": {
       "Classes": {
         "methods": {},
         "properties": {}
       },
-      "Blob": {
+      "Alignment": {
         "methods": {},
         "properties": {}
       },
-      "BlobSource": {
+      "CheckboxGridItem": {
         "methods": {},
         "properties": {}
       },
-      "Browser": {
+      "CheckboxGridValidation": {
         "methods": {},
         "properties": {}
       },
-      "Button": {
+      "CheckboxGridValidationBuilder": {
         "methods": {},
         "properties": {}
       },
-      "ButtonSet": {
+      "CheckboxItem": {
         "methods": {},
         "properties": {}
       },
-      "ColorType": {
+      "CheckboxValidation": {
         "methods": {},
         "properties": {}
       },
-      "Logger": {
+      "CheckboxValidationBuilder": {
         "methods": {},
         "properties": {}
       },
-      "Menu": {
+      "Choice": {
         "methods": {},
         "properties": {}
       },
-      "MimeType": {
+      "DateItem": {
         "methods": {},
         "properties": {}
       },
-      "Month": {
+      "DateTimeItem": {
         "methods": {},
         "properties": {}
       },
-      "PromptResponse": {
+      "DestinationType": {
         "methods": {},
         "properties": {}
       },
-      "RgbColor": {
+      "DurationItem": {
         "methods": {},
         "properties": {}
       },
-      "Session": {
+      "FeedbackType": {
         "methods": {},
         "properties": {}
       },
-      "Ui": {
+      "Form": {
         "methods": {},
         "properties": {}
       },
-      "User": {
+      "FormApp": {
         "methods": {},
         "properties": {}
       },
-      "Weekday": {
+      "FormResponse": {
         "methods": {},
         "properties": {}
       },
-      "console": {
+      "GridItem": {
+        "methods": {},
+        "properties": {}
+      },
+      "GridValidation": {
+        "methods": {},
+        "properties": {}
+      },
+      "GridValidationBuilder": {
+        "methods": {},
+        "properties": {}
+      },
+      "ImageItem": {
+        "methods": {},
+        "properties": {}
+      },
+      "Item": {
+        "methods": {},
+        "properties": {}
+      },
+      "ItemResponse": {
+        "methods": {},
+        "properties": {}
+      },
+      "ItemType": {
+        "methods": {},
+        "properties": {}
+      },
+      "ListItem": {
+        "methods": {},
+        "properties": {}
+      },
+      "MultipleChoiceItem": {
+        "methods": {},
+        "properties": {}
+      },
+      "PageBreakItem": {
+        "methods": {},
+        "properties": {}
+      },
+      "PageNavigationType": {
+        "methods": {},
+        "properties": {}
+      },
+      "ParagraphTextItem": {
+        "methods": {},
+        "properties": {}
+      },
+      "ParagraphTextValidation": {
+        "methods": {},
+        "properties": {}
+      },
+      "ParagraphTextValidationBuilder": {
+        "methods": {},
+        "properties": {}
+      },
+      "QuizFeedback": {
+        "methods": {},
+        "properties": {}
+      },
+      "QuizFeedbackBuilder": {
+        "methods": {},
+        "properties": {}
+      },
+      "RatingIconType": {
+        "methods": {},
+        "properties": {}
+      },
+      "RatingItem": {
+        "methods": {},
+        "properties": {}
+      },
+      "ScaleItem": {
+        "methods": {},
+        "properties": {}
+      },
+      "SectionHeaderItem": {
+        "methods": {},
+        "properties": {}
+      },
+      "TextItem": {
+        "methods": {},
+        "properties": {}
+      },
+      "TextValidation": {
+        "methods": {},
+        "properties": {}
+      },
+      "TextValidationBuilder": {
+        "methods": {},
+        "properties": {}
+      },
+      "TimeItem": {
+        "methods": {},
+        "properties": {}
+      },
+      "VideoItem": {
         "methods": {},
         "properties": {}
       }

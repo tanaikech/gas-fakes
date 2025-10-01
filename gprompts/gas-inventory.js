@@ -2,13 +2,13 @@ import got from 'got';
 import * as cheerio from 'cheerio';
 import fs from 'fs/promises';
 import { URL } from 'url';
-
+const doThese = './inventory-list.json'
 const baseUrl = "https://developers.google.com/apps-script/reference/"
-const items = JSON.parse(await fs.readFile('/home/bruce/gas-fakes/gprompts/inventory-list.json', 'utf-8'));
-const outputFile = '/home/bruce/gas-fakes/gprompts/gas-inventory.json';
+const items = JSON.parse(await fs.readFile(doThese, 'utf-8'));
+const outputFile = './gas-inventory.json';
 
 const visited = new Set();
-const queue = items.map (f=>baseUrl+f);
+const queue = [baseUrl]
 
 async function scrape() {
   const inventory = {};
@@ -34,9 +34,12 @@ async function scrape() {
 
     $('a').each((i, el) => {
       const href = $(el).attr('href');
-      if (href && href.startsWith(url)) {
+      console.log ('...found href',href,url)
+      if (href && href.startsWith('/apps-script/reference')) {
+        console.log ('...adding to queue',href)
         const absoluteUrl = new URL(href, url).href;
         if (!visited.has(absoluteUrl)) {
+          console.log ('...adding to queue',absoluteUrl)
           queue.push(absoluteUrl);
         }
       }

@@ -338,9 +338,21 @@ const compareMixedValues = (a, b) => {
   if (typeof a === 'string' && typeof b === 'string') {
     return a.localeCompare(b, undefined, { sensitivity: 'base', numeric: true });
   }
+  /*
   if (typeof a === 'boolean' && typeof b === 'boolean') {
     return (a === b) ? 0 : (a ? 1 : -1); 
   }
+*/
+   // *** THE FIX IS HERE (Explicit Boolean Comparison) ***
+  if (typeof a === 'boolean' && typeof b === 'boolean') {
+    if (a === b) return 0;
+    // In ascending sort, FALSE is less than TRUE.
+    return a === false ? -1 : 1;
+    // OR: return (a ? 1 : 0) - (b ? 1 : 0); // TRUE is 1, FALSE is 0
+  }
+  // *** END OF FIX ***
+
+
   if (a instanceof Date && b instanceof Date) {
     return a.getTime() - b.getTime();
   }
