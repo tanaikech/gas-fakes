@@ -15,11 +15,6 @@ async function scrape() {
 
   while (queue.length > 0) {
     const url = queue.shift();
-    if (visited.has(url)) {
-      continue;
-    }
-    visited.add(url);
-
     console.log(`Scraping ${url}`);
     const response = await got(url);
     const $ = cheerio.load(response.body);
@@ -34,13 +29,12 @@ async function scrape() {
 
     $('a').each((i, el) => {
       const href = $(el).attr('href');
-      console.log ('...found href',href,url)
       if (href && href.startsWith('/apps-script/reference')) {
-        console.log ('...adding to queue',href)
         const absoluteUrl = new URL(href, url).href;
         if (!visited.has(absoluteUrl)) {
           console.log ('...adding to queue',absoluteUrl)
           queue.push(absoluteUrl);
+          visited.add(absoluteUrl);
         }
       }
     });
