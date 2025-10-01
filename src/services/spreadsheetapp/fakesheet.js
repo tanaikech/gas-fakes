@@ -11,10 +11,8 @@ import { newFakeDeveloperMetadataFinder } from "./fakedevelopermetadatafinder.js
 import { newFakeSheetRangeList } from "./fakesheetrangelist.js";
 import { FakeTextFinder, newFakeTextFinder } from "./faketextfinder.js";
 
-import {  newFakeNamedRange } from "./fakenamedrange.js";
+import { newFakeNamedRange } from "./fakenamedrange.js";
 import { newFakeProtection } from "./fakeprotection.js";
-
-
 
 const { is, isEnum } = Utils;
 
@@ -1009,7 +1007,8 @@ export class FakeSheet {
       ],
     };
     this.__batchUpdate(obj);
-    return this.getParent().getSheetByName(name);
+    this.__properties.title = name;
+    return this;
   }
 
   protect() {
