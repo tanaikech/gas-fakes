@@ -1,0 +1,176 @@
+{
+  "Forms Service": {
+    "name": "Forms Service",
+    "link": "https://developers.google.com/apps-script/reference/forms",
+    "classes": {
+      "Classes": {
+        "methods": {},
+        "properties": {}
+      },
+      "Alignment": {
+        "methods": {},
+        "properties": {}
+      },
+      "CheckboxGridItem": {
+        "methods": {},
+        "properties": {}
+      },
+      "CheckboxGridValidation": {
+        "methods": {},
+        "properties": {}
+      },
+      "CheckboxGridValidationBuilder": {
+        "methods": {},
+        "properties": {}
+      },
+      "CheckboxItem": {
+        "methods": {},
+        "properties": {}
+      },
+      "CheckboxValidation": {
+        "methods": {},
+        "properties": {}
+      },
+      "CheckboxValidationBuilder": {
+        "methods": {},
+        "properties": {}
+      },
+      "Choice": {
+        "methods": {},
+        "properties": {}
+      },
+      "DateItem": {
+        "methods": {},
+        "properties": {}
+      },
+      "DateTimeItem": {
+        "methods": {},
+        "properties": {}
+      },
+      "DestinationType": {
+        "methods": {},
+        "properties": {}
+      },
+      "DurationItem": {
+        "methods": {},
+        "properties": {}
+      },
+      "FeedbackType": {
+        "methods": {},
+        "properties": {}
+      },
+      "Form": {
+        "methods": {},
+        "properties": {}
+      },
+      "FormApp": {
+        "methods": {},
+        "properties": {}
+      },
+      "FormResponse": {
+        "methods": {},
+        "properties": {}
+      },
+      "GridItem": {
+        "methods": {},
+        "properties": {}
+      },
+      "GridValidation": {
+        "methods": {},
+        "properties": {}
+      },
+      "GridValidationBuilder": {
+        "methods": {},
+        "properties": {}
+      },
+      "ImageItem": {
+        "methods": {},
+        "properties": {}
+      },
+      "Item": {
+        "methods": {},
+        "properties": {}
+      },
+      "ItemResponse": {
+        "methods": {},
+        "properties": {}
+      },
+      "ItemType": {
+        "methods": {},
+        "properties": {}
+      },
+      "ListItem": {
+        "methods": {},
+        "properties": {}
+      },
+      "MultipleChoiceItem": {
+        "methods": {},
+        "properties": {}
+      },
+      "PageBreakItem": {
+        "methods": {},
+        "properties": {}
+      },
+      "PageNavigationType": {
+        "methods": {},
+        "properties": {}
+      },
+      "ParagraphTextItem": {
+        "methods": {},
+        "properties": {}
+      },
+      "ParagraphTextValidation": {
+        "methods": {},
+        "properties": {}
+      },
+      "ParagraphTextValidationBuilder": {
+        "methods": {},
+        "properties": {}
+      },
+      "QuizFeedback": {
+        "methods": {},
+        "properties": {}
+      },
+      "QuizFeedbackBuilder": {
+        "methods": {},
+        "properties": {}
+      },
+      "RatingIconType": {
+        "methods": {},
+        "properties": {}
+      },
+      "RatingItem": {
+        "methods": {},
+        "properties": {}
+      },
+      "ScaleItem": {
+        "methods": {},
+        "properties": {}
+      },
+      "SectionHeaderItem": {
+        "methods": {},
+        "properties": {}
+      },
+      "TextItem": {
+        "methods": {},
+        "properties": {}
+      },
+      "TextValidation": {
+        "methods": {},
+        "properties": {}
+      },
+      "TextValidationBuilder": {
+        "methods": {},
+        "properties": {}
+      },
+      "TimeItem": {
+        "methods": {},
+        "properties": {}
+      },
+      "VideoItem": {
+        "methods": {},
+        "properties": {}
+      }
+    }
+  }
+}
