@@ -1,5 +1,6 @@
 import './services/scriptapp/app.js'
 import './services/driveapp/app.js'
+import './services/logger/app.js'
 import './services/urlfetchapp/app.js'
 import './services/utilities/app.js'
 import './services/spreadsheetapp/app.js'

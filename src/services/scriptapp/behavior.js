@@ -167,7 +167,7 @@ class FakeBehavior {
     this.__idWhitelist = null
 
     // individually settable services
-    const services = ['DocumentApp', 'DriveApp', 'SpreadsheetApp', 'SlidesApp', 'Docs', 'Sheets', 'Drive', 'Slides', 'FormApp', 'Forms']
+    const services = ScriptApp.__registeredServices
     this.__sandboxService = {}
     services.forEach(f => this.__sandboxService[f] = newFakeSandboxService(this, f))
 

@@ -1,32 +1,10 @@
 
 /**
- * the idea here is to create a global entry for the singleton 
- * before we actually have everything we need to create it. 
- * We do this by using a proxy, intercepting calls to the 
- * initial sigleton and diverting them to a completed one
+ * the idea here is to create an empty global entry for the singleton
+ * but only load it when it is actually used.
  */
-import { newFakeAdvSlides } from './fakeadvslides.js'
-import { Proxies } from '../../support/proxies.js'
+import { newFakeAdvSlides as maker } from './fakeadvslides.js'
+import { lazyLoaderApp } from '../common/lazyloader.js'
 
-// This will eventually hold a proxy for slidesapp
-let _app = null
-
-/**
- * adds to global space to mimic Apps Script behavior
- */
-const name = "Slides"
-if (typeof globalThis[name] === typeof undefined) {
-
-  const getApp = () => {
-    // if it hasne been intialized yet then do that
-    if (!_app) {
-      console.log('...activating proxy for', name)
-      _app = newFakeAdvSlides()
-    }
-    // this is the actual driveApp we'll return from the proxy
-    return _app
-  }
-
-  Proxies.registerProxy(name, getApp)
-
-}
+let _app = null;
+_app = lazyLoaderApp(_app, 'Slides', maker)

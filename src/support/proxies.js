@@ -1,6 +1,7 @@
 import { Utils } from './utils.js';
 
 const serviceRegistry = new Set();
+const loadedRegistry = new Set();
 
 /**
  * diverts the property get to another object returned by the getApp function
@@ -11,10 +12,24 @@ const getAppHandler = (getApp, name) => {
   return {
 
     get(_, prop, receiver) {
+
       // this will let the caller know we're not really running in Apps Script
+      // every service can return this
       if (prop === 'isFake') return true;
 
+      // this returns all services already registered - may be useful
+      if (prop === '__registeredServices') return Array.from(serviceRegistry)
+
+     // this returns all services already loaded - may be useful
+      if (prop === '__loadedServices') return Array.from(loadedRegistry)
+
+      // this will get the app and lazy load it if its not already loaded
       const app = getApp();
+
+      // now we have a loaded service
+      loadedRegistry.add(name)
+
+      // are we being asked to run a method?
       const member = Reflect.get(app, prop, receiver);
 
       // Check method whitelist if it's a function call on a service
@@ -37,6 +52,7 @@ const getAppHandler = (getApp, name) => {
   }
 }
 
+// keep a note of which services have been registered
 const registerProxy = (name, getApp) => {
   serviceRegistry.add(name);
   const value = new Proxy({}, getAppHandler(getApp, name))

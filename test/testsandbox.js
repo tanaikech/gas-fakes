@@ -1,4 +1,6 @@
 import "../main.js";
+import is from '@sindresorhus/is';
+
 import { initTests } from "./testinit.js";
 import {
   getDrivePerformance,
@@ -25,16 +27,26 @@ export const testSandbox = (pack) => {
     idWhitelist: behavior.idWhitelist ? [...behavior.idWhitelist] : null,
     serviceStates: {}
   };
+  unit.section('init tests', t => {
+    if (behavior.sandboxService) {
+      const registered = ScriptApp.__registeredServices
+      const loaded = ScriptApp.__loadedServices
+      t.true(is.nonEmptyArray(registered), 'these are the services that have been registered')
+      t.true(is.nonEmptyArray(loaded), 'these are the services that have been loaded')
 
-  if (behavior.sandboxService) {
-    Object.keys(behavior.sandboxService).forEach(serviceName => {
-      const service = behavior.sandboxService[serviceName];
-      // a bit naughty to access private property, but it's the only way to preserve state
-      if (service && service.__state) {
-        initialState.serviceStates[serviceName] = JSON.parse(JSON.stringify(service.__state));
-      }
-    });
-  }
+      // every registered service should have a sandbox service set up
+      t.deepEqual(registered.sort(), Object.keys(behavior.sandboxService).sort())
+      t.deepEqual(loaded.sort(), Object.keys(behavior.sandboxService).sort().filter(f=>loaded.includes(f)))
+
+      registered.forEach(serviceName => {
+        const service = behavior.sandboxService[serviceName];
+        // a bit naughty to access private property, but it's the only way to preserve state
+        if (service && service.__state) {
+          initialState.serviceStates[serviceName] = JSON.parse(JSON.stringify(service.__state));
+        }
+      });
+    }
+  })
 
   // Helper to reset sandbox to the default state defined in testinit.js for each section
   const resetSandbox = () => {

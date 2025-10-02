@@ -103,7 +103,6 @@ if (typeof globalThis[name] === typeof undefined) {
   const getApp = () => {
     // if it hasne been intialized yet then do that
     if (!_app) {
-      console.log('...activating proxy for', name)
       _app = {
         fetch
       }

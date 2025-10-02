@@ -1,6 +1,7 @@
-import is from '@sindresorhus/is';
 
 import '../main.js';
+import is from '@sindresorhus/is';
+
 import { initTests } from './testinit.js';
 import { getGmailPerformance, wrapupTest, trasher } from './testassist.js';
 

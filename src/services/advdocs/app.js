@@ -5,28 +5,9 @@
  * We do this by using a proxy, intercepting calls to the 
  * initial sigleton and diverting them to a completed one
  */
-import { newFakeAdvDocs } from './fakeadvdocs.js'
-import { Proxies } from '../../support/proxies.js'
+import { newFakeAdvDocs as maker } from './fakeadvdocs.js'
+import { lazyLoaderApp } from '../common/lazyloader.js'
 
-// This will eventually hold a proxy for DriveApp
-let _app = null
+let _app = null;
+_app = lazyLoaderApp(_app, 'Docs', maker)
 
-/**
- * adds to global space to mimic Apps Script behavior
- */
-const name = "Docs"
-if (typeof globalThis[name] === typeof undefined) {
-
-  const getApp = () => {
-    // if it hasne been intialized yet then do that
-    if (!_app) {
-      console.log('...activating proxy for', name)
-      _app = newFakeAdvDocs()
-    }
-    // this is the actual driveApp we'll return from the proxy
-    return _app
-  }
-
-  Proxies.registerProxy(name, getApp)
-
-}

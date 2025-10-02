@@ -110,7 +110,7 @@ if (typeof globalThis[name] === typeof undefined) {
 
     // if it hasn't been intialized yet then do that
     if (!_app) {
-      console.log('...activating proxy for', name)
+
       _app = {
         getOAuthToken,
         requireAllScopes,

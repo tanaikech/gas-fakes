@@ -48,6 +48,7 @@ import { testDocsImages } from "./testdocsimages.js";
 import { testSandbox } from "./testsandbox.js";
 import { testDocsStyles } from "./testdocsstyles.js";
 
+import { testLogger } from "./testlogger.js";
 const testFakes = () => {
   const pack = initTests();
   const { unit } = pack;
@@ -117,6 +118,8 @@ const testFakes = () => {
   testUtilities(pack);
   console.log("\n----Test Stores----");
   testStores(pack);
+  console.log("\n----Test Logger----");
+  testLogger(pack);
   console.log("\n----Test ScriptApp----");
   testScriptApp(pack);
   console.log("\n----Test Sheets Range----");

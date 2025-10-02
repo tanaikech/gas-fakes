@@ -72,6 +72,14 @@ In short, the service is registered as an empty object, but when any attempt is 
 
 There's also a test available to see if you are running in GAS or on Node - `ScriptApp.isFake`. In fact this method 'isFake' is available on any of the implemented services, eg `DriveApp.isFake`.
 
+The proxy also enables the [sandbox service](sandbox.md) to be applied to globally without needing special code in each of the services. Private methods and properties (those that exist only in the fake class) are identified by a prefixed `__` (with the exception of isFake which is present in every fake class). The proxy uses this to  detect and prevent accidental overwriting of any methods. For example range.getValue() = 1 will throw and error, whereas doc.__somefakeproperty = 1 will not.
+
+ScriptApp.__registeredServices (in fact the __registeredServices on any service) will return an array of the services that have already been registered. There's generally no need to do this but for collaborators developing services it could be useful
+
+ScriptApp.__loadedServices will return an array of the services that have already been loaded and initialized. In other words they've been used at least once.
+
+Initial sandbox behaviors are set in src/services/scriptapp/behavior.js for every registered class.
+
 ### Iterators
 
 An iterator created by a generator does not have a `hasNext()` function, whereas GAS iterators do. To get round this, I use a regular Node iterator, but with a wrapper so the constructor actually gets the first one, and `next()` uses the value we've already peeked at.
