@@ -97,16 +97,7 @@ Optionally, gasfakes.json holds various location and behavior parameters to info
 | properties | string | /tmp/gas-fakes/properties        | gas-fakes uses a local file to emulate apps script's PropertiesService. This is where it should put the files. You may want to put it somewhere other than /tmp to avoid accidental deletion, but don't put it in a place that'll get commited to public git repo                        |
 | scriptId   | string | from clasp, or some random value | If you have a clasp file, it'll pick up the scriptId from there. If not you can enter your scriptId manually, or just leave it to create a fake one. It's use for the moment is to return something useful from ScriptApp.getScriptId() and to partition the cache and properties stores |
 
-### Pushing files to GAS
 
-There are a couple of syntactical differences between Node and Apps Script. Not in the body of the code but in how the IDE executes. The 2 main ones are
-- apps script doesnt support 'import'. Alls its top level variables are global, so we need to drop imports from the files that are pushed to the IDE
-- Script run on Node are called immediately. Normally on Apps Script we hit the run button.  Here's how I handle this in my scripts that need to run on both environments. 
-````
-// this required on Node but not on Apps Script
-if (ScriptApp.isFake) testFakes()
-````
-For inspiration on pushing modified files to the IDE, see the bash script I use for the test suite. 
 
 ### Cloud Logging Integration
 
@@ -153,7 +144,16 @@ Logger.log('This now only goes to the console');
 Logger.__setLogDestination('NONE');
 Logger.log('This goes nowhere');
 ```
+### Pushing files to GAS
 
+There are a couple of syntactical differences between Node and Apps Script. Not in the body of the code but in how the IDE executes. The 2 main ones are
+- apps script doesnt support 'import'. Alls its top level variables are global, so we need to drop imports from the files that are pushed to the IDE
+- Script run on Node are called immediately. Normally on Apps Script we hit the run button.  Here's how I handle this in my scripts that need to run on both environments. 
+````
+// this required on Node but not on Apps Script
+if (ScriptApp.isFake) testFakes()
+````
+For inspiration on pushing modified files to the IDE, see the togas.sh bash script I use for the test suite. 
 
 ## Help
 
