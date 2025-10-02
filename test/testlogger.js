@@ -7,11 +7,11 @@ import { wrapupTest } from './testassist.js';
 export const testLogger = (pack) => {
   const { unit, fixes } = pack || initTests();
 
-  unit.section('whatever logger is set to', (t) =>  {
+  unit.section('whatever logger is set to', (t) => {
     const l = process.env.LOG_DESTINATION
-    t.true (['NONE', 'CONSOLE', 'CLOUD', 'BOTH',''].includes (l))
-    console.log ('log destination ser to ', l)
-    Logger.log ('logger test with destination set to '+l)
+    t.true(['NONE', 'CONSOLE', 'CLOUD', 'BOTH', ''].includes(l))
+    console.log('log destination ser to ', l)
+    Logger.log('logger test with destination set to ' + l)
   })
 
 
@@ -58,21 +58,21 @@ export const testLogger = (pack) => {
   // This test section is only relevant in the fake (Node.js) environment
   // where we can spy on console.log and the cloud logging client.
   if (ScriptApp.isFake) {
-    unit.section('Logger LOG_DESTINATION behavior', async (t) => {
+    unit.section('Logger LOG_DESTINATION behavior', (t) => {
       // Spy on the global console.log
       const consoleSpy = sinon.spy(console, 'log');
 
       // The cloudLog object might not exist at spy-creation time, so we spy on its 'write' method later.
       let cloudLogSpy;
 
-      const testDestination = async (destination, { expectConsole, expectCloud, expectInternalLog }) => {
+      const testDestination = (destination, { expectConsole, expectCloud, expectInternalLog }) => {
         Logger.__setLogDestination(destination);
         console.log(`    [INFO] Testing with LOG_DESTINATION = ${destination}`);
 
         // The cloudLog object is created lazily, so we must spy on it after it's potentially created.
         // The first call to Logger.log() with a CLOUD destination will create it.
         if (expectCloud && !cloudLogSpy) {
-          await Logger.log('init spy'); // This call will trigger initialization.
+          Logger.log('init spy'); // This call will trigger initialization.
           cloudLogSpy = sinon.spy(fakeCloudLog, 'write');
         }
 
@@ -81,7 +81,7 @@ export const testLogger = (pack) => {
         Logger.clear();
 
         const logMessage = `testing destination ${destination}`;
-        await Logger.log(logMessage);
+        Logger.log(logMessage);
 
         if (expectConsole) {
           t.true(consoleSpy.called, `console.log should be called for ${destination}`);
@@ -103,10 +103,10 @@ export const testLogger = (pack) => {
       // Save original and then test each destination
       const originalDestination = (process.env.LOG_DESTINATION || 'CONSOLE').toUpperCase();
       try {
-        await testDestination('CONSOLE', { expectConsole: true, expectCloud: false, expectInternalLog: true });
-        await testDestination('CLOUD', { expectConsole: false, expectCloud: true, expectInternalLog: true });
-        await testDestination('BOTH', { expectConsole: true, expectCloud: true, expectInternalLog: true });
-        await testDestination('NONE', { expectConsole: false, expectCloud: false, expectInternalLog: true });
+        testDestination('CONSOLE', { expectConsole: true, expectCloud: false, expectInternalLog: true });
+        testDestination('CLOUD', { expectConsole: false, expectCloud: true, expectInternalLog: true });
+        testDestination('BOTH', { expectConsole: true, expectCloud: true, expectInternalLog: true });
+        testDestination('NONE', { expectConsole: false, expectCloud: false, expectInternalLog: true });
       } finally {
         // Restore original environment variable and spies
         Logger.__setLogDestination(originalDestination);

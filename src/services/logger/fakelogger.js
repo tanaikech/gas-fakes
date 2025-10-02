@@ -96,7 +96,7 @@ export const newFakeLogger = (...args) => Proxies.guard(new FakeLogger(...args))
  * @private
  * @param {FakeLogger} loggerInstance The logger instance, to access its destination.
  */
-const writeToCloudOrConsole = async (message, loggerInstance) => {
+const writeToCloudOrConsole =  (message, loggerInstance) => {
   const logDestination = loggerInstance.__destination;
   const useConsoleLogging = logDestination === 'CONSOLE' || logDestination === 'BOTH';
   const useCloudLogging = logDestination === 'CLOUD' || logDestination === 'BOTH';
@@ -152,14 +152,11 @@ const writeToCloudOrConsole = async (message, loggerInstance) => {
       severity: 'INFO',
     };
 
-    // Use log.write which returns a promise. This allows us to catch
-    // errors, such as a disabled API or permission issues.
+    // Use log.write which returns a promise. T
+    // his allows us to catch errors, such as a disabled API or permission issues.
+    // however we are firing and forgetting so an error might appear later on in execution
     if (cloudLog) {
-      try {
-        await cloudLog.write(cloudLog.entry(metadata));
-      } catch (err) {
-        console.error('gas-fakes: Failed to write to Cloud Logging.', err.message);
-      }
+      cloudLog.write(cloudLog.entry(metadata)).catch(err=> console.error('gas-fakes: Failed to write to Cloud Logging.', err.message))
     }
   }
 };
