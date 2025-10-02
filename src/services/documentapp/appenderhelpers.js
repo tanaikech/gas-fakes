@@ -121,7 +121,7 @@ const calculateInsertionPointsAndInitialRequests = (self, childIndex, isAppend, 
     if (isParaInsert) {
       // Inserting into an existing paragraph. No newlines needed.
       if (childIndex < 0 || childIndex > children.length) {
-        throw new Error(`Child index (${childIndex}) must be between 0 and the number of child elements (${children.length}).`);
+        throw new Error(`Child index (${childIndex}) must be less than or equal to the number of child elements (${children.length}).`);
       }
       if (children.length === 0 || childIndex === children.length) {
         // Inserting into an empty paragraph or at the end.
@@ -137,7 +137,7 @@ const calculateInsertionPointsAndInitialRequests = (self, childIndex, isAppend, 
     } else {
       // It's an insert operation, creating a new element in a Body/Header/etc.
       if (childIndex < 0 || childIndex > children.length) {
-        throw new Error(`Child index (${childIndex}) must be between 0 and the number of child elements (${children.length}).`);
+        throw new Error(`Child index (${childIndex}) must be less than or equal to the number of child elements (${children.length}).`);
       }
       // Handle the case where we are inserting at the end (which is like an append).
       if (childIndex === children.length) {

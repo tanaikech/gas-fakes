@@ -70,7 +70,7 @@ export class FakeParagraph extends FakeContainerElement {
     }
 
     if (childIndex < 0 || childIndex > children.length) {
-      throw new Error(`Child index (${childIndex}) must be between 0 and the number of child elements (${children.length}).`);
+      throw new Error(`Child index (${childIndex}) must be less than or equal to the number of child elements (${children.length}).`);
     }
 
     // Determine the character index for insertion.
