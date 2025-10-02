@@ -116,6 +116,12 @@ if (typeof globalThis[name] === typeof undefined) {
         requireAllScopes,
         requireScopes,
         getScriptId: Auth.getScriptId,
+        get __projectId () {
+          return Auth.getProjectId()
+        },
+        get __userId () {
+          return Auth.getUserId()
+        },
         AuthMode: {
           FULL: 'FULL'
         },

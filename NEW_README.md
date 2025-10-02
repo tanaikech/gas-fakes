@@ -37,15 +37,23 @@ In order to avoid a bunch of Node specific code and credentials, yet still handl
 
 At the very least you need to add the gcp project id and optionally the id of some file you have access to - this'll be used to check that you have set up ADC properly.
 
-#### Your .env file
+#### Option 1 - automated setup
+
+In the shells folder run
+```sh
+bash setup.sh
+```
+This will prompt you for project id and a file id to test with. It will also ask it you want to set up all the parameters needed for testing. If you answer yes, this will set up other things from the .env-template you can ignore unless you're planning to run the test suite. More information on that is in [collaborators info](collaborators.md) 
+
+Running set up will enhance your .env file and auth you in ADC with the required scopes
+
+#### Option 2 - manual setup
 
 You can setup the .env file your self using the .env.template as a guide.
 
 ```
 # must set these
 GCP_PROJECT_ID="add your gcp project id here"
-
-# optional reference if you want to run a test after setting up
 DRIVE_TEST_FILE_ID="add the id of some test file you have access to here"
 
 # we'll use the default config for application default credentials
@@ -60,6 +68,53 @@ EXTRA_SCOPES=",https://www.googleapis.com/auth/drive,https://www.googleapis.com/
 LOG_DESTINATION="BOTH"
 
 ```
+
+### Cloud Logging Integration
+
+`gas-fakes` emulates the native Google Apps Script `Logger.log()` integration with Google Cloud Logging, allowing you to send structured logs from your local Node.js environment directly to your Google Cloud project.
+
+#### Initial Configuration
+
+The initial logging behavior is controlled by the `LOG_DESTINATION` environment variable in your `.env` file.
+
+| `LOG_DESTINATION` | Behavior |
+|---|---|
+| `CONSOLE` (Default) | Logs structured JSON to the console (`stdout`). This is the default behavior if the variable is not set. |
+| `CLOUD` | Sends logs directly to Google Cloud Logging. Nothing is written to the console. |
+| `BOTH` | Sends logs to both Google Cloud Logging and the console. |
+| `NONE` | Disables all output from `Logger.log()`. |
+
+When logging to the cloud, entries are sent to the `gas-fakes/console_logs` log name and include the following labels for easy filtering in the Log Explorer:
+- `gas-fakes-scriptId`
+- `gas-fakes-userId`
+
+#### Dynamic Control
+
+You can change the logging destination at any time during runtime using the `Logger.setLogDestination()` method. This is especially useful for testing or for applications that need to change their logging behavior dynamically.
+
+The method accepts one of the following string values: `'CONSOLE'`, `'CLOUD'`, `'BOTH'`, or `'NONE'`.
+
+#### Example Usage
+
+To set the initial destination, modify your `.env` file:
+```
+LOG_DESTINATION="BOTH"
+```
+
+To change the destination during runtime in your script:
+```javascript
+// Initially logs to BOTH (from .env)
+Logger.log('This goes to console and cloud');
+
+// Switch to only logging to the console
+Logger.setLogDestination('CONSOLE');
+Logger.log('This now only goes to the console');
+
+// Disable logging completely
+Logger.setLogDestination('NONE');
+Logger.log('This goes nowhere');
+```
+
 
 #### Manifest file
 
@@ -108,51 +163,6 @@ if (ScriptApp.isFake) testFakes()
 ````
 For inspiration on pushing modified files to the IDE, see the bash script I use for the test suite. 
 
-### Cloud Logging Integration
-
-`gas-fakes` emulates the native Google Apps Script `Logger.log()` integration with Google Cloud Logging, allowing you to send structured logs from your local Node.js environment directly to your Google Cloud project. Note that console.log is the normal Node console and writes to the local console only. 
-
-#### Initial Configuration
-
-The initial logging behavior is controlled by the `LOG_DESTINATION` environment variable in your `.env` file.
-
-| `LOG_DESTINATION` | Behavior |
-|---|---|
-| `CONSOLE` (Default) | Logs structured JSON to the console (`stdout`). This is the default behavior if the variable is not set. |
-| `CLOUD` | Sends logs directly to Google Cloud Logging. Nothing is written to the console. |
-| `BOTH` | Sends logs to both Google Cloud Logging and the console. |
-| `NONE` | Disables all output from `Logger.log()`. |
-
-When logging to the cloud, entries are sent to the `gas-fakes/console_logs` log name and include the following labels for easy filtering in the Log Explorer:
-- `gas-fakes-scriptId`
-- `gas-fakes-userId`
-
-#### Dynamic Control
-
-You can change the logging destination at any time during runtime using the `Logger.__setLogDestination()` method. This is especially useful for testing or for applications that need to change their logging behavior dynamically.
-
-The method accepts one of the following string values: `'CONSOLE'`, `'CLOUD'`, `'BOTH'`, or `'NONE'`.
-
-#### Example Usage
-
-To set the initial destination, modify your `.env` file:
-```
-LOG_DESTINATION="BOTH"
-```
-
-To change the destination during runtime in your script:
-```javascript
-// Initially logs to BOTH (from .env)
-Logger.log('This goes to console and cloud');
-
-// Switch to only logging to the console
-Logger.__setLogDestination('CONSOLE');
-Logger.log('This now only goes to the console');
-
-// Disable logging completely
-Logger.__setLogDestination('NONE');
-Logger.log('This goes nowhere');
-```
 
 
 ## Help

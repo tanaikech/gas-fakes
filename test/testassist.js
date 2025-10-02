@@ -36,7 +36,7 @@ export const wrapupTest = (func) => {
     // actually most of these should already have been trashed
 
     ScriptApp.__behavior.trash();
-    console.log('...its a wrap')
+    console.log('...its a wrap');
   }
 
 
