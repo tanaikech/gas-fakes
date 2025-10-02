@@ -110,7 +110,7 @@ For inspiration on pushing modified files to the IDE, see the bash script I use 
 
 ### Cloud Logging Integration
 
-`gas-fakes` emulates the native Google Apps Script `Logger.log()` integration with Google Cloud Logging, allowing you to send structured logs from your local Node.js environment directly to your Google Cloud project. Note that console.log is the normal Node console and writes to the local console only. 
+`gas-fakes` emulates the native Google Apps Script `Logger.log()` integration with Google Cloud Logging, allowing you to send structured logs from your local Node.js environment directly to your Google Cloud project. Note that console.log is the normal Node console and writes to the local console only. All messages from gas-fakes api still go to the console, so the Logger.log is for your own user messages as required.
 
 #### Initial Configuration
 
