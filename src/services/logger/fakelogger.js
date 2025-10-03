@@ -96,7 +96,7 @@ export const newFakeLogger = (...args) => Proxies.guard(new FakeLogger(...args))
  * @private
  * @param {FakeLogger} loggerInstance The logger instance, to access its destination.
  */
-const writeToCloudOrConsole =  (message, loggerInstance) => {
+const writeToCloudOrConsole = (message, loggerInstance) => {
   const logDestination = loggerInstance.__destination;
   const useConsoleLogging = logDestination === 'CONSOLE' || logDestination === 'BOTH';
   const useCloudLogging = logDestination === 'CLOUD' || logDestination === 'BOTH';
@@ -133,6 +133,8 @@ const writeToCloudOrConsole =  (message, loggerInstance) => {
     console.log(JSON.stringify(logEntry));
   }
 
+
+
   // Write to Cloud Logging if CLOUD or BOTH is specified and client is ready.
   if (useCloudLogging) {
     // Initialize the cloud logger on the first use if it hasn't been already.
@@ -152,11 +154,47 @@ const writeToCloudOrConsole =  (message, loggerInstance) => {
       severity: 'INFO',
     };
 
-    // Use log.write which returns a promise. T
-    // his allows us to catch errors, such as a disabled API or permission issues.
-    // however we are firing and forgetting so an error might appear later on in execution
+
+
+
+
+
     if (cloudLog) {
-      cloudLog.write(cloudLog.entry(metadata)).catch(err=> console.error('gas-fakes: Failed to write to Cloud Logging.', err.message))
+
+      // filter on user/script/priject and run times
+      // we'll extend the end date filter to a little more than now
+      const aLittleMore = 7 * 1000
+      const endDate = new Date(new Date().getTime() + aLittleMore)
+      const startDate = loggerInstance.__startedLoggingAt
+
+      const base = `https://console.cloud.google.com/logs/query;`
+
+
+      // B. Build the RAW LQL Filter String (NO "query=" prefix here)
+      const lqlParts = [
+        // LogName filter
+        `logName="projects/${projectId}/logs/${logName.replace('/', '%2F')}"`,
+        // Labels filter
+        ...Object.keys(metadata.labels).map(k => `labels.${k}="${metadata.labels[k]}"`),
+        // Date filter (recommended for query stability)
+        `timestamp>="${startDate.toISOString()}"`,
+        `timestamp<="${endDate.toISOString()}"`
+      ];
+      const fullLQLQuery = lqlParts.join(' AND ');
+
+      // C. Encode ONLY the filter content, then prepend the literal 'query='
+      const encodedQueryParam = `query=${encodeURIComponent(fullLQLQuery)}`;
+
+      // D. Create the timeRange parameter (correct casing)
+      const timeRangeParam = `;timeRange=${startDate.getTime()}/${endDate.getTime()}`;
+
+      // E. Assemble the final URL
+      loggerInstance.__cloudLogLink = base + encodedQueryParam + `?project=${projectId}`;
+
+      cloudLog.write(cloudLog.entry(metadata)).then(p => {
+        console.log('written', p)
+      }).catch(err => console.error('gas-fakes: Failed to write to Cloud Logging.', err.message))
     }
   }
+}
 };
