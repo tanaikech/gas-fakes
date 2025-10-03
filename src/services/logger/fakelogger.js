@@ -23,6 +23,7 @@ export class FakeLogger {
      * @type {string}
      */
     this.__destination = (process.env.LOG_DESTINATION || 'CONSOLE').toUpperCase();
+    this.__startedLoggingAt = new Date()
   }
 
   /**
@@ -57,6 +58,7 @@ export class FakeLogger {
 
     const message = format(formatOrData, ...values);
     this.__log.push(message);
+
 
     // Pass the destination and instance context to the writer function.
     writeToCloudOrConsole(message, this);
@@ -100,17 +102,19 @@ const writeToCloudOrConsole = (message, loggerInstance) => {
   const logDestination = loggerInstance.__destination;
   const useConsoleLogging = logDestination === 'CONSOLE' || logDestination === 'BOTH';
   const useCloudLogging = logDestination === 'CLOUD' || logDestination === 'BOTH';
+  const logName = 'gas-fakes/console_logs';
+  const projectId = ScriptApp.__projectId;
+  const scriptId = ScriptApp.getScriptId();
+  const userId = ScriptApp.__userId;
 
   // Lazy-initialize the cloud logger if needed.
   const initializeCloudLogging = () => {
     if (cloudLog) return; // Already initialized.
     try {
-      const projectId = ScriptApp.__projectId;
       if (!projectId) {
         throw new Error('Could not determine Google Cloud Project ID for logging.');
       }
       const logging = new Logging({ projectId });
-      const logName = 'gas-fakes/console_logs';
       cloudLog = logging.log(logName);
       console.info(`gas-fakes: Cloud Logging is enabled, writing to log "${logName}".`);
     } catch (err) {
@@ -133,8 +137,6 @@ const writeToCloudOrConsole = (message, loggerInstance) => {
     console.log(JSON.stringify(logEntry));
   }
 
-
-
   // Write to Cloud Logging if CLOUD or BOTH is specified and client is ready.
   if (useCloudLogging) {
     // Initialize the cloud logger on the first use if it hasn't been already.
@@ -147,20 +149,20 @@ const writeToCloudOrConsole = (message, loggerInstance) => {
       // not running on a specific GCP compute service.
       resource: { type: 'global' },
       labels: {
-        'gas-fakes-scriptId': ScriptApp.getScriptId(),
-        'gas-fakes-userId': ScriptApp.__userId,
+        'gas-fakes-scriptId': scriptId,
+        'gas-fakes-userId': userId,
       },
       jsonPayload: { message: message },
       severity: 'INFO',
     };
 
-
-
-
-
-
+    // Use log.write which returns a promise. T
+    // his allows us to catch errors, such as a disabled API or permission issues.
+    // however we are firing and forgetting so an error might appear later on in execution
     if (cloudLog) {
-
+      //https://console.cloud.google.com/logs/query;query=logName="projects/docai-369211/logs/gas-fakes%2Fconsole_logs" AND labels.gas-fakes-scriptId="1bc79bd3-fe02-425f-9653-525e5ae0b678" AND labels.gas-fakes-userId="112066118406610145134" AND timestamp>="2025-10-01T08:00:00Z" AND timestamp<="2025-10-02T08:00:00Z"?project=docai-369211
+      //https://console.cloud.google.com/logs/query;query=logName%3D%22projects%2Fdocai-369211%2Flogs%2Fgas-fakes%252Fconsole_logs%22%20AND%20labels.gas-fakes-scriptId%3D%221bc79bd3-fe02-425f-9653-525e5ae0b678%22%20AND%20labels.gas-fakes-userId%3D%22112066118406610145134%22%20AND%20timestamp%3E%3D%222025-10-01T08%3A00%3A00Z%22%20AND%20timestamp%3C%3D%222025-10-02T08%3A00%3A00Z%22?project=docai-369211
+      // we can create a link to get this stuff for later publishing
       // filter on user/script/priject and run times
       // we'll extend the end date filter to a little more than now
       const aLittleMore = 7 * 1000
@@ -175,7 +177,7 @@ const writeToCloudOrConsole = (message, loggerInstance) => {
         // LogName filter
         `logName="projects/${projectId}/logs/${logName.replace('/', '%2F')}"`,
         // Labels filter
-        ...Object.keys(metadata.labels).map(k => `labels.${k}="${metadata.labels[k]}"`),
+        ...Object.keys(metadata.labels).map(k => `jsonPayload.labels.${k}="${metadata.labels[k]}"`),
         // Date filter (recommended for query stability)
         `timestamp>="${startDate.toISOString()}"`,
         `timestamp<="${endDate.toISOString()}"`
@@ -190,11 +192,8 @@ const writeToCloudOrConsole = (message, loggerInstance) => {
 
       // E. Assemble the final URL
       loggerInstance.__cloudLogLink = base + encodedQueryParam + `?project=${projectId}`;
-
-      cloudLog.write(cloudLog.entry(metadata)).then(p => {
-        console.log('written', p)
-      }).catch(err => console.error('gas-fakes: Failed to write to Cloud Logging.', err.message))
+      // fire and forget
+      cloudLog.write(cloudLog.entry(metadata)).catch(err => console.error('gas-fakes: Failed to write to Cloud Logging.', err.message))
     }
   }
-}
 };

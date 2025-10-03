@@ -3,13 +3,21 @@ import { initTests } from './testinit.js';
 import * as sinon from 'sinon';
 import { cloudLog as fakeCloudLog } from '../src/services/logger/fakelogger.js';
 import { wrapupTest } from './testassist.js';
+import is from '@sindresorhus/is';
+
 
 export const testLogger = (pack) => {
   const { unit, fixes } = pack || initTests();
 
+  if (!Logger.isFake) {
+    console.log ('...logger tests only relevant in gas-fakes ... skipping in live Apps Script')
+    return { unit, fixes };
+  }
+
+
   unit.section('whatever logger is set to', (t) => {
     const l = process.env.LOG_DESTINATION
-    t.true(['NONE', 'CONSOLE', 'CLOUD', 'BOTH', ''].includes(l))
+    t.true(['NONE', 'CONSOLE', 'CLOUD', 'BOTH', '', undefined].includes(l))
     console.log('log destination ser to ', l)
     Logger.log('logger test with destination set to ' + l)
   })
@@ -107,6 +115,8 @@ export const testLogger = (pack) => {
         testDestination('CLOUD', { expectConsole: false, expectCloud: true, expectInternalLog: true });
         testDestination('BOTH', { expectConsole: true, expectCloud: true, expectInternalLog: true });
         testDestination('NONE', { expectConsole: false, expectCloud: false, expectInternalLog: true });
+        t.true(is.nonEmptyString(Logger.__cloudLogLink), 'since we dont at least 1 cloud write check we can get a link to it')
+
       } finally {
         // Restore original environment variable and spies
         Logger.__setLogDestination(originalDestination);
@@ -149,7 +159,9 @@ export const testLogger = (pack) => {
       loggerService.clear();
     });
   }
-
+  
+  console.log ('....example cloud log link for this session',Logger.__cloudLogLink)
+  
   if (!pack) {
     unit.report();
   }

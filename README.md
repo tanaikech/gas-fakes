@@ -144,6 +144,19 @@ Logger.log('This now only goes to the console');
 Logger.__setLogDestination('NONE');
 Logger.log('This goes nowhere');
 ```
+
+#### Link to Cloud log for this run
+
+If you have used Logging to cloud, you can get a link to the log data like this. 
+
+```javascript
+console.log ('....example cloud log link for this session',Logger.__cloudLogLink)
+````
+
+It contains a cloud logging query that will display any logging done in this session - the filter is based on the scriptId (from gasfakes.json), the projectId and userId (from Auth), as well as the start and end time of the session. 
+
+
+
 ### Pushing files to GAS
 
 There are a couple of syntactical differences between Node and Apps Script. Not in the body of the code but in how the IDE executes. The 2 main ones are
