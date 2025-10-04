@@ -4,7 +4,6 @@
   },
   "dependencies": {
     "@mcpher/fiddler": "^1.0.1",
-    "@mcpher/gas-fakes": "^1.0.19",
     "@mcpher/unit": "^1.1.10",
     "sinon": "^21.0.0"
   },
