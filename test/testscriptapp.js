@@ -16,9 +16,12 @@ export const testScriptApp = (pack) => {
 
   unit.section("scriptapp basics", t => {
     t.true(is.nonEmptyString(ScriptApp.getScriptId()))
-    console.log (ScriptApp.getScriptId())
-    t.true(is.nonEmptyString(ScriptApp.__projectId))
-    t.true(is.nonEmptyString(ScriptApp.__userId))
+    t.true(is.nonEmptyString(ScriptApp.__projectId), {
+      skip: !ScriptApp.isFake
+    })
+    t.true(is.nonEmptyString(ScriptApp.__userId), {
+      skip: !ScriptApp.isFake
+    })
   })
 
   unit.section('scopes and oauth', t => {

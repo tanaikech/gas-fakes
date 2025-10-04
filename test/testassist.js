@@ -39,7 +39,6 @@ export const wrapupTest = (func) => {
     console.log('...its a wrap');
   }
 
-
 }
 
 export const trasher = (toTrash) => {

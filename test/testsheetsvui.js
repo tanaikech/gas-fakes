@@ -18,6 +18,23 @@ export const testSheetsVui = (pack) => {
 
   const { unit, fixes } = pack || initTests()
 
+  unit.section("getImages", (t) => {
+    const ssId = fixes.TEST_BORDERS_ID
+    const ss = SpreadsheetApp.openById(ssId);
+    const sheet = ss.getSheetByName("sampleImage1");
+    const images = sheet.getImages();
+    t.is(images.length, 2);
+    const anchorCells = images.map((e) => e.getAnchorCell().getA1Notation());
+    t.deepEqual(anchorCells, ["A3", "C6"]);
+    const size = images.map((e) => e.getWidth() === e.getHeight());
+    t.deepEqual(size, [true, true]);
+
+    if (SpreadsheetApp.isFake)
+      console.log(
+        "...cumulative sheets cache performance",
+        getSheetsPerformance()
+      );
+  });
 
   unit.section("TODO - currently skipped - range.getBorder() does work on GAS although it's not documented", t => {
     // TODO figure out how to handle thick/medium etc.

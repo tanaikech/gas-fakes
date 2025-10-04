@@ -137,14 +137,13 @@ const testFakes = () => {
     console.log("...cumulative slides cache performance", getSlidesPerformance());
     console.log("...cumulative forms cache performance", getFormsPerformance());
   }
-
-  // all tests cumulative unit report
-  unit.report();
-
   // final cleanup of all files created during the test run
   if (ScriptApp.isFake) {
     ScriptApp.__behavior.trash();
   }
+  // all tests cumulative unit report
+  unit.report();
+
 };
 
 // this required on Node but not on Apps Script

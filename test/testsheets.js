@@ -2954,23 +2954,7 @@ export const testSheets = (pack) => {
       );
   });
 
-  unit.section("getImages", (t) => {
-    const ssId = "1hRGdrYHEPixXTuQLeL3Z0qGRZVs_8ojMIm6D4KrCh1o"; // TEST_BORDERS_ID
-    const ss = SpreadsheetApp.openById(ssId);
-    const sheet = ss.getSheetByName("sampleImage1");
-    const images = sheet.getImages();
-    t.is(images.length, 2);
-    const anchorCells = images.map((e) => e.getAnchorCell().getA1Notation());
-    t.deepEqual(anchorCells, ["A3", "C6"]);
-    const size = images.map((e) => e.getWidth() === e.getHeight());
-    t.deepEqual(size, [true, true]);
 
-    if (SpreadsheetApp.isFake)
-      console.log(
-        "...cumulative sheets cache performance",
-        getSheetsPerformance()
-      );
-  });
 
   // running standalone
   if (!pack) {
