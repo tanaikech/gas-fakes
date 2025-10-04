@@ -13,6 +13,10 @@ import { FakeTextFinder, newFakeTextFinder } from "./faketextfinder.js";
 
 import { newFakeNamedRange } from "./fakenamedrange.js";
 import { newFakeProtection } from "./fakeprotection.js";
+import { newFakeOverGridImage } from "./fakeovergridimage.js";
+
+import { Syncit } from "../../support/syncit.js";
+// import ExcelJS from "exceljs"; // When test_getImages() is used, use this.
 
 const { is, isEnum } = Utils;
 
@@ -35,7 +39,7 @@ export class FakeSheet {
       "insertChart",
       "removeChart",
       "updateChart",
-      "getImages",
+      // "getImages",
       "insertImage",
       "removeImage",
       // "getNamedRanges",
@@ -1061,6 +1065,30 @@ export class FakeSheet {
       return ar.map((e) => newFakeProtection(sheet, e));
     }
     return [];
+  }
+
+  // This function is used for testing getImages without a worker.
+  // async test_getImages() {
+  //   const url = `https://docs.google.com/spreadsheets/export?exportFormat=xlsx&id=${
+  //     this.__parent.__meta.spreadsheetId
+  //   }&access_token=${ScriptApp.getOAuthToken()}`;
+  //   const res = UrlFetchApp.fetch(url);
+  //   const buf = new Uint8Array(res.getBlob()._data).buffer;
+  //   const workbook = new ExcelJS.Workbook();
+  //   await workbook.xlsx.load(buf);
+  //   const worksheet = workbook.worksheets[this.getIndex() - 1];
+  //   const images = worksheet.getImages();
+  //   console.log(images);
+  // }
+
+  getImages() {
+    const url = `https://docs.google.com/spreadsheets/export?exportFormat=xlsx&id=${
+      this.__parent.__meta.spreadsheetId
+    }&access_token=${ScriptApp.getOAuthToken()}`;
+    const idx = this.getIndex() - 1;
+    const ar = Syncit.fxGetImagesFromXlsx({ url, idx });
+    const sheet = this;
+    return ar.map((e) => newFakeOverGridImage(sheet, e));
   }
 
   __batchUpdate({ spreadsheetId, requests }) {
