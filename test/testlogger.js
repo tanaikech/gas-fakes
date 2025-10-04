@@ -10,7 +10,7 @@ export const testLogger = (pack) => {
   const { unit, fixes } = pack || initTests();
 
   if (!Logger.isFake) {
-    console.log ('...logger tests only relevant in gas-fakes ... skipping in live Apps Script')
+    console.log('...logger tests only relevant in gas-fakes ... skipping in live Apps Script')
     return { unit, fixes };
   }
 
@@ -18,8 +18,10 @@ export const testLogger = (pack) => {
   unit.section('whatever logger is set to', (t) => {
     const l = process.env.LOG_DESTINATION
     t.true(['NONE', 'CONSOLE', 'CLOUD', 'BOTH', '', undefined].includes(l))
-    console.log('log destination ser to ', l)
-    Logger.log('logger test with destination set to ' + l)
+
+    console.log('...default log destination in .env is set to ', l)
+    console.log('...initial log link is', Logger.__cloudLogLink)
+    Logger.log('logger test using current log destination from .env '  + l)
   })
 
 
@@ -74,7 +76,7 @@ export const testLogger = (pack) => {
       let cloudLogSpy;
 
       const testDestination = (destination, { expectConsole, expectCloud, expectInternalLog }) => {
-        Logger.__setLogDestination(destination);
+        Logger.__logDestination = destination;
         console.log(`    [INFO] Testing with LOG_DESTINATION = ${destination}`);
 
         // The cloudLog object is created lazily, so we must spy on it after it's potentially created.
@@ -119,7 +121,7 @@ export const testLogger = (pack) => {
 
       } finally {
         // Restore original environment variable and spies
-        Logger.__setLogDestination(originalDestination);
+        Logger.__logDestination = originalDestination;
         consoleSpy.restore();
         if (cloudLogSpy) cloudLogSpy.restore();
       }
@@ -159,9 +161,9 @@ export const testLogger = (pack) => {
       loggerService.clear();
     });
   }
-  
-  console.log ('....example cloud log link for this session',Logger.__cloudLogLink)
-  
+
+  console.log('....example cloud log link for this session', Logger.__cloudLogLink)
+
   if (!pack) {
     unit.report();
   }

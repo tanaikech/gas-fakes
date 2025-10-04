@@ -24,6 +24,11 @@ export class FakeLogger {
      */
     this.__destination = (process.env.LOG_DESTINATION || 'CONSOLE').toUpperCase();
     this.__startedLoggingAt = new Date()
+    this.__cloudLogLink = 'No cloud logging enabled - use Logger.__logDestination = "CLOUD" or "BOTH" to enable'
+
+    if (['CLOUD','BOTH'].includes(this.__destination)) {
+      writeToCloudOrConsole("...Initializing cloud logging", this)
+    }
   }
 
   /**
@@ -85,6 +90,12 @@ export class FakeLogger {
     }
     return this;
   }
+
+  // to allow code compatibility without error on apps script, we should use the setter since it'll be undefined on Apps live Script
+  set __logDestination (destination) {
+    return this.__setLogDestination(destination);
+  }
+
 }
 
 /**
@@ -160,9 +171,6 @@ const writeToCloudOrConsole = (message, loggerInstance) => {
     // his allows us to catch errors, such as a disabled API or permission issues.
     // however we are firing and forgetting so an error might appear later on in execution
     if (cloudLog) {
-      //https://console.cloud.google.com/logs/query;query=logName="projects/docai-369211/logs/gas-fakes%2Fconsole_logs" AND labels.gas-fakes-scriptId="1bc79bd3-fe02-425f-9653-525e5ae0b678" AND labels.gas-fakes-userId="112066118406610145134" AND timestamp>="2025-10-01T08:00:00Z" AND timestamp<="2025-10-02T08:00:00Z"?project=docai-369211
-      //https://console.cloud.google.com/logs/query;query=logName%3D%22projects%2Fdocai-369211%2Flogs%2Fgas-fakes%252Fconsole_logs%22%20AND%20labels.gas-fakes-scriptId%3D%221bc79bd3-fe02-425f-9653-525e5ae0b678%22%20AND%20labels.gas-fakes-userId%3D%22112066118406610145134%22%20AND%20timestamp%3E%3D%222025-10-01T08%3A00%3A00Z%22%20AND%20timestamp%3C%3D%222025-10-02T08%3A00%3A00Z%22?project=docai-369211
-      // we can create a link to get this stuff for later publishing
       // filter on user/script/priject and run times
       // we'll extend the end date filter to a little more than now
       const aLittleMore = 7 * 1000
@@ -170,7 +178,6 @@ const writeToCloudOrConsole = (message, loggerInstance) => {
       const startDate = loggerInstance.__startedLoggingAt
 
       const base = `https://console.cloud.google.com/logs/query;`
-
 
       // B. Build the RAW LQL Filter String (NO "query=" prefix here)
       const lqlParts = [

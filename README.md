@@ -120,7 +120,7 @@ When logging to the cloud, entries are sent to the `gas-fakes/console_logs` log 
 
 #### Dynamic Control
 
-You can change the logging destination at any time during runtime using the `Logger.__setLogDestination()` method. This is especially useful for testing or for applications that need to change their logging behavior dynamically.
+You can change the logging destination at any time during runtime by setting the `Logger.__logDestination` property. This is especially useful for testing or for applications that need to change their logging behavior dynamically.
 
 The method accepts one of the following string values: `'CONSOLE'`, `'CLOUD'`, `'BOTH'`, or `'NONE'`.
 
@@ -137,11 +137,11 @@ To change the destination during runtime in your script:
 Logger.log('This goes to console and cloud');
 
 // Switch to only logging to the console
-Logger.__setLogDestination('CONSOLE');
+Logger.__logDestination='CONSOLE';
 Logger.log('This now only goes to the console');
 
 // Disable logging completely
-Logger.__setLogDestination('NONE');
+Logger.__logDestination='NONE';
 Logger.log('This goes nowhere');
 ```
 
