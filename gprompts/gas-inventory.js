@@ -3,90 +3,94 @@ import * as cheerio from 'cheerio';
 import fs from 'fs/promises';
 import { URL } from 'url';
 
-const baseUrl = "https://developers.google.com/apps-script/reference/"
+const baseUrl = "https://developers.google.com/apps-script/reference/script/"
 const outputFile = './gas-inventory.json';
 
 const visited = new Map();
 const queue = [baseUrl]
 
+// the urls are kebab cased
 const kebabCamel = (s) => {
   return s.replace(/([-][a-z])/ig, ($1) => {
     return $1.toUpperCase()
       .replace('-', '')
   });
 };
-async function scrape() {
-  const inventory = {};
 
-  while (queue.length > 0) {
-    const url = queue.shift();
-    console.log(`Scraping ${url}`);
-    const response = await got(url);
-    const $ = cheerio.load(response.body);
-    const serviceName = $('h1').text().split('\n').map(f=>f.replace(/^\s+/,'').trim()).filter (f=>f)[0];
-    console.log ('...starting service name',serviceName)
-    inventory[serviceName] = {
-      name: serviceName,
-      link: url,
-      classes: {},
-    };
+function debugPageStructure($) {
+  console.log('=== PAGE STRUCTURE DEBUG ===');
 
-    $('a').each((i, el) => {
-      const href = $(el).attr('href');
-      if (href && href.startsWith('/apps-script/reference')) {
-        const absoluteUrl = new URL(href, url).href;
-        const parentUrl = absoluteUrl.replace (/#.*/, '')
-        const method = kebabCamel(absoluteUrl.match(/#(.*)/) || ['', ''][1])
-        if (!visited.has(parentUrl)) {
-          console.log ('...adding to queue',parentUrl)
-          queue.push(parentUrl);
-          visited.set(parentUrl, {
-            url: parentUrl,
-            methods: new Map ()
-          });
-        }
-        if (method) {
-          visited.get(parentUrl).methods.set(absoluteUrl, {
-            url: absoluteUrl,
-            method
-          })
-        }
-      }
-    });
+  // Check if main elements exist
+  console.log('#main-content exists:', $('#main-content').length > 0);
+  console.log('devsite-content exists:', $('devsite-content').length > 0);
+  console.log('article exists:', $('article').length > 0);
+  console.log('h1 elements:', $('h1').length);
 
-    // Extract classes and methods
-    $('h2').each((i, el) => {
-      const className = $(el).text().trim();
-      if (className) {
-        console.log ('...found class',className,'for service',serviceName)
-        inventory[serviceName].classes[className] = {
-          methods: {},
-          properties: {},
-        };
+  // Show all h1 texts
+  $('h1').each((i, el) => {
+    console.log(`H1[${i}]:`, $(el).text().trim());
+  });
 
-        // Find the table of methods for the current class
-        const methodsTable = $(el).nextAll('table').first();
-        methodsTable.find('tbody tr').each((j, row) => {
-          const methodName = $(row).find('td').eq(1).text().trim();
-          const methodLink = $(row).find('td').eq(1).find('a').attr('href');
-          const returnType = $(row).find('td').eq(0).text().trim();
-
-          if (methodName) {
-            inventory[serviceName].classes[className].methods[methodName] = {
-              link: methodLink ? new URL(methodLink, url).href : '',
-              returns: {
-                type: returnType,
-                link: '' // to be extracted later
-              }
-            };
-          }
-        });
-      }
+  // Show structure of main-content
+  const mainContent = $('#main-content');
+  if (mainContent.length > 0) {
+    console.log('Main-content children:', mainContent.children().length);
+    mainContent.children().each((i, el) => {
+      console.log(`Child ${i}:`, el.tagName, $(el).attr('class') || $(el).attr('id'));
     });
   }
-
-  await fs.writeFile(outputFile, JSON.stringify(inventory, null, 2));
-  console.log(`Inventory saved to ${outputFile}`);
 }
 
-scrape().catch(console.error);
+
+const getNextCheer = async (u) => {
+  console.log(`Scraping ${u}`);
+  const response = await got(u);
+  return cheerio.load(response.body);
+}
+
+const getHrefs = ($) => {
+  return $('a').map((i, el) => {
+    const r = $(el).attr('href');
+    if (r) {
+      const absolute = new URL(r, baseUrl).href;
+      // skip references to elsewhere and blank anchors
+      if (absolute.startsWith(baseUrl) && !absolute.endsWith('#')) return absolute;
+    }
+  }).get();
+}
+
+
+const s2 = async () => {
+  const umap = new Map();
+  const uset = new Set()
+  while (queue.length) {
+
+    const url = queue.shift();
+    console.log('working on url', url)
+    const $ = await getNextCheer(url);
+    debugPageStructure($);
+
+    // get all the hrefs
+    getHrefs($).forEach(f => {
+      // so a url could have an anchor for a method so we need to strip that out
+      const u = new URL(f);
+      const method = u.hash.substring(1);
+      const classUrl = u.origin + '/' + u.pathname
+      const methodUrl = u.href
+      if (!umap.has(classUrl)) {
+        umap.set(classUrl, {
+          parents: new Map(),
+          classUrl,
+          methods: new Map()
+        })
+        console.log ('pushing', classUrl)
+        queue.push (classUrl)
+      }
+      const ob = umap.get(classUrl)
+      ob.methods.set(method, { method, methodUrl })
+      ob.parents.set(url, { url })
+      console.log('adding', f)
+    })
+  }
+}
+s2().catch(console.error)
