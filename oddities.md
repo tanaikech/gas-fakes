@@ -830,7 +830,6 @@ If you want to play with the testing suite , then take a look at the [collaborat
 - [colaborators](collaborators.md) - additional information for collaborators
 - [oddities](oddities.md) - a collection of oddities uncovered during this project
 - [gemini](gemini.md) - some reflections and experiences on using gemini to help code large projects
-- [setup env](setup-env.md) - ([credit Eric Shapiro] - additional info on contents of .env file
 - [this file](README.md)
 - [named colors](named-colors.md)
 - [named range identity](named-range-identity.md)

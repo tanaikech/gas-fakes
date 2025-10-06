@@ -1,7 +1,18 @@
 #!/bin/bash
-# load in environment variables from root folder
-ROOT_DIRECTORY=$(git rev-parse --show-toplevel)
-source "$ROOT_DIRECTORY/.env"
+
+# Find the project root directory relative to the script's location
+# This makes the script runnable from any directory
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+ROOT_DIRECTORY=$( cd -- "$SCRIPT_DIR/.." &> /dev/null && pwd )
+ENV_FILE="$ROOT_DIRECTORY/.env"
+
+# Check if the .env file exists and then source it
+if [ -f "$ENV_FILE" ]; then
+  source "$ENV_FILE"
+else
+  echo "Error: .env file not found at '$ENV_FILE'"
+  exit 1
+fi
 
 # project ID
 P=$GCP_PROJECT_ID
@@ -10,10 +21,13 @@ P=$GCP_PROJECT_ID
 # here we're working on the default project configuration
 AC=default
 
-# Combine scopes from the .env file.
-# The values from .env can sometimes be misinterpreted by the shell,
-# leading to spaces in the scopes string. This sanitizes the string.
-SCOPES=$(echo "$DEFAULT_SCOPES$EXTRA_SCOPES" | tr -d '[:space:]')
+# these are the ones it sets by default - take some of these out if you want to minimize access
+DEFAULT_SCOPES=$DEFAULT_SCOPES
+
+# these are the ones we want to add (note comma at beginning)
+EXTRA_SCOPES=$EXTRA_SCOPES
+
+SCOPES="${DEFAULT_SCOPES}${EXTRA_SCOPES}"
 
 # clean up anything set from before
 echo "ignore no credentials to revoke error if this is the first time you've done this here"

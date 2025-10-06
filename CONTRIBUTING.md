@@ -22,9 +22,8 @@ As a background project I'm chipping away at this when I can. There's a mountain
 
 ## Testing
 
-Use the test project included in the repo if you want to do some tests. It uses a Fake services to exercise Auth etc. Just change the fixtures in your own environments by following the instructions in [setup-env.md](https://github.com/brucemcpherson/gas-fakes/blob/main/setup-env.MD), then `npm i && npm test`. Tests using local files should be run from the top project folder.
+Here's some guidance on testing. Before submitting a PR always run all the existing tests on both live Apps Script and gas-fakes to ensure your changes havn't broken anything.
 
-You can also run tests using the npm version of gas-fakes set in test/package.json using npm run testnpm - which should be run from the ./test folder.
 
 ### Create a unit.section for each class method or group of related methods
 
@@ -38,7 +37,18 @@ Each test can be run individually (for example `npm run testdrive`) or all with 
 
 ### Test Settings
 
-Test settings and fixtures are in the .env file. Some readonly files are publicly shared and can be left with the example value in .env-template. Most files which are written are created and deleted afterwards on successful completion. They will be named something starting with -- and often centralized into a scratch folder for easy maintentance. In case of failures you may need to delete these yourself. If you want to preserve the testfiles it creates doing a test session, just set the CLEAN parameter in .env to 0.
+Test settings and fixtures are in test/testfixes.js. Some readonly files are publicly shared and can be left at current values. Most files which are written are created and deleted afterwards on successful completion. They will be named something starting with -- and often centralized into a scratch folder for easy maintentance. In case of failures you may need to delete these yourself. 
+
+##### Breaking fixtures change at v1.0.23
+
+Previously we were using the .env file to pass fixed values to the tests. That has proved to be problematic, so now the test values are in ./test/testfixes.js 
+
+If you need to convert an existing .env file, there's a shell script for that. 
+- go to the test folder
+- execute sh efixconvert.sh
+- run once, check testfixes.js, run a test 
+- if all okay - you can now delete from ../env all keys that are required for testing. In other words delete all the items that are not in ../.env-setup-template
+- from v1.0.23 .env fixtures are no longer supprted.
 
 #### Specifics on expectations for test files. 
 
@@ -112,7 +122,6 @@ As I mentioned earlier, to take this further, I'm going to need a lot of help to
 - [colaborators](collaborators.md) - additional information for collaborators
 - [oddities](oddities.md) - a collection of oddities uncovered during this project
 - [gemini](gemini.md) - some reflections and experiences on using gemini to help code large projects
-- [setup env](setup-env.md) - ([credit Eric Shapiro] - additional info on contents of .env file
 - [readme](README.md)
 - [named colors](named-colors.md)
 - [sandbox](sandbox.md)

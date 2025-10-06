@@ -192,7 +192,6 @@ The colors used for banding themes can change over time with UI updates from Goo
 - [oddities](oddities.md) - a collection of oddities uncovered during this project
 - [gemini](gemini.md) - some reflections and experiences on using gemini to help code large projects
 - [named colors](named-colors.md) - colors supported by Apps Script
-- [setup env](setup-env.md) - ([credit Eric Shapiro] - additional info on contents of .env file
 - [this file](README.md)
 - [named colors](named-colors.md)
 - [sandbox](sandbox.md)

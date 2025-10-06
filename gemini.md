@@ -96,7 +96,6 @@ As I mentioned earlier, to take this further, I'm going to need a lot of help to
 - [colaborators](collaborators.md) - additional information for collaborators
 - [oddities](oddities.md) - a collection of oddities uncovered during this project
 - [gemini](gemini.md) - some reflections and experiences on using gemini to help code large projects
-- [setup env](setup-env.md) - ([credit Eric Shapiro] - additional info on contents of .env file
 - [readme](README.md)
 - [named colors](named-colors.md)
 - [sandbox](sandbox.md)
