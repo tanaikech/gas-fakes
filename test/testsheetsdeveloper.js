@@ -1,7 +1,7 @@
 // all these imports 
 // this is loaded by npm, but is a library on Apps Script side
 
-import '../main.js'
+import '@mcpher/gas-fakes'
 
 // all the fake services are here
 //import '@mcpher/gas-fakes/main.js'

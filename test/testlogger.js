@@ -1,4 +1,4 @@
-import '../main.js';
+import '@mcpher/gas-fakes';
 import { initTests } from './testinit.js';
 import * as sinon from 'sinon';
 import { cloudLog as fakeCloudLog } from '../src/services/logger/fakelogger.js';

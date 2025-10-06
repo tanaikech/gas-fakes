@@ -1,4 +1,4 @@
-import '../main.js';
+import '@mcpher/gas-fakes';
 import { maketdoc, getDocsPerformance } from './testassist.js';
 ;
 

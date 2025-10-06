@@ -4,7 +4,7 @@
 
 
 
-import '../main.js'
+import '@mcpher/gas-fakes'
 import { getDrivePerformance, wrapupTest, trasher } from './testassist.js';
 import is from '@sindresorhus/is';
 // all the fake services are here

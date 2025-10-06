@@ -4,7 +4,8 @@
 // all the fake services are here
 //import '@mcpher/gas-fakes/main.js'
 
-import "../main.js";
+import '@mcpher/gas-fakes'
+
 import { initTests } from "./testinit.js";
 
 import { cachePerformance } from "./testassist.js";

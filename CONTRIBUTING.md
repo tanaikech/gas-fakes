@@ -39,7 +39,7 @@ Each test can be run individually (for example `npm run testdrive`) or all with 
 
 Test settings and fixtures are in test/testfixes.js. Some readonly files are publicly shared and can be left at current values. Most files which are written are created and deleted afterwards on successful completion. They will be named something starting with -- and often centralized into a scratch folder for easy maintentance. In case of failures you may need to delete these yourself. 
 
-##### Breaking fixtures change at v1.0.23
+##### Breaking fixtures change at v1.0.25
 
 Previously we were using the .env file to pass fixed values to the tests. That has proved to be problematic, so now the test values are in ./test/testfixes.js 
 
@@ -48,7 +48,18 @@ If you need to convert an existing .env file, there's a shell script for that.
 - execute sh efixconvert.sh
 - run once, check testfixes.js, run a test 
 - if all okay - you can now delete from ../env all keys that are required for testing. In other words delete all the items that are not in ../.env-setup-template
-- from v1.0.23 .env fixtures are no longer supprted.
+- from v1.0.25 .env fixtures are no longer supprted.
+- the package.json in the test folder has been updated as below, so you'll need to reinstall there.
+
+##### how to redirect to use local files
+
+When testing and you want to use the local files rather than @mcpher/gas-fakes, you can have a local package.json in the same folder as your tests which directs the package to a local file. just run npm i to install
+````
+  "dependencies": {
+    "@mcpher/gas-fakes": "file:../../"
+  }
+````
+where the file value points to the root of gas-fakes. If you want to instead use the npm version then just revert that normal npm syntax and install again. 
 
 #### Specifics on expectations for test files. 
 

@@ -1,4 +1,5 @@
-import "../main.js";
+import '@mcpher/gas-fakes'
+
 import is from '@sindresorhus/is';
 
 import { initTests } from "./testinit.js";

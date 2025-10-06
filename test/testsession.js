@@ -3,7 +3,7 @@
 // this is loaded by npm, but is a library on Apps Script side
 
 import is from '@sindresorhus/is';
-import '../main.js'
+import '@mcpher/gas-fakes'
 import { wrapupTest } from './testassist.js';
 import { initTests }  from  './testinit.js'
 

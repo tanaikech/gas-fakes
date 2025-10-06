@@ -2,7 +2,7 @@
 // all these imports 
 // this is loaded by npm, but is a library on Apps Script side
 
-import '../main.js';
+import '@mcpher/gas-fakes';
 import { initTests } from './testinit.js';
 import { getSheetsPerformance, wrapupTest, trasher } from './testassist.js';
 import { Fiddler } from '@mcpher/fiddler';

@@ -1,5 +1,5 @@
 import is from '@sindresorhus/is';
-import '../main.js';
+import '@mcpher/gas-fakes';
 import { initTests } from './testinit.js';
 import { getSlidesPerformance, wrapupTest, getDrivePerformance, trasher } from './testassist.js';
 

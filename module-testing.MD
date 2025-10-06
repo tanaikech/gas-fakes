@@ -16,7 +16,7 @@ testutilities.js
 // this is loaded by npm, but is a library on Apps Script side
 
 import is from '@sindresorhus/is';
-import '../main.js'
+import '@mcpher/gas-fakes'
 
 // all the fake services are here
 //import '@mcpher/gas-fakes/main.js'
@@ -97,7 +97,7 @@ npm run testdrive
 ## Running all tests
 The consolidated test.js should contain references to all known tests
 ````
-import '../main.js'
+import '@mcpher/gas-fakes'
 import { initTests }  from  './testinit.js'
 import { testDrive } from './testdrive.js';
 import { testSheets } from './testsheets.js';

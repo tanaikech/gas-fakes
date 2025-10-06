@@ -7,7 +7,7 @@ import { testFixes } from './testfixes.js'
 // all the fake services are here
 //import '@mcpher/gas-fakes/main.js'
 
-import '../main.js';
+import '@mcpher/gas-fakes';
 import { Proxies } from '../src/support/proxies.js';
 
 

@@ -1,4 +1,4 @@
-import '../main.js';
+import '@mcpher/gas-fakes';
 import { initTests } from './testinit.js';
 import { wrapupTest, getDocsPerformance, maketdoc, trasher, unpackedDoc } from './testassist.js';
 

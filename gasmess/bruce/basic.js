@@ -1,24 +1,33 @@
-import '../../main.js';
-import { moveToTempFolder, deleteTempFile } from './tempfolder.js';
-
-// put all this stuff in a temp folder for easy deletion
-const ss = SpreadsheetApp.create("--gasmess-sheet")
-moveToTempFolder(ss.getId())
-
-const sheet = ss.insertSheet()
-const values = [[1,2,3,'=A1+B1'],[4,5,6,'=sum(A2:c2)'],[7,8,9, '=d1+d2']]
-const range = sheet.getRange(1,1,values.length,values[0].length)
-range.setValues(values)
-
-const result = range.getDisplayValues()
-
-console.log (result)
-
-/* result is correct
- * [
-  [ '1', '2', '3', '3' ],
-  [ '4', '5', '6', '15' ],
-  [ '7', '8', '9', '18' ]
-]
+/**
+ * @OnlyCurrentDoc
  */
-deleteTempFile(ss.getId())
+import '@mcpher/gas-fakes';
+
+// the test
+const test = () => {
+  // enable sandbox mode
+  ScriptApp.__behavior.sandboxMode = true;
+
+  // create a new document
+  const doc = DocumentApp.create('--gas-fakes-test');
+
+  // append a paragraph
+  const text = 'coffee turns potential into momentum.';
+  doc.getBody().appendParagraph(text);
+  doc.saveAndClose();
+
+  // read the document text and ensure it matches what you created
+  const readText = DocumentApp.openById(doc.getId()).getBody().getText();
+
+  // check it
+  if (text !== readText.trim()) {
+    throw new Error(`expected "${text}", but got "${readText}"`);
+  }
+  console.log('document created and read back successfully');
+
+  // tidy up sandbox
+  ScriptApp.__behavior.trash();
+}
+
+// run the test
+test();
