@@ -70,12 +70,7 @@
   "license": "MIT",
   "main": "main.js",
   "exports": {
-    ".": {
-      "development": "./src/index.js",
-      "import": "./main.js",
-      "default": "./main.js"
-    },
-    "./package.json": "./package.json"
+    ".": "./main.js"
   },
   "description": "A proof of concept implementation of Apps Script Environment on Node",
   "repository": "github:brucemcpherson/gas-fakes",
