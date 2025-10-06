@@ -56,7 +56,7 @@ const tli = () => {
   deleteTempFile(id)
 
 }
-tli()
+// tli()
 
 const tx2 = () => {
   let doc = DocumentApp.create("abc")
