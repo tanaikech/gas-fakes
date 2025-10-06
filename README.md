@@ -151,11 +151,32 @@ If you have used Logging to cloud, you can get a link to the log data like this.
 
 ```javascript
 console.log ('....example cloud log link for this session',Logger.__cloudLogLink)
-````
+```
 
 It contains a cloud logging query that will display any logging done in this session - the filter is based on the scriptId (from gasfakes.json), the projectId and userId (from Auth), as well as the start and end time of the session. 
 
+#### A note on .env location
 
+Optionally you can set the initial Logging environment in your .env file. By default it assumes you want to log to the console only.
+If you want to set an initial LOG_DESTINATION using that .env file, you have to let gas-fakes know where to find it. Let's assume it's in the same folder as your main script.
+```env
+node --env-file=.env yourapp.js
+```
+Some developers prefer to use [dotenv](https://www.npmjs.com/package/dotenv) to set the path of the .env file
+```javascript
+import dotenv from 'dotenv'
+dotenv.config({ path: '/custom/path/to/.env' })
+```
+Alternatively, instead of putting it in an env file, you can export it in your shell environment. 
+```sh
+export LOG_DESTINATION="BOTH"
+```
+Finally, another approach is to set it dynamically at the beginning of your app.
+```javascript
+Logger.__logDestination="BOTH"
+```
+
+Do whichever one suits you best.
 
 ### Pushing files to GAS
 

@@ -25,7 +25,6 @@ export class FakeLogger {
     this.__destination = (process.env.LOG_DESTINATION || 'CONSOLE').toUpperCase();
     this.__startedLoggingAt = new Date()
     this.__cloudLogLink = 'No cloud logging enabled - use Logger.__logDestination = "CLOUD" or "BOTH" to enable'
-
     if (['CLOUD','BOTH'].includes(this.__destination)) {
       writeToCloudOrConsole("...Initializing cloud logging", this)
     }
@@ -88,6 +87,8 @@ export class FakeLogger {
     if (['CONSOLE', 'CLOUD', 'BOTH', 'NONE'].includes(destination.toUpperCase())) {
       this.__destination = destination.toUpperCase();
     }
+    // we need to send a logger message to initialize and test
+    this.log (`...setting destination to ${this.__destination}`)
     return this;
   }
 
