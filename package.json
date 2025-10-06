@@ -63,7 +63,7 @@
     "testsandbox": "cp mainlocal.js main.js && node ./test/testsandbox.js execute",
     "testgmail": "cp mainlocal.js main.js && node ./test/testgmail.js execute",
     "testlogger": "cp mainlocal.js main.js && node ./test/testlogger.js execute",
-    "pub": "cp mainlocal.js main.js && node  && npm publish --access public"
+    "pub": "cp mainlocal.js main.js  && npm publish --access public"
   },
   "name": "@mcpher/gas-fakes",
   "version": "1.0.23",
