@@ -1,7 +1,6 @@
 /**
  * @OnlyCurrentDoc
  */
-import './node_modules/@mcpher/gas-fakes/main.js';
 import '@mcpher/gas-fakes';
 
 // the test

@@ -64,19 +64,26 @@ const isTokenExpired = () => !_accessToken || !_tokenExpiresAt || Date.now() >= 
 
 const setAuth = async (scopes = [], keyFile = null) => {
   if (!hasAuth() || !scopes.every(s => _authScopes.has(s))) {
-    syncLog(`...initializing auth and discovering project ID with scopes ${scopes.join(',')}`);
-    _auth = new GoogleAuth({
+    syncLog(`...initializing auth and discovering project ID`);
+    // First auth is just to get the project ID.
+    const initialAuth = new GoogleAuth({
       keyFile,
-      scopes,
-      // projectId is not needed; it will be discovered automatically.
+      scopes: ['https://www.googleapis.com/auth/cloud-platform'], // Minimal scope
     });
 
     // Discover and cache the project ID. This also serves as validation.
-    _projectId = await _auth.getProjectId();
+    _projectId = await initialAuth.getProjectId();
     if (!_projectId) {
       throw new Error('Failed to get project ID from Application Default Credentials.');
     }
     syncLog(`...discovered and set projectId to ${_projectId}`);
+
+    // Now, create the *real* auth client with the projectId and all required scopes.
+    _auth = new GoogleAuth({
+      keyFile,
+      scopes,
+      projectId: _projectId,
+    });
 
     scopes.forEach(s => _authScopes.add(s));
   }
