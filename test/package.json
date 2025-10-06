@@ -13,7 +13,7 @@
     "test": "node ./test.js"
   },
   "name": "test-gas-fakes",
-  "version": "1.0.25",
+  "version": "1.0.26",
   "license": "MIT",
   "main": "test.js",
   "description": "test A proof of concept implementation of Apps Script Environment on Node",

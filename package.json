@@ -66,12 +66,16 @@
     "pub": "npm publish --access public"
   },
   "name": "@mcpher/gas-fakes",
-  "version": "1.0.25",
+  "version": "1.0.26",
   "license": "MIT",
-  "main": "mainlocal.js",
+  "main": "main.js",
   "exports": {
-    ".": "./mainlocal.js",
-    "./main.js": "./mainlocal.js"
+    ".": {
+      "development": "./src/index.js",
+      "import": "./main.js",
+      "default": "./main.js"
+    },
+    "./package.json": "./package.json"
   },
   "description": "A proof of concept implementation of Apps Script Environment on Node",
   "repository": "github:brucemcpherson/gas-fakes",

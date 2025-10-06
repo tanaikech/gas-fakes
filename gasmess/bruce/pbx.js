@@ -1,9 +1,9 @@
-import '../../main.js';
+
 import { moveToTempFolder, deleteTempFile } from '../tempfolder.js';
 import { report, scl } from './dreport.js';
 
 
-
+import '@mcpher/gas-fakes';
 const suffix = "-bruce"
 const tli = () => {
   let doc = DocumentApp.create("abc")
