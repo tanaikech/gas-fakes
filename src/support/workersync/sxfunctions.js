@@ -9,3 +9,5 @@ export * from "../sxzip.js";
 export * from "../sxauth.js";
 export * from "../sxgmail.js";
 export * from "../sxxlsx.js";
+
+export * from "../sxlogger.js";

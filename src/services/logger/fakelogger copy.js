@@ -1,9 +1,11 @@
 import { format } from 'util';
 import { Proxies } from '../../support/proxies.js';
-import { Syncit } from '../../support/syncit.js';
+import { Logging } from '@google-cloud/logging';
 
 // --- Cloud Logging Integration ---
 
+// Cloud Logging client instance.
+export let cloudLog;
 
 /**
  * @class
@@ -117,6 +119,25 @@ const writeToCloudOrConsole = (message, loggerInstance) => {
   const scriptId = ScriptApp.getScriptId();
   const userId = ScriptApp.__userId;
 
+  // Lazy-initialize the cloud logger if needed.
+  const initializeCloudLogging = () => {
+    if (cloudLog) return; // Already initialized.
+    try {
+      if (!projectId) {
+        throw new Error('Could not determine Google Cloud Project ID for logging.');
+      }
+      const logging = new Logging({ projectId });
+      cloudLog = logging.log(logName);
+      console.info(`gas-fakes: Cloud Logging is enabled, writing to log "${logName}".`);
+    } catch (err) {
+      console.warn(
+        `gas-fakes: Cloud Logging failed to initialize. ` +
+        'Falling back to console.log.',
+        err.message
+      );
+      cloudLog = null;
+    }
+  };
 
   // Write to console if CONSOLE or BOTH is specified.
   if (useConsoleLogging) {
@@ -130,6 +151,10 @@ const writeToCloudOrConsole = (message, loggerInstance) => {
 
   // Write to Cloud Logging if CLOUD or BOTH is specified and client is ready.
   if (useCloudLogging) {
+    // Initialize the cloud logger on the first use if it hasn't been already.
+    if (!cloudLog) {
+      initializeCloudLogging();
+    }
 
     const metadata = {
       // Use the 'global' resource type, which is a generic fallback for applications
@@ -143,6 +168,10 @@ const writeToCloudOrConsole = (message, loggerInstance) => {
       severity: 'INFO',
     };
 
+    // Use log.write which returns a promise. T
+    // his allows us to catch errors, such as a disabled API or permission issues.
+    // however we are firing and forgetting so an error might appear later on in execution
+    if (cloudLog) {
       // filter on user/script/priject and run times
       // we'll extend the end date filter to a little more than now
       const aLittleMore = 7 * 1000
@@ -172,6 +201,7 @@ const writeToCloudOrConsole = (message, loggerInstance) => {
       // E. Assemble the final URL
       loggerInstance.__cloudLogLink = base + encodedQueryParam + `?project=${projectId}`;
       // fire and forget
-      Syncit.fxLogger({ logName, metadata })
+      cloudLog.write(cloudLog.entry(metadata)).catch(err => console.error('gas-fakes: Failed to write to Cloud Logging.', err.message))
+    }
   }
 };

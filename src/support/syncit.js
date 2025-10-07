@@ -295,7 +295,7 @@ const fxInit = ({
   Auth.setProjectId(projectId);
   //Auth.setAuth(scopes)
   Auth.setTokenInfo(tokenInfo);
-  //Auth.setAdcPath(adcPath)
+  Auth.setAdcPath(adcPath)
   //Auth.setAccessToken(accessToken)
   Auth.setSettings(settings);
   Auth.setClasp(clasp);
@@ -384,6 +384,7 @@ const fxGmail = (args) =>
   });
 
 const fxGetImagesFromXlsx = (args) => callSync("sxGetImagesFromXlsx", args);
+const fxLogger = ({metadata, logName}) => callSync("sxLogger", {metadata, logName});
 
 export const Syncit = {
   fxFetch,
@@ -402,4 +403,5 @@ export const Syncit = {
   fxForms,
   fxGmail,
   fxGetImagesFromXlsx,
+  fxLogger
 };

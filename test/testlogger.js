@@ -1,7 +1,6 @@
 import '@mcpher/gas-fakes';
 import { initTests } from './testinit.js';
 import * as sinon from 'sinon';
-import { cloudLog as fakeCloudLog } from '../src/services/logger/fakelogger.js';
 import { wrapupTest } from './testassist.js';
 import is from '@sindresorhus/is';
 
