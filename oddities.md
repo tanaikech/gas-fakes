@@ -818,33 +818,23 @@ I hit a brick wall when installing cloud logging because googleapis and gloud lo
 
 This is the original conflict
 ````
+npm ls google-auth-library
+
 @mcpher/gas-fakes@1.1.3 /Users/brucemcpherson/Documents/repos/gas-fakes
 ├─┬ @google-cloud/logging@11.2.1
 │ ├─┬ @google-cloud/common@5.0.2
-│ │ └── google-auth-library@9.15.1
+│ │ └── google-auth-library@9.15.1 deduped
 │ ├── google-auth-library@9.15.1
 │ └─┬ google-gax@4.6.1
-│   └── google-auth-library@9.15.1
-└─┬ googleapis@157.0.0
+│   └── google-auth-library@9.15.1 deduped
+└─┬ googleapis@161.0.0
   ├── google-auth-library@10.4.0
   └─┬ googleapis-common@8.0.0
     └── google-auth-library@10.4.0
 ````
-I tried various combinations to try to find auth libraries that would work with both, and eventually landed on v10.2
-````
-@mcpher/gas-fakes@1.1.3 /Users/brucemcpherson/Documents/repos/gas-fakes
-├─┬ @google-cloud/logging@11.2.1
-│ ├─┬ @google-cloud/common@5.0.2
-│ │ └── google-auth-library@10.2.0 deduped
-│ ├── google-auth-library@10.2.0 overridden
-│ └─┬ google-gax@4.6.1
-│   └── google-auth-library@10.2.0 deduped
-└─┬ googleapis@157.0.0
-  ├── google-auth-library@10.2.0 deduped
-  └─┬ googleapis-common@8.0.0
-    └── google-auth-library@10.2.0 deduped
-````
-We'll need to watch for this in future when the logger client is updated with a newer auth library dependency,
+I can see that logger is still on 9.15 whereas google apis latest (and v157 also) are both on 10.4.
+
+Another issue with 10.4, is we now get this error "Method doesn't allow unregistered callers (callers without established identity)"
 
 ## Testing
 

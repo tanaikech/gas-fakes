@@ -93,7 +93,7 @@ parentPort.on('message', async (task) => {
       // The projectId is already discovered and set within the initial `sxInit` -> `setAuth` call.
       // This subsequent call is redundant, so it is removed for clarity.
       // Auth.setProjectId(result.projectId);
-      await Auth.setAuth(result.scopes, result.adcPath);
+      await Auth.setAuth(result.scopes);
       Auth.setAccessToken(result.accessToken);
       Auth.setSettings(result.settings);
       Auth.setClasp(result.clasp);
