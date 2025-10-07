@@ -24,6 +24,9 @@
     "unzipper": "^0.12.3",
     "yoctocolors": "^2.1.2"
   },
+  "overrides": {
+    "google-auth-library": "10.2.0"
+  },
   "type": "module",
   "scripts": {
     "test": "node  ./test/test.js",

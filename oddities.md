@@ -812,6 +812,39 @@ All Apps Script enums are imitated using a seperate class 'newFakeGasenum()'. A 
 
 Sometime between v144 and v150 of googleapis library, it appeared to become mandatory to include the project id in the auth pattern for API clients. Since we get the project id from the ADC, we actually have to do double auths. One to get the project id (which is async), and another to get an auth with the scopes required for the sheets, drive etc client (which is not async). All this now taken care of during the init phase.
 
+#### logging auth dependency compatibility
+
+I hit a brick wall when installing cloud logging because googleapis and gloud logging apis have different auth-library dependencies. This means we have 2 conflicting version of the auth-library. This works okay locally, but npm does some weird caching thing that causes it to fail when running in node_modules. 
+
+This is the original conflict
+````
+@mcpher/gas-fakes@1.1.3 /Users/brucemcpherson/Documents/repos/gas-fakes
+├─┬ @google-cloud/logging@11.2.1
+│ ├─┬ @google-cloud/common@5.0.2
+│ │ └── google-auth-library@9.15.1
+│ ├── google-auth-library@9.15.1
+│ └─┬ google-gax@4.6.1
+│   └── google-auth-library@9.15.1
+└─┬ googleapis@157.0.0
+  ├── google-auth-library@10.4.0
+  └─┬ googleapis-common@8.0.0
+    └── google-auth-library@10.4.0
+````
+I tried various combinations to try to find auth libraries that would work with both, and eventually landed on v10.2
+````
+@mcpher/gas-fakes@1.1.3 /Users/brucemcpherson/Documents/repos/gas-fakes
+├─┬ @google-cloud/logging@11.2.1
+│ ├─┬ @google-cloud/common@5.0.2
+│ │ └── google-auth-library@10.2.0 deduped
+│ ├── google-auth-library@10.2.0 overridden
+│ └─┬ google-gax@4.6.1
+│   └── google-auth-library@10.2.0 deduped
+└─┬ googleapis@157.0.0
+  ├── google-auth-library@10.2.0 deduped
+  └─┬ googleapis-common@8.0.0
+    └── google-auth-library@10.2.0 deduped
+````
+We'll need to watch for this in future when the logger client is updated with a newer auth library dependency,
 
 ## Testing
 
