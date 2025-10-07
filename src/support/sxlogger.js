@@ -14,7 +14,7 @@ import { syncError, syncLog } from './workersync/synclogger.js';
 export const sxLogger = async (Auth , { logName, metadata }) => {
   const keyFile = Auth.getAdcPath()
   const projectId = Auth.getProjectId();
-  syncLog(`sxLogger creating isolated auth with keyFile: ${keyFile} and projectId: ${projectId}`);
+
 
   // Let the Logging client handle its own authentication by providing it
   // with the three essential pieces of information. This is the most robust
@@ -24,8 +24,7 @@ export const sxLogger = async (Auth , { logName, metadata }) => {
   });
   let response;
   let error;
-  logName = 'console_logs'
-   syncLog(`${logName} ${projectId} ${JSON.stringify(metadata)}, ${keyFile}`)
+
   const cloudlog = logging.log(logName)
   try {
     response = await cloudlog.write(cloudlog.entry(metadata))
