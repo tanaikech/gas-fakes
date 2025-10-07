@@ -10,8 +10,8 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@mcpher/gas-fakes": "^1.1.2",
     "google-auth-library": ">=9.0.0",
-    "googleapis": ">=157.0.0",
-    "@mcpher/gas-fakes": "file:../../"
+    "googleapis": ">=157.0.0"
   }
 }

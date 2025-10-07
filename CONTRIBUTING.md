@@ -61,6 +61,8 @@ When testing and you want to use the local files rather than @mcpher/gas-fakes, 
 ````
 where the file value points to the root of gas-fakes. If you want to instead use the npm version then just revert that normal npm syntax and install again. 
 
+CAUTION: when switching between, you'll need to clear npm cache - I wasted a whole afternoon on that.
+
 #### Specifics on expectations for test files. 
 
 In principle test files specified in the .env file should belong to you, although for simplicity and to test predefined ui set values, some are necesseraily shared - here are all the test files expected by the test suite.

@@ -6,7 +6,8 @@
     "@mcpher/fiddler": "^1.0.1",
     "@mcpher/unit": "^1.1.10",
     "sinon": "^21.0.0",
-    "@mcpher/gas-fakes": "file:../"
+    "@mcpher/gas-fakes": "file:../",
+    "@sindresorhus/is": "^7.0.1"
   },
   "type": "module",
   "scripts": {
