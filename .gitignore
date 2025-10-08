@@ -6,5 +6,5 @@ testongas
 .env-bruce
 ghissues
 **/.gemini
-
+.DS_Store
 
