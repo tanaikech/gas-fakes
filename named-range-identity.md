@@ -1,4 +1,4 @@
-### How Named Ranges Are Used to Track Element Identity
+### <img src="./logo.png" alt="gas-fakes logo" width="50" align="top"> How Named Ranges Are Used to Track Element Identity
 
 The core challenge in emulating `DocumentApp` is understanding how Apps Script objects, like a `Paragraph`, remain "alive" and valid even after the document is modified and their position changes.
 
@@ -58,8 +58,10 @@ The self-healing mechanism described above only works if the element's identity 
 
 By doing this in a single `batchUpdate`, we are explicitly telling the Docs API: "I am changing this element, but I want it to keep its identity." This ensures that when the `shadowDocument` refreshes, it can still find the named range and the `FakeElement` object remains valid. This protection is the key to the entire system's stability.
 
-## Translations and writeups
+## Further Reading
 
+- [getting started](GETTING_STARTED.md) - how to handle authentication for restricted scopes.
+- [readme](README.md)
 - [initial idea and thoughts](https://ramblings.mcpher.com/a-proof-of-concept-implementation-of-apps-script-environment-on-node/)
 - [Inside the volatile world of a Google Document](https://ramblings.mcpher.com/inside-the-volatile-world-of-a-google-document/
 - [Apps Script Services on Node – using apps script libraries](https://ramblings.mcpher.com/apps-script-services-on-node-using-apps-script-libraries/)
@@ -70,8 +72,7 @@ By doing this in a single `batchUpdate`, we are explicitly telling the Docs API:
 - [colaborators](collaborators.md) - additional information for collaborators
 - [oddities](oddities.md) - a collection of oddities uncovered during this project
 - [gemini](gemini.md) - some reflections and experiences on using gemini to help code large projects
-- [named colors](named-colors.md) - colors supported by Apps Script
-- [this file](README.md)
 - [named colors](named-colors.md)
 - [sandbox](sandbox.md)
 - [named range identity](named-range-identity.md)
+- [restricted scopes](restricted_scopes.md) - how to handle authentication for restricted scopes.

@@ -1,110 +1,37 @@
-# A proof of concept implementation of Apps Script Environment on Node
+# <img src="./logo.png" alt="gas-fakes logo" width="50" align="top"> A proof of concept implementation of Apps Script Environment on Node
 
-I use clasp/vscode to develop Google Apps Script (GAS) applications, but when using GAS native services, there's way too much back and fowards to the GAS IDE going while testing. I set myself the ambition of implementing fake version of the GAS runtime environment on Node so I could at least do some testing and debugging of Apps Scripts locally on Node.
+I use clasp/vscode to develop Google Apps Script (GAS) applications, but when using GAS native services, there's way too much back and forwards to the GAS IDE going while testing. I set myself the ambition of implementing a fake version of the GAS runtime environment on Node so I could at least do some testing and debugging of Apps Scripts locally on Node.
 
 This is a proof of concept so I've implemented a growing subset of number of services and methods. There are a rigorous set of tests for all emulated classes and methods to make sure the same code produces the same result on both Node and Apps Script. Please report any inconsistencies in the issues of this repo.
 
 
 ## Getting started as a package user
 
-You can get the package from npm
-
+You can get the package from npm:
 ```sh
 npm i @mcpher/gas-fakes
 ```
 
-Collaborators should fork the repo and use the local versions of these files - see [collaborators info](collaborators.md).
+For a complete guide on how to set up your local environment for authentication and development, please see the consolidated guide: [Getting Started with `gas-fakes`](gas-fakes/GETTING_STARTED.md)
+
+Collaborators should fork the repo and use the local versions of these files - see collaborators info.
 
 ### Use exactly the same code as in Apps Script
 
 Just as on Apps Script, everything is executed synchronously so you don't need to bother with handling Promises/async/await. Just write normal Apps Script code. Usually you would have an associated App Script project if that's your eventual target, but it's not essential that you do. You can get started right away on Node. 
 
-
-### Cloud project
-
-You don't have access to GAS maintained cloud projects from Node, so you'll need to create a GCP project to use locally (or you can use it on Apps Script too if you prefer) that has the workspace APIs enabled (Drive, Docs, Sheets etc). 
-
-### .env and shell script helpers
-
-In order to duplicate the OAuth management handled by GAS, we'll use Application Default Credentials. I've provided a handy shell that will take care of all this for you. 
-
-- Get this [folder](https://github.com/brucemcpherson/gas-fakes/tree/main/shells) into the ./shells folder of your project.
-- Get this [env template](https://github.com/brucemcpherson/gas-fakes/blob/main/shells/.env.template) and copy it/add it to your .env file in your project
-
-#### Application default credentials
-
-In order to avoid a bunch of Node specific code and credentials, yet still handle OAuth, I figured that we could simply rely on ADC. This is a problem I already wrote about here [Application Default Credentials with Google Cloud and Workspace APIs](https://ramblings.mcpher.com/application-default-credentials-with-google-cloud-and-workspace-apis/)
-
-At the very least you need to add the gcp project id and optionally the id of some file you have access to - this'll be used to check that you have set up ADC properly.
-
-#### Your .env file
-
-You can setup the .env file your self using the .env.template as a guide.
-
-```
-# must set these
-GCP_PROJECT_ID="add your gcp project id here"
-
-# optional reference if you want to run a test after setting up
-DRIVE_TEST_FILE_ID="add the id of some test file you have access to here"
-
-# we'll use the default config for application default credentials
-# probably dont need to change these
-AC=default
-# these are the scopes set by default - take some of these out if you want to minimize access
-DEFAULT_SCOPES="https://www.googleapis.com/auth/userinfo.email,openid,https://www.googleapis.com/auth/cloud-platform"
-EXTRA_SCOPES=",https://www.googleapis.com/auth/drive,https://www.googleapis.com/auth/spreadsheets"
- 
-# optional logging destination
-# can be CONSOLE (default), CLOUD, BOTH, NONE
-LOG_DESTINATION="BOTH"
-
-```
-#### Applying the .env
-
-You can run 
-```bash
-cd shells
-bash setaccounts.sh
-```
-Which will set up and test the initial application default login with the selected scopes.
-
-#### enabling workspace services
-
-You can run this shell to enable all the required cloud services
-```bash
-cd shells
-bash enable.sh
-```
-
-#### Restricted scopes
-
-Recent changes in the OAuth security model have made it more difficult for Application Default credentials to work with all the scopes we'll need to fully emulate Live Apps Script locally. However there is a way to work around this by creating an oauth client for internal use in the cloud console, and injecting its credentials into those used by the application default creadentials process. You should now follow the guidance in [restricted scopes](restricted_scopes.md) to enhance your login process to be able access all the supported services in gas-fakes
-
-#### Manifest file
-
-If you have an associated apps script project, you'll probably be using clasp to sync with the apps script IDE, and you'll have an appsscript.json available in your project folder
-
-**gas-fakes** reads the manifest file to see which scopes you need in your project, uses the Google Auth library to attempt to authorizes them and has `ScriptApp.getOauthToken()` return a sufficiently specced token, just as the GAS environment does. Just make sure you have an `appsscript.json` in the same folder as your main script.
-
-Now you can execute this and it will set up your ADC to be able to run any services that require the scopes you add.
-
-##### note
-
-Although you may be tempted to add `https://www.googleapis.com/auth/script.external_request`, it's not necessary for the ADC and in fact will generate an error. You will of course need it in your Apps script manifest. Same goes for "https://www.googleapis.com/auth/documents" and "https://www.googleapis.com/auth/documents" 
-
 ### Settings
 
-Optionally, gasfakes.json holds various location and behavior parameters to inform about your Node environment. It's not required on GAS as you can't change anything over there. If you don't have one or need one, it'll create one for you and use some sensible defaults. Here's an example of one with the defaults. It should be in the same folder as your main script.
+The optional `gasfakes.json` file holds various location and behavior parameters for your local Node environment. It is not required on GAS, as you can't change anything over there. If you don't provide this file, `gas-fakes` will create one for you with sensible defaults.
 
-```
+```json
 {
   "manifest": "./appsscript.json",
   "clasp": "./.clasp.json",
   "documentId": null,
   "cache": "/tmp/gas-fakes/cache",
   "properties": "/tmp/gas-fakes/properties",
-  "scriptId": "1bc79bd3-fe02-425f-9653-525e5ae0b678"
+  "scriptId": "a-unique-id-for-your-local-project"
 }
 ```
 
@@ -182,7 +109,7 @@ If you want to set an initial LOG_DESTINATION using that .env file, you have to 
 ```env
 node --env-file=.env yourapp.js
 ```
-Some developers prefer to use [dotenv](https://www.npmjs.com/package/dotenv) to set the path of the .env file
+Some developers prefer to use dotenv to set the path of the .env file
 ```javascript
 import dotenv from 'dotenv'
 dotenv.config({ path: '/custom/path/to/.env' })
@@ -213,9 +140,10 @@ For inspiration on pushing modified files to the IDE, see the togas.sh bash scri
 
 As I mentioned earlier, to take this further, I'm going to need a lot of help to extend the methods and services supported - so if you feel this would be useful to you, and would like to collaborate, please ping me on bruce@mcpher.com and we'll talk.
 
-## Translations and writeups
+## Further Reading
 
-
+- [getting started](GETTING_STARTED.md) - how to handle authentication for restricted scopes.
+- [readme](README.md)
 - [initial idea and thoughts](https://ramblings.mcpher.com/a-proof-of-concept-implementation-of-apps-script-environment-on-node/)
 - [Inside the volatile world of a Google Document](https://ramblings.mcpher.com/inside-the-volatile-world-of-a-google-document/
 - [Apps Script Services on Node – using apps script libraries](https://ramblings.mcpher.com/apps-script-services-on-node-using-apps-script-libraries/)
@@ -226,8 +154,7 @@ As I mentioned earlier, to take this further, I'm going to need a lot of help to
 - [colaborators](collaborators.md) - additional information for collaborators
 - [oddities](oddities.md) - a collection of oddities uncovered during this project
 - [gemini](gemini.md) - some reflections and experiences on using gemini to help code large projects
-- [named colors](named-colors.md) - colors supported by Apps Script
-- [this file](README.md)
 - [named colors](named-colors.md)
 - [sandbox](sandbox.md)
 - [named range identity](named-range-identity.md)
+- [restricted scopes](restricted_scopes.md) - how to handle authentication for restricted scopes.

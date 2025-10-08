@@ -1,5 +1,5 @@
 
-# Note to collaborators on Gemini 
+# <img src="./logo.png" alt="gas-fakes logo" width="50" align="top">  Note to collaborators on Gemini 
 
 Gemini code assist can be a very helpful for the busy work, but there a huge number of inconsistencies between what it believes to be the documentation and the actual real world, so if Gemini starts flailing take over early.
 
@@ -85,9 +85,12 @@ On the positive side, it's very good at creating issues and creating standalone 
 
 As I mentioned earlier, to take this further, I'm going to need a lot of help to extend the methods and services supported - so if you feel this would be useful to you, and would like to collaborate, please ping me on [bruce@mcpher.com](mailto:bruce@mcpher.com) and we'll talk.
 
-## Translations and writeups
+## Further Reading
 
+- [getting started](GETTING_STARTED.md) - how to handle authentication for restricted scopes.
+- [readme](README.md)
 - [initial idea and thoughts](https://ramblings.mcpher.com/a-proof-of-concept-implementation-of-apps-script-environment-on-node/)
+- [Inside the volatile world of a Google Document](https://ramblings.mcpher.com/inside-the-volatile-world-of-a-google-document/
 - [Apps Script Services on Node – using apps script libraries](https://ramblings.mcpher.com/apps-script-services-on-node-using-apps-script-libraries/)
 - [Apps Script environment on Node – more services](https://ramblings.mcpher.com/apps-script-environment-on-node-more-services/)
 - [Turning async into synch on Node using workers](https://ramblings.mcpher.com/turning-async-into-synch-on-node-using-workers/)
@@ -96,7 +99,7 @@ As I mentioned earlier, to take this further, I'm going to need a lot of help to
 - [colaborators](collaborators.md) - additional information for collaborators
 - [oddities](oddities.md) - a collection of oddities uncovered during this project
 - [gemini](gemini.md) - some reflections and experiences on using gemini to help code large projects
-- [readme](README.md)
 - [named colors](named-colors.md)
 - [sandbox](sandbox.md)
 - [named range identity](named-range-identity.md)
+- [restricted scopes](restricted_scopes.md) - how to handle authentication for restricted scopes.

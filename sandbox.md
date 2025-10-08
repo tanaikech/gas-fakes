@@ -1,4 +1,4 @@
-# `gas-fakes` Sandbox Mode
+# <img src="./logo.png" alt="gas-fakes logo" width="50" align="top"> `gas-fakes` Sandbox Mode
 
 `gas-fakes` includes a powerful sandbox feature that allows you to control file access and manage test artifacts, ensuring your tests are isolated, predictable, and clean.
 
@@ -161,8 +161,10 @@ try {
   console.error(e.message); // "Method DriveApp.getRootFolder is not allowed..."
 }
 ```
-## Translations and writeups
+## Further Reading
 
+- [getting started](GETTING_STARTED.md) - how to handle authentication for restricted scopes.
+- [readme](README.md)
 - [initial idea and thoughts](https://ramblings.mcpher.com/a-proof-of-concept-implementation-of-apps-script-environment-on-node/)
 - [Inside the volatile world of a Google Document](https://ramblings.mcpher.com/inside-the-volatile-world-of-a-google-document/
 - [Apps Script Services on Node – using apps script libraries](https://ramblings.mcpher.com/apps-script-services-on-node-using-apps-script-libraries/)
@@ -173,8 +175,7 @@ try {
 - [colaborators](collaborators.md) - additional information for collaborators
 - [oddities](oddities.md) - a collection of oddities uncovered during this project
 - [gemini](gemini.md) - some reflections and experiences on using gemini to help code large projects
-- [named colors](named-colors.md) - colors supported by Apps Script
-- [this file](README.md)
 - [named colors](named-colors.md)
 - [sandbox](sandbox.md)
 - [named range identity](named-range-identity.md)
+- [restricted scopes](restricted_scopes.md) - how to handle authentication for restricted scopes.

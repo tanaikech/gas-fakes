@@ -1,4 +1,4 @@
-# Approach, and oddities I've found while creating gas-fakes
+# <img src="./logo.png" alt="gas-fakes logo" width="50" align="top">  Approach, and oddities I've found while creating gas-fakes
 
 
 Just as on Apps Script, everything is executed synchronously so you don't need to bother with handling Promises/async/await. Note that the intended audience is Apps Script developers who want to run the same code and access the same services in both Node and Apps Script. However I've uncovered quite a few behavioral oddities, inconsistencies (and bugs) in the Apps Script services I've dug into. I'm using this file as a record what I've found and discuss the dilemma of whether I should actually emulate dubious behavior.
@@ -850,8 +850,10 @@ Another issue with 10.4, is we now get this error "Method doesn't allow unregist
 If you want to play with the testing suite , then take a look at the [collaborators](collaborators.md) writeup.
 
 
-## Translations and writeups
+## Further Reading
 
+- [getting started](GETTING_STARTED.md) - how to handle authentication for restricted scopes.
+- [readme](README.md)
 - [initial idea and thoughts](https://ramblings.mcpher.com/a-proof-of-concept-implementation-of-apps-script-environment-on-node/)
 - [Inside the volatile world of a Google Document](https://ramblings.mcpher.com/inside-the-volatile-world-of-a-google-document/
 - [Apps Script Services on Node – using apps script libraries](https://ramblings.mcpher.com/apps-script-services-on-node-using-apps-script-libraries/)
@@ -862,6 +864,7 @@ If you want to play with the testing suite , then take a look at the [collaborat
 - [colaborators](collaborators.md) - additional information for collaborators
 - [oddities](oddities.md) - a collection of oddities uncovered during this project
 - [gemini](gemini.md) - some reflections and experiences on using gemini to help code large projects
-- [this file](README.md)
 - [named colors](named-colors.md)
+- [sandbox](sandbox.md)
 - [named range identity](named-range-identity.md)
+- [restricted scopes](restricted_scopes.md) - how to handle authentication for restricted scopes.

@@ -1,4 +1,4 @@
-## Revolutionize Your Apps Script Workflow: Develop and Test Locally with gas-fakes
+## <img src="./logo.png" alt="gas-fakes logo" width="50" align="top">  Revolutionize Your Apps Script Workflow: Develop and Test Locally with gas-fakes
 For developers building on Google's powerful Apps Script platform, the creative possibilities are vast. However, the development process itself can often feel constrained by its cloud-native environment. The constant cycle of writing code in the online editor, saving, and running tests in the cloud can be a significant drag on productivity. But what if you could bring the Apps Script environment to your local machine?
 
 Thanks to the innovative work of Google Developer Expert, Bruce McPherson, this is no longer a "what if." Introducing gas-fakes, a game-changing repository that brings the Apps Script environment to Node.js, allowing you to develop, test, and debug your Google Apps Script projects locally.
