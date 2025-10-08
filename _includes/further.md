@@ -1,4 +1,4 @@
-## Further Reading
+## <img src="./logo.png" alt="gas-fakes logo" width="50" align="top">  Further Reading
 
 - [getting started](GETTING_STARTED.md) - how to handle authentication for restricted scopes.
 - [readme](README.md)
