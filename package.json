@@ -3,7 +3,6 @@
     "node": ">=20.11.0"
   },
   "dependencies": {
-    "@google-cloud/logging": "^11.2.1",
     "@mcpher/fake-gasenum": "^1.0.2",
     "@sindresorhus/is": "^7.0.1",
     "archiver": "^7.0.1",
@@ -66,7 +65,7 @@
     "pub": "npm publish --access public"
   },
   "name": "@mcpher/gas-fakes",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "license": "MIT",
   "main": "main.js",
   "description": "A proof of concept implementation of Apps Script Environment on Node",

@@ -1,9 +1,10 @@
 import { format } from 'util';
 import { Proxies } from '../../support/proxies.js';
-import { Syncit } from '../../support/syncit.js';
+
 
 // --- Cloud Logging Integration ---
-
+// instead of using the node client for this, which is out of date and uses conflicting version of google-auth-library
+// im going to use its json api
 
 /**
  * @class
@@ -23,7 +24,7 @@ export class FakeLogger {
     this.__destination = (process.env.LOG_DESTINATION || 'CONSOLE').toUpperCase();
     this.__startedLoggingAt = new Date()
     this.__cloudLogLink = 'No cloud logging enabled - use Logger.__logDestination = "CLOUD" or "BOTH" to enable'
-    if (['CLOUD','BOTH'].includes(this.__destination)) {
+    if (['CLOUD', 'BOTH'].includes(this.__destination)) {
       writeToCloudOrConsole("...Initializing cloud logging", this)
     }
   }
@@ -86,12 +87,12 @@ export class FakeLogger {
       this.__destination = destination.toUpperCase();
     }
     // we need to send a logger message to initialize and test
-    this.log (`...setting destination to ${this.__destination}`)
+    this.log(`...setting destination to ${this.__destination}`)
     return this;
   }
 
   // to allow code compatibility without error on apps script, we should use the setter since it'll be undefined on Apps live Script
-  set __logDestination (destination) {
+  set __logDestination(destination) {
     return this.__setLogDestination(destination);
   }
 
@@ -143,35 +144,54 @@ const writeToCloudOrConsole = (message, loggerInstance) => {
       severity: 'INFO',
     };
 
-      // filter on user/script/priject and run times
-      // we'll extend the end date filter to a little more than now
-      const aLittleMore = 7 * 1000
-      const endDate = new Date(new Date().getTime() + aLittleMore)
-      const startDate = loggerInstance.__startedLoggingAt
+    // filter on user/script/priject and run times
+    // we'll extend the end date filter to a little more than now
+    const aLittleMore = 7 * 1000
+    const endDate = new Date(new Date().getTime() + aLittleMore)
+    const startDate = loggerInstance.__startedLoggingAt
 
-      const base = `https://console.cloud.google.com/logs/query;`
+    const base = `https://console.cloud.google.com/logs/query;`
 
-      // B. Build the RAW LQL Filter String (NO "query=" prefix here)
-      const lqlParts = [
-        // LogName filter
-        `logName="projects/${projectId}/logs/${logName.replace('/', '%2F')}"`,
-        // Labels filter
-        ...Object.keys(metadata.labels).map(k => `jsonPayload.labels.${k}="${metadata.labels[k]}"`),
-        // Date filter (recommended for query stability)
-        `timestamp>="${startDate.toISOString()}"`,
-        `timestamp<="${endDate.toISOString()}"`
-      ];
-      const fullLQLQuery = lqlParts.join(' AND ');
+    // B. Build the RAW LQL Filter String (NO "query=" prefix here)
+    const lqlParts = [
+      // LogName filter
+      `logName="projects/${projectId}/logs/${logName.replace('/', '%2F')}"`,
+      // Labels filter
+      ...Object.keys(metadata.labels).map(k => `jsonPayload.labels.${k}="${metadata.labels[k]}"`),
+      // Date filter (recommended for query stability)
+      `timestamp>="${startDate.toISOString()}"`,
+      `timestamp<="${endDate.toISOString()}"`
+    ];
+    const fullLQLQuery = lqlParts.join(' AND ');
 
-      // C. Encode ONLY the filter content, then prepend the literal 'query='
-      const encodedQueryParam = `query=${encodeURIComponent(fullLQLQuery)}`;
+    // C. Encode ONLY the filter content, then prepend the literal 'query='
+    const encodedQueryParam = `query=${encodeURIComponent(fullLQLQuery)}`;
 
-      // D. Create the timeRange parameter (correct casing)
-      const timeRangeParam = `;timeRange=${startDate.getTime()}/${endDate.getTime()}`;
+    // D. Create the timeRange parameter (correct casing)
+    const timeRangeParam = `;timeRange=${startDate.getTime()}/${endDate.getTime()}`;
 
-      // E. Assemble the final URL
-      loggerInstance.__cloudLogLink = base + encodedQueryParam + `?project=${projectId}`;
-      // fire and forget
-      Syncit.fxLogger({ logName, metadata })
+    // E. Assemble the final URL
+    loggerInstance.__cloudLogLink = base + encodedQueryParam + `?project=${projectId}`;
+
+    const apiBase = 'https://logging.googleapis.com/v2/entries:write'
+    const payload = JSON.stringify({
+      entries: [
+        metadata
+      ]
+    })
+    const token = ScriptApp.getOAuthToken()
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      'content-type': "application/json",
+    }
+    const response = UrlFetchApp.fetch(apiBase, {
+      method: 'post',
+      headers,
+    })
+    if (response.getResponseCode() !== 200) {
+      console.log ('logging failure', response.getContentText())
+    }
+ 
   }
+
 };

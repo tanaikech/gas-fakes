@@ -70,6 +70,23 @@ parentPort.once('message', (msg) => {
   Atomics.notify(control, 0);
 });
 
+/**
+ * Catches any error that happens outside the main task processing loop,
+ * especially during worker initialization/module loading.
+ * @param {Error} error The uncaught error.
+ */
+const handleUncaughtError = (error) => {
+  // If control is not initialized, we can't report the error.
+  // Just log it and exit.
+  if (control) {
+    syncError('A fatal, unhandled error occurred in the worker', error);
+    writeError(error);
+    Atomics.notify(control, 0);
+  }
+};
+process.on('uncaughtException', handleUncaughtError);
+process.on('unhandledRejection', handleUncaughtError);
+
 // 2. Listen for tasks from the main thread.
 parentPort.on('message', async (task) => {
   // Ignore the initial setup message which has no 'method' property.

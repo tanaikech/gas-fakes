@@ -384,7 +384,6 @@ const fxGmail = (args) =>
   });
 
 const fxGetImagesFromXlsx = (args) => callSync("sxGetImagesFromXlsx", args);
-const fxLogger = ({metadata, logName}) => callSync("sxLogger", {metadata, logName});
 
 export const Syncit = {
   fxFetch,
@@ -402,6 +401,5 @@ export const Syncit = {
   fxDocs,
   fxForms,
   fxGmail,
-  fxGetImagesFromXlsx,
-  fxLogger
+  fxGetImagesFromXlsx
 };

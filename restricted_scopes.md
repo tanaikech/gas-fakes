@@ -68,12 +68,22 @@ And you'll have a file in  ~/.config/gcloud/application_default_credentials.json
   "universe_domain": "googleapis.com"
 }
 ````
+≈
 
-We're going to inject the project number, and the client id and secret that we downloaded from the OAuth consent process into this file. 
 
 ## resetting with the new credentials
 
-Now we've persuaded Application Default Credentials to use our newly created app rather than the one it wanted to use. You can now go to shells and run setaccounts.sh as normal (this will run gcloud auth application-default login with the approperiate scopes), and it should go through the normal adc dialog. if you've created a new project it will ask if you want to turn on some cloud APIS.
+Now we'll persuade Application Default Credentials to use our newly created app rather than the one it wanted to use. Presumably you've already run setaacounts.h to seed the ADC as normal and set your project. 
+
+Now add this to your .env file - Im storing mine in the project in a folder called private (which is in my .gitignore file). The file is the one you downloaded from the console.
+
+````
+CLIENT_CREDENTIAL_FILE="private/gasfakes-oa.json"
+````
+
+Now you can run shells/setenhanced.sh which will replace the adc credentials with these, via another dialog.
+
+You can now go to shells and run setaccounts.sh as normal (this will run gcloud auth application-default login with the approperiate scopes), and it should go through the normal adc dialog. if you've created a new project it will ask if you want to turn on some cloud APIS.
 
 ## enabling workspace apis
 
