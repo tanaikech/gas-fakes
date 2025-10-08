@@ -10,7 +10,7 @@
     "exceljs": "^4.4.0",
     "fast-json-stable-stringify": "^2.1.0",
     "get-stream": "^9.0.1",
-    "googleapis": "^157.0.0",
+    "googleapis": "^161.0.0",
     "got": "^14.4.7",
     "into-stream": "^8.0.1",
     "is": "^3.3.2",

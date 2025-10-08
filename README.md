@@ -52,7 +52,7 @@ DRIVE_TEST_FILE_ID="add the id of some test file you have access to here"
 # probably dont need to change these
 AC=default
 # these are the scopes set by default - take some of these out if you want to minimize access
-DEFAULT_SCOPES="https://www.googleapis.com/auth/userinfo.email,openid,https://www.googleapis.com/auth/cloud-platform,https://www.googleapis.com/auth/sqlservice.login"
+DEFAULT_SCOPES="https://www.googleapis.com/auth/userinfo.email,openid,https://www.googleapis.com/auth/cloud-platform"
 EXTRA_SCOPES=",https://www.googleapis.com/auth/drive,https://www.googleapis.com/auth/spreadsheets"
  
 # optional logging destination
@@ -60,6 +60,26 @@ EXTRA_SCOPES=",https://www.googleapis.com/auth/drive,https://www.googleapis.com/
 LOG_DESTINATION="BOTH"
 
 ```
+#### Applying the .env
+
+You can run 
+```bash
+cd shells
+bash setaccounts.sh
+```
+Which will set up and test the initial application default login with the selected scopes.
+
+#### enabling workspace services
+
+You can run this shell to enable all the required cloud services
+```bash
+cd shells
+bash enable.sh
+```
+
+#### Restricted scopes
+
+Recent changes in the OAuth security model have made it more difficult for Application Default credentials to work with all the scopes we'll need to fully emulate Live Apps Script locally. However there is a way to work around this by creating an oauth client for internal use in the cloud console, and injecting its credentials into those used by the application default creadentials process. You should now follow the guidance in [restricted scopes](restricted_scopes.md) to enhance your login process to be able access all the supported services in gas-fakes
 
 #### Manifest file
 

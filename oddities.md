@@ -832,9 +832,18 @@ npm ls google-auth-library
   └─┬ googleapis-common@8.0.0
     └── google-auth-library@10.4.0
 ````
-I can see that logger is still on 9.15 whereas google apis latest (and v157 also) are both on 10.4.
+I can see that logger is still on 9.15 whereas google apis latest (and v157 also) are both on 10.4. 
 
-Another issue with 10.4, is we now get this error "Method doesn't allow unregistered callers (callers without established identity)"
+We see another warning also, which presumably google will clear up at some point, and you can ignore till they do.
+
+
+````
+The `fromJSON` method is deprecated. Please use the `JWT` constructor instead. For more details, see https://cloud.google.com/docs/authentication/external/externally-sourced-credentials.
+````
+
+#### Googke-auth-library changes
+
+Another issue with 10.4, is we now get this error "Method doesn't allow unregistered callers (callers without established identity)". I believe this is to do with the use of certain scopes being restricted. We are using ADC for authentication, but we can full it into thinking it's using an internal OAuth client by creating one in the console, then injecting its credentials into the file used by ADC. For a full explanation on setting this up see  this write up on setting up [restricted scopes](restricted_scopes.md)
 
 ## Testing
 

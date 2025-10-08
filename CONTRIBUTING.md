@@ -51,6 +51,11 @@ If you need to convert an existing .env file, there's a shell script for that.
 - from v1.1.0 .env fixtures are no longer supprted.
 - the package.json in the test folder has been updated as below, so you'll need to reinstall there.
 
+##### authentication mandatory enhancement
+
+With recent security changes, and updates to the latest googleapis module, msny of the methods have now been restreicted for regular ADC access, so we have to do a little fiddling to ADC process to get round these - see [restricted scopes](restricted_scopes.md) for additional guidance on how to do this
+
+
 ##### how to redirect to use local files
 
 When testing and you want to use the local files rather than @mcpher/gas-fakes, you can have a local package.json in the same folder as your tests which directs the package to a local file. just run npm i to install
@@ -61,7 +66,7 @@ When testing and you want to use the local files rather than @mcpher/gas-fakes, 
 ````
 where the file value points to the root of gas-fakes. If you want to instead use the npm version then just revert that normal npm syntax and install again. 
 
-CAUTION: when switching between, you'll need to clear npm cache - I wasted a whole afternoon on that.
+CAUTION: when switching between, you'll maybe need to clear npm cache - I wasted a whole afternoon on that.
 
 #### Specifics on expectations for test files. 
 
