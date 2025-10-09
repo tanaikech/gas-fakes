@@ -15,3 +15,4 @@
 - [named colors](named-colors.md)
 - [sandbox](sandbox.md)
 - [named range identity](named-range-identity.md)
+- [adc and restricted scopes](https://ramblings.mcpher.com/how-to-allow-access-to-sensitive-scopes-with-application-default-credentials/)

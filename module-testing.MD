@@ -129,3 +129,4 @@ execute `bash togas.sh` to copy all files to apps script IDE. All tests can be r
 - [named colors](named-colors.md)
 - [sandbox](sandbox.md)
 - [named range identity](named-range-identity.md)
+- [adc and restricted scopes](https://ramblings.mcpher.com/how-to-allow-access-to-sensitive-scopes-with-application-default-credentials/)
