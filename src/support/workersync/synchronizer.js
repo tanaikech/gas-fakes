@@ -95,8 +95,11 @@ function cleanup() {
   console.log('...terminating worker thread');
   worker.terminate();
 }
+
+// The 'exit' event is for when the process is already shutting down normally.
 process.on('exit', cleanup);
-process.on('SIGINT', cleanup); // Catches Ctrl+C
+// By not listening for 'SIGINT', we allow Node.js to perform its default action,
+// which is to exit the process. The 'exit' event will then be fired to clean up the worker.
 process.on('SIGTERM', cleanup); // Catches `kill`
 
 /**
