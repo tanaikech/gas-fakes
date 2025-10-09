@@ -29,21 +29,29 @@ Authentication is handled using Application Default Credentials (ADC), enhanced 
 
 1.  **Download Helper Scripts**: Get the `shells` folder from the `gas-fakes` repository and place it in your project's root directory.
 
-2.  **Create `.env` File**: Copy the `.env.template` from the `shells` directory into your project's root and rename it to `.env`.
+2.  **Create and Configure `.env` File**: You can create the environment file in one of two ways:
 
-3.  **Configure Initial `.env`**: Open your new `.env` file and set your GCP Project ID.
+    *   **Option A: Interactive Setup (Recommended)**
+        Run the `setup.sh` script from within the `shells` directory. It will guide you through creating your `.env` file by asking for the necessary values. If an `.env` file already exists, it will offer to use the existing values as defaults.
+        ```bash
+        cd shells
+        bash setup.sh
+        ```
 
-    ```
-    # must set this
-    GCP_PROJECT_ID="your-gcp-project-id-goes-here"
-    
-    # optional reference if you want to run a test after setting up
-    DRIVE_TEST_FILE_ID="add the id of some test file you have access to here"
-    ```
+    *   **Option B: Manual Setup**
+        1.  Copy the `.env.template` from the `shells` directory into your project's root and rename it to `.env`.
+        2.  Open your new `.env` file and set your GCP Project ID.
+            ```
+            # must set this
+            GCP_PROJECT_ID="your-gcp-project-id-goes-here"
+            
+            # optional reference if you want to run a test after setting up
+            DRIVE_TEST_FILE_ID="add the id of some test file you have access to here"
+            ```
 
-## Step 3: Configure OAuth for Restricted Scopes
+## Step 3: Configure OAuth for Restricted Scopes - if you plan to use them
 
-Recent Google security policies require extra steps to access certain APIs (like Drive, Sheets, etc.) with ADC. You will create an OAuth client and mark it for "internal" use.
+Recent Google security policies require extra steps to access certain APIs (like Gmail etc.) with ADC. If you need to access these, you will need to create an OAuth client and mark it for "internal" use, otherwise the google auth login process will block your app.
 
 1.  **Go to OAuth Consent Screen**: In the Google Cloud Console, navigate to **APIs & Services -> OAuth consent screen** for your project.
 
@@ -52,9 +60,9 @@ Recent Google security policies require extra steps to access certain APIs (like
     *   Give your app a name (e.g., "gas-fakes local dev"), provide a user support email, and add your own email as the developer contact. Click **Save and Continue**.
 
 3.  **Add Scopes**: On the "Scopes" page, click **Add or Remove Scopes**.
-    *   Scroll to the bottom and paste the full list of scopes your project will need into the text box under "Manually add scopes". A good starting list is:
+    *   Scroll to the bottom and paste the full list of scopes your project will need into the text box under "Manually add scopes". This should be all the ones you plan to access, and should either match or be a superset of the ones in your .env file. The example below contains gmail.compose which would normally be blocked for Node access.
     ```
-    https://www.googleapis.com/auth/userinfo.email,openid,https://www.googleapis.com/auth/cloud-platform,https://www.googleapis.com/auth/drive,https://www.googleapis.com/auth/spreadsheets,https://www.googleapis.com/auth/documents,https://www.googleapis.com/auth/gmail.labels
+    https://www.googleapis.com/auth/userinfo.email,openid,https://www.googleapis.com/auth/cloud-platform,https://www.googleapis.com/auth/drive,https://www.googleapis.com/auth/spreadsheets,https://www.googleapis.com/auth/documents,https://www.googleapis.com/auth/gmail.labels,,https://www.googleapis.com/auth/gmail.compose
     ```
     *   Click **Add to Table**, then **Update**, and finally **Save and Continue**.
 
@@ -66,7 +74,7 @@ Recent Google security policies require extra steps to access certain APIs (like
     *   Click **Create**. A popup will show your Client ID and Secret. Click **Download JSON** and save the file to a secure location in your project (e.g., a `private/` folder that is included in your `.gitignore`).
 
 5.  **Update `.env` with Credentials Path**: Add a new line to your `.env` file pointing to the JSON file you just downloaded.
-
+    If you used `setup.sh`, you can re-run it to add or update this value.
     ```
     CLIENT_CREDENTIAL_FILE="private/your-downloaded-credentials-file.json"
     ```
@@ -79,16 +87,10 @@ Now, run the provided shell scripts to use your new configuration to log in and 
 
     ```bash
     cd shells
-    bash setaccounts.sh
+    bash setaccount.sh
     ```
 
-2.  **Set Enhanced Credentials**: This script injects your OAuth client details into the ADC flow, replacing the standard credentials with your "internal" app credentials to allow access to restricted scopes.
-
-    ```bash
-    bash setenhanced.sh
-    ```
-
-3.  **Enable Workspace APIs**: If this is a new GCP project, you need to enable the necessary APIs (Drive, Sheets, Docs, etc.). The `enable.sh` script does this for you.
+2.  **Enable Workspace APIs**: If this is a new GCP project, you need to enable the necessary APIs (Drive, Sheets, Docs, etc.). The `enable.sh` script does this for you.
 
     ```bash
     bash enable.sh

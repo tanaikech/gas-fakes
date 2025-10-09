@@ -5,7 +5,7 @@ let currentAuth = null;
 let __client = null;
 syncLog('...importing Sheets API');
 export const getSheetsApiClient = () => {
-  const auth = Auth.getAuth()
+  const auth = Auth.getAuthClient()
 
   if (__client && currentAuth !== auth) {
     syncLog('Auth has changed - creating new Sheets API client');

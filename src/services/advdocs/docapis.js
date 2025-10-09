@@ -5,7 +5,7 @@ import { syncLog} from '../../support/workersync/synclogger.js'
 let __client = null;
 
 export const getDocsApiClient = () => {
-  const auth = Auth.getAuth()
+  const auth = Auth.getAuthClient()
   if (!__client) {
     syncLog('Creating new Docs API client');
     __client = google.docs({ version: 'v1', auth });

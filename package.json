@@ -59,7 +59,7 @@
     "testdocsfootnotes": "node ./test/testdocsfootnotes.js execute",
     "testdocsimages": "node ./test/testdocsimages.js execute",
     "testdocsstyles": "node ./test/testdocsstyles.js execute",
-    "testsandbox": "node ./test/testsandbox.js execute",
+    "testsandbox": "node --trace-warnings ./test/testsandbox.js execute",
     "testgmail": "node ./test/testgmail.js execute",
     "testlogger": "node ./test/testlogger.js execute",
     "pub": "npm publish --access public"

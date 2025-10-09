@@ -6,12 +6,42 @@ import fs from 'node:fs';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// --- Start: Suppress google-auth-library warnings globally ---
+// A regex to match either of the Google Auth deprecation warnings.
+const googleAuthWarningRegex = /The `from(Stream|JSON)` method is deprecated/;
+
+// Monkey-patch the main process's write methods to filter output.
+const patchStream = (stream) => {
+  const originalWrite = stream.write;
+  stream.write = (chunk, encoding, callback) => {
+    const message = typeof chunk === 'string' ? chunk : chunk.toString();
+    if (googleAuthWarningRegex.test(message)) {
+      // If it's a warning we want to suppress, do nothing.
+      return true;
+    }
+    // Otherwise, call the original write method.
+    return originalWrite.apply(stream, [chunk, encoding, callback]);
+  };
+};
+
+patchStream(process.stdout);
+patchStream(process.stderr);
+// --- End: Suppress google-auth-library warnings ---
+
+// Define indices for the control buffer to avoid magic numbers.
+const CONTROL_INDICES = {
+  STATUS: 0,      // 0: free, 1: busy, 2: worker_init
+  DATA_SIZE: 1,   // Size of the result data in bytes
+  IS_ERROR: 2,    // 0: success, 1: error
+  RESULT_TYPE: 3, // 0: buffer, 1: file
+};
+
 // Shared buffer for control signals
 // [0]: status lock (0: free, 1: busy, 2: worker_init)
 // [1]: result data size in bytes
 // [2]: error flag (0: success, 1: error)
 // [3]: result type (0: buffer, 1: file)
-const controlBuf = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * 4);
+const controlBuf = new SharedArrayBuffer(Int32Array.BYTES_PER_ELEMENT * Object.keys(CONTROL_INDICES).length);
 const control = new Int32Array(controlBuf);
 
 // Shared buffer for data transfer (e.g., 16MB)
@@ -24,7 +54,7 @@ const textDecoder = new TextDecoder();
 // The single, long-lived worker
 const worker = new Worker(path.resolve(__dirname, 'worker.js'));
 
-// Pipe worker's stdout and stderr to the main process to see its logs
+// Pipe worker's output directly. The patch above will handle filtering.
 worker.stdout.pipe(process.stdout);
 worker.stderr.pipe(process.stderr);
 
@@ -33,7 +63,7 @@ worker.stderr.pipe(process.stderr);
 worker.on('error', (error) => {
   console.error('Worker thread encountered a fatal error:', error);
   // Unblock any pending Atomics.wait() call to prevent a deadlock.
-  Atomics.store(control, 0, 0); // Set status to "free"
+  Atomics.store(control, CONTROL_INDICES.STATUS, 0); // Set status to "free"
   Atomics.notify(control, 0);
   // Exit the main process, as the application is in an unrecoverable state.
   process.exit(1);
@@ -44,24 +74,30 @@ worker.on('exit', (code) => {
   // This handles cases where the worker exits unexpectedly.
   if (code !== 0) {
     console.error(`Worker thread stopped with exit code ${code}`);
-    Atomics.store(control, 0, 0); // Unblock main thread
+    Atomics.store(control, CONTROL_INDICES.STATUS, 0); // Unblock main thread
     Atomics.notify(control, 0);
   }
 });
 
 // Send the shared buffers to the worker once and wait for it to confirm initialization
-Atomics.store(control, 0, 2); // Set status to "worker_init"
+Atomics.store(control, CONTROL_INDICES.STATUS, 2); // Set status to "worker_init"
 worker.postMessage({ controlBuf, dataBuf });
-Atomics.wait(control, 0, 2); // Wait for worker to set status to "free" (0)
+Atomics.wait(control, CONTROL_INDICES.STATUS, 2); // Wait for worker to set status to "free" (0)
 
 // Allow the main process to exit even if the worker is still running.
 worker.unref();
 
-// Ensure worker is terminated when the main process exits
-process.on('exit', () => {
-  console.log ('...worker is terminating')
-  worker.terminate()
-});
+/**
+ * Ensures the worker is terminated when the main process exits,
+ * whether normally or via signals like Ctrl+C.
+ */
+function cleanup() {
+  console.log('...terminating worker thread');
+  worker.terminate();
+}
+process.on('exit', cleanup);
+process.on('SIGINT', cleanup); // Catches Ctrl+C
+process.on('SIGTERM', cleanup); // Catches `kill`
 
 /**
  * Calls an async function in the worker and blocks until it returns.
@@ -74,7 +110,7 @@ export function callSync(method, ...args) {
 
 
   // 1. Set status to "busy". This acts as a lock.
-  Atomics.store(control, 0, 1);
+  Atomics.store(control, CONTROL_INDICES.STATUS, 1);
 
   // 2. Send the task to the worker.
   const payload = { method, args };
@@ -83,12 +119,12 @@ export function callSync(method, ...args) {
   // 3. Block and wait for the worker to finish.
   // It's "busy" (1) until the worker sets it back to "free" (0).
   // This is a true blocking wait, consuming minimal CPU.
-  Atomics.wait(control, 0, 1);
+  Atomics.wait(control, CONTROL_INDICES.STATUS, 1);
 
   // 4. Worker is done, result is in the shared buffer.
-  const resultSize = Atomics.load(control, 1);
-  const hasError = Atomics.load(control, 2) === 1;
-  const resultIsFile = Atomics.load(control, 3) === 1;
+  const resultSize = Atomics.load(control, CONTROL_INDICES.DATA_SIZE);
+  const hasError = Atomics.load(control, CONTROL_INDICES.IS_ERROR) === 1;
+  const resultIsFile = Atomics.load(control, CONTROL_INDICES.RESULT_TYPE) === 1;
 
   if (resultSize > dataBuf.byteLength) {
     throw new Error(

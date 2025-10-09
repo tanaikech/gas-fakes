@@ -9,6 +9,16 @@ export const testGmail = (pack) => {
   const toTrash = [];
   const { unit, fixes } = pack || initTests();
 
+  unit.section("gmailapp createDraft", (t) => {
+    const recipient = "test@example.com";
+    const subject = "Test Draft Subject " + new Date().getTime();
+    const body = "Test draft body.";
+    const draft = GmailApp.createDraft(recipient, subject, body);
+    t.true(is.object(draft), "should create a draft object");
+    t.true(is.nonEmptyString(draft.getId()), "draft should have an id");
+    t.is(draft.toString(), "GmailDraft", "should be a gmail draft object");
+  });
+
   unit.section('gmail labels', (t) => {
     // get current labels
     const initialLabels = Gmail.Users.Labels.list('me');
@@ -83,3 +93,5 @@ export const testGmail = (pack) => {
 };
 
 wrapupTest(testGmail);
+
+
