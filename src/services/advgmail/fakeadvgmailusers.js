@@ -2,6 +2,7 @@ import { FakeAdvResource } from '../common/fakeadvresource.js';
 import { Syncit } from '../../support/syncit.js';
 import { signatureArgs, ssError, gError } from '../../support/helpers.js';
 import { newFakeAdvGmailLabels } from './fakeadvgmaillabels.js';
+import { newFakeAdvGmailDrafts } from './fakeadvgmaildrafts.js';
 
 import { Proxies } from '../../support/proxies.js';
 import { Utils } from '../../support/utils.js';
@@ -18,6 +19,10 @@ class FakeAdvGmailUsers extends FakeAdvResource {
 
   get Labels() {
     return newFakeAdvGmailLabels(this.gmail);
+  }
+
+  get Drafts() {
+    return newFakeAdvGmailDrafts(this.gmail);
   }
 
 }

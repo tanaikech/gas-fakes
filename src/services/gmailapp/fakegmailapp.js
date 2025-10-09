@@ -1,5 +1,6 @@
 import { Proxies } from '../../support/proxies.js';
 import { newFakeGmailLabel } from './fakegmaillabel.js';
+import { newFakeGmailDraft } from './fakegmaildraft.js';
 
 /**
  * Provides access to Gmail threads, messages, and labels.
@@ -7,6 +8,31 @@ import { newFakeGmailLabel } from './fakegmaillabel.js';
 class FakeGmailApp {
   constructor() {
     this.__fakeObjectType = 'GmailApp';
+  }
+
+  /**
+   * Creates a draft email message.
+   * @param {string} recipient a comma-separated list of email addresses
+   * @param {string} subject the subject of the message
+   * @param {string} body the body of the message
+   * @returns {GmailDraft} the newly created draft
+   */
+  createDraft(recipient, subject, body) {
+    // this is a fairly naive implementation of rfc2822
+    const raw = [
+      `To: ${recipient}`,
+      `Subject: ${subject}`,
+      'Content-Type: text/plain; charset=utf-8',
+      '',
+      body,
+    ].join('\r\n');
+
+    // rfc4648 url safe alphabet
+    const encoded = Utilities.base64Encode(raw, Utilities.Charset.UTF_8)
+      .replace(/\+/g, '-').replace(/\//g, '_');
+
+    const draft = Gmail.Users.Drafts.create({ message: { raw: encoded } }, 'me');
+    return newFakeGmailDraft(draft);
   }
 
   /**

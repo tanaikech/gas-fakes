@@ -835,10 +835,35 @@ npm ls google-auth-library
 I can see that logger is still on 9.15 whereas google apis latest (and v157 also) are both on 10.4. This turned out to be an impasse. Overriding to one version or the other simply made one api or the other fail. After spending days on trying to resolve this, i finally figured that simply using the JSON API instead of the node logging client made all thr troubles go away - so now we are all good.
 
 
-However the latest version of googleapis, does give another warning nowadays, which presumably google will clear up at some point, and you can ignore till they do.
+However the latest version of googleapis, does give another warning nowadays, which presumably google will clear up at some point.
 
 ````
 The `fromJSON` method is deprecated. Please use the `JWT` constructor instead. For more details, see https://cloud.google.com/docs/authentication/external/externally-sourced-credentials.
+````
+
+For now I've patched synchronizer.js to suppress these warnings like this - which we can remove if this ever gets resolved
+````
+
+// --- Start: Suppress google-auth-library warnings globally ---
+// A regex to match either of the Google Auth deprecation warnings.
+const googleAuthWarningRegex = /The `from(Stream|JSON)` method is deprecated/;
+
+// Monkey-patch the main process's write methods to filter output.
+const patchStream = (stream) => {
+  const originalWrite = stream.write;
+  stream.write = (chunk, encoding, callback) => {
+    const message = typeof chunk === 'string' ? chunk : chunk.toString();
+    if (googleAuthWarningRegex.test(message)) {
+      // If it's a warning we want to suppress, do nothing.
+      return true;
+    }
+    // Otherwise, call the original write method.
+    return originalWrite.apply(stream, [chunk, encoding, callback]);
+  };
+};
+
+patchStream(process.stdout);
+patchStream(process.stderr);
 ````
 
 #### Google-auth-library changes
