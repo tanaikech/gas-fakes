@@ -12,7 +12,7 @@ You can get the package from npm:
 npm i @mcpher/gas-fakes
 ```
 
-For a complete guide on how to set up your local environment for authentication and development, please see the consolidated guide: [Getting Started with `gas-fakes`](gas-fakes/GETTING_STARTED.md)
+For a complete guide on how to set up your local environment for authentication and development, please see the consolidated guide: [Getting Started with `gas-fakes`](GETTING_STARTED.md)
 
 Collaborators should fork the repo and use the local versions of these files - see collaborators info.
 
