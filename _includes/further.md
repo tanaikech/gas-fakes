@@ -15,4 +15,3 @@
 - [named colors](named-colors.md)
 - [sandbox](sandbox.md)
 - [named range identity](named-range-identity.md)
-- [restricted scopes](restricted_scopes.md) - how to handle authentication for restricted scopes.

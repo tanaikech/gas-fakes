@@ -868,7 +868,7 @@ patchStream(process.stderr);
 
 #### Google-auth-library changes
 
-Another issue with 10.4, is we now get this error "Method doesn't allow unregistered callers (callers without established identity)". I believe this is to do with the use of certain scopes being restricted. We are using ADC for authentication, but we can full it into thinking it's using an internal OAuth client by creating one in the console, then injecting its credentials into the file used by ADC. For a full explanation on setting this up see  this write up on setting up [restricted scopes](restricted_scopes.md)
+Another issue with 10.4, is we now get this error "Method doesn't allow unregistered callers (callers without established identity)". I believe this is to do with the use of certain scopes being restricted. We are using ADC for authentication, but we can full it into thinking it's using an internal OAuth client by creating one in the console, then injecting its credentials into the file used by ADC. For a full explanation on setting this up see  this write up on setting up [getting started](GETTING_STARTED.md)
 
 ## Testing
 
@@ -892,4 +892,3 @@ If you want to play with the testing suite , then take a look at the [collaborat
 - [named colors](named-colors.md)
 - [sandbox](sandbox.md)
 - [named range identity](named-range-identity.md)
-- [restricted scopes](restricted_scopes.md) - how to handle authentication for restricted scopes.

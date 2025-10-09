@@ -55,7 +55,7 @@ else
   echo ""
   echo "...CLIENT_CREDENTIAL_FILE is not set. Using default Application Default Credentials (ADC)."
   echo "...if you have requested any sensitive scopes, you'll see 'This app is blocked message.'"
-  echo "...To allow them see - https://github.com/brucemcpherson/gas-fakes/blob/main/restricted_scopes.md"
+  echo "...To allow them see - https://github.com/brucemcpherson/gas-fakes/blob/main/GETTING_STARTED.md"
   echo ""
 fi
 

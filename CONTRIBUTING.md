@@ -53,7 +53,7 @@ If you need to convert an existing .env file, there's a shell script for that.
 
 ##### authentication mandatory enhancement
 
-With recent security changes, and updates to the latest googleapis module, msny of the methods have now been restreicted for regular ADC access, so we have to do a little fiddling to ADC process to get round these - see [restricted scopes](restricted_scopes.md) for additional guidance on how to do this
+With recent security changes, and updates to the latest googleapis module, msny of the methods have now been restreicted for regular ADC access, so we have to do a little fiddling to ADC process to get round these - see [getting started](GETTING_STARTED.md) for additional guidance on how to do this
 
 
 ##### how to redirect to use local files
@@ -145,4 +145,3 @@ As I mentioned earlier, to take this further, I'm going to need a lot of help to
 - [named colors](named-colors.md)
 - [sandbox](sandbox.md)
 - [named range identity](named-range-identity.md)
-- [restricted scopes](restricted_scopes.md) - how to handle authentication for restricted scopes.
