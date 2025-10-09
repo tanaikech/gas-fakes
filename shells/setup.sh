@@ -1,141 +1,116 @@
 #!/bin/bash
-# A guided script to help set up the .env file and run ADC setup.
-set -e
 
-# Get the directory of the script to locate other files relative to it.
-SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
-PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
-ENV_FILE="$PROJECT_ROOT/.env"
-SETUP_ENV_TEMPLATE="$PROJECT_ROOT/.env.setup.template"
-TEST_ENV_TEMPLATE="$PROJECT_ROOT/.env.test.template"
+echo "Welcome to the gas-fakes setup script!"
+echo "This will help you create your .env file."
+echo ""
 
-echo "--- gas-fakes environment setup ---"
-echo
+# Find the project root directory relative to the script's location
+# This makes the script runnable from any directory
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+ROOT_DIRECTORY=$( cd -- "$SCRIPT_DIR/.." &> /dev/null && pwd )
+ENV_FILE="$ROOT_DIRECTORY/.env"
 
-# --- Helper functions ---
-# Reads a value for a given key from the .env file
-get_env_value() {
-    local key=$1
-    if grep -q "^${key}=" "$ENV_FILE"; then
-        # Get value, remove quotes
-        grep "^${key}=" "$ENV_FILE" | head -n 1 | cut -d'=' -f2- | sed -e 's/^"//' -e 's/"$//'
+# Initialize variables for existing values
+existing_gcp_project_id=""
+existing_drive_test_file_id=""
+existing_client_credential_file=""
+existing_ac="default"
+existing_default_scopes="https://www.googleapis.com/auth/userinfo.email,openid,https://www.googleapis.com/auth/cloud-platform"
+existing_extra_scopes=",https://www.googleapis.com/auth/drive,https://www.googleapis.com/auth/spreadsheets,https://www.googleapis.com/auth/gmail.labels"
+existing_log_destination="CONSOLE"
+created_new_file=false
+
+if [ -f "$ENV_FILE" ]; then
+  # Source the file to get existing values, removing quotes for the default prompt
+  # The '|| true' prevents the script from exiting if a variable is unbound
+  # We source it directly, then use parameter expansion to fill our 'existing_'
+  # variables, falling back to the initial defaults if they are not set in the file.
+  source "$ENV_FILE" || true
+  existing_gcp_project_id="${GCP_PROJECT_ID:-$existing_gcp_project_id}"
+  existing_drive_test_file_id="${DRIVE_TEST_FILE_ID:-$existing_drive_test_file_id}"
+  existing_client_credential_file="${CLIENT_CREDENTIAL_FILE:-$existing_client_credential_file}"
+  existing_ac="${AC:-$existing_ac}"
+  existing_default_scopes="${DEFAULT_SCOPES:-$existing_default_scopes}"
+  existing_extra_scopes="${EXTRA_SCOPES:-$existing_extra_scopes}"
+  existing_log_destination="${LOG_DESTINATION:-$existing_log_destination}"
+
+  read -p "An existing .env file was found. Do you want to overwrite it? (y/n) " -n 1 -r
+  echo
+  if [[ ! $REPLY =~ ^[Yy]$ ]]; then # If user says no to overwriting
+    read -p "Would you like to create a '.env.new' file instead for you to merge later? (y/n) " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+      ENV_FILE="$ROOT_DIRECTORY/.env.new"
+      echo "Okay, a new file will be created at $ENV_FILE"
+      created_new_file=true
+      # The existing .env values will be used as defaults for the new file.
     else
-        echo ""
+      echo "Setup cancelled."
+      exit 1
     fi
-}
-
-# Merges a template file into .env, adding only keys that are missing.
-merge_template() {
-    local template_file=$1
-    if [ ! -f "$template_file" ]; then
-        echo "Warning: Template file not found, skipping: $template_file"
-        return
-    fi
-
-    # Read template line by line, ignore comments and empty lines
-    # Use of `grep` and `while` handles various line ending types
-    grep -v '^[[:space:]]*#' "$template_file" | grep -v '^[[:space:]]*$' | while IFS= read -r line || [ -n "$line" ]; do
-        # a bit of cleanup for lines with carriage returns
-        line=$(echo "$line" | tr -d '\r')
-        local key=$(echo "$line" | cut -d'=' -f1)
-        if ! grep -q "^${key}=" "$ENV_FILE"; then
-            echo "Adding missing key '$key' to .env"
-            echo "$line" >> "$ENV_FILE"
-        fi
-    done
-}
-
-# Updates a value for a given key in the .env file
-update_env_value() {
-    local key=$1
-    local value=$2
-    # Escape for sed's RHS
-    local escaped_value=$(printf '%s\n' "$value" | sed -e 's/[\/&]/\\&/g')
-
-    if grep -q "^${key}=" "$ENV_FILE"; then
-        # sed -i.bak is compatible with both GNU and BSD sed
-        sed -i.bak "s/^${key}=.*/${key}=\"${escaped_value}\"/" "$ENV_FILE"
-    else
-        echo "${key}=\"${value}\"" >> "$ENV_FILE"
-    fi
-    rm -f "${ENV_FILE}.bak"
-}
-
-# --- .env file setup ---
-if [ ! -f "$ENV_FILE" ]; then
-  echo ".env file not found. Creating from .env.setup.template..."
-  if [ -f "$SETUP_ENV_TEMPLATE" ]; then
-    cp "$SETUP_ENV_TEMPLATE" "$ENV_FILE"
-  else
-    echo "Error: .env.setup.template not found in project root ($PROJECT_ROOT)."
-    echo "Please make sure required template files from the repository are in your project root."
-    exit 1
   fi
+fi
+
+echo "Creating a new file at $ENV_FILE..."
+echo ""
+
+# Prompt for GCP_PROJECT_ID (mandatory)
+read -p "Enter your Google Cloud Project ID [${existing_gcp_project_id}]: " gcp_project_id
+gcp_project_id=${gcp_project_id:-$existing_gcp_project_id}
+while [ -z "$gcp_project_id" ]; do
+  read -p "Project ID is required. Please enter your Google Cloud Project ID: " gcp_project_id
+done
+
+# Prompt for DRIVE_TEST_FILE_ID (optional)
+read -p "Enter a Drive file ID for testing (optional) [${existing_drive_test_file_id}]: " drive_test_file_id
+drive_test_file_id=${drive_test_file_id:-$existing_drive_test_file_id}
+
+# Prompt for CLIENT_CREDENTIAL_FILE (optional)
+read -p "Enter the path to your OAuth client credentials JSON file (optional) [${existing_client_credential_file}]: " client_credential_file
+client_credential_file=${client_credential_file:-$existing_client_credential_file}
+
+# Prompt for other .env values
+read -p "Enter the gcloud config name (AC) [${existing_ac}]: " ac
+ac=${ac:-$existing_ac}
+
+read -p "Enter the default scopes [${existing_default_scopes}]: " default_scopes
+default_scopes=${default_scopes:-$existing_default_scopes}
+
+read -p "Enter any extra scopes (comma-prefixed) [${existing_extra_scopes}]: " extra_scopes
+extra_scopes=${extra_scopes:-$existing_extra_scopes}
+
+read -p "Enter the log destination (CONSOLE, CLOUD, BOTH, NONE) [${existing_log_destination}]: " log_destination
+log_destination=${log_destination:-$existing_log_destination}
+while [[ ! "$log_destination" =~ ^(CONSOLE|CLOUD|BOTH|NONE)$ ]]; do
+  read -p "Invalid value. Please enter CONSOLE, CLOUD, BOTH, or NONE: " log_destination
+done
+
+# Write to .env file
+cat > "$ENV_FILE" << EOL
+# gas-fakes environment configuration
+# Generated by setup.sh on $(date)
+
+GCP_PROJECT_ID="$gcp_project_id"
+
+# Optional file ID for testing authentication
+DRIVE_TEST_FILE_ID="$drive_test_file_id"
+
+# Optional path to OAuth client credentials for restricted scopes
+CLIENT_CREDENTIAL_FILE="$client_credential_file"
+
+# Default values for Application Default Credentials
+AC="$ac"
+DEFAULT_SCOPES="$default_scopes"
+EXTRA_SCOPES="$extra_scopes"
+LOG_DESTINATION="$log_destination"
+EOL
+
+echo ""
+echo "File created successfully at $ENV_FILE"
+
+if [ "$created_new_file" = true ]; then
+  echo "IMPORTANT: Please manually merge the contents of '.env.new' into your existing '.env' file."
+  echo "After merging, you can run 'bash setaccount.sh' to apply the new settings."
 else
-    echo "Found existing .env file. Merging missing values from .env.setup.template..."
-    merge_template "$SETUP_ENV_TEMPLATE"
+  echo "You can now run 'bash setaccount.sh' to log in."
 fi
-echo
-
-# --- Ask about test suite ---
-read -p "Do you want to set up this environment to run the test suite? (y/N): " SETUP_TESTS
-case "$SETUP_TESTS" in
-    [Yy]*)
-        echo "Setting up for test suite. Merging missing values from .env.test.template..."
-        merge_template "$TEST_ENV_TEMPLATE"
-        ;;
-esac
-echo
-
-# --- Prompt for required values ---
-echo "Please provide the following values for your .env file."
-echo "These are required for authentication with Google Cloud."
-echo
-
-# GCP_PROJECT_ID (Required)
-CURRENT_GCP_PROJECT_ID=$(get_env_value "GCP_PROJECT_ID")
-if [ -n "$CURRENT_GCP_PROJECT_ID" ] && [ "$CURRENT_GCP_PROJECT_ID" != "add your gcp project id here" ]; then
-    read -p "Enter your GCP Project ID [current: $CURRENT_GCP_PROJECT_ID]: " GCP_PROJECT_ID
-    GCP_PROJECT_ID=${GCP_PROJECT_ID:-$CURRENT_GCP_PROJECT_ID}
-else
-    read -p "Enter your GCP Project ID: " GCP_PROJECT_ID
-    while [ -z "$GCP_PROJECT_ID" ]; do
-        echo "GCP Project ID cannot be empty."
-        read -p "Enter your GCP Project ID: " GCP_PROJECT_ID
-    done
-fi
-update_env_value "GCP_PROJECT_ID" "$GCP_PROJECT_ID"
-
-# DRIVE_TEST_FILE_ID (Optional)
-echo "The DRIVE_TEST_FILE_ID is optional. If provided, the setup script will"
-echo "run a test to validate that your ADC token can access Google Drive."
-CURRENT_DRIVE_TEST_FILE_ID=$(get_env_value "DRIVE_TEST_FILE_ID")
-PLACEHOLDER="add the id of some test file you have access to here"
-
-PROMPT_DEFAULT=""
-if [ -n "$CURRENT_DRIVE_TEST_FILE_ID" ] && [ "$CURRENT_DRIVE_TEST_FILE_ID" != "$PLACEHOLDER" ]; then
-    PROMPT_DEFAULT=$CURRENT_DRIVE_TEST_FILE_ID
-fi
-
-if [ -n "$PROMPT_DEFAULT" ]; then
-    read -p "Enter a Drive File ID for token validation (optional) [current: $PROMPT_DEFAULT]: " DRIVE_TEST_FILE_ID
-    # If user enters nothing, keep the default
-    DRIVE_TEST_FILE_ID=${DRIVE_TEST_FILE_ID:-$PROMPT_DEFAULT}
-else
-    read -p "Enter a Drive File ID for token validation (optional, press Enter to skip): " DRIVE_TEST_FILE_ID
-fi
-update_env_value "DRIVE_TEST_FILE_ID" "$DRIVE_TEST_FILE_ID"
-
-echo
-echo ".env file updated successfully."
-echo
-
-# --- Run ADC setup ---
-echo "Proceeding to set up Application Default Credentials (ADC) by running sp.sh..."
-echo "This will open a browser for you to log in to your Google Account."
-echo
-(cd "$SCRIPT_DIR" && bash ./sp.sh)
-
-echo
-echo "--- Setup complete! ---"
-echo "You should now be able to run your local tests against Google Workspace APIs."

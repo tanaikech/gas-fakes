@@ -67,7 +67,7 @@ const setAuth = async (scopes = [], keyFile = null) => {
     syncLog(`...initializing auth and discovering project ID`);
     // First auth is just to get the project ID.
     const initialAuth = new GoogleAuth({
-      keyFile,
+      //keyFile,
       scopes: ['https://www.googleapis.com/auth/cloud-platform'], // Minimal scope
     });
 
@@ -80,7 +80,7 @@ const setAuth = async (scopes = [], keyFile = null) => {
 
     // Now, create the *real* auth client with the projectId and all required scopes.
     _auth = new GoogleAuth({
-      keyFile,
+      //keyFile,
       scopes,
       projectId: _projectId,
     });

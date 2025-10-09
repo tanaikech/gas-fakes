@@ -1,6 +1,7 @@
 import { google } from "googleapis";
 import { Auth } from '../../support/auth.js'
 import { syncLog} from '../../support/workersync/synclogger.js'
+import { google } from 'googleapis';
 
 let __client = null;
 syncLog('...importing Drive API');
