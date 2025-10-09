@@ -7,7 +7,7 @@
  */
 import got from 'got';
 import { Auth } from './auth.js';
-import { syncLog } from './workersync/synclogger.js';
+import { syncError, syncLog } from './workersync/synclogger.js';
 import { homedir } from 'os';
 import {access, readFile, writeFile, mkdir } from 'fs/promises';
 import path from 'path'
@@ -28,34 +28,7 @@ import path from 'path'
  */
 export const sxInit = async ({ manifestPath, claspPath, settingsPath, mainDir, cachePath, propertiesPath, fakeId }) => {
 
-  const findAdcPath = async () => {
 
-
-    if (process.env.GOOGLE_APPLICATION_CREDENTIALS) {
-      return process.env.GOOGLE_APPLICATION_CREDENTIALS;
-    }
-    const isWindows = process.platform === 'win32';
-    const home = homedir();
-    let adcPath;
-    if (isWindows) {
-      const appData = process.env.APPDATA;
-      if (appData) {
-        adcPath = path.join(appData, 'gcloud', 'application_default_credentials.json');
-      }
-    } else {
-      adcPath = path.join(home, '.config', 'gcloud', 'application_default_credentials.json');
-    }
-
-    if (adcPath) {
-      try {
-        await access(adcPath);
-        return adcPath;
-      } catch {
-        // file doesn't exist or not accessible
-      }
-    }
-    return null;
-  };
 
   // get the settings and manifest
 
@@ -118,17 +91,19 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, mainDir, c
   // Initialize auth. This is async and will discover the project ID.
   const auth = await Auth.setAuth(scopes);
   const projectId = Auth.getProjectId();
-  const adcPath = await findAdcPath();
   const accessToken = await auth.getAccessToken()
-  const tokenInfo = await got(`https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${accessToken}`).json()
-
+  let tokenInfo = null
+  try {
+    tokenInfo = await got(`https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${accessToken}`).json()
+  } catch (err) {
+    syncError (`failed to get access token info`)
+  }
 
   /// these all jst exist in this sub process so we need to send them back to parent process
   return {
     scopes,
     projectId,
     tokenInfo,
-    adcPath,
     accessToken, // also return the token itself
     settings,
     manifest,

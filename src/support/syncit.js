@@ -284,7 +284,6 @@ const fxInit = ({
     scopes,
     projectId,
     tokenInfo,
-    adcPath,
     accessToken,
     settings,
     manifest,
@@ -295,7 +294,6 @@ const fxInit = ({
   Auth.setProjectId(projectId);
   //Auth.setAuth(scopes)
   Auth.setTokenInfo(tokenInfo);
-  Auth.setAdcPath(adcPath)
   //Auth.setAccessToken(accessToken)
   Auth.setSettings(settings);
   Auth.setClasp(clasp);

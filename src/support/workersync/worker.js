@@ -10,6 +10,14 @@ let control;
 let dataView;
 const textEncoder = new TextEncoder();
 
+// Define indices for the control buffer to match synchronizer.js
+const CONTROL_INDICES = {
+  STATUS: 0,      // 0: free, 1: busy, 2: worker_init
+  DATA_SIZE: 1,   // Size of the result data in bytes
+  IS_ERROR: 2,    // 0: success, 1: error
+  RESULT_TYPE: 3, // 0: buffer, 1: file
+};
+
 /**
  * Writes a result to the shared buffer and sets control flags.
  * @param {*} result The successful result to write.
@@ -27,16 +35,16 @@ async function writeResult(result) {
 
     // Write the path to the shared buffer
     dataView.set(pathBytes);
-    Atomics.store(control, 1, pathBytes.length); // data size (of the path)
-    Atomics.store(control, 2, 0); // success flag
-    Atomics.store(control, 3, 1); // result type: file
+    Atomics.store(control, CONTROL_INDICES.DATA_SIZE, pathBytes.length); // data size (of the path)
+    Atomics.store(control, CONTROL_INDICES.IS_ERROR, 0); // success flag
+    Atomics.store(control, CONTROL_INDICES.RESULT_TYPE, 1); // result type: file
   } else {
     // Result fits in the buffer, write it directly.
 
     dataView.set(encodedResult);
-    Atomics.store(control, 1, encodedResult.length); // data size
-    Atomics.store(control, 2, 0); // success flag
-    Atomics.store(control, 3, 0); // result type: buffer
+    Atomics.store(control, CONTROL_INDICES.DATA_SIZE, encodedResult.length); // data size
+    Atomics.store(control, CONTROL_INDICES.IS_ERROR, 0); // success flag
+    Atomics.store(control, CONTROL_INDICES.RESULT_TYPE, 0); // result type: buffer
  
   }
 }
@@ -55,9 +63,9 @@ function writeError(error) {
   const encodedError = textEncoder.encode(errorString);
 
   dataView.set(encodedError);
-  Atomics.store(control, 1, encodedError.length); // data size
-  Atomics.store(control, 2, 1); // error flag
-  Atomics.store(control, 3, 0); // result type: buffer (errors are always small enough)
+  Atomics.store(control, CONTROL_INDICES.DATA_SIZE, encodedError.length); // data size
+  Atomics.store(control, CONTROL_INDICES.IS_ERROR, 1); // error flag
+  Atomics.store(control, CONTROL_INDICES.RESULT_TYPE, 0); // result type: buffer (errors are always small enough)
 }
 
 // 1. Receive the shared buffers from the main thread on startup.
@@ -66,7 +74,7 @@ parentPort.once('message', (msg) => {
   dataView = new Uint8Array(msg.dataBuf);
 
   // Signal that the worker is ready.
-  Atomics.store(control, 0, 0);
+  Atomics.store(control, CONTROL_INDICES.STATUS, 0);
   Atomics.notify(control, 0);
 });
 
@@ -79,7 +87,9 @@ const handleUncaughtError = (error) => {
   // If control is not initialized, we can't report the error.
   // Just log it and exit.
   if (control) {
-    syncError('A fatal, unhandled error occurred in the worker', error);
+    // Log the full error stack to identify the call site
+    syncError('A fatal, unhandled error occurred in the worker. The worker will be unresponsive.', error);
+
     writeError(error);
     Atomics.notify(control, 0);
   }
@@ -105,8 +115,7 @@ parentPort.on('message', async (task) => {
       // sxInit is special: it creates the auth state and returns serializable info.
       result = await asyncFn(...task.args);
 
-      // Configure the worker's persistent Auth object.
-      Auth.setAdcPath(result.adcPath);
+
       // The projectId is already discovered and set within the initial `sxInit` -> `setAuth` call.
       // This subsequent call is redundant, so it is removed for clarity.
       // Auth.setProjectId(result.projectId);
@@ -132,7 +141,7 @@ parentPort.on('message', async (task) => {
     writeError(error);
   } finally {
     // 3. Signal completion and wake up the main thread.
-    Atomics.store(control, 0, 0);
+    Atomics.store(control, CONTROL_INDICES.STATUS, 0);
     Atomics.notify(control, 0);
   }
 });
