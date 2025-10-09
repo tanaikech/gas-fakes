@@ -39,7 +39,7 @@ Authentication is handled using Application Default Credentials (ADC), enhanced 
         ```
 
     *   **Option B: Manual Setup**
-        1.  Copy the `.env.template` from the `shells` directory into your project's root and rename it to `.env`.
+        1.  Copy the `env.setup.template` from the `shells` directory into your project's root and rename it to `.env`.
         2.  Open your new `.env` file and set your GCP Project ID.
             ```
             # must set this

@@ -13,7 +13,6 @@ testutilities.js
 ````js
 
 // all these imports 
-// this is loaded by npm, but is a library on Apps Script side
 
 import is from '@sindresorhus/is';
 import '@mcpher/gas-fakes'
@@ -21,7 +20,7 @@ import '@mcpher/gas-fakes'
 // all the fake services are here
 //import '@mcpher/gas-fakes/main.js'
 
-import { initTests }  from  './testinit.js'
+import { initTests, wrapupTest }  from  './testinit.js'
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testUtilities = (pack) => {
@@ -36,27 +35,7 @@ export const testUtilities = (pack) => {
     //.. tests
     
   })
-
-
-  unit.section('utilities gzipping', t => {
-    //.. tests
-
-  })
-
-  unit.section('utilities blob manipulation', t => {
-    //.. tests
-        
-  })
-
-  unit.section("utilities hmac", t => {
-    //.. tests
-
-  })
-
-  unit.section('gas utiltities', t => {
-    //.. tests
-    
-  })
+  // etc..
 
   if (!pack) {
     unit.report()
@@ -66,12 +45,10 @@ export const testUtilities = (pack) => {
 
 // if we're running this test standalone, on Node - we need to actually kick it off
 // the provess.argv should contain "execute" 
-// for example node testdrive.js execute
 // on apps script we don't want it to run automatically
 // when running as part of a consolidated test, we dont want to run it, as the caller will do that
 
-if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) testUtilities()
-
+wrapupTest(testUtilities);
 
 ````
 
@@ -79,15 +56,9 @@ if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) t
 The package.json should contain a reference to the test
 ````
   "scripts": {
-    "test": "node --env-file=.env ./test/test.js",
-    "testdrive": "node --env-file=.env ./test/testdrive.js execute",
-    "testsheets": "node --env-file=.env ./test/testsheets.js execute",
-    "testfetch": "node --env-file=.env ./test/testfetch.js execute",
-    "testsession": "node --env-file=.env ./test/testsession.js execute",
-    "testutilities": "node --env-file=.env ./test/testutilities.js execute",
-    "teststores": "node --env-file=.env ./test/teststores.js execute",
-    "testscriptapp": "node --env-file=.env ./test/testscriptapp.js execute",
-    "pub": "npm publish --access public"
+    "test": "node  ./test/test.js",
+    "testdrive": node ./test/testdrive.js execute",
+    ....etc
   },
 ````
 they can be run individually with - for example
@@ -101,11 +72,7 @@ import '@mcpher/gas-fakes'
 import { initTests }  from  './testinit.js'
 import { testDrive } from './testdrive.js';
 import { testSheets } from './testsheets.js';
-import { testFetch } from './testfetch.js';
-import { testSession } from './testsession.js';
-import { testUtilities } from './testutilities.js';
-import { testStores } from './teststores.js';
-import { testScriptApp } from './testscriptapp.js';
+...etc
 
 const testFakes = () => {
   const pack = initTests()
@@ -115,11 +82,7 @@ const testFakes = () => {
   
   testSheets(pack)
   testDrive(pack)
-  testFetch(pack)
-  testSession(pack)
-  testUtilities(pack)
-  testStores(pack)
-  testScriptApp(pack)
+  ...etc
   
   unit.report()
 }
@@ -132,6 +95,19 @@ and can be run with
 ````
 npm run test
 ````
+
+## how to redirect to use local files
+
+When testing and you want to use the local files rather than @mcpher/gas-fakes, you can have a local package.json in the same folder as your tests which directs the package to a local file. just run npm i to install
+````
+  "dependencies": {
+    "@mcpher/gas-fakes": "file:../../"
+  }
+````
+where the file value points to the root of gas-fakes. If you want to instead use the npm version then just revert that normal npm syntax and install again. 
+
+
+
 ## Running on apps script
 
 execute `bash togas.sh` to copy all files to apps script IDE. All tests can be run there either indivually or as a whole just like on Node

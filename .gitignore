@@ -2,8 +2,7 @@
 **/private
 testongas
 **/.gas-fakes/store
-.env
-.env-bruce
+.env*
 ghissues
 **/.gemini
 .DS_Store

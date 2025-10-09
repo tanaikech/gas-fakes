@@ -47,7 +47,7 @@ If you need to convert an existing .env file, there's a shell script for that.
 - go to the test folder
 - execute sh efixconvert.sh
 - run once, check testfixes.js, run a test 
-- if all okay - you can now delete from ../env all keys that are required for testing. In other words delete all the items that are not in ../.env-setup-template
+- if all okay - you can now delete from ../env all keys that are required for testing. In other words delete all the items that are not in ../env-setup-template
 - from v1.1.0 .env fixtures are no longer supprted.
 - the package.json in the test folder has been updated as below, so you'll need to reinstall there.
 
@@ -66,7 +66,7 @@ When testing and you want to use the local files rather than @mcpher/gas-fakes, 
 ````
 where the file value points to the root of gas-fakes. If you want to instead use the npm version then just revert that normal npm syntax and install again. 
 
-CAUTION: when switching between, you'll maybe need to clear npm cache - I wasted a whole afternoon on that.
+
 
 #### Specifics on expectations for test files. 
 
