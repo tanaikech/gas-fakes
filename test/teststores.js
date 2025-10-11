@@ -93,82 +93,77 @@ export const testStores = (pack) => {
     })
   })
 
+  /**
+   * A generalized function to test cross-environment data sharing.
+   * It writes data using gas-fakes (with Upstash backend) and reads it in the live Apps Script environment.
+   * @param {object} t - The test assertion object from the unit tester.
+   * @param {string} storeType - The type of store to test ('script' or 'user').
+   */
+  const doCrossStoreTest = (t, storeType) => {
+    const inFake = PropertiesService.isFake;
+    const isUserStore = storeType === 'user';
 
+    // Define unique keys for each store type to avoid collisions
+    const propsKey = `cross-props-${storeType}`;
+    const cacheKey = `cross-cache-${storeType}`;
+    const value = `value-for-${storeType}`;
 
-  unit.section("properties and cache store cross-environment ", t => {
-
-    // these tests are about interoperatibility between fake and live
-    // first we'll create spefic drop in instances
-    // 1. get some creds from if we can from env
-    const inFake = PropertiesService.isFake
-    const sp = PropertiesService.getScriptProperties()
-    const dope = sp.externalService || null
-    const isUpstash = dope && dope.type === "upstash"
-
+    // --- FAKE ENVIRONMENT: Write data to Upstash ---
     if (inFake) {
+      // Get the appropriate service based on the store type
+      const props = isUserStore ? PropertiesService.getUserProperties() : PropertiesService.getScriptProperties();
+      const cache = isUserStore ? CacheService.getUserCache() : CacheService.getScriptCache();
+      const dope = props.externalService || null;
+      const isUpstash = dope && dope.type === "upstash";
+      
       if (isUpstash) {
-        t.true(isNonEmptyString(dope.url), 'we should have an upstash url')
-        t.true(isNonEmptyString(dope.token), 'we should have an upstash token')
-        t.is(dope.kind, 'property', 'kind should be property')
-        t.is(dope.type, 'upstash', 'type should be upstash')
-        t.true(is.undefined(dope.defaultExpirationSeconds), 'no expiration in properties')
+        // Write properties and cache entries
+        props.setProperty(propsKey, value);
+        cache.put(cacheKey, value, 300); // 5-minute expiry
+        
+        t.is(props.getProperty(propsKey), value, `[fake] should write to ${storeType} properties`);
+        t.is(cache.get(cacheKey), value, `[fake] should write to ${storeType} cache`);
       } else {
-        console.log('...cant test upstash as we dont have creds from env')
+        console.log(`...skipping cross-store test for ${storeType} as Upstash is not configured in .env`);
+        t.skip(`Upstash not configured for ${storeType} store`);
       }
-    } else {
-      // not available in live
-      t.is(dope, null)
     }
-
-
-    // we have some local creds so we can do all his
-    if (isUpstash) {
-      const creds = {
-        ...dope,
-        scriptId: ScriptApp.getScriptId()
-      }
-      const newCacheDropin = ScriptApp.__newCacheDropin
-      t.true(is.function(newCacheDropin, 'scriptapp should be able to export an instance of this'))
-      const props = newCacheDropin({ creds: { ...creds, kind: "property" } });
-      const cache = newCacheDropin({ creds: { ...creds, kind: "cache" } });
-
-      // this should show up in the dropin  stores of live apps script if they are set up
-      // we'll use the same key in props and cache to check partitioning works
-      props.setProperty('fkey', 'fpvalue')
-      cache.put('fkey', 'fcvalue')
-      t.is(props.getProperty('fkey'), 'fpvalue')
-      t.is(cache.get('fkey'), 'fcvalue')
-
-      // the fake property store should also be using upstash
-      PropertiesService.getScriptProperties().setProperty('fskey', 'fpsvalue')
-      CacheService.getScriptCache().put('fskey', 'fcsvalue')
-      t.is(PropertiesService.getScriptProperties().getProperty('fskey'), 'fpsvalue')
-      t.is(CacheService.getScriptCache().get('fskey'), 'fcsvalue')
-
-    }
-
-    // now on the live gas we can read these values
-    if (!inFake) {
-      // the creds should be in the prop store of the live apps script
-      t.true(is.function(newCacheDropin, 'should be defined globallly from the library'))
-      const dope = PropertiesService.getScriptProperties().getProperty("dropin_upstash_credentials")
-      t.true(is.nonEmptyString(dope), 'needs flex-cache creds in live test script property store')
-      const crob = dope && JSON.parse(dope)
+    // --- LIVE ENVIRONMENT: Read data from Upstash ---
+    else { // !inFake
+      const scriptProps = PropertiesService.getScriptProperties();
+      const dope = scriptProps.getProperty("dropin_upstash_credentials");
+      const crob = dope && JSON.parse(dope);
+      
       if (crob) {
-        const creds = {
-          ...crob,
-          scriptId: ScriptApp.getScriptId()
+        const creds = { ...crob, scriptId: ScriptApp.getScriptId() };
+        if (isUserStore) {
+          creds.userId = Session.getEffectiveUser().getEmail();
         }
-        // we can go ahead and create a dropin to check the store
+        
         const props = newCacheDropin({ creds: { ...creds, kind: "property" } });
         const cache = newCacheDropin({ creds: { ...creds, kind: "cache" } });
-        t.is(props.getProperty('fkey'), 'fpvalue')
-        t.is(cache.get('fkey'), 'fcvalue')
-        t.is(props.getProperty('fskey'), 'fpsvalue')
-        t.is(cache.get('fskey'), 'fcsvalue')
+        
+        // Read and verify data written by the fake environment
+        t.is(props.getProperty(propsKey), value, `[live] should read from ${storeType} properties written by fake`);
+        t.is(cache.get(cacheKey), value, `[live] should read from ${storeType} cache written by fake`);
+
+        // cleanup after live test
+        props.deleteProperty(propsKey);
+        cache.remove(cacheKey);
+        t.is(props.getProperty(propsKey), null, `[live] property for ${storeType} should be deleted`);
+        t.is(cache.get(cacheKey), null, `[live] cache for ${storeType} should be removed`);
+      } else {
+        t.fail('Upstash credentials not found in live Script Properties');
       }
     }
-
+  };
+  
+  unit.section("cross-environment (script stores)", t => {
+    doCrossStoreTest(t, 'script');
+  });
+  
+  unit.section("cross-environment (user stores)", t => {
+    doCrossStoreTest(t, 'user');
   })
 
   if (!pack) {
