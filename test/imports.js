@@ -5,3 +5,4 @@
 const unitExports = bmUnitTester.Exports
 const {is} = bmIs.Exports
 const Fiddler = bmFiddler.Fiddler
+const newCacheDropin = bmGasFlexCache.newCacheDropin

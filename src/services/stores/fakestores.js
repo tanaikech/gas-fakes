@@ -1,10 +1,14 @@
 import { Proxies } from '../../support/proxies.js'
 import { Syncit } from '../../support/syncit.js'
 import { Auth } from '../../support/auth.js'
-
+import { Utils } from '../../support/utils.js'
+import { storeModels } from './gasflex.js'
+import { newCacheDropin } from '@mcpher/gas-flex-cache'
+import { notYetImplemented } from '../../support/helpers.js'
+const { is } = Utils
 
 /**
- * caching support uses node files storage
+ * caching support uses node files storage by default, but can also use upstash redis
  */
 
 /**
@@ -53,8 +57,8 @@ const StoreType = Object.freeze({
  * @enum {string}
  */
 export const ServiceKind = Object.freeze({
-  PROPERTIES: 'PROPERTIES',
-  CACHE: 'CACHE'
+  PROPERTIES: 'property',
+  CACHE: 'cache'
 })
 
 /**
@@ -69,7 +73,27 @@ const checkStoreType = (type) => {
   return type
 }
 
-
+// this checks to see if we want to override a service with gas-flex-cache
+const whichCache = () => {
+  const type = (process.env.STORE_TYPE || "file").toLowerCase()
+  if (!["file", "upstash"].includes(type)) {
+    throw new Error(`invalid store type ${type} found in .env file`)
+  }
+  if (type === "upstash") {
+    const url = process.env.UPSTASH_REDIS_REST_URL
+    const token = process.env.UPSTASH_REDIS_REST_TOKEN
+    if (!is.nonEmptyString(token)) throw new Error('UPSTASH_REDIS_REST_TOKEN not found or invalid in .env file')
+    if (!is.nonEmptyString(url)) throw new Error('upstash UPSTASH_REDIS_REST_URL not found or invalid in .env file')
+    return {
+      url,
+      token,
+      type: "upstash"
+    }
+  }
+  return {
+    type
+  }
+}
 /**
  * check store kind is valid
  * @param {ServiceKind} kind  
@@ -79,7 +103,7 @@ const checkServiceKind = (kind) => {
   if (!ServiceKind[kind]) {
     throw new Error(`invalid store kind ${kind}`)
   }
-  return kind
+  return ServiceKind[kind]
 }
 /**
  * create a new FakeService instance
@@ -87,29 +111,49 @@ const checkServiceKind = (kind) => {
  * @returns {FakePropertiesService || FakeCacheService}
  */
 export const newFakeService = (kind) => {
-  checkServiceKind(kind)
+  kind = checkServiceKind(kind)
   return Proxies.guard(kind === ServiceKind.CACHE ? new FakeCacheService() : new FakePropertiesService())
 }
 
+const selectCache = (cacheType, kind, defaultExpirationSeconds) => {
+  // actually we might be overriding the type of service
+  const which = whichCache()
+  if (which.type === "upstash") {
+    const model = storeModels[cacheType]
+    if (!model) {
+      throw new Error(`invalid store type model for ${cacheType}`) 
+    }
+    return newCacheDropin ({ creds: {
+      ...model,
+      ...which,
+      kind,
+      defaultExpirationSeconds
+    }})
+  } else if (which.type === "file") {
+    return Proxies.guard(new FakeProperties(cacheType))
+  } else {
+    throw new Error(`invalid store type ${which.type} found in .env file`)
+  }
+}
 
 /**
  * @class FakePropertiesService
  */
 class FakePropertiesService {
   constructor() {
-    this.kind = StoreType.PROPERTIES
+    this.kind = ServiceKind.PROPERTIES
 
   }
   getDocumentProperties() {
     // apps script needs a bound document to use this store
     if (!Auth.getDocumentId()) return null
-    return Proxies.guard(new FakeProperties(StoreType.DOCUMENT))
+    return selectCache(StoreType.DOCUMENT, this.kind)
   }
   getUserProperties() {
-    return Proxies.guard(new FakeProperties(StoreType.USER))
+    return selectCache(StoreType.USER, this.kind)
   }
   getScriptProperties() {
-    return Proxies.guard(new FakeProperties(StoreType.SCRIPT))
+     return selectCache(StoreType.SCRIPT, this.kind)
   }
 }
 
@@ -118,18 +162,18 @@ class FakePropertiesService {
  */
 class FakeCacheService {
   constructor() {
-    this.kind = StoreType.CACHE
+    this.kind = ServiceKind.CACHE
   }
   getDocumentCache() {
     // apps script needs a bound document to use this store
     if (!Auth.getDocumentId()) return null
-    return Proxies.guard(new FakeCache(StoreType.DOCUMENT))
+    return selectCache(StoreType.DOCUMENT, this.kind, DEFAULT_CACHE_EXPIRY)
   }
   getUserCache() {
-    return Proxies.guard(new FakeCache(StoreType.USER))
+    return selectCache(StoreType.USER, this.kind,DEFAULT_CACHE_EXPIRY)
   }
   getScriptCache() {
-    return Proxies.guard(new FakeCache(StoreType.SCRIPT))
+     return selectCache(StoreType.SCRIPT, this.kind, DEFAULT_CACHE_EXPIRY)
   }
 }
 
@@ -186,16 +230,16 @@ class FakeProperties extends FakeStore {
    */
   constructor(type) {
     super(type)
-    this._storeArgs =  {
+    this._storeArgs = {
       inMemory: false,
-      fileName: this.getFileName (ServiceKind.PROPERTIES),
-      storeDir:  Auth.getPropertiesPath()
+      fileName: this.getFileName(ServiceKind.PROPERTIES),
+      storeDir: Auth.getPropertiesPath()
     }
   }
 
 
   deleteAllProperties() {
-
+    return notYetImplemented('....try using gas-flex-cache store instead')
   }
   /**
    * delete the entry associated with the given key
@@ -207,10 +251,10 @@ class FakeProperties extends FakeStore {
     return this
   }
   getKeys() {
-
+    return notYetImplemented('....try using gas-flex-cache store instead')
   }
   getProperties() {
-
+    return notYetImplemented('....try using gas-flex-cache store instead')
   }
   /**
    * get a value from prop store
@@ -220,10 +264,10 @@ class FakeProperties extends FakeStore {
   getProperty(key) {
     return fixun(Syncit.fxStore(this._storeArgs, "get", key))
 
-    
+
   }
   setProperties(properties, deleteAllOthers) {
-
+    return notYetImplemented('....try using gas-flex-cache store instead')
   }
   /**
    * set the entry associated with the given key
@@ -241,14 +285,14 @@ class FakeProperties extends FakeStore {
 class FakeCache extends FakeStore {
   constructor(type) {
     super(type)
-    this._storeArgs =  {
+    this._storeArgs = {
       inMemory: false,
-      fileName: this.getFileName (ServiceKind.CACHE),
-      storeDir:  Auth.getCachePath()
+      fileName: this.getFileName(ServiceKind.CACHE),
+      storeDir: Auth.getCachePath()
     }
   }
   getAll(keys) {
-
+    return notYetImplemented('....try using gas-flex-cache store instead')
   }
 
   /**
@@ -264,7 +308,7 @@ class FakeCache extends FakeStore {
   }
 
   putAll(values, expirationInSeconds) {
-
+    return notYetImplemented('....try using gas-flex-cache store instead')
   }
 
   /**
@@ -278,12 +322,10 @@ class FakeCache extends FakeStore {
   }
 
   removeAll(keys) {
-
+    return notYetImplemented('....try using gas-flex-cache store instead')
   }
   get(key) {
     return fixun(Syncit.fxStore(this._storeArgs, "get", key))
   }
 
 }
-
-
