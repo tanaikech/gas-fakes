@@ -133,6 +133,73 @@ Now, run the provided shell scripts to use your new configuration to log in and 
 
 ---
 
+## Step 6: (Optional) Using a Shared Data Store with Upstash
+
+By default, `gas-fakes` emulates `PropertiesService` and `CacheService` using local files. For advanced use cases, such as sharing data between your local Node.js environment and a live Apps Script project, you can configure `gas-fakes` to use Upstash Redis as a backend.
+
+This is especially useful for integration testing, where you can write data in a local test and verify it in the live environment, or vice-versa.
+
+### 1. Configure `gas-fakes` (Local Environment)
+
+*   **Get Upstash Credentials**: Sign up for a free Upstash Redis database and get your REST URL and Token.
+*   **Update your `.env` file**: Set `STORE_TYPE` to `UPSTASH` and add your credentials. You can do this by re-running the interactive `setup.sh` script or by editing the file manually.
+
+    ```env
+    # ... other settings
+    STORE_TYPE="UPSTASH"
+    UPSTASH_REDIS_REST_URL="https://your-instance.upstash.io"
+    UPSTASH_REDIS_REST_TOKEN="your-upstash-token"
+    ```
+*   **Match Script ID**: Ensure the `scriptId` in your `gasfakes.json` file matches the Script ID of your live Apps Script project. This is crucial for partitioning the data correctly. `gas-fakes` will automatically use the ID from `.clasp.json` if available.
+
+### 2. Configure Live Apps Script Project
+
+To allow your live script to access the same Upstash database, you'll use the `gas-flex-cache` library.
+
+*   **Add the Library**: Add the `bmGasFlexCache` library to your `appsscript.json` manifest.
+
+    ```json
+    "dependencies": {
+      "libraries": [
+        {
+          "userSymbol": "bmGasFlexCache",
+          "libraryId": "1R_r9n4EGctvA8lWBZVeuT66mgaKBRV5IxfIsD_And-ra2H16iNXVWva0",
+          "version": "9"
+        }
+      ]
+    }
+    ```
+
+*   **Store Credentials in Live Script**: Securely store your Upstash credentials in the live script's native `PropertiesService`.
+
+    ```javascript
+    function setLiveCredentials() {
+      const creds = {
+        type: "upstash",
+        url: "YOUR_UPSTASH_URL",
+        token: "YOUR_UPSTASH_TOKEN"
+      };
+      PropertiesService.getScriptProperties()
+        .setProperty("dropin_upstash_credentials", JSON.stringify(creds));
+    }
+    ```
+
+*   **Instantiate the Drop-in Service**: In your live script, you can now create a drop-in replacement for `CacheService` or `PropertiesService` that connects to your Upstash database, allowing you to read data written by `gas-fakes`.
+
+    ```javascript
+    // Example: Reading a user property set by a gas-fakes test
+    const creds = JSON.parse(PropertiesService.getScriptProperties().getProperty("dropin_upstash_credentials"));
+    creds.userId = Session.getEffectiveUser().getEmail();
+    creds.scriptId = ScriptApp.getScriptId();
+    creds.kind = 'property';
+
+    const sharedUserProps = bmGasFlexCache.newCacheDropin({ creds });
+    const valueFromFake = sharedUserProps.getProperty('some-key-written-by-fake');
+    console.log(valueFromFake);
+    ```
+
+---
+
 ## You're Ready to Code!
 
 Your environment is now configured. You can start writing Apps Script code in your local `.js` files and run them with Node.js. Remember to import `gas-fakes` at the top of your main script file:
