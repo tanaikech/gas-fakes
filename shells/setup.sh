@@ -1,116 +1,124 @@
 #!/bin/bash
 
-echo "Welcome to the gas-fakes setup script!"
-echo "This will help you create your .env file."
-echo ""
+# Move to the script's directory to ensure relative paths work correctly.
+cd "$(dirname "$0")"
 
-# Find the project root directory relative to the script's location
-# This makes the script runnable from any directory
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-ROOT_DIRECTORY=$( cd -- "$SCRIPT_DIR/.." &> /dev/null && pwd )
-ENV_FILE="$ROOT_DIRECTORY/.env"
+# Define the path to the .env file, which is in the parent directory.
+ENV_FILE="../.env"
 
-# Initialize variables for existing values
-existing_gcp_project_id=""
-existing_drive_test_file_id=""
-existing_client_credential_file=""
-existing_ac="default"
-existing_default_scopes="https://www.googleapis.com/auth/userinfo.email,openid,https://www.googleapis.com/auth/cloud-platform"
-existing_extra_scopes=",https://www.googleapis.com/auth/drive,https://www.googleapis.com/auth/spreadsheets,https://www.googleapis.com/auth/gmail.labels"
-existing_log_destination="CONSOLE"
-created_new_file=false
-
+# --- Load existing values from .env file if it exists ---
 if [ -f "$ENV_FILE" ]; then
-  # Source the file to get existing values, removing quotes for the default prompt
-  # The '|| true' prevents the script from exiting if a variable is unbound
-  # We source it directly, then use parameter expansion to fill our 'existing_'
-  # variables, falling back to the initial defaults if they are not set in the file.
-  source "$ENV_FILE" || true
-  existing_gcp_project_id="${GCP_PROJECT_ID:-$existing_gcp_project_id}"
-  existing_drive_test_file_id="${DRIVE_TEST_FILE_ID:-$existing_drive_test_file_id}"
-  existing_client_credential_file="${CLIENT_CREDENTIAL_FILE:-$existing_client_credential_file}"
-  existing_ac="${AC:-$existing_ac}"
-  existing_default_scopes="${DEFAULT_SCOPES:-$existing_default_scopes}"
-  existing_extra_scopes="${EXTRA_SCOPES:-$existing_extra_scopes}"
-  existing_log_destination="${LOG_DESTINATION:-$existing_log_destination}"
-
-  read -p "An existing .env file was found. Do you want to overwrite it? (y/n) " -n 1 -r
-  echo
-  if [[ ! $REPLY =~ ^[Yy]$ ]]; then # If user says no to overwriting
-    read -p "Would you like to create a '.env.new' file instead for you to merge later? (y/n) " -n 1 -r
-    echo
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-      ENV_FILE="$ROOT_DIRECTORY/.env.new"
-      echo "Okay, a new file will be created at $ENV_FILE"
-      created_new_file=true
-      # The existing .env values will be used as defaults for the new file.
-    else
-      echo "Setup cancelled."
-      exit 1
-    fi
-  fi
+  echo "Found existing .env file. Loading current values as defaults."
+  # Source the file to load its variables into the current shell session.
+  # This handles various formats and ensures variables are available.
+  set -o allexport
+  source "$ENV_FILE"
+  set +o allexport
 fi
 
-echo "Creating a new file at $ENV_FILE..."
-echo ""
+# --- Helper function for user prompts ---
+# Prompts the user for a value, showing the current value as a default.
+prompt_for_value() {
+  local prompt_text=$1
+  local var_name=$2
+  local default_value=${!var_name} # Indirectly get the value of the variable named by var_name
 
-# Prompt for GCP_PROJECT_ID (mandatory)
-read -p "Enter your Google Cloud Project ID [${existing_gcp_project_id}]: " gcp_project_id
-gcp_project_id=${gcp_project_id:-$existing_gcp_project_id}
-while [ -z "$gcp_project_id" ]; do
-  read -p "Project ID is required. Please enter your Google Cloud Project ID: " gcp_project_id
+  read -p "$prompt_text [$default_value]: " input
+  
+  # If the user provides input, use it. Otherwise, keep the default value.
+  if [ -n "$input" ]; then
+    # Use printf to handle assignment safely, then evaluate it.
+    eval "$(printf '%s=%s' "$var_name" "'$input'")"
+  fi
+}
+
+# --- Gather Configuration Values ---
+echo "--------------------------------------------------"
+echo "Configuring .env for gas-fakes"
+echo "Press Enter to accept the default value in brackets."
+echo "--------------------------------------------------"
+
+prompt_for_value "Enter your GCP Project ID" "GCP_PROJECT_ID"
+prompt_for_value "Enter a test Drive file ID for authentication checks" "DRIVE_TEST_FILE_ID"
+prompt_for_value "Enter path to OAuth client credentials JSON (optional)" "CLIENT_CREDENTIAL_FILE"
+
+# --- Logging Configuration ---
+
+# Set default for LOG_DESTINATION if it's not already set
+LOG_DESTINATION=${LOG_DESTINATION:-CONSOLE}
+
+# Loop until a valid LOG_DESTINATION is entered
+while true; do
+  read -p "Enter logging destination (CONSOLE, CLOUD, BOTH, NONE) [$LOG_DESTINATION]: " input
+  input_upper=$(echo "${input:-$LOG_DESTINATION}" | tr '[:lower:]' '[:upper:]')
+
+  if [[ "$input_upper" == "CONSOLE" || "$input_upper" == "CLOUD" || "$input_upper" == "BOTH" || "$input_upper" == "NONE" ]]; then
+    LOG_DESTINATION=$input_upper
+    break
+  else
+    echo "Invalid input. Please enter one of CONSOLE, CLOUD, BOTH, or NONE."
+  fi
 done
 
-# Prompt for DRIVE_TEST_FILE_ID (optional)
-read -p "Enter a Drive file ID for testing (optional) [${existing_drive_test_file_id}]: " drive_test_file_id
-drive_test_file_id=${drive_test_file_id:-$existing_drive_test_file_id}
 
-# Prompt for CLIENT_CREDENTIAL_FILE (optional)
-read -p "Enter the path to your OAuth client credentials JSON file (optional) [${existing_client_credential_file}]: " client_credential_file
-client_credential_file=${client_credential_file:-$existing_client_credential_file}
+# --- Storage Configuration ---
 
-# Prompt for other .env values
-read -p "Enter the gcloud config name (AC) [${existing_ac}]: " ac
-ac=${ac:-$existing_ac}
+# Set default for STORE_TYPE if it's not already set
+STORE_TYPE=${STORE_TYPE:-file}
 
-read -p "Enter the default scopes [${existing_default_scopes}]: " default_scopes
-default_scopes=${default_scopes:-$existing_default_scopes}
+# Loop until a valid STORE_TYPE is entered
+while true; do
+  read -p "Enter storage type (file or upstash) [$STORE_TYPE]: " input
+  input=${input:-$STORE_TYPE} # Use default if input is empty
 
-read -p "Enter any extra scopes (comma-prefixed) [${existing_extra_scopes}]: " extra_scopes
-extra_scopes=${extra_scopes:-$existing_extra_scopes}
-
-read -p "Enter the log destination (CONSOLE, CLOUD, BOTH, NONE) [${existing_log_destination}]: " log_destination
-log_destination=${log_destination:-$existing_log_destination}
-while [[ ! "$log_destination" =~ ^(CONSOLE|CLOUD|BOTH|NONE)$ ]]; do
-  read -p "Invalid value. Please enter CONSOLE, CLOUD, BOTH, or NONE: " log_destination
+  if [[ "$input" == "file" || "$input" == "upstash" ]]; then
+    STORE_TYPE=$input
+    break
+  else
+    echo "Invalid input. Please enter 'file' or 'upstash'."
+  fi
 done
 
-# Write to .env file
+# Conditionally ask for Upstash credentials
+if [ "$STORE_TYPE" == "upstash" ]; then
+  echo "Upstash storage selected. Please provide your Redis credentials."
+  prompt_for_value "Enter your Upstash Redis REST URL" "UPSTASH_REDIS_REST_URL"
+  prompt_for_value "Enter your Upstash Redis REST Token" "UPSTASH_REDIS_REST_TOKEN"
+else
+  # If not using upstash, ensure the variables are unset so they don't get written to .env
+  unset UPSTASH_REDIS_REST_URL
+  unset UPSTASH_REDIS_REST_TOKEN
+fi
+
+# --- Write Configuration to .env file ---
+echo "--------------------------------------------------"
+echo "Writing configuration to $ENV_FILE..."
+
+# Create or overwrite the .env file
 cat > "$ENV_FILE" << EOL
-# gas-fakes environment configuration
-# Generated by setup.sh on $(date)
+# Google Cloud Project ID (required)
+GCP_PROJECT_ID="${GCP_PROJECT_ID}"
 
-GCP_PROJECT_ID="$gcp_project_id"
+# Path to OAuth client credentials for restricted scopes (optional)
+CLIENT_CREDENTIAL_FILE="${CLIENT_CREDENTIAL_FILE}"
 
-# Optional file ID for testing authentication
-DRIVE_TEST_FILE_ID="$drive_test_file_id"
+# A test file ID for checking authentication (optional)
+DRIVE_TEST_FILE_ID="${DRIVE_TEST_FILE_ID}"
 
-# Optional path to OAuth client credentials for restricted scopes
-CLIENT_CREDENTIAL_FILE="$client_credential_file"
+# Storage configuration for PropertiesService and CacheService ('file' or 'upstash')
+STORE_TYPE="${STORE_TYPE}"
 
-# Default values for Application Default Credentials
-AC="$ac"
-DEFAULT_SCOPES="$default_scopes"
-EXTRA_SCOPES="$extra_scopes"
-LOG_DESTINATION="$log_destination"
+# Logging destination for Logger.log() ('CONSOLE', 'CLOUD', 'BOTH', 'NONE')
+LOG_DESTINATION="${LOG_DESTINATION}"
 EOL
 
-echo ""
-echo "File created successfully at $ENV_FILE"
-
-if [ "$created_new_file" = true ]; then
-  echo "IMPORTANT: Please manually merge the contents of '.env.new' into your existing '.env' file."
-  echo "After merging, you can run 'bash setaccount.sh' to apply the new settings."
-else
-  echo "You can now run 'bash setaccount.sh' to log in."
+# Only append Upstash credentials if the type is 'upstash'
+if [ "$STORE_TYPE" == "upstash" ]; then
+  echo "" >> "$ENV_FILE"
+  echo "# Upstash credentials (only used if STORE_TYPE is 'upstash')" >> "$ENV_FILE"
+  echo "UPSTASH_REDIS_REST_URL=\"${UPSTASH_REDIS_REST_URL}\"" >> "$ENV_FILE"
+  echo "UPSTASH_REDIS_REST_TOKEN=\"${UPSTASH_REDIS_REST_TOKEN}\"" >> "$ENV_FILE"
 fi
+
+echo "Setup complete. Your .env file has been updated."
+echo "--------------------------------------------------"
