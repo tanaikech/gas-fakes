@@ -27,6 +27,11 @@ export const testStores = (pack) => {
     t.is(typeof PropertiesService.getDocumentProperties, 'function')
     ps.dp = PropertiesService.getDocumentProperties()
 
+    if (ScriptApp.isFake) {
+      const st = (process.env.STORE_TYPE || 'file').toUpperCase()
+      t.is(PropertiesService.type, st, 'store should match store type in env')
+    }
+
     const p = ['dp', 'sp', 'up']
     p.forEach(f => {
       const testValue = f + 'p'
@@ -37,10 +42,7 @@ export const testStores = (pack) => {
         ps[f].deleteProperty(testKey);
         t.is(ps[f].getProperty(testKey), null);
         // check that we got the right thing from process if runing on node
-        if (ScriptApp.isFake) {
-          const st = process.env.STORE_TYPE
-          t.is(ps[f].type, st, 'store should match store type in env')
-        }
+
       }
     })
 
@@ -61,6 +63,12 @@ export const testStores = (pack) => {
     t.is(typeof CacheService.getDocumentCache, 'function')
     cs.dp = CacheService.getDocumentCache()
 
+
+    if (ScriptApp.isFake) {
+      const st = (process.env.STORE_TYPE || 'file').toUpperCase()
+      t.is(CacheService.type, st, 'store should match store type in env')
+    }
+
     const exValue = 'ex'
     const p = ['dp', 'sp', 'up']
     p.forEach(f => {
@@ -72,11 +80,6 @@ export const testStores = (pack) => {
         t.is(cs[f].put(testKey, exValue, 2), null)
       } else {
         t.is(cs[f], null)
-      }
-      // check that we got the right thing from process if runing on node
-      if (ScriptApp.isFake && cs[f]) {
-        const st = process.env.STORE_TYPE
-        t.is(cs[f].type, st, 'store should match store type in env')
       }
     })
 
@@ -115,17 +118,17 @@ export const testStores = (pack) => {
       const cache = isUserStore ? CacheService.getUserCache() : CacheService.getScriptCache();
       const dope = props.externalService || null;
       const isUpstash = dope && dope.type === "upstash";
-      
+
       if (isUpstash) {
         // Write properties and cache entries
         props.setProperty(propsKey, value);
         cache.put(cacheKey, value, 300); // 5-minute expiry
-        
+
         t.is(props.getProperty(propsKey), value, `[fake] should write to ${storeType} properties`);
         t.is(cache.get(cacheKey), value, `[fake] should write to ${storeType} cache`);
       } else {
         console.log(`...skipping cross-store test for ${storeType} as Upstash is not configured in .env`);
-        t.skip(`Upstash not configured for ${storeType} store`);
+        t.skipFromHere = true
       }
     }
     // --- LIVE ENVIRONMENT: Read data from Upstash ---
@@ -133,16 +136,16 @@ export const testStores = (pack) => {
       const scriptProps = PropertiesService.getScriptProperties();
       const dope = scriptProps.getProperty("dropin_upstash_credentials");
       const crob = dope && JSON.parse(dope);
-      
+
       if (crob) {
         const creds = { ...crob, scriptId: ScriptApp.getScriptId() };
         if (isUserStore) {
           creds.userId = Session.getEffectiveUser().getEmail();
         }
-        
+
         const props = newCacheDropin({ creds: { ...creds, kind: "property" } });
         const cache = newCacheDropin({ creds: { ...creds, kind: "cache" } });
-        
+
         // Read and verify data written by the fake environment
         t.is(props.getProperty(propsKey), value, `[live] should read from ${storeType} properties written by fake`);
         t.is(cache.get(cacheKey), value, `[live] should read from ${storeType} cache written by fake`);
@@ -157,11 +160,11 @@ export const testStores = (pack) => {
       }
     }
   };
-  
+
   unit.section("cross-environment (script stores)", t => {
     doCrossStoreTest(t, 'script');
   });
-  
+
   unit.section("cross-environment (user stores)", t => {
     doCrossStoreTest(t, 'user');
   })

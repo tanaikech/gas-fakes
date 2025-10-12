@@ -68,11 +68,12 @@ STORE_TYPE=${STORE_TYPE:-file}
 
 # Loop until a valid STORE_TYPE is entered
 while true; do
-  read -p "Enter storage type (file or upstash) [$STORE_TYPE]: " input
-  input=${input:-$STORE_TYPE} # Use default if input is empty
+  read -p "Enter storage type (FILE or UPSTASH) [$STORE_TYPE]: " input
+  # Use default if input is empty, and convert to uppercase
+  input_upper=$(echo "${input:-$STORE_TYPE}" | tr '[:lower:]' '[:upper:]')
 
-  if [[ "$input" == "file" || "$input" == "upstash" ]]; then
-    STORE_TYPE=$input
+  if [[ "$input_upper" == "FILE" || "$input_upper" == "UPSTASH" ]]; then
+    STORE_TYPE=$input_upper
     break
   else
     echo "Invalid input. Please enter 'file' or 'upstash'."
@@ -80,14 +81,10 @@ while true; do
 done
 
 # Conditionally ask for Upstash credentials
-if [ "$STORE_TYPE" == "upstash" ]; then
+if [ "$STORE_TYPE" == "UPSTASH" ]; then
   echo "Upstash storage selected. Please provide your Redis credentials."
   prompt_for_value "Enter your Upstash Redis REST URL" "UPSTASH_REDIS_REST_URL"
   prompt_for_value "Enter your Upstash Redis REST Token" "UPSTASH_REDIS_REST_TOKEN"
-else
-  # If not using upstash, ensure the variables are unset so they don't get written to .env
-  unset UPSTASH_REDIS_REST_URL
-  unset UPSTASH_REDIS_REST_TOKEN
 fi
 
 # --- Write Configuration to .env file ---
@@ -105,17 +102,18 @@ CLIENT_CREDENTIAL_FILE="${CLIENT_CREDENTIAL_FILE}"
 # A test file ID for checking authentication (optional)
 DRIVE_TEST_FILE_ID="${DRIVE_TEST_FILE_ID}"
 
-# Storage configuration for PropertiesService and CacheService ('file' or 'upstash')
+# Storage configuration for PropertiesService and CacheService ('FILE' or 'UPSTASH')
 STORE_TYPE="${STORE_TYPE}"
 
 # Logging destination for Logger.log() ('CONSOLE', 'CLOUD', 'BOTH', 'NONE')
 LOG_DESTINATION="${LOG_DESTINATION}"
 EOL
 
-# Only append Upstash credentials if the type is 'upstash'
-if [ "$STORE_TYPE" == "upstash" ]; then
+# Append Upstash credentials if they exist, regardless of STORE_TYPE.
+# This preserves them when switching back and forth.
+if [ -n "$UPSTASH_REDIS_REST_URL" ] && [ -n "$UPSTASH_REDIS_REST_TOKEN" ]; then
   echo "" >> "$ENV_FILE"
-  echo "# Upstash credentials (only used if STORE_TYPE is 'upstash')" >> "$ENV_FILE"
+  echo "# Upstash credentials (only used if STORE_TYPE is 'UPSTASH')" >> "$ENV_FILE"
   echo "UPSTASH_REDIS_REST_URL=\"${UPSTASH_REDIS_REST_URL}\"" >> "$ENV_FILE"
   echo "UPSTASH_REDIS_REST_TOKEN=\"${UPSTASH_REDIS_REST_TOKEN}\"" >> "$ENV_FILE"
 fi

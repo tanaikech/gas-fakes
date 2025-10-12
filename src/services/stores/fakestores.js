@@ -5,11 +5,42 @@ import { Utils } from '../../support/utils.js'
 import { storeModels } from './gasflex.js'
 import { newCacheDropin } from '@mcpher/gas-flex-cache'
 import { notYetImplemented } from '../../support/helpers.js'
+import { file } from 'googleapis/build/src/apis/file/index.js'
 const { is } = Utils
 
 /**
- * caching support uses node files storage by default, but can also use upstash redis
+ * what these props mean
+ * store_type = currently upstash or file - it defines the back end and maps to env variable
+ * service_kind = cache or property 
+ * store_domain = script, document, user
  */
+/**
+ * domains of store supported
+ * @enum {string}
+ */
+const StoreDomain = Object.freeze({
+  SCRIPT: 'SCRIPT',
+  USER: 'USER',
+  DOCUMENT: 'DOCUMENT'
+})
+
+/**
+ * kinds of store service supported
+ * @enum {string}
+ */
+const ServiceKind = Object.freeze({
+  PROPERTIES: 'PROPERTY',
+  CACHE: 'CACHE'
+})
+
+
+/**
+ * types of store supported 
+ */
+const StoreType = Object.freeze({
+  UPSTASH: 'UPSTASH',
+  FILE: 'FILE'
+})
 
 /**
  * default expiration of cache in seconds
@@ -42,95 +73,69 @@ const normExpiry = (secs) => {
  */
 const fixun = (value) => typeof value === typeof undefined ? null : value
 
-/**
- * types of store supported
- * @enum {string}
- */
-const StoreType = Object.freeze({
-  SCRIPT: 'SCRIPT',
-  USER: 'USER',
-  DOCUMENT: 'DOCUMENT'
-})
 
-/**
- * kinds of store service supported
- * @enum {string}
- */
-export const ServiceKind = Object.freeze({
-  PROPERTIES: 'property',
-  CACHE: 'cache'
-})
-
-/**
- * check store type is valid
- * @param {StoreType} type 
- * @returns {StoreType}
- */
-const checkStoreType = (type) => {
-  if (!Reflect.has(StoreType, type)) {
-    throw new Error(`invalid store type ${type}`)
+const validateProp = (prop, vob, name = '') => {
+  // this will return the actual value of the enum, not the property name
+  prop = prop.toUpperCase(prop)
+  if (!Reflect.has(vob, prop)) {
+    throw new Error(`invalid ${name} property ${prop}`)
   }
-  return type
+  return vob[prop]
 }
+
+
 
 // this checks to see if we want to override a service with gas-flex-cache
 const whichCache = () => {
-  const type = (process.env.STORE_TYPE || "file").toLowerCase()
-  if (!["file", "upstash"].includes(type)) {
-    throw new Error(`invalid store type ${type} found in .env file`)
-  }
-  if (type === "upstash") {
+  // this will return the actual value of the enum, not the property name
+  const type = validateProp (process.env.STORE_TYPE || "file", StoreType, 'store_type')
+  if (type === StoreType.UPSTASH) {
     const url = process.env.UPSTASH_REDIS_REST_URL
     const token = process.env.UPSTASH_REDIS_REST_TOKEN
     if (!is.nonEmptyString(token)) throw new Error('UPSTASH_REDIS_REST_TOKEN not found or invalid in .env file')
-    if (!is.nonEmptyString(url)) throw new Error('upstash UPSTASH_REDIS_REST_URL not found or invalid in .env file')
+    if (!is.nonEmptyString(url)) throw new Error('UPSTASH_REDIS_REST_URL not found or invalid in .env file')
     return {
       url,
       token,
-      type: "upstash"
+      type
     }
   }
   return {
     type
   }
 }
-/**
- * check store kind is valid
- * @param {ServiceKind} kind  
- * @returns {ServiceKind}
- */
-const checkServiceKind = (kind) => {
-  if (!ServiceKind[kind]) {
-    throw new Error(`invalid store kind ${kind}`)
-  }
-  return ServiceKind[kind]
-}
+
 /**
  * create a new FakeService instance
  * @param {ServiceKind} kind of service
  * @returns {FakePropertiesService || FakeCacheService}
  */
 export const newFakeService = (kind) => {
-  kind = checkServiceKind(kind)
-  return Proxies.guard(kind === ServiceKind.CACHE ? new FakeCacheService() : new FakePropertiesService())
+  kind = validateProp (kind, ServiceKind, 'service_kind')
+  const w = whichCache ()
+  console.log (`...${kind} store service is using store type ${w.type} as backend`)
+  return Proxies.guard(kind === ServiceKind.CACHE ? new FakeCacheService(w.type) : new FakePropertiesService(w.type))
 }
 
-const selectCache = (cacheType, kind, defaultExpirationSeconds) => {
+const selectCache = (domain, kind, defaultExpirationSeconds) => {
   // actually we might be overriding the type of service
+  domain = validateProp (domain, StoreDomain, 'store_domain')
   const which = whichCache()
-  if (which.type === "upstash") {
-    const model = storeModels[cacheType]
+  if (which.type === "UPSTASH") {
+    const model = storeModels[domain]
     if (!model) {
       throw new Error(`invalid store type model for ${cacheType}`) 
     }
     return newCacheDropin ({ creds: {
       ...model,
       ...which,
-      kind,
+      type: "upstash",
+      kind: kind.toLowerCase(),
       defaultExpirationSeconds
     }})
-  } else if (which.type === "file") {
-    return Proxies.guard(new FakeProperties(cacheType))
+  } else if (which.type === StoreType.FILE) {
+    const store = kind === ServiceKind.CACHE ? FakeCache : FakeProperties
+    return Proxies.guard(new store(domain))
   } else {
     throw new Error(`invalid store type ${which.type} found in .env file`)
   }
@@ -140,20 +145,20 @@ const selectCache = (cacheType, kind, defaultExpirationSeconds) => {
  * @class FakePropertiesService
  */
 class FakePropertiesService {
-  constructor() {
+  constructor(type) {
     this.kind = ServiceKind.PROPERTIES
-
+    this.type = type
   }
   getDocumentProperties() {
     // apps script needs a bound document to use this store
     if (!Auth.getDocumentId()) return null
-    return selectCache(StoreType.DOCUMENT, this.kind)
+    return selectCache(StoreDomain.DOCUMENT, this.kind)
   }
   getUserProperties() {
-    return selectCache(StoreType.USER, this.kind)
+    return selectCache(StoreDomain.USER, this.kind)
   }
   getScriptProperties() {
-     return selectCache(StoreType.SCRIPT, this.kind)
+     return selectCache(StoreDomain.SCRIPT, this.kind)
   }
 }
 
@@ -161,19 +166,20 @@ class FakePropertiesService {
  * @class FakePropertiesService
  */
 class FakeCacheService {
-  constructor() {
-    this.kind = ServiceKind.CACHE
+  constructor(type) {
+    this.kind =  ServiceKind.CACHE
+    this.type = type
   }
   getDocumentCache() {
     // apps script needs a bound document to use this store
     if (!Auth.getDocumentId()) return null
-    return selectCache(StoreType.DOCUMENT, this.kind, DEFAULT_CACHE_EXPIRY)
+    return selectCache(StoreDomain.DOCUMENT, this.kind, DEFAULT_CACHE_EXPIRY)
   }
   getUserCache() {
-    return selectCache(StoreType.USER, this.kind,DEFAULT_CACHE_EXPIRY)
+    return selectCache(StoreDomain.USER, this.kind,DEFAULT_CACHE_EXPIRY)
   }
   getScriptCache() {
-     return selectCache(StoreType.SCRIPT, this.kind, DEFAULT_CACHE_EXPIRY)
+     return selectCache(StoreDomain.SCRIPT, this.kind, DEFAULT_CACHE_EXPIRY)
   }
 }
 
@@ -184,32 +190,32 @@ class FakeCacheService {
 class FakeStore {
   /**
    * @constructor
-   * @param {StoreType} type 
+   * @param {string} domain 
    */
-  constructor(type) {
-    checkStoreType(type)
-    this._type = type
+  constructor(domain) {
+    domain = validateProp(domain, StoreDomain, 'store_domain')
+    this._domain = domain
   }
 
   /**
-   * @returns {StoreType}
+   * @returns {string}
    */
-  get type() {
-    return this._type
+  get domain() {
+    return this._domain
   }
 
   getFileName(kind) {
 
-    const t = this.type.substring(0, 1).toLowerCase()
+    const d = this.domain.substring(0, 1).toLowerCase()
     const k = kind.substring(0, 1).toLowerCase()
     const scriptId = Auth.getScriptId()
     const documentId = Auth.getDocumentId()
 
-    let fileName = `${k}${t}-${scriptId}`
-    if (this.type === StoreType.USER) {
+    let fileName = `${k}${d}-${scriptId}`
+    if (this.domain === StoreDomain.USER) {
       fileName += `-${Auth.getHashedUserId()}`
     }
-    else if (this.type === StoreType.DOCUMENT && documentId) {
+    else if (this.domain === StoreDomain.DOCUMENT && documentId) {
       fileName += `-${documentId}`
     }
 
@@ -226,13 +232,13 @@ class FakeStore {
 class FakeProperties extends FakeStore {
   /**
    * @constructor
-   * @param {StoreType} type 
+   * @param {string} domain 
    */
-  constructor(type) {
-    super(type)
+  constructor(domain) {
+    super(domain)
     this._storeArgs = {
       inMemory: false,
-      fileName: this.getFileName(ServiceKind.PROPERTIES),
+      fileName: this.getFileName(ServiceKind.PROPERTIES).toLowerCase(),
       storeDir: Auth.getPropertiesPath()
     }
   }
@@ -283,11 +289,11 @@ class FakeProperties extends FakeStore {
 }
 
 class FakeCache extends FakeStore {
-  constructor(type) {
-    super(type)
+  constructor(domain) {
+    super(domain)
     this._storeArgs = {
       inMemory: false,
-      fileName: this.getFileName(ServiceKind.CACHE),
+      fileName: this.getFileName(ServiceKind.CACHE).toLowerCase(),
       storeDir: Auth.getCachePath()
     }
   }

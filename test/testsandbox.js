@@ -31,13 +31,15 @@ export const testSandbox = (pack) => {
   unit.section('init tests', t => {
     if (behavior.sandboxService) {
       const registered = ScriptApp.__registeredServices
+      const sandboxedServices = Object.keys(behavior.sandboxService).sort();
+      const nonSandboxedServices = ['PropertiesService', 'CacheService'];
       const loaded = ScriptApp.__loadedServices
       t.true(is.nonEmptyArray(registered), 'these are the services that have been registered')
       t.true(is.nonEmptyArray(loaded), 'these are the services that have been loaded')
 
       // every registered service should have a sandbox service set up
-      t.deepEqual(registered.sort(), Object.keys(behavior.sandboxService).sort())
-      t.deepEqual(loaded.sort(), Object.keys(behavior.sandboxService).sort().filter(f=>loaded.includes(f)))
+      t.deepEqual(registered.filter(f => !nonSandboxedServices.includes(f)).sort(), sandboxedServices)
+      t.deepEqual(loaded.filter(f => !nonSandboxedServices.includes(f)).sort(), sandboxedServices.filter(f=>loaded.includes(f)))
 
       registered.forEach(serviceName => {
         const service = behavior.sandboxService[serviceName];
