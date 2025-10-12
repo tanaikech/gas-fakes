@@ -86,7 +86,9 @@ An iterator created by a generator does not have a `hasNext()` function, whereas
 
 ### Cache and Property services
 
-These are currently implemented using [keyv](https://github.com/jaredwray/keyv) with storage adaptor [keyv-file](https://github.com/zaaack/keyv-file).The `gasfakes.json` file is used to commiicate where these files should be. I've gone for local file storage rather than something like redis to avoid adding local service requirements, but keyv takes a wide range of storage adaptors if you want to do something fancier. A small modificaion to kv.js is all you need.
+These services can be backed by two different storage types, configured via the `STORE_TYPE` variable in your `.env` file:
+- **`FILE` (Default)**: Implemented using keyv with the keyv-file storage adapter. This stores data in local files, with the path specified in `gasfakes.json`.
+- **`UPSTASH`**: Uses Upstash Redis as a cloud-based backend. This requires setting `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` in your `.env` file. This option allows for interoperability testing, where data written by `gas-fakes` can be read by a live Apps Script project (and vice-versa) when using a compatible library like `gas-flex-cache`.
 
 #### Script, user and document store varieties
 

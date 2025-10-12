@@ -31,23 +31,37 @@ Authentication is handled using Application Default Credentials (ADC), enhanced 
 
 2.  **Create and Configure `.env` File**: You can create the environment file in one of two ways:
 
-    *   **Option A: Interactive Setup (Recommended)**
-        Run the `setup.sh` script from within the `shells` directory. It will guide you through creating your `.env` file by asking for the necessary values. If an `.env` file already exists, it will offer to use the existing values as defaults.
-        ```bash
+    *   **Interactive Setup (Recommended)**
+        Run the `setup.sh` script from within the `shells` directory. It will guide you through creating your `.env` file by asking for the necessary values. If an `.env` file already exists, it will use the existing values as defaults.
+        ```sh
         cd shells
-        bash setup.sh
+        ./setup.sh
         ```
 
-    *   **Option B: Manual Setup**
-        1.  Copy the `env.setup.template` from the `shells` directory into your project's root and rename it to `.env`.
-        2.  Open your new `.env` file and set your GCP Project ID.
-            ```
-            # must set this
-            GCP_PROJECT_ID="your-gcp-project-id-goes-here"
-            
-            # optional reference if you want to run a test after setting up
-            DRIVE_TEST_FILE_ID="add the id of some test file you have access to here"
-            ```
+    *   **Manual Setup**
+        Alternatively, you can create a `.env` file in your project root manually. Here is an example with all possible variables:
+        ```env
+        # Google Cloud Project ID (required)
+        GCP_PROJECT_ID="your-gcp-project-id"
+
+        # Path to OAuth client credentials for restricted scopes (optional, but recommended)
+        CLIENT_CREDENTIAL_FILE="private/your-credentials.json"
+
+        # A test file ID for checking authentication (optional)
+        DRIVE_TEST_FILE_ID="some-drive-file-id-you-can-access"
+
+        # Storage configuration for PropertiesService and CacheService ('FILE' or 'UPSTASH')
+        # Defaults to 'FILE' if not set.
+        STORE_TYPE="UPSTASH"
+
+        # Logging destination for Logger.log() ('CONSOLE', 'CLOUD', 'BOTH', 'NONE')
+        # Defaults to 'CONSOLE' if not set.
+        LOG_DESTINATION="BOTH"
+
+        # Upstash credentials (only used if STORE_TYPE is 'UPSTASH')
+        UPSTASH_REDIS_REST_URL="https://your-instance.upstash.io"
+        UPSTASH_REDIS_REST_TOKEN="your-upstash-token"
+        ```
 
 ## Step 3: Configure OAuth for Restricted Scopes - if you plan to use them
 
