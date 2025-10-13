@@ -11,7 +11,8 @@
     "https://www.googleapis.com/auth/presentations",
     "https://www.googleapis.com/auth/forms",
     "https://www.googleapis.com/auth/gmail.labels",
-    "https://www.googleapis.com/auth/gmail.compose"
+    "https://www.googleapis.com/auth/gmail.compose",
+    "openid"
   ],
   "dependencies": {
     "libraries": [
@@ -34,7 +35,7 @@
       {
         "userSymbol": "bmGasFlexCache",
         "libraryId": "1R_r9n4EGctvA8lWBZVeuT66mgaKBRV5IxfIsD_And-ra2H16iNXVWva0",
-        "version": "9"
+        "version": "10"
       }
     ],
     "enabledAdvancedServices": [

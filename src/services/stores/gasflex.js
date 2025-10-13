@@ -1,4 +1,6 @@
 import {Auth} from '../../support/auth.js'
+import { getUserIdFromToken} from '@mcpher/gas-flex-cache'
+
 // these are the default models to match live apps script
 export const storeModels = {
     SCRIPT: {
@@ -6,7 +8,7 @@ export const storeModels = {
     },
     USER: {
         scriptId: ScriptApp.getScriptId(),
-        userId: Session.getEffectiveUser().getEmail()
+        userId: getUserIdFromToken(ScriptApp.getOAuthToken())
     },
     DOCUMENT: {
         scriptId: ScriptApp.getScriptId(),

@@ -15,11 +15,15 @@ else
 fi
 
 # these are the ones it sets by default - take some of these out if you want to minimize access
-DEFAULT_SCOPES=$DEFAULT_SCOPES
+DEFAULT_SCOPES=${DEFAULT_SCOPES:-"https://www.googleapis.com/auth/userinfo.email,openid,https://www.googleapis.com/auth/cloud-platform"}
 
-# these are the ones we want to add (note comma at beginning)
-EXTRA_SCOPES=$EXTRA_SCOPES
-SCOPES="${DEFAULT_SCOPES}${EXTRA_SCOPES}"
+# Combine default and extra scopes, adding a comma if needed.
+EXTRA_SCOPES=${EXTRA_SCOPES:-"https://www.googleapis.com/auth/drive,https://www.googleapis.com/auth/spreadsheets"}
+if [[ -n "$EXTRA_SCOPES" && "$EXTRA_SCOPES" != ,* ]]; then
+  SCOPES="${DEFAULT_SCOPES},${EXTRA_SCOPES}"
+else
+  SCOPES="${DEFAULT_SCOPES}${EXTRA_SCOPES}"
+fi
 
 # needs special flag to allow drive access
 DRIVE="--enable-gdrive-access"

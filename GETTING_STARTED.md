@@ -164,7 +164,7 @@ To allow your live script to access the same Upstash database, you'll use the `g
         {
           "userSymbol": "bmGasFlexCache",
           "libraryId": "1R_r9n4EGctvA8lWBZVeuT66mgaKBRV5IxfIsD_And-ra2H16iNXVWva0",
-          "version": "9"
+          "version": "...whatever the latest version is.."
         }
       ]
     }
@@ -184,12 +184,12 @@ To allow your live script to access the same Upstash database, you'll use the `g
     }
     ```
 
-*   **Instantiate the Drop-in Service**: In your live script, you can now create a drop-in replacement for `CacheService` or `PropertiesService` that connects to your Upstash database, allowing you to read data written by `gas-fakes`.
+*   **Instantiate the Drop-in Service**: In your live script, you can now create a drop-in replacement for `CacheService` or `PropertiesService` that connects to your Upstash database, allowing you to read data written by `gas-fakes`. gas-fakes uses the openid as a stable userid which will be the same on both apps script and gas-fakes.
 
     ```javascript
     // Example: Reading a user property set by a gas-fakes test
     const creds = JSON.parse(PropertiesService.getScriptProperties().getProperty("dropin_upstash_credentials"));
-    creds.userId = Session.getEffectiveUser().getEmail();
+    creds.userId = getUserIdFromToken(ScriptApp.getOAuthToken())
     creds.scriptId = ScriptApp.getScriptId();
     creds.kind = 'property';
 
@@ -197,8 +197,45 @@ To allow your live script to access the same Upstash database, you'll use the `g
     const valueFromFake = sharedUserProps.getProperty('some-key-written-by-fake');
     console.log(valueFromFake);
     ```
+### A note on userId if you are planning to share user orientated cache or property stores 
+To generate a unique, stable `userId` that'll be the same on both gas-fakes and Apps Script we could have used Session.getEffectiveUser().getEmail(). However, to avoid inserting email addresses into the redis database, it would be better to use an openid. An openid will be unique to an authenticated user across platforms. This is what gas-fakes uses when emulating a service.
+
+On gas-fakes, the default scopes include openid, but to be able to get the same value for a user on Apps Script, your appsscript.json manifest needs the scope "openid". gas-flex-cache has a handy convenience method to deduce your openid from and accesstoken. If you do not include the openid scope, we will be able to retrieve your unique openid to use as a userId.
+
+You would need at least these scopes in your app
+```json
+  "oauthScopes": [
+    "https://www.googleapis.com/auth/script.external_request",
+    "openid"
+  ]
+```
+
+We import the getUserIdFromToken on gas-fakes
+```javascript
+  import { newCacheDropin , getUserIdFromToken } from '@mcpher/gas-flex-cache'
+``` 
+
+And on apps script
+```javascript
+var getUserIdFromToken = bmGasFlexCache.getUserIdFromToken;
+```
+
+
+Now you can use this stable userId instead of writing an email to redis.
+```javaScript
+const userId = getUserIdFromToken(ScriptApp.getOAuthToken())
+const userCacheCreds = {
+  ...upstashCreds, 
+  scriptId: ScriptApp.getScriptId(),
+  userId,
+  defaultExpirationSeconds: 360 
+}
+const userCache = newCacheDropin({creds:userCacheCreds});
 
 ---
+
+
+```
 
 ## You're Ready to Code!
 

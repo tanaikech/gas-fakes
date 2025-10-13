@@ -8,7 +8,7 @@ import { Syncit } from '../../support/syncit.js'
 import { Auth } from '../../support/auth.js'
 import { Proxies } from '../../support/proxies.js'
 import { newFakeBehavior } from './behavior.js'
-import { newCacheDropin } from '@mcpher/gas-flex-cache'
+import { newCacheDropin , getUserIdFromToken} from '@mcpher/gas-flex-cache'
 /**
  * fake ScriptApp.getOAuthToken 
  * @return {string} token
@@ -117,17 +117,18 @@ if (typeof globalThis[name] === typeof undefined) {
         requireAllScopes,
         requireScopes,
         getScriptId: Auth.getScriptId,
-        get __projectId () {
+        get __projectId() {
           return Auth.getProjectId()
         },
-        get __userId () {
+        get __userId() {
           return Auth.getUserId()
         },
         AuthMode: {
           FULL: 'FULL'
         },
         __behavior: newFakeBehavior(),
-        __newCacheDropin: newCacheDropin
+        __newCacheDropin: newCacheDropin,
+        __getUserIdFromToken: getUserIdFromToken
       }
 
 

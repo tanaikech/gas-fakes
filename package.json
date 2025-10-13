@@ -4,7 +4,7 @@
   },
   "dependencies": {
     "@mcpher/fake-gasenum": "^1.0.2",
-    "@mcpher/gas-flex-cache": "^1.1.0",
+    "@mcpher/gas-flex-cache": "^1.1.2",
     "@sindresorhus/is": "^7.0.1",
     "archiver": "^7.0.1",
     "exceljs": "^4.4.0",
@@ -66,7 +66,7 @@
     "pub": "npm publish --access public"
   },
   "name": "@mcpher/gas-fakes",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "license": "MIT",
   "main": "main.js",
   "description": "A proof of concept implementation of Apps Script Environment on Node",

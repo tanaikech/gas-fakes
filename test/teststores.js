@@ -5,10 +5,7 @@
 import '@mcpher/gas-fakes'
 import { wrapupTest } from './testassist.js'
 import is from '@sindresorhus/is'
-
-
 import { initTests } from './testinit.js'
-import { isNonEmptyString } from '@sindresorhus/is'
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testStores = (pack) => {
@@ -140,7 +137,7 @@ export const testStores = (pack) => {
       if (crob) {
         const creds = { ...crob, scriptId: ScriptApp.getScriptId() };
         if (isUserStore) {
-          creds.userId = Session.getEffectiveUser().getEmail();
+          creds.userId = getUserIdFromToken(ScriptApp.getOAuthToken());
         }
 
         const props = newCacheDropin({ creds: { ...creds, kind: "property" } });

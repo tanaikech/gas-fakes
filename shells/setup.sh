@@ -42,6 +42,15 @@ prompt_for_value "Enter your GCP Project ID" "GCP_PROJECT_ID"
 prompt_for_value "Enter a test Drive file ID for authentication checks" "DRIVE_TEST_FILE_ID"
 prompt_for_value "Enter path to OAuth client credentials JSON (optional)" "CLIENT_CREDENTIAL_FILE"
 
+# --- Scope Configuration ---
+
+# Set defaults for scopes if they are not already set
+DEFAULT_SCOPES=${DEFAULT_SCOPES:-"https://www.googleapis.com/auth/userinfo.email,openid,https://www.googleapis.com/auth/cloud-platform"}
+EXTRA_SCOPES=${EXTRA_SCOPES:-",https://www.googleapis.com/auth/drive,https://www.googleapis.com/auth/spreadsheets"}
+
+prompt_for_value "Enter default scopes" "DEFAULT_SCOPES"
+prompt_for_value "Enter any extra scopes (comma-separated)" "EXTRA_SCOPES"
+
 # --- Logging Configuration ---
 
 # Set default for LOG_DESTINATION if it's not already set
@@ -107,6 +116,12 @@ STORE_TYPE="${STORE_TYPE}"
 
 # Logging destination for Logger.log() ('CONSOLE', 'CLOUD', 'BOTH', 'NONE')
 LOG_DESTINATION="${LOG_DESTINATION}"
+
+# Scopes for authentication
+# these are the scopes set by default - take some of these out if you want to minimize access
+DEFAULT_SCOPES="${DEFAULT_SCOPES}"
+EXTRA_SCOPES="${EXTRA_SCOPES}"
+
 EOL
 
 # Append Upstash credentials if they exist, regardless of STORE_TYPE.
