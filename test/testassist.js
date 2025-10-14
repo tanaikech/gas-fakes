@@ -9,6 +9,8 @@ export let getDocsPerformance
 export let getSlidesPerformance
 export let getFormsPerformance
 export let getGmailPerformance
+export let getChatPerformance
+export let getPeoplePerformance
 
 
 if (ScriptApp.isFake) {
@@ -18,6 +20,8 @@ if (ScriptApp.isFake) {
   getSlidesPerformance = Slides.__getSlidesPerformance;
   getFormsPerformance = Forms.__getFormsPerformance;
   getGmailPerformance = Gmail.__getGmailPerformance;
+  getChatPerformance = Chat.__getChatPerformance;
+  getPeoplePerformance = People.__getPeoplePerformance;
 }
 export const cachePerformance = () => {
   if (ScriptApp.isFake) {
@@ -26,6 +30,7 @@ export const cachePerformance = () => {
     console.log('...cumulative sheets cache performance', getSheetsPerformance());
     console.log('...cumulative slides cache performance', getSlidesPerformance());
     console.log('...cumulative forms cache performance', getFormsPerformance());
+    console.log('...cumulative people cache performance', getPeoplePerformance());
     console.log('...cumulative gmail cache performance', getGmailPerformance());
   }
 }

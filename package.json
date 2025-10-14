@@ -63,6 +63,8 @@
     "testsandbox": "node --trace-warnings ./test/testsandbox.js execute",
     "testgmail": "node --env-file=./.env ./test/testgmail.js execute",
     "testlogger": "node --env-file=./.env ./test/testlogger.js execute",
+    "testchat": "node --env-file=./.env ./test/testchat.js execute",
+    "testpeople": "node --env-file=./.env ./test/testpeople.js execute",
     "pub": "npm publish --access public"
   },
   "name": "@mcpher/gas-fakes",

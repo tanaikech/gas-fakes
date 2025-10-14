@@ -49,13 +49,18 @@ import { testSheetsRange } from "./testsheetsrange.js";
 import { testDocsImages } from "./testdocsimages.js";
 import { testSandbox } from "./testsandbox.js";
 import { testDocsStyles } from "./testdocsstyles.js";
-
+import { testChat } from './testchat.js';
+import { testPeople } from './testpeople.js';
 import { testLogger } from "./testlogger.js";
 const testFakes = () => {
   const pack = initTests();
   const { unit } = pack;
 
   // add one of these for each service being tested
+  console.log("\n----Test people----");
+  testPeople(pack);
+  console.log("\n----Test chat----");
+  testChat(pack);
   console.log("\n----Test sandbox----");
   testSandbox(pack);
   console.log("\n----Test docs styles----");
