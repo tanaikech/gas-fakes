@@ -78,6 +78,16 @@
         "userSymbol": "Calendar",
         "version": "v3",
         "serviceId": "calendar"
+      },
+      {
+        "userSymbol": "WorkspaceEvents",
+        "version": "v1",
+        "serviceId": "workspaceevents"
+      },
+      {
+        "userSymbol": "Drive",
+        "version": "v3",
+        "serviceId": "drive"
       }
     ]
   }
