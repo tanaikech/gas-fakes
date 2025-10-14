@@ -51,12 +51,21 @@ import { testSandbox } from "./testsandbox.js";
 import { testDocsStyles } from "./testdocsstyles.js";
 import { testChat } from './testchat.js';
 import { testPeople } from './testpeople.js';
+import { testCalendar } from './testcalendar.js';
+import { testTasks } from './testtasks.js';
+import { testWorkspaceEvents } from './testworkspaceevents.js';
 import { testLogger } from "./testlogger.js";
 const testFakes = () => {
   const pack = initTests();
   const { unit } = pack;
 
   // add one of these for each service being tested
+  console.log("\n----Test workspaceevents----");
+  testWorkspaceEvents(pack);
+  console.log("\n----Test calendar----");
+  testCalendar(pack);
+  console.log("\n----Test tasks----");
+  testTasks(pack);
   console.log("\n----Test people----");
   testPeople(pack);
   console.log("\n----Test chat----");

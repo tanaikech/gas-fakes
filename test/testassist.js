@@ -11,6 +11,9 @@ export let getFormsPerformance
 export let getGmailPerformance
 export let getChatPerformance
 export let getPeoplePerformance
+export let getTasksPerformance
+export let getCalendarPerformance
+export let getWorkspaceEventsPerformance
 
 
 if (ScriptApp.isFake) {
@@ -22,6 +25,9 @@ if (ScriptApp.isFake) {
   getGmailPerformance = Gmail.__getGmailPerformance;
   getChatPerformance = Chat.__getChatPerformance;
   getPeoplePerformance = People.__getPeoplePerformance;
+  getTasksPerformance = Tasks.__getTasksPerformance;
+  getCalendarPerformance = Calendar.__getCalendarPerformance;
+  getWorkspaceEventsPerformance = WorkspaceEvents.__getWorkspaceEventsPerformance;
 }
 export const cachePerformance = () => {
   if (ScriptApp.isFake) {
@@ -31,6 +37,9 @@ export const cachePerformance = () => {
     console.log('...cumulative slides cache performance', getSlidesPerformance());
     console.log('...cumulative forms cache performance', getFormsPerformance());
     console.log('...cumulative people cache performance', getPeoplePerformance());
+    console.log('...cumulative workspaceevents cache performance', getWorkspaceEventsPerformance());
+    console.log('...cumulative calendar cache performance', getCalendarPerformance());
+    console.log('...cumulative tasks cache performance', getTasksPerformance());
     console.log('...cumulative gmail cache performance', getGmailPerformance());
   }
 }

@@ -65,6 +65,9 @@
     "testlogger": "node --env-file=./.env ./test/testlogger.js execute",
     "testchat": "node --env-file=./.env ./test/testchat.js execute",
     "testpeople": "node --env-file=./.env ./test/testpeople.js execute",
+    "testtasks": "node --env-file=./.env ./test/testtasks.js execute",
+    "testcalendar": "node --env-file=./.env ./test/testcalendar.js execute",
+    "testworkspaceevents": "node --env-file=./.env ./test/testworkspaceevents.js execute",
     "pub": "npm publish --access public"
   },
   "name": "@mcpher/gas-fakes",

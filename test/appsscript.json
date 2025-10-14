@@ -40,11 +40,6 @@
     ],
     "enabledAdvancedServices": [
       {
-        "userSymbol": "Drive",
-        "version": "v3",
-        "serviceId": "drive"
-      },
-      {
         "userSymbol": "Sheets",
         "version": "v4",
         "serviceId": "sheets"
@@ -63,6 +58,26 @@
         "userSymbol": "Gmail",
         "version": "v1",
         "serviceId": "gmail"
+      },
+      {
+        "userSymbol": "Chat",
+        "version": "v1",
+        "serviceId": "chat"
+      },
+      {
+        "userSymbol": "People",
+        "version": "v1",
+        "serviceId": "peopleapi"
+      },
+      {
+        "userSymbol": "Tasks",
+        "version": "v1",
+        "serviceId": "tasks"
+      },
+      {
+        "userSymbol": "Calendar",
+        "version": "v3",
+        "serviceId": "calendar"
       }
     ]
   }
