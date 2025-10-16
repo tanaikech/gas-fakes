@@ -67,5 +67,5 @@ for (const service of data) {
     markdown += '\n';
   }
 
-  fs.writeFileSync(`/Users/brucemcpherson/Documents/repos/gas-fakes/progress/${service.serviceName}.md`, markdown);
+  fs.writeFileSync(`/Users/brucemcpherson/Documents/repos/gas-fakes/progress/${service.serviceName.toLowerCase()}.md`, markdown);
 }

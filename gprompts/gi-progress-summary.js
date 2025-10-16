@@ -16,7 +16,7 @@ for (const file of files) {
   const filePath = path.join(progressDir, file);
   const content = fs.readFileSync(filePath, 'utf8');
 
-  const serviceNameMatch = content.match(/^#\s*\[(.*?)\]/);
+  const serviceNameMatch = content.match(/^#\s*\[?([^\]]+)\]?/);
   const serviceName = serviceNameMatch ? serviceNameMatch[1] : path.basename(file, '.md');
 
   const classMatches = content.match(/## Class:/g);
