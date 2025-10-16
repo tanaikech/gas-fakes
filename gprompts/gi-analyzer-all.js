@@ -5,6 +5,14 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const sheetRangeMakerPath = path.resolve(__dirname, '../src/services/spreadsheetapp/sheetrangemakers.js');
+const { setterList, attrGetList, valuesGetList } = await import(sheetRangeMakerPath);
+
+const utilsPath = path.resolve(__dirname, '../src/support/utils.js');
+const { Utils } = await import(utilsPath);
+
+const dynamicSheetRangeMethods = new Set();
+
 const giPath = path.resolve(__dirname, 'gi.json');
 const projectPath = path.resolve(__dirname, '..');
 const outputPath = path.resolve(__dirname, 'gi-fake-all.json');
@@ -88,6 +96,21 @@ const classToFileMap = {
     'ScriptApp': 'scriptapp/app.js'
 };
 
+// Populate the dynamic methods set for easier lookup
+setterList.forEach(item => {
+  dynamicSheetRangeMethods.add(`set${Utils.capital(item.single || item.name)}`);
+  if (item.plural !== false) {
+    dynamicSheetRangeMethods.add(item.plural || `set${Utils.capital(item.single || item.name)}s`);
+  }
+});
+attrGetList.forEach(item => {
+  dynamicSheetRangeMethods.add(item.name);
+  dynamicSheetRangeMethods.add(item.plural || `${item.name}s`);
+});
+valuesGetList.forEach(item => {
+  dynamicSheetRangeMethods.add(item.name);
+  dynamicSheetRangeMethods.add(item.plural || `${item.name}s`);
+});
 
 for (const service of giData) {
     const serviceName = service.serviceName;
@@ -144,7 +167,14 @@ for (const service of giData) {
 
             if (methodName) {
                 for (const file of fileContents) {
-                    const isImplemented = classData.type === 'Enum' ? file.content.includes(`"${methodName}"`) : file.content.includes(methodName);
+                    let isImplemented = classData.type === 'Enum' ? file.content.includes(`"${methodName}"`) : file.content.includes(methodName);
+
+                    // Special check for dynamically generated Spreadsheet Range methods
+                    if (!isImplemented && serviceName === 'Spreadsheet' && className === 'Range') {
+                        if (dynamicSheetRangeMethods.has(methodName)) {
+                            isImplemented = true;
+                        }
+                    }
 
                     if (isImplemented) {
                         const notImplementedRegex = new RegExp(String.raw`${methodName}[\s\S]*?(notyetimplemented|not yet implemented)`, 'mi');

@@ -42587,8 +42587,8 @@
             "description": "Returns the value of the top-left cell in the range. The value may be of type Number,\nBoolean, Date, or String depending on the value of the cell. Empty\ncells return an empty string.",
             "returnType": "Object",
             "returnDescription": "The value in this cell.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getValues()",
@@ -42596,8 +42596,8 @@
             "description": "Returns the rectangular grid of values for this range.",
             "returnType": "Object[][]",
             "returnDescription": "A two-dimensional array of values.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "activate()",
@@ -42965,8 +42965,8 @@
             "description": "Returns the background color of the top-left cell in the range (for example, '#ffffff').",
             "returnType": "String",
             "returnDescription": "The color code of the background.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getBackgroundObject()",
@@ -42974,8 +42974,8 @@
             "description": "Returns the background color of the top-left cell in the range.",
             "returnType": "Color",
             "returnDescription": "The background color of the top-left cell in the range.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getBackgroundObjects()",
@@ -42983,8 +42983,8 @@
             "description": "Returns the background colors of the cells in the range.",
             "returnType": "Color[][]",
             "returnDescription": "A two-dimensional array of background colors.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getBackgrounds()",
@@ -42992,8 +42992,8 @@
             "description": "Returns the background colors of the cells in the range (for example, '#ffffff').",
             "returnType": "String[][]",
             "returnDescription": "A two-dimensional array of color codes of the backgrounds.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getBandings()",
@@ -43109,8 +43109,8 @@
             "description": "Returns the data validation rule for the top-left cell in the range. If data validation has not\nbeen set on the cell, this method returns null.",
             "returnType": "DataValidation",
             "returnDescription": "The data validation rule for the top-left cell in the range.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getDataValidations()",
@@ -43118,8 +43118,8 @@
             "description": "Returns the data validation rules for all cells in the range. If data validation has not been\nset on a given cell, this method returns null for that cell's position in the array.",
             "returnType": "DataValidation[][]",
             "returnDescription": "A two-dimensional array of data validation rules associated with the cells in the\n    range.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getDeveloperMetadata()",
@@ -43136,8 +43136,8 @@
             "description": "Returns the displayed value of the top-left cell in the range. The value is a String.\nThe displayed value takes into account date, time and currency formatting formatting, including\nformats applied automatically by the spreadsheet's locale setting. Empty cells return an empty\nstring.",
             "returnType": "String",
             "returnDescription": "The displayed value in this cell.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getDisplayValues()",
@@ -43145,8 +43145,8 @@
             "description": "Returns the rectangular grid of values for this range.",
             "returnType": "String[][]",
             "returnDescription": "A two-dimensional array of values.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getFilter()",
@@ -43163,8 +43163,8 @@
             "description": "Returns the font color of the cell in the top-left corner of the range.",
             "returnType": "Color",
             "returnDescription": "The font color of the top-left cell in the range.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getFontColorObjects()",
@@ -43172,8 +43172,8 @@
             "description": "Returns the font colors of the cells in the range.",
             "returnType": "Color[][]",
             "returnDescription": "A two-dimensional array of font colors associated with cells in the range.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getFontFamilies()",
@@ -43181,8 +43181,8 @@
             "description": "Returns the font families of the cells in the range.",
             "returnType": "String[][]",
             "returnDescription": "A two-dimensional array of font families associated with cells in the range.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getFontFamily()",
@@ -43190,8 +43190,8 @@
             "description": "Returns the font family of the cell in the top-left corner of the range.",
             "returnType": "String",
             "returnDescription": "The font family of the cell.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getFontLine()",
@@ -43199,8 +43199,8 @@
             "description": "Gets the line style of the cell in the top-left corner of the range ('underline',\n'line-through', or 'none').",
             "returnType": "String",
             "returnDescription": "The font line.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getFontLines()",
@@ -43208,8 +43208,8 @@
             "description": "Gets the line style of the cells in the range ('underline', 'line-through', or\n'none').",
             "returnType": "String[][]",
             "returnDescription": "A two-dimensional array of font lines associated with cells in the range.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getFontSize()",
@@ -43217,8 +43217,8 @@
             "description": "Returns the font size in point size of the cell in the top-left corner of the range.",
             "returnType": "Integer",
             "returnDescription": "The font size in point size.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getFontSizes()",
@@ -43226,8 +43226,8 @@
             "description": "Returns the font sizes of the cells in the range.",
             "returnType": "Integer[][]",
             "returnDescription": "A two-dimensional array of font sizes of text associated with cells in the range.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getFontStyle()",
@@ -43235,8 +43235,8 @@
             "description": "Returns the font style ('italic' or 'normal') of the cell in the top-left\ncorner of the range.",
             "returnType": "String",
             "returnDescription": "The font style of the text in the cell.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getFontStyles()",
@@ -43244,8 +43244,8 @@
             "description": "Returns the font styles of the cells in the range.",
             "returnType": "String[][]",
             "returnDescription": "A two-dimensional array of font styles of text associated with cells in the range.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getFontWeight()",
@@ -43253,8 +43253,8 @@
             "description": "Returns the font weight (normal/bold) of the cell in the top-left corner of the range.",
             "returnType": "String",
             "returnDescription": "The font weight of the text in the cell.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getFontWeights()",
@@ -43262,8 +43262,8 @@
             "description": "Returns the font weights of the cells in the range.",
             "returnType": "String[][]",
             "returnDescription": "A two-dimensional array of font weights of text associated with cells in the range.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getFormula()",
@@ -43271,8 +43271,8 @@
             "description": "Returns the formula (A1 notation) for the top-left cell of the range, or an empty string if the\ncell is empty or doesn't contain a formula.",
             "returnType": "String",
             "returnDescription": "The formula for the cell.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getFormulaR1C1()",
@@ -43289,8 +43289,8 @@
             "description": "Returns the formulas (A1 notation) for the cells in the range. Entries in the 2D array are\nempty strings for cells with no formula.",
             "returnType": "String[][]",
             "returnDescription": "A two-dimensional array of formulas in string format.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getFormulasR1C1()",
@@ -43325,8 +43325,8 @@
             "description": "Returns the horizontal alignment of the text (left/center/right) of the cell in the top-left\ncorner of the range.",
             "returnType": "String",
             "returnDescription": "The horizontal alignment of the text in the cell.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getHorizontalAlignments()",
@@ -43334,8 +43334,8 @@
             "description": "Returns the horizontal alignments of the cells in the range.",
             "returnType": "String[][]",
             "returnDescription": "A two-dimensional array of horizontal alignments of text associated with cells in the\n    range.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getLastColumn()",
@@ -43379,8 +43379,8 @@
             "description": "Returns the note associated with the given range.",
             "returnType": "String",
             "returnDescription": "The note associated with the given cell.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getNotes()",
@@ -43388,8 +43388,8 @@
             "description": "Returns the notes associated with the cells in the range.",
             "returnType": "String[][]",
             "returnDescription": "A two-dimensional array of notes associated with cells in the range.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getNumColumns()",
@@ -43415,8 +43415,8 @@
             "description": "Get the number or date formatting of the top-left cell of the given range. The returned format\npatterns are described in the Sheets API\ndocumentation.",
             "returnType": "String",
             "returnDescription": "The number format of the top-left cell of the range.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getNumberFormats()",
@@ -43424,8 +43424,8 @@
             "description": "Returns the number or date formats for the cells in the range. The returned format patterns are\ndescribed in the Sheets API documentation.",
             "returnType": "String[][]",
             "returnDescription": "A two-dimensional array of number formats.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getRichTextValue()",
@@ -43433,8 +43433,8 @@
             "description": "Returns the Rich Text value for the top left cell of the range, or null if the cell\nvalue is not text.",
             "returnType": "RichTextValue",
             "returnDescription": "The Rich Text value of the top left cell in the range, or null if the cell\n    value is not text.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getRichTextValues()",
@@ -43442,8 +43442,8 @@
             "description": "Returns the Rich Text values for the cells in the range.",
             "returnType": "RichTextValue[][]",
             "returnDescription": "A two-dimensional array of Rich Text values.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getRow()",
@@ -43478,8 +43478,8 @@
             "description": "Returns the text direction for the top left cell of the range. Returns null if the cell\ntext direction is determined with automatic detection.",
             "returnType": "TextDirection",
             "returnDescription": "The text direction of the top left cell in the range.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getTextDirections()",
@@ -43487,8 +43487,8 @@
             "description": "Returns the text directions for the cells in the range. Entries in the 2D array are null for cells using automatic detection.",
             "returnType": "TextDirection[][]",
             "returnDescription": "A two-dimensional array of text directions.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getTextRotation()",
@@ -43496,8 +43496,8 @@
             "description": "Returns the text rotation settings for the top left cell of the range.",
             "returnType": "TextRotation",
             "returnDescription": "The text rotation settings.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getTextRotations()",
@@ -43505,8 +43505,8 @@
             "description": "Returns the text rotation settings for the cells in the range.",
             "returnType": "TextRotation[][]",
             "returnDescription": "A two-dimensional array of text rotations associated with cells in the range.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getTextStyle()",
@@ -43514,8 +43514,8 @@
             "description": "Returns the text style for the top left cell of the range.",
             "returnType": "TextStyle",
             "returnDescription": "The text style of the top left cell in the range.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getTextStyles()",
@@ -43523,8 +43523,8 @@
             "description": "Returns the text styles for the cells in the range.",
             "returnType": "TextStyle[][]",
             "returnDescription": "A two-dimensional array of text styles.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getVerticalAlignment()",
@@ -43532,8 +43532,8 @@
             "description": "Returns the vertical alignment (top/middle/bottom) of the cell in the top-left corner of the\nrange.",
             "returnType": "String",
             "returnDescription": "The vertical alignment of the text in the cell.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getVerticalAlignments()",
@@ -43541,8 +43541,8 @@
             "description": "Returns the vertical alignments of the cells in the range.",
             "returnType": "String[][]",
             "returnDescription": "A two-dimensional array of vertical alignments of text associated with cells in the\n    range.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getWidth()",
@@ -43559,8 +43559,8 @@
             "description": "Returns whether the text in the cell wraps. To get more granular wrap strategy, use getWrapStrategy().",
             "returnType": "Boolean",
             "returnDescription": "Whether the text in this cell wraps or not.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getWrapStrategies()",
@@ -43568,8 +43568,8 @@
             "description": "Returns the text wrapping strategies for the cells in the range.",
             "returnType": "WrapStrategy[][]",
             "returnDescription": "A two-dimensional array of text wrapping strategies.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getWrapStrategy()",
@@ -43577,8 +43577,8 @@
             "description": "Returns the text wrapping strategy for the top left cell of the range.",
             "returnType": "WrapStrategy",
             "returnDescription": "The text wrapping strategy of the top left cell in the range.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "getWraps()",
@@ -43586,8 +43586,8 @@
             "description": "Returns whether the text in the cells wrap. To get more granular wrap strategy, use getWrapStrategies().",
             "returnType": "Boolean[][]",
             "returnDescription": "A two-dimensional array of vertical alignments of text associated with cells in the\n    range.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "insertCells(Dimension)",
@@ -43631,8 +43631,8 @@
             "description": "Returns true if the range is totally blank.",
             "returnType": "Boolean",
             "returnDescription": "true if the range is blank; false otherwise.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "isChecked()",
@@ -43640,8 +43640,8 @@
             "description": "Returns whether all cells in the range have their checkbox state as 'checked'. Returns null if some cells are checked and the rest unchecked, or if some cells do not have checkbox\ndata validation.",
             "returnType": "Boolean",
             "returnDescription": "true, if all cells in the range are checked, false if all cells in the\n    range are unchecked, or null if any of the cells are unchecked or do not have\n    checkbox data validation.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "isEndColumnBounded()",
@@ -43883,8 +43883,8 @@
             "description": "Sets the font color of the given range.",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setFontColorObjects(Color)",
@@ -43892,8 +43892,8 @@
             "description": "Sets a rectangular grid of font colors (must match dimensions of this range).",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setFontColors(Object)",
@@ -43910,8 +43910,8 @@
             "description": "Sets a rectangular grid of font families (must match dimensions of this range). Examples of\nfont families are \"Arial\" or \"Helvetica\".",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setFontFamily(String)",
@@ -43919,8 +43919,8 @@
             "description": "Sets the font family, such as \"Arial\" or \"Helvetica\".",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setFontLine(String)",
@@ -43928,8 +43928,8 @@
             "description": "Sets the font line style of the given range ('underline', 'line-through', or\n'none').",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setFontLines(Object)",
@@ -43937,8 +43937,8 @@
             "description": "Sets a rectangular grid of line styles (must match dimensions of this range).",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setFontSize(Integer)",
@@ -43946,8 +43946,8 @@
             "description": "Sets the font size, with the size being the point size to use.",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setFontSizes(Object)",
@@ -43955,8 +43955,8 @@
             "description": "Sets a rectangular grid of font sizes (must match dimensions of this range). The sizes are in\npoints.",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setFontStyle(String)",
@@ -43964,8 +43964,8 @@
             "description": "Set the font style for the given range ('italic' or 'normal').",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setFontStyles(Object)",
@@ -43973,8 +43973,8 @@
             "description": "Sets a rectangular grid of font styles (must match dimensions of this range).",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setFontWeight(String)",
@@ -43982,8 +43982,8 @@
             "description": "Set the font weight for the given range (normal/bold).",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setFontWeights(Object)",
@@ -43991,8 +43991,8 @@
             "description": "Sets a rectangular grid of font weights (must match dimensions of this range). An example of a\nfont weight is \"bold\".",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setFormula(String)",
@@ -44000,8 +44000,8 @@
             "description": "Updates the formula for this range. The given formula must be in A1 notation.",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setFormulaR1C1(String)",
@@ -44018,8 +44018,8 @@
             "description": "Sets a rectangular grid of formulas (must match dimensions of this range). The given formulas\nmust be in A1 notation. This method takes a two-dimensional array of formulas, indexed by row,\nthen by column. The array dimensions must correspond to the range dimensions.",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setFormulasR1C1(String)",
@@ -44036,8 +44036,8 @@
             "description": "Set the horizontal (left to right) alignment for the given range (left/center/right).",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setHorizontalAlignments(Object)",
@@ -44045,8 +44045,8 @@
             "description": "Sets a rectangular grid of horizontal alignments. see setHorizontalAlignment(alignment)",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setNote(String)",
@@ -44054,8 +44054,8 @@
             "description": "Sets the note to the given value.",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setNotes(Object)",
@@ -44063,8 +44063,8 @@
             "description": "Sets a rectangular grid of notes (must match dimensions of this range).",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setNumberFormat(String)",
@@ -44072,8 +44072,8 @@
             "description": "Sets the number or date format to the given formatting string. The accepted format patterns are\ndescribed in the Sheets API documentation.",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setNumberFormats(Object)",
@@ -44081,8 +44081,8 @@
             "description": "Sets a rectangular grid of number or date formats (must match dimensions of this range). The\nvalues are format pattern strings as described in the \nSheets API documentation.",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setRichTextValue(RichTextValue)",
@@ -44090,8 +44090,8 @@
             "description": "Sets the Rich Text value for the cells in the range.",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setRichTextValues(RichTextValue)",
@@ -44099,8 +44099,8 @@
             "description": "Sets a rectangular grid of Rich Text values.",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setShowHyperlink(Boolean)",
@@ -44108,8 +44108,8 @@
             "description": "Sets whether or not the range should show hyperlinks.",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setTextDirection(TextDirection)",
@@ -44117,8 +44117,8 @@
             "description": "Sets the text direction for the cells in the range. If a specified direction is null,\nthe direction is inferred and then set.",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setTextDirections(TextDirection)",
@@ -44126,8 +44126,8 @@
             "description": "Sets a rectangular grid of text directions. If a specified direction is null, the\ndirection is inferred and then set.",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setTextRotation(Integer)",
@@ -44135,8 +44135,8 @@
             "description": "Sets the text rotation settings for the cells in the range. The input corresponds to the angle\nbetween the standard text orientation and the desired orientation. An input of zero indicates\nthat the text is set to the standard orientation.",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setTextRotation(TextRotation)",
@@ -44144,8 +44144,8 @@
             "description": "Sets the text rotation settings for the cells in the range.",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setTextRotations(TextRotation)",
@@ -44153,8 +44153,8 @@
             "description": "Sets a rectangular grid of text rotations.",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setTextStyle(TextStyle)",
@@ -44162,8 +44162,8 @@
             "description": "Sets the text style for the cells in the range.",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setTextStyles(TextStyle)",
@@ -44171,8 +44171,8 @@
             "description": "Sets a rectangular grid of text styles.",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setValue(Object)",
@@ -44198,8 +44198,8 @@
             "description": "Set the vertical (top to bottom) alignment for the given range (top/middle/bottom).",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setVerticalAlignments(Object)",
@@ -44207,8 +44207,8 @@
             "description": "Sets a rectangular grid of vertical alignments (must match dimensions of this range).",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setVerticalText(Boolean)",
@@ -44216,8 +44216,8 @@
             "description": "Sets whether or not to stack the text for the cells in the range. If the text is stacked\nvertically, the degree text rotation setting is ignored.",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setWrap(Boolean)",
@@ -44225,8 +44225,8 @@
             "description": "Set the cell wrap of the given range.",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setWrapStrategies(WrapStrategy)",
@@ -44234,8 +44234,8 @@
             "description": "Sets a rectangular grid of wrap strategies.",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setWrapStrategy(WrapStrategy)",
@@ -44243,8 +44243,8 @@
             "description": "Sets the text wrapping strategy for the cells in the range.",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "setWraps(Object)",
@@ -44252,8 +44252,8 @@
             "description": "Sets a rectangular grid of word wrap policies (must match dimensions of this range). Cells with\nwrap enabled (the default) resize to display their full content. Cells with wrap disabled\ndisplay as much as possible in the cell without resizing or running to multiple lines.",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
           },
           {
             "method": "shiftColumnGroupDepth(Integer)",
