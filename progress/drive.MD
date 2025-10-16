@@ -1,186 +1,224 @@
-# Drive Service Progress - 64% completed
-**Documentation:** [Drive Service](https://developers.google.com/apps-script/reference/drive)
----
-## [Access](https://developers.google.com/apps-script/reference/drive/access)
-An enum representing classes of users who can access a file or folder.
-(5 methods out of 5 (100%) completed
-| method | return | status | comments |
-|---|---|---|---|
-| [ANYONE](https://developers.google.com/apps-script/reference/drive/access#anyone) | Access | Completed | |
-| [ANYONE_WITH_LINK](https://developers.google.com/apps-script/reference/drive/access#anyone_with_link) | Access | Completed | |
-| [DOMAIN](https://developers.google.com/apps-script/reference/drive/access#domain) | Access | Completed | |
-| [DOMAIN_WITH_LINK](https://developers.google.com/apps-script/reference/drive/access#domain_with_link) | Access | Completed | |
-| [PRIVATE](https://developers.google.com/apps-script/reference/drive/access#private) | Access | Completed | |
----
-## [DriveApp](https://developers.google.com/apps-script/reference/drive/drive-app)
-Allows scripts to create, find, and modify files and folders in Google Drive.
-(13 methods out of 23 (57%) completed
-| method | return | status | comments |
-|---|---|---|---|
-| [continueFileIterator(continuationToken)](https://developers.google.com/apps-script/reference/drive/drive-app#continuefileiteratorcontinuationtoken) | [FileIterator](#fileiterator) | Not Started | |
-| [continueFolderIterator(continuationToken)](https://developers.google.com/apps-script/reference/drive/drive-app#continuefolderiteratorcontinuationtoken) | [FolderIterator](#folderiterator) | Not Started | |
-| [createFile(blob)](https://developers.google.com/apps-script/reference/drive/drive-app#createfileblob) | [File](#file) | Completed | |
-| [createFolder(name)](https://developers.google.com/apps-script/reference/drive/drive-app#createfoldername) | [Folder](#folder) | Completed | |
-| [createShortcut(targetId)](https://developers.google.com/apps-script/reference/drive/drive-app#createshortcuttargetid) | [File](#file) | Not Started | |
-| [createShortcutForTargetIdAndResourceKey(targetId, targetResourceKey)](https://developers.google.com/apps-script/reference/drive/drive-app#createshortcutfortargetidandresourcekeytargetid,-targetresourcekey) | [File](#file) | Not Started | |
-| [enforceSingleParent(value)](https://developers.google.com/apps-script/reference/drive/drive-app#enforcesingleparentvalue) | void | Not Started | |
-| [getFileById(id)](https://developers.google.com/apps-script/reference/drive/drive-app#getfilebyidid) | [File](#file) | Completed | |
-| [getFileByIdAndResourceKey(id, resourceKey)](https://developers.google.com/apps-script/reference/drive/drive-app#getfilebyidandresourcekeyid,-resourcekey) | [File](#file) | Not Started | |
-| [getFiles()](https://developers.google.com/apps-script/reference/drive/drive-app#getfiles) | [FileIterator](#fileiterator) | Completed | |
-| [getFilesByName(name)](https://developers.google.com/apps-script/reference/drive/drive-app#getfilesbynamename) | [FileIterator](#fileiterator) | Completed | |
-| [getFilesByType(mimeType)](https://developers.google.com/apps-script/reference/drive/drive-app#getfilesbytypemimetype) | [FileIterator](#fileiterator) | Completed | |
-| [getFolderById(id)](https://developers.google.com/apps-script/reference/drive/drive-app#getfolderbyidid) | [Folder](#folder) | Completed | |
-| [getFolderByIdAndResourceKey(id, resourceKey)](https://developers.google.com/apps-script/reference/drive/drive-app#getfolderbyidandresourcekeyid,-resourcekey) | [Folder](#folder) | Not Started | |
-| [getFolders()](https://developers.google.com/apps-script/reference/drive/drive-app#getfolders) | [FolderIterator](#folderiterator) | Completed | |
-| [getFoldersByName(name)](https://developers.google.com/apps-script/reference/drive/drive-app#getfoldersbynamename) | [FolderIterator](#folderiterator) | Completed | |
-| [getRootFolder()](https://developers.google.com/apps-script/reference/drive/drive-app#getrootfolder) | [Folder](#folder) | Completed | |
-| [getStorageLimit()](https://developers.google.com/apps-script/reference/drive/drive-app#getstoragelimit) | Integer | Not Started | |
-| [getStorageUsed()](https://developers.google.com/apps-script/reference/drive/drive-app#getstorageused) | Integer | Not Started | |
-| [getTrashedFiles()](https://developers.google.com/apps-script/reference/drive/drive-app#gettrashedfiles) | [FileIterator](#fileiterator) | Not Started | |
-| [getTrashedFolders()](https://developers.google.com/apps-script/reference/drive/drive-app#gettrashedfolders) | [FolderIterator](#folderiterator) | Not Started | |
-| [searchFiles(params)](https://developers.google.com/apps-script/reference/drive/drive-app#searchfilesparams) | [FileIterator](#fileiterator) | Not Started | |
-| [searchFolders(params)](https://developers.google.com/apps-script/reference/drive/drive-app#searchfoldersparams) | [FolderIterator](#folderiterator) | Not Started | |
----
-## [File](https://developers.google.com/apps-script/reference/drive/file)
-A file in Google Drive.
-(25 methods out of 49 (51%) completed
-| method | return | status | comments |
-|---|---|---|---|
-| [addCommenter(emailAddress)](https://developers.google.com/apps-script/reference/drive/file#addcommenteremailaddress) | [File](#file) | Not Started | |
-| [addEditor(emailAddress)](https://developers.google.com/apps-script/reference/drive/file#addeditoremailaddress) | [File](#file) | Completed | |
-| [addViewer(emailAddress)](https://developers.google.com/apps-script/reference/drive/file#addvieweremailaddress) | [File](#file) | Completed | |
-| [getAccess(email)](https://developers.google.com/apps-script/reference/drive/file#getaccessemail) | [Permission](#permission) | Not Started | |
-| [getAs(contentType)](https://developers.google.com/apps-script/reference/drive/file#getascontenttype) | [Blob](https://developers.google.com/apps-script/reference/base/blob) | Not Started | |
-| [getBlob()](https://developers.google.com/apps-script/reference/drive/file#getblob) | [Blob](https://developers.google.com/apps-script/reference/base/blob) | Completed | |
-| [getDateCreated()](https://developers.google.com/apps-script/reference/drive/file#getdatecreated) | Date | Completed | |
-| [getDescription()](https://developers.google.com/apps-script/reference/drive/file#getdescription) | String | Completed | |
-| [getDownloadUrl()](https://developers.google.com/apps-script/reference/drive/file#getdownloadurl) | String | Completed | |
-| [getEditors()](https://developers.google.com/apps-script/reference/drive/file#geteditors) | [User[]](#user) | Completed | |
-| [getId()](https://developers.google.com/apps-script/reference/drive/file#getid) | String | Completed | |
-| [getLastUpdated()](https://developers.google.com/apps-script/reference/drive/file#getlastupdated) | Date | Completed | |
-| [getMimeType()](https://developers.google.com/apps-script/reference/drive/file#getmimetype) | String | Completed | |
-| [getName()](https://developers.google.com/apps-script/reference/drive/file#getname) | String | Completed | |
-| [getOwner()](https://developers.google.com/apps-script/reference/drive/file#getowner) | [User](#user) | Completed | |
-| [getParents()](https://developers.google.com/apps-script/reference/drive/file#getparents) | [FolderIterator](#folderiterator) | Completed | |
-| [getResourceKey()](https://developers.google.com/apps-script/reference/drive/file#getresourcekey) | String | Not Started | |
-| [getSecurityUpdateEligible()](https://developers.google.com/apps-script/reference/drive/file#getsecurityupdateeligible) | Boolean | Not Started | |
-| [getSecurityUpdateEnabled()](https://developers.google.com/apps-script/reference/drive/file#getsecurityupdateenabled) | Boolean | Not Started | |
-| [getSharingAccess()](https://developers.google.com/apps-script/reference/drive/file#getsharingaccess) | [Access](#access) | Not Started | |
-| [getSharingPermission()](https://developers.google.com/apps-script/reference/drive/file#getsharingpermission) | [Permission](#permission) | Not Started | |
-| [getSize()](https://developers.google.com/apps-script/reference/drive/file#getsize) | Integer | Completed | |
-| [getTargetId()](https://developers.google.com/apps-script/reference/drive/file#gettargetid) | String | Not Started | |
-| [getTargetMimeType()](https://developers.google.com/apps-script/reference/drive/file#gettargetmimetype) | String | Not Started | |
-| [getTargetResourceKey()](https://developers.google.com/apps-script/reference/drive/file#gettargetresourcekey) | String | Not Started | |
-| [getThumbnail()](https://developers.google.com/apps-script/reference/drive/file#getthumbnail) | [Blob](https://developers.google.com/apps-script/reference/base/blob) | Completed | |
-| [getUrl()](https://developers.google.com/apps-script/reference/drive/file#geturl) | String | Completed | |
-| [getViewers()](https://developers.google.com/apps-script/reference/drive/file#getviewers) | [User[]](#user) | Completed | |
-| [isShareableByEditors()](https://developers.google.com/apps-script/reference/drive/file#isshareablebyeditors) | Boolean | Completed | |
-| [isStarred()](https://developers.google.com/apps-script/reference/drive/file#isstarred) | Boolean | Completed | |
-| [isTrashed()](https://developers.google.com/apps-script/reference/drive/file#istrashed) | Boolean | Completed | |
-| [makeCopy()](https://developers.google.com/apps-script/reference/drive/file#makecopy) | [File](#file) | Completed | |
-| [moveTo(destination)](https://developers.google.com/apps-script/reference/drive/file#movetodestination) | [File](#file) | Completed | |
-| [removeCommenter(emailAddress)](https://developers.google.com/apps-script/reference/drive/file#removecommenteremailaddress) | [File](#file) | Not Started | |
-| [removeEditor(emailAddress)](https://developers.google.com/apps-script/reference/drive/file#removeeditoremailaddress) | [File](#file) | Completed | |
-| [removeViewer(emailAddress)](https://developers.google.com/apps-script/reference/drive/file#removevieweremailaddress) | [File](#file) | Completed | |
-| [revokePermissions(emailAddress)](https://developers.google.com/apps-script/reference/drive/file#revokepermissionsemailaddress) | [File](#file) | Not Started | |
-| [setContent(content)](https://developers.google.com/apps-script/reference/drive/file#setcontentcontent) | [File](#file) | Completed | |
-| [setDescription(description)](https://developers.google.com/apps-script/reference/drive/file#setdescriptiondescription) | [File](#file) | Completed | |
-| [setName(name)](https://developers.google.com/apps-script/reference/drive/file#setnamename) | [File](#file) | Completed | |
-| [setOwner(emailAddress)](https://developers.google.com/apps-script/reference/drive/file#setowneremailaddress) | [File](#file) | Not Started | |
-| [setSecurityUpdateEnabled(enabled)](https://developers.google.com/apps-script/reference/drive/file#setsecurityupdateenabledenabled) | void | Not Started | |
-| [setShareableByEditors(shareable)](https://developers.google.com/apps-script/reference/drive/file#setshareablebyeditorsshareable) | [File](#file) | Completed | |
-| [setSharing(accessType, permissionType)](https://developers.google.com/apps-script/reference/drive/file#setsharingaccesstype,-permissiontype) | [File](#file) | Not Started | |
-| [setStarred(starred)](https://developers.google.com/apps-script/reference/drive/file#setstarredstarred) | [File](#file) | Completed | |
-| [setTrashed(trashed)](https://developers.google.com/apps-script/reference/drive/file#settrashedtrashed) | [File](#file) | Completed | |
----
-## [FileIterator](https://developers.google.com/apps-script/reference/drive/file-iterator)
-An iterator that allows scripts to iterate over a large collection of files.
-(3 methods out of 3 (100%) completed
-| method | return | status | comments |
-|---|---|---|---|
-| [getContinuationToken()](https://developers.google.com/apps-script/reference/drive/file-iterator#getcontinuationtoken) | String | Not Started | |
-| [hasNext()](https://developers.google.com/apps-script/reference/drive/file-iterator#hasnext) | Boolean | Completed | |
-| [next()](https://developers.google.com/apps-script/reference/drive/file-iterator#next) | [File](#file) | Completed | |
----
-## [Folder](https://developers.google.com/apps-script/reference/drive/folder)
-A folder in Google Drive.
-(25 methods out of 49 (51%) completed
-| method | return | status | comments |
-|---|---|---|---|
-| [addEditor(emailAddress)](https://developers.google.com/apps-script/reference/drive/folder#addeditoremailaddress) | [Folder](#folder) | Completed | |
-| [addViewer(emailAddress)](https://developers.google.com/apps-script/reference/drive/folder#addvieweremailaddress) | [Folder](#folder) | Completed | |
-| [createFile(blob)](https://developers.google.com/apps-script/reference/drive/folder#createfileblob) | [File](#file) | Completed | |
-| [createFolder(name)](https://developers.google.com/apps-script/reference/drive/folder#createfoldername) | [Folder](#folder) | Completed | |
-| [createShortcut(targetId)](https://developers.google.com/apps-script/reference/drive/folder#createshortcuttargetid) | [Folder](#folder) | Not Started | |
-| [createShortcutForTargetIdAndResourceKey(targetId, targetResourceKey)](https://developers.google.com/apps-script/reference/drive/folder#createshortcutfortargetidandresourcekeytargetid,-targetresourcekey) | [Folder](#folder) | Not Started | |
-| [getAccess(email)](https://developers.google.com/apps-script/reference/drive/folder#getaccessemail) | [Permission](#permission) | Not Started | |
-| [getDateCreated()](https://developers.google.com/apps-script/reference/drive/folder#getdatecreated) | Date | Completed | |
-| [getDescription()](https://developers.google.com/apps-script/reference/drive/folder#getdescription) | String | Completed | |
-| [getEditors()](https://developers.google.com/apps-script/reference/drive/folder#geteditors) | [User[]](#user) | Completed | |
-| [getFiles()](https://developers.google.com/apps-script/reference/drive/folder#getfiles) | [FileIterator](#fileiterator) | Completed | |
-| [getFilesByName(name)](https://developers.google.com/apps-script/reference/drive/folder#getfilesbynamename) | [FileIterator](#fileiterator) | Completed | |
-| [getFilesByType(mimeType)](https://developers.google.com/apps-script/reference/drive/folder#getfilesbytypemimetype) | [FileIterator](#fileiterator) | Completed | |
-| [getFolders()](https://developers.google.com/apps-script/reference/drive/folder#getfolders) | [FolderIterator](#folderiterator) | Completed | |
-| [getFoldersByName(name)](https://developers.google.com/apps-script/reference/drive/folder#getfoldersbynamename) | [FolderIterator](#folderiterator) | Completed | |
-| [getId()](https://developers.google.com/apps-script/reference/drive/folder#getid) | String | Completed | |
-| [getLastUpdated()](https://developers.google.com/apps-script/reference/drive/folder#getlastupdated) | Date | Completed | |
-| [getName()](https://developers.google.com/apps-script/reference/drive/folder#getname) | String | Completed | |
-| [getOwner()](https://developers.google.com/apps-script/reference/drive/folder#getowner) | [User](#user) | Completed | |
-| [getParents()](https://developers.google.com/apps-script/reference/drive/folder#getparents) | [FolderIterator](#folderiterator) | Completed | |
-| [getResourceKey()](https://developers.google.com/apps-script/reference/drive/folder#getresourcekey) | String | Not Started | |
-| [getSecurityUpdateEligible()](https://developers.google.com/apps-script/reference/drive/folder#getsecurityupdateeligible) | Boolean | Not Started | |
-| [getSecurityUpdateEnabled()](https://developers.google.com/apps-script/reference/drive/folder#getsecurityupdateenabled) | Boolean | Not Started | |
-| [getSharingAccess()](https://developers.google.com/apps-script/reference/drive/folder#getsharingaccess) | [Access](#access) | Not Started | |
-| [getSharingPermission()](https://developers.google.com/apps-script/reference/drive/folder#getsharingpermission) | [Permission](#permission) | Not Started | |
-| [getSize()](https://developers.google.com/apps-script/reference/drive/folder#getsize) | Integer | Completed | |
-| [getUrl()](https://developers.google.com/apps-script/reference/drive/folder#geturl) | String | Completed | |
-| [getViewers()](https://developers.google.com/apps-script/reference/drive/folder#getviewers) | [User[]](#user) | Completed | |
-| [isShareableByEditors()](https://developers.google.com/apps-script/reference/drive/folder#isshareablebyeditors) | Boolean | Completed | |
-| [isStarred()](https://developers.google.com/apps-script/reference/drive/folder#isstarred) | Boolean | Completed | |
-| [isTrashed()](https://developers.google.com/apps-script/reference/drive/folder#istrashed) | Boolean | Completed | |
-| [moveTo(destination)](https://developers.google.com/apps-script/reference/drive/folder#movetodestination) | [Folder](#folder) | Completed | |
-| [removeEditor(emailAddress)](https://developers.google.com/apps-script/reference/drive/folder#removeeditoremailaddress) | [Folder](#folder) | Completed | |
-| [removeViewer(emailAddress)](https://developers.google.com/apps-script/reference/drive/folder#removevieweremailaddress) | [Folder](#folder) | Completed | |
-| [revokePermissions(emailAddress)](https://developers.google.com/apps-script/reference/drive/folder#revokepermissionsemailaddress) | [Folder](#folder) | Not Started | |
-| [searchFiles(params)](https://developers.google.com/apps-script/reference/drive/folder#searchfilesparams) | [FileIterator](#fileiterator) | Not Started | |
-| [searchFolders(params)](https://developers.google.com/apps-script/reference/drive/folder#searchfoldersparams) | [FolderIterator](#folderiterator) | Not Started | |
-| [setDescription(description)](https://developers.google.com/apps-script/reference/drive/folder#setdescriptiondescription) | [Folder](#folder) | Completed | |
-| [setName(name)](https://developers.google.com/apps-script/reference/drive/folder#setnamename) | [Folder](#folder) | Completed | |
-| [setOwner(emailAddress)](https://developers.google.com/apps-script/reference/drive/folder#setowneremailaddress) | [Folder](#folder) | Not Started | |
-| [setSecurityUpdateEnabled(enabled)](https://developers.google.com/apps-script/reference/drive/folder#setsecurityupdateenabledenabled) | void | Not Started | |
-| [setShareableByEditors(shareable)](https://developers.google.com/apps-script/reference/drive/folder#setshareablebyeditorsshareable) | [Folder](#folder) | Completed | |
-| [setSharing(accessType, permissionType)](https://developers.google.com/apps-script/reference/drive/folder#setsharingaccesstype,-permissiontype) | [Folder](#folder) | Not Started | |
-| [setStarred(starred)](https://developers.google.com/apps-script/reference/drive/folder#setstarredstarred) | [Folder](#folder) | Completed | |
-| [setTrashed(trashed)](https://developers.google.com/apps-script/reference/drive/folder#settrashedtrashed) | [Folder](#folder) | Completed | |
----
-## [FolderIterator](https://developers.google.com/apps-script/reference/drive/folder-iterator)
-An object that allows scripts to iterate over a large collection of folders.
-(3 methods out of 3 (100%) completed
-| method | return | status | comments |
-|---|---|---|---|
-| [getContinuationToken()](https://developers.google.com/apps-script/reference/drive/folder-iterator#getcontinuationtoken) | String | Not Started | |
-| [hasNext()](https://developers.google.com/apps-script/reference/drive/folder-iterator#hasnext) | Boolean | Completed | |
-| [next()](https://developers.google.com/apps-script/reference/drive/folder-iterator#next) | [Folder](#folder) | Completed | |
----
-## [Permission](https://developers.google.com/apps-script/reference/drive/permission)
-An enum representing the permissions granted to users for a file or folder.
-(7 methods out of 7 (100%) completed
-| method | return | status | comments |
-|---|---|---|---|
-| [VIEW](https://developers.google.com/apps-script/reference/drive/permission#view) | Permission | Completed | |
-| [EDIT](https://developers.google.com/apps-script/reference/drive/permission#edit) | Permission | Completed | |
-| [COMMENT](https://developers.google.com/apps-script/reference/drive/permission#comment) | Permission | Completed | |
-| [OWNER](https://developers.google.com/apps-script/reference/drive/permission#owner) | Permission | Completed | |
-| [ORGANIZER](https://developers.google.com/apps-script/reference/drive/permission#organizer) | Permission | Completed | |
-| [FILE_ORGANIZER](https://developers.google.com/apps-script/reference/drive/permission#file_organizer) | Permission | Completed | |
-| [NONE](https://developers.google.com/apps-script/reference/drive/permission#none) | Permission | Completed | |
----
-## [User](https://developers.google.com/apps-script/reference/drive/user)
-A user associated with a file in Google Drive.
-(4 methods out of 4 (100%) completed
-| method | return | status | comments |
-|---|---|---|---|
-| [getDomain()](https://developers.google.com/apps-script/reference/drive/user#getdomain) | String | Completed | |
-| [getEmail()](https://developers.google.com/apps-script/reference/drive/user#getemail) | String | Completed | |
-| [getName()](https://developers.google.com/apps-script/reference/drive/user#getname) | String | Completed | |
-| [getPhotoUrl()](https://developers.google.com/apps-script/reference/drive/user#getphotourl) | String | Completed | |
+# [Drive](https://developers.google.com/apps-script/reference/drive)
+
+This service lets scripts create, find, and modify files and folders in Google Drive. Although the built-in Drive service is easier to use, it has some limitations. For the most up-to-date features and support, and to access files or folders in shared drives, use the advanced Drive service.
+
+## Class: [DriveApp](https://developers.google.com/apps-script/reference/drive/drive-app)
+
+Allows scripts to create, find, and modify files and folders in Google Drive. Although the built-in Drive service is easier to use, it has some limitations. For the most up-to-date features and support, and to access files or folders in shared drives, use the advanced Drive service.
+
+| Method | Description | Return Type | Return Description | Status | Implementation |
+|--- |--- |--- |--- |--- |--- |
+| [continueFileIterator(String)](https://developers.google.com/apps-script/reference/drive/drive-app#continueFileIterator(String)) | Resumes a file iteration using a continuation token from a previous iterator. This method is useful if processing an iterator in one execution exceeds the maximum execution time. Continuation tokens are generally valid for one week. | [FileIterator](#class-fileiterator) | A collection of files that remained in a previous iterator when the continuation token was generated. | in progress | [link](../src/services/driveapp/fakedriveapp.js#L121) |
+| [continueFolderIterator(String)](https://developers.google.com/apps-script/reference/drive/drive-app#continueFolderIterator(String)) | Resumes a folder iteration using a continuation token from a previous iterator. This method is useful if processing an iterator in one execution exceeds the maximum execution time. Continuation tokens are generally valid for one week. | [FolderIterator](#class-folderiterator) | A collection of folders that remained in a previous iterator when the continuation token was generated. | in progress | [link](../src/services/driveapp/fakedriveapp.js#L124) |
+| [createFile(BlobSource)](https://developers.google.com/apps-script/reference/drive/drive-app#createFile(BlobSource)) | Creates a file in the root of the user's Drive from a given Blob of arbitrary data. | [File](#class-file) | The new file. | in progress | [link](../src/services/driveapp/fakedriveapp.js#L101) |
+| [createFile(String,String,String)](https://developers.google.com/apps-script/reference/drive/drive-app#createFile(String,String,String)) |  |  |  | in progress | [link](../src/services/driveapp/fakedriveapp.js#L101) |
+| [createFile(String,String)](https://developers.google.com/apps-script/reference/drive/drive-app#createFile(String,String)) |  |  |  | in progress | [link](../src/services/driveapp/fakedriveapp.js#L101) |
+| [createFolder(String)](https://developers.google.com/apps-script/reference/drive/drive-app#createFolder(String)) | Creates a folder in the root of the user's Drive with the given name. | [Folder](#class-folder) | The new folder. | in progress | [link](../src/services/driveapp/fakedriveapp.js#L108) |
+| [createShortcut(String)](https://developers.google.com/apps-script/reference/drive/drive-app#createShortcut(String)) | Creates a shortcut to the provided Drive item ID, and returns it. | [File](#class-file) | The new shortcut. | not started |  |
+| [createShortcutForTargetIdAndResourceKey(String,String)](https://developers.google.com/apps-script/reference/drive/drive-app#createShortcutForTargetIdAndResourceKey(String,String)) |  |  |  | not started |  |
+| [enforceSingleParent(Boolean)](https://developers.google.com/apps-script/reference/drive/drive-app#enforceSingleParent(Boolean)) | Enables or disables enforceSingleParent behavior for all calls affecting item parents. |  |  | in progress | [link](../src/services/driveapp/fakedriveapp.js#L140) |
+| [getFileById(String)](https://developers.google.com/apps-script/reference/drive/drive-app#getFileById(String)) | Gets the file with the given ID. Throws a scripting exception if the file does not exist or the user does not have permission to access it. | [File](#class-file) | The file with the given ID. | in progress | [link](../src/services/driveapp/fakedriveapp.js#L44) |
+| [getFileByIdAndResourceKey(String,String)](https://developers.google.com/apps-script/reference/drive/drive-app#getFileByIdAndResourceKey(String,String)) |  |  |  | in progress | [link](../src/services/driveapp/fakedriveapp.js#L117) |
+| [getFiles()](https://developers.google.com/apps-script/reference/drive/drive-app#getFiles()) | Gets a collection of all files in the user's Drive. | [FileIterator](#class-fileiterator) | A collection of all files in the user's Drive. | in progress | [link](../src/services/driveapp/fakedriveapp.js#L58) |
+| [getFilesByName(String)](https://developers.google.com/apps-script/reference/drive/drive-app#getFilesByName(String)) | Gets a collection of all files in the user's Drive that have the given name. | [FileIterator](#class-fileiterator) | A collection of all files in the user's Drive that have the given name. | in progress | [link](../src/services/driveapp/fakedriveapp.js#L76) |
+| [getFilesByType(String)](https://developers.google.com/apps-script/reference/drive/drive-app#getFilesByType(String)) | Gets a collection of all files in the user's Drive that have the given MIME type. | [FileIterator](#class-fileiterator) | A collection of all files in the user's Drive that have the given MIME type. | in progress | [link](../src/services/driveapp/fakedriveapp.js#L93) |
+| [getFolderById(String)](https://developers.google.com/apps-script/reference/drive/drive-app#getFolderById(String)) | Gets the folder with the given ID. Throws a scripting exception if the folder does not exist or the user does not have permission to access it. | [Folder](#class-folder) | The folder with the given ID. | in progress | [link](../src/services/driveapp/fakedriveapp.js#L49) |
+| [getFolderByIdAndResourceKey(String,String)](https://developers.google.com/apps-script/reference/drive/drive-app#getFolderByIdAndResourceKey(String,String)) |  |  |  | in progress | [link](../src/services/driveapp/fakedriveapp.js#L114) |
+| [getFolders()](https://developers.google.com/apps-script/reference/drive/drive-app#getFolders()) | Gets a collection of all folders in the user's Drive. | [FolderIterator](#class-folderiterator) | A collection of all folders in the user's Drive. | in progress | [link](../src/services/driveapp/fakedriveapp.js#L66) |
+| [getFoldersByName(String)](https://developers.google.com/apps-script/reference/drive/drive-app#getFoldersByName(String)) | Gets a collection of all folders in the user's Drive that have the given name. | [FolderIterator](#class-folderiterator) | A collection of all folders in the user's Drive that have the given name. | in progress | [link](../src/services/driveapp/fakedriveapp.js#L75) |
+| [getRootFolder()](https://developers.google.com/apps-script/reference/drive/drive-app#getRootFolder()) | Gets the folder at the root of the user's Drive. | [Folder](#class-folder) | The root folder of the user's Drive. | in progress | [link](../src/services/driveapp/fakedriveapp.js#L33) |
+| [getStorageLimit()](https://developers.google.com/apps-script/reference/drive/drive-app#getStorageLimit()) | Gets the number of bytes the user is allowed to store in Drive. | Integer | The number of bytes the user is allowed to store in Drive. | in progress | [link](../src/services/driveapp/fakedriveapp.js#L134) |
+| [getStorageUsed()](https://developers.google.com/apps-script/reference/drive/drive-app#getStorageUsed()) | Gets the number of bytes the user is currently storing in Drive. | Integer | The number of bytes the user is currently storing in Drive. | in progress | [link](../src/services/driveapp/fakedriveapp.js#L137) |
+| [getTrashedFiles()](https://developers.google.com/apps-script/reference/drive/drive-app#getTrashedFiles()) | Gets a collection of all the files in the trash of the user's Drive. | [FileIterator](#class-fileiterator) | A collection of files in the trash. | in progress | [link](../src/services/driveapp/fakedriveapp.js#L127) |
+| [getTrashedFolders()](https://developers.google.com/apps-script/reference/drive/drive-app#getTrashedFolders()) | Gets a collection of all the folders in the trash of the user's Drive. | [FolderIterator](#class-folderiterator) | A collection of folders in the trash. | in progress | [link](../src/services/driveapp/fakedriveapp.js#L130) |
+| [searchFiles(String)](https://developers.google.com/apps-script/reference/drive/drive-app#searchFiles(String)) | Gets a collection of all files in the user's Drive that match the given search criteria. The search criteria are detailed in the Google Drive SDK documentation. Note that the Drive service uses v2 of the Drive API and some query fields differ from v3. Review the field differences between v2 and v3. | [FileIterator](#class-fileiterator) | A collection of all files in the user's Drive that match the search criteria. | not started |  |
+| [searchFolders(String)](https://developers.google.com/apps-script/reference/drive/drive-app#searchFolders(String)) | Gets a collection of all folders in the user's Drive that match the given search criteria. The search criteria are detailed in the Google Drive SDK documentation. Note that the Drive service uses v2 of the Drive API and some query fields differ from v3. Review the field differences between v2 and v3. | [FolderIterator](#class-folderiterator) | A collection of all folders in the user's Drive that match the search criteria. | not started |  |
+
+## Class: [File](https://developers.google.com/apps-script/reference/drive/file)
+
+A file in Google Drive. Files can be accessed or created from DriveApp.
+
+| Method | Description | Return Type | Return Description | Status | Implementation |
+|--- |--- |--- |--- |--- |--- |
+| [addCommenter(String)](https://developers.google.com/apps-script/reference/drive/file#addCommenter(String)) | Add the given user to the list of commenters for the File. If the user was already on the list of viewers, this method promotes the user out of the list of viewers. | [File](#class-file) | This File, for chaining. | not started |  |
+| [addCommenter(User)](https://developers.google.com/apps-script/reference/drive/file#addCommenter(User)) | Add the given user to the list of commenters for the File. If the user was already on the list of viewers, this method promotes the user out of the list of viewers. | [File](#class-file) | This File, for chaining. | not started |  |
+| [addCommenters(String)](https://developers.google.com/apps-script/reference/drive/file#addCommenters(String)) | Add the given array of users to the list of commenters for the File. If any of the users were already on the list of viewers, this method promotes them out of the list of viewers. | [File](#class-file) | This File, for chaining. | not started |  |
+| [addEditor(String)](https://developers.google.com/apps-script/reference/drive/file#addEditor(String)) | Adds the given user to the list of editors for the File. If the user was already on the list of viewers, this method promotes the user out of the list of viewers. | [File](#class-file) | This File, for chaining. | not started |  |
+| [addEditor(User)](https://developers.google.com/apps-script/reference/drive/file#addEditor(User)) | Adds the given user to the list of editors for the File. If the user was already on the list of viewers, this method promotes the user out of the list of viewers. | [File](#class-file) | This File, for chaining. | not started |  |
+| [addEditors(String)](https://developers.google.com/apps-script/reference/drive/file#addEditors(String)) | Adds the given array of users to the list of editors for the File. If any of the users were already on the list of viewers, this method promotes them out of the list of viewers. | [File](#class-file) | This File, for chaining. | not started |  |
+| [addViewer(String)](https://developers.google.com/apps-script/reference/drive/file#addViewer(String)) | Adds the given user to the list of viewers for the File. If the user was already on the list of editors, this method has no effect. | [File](#class-file) | This File, for chaining. | not started |  |
+| [addViewer(User)](https://developers.google.com/apps-script/reference/drive/file#addViewer(User)) | Adds the given user to the list of viewers for the File. If the user was already on the list of editors, this method has no effect. | [File](#class-file) | This File, for chaining. | not started |  |
+| [addViewers(String)](https://developers.google.com/apps-script/reference/drive/file#addViewers(String)) | Adds the given array of users to the list of viewers for the File. If any of the users were already on the list of editors, this method has no effect for them. | [File](#class-file) | This File, for chaining. | not started |  |
+| [getAccess(String)](https://developers.google.com/apps-script/reference/drive/file#getAccess(String)) | Gets the permission granted to a specific user. The method doesn't support returning permissions for a Google Group or permissions inherited through Google Groups. | [Permission](#enum-permission) | The permissions granted to the user. | not started |  |
+| [getAccess(User)](https://developers.google.com/apps-script/reference/drive/file#getAccess(User)) | Gets the permission granted to a specific user. The method doesn't support returning permissions for a Google Group or permissions inherited through Google Groups. | [Permission](#enum-permission) | The permissions granted to the user. | not started |  |
+| [getAs(String)](https://developers.google.com/apps-script/reference/drive/file#getAs(String)) | Return the data inside this object as a blob converted to the specified content type. This method adds the appropriate extension to the filename—for example, "myfile.pdf". However, it assumes that the part of the filename that follows the last period (if any) is an existing extension that should be replaced. Consequently, "ShoppingList.12.25.2014" becomes "ShoppingList.12.25.pdf". | Blob | The data as a blob. | not started |  |
+| [getBlob()](https://developers.google.com/apps-script/reference/drive/file#getBlob()) | Return the data inside this object as a blob. | Blob | The data as a blob. | not started |  |
+| [getDateCreated()](https://developers.google.com/apps-script/reference/drive/file#getDateCreated()) | Gets the date the File was created. | Date | the date the File was created | not started |  |
+| [getDescription()](https://developers.google.com/apps-script/reference/drive/file#getDescription()) | Gets the description for the File. | String | the description for the File | not started |  |
+| [getDownloadUrl()](https://developers.google.com/apps-script/reference/drive/file#getDownloadUrl()) | Gets the URL that can be used to download the file. Only users with permission to open the file in Google Drive can access the URL. You can use this URL in a browser to download the file, but you can't use to fetch the file with UrlFetchApp. If you want the contents of the file in the script, use getBlob(). | String | The URL that can be used to download the file. | not started |  |
+| [getEditors()](https://developers.google.com/apps-script/reference/drive/file#getEditors()) | Gets the list of editors for this File. If the user who executes the script does not have edit access to the File, this method returns an empty array. | [User[]](#class-user) | If the user has edit access for this File, returns the list of editors. If the user doesn't have edit access, returns an empty array. | not started |  |
+| [getId()](https://developers.google.com/apps-script/reference/drive/file#getId()) | Gets the ID of the File. | String | the ID of the File | not started |  |
+| [getLastUpdated()](https://developers.google.com/apps-script/reference/drive/file#getLastUpdated()) | Gets the date the File was last updated. | Date | the date the File was last updated | not started |  |
+| [getMimeType()](https://developers.google.com/apps-script/reference/drive/file#getMimeType()) | Gets the MIME type of the file. | String | The MIME type of the file. | not started |  |
+| [getName()](https://developers.google.com/apps-script/reference/drive/file#getName()) | Gets the name of the File. | String | the name of the File | not started |  |
+| [getOwner()](https://developers.google.com/apps-script/reference/drive/file#getOwner()) | Gets the file owner. | [User](#class-user) | The file owner. | not started |  |
+| [getParents()](https://developers.google.com/apps-script/reference/drive/file#getParents()) | Gets a collection of folders that are immediate parents of the File. | [FolderIterator](#class-folderiterator) | a collection of folders that are immediate parents of the File | not started |  |
+| [getResourceKey()](https://developers.google.com/apps-script/reference/drive/file#getResourceKey()) | Gets the resource key of the File that is required to access items that have been shared using a link. | String | The resource key of the File. | not started |  |
+| [getSecurityUpdateEligible()](https://developers.google.com/apps-script/reference/drive/file#getSecurityUpdateEligible()) | Gets whether this File is eligible to apply the security update that requires a resource key for access when it's shared using a link. | Boolean | Whether the resource key requirement can be applied for the File. | not started |  |
+| [getSecurityUpdateEnabled()](https://developers.google.com/apps-script/reference/drive/file#getSecurityUpdateEnabled()) | Gets whether this File requires a resource key for access when it's shared using a link. This requirement is turned on by default for eligible files and folders. To turn the resource key requirement on or off for eligible files, use setSecurityUpdateEnabled. | Boolean | Whether the resource key requirement is enabled for this File. | not started |  |
+| [getSharingAccess()](https://developers.google.com/apps-script/reference/drive/file#getSharingAccess()) | Gets which class of users can access the File, besides any individual users who have been explicitly given access. | [Access](#enum-access) | which class of users can access the File | not started |  |
+| [getSharingPermission()](https://developers.google.com/apps-script/reference/drive/file#getSharingPermission()) | Gets the permission granted to those users who can access the File, besides any individual users who have been explicitly given access. | [Permission](#enum-permission) | the permissions granted to users who can access the File | not started |  |
+| [getSize()](https://developers.google.com/apps-script/reference/drive/file#getSize()) | Gets the number of bytes used to store the File in Drive. Note that Google Workspace application files do not count toward Drive storage limits and thus return 0 bytes. | Integer | the number of bytes used to store the File in Drive | not started |  |
+| [getTargetId()](https://developers.google.com/apps-script/reference/drive/file#getTargetId()) | If this is a Shortcut, returns the ID of the item it points to. | String | The target item ID. | not started |  |
+| [getTargetMimeType()](https://developers.google.com/apps-script/reference/drive/file#getTargetMimeType()) | If this is a Shortcut, returns the mime type of the item it points to. | String | The target item mime type. | not started |  |
+| [getTargetResourceKey()](https://developers.google.com/apps-script/reference/drive/file#getTargetResourceKey()) | If the file is a shortcut, returns the resource key of the item it points to. A resource key is an additional parameter that you need to pass to access files that have been shared using a link. | String | The target item's resource key or null if the file is not a shortcut. | not started |  |
+| [getThumbnail()](https://developers.google.com/apps-script/reference/drive/file#getThumbnail()) | Gets a thumbnail image for the file, or null if no thumbnail exists. | Blob | The thumbnail image for the file. | not started |  |
+| [getUrl()](https://developers.google.com/apps-script/reference/drive/file#getUrl()) | Gets the URL that can be used to open the File in a Google App like Drive or Docs. | String | the URL that can be used to view this File in a Google App like Drive or Docs | not started |  |
+| [getViewers()](https://developers.google.com/apps-script/reference/drive/file#getViewers()) | Gets the list of viewers and commenters for this File. If the user who executes the script does not have edit access to the File, this method returns an empty array. | [User[]](#class-user) | If the user has edit access for this File, returns the list of viewers and commenters. If the user doesn't have edit access, returns an empty array. | not started |  |
+| [isShareableByEditors()](https://developers.google.com/apps-script/reference/drive/file#isShareableByEditors()) | Determines whether users with edit permissions to the File are allowed to share with other users or change the permissions. | Boolean | true if users with edit permissions are allowed to share with other users or change the permissions; false if not | not started |  |
+| [isStarred()](https://developers.google.com/apps-script/reference/drive/file#isStarred()) | Determines whether the File has been starred in the user's Drive. | Boolean | true if the File is starred in the user's Drive; false if not | not started |  |
+| [isTrashed()](https://developers.google.com/apps-script/reference/drive/file#isTrashed()) | Determines whether the File is in the trash of the user's Drive. | Boolean | true if the File is in the trash of the user's Drive; false if not | not started |  |
+| [makeCopy()](https://developers.google.com/apps-script/reference/drive/file#makeCopy()) | Creates a copy of the file. | [File](#class-file) | The new copy. | not started |  |
+| [makeCopy(Folder)](https://developers.google.com/apps-script/reference/drive/file#makeCopy(Folder)) | Creates a copy of the file in the destination directory. | [File](#class-file) | The new copy. | not started |  |
+| [makeCopy(String,Folder)](https://developers.google.com/apps-script/reference/drive/file#makeCopy(String,Folder)) |  |  |  | not started |  |
+| [makeCopy(String)](https://developers.google.com/apps-script/reference/drive/file#makeCopy(String)) | Creates a copy of the file and names it with the name provided. | [File](#class-file) | The new copy. | not started |  |
+| [moveTo(Folder)](https://developers.google.com/apps-script/reference/drive/file#moveTo(Folder)) | Moves this item to the provided destination folder. | [File](#class-file) | This File, for chaining. | not started |  |
+| [removeCommenter(String)](https://developers.google.com/apps-script/reference/drive/file#removeCommenter(String)) | Removes the given user from the list of commenters for the File. This method does not block users from access the File if they belong to a class of users who have general access — for example, if the File is shared with the user's entire domain. | [File](#class-file) | This File, for chaining. | not started |  |
+| [removeCommenter(User)](https://developers.google.com/apps-script/reference/drive/file#removeCommenter(User)) | Removes the given user from the list of commenters for the File. This method does not block users from access the File if they belong to a class of users who have general access — for example, if the File is shared with the user's entire domain. | [File](#class-file) | This File, for chaining. | not started |  |
+| [removeEditor(String)](https://developers.google.com/apps-script/reference/drive/file#removeEditor(String)) | Removes the given user from the list of editors for the File. This method doesn't block users from accessing the File if they belong to a class of users who have general access—for example, if the File is shared with the user's entire domain, or if the File is in a shared drive that the user can access. | [File](#class-file) | This File, for chaining. | not started |  |
+| [removeEditor(User)](https://developers.google.com/apps-script/reference/drive/file#removeEditor(User)) | Removes the given user from the list of editors for the File. This method doesn't block users from accessing the File if they belong to a class of users who have general access—for example, if the File is shared with the user's entire domain, or if the File is in a shared drive that the user can access. | [File](#class-file) | This File, for chaining. | not started |  |
+| [removeViewer(String)](https://developers.google.com/apps-script/reference/drive/file#removeViewer(String)) | Removes the given user from the list of viewers and commenters for the File. This method has no effect if the user is an editor, not a viewer or commenter. This method also doesn't block users from accessing the File if they belong to a class of users who have general access—for example, if the File is shared with the user's entire domain, or if the File is in a shared drive that the user can access. | [File](#class-file) | This File for chaining. | not started |  |
+| [removeViewer(User)](https://developers.google.com/apps-script/reference/drive/file#removeViewer(User)) | Removes the given user from the list of viewers and commenters for the File. This method has no effect if the user is an editor, not a viewer. This method also doesn't block users from accessing the File if they belong to a class of users who have general access—for example, if the File is shared with the user's entire domain, or if the File is in a shared drive that the user can access. | [File](#class-file) | This File for chaining. | not started |  |
+| [revokePermissions(String)](https://developers.google.com/apps-script/reference/drive/file#revokePermissions(String)) | Revokes the access to the File granted to the given user. This method doesn't block users from accessing the File if they belong to a class of users who have general access — for example, if the File is shared with the user's entire domain. | [File](#class-file) | This File, for chaining. | not started |  |
+| [revokePermissions(User)](https://developers.google.com/apps-script/reference/drive/file#revokePermissions(User)) | Revokes the access to the File granted to the given user. This method doesn't block users from accessing the File if they belong to a class of users who have general access — for example, if the File is shared with the user's entire domain. | [File](#class-file) | This File, for chaining. | not started |  |
+| [setContent(String)](https://developers.google.com/apps-script/reference/drive/file#setContent(String)) | Overwrites the content of the file with a given replacement. Throws an exception if content is larger than 10MB. | [File](#class-file) | This File, for chaining. | not started |  |
+| [setDescription(String)](https://developers.google.com/apps-script/reference/drive/file#setDescription(String)) | Sets the description for the File. | [File](#class-file) | this File, for chaining | not started |  |
+| [setName(String)](https://developers.google.com/apps-script/reference/drive/file#setName(String)) | Sets the name of the File. | [File](#class-file) | this File, for chaining | not started |  |
+| [setOwner(String)](https://developers.google.com/apps-script/reference/drive/file#setOwner(String)) | Changes the owner of the File. This method also gives the previous owner explicit edit access to the File. | [File](#class-file) | this File, for chaining | not started |  |
+| [setOwner(User)](https://developers.google.com/apps-script/reference/drive/file#setOwner(User)) | Changes the owner of the File. This method also gives the previous owner explicit edit access to the File. | [File](#class-file) | this File, for chaining | not started |  |
+| [setSecurityUpdateEnabled(Boolean)](https://developers.google.com/apps-script/reference/drive/file#setSecurityUpdateEnabled(Boolean)) | Sets whether the File requires a resource key for access when it's shared using a link. Eligible files and folders are enabled by default. | [File](#class-file) | This File, for chaining. | not started |  |
+| [setShareableByEditors(Boolean)](https://developers.google.com/apps-script/reference/drive/file#setShareableByEditors(Boolean)) | Sets whether users with edit permissions to the File are allowed to share with other users or change the permissions. The default for a new File is true. | [File](#class-file) | this File, for chaining | not started |  |
+| [setSharing(Access,Permission)](https://developers.google.com/apps-script/reference/drive/file#setSharing(Access,Permission)) |  |  |  | not started |  |
+| [setStarred(Boolean)](https://developers.google.com/apps-script/reference/drive/file#setStarred(Boolean)) | Sets whether the File is starred in the user's Drive. The default for new Files is false. | [File](#class-file) | this File, for chaining | not started |  |
+| [setTrashed(Boolean)](https://developers.google.com/apps-script/reference/drive/file#setTrashed(Boolean)) | Sets whether the File is in the trash of the user's Drive. Only the owner may trash the File. The default for new Files is false. | [File](#class-file) | this File, for chaining | not started |  |
+
+## Class: [FileIterator](https://developers.google.com/apps-script/reference/drive/file-iterator)
+
+An iterator that allows scripts to iterate over a potentially large collection of files. File iterators can be accessed from DriveApp or a Folder.
+
+| Method | Description | Return Type | Return Description | Status | Implementation |
+|--- |--- |--- |--- |--- |--- |
+| [getContinuationToken()](https://developers.google.com/apps-script/reference/drive/file-iterator#getContinuationToken()) | Gets a token that can be used to resume this iteration at a later time. This method is useful if processing an iterator in one execution would exceed the maximum execution time. Continuation tokens are generally valid for one week. | String | a continuation token that can be used to resume this iteration with the items that remained in the iterator when the token was generated | not started |  |
+| [hasNext()](https://developers.google.com/apps-script/reference/drive/file-iterator#hasNext()) | Determines whether calling next() will return an item. | Boolean | true if next() will return an item; false if not | not started |  |
+| [next()](https://developers.google.com/apps-script/reference/drive/file-iterator#next()) | Gets the next item in the collection of files or folders. Throws an exception if no items remain. | [File](#class-file) | the next item in the collection | not started |  |
+
+## Class: [Folder](https://developers.google.com/apps-script/reference/drive/folder)
+
+A folder in Google Drive. Folders can be accessed or created from DriveApp.
+
+| Method | Description | Return Type | Return Description | Status | Implementation |
+|--- |--- |--- |--- |--- |--- |
+| [addEditor(String)](https://developers.google.com/apps-script/reference/drive/folder#addEditor(String)) | Adds the given user to the list of editors for the Folder. If the user was already on the list of viewers, this method promotes the user out of the list of viewers. | [Folder](#class-folder) | This Folder, for chaining. | not started |  |
+| [addEditor(User)](https://developers.google.com/apps-script/reference/drive/folder#addEditor(User)) | Adds the given user to the list of editors for the Folder. If the user was already on the list of viewers, this method promotes the user out of the list of viewers. | [Folder](#class-folder) | This Folder, for chaining. | not started |  |
+| [addEditors(String)](https://developers.google.com/apps-script/reference/drive/folder#addEditors(String)) | Adds the given array of users to the list of editors for the Folder. If any of the users were already on the list of viewers, this method promotes them out of the list of viewers. | [Folder](#class-folder) | This Folder, for chaining. | not started |  |
+| [addViewer(String)](https://developers.google.com/apps-script/reference/drive/folder#addViewer(String)) | Adds the given user to the list of viewers for the Folder. If the user was already on the list of editors, this method has no effect. | [Folder](#class-folder) | This Folder, for chaining. | not started |  |
+| [addViewer(User)](https://developers.google.com/apps-script/reference/drive/folder#addViewer(User)) | Adds the given user to the list of viewers for the Folder. If the user was already on the list of editors, this method has no effect. | [Folder](#class-folder) | This Folder, for chaining. | not started |  |
+| [addViewers(String)](https://developers.google.com/apps-script/reference/drive/folder#addViewers(String)) | Adds the given array of users to the list of viewers for the Folder. If any of the users were already on the list of editors, this method has no effect for them. | [Folder](#class-folder) | This Folder, for chaining. | not started |  |
+| [createFile(BlobSource)](https://developers.google.com/apps-script/reference/drive/folder#createFile(BlobSource)) | Creates a file in the current folder from a given Blob of arbitrary data. | [File](#class-file) | The new file. | not started |  |
+| [createFile(String,String,String)](https://developers.google.com/apps-script/reference/drive/folder#createFile(String,String,String)) |  |  |  | not started |  |
+| [createFile(String,String)](https://developers.google.com/apps-script/reference/drive/folder#createFile(String,String)) |  |  |  | not started |  |
+| [createFolder(String)](https://developers.google.com/apps-script/reference/drive/folder#createFolder(String)) | Creates a folder in the current folder with the given name. | [Folder](#class-folder) | The new folder. | not started |  |
+| [createShortcut(String)](https://developers.google.com/apps-script/reference/drive/folder#createShortcut(String)) | Creates a shortcut to the provided Drive item ID, and returns it. | [File](#class-file) | The new shortcut. | not started |  |
+| [createShortcutForTargetIdAndResourceKey(String,String)](https://developers.google.com/apps-script/reference/drive/folder#createShortcutForTargetIdAndResourceKey(String,String)) |  |  |  | not started |  |
+| [getAccess(String)](https://developers.google.com/apps-script/reference/drive/folder#getAccess(String)) | Gets the permission granted to a specific user. The method doesn't support returning permissions for a Google Group or permissions inherited through Google Groups. | [Permission](#enum-permission) | The permissions granted to the user. | not started |  |
+| [getAccess(User)](https://developers.google.com/apps-script/reference/drive/folder#getAccess(User)) | Gets the permission granted to a specific user. The method doesn't support returning permissions for a Google Group or permissions inherited through Google Groups. | [Permission](#enum-permission) | The permissions granted to the user. | not started |  |
+| [getDateCreated()](https://developers.google.com/apps-script/reference/drive/folder#getDateCreated()) | Gets the date the Folder was created. | Date | the date the Folder was created | not started |  |
+| [getDescription()](https://developers.google.com/apps-script/reference/drive/folder#getDescription()) | Gets the description for the Folder. | String | the description for the Folder | not started |  |
+| [getEditors()](https://developers.google.com/apps-script/reference/drive/folder#getEditors()) | Gets the list of editors for this Folder. If the user who executes the script does not have edit access to the Folder, this method returns an empty array. | [User[]](#class-user) | The list of editors for this Folder if the user has edit access or an empty array otherwise. | not started |  |
+| [getFiles()](https://developers.google.com/apps-script/reference/drive/folder#getFiles()) | Gets a collection of all files that are children of the current folder. | [FileIterator](#class-fileiterator) | A collection of all files that are children of the current folder. | not started |  |
+| [getFilesByName(String)](https://developers.google.com/apps-script/reference/drive/folder#getFilesByName(String)) | Gets a collection of all files that are children of the current folder and have the given name. | [FileIterator](#class-fileiterator) | A collection of all files that are children of the current folder and have the given name. | not started |  |
+| [getFilesByType(String)](https://developers.google.com/apps-script/reference/drive/folder#getFilesByType(String)) | Gets a collection of all files that are children of the current folder and have the given MIME type. | [FileIterator](#class-fileiterator) | A collection of all files that are children of the current folder and have the given MIME type. | not started |  |
+| [getFolders()](https://developers.google.com/apps-script/reference/drive/folder#getFolders()) | Gets a collection of all folders that are children of the current folder. | [FolderIterator](#class-folderiterator) | A collection of all folders that are children of the current folder. | not started |  |
+| [getFoldersByName(String)](https://developers.google.com/apps-script/reference/drive/folder#getFoldersByName(String)) | Gets a collection of all folders that are children of the current folder and have the given name. | [FolderIterator](#class-folderiterator) | A collection of all folders that are children of the current folder and have the given name. | not started |  |
+| [getId()](https://developers.google.com/apps-script/reference/drive/folder#getId()) | Gets the ID of the Folder. | String | the ID of the Folder | not started |  |
+| [getLastUpdated()](https://developers.google.com/apps-script/reference/drive/folder#getLastUpdated()) | Gets the date the Folder was last updated. | Date | the date the Folder was last updated | not started |  |
+| [getName()](https://developers.google.com/apps-script/reference/drive/folder#getName()) | Gets the name of the Folder. | String | the name of the Folder | not started |  |
+| [getOwner()](https://developers.google.com/apps-script/reference/drive/folder#getOwner()) | Gets the owner of this Folder. | [User](#class-user) | The owner of this Folder. | not started |  |
+| [getParents()](https://developers.google.com/apps-script/reference/drive/folder#getParents()) | Gets a collection of folders that are immediate parents of the Folder. | [FolderIterator](#class-folderiterator) | a collection of folders that are immediate parents of the Folder | not started |  |
+| [getResourceKey()](https://developers.google.com/apps-script/reference/drive/folder#getResourceKey()) | Gets the resource key of the Folder that is required to access items that have been shared using a link. | String | The resource key of the Folder. | not started |  |
+| [getSecurityUpdateEligible()](https://developers.google.com/apps-script/reference/drive/folder#getSecurityUpdateEligible()) | Gets whether this Folder is eligible to apply the security update that requires a resource key for access when it's shared using a link. | Boolean | Whether the resource key requirement can be applied for the Folder. | not started |  |
+| [getSecurityUpdateEnabled()](https://developers.google.com/apps-script/reference/drive/folder#getSecurityUpdateEnabled()) | Gets whether this Folder requires a resource key for access when it's shared using a link. This requirement is turned on by default for eligible files and folders. To turn the resource key requirement on or off for eligible files, use setSecurityUpdateEnabled. | Boolean | Whether the resource key requirement is enabled for this Folder. | not started |  |
+| [getSharingAccess()](https://developers.google.com/apps-script/reference/drive/folder#getSharingAccess()) | Gets which class of users can access the Folder, besides any individual users who have been explicitly given access. | [Access](#enum-access) | which class of users can access the Folder | not started |  |
+| [getSharingPermission()](https://developers.google.com/apps-script/reference/drive/folder#getSharingPermission()) | Gets the permission granted to those users who can access the Folder, besides any individual users who have been explicitly given access. | [Permission](#enum-permission) | the permissions granted to users who can access the Folder | not started |  |
+| [getSize()](https://developers.google.com/apps-script/reference/drive/folder#getSize()) | Gets the number of bytes used to store the Folder in Drive. Note that Google Workspace application files do not count toward Drive storage limits and thus return 0 bytes. | Integer | the number of bytes used to store the Folder in Drive | not started |  |
+| [getUrl()](https://developers.google.com/apps-script/reference/drive/folder#getUrl()) | Gets the URL that can be used to open the Folder in a Google App like Drive or Docs. | String | the URL that can be used to view this Folder in a Google App like Drive or Docs | not started |  |
+| [getViewers()](https://developers.google.com/apps-script/reference/drive/folder#getViewers()) | Gets the list of viewers and commenters for this Folder. If the user who executes the script does not have edit access to the Folder, this method returns an empty array. | [User[]](#class-user) | The list of viewers and commenters for this Folder if the user has edit access or an empty array otherwise. | not started |  |
+| [isShareableByEditors()](https://developers.google.com/apps-script/reference/drive/folder#isShareableByEditors()) | Determines whether users with edit permissions to the Folder are allowed to share with other users or change the permissions. | Boolean | true if users with edit permissions are allowed to share with other users or change the permissions; false if not | not started |  |
+| [isStarred()](https://developers.google.com/apps-script/reference/drive/folder#isStarred()) | Determines whether the Folder has been starred in the user's Drive. | Boolean | true if the Folder is starred in the user's Drive; false if not | not started |  |
+| [isTrashed()](https://developers.google.com/apps-script/reference/drive/folder#isTrashed()) | Determines whether the Folder is in the trash of the user's Drive. | Boolean | true if the Folder is in the trash of the user's Drive; false if not | not started |  |
+| [moveTo(Folder)](https://developers.google.com/apps-script/reference/drive/folder#moveTo(Folder)) | Moves this item to the provided destination folder. | [Folder](#class-folder) | This Folder, for chaining. | not started |  |
+| [removeEditor(String)](https://developers.google.com/apps-script/reference/drive/folder#removeEditor(String)) | Removes the given user from the list of editors for the Folder. This method doesn't block users from accessing the Folder if they belong to a class of users who have general access—for example, if the Folder is shared with the user's entire domain, or if the Folder is in a shared drive that the user can access. | [Folder](#class-folder) | This Folder, for chaining. | not started |  |
+| [removeEditor(User)](https://developers.google.com/apps-script/reference/drive/folder#removeEditor(User)) | Removes the given user from the list of editors for the Folder. This method doesn't block users from accessing the Folder if they belong to a class of users who have general access—for example, if the Folder is shared with the user's entire domain, or if the Folder is in a shared drive that the user can access. | [Folder](#class-folder) | This Folder, for chaining. | not started |  |
+| [removeViewer(String)](https://developers.google.com/apps-script/reference/drive/folder#removeViewer(String)) | Removes the given user from the list of viewers and commenters for the Folder. This method has no effect if the user is an editor, not a viewer or commenter. This method also doesn't block users from accessing the Folder if they belong to a class of users who have general access—for example, if the Folder is shared with the user's entire domain, or if the Folder is in a shared drive that the user can access. | [Folder](#class-folder) | This Folder for chaining. | not started |  |
+| [removeViewer(User)](https://developers.google.com/apps-script/reference/drive/folder#removeViewer(User)) | Removes the given user from the list of viewers and commenters for the Folder. This method has no effect if the user is an editor, not a viewer. This method also doesn't block users from accessing the Folder if they belong to a class of users who have general access—for example, if the Folder is shared with the user's entire domain, or if the Folder is in a shared drive that the user can access. | [Folder](#class-folder) | This Folder for chaining. | not started |  |
+| [revokePermissions(String)](https://developers.google.com/apps-script/reference/drive/folder#revokePermissions(String)) | Revokes the access to the Folder granted to the given user. This method doesn't block users from accessing the Folder if they belong to a class of users who have general access — for example, if the Folder is shared with the user's entire domain. | [Folder](#class-folder) | This Folder, for chaining. | not started |  |
+| [revokePermissions(User)](https://developers.google.com/apps-script/reference/drive/folder#revokePermissions(User)) | Revokes the access to the Folder granted to the given user. This method doesn't block users from accessing the Folder if they belong to a class of users who have general access — for example, if the Folder is shared with the user's entire domain. | [Folder](#class-folder) | This Folder, for chaining. | not started |  |
+| [searchFiles(String)](https://developers.google.com/apps-script/reference/drive/folder#searchFiles(String)) | Gets a collection of all files that are children of the current folder and match the given search criteria. The search criteria are detailed in the Google Drive SDK documentation. Note that the Drive service uses v2 of the Drive API and some query fields differ from v3. Review the field differences between v2 and v3. | [FileIterator](#class-fileiterator) | A collection of all files that are children of the current folder and match the search criteria. | not started |  |
+| [searchFolders(String)](https://developers.google.com/apps-script/reference/drive/folder#searchFolders(String)) | Gets a collection of all folders that are children of the current folder and match the given search criteria. The search criteria are detailed in the Google Drive SDK documentation. Note that the Drive service uses v2 of the Drive API and some query fields differ from v3. Review the field differences between v2 and v3. | [FolderIterator](#class-folderiterator) | A collection of all folders that are children of the current folder and match the search criteria. | not started |  |
+| [setDescription(String)](https://developers.google.com/apps-script/reference/drive/folder#setDescription(String)) | Sets the description for the Folder. | [Folder](#class-folder) | this Folder, for chaining | not started |  |
+| [setName(String)](https://developers.google.com/apps-script/reference/drive/folder#setName(String)) | Sets the name of the Folder. | [Folder](#class-folder) | this Folder, for chaining | not started |  |
+| [setOwner(String)](https://developers.google.com/apps-script/reference/drive/folder#setOwner(String)) | Changes the owner of the Folder. This method also gives the previous owner explicit edit access to the Folder. | [Folder](#class-folder) | this Folder, for chaining | not started |  |
+| [setOwner(User)](https://developers.google.com/apps-script/reference/drive/folder#setOwner(User)) | Changes the owner of the Folder. This method also gives the previous owner explicit edit access to the Folder. | [Folder](#class-folder) | this Folder, for chaining | not started |  |
+| [setSecurityUpdateEnabled(Boolean)](https://developers.google.com/apps-script/reference/drive/folder#setSecurityUpdateEnabled(Boolean)) | Sets whether the Folder requires a resource key for access when it's shared using a link. Eligible files and folders are enabled by default. | [Folder](#class-folder) | This Folder, for chaining. | not started |  |
+| [setShareableByEditors(Boolean)](https://developers.google.com/apps-script/reference/drive/folder#setShareableByEditors(Boolean)) | Sets whether users with edit permissions to the Folder are allowed to share with other users or change the permissions. The default for a new Folder is true. | [Folder](#class-folder) | this Folder, for chaining | not started |  |
+| [setSharing(Access,Permission)](https://developers.google.com/apps-script/reference/drive/folder#setSharing(Access,Permission)) |  |  |  | not started |  |
+| [setStarred(Boolean)](https://developers.google.com/apps-script/reference/drive/folder#setStarred(Boolean)) | Sets whether the Folder is starred in the user's Drive. The default for new Folders is false. | [Folder](#class-folder) | this Folder, for chaining | not started |  |
+| [setTrashed(Boolean)](https://developers.google.com/apps-script/reference/drive/folder#setTrashed(Boolean)) | Sets whether the Folder is in the trash of the user's Drive. Only the owner may trash the Folder. The default for new Folders is false. | [Folder](#class-folder) | this Folder, for chaining | not started |  |
+
+## Class: [FolderIterator](https://developers.google.com/apps-script/reference/drive/folder-iterator)
+
+An object that allows scripts to iterate over a potentially large collection of folders. Folder iterators can be accessed from DriveApp, a File, or a Folder.
+
+| Method | Description | Return Type | Return Description | Status | Implementation |
+|--- |--- |--- |--- |--- |--- |
+| [getContinuationToken()](https://developers.google.com/apps-script/reference/drive/folder-iterator#getContinuationToken()) | Gets a token that can be used to resume this iteration at a later time. This method is useful if processing an iterator in one execution would exceed the maximum execution time. Continuation tokens are generally valid for one week. | String | a continuation token that can be used to resume this iteration with the items that remained in the iterator when the token was generated | not started |  |
+| [hasNext()](https://developers.google.com/apps-script/reference/drive/folder-iterator#hasNext()) | Determines whether calling next() will return an item. | Boolean | true if next() will return an item; false if not | not started |  |
+| [next()](https://developers.google.com/apps-script/reference/drive/folder-iterator#next()) | Gets the next item in the collection of files or folders. Throws an exception if no items remain. | [Folder](#class-folder) | the next item in the collection | not started |  |
+
+## Class: [User](https://developers.google.com/apps-script/reference/drive/user)
+
+A user associated with a file in Google Drive. Users can be accessed from File.getEditors(), Folder.getViewers(), and other methods.
+
+| Method | Description | Return Type | Return Description | Status | Implementation |
+|--- |--- |--- |--- |--- |--- |
+| [getDomain()](https://developers.google.com/apps-script/reference/drive/user#getDomain()) | Gets the domain name associated with the user's account. | String | the domain name associated with the user's account | completed | [link](../src/services/common/fakeuser.js#L26) |
+| [getEmail()](https://developers.google.com/apps-script/reference/drive/user#getEmail()) | Gets the user's email address. The user's email address is only available if the user has chosen to share the address from the Google+ account settings page, or if the user belongs to the same domain as the user running the script and the domain administrator has allowed all users within the domain to see other users' email addresses. | String | the user's email's address, or a blank string if the email address is not available | completed | [link](../src/services/common/fakeuser.js#L5) |
+| [getName()](https://developers.google.com/apps-script/reference/drive/user#getName()) | Gets the user's name. This method returns null if the user's name is not available. | String | the user's name, or null if the name is not available | completed | [link](../src/services/common/fakeuser.js#L32) |
+| [getPhotoUrl()](https://developers.google.com/apps-script/reference/drive/user#getPhotoUrl()) | Gets the URL for the user's photo. This method returns null if the user's photo is not available. | String | the URL for the user's photo, or null if the photo is not available | completed | [link](../src/services/common/fakeuser.js#L29) |
+
+## Enum: [Access](https://developers.google.com/apps-script/reference/drive/access)
+
+An enum representing classes of users who can access a file or folder, besides any individual users who have been explicitly given access. These properties can be accessed from DriveApp.Access.
+
+| Property | Description | Status | Implementation |
+|--- |--- |--- |--- |
+| ANYONE | Anyone on the Internet can find and access. No sign-in required. Domain administrators can prohibit this setting for users of a Google Workspace domain. If the setting is disabled, passing this value to File.setSharing(accessType, permissionType) throws an exception. | not started |  |
+| ANYONE_WITH_LINK | Anyone who has the link can access. No sign-in required. Domain administrators can prohibit this setting for users of a Google Workspace domain. If the setting is disabled, passing this value to File.setSharing(accessType, permissionType) throws an exception. | not started |  |
+| DOMAIN | People in your domain can find and access. Sign-in required. This setting is available only for users of a Google Workspace domain. For other types of Google accounts, passing this value to File.setSharing(accessType, permissionType) throws an exception. | not started |  |
+| DOMAIN_WITH_LINK | People in your domain who have the link can access. Sign-in required. This setting is available only for users of a Google Workspace domain. For other types of Google accounts, passing this value to File.setSharing(accessType, permissionType) throws an exception. | not started |  |
+| PRIVATE | Only people explicitly granted permission can access. Sign-in required. | not started |  |
+
+## Enum: [Permission](https://developers.google.com/apps-script/reference/drive/permission)
+
+An enum representing the permissions granted to users who can access a file or folder, besides any individual users who have been explicitly given access. These properties can be accessed from DriveApp.Permission.
+
+| Property | Description | Status | Implementation |
+|--- |--- |--- |--- |
+| COMMENT | Users who can access the file or folder are able only to view it, copy it, or comment on it. Passing this value to File.setSharing(accessType, permissionType) throws an exception if the type of file does not support it. | not started |  |
+| EDIT | Users who can access the file or folder are able to edit it. Unless File.setShareableByEditors(shareable) is set to false, users can also change the sharing settings. Passing this value to File.setSharing(accessType, permissionType) throws an exception if the type of file does not support it. | not started |  |
+| FILE_ORGANIZER | Users who can edit, trash, and move content within a shared drive. This value can be returned, but passing it to File.setSharing(accessType, permissionType) throws an exception. | not started |  |
+| NONE | The user does not have any permissions for the file or folder. This value can be returned, but passing it to File.setSharing(accessType, permissionType) throws an exception unless it is set in combination with Access.ANYONE. | not started |  |
+| ORGANIZER | Users who can organize files and folders within a shared drive. This value can be returned, but passing it to File.setSharing(accessType, permissionType) throws an exception. | not started |  |
+| OWNER | The user owns the file or folder. This value can be returned, but passing it to File.setSharing(accessType, permissionType) throws an exception. | not started |  |
+| VIEW | Users who can access the file or folder are able only to view it or copy it. Passing this value to File.setSharing(accessType, permissionType) throws an exception if the type of file does not support it. | not started |  |
+

@@ -106,9 +106,81 @@ const whichCache = () => {
 }
 
 /**
+ * @class FakePropertiesService
+ */
+class FakePropertiesService {
+  constructor(type) {
+    this.kind = ServiceKind.PROPERTIES
+    this.type = type
+  }
+
+  /**
+   * get document properties
+   * @returns {FakeProperties | null}
+   */
+  getDocumentProperties() {
+    // apps script needs a bound document to use this store
+    if (!Auth.getDocumentId()) return null
+    return selectCache(StoreDomain.DOCUMENT, this.kind)
+  }
+
+  /**
+   * get user properties
+   * @returns {FakeProperties}
+   */
+  getUserProperties() {
+    return selectCache(StoreDomain.USER, this.kind)
+  }
+
+  /**
+   * get script properties
+   * @returns {FakeProperties}
+   */
+  getScriptProperties() {
+     return selectCache(StoreDomain.SCRIPT, this.kind)
+  }
+}
+
+/**
+ * @class FakeCacheService
+ */
+class FakeCacheService {
+  constructor(type) {
+    this.kind =  ServiceKind.CACHE
+    this.type = type
+  }
+
+  /**
+   * get document cache
+   * @returns {FakeCache | null}
+   */
+  getDocumentCache() {
+    // apps script needs a bound document to use this store
+    if (!Auth.getDocumentId()) return null
+    return selectCache(StoreDomain.DOCUMENT, this.kind, DEFAULT_CACHE_EXPIRY)
+  }
+
+  /**
+   * get user cache
+   * @returns {FakeCache}
+   */
+  getUserCache() {
+    return selectCache(StoreDomain.USER, this.kind,DEFAULT_CACHE_EXPIRY)
+  }
+
+  /**
+   * get script cache
+   * @returns {FakeCache}
+   */
+  getScriptCache() {
+     return selectCache(StoreDomain.SCRIPT, this.kind, DEFAULT_CACHE_EXPIRY)
+  }
+}
+
+/**
  * create a new FakeService instance
  * @param {ServiceKind} kind of service
- * @returns {FakePropertiesService || FakeCacheService}
+ * @returns {FakePropertiesService | FakeCacheService}
  */
 export const newFakeService = (kind) => {
   kind = validateProp (kind, ServiceKind, 'service_kind')
@@ -138,48 +210,6 @@ const selectCache = (domain, kind, defaultExpirationSeconds) => {
     return Proxies.guard(new store(domain))
   } else {
     throw new Error(`invalid store type ${which.type} found in .env file`)
-  }
-}
-
-/**
- * @class FakePropertiesService
- */
-class FakePropertiesService {
-  constructor(type) {
-    this.kind = ServiceKind.PROPERTIES
-    this.type = type
-  }
-  getDocumentProperties() {
-    // apps script needs a bound document to use this store
-    if (!Auth.getDocumentId()) return null
-    return selectCache(StoreDomain.DOCUMENT, this.kind)
-  }
-  getUserProperties() {
-    return selectCache(StoreDomain.USER, this.kind)
-  }
-  getScriptProperties() {
-     return selectCache(StoreDomain.SCRIPT, this.kind)
-  }
-}
-
-/**
- * @class FakePropertiesService
- */
-class FakeCacheService {
-  constructor(type) {
-    this.kind =  ServiceKind.CACHE
-    this.type = type
-  }
-  getDocumentCache() {
-    // apps script needs a bound document to use this store
-    if (!Auth.getDocumentId()) return null
-    return selectCache(StoreDomain.DOCUMENT, this.kind, DEFAULT_CACHE_EXPIRY)
-  }
-  getUserCache() {
-    return selectCache(StoreDomain.USER, this.kind,DEFAULT_CACHE_EXPIRY)
-  }
-  getScriptCache() {
-     return selectCache(StoreDomain.SCRIPT, this.kind, DEFAULT_CACHE_EXPIRY)
   }
 }
 

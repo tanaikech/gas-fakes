@@ -1,24 +1,43 @@
-# Properties Service Progress - 50% completed
-**Documentation:** [Properties Service](https://developers.google.com/apps-script/reference/properties)
----
-## [PropertiesService](https://developers.google.com/apps-script/reference/properties/properties-service)
-Allows you to store data in a temporary cache.
-(3 methods out of 3 (100%) completed
-| method | return | status | comments |
-|---|---|---|---|
-| [getDocumentProperties()](https://developers.google.com/apps-script/reference/properties/properties-service#getdocumentproperties) | [Properties](#properties) | Completed | |
-| [getScriptProperties()](https://developers.google.com/apps-script/reference/properties/properties-service#getscriptproperties) | [Properties](#properties) | Completed | |
-| [getUserProperties()](https://developers.google.com/apps-script/reference/properties/properties-service#getuserproperties) | [Properties](#properties) | Completed | |
----
-## [Properties](https://developers.google.com/apps-script/reference/properties/properties)
-A store for developer metadata.
-(3 methods out of 6 (50%) completed
-| method | return | status | comments |
-|---|---|---|---|
-| [deleteAllProperties()](https://developers.google.com/apps-script/reference/properties/properties#deleteallproperties) | [Properties](#properties) | Not Started | |
-| [deleteProperty(key)](https://developers.google.com/apps-script/reference/properties/properties#deletepropertykey) | [Properties](#properties) | Completed | |
-| [getKeys()](https://developers.google.com/apps-script/reference/properties/properties#getkeys) | String[] | Not Started | |
-| [getProperties()](https://developers.google.com/apps-script/reference/properties/properties#getproperties) | Object | Not Started | |
-| [getProperty(key)](https://developers.google.com/apps-script/reference/properties/properties#getpropertykey) | String | Completed | |
-| [setProperties(properties, deleteAllOthers)](https://developers.google.com/apps-script/reference/properties/properties#setpropertiesproperties,-deleteallothers) | [Properties](#properties) | Not Started | |
-| [setProperty(key, value)](https://developers.google.com/apps-script/reference/properties/properties#setpropertykey,-value) | [Properties](#properties) | Completed | |
+# [Properties](https://developers.google.com/apps-script/reference/properties)
+
+This service allows scripts to store strings as key-value pairs scoped to one script, one user of a script, or one document in which an editor add-on is used. For more information about when to use each type of property, see the guide to the Properties service.
+
+## Class: [Properties](https://developers.google.com/apps-script/reference/properties/properties)
+
+The properties object acts as the interface to access user, document, or script properties. The specific property type depends on which of the three methods of PropertiesService the script called: PropertiesService.getDocumentProperties(), PropertiesService.getUserProperties(), or PropertiesService.getScriptProperties(). Properties cannot be shared between scripts. For more information about property types, see the guide to the Properties service.
+
+| Method | Description | Return Type | Return Description | Status | Implementation |
+|--- |--- |--- |--- |--- |--- |
+| [deleteAllProperties()](https://developers.google.com/apps-script/reference/properties/properties#deleteAllProperties()) | Deletes all properties in the current Properties store. | [Properties](#class-properties) | this Properties store, for chaining | in progress | [link](../src/services/stores/fakestores.js#L277) |
+| [deleteProperty(String)](https://developers.google.com/apps-script/reference/properties/properties#deleteProperty(String)) | Deletes the property with the given key in the current Properties store. | [Properties](#class-properties) | this Properties store, for chaining | in progress | [link](../src/services/stores/fakestores.js#L285) |
+| [getKeys()](https://developers.google.com/apps-script/reference/properties/properties#getKeys()) | Gets all keys in the current Properties store. | String[] | an array of all keys in the current Properties store | in progress | [link](../src/services/stores/fakestores.js#L289) |
+| [getProperties()](https://developers.google.com/apps-script/reference/properties/properties#getProperties()) | Gets a copy of all key-value pairs in the current Properties store. Note that the returned object is not a live view of the store. Consequently, changing the properties on the returned object will not automatically update them in storage, or vice versa. | Object | a copy of all key-value pairs in the current Properties store | in progress | [link](../src/services/stores/fakestores.js#L272) |
+| [getProperty(String)](https://developers.google.com/apps-script/reference/properties/properties#getProperty(String)) | Gets the value associated with the given key in the current Properties store, or null if no such key exists. | String | the value associated with the given key in the current Properties store | in progress | [link](../src/services/stores/fakestores.js#L300) |
+| [setProperties(Object,Boolean)](https://developers.google.com/apps-script/reference/properties/properties#setProperties(Object,Boolean)) |  |  |  | in progress | [link](../src/services/stores/fakestores.js#L305) |
+| [setProperties(Object)](https://developers.google.com/apps-script/reference/properties/properties#setProperties(Object)) | Sets all key-value pairs from the given object in the current Properties store. | [Properties](#class-properties) | this Properties store, for chaining | in progress | [link](../src/services/stores/fakestores.js#L305) |
+| [setProperty(String,String)](https://developers.google.com/apps-script/reference/properties/properties#setProperty(String,String)) |  |  |  | in progress | [link](../src/services/stores/fakestores.js#L314) |
+
+## Class: [PropertiesService](https://developers.google.com/apps-script/reference/properties/properties-service)
+
+Allows scripts to store simple data in key-value pairs scoped to one script, one user of a script, or one document in which an add-on is used. Properties cannot be shared between scripts. For more information about when to use each type of property, see the guide to the Properties service.
+
+| Method | Description | Return Type | Return Description | Status | Implementation |
+|--- |--- |--- |--- |--- |--- |
+| [getDocumentProperties()](https://developers.google.com/apps-script/reference/properties/properties-service#getDocumentProperties()) | Gets a property store (for this script only) that all users can access within the open document, spreadsheet, or form. It is only available if the script is published and executing as an add-on or if it is bound to a Google file type. When document properties are not available this method returns null. Document properties created by a script are not accessible outside that script, even by other scripts accessing the same document. | [Properties](#class-properties) | a property store for this script only that all users of the current document can access, or null if the script is not either an add-on or bound to a Google Workspace file | in progress | [link](../src/services/stores/fakestores.js#L121) |
+| [getScriptProperties()](https://developers.google.com/apps-script/reference/properties/properties-service#getScriptProperties()) | Gets a property store that all users can access, but only within this script. | [Properties](#class-properties) | a property store that all users of the script can access | in progress | [link](../src/services/stores/fakestores.js#L139) |
+| [getUserProperties()](https://developers.google.com/apps-script/reference/properties/properties-service#getUserProperties()) | Gets a property store that only the current user can access, and only within this script. | [Properties](#class-properties) | a property store that only the current user of the script can access | in progress | [link](../src/services/stores/fakestores.js#L131) |
+
+## Class: [ScriptProperties](https://developers.google.com/apps-script/reference/properties/script-properties)
+
+Deprecated. This class is deprecated and should not be used in new scripts.
+
+| Method | Description | Return Type | Return Description | Status | Implementation |
+|--- |--- |--- |--- |--- |--- |
+
+## Class: [UserProperties](https://developers.google.com/apps-script/reference/properties/user-properties)
+
+Deprecated. This class is deprecated and should not be used in new scripts.
+
+| Method | Description | Return Type | Return Description | Status | Implementation |
+|--- |--- |--- |--- |--- |--- |
+
