@@ -46,7 +46,7 @@ const getFilePaths = (dirPath, fileList = []) => {
 };
 
 const giData = JSON.parse(fs.readFileSync(giPath, 'utf8'));
-const allJsFiles = getFilePaths(projectPath);
+const allJsFiles = getFilePaths(path.join(projectPath, 'src'));
 const fileCache = new Map();
 allJsFiles.forEach(file => fileCache.set(file, fs.readFileSync(file, 'utf8')));
 
@@ -82,9 +82,8 @@ const classSynonyms = {
     'TableCell': ['containerelement', 'element'],
     'Text': ['element'],
     'InlineImage': ['element'],
-    'File': ['fakebasefile', 'fakebaseitem'],
-    'Folder': ['fakebasefile', 'fakebaseitem'],
-    'User': ['fakeuser'],
+    'File': ['drivemeta'],
+    'Folder': ['drivemeta'],
     'PageBreak': ['element'],
     'HorizontalRule': ['element'],
     'Footnote': ['containerelement', 'element'],
@@ -96,21 +95,16 @@ const classSynonyms = {
 };
 
 const classToFileMap = {
-    // Base service classes implemented elsewhere
     'Blob': 'utilities/fakeblob.js',
     'User': 'common/fakeuser.js',
     'Session': 'session/fakesession.js',
     'Logger': 'logger/fakelogger.js',
-    // Properties/Cache services implemented in stores
     'Properties': 'stores/fakestores.js',
     'Cache': 'stores/fakestores.js',
     'PropertiesService': 'stores/fakestores.js',
     'CacheService': 'stores/fakestores.js',
-    // Drive service classes
     'ScriptApp': 'scriptapp/app.js',
-    'DriveApp': 'driveapp/fakedriveapp.js',
-    'File': 'driveapp/fakedrivefile.js',
-    'Folder': 'driveapp/fakedrivefolder.js',
+    'DriveApp': 'driveapp/fakedriveapp.js'
 };
 
 // Populate the dynamic methods set for easier lookup
@@ -172,7 +166,7 @@ for (const service of giData) {
 
             for (const fileName of possibleFileNames) {
                 const filePath = allJsFiles.find(p => p.endsWith(`${serviceDirectory}/${fileName}`));
-                if (filePath && fileCache.has(filePath)) {
+                if (filePath && fileCache.has(filePath) && !fileContents.some(f => f.filePath === filePath)) {
                     fileContents.push({ filePath, content: fileCache.get(filePath) });
                 }
             }
@@ -220,7 +214,7 @@ for (const service of giData) {
                     if (isImplemented) {
                         let inProgress = false;
                         try {
-                            const ast = acorn.parse(file.content, { ecmaVersion: 2022, sourceType: 'module' });
+                            const ast = acorn.parse(file.content, { ecmaVersion: 'latest', sourceType: 'module' });
                             walk.simple(ast, {
                                 MethodDefinition(node) {
                                     if (node.key.name === methodName) {
