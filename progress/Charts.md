@@ -441,5 +441,5 @@ Interface for objects that can represent their data as a DataTable.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| [getDataTable()](https://developers.google.com/apps-script/reference/charts/data-table-source#getDataTable()) | Return the data inside this object as a DataTable. | [DataTable](#class-datatable) | the data as a datatable. | not started |  |
+| getDataTable() | Return the data inside this object as a DataTable. | not started |  |
 

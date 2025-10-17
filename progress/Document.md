@@ -33,13 +33,13 @@ The content of a tab in a Google Docs document. The Body may contain ListItem, P
 | [getHeadingAttributes(ParagraphHeading)](https://developers.google.com/apps-script/reference/document/body#getHeadingAttributes(ParagraphHeading)) | Retrieves the set of attributes for the provided ParagraphHeading. | Object | A map of the attributes and their current values. | not started |  |
 | [getImages()](https://developers.google.com/apps-script/reference/document/body#getImages()) | Retrieves all the InlineImages contained in the section. | [InlineImage[]](#class-inlineimage) | The section images. | not started |  |
 | [getListItems()](https://developers.google.com/apps-script/reference/document/body#getListItems()) | Retrieves all the ListItems contained in the section. | [ListItem[]](#class-listitem) | The section list items. | not started |  |
-| [getMarginBottom()](https://developers.google.com/apps-script/reference/document/body#getMarginBottom()) | Retrieves the bottom margin, in points. | Number | The bottom margin, in points. | not started |  |
-| [getMarginLeft()](https://developers.google.com/apps-script/reference/document/body#getMarginLeft()) | Retrieves the left margin, in points. | Number | The left margin, in points. | not started |  |
-| [getMarginRight()](https://developers.google.com/apps-script/reference/document/body#getMarginRight()) | Retrieves the right margin. | Number | The right margin, in points. | not started |  |
-| [getMarginTop()](https://developers.google.com/apps-script/reference/document/body#getMarginTop()) | Retrieves the top margin. | Number | The top margin, in points. | not started |  |
+| [getMarginBottom()](https://developers.google.com/apps-script/reference/document/body#getMarginBottom()) | Retrieves the bottom margin, in points. | Number | The bottom margin, in points. | completed | [link](../src/services/documentapp/fakebody.js#L0) |
+| [getMarginLeft()](https://developers.google.com/apps-script/reference/document/body#getMarginLeft()) | Retrieves the left margin, in points. | Number | The left margin, in points. | completed | [link](../src/services/documentapp/fakebody.js#L0) |
+| [getMarginRight()](https://developers.google.com/apps-script/reference/document/body#getMarginRight()) | Retrieves the right margin. | Number | The right margin, in points. | completed | [link](../src/services/documentapp/fakebody.js#L0) |
+| [getMarginTop()](https://developers.google.com/apps-script/reference/document/body#getMarginTop()) | Retrieves the top margin. | Number | The top margin, in points. | completed | [link](../src/services/documentapp/fakebody.js#L0) |
 | [getNumChildren()](https://developers.google.com/apps-script/reference/document/body#getNumChildren()) | Retrieves the number of children. | Integer | The number of children. | completed | [link](../src/services/documentapp/fakebody.js#L24) |
-| [getPageHeight()](https://developers.google.com/apps-script/reference/document/body#getPageHeight()) | Retrieves the page height, in points. | Number | The page height, in points. | not started |  |
-| [getPageWidth()](https://developers.google.com/apps-script/reference/document/body#getPageWidth()) | Retrieves the page width, in points. | Number | The page width, in points. | not started |  |
+| [getPageHeight()](https://developers.google.com/apps-script/reference/document/body#getPageHeight()) | Retrieves the page height, in points. | Number | The page height, in points. | completed | [link](../src/services/documentapp/fakebody.js#L0) |
+| [getPageWidth()](https://developers.google.com/apps-script/reference/document/body#getPageWidth()) | Retrieves the page width, in points. | Number | The page width, in points. | completed | [link](../src/services/documentapp/fakebody.js#L0) |
 | [getParagraphs()](https://developers.google.com/apps-script/reference/document/body#getParagraphs()) | Retrieves all the Paragraphs contained in the section (including ListItems). | [Paragraph[]](#class-paragraph) | The section paragraphs. | not started |  |
 | [getParent()](https://developers.google.com/apps-script/reference/document/body#getParent()) | Retrieves the element's parent element. | [ContainerElement](#class-containerelement) | The parent element. | completed | [link](../src/services/documentapp/fakeelement.js#L155) |
 | [getTables()](https://developers.google.com/apps-script/reference/document/body#getTables()) | Retrieves all the Tables contained in the section. | [Table[]](#class-table) | The section tables. | not started |  |
@@ -108,7 +108,7 @@ A generic element that may contain other elements. All elements that may contain
 | [getAttributes()](https://developers.google.com/apps-script/reference/document/container-element#getAttributes()) | Retrieves the element's attributes. | Object | The element's attributes. | not started |  |
 | [getChild(Integer)](https://developers.google.com/apps-script/reference/document/container-element#getChild(Integer)) | Retrieves the child element at the specified child index. | [Element](#interface-element) | The child element at the specified index. | completed | [link](../src/services/documentapp/fakecontainerelement.js#L102) |
 | [getChildIndex(Element)](https://developers.google.com/apps-script/reference/document/container-element#getChildIndex(Element)) | Retrieves the child index for the specified child element. | Integer | The child index. | completed | [link](../src/services/documentapp/fakecontainerelement.js#L169) |
-| [getLinkUrl()](https://developers.google.com/apps-script/reference/document/container-element#getLinkUrl()) | Retrieves the link url. | String | the link url, or null if the element contains multiple values for this attribute | not started |  |
+| [getLinkUrl()](https://developers.google.com/apps-script/reference/document/container-element#getLinkUrl()) | Retrieves the link url. | String | the link url, or null if the element contains multiple values for this attribute | completed | [link](../src/services/documentapp/fakecontainerelement.js#L0) |
 | [getNextSibling()](https://developers.google.com/apps-script/reference/document/container-element#getNextSibling()) | Retrieves the element's next sibling element. | [Element](#interface-element) | The next sibling element. | not started |  |
 | [getNumChildren()](https://developers.google.com/apps-script/reference/document/container-element#getNumChildren()) | Retrieves the number of children. | Integer | The number of children. | completed | [link](../src/services/documentapp/fakecontainerelement.js#L198) |
 | [getParent()](https://developers.google.com/apps-script/reference/document/container-element#getParent()) | Retrieves the element's parent element. | [ContainerElement](#class-containerelement) | The parent element. | completed | [link](../src/services/documentapp/fakeelement.js#L155) |
@@ -121,7 +121,7 @@ A generic element that may contain other elements. All elements that may contain
 | [removeFromParent()](https://developers.google.com/apps-script/reference/document/container-element#removeFromParent()) | Removes the element from its parent. | [ContainerElement](#class-containerelement) | The removed element. | not started |  |
 | [replaceText(String,String)](https://developers.google.com/apps-script/reference/document/container-element#replaceText(String,String)) |  |  |  | not started |  |
 | [setAttributes(Object)](https://developers.google.com/apps-script/reference/document/container-element#setAttributes(Object)) | Sets the element's attributes. | [ContainerElement](#class-containerelement) | The current element. | not started |  |
-| [setLinkUrl(String)](https://developers.google.com/apps-script/reference/document/container-element#setLinkUrl(String)) | Sets the link url. | [ContainerElement](#class-containerelement) | the current element | not started |  |
+| [setLinkUrl(String)](https://developers.google.com/apps-script/reference/document/container-element#setLinkUrl(String)) | Sets the link url. | [ContainerElement](#class-containerelement) | the current element | completed | [link](../src/services/documentapp/fakecontainerelement.js#L0) |
 | [setTextAlignment(TextAlignment)](https://developers.google.com/apps-script/reference/document/container-element#setTextAlignment(TextAlignment)) | Sets the text alignment. The available types of alignment are DocumentApp.TextAlignment.NORMAL, DocumentApp.TextAlignment.SUBSCRIPT, and DocumentApp.TextAlignment.SUPERSCRIPT. | [ContainerElement](#class-containerelement) | the current element | not started |  |
 
 ## Class: [Date](https://developers.google.com/apps-script/reference/document/date)
@@ -216,14 +216,14 @@ A document tab, containing rich text and elements such as tables and lists.
 |--- |--- |--- |--- |--- |--- |
 | [addBookmark(Position)](https://developers.google.com/apps-script/reference/document/document-tab#addBookmark(Position)) | Adds a Bookmark at the given Position. | [Bookmark](#class-bookmark) | The new bookmark. | in progress | [link](../src/services/documentapp/fakedocumenttab.js#L37) |
 | [addFooter()](https://developers.google.com/apps-script/reference/document/document-tab#addFooter()) | Adds a tab footer section, if none exists. | [FooterSection](#class-footersection) | The tab footer. | in progress | [link](../src/services/documentapp/fakedocumenttab.js#L41) |
-| [addHeader()](https://developers.google.com/apps-script/reference/document/document-tab#addHeader()) | Adds a tab header section, if none exists. | [HeaderSection](#class-headersection) | The tab header. | in progress | [link](../src/services/documentapp/fakedocumenttab.js#L49) |
+| [addHeader()](https://developers.google.com/apps-script/reference/document/document-tab#addHeader()) | Adds a tab header section, if none exists. | [HeaderSection](#class-headersection) | The tab header. | completed | [link](../src/services/documentapp/fakedocumenttab.js#L49) |
 | [addNamedRange(String,Range)](https://developers.google.com/apps-script/reference/document/document-tab#addNamedRange(String,Range)) |  |  |  | in progress | [link](../src/services/documentapp/fakedocumenttab.js#L53) |
-| [getBody()](https://developers.google.com/apps-script/reference/document/document-tab#getBody()) | Retrieves the tab's Body. | [Body](#class-body) | The tab's body section. | in progress | [link](../src/services/documentapp/fakedocumenttab.js#L33) |
+| [getBody()](https://developers.google.com/apps-script/reference/document/document-tab#getBody()) | Retrieves the tab's Body. | [Body](#class-body) | The tab's body section. | completed | [link](../src/services/documentapp/fakedocumenttab.js#L33) |
 | [getBookmark(String)](https://developers.google.com/apps-script/reference/document/document-tab#getBookmark(String)) | Gets the Bookmark with the given ID. This method returns null if no such Bookmark exists within this tab. | [Bookmark](#class-bookmark) | The Bookmark with the given ID, or null if no such Bookmark exists within the tab. | in progress | [link](../src/services/documentapp/fakedocumenttab.js#L57) |
 | [getBookmarks()](https://developers.google.com/apps-script/reference/document/document-tab#getBookmarks()) | Gets all Bookmark objects in the tab. | [Bookmark[]](#class-bookmark) | An array of the Bookmark objects in the tab. | in progress | [link](../src/services/documentapp/fakedocumenttab.js#L61) |
 | [getFooter()](https://developers.google.com/apps-script/reference/document/document-tab#getFooter()) | Retrieves the tab's footer section, if one exists. | [FooterSection](#class-footersection) | The tab's footer. | in progress | [link](../src/services/documentapp/fakedocumenttab.js#L65) |
 | [getFootnotes()](https://developers.google.com/apps-script/reference/document/document-tab#getFootnotes()) | Retrieves all the Footnote elements in the tab's body. | [Footnote[]](#class-footnote) | The tab's footnotes. | in progress | [link](../src/services/documentapp/fakedocumenttab.js#L73) |
-| [getHeader()](https://developers.google.com/apps-script/reference/document/document-tab#getHeader()) | Retrieves the tab's header section, if one exists. | [HeaderSection](#class-headersection) | The tab's header. | in progress | [link](../src/services/documentapp/fakedocumenttab.js#L77) |
+| [getHeader()](https://developers.google.com/apps-script/reference/document/document-tab#getHeader()) | Retrieves the tab's header section, if one exists. | [HeaderSection](#class-headersection) | The tab's header. | completed | [link](../src/services/documentapp/fakedocumenttab.js#L77) |
 | [getNamedRangeById(String)](https://developers.google.com/apps-script/reference/document/document-tab#getNamedRangeById(String)) | Gets the NamedRange with the given ID. This method returns null if no such NamedRange exists in the tab. Names are not necessarily unique, even across tabs; several different ranges in the same document may share the same name, much like a class in HTML. By contrast, IDs are unique within the tab, like an ID in HTML. | [NamedRange](#class-namedrange) | The NamedRange with the given ID, or null if no such range exists in the tab. | in progress | [link](../src/services/documentapp/fakedocumenttab.js#L81) |
 | [getNamedRanges()](https://developers.google.com/apps-script/reference/document/document-tab#getNamedRanges()) | Gets all NamedRange objects in the tab. | [NamedRange[]](#class-namedrange) | An array of the NamedRange objects in the tab, possibly including multiple ranges with the same name. | in progress | [link](../src/services/documentapp/fakedocumenttab.js#L85) |
 | [getNamedRanges(String)](https://developers.google.com/apps-script/reference/document/document-tab#getNamedRanges(String)) | Gets all NamedRange objects in the tab with the given name. Names are not necessarily unique, even across tabs; several different ranges in the same document may share the same name, much like a class in HTML. By contrast, IDs are unique within the tab, like an ID in HTML. | [NamedRange[]](#class-namedrange) | An array of the NamedRange objects in the tab with the given name. | in progress | [link](../src/services/documentapp/fakedocumenttab.js#L85) |
@@ -529,7 +529,7 @@ An element representing an embedded image. An InlineImage can be contained withi
 
 | Method | Description | Return Type | Return Description | Status | Implementation |
 |--- |--- |--- |--- |--- |--- |
-| [copy()](https://developers.google.com/apps-script/reference/document/inline-image#copy()) | Returns a detached, deep copy of the current element. | [InlineImage](#class-inlineimage) | The new copy. | in progress | [link](../src/services/documentapp/fakeinlineimage.js#L41) |
+| [copy()](https://developers.google.com/apps-script/reference/document/inline-image#copy()) | Returns a detached, deep copy of the current element. | [InlineImage](#class-inlineimage) | The new copy. | completed | [link](../src/services/documentapp/fakeinlineimage.js#L41) |
 | [getAltDescription()](https://developers.google.com/apps-script/reference/document/inline-image#getAltDescription()) | Returns the image's alternate description. | String | The alternate description, or null if the element does not have an alternate description. | completed | [link](../src/services/documentapp/fakeinlineimage.js#L78) |
 | [getAltTitle()](https://developers.google.com/apps-script/reference/document/inline-image#getAltTitle()) | Returns the image's alternate title. | String | The alternate title, or null if the element does not have an alternate title. | completed | [link](../src/services/documentapp/fakeinlineimage.js#L82) |
 | [getAs(String)](https://developers.google.com/apps-script/reference/document/inline-image#getAs(String)) | Return the data inside this object as a blob converted to the specified content type. This method adds the appropriate extension to the filename—for example, "myfile.pdf". However, it assumes that the part of the filename that follows the last period (if any) is an existing extension that should be replaced. Consequently, "ShoppingList.12.25.2014" becomes "ShoppingList.12.25.pdf". | Blob | The data as a blob. | completed | [link](../src/services/documentapp/fakeinlineimage.js#L92) |
@@ -564,37 +564,37 @@ An element representing a list item. A ListItem is a Paragraph that is associate
 | [appendInlineImage(InlineImage)](https://developers.google.com/apps-script/reference/document/list-item#appendInlineImage(InlineImage)) | Appends the given InlineImage. | [InlineImage](#class-inlineimage) | the appended image | not started |  |
 | [appendPageBreak()](https://developers.google.com/apps-script/reference/document/list-item#appendPageBreak()) | Creates and appends a new PageBreak. | [PageBreak](#class-pagebreak) | the new page break element | not started |  |
 | [appendPageBreak(PageBreak)](https://developers.google.com/apps-script/reference/document/list-item#appendPageBreak(PageBreak)) | Appends the given PageBreak. | [PageBreak](#class-pagebreak) | the appended page break element | not started |  |
-| [appendText(String)](https://developers.google.com/apps-script/reference/document/list-item#appendText(String)) | Creates and appends a new Text element with the specified contents. | [Text](#class-text) | the new text element | in progress | [link](../src/services/documentapp/fakelistitem.js#L8) |
-| [appendText(Text)](https://developers.google.com/apps-script/reference/document/list-item#appendText(Text)) | Appends the given Text element. | [Text](#class-text) | the appended text element | in progress | [link](../src/services/documentapp/fakelistitem.js#L8) |
-| [clear()](https://developers.google.com/apps-script/reference/document/list-item#clear()) | Clears the contents of the element. | [ListItem](#class-listitem) | The current element. | in progress | [link](../src/services/documentapp/fakelistitem.js#L321) |
-| [copy()](https://developers.google.com/apps-script/reference/document/list-item#copy()) | Returns a detached, deep copy of the current element. | [ListItem](#class-listitem) | The new copy. | in progress | [link](../src/services/documentapp/fakelistitem.js#L40) |
+| [appendText(String)](https://developers.google.com/apps-script/reference/document/list-item#appendText(String)) | Creates and appends a new Text element with the specified contents. | [Text](#class-text) | the new text element | completed | [link](../src/services/documentapp/fakelistitem.js#L8) |
+| [appendText(Text)](https://developers.google.com/apps-script/reference/document/list-item#appendText(Text)) | Appends the given Text element. | [Text](#class-text) | the appended text element | completed | [link](../src/services/documentapp/fakelistitem.js#L8) |
+| [clear()](https://developers.google.com/apps-script/reference/document/list-item#clear()) | Clears the contents of the element. | [ListItem](#class-listitem) | The current element. | completed | [link](../src/services/documentapp/fakelistitem.js#L321) |
+| [copy()](https://developers.google.com/apps-script/reference/document/list-item#copy()) | Returns a detached, deep copy of the current element. | [ListItem](#class-listitem) | The new copy. | completed | [link](../src/services/documentapp/fakelistitem.js#L40) |
 | [editAsText()](https://developers.google.com/apps-script/reference/document/list-item#editAsText()) | Obtains a Text version of the current element, for editing. | [Text](#class-text) | a text version of the current element | not started |  |
 | [findElement(ElementType,RangeElement)](https://developers.google.com/apps-script/reference/document/list-item#findElement(ElementType,RangeElement)) |  |  |  | not started |  |
 | [findElement(ElementType)](https://developers.google.com/apps-script/reference/document/list-item#findElement(ElementType)) | Searches the contents of the element for a descendant of the specified type. | [RangeElement](#class-rangeelement) | A search result indicating the position of the search element. | not started |  |
 | [findText(String,RangeElement)](https://developers.google.com/apps-script/reference/document/list-item#findText(String,RangeElement)) |  |  |  | not started |  |
 | [findText(String)](https://developers.google.com/apps-script/reference/document/list-item#findText(String)) | Searches the contents of the element for the specified text pattern using regular expressions. | [RangeElement](#class-rangeelement) | a search result indicating the position of the search text, or null if there is no match | not started |  |
-| [getAlignment()](https://developers.google.com/apps-script/reference/document/list-item#getAlignment()) | Retrieves the HorizontalAlignment. | [HorizontalAlignment](#enum-horizontalalignment) | the alignment | in progress | [link](../src/services/documentapp/fakelistitem.js#L182) |
-| [getAttributes()](https://developers.google.com/apps-script/reference/document/list-item#getAttributes()) | Retrieves the element's attributes. | Object | The element's attributes. | in progress | [link](../src/services/documentapp/fakelistitem.js#L7) |
+| [getAlignment()](https://developers.google.com/apps-script/reference/document/list-item#getAlignment()) | Retrieves the HorizontalAlignment. | [HorizontalAlignment](#enum-horizontalalignment) | the alignment | completed | [link](../src/services/documentapp/fakelistitem.js#L182) |
+| [getAttributes()](https://developers.google.com/apps-script/reference/document/list-item#getAttributes()) | Retrieves the element's attributes. | Object | The element's attributes. | completed | [link](../src/services/documentapp/fakelistitem.js#L7) |
 | [getChild(Integer)](https://developers.google.com/apps-script/reference/document/list-item#getChild(Integer)) | Retrieves the child element at the specified child index. | [Element](#interface-element) | The child element at the specified index. | completed | [link](../src/services/documentapp/fakecontainerelement.js#L102) |
 | [getChildIndex(Element)](https://developers.google.com/apps-script/reference/document/list-item#getChildIndex(Element)) | Retrieves the child index for the specified child element. | Integer | The child index. | completed | [link](../src/services/documentapp/fakecontainerelement.js#L169) |
-| [getGlyphType()](https://developers.google.com/apps-script/reference/document/list-item#getGlyphType()) | Retrieves the list item's GlyphType. | [GlyphType](#enum-glyphtype) | the glyph type | in progress | [link](../src/services/documentapp/fakelistitem.js#L52) |
-| [getHeading()](https://developers.google.com/apps-script/reference/document/list-item#getHeading()) | Retrieves the ParagraphHeading. | [ParagraphHeading](#enum-paragraphheading) | the heading | in progress | [link](../src/services/documentapp/fakelistitem.js#L126) |
-| [getIndentEnd()](https://developers.google.com/apps-script/reference/document/list-item#getIndentEnd()) | Retrieves the end indentation, in points. | Number | the end indentation, in points | in progress | [link](../src/services/documentapp/fakelistitem.js#L207) |
-| [getIndentFirstLine()](https://developers.google.com/apps-script/reference/document/list-item#getIndentFirstLine()) | Retrieves the first line indentation, in points. | Number | the first line indentation, in points | in progress | [link](../src/services/documentapp/fakelistitem.js#L219) |
-| [getIndentStart()](https://developers.google.com/apps-script/reference/document/list-item#getIndentStart()) | Retrieves the start indentation. | Number | the start indentation | in progress | [link](../src/services/documentapp/fakelistitem.js#L225) |
-| [getLineSpacing()](https://developers.google.com/apps-script/reference/document/list-item#getLineSpacing()) | Retrieves the line spacing, in points. | Number | the line spacing, in points | in progress | [link](../src/services/documentapp/fakelistitem.js#L231) |
-| [getLinkUrl()](https://developers.google.com/apps-script/reference/document/list-item#getLinkUrl()) | Retrieves the link url. | String | the link url, or null if the element contains multiple values for this attribute | not started |  |
-| [getListId()](https://developers.google.com/apps-script/reference/document/list-item#getListId()) | Retrieves the list ID. | String | the list ID | in progress | [link](../src/services/documentapp/fakelistitem.js#L55) |
-| [getNestingLevel()](https://developers.google.com/apps-script/reference/document/list-item#getNestingLevel()) | Retrieves the list item's nesting level. | Integer | the nesting level | in progress | [link](../src/services/documentapp/fakelistitem.js#L58) |
+| [getGlyphType()](https://developers.google.com/apps-script/reference/document/list-item#getGlyphType()) | Retrieves the list item's GlyphType. | [GlyphType](#enum-glyphtype) | the glyph type | completed | [link](../src/services/documentapp/fakelistitem.js#L52) |
+| [getHeading()](https://developers.google.com/apps-script/reference/document/list-item#getHeading()) | Retrieves the ParagraphHeading. | [ParagraphHeading](#enum-paragraphheading) | the heading | completed | [link](../src/services/documentapp/fakelistitem.js#L126) |
+| [getIndentEnd()](https://developers.google.com/apps-script/reference/document/list-item#getIndentEnd()) | Retrieves the end indentation, in points. | Number | the end indentation, in points | completed | [link](../src/services/documentapp/fakelistitem.js#L207) |
+| [getIndentFirstLine()](https://developers.google.com/apps-script/reference/document/list-item#getIndentFirstLine()) | Retrieves the first line indentation, in points. | Number | the first line indentation, in points | completed | [link](../src/services/documentapp/fakelistitem.js#L219) |
+| [getIndentStart()](https://developers.google.com/apps-script/reference/document/list-item#getIndentStart()) | Retrieves the start indentation. | Number | the start indentation | completed | [link](../src/services/documentapp/fakelistitem.js#L225) |
+| [getLineSpacing()](https://developers.google.com/apps-script/reference/document/list-item#getLineSpacing()) | Retrieves the line spacing, in points. | Number | the line spacing, in points | completed | [link](../src/services/documentapp/fakelistitem.js#L231) |
+| [getLinkUrl()](https://developers.google.com/apps-script/reference/document/list-item#getLinkUrl()) | Retrieves the link url. | String | the link url, or null if the element contains multiple values for this attribute | completed | [link](../src/services/documentapp/fakelistitem.js#L0) |
+| [getListId()](https://developers.google.com/apps-script/reference/document/list-item#getListId()) | Retrieves the list ID. | String | the list ID | completed | [link](../src/services/documentapp/fakelistitem.js#L55) |
+| [getNestingLevel()](https://developers.google.com/apps-script/reference/document/list-item#getNestingLevel()) | Retrieves the list item's nesting level. | Integer | the nesting level | completed | [link](../src/services/documentapp/fakelistitem.js#L58) |
 | [getNextSibling()](https://developers.google.com/apps-script/reference/document/list-item#getNextSibling()) | Retrieves the element's next sibling element. | [Element](#interface-element) | The next sibling element. | not started |  |
 | [getNumChildren()](https://developers.google.com/apps-script/reference/document/list-item#getNumChildren()) | Retrieves the number of children. | Integer | The number of children. | completed | [link](../src/services/documentapp/fakecontainerelement.js#L198) |
 | [getParent()](https://developers.google.com/apps-script/reference/document/list-item#getParent()) | Retrieves the element's parent element. | [ContainerElement](#class-containerelement) | The parent element. | completed | [link](../src/services/documentapp/fakeelement.js#L155) |
 | [getPositionedImage(String)](https://developers.google.com/apps-script/reference/document/list-item#getPositionedImage(String)) | Gets a PositionedImage by the image's ID. | [PositionedImage](#class-positionedimage) | the positioned image | not started |  |
 | [getPositionedImages()](https://developers.google.com/apps-script/reference/document/list-item#getPositionedImages()) | Gets all PositionedImage objects anchored to the paragraph. | [PositionedImage[]](#class-positionedimage) | a list of positioned images | not started |  |
 | [getPreviousSibling()](https://developers.google.com/apps-script/reference/document/list-item#getPreviousSibling()) | Retrieves the element's previous sibling element. | [Element](#interface-element) | The previous sibling element. | not started |  |
-| [getSpacingAfter()](https://developers.google.com/apps-script/reference/document/list-item#getSpacingAfter()) | Retrieves the spacing after the element, in points. | Number | the spacing after the element, in points | in progress | [link](../src/services/documentapp/fakelistitem.js#L243) |
-| [getSpacingBefore()](https://developers.google.com/apps-script/reference/document/list-item#getSpacingBefore()) | Retrieves the spacing before the element, in points. | Number | the spacing before the element, in points | in progress | [link](../src/services/documentapp/fakelistitem.js#L255) |
-| [getText()](https://developers.google.com/apps-script/reference/document/list-item#getText()) | Retrieves the contents of the element as a text string. | String | the contents of the element as text string | in progress | [link](../src/services/documentapp/fakelistitem.js#L7) |
+| [getSpacingAfter()](https://developers.google.com/apps-script/reference/document/list-item#getSpacingAfter()) | Retrieves the spacing after the element, in points. | Number | the spacing after the element, in points | completed | [link](../src/services/documentapp/fakelistitem.js#L243) |
+| [getSpacingBefore()](https://developers.google.com/apps-script/reference/document/list-item#getSpacingBefore()) | Retrieves the spacing before the element, in points. | Number | the spacing before the element, in points | completed | [link](../src/services/documentapp/fakelistitem.js#L255) |
+| [getText()](https://developers.google.com/apps-script/reference/document/list-item#getText()) | Retrieves the contents of the element as a text string. | String | the contents of the element as text string | completed | [link](../src/services/documentapp/fakelistitem.js#L7) |
 | [getTextAlignment()](https://developers.google.com/apps-script/reference/document/list-item#getTextAlignment()) | Gets the text alignment. The available types of alignment are DocumentApp.TextAlignment.NORMAL, DocumentApp.TextAlignment.SUBSCRIPT, and DocumentApp.TextAlignment.SUPERSCRIPT. | [TextAlignment](#enum-textalignment) | the type of text alignment, or null if the text contains multiple types of text alignments or if the text alignment has never been set | not started |  |
 | [getType()](https://developers.google.com/apps-script/reference/document/list-item#getType()) | Retrieves the element's ElementType. | [ElementType](#enum-elementtype) | The element type. | completed | [link](../src/services/documentapp/fakecontainerelement.js#L79) |
 | [insertHorizontalRule(Integer)](https://developers.google.com/apps-script/reference/document/list-item#insertHorizontalRule(Integer)) | Creates and inserts a HorizontalRule at the specified index. | [HorizontalRule](#class-horizontalrule) | the new horizontal rule element | not started |  |
@@ -602,30 +602,30 @@ An element representing a list item. A ListItem is a Paragraph that is associate
 | [insertInlineImage(Integer,InlineImage)](https://developers.google.com/apps-script/reference/document/list-item#insertInlineImage(Integer,InlineImage)) |  |  |  | not started |  |
 | [insertPageBreak(Integer,PageBreak)](https://developers.google.com/apps-script/reference/document/list-item#insertPageBreak(Integer,PageBreak)) |  |  |  | not started |  |
 | [insertPageBreak(Integer)](https://developers.google.com/apps-script/reference/document/list-item#insertPageBreak(Integer)) | Creates and inserts a new PageBreak at the specified index. | [PageBreak](#class-pagebreak) | the new page break element | not started |  |
-| [insertText(Integer,String)](https://developers.google.com/apps-script/reference/document/list-item#insertText(Integer,String)) |  |  |  | in progress | [link](../src/services/documentapp/fakelistitem.js#L371) |
-| [insertText(Integer,Text)](https://developers.google.com/apps-script/reference/document/list-item#insertText(Integer,Text)) |  |  |  | in progress | [link](../src/services/documentapp/fakelistitem.js#L371) |
+| [insertText(Integer,String)](https://developers.google.com/apps-script/reference/document/list-item#insertText(Integer,String)) |  |  |  | completed | [link](../src/services/documentapp/fakelistitem.js#L371) |
+| [insertText(Integer,Text)](https://developers.google.com/apps-script/reference/document/list-item#insertText(Integer,Text)) |  |  |  | completed | [link](../src/services/documentapp/fakelistitem.js#L371) |
 | [isAtDocumentEnd()](https://developers.google.com/apps-script/reference/document/list-item#isAtDocumentEnd()) | Determines whether the element is at the end of the Document. | Boolean | Whether the element is at the end of the tab. | not started |  |
-| [isLeftToRight()](https://developers.google.com/apps-script/reference/document/list-item#isLeftToRight()) | Retrieves the left-to-right setting. | Boolean | the left-to-right setting | in progress | [link](../src/services/documentapp/fakelistitem.js#L267) |
+| [isLeftToRight()](https://developers.google.com/apps-script/reference/document/list-item#isLeftToRight()) | Retrieves the left-to-right setting. | Boolean | the left-to-right setting | completed | [link](../src/services/documentapp/fakelistitem.js#L267) |
 | [merge()](https://developers.google.com/apps-script/reference/document/list-item#merge()) | Merges the element with the preceding sibling of the same type. | [ListItem](#class-listitem) | The merged element. | not started |  |
 | [removeChild(Element)](https://developers.google.com/apps-script/reference/document/list-item#removeChild(Element)) | Removes the specified child element. | [ListItem](#class-listitem) | the current element | not started |  |
 | [removeFromParent()](https://developers.google.com/apps-script/reference/document/list-item#removeFromParent()) | Removes the element from its parent. | [ListItem](#class-listitem) | The removed element. | not started |  |
 | [removePositionedImage(String)](https://developers.google.com/apps-script/reference/document/list-item#removePositionedImage(String)) | Removes a PositionedImage by the image's ID. | Boolean | whether or not the specified image was removed | not started |  |
 | [replaceText(String,String)](https://developers.google.com/apps-script/reference/document/list-item#replaceText(String,String)) |  |  |  | not started |  |
-| [setAlignment(HorizontalAlignment)](https://developers.google.com/apps-script/reference/document/list-item#setAlignment(HorizontalAlignment)) | Sets the HorizontalAlignment. | [ListItem](#class-listitem) | the current element | in progress | [link](../src/services/documentapp/fakelistitem.js#L188) |
+| [setAlignment(HorizontalAlignment)](https://developers.google.com/apps-script/reference/document/list-item#setAlignment(HorizontalAlignment)) | Sets the HorizontalAlignment. | [ListItem](#class-listitem) | the current element | completed | [link](../src/services/documentapp/fakelistitem.js#L188) |
 | [setAttributes(Object)](https://developers.google.com/apps-script/reference/document/list-item#setAttributes(Object)) | Sets the element's attributes. | [ListItem](#class-listitem) | The current element. | not started |  |
-| [setGlyphType(GlyphType)](https://developers.google.com/apps-script/reference/document/list-item#setGlyphType(GlyphType)) | Sets the list item's GlyphType. | [ListItem](#class-listitem) | the current element | in progress | [link](../src/services/documentapp/fakelistitem.js#L288) |
-| [setHeading(ParagraphHeading)](https://developers.google.com/apps-script/reference/document/list-item#setHeading(ParagraphHeading)) | Sets the ParagraphHeading. | [ListItem](#class-listitem) | the current element | in progress | [link](../src/services/documentapp/fakelistitem.js#L153) |
-| [setIndentEnd(Number)](https://developers.google.com/apps-script/reference/document/list-item#setIndentEnd(Number)) | Sets the end indentation, in points. | [ListItem](#class-listitem) | the current element | in progress | [link](../src/services/documentapp/fakelistitem.js#L213) |
-| [setIndentFirstLine(Number)](https://developers.google.com/apps-script/reference/document/list-item#setIndentFirstLine(Number)) | Sets the first line indentation, in points. | [ListItem](#class-listitem) | the current element | in progress | [link](../src/services/documentapp/fakelistitem.js#L301) |
-| [setIndentStart(Number)](https://developers.google.com/apps-script/reference/document/list-item#setIndentStart(Number)) | Sets the start indentation, in points. | [ListItem](#class-listitem) | the current element | in progress | [link](../src/services/documentapp/fakelistitem.js#L313) |
-| [setLeftToRight(Boolean)](https://developers.google.com/apps-script/reference/document/list-item#setLeftToRight(Boolean)) | Sets the left-to-right setting. | [ListItem](#class-listitem) | the current element | in progress | [link](../src/services/documentapp/fakelistitem.js#L276) |
-| [setLineSpacing(Number)](https://developers.google.com/apps-script/reference/document/list-item#setLineSpacing(Number)) | Sets the line spacing, as a quantity indicating the number of lines to use for spacing. | [ListItem](#class-listitem) | the current element | in progress | [link](../src/services/documentapp/fakelistitem.js#L237) |
-| [setLinkUrl(String)](https://developers.google.com/apps-script/reference/document/list-item#setLinkUrl(String)) | Sets the link url. | [ListItem](#class-listitem) | the current element | not started |  |
-| [setListId(ListItem)](https://developers.google.com/apps-script/reference/document/list-item#setListId(ListItem)) | Sets the list ID. | [ListItem](#class-listitem) | the current element | not started |  |
-| [setNestingLevel(Integer)](https://developers.google.com/apps-script/reference/document/list-item#setNestingLevel(Integer)) | Sets the list item's nesting level. | [ListItem](#class-listitem) | the current element | in progress | [link](../src/services/documentapp/fakelistitem.js#L392) |
-| [setSpacingAfter(Number)](https://developers.google.com/apps-script/reference/document/list-item#setSpacingAfter(Number)) | Sets the spacing after the element, in points. | [ListItem](#class-listitem) | the current element | in progress | [link](../src/services/documentapp/fakelistitem.js#L249) |
-| [setSpacingBefore(Number)](https://developers.google.com/apps-script/reference/document/list-item#setSpacingBefore(Number)) | Sets the spacing before the element, in points. | [ListItem](#class-listitem) | the current element | in progress | [link](../src/services/documentapp/fakelistitem.js#L261) |
-| [setText(String)](https://developers.google.com/apps-script/reference/document/list-item#setText(String)) | Sets the contents of the list item as text. |  |  | in progress | [link](../src/services/documentapp/fakelistitem.js#L354) |
+| [setGlyphType(GlyphType)](https://developers.google.com/apps-script/reference/document/list-item#setGlyphType(GlyphType)) | Sets the list item's GlyphType. | [ListItem](#class-listitem) | the current element | completed | [link](../src/services/documentapp/app.js#L0) |
+| [setHeading(ParagraphHeading)](https://developers.google.com/apps-script/reference/document/list-item#setHeading(ParagraphHeading)) | Sets the ParagraphHeading. | [ListItem](#class-listitem) | the current element | completed | [link](../src/services/documentapp/fakelistitem.js#L153) |
+| [setIndentEnd(Number)](https://developers.google.com/apps-script/reference/document/list-item#setIndentEnd(Number)) | Sets the end indentation, in points. | [ListItem](#class-listitem) | the current element | completed | [link](../src/services/documentapp/fakelistitem.js#L213) |
+| [setIndentFirstLine(Number)](https://developers.google.com/apps-script/reference/document/list-item#setIndentFirstLine(Number)) | Sets the first line indentation, in points. | [ListItem](#class-listitem) | the current element | completed | [link](../src/services/documentapp/fakelistitem.js#L301) |
+| [setIndentStart(Number)](https://developers.google.com/apps-script/reference/document/list-item#setIndentStart(Number)) | Sets the start indentation, in points. | [ListItem](#class-listitem) | the current element | completed | [link](../src/services/documentapp/fakelistitem.js#L313) |
+| [setLeftToRight(Boolean)](https://developers.google.com/apps-script/reference/document/list-item#setLeftToRight(Boolean)) | Sets the left-to-right setting. | [ListItem](#class-listitem) | the current element | completed | [link](../src/services/documentapp/fakelistitem.js#L276) |
+| [setLineSpacing(Number)](https://developers.google.com/apps-script/reference/document/list-item#setLineSpacing(Number)) | Sets the line spacing, as a quantity indicating the number of lines to use for spacing. | [ListItem](#class-listitem) | the current element | completed | [link](../src/services/documentapp/fakelistitem.js#L237) |
+| [setLinkUrl(String)](https://developers.google.com/apps-script/reference/document/list-item#setLinkUrl(String)) | Sets the link url. | [ListItem](#class-listitem) | the current element | completed | [link](../src/services/documentapp/fakelistitem.js#L0) |
+| [setListId(ListItem)](https://developers.google.com/apps-script/reference/document/list-item#setListId(ListItem)) | Sets the list ID. | [ListItem](#class-listitem) | the current element | completed | [link](../src/services/documentapp/fakelistitem.js#L0) |
+| [setNestingLevel(Integer)](https://developers.google.com/apps-script/reference/document/list-item#setNestingLevel(Integer)) | Sets the list item's nesting level. | [ListItem](#class-listitem) | the current element | completed | [link](../src/services/documentapp/app.js#L0) |
+| [setSpacingAfter(Number)](https://developers.google.com/apps-script/reference/document/list-item#setSpacingAfter(Number)) | Sets the spacing after the element, in points. | [ListItem](#class-listitem) | the current element | completed | [link](../src/services/documentapp/fakelistitem.js#L249) |
+| [setSpacingBefore(Number)](https://developers.google.com/apps-script/reference/document/list-item#setSpacingBefore(Number)) | Sets the spacing before the element, in points. | [ListItem](#class-listitem) | the current element | completed | [link](../src/services/documentapp/fakelistitem.js#L261) |
+| [setText(String)](https://developers.google.com/apps-script/reference/document/list-item#setText(String)) | Sets the contents of the list item as text. |  |  | completed | [link](../src/services/documentapp/fakelistitem.js#L354) |
 | [setTextAlignment(TextAlignment)](https://developers.google.com/apps-script/reference/document/list-item#setTextAlignment(TextAlignment)) | Sets the text alignment. The available types of alignment are DocumentApp.TextAlignment.NORMAL, DocumentApp.TextAlignment.SUBSCRIPT, and DocumentApp.TextAlignment.SUPERSCRIPT. | [ListItem](#class-listitem) | the current element | not started |  |
 
 ## Class: [NamedRange](https://developers.google.com/apps-script/reference/document/named-range)
@@ -685,7 +685,7 @@ An element representing a paragraph. A Paragraph may contain Equation, Footnote,
 | [getIndentFirstLine()](https://developers.google.com/apps-script/reference/document/paragraph#getIndentFirstLine()) | Retrieves the first line indentation, in points. | Number | the first line indentation, in points | completed | [link](../src/services/documentapp/fakeparagraph.js#L189) |
 | [getIndentStart()](https://developers.google.com/apps-script/reference/document/paragraph#getIndentStart()) | Retrieves the start indentation. | Number | the start indentation | completed | [link](../src/services/documentapp/fakeparagraph.js#L201) |
 | [getLineSpacing()](https://developers.google.com/apps-script/reference/document/paragraph#getLineSpacing()) | Retrieves the line spacing, in points. | Number | the line spacing, in points | completed | [link](../src/services/documentapp/fakeparagraph.js#L213) |
-| [getLinkUrl()](https://developers.google.com/apps-script/reference/document/paragraph#getLinkUrl()) | Retrieves the link url. | String | the link url, or null if the element contains multiple values for this attribute | not started |  |
+| [getLinkUrl()](https://developers.google.com/apps-script/reference/document/paragraph#getLinkUrl()) | Retrieves the link url. | String | the link url, or null if the element contains multiple values for this attribute | completed | [link](../src/services/documentapp/fakeparagraph.js#L0) |
 | [getNextSibling()](https://developers.google.com/apps-script/reference/document/paragraph#getNextSibling()) | Retrieves the element's next sibling element. | [Element](#interface-element) | The next sibling element. | not started |  |
 | [getNumChildren()](https://developers.google.com/apps-script/reference/document/paragraph#getNumChildren()) | Retrieves the number of children. | Integer | The number of children. | completed | [link](../src/services/documentapp/fakeparagraph.js#L59) |
 | [getParent()](https://developers.google.com/apps-script/reference/document/paragraph#getParent()) | Retrieves the element's parent element. | [ContainerElement](#class-containerelement) | The parent element. | completed | [link](../src/services/documentapp/fakeelement.js#L155) |
@@ -719,7 +719,7 @@ An element representing a paragraph. A Paragraph may contain Equation, Footnote,
 | [setIndentStart(Number)](https://developers.google.com/apps-script/reference/document/paragraph#setIndentStart(Number)) | Sets the start indentation, in points. | [Paragraph](#class-paragraph) | the current element | completed | [link](../src/services/documentapp/fakeparagraph.js#L207) |
 | [setLeftToRight(Boolean)](https://developers.google.com/apps-script/reference/document/paragraph#setLeftToRight(Boolean)) | Sets the left-to-right setting. | [Paragraph](#class-paragraph) | the current element | completed | [link](../src/services/documentapp/fakeparagraph.js#L258) |
 | [setLineSpacing(Number)](https://developers.google.com/apps-script/reference/document/paragraph#setLineSpacing(Number)) | Sets the line spacing, as a quantity indicating the number of lines to use for spacing. | [Paragraph](#class-paragraph) | the current element | completed | [link](../src/services/documentapp/fakeparagraph.js#L219) |
-| [setLinkUrl(String)](https://developers.google.com/apps-script/reference/document/paragraph#setLinkUrl(String)) | Sets the link url. | [Paragraph](#class-paragraph) | the current element | not started |  |
+| [setLinkUrl(String)](https://developers.google.com/apps-script/reference/document/paragraph#setLinkUrl(String)) | Sets the link url. | [Paragraph](#class-paragraph) | the current element | completed | [link](../src/services/documentapp/fakeparagraph.js#L0) |
 | [setSpacingAfter(Number)](https://developers.google.com/apps-script/reference/document/paragraph#setSpacingAfter(Number)) | Sets the spacing after the element, in points. | [Paragraph](#class-paragraph) | the current element | completed | [link](../src/services/documentapp/fakeparagraph.js#L231) |
 | [setSpacingBefore(Number)](https://developers.google.com/apps-script/reference/document/paragraph#setSpacingBefore(Number)) | Sets the spacing before the element, in points. | [Paragraph](#class-paragraph) | the current element | completed | [link](../src/services/documentapp/fakeparagraph.js#L243) |
 | [setText(String)](https://developers.google.com/apps-script/reference/document/paragraph#setText(String)) | Sets the contents of the paragraph as text. |  |  | not started |  |
@@ -750,11 +750,11 @@ A reference to a location in the document tab, relative to a specific element. T
 
 | Method | Description | Return Type | Return Description | Status | Implementation |
 |--- |--- |--- |--- |--- |--- |
-| [getElement()](https://developers.google.com/apps-script/reference/document/position#getElement()) | Gets the element that contains this Position. This will be either a Text element or a container element like Paragraph. In either case, the relative position within the element can be determined with getOffset(). | [Element](#interface-element) | the container or Text element in which this Position object is located | in progress | [link](../src/services/documentapp/fakeposition.js#L37) |
-| [getOffset()](https://developers.google.com/apps-script/reference/document/position#getOffset()) | Gets this Position's relative location within the element that contains it. If the element is a Text element, the offset is the number of characters before the Position (that is, the index of the character after this Position); for any other element, the offset is the number of child elements before this Position within the same container element (that is, the index of the child element after the Position). | Integer | for Text elements, the number of characters before this Position; for other elements, the number of child elements before this Position within the same container element | in progress | [link](../src/services/documentapp/fakeposition.js#L45) |
+| [getElement()](https://developers.google.com/apps-script/reference/document/position#getElement()) | Gets the element that contains this Position. This will be either a Text element or a container element like Paragraph. In either case, the relative position within the element can be determined with getOffset(). | [Element](#interface-element) | the container or Text element in which this Position object is located | completed | [link](../src/services/documentapp/fakeposition.js#L37) |
+| [getOffset()](https://developers.google.com/apps-script/reference/document/position#getOffset()) | Gets this Position's relative location within the element that contains it. If the element is a Text element, the offset is the number of characters before the Position (that is, the index of the character after this Position); for any other element, the offset is the number of child elements before this Position within the same container element (that is, the index of the child element after the Position). | Integer | for Text elements, the number of characters before this Position; for other elements, the number of child elements before this Position within the same container element | completed | [link](../src/services/documentapp/fakeposition.js#L45) |
 | [getSurroundingText()](https://developers.google.com/apps-script/reference/document/position#getSurroundingText()) | Creates an artificial Text element that represents the text and formatting of the Paragraph or ListItem that contains the Position, either directly or through a chain of child elements. To determine the Position's offset in the returned Text element, use getSurroundingTextOffset(). | [Text](#class-text) | an element equivalent to the result of calling editAsText() on the Paragraph or ListItem that contains the Position, either directly or through a chain of child elements | in progress | [link](../src/services/documentapp/fakeposition.js#L49) |
 | [getSurroundingTextOffset()](https://developers.google.com/apps-script/reference/document/position#getSurroundingTextOffset()) | Gets the offset of this Position within the Text element returned by getSurroundingText(). The offset is the number of characters before the Position (that is, the index of the character after this Position). | Integer | the number of characters before this Position in the Paragraph or ListItem that contains the Position, either directly or through a chain of child elements | in progress | [link](../src/services/documentapp/fakeposition.js#L53) |
-| [insertBookmark()](https://developers.google.com/apps-script/reference/document/position#insertBookmark()) | Creates and inserts a new Bookmark at this Position. | [Bookmark](#class-bookmark) | the new bookmark | in progress | [link](../src/services/documentapp/fakeposition.js#L57) |
+| [insertBookmark()](https://developers.google.com/apps-script/reference/document/position#insertBookmark()) | Creates and inserts a new Bookmark at this Position. | [Bookmark](#class-bookmark) | the new bookmark | completed | [link](../src/services/documentapp/fakeposition.js#L57) |
 | [insertInlineImage(BlobSource)](https://developers.google.com/apps-script/reference/document/position#insertInlineImage(BlobSource)) | Creates and inserts a new InlineImage at this Position from the specified image blob. | [InlineImage](#class-inlineimage) | the new image element, or null if the element in which this Position is located does not allow images to be inserted | in progress | [link](../src/services/documentapp/fakeposition.js#L72) |
 | [insertText(String)](https://developers.google.com/apps-script/reference/document/position#insertText(String)) | Inserts the specified text at this Position. This method creates a new Text element, even if the string is inserted within an existing Text element, so that it is easy to style the new element. | [Text](#class-text) | the new text element, or null if the element in which this Position is located does not allow text to be inserted | in progress | [link](../src/services/documentapp/fakeposition.js#L76) |
 
@@ -764,15 +764,15 @@ Fixed position image anchored to a Paragraph. Unlike an InlineImage, a Positione
 
 | Method | Description | Return Type | Return Description | Status | Implementation |
 |--- |--- |--- |--- |--- |--- |
-| [getAs(String)](https://developers.google.com/apps-script/reference/document/positioned-image#getAs(String)) | Return the data inside this object as a blob converted to the specified content type. This method adds the appropriate extension to the filename—for example, "myfile.pdf". However, it assumes that the part of the filename that follows the last period (if any) is an existing extension that should be replaced. Consequently, "ShoppingList.12.25.2014" becomes "ShoppingList.12.25.pdf". | Blob | The data as a blob. | in progress | [link](../src/services/documentapp/fakepositionedimage.js#L46) |
-| [getBlob()](https://developers.google.com/apps-script/reference/document/positioned-image#getBlob()) | Return the data inside this object as a blob. | Blob | The data as a blob. | in progress | [link](../src/services/documentapp/fakepositionedimage.js#L40) |
-| [getHeight()](https://developers.google.com/apps-script/reference/document/positioned-image#getHeight()) | Retrieves the image's height, in pixels. | Integer | the image's height, in pixels | in progress | [link](../src/services/documentapp/fakepositionedimage.js#L50) |
+| [getAs(String)](https://developers.google.com/apps-script/reference/document/positioned-image#getAs(String)) | Return the data inside this object as a blob converted to the specified content type. This method adds the appropriate extension to the filename—for example, "myfile.pdf". However, it assumes that the part of the filename that follows the last period (if any) is an existing extension that should be replaced. Consequently, "ShoppingList.12.25.2014" becomes "ShoppingList.12.25.pdf". | Blob | The data as a blob. | completed | [link](../src/services/documentapp/fakepositionedimage.js#L46) |
+| [getBlob()](https://developers.google.com/apps-script/reference/document/positioned-image#getBlob()) | Return the data inside this object as a blob. | Blob | The data as a blob. | completed | [link](../src/services/documentapp/fakepositionedimage.js#L40) |
+| [getHeight()](https://developers.google.com/apps-script/reference/document/positioned-image#getHeight()) | Retrieves the image's height, in pixels. | Integer | the image's height, in pixels | completed | [link](../src/services/documentapp/fakepositionedimage.js#L50) |
 | [getId()](https://developers.google.com/apps-script/reference/document/positioned-image#getId()) | Gets the image's ID. | String | the image ID | not started |  |
-| [getLayout()](https://developers.google.com/apps-script/reference/document/positioned-image#getLayout()) | Gets an enum value that represents how the image is laid out. | [PositionedLayout](#enum-positionedlayout) | the image layout | in progress | [link](../src/services/documentapp/fakepositionedimage.js#L66) |
-| [getLeftOffset()](https://developers.google.com/apps-script/reference/document/positioned-image#getLeftOffset()) | Gets the image's offset, in points, from the paragraph's left. | Number | the image offset from the left paragraph's left | in progress | [link](../src/services/documentapp/fakepositionedimage.js#L58) |
+| [getLayout()](https://developers.google.com/apps-script/reference/document/positioned-image#getLayout()) | Gets an enum value that represents how the image is laid out. | [PositionedLayout](#enum-positionedlayout) | the image layout | completed | [link](../src/services/documentapp/fakepositionedimage.js#L66) |
+| [getLeftOffset()](https://developers.google.com/apps-script/reference/document/positioned-image#getLeftOffset()) | Gets the image's offset, in points, from the paragraph's left. | Number | the image offset from the left paragraph's left | completed | [link](../src/services/documentapp/fakepositionedimage.js#L58) |
 | [getParagraph()](https://developers.google.com/apps-script/reference/document/positioned-image#getParagraph()) | Gets the Paragraph the image is anchored to. | [Paragraph](#class-paragraph) | the parent paragraph | not started |  |
-| [getTopOffset()](https://developers.google.com/apps-script/reference/document/positioned-image#getTopOffset()) | Gets the image's offset, in points, from the paragraph's top. | Number | the image offset from the left paragraph's top | in progress | [link](../src/services/documentapp/fakepositionedimage.js#L62) |
-| [getWidth()](https://developers.google.com/apps-script/reference/document/positioned-image#getWidth()) | Retrieves the image's width, in pixels. | Integer | the image's width, in pixels | in progress | [link](../src/services/documentapp/fakepositionedimage.js#L54) |
+| [getTopOffset()](https://developers.google.com/apps-script/reference/document/positioned-image#getTopOffset()) | Gets the image's offset, in points, from the paragraph's top. | Number | the image offset from the left paragraph's top | completed | [link](../src/services/documentapp/fakepositionedimage.js#L62) |
+| [getWidth()](https://developers.google.com/apps-script/reference/document/positioned-image#getWidth()) | Retrieves the image's width, in pixels. | Integer | the image's width, in pixels | completed | [link](../src/services/documentapp/fakepositionedimage.js#L54) |
 | [setHeight(Integer)](https://developers.google.com/apps-script/reference/document/positioned-image#setHeight(Integer)) | Sets the image's height, in pixels. | [PositionedImage](#class-positionedimage) | the current object | in progress | [link](../src/services/documentapp/fakepositionedimage.js#L74) |
 | [setLayout(PositionedLayout)](https://developers.google.com/apps-script/reference/document/positioned-image#setLayout(PositionedLayout)) | Sets the definition of how the image is laid out. | [PositionedImage](#class-positionedimage) | this object for chaining | in progress | [link](../src/services/documentapp/fakepositionedimage.js#L78) |
 | [setLeftOffset(Number)](https://developers.google.com/apps-script/reference/document/positioned-image#setLeftOffset(Number)) | Sets the image's offset, in points, from the paragraph's left. | [PositionedImage](#class-positionedimage) | this object for chaining | in progress | [link](../src/services/documentapp/fakepositionedimage.js#L76) |
@@ -838,11 +838,11 @@ A tab within a Google Docs document.
 
 | Method | Description | Return Type | Return Description | Status | Implementation |
 |--- |--- |--- |--- |--- |--- |
-| [asDocumentTab()](https://developers.google.com/apps-script/reference/document/tab#asDocumentTab()) | Retrieves the tab contents as a DocumentTab. | [DocumentTab](#class-documenttab) | The tab as a DocumentTab. | in progress | [link](../src/services/documentapp/faketab.js#L24) |
-| [getChildTabs()](https://developers.google.com/apps-script/reference/document/tab#getChildTabs()) | Retrieves the child tabs nested within this tab. | [Tab[]](#class-tab) | The child tabs nested within this tab. | in progress | [link](../src/services/documentapp/faketab.js#L29) |
-| [getId()](https://developers.google.com/apps-script/reference/document/tab#getId()) | Retrieves the ID of the tab. | String | The ID of the tab. | in progress | [link](../src/services/documentapp/faketab.js#L38) |
-| [getIndex()](https://developers.google.com/apps-script/reference/document/tab#getIndex()) | Retrieves the 0-based index of the tab within the parent. | Integer | The index of the tab within the parent. | in progress | [link](../src/services/documentapp/faketab.js#L46) |
-| [getTitle()](https://developers.google.com/apps-script/reference/document/tab#getTitle()) | Retrieves the title of the tab. | String | The title of the tab. | in progress | [link](../src/services/documentapp/faketab.js#L42) |
+| [asDocumentTab()](https://developers.google.com/apps-script/reference/document/tab#asDocumentTab()) | Retrieves the tab contents as a DocumentTab. | [DocumentTab](#class-documenttab) | The tab as a DocumentTab. | completed | [link](../src/services/documentapp/faketab.js#L24) |
+| [getChildTabs()](https://developers.google.com/apps-script/reference/document/tab#getChildTabs()) | Retrieves the child tabs nested within this tab. | [Tab[]](#class-tab) | The child tabs nested within this tab. | completed | [link](../src/services/documentapp/faketab.js#L29) |
+| [getId()](https://developers.google.com/apps-script/reference/document/tab#getId()) | Retrieves the ID of the tab. | String | The ID of the tab. | completed | [link](../src/services/documentapp/faketab.js#L38) |
+| [getIndex()](https://developers.google.com/apps-script/reference/document/tab#getIndex()) | Retrieves the 0-based index of the tab within the parent. | Integer | The index of the tab within the parent. | completed | [link](../src/services/documentapp/faketab.js#L46) |
+| [getTitle()](https://developers.google.com/apps-script/reference/document/tab#getTitle()) | Retrieves the title of the tab. | String | The title of the tab. | completed | [link](../src/services/documentapp/faketab.js#L42) |
 | [getType()](https://developers.google.com/apps-script/reference/document/tab#getType()) | Retrieves the type of tab. | [TabType](#enum-tabtype) | The tab's type. | in progress | [link](../src/services/documentapp/faketab.js#L50) |
 
 ## Class: [Table](https://developers.google.com/apps-script/reference/document/table)
@@ -861,13 +861,13 @@ An element representing a table. A Table may only contain TableRow elements. For
 | [findText(String,RangeElement)](https://developers.google.com/apps-script/reference/document/table#findText(String,RangeElement)) |  |  |  | not started |  |
 | [findText(String)](https://developers.google.com/apps-script/reference/document/table#findText(String)) | Searches the contents of the element for the specified text pattern using regular expressions. | [RangeElement](#class-rangeelement) | a search result indicating the position of the search text, or null if there is no match | not started |  |
 | [getAttributes()](https://developers.google.com/apps-script/reference/document/table#getAttributes()) | Retrieves the element's attributes. | Object | The element's attributes. | not started |  |
-| [getBorderColor()](https://developers.google.com/apps-script/reference/document/table#getBorderColor()) | Retrieves the border color. | String | The border color, formatted in CSS notation (like '#ffffff'). | not started |  |
-| [getBorderWidth()](https://developers.google.com/apps-script/reference/document/table#getBorderWidth()) | Retrieves the border width, in points. | Number | The border width, in points. | not started |  |
+| [getBorderColor()](https://developers.google.com/apps-script/reference/document/table#getBorderColor()) | Retrieves the border color. | String | The border color, formatted in CSS notation (like '#ffffff'). | completed | [link](../src/services/documentapp/faketable.js#L0) |
+| [getBorderWidth()](https://developers.google.com/apps-script/reference/document/table#getBorderWidth()) | Retrieves the border width, in points. | Number | The border width, in points. | completed | [link](../src/services/documentapp/faketable.js#L0) |
 | [getCell(Integer,Integer)](https://developers.google.com/apps-script/reference/document/table#getCell(Integer,Integer)) |  |  |  | completed | [link](../src/services/documentapp/faketable.js#L67) |
 | [getChild(Integer)](https://developers.google.com/apps-script/reference/document/table#getChild(Integer)) | Retrieves the child element at the specified child index. | [Element](#interface-element) | The child element at the specified index. | completed | [link](../src/services/documentapp/faketable.js#L46) |
 | [getChildIndex(Element)](https://developers.google.com/apps-script/reference/document/table#getChildIndex(Element)) | Retrieves the child index for the specified child element. | Integer | The child index. | completed | [link](../src/services/documentapp/fakecontainerelement.js#L169) |
 | [getColumnWidth(Integer)](https://developers.google.com/apps-script/reference/document/table#getColumnWidth(Integer)) | Retrieves the width of the specified table column, in points. | Number | The column width, in points. | not started |  |
-| [getLinkUrl()](https://developers.google.com/apps-script/reference/document/table#getLinkUrl()) | Retrieves the link url. | String | the link url, or null if the element contains multiple values for this attribute | not started |  |
+| [getLinkUrl()](https://developers.google.com/apps-script/reference/document/table#getLinkUrl()) | Retrieves the link url. | String | the link url, or null if the element contains multiple values for this attribute | completed | [link](../src/services/documentapp/faketable.js#L0) |
 | [getNextSibling()](https://developers.google.com/apps-script/reference/document/table#getNextSibling()) | Retrieves the element's next sibling element. | [Element](#interface-element) | The next sibling element. | not started |  |
 | [getNumChildren()](https://developers.google.com/apps-script/reference/document/table#getNumChildren()) | Retrieves the number of children. | Integer | The number of children. | completed | [link](../src/services/documentapp/faketable.js#L36) |
 | [getNumRows()](https://developers.google.com/apps-script/reference/document/table#getNumRows()) | Retrieves the number of TableRows. | Integer | The number of table rows. | completed | [link](../src/services/documentapp/faketable.js#L33) |
@@ -885,10 +885,10 @@ An element representing a table. A Table may only contain TableRow elements. For
 | [removeRow(Integer)](https://developers.google.com/apps-script/reference/document/table#removeRow(Integer)) | Removes the TableRow at the specified row index. | [TableRow](#class-tablerow) | The removed row. | not started |  |
 | [replaceText(String,String)](https://developers.google.com/apps-script/reference/document/table#replaceText(String,String)) |  |  |  | not started |  |
 | [setAttributes(Object)](https://developers.google.com/apps-script/reference/document/table#setAttributes(Object)) | Sets the element's attributes. | [Table](#class-table) | The current element. | not started |  |
-| [setBorderColor(String)](https://developers.google.com/apps-script/reference/document/table#setBorderColor(String)) | Sets the border color. | [Table](#class-table) | The current element. | not started |  |
-| [setBorderWidth(Number)](https://developers.google.com/apps-script/reference/document/table#setBorderWidth(Number)) | Sets the border width, in points. | [Table](#class-table) | the current element | not started |  |
+| [setBorderColor(String)](https://developers.google.com/apps-script/reference/document/table#setBorderColor(String)) | Sets the border color. | [Table](#class-table) | The current element. | completed | [link](../src/services/documentapp/faketable.js#L0) |
+| [setBorderWidth(Number)](https://developers.google.com/apps-script/reference/document/table#setBorderWidth(Number)) | Sets the border width, in points. | [Table](#class-table) | the current element | completed | [link](../src/services/documentapp/faketable.js#L0) |
 | [setColumnWidth(Integer,Number)](https://developers.google.com/apps-script/reference/document/table#setColumnWidth(Integer,Number)) |  |  |  | not started |  |
-| [setLinkUrl(String)](https://developers.google.com/apps-script/reference/document/table#setLinkUrl(String)) | Sets the link url. | [Table](#class-table) | the current element | not started |  |
+| [setLinkUrl(String)](https://developers.google.com/apps-script/reference/document/table#setLinkUrl(String)) | Sets the link url. | [Table](#class-table) | the current element | completed | [link](../src/services/documentapp/faketable.js#L0) |
 | [setTextAlignment(TextAlignment)](https://developers.google.com/apps-script/reference/document/table#setTextAlignment(TextAlignment)) | Sets the text alignment. The available types of alignment are DocumentApp.TextAlignment.NORMAL, DocumentApp.TextAlignment.SUBSCRIPT, and DocumentApp.TextAlignment.SUPERSCRIPT. | [Table](#class-table) | the current element | not started |  |
 
 ## Class: [TableCell](https://developers.google.com/apps-script/reference/document/table-cell)
@@ -915,17 +915,17 @@ An element representing a table cell. A TableCell is always contained within a T
 | [findText(String,RangeElement)](https://developers.google.com/apps-script/reference/document/table-cell#findText(String,RangeElement)) |  |  |  | not started |  |
 | [findText(String)](https://developers.google.com/apps-script/reference/document/table-cell#findText(String)) | Searches the contents of the element for the specified text pattern using regular expressions. | [RangeElement](#class-rangeelement) | a search result indicating the position of the search text, or null if there is no match | not started |  |
 | [getAttributes()](https://developers.google.com/apps-script/reference/document/table-cell#getAttributes()) | Retrieves the element's attributes. | Object | The element's attributes. | not started |  |
-| [getBackgroundColor()](https://developers.google.com/apps-script/reference/document/table-cell#getBackgroundColor()) | Retrieves the background color. | String | the background color, formatted in CSS notation (like '#ffffff') | not started |  |
+| [getBackgroundColor()](https://developers.google.com/apps-script/reference/document/table-cell#getBackgroundColor()) | Retrieves the background color. | String | the background color, formatted in CSS notation (like '#ffffff') | completed | [link](../src/services/documentapp/faketablecell.js#L0) |
 | [getChild(Integer)](https://developers.google.com/apps-script/reference/document/table-cell#getChild(Integer)) | Retrieves the child element at the specified child index. | [Element](#interface-element) | The child element at the specified index. | completed | [link](../src/services/documentapp/fakecontainerelement.js#L102) |
 | [getChildIndex(Element)](https://developers.google.com/apps-script/reference/document/table-cell#getChildIndex(Element)) | Retrieves the child index for the specified child element. | Integer | The child index. | completed | [link](../src/services/documentapp/fakecontainerelement.js#L169) |
 | [getColSpan()](https://developers.google.com/apps-script/reference/document/table-cell#getColSpan()) | Retrieves the column span, which is the number of columns of table cells this cell spans. Non-merged cells have a col span of 1. | Integer | the column span or 0 for a cell which is merged over by another cell | not started |  |
-| [getLinkUrl()](https://developers.google.com/apps-script/reference/document/table-cell#getLinkUrl()) | Retrieves the link url. | String | the link url, or null if the element contains multiple values for this attribute | not started |  |
+| [getLinkUrl()](https://developers.google.com/apps-script/reference/document/table-cell#getLinkUrl()) | Retrieves the link url. | String | the link url, or null if the element contains multiple values for this attribute | completed | [link](../src/services/documentapp/faketablecell.js#L0) |
 | [getNextSibling()](https://developers.google.com/apps-script/reference/document/table-cell#getNextSibling()) | Retrieves the element's next sibling element. | [Element](#interface-element) | The next sibling element. | not started |  |
 | [getNumChildren()](https://developers.google.com/apps-script/reference/document/table-cell#getNumChildren()) | Retrieves the number of children. | Integer | The number of children. | completed | [link](../src/services/documentapp/fakecontainerelement.js#L198) |
-| [getPaddingBottom()](https://developers.google.com/apps-script/reference/document/table-cell#getPaddingBottom()) | Retrieves the bottom padding, in points. | Number | the bottom padding, in points | not started |  |
-| [getPaddingLeft()](https://developers.google.com/apps-script/reference/document/table-cell#getPaddingLeft()) | Retrieves the left padding, in points. | Number | the left padding, in points | not started |  |
-| [getPaddingRight()](https://developers.google.com/apps-script/reference/document/table-cell#getPaddingRight()) | Retrieves the right padding, in points. | Number | the right padding, in points | not started |  |
-| [getPaddingTop()](https://developers.google.com/apps-script/reference/document/table-cell#getPaddingTop()) | Retrieves the top padding, in points. | Number | the top padding, in points | not started |  |
+| [getPaddingBottom()](https://developers.google.com/apps-script/reference/document/table-cell#getPaddingBottom()) | Retrieves the bottom padding, in points. | Number | the bottom padding, in points | completed | [link](../src/services/documentapp/faketablecell.js#L0) |
+| [getPaddingLeft()](https://developers.google.com/apps-script/reference/document/table-cell#getPaddingLeft()) | Retrieves the left padding, in points. | Number | the left padding, in points | completed | [link](../src/services/documentapp/faketablecell.js#L0) |
+| [getPaddingRight()](https://developers.google.com/apps-script/reference/document/table-cell#getPaddingRight()) | Retrieves the right padding, in points. | Number | the right padding, in points | completed | [link](../src/services/documentapp/faketablecell.js#L0) |
+| [getPaddingTop()](https://developers.google.com/apps-script/reference/document/table-cell#getPaddingTop()) | Retrieves the top padding, in points. | Number | the top padding, in points | completed | [link](../src/services/documentapp/faketablecell.js#L0) |
 | [getParent()](https://developers.google.com/apps-script/reference/document/table-cell#getParent()) | Retrieves the element's parent element. | [ContainerElement](#class-containerelement) | The parent element. | completed | [link](../src/services/documentapp/fakeelement.js#L155) |
 | [getParentRow()](https://developers.google.com/apps-script/reference/document/table-cell#getParentRow()) | Retrieves the TableRow containing the current TableCell. | [TableRow](#class-tablerow) | the table row containing the current cell | not started |  |
 | [getParentTable()](https://developers.google.com/apps-script/reference/document/table-cell#getParentTable()) | Retrieves the Table containing the current TableCell. | [Table](#class-table) | the table containing the current cell | not started |  |
@@ -934,8 +934,8 @@ An element representing a table cell. A TableCell is always contained within a T
 | [getText()](https://developers.google.com/apps-script/reference/document/table-cell#getText()) | Retrieves the contents of the element as a text string. | String | the contents of the element as text string | completed | [link](../src/services/documentapp/faketablecell.js#L7) |
 | [getTextAlignment()](https://developers.google.com/apps-script/reference/document/table-cell#getTextAlignment()) | Gets the text alignment. The available types of alignment are DocumentApp.TextAlignment.NORMAL, DocumentApp.TextAlignment.SUBSCRIPT, and DocumentApp.TextAlignment.SUPERSCRIPT. | [TextAlignment](#enum-textalignment) | the type of text alignment, or null if the text contains multiple types of text alignments or if the text alignment has never been set | not started |  |
 | [getType()](https://developers.google.com/apps-script/reference/document/table-cell#getType()) | Retrieves the element's ElementType. | [ElementType](#enum-elementtype) | The element type. | completed | [link](../src/services/documentapp/fakecontainerelement.js#L79) |
-| [getVerticalAlignment()](https://developers.google.com/apps-script/reference/document/table-cell#getVerticalAlignment()) | Retrieves the VerticalAlignment. | [VerticalAlignment](#enum-verticalalignment) | the vertical alignment | not started |  |
-| [getWidth()](https://developers.google.com/apps-script/reference/document/table-cell#getWidth()) | Retrieves the width of the column containing the cell, in points. | Number | the column width, in points | not started |  |
+| [getVerticalAlignment()](https://developers.google.com/apps-script/reference/document/table-cell#getVerticalAlignment()) | Retrieves the VerticalAlignment. | [VerticalAlignment](#enum-verticalalignment) | the vertical alignment | completed | [link](../src/services/documentapp/faketablecell.js#L0) |
+| [getWidth()](https://developers.google.com/apps-script/reference/document/table-cell#getWidth()) | Retrieves the width of the column containing the cell, in points. | Number | the column width, in points | completed | [link](../src/services/documentapp/faketablecell.js#L0) |
 | [insertHorizontalRule(Integer)](https://developers.google.com/apps-script/reference/document/table-cell#insertHorizontalRule(Integer)) | Creates and inserts a new HorizontalRule at the specified index. | [HorizontalRule](#class-horizontalrule) | the new horizontal rule | not started |  |
 | [insertImage(Integer,BlobSource)](https://developers.google.com/apps-script/reference/document/table-cell#insertImage(Integer,BlobSource)) |  |  |  | not started |  |
 | [insertImage(Integer,InlineImage)](https://developers.google.com/apps-script/reference/document/table-cell#insertImage(Integer,InlineImage)) |  |  |  | not started |  |
@@ -952,16 +952,16 @@ An element representing a table cell. A TableCell is always contained within a T
 | [removeFromParent()](https://developers.google.com/apps-script/reference/document/table-cell#removeFromParent()) | Removes the element from its parent. | [TableCell](#class-tablecell) | The removed element. | not started |  |
 | [replaceText(String,String)](https://developers.google.com/apps-script/reference/document/table-cell#replaceText(String,String)) |  |  |  | not started |  |
 | [setAttributes(Object)](https://developers.google.com/apps-script/reference/document/table-cell#setAttributes(Object)) | Sets the element's attributes. | [TableCell](#class-tablecell) | The current element. | not started |  |
-| [setBackgroundColor(String)](https://developers.google.com/apps-script/reference/document/table-cell#setBackgroundColor(String)) | Sets the background color. | [TableCell](#class-tablecell) | the current element | not started |  |
-| [setLinkUrl(String)](https://developers.google.com/apps-script/reference/document/table-cell#setLinkUrl(String)) | Sets the link url. | [TableCell](#class-tablecell) | the current element | not started |  |
-| [setPaddingBottom(Number)](https://developers.google.com/apps-script/reference/document/table-cell#setPaddingBottom(Number)) | Sets the bottom padding, in points. | [TableCell](#class-tablecell) | the current element | not started |  |
-| [setPaddingLeft(Number)](https://developers.google.com/apps-script/reference/document/table-cell#setPaddingLeft(Number)) | Sets the left padding, in points. | [TableCell](#class-tablecell) | the current element | not started |  |
-| [setPaddingRight(Number)](https://developers.google.com/apps-script/reference/document/table-cell#setPaddingRight(Number)) | Sets the right padding, in points. | [TableCell](#class-tablecell) | The current element. | not started |  |
-| [setPaddingTop(Number)](https://developers.google.com/apps-script/reference/document/table-cell#setPaddingTop(Number)) | Sets the top padding, in points. | [TableCell](#class-tablecell) | the current element | not started |  |
+| [setBackgroundColor(String)](https://developers.google.com/apps-script/reference/document/table-cell#setBackgroundColor(String)) | Sets the background color. | [TableCell](#class-tablecell) | the current element | completed | [link](../src/services/documentapp/faketablecell.js#L0) |
+| [setLinkUrl(String)](https://developers.google.com/apps-script/reference/document/table-cell#setLinkUrl(String)) | Sets the link url. | [TableCell](#class-tablecell) | the current element | completed | [link](../src/services/documentapp/faketablecell.js#L0) |
+| [setPaddingBottom(Number)](https://developers.google.com/apps-script/reference/document/table-cell#setPaddingBottom(Number)) | Sets the bottom padding, in points. | [TableCell](#class-tablecell) | the current element | completed | [link](../src/services/documentapp/faketablecell.js#L0) |
+| [setPaddingLeft(Number)](https://developers.google.com/apps-script/reference/document/table-cell#setPaddingLeft(Number)) | Sets the left padding, in points. | [TableCell](#class-tablecell) | the current element | completed | [link](../src/services/documentapp/faketablecell.js#L0) |
+| [setPaddingRight(Number)](https://developers.google.com/apps-script/reference/document/table-cell#setPaddingRight(Number)) | Sets the right padding, in points. | [TableCell](#class-tablecell) | The current element. | completed | [link](../src/services/documentapp/faketablecell.js#L0) |
+| [setPaddingTop(Number)](https://developers.google.com/apps-script/reference/document/table-cell#setPaddingTop(Number)) | Sets the top padding, in points. | [TableCell](#class-tablecell) | the current element | completed | [link](../src/services/documentapp/faketablecell.js#L0) |
 | [setText(String)](https://developers.google.com/apps-script/reference/document/table-cell#setText(String)) | Sets the contents as plain text. | [TableCell](#class-tablecell) | the current element | not started |  |
 | [setTextAlignment(TextAlignment)](https://developers.google.com/apps-script/reference/document/table-cell#setTextAlignment(TextAlignment)) | Sets the text alignment. The available types of alignment are DocumentApp.TextAlignment.NORMAL, DocumentApp.TextAlignment.SUBSCRIPT, and DocumentApp.TextAlignment.SUPERSCRIPT. | [TableCell](#class-tablecell) | the current element | not started |  |
-| [setVerticalAlignment(VerticalAlignment)](https://developers.google.com/apps-script/reference/document/table-cell#setVerticalAlignment(VerticalAlignment)) | Sets the vertical alignment. | [TableCell](#class-tablecell) | the current element | not started |  |
-| [setWidth(Number)](https://developers.google.com/apps-script/reference/document/table-cell#setWidth(Number)) | Sets the width of the column containing the current cell, in points. | [TableCell](#class-tablecell) | the current element | not started |  |
+| [setVerticalAlignment(VerticalAlignment)](https://developers.google.com/apps-script/reference/document/table-cell#setVerticalAlignment(VerticalAlignment)) | Sets the vertical alignment. | [TableCell](#class-tablecell) | the current element | completed | [link](../src/services/documentapp/faketablecell.js#L0) |
+| [setWidth(Number)](https://developers.google.com/apps-script/reference/document/table-cell#setWidth(Number)) | Sets the width of the column containing the current cell, in points. | [TableCell](#class-tablecell) | the current element | completed | [link](../src/services/documentapp/faketablecell.js#L0) |
 
 ## Class: [TableOfContents](https://developers.google.com/apps-script/reference/document/table-of-contents)
 
@@ -1014,8 +1014,8 @@ An element representing a table row. A TableRow is always contained within a Tab
 | [getCell(Integer)](https://developers.google.com/apps-script/reference/document/table-row#getCell(Integer)) | Retrieves the TableCell at the specified cell index. | [TableCell](#class-tablecell) | the table cell | completed | [link](../src/services/documentapp/faketablerow.js#L26) |
 | [getChild(Integer)](https://developers.google.com/apps-script/reference/document/table-row#getChild(Integer)) | Retrieves the child element at the specified child index. | [Element](#interface-element) | The child element at the specified index. | completed | [link](../src/services/documentapp/faketablerow.js#L29) |
 | [getChildIndex(Element)](https://developers.google.com/apps-script/reference/document/table-row#getChildIndex(Element)) | Retrieves the child index for the specified child element. | Integer | The child index. | completed | [link](../src/services/documentapp/fakecontainerelement.js#L169) |
-| [getLinkUrl()](https://developers.google.com/apps-script/reference/document/table-row#getLinkUrl()) | Retrieves the link url. | String | the link url, or null if the element contains multiple values for this attribute | not started |  |
-| [getMinimumHeight()](https://developers.google.com/apps-script/reference/document/table-row#getMinimumHeight()) | Retrieves the minimum height, in points. | Number | the minimum height, in points | not started |  |
+| [getLinkUrl()](https://developers.google.com/apps-script/reference/document/table-row#getLinkUrl()) | Retrieves the link url. | String | the link url, or null if the element contains multiple values for this attribute | completed | [link](../src/services/documentapp/faketablerow.js#L0) |
+| [getMinimumHeight()](https://developers.google.com/apps-script/reference/document/table-row#getMinimumHeight()) | Retrieves the minimum height, in points. | Number | the minimum height, in points | completed | [link](../src/services/documentapp/faketablerow.js#L0) |
 | [getNextSibling()](https://developers.google.com/apps-script/reference/document/table-row#getNextSibling()) | Retrieves the element's next sibling element. | [Element](#interface-element) | The next sibling element. | not started |  |
 | [getNumCells()](https://developers.google.com/apps-script/reference/document/table-row#getNumCells()) | Retrieves the number of cells in the row. | Integer | the number of cells | completed | [link](../src/services/documentapp/faketablerow.js#L35) |
 | [getNumChildren()](https://developers.google.com/apps-script/reference/document/table-row#getNumChildren()) | Retrieves the number of children. | Integer | The number of children. | completed | [link](../src/services/documentapp/faketablerow.js#L38) |
@@ -1035,8 +1035,8 @@ An element representing a table row. A TableRow is always contained within a Tab
 | [removeFromParent()](https://developers.google.com/apps-script/reference/document/table-row#removeFromParent()) | Removes the element from its parent. | [TableRow](#class-tablerow) | The removed element. | not started |  |
 | [replaceText(String,String)](https://developers.google.com/apps-script/reference/document/table-row#replaceText(String,String)) |  |  |  | not started |  |
 | [setAttributes(Object)](https://developers.google.com/apps-script/reference/document/table-row#setAttributes(Object)) | Sets the element's attributes. | [TableRow](#class-tablerow) | The current element. | not started |  |
-| [setLinkUrl(String)](https://developers.google.com/apps-script/reference/document/table-row#setLinkUrl(String)) | Sets the link url. | [TableRow](#class-tablerow) | the current element | not started |  |
-| [setMinimumHeight(Number)](https://developers.google.com/apps-script/reference/document/table-row#setMinimumHeight(Number)) | Sets the minimum height, in points. | [TableRow](#class-tablerow) | the current element | not started |  |
+| [setLinkUrl(String)](https://developers.google.com/apps-script/reference/document/table-row#setLinkUrl(String)) | Sets the link url. | [TableRow](#class-tablerow) | the current element | completed | [link](../src/services/documentapp/faketablerow.js#L0) |
+| [setMinimumHeight(Number)](https://developers.google.com/apps-script/reference/document/table-row#setMinimumHeight(Number)) | Sets the minimum height, in points. | [TableRow](#class-tablerow) | the current element | completed | [link](../src/services/documentapp/faketablerow.js#L0) |
 | [setTextAlignment(TextAlignment)](https://developers.google.com/apps-script/reference/document/table-row#setTextAlignment(TextAlignment)) | Sets the text alignment. The available types of alignment are DocumentApp.TextAlignment.NORMAL, DocumentApp.TextAlignment.SUBSCRIPT, and DocumentApp.TextAlignment.SUPERSCRIPT. | [TableRow](#class-tablerow) | the current element | not started |  |
 
 ## Class: [Text](https://developers.google.com/apps-script/reference/document/text)
@@ -1053,16 +1053,16 @@ An element representing a rich text region. All text in a Document is contained 
 | [findText(String)](https://developers.google.com/apps-script/reference/document/text#findText(String)) | Searches the contents of the element for the specified text pattern using regular expressions. | [RangeElement](#class-rangeelement) | a search result indicating the position of the search text, or null if there is no match | not started |  |
 | [getAttributes()](https://developers.google.com/apps-script/reference/document/text#getAttributes()) | Retrieves the element's attributes. | Object | The element's attributes. | not started |  |
 | [getAttributes(Integer)](https://developers.google.com/apps-script/reference/document/text#getAttributes(Integer)) | Retrieves the attributes at the specified character offset. | Object | The element's attributes. | not started |  |
-| [getBackgroundColor()](https://developers.google.com/apps-script/reference/document/text#getBackgroundColor()) | Retrieves the background color setting. | String | the background color, formatted in CSS notation (like '#ffffff'), or null if the element contains multiple values for this attribute | not started |  |
-| [getBackgroundColor(Integer)](https://developers.google.com/apps-script/reference/document/text#getBackgroundColor(Integer)) | Retrieves the background color at the specified character offset. | String | The background color, formatted in CSS notation (like '#ffffff'). | not started |  |
-| [getFontFamily()](https://developers.google.com/apps-script/reference/document/text#getFontFamily()) | Retrieves the font family setting. The name can be any font from the Font menu in Docs or Google Fonts, and is case-sensitive. The methods getFontFamily() and setFontFamily(fontFamilyName) now use string names for fonts instead of the FontFamily enum. Although this enum is deprecated, it will remain available for compatibility with older scripts. | String | the font family, or null if the element contains multiple values for this attribute | not started |  |
-| [getFontFamily(Integer)](https://developers.google.com/apps-script/reference/document/text#getFontFamily(Integer)) | Retrieves the font family at the specified character offset. The name can be any font from the Font menu in Docs or Google Fonts, and is case-sensitive. The methods getFontFamily() and setFontFamily(fontFamilyName) now use string names for fonts instead of the FontFamily enum. Although this enum is deprecated, it will remain available for compatibility with older scripts. | String | The font family. | not started |  |
-| [getFontSize()](https://developers.google.com/apps-script/reference/document/text#getFontSize()) | Retrieves the font size setting. | Number | the font size, or null if the element contains multiple values for this attribute | not started |  |
-| [getFontSize(Integer)](https://developers.google.com/apps-script/reference/document/text#getFontSize(Integer)) | Retrieves the font size at the specified character offset. | Number | The font size. | not started |  |
-| [getForegroundColor()](https://developers.google.com/apps-script/reference/document/text#getForegroundColor()) | Retrieves the foreground color setting. | String | the foreground color, formatted in CSS notation (like '#ffffff'), or null if the element contains multiple values for this attribute | not started |  |
-| [getForegroundColor(Integer)](https://developers.google.com/apps-script/reference/document/text#getForegroundColor(Integer)) | Retrieves the foreground color at the specified character offset. | String | The foreground color, formatted in CSS notation (like '#ffffff'). | not started |  |
-| [getLinkUrl()](https://developers.google.com/apps-script/reference/document/text#getLinkUrl()) | Retrieves the link url. | String | the link url, or null if the element contains multiple values for this attribute | not started |  |
-| [getLinkUrl(Integer)](https://developers.google.com/apps-script/reference/document/text#getLinkUrl(Integer)) | Retrieves the link URL at the specified character offset. | String | The link URL. | not started |  |
+| [getBackgroundColor()](https://developers.google.com/apps-script/reference/document/text#getBackgroundColor()) | Retrieves the background color setting. | String | the background color, formatted in CSS notation (like '#ffffff'), or null if the element contains multiple values for this attribute | completed | [link](../src/services/documentapp/faketext.js#L0) |
+| [getBackgroundColor(Integer)](https://developers.google.com/apps-script/reference/document/text#getBackgroundColor(Integer)) | Retrieves the background color at the specified character offset. | String | The background color, formatted in CSS notation (like '#ffffff'). | completed | [link](../src/services/documentapp/faketext.js#L0) |
+| [getFontFamily()](https://developers.google.com/apps-script/reference/document/text#getFontFamily()) | Retrieves the font family setting. The name can be any font from the Font menu in Docs or Google Fonts, and is case-sensitive. The methods getFontFamily() and setFontFamily(fontFamilyName) now use string names for fonts instead of the FontFamily enum. Although this enum is deprecated, it will remain available for compatibility with older scripts. | String | the font family, or null if the element contains multiple values for this attribute | completed | [link](../src/services/documentapp/faketext.js#L0) |
+| [getFontFamily(Integer)](https://developers.google.com/apps-script/reference/document/text#getFontFamily(Integer)) | Retrieves the font family at the specified character offset. The name can be any font from the Font menu in Docs or Google Fonts, and is case-sensitive. The methods getFontFamily() and setFontFamily(fontFamilyName) now use string names for fonts instead of the FontFamily enum. Although this enum is deprecated, it will remain available for compatibility with older scripts. | String | The font family. | completed | [link](../src/services/documentapp/faketext.js#L0) |
+| [getFontSize()](https://developers.google.com/apps-script/reference/document/text#getFontSize()) | Retrieves the font size setting. | Number | the font size, or null if the element contains multiple values for this attribute | completed | [link](../src/services/documentapp/faketext.js#L0) |
+| [getFontSize(Integer)](https://developers.google.com/apps-script/reference/document/text#getFontSize(Integer)) | Retrieves the font size at the specified character offset. | Number | The font size. | completed | [link](../src/services/documentapp/faketext.js#L0) |
+| [getForegroundColor()](https://developers.google.com/apps-script/reference/document/text#getForegroundColor()) | Retrieves the foreground color setting. | String | the foreground color, formatted in CSS notation (like '#ffffff'), or null if the element contains multiple values for this attribute | completed | [link](../src/services/documentapp/faketext.js#L0) |
+| [getForegroundColor(Integer)](https://developers.google.com/apps-script/reference/document/text#getForegroundColor(Integer)) | Retrieves the foreground color at the specified character offset. | String | The foreground color, formatted in CSS notation (like '#ffffff'). | completed | [link](../src/services/documentapp/faketext.js#L0) |
+| [getLinkUrl()](https://developers.google.com/apps-script/reference/document/text#getLinkUrl()) | Retrieves the link url. | String | the link url, or null if the element contains multiple values for this attribute | completed | [link](../src/services/documentapp/faketext.js#L0) |
+| [getLinkUrl(Integer)](https://developers.google.com/apps-script/reference/document/text#getLinkUrl(Integer)) | Retrieves the link URL at the specified character offset. | String | The link URL. | completed | [link](../src/services/documentapp/faketext.js#L0) |
 | [getNextSibling()](https://developers.google.com/apps-script/reference/document/text#getNextSibling()) | Retrieves the element's next sibling element. | [Element](#interface-element) | The next sibling element. | not started |  |
 | [getParent()](https://developers.google.com/apps-script/reference/document/text#getParent()) | Retrieves the element's parent element. | [ContainerElement](#class-containerelement) | The parent element. | completed | [link](../src/services/documentapp/fakeelement.js#L155) |
 | [getPreviousSibling()](https://developers.google.com/apps-script/reference/document/text#getPreviousSibling()) | Retrieves the element's previous sibling element. | [Element](#interface-element) | The previous sibling element. | not started |  |
@@ -1086,27 +1086,27 @@ An element representing a rich text region. All text in a Document is contained 
 | [replaceText(String,String)](https://developers.google.com/apps-script/reference/document/text#replaceText(String,String)) |  |  |  | not started |  |
 | [setAttributes(Integer,Integer,Object)](https://developers.google.com/apps-script/reference/document/text#setAttributes(Integer,Integer,Object)) |  |  |  | not started |  |
 | [setAttributes(Object)](https://developers.google.com/apps-script/reference/document/text#setAttributes(Object)) | Sets the element's attributes. | [Text](#class-text) | The current element. | not started |  |
-| [setBackgroundColor(Integer,Integer,String)](https://developers.google.com/apps-script/reference/document/text#setBackgroundColor(Integer,Integer,String)) |  |  |  | not started |  |
-| [setBackgroundColor(String)](https://developers.google.com/apps-script/reference/document/text#setBackgroundColor(String)) | Sets the background color. | [Text](#class-text) | the current element | not started |  |
-| [setBold(Boolean)](https://developers.google.com/apps-script/reference/document/text#setBold(Boolean)) | Sets the bold setting. | [Text](#class-text) | the current element | not started |  |
-| [setBold(Integer,Integer,Boolean)](https://developers.google.com/apps-script/reference/document/text#setBold(Integer,Integer,Boolean)) |  |  |  | not started |  |
-| [setFontFamily(Integer,Integer,String)](https://developers.google.com/apps-script/reference/document/text#setFontFamily(Integer,Integer,String)) |  |  |  | not started |  |
-| [setFontFamily(String)](https://developers.google.com/apps-script/reference/document/text#setFontFamily(String)) | Sets the font family. The name can be any font from the Font menu in Docs or Google Fonts, and is case-sensitive. Unrecognized font names will render as Arial. The methods getFontFamily() and setFontFamily(fontFamilyName) now use string names for fonts instead of the FontFamily enum. Although this enum is deprecated, it will remain available for compatibility with older scripts. | [Text](#class-text) | the current element | not started |  |
-| [setFontSize(Integer,Integer,Number)](https://developers.google.com/apps-script/reference/document/text#setFontSize(Integer,Integer,Number)) |  |  |  | not started |  |
-| [setFontSize(Number)](https://developers.google.com/apps-script/reference/document/text#setFontSize(Number)) | Sets the font size. | [Text](#class-text) | the current element | not started |  |
-| [setForegroundColor(Integer,Integer,String)](https://developers.google.com/apps-script/reference/document/text#setForegroundColor(Integer,Integer,String)) |  |  |  | not started |  |
-| [setForegroundColor(String)](https://developers.google.com/apps-script/reference/document/text#setForegroundColor(String)) | Sets the foreground color. | [Text](#class-text) | the current element | not started |  |
-| [setItalic(Boolean)](https://developers.google.com/apps-script/reference/document/text#setItalic(Boolean)) | Sets the italic setting. | [Text](#class-text) | the current element | not started |  |
-| [setItalic(Integer,Integer,Boolean)](https://developers.google.com/apps-script/reference/document/text#setItalic(Integer,Integer,Boolean)) |  |  |  | not started |  |
-| [setLinkUrl(Integer,Integer,String)](https://developers.google.com/apps-script/reference/document/text#setLinkUrl(Integer,Integer,String)) |  |  |  | not started |  |
-| [setLinkUrl(String)](https://developers.google.com/apps-script/reference/document/text#setLinkUrl(String)) | Sets the link url. | [Text](#class-text) | the current element | not started |  |
-| [setStrikethrough(Boolean)](https://developers.google.com/apps-script/reference/document/text#setStrikethrough(Boolean)) | Sets the strikethrough setting. | [Text](#class-text) | the current element | not started |  |
-| [setStrikethrough(Integer,Integer,Boolean)](https://developers.google.com/apps-script/reference/document/text#setStrikethrough(Integer,Integer,Boolean)) |  |  |  | not started |  |
+| [setBackgroundColor(Integer,Integer,String)](https://developers.google.com/apps-script/reference/document/text#setBackgroundColor(Integer,Integer,String)) |  |  |  | completed | [link](../src/services/documentapp/faketext.js#L0) |
+| [setBackgroundColor(String)](https://developers.google.com/apps-script/reference/document/text#setBackgroundColor(String)) | Sets the background color. | [Text](#class-text) | the current element | completed | [link](../src/services/documentapp/faketext.js#L0) |
+| [setBold(Boolean)](https://developers.google.com/apps-script/reference/document/text#setBold(Boolean)) | Sets the bold setting. | [Text](#class-text) | the current element | completed | [link](../src/services/documentapp/faketext.js#L0) |
+| [setBold(Integer,Integer,Boolean)](https://developers.google.com/apps-script/reference/document/text#setBold(Integer,Integer,Boolean)) |  |  |  | completed | [link](../src/services/documentapp/faketext.js#L0) |
+| [setFontFamily(Integer,Integer,String)](https://developers.google.com/apps-script/reference/document/text#setFontFamily(Integer,Integer,String)) |  |  |  | completed | [link](../src/services/documentapp/faketext.js#L0) |
+| [setFontFamily(String)](https://developers.google.com/apps-script/reference/document/text#setFontFamily(String)) | Sets the font family. The name can be any font from the Font menu in Docs or Google Fonts, and is case-sensitive. Unrecognized font names will render as Arial. The methods getFontFamily() and setFontFamily(fontFamilyName) now use string names for fonts instead of the FontFamily enum. Although this enum is deprecated, it will remain available for compatibility with older scripts. | [Text](#class-text) | the current element | completed | [link](../src/services/documentapp/faketext.js#L0) |
+| [setFontSize(Integer,Integer,Number)](https://developers.google.com/apps-script/reference/document/text#setFontSize(Integer,Integer,Number)) |  |  |  | completed | [link](../src/services/documentapp/faketext.js#L0) |
+| [setFontSize(Number)](https://developers.google.com/apps-script/reference/document/text#setFontSize(Number)) | Sets the font size. | [Text](#class-text) | the current element | completed | [link](../src/services/documentapp/faketext.js#L0) |
+| [setForegroundColor(Integer,Integer,String)](https://developers.google.com/apps-script/reference/document/text#setForegroundColor(Integer,Integer,String)) |  |  |  | completed | [link](../src/services/documentapp/faketext.js#L0) |
+| [setForegroundColor(String)](https://developers.google.com/apps-script/reference/document/text#setForegroundColor(String)) | Sets the foreground color. | [Text](#class-text) | the current element | completed | [link](../src/services/documentapp/faketext.js#L0) |
+| [setItalic(Boolean)](https://developers.google.com/apps-script/reference/document/text#setItalic(Boolean)) | Sets the italic setting. | [Text](#class-text) | the current element | completed | [link](../src/services/documentapp/faketext.js#L0) |
+| [setItalic(Integer,Integer,Boolean)](https://developers.google.com/apps-script/reference/document/text#setItalic(Integer,Integer,Boolean)) |  |  |  | completed | [link](../src/services/documentapp/faketext.js#L0) |
+| [setLinkUrl(Integer,Integer,String)](https://developers.google.com/apps-script/reference/document/text#setLinkUrl(Integer,Integer,String)) |  |  |  | completed | [link](../src/services/documentapp/faketext.js#L0) |
+| [setLinkUrl(String)](https://developers.google.com/apps-script/reference/document/text#setLinkUrl(String)) | Sets the link url. | [Text](#class-text) | the current element | completed | [link](../src/services/documentapp/faketext.js#L0) |
+| [setStrikethrough(Boolean)](https://developers.google.com/apps-script/reference/document/text#setStrikethrough(Boolean)) | Sets the strikethrough setting. | [Text](#class-text) | the current element | completed | [link](../src/services/documentapp/faketext.js#L0) |
+| [setStrikethrough(Integer,Integer,Boolean)](https://developers.google.com/apps-script/reference/document/text#setStrikethrough(Integer,Integer,Boolean)) |  |  |  | completed | [link](../src/services/documentapp/faketext.js#L0) |
 | [setText(String)](https://developers.google.com/apps-script/reference/document/text#setText(String)) | Sets the text contents. | [Text](#class-text) | The current element. | not started |  |
 | [setTextAlignment(Integer,Integer,TextAlignment)](https://developers.google.com/apps-script/reference/document/text#setTextAlignment(Integer,Integer,TextAlignment)) |  |  |  | not started |  |
 | [setTextAlignment(TextAlignment)](https://developers.google.com/apps-script/reference/document/text#setTextAlignment(TextAlignment)) | Sets the text alignment. The available types of alignment are DocumentApp.TextAlignment.NORMAL, DocumentApp.TextAlignment.SUBSCRIPT, and DocumentApp.TextAlignment.SUPERSCRIPT. | [Text](#class-text) | the current element | not started |  |
-| [setUnderline(Boolean)](https://developers.google.com/apps-script/reference/document/text#setUnderline(Boolean)) | Sets the underline setting. | [Text](#class-text) | the current element | not started |  |
-| [setUnderline(Integer,Integer,Boolean)](https://developers.google.com/apps-script/reference/document/text#setUnderline(Integer,Integer,Boolean)) |  |  |  | not started |  |
+| [setUnderline(Boolean)](https://developers.google.com/apps-script/reference/document/text#setUnderline(Boolean)) | Sets the underline setting. | [Text](#class-text) | the current element | completed | [link](../src/services/documentapp/faketext.js#L0) |
+| [setUnderline(Integer,Integer,Boolean)](https://developers.google.com/apps-script/reference/document/text#setUnderline(Integer,Integer,Boolean)) |  |  |  | completed | [link](../src/services/documentapp/faketext.js#L0) |
 
 ## Class: [UnsupportedElement](https://developers.google.com/apps-script/reference/document/unsupported-element)
 
@@ -1131,44 +1131,44 @@ An enumeration of the element attributes.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| BACKGROUND_COLOR | The background color of an element (Paragraph, Table, etc) or document. | not started |  |
-| BOLD | The font weight setting, for rich text. | not started |  |
-| BORDER_COLOR | The border color, for table elements. | not started |  |
-| BORDER_WIDTH | The border width in points, for table elements. | not started |  |
-| CODE | The code contents, for equation elements. | not started |  |
-| FONT_FAMILY | The font family setting, for rich text. | not started |  |
-| FONT_SIZE | The font size setting in points, for rich text. | not started |  |
-| FOREGROUND_COLOR | The foreground color setting, for rich text. | not started |  |
-| GLYPH_TYPE | The glyph type, for list item elements. | not started |  |
-| HEADING | The heading type, for paragraph elements (for example, DocumentApp.ParagraphHeading.HEADING1). | not started |  |
-| HEIGHT | The height setting, for image elements. | not started |  |
-| HORIZONTAL_ALIGNMENT | The horizontal alignment, for paragraph elements (for example, DocumentApp.HorizontalAlignment.CENTER). | not started |  |
-| INDENT_END | The end indentation setting in points, for paragraph elements. | not started |  |
-| INDENT_FIRST_LINE | The first line indentation setting in points, for paragraph elements. | not started |  |
-| INDENT_START | The start indentation setting in points, for paragraph elements. | not started |  |
-| ITALIC | The font style setting, for rich text. | not started |  |
-| LEFT_TO_RIGHT | The text direction setting, for rich text. | not started |  |
-| LINE_SPACING | The line spacing setting as a multiplier, for paragraph elements. | not started |  |
-| LINK_URL | The link URL, for rich text. The default link style (foreground color, underline) is automatically applied. | not started |  |
-| LIST_ID | The ID of the encompassing list, for list item elements. | not started |  |
-| MARGIN_BOTTOM | The bottom margin setting in points, for paragraph elements. | not started |  |
-| MARGIN_LEFT | The left margin setting in points, for paragraph elements. | not started |  |
-| MARGIN_RIGHT | The right margin setting in points, for paragraph elements. | not started |  |
-| MARGIN_TOP | The top margin setting in points, for paragraph elements. | not started |  |
-| MINIMUM_HEIGHT | The minimum height setting in points, for table row elements. | not started |  |
-| NESTING_LEVEL | The item nesting level, for list item elements. | not started |  |
-| PADDING_BOTTOM | The bottom padding setting in points, for table cell elements. | not started |  |
-| PADDING_LEFT | The left padding setting in points, for table cell elements. | not started |  |
-| PADDING_RIGHT | The right padding setting in points, for table cell elements. | not started |  |
-| PADDING_TOP | The top padding setting in points, for table cell elements. | not started |  |
-| PAGE_HEIGHT | The page height setting in points, for documents. | not started |  |
-| PAGE_WIDTH | The page width setting in points, for documents. | not started |  |
-| SPACING_AFTER | The bottom spacing setting in points, for paragraph elements. | not started |  |
-| SPACING_BEFORE | The top spacing setting in points, for paragraph elements. | not started |  |
-| STRIKETHROUGH | The strike-through setting, for rich text. | not started |  |
-| UNDERLINE | The underline setting, for rich text. | not started |  |
-| VERTICAL_ALIGNMENT | The vertical alignment setting, for table cell elements. | not started |  |
-| WIDTH | The width setting, for table cell and image elements. | not started |  |
+| BACKGROUND_COLOR | The background color of an element (Paragraph, Table, etc) or document. | completed | [link](../src/services/enums/docsenums.js#L3) |
+| BOLD | The font weight setting, for rich text. | completed | [link](../src/services/enums/docsenums.js#L4) |
+| BORDER_COLOR | The border color, for table elements. | completed | [link](../src/services/enums/docsenums.js#L5) |
+| BORDER_WIDTH | The border width in points, for table elements. | completed | [link](../src/services/enums/docsenums.js#L6) |
+| CODE | The code contents, for equation elements. | completed | [link](../src/services/enums/docsenums.js#L7) |
+| FONT_FAMILY | The font family setting, for rich text. | completed | [link](../src/services/enums/docsenums.js#L8) |
+| FONT_SIZE | The font size setting in points, for rich text. | completed | [link](../src/services/enums/docsenums.js#L9) |
+| FOREGROUND_COLOR | The foreground color setting, for rich text. | completed | [link](../src/services/enums/docsenums.js#L10) |
+| GLYPH_TYPE | The glyph type, for list item elements. | completed | [link](../src/services/enums/docsenums.js#L18) |
+| HEADING | The heading type, for paragraph elements (for example, DocumentApp.ParagraphHeading.HEADING1). | completed | [link](../src/services/enums/docsenums.js#L11) |
+| HEIGHT | The height setting, for image elements. | completed | [link](../src/services/enums/docsenums.js#L12) |
+| HORIZONTAL_ALIGNMENT | The horizontal alignment, for paragraph elements (for example, DocumentApp.HorizontalAlignment.CENTER). | completed | [link](../src/services/enums/docsenums.js#L13) |
+| INDENT_END | The end indentation setting in points, for paragraph elements. | completed | [link](../src/services/enums/docsenums.js#L14) |
+| INDENT_FIRST_LINE | The first line indentation setting in points, for paragraph elements. | completed | [link](../src/services/enums/docsenums.js#L15) |
+| INDENT_START | The start indentation setting in points, for paragraph elements. | completed | [link](../src/services/enums/docsenums.js#L16) |
+| ITALIC | The font style setting, for rich text. | completed | [link](../src/services/enums/docsenums.js#L17) |
+| LEFT_TO_RIGHT | The text direction setting, for rich text. | completed | [link](../src/services/enums/docsenums.js#L19) |
+| LINE_SPACING | The line spacing setting as a multiplier, for paragraph elements. | completed | [link](../src/services/enums/docsenums.js#L20) |
+| LINK_URL | The link URL, for rich text. The default link style (foreground color, underline) is automatically applied. | completed | [link](../src/services/enums/docsenums.js#L21) |
+| LIST_ID | The ID of the encompassing list, for list item elements. | completed | [link](../src/services/enums/docsenums.js#L22) |
+| MARGIN_BOTTOM | The bottom margin setting in points, for paragraph elements. | completed | [link](../src/services/enums/docsenums.js#L23) |
+| MARGIN_LEFT | The left margin setting in points, for paragraph elements. | completed | [link](../src/services/enums/docsenums.js#L24) |
+| MARGIN_RIGHT | The right margin setting in points, for paragraph elements. | completed | [link](../src/services/enums/docsenums.js#L25) |
+| MARGIN_TOP | The top margin setting in points, for paragraph elements. | completed | [link](../src/services/enums/docsenums.js#L26) |
+| MINIMUM_HEIGHT | The minimum height setting in points, for table row elements. | completed | [link](../src/services/enums/docsenums.js#L28) |
+| NESTING_LEVEL | The item nesting level, for list item elements. | completed | [link](../src/services/enums/docsenums.js#L27) |
+| PADDING_BOTTOM | The bottom padding setting in points, for table cell elements. | completed | [link](../src/services/enums/docsenums.js#L29) |
+| PADDING_LEFT | The left padding setting in points, for table cell elements. | completed | [link](../src/services/enums/docsenums.js#L30) |
+| PADDING_RIGHT | The right padding setting in points, for table cell elements. | completed | [link](../src/services/enums/docsenums.js#L31) |
+| PADDING_TOP | The top padding setting in points, for table cell elements. | completed | [link](../src/services/enums/docsenums.js#L32) |
+| PAGE_HEIGHT | The page height setting in points, for documents. | completed | [link](../src/services/enums/docsenums.js#L33) |
+| PAGE_WIDTH | The page width setting in points, for documents. | completed | [link](../src/services/enums/docsenums.js#L34) |
+| SPACING_AFTER | The bottom spacing setting in points, for paragraph elements. | completed | [link](../src/services/enums/docsenums.js#L35) |
+| SPACING_BEFORE | The top spacing setting in points, for paragraph elements. | completed | [link](../src/services/enums/docsenums.js#L36) |
+| STRIKETHROUGH | The strike-through setting, for rich text. | completed | [link](../src/services/enums/docsenums.js#L37) |
+| UNDERLINE | The underline setting, for rich text. | completed | [link](../src/services/enums/docsenums.js#L38) |
+| VERTICAL_ALIGNMENT | The vertical alignment setting, for table cell elements. | completed | [link](../src/services/enums/docsenums.js#L39) |
+| WIDTH | The width setting, for table cell and image elements. | completed | [link](../src/services/enums/docsenums.js#L6) |
 
 ## Enum: [ElementType](https://developers.google.com/apps-script/reference/document/element-type)
 
@@ -1176,30 +1176,30 @@ An enumeration of all the element types.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| BODY_SECTION | The type corresponding to the Body element. | not started |  |
-| COMMENT_SECTION | The type corresponding to the CommentSection element. | not started |  |
-| DATE | The type corresponding to the Date element. | not started |  |
-| EQUATION | The type corresponding to the Equation element. | not started |  |
-| EQUATION_FUNCTION | The type corresponding to the EquationFunction element. | not started |  |
-| EQUATION_FUNCTION_ARGUMENT_SEPARATOR | The type corresponding to the EquationFunctionArgumentSeparator element. | not started |  |
-| EQUATION_SYMBOL | The type corresponding to the EquationSymbol element. | not started |  |
-| FOOTER_SECTION | The type corresponding to the FooterSection element. | not started |  |
-| FOOTNOTE | The type corresponding to the Footnote element. | not started |  |
-| FOOTNOTE_SECTION | The type corresponding to the FootnoteSection element. | not started |  |
-| HEADER_SECTION | The type corresponding to the HeaderSection element. | not started |  |
-| HORIZONTAL_RULE | The type corresponding to the HorizontalRule element. | not started |  |
-| INLINE_DRAWING | The type corresponding to the InlineDrawing element. | not started |  |
-| INLINE_IMAGE | The type corresponding to the InlineImage element. | not started |  |
-| LIST_ITEM | The type corresponding to the ListItem element. | not started |  |
-| PAGE_BREAK | The type corresponding to the PageBreak element. | not started |  |
-| PARAGRAPH | The type corresponding to the Paragraph element. | not started |  |
-| PERSON | The type corresponding to the Person element. | not started |  |
-| RICH_LINK | The type corresponding to the RichLink element. | not started |  |
-| TABLE | The type corresponding to the Table element. | not started |  |
-| TABLE_CELL | The type corresponding to the TableCell element. | not started |  |
-| TABLE_OF_CONTENTS | The type corresponding to the TableOfContents element. | not started |  |
-| TABLE_ROW | The type corresponding to the TableRow element. | not started |  |
-| TEXT | The type corresponding to the Text element. | not started |  |
+| BODY_SECTION | The type corresponding to the Body element. | completed | [link](../src/services/enums/docsenums.js#L45) |
+| COMMENT_SECTION | The type corresponding to the CommentSection element. | completed | [link](../src/services/enums/docsenums.js#L47) |
+| DATE | The type corresponding to the Date element. | completed | [link](../src/services/enums/docsenums.js#L48) |
+| EQUATION | The type corresponding to the Equation element. | completed | [link](../src/services/enums/docsenums.js#L50) |
+| EQUATION_FUNCTION | The type corresponding to the EquationFunction element. | completed | [link](../src/services/enums/docsenums.js#L51) |
+| EQUATION_FUNCTION_ARGUMENT_SEPARATOR | The type corresponding to the EquationFunctionArgumentSeparator element. | completed | [link](../src/services/enums/docsenums.js#L52) |
+| EQUATION_SYMBOL | The type corresponding to the EquationSymbol element. | completed | [link](../src/services/enums/docsenums.js#L53) |
+| FOOTER_SECTION | The type corresponding to the FooterSection element. | completed | [link](../src/services/enums/docsenums.js#L55) |
+| FOOTNOTE | The type corresponding to the Footnote element. | completed | [link](../src/services/enums/docsenums.js#L56) |
+| FOOTNOTE_SECTION | The type corresponding to the FootnoteSection element. | completed | [link](../src/services/enums/docsenums.js#L58) |
+| HEADER_SECTION | The type corresponding to the HeaderSection element. | completed | [link](../src/services/enums/docsenums.js#L59) |
+| HORIZONTAL_RULE | The type corresponding to the HorizontalRule element. | completed | [link](../src/services/enums/docsenums.js#L60) |
+| INLINE_DRAWING | The type corresponding to the InlineDrawing element. | completed | [link](../src/services/enums/docsenums.js#L61) |
+| INLINE_IMAGE | The type corresponding to the InlineImage element. | completed | [link](../src/services/enums/docsenums.js#L62) |
+| LIST_ITEM | The type corresponding to the ListItem element. | completed | [link](../src/services/enums/docsenums.js#L63) |
+| PAGE_BREAK | The type corresponding to the PageBreak element. | completed | [link](../src/services/enums/docsenums.js#L64) |
+| PARAGRAPH | The type corresponding to the Paragraph element. | completed | [link](../src/services/enums/docsenums.js#L65) |
+| PERSON | The type corresponding to the Person element. | completed | [link](../src/services/enums/docsenums.js#L66) |
+| RICH_LINK | The type corresponding to the RichLink element. | completed | [link](../src/services/enums/docsenums.js#L54) |
+| TABLE | The type corresponding to the Table element. | completed | [link](../src/services/enums/docsenums.js#L68) |
+| TABLE_CELL | The type corresponding to the TableCell element. | completed | [link](../src/services/enums/docsenums.js#L69) |
+| TABLE_OF_CONTENTS | The type corresponding to the TableOfContents element. | completed | [link](../src/services/enums/docsenums.js#L70) |
+| TABLE_ROW | The type corresponding to the TableRow element. | completed | [link](../src/services/enums/docsenums.js#L71) |
+| TEXT | The type corresponding to the Text element. | completed | [link](../src/services/enums/docsenums.js#L72) |
 | UNSUPPORTED | The type corresponding to UnsupportedElement. Unsupported elements represent document portions that do not support scripting. | not started |  |
 
 ## Enum: [FontFamily](https://developers.google.com/apps-script/reference/document/font-family)
@@ -1208,37 +1208,37 @@ Deprecated. The methods getFontFamily() and setFontFamily(String) now use string
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| AMARANTH | The Amaranth font family. | not started |  |
-| ARIAL | The Arial font family. | not started |  |
-| ARIAL_BLACK | The Arial Black font family. | not started |  |
-| ARIAL_NARROW | The Arial Narrow font family. | not started |  |
-| ARVO | The Arvo font family. | not started |  |
-| CALIBRI | The Calibri font family. | not started |  |
-| CAMBRIA | The Cambria font family. | not started |  |
-| COMIC_SANS_MS | The Comic Sans MS font family. | not started |  |
-| CONSOLAS | The Consolas font family. | not started |  |
-| CORSIVA | The Corsiva font family. | not started |  |
-| COURIER_NEW | The Courier New font family. | not started |  |
-| DANCING_SCRIPT | The Dancing Script font family. | not started |  |
-| DROID_SANS | The Droid Sans font family. | not started |  |
-| DROID_SERIF | The Droid Serif font family. | not started |  |
-| GARAMOND | The Garamond font family. | not started |  |
-| GEORGIA | The Georgia font family. | not started |  |
-| GLORIA_HALLELUJAH | The Gloria Hallelujah font family. | not started |  |
-| GREAT_VIBES | The Great Vibes font family. | not started |  |
-| LOBSTER | The Lobster font family. | not started |  |
-| MERRIWEATHER | The Merriweather font family. | not started |  |
-| PACIFICO | The Pacifico font family. | not started |  |
-| PHILOSOPHER | The Philosopher font family. | not started |  |
-| POIRET_ONE | The Poiret One font family | not started |  |
-| QUATTROCENTO | The Quattrocento font family. | not started |  |
-| ROBOTO | The Roboto font family | not started |  |
-| SHADOWS_INTO_LIGHT | The Shadows Into Light font family. | not started |  |
-| SYNCOPATE | The Syncopate font family. | not started |  |
-| TAHOMA | The Tahoma font family. | not started |  |
-| TIMES_NEW_ROMAN | The Times New Roman font family. | not started |  |
-| TREBUCHET_MS | The Trebuchet MS font family. | not started |  |
-| UBUNTU | The Ubuntu font family. | not started |  |
+| AMARANTH | The Amaranth font family. | completed | [link](../src/services/enums/docsenums.js#L77) |
+| ARIAL | The Arial font family. | completed | [link](../src/services/enums/docsenums.js#L78) |
+| ARIAL_BLACK | The Arial Black font family. | completed | [link](../src/services/enums/docsenums.js#L79) |
+| ARIAL_NARROW | The Arial Narrow font family. | completed | [link](../src/services/enums/docsenums.js#L80) |
+| ARVO | The Arvo font family. | completed | [link](../src/services/enums/docsenums.js#L81) |
+| CALIBRI | The Calibri font family. | completed | [link](../src/services/enums/docsenums.js#L82) |
+| CAMBRIA | The Cambria font family. | completed | [link](../src/services/enums/docsenums.js#L83) |
+| COMIC_SANS_MS | The Comic Sans MS font family. | completed | [link](../src/services/enums/docsenums.js#L84) |
+| CONSOLAS | The Consolas font family. | completed | [link](../src/services/enums/docsenums.js#L85) |
+| CORSIVA | The Corsiva font family. | completed | [link](../src/services/enums/docsenums.js#L86) |
+| COURIER_NEW | The Courier New font family. | completed | [link](../src/services/enums/docsenums.js#L87) |
+| DANCING_SCRIPT | The Dancing Script font family. | completed | [link](../src/services/enums/docsenums.js#L88) |
+| DROID_SANS | The Droid Sans font family. | completed | [link](../src/services/enums/docsenums.js#L89) |
+| DROID_SERIF | The Droid Serif font family. | completed | [link](../src/services/enums/docsenums.js#L90) |
+| GARAMOND | The Garamond font family. | completed | [link](../src/services/enums/docsenums.js#L91) |
+| GEORGIA | The Georgia font family. | completed | [link](../src/services/enums/docsenums.js#L92) |
+| GLORIA_HALLELUJAH | The Gloria Hallelujah font family. | completed | [link](../src/services/enums/docsenums.js#L93) |
+| GREAT_VIBES | The Great Vibes font family. | completed | [link](../src/services/enums/docsenums.js#L94) |
+| LOBSTER | The Lobster font family. | completed | [link](../src/services/enums/docsenums.js#L95) |
+| MERRIWEATHER | The Merriweather font family. | completed | [link](../src/services/enums/docsenums.js#L96) |
+| PACIFICO | The Pacifico font family. | completed | [link](../src/services/enums/docsenums.js#L97) |
+| PHILOSOPHER | The Philosopher font family. | completed | [link](../src/services/enums/docsenums.js#L98) |
+| POIRET_ONE | The Poiret One font family | completed | [link](../src/services/enums/docsenums.js#L99) |
+| QUATTROCENTO | The Quattrocento font family. | completed | [link](../src/services/enums/docsenums.js#L100) |
+| ROBOTO | The Roboto font family | completed | [link](../src/services/enums/docsenums.js#L101) |
+| SHADOWS_INTO_LIGHT | The Shadows Into Light font family. | completed | [link](../src/services/enums/docsenums.js#L102) |
+| SYNCOPATE | The Syncopate font family. | completed | [link](../src/services/enums/docsenums.js#L103) |
+| TAHOMA | The Tahoma font family. | completed | [link](../src/services/enums/docsenums.js#L104) |
+| TIMES_NEW_ROMAN | The Times New Roman font family. | completed | [link](../src/services/enums/docsenums.js#L105) |
+| TREBUCHET_MS | The Trebuchet MS font family. | completed | [link](../src/services/enums/docsenums.js#L106) |
+| UBUNTU | The Ubuntu font family. | completed | [link](../src/services/enums/docsenums.js#L107) |
 | VERDANA | The Verdana font family. | not started |  |
 
 ## Enum: [GlyphType](https://developers.google.com/apps-script/reference/document/glyph-type)
@@ -1247,14 +1247,14 @@ An enumeration of the supported glyph types.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| BULLET | The default bullet, circular and filled. | not started |  |
-| HOLLOW_BULLET | A hollow bullet. | not started |  |
-| LATIN_LOWER | A latin, lowercase bullet. | not started |  |
-| LATIN_UPPER | A latin, uppercase bullet. | not started |  |
-| NUMBER | A number based bullet. | not started |  |
+| BULLET | The default bullet, circular and filled. | completed | [link](../src/services/enums/docsenums.js#L111) |
+| HOLLOW_BULLET | A hollow bullet. | completed | [link](../src/services/enums/docsenums.js#L112) |
+| LATIN_LOWER | A latin, lowercase bullet. | completed | [link](../src/services/enums/docsenums.js#L116) |
+| LATIN_UPPER | A latin, uppercase bullet. | completed | [link](../src/services/enums/docsenums.js#L115) |
+| NUMBER | A number based bullet. | completed | [link](../src/services/enums/docsenums.js#L114) |
 | ROMAN_LOWER | A roman numeral, lowercase bullet. | not started |  |
-| ROMAN_UPPER | A roman numeral, uppercase bullet. | not started |  |
-| SQUARE_BULLET | A square bullet. | not started |  |
+| ROMAN_UPPER | A roman numeral, uppercase bullet. | completed | [link](../src/services/enums/docsenums.js#L117) |
+| SQUARE_BULLET | A square bullet. | completed | [link](../src/services/enums/docsenums.js#L113) |
 
 ## Enum: [HorizontalAlignment](https://developers.google.com/apps-script/reference/document/horizontal-alignment)
 
@@ -1262,10 +1262,10 @@ An enumeration of the supported horizontal alignment types.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| CENTER | The center-alignment option. | not started |  |
+| CENTER | The center-alignment option. | completed | [link](../src/services/enums/docsenums.js#L122) |
 | JUSTIFY | The justify-alignment option. | not started |  |
-| LEFT | The left-alignment option. | not started |  |
-| RIGHT | The right-alignment option. | not started |  |
+| LEFT | The left-alignment option. | completed | [link](../src/services/enums/docsenums.js#L19) |
+| RIGHT | The right-alignment option. | completed | [link](../src/services/enums/docsenums.js#L19) |
 
 ## Enum: [ParagraphHeading](https://developers.google.com/apps-script/reference/document/paragraph-heading)
 
@@ -1273,15 +1273,15 @@ An enumeration of the standard paragraph headings.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| HEADING1 | The highest heading option. | not started |  |
-| HEADING2 | The second heading option. | not started |  |
-| HEADING3 | The third heading option | not started |  |
-| HEADING4 | The fourth heading option. | not started |  |
-| HEADING5 | The fifth heading option. | not started |  |
-| HEADING6 | The lowest heading option. | not started |  |
-| NORMAL | The heading option for normal text. | not started |  |
+| HEADING1 | The highest heading option. | completed | [link](../src/services/enums/docsenums.js#L128) |
+| HEADING2 | The second heading option. | completed | [link](../src/services/enums/docsenums.js#L129) |
+| HEADING3 | The third heading option | completed | [link](../src/services/enums/docsenums.js#L130) |
+| HEADING4 | The fourth heading option. | completed | [link](../src/services/enums/docsenums.js#L131) |
+| HEADING5 | The fifth heading option. | completed | [link](../src/services/enums/docsenums.js#L132) |
+| HEADING6 | The lowest heading option. | completed | [link](../src/services/enums/docsenums.js#L133) |
+| NORMAL | The heading option for normal text. | completed | [link](../src/services/enums/docsenums.js#L127) |
 | SUBTITLE | The subtitle heading option. | not started |  |
-| TITLE | The title heading option. | not started |  |
+| TITLE | The title heading option. | completed | [link](../src/services/enums/docsenums.js#L134) |
 
 ## Enum: [PositionedLayout](https://developers.google.com/apps-script/reference/document/positioned-layout)
 
@@ -1289,10 +1289,10 @@ An enumeration that specifies how to lay out a PositionedImage in relation to su
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| ABOVE_TEXT | The image is positioned above the text. | not started |  |
-| BREAK_BOTH | The image breaks the text on the left and right. | not started |  |
-| BREAK_LEFT | The image breaks the text on the left. | not started |  |
-| BREAK_RIGHT | The image breaks the text on the right. | not started |  |
+| ABOVE_TEXT | The image is positioned above the text. | completed | [link](../src/services/enums/docsenums.js#L138) |
+| BREAK_BOTH | The image breaks the text on the left and right. | completed | [link](../src/services/enums/docsenums.js#L139) |
+| BREAK_LEFT | The image breaks the text on the left. | completed | [link](../src/services/enums/docsenums.js#L140) |
+| BREAK_RIGHT | The image breaks the text on the right. | completed | [link](../src/services/enums/docsenums.js#L141) |
 | WRAP_TEXT | The image is wrapped by text. | not started |  |
 
 ## Enum: [TabType](https://developers.google.com/apps-script/reference/document/tab-type)
@@ -1309,9 +1309,9 @@ An enumeration of the type of text alignments.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| NORMAL | The normal text alignment. | not started |  |
+| NORMAL | The normal text alignment. | completed | [link](../src/services/enums/docsenums.js#L127) |
 | SUBSCRIPT | The subscript text alignment. | not started |  |
-| SUPERSCRIPT | The superscript text alignment. | not started |  |
+| SUPERSCRIPT | The superscript text alignment. | completed | [link](../src/services/enums/docsenums.js#L149) |
 
 ## Enum: [VerticalAlignment](https://developers.google.com/apps-script/reference/document/vertical-alignment)
 
@@ -1319,9 +1319,9 @@ An enumeration of the supported vertical alignment types.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| BOTTOM | The bottom-alignment option. | not started |  |
-| CENTER | The center-alignment option. | not started |  |
-| TOP | The top-alignment option. | not started |  |
+| BOTTOM | The bottom-alignment option. | completed | [link](../src/services/enums/docsenums.js#L23) |
+| CENTER | The center-alignment option. | completed | [link](../src/services/enums/docsenums.js#L122) |
+| TOP | The top-alignment option. | completed | [link](../src/services/enums/docsenums.js#L26) |
 
 ## Interface: [Element](https://developers.google.com/apps-script/reference/document/element)
 
@@ -1329,37 +1329,37 @@ A generic element. Document contents are represented as elements. For example, L
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| [asBody()](https://developers.google.com/apps-script/reference/document/element#asBody()) | Returns the current element as a Body. | [Body](#class-body) | The current element. | not started |  |
-| [asDate()](https://developers.google.com/apps-script/reference/document/element#asDate()) | Returns the current element as a Date. | [Date](#class-date) | The current element with its type set as Date. | not started |  |
-| [asEquation()](https://developers.google.com/apps-script/reference/document/element#asEquation()) | Returns the current element as an Equation. | [Equation](#class-equation) | The current element. | not started |  |
-| [asEquationFunction()](https://developers.google.com/apps-script/reference/document/element#asEquationFunction()) | Returns the current element as a EquationFunction. | [EquationFunction](#class-equationfunction) | The current element. | not started |  |
-| [asEquationFunctionArgumentSeparator()](https://developers.google.com/apps-script/reference/document/element#asEquationFunctionArgumentSeparator()) | Returns the current element as a EquationFunctionArgumentSeparator. | [EquationFunctionArgumentSeparator](#class-equationfunctionargumentseparator) | The current element. | not started |  |
-| [asEquationSymbol()](https://developers.google.com/apps-script/reference/document/element#asEquationSymbol()) | Returns the current element as a EquationSymbol. | [EquationSymbol](#class-equationsymbol) | The current element. | not started |  |
-| [asFooterSection()](https://developers.google.com/apps-script/reference/document/element#asFooterSection()) | Returns the current element as a FooterSection. | [FooterSection](#class-footersection) | The current element. | not started |  |
-| [asFootnote()](https://developers.google.com/apps-script/reference/document/element#asFootnote()) | Returns the current element as a Footnote. | [Footnote](#class-footnote) | The current element. | completed | [link](../src/services/documentapp/fakeelement.js#L45) |
-| [asFootnoteSection()](https://developers.google.com/apps-script/reference/document/element#asFootnoteSection()) | Returns the current element as a FootnoteSection. | [FootnoteSection](#class-footnotesection) | The current element. | not started |  |
-| [asHeaderSection()](https://developers.google.com/apps-script/reference/document/element#asHeaderSection()) | Returns the current element as a HeaderSection. | [HeaderSection](#class-headersection) | The current element. | not started |  |
-| [asHorizontalRule()](https://developers.google.com/apps-script/reference/document/element#asHorizontalRule()) | Returns the current element as a HorizontalRule. | [HorizontalRule](#class-horizontalrule) | The current element. | completed | [link](../src/services/documentapp/fakeelement.js#L42) |
-| [asInlineDrawing()](https://developers.google.com/apps-script/reference/document/element#asInlineDrawing()) | Returns the current element as a InlineDrawing. | [InlineDrawing](#class-inlinedrawing) | The current element. | not started |  |
-| [asInlineImage()](https://developers.google.com/apps-script/reference/document/element#asInlineImage()) | Returns the current element as a InlineImage. | [InlineImage](#class-inlineimage) | The current element. | not started |  |
-| [asListItem()](https://developers.google.com/apps-script/reference/document/element#asListItem()) | Returns the current element as a ListItem. | [ListItem](#class-listitem) | The current element. | not started |  |
-| [asPageBreak()](https://developers.google.com/apps-script/reference/document/element#asPageBreak()) | Returns the current element as a PageBreak. | [PageBreak](#class-pagebreak) | The current element. | completed | [link](../src/services/documentapp/fakeelement.js#L39) |
-| [asParagraph()](https://developers.google.com/apps-script/reference/document/element#asParagraph()) | Returns the current element as a Paragraph. | [Paragraph](#class-paragraph) | The current element. | completed | [link](../src/services/documentapp/fakeelement.js#L19) |
-| [asPerson()](https://developers.google.com/apps-script/reference/document/element#asPerson()) | Returns the current element as a Person. | [Person](#class-person) | The current element with its type set as Person. | not started |  |
-| [asRichLink()](https://developers.google.com/apps-script/reference/document/element#asRichLink()) | Returns the current element as a RichLink, for example, a link to a Google Sheets file. | [RichLink](#class-richlink) | The current element with its type set as RichLink. | not started |  |
-| [asTable()](https://developers.google.com/apps-script/reference/document/element#asTable()) | Returns the current element as a Table. | [Table](#class-table) | The current element. | completed | [link](../src/services/documentapp/fakeelement.js#L27) |
-| [asTableCell()](https://developers.google.com/apps-script/reference/document/element#asTableCell()) | Returns the current element as a TableCell. | [TableCell](#class-tablecell) | The current element. | completed | [link](../src/services/documentapp/fakeelement.js#L33) |
-| [asTableOfContents()](https://developers.google.com/apps-script/reference/document/element#asTableOfContents()) | Returns the current element as a TableOfContents. | [TableOfContents](#class-tableofcontents) | The current element. | not started |  |
-| [asTableRow()](https://developers.google.com/apps-script/reference/document/element#asTableRow()) | Returns the current element as a TableRow. | [TableRow](#class-tablerow) | The current element. | completed | [link](../src/services/documentapp/fakeelement.js#L30) |
-| [asText()](https://developers.google.com/apps-script/reference/document/element#asText()) | Returns the current element as a Text. | [Text](#class-text) | The current element. | completed | [link](../src/services/documentapp/fakeelement.js#L36) |
-| [copy()](https://developers.google.com/apps-script/reference/document/element#copy()) | Returns a detached, deep copy of the current element. | [Element](#interface-element) | The new copy. | completed | [link](../src/services/documentapp/fakeelement.js#L52) |
-| [getAttributes()](https://developers.google.com/apps-script/reference/document/element#getAttributes()) | Retrieves the element's attributes. | Object | The element's attributes. | not started |  |
-| [getNextSibling()](https://developers.google.com/apps-script/reference/document/element#getNextSibling()) | Retrieves the element's next sibling element. | [Element](#interface-element) | The next sibling element. | not started |  |
-| [getParent()](https://developers.google.com/apps-script/reference/document/element#getParent()) | Retrieves the element's parent element. | [ContainerElement](#class-containerelement) | The parent element. | completed | [link](../src/services/documentapp/fakeelement.js#L155) |
-| [getPreviousSibling()](https://developers.google.com/apps-script/reference/document/element#getPreviousSibling()) | Retrieves the element's previous sibling element. | [Element](#interface-element) | The previous sibling element. | not started |  |
-| [getType()](https://developers.google.com/apps-script/reference/document/element#getType()) | Retrieves the element's ElementType. | [ElementType](#enum-elementtype) | The element type. | completed | [link](../src/services/documentapp/fakeelement.js#L121) |
-| [isAtDocumentEnd()](https://developers.google.com/apps-script/reference/document/element#isAtDocumentEnd()) | Determines whether the element is at the end of the Document. | Boolean | Whether the element is at the end of the tab. | not started |  |
-| [merge()](https://developers.google.com/apps-script/reference/document/element#merge()) | Merges the element with the preceding sibling of the same type. | [Element](#interface-element) | The merged element. | not started |  |
-| [removeFromParent()](https://developers.google.com/apps-script/reference/document/element#removeFromParent()) | Removes the element from its parent. | [Element](#interface-element) | The removed element. | not started |  |
-| [setAttributes(Object)](https://developers.google.com/apps-script/reference/document/element#setAttributes(Object)) | Sets the element's attributes. | [Element](#interface-element) | The current element. | not started |  |
+| asBody() | Returns the current element as a Body. | not started |  |
+| asDate() | Returns the current element as a Date. | not started |  |
+| asEquation() | Returns the current element as an Equation. | not started |  |
+| asEquationFunction() | Returns the current element as a EquationFunction. | not started |  |
+| asEquationFunctionArgumentSeparator() | Returns the current element as a EquationFunctionArgumentSeparator. | not started |  |
+| asEquationSymbol() | Returns the current element as a EquationSymbol. | not started |  |
+| asFooterSection() | Returns the current element as a FooterSection. | not started |  |
+| asFootnote() | Returns the current element as a Footnote. | completed | [link](../src/services/documentapp/fakeelement.js#L45) |
+| asFootnoteSection() | Returns the current element as a FootnoteSection. | not started |  |
+| asHeaderSection() | Returns the current element as a HeaderSection. | not started |  |
+| asHorizontalRule() | Returns the current element as a HorizontalRule. | completed | [link](../src/services/documentapp/fakeelement.js#L42) |
+| asInlineDrawing() | Returns the current element as a InlineDrawing. | not started |  |
+| asInlineImage() | Returns the current element as a InlineImage. | not started |  |
+| asListItem() | Returns the current element as a ListItem. | not started |  |
+| asPageBreak() | Returns the current element as a PageBreak. | completed | [link](../src/services/documentapp/fakeelement.js#L39) |
+| asParagraph() | Returns the current element as a Paragraph. | completed | [link](../src/services/documentapp/fakeelement.js#L19) |
+| asPerson() | Returns the current element as a Person. | not started |  |
+| asRichLink() | Returns the current element as a RichLink, for example, a link to a Google Sheets file. | not started |  |
+| asTable() | Returns the current element as a Table. | completed | [link](../src/services/documentapp/fakeelement.js#L27) |
+| asTableCell() | Returns the current element as a TableCell. | completed | [link](../src/services/documentapp/fakeelement.js#L33) |
+| asTableOfContents() | Returns the current element as a TableOfContents. | not started |  |
+| asTableRow() | Returns the current element as a TableRow. | completed | [link](../src/services/documentapp/fakeelement.js#L30) |
+| asText() | Returns the current element as a Text. | completed | [link](../src/services/documentapp/fakeelement.js#L36) |
+| copy() | Returns a detached, deep copy of the current element. | completed | [link](../src/services/documentapp/fakeelement.js#L52) |
+| getAttributes() | Retrieves the element's attributes. | not started |  |
+| getNextSibling() | Retrieves the element's next sibling element. | not started |  |
+| getParent() | Retrieves the element's parent element. | completed | [link](../src/services/documentapp/fakeelement.js#L155) |
+| getPreviousSibling() | Retrieves the element's previous sibling element. | not started |  |
+| getType() | Retrieves the element's ElementType. | completed | [link](../src/services/documentapp/fakeelement.js#L121) |
+| isAtDocumentEnd() | Determines whether the element is at the end of the Document. | not started |  |
+| merge() | Merges the element with the preceding sibling of the same type. | not started |  |
+| removeFromParent() | Removes the element from its parent. | not started |  |
+| setAttributes(Object) | Sets the element's attributes. | not started |  |
 

@@ -589,7 +589,7 @@ export class FakeSpreadsheet {
 
     // TODO validate options as they could be Fake objects needing serialized !!
     if (sheetOptions) {
-      throw `handling options not yet implemented`;
+      return notYetImplemented ('handling options in  insertSheet')
     }
 
     const pack = {

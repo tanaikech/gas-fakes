@@ -767,29 +767,29 @@ A generic form item that contains properties common to all items, such as title 
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| [asCheckboxGridItem()](https://developers.google.com/apps-script/reference/forms/item#asCheckboxGridItem()) | Returns the item as a checkbox grid item. Throws a scripting exception if the ItemType was not already CHECKBOX_GRID. | [CheckboxGridItem](#class-checkboxgriditem) | the checkbox grid item | not started |  |
-| [asCheckboxItem()](https://developers.google.com/apps-script/reference/forms/item#asCheckboxItem()) | Returns the item as a checkbox item. Throws a scripting exception if the ItemType was not already CHECKBOX. | [CheckboxItem](#class-checkboxitem) | the checkbox item | not started |  |
-| [asDateItem()](https://developers.google.com/apps-script/reference/forms/item#asDateItem()) | Returns the item as a date item. Throws a scripting exception if the ItemType was not already DATE. | [DateItem](#class-dateitem) | the date item | not started |  |
-| [asDateTimeItem()](https://developers.google.com/apps-script/reference/forms/item#asDateTimeItem()) | Returns the item as a date-time item. Throws a scripting exception if the ItemType was not already DATETIME. | [DateTimeItem](#class-datetimeitem) | the date-time item | not started |  |
-| [asDurationItem()](https://developers.google.com/apps-script/reference/forms/item#asDurationItem()) | Returns the item as a duration item. Throws a scripting exception if the ItemType was not already DURATION. | [DurationItem](#class-durationitem) | the duration item | not started |  |
-| [asGridItem()](https://developers.google.com/apps-script/reference/forms/item#asGridItem()) | Returns the item as a grid item. Throws a scripting exception if the ItemType was not already GRID. | [GridItem](#class-griditem) | the grid item | not started |  |
-| [asImageItem()](https://developers.google.com/apps-script/reference/forms/item#asImageItem()) | Returns the item as an image item. Throws a scripting exception if the ItemType was not already IMAGE. | [ImageItem](#class-imageitem) | the image item | not started |  |
-| [asListItem()](https://developers.google.com/apps-script/reference/forms/item#asListItem()) | Returns the item as a list item. Throws a scripting exception if the ItemType was not already LIST. | [ListItem](#class-listitem) | the list item | not started |  |
-| [asMultipleChoiceItem()](https://developers.google.com/apps-script/reference/forms/item#asMultipleChoiceItem()) | Returns the item as a multiple-choice item. Throws a scripting exception if the ItemType was not already MULTIPLE_CHOICE. | [MultipleChoiceItem](#class-multiplechoiceitem) | the multiple-choice item | not started |  |
-| [asPageBreakItem()](https://developers.google.com/apps-script/reference/forms/item#asPageBreakItem()) | Returns the item as a page-break item. Throws a scripting exception if the ItemType was not already PAGE_BREAK. | [PageBreakItem](#class-pagebreakitem) | the page-break item | not started |  |
-| [asParagraphTextItem()](https://developers.google.com/apps-script/reference/forms/item#asParagraphTextItem()) | Returns the item as a paragraph-text item. Throws a scripting exception if the ItemType was not already PARAGRAPH_TEXT. | [ParagraphTextItem](#class-paragraphtextitem) | the paragraph-text item | not started |  |
-| [asRatingItem()](https://developers.google.com/apps-script/reference/forms/item#asRatingItem()) | Returns the item as a rating item. Throws a ScriptingException if the ItemType was not already RATING. | [RatingItem](#class-ratingitem) | The rating item. | not started |  |
-| [asScaleItem()](https://developers.google.com/apps-script/reference/forms/item#asScaleItem()) | Returns the item as a scale item. Throws a scripting exception if the ItemType was not already SCALE. | [ScaleItem](#class-scaleitem) | the scale item | not started |  |
-| [asSectionHeaderItem()](https://developers.google.com/apps-script/reference/forms/item#asSectionHeaderItem()) | Returns the item as a section-header item. Throws a scripting exception if the ItemType was not already SECTION_HEADER. | [SectionHeaderItem](#class-sectionheaderitem) | the section-header item | not started |  |
-| [asTextItem()](https://developers.google.com/apps-script/reference/forms/item#asTextItem()) | Returns the item as a text item. Throws a scripting exception if the ItemType was not already TEXT. | [TextItem](#class-textitem) | the text item | not started |  |
-| [asTimeItem()](https://developers.google.com/apps-script/reference/forms/item#asTimeItem()) | Returns the item as a time item. Throws a scripting exception if the ItemType was not already TIME. | [TimeItem](#class-timeitem) | the time item | not started |  |
-| [asVideoItem()](https://developers.google.com/apps-script/reference/forms/item#asVideoItem()) | Returns the item as a video item. Throws a scripting exception if the ItemType was not already VIDEO. | [VideoItem](#class-videoitem) | the video item | not started |  |
-| [duplicate()](https://developers.google.com/apps-script/reference/forms/item#duplicate()) | Creates a copy of this item and appends it to the end of the form. | [Item](#interface-item) | a duplicate of this Item, for chaining | not started |  |
-| [getHelpText()](https://developers.google.com/apps-script/reference/forms/item#getHelpText()) | Gets the item's help text (sometimes called description text for layout items like ImageItems, PageBreakItems, and SectionHeaderItems). | String | the item's help text or description text | not started |  |
-| [getId()](https://developers.google.com/apps-script/reference/forms/item#getId()) | Gets the item's unique identifier. | Integer | the item's ID | not started |  |
-| [getIndex()](https://developers.google.com/apps-script/reference/forms/item#getIndex()) | Gets the index of the item among all the items in the form. | Integer | the index of the item | not started |  |
-| [getTitle()](https://developers.google.com/apps-script/reference/forms/item#getTitle()) | Gets the item's title (sometimes called header text, in the case of a SectionHeaderItem). | String | the item's title or header text | not started |  |
-| [getType()](https://developers.google.com/apps-script/reference/forms/item#getType()) | Gets the item's type, represented as an ItemType. | [ItemType](#enum-itemtype) | the item's type | not started |  |
-| [setHelpText(String)](https://developers.google.com/apps-script/reference/forms/item#setHelpText(String)) | Sets the item's help text (sometimes called description text for layout items like ImageItems, PageBreakItems, and SectionHeaderItems). | [Item](#interface-item) | this Item, for chaining | not started |  |
-| [setTitle(String)](https://developers.google.com/apps-script/reference/forms/item#setTitle(String)) | Sets the item's title (sometimes called header text, in the case of a SectionHeaderItem). | [Item](#interface-item) | this Item, for chaining | not started |  |
+| asCheckboxGridItem() | Returns the item as a checkbox grid item. Throws a scripting exception if the ItemType was not already CHECKBOX_GRID. | not started |  |
+| asCheckboxItem() | Returns the item as a checkbox item. Throws a scripting exception if the ItemType was not already CHECKBOX. | not started |  |
+| asDateItem() | Returns the item as a date item. Throws a scripting exception if the ItemType was not already DATE. | not started |  |
+| asDateTimeItem() | Returns the item as a date-time item. Throws a scripting exception if the ItemType was not already DATETIME. | not started |  |
+| asDurationItem() | Returns the item as a duration item. Throws a scripting exception if the ItemType was not already DURATION. | not started |  |
+| asGridItem() | Returns the item as a grid item. Throws a scripting exception if the ItemType was not already GRID. | not started |  |
+| asImageItem() | Returns the item as an image item. Throws a scripting exception if the ItemType was not already IMAGE. | not started |  |
+| asListItem() | Returns the item as a list item. Throws a scripting exception if the ItemType was not already LIST. | not started |  |
+| asMultipleChoiceItem() | Returns the item as a multiple-choice item. Throws a scripting exception if the ItemType was not already MULTIPLE_CHOICE. | not started |  |
+| asPageBreakItem() | Returns the item as a page-break item. Throws a scripting exception if the ItemType was not already PAGE_BREAK. | not started |  |
+| asParagraphTextItem() | Returns the item as a paragraph-text item. Throws a scripting exception if the ItemType was not already PARAGRAPH_TEXT. | not started |  |
+| asRatingItem() | Returns the item as a rating item. Throws a ScriptingException if the ItemType was not already RATING. | not started |  |
+| asScaleItem() | Returns the item as a scale item. Throws a scripting exception if the ItemType was not already SCALE. | not started |  |
+| asSectionHeaderItem() | Returns the item as a section-header item. Throws a scripting exception if the ItemType was not already SECTION_HEADER. | not started |  |
+| asTextItem() | Returns the item as a text item. Throws a scripting exception if the ItemType was not already TEXT. | not started |  |
+| asTimeItem() | Returns the item as a time item. Throws a scripting exception if the ItemType was not already TIME. | not started |  |
+| asVideoItem() | Returns the item as a video item. Throws a scripting exception if the ItemType was not already VIDEO. | not started |  |
+| duplicate() | Creates a copy of this item and appends it to the end of the form. | not started |  |
+| getHelpText() | Gets the item's help text (sometimes called description text for layout items like ImageItems, PageBreakItems, and SectionHeaderItems). | not started |  |
+| getId() | Gets the item's unique identifier. | not started |  |
+| getIndex() | Gets the index of the item among all the items in the form. | not started |  |
+| getTitle() | Gets the item's title (sometimes called header text, in the case of a SectionHeaderItem). | not started |  |
+| getType() | Gets the item's type, represented as an ItemType. | not started |  |
+| setHelpText(String) | Sets the item's help text (sometimes called description text for layout items like ImageItems, PageBreakItems, and SectionHeaderItems). | not started |  |
+| setTitle(String) | Sets the item's title (sometimes called header text, in the case of a SectionHeaderItem). | not started |  |
 

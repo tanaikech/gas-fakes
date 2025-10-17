@@ -1,5 +1,7 @@
 import fs from 'fs';
 import path from 'path';
+import * as acorn from 'acorn';
+import * as walk from 'acorn-walk';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -11,7 +13,13 @@ const { setterList, attrGetList, valuesGetList } = await import(sheetRangeMakerP
 const utilsPath = path.resolve(__dirname, '../src/support/utils.js');
 const { Utils } = await import(utilsPath);
 
+const docEnumsPath = path.resolve(__dirname, '../src/services/enums/docsenums.js');
+const { Attribute } = await import(docEnumsPath);
+
 const dynamicSheetRangeMethods = new Set();
+const dynamicDocMethods = new Set();
+
+const docServiceClasses = new Set(['Body', 'Paragraph', 'ListItem', 'Table', 'TableRow', 'TableCell', 'Text', 'InlineImage', 'PageBreak', 'HorizontalRule', 'Footnote', 'HeaderSection', 'FooterSection', 'FootnoteSection', 'ContainerElement', 'SectionElement', 'RichLink']);
 
 const giPath = path.resolve(__dirname, 'gi.json');
 const projectPath = path.resolve(__dirname, '..');
@@ -74,6 +82,9 @@ const classSynonyms = {
     'TableCell': ['containerelement', 'element'],
     'Text': ['element'],
     'InlineImage': ['element'],
+    'File': ['fakebasefile', 'fakebaseitem'],
+    'Folder': ['fakebasefile', 'fakebaseitem'],
+    'User': ['fakeuser'],
     'PageBreak': ['element'],
     'HorizontalRule': ['element'],
     'Footnote': ['containerelement', 'element'],
@@ -93,7 +104,8 @@ const classToFileMap = {
     'Cache': 'stores/fakestores.js',
     'PropertiesService': 'stores/fakestores.js',
     'CacheService': 'stores/fakestores.js',
-    'ScriptApp': 'scriptapp/app.js'
+    'ScriptApp': 'scriptapp/app.js',
+    'DriveApp': 'driveapp/fakedriveapp.js'
 };
 
 // Populate the dynamic methods set for easier lookup
@@ -112,6 +124,15 @@ valuesGetList.forEach(item => {
   dynamicSheetRangeMethods.add(item.plural || `${item.name}s`);
 });
 
+// Populate the dynamic methods set for Document service
+const snakeToCamel = str => str.toLowerCase().replace(/([-_][a-z])/g, group => group.toUpperCase().replace('-', '').replace('_', ''));
+
+Object.keys(Attribute).forEach(key => {
+  const propName = snakeToCamel(key);
+  const capitalizedProp = Utils.capital(propName);
+  dynamicDocMethods.add(`get${capitalizedProp}`);
+  dynamicDocMethods.add(`set${capitalizedProp}`);
+});
 for (const service of giData) {
     const serviceName = service.serviceName;
     const serviceDirectory = serviceToDirectoryMap[serviceName] || serviceName.toLowerCase();
@@ -128,6 +149,7 @@ for (const service of giData) {
         } else {
             const possibleFileNames = [
                 `fake${className.toLowerCase()}.js`,
+                `fake${serviceName.toLowerCase()}${className.toLowerCase()}.js`,
                 `${className.toLowerCase()}.js`,
                 'app.js',
             ];
@@ -151,11 +173,11 @@ for (const service of giData) {
             }
             
             // also check in enums folder directly for enums
-            if (classData.type === 'Enum') {
-                 const filePath = allJsFiles.find(p => p.endsWith(`enums/${serviceDirectory}enums.js`));
-                 if (filePath && fileCache.has(filePath)) {
-                    fileContents.push({ filePath, content: fileCache.get(filePath) });
-                }
+            if (classData.type === 'Enum' && serviceName === 'Document') {
+                 const filePath = allJsFiles.find(p => p.endsWith(`enums/docsenums.js`));
+                 if (filePath && fileCache.has(filePath) && !fileContents.some(f => f.filePath === filePath)) {
+                     fileContents.push({ filePath, content: fileCache.get(filePath) });
+                 }
             }
         }
 
@@ -167,7 +189,14 @@ for (const service of giData) {
 
             if (methodName) {
                 for (const file of fileContents) {
-                    let isImplemented = classData.type === 'Enum' ? file.content.includes(`"${methodName}"`) : file.content.includes(methodName);
+                    let isImplemented;
+                    if (classData.type === 'Enum') {
+                        // Enums can be keys in an object literal or quoted strings in an array
+                        const enumRegex = new RegExp(`["']?${methodName}["']?[:\s,]`);
+                        isImplemented = enumRegex.test(file.content);
+                    } else {
+                        isImplemented = file.content.includes(methodName);
+                    }
 
                     // Special check for dynamically generated Spreadsheet Range methods
                     if (!isImplemented && serviceName === 'Spreadsheet' && className === 'Range') {
@@ -176,9 +205,42 @@ for (const service of giData) {
                         }
                     }
 
+                    // Special check for dynamically generated Document methods
+                    if (!isImplemented && serviceName === 'Document' && docServiceClasses.has(className)) {
+                        if (dynamicDocMethods.has(methodName)) {
+                            isImplemented = true;
+                        }
+                    }
+
                     if (isImplemented) {
-                        const notImplementedRegex = new RegExp(String.raw`${methodName}[\s\S]*?(notyetimplemented|not yet implemented)`, 'mi');
-                        if (notImplementedRegex.test(file.content)) {
+                        let inProgress = false;
+                        try {
+                            const ast = acorn.parse(file.content, { ecmaVersion: 2022, sourceType: 'module' });
+                            walk.simple(ast, {
+                                MethodDefinition(node) {
+                                    if (node.key.name === methodName) {
+                                        // Once we find the method, walk its body to check for notYetImplemented
+                                        walk.simple(node.value.body, {
+                                            CallExpression(callNode) {
+                                                if (callNode.callee.name === 'notYetImplemented') {
+                                                    inProgress = true;
+                                                    // We can stop walking this method body now
+                                                    throw 'found'; 
+                                                }
+                                            }
+                                        });
+                                        // Stop walking the whole file if we've analyzed the method
+                                        throw 'found';
+                                    }
+                                }
+                            });
+                        } catch (e) {
+                            if (e !== 'found') {
+                              console.error(`Failed to parse ${file.filePath} with acorn. Error: ${e.message}`);
+                            }
+                        }
+
+                        if (inProgress) {
                             status = 'in progress';
                         } else {
                             status = 'completed';
@@ -188,7 +250,7 @@ for (const service of giData) {
                         const lines = file.content.split('\n');
                         const lineNumber = lines.findIndex(line => line.includes(methodName)) + 1;
                         implementationLink = `${relativePath}#L${lineNumber}`;
-                        break;
+                        if (status === 'completed') break; // Stop searching if a completed version is found
                     }
                 }
             }

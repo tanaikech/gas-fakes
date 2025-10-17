@@ -19,7 +19,7 @@ for (const file of files) {
   const serviceNameMatch = content.match(/^#\s*\[?([^\]]+)\]?/);
   const serviceName = serviceNameMatch ? serviceNameMatch[1] : path.basename(file, '.md');
 
-  const classMatches = content.match(/## Class:/g);
+  const classMatches = content.match(/## (Class|Enum|Interface):/g);
   const numClasses = classMatches ? classMatches.length : 0;
 
   const completedMatches = (content.match(/\| completed \|/g) || []).length;

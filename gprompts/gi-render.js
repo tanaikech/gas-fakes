@@ -23,7 +23,7 @@ for (const service of data) {
   });
 
   for (const a_class of service.classes) {
-    if (a_class.type === 'Enum' || a_class.type === 'Interface') {
+    if (a_class.type === 'Enum' || a_class.type === 'Interface' && a_class.methods.length) {
       markdown += `## ${a_class.type}: [${a_class.className}](${a_class.classUrl})\n\n`;
       markdown += `${cleanText(a_class.description)}\n\n`;
       markdown += '| Property | Description | Status | Implementation |\n';
@@ -54,7 +54,7 @@ for (const service of data) {
       const status = method['gas-fakes status'] || 'not started';
       const implementationLink = method['implementationLink'] ? `[link](../${method['implementationLink']})` : '';
 
-      if (a_class.type === 'Enum') {
+      if (a_class.type === 'Enum' || a_class.type === 'Interface') {
         markdown += `| ${methodName} | ${cleanText(method.description)} | ${status} | ${implementationLink} |\n`;
       } else {
         if (method.methodUrl) {

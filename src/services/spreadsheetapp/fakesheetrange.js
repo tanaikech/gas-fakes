@@ -97,7 +97,7 @@ export class FakeSheetRange {
     attrGetList.forEach((target) => attrGens(this, target));
     valuesGetList.forEach((target) => valueGens(this, target));
 
-    // list of not yet implemented methods
+    // list of not implemented methods
     const props = [
       "createDataSourcePivotTable",
       "activate",
