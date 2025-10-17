@@ -71,8 +71,8 @@ An opaque color
 
 | Method | Description | Return Type | Return Description | Status | Implementation |
 |--- |--- |--- |--- |--- |--- |
-| [asRgbColor()](https://developers.google.com/apps-script/reference/slides/color#asRgbColor()) | Converts this color to an RgbColor. |  | RgbColor | not started |  |
-| [asThemeColor()](https://developers.google.com/apps-script/reference/slides/color#asThemeColor()) | Converts this color to a ThemeColor. |  | ThemeColor | not started |  |
+| [asRgbColor()](https://developers.google.com/apps-script/reference/slides/color#asRgbColor()) | Converts this color to an RgbColor. |  | RgbColor | completed | [link](../src/services/common/fakecolor.js#L25) |
+| [asThemeColor()](https://developers.google.com/apps-script/reference/slides/color#asThemeColor()) | Converts this color to a ThemeColor. |  | ThemeColor | completed | [link](../src/services/common/fakecolor.js#L29) |
 | [getColorType()](https://developers.google.com/apps-script/reference/slides/color#getColorType()) | Get the type of this color. | ColorType | The color type. | not started |  |
 
 ## Class: [ColorScheme](https://developers.google.com/apps-script/reference/slides/color-scheme)
@@ -1166,18 +1166,18 @@ The style of text.
 |--- |--- |--- |--- |--- |--- |
 | [getBackgroundColor()](https://developers.google.com/apps-script/reference/slides/text-style#getBackgroundColor()) | Returns the background color of the text, or null if there are multiple styles on the text. |  | Color | not started |  |
 | [getBaselineOffset()](https://developers.google.com/apps-script/reference/slides/text-style#getBaselineOffset()) | Returns the vertical offset of text from its normal position, or null if there are multiple styles on the text. |  | TextBaselineOffset | not started |  |
-| [getFontFamily()](https://developers.google.com/apps-script/reference/slides/text-style#getFontFamily()) | Returns the font family of the text, or null if there are multiple styles on the text. |  | String | not started |  |
-| [getFontSize()](https://developers.google.com/apps-script/reference/slides/text-style#getFontSize()) | Returns the font size of the text in points, or null if there are multiple styles on the text. |  | Number | not started |  |
+| [getFontFamily()](https://developers.google.com/apps-script/reference/slides/text-style#getFontFamily()) | Returns the font family of the text, or null if there are multiple styles on the text. |  | String | completed | [link](../src/services/common/faketextstyle.js#L37) |
+| [getFontSize()](https://developers.google.com/apps-script/reference/slides/text-style#getFontSize()) | Returns the font size of the text in points, or null if there are multiple styles on the text. |  | Number | completed | [link](../src/services/common/faketextstyle.js#L34) |
 | [getFontWeight()](https://developers.google.com/apps-script/reference/slides/text-style#getFontWeight()) | Returns the font weight of the text, or null if there are multiple styles on the text. |  | Integer | not started |  |
-| [getForegroundColor()](https://developers.google.com/apps-script/reference/slides/text-style#getForegroundColor()) | Returns the foreground color of the text, or null if there are multiple styles on the text. |  | Color | not started |  |
-| [getLink()](https://developers.google.com/apps-script/reference/slides/text-style#getLink()) | Returns the Link on the text, or null if there is no link or if the link is on part of the text or if there are multiple links. Call hasLink() to determine whether the text has no link. |  | Link | not started |  |
+| [getForegroundColor()](https://developers.google.com/apps-script/reference/slides/text-style#getForegroundColor()) | Returns the foreground color of the text, or null if there are multiple styles on the text. |  | Color | completed | [link](../src/services/common/faketextstyle.js#L40) |
+| [getLink()](https://developers.google.com/apps-script/reference/slides/text-style#getLink()) | Returns the Link on the text, or null if there is no link or if the link is on part of the text or if there are multiple links. Call hasLink() to determine whether the text has no link. |  | Link | completed | [link](../src/services/common/faketextstyle.js#L46) |
 | [hasLink()](https://developers.google.com/apps-script/reference/slides/text-style#hasLink()) | Returns true if there is link on the text, false if not, or null if the link is on part of the text or there are multiple links. |  | Boolean | not started |  |
 | [isBackgroundTransparent()](https://developers.google.com/apps-script/reference/slides/text-style#isBackgroundTransparent()) | Returns true if the background of the text is transparent, false if not, or null if there are multiple styles on the text. |  | Boolean | not started |  |
-| [isBold()](https://developers.google.com/apps-script/reference/slides/text-style#isBold()) | Returns true if the text is rendered as bold, false if not, or null if there are multiple styles on the text. |  | Boolean | not started |  |
-| [isItalic()](https://developers.google.com/apps-script/reference/slides/text-style#isItalic()) | Returns true if the text is italicized, false if not, or null if there are multiple styles on the text. |  | Boolean | not started |  |
+| [isBold()](https://developers.google.com/apps-script/reference/slides/text-style#isBold()) | Returns true if the text is rendered as bold, false if not, or null if there are multiple styles on the text. |  | Boolean | completed | [link](../src/services/common/faketextstyle.js#L22) |
+| [isItalic()](https://developers.google.com/apps-script/reference/slides/text-style#isItalic()) | Returns true if the text is italicized, false if not, or null if there are multiple styles on the text. |  | Boolean | completed | [link](../src/services/common/faketextstyle.js#L25) |
 | [isSmallCaps()](https://developers.google.com/apps-script/reference/slides/text-style#isSmallCaps()) | Returns true if the text is in small capital letters, false if not, or null if there are multiple styles on the text. |  | Boolean | not started |  |
-| [isStrikethrough()](https://developers.google.com/apps-script/reference/slides/text-style#isStrikethrough()) | Returns true if the text is struck through, false if not, or null if there are multiple styles on the text. |  | Boolean | not started |  |
-| [isUnderline()](https://developers.google.com/apps-script/reference/slides/text-style#isUnderline()) | Returns true if the text is underlined, false if not, or null if there are multiple styles on the text. |  | Boolean | not started |  |
+| [isStrikethrough()](https://developers.google.com/apps-script/reference/slides/text-style#isStrikethrough()) | Returns true if the text is struck through, false if not, or null if there are multiple styles on the text. |  | Boolean | completed | [link](../src/services/common/faketextstyle.js#L31) |
+| [isUnderline()](https://developers.google.com/apps-script/reference/slides/text-style#isUnderline()) | Returns true if the text is underlined, false if not, or null if there are multiple styles on the text. |  | Boolean | completed | [link](../src/services/common/faketextstyle.js#L28) |
 | [removeLink()](https://developers.google.com/apps-script/reference/slides/text-style#removeLink()) | Removes a Link. |  | TextStyle | not started |  |
 | [setBackgroundColor(Color)](https://developers.google.com/apps-script/reference/slides/text-style#setBackgroundColor(Color)) | Sets the background color of the text. |  | TextStyle | not started |  |
 | [setBackgroundColor(Integer,Integer,Integer)](https://developers.google.com/apps-script/reference/slides/text-style#setBackgroundColor(Integer,Integer,Integer)) |  |  |  | not started |  |
@@ -1185,22 +1185,22 @@ The style of text.
 | [setBackgroundColor(ThemeColorType)](https://developers.google.com/apps-script/reference/slides/text-style#setBackgroundColor(ThemeColorType)) | Sets the background color of the text to the given ThemeColorType. |  | TextStyle | not started |  |
 | [setBackgroundColorTransparent()](https://developers.google.com/apps-script/reference/slides/text-style#setBackgroundColorTransparent()) | Sets the background color of the text to transparent. |  | TextStyle | not started |  |
 | [setBaselineOffset(TextBaselineOffset)](https://developers.google.com/apps-script/reference/slides/text-style#setBaselineOffset(TextBaselineOffset)) | Sets the vertical offset of the text relative to its normal position. |  | TextStyle | not started |  |
-| [setBold(Boolean)](https://developers.google.com/apps-script/reference/slides/text-style#setBold(Boolean)) | Sets whether the text should be rendered as bold. |  | TextStyle | not started |  |
-| [setFontFamily(String)](https://developers.google.com/apps-script/reference/slides/text-style#setFontFamily(String)) | Sets the font family of the text . |  | TextStyle | not started |  |
+| [setBold(Boolean)](https://developers.google.com/apps-script/reference/slides/text-style#setBold(Boolean)) | Sets whether the text should be rendered as bold. |  | TextStyle | completed | [link](../src/services/common/faketextstyle.js#L54) |
+| [setFontFamily(String)](https://developers.google.com/apps-script/reference/slides/text-style#setFontFamily(String)) | Sets the font family of the text . |  | TextStyle | completed | [link](../src/services/common/faketextstyle.js#L58) |
 | [setFontFamilyAndWeight(String,Integer)](https://developers.google.com/apps-script/reference/slides/text-style#setFontFamilyAndWeight(String,Integer)) |  |  |  | not started |  |
-| [setFontSize(Number)](https://developers.google.com/apps-script/reference/slides/text-style#setFontSize(Number)) | Sets the font size of the text, in points. |  | TextStyle | not started |  |
-| [setForegroundColor(Color)](https://developers.google.com/apps-script/reference/slides/text-style#setForegroundColor(Color)) | Sets the foreground color of the text. |  | TextStyle | not started |  |
-| [setForegroundColor(Integer,Integer,Integer)](https://developers.google.com/apps-script/reference/slides/text-style#setForegroundColor(Integer,Integer,Integer)) |  |  |  | not started |  |
-| [setForegroundColor(String)](https://developers.google.com/apps-script/reference/slides/text-style#setForegroundColor(String)) | Sets the foreground color of the text to the given hex color string. |  | TextStyle | not started |  |
-| [setForegroundColor(ThemeColorType)](https://developers.google.com/apps-script/reference/slides/text-style#setForegroundColor(ThemeColorType)) | Sets the foreground color of the text to the given ThemeColorType. |  | TextStyle | not started |  |
-| [setItalic(Boolean)](https://developers.google.com/apps-script/reference/slides/text-style#setItalic(Boolean)) | Sets the whether the text is italicized. |  | TextStyle | not started |  |
+| [setFontSize(Number)](https://developers.google.com/apps-script/reference/slides/text-style#setFontSize(Number)) | Sets the font size of the text, in points. |  | TextStyle | completed | [link](../src/services/common/faketextstyle.js#L57) |
+| [setForegroundColor(Color)](https://developers.google.com/apps-script/reference/slides/text-style#setForegroundColor(Color)) | Sets the foreground color of the text. |  | TextStyle | completed | [link](../src/services/common/faketextstyle.js#L59) |
+| [setForegroundColor(Integer,Integer,Integer)](https://developers.google.com/apps-script/reference/slides/text-style#setForegroundColor(Integer,Integer,Integer)) |  |  |  | completed | [link](../src/services/common/faketextstyle.js#L59) |
+| [setForegroundColor(String)](https://developers.google.com/apps-script/reference/slides/text-style#setForegroundColor(String)) | Sets the foreground color of the text to the given hex color string. |  | TextStyle | completed | [link](../src/services/common/faketextstyle.js#L59) |
+| [setForegroundColor(ThemeColorType)](https://developers.google.com/apps-script/reference/slides/text-style#setForegroundColor(ThemeColorType)) | Sets the foreground color of the text to the given ThemeColorType. |  | TextStyle | completed | [link](../src/services/common/faketextstyle.js#L59) |
+| [setItalic(Boolean)](https://developers.google.com/apps-script/reference/slides/text-style#setItalic(Boolean)) | Sets the whether the text is italicized. |  | TextStyle | completed | [link](../src/services/common/faketextstyle.js#L53) |
 | [setLinkSlide(Integer)](https://developers.google.com/apps-script/reference/slides/text-style#setLinkSlide(Integer)) | Sets a Link to the given Slide using the zero-based index of the slide. |  | TextStyle | not started |  |
 | [setLinkSlide(Slide)](https://developers.google.com/apps-script/reference/slides/text-style#setLinkSlide(Slide)) | Sets a Link to the given Slide, the link is set by the given slide ID. |  | TextStyle | not started |  |
 | [setLinkSlide(SlidePosition)](https://developers.google.com/apps-script/reference/slides/text-style#setLinkSlide(SlidePosition)) | Sets a Link to the given Slide using the relative position of the slide. |  | TextStyle | not started |  |
 | [setLinkUrl(String)](https://developers.google.com/apps-script/reference/slides/text-style#setLinkUrl(String)) | Sets a Link to the given non-empty URL string. |  | TextStyle | not started |  |
 | [setSmallCaps(Boolean)](https://developers.google.com/apps-script/reference/slides/text-style#setSmallCaps(Boolean)) | Sets whether the text is rendered in small capital letters. |  | TextStyle | not started |  |
-| [setStrikethrough(Boolean)](https://developers.google.com/apps-script/reference/slides/text-style#setStrikethrough(Boolean)) | Sets whether the text is struck through. |  | TextStyle | not started |  |
-| [setUnderline(Boolean)](https://developers.google.com/apps-script/reference/slides/text-style#setUnderline(Boolean)) | Sets whether the text is underlined. |  | TextStyle | not started |  |
+| [setStrikethrough(Boolean)](https://developers.google.com/apps-script/reference/slides/text-style#setStrikethrough(Boolean)) | Sets whether the text is struck through. |  | TextStyle | completed | [link](../src/services/common/faketextstyle.js#L56) |
+| [setUnderline(Boolean)](https://developers.google.com/apps-script/reference/slides/text-style#setUnderline(Boolean)) | Sets whether the text is underlined. |  | TextStyle | completed | [link](../src/services/common/faketextstyle.js#L55) |
 
 ## Class: [ThemeColor](https://developers.google.com/apps-script/reference/slides/theme-color)
 
@@ -1208,8 +1208,8 @@ A color that refers to an entry in the page's ColorScheme.
 
 | Method | Description | Return Type | Return Description | Status | Implementation |
 |--- |--- |--- |--- |--- |--- |
-| [getColorType()](https://developers.google.com/apps-script/reference/slides/theme-color#getColorType()) | Get the type of this color. | ColorType | The color type. | not started |  |
-| [getThemeColorType()](https://developers.google.com/apps-script/reference/slides/theme-color#getThemeColorType()) | Get the theme color type of this color. |  | ThemeColorType | not started |  |
+| [getColorType()](https://developers.google.com/apps-script/reference/slides/theme-color#getColorType()) | Get the type of this color. | ColorType | The color type. | completed | [link](../src/services/common/fakethemecolor.js#L26) |
+| [getThemeColorType()](https://developers.google.com/apps-script/reference/slides/theme-color#getThemeColorType()) | Get the theme color type of this color. |  | ThemeColorType | completed | [link](../src/services/common/fakethemecolor.js#L34) |
 
 ## Class: [Video](https://developers.google.com/apps-script/reference/slides/video)
 

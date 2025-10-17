@@ -302,7 +302,7 @@ A text style configuration object. Used in charts options to configure text styl
 |--- |--- |--- |--- |--- |--- |
 | [getColor()](https://developers.google.com/apps-script/reference/charts/text-style#getColor()) | Gets the color of the text style. | String | The CSS value for the color (such as "blue" or "#00f"). | not started |  |
 | [getFontName()](https://developers.google.com/apps-script/reference/charts/text-style#getFontName()) | Gets the font name of the text style. | String | The font name. | not started |  |
-| [getFontSize()](https://developers.google.com/apps-script/reference/charts/text-style#getFontSize()) | Gets the font size of the text style. | Number | The font size in pixels. | not started |  |
+| [getFontSize()](https://developers.google.com/apps-script/reference/charts/text-style#getFontSize()) | Gets the font size of the text style. | Number | The font size in pixels. | completed | [link](../src/services/common/faketextstyle.js#L34) |
 
 ## Class: [TextStyleBuilder](https://developers.google.com/apps-script/reference/charts/text-style-builder)
 
@@ -310,10 +310,10 @@ A builder used to create TextStyle objects. It allows configuration of the text'
 
 | Method | Description | Return Type | Return Description | Status | Implementation |
 |--- |--- |--- |--- |--- |--- |
-| [build()](https://developers.google.com/apps-script/reference/charts/text-style-builder#build()) | Builds and returns a text style configuration object that was built using this builder. | [TextStyle](#class-textstyle) | A text style object built using this builder. | not started |  |
+| [build()](https://developers.google.com/apps-script/reference/charts/text-style-builder#build()) | Builds and returns a text style configuration object that was built using this builder. | [TextStyle](#class-textstyle) | A text style object built using this builder. | completed | [link](../src/services/common/faketextstylebuilder.js#L4) |
 | [setColor(String)](https://developers.google.com/apps-script/reference/charts/text-style-builder#setColor(String)) | Sets the color of the text style. | [TextStyleBuilder](#class-textstylebuilder) | This builder, useful for chaining. | not started |  |
 | [setFontName(String)](https://developers.google.com/apps-script/reference/charts/text-style-builder#setFontName(String)) | Sets the font name of the text style. | [TextStyleBuilder](#class-textstylebuilder) | This builder, useful for chaining. | not started |  |
-| [setFontSize(Number)](https://developers.google.com/apps-script/reference/charts/text-style-builder#setFontSize(Number)) | Sets the font size of the text style. | [TextStyleBuilder](#class-textstylebuilder) | This builder, useful for chaining. | not started |  |
+| [setFontSize(Number)](https://developers.google.com/apps-script/reference/charts/text-style-builder#setFontSize(Number)) | Sets the font size of the text style. | [TextStyleBuilder](#class-textstylebuilder) | This builder, useful for chaining. | completed | [link](../src/services/common/faketextstylebuilder.js#L41) |
 
 ## Enum: [ChartHiddenDimensionStrategy](https://developers.google.com/apps-script/reference/charts/chart-hidden-dimension-strategy)
 

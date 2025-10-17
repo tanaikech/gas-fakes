@@ -3146,8 +3146,8 @@
             "description": "Returns the color as a CSS-style 7 character hexadecimal string (#rrggbb) or 9 character\nhexadecimal string (#aarrggbb).",
             "returnType": "String",
             "returnDescription": "The hex representation of color.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/fakergbcolor.js#L35"
           },
           {
             "method": "getBlue()",
@@ -3155,8 +3155,8 @@
             "description": "The blue channel of this color, as a number from 0 to 255.",
             "returnType": "Integer",
             "returnDescription": "The value of blue channel.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/fakergbcolor.js#L44"
           },
           {
             "method": "getColorType()",
@@ -3164,8 +3164,8 @@
             "description": "Get the type of this color.",
             "returnType": "ColorType",
             "returnDescription": "The color type.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/fakergbcolor.js#L52"
           },
           {
             "method": "getGreen()",
@@ -3173,8 +3173,8 @@
             "description": "The green channel of this color, as a number from 0 to 255.",
             "returnType": "Integer",
             "returnDescription": "The value of green channel.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/fakergbcolor.js#L60"
           },
           {
             "method": "getRed()",
@@ -3182,8 +3182,8 @@
             "description": "The red channel of this color, as a number from 0 to 255.",
             "returnType": "Integer",
             "returnDescription": "The value of red channel.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/fakergbcolor.js#L68"
           }
         ]
       },
@@ -9215,8 +9215,8 @@
             "description": "Creates and inserts a new PositionedImage from the specified image blob.",
             "returnType": "PositionedImage",
             "returnDescription": "the new positioned image",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeparagraph.js#L7"
           },
           {
             "method": "appendHorizontalRule()",
@@ -9233,8 +9233,8 @@
             "description": "Creates and appends a new InlineImage from the specified image blob.",
             "returnType": "InlineImage",
             "returnDescription": "the appended image",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeparagraph.js#L53"
           },
           {
             "method": "appendInlineImage(InlineImage)",
@@ -9242,8 +9242,8 @@
             "description": "Appends the given InlineImage.",
             "returnType": "InlineImage",
             "returnDescription": "the appended image",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeparagraph.js#L53"
           },
           {
             "method": "appendPageBreak()",
@@ -9575,8 +9575,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeparagraph.js#L59"
           },
           {
             "method": "insertInlineImage(Integer,InlineImage)",
@@ -9584,8 +9584,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeparagraph.js#L59"
           },
           {
             "method": "insertPageBreak(Integer)",
@@ -17326,8 +17326,8 @@
             "description": "Creates a copy of this item and appends it to the end of the form.",
             "returnType": "CheckboxItem",
             "returnDescription": "a duplicate of this CheckboxItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L73"
           },
           {
             "method": "getChoices()",
@@ -17362,8 +17362,8 @@
             "description": "Gets the item's help text (sometimes called description text for layout items like ImageItems, PageBreakItems, and SectionHeaderItems).",
             "returnType": "String",
             "returnDescription": "the item's help text or description text",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L112"
           },
           {
             "method": "getId()",
@@ -17380,8 +17380,8 @@
             "description": "Gets the index of the item among all the items in the form.",
             "returnType": "Integer",
             "returnDescription": "the index of the item",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L120"
           },
           {
             "method": "getPoints()",
@@ -17398,8 +17398,8 @@
             "description": "Gets the item's title (sometimes called header text, in the case of a SectionHeaderItem).",
             "returnType": "String",
             "returnDescription": "the item's title or header text",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L125"
           },
           {
             "method": "getType()",
@@ -17407,8 +17407,8 @@
             "description": "Gets the item's type, represented as an ItemType.",
             "returnType": "ItemType",
             "returnDescription": "the item's type",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L36"
           },
           {
             "method": "hasOtherOption()",
@@ -17470,8 +17470,8 @@
             "description": "Sets the item's help text (sometimes called description text for layout items like ImageItems, PageBreakItems, and SectionHeaderItems).",
             "returnType": "CheckboxItem",
             "returnDescription": "this CheckboxItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L165"
           },
           {
             "method": "setPoints(Integer)",
@@ -17497,8 +17497,8 @@
             "description": "Sets the item's title (sometimes called header text, in the case of a SectionHeaderItem).",
             "returnType": "CheckboxItem",
             "returnDescription": "this CheckboxItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L190"
           },
           {
             "method": "setValidation(CheckboxValidation)",
@@ -17550,8 +17550,8 @@
             "description": "Creates a copy of this item and appends it to the end of the form.",
             "returnType": "CheckboxGridItem",
             "returnDescription": "a duplicate of this CheckboxGridItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L73"
           },
           {
             "method": "getColumns()",
@@ -17568,8 +17568,8 @@
             "description": "Gets the item's help text (sometimes called description text for layout items like ImageItems, PageBreakItems, and SectionHeaderItems).",
             "returnType": "String",
             "returnDescription": "the item's help text or description text",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L112"
           },
           {
             "method": "getId()",
@@ -17577,8 +17577,8 @@
             "description": "Gets the item's unique identifier.",
             "returnType": "Integer",
             "returnDescription": "the item's ID",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L88"
           },
           {
             "method": "getIndex()",
@@ -17586,8 +17586,8 @@
             "description": "Gets the index of the item among all the items in the form.",
             "returnType": "Integer",
             "returnDescription": "the index of the item",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L120"
           },
           {
             "method": "getRows()",
@@ -17604,8 +17604,8 @@
             "description": "Gets the item's title (sometimes called header text, in the case of a SectionHeaderItem).",
             "returnType": "String",
             "returnDescription": "the item's title or header text",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L125"
           },
           {
             "method": "getType()",
@@ -17613,8 +17613,8 @@
             "description": "Gets the item's type, represented as an ItemType.",
             "returnType": "ItemType",
             "returnDescription": "the item's type",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L36"
           },
           {
             "method": "isRequired()",
@@ -17640,8 +17640,8 @@
             "description": "Sets the item's help text (sometimes called description text for layout items like ImageItems, PageBreakItems, and SectionHeaderItems).",
             "returnType": "CheckboxGridItem",
             "returnDescription": "this CheckboxGridItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L165"
           },
           {
             "method": "setRequired(Boolean)",
@@ -17667,8 +17667,8 @@
             "description": "Sets the item's title (sometimes called header text, in the case of a SectionHeaderItem).",
             "returnType": "CheckboxGridItem",
             "returnDescription": "this CheckboxGridItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L190"
           },
           {
             "method": "setValidation(CheckboxGridValidation)",
@@ -17911,8 +17911,8 @@
             "description": "Creates a copy of this item and appends it to the end of the form.",
             "returnType": "DateItem",
             "returnDescription": "a duplicate of this DateItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L73"
           },
           {
             "method": "getGeneralFeedback()",
@@ -17929,8 +17929,8 @@
             "description": "Gets the item's help text (sometimes called description text for layout items like ImageItems, PageBreakItems, and SectionHeaderItems).",
             "returnType": "String",
             "returnDescription": "the item's help text or description text",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L112"
           },
           {
             "method": "getId()",
@@ -17938,8 +17938,8 @@
             "description": "Gets the item's unique identifier.",
             "returnType": "Integer",
             "returnDescription": "the item's ID",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L88"
           },
           {
             "method": "getIndex()",
@@ -17947,8 +17947,8 @@
             "description": "Gets the index of the item among all the items in the form.",
             "returnType": "Integer",
             "returnDescription": "the index of the item",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L120"
           },
           {
             "method": "getPoints()",
@@ -17965,8 +17965,8 @@
             "description": "Gets the item's title (sometimes called header text, in the case of a SectionHeaderItem).",
             "returnType": "String",
             "returnDescription": "the item's title or header text",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L125"
           },
           {
             "method": "getType()",
@@ -17974,8 +17974,8 @@
             "description": "Gets the item's type, represented as an ItemType.",
             "returnType": "ItemType",
             "returnDescription": "the item's type",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L36"
           },
           {
             "method": "includesYear()",
@@ -18010,8 +18010,8 @@
             "description": "Sets the item's help text (sometimes called description text for layout items like ImageItems, PageBreakItems, and SectionHeaderItems).",
             "returnType": "DateItem",
             "returnDescription": "this DateItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L165"
           },
           {
             "method": "setIncludesYear(Boolean)",
@@ -18046,8 +18046,8 @@
             "description": "Sets the item's title (sometimes called header text, in the case of a SectionHeaderItem).",
             "returnType": "DateItem",
             "returnDescription": "this DateItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L190"
           }
         ]
       },
@@ -18072,8 +18072,8 @@
             "description": "Creates a copy of this item and appends it to the end of the form.",
             "returnType": "DateTimeItem",
             "returnDescription": "a duplicate of this DateTimeItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L73"
           },
           {
             "method": "getGeneralFeedback()",
@@ -18090,8 +18090,8 @@
             "description": "Gets the item's help text (sometimes called description text for layout items like ImageItems, PageBreakItems, and SectionHeaderItems).",
             "returnType": "String",
             "returnDescription": "the item's help text or description text",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L112"
           },
           {
             "method": "getId()",
@@ -18099,8 +18099,8 @@
             "description": "Gets the item's unique identifier.",
             "returnType": "Integer",
             "returnDescription": "the item's ID",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L88"
           },
           {
             "method": "getIndex()",
@@ -18108,8 +18108,8 @@
             "description": "Gets the index of the item among all the items in the form.",
             "returnType": "Integer",
             "returnDescription": "the index of the item",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L120"
           },
           {
             "method": "getPoints()",
@@ -18126,8 +18126,8 @@
             "description": "Gets the item's title (sometimes called header text, in the case of a SectionHeaderItem).",
             "returnType": "String",
             "returnDescription": "the item's title or header text",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L125"
           },
           {
             "method": "getType()",
@@ -18135,8 +18135,8 @@
             "description": "Gets the item's type, represented as an ItemType.",
             "returnType": "ItemType",
             "returnDescription": "the item's type",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L36"
           },
           {
             "method": "includesYear()",
@@ -18171,8 +18171,8 @@
             "description": "Sets the item's help text (sometimes called description text for layout items like ImageItems, PageBreakItems, and SectionHeaderItems).",
             "returnType": "DateTimeItem",
             "returnDescription": "this DateTimeItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L165"
           },
           {
             "method": "setIncludesYear(Boolean)",
@@ -18207,8 +18207,8 @@
             "description": "Sets the item's title (sometimes called header text, in the case of a SectionHeaderItem).",
             "returnType": "DateTimeItem",
             "returnDescription": "this DateTimeItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L190"
           }
         ]
       },
@@ -18233,8 +18233,8 @@
             "description": "Creates a copy of this item and appends it to the end of the form.",
             "returnType": "DurationItem",
             "returnDescription": "a duplicate of this DurationItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L73"
           },
           {
             "method": "getGeneralFeedback()",
@@ -18251,8 +18251,8 @@
             "description": "Gets the item's help text (sometimes called description text for layout items like ImageItems, PageBreakItems, and SectionHeaderItems).",
             "returnType": "String",
             "returnDescription": "the item's help text or description text",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L112"
           },
           {
             "method": "getId()",
@@ -18260,8 +18260,8 @@
             "description": "Gets the item's unique identifier.",
             "returnType": "Integer",
             "returnDescription": "the item's ID",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L88"
           },
           {
             "method": "getIndex()",
@@ -18269,8 +18269,8 @@
             "description": "Gets the index of the item among all the items in the form.",
             "returnType": "Integer",
             "returnDescription": "the index of the item",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L120"
           },
           {
             "method": "getPoints()",
@@ -18287,8 +18287,8 @@
             "description": "Gets the item's title (sometimes called header text, in the case of a SectionHeaderItem).",
             "returnType": "String",
             "returnDescription": "the item's title or header text",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L125"
           },
           {
             "method": "getType()",
@@ -18296,8 +18296,8 @@
             "description": "Gets the item's type, represented as an ItemType.",
             "returnType": "ItemType",
             "returnDescription": "the item's type",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L36"
           },
           {
             "method": "isRequired()",
@@ -18323,8 +18323,8 @@
             "description": "Sets the item's help text (sometimes called description text for layout items like ImageItems, PageBreakItems, and SectionHeaderItems).",
             "returnType": "DurationItem",
             "returnDescription": "this DurationItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L165"
           },
           {
             "method": "setPoints(Integer)",
@@ -18350,8 +18350,8 @@
             "description": "Sets the item's title (sometimes called header text, in the case of a SectionHeaderItem).",
             "returnType": "DurationItem",
             "returnDescription": "this DurationItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L190"
           }
         ]
       },
@@ -19548,8 +19548,8 @@
             "description": "Creates a copy of this item and appends it to the end of the form.",
             "returnType": "GridItem",
             "returnDescription": "a duplicate of this GridItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L73"
           },
           {
             "method": "getColumns()",
@@ -19566,8 +19566,8 @@
             "description": "Gets the item's help text (sometimes called description text for layout items like ImageItems, PageBreakItems, and SectionHeaderItems).",
             "returnType": "String",
             "returnDescription": "the item's help text or description text",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L112"
           },
           {
             "method": "getId()",
@@ -19575,8 +19575,8 @@
             "description": "Gets the item's unique identifier.",
             "returnType": "Integer",
             "returnDescription": "the item's ID",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L88"
           },
           {
             "method": "getIndex()",
@@ -19584,8 +19584,8 @@
             "description": "Gets the index of the item among all the items in the form.",
             "returnType": "Integer",
             "returnDescription": "the index of the item",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L120"
           },
           {
             "method": "getRows()",
@@ -19602,8 +19602,8 @@
             "description": "Gets the item's title (sometimes called header text, in the case of a SectionHeaderItem).",
             "returnType": "String",
             "returnDescription": "the item's title or header text",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L125"
           },
           {
             "method": "getType()",
@@ -19611,8 +19611,8 @@
             "description": "Gets the item's type, represented as an ItemType.",
             "returnType": "ItemType",
             "returnDescription": "the item's type",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L36"
           },
           {
             "method": "isRequired()",
@@ -19638,8 +19638,8 @@
             "description": "Sets the item's help text (sometimes called description text for layout items like ImageItems, PageBreakItems, and SectionHeaderItems).",
             "returnType": "GridItem",
             "returnDescription": "this GridItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L165"
           },
           {
             "method": "setRequired(Boolean)",
@@ -19665,8 +19665,8 @@
             "description": "Sets the item's title (sometimes called header text, in the case of a SectionHeaderItem).",
             "returnType": "GridItem",
             "returnDescription": "this GridItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L190"
           },
           {
             "method": "setValidation(GridValidation)",
@@ -19736,8 +19736,8 @@
             "description": "Creates a copy of this item and appends it to the end of the form.",
             "returnType": "MultipleChoiceItem",
             "returnDescription": "a duplicate of this MultipleChoiceItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L73"
           },
           {
             "method": "getChoices()",
@@ -19772,8 +19772,8 @@
             "description": "Gets the item's help text (sometimes called description text for layout items like ImageItems, PageBreakItems, and SectionHeaderItems).",
             "returnType": "String",
             "returnDescription": "the item's help text or description text",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L112"
           },
           {
             "method": "getId()",
@@ -19781,8 +19781,8 @@
             "description": "Gets the item's unique identifier.",
             "returnType": "Integer",
             "returnDescription": "the item's ID",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L88"
           },
           {
             "method": "getIndex()",
@@ -19790,8 +19790,8 @@
             "description": "Gets the index of the item among all the items in the form.",
             "returnType": "Integer",
             "returnDescription": "the index of the item",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L120"
           },
           {
             "method": "getPoints()",
@@ -19808,8 +19808,8 @@
             "description": "Gets the item's title (sometimes called header text, in the case of a SectionHeaderItem).",
             "returnType": "String",
             "returnDescription": "the item's title or header text",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L125"
           },
           {
             "method": "getType()",
@@ -19817,8 +19817,8 @@
             "description": "Gets the item's type, represented as an ItemType.",
             "returnType": "ItemType",
             "returnDescription": "the item's type",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L36"
           },
           {
             "method": "hasOtherOption()",
@@ -19880,8 +19880,8 @@
             "description": "Sets the item's help text (sometimes called description text for layout items like ImageItems, PageBreakItems, and SectionHeaderItems).",
             "returnType": "MultipleChoiceItem",
             "returnDescription": "this MultipleChoiceItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L165"
           },
           {
             "method": "setPoints(Integer)",
@@ -19907,8 +19907,8 @@
             "description": "Sets the item's title (sometimes called header text, in the case of a SectionHeaderItem).",
             "returnType": "MultipleChoiceItem",
             "returnDescription": "this MultipleChoiceItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L190"
           },
           {
             "method": "showOtherOption(Boolean)",
@@ -19933,8 +19933,8 @@
             "description": "Creates a copy of this item and appends it to the end of the form.",
             "returnType": "ImageItem",
             "returnDescription": "a duplicate of this ImageItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L73"
           },
           {
             "method": "getAlignment()",
@@ -19951,8 +19951,8 @@
             "description": "Gets the item's help text (sometimes called description text for layout items like ImageItems, PageBreakItems, and SectionHeaderItems).",
             "returnType": "String",
             "returnDescription": "the item's help text or description text",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L112"
           },
           {
             "method": "getId()",
@@ -19960,8 +19960,8 @@
             "description": "Gets the item's unique identifier.",
             "returnType": "Integer",
             "returnDescription": "the item's ID",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L88"
           },
           {
             "method": "getImage()",
@@ -19978,8 +19978,8 @@
             "description": "Gets the index of the item among all the items in the form.",
             "returnType": "Integer",
             "returnDescription": "the index of the item",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L120"
           },
           {
             "method": "getTitle()",
@@ -19987,8 +19987,8 @@
             "description": "Gets the item's title (sometimes called header text, in the case of a SectionHeaderItem).",
             "returnType": "String",
             "returnDescription": "the item's title or header text",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L125"
           },
           {
             "method": "getType()",
@@ -19996,8 +19996,8 @@
             "description": "Gets the item's type, represented as an ItemType.",
             "returnType": "ItemType",
             "returnDescription": "the item's type",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L36"
           },
           {
             "method": "getWidth()",
@@ -20023,8 +20023,8 @@
             "description": "Sets the item's help text (sometimes called description text for layout items like ImageItems, PageBreakItems, and SectionHeaderItems).",
             "returnType": "ImageItem",
             "returnDescription": "this ImageItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L165"
           },
           {
             "method": "setImage(BlobSource)",
@@ -20041,8 +20041,8 @@
             "description": "Sets the item's title (sometimes called header text, in the case of a SectionHeaderItem).",
             "returnType": "ImageItem",
             "returnDescription": "this ImageItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L190"
           },
           {
             "method": "setWidth(Integer)",
@@ -20085,8 +20085,8 @@
             "description": "Creates a copy of this item and appends it to the end of the form.",
             "returnType": "ParagraphTextItem",
             "returnDescription": "a duplicate of this ParagraphTextItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L73"
           },
           {
             "method": "getGeneralFeedback()",
@@ -20103,8 +20103,8 @@
             "description": "Gets the item's help text (sometimes called description text for layout items like ImageItems, PageBreakItems, and SectionHeaderItems).",
             "returnType": "String",
             "returnDescription": "the item's help text or description text",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L112"
           },
           {
             "method": "getId()",
@@ -20112,8 +20112,8 @@
             "description": "Gets the item's unique identifier.",
             "returnType": "Integer",
             "returnDescription": "the item's ID",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L88"
           },
           {
             "method": "getIndex()",
@@ -20121,8 +20121,8 @@
             "description": "Gets the index of the item among all the items in the form.",
             "returnType": "Integer",
             "returnDescription": "the index of the item",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L120"
           },
           {
             "method": "getPoints()",
@@ -20139,8 +20139,8 @@
             "description": "Gets the item's title (sometimes called header text, in the case of a SectionHeaderItem).",
             "returnType": "String",
             "returnDescription": "the item's title or header text",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L125"
           },
           {
             "method": "getType()",
@@ -20148,8 +20148,8 @@
             "description": "Gets the item's type, represented as an ItemType.",
             "returnType": "ItemType",
             "returnDescription": "the item's type",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L36"
           },
           {
             "method": "isRequired()",
@@ -20175,8 +20175,8 @@
             "description": "Sets the item's help text (sometimes called description text for layout items like ImageItems, PageBreakItems, and SectionHeaderItems).",
             "returnType": "ParagraphTextItem",
             "returnDescription": "this ParagraphTextItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L165"
           },
           {
             "method": "setPoints(Integer)",
@@ -20202,8 +20202,8 @@
             "description": "Sets the item's title (sometimes called header text, in the case of a SectionHeaderItem).",
             "returnType": "ParagraphTextItem",
             "returnDescription": "this ParagraphTextItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L190"
           },
           {
             "method": "setValidation(ParagraphTextValidation)",
@@ -20235,8 +20235,8 @@
             "description": "Creates a copy of this item and appends it to the end of the form.",
             "returnType": "PageBreakItem",
             "returnDescription": "a duplicate of this PageBreakItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L73"
           },
           {
             "method": "getGoToPage()",
@@ -20253,8 +20253,8 @@
             "description": "Gets the item's help text (sometimes called description text for layout items like ImageItems, PageBreakItems, and SectionHeaderItems).",
             "returnType": "String",
             "returnDescription": "the item's help text or description text",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L112"
           },
           {
             "method": "getId()",
@@ -20262,8 +20262,8 @@
             "description": "Gets the item's unique identifier.",
             "returnType": "Integer",
             "returnDescription": "the item's ID",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L88"
           },
           {
             "method": "getIndex()",
@@ -20271,8 +20271,8 @@
             "description": "Gets the index of the item among all the items in the form.",
             "returnType": "Integer",
             "returnDescription": "the index of the item",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L120"
           },
           {
             "method": "getPageNavigationType()",
@@ -20289,8 +20289,8 @@
             "description": "Gets the item's title (sometimes called header text, in the case of a SectionHeaderItem).",
             "returnType": "String",
             "returnDescription": "the item's title or header text",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L125"
           },
           {
             "method": "getType()",
@@ -20298,8 +20298,8 @@
             "description": "Gets the item's type, represented as an ItemType.",
             "returnType": "ItemType",
             "returnDescription": "the item's type",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L36"
           },
           {
             "method": "setGoToPage(PageBreakItem)",
@@ -20325,8 +20325,8 @@
             "description": "Sets the item's help text (sometimes called description text for layout items like ImageItems, PageBreakItems, and SectionHeaderItems).",
             "returnType": "PageBreakItem",
             "returnDescription": "this PageBreakItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L165"
           },
           {
             "method": "setTitle(String)",
@@ -20334,8 +20334,8 @@
             "description": "Sets the item's title (sometimes called header text, in the case of a SectionHeaderItem).",
             "returnType": "PageBreakItem",
             "returnDescription": "this PageBreakItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L190"
           }
         ]
       },
@@ -20448,8 +20448,8 @@
             "description": "Creates a copy of this item and appends it to the end of the form.",
             "returnType": "ScaleItem",
             "returnDescription": "a duplicate of this ScaleItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L73"
           },
           {
             "method": "getGeneralFeedback()",
@@ -20466,8 +20466,8 @@
             "description": "Gets the item's help text (sometimes called description text for layout items like ImageItems, PageBreakItems, and SectionHeaderItems).",
             "returnType": "String",
             "returnDescription": "the item's help text or description text",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L112"
           },
           {
             "method": "getId()",
@@ -20475,8 +20475,8 @@
             "description": "Gets the item's unique identifier.",
             "returnType": "Integer",
             "returnDescription": "the item's ID",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L88"
           },
           {
             "method": "getIndex()",
@@ -20484,8 +20484,8 @@
             "description": "Gets the index of the item among all the items in the form.",
             "returnType": "Integer",
             "returnDescription": "the index of the item",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L120"
           },
           {
             "method": "getLeftLabel()",
@@ -20529,8 +20529,8 @@
             "description": "Gets the item's title (sometimes called header text, in the case of a SectionHeaderItem).",
             "returnType": "String",
             "returnDescription": "the item's title or header text",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L125"
           },
           {
             "method": "getType()",
@@ -20538,8 +20538,8 @@
             "description": "Gets the item's type, represented as an ItemType.",
             "returnType": "ItemType",
             "returnDescription": "the item's type",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L36"
           },
           {
             "method": "getUpperBound()",
@@ -20583,8 +20583,8 @@
             "description": "Sets the item's help text (sometimes called description text for layout items like ImageItems, PageBreakItems, and SectionHeaderItems).",
             "returnType": "ScaleItem",
             "returnDescription": "this ScaleItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L165"
           },
           {
             "method": "setLabels(String,String)",
@@ -20619,8 +20619,8 @@
             "description": "Sets the item's title (sometimes called header text, in the case of a SectionHeaderItem).",
             "returnType": "ScaleItem",
             "returnDescription": "this ScaleItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L190"
           }
         ]
       },
@@ -20645,8 +20645,8 @@
             "description": "Creates a copy of this item and appends it to the end of the form.",
             "returnType": "RatingItem",
             "returnDescription": "a duplicate of this RatingItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L73"
           },
           {
             "method": "getGeneralFeedback()",
@@ -20663,8 +20663,8 @@
             "description": "Gets the item's help text (sometimes called description text for layout items like ImageItems, PageBreakItems, and SectionHeaderItems).",
             "returnType": "String",
             "returnDescription": "the item's help text or description text",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L112"
           },
           {
             "method": "getId()",
@@ -20672,8 +20672,8 @@
             "description": "Gets the item's unique identifier.",
             "returnType": "Integer",
             "returnDescription": "the item's ID",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L88"
           },
           {
             "method": "getIndex()",
@@ -20681,8 +20681,8 @@
             "description": "Gets the index of the item among all the items in the form.",
             "returnType": "Integer",
             "returnDescription": "the index of the item",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L120"
           },
           {
             "method": "getPoints()",
@@ -20717,8 +20717,8 @@
             "description": "Gets the item's title (sometimes called header text, in the case of a SectionHeaderItem).",
             "returnType": "String",
             "returnDescription": "the item's title or header text",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L125"
           },
           {
             "method": "getType()",
@@ -20726,8 +20726,8 @@
             "description": "Gets the item's type, represented as an ItemType.",
             "returnType": "ItemType",
             "returnDescription": "the item's type",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L36"
           },
           {
             "method": "isRequired()",
@@ -20753,8 +20753,8 @@
             "description": "Sets the item's help text (sometimes called description text for layout items like ImageItems, PageBreakItems, and SectionHeaderItems).",
             "returnType": "RatingItem",
             "returnDescription": "this RatingItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L165"
           },
           {
             "method": "setPoints(Integer)",
@@ -20798,8 +20798,8 @@
             "description": "Sets the item's title (sometimes called header text, in the case of a SectionHeaderItem).",
             "returnType": "RatingItem",
             "returnDescription": "this RatingItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L190"
           }
         ]
       },
@@ -20815,8 +20815,8 @@
             "description": "Creates a copy of this item and appends it to the end of the form.",
             "returnType": "SectionHeaderItem",
             "returnDescription": "a duplicate of this SectionHeaderItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L73"
           },
           {
             "method": "getHelpText()",
@@ -20824,8 +20824,8 @@
             "description": "Gets the item's help text (sometimes called description text for layout items like ImageItems, PageBreakItems, and SectionHeaderItems).",
             "returnType": "String",
             "returnDescription": "the item's help text or description text",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L112"
           },
           {
             "method": "getId()",
@@ -20833,8 +20833,8 @@
             "description": "Gets the item's unique identifier.",
             "returnType": "Integer",
             "returnDescription": "the item's ID",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L88"
           },
           {
             "method": "getIndex()",
@@ -20842,8 +20842,8 @@
             "description": "Gets the index of the item among all the items in the form.",
             "returnType": "Integer",
             "returnDescription": "the index of the item",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L120"
           },
           {
             "method": "getTitle()",
@@ -20851,8 +20851,8 @@
             "description": "Gets the item's title (sometimes called header text, in the case of a SectionHeaderItem).",
             "returnType": "String",
             "returnDescription": "the item's title or header text",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L125"
           },
           {
             "method": "getType()",
@@ -20860,8 +20860,8 @@
             "description": "Gets the item's type, represented as an ItemType.",
             "returnType": "ItemType",
             "returnDescription": "the item's type",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L36"
           },
           {
             "method": "setHelpText(String)",
@@ -20869,8 +20869,8 @@
             "description": "Sets the item's help text (sometimes called description text for layout items like ImageItems, PageBreakItems, and SectionHeaderItems).",
             "returnType": "SectionHeaderItem",
             "returnDescription": "this SectionHeaderItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L165"
           },
           {
             "method": "setTitle(String)",
@@ -20878,8 +20878,8 @@
             "description": "Sets the item's title (sometimes called header text, in the case of a SectionHeaderItem).",
             "returnType": "SectionHeaderItem",
             "returnDescription": "this SectionHeaderItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L190"
           }
         ]
       },
@@ -21351,8 +21351,8 @@
             "description": "Creates a copy of this item and appends it to the end of the form.",
             "returnType": "TimeItem",
             "returnDescription": "a duplicate of this TimeItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L73"
           },
           {
             "method": "getGeneralFeedback()",
@@ -21369,8 +21369,8 @@
             "description": "Gets the item's help text (sometimes called description text for layout items like ImageItems, PageBreakItems, and SectionHeaderItems).",
             "returnType": "String",
             "returnDescription": "the item's help text or description text",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L112"
           },
           {
             "method": "getId()",
@@ -21378,8 +21378,8 @@
             "description": "Gets the item's unique identifier.",
             "returnType": "Integer",
             "returnDescription": "the item's ID",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L88"
           },
           {
             "method": "getIndex()",
@@ -21387,8 +21387,8 @@
             "description": "Gets the index of the item among all the items in the form.",
             "returnType": "Integer",
             "returnDescription": "the index of the item",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L120"
           },
           {
             "method": "getPoints()",
@@ -21405,8 +21405,8 @@
             "description": "Gets the item's title (sometimes called header text, in the case of a SectionHeaderItem).",
             "returnType": "String",
             "returnDescription": "the item's title or header text",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L125"
           },
           {
             "method": "getType()",
@@ -21414,8 +21414,8 @@
             "description": "Gets the item's type, represented as an ItemType.",
             "returnType": "ItemType",
             "returnDescription": "the item's type",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L36"
           },
           {
             "method": "isRequired()",
@@ -21441,8 +21441,8 @@
             "description": "Sets the item's help text (sometimes called description text for layout items like ImageItems, PageBreakItems, and SectionHeaderItems).",
             "returnType": "TimeItem",
             "returnDescription": "this TimeItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L165"
           },
           {
             "method": "setPoints(Integer)",
@@ -21468,8 +21468,8 @@
             "description": "Sets the item's title (sometimes called header text, in the case of a SectionHeaderItem).",
             "returnType": "TimeItem",
             "returnDescription": "this TimeItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L190"
           }
         ]
       },
@@ -21662,8 +21662,8 @@
             "description": "Creates a copy of this item and appends it to the end of the form.",
             "returnType": "VideoItem",
             "returnDescription": "a duplicate of this VideoItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L73"
           },
           {
             "method": "getAlignment()",
@@ -21680,8 +21680,8 @@
             "description": "Gets the item's help text (sometimes called description text for layout items like ImageItems, PageBreakItems, and SectionHeaderItems).",
             "returnType": "String",
             "returnDescription": "the item's help text or description text",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L112"
           },
           {
             "method": "getId()",
@@ -21689,8 +21689,8 @@
             "description": "Gets the item's unique identifier.",
             "returnType": "Integer",
             "returnDescription": "the item's ID",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L88"
           },
           {
             "method": "getIndex()",
@@ -21698,8 +21698,8 @@
             "description": "Gets the index of the item among all the items in the form.",
             "returnType": "Integer",
             "returnDescription": "the index of the item",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L120"
           },
           {
             "method": "getTitle()",
@@ -21707,8 +21707,8 @@
             "description": "Gets the item's title (sometimes called header text, in the case of a SectionHeaderItem).",
             "returnType": "String",
             "returnDescription": "the item's title or header text",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L125"
           },
           {
             "method": "getType()",
@@ -21716,8 +21716,8 @@
             "description": "Gets the item's type, represented as an ItemType.",
             "returnType": "ItemType",
             "returnDescription": "the item's type",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L36"
           },
           {
             "method": "getWidth()",
@@ -21743,8 +21743,8 @@
             "description": "Sets the item's help text (sometimes called description text for layout items like ImageItems, PageBreakItems, and SectionHeaderItems).",
             "returnType": "VideoItem",
             "returnDescription": "this VideoItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L165"
           },
           {
             "method": "setTitle(String)",
@@ -21752,8 +21752,8 @@
             "description": "Sets the item's title (sometimes called header text, in the case of a SectionHeaderItem).",
             "returnType": "VideoItem",
             "returnDescription": "this VideoItem, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformitem.js#L190"
           },
           {
             "method": "setVideoUrl(String)",
@@ -24841,8 +24841,8 @@
             "description": "Gets the font size of the text style.",
             "returnType": "Number",
             "returnDescription": "The font size in pixels.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstyle.js#L34"
           }
         ]
       },
@@ -25001,8 +25001,8 @@
             "description": "Builds and returns a text style configuration object that was built using this builder.",
             "returnType": "TextStyle",
             "returnDescription": "A text style object built using this builder.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstylebuilder.js#L4"
           },
           {
             "method": "setColor(String)",
@@ -25028,8 +25028,8 @@
             "description": "Sets the font size of the text style.",
             "returnType": "TextStyleBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstylebuilder.js#L41"
           }
         ]
       },
@@ -33485,8 +33485,8 @@
             "description": "Converts this color to an RgbColor.",
             "returnType": "RgbColor",
             "returnDescription": "The RGB color.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/fakecolor.js#L25"
           },
           {
             "method": "asThemeColor()",
@@ -33494,8 +33494,8 @@
             "description": "Converts this color to a ThemeColor.",
             "returnType": "ThemeColor",
             "returnDescription": "The theme color.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/fakecolor.js#L29"
           },
           {
             "method": "getColorType()",
@@ -33816,8 +33816,8 @@
             "description": "Converts this color to an RgbColor.",
             "returnType": "RgbColor",
             "returnDescription": "The RGB color.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/fakecolorbuilder.js#L42"
           },
           {
             "method": "asThemeColor()",
@@ -33825,8 +33825,8 @@
             "description": "Converts this color to a ThemeColor.",
             "returnType": "ThemeColor",
             "returnDescription": "The theme color.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/fakecolorbuilder.js#L47"
           },
           {
             "method": "build()",
@@ -33834,8 +33834,8 @@
             "description": "Creates a color object from the settings supplied to the builder.",
             "returnType": "Color",
             "returnDescription": "A color object created from this builder.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/fakecolorbuilder.js#L22"
           },
           {
             "method": "getColorType()",
@@ -33852,8 +33852,8 @@
             "description": "Sets as RGB color.",
             "returnType": "ColorBuilder",
             "returnDescription": "This builder, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/fakecolorbuilder.js#L32"
           },
           {
             "method": "setThemeColor(ThemeColorType)",
@@ -33861,8 +33861,8 @@
             "description": "Sets as theme color.",
             "returnType": "ColorBuilder",
             "returnDescription": "This builder, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/fakecolorbuilder.js#L30"
           }
         ]
       },
@@ -36150,8 +36150,8 @@
             "description": "Creates a builder for a data validation rule based on this rule's settings.",
             "returnType": "DataValidationBuilder",
             "returnDescription": "a builder based on this rule's settings",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakedatavalidationbuilder.js#L95"
           },
           {
             "method": "getAllowInvalid()",
@@ -44403,8 +44403,8 @@
             "description": "Returns a builder for a Rich Text value initialized with the values of this Rich Text value.",
             "returnType": "RichTextValueBuilder",
             "returnDescription": "A builder for a Rich Text value.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/fakerichtextvalue.js#L22"
           },
           {
             "method": "getEndIndex()",
@@ -44412,8 +44412,8 @@
             "description": "Gets the end index of this value in the cell.",
             "returnType": "Integer",
             "returnDescription": "The end index of this value in the cell.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/fakerichtextvalue.js#L28"
           },
           {
             "method": "getLinkUrl()",
@@ -44421,8 +44421,8 @@
             "description": "Returns the link URL for this value.",
             "returnType": "String",
             "returnDescription": "The link URL for this value, or null if there is no link or if there are\n    multiple different links.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/fakerichtextvalue.js#L32"
           },
           {
             "method": "getLinkUrl(Integer,Integer)",
@@ -44430,8 +44430,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/fakerichtextvalue.js#L32"
           },
           {
             "method": "getRuns()",
@@ -44439,8 +44439,8 @@
             "description": "Returns the Rich Text string split into an array of runs, wherein each run is the longest\npossible substring having a consistent text style.",
             "returnType": "RichTextValue[]",
             "returnDescription": "An array of runs.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/fakerichtextvalue.js#L47"
           },
           {
             "method": "getStartIndex()",
@@ -44448,8 +44448,8 @@
             "description": "Gets the start index of this value in the cell.",
             "returnType": "Integer",
             "returnDescription": "The start index of this value in the cell.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/fakerichtextvalue.js#L37"
           },
           {
             "method": "getText()",
@@ -44457,8 +44457,8 @@
             "description": "Returns the text of this value.",
             "returnType": "String",
             "returnDescription": "The text of this value.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/fakerichtextvalue.js#L37"
           },
           {
             "method": "getTextStyle()",
@@ -44466,8 +44466,8 @@
             "description": "Returns the text style of this value.",
             "returnType": "TextStyle",
             "returnDescription": "The text style of this value.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/fakerichtextvalue.js#L59"
           },
           {
             "method": "getTextStyle(Integer,Integer)",
@@ -44475,8 +44475,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/fakerichtextvalue.js#L59"
           }
         ]
       },
@@ -46152,8 +46152,8 @@
             "description": "Gets the angle between standard text orientation and the current text orientation. For\nleft-to-right text, positive angles are in the counterclockwise direction. If the text is set\nto stack vertically, this method returns 0.",
             "returnType": "Integer",
             "returnDescription": "The degrees between standard text rotation and the current text rotation.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextrotation.js#L28"
           },
           {
             "method": "isVertical()",
@@ -46161,8 +46161,8 @@
             "description": "Returns true if the text is stacked vertically; returns false otherwise.",
             "returnType": "Boolean",
             "returnDescription": "Whether or not the text is stacked vertically.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextrotation.js#L31"
           }
         ]
       },
@@ -46294,8 +46294,8 @@
             "description": "Creates a text style builder initialized with the values of this text style.",
             "returnType": "TextStyleBuilder",
             "returnDescription": "A builder from this text style.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstyle.js#L50"
           },
           {
             "method": "getFontFamily()",
@@ -46303,8 +46303,8 @@
             "description": "Gets the font family of the text. Returns null if the font family isn't set or the\ncorresponding RichTextValue has multiple runs with different font\nfamilies.",
             "returnType": "String",
             "returnDescription": "The font family of the text (for example, \"Arial\") or null.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstyle.js#L37"
           },
           {
             "method": "getFontSize()",
@@ -46312,8 +46312,8 @@
             "description": "Gets the font size of the text in points. Returns null if the font size isn't set or\nthe corresponding RichTextValue has multiple runs with different font\nsizes.",
             "returnType": "Integer",
             "returnDescription": "The font size of the text or null.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstyle.js#L34"
           },
           {
             "method": "getForegroundColorObject()",
@@ -46321,8 +46321,8 @@
             "description": "Gets the font color of the text. Returns null if the font color isn't set or the\ncorresponding RichTextValue has multiple runs with different font\ncolors.",
             "returnType": "Color",
             "returnDescription": "The font color of the text or null.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstyle.js#L43"
           },
           {
             "method": "isBold()",
@@ -46330,8 +46330,8 @@
             "description": "Gets whether or not the text is bold. Returns null if bold isn't set or the\ncorresponding RichTextValue has multiple runs with different bold\nsettings.",
             "returnType": "Boolean",
             "returnDescription": "Whether or not the cell is bold, or null.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstyle.js#L22"
           },
           {
             "method": "isItalic()",
@@ -46339,8 +46339,8 @@
             "description": "Gets whether or not the cell is italic. Returns null if italic isn't set or the\ncorresponding RichTextValue has multiple runs with different italic\nsettings.",
             "returnType": "Boolean",
             "returnDescription": "Whether or not the cell is italic, or null.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstyle.js#L25"
           },
           {
             "method": "isStrikethrough()",
@@ -46348,8 +46348,8 @@
             "description": "Gets whether or not the cell has strikethrough. Returns null if strikethrough isn't set\nor the corresponding RichTextValue has multiple runs with different\nstrikethrough settings.",
             "returnType": "Boolean",
             "returnDescription": "Whether or not the cell has strikethrough, or null.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstyle.js#L31"
           },
           {
             "method": "isUnderline()",
@@ -46357,8 +46357,8 @@
             "description": "Gets whether or not the cell is underlined. Returns null if underline isn't set or the\ncorresponding RichTextValue has multiple runs with different underline\nsettings.",
             "returnType": "Boolean",
             "returnDescription": "Whether or not the cell is underlined, or null.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstyle.js#L28"
           }
         ]
       },
@@ -47684,8 +47684,8 @@
             "description": "Creates a text style from this builder.",
             "returnType": "TextStyle",
             "returnDescription": "A text style created from this builder.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstylebuilder.js#L4"
           },
           {
             "method": "setBold(Boolean)",
@@ -47693,8 +47693,8 @@
             "description": "Sets whether or not the text is bold.",
             "returnType": "TextStyleBuilder",
             "returnDescription": "The builder for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstylebuilder.js#L43"
           },
           {
             "method": "setFontFamily(String)",
@@ -47702,8 +47702,8 @@
             "description": "Sets the text font family, such as \"Arial\".",
             "returnType": "TextStyleBuilder",
             "returnDescription": "The builder for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstylebuilder.js#L40"
           },
           {
             "method": "setFontSize(Integer)",
@@ -47711,8 +47711,8 @@
             "description": "Sets the text font size in points.",
             "returnType": "TextStyleBuilder",
             "returnDescription": "The builder for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstylebuilder.js#L41"
           },
           {
             "method": "setForegroundColor(String)",
@@ -47720,8 +47720,8 @@
             "description": "Sets the text font color.",
             "returnType": "TextStyleBuilder",
             "returnDescription": "The builder for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstylebuilder.js#L55"
           },
           {
             "method": "setForegroundColorObject(Color)",
@@ -47729,8 +47729,8 @@
             "description": "Sets the text font color.",
             "returnType": "TextStyleBuilder",
             "returnDescription": "The builder for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstylebuilder.js#L65"
           },
           {
             "method": "setItalic(Boolean)",
@@ -47738,8 +47738,8 @@
             "description": "Sets whether or not the text is italic.",
             "returnType": "TextStyleBuilder",
             "returnDescription": "The builder for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstylebuilder.js#L44"
           },
           {
             "method": "setStrikethrough(Boolean)",
@@ -47747,8 +47747,8 @@
             "description": "Sets whether or not the text has strikethrough.",
             "returnType": "TextStyleBuilder",
             "returnDescription": "The builder for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstylebuilder.js#L46"
           },
           {
             "method": "setUnderline(Boolean)",
@@ -47756,8 +47756,8 @@
             "description": "Sets whether or not the text is underlined.",
             "returnType": "TextStyleBuilder",
             "returnDescription": "The builder for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstylebuilder.js#L45"
           }
         ]
       },
@@ -48133,8 +48133,8 @@
             "description": "Get the type of this color.",
             "returnType": "ColorType",
             "returnDescription": "The color type.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/fakethemecolor.js#L26"
           },
           {
             "method": "getThemeColorType()",
@@ -48142,8 +48142,8 @@
             "description": "Gets the theme color type of this color.",
             "returnType": "ThemeColorType",
             "returnDescription": "The theme color type.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/fakethemecolor.js#L34"
           }
         ]
       },
@@ -49574,24 +49574,24 @@
             "description": "Wrap lines that are longer than the cell width onto a new line. Single words that are longer\nthan a line are wrapped at the character level.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/fakewrapstrategy.js#L16"
           },
           {
             "method": "OVERFLOW",
             "description": "Overflow lines into the next cell, so long as that cell is empty. If the next cell over is\nnon-empty, this behaves the same as CLIP.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/fakewrapstrategy.js#L16"
           },
           {
             "method": "CLIP",
             "description": "Clip lines that are longer than the cell width.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/fakewrapstrategy.js#L19"
           }
         ]
       },
@@ -50063,8 +50063,8 @@
             "description": "Converts this color to an RgbColor.",
             "returnType": "",
             "returnDescription": "RgbColor",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/fakecolor.js#L25"
           },
           {
             "method": "asThemeColor()",
@@ -50072,8 +50072,8 @@
             "description": "Converts this color to a ThemeColor.",
             "returnType": "",
             "returnDescription": "ThemeColor",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/fakecolor.js#L29"
           },
           {
             "method": "getColorType()",
@@ -57669,8 +57669,8 @@
             "description": "Get the type of this color.",
             "returnType": "ColorType",
             "returnDescription": "The color type.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/fakethemecolor.js#L26"
           },
           {
             "method": "getThemeColorType()",
@@ -57678,8 +57678,8 @@
             "description": "Get the theme color type of this color.",
             "returnType": "",
             "returnDescription": "ThemeColorType",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/fakethemecolor.js#L34"
           }
         ]
       },
@@ -58209,8 +58209,8 @@
             "description": "Returns the font family of the text, or null if there are multiple styles on the text.",
             "returnType": "",
             "returnDescription": "String",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstyle.js#L37"
           },
           {
             "method": "getFontSize()",
@@ -58218,8 +58218,8 @@
             "description": "Returns the font size of the text in points, or null if there are multiple styles on\nthe text.",
             "returnType": "",
             "returnDescription": "Number",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstyle.js#L34"
           },
           {
             "method": "getFontWeight()",
@@ -58236,8 +58236,8 @@
             "description": "Returns the foreground color of the text, or null if there are multiple styles on the\ntext.",
             "returnType": "",
             "returnDescription": "Color",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstyle.js#L40"
           },
           {
             "method": "getLink()",
@@ -58245,8 +58245,8 @@
             "description": "Returns the Link on the text, or null if there is no link or if the link is on\npart of the text or if there are multiple links. Call hasLink() to determine whether\nthe text has no link.",
             "returnType": "",
             "returnDescription": "Link",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstyle.js#L46"
           },
           {
             "method": "hasLink()",
@@ -58272,8 +58272,8 @@
             "description": "Returns true if the text is rendered as bold, false if not, or null if\nthere are multiple styles on the text.",
             "returnType": "",
             "returnDescription": "Boolean",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstyle.js#L22"
           },
           {
             "method": "isItalic()",
@@ -58281,8 +58281,8 @@
             "description": "Returns true if the text is italicized, false if not, or null if there\nare multiple styles on the text.",
             "returnType": "",
             "returnDescription": "Boolean",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstyle.js#L25"
           },
           {
             "method": "isSmallCaps()",
@@ -58299,8 +58299,8 @@
             "description": "Returns true if the text is struck through, false if not, or null if\nthere are multiple styles on the text.",
             "returnType": "",
             "returnDescription": "Boolean",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstyle.js#L31"
           },
           {
             "method": "isUnderline()",
@@ -58308,8 +58308,8 @@
             "description": "Returns true if the text is underlined, false if not, or null if there\nare multiple styles on the text.",
             "returnType": "",
             "returnDescription": "Boolean",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstyle.js#L28"
           },
           {
             "method": "removeLink()",
@@ -58380,8 +58380,8 @@
             "description": "Sets whether the text should be rendered as bold.",
             "returnType": "",
             "returnDescription": "TextStyle",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstyle.js#L54"
           },
           {
             "method": "setFontFamily(String)",
@@ -58389,8 +58389,8 @@
             "description": "Sets the font family of the text .",
             "returnType": "",
             "returnDescription": "TextStyle",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstyle.js#L58"
           },
           {
             "method": "setFontFamilyAndWeight(String,Integer)",
@@ -58407,8 +58407,8 @@
             "description": "Sets the font size of the text, in points.",
             "returnType": "",
             "returnDescription": "TextStyle",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstyle.js#L57"
           },
           {
             "method": "setForegroundColor(Color)",
@@ -58416,8 +58416,8 @@
             "description": "Sets the foreground color of the text.",
             "returnType": "",
             "returnDescription": "TextStyle",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstyle.js#L59"
           },
           {
             "method": "setForegroundColor(Integer,Integer,Integer)",
@@ -58425,8 +58425,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstyle.js#L59"
           },
           {
             "method": "setForegroundColor(String)",
@@ -58434,8 +58434,8 @@
             "description": "Sets the foreground color of the text to the given hex color string.",
             "returnType": "",
             "returnDescription": "TextStyle",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstyle.js#L59"
           },
           {
             "method": "setForegroundColor(ThemeColorType)",
@@ -58443,8 +58443,8 @@
             "description": "Sets the foreground color of the text to the given ThemeColorType.",
             "returnType": "",
             "returnDescription": "TextStyle",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstyle.js#L59"
           },
           {
             "method": "setItalic(Boolean)",
@@ -58452,8 +58452,8 @@
             "description": "Sets the whether the text is italicized.",
             "returnType": "",
             "returnDescription": "TextStyle",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstyle.js#L53"
           },
           {
             "method": "setLinkSlide(Integer)",
@@ -58506,8 +58506,8 @@
             "description": "Sets whether the text is struck through.",
             "returnType": "",
             "returnDescription": "TextStyle",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstyle.js#L56"
           },
           {
             "method": "setUnderline(Boolean)",
@@ -58515,8 +58515,8 @@
             "description": "Sets whether the text is underlined.",
             "returnType": "",
             "returnDescription": "TextStyle",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/faketextstyle.js#L55"
           }
         ]
       },

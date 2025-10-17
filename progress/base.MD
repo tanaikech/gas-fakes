@@ -90,11 +90,11 @@ A color defined by red, green, blue color channels.
 
 | Method | Description | Return Type | Return Description | Status | Implementation |
 |--- |--- |--- |--- |--- |--- |
-| [asHexString()](https://developers.google.com/apps-script/reference/base/rgb-color#asHexString()) | Returns the color as a CSS-style 7 character hexadecimal string (#rrggbb) or 9 character hexadecimal string (#aarrggbb). | String | The hex representation of color. | not started |  |
-| [getBlue()](https://developers.google.com/apps-script/reference/base/rgb-color#getBlue()) | The blue channel of this color, as a number from 0 to 255. | Integer | The value of blue channel. | not started |  |
-| [getColorType()](https://developers.google.com/apps-script/reference/base/rgb-color#getColorType()) | Get the type of this color. | [ColorType](#enum-colortype) | The color type. | not started |  |
-| [getGreen()](https://developers.google.com/apps-script/reference/base/rgb-color#getGreen()) | The green channel of this color, as a number from 0 to 255. | Integer | The value of green channel. | not started |  |
-| [getRed()](https://developers.google.com/apps-script/reference/base/rgb-color#getRed()) | The red channel of this color, as a number from 0 to 255. | Integer | The value of red channel. | not started |  |
+| [asHexString()](https://developers.google.com/apps-script/reference/base/rgb-color#asHexString()) | Returns the color as a CSS-style 7 character hexadecimal string (#rrggbb) or 9 character hexadecimal string (#aarrggbb). | String | The hex representation of color. | completed | [link](../src/services/common/fakergbcolor.js#L35) |
+| [getBlue()](https://developers.google.com/apps-script/reference/base/rgb-color#getBlue()) | The blue channel of this color, as a number from 0 to 255. | Integer | The value of blue channel. | completed | [link](../src/services/common/fakergbcolor.js#L44) |
+| [getColorType()](https://developers.google.com/apps-script/reference/base/rgb-color#getColorType()) | Get the type of this color. | [ColorType](#enum-colortype) | The color type. | completed | [link](../src/services/common/fakergbcolor.js#L52) |
+| [getGreen()](https://developers.google.com/apps-script/reference/base/rgb-color#getGreen()) | The green channel of this color, as a number from 0 to 255. | Integer | The value of green channel. | completed | [link](../src/services/common/fakergbcolor.js#L60) |
+| [getRed()](https://developers.google.com/apps-script/reference/base/rgb-color#getRed()) | The red channel of this color, as a number from 0 to 255. | Integer | The value of red channel. | completed | [link](../src/services/common/fakergbcolor.js#L68) |
 
 ## Class: [Session](https://developers.google.com/apps-script/reference/base/session)
 

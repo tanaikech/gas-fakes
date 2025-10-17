@@ -75,15 +75,33 @@ const serviceToDirectoryMap = {
 
 const classSynonyms = {
     'Body': ['containerelement', 'element'],
+    'File': ['drivemeta'],
+    'Folder': ['drivemeta'],
+    'FileIterator': ['iterator'],
+    'FolderIterator': ['iterator'],
     'Paragraph': ['containerelement', 'element'],
-    'ListItem': ['containerelement', 'element'],
+    'ListItem': ['containerelement', 'element', 'paragraph'],
     'Table': ['containerelement', 'element'],
     'TableRow': ['containerelement', 'element'],
     'TableCell': ['containerelement', 'element'],
     'Text': ['element'],
     'InlineImage': ['element'],
-    'File': ['drivemeta'],
-    'Folder': ['drivemeta'],
+    'CheckboxItem': ['formitem'],
+    'DateItem': ['formitem'],
+    'DateTimeItem': ['formitem'],
+    'DurationItem': ['formitem'],
+    'GridItem': ['formitem'],
+    'ImageItem': ['formitem'],
+    'MultipleChoiceItem': ['formitem'],
+    'PageBreakItem': ['formitem'],
+    'ParagraphTextItem': ['formitem'],
+    'RatingItem': ['formitem'],
+    'ScaleItem': ['formitem'],
+    'SectionHeaderItem': ['formitem'],
+    'TimeItem': ['formitem'],
+    'VideoItem': ['formitem'],
+    'CheckboxGridItem': ['formitem'],
+    'FormResponse': ['itemresponse'],
     'PageBreak': ['element'],
     'HorizontalRule': ['element'],
     'Footnote': ['containerelement', 'element'],
@@ -92,6 +110,15 @@ const classSynonyms = {
     'FootnoteSection': ['containerelement', 'element'],
     'ContainerElement': ['element'],
     'SectionElement': ['element'],
+    'Range': ['range'],
+    'RichTextValue': ['richtextvalue'],
+    'TextStyle': ['textstyle'],
+    'ConditionalFormatRule': ['conditionalformatrule'],
+    'Banding': ['banding'],
+    'Borders': ['borders'],
+    'Color': ['colorbuilder'],
+    'RgbColor': ['rgbcolor'],
+    'DataValidation': ['datavalidationbuilder'],
 };
 
 const classToFileMap = {
@@ -165,7 +192,12 @@ for (const service of giData) {
 
 
             for (const fileName of possibleFileNames) {
-                const filePath = allJsFiles.find(p => p.endsWith(`${serviceDirectory}/${fileName}`));
+                // Search in the service-specific directory first, then in the common directory
+                let filePath = allJsFiles.find(p => p.endsWith(`${serviceDirectory}/${fileName}`));
+                if (!filePath) {
+                    filePath = allJsFiles.find(p => p.endsWith(`common/${fileName}`));
+                }
+
                 if (filePath && fileCache.has(filePath) && !fileContents.some(f => f.filePath === filePath)) {
                     fileContents.push({ filePath, content: fileCache.get(filePath) });
                 }
