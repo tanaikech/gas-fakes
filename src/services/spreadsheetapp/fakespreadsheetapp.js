@@ -75,7 +75,7 @@ export class FakeSpreadsheetApp {
     });
 
     const props = [
-      "toString",
+
 
       "getActive",
       "newConditionalFormatRule",
@@ -105,7 +105,12 @@ export class FakeSpreadsheetApp {
       };
     });
   }
+  toString() {
+    return "SpreadsheetApp";
+  }
 
+  /**
+  }
   enableBigQueryExecution() {
     const { nargs, matchThrow } = signatureArgs(
       arguments,

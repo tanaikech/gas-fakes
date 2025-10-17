@@ -45,10 +45,27 @@ const getAppHandler = (getApp, name) => {
       if (prop.substring(0,2) === '__') return Reflect.set (getApp(), prop, value)
       throw new Error(`setting values directly in ${name}.${prop} is not allowed`)
     },
+ownKeys(_) {
+    const app = getApp();
+    const keys = new Set();
+    let currentObj = app;
 
-    ownKeys(_) {
-      return Reflect.ownKeys(getApp())
+    // Traverse the prototype chain of the underlying object (the class/function)
+    while (currentObj && currentObj !== Object.prototype) {
+        // Collect all own string and symbol properties
+        Object.getOwnPropertyNames(currentObj).forEach(key => keys.add(key));
+        Object.getOwnPropertySymbols(currentObj).forEach(symbol => keys.add(symbol));
+
+        // Move up the prototype chain
+        currentObj = Object.getPrototypeOf(currentObj);
     }
+    
+    // Convert to Array, as required by the ownKeys trap
+    return Array.from(keys);
+},
+    //ownKeys(_) {
+    //  return Reflect.ownKeys(getApp())
+    //}
   }
 }
 

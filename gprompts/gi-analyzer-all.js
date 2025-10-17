@@ -96,16 +96,21 @@ const classSynonyms = {
 };
 
 const classToFileMap = {
+    // Base service classes implemented elsewhere
     'Blob': 'utilities/fakeblob.js',
     'User': 'common/fakeuser.js',
     'Session': 'session/fakesession.js',
     'Logger': 'logger/fakelogger.js',
+    // Properties/Cache services implemented in stores
     'Properties': 'stores/fakestores.js',
     'Cache': 'stores/fakestores.js',
     'PropertiesService': 'stores/fakestores.js',
     'CacheService': 'stores/fakestores.js',
+    // Drive service classes
     'ScriptApp': 'scriptapp/app.js',
-    'DriveApp': 'driveapp/fakedriveapp.js'
+    'DriveApp': 'driveapp/fakedriveapp.js',
+    'File': 'driveapp/fakedrivefile.js',
+    'Folder': 'driveapp/fakedrivefolder.js',
 };
 
 // Populate the dynamic methods set for easier lookup
