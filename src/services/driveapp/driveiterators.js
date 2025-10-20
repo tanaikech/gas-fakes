@@ -17,7 +17,7 @@ export const getFilesIterator = ({
   fileTypes
 }) => {
 
- 
+
   // parentId can be null to search everywhere
   if (!is.null(parentId)) assert.nonEmptyString(parentId)
   assert.boolean(folderTypes)
@@ -25,6 +25,20 @@ export const getFilesIterator = ({
 
   // DriveApp doesnt give option to specify these so this will be fixed
   const fields = `files(${minFields}),nextPageToken`
+
+  /// in apps script the name field is title - if you use name it errors
+  /// in the api the name field is the name - if you use tile if fails
+
+  if (qob) {
+    const regex = /(^|\s)title(\s*=\s*|\s+contains\s+|\s*!=\s*|\s*>\s*|\s*<\s*)/gi;
+    qob = qob.map(f => {
+      return f.replace(regex, (match, p1, p2) => {
+        // p1 is the start-of-string or whitespace before 'title'
+        // p2 is the operator and surrounding whitespace
+        return `${p1}name${p2}`;
+      });
+    })
+  }
 
   /**
    * this generator will get chunks of matching files from the drive api
@@ -48,8 +62,8 @@ export const getFilesIterator = ({
 
 
         // format the results into the folder or file object
-        assert.array (data.files)
-        assert.function (DriveApp.__settleClass)
+        assert.array(data.files)
+        assert.function(DriveApp.__settleClass)
         tank = data.files.map(DriveApp.__settleClass)
 
       }
@@ -84,13 +98,13 @@ export const getParentsIterator = ({
   const { assert } = Utils
   assert.object(file)
   // if its rott folder can be null
-  const parents  = is.null (file.parents) ? [] : file.parents
+  const parents = is.null(file.parents) ? [] : file.parents
   assert.array(parents)
   // TODO we need to handle allowing access to root when sandbox is on
   // and would prevent it. - this still needs more thought on whether this is all handled properly
   // I think we should be ok because the individual file access will be blocked if not allowed
   // but we need to be able to get root folder if it's a parent of an allowed
-  const rooter = (id) => (!ScriptApp.__behavior.isAccessible(id) && DriveApp.getRootFolder().getId() === id) ?  'root' : id
+  const rooter = (id) => (!ScriptApp.__behavior.isAccessible(id) && DriveApp.getRootFolder().getId() === id) ? 'root' : id
   function* filesink() {
     // the result tank, we just get them all by id - will return the usual minfields
     // and will also stick them in cache
@@ -140,10 +154,10 @@ const fileLister = ({
 
   // exclusive xor - if they're both true we dont need to do any extra q filtering
   if (folderTypes !== fileTypes) {
-    qob.push(`mimeType${fileTypes ? "!" : ""}='${folderType}'`)
+    qob.push(`mimeType ${fileTypes ? "!" : ""}= '${folderType}'`)
   }
 
-  const q = qob.map(f => `(${f})`).join(" and ")
+  const q = qob.map(f => `${f}`).join(" and ")
   let params = { q, fields }
   if (pageToken) {
     params.pageToken = pageToken

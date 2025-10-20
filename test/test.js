@@ -55,11 +55,15 @@ import { testCalendar } from './testcalendar.js';
 import { testTasks } from './testtasks.js';
 import { testWorkspaceEvents } from './testworkspaceevents.js';
 import { testLogger } from "./testlogger.js";
+import { testMimeType } from './testmimetype.js';
+
 const testFakes = () => {
   const pack = initTests();
   const { unit } = pack;
 
   // add one of these for each service being tested
+  console.log("\n----Test mimetype----");
+  testMimeType(pack);
   console.log("\n----Test workspaceevents----");
   testWorkspaceEvents(pack);
   console.log("\n----Test calendar----");

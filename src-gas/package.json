@@ -1,0 +1,26 @@
+{
+  "name": "src-gas",
+  "version": "1.0.0",
+  "description": "this is to test bundling from gas",
+  "main": "index.js",
+  "scripts": {
+    "fromgas": "SCRIPT_PATH=\"$PWD/fromgas.sh\" && cd \"$INIT_CWD\" && bash \"$SCRIPT_PATH\" --pull --bundle --run \"$@\"",
+    "fromgas:pull": "SCRIPT_PATH=\"$PWD/fromgas.sh\" && cd \"$INIT_CWD\" && bash \"$SCRIPT_PATH\" --pull \"$@\"",
+    "fromgas:bundle": "SCRIPT_PATH=\"$PWD/fromgas.sh\" && cd \"$INIT_CWD\" && bash \"$SCRIPT_PATH\" --bundle \"$@\"",
+    "fromgas:run": "SCRIPT_PATH=\"$PWD/fromgas.sh\" && cd \"$INIT_CWD\" && bash \"$SCRIPT_PATH\" --run \"$@\"",
+    "fromgas:build": "SCRIPT_PATH=\"$PWD/fromgas.sh\" && cd \"$INIT_CWD\" && bash \"$SCRIPT_PATH\" --pull --bundle \"$@\"",
+    "fromgas:test": "SCRIPT_PATH=\"$PWD/fromgas.sh\" && cd \"$INIT_CWD\" && bash \"$SCRIPT_PATH\" --bundle --run \"$@\"",
+    "togas": "SCRIPT_PATH=\"$PWD/togas.sh\" && cd \"$INIT_CWD\" && bash \"$SCRIPT_PATH\" \"$@\""
+  },
+  "author": "bruce mcpherson",
+  "license": "MIT",
+  "dependencies": {
+    "@mcpher/gas-fakes": "file:../"
+  },
+  "type": "module",
+  "devDependencies": {
+    "esbuild": "^0.25.11",
+    "glob": "^11.0.3"
+  },
+  "sideEffects": true
+}

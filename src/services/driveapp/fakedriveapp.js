@@ -85,6 +85,14 @@ export class FakeDriveApp {
     return this.folderApp.getFilesByName({ folderTypes: false, name })
   }
 
+  searchFiles(params) {
+    return this.folderApp.searchFiles({  params })
+  }
+  
+  searchFolders(params) {
+    return this.folderApp.searchFolders({ params })
+  }
+
   /**
    * get files by name
    * @param {string} name 

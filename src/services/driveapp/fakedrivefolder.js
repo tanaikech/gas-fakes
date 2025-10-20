@@ -27,6 +27,15 @@ export class FakeDriveFolder extends FakeDriveMeta {
     this.folderApp = newFakeFolderApp()
   }
 
+  searchFiles(params) {
+    return this.folderApp.searchFiles({ parentId: this.getId(), params })
+  }
+  
+  searchFolders(params) {
+    return this.folderApp.searchFolders({ parentId: this.getId(), params })
+  }
+
+
   /**
    * the args are a bit flexible
    * we can have 1 arg which mucst be ablob

@@ -1,0 +1,8 @@
+{
+  "manifest": "./appsscript.json",
+  "clasp": "./.clasp.json",
+  "scriptId": "1GrPAy0mMLuNL5HH57qIHxU2gycXbzVSIZOsgl0BE9DMbYIwdRrsDcoTG",
+  "documentId": null,
+  "cache": "/tmp/gas-fakes/cache",
+  "properties": "/tmp/gas-fakes/properties"
+}

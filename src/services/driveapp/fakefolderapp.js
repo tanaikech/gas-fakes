@@ -65,16 +65,26 @@ class FakeFolderApp {
     return notYetImplemented('createShortcutForTargetIdAndResourceKey')
   }
 
-  searchFolders() {
-    return notYetImplemented('searchFolders')
+
+
+  searchFiles ({ parentId, params }) {
+    return getFilesIterator({
+      parentId,
+      fileTypes: true,
+      folderTypes: false,
+      qob: [params]
+    })
   }
 
-
-  searchFiles() {
-    return notYetImplemented('searchFiles')
+  searchFolders ({ parentId, params }) {
+    return getFilesIterator({
+      parentId,
+      fileTypes: false,
+      folderTypes: true,
+      qob: [params]
+    })
   }
-
-
+  
   removeFolder() {
     return notYetImplemented('removeFolder')
   }

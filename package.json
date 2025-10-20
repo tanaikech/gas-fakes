@@ -26,6 +26,7 @@
   },
   "type": "module",
   "scripts": {
+
     "test": "node --env-file=./.env ./test/test.js",
     "testdrive": "node --env-file=./.env ./test/testdrive.js execute",
     "testsheetsdatavalidations": "node --env-file=./.env ./test/testsheetsdatavalidations.js execute",
@@ -68,10 +69,11 @@
     "testtasks": "node --env-file=./.env ./test/testtasks.js execute",
     "testcalendar": "node --env-file=./.env ./test/testcalendar.js execute",
     "testworkspaceevents": "node --env-file=./.env ./test/testworkspaceevents.js execute",
+    "testmimetype": "node --env-file=./.env ./test/testmimetype.js execute",
     "pub": "npm publish --access public"
   },
   "name": "@mcpher/gas-fakes",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "license": "MIT",
   "main": "main.js",
   "description": "A proof of concept implementation of Apps Script Environment on Node",
