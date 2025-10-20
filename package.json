@@ -26,7 +26,6 @@
   },
   "type": "module",
   "scripts": {
-
     "test": "node --env-file=./.env ./test/test.js",
     "testdrive": "node --env-file=./.env ./test/testdrive.js execute",
     "testsheetsdatavalidations": "node --env-file=./.env ./test/testsheetsdatavalidations.js execute",
@@ -74,7 +73,7 @@
   },
   "name": "@mcpher/gas-fakes",
   "author": "bruce mcpherson",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "license": "MIT",
   "main": "main.js",
   "description": "A proof of concept implementation of Apps Script Environment on Node",

@@ -109,8 +109,7 @@ export class FakeSpreadsheetApp {
     return "SpreadsheetApp";
   }
 
-  /**
-  }
+
   enableBigQueryExecution() {
     const { nargs, matchThrow } = signatureArgs(
       arguments,

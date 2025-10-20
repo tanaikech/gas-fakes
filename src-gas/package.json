@@ -14,13 +14,13 @@
   },
   "author": "bruce mcpherson",
   "license": "MIT",
-  "dependencies": {
-    "@mcpher/gas-fakes": "file:../"
-  },
   "type": "module",
   "devDependencies": {
     "esbuild": "^0.25.11",
     "glob": "^11.0.3"
   },
-  "sideEffects": true
+  "sideEffects": true,
+  "dependencies": {
+    "@mcpher/gas-fakes": "^1.2.3"
+  }
 }
