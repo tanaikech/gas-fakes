@@ -73,7 +73,8 @@
     "pub": "npm publish --access public"
   },
   "name": "@mcpher/gas-fakes",
-  "version": "1.2.2",
+  "author": "bruce mcpherson",
+  "version": "1.2.3",
   "license": "MIT",
   "main": "main.js",
   "description": "A proof of concept implementation of Apps Script Environment on Node",
