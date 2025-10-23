@@ -75,13 +75,13 @@
   },
   "name": "@mcpher/gas-fakes",
   "author": "bruce mcpherson",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "license": "MIT",
   "main": "main.js",
   "description": "A proof of concept implementation of Apps Script Environment on Node",
   "repository": "github:brucemcpherson/gas-fakes",
   "homepage": "https://ramblings.mcpher.com/a-proof-of-concept-implementation-of-apps-script-environment-on-node/",
   "bin": {
-    "gas-fakes": "cli/gas-fakes.js"
+    "gas-fakes": "gas-fakes.js"
   }
 }
