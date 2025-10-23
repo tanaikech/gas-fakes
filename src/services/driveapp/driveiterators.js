@@ -32,6 +32,7 @@ export const getFilesIterator = ({
   if (qob) {
     const regex = /(^|\s)title(\s*=\s*|\s+contains\s+|\s*!=\s*|\s*>\s*|\s*<\s*)/gi;
     qob = qob.map(f => {
+      if (!is.string(f)) throw new Error (`invalid parameters ${JSON.stringify(qob)}`)
       return f.replace(regex, (match, p1, p2) => {
         // p1 is the start-of-string or whitespace before 'title'
         // p2 is the operator and surrounding whitespace
@@ -39,7 +40,7 @@ export const getFilesIterator = ({
       });
     })
   }
-
+//qob = ["name contains 'Untitled' and '0AN2ExLh4POiZUk9PVA' in parents and mimeType != 'application/vnd.google-apps.folder'"]
   /**
    * this generator will get chunks of matching files from the drive api
    * and yield them 1 by 1 and handle paging if required
@@ -142,6 +143,7 @@ const fileLister = ({
 }) => {
   // enhance any already supplied query params
   qob = Utils.arrify(qob) || []
+  qob = [...qob]
   if (parentId) {
     ScriptApp.__behavior.isAccessible(parentId) // will throw if not accessible
     qob.push(`'${parentId}' in parents`)

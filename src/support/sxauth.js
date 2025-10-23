@@ -9,7 +9,7 @@ import got from 'got';
 import { Auth } from './auth.js';
 import { syncError, syncLog } from './workersync/synclogger.js';
 import { homedir } from 'os';
-import {access, readFile, writeFile, mkdir } from 'fs/promises';
+import { access, readFile, writeFile, mkdir } from 'fs/promises';
 import path from 'path'
 
 
@@ -91,12 +91,27 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, mainDir, c
   // Initialize auth. This is async and will discover the project ID.
   const auth = await Auth.setAuth(scopes);
   const projectId = Auth.getProjectId();
-  const accessToken = await auth.getAccessToken()
+  let accessToken = null
+
+  // need to handle an expired refresh token
+  try {
+    accessToken = await auth.getAccessToken()
+  } catch (error) {
+
+  }
   let tokenInfo = null
   try {
     tokenInfo = await got(`https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${accessToken}`).json()
   } catch (err) {
-    syncError (`failed to get access token info`)
+    syncError(`Application default credentials needs attention`)
+    if (error.code === 400 && error.message.includes('invalid_grant')) {
+      // Log a specific, actionable error for the developer/operator
+      syncError("ADC 'invalid_grant' Error: The underlying Application Default Credentials have expired or been revoked.");
+      syncError("Helpful note: in your admin console under security/access amd data control there are a couple of settings to fiddle with token life")
+      syncError("Use your settaccount.sh to reauthenticate");
+      throw new Error ('failed to get access token info : Use your settaccount.sh to reauthenticate')
+    }
+    throw error; // Re-throw any other errors
   }
 
   /// these all jst exist in this sub process so we need to send them back to parent process

@@ -1,6 +1,6 @@
 {
   "name": "src-gas",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "this is to test bundling from gas",
   "main": "index.js",
   "scripts": {
@@ -21,6 +21,6 @@
   },
   "sideEffects": true,
   "dependencies": {
-    "@mcpher/gas-fakes": "^1.2.3"
+    "@mcpher/gas-fakes": "^1.2.5"
   }
 }

@@ -2,9 +2,9 @@
 **/private
 testongas
 **/.gas-fakes/store
-.env*
+**/.env*
 ghissues
 **/.gemini
 .DS_Store
 articles
-
+**/gas-fakes.json
