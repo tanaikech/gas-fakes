@@ -32,7 +32,9 @@ export const getFilesIterator = ({
   if (qob) {
     const regex = /(^|\s)title(\s*=\s*|\s+contains\s+|\s*!=\s*|\s*>\s*|\s*<\s*)/gi;
     qob = qob.map(f => {
-      if (!is.string(f)) throw new Error (`invalid parameters ${JSON.stringify(qob)}`)
+      if (!is.string(f)) {
+        throw new Error (`invalid parameters ${JSON.stringify(qob)}`)
+      }
       return f.replace(regex, (match, p1, p2) => {
         // p1 is the start-of-string or whitespace before 'title'
         // p2 is the operator and surrounding whitespace

@@ -8,6 +8,7 @@
     "@sindresorhus/is": "^7.0.1",
     "archiver": "^7.0.1",
     "commander": "^14.0.1",
+    "dotenv": "^17.2.3",
     "exceljs": "^4.4.0",
     "fast-json-stable-stringify": "^2.1.0",
     "get-stream": "^9.0.1",

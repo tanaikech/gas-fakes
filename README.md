@@ -25,7 +25,7 @@ Just as on Apps Script, everything is executed synchronously so you don't need t
 Now you can run apps script code directly from your console - for example 
 
 ```bash
-gas-fakes  -s "const files=DriveApp.getRootFolder().searchFiles('title contains \'Untitled\'');while (files.hasNext()) {console.log(files.next().getName())};"
+gas-fakes  -s "const files=DriveApp.getRootFolder().searchFiles('title contains \"Untitled\"');while (files.hasNext()) {console.log(files.next().getName())};" 
 ```
 
 For details see [gas fakes cli](gas-fakes-cli.md)

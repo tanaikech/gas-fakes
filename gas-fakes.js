@@ -6,8 +6,9 @@
  */
 import fs from "fs";
 import { Command } from "commander";
+import dotenv from 'dotenv'
 
-const version = "0.0.1";
+const version = "0.0.2";
 
 const program = new Command();
 
@@ -16,11 +17,20 @@ program
   .description("CLI tool for gas-fakes")
   .version(version, "-v, --version", "display the current version");
 
+
 program
   .description("Execute Google Apps Script using gas-fakes.")
   .option(
     "-f, --filename <string>",
     "filename of the file including Google Apps Script. When this is used, the option --script is ignored."
+  )
+  .option(
+    "-e, --env <path>",
+    "provide path to your .env file for special options."
+  )
+  .option(
+    "-g, --gfsettings <path>",
+    "provide path to your gasfakes.json file for script options."
   )
   .option(
     "-s, --script <string>",
@@ -44,13 +54,19 @@ program
     if (Object.keys(options).length == 0) {
       program.help();
     } else {
-      const { filename, script, sandbox, whitelist, json, display } = options;
+      const { filename, script, sandbox, whitelist, json, display, env , gfsettings} = options;
       const obj = { sandbox: !!sandbox, display };
       if (!filename && !script) {
         console.error(
           "error: Provide the filename or the script of Google Apps Script."
         );
         process.exit();
+      }
+      if (gfsettings) {
+        obj.gfSettings= gfsettings
+      }
+      if (env) {
+        dotenv.config({ path: env })
       }
       if (filename) {
         obj.filename = filename;
@@ -83,7 +99,7 @@ program.showHelpAfterError("(add --help for additional information)");
 program.parse();
 
 function __getImportScript(o) {
-  const { scriptText, sandbox, whitelistItems, json_sandbox } = o;
+  const { scriptText, sandbox, whitelistItems, json_sandbox, gfSettings } = o;
   if (scriptText.trim() == "") {
     console.error("error: Google Apps Script was not found.");
     process.exit();
@@ -160,7 +176,11 @@ function __getImportScript(o) {
   }
   const importScriptAr = [
     `async function runGas() {`,
-    `await import("../main.js");`,
+    // Pass the settings path to the init function if it's provided
+    gfSettings
+      ? `const settingsPath = "${gfSettings}";`
+      : `const settingsPath = undefined;`,
+    `await import("./main.js");`, // This will trigger the fxInit call
     ...gasScriptAr,
     `};`,
     ``,
@@ -174,6 +194,7 @@ function __getImportScript(o) {
 
 async function loadScript(o) {
   const { filename, script, display } = o;
+
   const scriptText = filename ? fs.readFileSync(filename, "utf8") : script;
   const { mainScript, gasScript } = __getImportScript({ scriptText, ...o });
   if (display) {
@@ -182,5 +203,11 @@ async function loadScript(o) {
     console.log(`--- /script ---`);
   }
   const gasFunc = new Function(mainScript);
+  // The script needs access to the settings path variable we just created
+  Object.defineProperty(globalThis, "settingsPath", {
+    value: o.gfSettings,
+    writable: true,
+    configurable: true,
+  });
   gasFunc();
 }

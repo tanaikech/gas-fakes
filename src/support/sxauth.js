@@ -47,10 +47,11 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, mainDir, c
   }
 
   // files are relative to this main path
+
   const settingsFile = path.resolve(mainDir, settingsPath)
   const settingsDir = path.dirname(settingsFile)
 
-
+  // syncLog (JSON.stringify({mainDir,settingsPath,settingsDir,settingsFile}))
   // get the setting file if it exists
   const _settings = await getIfExists(path.resolve(mainDir, settingsFile))
   const settings = { ..._settings }
