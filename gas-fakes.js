@@ -5,6 +5,7 @@
  * v0.0.1
  */
 import fs from "fs";
+import path from "path";
 import { Command } from "commander";
 import dotenv from 'dotenv'
 
@@ -63,10 +64,10 @@ program
         process.exit();
       }
       if (gfsettings) {
-        obj.gfSettings= gfsettings
+        obj.gfSettings = path.resolve(gfsettings);
       }
       if (env) {
-        dotenv.config({ path: env })
+        dotenv.config({ path: path.resolve(env) });
       }
       if (filename) {
         obj.filename = filename;

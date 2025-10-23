@@ -22,7 +22,7 @@ import { callSync } from "./workersync/synchronizer.js";
 
 const manifestDefaultPath = "./appsscript.json";
 const claspDefaultPath = "./.clasp.json";
-const settingsDefaultPath = "./gasfakes.json" || process.env.GF_SETTINGS_PATH;
+const settingsDefaultPath = process.env.GF_SETTINGS_PATH || "./gasfakes.json";
 const propertiesDefaultPath = "/tmp/gas-fakes/properties";
 const cacheDefaultPath = "/tmp/gas-fakes/cache";
 // note that functions like Sheets.newGridRange() etc create objects that contain get and set functions
