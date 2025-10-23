@@ -198,3 +198,4 @@ The colors used for banding themes can change over time with UI updates from Goo
 - [named range identity](named-range-identity.md)
 - [adc and restricted scopes](https://ramblings.mcpher.com/how-to-allow-access-to-sensitive-scopes-with-application-default-credentials/)
 - [push test pull](pull-test-push.md)
+- [gas fakes cli](gas-fakes-cli.md)

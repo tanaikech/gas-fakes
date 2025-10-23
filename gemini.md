@@ -104,3 +104,4 @@ As I mentioned earlier, to take this further, I'm going to need a lot of help to
 - [named range identity](named-range-identity.md)
 - [adc and restricted scopes](https://ramblings.mcpher.com/how-to-allow-access-to-sensitive-scopes-with-application-default-credentials/)
 - [push test pull](pull-test-push.md)
+- [gas fakes cli](gas-fakes-cli.md)

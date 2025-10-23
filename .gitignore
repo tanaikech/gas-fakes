@@ -7,4 +7,4 @@ ghissues
 **/.gemini
 .DS_Store
 articles
-**/gas-fakes.json
+**/gasfakes.json

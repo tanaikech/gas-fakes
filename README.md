@@ -20,6 +20,16 @@ Collaborators should fork the repo and use the local versions of these files - s
 
 Just as on Apps Script, everything is executed synchronously so you don't need to bother with handling Promises/async/await. Just write normal Apps Script code. Usually you would have an associated App Script project if that's your eventual target, but it's not essential that you do. You can get started right away on Node. 
 
+# gas-fakes-cli
+
+Now you can run apps script code directly from your console - for example 
+
+```bash
+gas-fakes  -s "const files=DriveApp.getRootFolder().searchFiles('title contains \'Untitled\'');while (files.hasNext()) {console.log(files.next().getName())};"
+```
+
+For details see [gas fakes cli](gas-fakes-cli.md)
+
 ### Settings
 
 The optional `gasfakes.json` file holds various location and behavior parameters for your local Node environment. It is not required on GAS, as you can't change anything over there. If you don't provide this file, `gas-fakes` will create one for you with sensible defaults.
@@ -134,12 +144,12 @@ There are a couple of syntactical differences between Node and Apps Script. Not 
 // this required on Node but not on Apps Script
 if (ScriptApp.isFake) testFakes()
 ````
-For inspiration on pushing modified files to the IDE, see the togas.sh bash script I use for the test suite. 
+For inspiration on pushing modified files to the IDE, see the togas.sh bash script I use for the test suite. There's also a complete push pull workflow available - see - [push test pull](pull-test-push.md)
+
 
 ## Help
 
 As I mentioned earlier, to take this further, I'm going to need a lot of help to extend the methods and services supported - so if you feel this would be useful to you, and would like to collaborate, please ping me on bruce@mcpher.com and we'll talk.
-
 ## <img src="./logo.png" alt="gas-fakes logo" width="50" align="top">  Further Reading
 
 - [getting started](GETTING_STARTED.md) - how to handle authentication for restricted scopes.
@@ -159,3 +169,4 @@ As I mentioned earlier, to take this further, I'm going to need a lot of help to
 - [named range identity](named-range-identity.md)
 - [adc and restricted scopes](https://ramblings.mcpher.com/how-to-allow-access-to-sensitive-scopes-with-application-default-credentials/)
 - [push test pull](pull-test-push.md)
+- [gas fakes cli](gas-fakes-cli.md)
