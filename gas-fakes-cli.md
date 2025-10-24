@@ -47,6 +47,8 @@ Options:
   -j, --json <string>       JSON string including parameters for managing a sandbox. Enclose it with ' or ". When this is used, the option --whitelist is ignored. When this is used, the script is run in a sandbox.
   -d, --display             display the created script for executing with gas-fakes. Default is false. (default: false)
   -h, --help                display help for command
+  -g, --gfsettings  <path>  normally your gasfakes.json settings file will be whereever you are running this from - you can change with path/to/gasfakes.json
+  -e, --env  <path>         normally your .env file will be whereever you are running this from - you can change with path/to/.env
 ```
 
 ### Running a Script from a File
@@ -234,6 +236,57 @@ The JSON object used with the `-j` option follows this schema:
   "required": ["whitelistItems"]
 }
 ```
+
+## Using non default locations
+
+Let's look at this example, where I'm setting a value in a property store unique to the folder Im running from, and using a local .env file, if there is one. Cache stores work in exactly the same way as the property store examples below.
+
+```bash
+$ gas-fakes -s "PropertiesService.getScriptProperties().setProperty('hello','world')" 
+```
+I'll see a message like this - in this case i have no .env file in this folder
+```bash
+...using env file in /Users/brucemcpherson/Documents/repos/gas-fakes/t/.env
+...using gasfakes settings file in /Users/brucemcpherson/Documents/repos/gas-fakes/t/gasfakes.json
+...etc..
+.....PROPERTY store service is using store type FILE as backend
+```
+Now i can retrieve that value with
+
+```bash
+$ gas-fakes -s "console.log(PropertiesService.getScriptProperties().getProperty('hello'))"
+...
+...PROPERTY store service is using store type FILE as backend
+world
+```
+### Using a different env
+
+Let's say that instead of using the default store type, I want to use redis (see - [sharing cache and properties between gas-fakes and live apps script](https://ramblings.mcpher.com/sharing-cache-and-properties-between-gas-fakes-and-live-apps-script/)), whose details are already defined in some other .env file, I can do this:
+
+```bash
+$ gas-fakes -s "PropertiesService.getScriptProperties().setProperty('hello','world of redis')" -e ../.env 
+...PROPERTY store service is using store type UPSTASH as backend
+
+$ gas-fakes -s "console.log(PropertiesService.getScriptProperties().getProperty('hello'))" -e ../.env    
+...PROPERTY store service is using store type UPSTASH as backend
+world of redis
+```
+### Using a different gasfakes.json
+
+Similarily, a default gasfakes.json will have generated a random scriptId to use to partition property and cache stores. If you want to share stores between different folders, you need to ensure that the scriptId in gasfkes.json has the same value. This is especially important of you plan to share property and cache stores with live Apps Script (yes you can!). In this case, you set the scriptId in the gasfakes.json to match the scriptId of the live apps script you want to share these stores with. 
+
+```bash
+$ gas-fakes -s "PropertiesService.getScriptProperties().setProperty('hello','to live apps script')" -e ../.env -g ../test/gasfakes.json
+....PROPERTY store service is using store type UPSTASH as backend
+
+$ gas-fakes -s "console.log(PropertiesService.getScriptProperties().getProperty('hello'))" -e ../.env -g ../test/gasfakes.json
+...PROPERTY store service is using store type UPSTASH as backend
+to live apps script
+```
+
+You can find more info about how to read or update these values directly in live apps script using the Dropin replacement for the property and cache stores in [sharing cache and properties between gas-fakes and live apps script](https://ramblings.mcpher.com/sharing-cache-and-properties-between-gas-fakes-and-live-apps-script/)
+
+
 ## <img src="./logo.png" alt="gas-fakes logo" width="50" align="top">  Further Reading
 
 - [getting started](GETTING_STARTED.md) - how to handle authentication for restricted scopes.
@@ -254,3 +307,4 @@ The JSON object used with the `-j` option follows this schema:
 - [adc and restricted scopes](https://ramblings.mcpher.com/how-to-allow-access-to-sensitive-scopes-with-application-default-credentials/)
 - [push test pull](pull-test-push.md)
 - [gas fakes cli](gas-fakes-cli.md)
+- [sharing cache and properties between gas-fakes and live apps script](https://ramblings.mcpher.com/sharing-cache-and-properties-between-gas-fakes-and-live-apps-script/)

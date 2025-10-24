@@ -65,16 +65,22 @@ program
         );
         process.exit();
       }
-      if (gfsettings) {
-        const gfPath = path.resolve(process.cwd(), gfsettings )
-        console.log ('...using gasfakes settings file in', gfPath)
-        obj.gfSettings = path.resolve(process.cwd(), gfsettings);
-      }
+
       if (env) {
         const envPath = path.resolve(process.cwd(), env)
         console.log ('...using env file in', envPath)
         dotenv.config({ path: envPath, quiet: true});
       }
+
+      // note this must come after any env file fiddling.
+      if (gfsettings) {
+        const gfPath = path.resolve(process.cwd(), gfsettings )
+        console.log ('...using gasfakes settings file in', gfPath)
+        obj.gfSettings = gfPath;
+        // override whatever is in env
+        process.env.GF_SETTINGS_PATH = gfPath
+      }
+
       if (filename) {
         obj.filename = filename;
       }
@@ -183,10 +189,6 @@ function __getImportScript(o) {
   }
   const importScriptAr = [
     `async function runGas() {`,
-    // Pass the settings path to the init function if it's provided
-    gfSettings
-      ? `const settingsPath = "${gfSettings}";`
-      : `const settingsPath = undefined;`,
     `await import("./main.js");`, // This will trigger the fxInit call
     ...gasScriptAr,
     `};`,
@@ -200,6 +202,7 @@ function __getImportScript(o) {
 }
 
 async function loadScript(o) {
+
   const { filename, script, display } = o;
 
   const scriptText = filename ? fs.readFileSync(filename, "utf8") : script;

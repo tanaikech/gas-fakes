@@ -18,3 +18,4 @@
 - [adc and restricted scopes](https://ramblings.mcpher.com/how-to-allow-access-to-sensitive-scopes-with-application-default-credentials/)
 - [push test pull](pull-test-push.md)
 - [gas fakes cli](gas-fakes-cli.md)
+- [sharing cache and properties between gas-fakes and live apps script](https://ramblings.mcpher.com/sharing-cache-and-properties-between-gas-fakes-and-live-apps-script/)

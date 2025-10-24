@@ -32,7 +32,7 @@
   },
   "name": "@mcpher/gas-fakes",
   "author": "bruce mcpherson",
-  "version": "1.2.7",
+  "version": "1.2.8",
   "license": "MIT",
   "main": "main.js",
   "description": "A proof of concept implementation of Apps Script Environment on Node",
