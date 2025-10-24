@@ -27,11 +27,13 @@ program
   )
   .option(
     "-e, --env <path>",
-    "provide path to your .env file for special options."
+    "provide path to your .env file for special options.",
+    "./.env"
   )
   .option(
     "-g, --gfsettings <path>",
-    "provide path to your gasfakes.json file for script options."
+    "provide path to your gasfakes.json file for script options.",
+    "./gasfakes.json"
   )
   .option(
     "-s, --script <string>",
@@ -64,10 +66,14 @@ program
         process.exit();
       }
       if (gfsettings) {
-        obj.gfSettings = path.resolve(gfsettings);
+        const gfPath = path.resolve(process.cwd(), gfsettings )
+        console.log ('...using gasfakes settings file in', gfPath)
+        obj.gfSettings = path.resolve(process.cwd(), gfsettings);
       }
       if (env) {
-        dotenv.config({ path: path.resolve(env) });
+        const envPath = path.resolve(process.cwd(), env)
+        console.log ('...using env file in', envPath)
+        dotenv.config({ path: envPath, quiet: true});
       }
       if (filename) {
         obj.filename = filename;

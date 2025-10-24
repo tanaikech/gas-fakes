@@ -262,10 +262,11 @@ const fxUnzipper = ({ blob }) => {
 const fxInit = ({
   manifestPath = manifestDefaultPath,
   claspPath = claspDefaultPath,
-  settingsPath = globalThis.settingsPath || settingsDefaultPath,
+  settingsPath = settingsDefaultPath,
   cachePath = cacheDefaultPath,
   propertiesPath = propertiesDefaultPath,
 } = {}) => {
+
   // this is the path of the runing main process
   const mainDir = path.dirname(process.argv[1]);
 

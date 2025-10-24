@@ -20,13 +20,12 @@ import path from 'path'
  * @param {string} p.authPath import the auth code 
  * @param {string} p.claspPath where to find the clasp file by default
  * @param {string} p.settingsPath where to find the settings file
- * @param {string} p.mainDir the directory the main app is running from
  * @param {string} p.cachePath the cache files
  * @param {string} p.propertiesPath the properties file location
  * @param {string} p.fakeId a fake script id to use if one isnt in the settings
  * @return {object} the finalized vesions of all the above 
  */
-export const sxInit = async ({ manifestPath, claspPath, settingsPath, mainDir, cachePath, propertiesPath, fakeId }) => {
+export const sxInit = async ({ manifestPath, claspPath, settingsPath, cachePath, propertiesPath, fakeId }) => {
 
 
 
@@ -47,13 +46,11 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, mainDir, c
   }
 
   // files are relative to this main path
+  const settingsDir = path.dirname(settingsPath)
 
-  const settingsFile = path.resolve(mainDir, settingsPath)
-  const settingsDir = path.dirname(settingsFile)
-
-  // syncLog (JSON.stringify({mainDir,settingsPath,settingsDir,settingsFile}))
+  // syncLog (JSON.stringify({settingsPath,settingsDir,settingsPath}))
   // get the setting file if it exists
-  const _settings = await getIfExists(path.resolve(mainDir, settingsFile))
+  const _settings = await getIfExists(settingsPath)
   const settings = { ..._settings }
 
   // the content of the settings file take precedence over whatever is passed as the default
@@ -61,8 +58,8 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, mainDir, c
   settings.manifest = settings.manifest || manifestPath
   settings.clasp = settings.clasp || claspPath
   const [manifest, clasp] = await Promise.all([
-    getIfExists(path.resolve(mainDir, settings.manifest)),
-    getIfExists(path.resolve(mainDir, settings.clasp))
+    getIfExists(path.resolve(settingsDir, settings.manifest)),
+    getIfExists(path.resolve(settingsDir, settings.clasp))
   ])
 
   /// if we dont have a scriptId we need to check in clasp or make a fakeone
@@ -82,8 +79,8 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, mainDir, c
   const strSet = JSON.stringify(settings, null, 2)
   if (JSON.stringify(_settings, null, 2) !== strSet) {
     await mkdir(settingsDir, { recursive: true })
-    syncLog(`...writing to ${settingsFile}`);
-    writeFile(settingsFile, strSet, { flag: 'w' })
+    syncLog(`...writing to ${settingsPath}`);
+    writeFile(settingsPath, strSet, { flag: 'w' })
   }
 
   // get the required scopes and set them
