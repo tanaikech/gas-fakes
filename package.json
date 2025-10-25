@@ -5,6 +5,7 @@
   "dependencies": {
     "@mcpher/fake-gasenum": "^1.0.2",
     "@mcpher/gas-flex-cache": "^1.1.2",
+    "@modelcontextprotocol/sdk": "^1.20.2",
     "@sindresorhus/is": "^7.0.1",
     "archiver": "^7.0.1",
     "commander": "^14.0.1",
@@ -24,7 +25,8 @@
     "subsume": "^4.0.0",
     "to-readable-stream": "^4.0.0",
     "unzipper": "^0.12.3",
-    "yoctocolors": "^2.1.2"
+    "yoctocolors": "^2.1.2",
+    "zod": "^3.25.76"
   },
   "type": "module",
   "scripts": {

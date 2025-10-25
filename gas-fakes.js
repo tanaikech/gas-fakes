@@ -2,14 +2,18 @@
 
 /**
  * cli for gas-fakes
- * v0.0.1
  */
 import fs from "fs";
 import path from "path";
 import { Command } from "commander";
-import dotenv from 'dotenv'
+import dotenv from "dotenv";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import z from "zod";
+import { exec } from "child_process";
+import { promisify } from "util";
 
-const version = "0.0.2";
+const version = "0.0.3";
 
 const program = new Command();
 
@@ -17,7 +21,6 @@ program
   .name("gas-fakes")
   .description("CLI tool for gas-fakes")
   .version(version, "-v, --version", "display the current version");
-
 
 program
   .description("Execute Google Apps Script using gas-fakes.")
@@ -57,9 +60,19 @@ program
     if (Object.keys(options).length == 0) {
       program.help();
     } else {
-      const { filename, script, sandbox, whitelist, json, display, env , gfsettings} = options;
+      const {
+        filename,
+        script,
+        sandbox,
+        whitelist,
+        json,
+        display,
+        env,
+        gfsettings,
+      } = options;
       const obj = { sandbox: !!sandbox, display };
-      if (!filename && !script) {
+
+      if (!filename && !script && !obj.script) {
         console.error(
           "error: Provide the filename or the script of Google Apps Script."
         );
@@ -67,24 +80,24 @@ program
       }
 
       if (env) {
-        const envPath = path.resolve(process.cwd(), env)
-        console.log ('...using env file in', envPath)
-        dotenv.config({ path: envPath, quiet: true});
+        const envPath = path.resolve(process.cwd(), env);
+        console.log("...using env file in", envPath);
+        dotenv.config({ path: envPath, quiet: true });
       }
 
       // note this must come after any env file fiddling.
       if (gfsettings) {
-        const gfPath = path.resolve(process.cwd(), gfsettings )
-        console.log ('...using gasfakes settings file in', gfPath)
+        const gfPath = path.resolve(process.cwd(), gfsettings);
+        console.log("...using gasfakes settings file in", gfPath);
         obj.gfSettings = gfPath;
         // override whatever is in env
-        process.env.GF_SETTINGS_PATH = gfPath
+        process.env.GF_SETTINGS_PATH = gfPath;
       }
 
       if (filename) {
         obj.filename = filename;
       }
-      if (script) {
+      if (!obj.script && script) {
         obj.script = script;
       }
 
@@ -108,15 +121,22 @@ program
     }
   });
 
+const execAsync = promisify(exec);
+program
+  .command("mcp")
+  .description("Launch gas-fakes as the MCP server")
+  .action(mcp_server);
+
 program.showHelpAfterError("(add --help for additional information)");
 program.parse();
 
 function __getImportScript(o) {
-  const { scriptText, sandbox, whitelistItems, json_sandbox, gfSettings } = o;
+  const { scriptText, sandbox, whitelistItems, json_sandbox } = o;
   if (scriptText.trim() == "") {
     console.error("error: Google Apps Script was not found.");
     process.exit();
   }
+  let gasScriptStr = "";
   const gasScriptAr = [];
   if (json_sandbox) {
     gasScriptAr.push(
@@ -179,8 +199,7 @@ function __getImportScript(o) {
         `const behavior = ScriptApp.__behavior;`,
         `behavior.sandboxMode = true;`,
         `behavior.strictSandbox = true;`,
-        `behavior.setIdWhitelist([${wl}]);`,
-        `\n\n${scriptText}\n\n`,
+        `behavior.setIdWhitelist([${wl}]);``\n\n${scriptText}\n\n`,
         `ScriptApp.__behavior.trash();`
       );
     } else {
@@ -202,15 +221,14 @@ function __getImportScript(o) {
 }
 
 async function loadScript(o) {
-
   const { filename, script, display } = o;
-
   const scriptText = filename ? fs.readFileSync(filename, "utf8") : script;
-  const { mainScript, gasScript } = __getImportScript({ scriptText, ...o });
+  const { mainScript, gasScript } = __getImportScript({
+    scriptText: scriptText.replace(/\\n/g, "\n"),
+    ...o,
+  });
   if (display) {
-    console.log(`--- script ---`);
-    console.log(gasScript);
-    console.log(`--- /script ---`);
+    console.log(`\n--- script ---\n${gasScript}\n--- /script ---\n`);
   }
   const gasFunc = new Function(mainScript);
   // The script needs access to the settings path variable we just created
@@ -220,4 +238,72 @@ async function loadScript(o) {
     configurable: true,
   });
   gasFunc();
+}
+
+async function mcp_server() {
+  const server = new McpServer({
+    name: "gas-fakes-mcp",
+    version: "0.0.1",
+  });
+
+  const { name, schema, func } = {
+    name: "run-gas-by-gas-fakes",
+    schema: {
+      description:
+        "Use this to safely run Google Apps Script in a sandbox using gas-fakes.",
+      inputSchema: {
+        script: z.string().describe(`Provide Google Apps Script as a string.`),
+        sandbox: z
+          .boolean()
+          .describe("Use to run Google Apps Script in a sandbox."),
+        whitelist: z
+          .string()
+          .describe(
+            "Use this to use the specific files and folders on Google Drive. whitelist of file IDs. Set the file IDs in comma-separated list. In this case, the files of the file IDs are used for both read and write. When this is used, the script is run in a sandbox."
+          )
+          .optional(),
+        json: z
+          .string()
+          .describe(
+            `Use this to manage the sandbox more if the detailed information about the sandbox is provided. JSON string including parameters for managing a sandbox. Enclose it with ' or ". When this is used, the option "whitelist" is ignored. When this is used, the script is run in a sandbox.`
+          )
+          .optional(),
+      },
+    },
+    func: async (options = {}) => {
+      const { sandbox, whitelist, json } = options;
+      try {
+        const opts = [
+          { v: sandbox, k: "-x" },
+          { v: whitelist, k: "-w" },
+          { v: json, k: "-j" },
+        ].reduce((ar, { v, k }) => {
+          if (v) {
+            ar.push(k != "-x" ? `${k} ${v}` : `${k}`);
+          }
+          return ar;
+        }, []);
+        const scriptArg = JSON.stringify(options.script.toString());
+        const c = `gas-fakes ${opts.join(" ")} -s ${scriptArg.replace(
+          /\\n/g,
+          "\n"
+        )}`;
+        const { stdout } = await execAsync(c);
+        return {
+          content: [{ type: "text", text: stdout || "Done." }],
+          isError: false,
+        };
+      } catch (err) {
+        return {
+          content: [{ type: "text", text: err.message }],
+          isError: true,
+        };
+      }
+    },
+  };
+
+  server.registerTool(name, schema, func);
+
+  const transport = new StdioServerTransport();
+  await server.connect(transport);
 }
