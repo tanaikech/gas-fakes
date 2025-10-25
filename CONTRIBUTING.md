@@ -33,6 +33,10 @@ Here's some guidance on testing. Before submitting a PR always run all the exist
 
 Note that I use a [unit tester](https://ramblings.mcpher.com/apps-script-test-runner-library-ported-to-node/) that runs in both GAS and Node, so the exact same tests will run in both environments. There are some example tests in the repo. Each test has been proved on both Node and GAS. There's also a shell (togas.sh) which will use clasp to push the test code to Apps Script.
 
+### test location change at v1.2.7
+
+As of v1.2.7 all tests should be run from the test folder.
+
 Each test can be run individually (for example `npm run testdrive`) or all with `npm test`
 
 ### Test Settings
