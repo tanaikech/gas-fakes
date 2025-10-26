@@ -13,7 +13,7 @@ import z from "zod";
 import { exec } from "child_process";
 import { promisify } from "util";
 
-const version = "0.0.3";
+const version = "0.0.4";
 
 const program = new Command();
 
@@ -136,7 +136,6 @@ function __getImportScript(o) {
     console.error("error: Google Apps Script was not found.");
     process.exit();
   }
-  let gasScriptStr = "";
   const gasScriptAr = [];
   if (json_sandbox) {
     gasScriptAr.push(
@@ -220,11 +219,16 @@ function __getImportScript(o) {
   };
 }
 
+function __replacer(text) {
+  const regex = /("[^"]*")|('[^']*')|(`[^`]*`)|(\\n)/g;
+  return text.replace(regex, (m, g1, g2, g3, g4) => (g4 ? "\n" : m));
+}
+
 async function loadScript(o) {
   const { filename, script, display } = o;
   const scriptText = filename ? fs.readFileSync(filename, "utf8") : script;
   const { mainScript, gasScript } = __getImportScript({
-    scriptText: scriptText.replace(/\\n/g, "\n"),
+    scriptText: __replacer(scriptText),
     ...o,
   });
   if (display) {
@@ -243,16 +247,24 @@ async function loadScript(o) {
 async function mcp_server() {
   const server = new McpServer({
     name: "gas-fakes-mcp",
-    version: "0.0.1",
+    version: "0.0.2",
   });
 
   const { name, schema, func } = {
     name: "run-gas-by-gas-fakes",
     schema: {
-      description:
-        "Use this to safely run Google Apps Script in a sandbox using gas-fakes.",
+      description: [
+        `Use this to safely run Google Apps Script in a sandbox using gas-fakes.`,
+        `# Important`,
+        `- Use the extension of the Google Apps Script files as \`js\`. Don't use \`gs\``,
+        `- When you provide the generated Google Apps Script to the tool "gas-fakes" of the MCP server "gas-development-kit-extension", please be careful of the following rule. For example, when you generated a Google Apps Script like \`function sample() { script }\`, please add \`sample();\` to execute the function. Or, you can also create a Google Apps Script without enclosing the script with \`function sample() { script }\`.`,
+      ].join("\n"),
       inputSchema: {
-        script: z.string().describe(`Provide Google Apps Script as a string.`),
+        filename: z
+          .string()
+          .describe(
+            `Provide a filename with the path of the file, including Google Apps Script. Write the Google Apps Script into a file and use this.`
+          ),
         sandbox: z
           .boolean()
           .describe("Use to run Google Apps Script in a sandbox."),
@@ -271,7 +283,18 @@ async function mcp_server() {
       },
     },
     func: async (options = {}) => {
-      const { sandbox, whitelist, json } = options;
+      const { filename, sandbox, whitelist, json } = options;
+      if (!filename) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: "Provide the filename of the file including Google Apps Script.",
+            },
+          ],
+          isError: true,
+        };
+      }
       try {
         const opts = [
           { v: sandbox, k: "-x" },
@@ -283,11 +306,7 @@ async function mcp_server() {
           }
           return ar;
         }, []);
-        const scriptArg = JSON.stringify(options.script.toString());
-        const c = `gas-fakes ${opts.join(" ")} -s ${scriptArg.replace(
-          /\\n/g,
-          "\n"
-        )}`;
+        const c = `gas-fakes ${opts.join(" ")} -f ${filename}`;
         const { stdout } = await execAsync(c);
         return {
           content: [{ type: "text", text: stdout || "Done." }],
