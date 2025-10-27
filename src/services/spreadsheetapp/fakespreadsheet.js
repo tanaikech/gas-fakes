@@ -42,7 +42,7 @@ export class FakeSpreadsheet {
     const props = [
       "getSpreadsheetTheme",
       "setActiveSheet",
-      "getActiveSheet",
+
       "getBandings",
       "getDataSources",
       "addCollaborator",
@@ -171,8 +171,17 @@ export class FakeSpreadsheet {
         return notYetImplemented(f);
       };
     });
+
   }
 
+  // note this is a workaround as we don't have the concept of active sheet in a non bound document
+  // so instead we'll just get the first sheet for now
+  // TODO - something better
+  getActiveSheet() {
+    return this.__getFirstSheet();
+  }
+
+  
   addDeveloperMetadata(key, value, visibility) {
     const { nargs, matchThrow } = signatureArgs(
       arguments,
