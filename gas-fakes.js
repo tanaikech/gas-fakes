@@ -1,328 +1,482 @@
 #!/usr/bin/env node
 
-/**
- * cli for gas-fakes
- */
+// -----------------------------------------------------------------------------
+// IMPORTS
+// -----------------------------------------------------------------------------
+
 import fs from "fs";
 import path from "path";
+import { exec } from "child_process";
+import { promisify } from "util";
 import { Command } from "commander";
 import dotenv from "dotenv";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import z from "zod";
-import { exec } from "child_process";
-import { promisify } from "util";
+import { z } from "zod";
 
-const version = "0.0.4";
+// -----------------------------------------------------------------------------
+// CONSTANTS & UTILITIES
+// -----------------------------------------------------------------------------
 
-const program = new Command();
-
-program
-  .name("gas-fakes")
-  .description("CLI tool for gas-fakes")
-  .version(version, "-v, --version", "display the current version");
-
-program
-  .description("Execute Google Apps Script using gas-fakes.")
-  .option(
-    "-f, --filename <string>",
-    "filename of the file including Google Apps Script. When this is used, the option --script is ignored."
-  )
-  .option(
-    "-e, --env <path>",
-    "provide path to your .env file for special options.",
-    "./.env"
-  )
-  .option(
-    "-g, --gfsettings <path>",
-    "provide path to your gasfakes.json file for script options.",
-    "./gasfakes.json"
-  )
-  .option(
-    "-s, --script <string>",
-    "provide Google Apps Script as a string. When this is used, the option --filename is ignored."
-  )
-  .option("-x, --sandbox", "run Google Apps Script in a sandbox.")
-  .option(
-    "-w, --whitelist <string>",
-    "whitelist of file IDs. Set the file IDs in comma-separated list. In this case, the files of the file IDs are used for both read and write. When this is used, the script is run in a sandbox."
-  )
-  .option(
-    "-j, --json <string>",
-    `JSON string including parameters for managing a sandbox. Enclose it with ' or ". When this is used, the option --whitelist is ignored. When this is used, the script is run in a sandbox.`
-  )
-  .option(
-    "-d, --display",
-    `display the created script for executing with gas-fakes. Default is false.`,
-    false
-  )
-  .action((options) => {
-    if (Object.keys(options).length == 0) {
-      program.help();
-    } else {
-      const {
-        filename,
-        script,
-        sandbox,
-        whitelist,
-        json,
-        display,
-        env,
-        gfsettings,
-      } = options;
-      const obj = { sandbox: !!sandbox, display };
-
-      if (!filename && !script && !obj.script) {
-        console.error(
-          "error: Provide the filename or the script of Google Apps Script."
-        );
-        process.exit();
-      }
-
-      if (env) {
-        const envPath = path.resolve(process.cwd(), env);
-        console.log("...using env file in", envPath);
-        dotenv.config({ path: envPath, quiet: true });
-      }
-
-      // note this must come after any env file fiddling.
-      if (gfsettings) {
-        const gfPath = path.resolve(process.cwd(), gfsettings);
-        console.log("...using gasfakes settings file in", gfPath);
-        obj.gfSettings = gfPath;
-        // override whatever is in env
-        process.env.GF_SETTINGS_PATH = gfPath;
-      }
-
-      if (filename) {
-        obj.filename = filename;
-      }
-      if (!obj.script && script) {
-        obj.script = script;
-      }
-
-      // for sandbox
-      if (whitelist) {
-        const ar = whitelist.split(",").map((e) => e.trim());
-        if (ar.length > 0) {
-          obj.whitelistItems = ar;
-        }
-      }
-      if (json) {
-        try {
-          const temp = JSON.parse(json);
-          obj.json_sandbox = temp;
-        } catch (err) {
-          console.error("error: Invalid JSON.");
-          process.exit();
-        }
-      }
-      loadScript(obj);
-    }
-  });
-
+const VERSION = "0.0.5";
+const MCP_VERSION = "0.0.3";
 const execAsync = promisify(exec);
-program
-  .command("mcp")
-  .description("Launch gas-fakes as the MCP server")
-  .action(mcp_server);
 
-program.showHelpAfterError("(add --help for additional information)");
-program.parse();
-
-function __getImportScript(o) {
-  const { scriptText, sandbox, whitelistItems, json_sandbox } = o;
-  if (scriptText.trim() == "") {
-    console.error("error: Google Apps Script was not found.");
-    process.exit();
-  }
-  const gasScriptAr = [];
-  if (json_sandbox) {
-    gasScriptAr.push(
-      `const behavior = ScriptApp.__behavior;`,
-      `behavior.sandboxMode = true;`,
-      `behavior.strictSandbox = true;`
-    );
-    const { whitelistItems, whitelistServices, blacklistServices } =
-      json_sandbox;
-    if (whitelistServices && whitelistServices.length > 0) {
-      const bl = whitelistServices.flatMap(({ className, methodNames }, i) => {
-        if (!className) {
-          console.error(
-            "error: Class name was not found in whitelistServices."
-          );
-          process.exit();
-        }
-        const k = `s${i + 1}`;
-        const temp = [`const ${k} = behavior.sandboxService.${className};`];
-        if (methodNames && methodNames.length > 0) {
-          temp.push(
-            `${k}.setMethodWhitelist([${methodNames.map((e) => `"${e}"`)}]);`
-          );
-        }
-        return temp;
-      });
-      gasScriptAr.push(...bl);
-    }
-    if (blacklistServices && blacklistServices.length > 0) {
-      const bl = blacklistServices.map(
-        (e) => `behavior.sandboxService.${e}.enabled = false;`
-      );
-      gasScriptAr.push(bl);
-    }
-    if (whitelistItems && whitelistItems.length > 0) {
-      const wl = whitelistItems
-        .map(({ itemId = "", read = true, write = false, trash = false }) => {
-          if (!itemId) {
-            console.error("error: itemId was not found in whitelistItems.");
-            process.exit();
-          }
-          return `behavior.newIdWhitelistItem("${itemId}").setRead(${read}).setWrite(${write}).setTrash(${trash})`;
-        })
-        .join(",");
-      gasScriptAr.push(`behavior.setIdWhitelist([${wl}]);`);
-    }
-    gasScriptAr.push(`\n\n${scriptText}\n\n`, `ScriptApp.__behavior.trash();`);
-  } else {
-    if (sandbox && (!whitelistItems || whitelistItems.length === 0)) {
-      gasScriptAr.push(
-        sandbox ? `ScriptApp.__behavior.sandBoxMode = true;` : "",
-        `\n\n${scriptText}\n\n`,
-        sandbox ? `ScriptApp.__behavior.trash();` : ""
-      );
-    } else if (whitelistItems && whitelistItems.length > 0) {
-      const wl = whitelistItems
-        .map((id) => `behavior.newIdWhitelistItem("${id}").setWrite(true)`)
-        .join(",");
-      gasScriptAr.push(
-        `const behavior = ScriptApp.__behavior;`,
-        `behavior.sandboxMode = true;`,
-        `behavior.strictSandbox = true;`,
-        `behavior.setIdWhitelist([${wl}]);``\n\n${scriptText}\n\n`,
-        `ScriptApp.__behavior.trash();`
-      );
-    } else {
-      gasScriptAr.push(scriptText);
-    }
-  }
-  const importScriptAr = [
-    `async function runGas() {`,
-    `await import("./main.js");`, // This will trigger the fxInit call
-    ...gasScriptAr,
-    `};`,
-    ``,
-    `runGas();`,
-  ];
-  return {
-    mainScript: importScriptAr.join("\n"),
-    gasScript: gasScriptAr.join("\n"),
-  };
-}
-
-function __replacer(text) {
+/**
+ * Replaces escaped newline characters ('\\n') with actual newlines,
+ * while ignoring newlines inside string literals.
+ * @param {string} text The script text to process.
+ * @returns {string} The processed text.
+ */
+function normalizeScriptNewlines(text) {
   const regex = /("[^"]*")|('[^']*')|(`[^`]*`)|(\\n)/g;
-  return text.replace(regex, (m, g1, g2, g3, g4) => (g4 ? "\n" : m));
+  return text.replace(regex, (match, g1, g2, g3, g4) => (g4 ? "\n" : match));
 }
 
-async function loadScript(o) {
-  const { filename, script, display } = o;
-  const scriptText = filename ? fs.readFileSync(filename, "utf8") : script;
-  const { mainScript, gasScript } = __getImportScript({
-    scriptText: __replacer(scriptText),
-    ...o,
+// -----------------------------------------------------------------------------
+// SANDBOX SCRIPT GENERATION
+// -----------------------------------------------------------------------------
+
+/**
+ * Generates the GAS script snippet for whitelisting services.
+ * @param {Array<Object>} services The whitelistServices configuration.
+ * @returns {string[]} An array of script lines.
+ */
+function generateServiceWhitelistScript(services) {
+  if (!services || services.length === 0) return [];
+
+  return services.flatMap(({ className, methodNames }, index) => {
+    if (!className) {
+      console.error("Error: Class name not found in whitelistServices.");
+      process.exit(1);
+    }
+    const serviceVar = `service${index + 1}`;
+    const lines = [
+      `const ${serviceVar} = behavior.sandboxService.${className};`,
+    ];
+    if (methodNames && methodNames.length > 0) {
+      const methods = methodNames.map((name) => `"${name}"`).join(", ");
+      lines.push(`${serviceVar}.setMethodWhitelist([${methods}]);`);
+    }
+    return lines;
   });
-  if (display) {
-    console.log(`\n--- script ---\n${gasScript}\n--- /script ---\n`);
+}
+
+/**
+ * Generates the GAS script snippet for blacklisting services.
+ * @param {string[]} services The blacklistServices configuration.
+ * @returns {string[]} An array of script lines.
+ */
+function generateServiceBlacklistScript(services) {
+  if (!services || services.length === 0) return [];
+  return services.map(
+    (service) => `behavior.sandboxService.${service}.enabled = false;`
+  );
+}
+
+/**
+ * Generates the GAS script snippet for whitelisting Drive items.
+ * @param {Array<Object>} items The whitelistItems configuration.
+ * @returns {string} A script string.
+ */
+function generateItemWhitelistScript(items) {
+  if (!items || items.length === 0) return "";
+
+  const whitelistItemsString = items
+    .map(({ itemId = "", read = true, write = false, trash = false }) => {
+      if (!itemId) {
+        console.error("Error: itemId not found in whitelistItems.");
+        process.exit(1);
+      }
+      return `behavior.newIdWhitelistItem("${itemId}").setRead(${read}).setWrite(${write}).setTrash(${trash})`;
+    })
+    .join(",\n        ");
+
+  return `behavior.setIdWhitelist([${whitelistItemsString}]);`;
+}
+
+/**
+ * Constructs the setup script for a sandboxed environment based on configuration.
+ * @param {object} sandboxConfig The sandbox configuration object.
+ * @returns {string[]} An array of GAS script lines for setup.
+ */
+function generateSandboxSetupScript(sandboxConfig) {
+  const script = [
+    "const behavior = ScriptApp.__behavior;",
+    "behavior.sandboxMode = true;",
+    "behavior.strictSandbox = true;",
+  ];
+
+  const { whitelistServices, blacklistServices, whitelistItems } =
+    sandboxConfig;
+
+  script.push(...generateServiceWhitelistScript(whitelistServices));
+  script.push(...generateServiceBlacklistScript(blacklistServices));
+
+  const itemWhitelist = generateItemWhitelistScript(whitelistItems);
+  if (itemWhitelist) {
+    script.push(itemWhitelist);
   }
-  const gasFunc = new Function(mainScript);
-  // The script needs access to the settings path variable we just created
+
+  return script;
+}
+
+/**
+ * Generates the final, executable script string.
+ * @param {object} options
+ * @param {string} options.scriptText The user's Google Apps Script.
+ * @param {boolean} options.useSandbox Whether to enable basic sandbox mode.
+ * @param {object} [options.sandboxConfig] Detailed sandbox configuration.
+ * @returns {{mainScript: string, gasScript: string}} The script to be executed and the user-facing script part.
+ */
+function generateExecutionScript({ scriptText, useSandbox, sandboxConfig }) {
+  if (!scriptText || scriptText.trim() === "") {
+    console.error("Error: Google Apps Script is empty or was not found.");
+    process.exit(1);
+  }
+
+  let gasScriptLines = [];
+
+  if (sandboxConfig) {
+    gasScriptLines.push(...generateSandboxSetupScript(sandboxConfig));
+    gasScriptLines.push(`\n\n${scriptText}\n\n`);
+    gasScriptLines.push("ScriptApp.__behavior.trash();");
+  } else if (useSandbox) {
+    gasScriptLines.push("ScriptApp.__behavior.sandBoxMode = true;");
+    gasScriptLines.push(`\n\n${scriptText}\n\n`);
+    gasScriptLines.push("ScriptApp.__behavior.trash();");
+  } else {
+    gasScriptLines.push(scriptText);
+  }
+
+  const gasScript = gasScriptLines.join("\n");
+  const mainScript = [
+    "async function runGas() {",
+    '  await import("./main.js"); // This will trigger the fxInit call',
+    gasScript,
+    "}",
+    "runGas();",
+  ].join("\n");
+
+  return { mainScript, gasScript };
+}
+
+// -----------------------------------------------------------------------------
+// SCRIPT EXECUTION
+// -----------------------------------------------------------------------------
+
+/**
+ * Loads, prepares, and executes the user's Google Apps Script.
+ * @param {object} options The processed CLI options.
+ */
+async function executeGasScript(options) {
+  const { filename, script, display, gfSettings, useSandbox, sandboxConfig } =
+    options;
+
+  const scriptText = filename ? fs.readFileSync(filename, "utf8") : script;
+
+  const { mainScript, gasScript } = generateExecutionScript({
+    scriptText: normalizeScriptNewlines(scriptText),
+    useSandbox,
+    sandboxConfig,
+  });
+
+  if (display) {
+    console.log(
+      `\n--- Generated GAS ---\n${gasScript}\n--- End Generated GAS ---\n`
+    );
+  }
+
+  // Inject the settings path as a global for the script to access.
   Object.defineProperty(globalThis, "settingsPath", {
-    value: o.gfSettings,
+    value: gfSettings,
     writable: true,
     configurable: true,
   });
-  gasFunc();
+
+  const gasFunction = new Function(mainScript);
+  await gasFunction();
 }
 
-async function mcp_server() {
+// -----------------------------------------------------------------------------
+// MCP SERVER
+// -----------------------------------------------------------------------------
+
+/**
+ * Defines and runs the MCP server for gas-fakes.
+ */
+async function startMcpServer() {
   const server = new McpServer({
     name: "gas-fakes-mcp",
-    version: "0.0.2",
+    version: MCP_VERSION,
   });
 
-  const { name, schema, func } = {
-    name: "run-gas-by-gas-fakes",
-    schema: {
-      description: [
-        `Use this to safely run Google Apps Script in a sandbox using gas-fakes.`,
-        `# Important`,
-        `- Use the extension of the Google Apps Script files as \`js\`. Don't use \`gs\``,
-        `- When you provide the generated Google Apps Script to the tool "gas-fakes" of the MCP server "gas-development-kit-extension", please be careful of the following rule. For example, when you generated a Google Apps Script like \`function sample() { script }\`, please add \`sample();\` to execute the function. Or, you can also create a Google Apps Script without enclosing the script with \`function sample() { script }\`.`,
-      ].join("\n"),
-      inputSchema: {
-        filename: z
-          .string()
-          .describe(
-            `Provide a filename with the path of the file, including Google Apps Script. Write the Google Apps Script into a file and use this.`
-          ),
-        sandbox: z
-          .boolean()
-          .describe("Use to run Google Apps Script in a sandbox."),
-        whitelist: z
-          .string()
-          .describe(
-            "Use this to use the specific files and folders on Google Drive. whitelist of file IDs. Set the file IDs in comma-separated list. In this case, the files of the file IDs are used for both read and write. When this is used, the script is run in a sandbox."
-          )
-          .optional(),
-        json: z
-          .string()
-          .describe(
-            `Use this to manage the sandbox more if the detailed information about the sandbox is provided. JSON string including parameters for managing a sandbox. Enclose it with ' or ". When this is used, the option "whitelist" is ignored. When this is used, the script is run in a sandbox.`
-          )
-          .optional(),
-      },
-    },
-    func: async (options = {}) => {
-      const { filename, sandbox, whitelist, json } = options;
-      if (!filename) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: "Provide the filename of the file including Google Apps Script.",
-            },
-          ],
-          isError: true,
-        };
-      }
-      try {
-        const opts = [
-          { v: sandbox, k: "-x" },
-          { v: whitelist, k: "-w" },
-          { v: json, k: "-j" },
-        ].reduce((ar, { v, k }) => {
-          if (v) {
-            ar.push(k != "-x" ? `${k} ${v}` : `${k}`);
-          }
-          return ar;
-        }, []);
-        const c = `gas-fakes ${opts.join(" ")} -f ${filename}`;
-        const { stdout } = await execAsync(c);
-        return {
-          content: [{ type: "text", text: stdout || "Done." }],
-          isError: false,
-        };
-      } catch (err) {
-        return {
-          content: [{ type: "text", text: err.message }],
-          isError: true,
-        };
-      }
+  const mcpToolSchema = {
+    description: [
+      `Use this to safely run Google Apps Script in a sandbox using gas-fakes.`,
+      `# Important`,
+      `- Use the extension of the Google Apps Script files as \`js\`. Don't use \`gs\``,
+      `- When you provide the generated Google Apps Script to the tool "gas-fakes" of the MCP server "gas-development-kit-extension", please be careful of the following rule. For example, when you generated a Google Apps Script like \`function sample() { script }\`, please add \`sample();\` to execute the function. Or, you can also create a Google Apps Script without enclosing the script with \`function sample() { script }\`.`,
+    ].join("\n"),
+    inputSchema: {
+      filename: z
+        .string()
+        .describe(
+          `Provide a filename with the path of the file, including Google Apps Script. Write the Google Apps Script into a file and use this.`
+        ),
+      sandbox: z
+        .boolean()
+        .describe("Use to run Google Apps Script in a sandbox."),
+      whitelistRead: z
+        .string()
+        .describe(
+          "Whitelist of file IDs for readonly access (comma-separated). Enables sandbox mode."
+        )
+        .optional(),
+      whitelistReadWrite: z
+        .string()
+        .describe(
+          "Whitelist of file IDs for read/write access (comma-separated). Enables sandbox mode."
+        )
+        .optional(),
+      whitelistReadWriteTrash: z
+        .string()
+        .describe(
+          "Whitelist of file IDs for read/write/trash access (comma-separated). Enables sandbox mode."
+        )
+        .optional(),
+      json: z
+        .object({
+          whitelistItems: z
+            .array(
+              z.object({
+                itemId: z
+                  .string()
+                  .describe("The file or folder ID on Google Drive."),
+                read: z.boolean().optional().default(true),
+                write: z.boolean().optional().default(false),
+                trash: z.boolean().optional().default(false),
+              })
+            )
+            .describe("A list of items to be whitelisted."),
+          whitelistServices: z
+            .array(
+              z.object({
+                className: z
+                  .string()
+                  .describe("The class name of the GAS service."),
+                methodNames: z
+                  .array(z.string())
+                  .describe(
+                    "A list of method names for the class to be whitelisted."
+                  )
+                  .optional(),
+              })
+            )
+            .describe("A list of services to be whitelisted.")
+            .optional(),
+          blacklistServices: z
+            .array(z.string())
+            .describe("A list of GAS services to be blacklisted.")
+            .optional(),
+        })
+        .describe("A JSON object for advanced sandbox configuration.")
+        .optional(),
     },
   };
 
-  server.registerTool(name, schema, func);
+  const mcpToolFunc = async (options = {}) => {
+    const {
+      filename,
+      sandbox,
+      whitelistRead,
+      whitelistReadWrite,
+      whitelistReadWriteTrash,
+      json,
+    } = options;
+
+    if (!filename) {
+      return {
+        content: [
+          { type: "text", text: "Error: `filename` is a required parameter." },
+        ],
+        isError: true,
+      };
+    }
+
+    try {
+      const cliArgs = [];
+      cliArgs.push(`-f "${filename}"`);
+      if (sandbox) cliArgs.push("-x");
+      if (whitelistRead) cliArgs.push(`-w "${whitelistRead}"`);
+      if (whitelistReadWrite) cliArgs.push(`--ww "${whitelistReadWrite}"`);
+      if (whitelistReadWriteTrash)
+        cliArgs.push(`--wt "${whitelistReadWriteTrash}"`);
+      if (json) cliArgs.push(`-j '${JSON.stringify(json)}'`);
+
+      const command = `gas-fakes ${cliArgs.join(" ")}`;
+      const { stdout } = await execAsync(command);
+      return {
+        content: [{ type: "text", text: stdout || "Execution finished." }],
+        isError: false,
+      };
+    } catch (err) {
+      return {
+        content: [{ type: "text", text: err.message }],
+        isError: true,
+      };
+    }
+  };
+
+  server.registerTool("run-gas-by-gas-fakes", mcpToolSchema, mcpToolFunc);
 
   const transport = new StdioServerTransport();
   await server.connect(transport);
 }
+
+// -----------------------------------------------------------------------------
+// CLI DEFINITION & MAIN EXECUTION
+// -----------------------------------------------------------------------------
+
+/**
+ * Parses sandbox-related CLI options into a structured config object.
+ * @param {object} options Raw options from Commander.
+ * @returns {object | undefined} A sandbox configuration object or undefined.
+ */
+function buildSandboxConfig(options) {
+  const { json, whitelistRead, whitelistReadWrite, whitelistReadWriteTrash } =
+    options;
+
+  if (json) {
+    try {
+      return JSON.parse(json);
+    } catch (err) {
+      console.error("Error: Invalid JSON provided to --json option.");
+      process.exit(1);
+    }
+  }
+
+  if (whitelistRead || whitelistReadWrite || whitelistReadWriteTrash) {
+    const config = { whitelistItems: [] };
+    const parseWhitelist = (idString, permissions) => {
+      if (!idString) return;
+      idString.split(",").forEach((id) => {
+        const trimmedId = id.trim();
+        if (trimmedId) {
+          config.whitelistItems.push({ itemId: trimmedId, ...permissions });
+        }
+      });
+    };
+
+    parseWhitelist(whitelistRead, { read: true });
+    parseWhitelist(whitelistReadWrite, { read: true, write: true });
+    parseWhitelist(whitelistReadWriteTrash, {
+      read: true,
+      write: true,
+      trash: true,
+    });
+
+    return config;
+  }
+
+  return undefined;
+}
+
+/**
+ * Sets up and runs the command-line interface.
+ */
+async function main() {
+  const program = new Command();
+
+  program
+    .name("gas-fakes")
+    .description("A CLI tool to execute Google Apps Script with fakes/mocks.")
+    .version(VERSION, "-v, --version", "Display the current version");
+
+  program
+    .description("Execute a Google Apps Script file or string.")
+    .option("-f, --filename <string>", "Path to the Google Apps Script file.")
+    .option(
+      "-s, --script <string>",
+      "A string containing the Google Apps Script."
+    )
+    .option("-e, --env <path>", "Path to a custom .env file.", "./.env")
+    .option(
+      "-g, --gfsettings <path>",
+      "Path to a gasfakes.json settings file.",
+      "./gasfakes.json"
+    )
+    .option("-x, --sandbox", "Run the script in a basic sandbox.")
+    .option(
+      "-w, --whitelistRead <string>",
+      "Comma-separated file IDs for read-only access (enables sandbox)."
+    )
+    .option(
+      "--ww, --whitelistReadWrite <string>",
+      "Comma-separated file IDs for read/write access (enables sandbox)."
+    )
+    .option(
+      "--wt, --whitelistReadWriteTrash <string>",
+      "Comma-separated file IDs for read/write/trash access (enables sandbox)."
+    )
+    .option(
+      "-j, --json <string>",
+      "JSON string for advanced sandbox configuration (overrides whitelist flags)."
+    )
+    .option(
+      "-d, --display",
+      "Display the generated script before execution.",
+      false
+    )
+    .action(async (options) => {
+      if (Object.keys(options).length === 0) {
+        program.help();
+        return;
+      }
+
+      const { filename, script, env, gfsettings } = options;
+      if (!filename && !script) {
+        console.error(
+          "Error: You must provide a script via --filename or --script."
+        );
+        process.exit(1);
+      }
+
+      // Load environment variables
+      const envPath = path.resolve(process.cwd(), env);
+      console.log(`...using env file in ${envPath}`);
+      dotenv.config({ path: envPath, quiet: true });
+
+      // Load gasfakes settings
+      const settingsPath = path.resolve(process.cwd(), gfsettings);
+      console.log(`...using gasfakes settings file in ${settingsPath}`);
+      process.env.GF_SETTINGS_PATH = settingsPath;
+
+      const sandboxConfig = buildSandboxConfig(options);
+      const useSandbox = !!options.sandbox || !!sandboxConfig;
+
+      await executeGasScript({
+        filename,
+        script,
+        display: options.display,
+        useSandbox,
+        sandboxConfig,
+        gfSettings: settingsPath,
+      });
+    });
+
+  program
+    .command("mcp")
+    .description("Launch gas-fakes as an MCP server.")
+    .action(startMcpServer);
+
+  program.showHelpAfterError("(add --help for additional information)");
+
+  await program.parseAsync(process.argv);
+}
+
+// Run the main function
+main().catch((err) => {
+  console.error("An unexpected error occurred:", err);
+  process.exit(1);
+});

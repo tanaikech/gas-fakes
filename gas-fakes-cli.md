@@ -36,22 +36,24 @@ This will display the following help message:
 $ gas-fakes --help
 Usage: gas-fakes [options] [command]
 
-Execute Google Apps Script using gas-fakes.
+Execute a Google Apps Script file or string.
 
 Options:
-  -v, --version             display the current version
-  -f, --filename <string>   filename of the file including Google Apps Script. When this is used, the option --script is ignored.
-  -e, --env <path>          provide path to your .env file for special options. (default: "./.env")
-  -g, --gfsettings <path>   provide path to your gasfakes.json file for script options. (default: "./gasfakes.json")
-  -s, --script <string>     provide Google Apps Script as a string. When this is used, the option --filename is ignored.
-  -x, --sandbox             run Google Apps Script in a sandbox.
-  -w, --whitelist <string>  whitelist of file IDs. Set the file IDs in comma-separated list. In this case, the files of the file IDs are used for both read and write. When this is used, the script is run in a sandbox.
-  -j, --json <string>       JSON string including parameters for managing a sandbox. Enclose it with ' or ". When this is used, the option --whitelist is ignored. When this is used, the script is run in a sandbox.
-  -d, --display             display the created script for executing with gas-fakes. Default is false. (default: false)
-  -h, --help                display help for command
+  -v, --version                             Display the current version
+  -f, --filename <string>                   Path to the Google Apps Script file.
+  -s, --script <string>                     A string containing the Google Apps Script.
+  -e, --env <path>                          Path to a custom .env file. (default: "./.env")
+  -g, --gfsettings <path>                   Path to a gasfakes.json settings file. (default: "./gasfakes.json")
+  -x, --sandbox                             Run the script in a basic sandbox.
+  -w, --whitelistRead <string>              Comma-separated file IDs for read-only access (enables sandbox).
+  --ww, --whitelistReadWrite <string>       Comma-separated file IDs for read/write access (enables sandbox).
+  --wt, --whitelistReadWriteTrash <string>  Comma-separated file IDs for read/write/trash access (enables sandbox).
+  -j, --json <string>                       JSON string for advanced sandbox configuration (overrides whitelist flags).
+  -d, --display                             Display the generated script before execution. (default: false)
+  -h, --help                                display help for command
 
 Commands:
-  mcp                       Launch gas-fakes as the MCP server
+  mcp                                       Launch gas-fakes as an MCP server.
 ```
 
 ### Running a Script from a File
