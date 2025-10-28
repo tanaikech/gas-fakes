@@ -18,6 +18,8 @@ fi
 
 # Read the GCP_PROJECT_ID, remove quotes, and handle potential carriage returns
 GCP_PROJECT_ID_VALUE=$(grep -E '^GCP_PROJECT_ID=' "$ENV_FILE" | cut -d '=' -f2 | tr -d '"\r')
+GEMINI_API_KEY_VALUE=$(grep -E '^GEMINI_API_KEY=' "$ENV_FILE" | cut -d '=' -f2 | tr -d '"\r')
+GEMINI_MODEL_VALUE=$(grep -E '^GEMINI_MODEL=' "$ENV_FILE" | cut -d '=' -f2 | tr -d '"\r')
 
 # Check if a value was extracted
 if [ -z "$GCP_PROJECT_ID_VALUE" ]; then
@@ -25,7 +27,21 @@ if [ -z "$GCP_PROJECT_ID_VALUE" ]; then
   return 1
 fi
 
+if [ -z "GEMINI_API_KEY_VALUE" ]; then
+  echo "GEMINI_API_KEY not found or is empty in $ENV_FILE."
+else
+  echo "exported: GEMINI_API_KEY"
+  export GEMINI_API_KEY="$GEMINI_API_KEY_VALUE"
+fi  
+
+if [ -z "GEMINI_MODEL_VALUE" ]; then
+  echo "GEMINI_MODEL not found or is empty in $ENV_FILE."
+else
+  echo "exported: GEMINI_MODEL=$GEMINI_MODEL_VALUE"
+  export GEMINI_MODEL="$GEMINI_MODEL_VALUE"
+fi  
+
 # Export the variable for the current session
 export GOOGLE_CLOUD_PROJECT="$GCP_PROJECT_ID_VALUE"
 
-echo "Successfully exported: GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT"
+echo "exported: GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT"

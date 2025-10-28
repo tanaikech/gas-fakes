@@ -30,7 +30,8 @@
   },
   "type": "module",
   "scripts": {
-    "pub": "npm publish --access public"
+    "pub": "npm publish --access public",
+    "includes": "node ./doccreation/include-docs.js"  
   },
   "name": "@mcpher/gas-fakes",
   "author": "bruce mcpherson",

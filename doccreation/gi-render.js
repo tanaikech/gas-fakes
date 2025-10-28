@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-const data = JSON.parse(fs.readFileSync('/Users/brucemcpherson/Documents/repos/gas-fakes/gprompts/gi-fake-all.json', 'utf8'));
+const data = JSON.parse(fs.readFileSync('/Users/brucemcpherson/Documents/repos/gas-fakes/doccreation/gi-fake-all.json', 'utf8'));
 
 const cleanText = (text) => {
   if (!text) return '';

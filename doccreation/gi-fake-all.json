@@ -662,7 +662,7 @@
             "returnType": "File",
             "returnDescription": "The new file.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L35"
+            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L44"
           },
           {
             "method": "createFile(String,String)",
@@ -671,7 +671,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L35"
+            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L44"
           },
           {
             "method": "createFile(String,String,String)",
@@ -680,7 +680,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L35"
+            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L44"
           },
           {
             "method": "createFolder(String)",
@@ -689,7 +689,7 @@
             "returnType": "Folder",
             "returnDescription": "The new folder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L45"
+            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L54"
           },
           {
             "method": "createShortcut(String)",
@@ -761,7 +761,7 @@
             "returnType": "FileIterator",
             "returnDescription": "A collection of all files that are children of the current folder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L56"
+            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L65"
           },
           {
             "method": "getFilesByName(String)",
@@ -770,7 +770,7 @@
             "returnType": "FileIterator",
             "returnDescription": "A collection of all files that are children of the current folder and have the given name.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L74"
+            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L83"
           },
           {
             "method": "getFilesByType(String)",
@@ -779,7 +779,7 @@
             "returnType": "FileIterator",
             "returnDescription": "A collection of all files that are children of the current folder and have the given MIME\n    type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L91"
+            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L100"
           },
           {
             "method": "getFolders()",
@@ -788,7 +788,7 @@
             "returnType": "FolderIterator",
             "returnDescription": "A collection of all folders that are children of the current folder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L64"
+            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L73"
           },
           {
             "method": "getFoldersByName(String)",
@@ -797,7 +797,7 @@
             "returnType": "FolderIterator",
             "returnDescription": "A collection of all folders that are children of the current folder and have the given name.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L73"
+            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L82"
           },
           {
             "method": "getId()",
@@ -806,7 +806,7 @@
             "returnType": "String",
             "returnDescription": "the ID of the Folder",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L38"
+            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L31"
           },
           {
             "method": "getLastUpdated()",
@@ -1012,8 +1012,8 @@
             "description": "Gets a collection of all files that are children of the current folder and match the given search\ncriteria. The search criteria are detailed in the Google Drive SDK documentation. Note that the Drive\nservice uses v2 of the Drive API and some query fields differ from v3. Review the field\ndifferences between v2 and v3.",
             "returnType": "FileIterator",
             "returnDescription": "A collection of all files that are children of the current folder and match the search\n    criteria.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L30"
           },
           {
             "method": "searchFolders(String)",
@@ -1021,8 +1021,8 @@
             "description": "Gets a collection of all folders that are children of the current folder and match the given search\ncriteria. The search criteria are detailed in the Google Drive SDK documentation. Note that the Drive\nservice uses v2 of the Drive API and some query fields differ from v3. Review the field\ndifferences between v2 and v3.",
             "returnType": "FolderIterator",
             "returnDescription": "A collection of all folders that are children of the current folder and match the search\n    criteria.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L34"
           },
           {
             "method": "setDescription(String)",
@@ -1199,7 +1199,7 @@
             "returnType": "FileIterator",
             "returnDescription": "A collection of files that remained in a previous iterator when the continuation token\n    was generated.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/driveapp/fakedriveapp.js#L121"
+            "implementationLink": "src/services/driveapp/fakedriveapp.js#L129"
           },
           {
             "method": "continueFolderIterator(String)",
@@ -1208,7 +1208,7 @@
             "returnType": "FolderIterator",
             "returnDescription": "A collection of folders that remained in a previous iterator when the continuation\n    token was generated.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/driveapp/fakedriveapp.js#L124"
+            "implementationLink": "src/services/driveapp/fakedriveapp.js#L132"
           },
           {
             "method": "createFile(BlobSource)",
@@ -1217,7 +1217,7 @@
             "returnType": "File",
             "returnDescription": "The new file.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedriveapp.js#L101"
+            "implementationLink": "src/services/driveapp/fakedriveapp.js#L109"
           },
           {
             "method": "createFile(String,String)",
@@ -1226,7 +1226,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedriveapp.js#L101"
+            "implementationLink": "src/services/driveapp/fakedriveapp.js#L109"
           },
           {
             "method": "createFile(String,String,String)",
@@ -1235,7 +1235,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedriveapp.js#L101"
+            "implementationLink": "src/services/driveapp/fakedriveapp.js#L109"
           },
           {
             "method": "createFolder(String)",
@@ -1244,7 +1244,7 @@
             "returnType": "Folder",
             "returnDescription": "The new folder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedriveapp.js#L108"
+            "implementationLink": "src/services/driveapp/fakedriveapp.js#L116"
           },
           {
             "method": "createShortcut(String)",
@@ -1271,7 +1271,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/driveapp/fakedriveapp.js#L140"
+            "implementationLink": "src/services/driveapp/fakedriveapp.js#L148"
           },
           {
             "method": "getFileById(String)",
@@ -1289,7 +1289,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/driveapp/fakedriveapp.js#L117"
+            "implementationLink": "src/services/driveapp/fakedriveapp.js#L125"
           },
           {
             "method": "getFiles()",
@@ -1316,7 +1316,7 @@
             "returnType": "FileIterator",
             "returnDescription": "A collection of all files in the user's Drive that have the given MIME\n    type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedriveapp.js#L93"
+            "implementationLink": "src/services/driveapp/fakedriveapp.js#L101"
           },
           {
             "method": "getFolderById(String)",
@@ -1334,7 +1334,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/driveapp/fakedriveapp.js#L114"
+            "implementationLink": "src/services/driveapp/fakedriveapp.js#L122"
           },
           {
             "method": "getFolders()",
@@ -1370,7 +1370,7 @@
             "returnType": "Integer",
             "returnDescription": "The number of bytes the user is allowed to store in Drive.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/driveapp/fakedriveapp.js#L134"
+            "implementationLink": "src/services/driveapp/fakedriveapp.js#L142"
           },
           {
             "method": "getStorageUsed()",
@@ -1379,7 +1379,7 @@
             "returnType": "Integer",
             "returnDescription": "The number of bytes the user is currently storing in Drive.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/driveapp/fakedriveapp.js#L137"
+            "implementationLink": "src/services/driveapp/fakedriveapp.js#L145"
           },
           {
             "method": "getTrashedFiles()",
@@ -1388,7 +1388,7 @@
             "returnType": "FileIterator",
             "returnDescription": "A collection of files in the trash.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/driveapp/fakedriveapp.js#L127"
+            "implementationLink": "src/services/driveapp/fakedriveapp.js#L135"
           },
           {
             "method": "getTrashedFolders()",
@@ -1397,7 +1397,7 @@
             "returnType": "FolderIterator",
             "returnDescription": "A collection of folders in the trash.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/driveapp/fakedriveapp.js#L130"
+            "implementationLink": "src/services/driveapp/fakedriveapp.js#L138"
           },
           {
             "method": "searchFiles(String)",
@@ -1405,8 +1405,8 @@
             "description": "Gets a collection of all files in the user's Drive that match the given search\ncriteria. The search criteria are detailed in the Google Drive SDK documentation. Note that the Drive\nservice uses v2 of the Drive API and some query fields differ from v3. Review the field\ndifferences between v2 and v3.",
             "returnType": "FileIterator",
             "returnDescription": "A collection of all files in the user's Drive that match the search\n    criteria.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/driveapp/fakedriveapp.js#L88"
           },
           {
             "method": "searchFolders(String)",
@@ -1414,8 +1414,8 @@
             "description": "Gets a collection of all folders in the user's Drive that match the given search\ncriteria. The search criteria are detailed in the Google Drive SDK documentation. Note that the Drive\nservice uses v2 of the Drive API and some query fields differ from v3. Review the field\ndifferences between v2 and v3.",
             "returnType": "FolderIterator",
             "returnDescription": "A collection of all folders in the user's Drive that match the search\n    criteria.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/driveapp/fakedriveapp.js#L92"
           }
         ]
       },
@@ -33521,7 +33521,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L141"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L140"
           },
           {
             "method": "create(String)",
@@ -33548,7 +33548,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L123"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L122"
           },
           {
             "method": "enableBigQueryExecution()",
@@ -33557,7 +33557,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L114"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L113"
           },
           {
             "method": "enableLookerExecution()",
@@ -33566,7 +33566,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L132"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L131"
           },
           {
             "method": "flush()",
@@ -33575,7 +33575,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L141"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L140"
           },
           {
             "method": "getActive()",
@@ -33665,7 +33665,7 @@
             "returnType": "ColorBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L221"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L220"
           },
           {
             "method": "newConditionalFormatRule()",
@@ -33683,7 +33683,7 @@
             "returnType": "DataSourceSpecBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L265"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L264"
           },
           {
             "method": "newDataValidation()",
@@ -33692,7 +33692,7 @@
             "returnType": "DataValidationBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L239"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L238"
           },
           {
             "method": "newFilterCriteria()",
@@ -33701,7 +33701,7 @@
             "returnType": "FilterCriteriaBuilder",
             "returnDescription": "the new builder",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L257"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L256"
           },
           {
             "method": "newRichTextValue()",
@@ -33710,7 +33710,7 @@
             "returnType": "RichTextValueBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L248"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L247"
           },
           {
             "method": "newTextStyle()",
@@ -33719,7 +33719,7 @@
             "returnType": "TextStyleBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L230"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L229"
           },
           {
             "method": "open(File)",
@@ -33737,7 +33737,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "the Spreadsheet object with the given id",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L150"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L149"
           },
           {
             "method": "openByUrl(String)",
@@ -33746,7 +33746,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "The spreadsheet object with the given URL.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L212"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L211"
           },
           {
             "method": "setActiveRange(Range)",
@@ -46375,7 +46375,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "This spreadsheet, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L176"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L185"
           },
           {
             "method": "addDeveloperMetadata(String,DeveloperMetadataVisibility)",
@@ -46384,7 +46384,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L176"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L185"
           },
           {
             "method": "addDeveloperMetadata(String,String)",
@@ -46393,7 +46393,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L176"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L185"
           },
           {
             "method": "addDeveloperMetadata(String,String,DeveloperMetadataVisibility)",
@@ -46402,7 +46402,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L176"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L185"
           },
           {
             "method": "addEditor(String)",
@@ -46501,7 +46501,7 @@
             "returnType": "DeveloperMetadataFinder",
             "returnDescription": "A developer metadata finder to search for metadata in the scope of this spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L217"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L226"
           },
           {
             "method": "createTextFinder(String)",
@@ -46609,7 +46609,7 @@
             "returnType": "Sheet",
             "returnDescription": "The active sheet in the spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L45"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L180"
           },
           {
             "method": "getAs(String)",
@@ -46645,7 +46645,7 @@
             "returnType": "Integer",
             "returnDescription": "Column width in pixels.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L407"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L416"
           },
           {
             "method": "getCurrentCell()",
@@ -46663,7 +46663,7 @@
             "returnType": "Range",
             "returnDescription": "A range consisting of all the data in the spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L398"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L407"
           },
           {
             "method": "getDataSourceFormulas()",
@@ -46726,7 +46726,7 @@
             "returnType": "DeveloperMetadata[]",
             "returnDescription": "The developer metadata associated with this range.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L259"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L268"
           },
           {
             "method": "getEditors()",
@@ -46735,7 +46735,7 @@
             "returnType": "User[]",
             "returnDescription": "An array of users with edit permission.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L277"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L286"
           },
           {
             "method": "getFormUrl()",
@@ -46771,7 +46771,7 @@
             "returnType": "String",
             "returnDescription": "The unique ID (or key) for the spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L237"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L246"
           },
           {
             "method": "getImages()",
@@ -46798,7 +46798,7 @@
             "returnType": "Integer",
             "returnDescription": "The last column of the sheet that contains content.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L383"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L392"
           },
           {
             "method": "getLastRow()",
@@ -46807,7 +46807,7 @@
             "returnType": "Integer",
             "returnDescription": "The last row of the sheet that contains content.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L391"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L400"
           },
           {
             "method": "getMaxIterativeCalculationCycles()",
@@ -46843,7 +46843,7 @@
             "returnType": "Integer",
             "returnDescription": "The number of sheets in the spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L447"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L456"
           },
           {
             "method": "getOwner()",
@@ -46852,7 +46852,7 @@
             "returnType": "User",
             "returnDescription": "The owner of the document, or null if the document is in a shared drive.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L286"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L295"
           },
           {
             "method": "getPredefinedSpreadsheetThemes()",
@@ -46870,7 +46870,7 @@
             "returnType": "Protection[]",
             "returnDescription": "An array of objects representing all protected ranges or sheets in the spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L305"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L314"
           },
           {
             "method": "getRange(String)",
@@ -46906,7 +46906,7 @@
             "returnType": "RecalculationInterval",
             "returnDescription": "The calculation interval for this spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L373"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L382"
           },
           {
             "method": "getRowHeight(Integer)",
@@ -46915,7 +46915,7 @@
             "returnType": "Integer",
             "returnDescription": "Row height in pixels.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L417"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L426"
           },
           {
             "method": "getSelection()",
@@ -46933,7 +46933,7 @@
             "returnType": "Sheet",
             "returnDescription": "The sheet with the given ID or null if no sheet is found.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L364"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L373"
           },
           {
             "method": "getSheetByName(String)",
@@ -46942,7 +46942,7 @@
             "returnType": "Sheet",
             "returnDescription": "The sheet with the given name.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L480"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L489"
           },
           {
             "method": "getSheetId()",
@@ -46951,7 +46951,7 @@
             "returnType": "Integer",
             "returnDescription": "An ID for the sheet unique to the spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L473"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L482"
           },
           {
             "method": "getSheetName()",
@@ -46960,7 +46960,7 @@
             "returnType": "String",
             "returnDescription": "The name of the sheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L499"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L508"
           },
           {
             "method": "getSheetValues(Integer,Integer,Integer,Integer)",
@@ -46978,7 +46978,7 @@
             "returnType": "Sheet[]",
             "returnDescription": "An array of all the sheets in the spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L246"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L255"
           },
           {
             "method": "getSpreadsheetLocale()",
@@ -47014,7 +47014,7 @@
             "returnType": "String",
             "returnDescription": "The URL for the given spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L463"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L472"
           },
           {
             "method": "getViewers()",
@@ -47023,7 +47023,7 @@
             "returnType": "User[]",
             "returnDescription": "An array of users with view or comment permission.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L269"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L278"
           },
           {
             "method": "hideColumn(Range)",
@@ -47086,7 +47086,7 @@
             "returnType": "DataSourceSheet",
             "returnDescription": "The new data source sheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L623"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L632"
           },
           {
             "method": "insertImage(BlobSource,Integer,Integer)",
@@ -47446,7 +47446,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L503"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L512"
           },
           {
             "method": "setCurrentCell(Range)",
@@ -47527,7 +47527,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L514"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L523"
           },
           {
             "method": "setSpreadsheetLocale(String)",
