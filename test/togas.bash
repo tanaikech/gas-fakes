@@ -6,10 +6,10 @@ set -a
 source "$ROOT_DIRECTORY/.env"
 set +a
 
-TARGET="testongas"
+TARGET="../testongas"
 
 # Define the input folder
-SOURCE="test"
+SOURCE="./"
 
 # a spec to match extension
 EXT="*.js"
@@ -18,6 +18,10 @@ EXT="*.js"
 CLASP=true
 
 # the soure appsscript.json manifest should be in the top level 
+
+mkdir -p ${TARGET}
+mkdir -p ${TARGET}/test
+
 cp ${SOURCE}/appsscript.json ${TARGET}
 cp ${SOURCE}/imports.js ${TARGET}/test
 cp ${SOURCE}/test*.js ${TARGET}/test

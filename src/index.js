@@ -22,5 +22,6 @@ import './services/advforms/app.js'
 import './services/formapp/app.js'
 import './services/slidesapp/app.js'
 import './services/mimetype/app.js'
+import './services/lock/app.js'
 // should be last
 import './services/stores/app.js'

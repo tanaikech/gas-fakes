@@ -20,7 +20,11 @@ class FakeLockService {
     this.__fakeObjectType = 'LockService';
   }
   getDocumentLock () {
-    return newFakeLock(LockDomain.DOCUMENT)
+    // Per documentation, this should return null if not in the context of a document.
+    if (ScriptApp.__documentId) {
+      return newFakeLock(LockDomain.DOCUMENT);
+    }
+    return null;
   }
   getUserLock () {
     return newFakeLock(LockDomain.USER) 

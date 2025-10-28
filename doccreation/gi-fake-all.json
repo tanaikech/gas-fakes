@@ -22228,8 +22228,8 @@
             "description": "Returns true if the lock was acquired. This method will return false if tryLock(timeoutInMillis) or\nwaitLock(timeoutInMillis) were never called, timed out before the lock could be retrieved, or if releaseLock() was called.",
             "returnType": "Boolean",
             "returnDescription": "true if the lock was acquired, false otherwise",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/lock/fakelock.js#L20"
           },
           {
             "method": "releaseLock()",
@@ -22237,8 +22237,8 @@
             "description": "Releases the lock, allowing other processes waiting on the lock to continue. The lock is\nautomatically released when the script terminates, but for efficiency it is best to release it\nas soon as you no longer need exclusive access to a section of code. This method has no effect\nif the lock has not been acquired.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/lock/fakelock.js#L27"
           },
           {
             "method": "tryLock(Integer)",
@@ -22246,8 +22246,8 @@
             "description": "Attempts to acquire the lock, timing out after the provided number of milliseconds. This method\nhas no effect if the lock has already been acquired.",
             "returnType": "Boolean",
             "returnDescription": "true if the lock was acquired, false otherwise",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/lock/fakelock.js#L36"
           },
           {
             "method": "waitLock(Integer)",
@@ -22255,8 +22255,8 @@
             "description": "Attempts to acquire the lock, timing out with an exception after the provided number of\nmilliseconds. This method is the same as tryLock(timeoutInMillis) except that it throws an exception\nwhen the lock could not be acquired instead of returning false.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/lock/fakelock.js#L52"
           }
         ]
       },
@@ -22272,8 +22272,8 @@
             "description": "Gets a lock that prevents any user of the current document from concurrently running a section\nof code. A code section guarded by a document lock can be executed simultaneously by script\ninstances running in the context of different documents, but by no more than one execution for\nany given document. Note that the lock is not actually acquired until Lock.tryLock(timeoutInMillis)\nor Lock.waitLock(timeoutInMillis) is called. If this method is called outside of the context of a\ncontaining document (such as from a standalone script or webapp), null is returned.",
             "returnType": "Lock",
             "returnDescription": "a lock scoped to the script and current document, or null if called from a\n    standalone script or webapp",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/lock/fakelockservice.js#L22"
           },
           {
             "method": "getScriptLock()",
@@ -22281,8 +22281,8 @@
             "description": "Gets a lock that prevents any user from concurrently running a section of code. A code section\nguarded by a script lock cannot be executed simultaneously regardless of the identity of the\nuser. Note that the lock is not actually acquired until Lock.tryLock(timeoutInMillis) or Lock.waitLock(timeoutInMillis) is called.",
             "returnType": "Lock",
             "returnDescription": "a lock scoped to the script",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/lock/fakelockservice.js#L32"
           },
           {
             "method": "getUserLock()",
@@ -22290,8 +22290,8 @@
             "description": "Gets a lock that prevents the current user from concurrently running a section of code. A code\nsection guarded by a user lock can be executed simultaneously by different users, but by no\nmore than one execution for any given user. The lock is \"private\" to the user. Note that the\nlock is not actually acquired until Lock.tryLock(timeoutInMillis) or Lock.waitLock(timeoutInMillis) is\ncalled.",
             "returnType": "Lock",
             "returnDescription": "a lock scoped to the script and current user",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/lock/fakelockservice.js#L29"
           }
         ]
       }

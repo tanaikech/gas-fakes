@@ -35,7 +35,7 @@ Note that I use a [unit tester](https://ramblings.mcpher.com/apps-script-test-ru
 
 ### test location change at v1.2.7
 
-As of v1.2.7 all tests should be run from the test folder.
+As of v1.2.7 all tests should be run from the test folder, and as of v1.2.11 togas.sh should also be run from the test folder
 
 Each test can be run individually (for example `npm run testdrive`) or all with `npm test`
 

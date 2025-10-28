@@ -56,12 +56,15 @@ import { testTasks } from './testtasks.js';
 import { testWorkspaceEvents } from './testworkspaceevents.js';
 import { testLogger } from "./testlogger.js";
 import { testMimeType } from './testmimetype.js';
+import { testLock } from './testlock.js';
 
 const testFakes = () => {
   const pack = initTests();
   const { unit } = pack;
 
   // add one of these for each service being tested
+  console.log("\n----Test lock----");
+  testLock(pack);
   console.log("\n----Test mimetype----");
   testMimeType(pack);
   console.log("\n----Test workspaceevents----");

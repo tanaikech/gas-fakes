@@ -31,11 +31,13 @@
   "type": "module",
   "scripts": {
     "pub": "npm publish --access public",
-    "includes": "node ./doccreation/include-docs.js"  
+    "includes": "node ./doccreation/include-docs.js",
+    "progress": "cd ./doccreation && bash pipeline.sh",
+    "docs": "npm run includes && npm run progress"
   },
   "name": "@mcpher/gas-fakes",
   "author": "bruce mcpherson",
-  "version": "1.2.10",
+  "version": "1.2.11",
   "license": "MIT",
   "main": "main.js",
   "description": "A proof of concept implementation of Apps Script Environment on Node",
