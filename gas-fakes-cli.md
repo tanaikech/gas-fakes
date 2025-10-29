@@ -50,6 +50,8 @@ Options:
   --wt, --whitelistReadWriteTrash <string>  Comma-separated file IDs for read/write/trash access (enables sandbox).
   -j, --json <string>                       JSON string for advanced sandbox configuration (overrides whitelist flags).
   -d, --display                             Display the generated script before execution. (default: false)
+  -a, --args <string>                       Arguments for the function of Google Apps Script. Provide it as a JSON string. The name of the argument is "args" as a fixed name. For example, when the function of GAS is `function
+                                            sample(args) { script }`, you can provide the arguments like `-a '{"key": "value"}'`. (default: null)
   -h, --help                                display help for command
 
 Commands:
@@ -242,6 +244,36 @@ The JSON object used with the `-j` option follows this schema:
 }
 ```
 
+### Provide arguments to GAS function
+
+You might have a situation that you want to run the GAS function by providing arguments. In that case, you can use as follows.
+
+```bash
+gas-fakes -s "function sample(obj) {console.log(obj);} sample(args);" -a '{"key": "value"}'
+```
+
+By this, the following result is returned.
+
+```text
+$ gas-fakes -s "function sample(obj) {console.log(obj);} sample(args);" -a '{"key": "value"}'
+...using env file in .env
+...using gasfakes settings file in gasfakes.json
+[Worker] ...importing Drive API
+[Worker] ...importing Sheets API
+[Worker] ...importing Slides API
+[Worker] ...didnt find gasfakes.json ... skipping
+[Worker] ...didnt find appsscript.json ... skipping
+[Worker] ...didnt find .clasp.json ... skipping
+[Worker] ...cache will be in /tmp/gas-fakes/cache
+[Worker] ...properties will be in /tmp/gas-fakes/properties
+[Worker] ...writing to gasfakes.json
+[Worker] ...initializing auth and discovering project ID
+[Worker] ...discovered and set projectId to for-testing
+[Worker] Creating new Drive API client
+{"key": "value"}
+...terminating worker thread
+```
+
 ## Using non default locations
 
 Let's look at this example, where I'm setting a value in a property store unique to the folder Im running from, and using a local .env file, if there is one. Cache stores work in exactly the same way as the property store examples below.
@@ -343,7 +375,7 @@ Configured MCP servers:
 - [gas fakes cli](gas-fakes-cli.md)
 - [sharing cache and properties between gas-fakes and live apps script](https://ramblings.mcpher.com/sharing-cache-and-properties-between-gas-fakes-and-live-apps-script/)
 
-## <img src="./logo.png" alt="gas-fakes logo" width="50" align="top">  Further Reading
+## <img src="./logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
 
 - [getting started](GETTING_STARTED.md) - how to handle authentication for restricted scopes.
 - [readme](README.md)
