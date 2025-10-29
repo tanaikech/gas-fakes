@@ -12,13 +12,13 @@ import { Command } from "commander";
 import dotenv from "dotenv";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { z } from "zod";
+import { z, ZodCatch } from "zod";
 
 // -----------------------------------------------------------------------------
 // CONSTANTS & UTILITIES
 // -----------------------------------------------------------------------------
 
-const VERSION = "0.0.5";
+const VERSION = "0.0.6";
 const MCP_VERSION = "0.0.3";
 const execAsync = promisify(exec);
 
@@ -170,8 +170,15 @@ function generateExecutionScript({ scriptText, useSandbox, sandboxConfig }) {
  * @param {object} options The processed CLI options.
  */
 async function executeGasScript(options) {
-  const { filename, script, display, gfSettings, useSandbox, sandboxConfig } =
-    options;
+  const {
+    filename,
+    script,
+    display,
+    gfSettings,
+    useSandbox,
+    sandboxConfig,
+    args,
+  } = options;
 
   const scriptText = filename ? fs.readFileSync(filename, "utf8") : script;
 
@@ -194,8 +201,13 @@ async function executeGasScript(options) {
     configurable: true,
   });
 
-  const gasFunction = new Function(mainScript);
-  await gasFunction();
+  if (args) {
+    const gasFunction = new Function("args", mainScript);
+    await gasFunction(args);
+  } else {
+    const gasFunction = new Function(mainScript);
+    await gasFunction();
+  }
 }
 
 // -----------------------------------------------------------------------------
@@ -428,6 +440,11 @@ async function main() {
       "Display the generated script before execution.",
       false
     )
+    .option(
+      "-a, --args <string>",
+      `Arguments for the function of Google Apps Script. Provide it as a JSON string. The name of the argument is "args" as a fixed name. For example, when the function of GAS is \`function sample(args) { script }\`, you can provide the arguments like \`-a '{"key": "value"}'\`.`,
+      null
+    )
     .action(async (options) => {
       if (Object.keys(options).length === 0) {
         program.help();
@@ -455,6 +472,16 @@ async function main() {
       const sandboxConfig = buildSandboxConfig(options);
       const useSandbox = !!options.sandbox || !!sandboxConfig;
 
+      let args = null;
+      if (options.args) {
+        try {
+          args = JSON.parse(options.args);
+        } catch (err) {
+          console.error("Error: Invalid JSON provided to --args option.");
+          process.exit(1);
+        }
+      }
+
       await executeGasScript({
         filename,
         script,
@@ -462,6 +489,7 @@ async function main() {
         useSandbox,
         sandboxConfig,
         gfSettings: settingsPath,
+        args,
       });
     });
 
