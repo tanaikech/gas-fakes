@@ -12,13 +12,13 @@ import { Command } from "commander";
 import dotenv from "dotenv";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { z, ZodCatch } from "zod";
+import { z } from "zod";
 
 // -----------------------------------------------------------------------------
 // CONSTANTS & UTILITIES
 // -----------------------------------------------------------------------------
 
-const VERSION = "0.0.6";
+const VERSION = "0.0.7";
 const MCP_VERSION = "0.0.3";
 const execAsync = promisify(exec);
 
@@ -155,7 +155,7 @@ function generateExecutionScript({ scriptText, useSandbox, sandboxConfig }) {
     '  await import("./main.js"); // This will trigger the fxInit call',
     gasScript,
     "}",
-    "runGas();",
+    "return runGas();",
   ].join("\n");
 
   return { mainScript, gasScript };
@@ -201,12 +201,17 @@ async function executeGasScript(options) {
     configurable: true,
   });
 
+  let res;
   if (args) {
     const gasFunction = new Function("args", mainScript);
-    await gasFunction(args);
+    res = await gasFunction(args);
   } else {
     const gasFunction = new Function(mainScript);
-    await gasFunction();
+    res = await gasFunction();
+  }
+  if (res) {
+    const output = typeof res == "string" ? res : JSON.stringify(res);
+    console.log(output); // Returned value from Google Apps Script.
   }
 }
 
@@ -475,7 +480,9 @@ async function main() {
       let args = null;
       if (options.args) {
         try {
-          args = JSON.parse(options.args);
+          args = JSON.parse(
+            options.args.replace(/\n/g, "\\n").replace(/\r/g, "\\r")
+          );
         } catch (err) {
           console.error("Error: Invalid JSON provided to --args option.");
           process.exit(1);

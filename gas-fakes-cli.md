@@ -274,6 +274,20 @@ $ gas-fakes -s "function sample(obj) {console.log(obj);} sample(args);" -a '{"ke
 ...terminating worker thread
 ```
 
+### Get response value
+
+This simple example demonstrates how to use a local value in a Google Apps Script and receive a value in return.
+
+```bash
+gas-fakes -a '{"key":"sample"}' -s 'const res = "The provided argument is " + args.key; return JSON.stringify({output: res});' | grep '^{"output":' | jq -r '.output'
+```
+
+When this command is run, the following result is returned. You can see that the provided argument is used in the Google Apps Script to return the value.
+
+```text
+The provided argument is sample
+```
+
 ## Using non default locations
 
 Let's look at this example, where I'm setting a value in a property store unique to the folder Im running from, and using a local .env file, if there is one. Cache stores work in exactly the same way as the property store examples below.
