@@ -20,7 +20,7 @@ fi
 GCP_PROJECT_ID_VALUE=$(grep -E '^GCP_PROJECT_ID=' "$ENV_FILE" | cut -d '=' -f2 | tr -d '"\r')
 GEMINI_API_KEY_VALUE=$(grep -E '^GEMINI_API_KEY=' "$ENV_FILE" | cut -d '=' -f2 | tr -d '"\r')
 GEMINI_MODEL_VALUE=$(grep -E '^GEMINI_MODEL=' "$ENV_FILE" | cut -d '=' -f2 | tr -d '"\r')
-
+OMDB_API_KEY_VALUE=$(grep -E '^OMDB_API_KEY=' "$ENV_FILE" | cut -d '=' -f2 | tr -d '"\r')
 # Check if a value was extracted
 if [ -z "$GCP_PROJECT_ID_VALUE" ]; then
   echo "Error: GCP_PROJECT_ID not found or is empty in $ENV_FILE."
@@ -32,6 +32,13 @@ if [ -z "GEMINI_API_KEY_VALUE" ]; then
 else
   echo "exported: GEMINI_API_KEY"
   export GEMINI_API_KEY="$GEMINI_API_KEY_VALUE"
+fi  
+
+if [ -z "OMDB_API_KEY_VALUE" ]; then
+  echo "OMDB_API_KEY not found or is empty in $ENV_FILE."
+else
+  echo "exported: OMDB_API_KEY"
+  export OMDB_API_KEY="$OMDB_API_KEY_VALUE"
 fi  
 
 if [ -z "GEMINI_MODEL_VALUE" ]; then
