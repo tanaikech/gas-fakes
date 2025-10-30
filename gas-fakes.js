@@ -14,11 +14,17 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 
+// sync the version with gas fakes code since they share a package.json
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const pjson = require('./package.json');
+const VERSION = pjson.version;
+
 // -----------------------------------------------------------------------------
 // CONSTANTS & UTILITIES
 // -----------------------------------------------------------------------------
 
-const VERSION = "0.0.7";
+const CLI_VERSION = "0.0.7";
 const MCP_VERSION = "0.0.3";
 const execAsync = promisify(exec);
 
