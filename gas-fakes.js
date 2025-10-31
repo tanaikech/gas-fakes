@@ -15,16 +15,16 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 
 // sync the version with gas fakes code since they share a package.json
-import { createRequire } from 'node:module';
+import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
-const pjson = require('./package.json');
+const pjson = require("./package.json");
 const VERSION = pjson.version;
 
 // -----------------------------------------------------------------------------
 // CONSTANTS & UTILITIES
 // -----------------------------------------------------------------------------
 
-const CLI_VERSION = "0.0.7";
+const CLI_VERSION = "0.0.8";
 const MCP_VERSION = "0.0.3";
 const execAsync = promisify(exec);
 
@@ -186,7 +186,11 @@ async function executeGasScript(options) {
     args,
   } = options;
 
-  const scriptText = filename ? fs.readFileSync(filename, "utf8") : script;
+  let scriptText = filename ? fs.readFileSync(filename, "utf8") : script;
+
+  if (scriptText) {
+    scriptText = scriptText.replace(/\\\s*?\n/g, "\n");
+  }
 
   const { mainScript, gasScript } = generateExecutionScript({
     scriptText: normalizeScriptNewlines(scriptText),
@@ -487,7 +491,10 @@ async function main() {
       if (options.args) {
         try {
           args = JSON.parse(
-            options.args.replace(/\n/g, "\\n").replace(/\r/g, "\\r")
+            options.args
+              .replace(/\\\s*?\n/g, "\\n")
+              .replace(/\n/g, "\\n")
+              .replace(/\r/g, "\\r")
           );
         } catch (err) {
           console.error("Error: Invalid JSON provided to --args option.");
