@@ -90,7 +90,7 @@ const fxStreamUpMedia = ({
     bytes: blob ? blob.getBytes() : null,
     fields,
     method,
-    mimeType: file.mimeType || blob?.getContentType(),
+    mimeType: blob?.getContentType() || file.mimeType,
     fileId,
     params,
   });
