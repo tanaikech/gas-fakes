@@ -266,7 +266,6 @@ const fxInit = ({
   cachePath = cacheDefaultPath,
   propertiesPath = propertiesDefaultPath,
 } = {}) => {
-
   // this is the path of the runing main process
   const mainDir = path.dirname(process.argv[1]);
 
@@ -382,7 +381,7 @@ const fxGmail = (args) =>
     idField: "id",
   });
 
-const fxGetImagesFromXlsx = (args) => callSync("sxGetImagesFromXlsx", args);
+// const fxGetImagesFromXlsx = (args) => callSync("sxGetImagesFromXlsx", args);
 
 export const Syncit = {
   fxFetch,
@@ -400,5 +399,5 @@ export const Syncit = {
   fxDocs,
   fxForms,
   fxGmail,
-  fxGetImagesFromXlsx
+  // fxGetImagesFromXlsx
 };

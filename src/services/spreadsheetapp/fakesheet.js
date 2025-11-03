@@ -16,7 +16,8 @@ import { newFakeProtection } from "./fakeprotection.js";
 import { newFakeOverGridImage } from "./fakeovergridimage.js";
 
 import { Syncit } from "../../support/syncit.js";
-// import ExcelJS from "exceljs"; // When test_getImages() is used, use this.
+import { XMLParser } from "fast-xml-parser";
+import { nullable } from "zod/v4";
 
 const { is, isEnum } = Utils;
 
@@ -1067,28 +1068,98 @@ export class FakeSheet {
     return [];
   }
 
-  // This function is used for testing getImages without a worker.
-  // async test_getImages() {
-  //   const url = `https://docs.google.com/spreadsheets/export?exportFormat=xlsx&id=${
-  //     this.__parent.__meta.spreadsheetId
-  //   }&access_token=${ScriptApp.getOAuthToken()}`;
-  //   const res = UrlFetchApp.fetch(url);
-  //   const buf = new Uint8Array(res.getBlob()._data).buffer;
-  //   const workbook = new ExcelJS.Workbook();
-  //   await workbook.xlsx.load(buf);
-  //   const worksheet = workbook.worksheets[this.getIndex() - 1];
-  //   const images = worksheet.getImages();
-  //   console.log(images);
-  // }
-
   getImages() {
-    const url = `https://docs.google.com/spreadsheets/export?exportFormat=xlsx&id=${
-      this.__parent.__meta.spreadsheetId
-    }&access_token=${ScriptApp.getOAuthToken()}`;
-    const idx = this.getIndex() - 1;
-    const ar = Syncit.fxGetImagesFromXlsx({ url, idx });
-    const sheet = this;
-    return ar.map((e) => newFakeOverGridImage(sheet, e));
+    const url = `https://docs.google.com/spreadsheets/export?exportFormat=xlsx&id=${this.__parent.__meta.spreadsheetId}`;
+    const res = UrlFetchApp.fetch(url, {
+      headers: { authorization: "Bearer " + ScriptApp.getOAuthToken() },
+    });
+    const blob = res.getBlob().setContentType("application/zip");
+    const unzipped = Utilities.unzip(blob);
+    const xmlObj = unzipped.reduce((o, b) => {
+      const filename = b.getName();
+      const parser = new XMLParser({ ignoreAttributes: false });
+      try {
+        const p = parser.parse(b.getDataAsString());
+        o[filename] = p;
+      } catch (err) {
+        // console.log(err);
+      }
+      return o;
+    }, {});
+    const tempObj = { sheets: {} };
+    if (xmlObj["xl/workbook.xml"]) {
+      const t = xmlObj[
+        "xl/_rels/workbook.xml.rels"
+      ].Relationships.Relationship.reduce(
+        (o, e) => ((o[e["@_Id"]] = e["@_Target"]), o),
+        {}
+      );
+      xmlObj["xl/workbook.xml"].workbook.sheets.sheet.forEach((e) => {
+        const target = `xl/${t[e["@_r:id"]]}`;
+        const k = `xl/worksheets/_rels/${target.split("/").pop()}.rels`;
+        let drawing;
+        if (Array.isArray(xmlObj[k].Relationships.Relationship)) {
+          xmlObj[k].Relationships.Relationship.forEach((f) => {
+            if (f["@_Type"].split("/").pop() == "drawing") {
+              drawing = `xl/drawings/${f["@_Target"].split("/").pop()}`;
+            }
+          });
+        } else {
+          drawing = `xl/drawings/${xmlObj[k].Relationships.Relationship[
+            "@_Target"
+          ]
+            .split("/")
+            .pop()}`;
+        }
+        const imgs = [];
+        if (
+          xmlObj[drawing]["xdr:wsDr"] &&
+          xmlObj[drawing]["xdr:wsDr"]["xdr:oneCellAnchor"]
+        ) {
+          const t = xmlObj[drawing]["xdr:wsDr"]["xdr:oneCellAnchor"];
+          if (Array.isArray(t)) {
+            t.forEach((f) => {
+              imgs.push({
+                col: f["xdr:from"]["xdr:col"],
+                row: f["xdr:from"]["xdr:row"],
+                anchorCellXOffset: f["xdr:from"]["xdr:colOff"] / 9525,
+                anchorCellYOffset: f["xdr:from"]["xdr:rowOff"] / 9525,
+                width: f["xdr:ext"]["@_cx"] / 9525,
+                height: f["xdr:ext"]["@_cy"] / 9525,
+                innerCell:
+                  f["xdr:from"]["xdr:colOff"] == 0 &&
+                  f["xdr:from"]["xdr:rowOff"] == 0,
+              });
+            });
+          } else {
+            imgs.push({
+              col: t["xdr:from"]["xdr:col"],
+              row: t["xdr:from"]["xdr:row"],
+              anchorCellXOffset: t["xdr:from"]["xdr:colOff"] / 9525,
+              anchorCellYOffset: t["xdr:from"]["xdr:rowOff"] / 9525,
+              width: t["xdr:ext"]["@_cx"] / 9525,
+              height: t["xdr:ext"]["@_cy"] / 9525,
+              innerCell:
+                f["xdr:from"]["xdr:colOff"] == 0 &&
+                f["xdr:from"]["xdr:rowOff"] == 0,
+            });
+          }
+        }
+        tempObj.sheets[e["@_name"]] = {
+          ...e,
+          name: `xl/${t[e["@_r:id"]]}`,
+          drawing,
+          imgs: imgs.filter(({ innerCell }) => !innerCell), // Images over cells are retrieved.
+        };
+      });
+    }
+    const sheetName = this.getName();
+    const o = tempObj.sheets[sheetName];
+    if (o.imgs && o.imgs.length > 0) {
+      const sheet = this;
+      return o.imgs.map((e) => newFakeOverGridImage(sheet, e));
+    }
+    return [];
   }
 
   __batchUpdate({ spreadsheetId, requests }) {
