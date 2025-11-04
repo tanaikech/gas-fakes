@@ -24,7 +24,7 @@ const VERSION = pjson.version;
 // CONSTANTS & UTILITIES
 // -----------------------------------------------------------------------------
 
-const CLI_VERSION = "0.0.8";
+const CLI_VERSION = "0.0.9";
 const MCP_VERSION = "0.0.3";
 const execAsync = promisify(exec);
 
@@ -461,11 +461,6 @@ async function main() {
       null
     )
     .action(async (options) => {
-      if (Object.keys(options).length === 0) {
-        program.help();
-        return;
-      }
-
       const { filename, script, env, gfsettings } = options;
       if (!filename && !script) {
         console.error(
@@ -519,6 +514,11 @@ async function main() {
     .action(startMcpServer);
 
   program.showHelpAfterError("(add --help for additional information)");
+
+  if (process.argv.length < 3) {
+    program.help();
+    return;
+  }
 
   await program.parseAsync(process.argv);
 }
