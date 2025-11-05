@@ -18,7 +18,33 @@ npm install -g @mcpher/gas-fakes
 
 ### 2. Authentication
 
+You can choose between two methods for authentication:
+
+#### 1. Manual Setup
+
 After installation, you will need to authorize the tool to access your Google account. Detailed instructions for setting up authentication can be found in the official documentation: [Getting Started - Step 2: Set up authentication](https://github.com/brucemcpherson/gas-fakes/blob/main/GETTING_STARTED.md#step-2-set-up-authentication-shells-and-environment).
+
+#### 2. Setup with the gas-fakes Command-Line Tool
+
+Alternatively, you can use the `gas-fakes` command-line interface (CLI) to assist with the setup. Before you begin, please have your Google Cloud Project ID ready.
+
+First, create a `.env` file to store your project configuration:
+
+```bash
+gas-fakes init
+```
+
+Next, authorize the tool. This command will guide you through the process of logging into your Google account and setting up the necessary credentials:
+
+```bash
+gas-fakes auth
+```
+
+If you need to enable the required Google APIs for your project, you can do so with the following command. This will ensure that all necessary services are accessible.
+
+```bash
+gas-fakes enableAPIs
+```
 
 ## Basic Usage
 
@@ -367,7 +393,7 @@ Configured MCP servers:
   - run-gas-by-gas-fakes
 ```
 
-## <img src="./logo.png" alt="gas-fakes logo" width="50" align="top">  Further Reading
+## <img src="./logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
 
 - [getting started](GETTING_STARTED.md) - how to handle authentication for restricted scopes.
 - [readme](README.md)

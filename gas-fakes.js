@@ -14,6 +14,13 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
 
+// --- Import setup commands ---
+import {
+  initializeConfiguration,
+  authenticateUser,
+  enableGoogleAPIs,
+} from "./setup.js";
+
 // sync the version with gas fakes code since they share a package.json
 import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
@@ -24,7 +31,7 @@ const VERSION = pjson.version;
 // CONSTANTS & UTILITIES
 // -----------------------------------------------------------------------------
 
-const CLI_VERSION = "0.0.9";
+const CLI_VERSION = "0.0.10";
 const MCP_VERSION = "0.0.3";
 const execAsync = promisify(exec);
 
@@ -420,6 +427,7 @@ async function main() {
     .description("A CLI tool to execute Google Apps Script with fakes/mocks.")
     .version(VERSION, "-v, --version", "Display the current version");
 
+  // Default command to execute a script
   program
     .description("Execute a Google Apps Script file or string.")
     .option("-f, --filename <string>", "Path to the Google Apps Script file.")
@@ -463,10 +471,17 @@ async function main() {
     .action(async (options) => {
       const { filename, script, env, gfsettings } = options;
       if (!filename && !script) {
-        console.error(
-          "Error: You must provide a script via --filename or --script."
-        );
-        process.exit(1);
+        // This action is for the default command. If a known command is passed (like 'init'), this won't run.
+        // We check if the command is not one of the others.
+        const knownCommands = program.commands.map((cmd) => cmd.name());
+        if (!process.argv.slice(2).some((arg) => knownCommands.includes(arg))) {
+          console.error(
+            "Error: You must provide a script via --filename or --script, or use a specific command (e.g., init, auth, mcp)."
+          );
+          program.help();
+          process.exit(1);
+        }
+        return;
       }
 
       // Load environment variables
@@ -508,17 +523,31 @@ async function main() {
       });
     });
 
+  // --- Setup commands ---
+  program
+    .command("init")
+    .description(
+      "Initializes the configuration by creating or updating the .env file."
+    )
+    .action(initializeConfiguration);
+
+  program
+    .command("auth")
+    .description("Runs the Google Cloud authentication and authorization flow.")
+    .action(authenticateUser);
+
+  program
+    .command("enableAPIs")
+    .description("Enables the required Google Cloud APIs for the project.")
+    .action(enableGoogleAPIs);
+
+  // MCP server command
   program
     .command("mcp")
     .description("Launch gas-fakes as an MCP server.")
     .action(startMcpServer);
 
   program.showHelpAfterError("(add --help for additional information)");
-
-  if (process.argv.length < 3) {
-    program.help();
-    return;
-  }
 
   await program.parseAsync(process.argv);
 }
