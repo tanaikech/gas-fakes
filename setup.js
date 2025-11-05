@@ -60,7 +60,7 @@ export async function initializeConfiguration() {
     console.log(
       "Found existing .env file. Loading current values as defaults."
     );
-    existingConfig = dotenv.config({ path: envPath }).parsed || {};
+    existingConfig = dotenv.config({ path: envPath , quiet: true }).parsed || {};
   }
 
   console.log("--------------------------------------------------");
