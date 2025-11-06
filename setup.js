@@ -2,12 +2,41 @@
 
 import prompts from "prompts";
 import dotenv from "dotenv";
-import fs from "fs";
+import fs from "fs/promises";
+import { readFileSync, writeFileSync, existsSync } from "fs";
 import path from "path";
 import os from "os";
 import { execSync } from "child_process";
 
 // --- Utility Functions ---
+
+/**
+ * Search .env file
+ * @param {string} dir - Start directory
+ * @returns {Promise<string[]>}
+ */
+async function findEnvFiles(dir) {
+  try {
+    const entries = await fs.readdir(dir, { withFileTypes: true });
+    const promises = entries.map((entry) => {
+      const fullPath = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        if (entry.name === "node_modules") {
+          return Promise.resolve([]);
+        }
+        return findEnvFiles(fullPath);
+      } else if (entry.isFile() && entry.name === ".env") {
+        return Promise.resolve(fullPath);
+      }
+      return Promise.resolve([]);
+    });
+    const results = await Promise.all(promises);
+    return results.flat();
+  } catch (err) {
+    console.error(`No directory: ${dir}`);
+    return [];
+  }
+}
 
 /**
  * Checks if the gcloud CLI is installed and available in the system's PATH.
@@ -51,16 +80,26 @@ function runCommand(command) {
  * Handles the 'init' command to configure the .env file.
  */
 export async function initializeConfiguration() {
-  // Define the path to the .env file in the current working directory.
-  const envPath = path.join(process.cwd(), ".env");
+  let envPath = path.join(process.cwd(), ".env");
+  const searchPath = process.cwd(); // or process.env.HOME
+  const absoluteSearchPath = path.resolve(searchPath);
+  const foundFiles = await findEnvFiles(absoluteSearchPath);
+  if (foundFiles.length > 0) {
+    // Check .env on the top directory.
+    const results = foundFiles
+      .map((file) => file.split("/"))
+      .sort((a, b) => (a.length > b.length ? 1 : -1));
+    envPath = results[0].join("/");
+  }
+
   let existingConfig = {};
 
-  // --- Load existing values from .env file if it exists ---
-  if (fs.existsSync(envPath)) {
+  // Load existing values from .env file if it exists to use as defaults for prompts.
+  if (existsSync(envPath)) {
     console.log(
       "Found existing .env file. Loading current values as defaults."
     );
-    existingConfig = dotenv.config({ path: envPath , quiet: true }).parsed || {};
+    existingConfig = dotenv.parse(readFileSync(envPath));
   }
 
   console.log("--------------------------------------------------");
@@ -140,6 +179,13 @@ export async function initializeConfiguration() {
 
   const responses = await prompts(questions);
 
+  // If the user cancels (e.g., Ctrl+C), prompts returns undefined for the keys.
+  if (typeof responses.GCP_PROJECT_ID === "undefined") {
+    console.log("Initialization cancelled.");
+    return; // Exit the function without writing to file.
+  }
+
+  // If Upstash is selected, ask for its credentials.
   if (responses.STORE_TYPE === "UPSTASH") {
     console.log(
       "Upstash storage selected. Please provide your Redis credentials."
@@ -159,49 +205,71 @@ export async function initializeConfiguration() {
       },
     ];
     const upstashResponses = await prompts(upstashQuestions);
+
+    if (typeof upstashResponses.UPSTASH_REDIS_REST_URL === "undefined") {
+      console.log("Initialization cancelled during Upstash configuration.");
+      return;
+    }
     Object.assign(responses, upstashResponses);
   }
-
-  const finalConfig = { ...existingConfig, ...responses };
 
   console.log("--------------------------------------------------");
   console.log(`Writing configuration to ${envPath}...`);
 
-  let envContent = `
+  if (!existsSync(envPath)) {
+    // --- Create a new .env file from a template ---
+    let envContent = `
 # Google Cloud Project ID (required)
-GCP_PROJECT_ID="${finalConfig.GCP_PROJECT_ID || ""}"
+GCP_PROJECT_ID="${responses.GCP_PROJECT_ID || ""}"
 
 # Path to OAuth client credentials for restricted scopes (optional)
-CLIENT_CREDENTIAL_FILE="${finalConfig.CLIENT_CREDENTIAL_FILE || ""}"
+CLIENT_CREDENTIAL_FILE="${responses.CLIENT_CREDENTIAL_FILE || ""}"
 
 # A test file ID for checking authentication (optional)
-DRIVE_TEST_FILE_ID="${finalConfig.DRIVE_TEST_FILE_ID || ""}"
+DRIVE_TEST_FILE_ID="${responses.DRIVE_TEST_FILE_ID || ""}"
 
 # Storage configuration for PropertiesService and CacheService ('FILE' or 'UPSTASH')
-STORE_TYPE="${finalConfig.STORE_TYPE || "FILE"}"
+STORE_TYPE="${responses.STORE_TYPE || "FILE"}"
 
 # Logging destination for Logger.log() ('CONSOLE', 'CLOUD', 'BOTH', 'NONE')
-LOG_DESTINATION="${finalConfig.LOG_DESTINATION || "CONSOLE"}"
+LOG_DESTINATION="${responses.LOG_DESTINATION || "CONSOLE"}"
 
 # Scopes for authentication
 # these are the scopes set by default - take some of these out if you want to minimize access
-DEFAULT_SCOPES="${finalConfig.DEFAULT_SCOPES || ""}"
-EXTRA_SCOPES="${finalConfig.EXTRA_SCOPES || ""}"
+DEFAULT_SCOPES="${responses.DEFAULT_SCOPES || ""}"
+EXTRA_SCOPES="${responses.EXTRA_SCOPES || ""}"
 `.trim();
 
-  if (
-    finalConfig.UPSTASH_REDIS_REST_URL &&
-    finalConfig.UPSTASH_REDIS_REST_TOKEN
-  ) {
-    envContent += `
+    if (responses.STORE_TYPE === "UPSTASH") {
+      envContent += `
 
 # Upstash credentials (only used if STORE_TYPE is 'UPSTASH')
-UPSTASH_REDIS_REST_URL="${finalConfig.UPSTASH_REDIS_REST_URL}"
-UPSTASH_REDIS_REST_TOKEN="${finalConfig.UPSTASH_REDIS_REST_TOKEN}"
+UPSTASH_REDIS_REST_URL="${responses.UPSTASH_REDIS_REST_URL || ""}"
+UPSTASH_REDIS_REST_TOKEN="${responses.UPSTASH_REDIS_REST_TOKEN || ""}"
 `;
-  }
+    }
+    writeFileSync(envPath, envContent, "utf8");
+  } else {
+    // --- Update the existing .env file ---
+    let envContent = readFileSync(envPath, "utf8");
 
-  fs.writeFileSync(envPath, envContent);
+    const configToUpdate = { ...responses };
+
+    for (const key of Object.keys(configToUpdate)) {
+      const value = configToUpdate[key] || "";
+      const keyRegex = new RegExp(`^\\s*${key}\\s*=.*$`, "m");
+
+      if (keyRegex.test(envContent)) {
+        envContent = envContent.replace(keyRegex, `${key}="${value}"`);
+      } else {
+        if (envContent.length > 0 && !envContent.endsWith("\n")) {
+          envContent += "\n";
+        }
+        envContent += `${key}="${value}"\n`;
+      }
+    }
+    writeFileSync(envPath, envContent, "utf8");
+  }
 
   console.log("Setup complete. Your .env file has been updated.");
   console.log("--------------------------------------------------");
@@ -217,13 +285,13 @@ export function authenticateUser() {
   const rootDirectory = process.cwd();
   const envPath = path.join(rootDirectory, ".env");
 
-  if (!fs.existsSync(envPath)) {
+  if (!existsSync(envPath)) {
     console.error(`Error: .env file not found at '${envPath}'`);
     console.error("Please run './gas-fakes.js init' first.");
     process.exit(1);
   }
 
-  dotenv.config({ path: envPath });
+  dotenv.config({ path: envPath, quiet: true });
 
   const {
     GCP_PROJECT_ID,
@@ -263,7 +331,7 @@ export function authenticateUser() {
       clientPath = path.join(rootDirectory, clientPath);
     }
 
-    if (fs.existsSync(clientPath)) {
+    if (existsSync(clientPath)) {
       clientFlag = `--client-id-file="${clientPath}"`;
     } else {
       console.error(
@@ -335,8 +403,8 @@ export function authenticateUser() {
   const activeConfigPath = path.join(gcloudConfigDir, "active_config");
 
   let currentConfig = "unknown";
-  if (fs.existsSync(activeConfigPath)) {
-    currentConfig = fs.readFileSync(activeConfigPath, "utf8").trim();
+  if (existsSync(activeConfigPath)) {
+    currentConfig = readFileSync(activeConfigPath, "utf8").trim();
   } else {
     console.warn(
       `Warning: Could not find active_config file at ${activeConfigPath}`
@@ -373,22 +441,60 @@ export function authenticateUser() {
 }
 
 /**
- * Handles the 'enableAPIs' command to enable necessary Google Cloud services.
+ * Handles the 'enableAPIs' command to enable or disable necessary Google Cloud services based on options.
+ * @param {object} options Options object provided by commander.js.
  */
-export function enableGoogleAPIs() {
-  // First, check if gcloud CLI is available.
+export function enableGoogleAPIs(options) {
   checkForGcloudCli();
 
-  const services = [
-    "drive.googleapis.com",
-    "sheets.googleapis.com",
-    "forms.googleapis.com",
-    "docs.googleapis.com",
-    "gmail.googleapis.com",
-    "logging.googleapis.com",
-  ];
+  const API_SERVICES = {
+    drive: "drive.googleapis.com",
+    sheets: "sheets.googleapis.com",
+    forms: "forms.googleapis.com",
+    docs: "docs.googleapis.com",
+    gmail: "gmail.googleapis.com",
+    logging: "logging.googleapis.com",
+  };
 
-  console.log("Enabling necessary Google Cloud services...");
-  runCommand(`gcloud services enable ${services.join(" ")}`);
-  console.log("Services enabled successfully.");
+  const servicesToEnable = new Set();
+  const servicesToDisable = new Set();
+  if (options.all || Object.keys(options).length === 0) {
+    Object.values(API_SERVICES).forEach((service) =>
+      servicesToEnable.add(service)
+    );
+  } else {
+    for (const key in API_SERVICES) {
+      if (options[`e${key}`]) {
+        servicesToEnable.add(API_SERVICES[key]);
+      }
+      if (options[`d${key}`]) {
+        servicesToDisable.add(API_SERVICES[key]);
+      }
+    }
+  }
+  if (servicesToEnable.size > 0) {
+    const enableList = Array.from(servicesToEnable);
+    console.log(`Enabling Google Cloud services: ${enableList.join(", ")}...`);
+    runCommand(`gcloud services enable ${enableList.join(" ")}`);
+    console.log("Services enabled successfully.");
+  }
+  if (servicesToDisable.size > 0) {
+    const disableList = Array.from(servicesToDisable);
+    console.log(
+      `Disabling Google Cloud services: ${disableList.join(", ")}...`
+    );
+    runCommand(`gcloud services disable ${disableList.join(" ")}`);
+    console.log("Services disabled successfully.");
+  }
+  if (
+    servicesToEnable.size === 0 &&
+    servicesToDisable.size === 0 &&
+    Object.keys(options).length > 0 &&
+    !options.all
+  ) {
+    console.log("No specific APIs were selected to enable or disable.");
+    console.log(
+      "Use '--all' to enable all default APIs, or specify flags like '--edrive' or '--ddrive'."
+    );
+  }
 }

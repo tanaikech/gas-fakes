@@ -31,7 +31,7 @@ const VERSION = pjson.version;
 // CONSTANTS & UTILITIES
 // -----------------------------------------------------------------------------
 
-const CLI_VERSION = "0.0.10";
+const CLI_VERSION = "0.0.11";
 const MCP_VERSION = "0.0.3";
 const execAsync = promisify(exec);
 
@@ -538,7 +538,22 @@ async function main() {
 
   program
     .command("enableAPIs")
-    .description("Enables the required Google Cloud APIs for the project.")
+    .description(
+      "Enables or disables required Google Cloud APIs for the project."
+    )
+    .option("--all", "Enable all default Google Cloud APIs.")
+    .option("--edrive", "Enable drive.googleapis.com")
+    .option("--ddrive", "Disable drive.googleapis.com")
+    .option("--esheets", "Enable sheets.googleapis.com")
+    .option("--dsheets", "Disable sheets.googleapis.com")
+    .option("--eforms", "Enable forms.googleapis.com")
+    .option("--dforms", "Disable forms.googleapis.com")
+    .option("--edocs", "Enable docs.googleapis.com")
+    .option("--ddocs", "Disable docs.googleapis.com")
+    .option("--egmail", "Enable gmail.googleapis.com")
+    .option("--dgmail", "Disable gmail.googleapis.com")
+    .option("--elogging", "Enable logging.googleapis.com")
+    .option("--dlogging", "Disable logging.googleapis.com")
     .action(enableGoogleAPIs);
 
   // MCP server command
