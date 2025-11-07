@@ -1721,7 +1721,7 @@
             "returnType": "String",
             "returnDescription": "A string representation of the OAuth 2.0 token.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/scriptapp/app.js#L13"
+            "implementationLink": "src/services/scriptapp/app.js#L14"
           },
           {
             "method": "getProjectTriggers()",
@@ -1739,7 +1739,7 @@
             "returnType": "String",
             "returnDescription": "The script project's ID.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/scriptapp/app.js#L119"
+            "implementationLink": "src/services/scriptapp/app.js#L120"
           },
           {
             "method": "getService()",
@@ -1811,7 +1811,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/scriptapp/app.js#L39"
+            "implementationLink": "src/services/scriptapp/app.js#L40"
           },
           {
             "method": "requireScopes(AuthMode,String)",
@@ -1820,7 +1820,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/scriptapp/app.js#L46"
+            "implementationLink": "src/services/scriptapp/app.js#L47"
           }
         ]
       },
@@ -22107,7 +22107,7 @@
             "returnType": "String",
             "returnDescription": "the cached value, or null if none was found",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/stores/fakestores.js#L118"
+            "implementationLink": "src/services/stores/fakestores.js#L117"
           },
           {
             "method": "getAll(String)",
@@ -22116,7 +22116,7 @@
             "returnType": "Object",
             "returnDescription": "a JavaScript Object containing the key/value pairs for all keys found in the cache",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/stores/fakestores.js#L330"
+            "implementationLink": "src/services/stores/fakestores.js#L329"
           },
           {
             "method": "put(String,String)",
@@ -22125,7 +22125,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/stores/fakestores.js#L341"
+            "implementationLink": "src/services/stores/fakestores.js#L340"
           },
           {
             "method": "put(String,String,Integer)",
@@ -22134,7 +22134,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/stores/fakestores.js#L341"
+            "implementationLink": "src/services/stores/fakestores.js#L340"
           },
           {
             "method": "putAll(Object)",
@@ -22143,7 +22143,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/stores/fakestores.js#L346"
+            "implementationLink": "src/services/stores/fakestores.js#L345"
           },
           {
             "method": "putAll(Object,Integer)",
@@ -22152,7 +22152,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/stores/fakestores.js#L346"
+            "implementationLink": "src/services/stores/fakestores.js#L345"
           },
           {
             "method": "remove(String)",
@@ -22161,7 +22161,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/stores/fakestores.js#L355"
+            "implementationLink": "src/services/stores/fakestores.js#L354"
           },
           {
             "method": "removeAll(String)",
@@ -22170,7 +22170,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/stores/fakestores.js#L360"
+            "implementationLink": "src/services/stores/fakestores.js#L359"
           }
         ]
       },
@@ -22187,7 +22187,7 @@
             "returnType": "Cache",
             "returnDescription": "a document cache instance, or null if there is no containing document",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/stores/fakestores.js#L157"
+            "implementationLink": "src/services/stores/fakestores.js#L156"
           },
           {
             "method": "getScriptCache()",
@@ -22196,7 +22196,7 @@
             "returnType": "Cache",
             "returnDescription": "a script cache instance",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/stores/fakestores.js#L175"
+            "implementationLink": "src/services/stores/fakestores.js#L174"
           },
           {
             "method": "getUserCache()",
@@ -22205,7 +22205,7 @@
             "returnType": "Cache",
             "returnDescription": "a user cache instance",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/stores/fakestores.js#L167"
+            "implementationLink": "src/services/stores/fakestores.js#L166"
           }
         ]
       }
@@ -22322,7 +22322,7 @@
             "returnType": "Properties",
             "returnDescription": "a property store for this script only that all users of the current document can\n    access, or null if the script is not either an add-on or bound to a Google\n    Workspace file",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/stores/fakestores.js#L121"
+            "implementationLink": "src/services/stores/fakestores.js#L120"
           },
           {
             "method": "getScriptProperties()",
@@ -22331,7 +22331,7 @@
             "returnType": "Properties",
             "returnDescription": "a property store that all users of the script can access",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/stores/fakestores.js#L139"
+            "implementationLink": "src/services/stores/fakestores.js#L138"
           },
           {
             "method": "getUserProperties()",
@@ -22340,7 +22340,7 @@
             "returnType": "Properties",
             "returnDescription": "a property store that only the current user of the script can access",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/stores/fakestores.js#L131"
+            "implementationLink": "src/services/stores/fakestores.js#L130"
           }
         ]
       },
@@ -22357,7 +22357,7 @@
             "returnType": "Properties",
             "returnDescription": "this Properties store, for chaining",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/stores/fakestores.js#L277"
+            "implementationLink": "src/services/stores/fakestores.js#L276"
           },
           {
             "method": "deleteProperty(String)",
@@ -22366,7 +22366,7 @@
             "returnType": "Properties",
             "returnDescription": "this Properties store, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/stores/fakestores.js#L285"
+            "implementationLink": "src/services/stores/fakestores.js#L284"
           },
           {
             "method": "getKeys()",
@@ -22375,7 +22375,7 @@
             "returnType": "String[]",
             "returnDescription": "an array of all keys in the current Properties store",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/stores/fakestores.js#L289"
+            "implementationLink": "src/services/stores/fakestores.js#L288"
           },
           {
             "method": "getProperties()",
@@ -22384,7 +22384,7 @@
             "returnType": "Object",
             "returnDescription": "a copy of all key-value pairs in the current Properties store",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/stores/fakestores.js#L272"
+            "implementationLink": "src/services/stores/fakestores.js#L271"
           },
           {
             "method": "getProperty(String)",
@@ -22393,7 +22393,7 @@
             "returnType": "String",
             "returnDescription": "the value associated with the given key in the current Properties store",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/stores/fakestores.js#L300"
+            "implementationLink": "src/services/stores/fakestores.js#L299"
           },
           {
             "method": "setProperties(Object)",
@@ -22402,7 +22402,7 @@
             "returnType": "Properties",
             "returnDescription": "this Properties store, for chaining",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/stores/fakestores.js#L305"
+            "implementationLink": "src/services/stores/fakestores.js#L304"
           },
           {
             "method": "setProperties(Object,Boolean)",
@@ -22411,7 +22411,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/stores/fakestores.js#L305"
+            "implementationLink": "src/services/stores/fakestores.js#L304"
           },
           {
             "method": "setProperty(String,String)",
@@ -22420,7 +22420,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/stores/fakestores.js#L314"
+            "implementationLink": "src/services/stores/fakestores.js#L313"
           }
         ]
       },
@@ -44502,7 +44502,7 @@
             "returnType": "Sheet",
             "returnDescription": "This sheet, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L418"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L416"
           },
           {
             "method": "addDeveloperMetadata(String,DeveloperMetadataVisibility)",
@@ -44511,7 +44511,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L418"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L416"
           },
           {
             "method": "addDeveloperMetadata(String,String)",
@@ -44520,7 +44520,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L418"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L416"
           },
           {
             "method": "addDeveloperMetadata(String,String,DeveloperMetadataVisibility)",
@@ -44529,7 +44529,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L418"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L416"
           },
           {
             "method": "appendRow(Object)",
@@ -44538,7 +44538,7 @@
             "returnType": "Sheet",
             "returnDescription": "The sheet, useful for method chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L565"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L563"
           },
           {
             "method": "asDataSourceSheet()",
@@ -44556,7 +44556,7 @@
             "returnType": "Sheet",
             "returnDescription": "The sheet, useful for method chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L79"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L77"
           },
           {
             "method": "autoResizeColumns(Integer,Integer)",
@@ -44565,7 +44565,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L80"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L78"
           },
           {
             "method": "autoResizeRows(Integer,Integer)",
@@ -44583,7 +44583,7 @@
             "returnType": "Sheet",
             "returnDescription": "The cleared sheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L468"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L466"
           },
           {
             "method": "clear(Object)",
@@ -44592,7 +44592,7 @@
             "returnType": "Sheet",
             "returnDescription": "This sheet, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L468"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L466"
           },
           {
             "method": "clearConditionalFormatRules()",
@@ -44610,7 +44610,7 @@
             "returnType": "Sheet",
             "returnDescription": "This sheet, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L500"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L498"
           },
           {
             "method": "clearFormats()",
@@ -44619,7 +44619,7 @@
             "returnType": "Sheet",
             "returnDescription": "This sheet, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L504"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L502"
           },
           {
             "method": "clearNotes()",
@@ -44628,7 +44628,7 @@
             "returnType": "Sheet",
             "returnDescription": "This sheet, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L508"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L506"
           },
           {
             "method": "collapseAllColumnGroups()",
@@ -44664,7 +44664,7 @@
             "returnType": "DeveloperMetadataFinder",
             "returnDescription": "A developer metadata finder to search for metadata in the scope of this sheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L415"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L413"
           },
           {
             "method": "createTextFinder(String)",
@@ -44673,7 +44673,7 @@
             "returnType": "TextFinder",
             "returnDescription": "The TextFinder for the sheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L552"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L550"
           },
           {
             "method": "deleteColumn(Integer)",
@@ -44682,7 +44682,7 @@
             "returnType": "Sheet",
             "returnDescription": "The sheet, useful for method chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L75"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L73"
           },
           {
             "method": "deleteColumns(Integer,Integer)",
@@ -44691,7 +44691,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L76"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L74"
           },
           {
             "method": "deleteRow(Integer)",
@@ -44700,7 +44700,7 @@
             "returnType": "Sheet",
             "returnDescription": "The sheet, useful for method chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L77"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L75"
           },
           {
             "method": "deleteRows(Integer,Integer)",
@@ -44709,7 +44709,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L78"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L76"
           },
           {
             "method": "expandAllColumnGroups()",
@@ -44781,7 +44781,7 @@
             "returnType": "Banding[]",
             "returnDescription": "All the bandings in this sheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L404"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L402"
           },
           {
             "method": "getCharts()",
@@ -44790,7 +44790,7 @@
             "returnType": "EmbeddedChart[]",
             "returnDescription": "An array of charts.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L39"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L37"
           },
           {
             "method": "getColumnGroup(Integer,Integer)",
@@ -44826,7 +44826,7 @@
             "returnType": "Integer",
             "returnDescription": "Column width in pixels.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L230"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L228"
           },
           {
             "method": "getConditionalFormatRules()",
@@ -44853,7 +44853,7 @@
             "returnType": "Range",
             "returnDescription": "A range consisting of all the data in the spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L208"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L206"
           },
           {
             "method": "getDataSourceFormulas()",
@@ -44862,7 +44862,7 @@
             "returnType": "DataSourceFormula[]",
             "returnDescription": "A list of data source formulas.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L83"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L81"
           },
           {
             "method": "getDataSourcePivotTables()",
@@ -44871,7 +44871,7 @@
             "returnType": "DataSourcePivotTable[]",
             "returnDescription": "A list of data source pivot tables.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L84"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L82"
           },
           {
             "method": "getDataSourceTables()",
@@ -44880,7 +44880,7 @@
             "returnType": "DataSourceTable[]",
             "returnDescription": "A list of data source tables.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L82"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L80"
           },
           {
             "method": "getDeveloperMetadata()",
@@ -44889,7 +44889,7 @@
             "returnType": "DeveloperMetadata[]",
             "returnDescription": "The developer metadata associated with this sheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L414"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L412"
           },
           {
             "method": "getDrawings()",
@@ -44907,7 +44907,7 @@
             "returnType": "Filter",
             "returnDescription": "The filter.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L373"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L371"
           },
           {
             "method": "getFormUrl()",
@@ -44943,7 +44943,7 @@
             "returnType": "OverGridImage[]",
             "returnDescription": "An array of over-the-grid images.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L43"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L41"
           },
           {
             "method": "getIndex()",
@@ -44952,7 +44952,7 @@
             "returnType": "Integer",
             "returnDescription": "The position of the sheet in its parent spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L106"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L104"
           },
           {
             "method": "getLastColumn()",
@@ -44961,7 +44961,7 @@
             "returnType": "Integer",
             "returnDescription": "The last column of the sheet that contains content.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L226"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L224"
           },
           {
             "method": "getLastRow()",
@@ -44970,7 +44970,7 @@
             "returnType": "Integer",
             "returnDescription": "The last row of the sheet that contains content.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L222"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L220"
           },
           {
             "method": "getMaxColumns()",
@@ -44979,7 +44979,7 @@
             "returnType": "Integer",
             "returnDescription": "The maximum width of the sheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L118"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L116"
           },
           {
             "method": "getMaxRows()",
@@ -44988,7 +44988,7 @@
             "returnType": "Integer",
             "returnDescription": "The maximum height of the sheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L114"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L112"
           },
           {
             "method": "getName()",
@@ -44997,7 +44997,7 @@
             "returnType": "String",
             "returnDescription": "The name of the sheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L46"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L44"
           },
           {
             "method": "getNamedRanges()",
@@ -45006,7 +45006,7 @@
             "returnType": "NamedRange[]",
             "returnDescription": "An array of all the named ranges in the sheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L46"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L44"
           },
           {
             "method": "getParent()",
@@ -45015,7 +45015,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "The parent spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L94"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L92"
           },
           {
             "method": "getPivotTables()",
@@ -45024,7 +45024,7 @@
             "returnType": "PivotTable[]",
             "returnDescription": "The pivot tables on this sheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L385"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L383"
           },
           {
             "method": "getProtections(ProtectionType)",
@@ -45033,7 +45033,7 @@
             "returnType": "Protection[]",
             "returnDescription": "An array of objects representing all protected ranges in the sheet, or a single-element\n    array representing the protection on the sheet itself.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L50"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L48"
           },
           {
             "method": "getRange(Integer,Integer)",
@@ -45042,7 +45042,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L47"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L45"
           },
           {
             "method": "getRange(Integer,Integer,Integer)",
@@ -45051,7 +45051,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L47"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L45"
           },
           {
             "method": "getRange(Integer,Integer,Integer,Integer)",
@@ -45060,7 +45060,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L47"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L45"
           },
           {
             "method": "getRange(String)",
@@ -45069,7 +45069,7 @@
             "returnType": "Range",
             "returnDescription": "The range at the location designated.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L47"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L45"
           },
           {
             "method": "getRangeList(String)",
@@ -45078,7 +45078,7 @@
             "returnType": "RangeList",
             "returnDescription": "The range list at the location designated.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L536"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L534"
           },
           {
             "method": "getRowGroup(Integer,Integer)",
@@ -45114,7 +45114,7 @@
             "returnType": "Integer",
             "returnDescription": "Row height in pixels.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L254"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L252"
           },
           {
             "method": "getSelection()",
@@ -45132,7 +45132,7 @@
             "returnType": "Integer",
             "returnDescription": "An ID for the sheet unique to the spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L102"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L100"
           },
           {
             "method": "getSheetName()",
@@ -45141,7 +45141,7 @@
             "returnType": "String",
             "returnDescription": "The name of the sheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L110"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L108"
           },
           {
             "method": "getSheetValues(Integer,Integer,Integer,Integer)",
@@ -45159,7 +45159,7 @@
             "returnType": "Slicer[]",
             "returnDescription": "The list of slicers on this sheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L52"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L50"
           },
           {
             "method": "getTabColorObject()",
@@ -45177,7 +45177,7 @@
             "returnType": "SheetType",
             "returnDescription": "The type of the sheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L122"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L120"
           },
           {
             "method": "hasHiddenGridlines()",
@@ -45195,7 +45195,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L54"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L52"
           },
           {
             "method": "hideColumns(Integer)",
@@ -45204,7 +45204,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L858"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L856"
           },
           {
             "method": "hideColumns(Integer,Integer)",
@@ -45213,7 +45213,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L858"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L856"
           },
           {
             "method": "hideRow(Range)",
@@ -45222,7 +45222,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L55"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L53"
           },
           {
             "method": "hideRows(Integer)",
@@ -45231,7 +45231,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L891"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L889"
           },
           {
             "method": "hideRows(Integer,Integer)",
@@ -45240,7 +45240,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L891"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L889"
           },
           {
             "method": "hideSheet()",
@@ -45249,7 +45249,7 @@
             "returnType": "Sheet",
             "returnDescription": "The current sheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L602"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L600"
           },
           {
             "method": "insertChart(EmbeddedChart)",
@@ -45258,7 +45258,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L40"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L38"
           },
           {
             "method": "insertColumnAfter(Integer)",
@@ -45267,7 +45267,7 @@
             "returnType": "Sheet",
             "returnDescription": "The sheet, useful for method chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L65"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L63"
           },
           {
             "method": "insertColumnBefore(Integer)",
@@ -45276,7 +45276,7 @@
             "returnType": "Sheet",
             "returnDescription": "The sheet, useful for method chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L66"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L64"
           },
           {
             "method": "insertColumns(Integer)",
@@ -45285,7 +45285,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L67"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L65"
           },
           {
             "method": "insertColumns(Integer,Integer)",
@@ -45294,7 +45294,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L67"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L65"
           },
           {
             "method": "insertColumnsAfter(Integer,Integer)",
@@ -45303,7 +45303,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L68"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L66"
           },
           {
             "method": "insertColumnsBefore(Integer,Integer)",
@@ -45312,7 +45312,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L69"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L67"
           },
           {
             "method": "insertImage(BlobSource,Integer,Integer)",
@@ -45321,7 +45321,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L44"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L42"
           },
           {
             "method": "insertImage(BlobSource,Integer,Integer,Integer,Integer)",
@@ -45330,7 +45330,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L44"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L42"
           },
           {
             "method": "insertImage(String,Integer,Integer)",
@@ -45339,7 +45339,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L44"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L42"
           },
           {
             "method": "insertImage(String,Integer,Integer,Integer,Integer)",
@@ -45348,7 +45348,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L44"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L42"
           },
           {
             "method": "insertRowAfter(Integer)",
@@ -45357,7 +45357,7 @@
             "returnType": "Sheet",
             "returnDescription": "The sheet, useful for method chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L70"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L68"
           },
           {
             "method": "insertRowBefore(Integer)",
@@ -45366,7 +45366,7 @@
             "returnType": "Sheet",
             "returnDescription": "The sheet, useful for method chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L71"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L69"
           },
           {
             "method": "insertRows(Integer)",
@@ -45375,7 +45375,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L72"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L70"
           },
           {
             "method": "insertRows(Integer,Integer)",
@@ -45384,7 +45384,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L72"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L70"
           },
           {
             "method": "insertRowsAfter(Integer,Integer)",
@@ -45393,7 +45393,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L73"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L71"
           },
           {
             "method": "insertRowsBefore(Integer,Integer)",
@@ -45402,7 +45402,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L74"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L72"
           },
           {
             "method": "insertSlicer(Range,Integer,Integer)",
@@ -45411,7 +45411,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L53"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L51"
           },
           {
             "method": "insertSlicer(Range,Integer,Integer,Integer,Integer)",
@@ -45420,7 +45420,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L53"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L51"
           },
           {
             "method": "isColumnHiddenByUser(Integer)",
@@ -45429,7 +45429,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the column is hidden, false otherwise.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L58"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L56"
           },
           {
             "method": "isRightToLeft()",
@@ -45447,7 +45447,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the row is hidden, false otherwise.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L60"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L58"
           },
           {
             "method": "isRowHiddenByUser(Integer)",
@@ -45456,7 +45456,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the row is hidden, false otherwise.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L59"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L57"
           },
           {
             "method": "isSheetHidden()",
@@ -45465,7 +45465,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the sheet is hidden, false otherwise.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L126"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L124"
           },
           {
             "method": "moveColumns(Range,Integer)",
@@ -45474,7 +45474,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L64"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L62"
           },
           {
             "method": "moveRows(Range,Integer)",
@@ -45483,7 +45483,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L63"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L61"
           },
           {
             "method": "newChart()",
@@ -45510,7 +45510,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L41"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L39"
           },
           {
             "method": "setActiveRange(Range)",
@@ -45564,7 +45564,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L329"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L327"
           },
           {
             "method": "setColumnWidths(Integer,Integer,Integer)",
@@ -45573,7 +45573,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L329"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L327"
           },
           {
             "method": "setConditionalFormatRules(ConditionalFormatRule)",
@@ -45600,7 +45600,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L61"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L59"
           },
           {
             "method": "setFrozenRows(Integer)",
@@ -45609,7 +45609,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L62"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L60"
           },
           {
             "method": "setHiddenGridlines(Boolean)",
@@ -45627,7 +45627,7 @@
             "returnType": "Sheet",
             "returnDescription": "This sheet, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L49"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L47"
           },
           {
             "method": "setRightToLeft(Boolean)",
@@ -45654,7 +45654,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L295"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L293"
           },
           {
             "method": "setRowHeights(Integer,Integer,Integer)",
@@ -45663,7 +45663,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L295"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L293"
           },
           {
             "method": "setRowHeightsForced(Integer,Integer,Integer)",
@@ -45672,7 +45672,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L313"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L311"
           },
           {
             "method": "setTabColor(String)",
@@ -45735,7 +45735,7 @@
             "returnType": "Sheet",
             "returnDescription": "The current sheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L586"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L584"
           },
           {
             "method": "sort(Integer)",
@@ -45744,7 +45744,7 @@
             "returnType": "Sheet",
             "returnDescription": "The sheet, useful for method chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L512"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L510"
           },
           {
             "method": "sort(Integer,Boolean)",
@@ -45753,7 +45753,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L512"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L510"
           },
           {
             "method": "unhideColumn(Range)",
@@ -45762,7 +45762,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L56"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L54"
           },
           {
             "method": "unhideRow(Range)",
@@ -45771,7 +45771,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L57"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L55"
           },
           {
             "method": "updateChart(EmbeddedChart)",
@@ -45780,7 +45780,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L42"
+            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L40"
           }
         ]
       },

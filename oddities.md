@@ -876,7 +876,6 @@ Another issue with 10.4, is we now get this error "Method doesn't allow unregist
 
 If you want to play with the testing suite , then take a look at the [collaborators](collaborators.md) writeup.
 
-
 ## <img src="./logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
 
 - [getting started](GETTING_STARTED.md) - how to handle authentication for restricted scopes.
