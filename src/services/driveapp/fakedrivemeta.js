@@ -13,7 +13,7 @@ import { isFolder, notYetImplemented, isFakeFolder, signatureArgs } from '../../
 import { getParentsIterator } from './driveiterators.js';
 import { improveFileCache } from "../../support/filecache.js"
 import { getSharers } from '../../support/filesharers.js';
-
+import {slogger } from "../../support/slogger.js";
 /**
  * basic fake File meta data
  * these are shared between folders and files
@@ -34,7 +34,7 @@ export class FakeDriveMeta {
 
   __preventRootDamage = (operation) => {
     if (this.__isRoot) {
-      console.log (`Can't do ${operation} on root folder`)
+      slogger.error (`Can't do ${operation} on root folder`)
       throw new Error("Access denied: DriveApp")
     }
   }

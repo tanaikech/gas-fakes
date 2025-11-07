@@ -15,10 +15,8 @@ import { newFakeNamedRange } from "./fakenamedrange.js";
 import { newFakeProtection } from "./fakeprotection.js";
 import { newFakeOverGridImage } from "./fakeovergridimage.js";
 
-import { Syncit } from "../../support/syncit.js";
 import { XMLParser } from "fast-xml-parser";
-import { nullable } from "zod/v4";
-
+import {slogger } from "../../support/slogger.js";
 const { is, isEnum } = Utils;
 
 export const newFakeSheet = (properties, parent) => {
@@ -1082,7 +1080,7 @@ export class FakeSheet {
         const p = parser.parse(b.getDataAsString());
         o[filename] = p;
       } catch (err) {
-        // console.log(err);
+          slogger.error(err)
       }
       return o;
     }, {});

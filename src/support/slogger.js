@@ -3,9 +3,10 @@
  * used for all internal gas-fakes logging
  */
 
-export const isQuiet =  process.env.QUIET.toString().toLowerCase()=== "true";
+const q = process.env.QUIET || false
+export const isQuiet =  q.toString().toLowerCase()=== "true";
 
-export const cliLogger = {
+export const slogger = {
   log: isQuiet ? () => {} : console.log,
   error: console.error,
   warn: console.warn,

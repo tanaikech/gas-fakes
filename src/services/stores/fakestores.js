@@ -5,9 +5,8 @@ import { Utils } from '../../support/utils.js'
 import { storeModels } from './gasflex.js'
 import { newCacheDropin } from '@mcpher/gas-flex-cache'
 import { notYetImplemented } from '../../support/helpers.js'
-import { file } from 'googleapis/build/src/apis/file/index.js'
 const { is } = Utils
-
+import {slogger } from "../../support/slogger.js";
 /**
  * what these props mean
  * store_type = currently upstash or file - it defines the back end and maps to env variable
@@ -185,7 +184,7 @@ class FakeCacheService {
 export const newFakeService = (kind) => {
   kind = validateProp (kind, ServiceKind, 'service_kind')
   const w = whichCache ()
-  console.log (`...${kind} store service is using store type ${w.type} as backend`)
+  slogger.log (`...${kind} store service is using store type ${w.type} as backend`)
   return Proxies.guard(kind === ServiceKind.CACHE ? new FakeCacheService(w.type) : new FakePropertiesService(w.type))
 }
 

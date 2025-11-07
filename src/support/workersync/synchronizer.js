@@ -2,6 +2,7 @@ import { Worker } from 'worker_threads';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import fs from 'node:fs';
+import { slogger} from '../slogger.js'
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -92,7 +93,7 @@ worker.unref();
  * whether normally or via signals like Ctrl+C.
  */
 function cleanup() {
-  console.log('...terminating worker thread');
+  slogger.log('...terminating worker thread');
   worker.terminate();
 }
 

@@ -1,11 +1,5 @@
-// all these imports
-// this is loaded by npm, but is a library on Apps Script side
-
-// all the fake services are here
-//import '@mcpher/gas-fakes/main.js'
-
+// use package.json to direct to file:../ for local code testing
 import '@mcpher/gas-fakes'
-
 
 import { initTests } from "./testinit.js";
 import { testDrive } from "./testdrive.js";

@@ -11,7 +11,7 @@
  *
  * @example
  * const MyEnum = newFakeGasEnum('MyEnum', ['KEY_A', 'KEY_B']);
- * console.log(MyEnum.KEY_A); // Outputs: "KEY_A"
+ * c.log(MyEnum.KEY_A); // Outputs: "KEY_A"
  * MyEnum.KEY_A = 'new value'; // Throws an error in strict mode
  *
  * @param {string} name The name of the enum, used for `toString()` representation (e.g., "ElementType").

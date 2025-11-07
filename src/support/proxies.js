@@ -74,7 +74,7 @@ const registerProxy = (name, getApp) => {
   serviceRegistry.add(name);
   const value = new Proxy({}, getAppHandler(getApp, name))
   // add it to the global space to mimic what apps script does
-  // console.log (`setting ${name} to global`)
+
   Object.defineProperty(globalThis, name, {
     value,
     enumerable: true,
@@ -103,7 +103,7 @@ const validateProperties = () => {
       if (
         // skip any inserted symbos
         typeof prop !== 'symbol' &&
-        // sometimes typeof & console.log looks for ths
+        // sometimes typeof & c.log looks for ths
         prop !== 'inspect' &&
         // this is a mysterious property that APPS script sometimes checks for
         prop !== '__GS_INTERNAL_isProxy' &&

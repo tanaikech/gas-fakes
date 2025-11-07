@@ -2,7 +2,7 @@
  * @file Provides helper functions for working with fake document elements.
  */
 
-
+import {slogger } from "../../support/slogger.js";
 import { Utils } from "../../support/utils.js";
 const { is } = Utils
 
@@ -38,7 +38,7 @@ export const getElementProp = (se) => {
     return { prop: 'body', type: 'BODY_SECTION' };
   }
 
-  console.log(se);
+  slogger.error(se);
   throw new Error('couldnt establish structural element type');
 }
 
@@ -220,7 +220,7 @@ export const findItem = (elementMap, type, startIndex, segmentId) => {
     return f.__type === type && f.startIndex === startIndex;
   });
   if (!item) {
-    console.log(elementMap.values())
+    slogger.error(elementMap.values())
     throw new Error(`Couldnt find element ${type} at ${startIndex} in segment ${segmentId || 'body'}`)
   }
   return item

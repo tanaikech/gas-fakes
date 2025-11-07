@@ -189,7 +189,7 @@ const writeToCloudOrConsole = (message, loggerInstance) => {
       headers,
     })
     if (response.getResponseCode() !== 200) {
-      console.log ('logging failure', response.getContentText())
+      console.error ('logging failure', response.getContentText())
     }
  
   }

@@ -10,8 +10,6 @@ import { testFixes } from './testfixes.js'
 import '@mcpher/gas-fakes';
 import { Proxies } from '../src/support/proxies.js';
 
-
-
 export const initTests = () => {
 
   // on node this will have come from the imports that get stripped when mocing to gas

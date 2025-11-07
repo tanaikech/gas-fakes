@@ -2,7 +2,7 @@
 
 import is from '@sindresorhus/is';
 import { assert } from '@sindresorhus/is'
-
+import {slogger} from './slogger.js'
 
 const isNU = (item) => is.null(item) || is.undefined(item)
 
@@ -14,7 +14,7 @@ const fromJson = (text, failOnError = false) => {
   try {
     return JSON.parse(text)
   } catch (err) {
-    console.log(text)
+    slogger.warn(text)
     if (failOnError) {
       throw err
     }
@@ -425,7 +425,7 @@ function stabilizeKeyOrder(obj) {
 const lobify = (ob, mess = '') => {
   let lob = ob
   if (is.object(lob)) lob = stringCircular(lob)
-  console.log(mess, lob)
+  slogger.log(mess, lob)
   return ob
 }
 export const Utils = {
