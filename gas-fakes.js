@@ -529,6 +529,7 @@ async function main() {
     .description(
       "Initializes the configuration by creating or updating the .env file."
     )
+    .option("-e, --env <path>", "Path to a custom .env file.")
     .action(initializeConfiguration);
 
   program
