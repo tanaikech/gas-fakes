@@ -27,12 +27,35 @@ npm i @mcpher/gas-fakes
 
 Authentication is handled using Application Default Credentials (ADC), enhanced with an OAuth client to access restricted scopes.
 
+There are various ways to do this. 
+
+### Use the gas-fakes-cli (recommended)
+
+The simplest and most complete way is to use the gas-fakes-cli, and available from v1.2.19
+
+Install gas-fakes globally 
+- npm install i -g @mcpher/gas-fakes
+- or use npx gas-fakes 
+  
+Then you can use these commands to guide you through the process:
+
+- gas-fakes init - to setup your intiialization choices
+- gas-fakes auth - to authorize
+- gas-fakes enableApis - to enable workspace apis
+
+
+For more details see [gas-fakes-cli](gas-fakes-cli.md)
+
+### Alternative methods - may be deprecated in the future
+
+If you really don't want to install and use gas-fakes-cli (or use npx gas-fakes), you can do one of these other methods.
+
 1.  **Download Helper Scripts**: Get the `shells` folder from the `gas-fakes` repository and place it in your project's root directory.
 
 2.  **Create and Configure `.env` File**: You can create the environment file in one of two ways:
 
-    *   **Interactive Setup (Recommended)**
-        Run the `setup.sh` script from within the `shells` directory. It will guide you through creating your `.env` file by asking for the necessary values. If an `.env` file already exists, it will use the existing values as defaults.
+    *   **Interactive Setup **
+        Run the `setup.sh` script from within the `shells` directory. It will guide you through creating your `.env` file by asking for the necessary values. If an `.env` file already exists, it will use the existing values as defaults. This is similar, but less comprehensive than the gas-fakes-cli method.
         ```sh
         cd shells
         ./setup.sh
@@ -61,6 +84,10 @@ Authentication is handled using Application Default Credentials (ADC), enhanced 
         # Upstash credentials (only used if STORE_TYPE is 'UPSTASH')
         UPSTASH_REDIS_REST_URL="https://your-instance.upstash.io"
         UPSTASH_REDIS_REST_TOKEN="your-upstash-token"
+
+        # Whether to suppress messages from the gas-fakes API
+        QUIET="true"
+
         ```
 
 ## Step 3: Configure OAuth for Restricted Scopes - if you plan to use them
