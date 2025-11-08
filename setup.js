@@ -80,6 +80,293 @@ function runCommand(command) {
  * Handles the 'init' command to configure the .env file.
  * @param {object} options - Options from commander (e.g., { env: './path/to/.env' })
  */
+// export async function initializeConfiguration(options = {}) {
+//   let envPath;
+
+//   if (options.env) {
+//     envPath = path.resolve(process.cwd(), options.env);
+//     console.log(`-> Using specified .env path: ${envPath}`);
+//   } else {
+//     envPath = path.join(process.cwd(), ".env");
+//     const foundFiles = await findEnvFiles(process.cwd());
+//     if (foundFiles.length > 0) {
+//       const results = foundFiles
+//         .map((file) => file.split(path.sep))
+//         .sort((a, b) => (a.length > b.length ? 1 : -1));
+//       envPath = results[0].join(path.sep);
+//     }
+//     console.log(`-> Using .env file at: ${envPath}`);
+//   }
+
+//   let existingConfig = {};
+//   if (existsSync(envPath)) {
+//     console.log(
+//       "Found existing .env file. Loading current values as defaults."
+//     );
+//     existingConfig = dotenv.parse(readFileSync(envPath));
+//   }
+
+//   console.log("--------------------------------------------------");
+//   console.log("Configuring .env for gas-fakes");
+//   console.log("Press Enter to accept the default value in brackets.");
+//   console.log("Use Space to select/deselect scopes.");
+//   console.log("--------------------------------------------------");
+
+//   const existingDefaultScopes = existingConfig.DEFAULT_SCOPES
+//     ? existingConfig.DEFAULT_SCOPES.split(",")
+//     : [];
+//   const existingExtraScopes = existingConfig.EXTRA_SCOPES
+//     ? existingConfig.EXTRA_SCOPES.split(",").filter((s) => s)
+//     : [];
+
+//   // Structure for staged questions
+//   const responses = {};
+
+//   // --- Stage 1: Basic Info ---
+//   const basicInfoQuestions = [
+//     {
+//       type: "text",
+//       name: "GCP_PROJECT_ID",
+//       message: "Enter your GCP Project ID",
+//       initial: existingConfig.GCP_PROJECT_ID || "",
+//     },
+//     {
+//       type: "text",
+//       name: "DRIVE_TEST_FILE_ID",
+//       message: "Enter a test Drive file ID for authentication checks",
+//       initial: existingConfig.DRIVE_TEST_FILE_ID || "",
+//     },
+//     {
+//       type: "text",
+//       name: "CLIENT_CREDENTIAL_FILE",
+//       message: "Enter path to OAuth client credentials JSON (optional)",
+//       initial: existingConfig.CLIENT_CREDENTIAL_FILE || "",
+//     },
+//   ];
+
+//   const basicInfoResponses = await prompts(basicInfoQuestions);
+//   if (typeof basicInfoResponses.GCP_PROJECT_ID === "undefined") {
+//     console.log("Initialization cancelled.");
+//     return;
+//   }
+//   Object.assign(responses, basicInfoResponses);
+
+//   // --- Stage 2: Scopes ---
+//   const scopeQuestions = [
+//     {
+//       type: "multiselect",
+//       name: "DEFAULT_SCOPES",
+//       message: "Select default scopes (required for basic operations)",
+//       choices: [
+//         {
+//           title: "User Info (email)",
+//           value: "https://www.googleapis.com/auth/userinfo.email",
+//         },
+//         { title: "OpenID", value: "openid" },
+//         {
+//           title: "Google Cloud Platform (general access)",
+//           value: "https://www.googleapis.com/auth/cloud-platform",
+//         },
+//       ].map((scope) => ({
+//         ...scope,
+//         selected:
+//           existingDefaultScopes.length > 0
+//             ? existingDefaultScopes.includes(scope.value)
+//             : true,
+//       })),
+//       hint: "- Use space to select/deselect. Press Enter to submit.",
+//     },
+//     {
+//       type: "multiselect",
+//       name: "EXTRA_SCOPES",
+//       message: "Select any extra scopes your script requires",
+//       choices: [
+//         {
+//           title: "Drive (full access)",
+//           value: "https://www.googleapis.com/auth/drive",
+//         },
+//         {
+//           title: "Sheets (full access)",
+//           value: "https://www.googleapis.com/auth/spreadsheets",
+//         },
+//         {
+//           title: "Docs (full access)",
+//           value: "https://www.googleapis.com/auth/documents",
+//         },
+//         {
+//           title: "Forms (full access)",
+//           value: "https://www.googleapis.com/auth/forms",
+//         },
+//         {
+//           title: "Gmail (send mail)",
+//           value: "https://www.googleapis.com/auth/gmail.send",
+//         },
+//         {
+//           title: "Gmail (full access)",
+//           value: "https://www.googleapis.com/auth/gmail.modify",
+//         },
+//       ].map((scope) => ({
+//         ...scope,
+//         selected: existingExtraScopes.includes(scope.value),
+//       })),
+//       hint: "- Use space to select/deselect. Press Enter to submit.",
+//     },
+//   ];
+
+//   const scopeResponses = await prompts(scopeQuestions);
+//   if (typeof scopeResponses.DEFAULT_SCOPES === "undefined") {
+//     console.log("Initialization cancelled.");
+//     return;
+//   }
+//   Object.assign(responses, scopeResponses);
+
+//   const defaultScopesDisplay =
+//     responses.DEFAULT_SCOPES && responses.DEFAULT_SCOPES.length > 0
+//       ? `\n  - Default: [${responses.DEFAULT_SCOPES.join(", ")}]`
+//       : "\n  - Default: [None]";
+//   const extraScopesDisplay =
+//     responses.EXTRA_SCOPES && responses.EXTRA_SCOPES.length > 0
+//       ? `\n  - Extra:   [${responses.EXTRA_SCOPES.join(", ")}]`
+//       : "\n  - Extra:   [None]";
+
+//   // --- Stage 3: Remaining Config ---
+//   const remainingQuestions = [
+//     {
+//       type: "select",
+//       name: "LOG_DESTINATION",
+//       message: `Selected Scopes:${defaultScopesDisplay}${extraScopesDisplay}\n\nEnter logging destination`,
+//       choices: [
+//         { title: "CONSOLE", value: "CONSOLE" },
+//         { title: "CLOUD", value: "CLOUD" },
+//         { title: "BOTH", value: "BOTH" },
+//         { title: "NONE", value: "NONE" },
+//       ],
+//       initial:
+//         ["CONSOLE", "CLOUD", "BOTH", "NONE"].indexOf(
+//           existingConfig.LOG_DESTINATION
+//         ) > -1
+//           ? ["CONSOLE", "CLOUD", "BOTH", "NONE"].indexOf(
+//               existingConfig.LOG_DESTINATION
+//             )
+//           : 0,
+//     },
+//     {
+//       type: "select",
+//       name: "STORE_TYPE",
+//       message: "Enter storage type",
+//       choices: [
+//         { title: "FILE", value: "FILE" },
+//         { title: "UPSTASH", value: "UPSTASH" },
+//       ],
+//       initial:
+//         ["FILE", "UPSTASH"].indexOf(existingConfig.STORE_TYPE?.toUpperCase()) >
+//         -1
+//           ? ["FILE", "UPSTASH"].indexOf(existingConfig.STORE_TYPE.toUpperCase())
+//           : 0,
+//     },
+//   ];
+
+//   const remainingResponses = await prompts(remainingQuestions);
+//   if (typeof remainingResponses.LOG_DESTINATION === "undefined") {
+//     console.log("Initialization cancelled.");
+//     return;
+//   }
+//   Object.assign(responses, remainingResponses);
+
+//   // Convert scope arrays to comma-separated strings for saving
+//   if (Array.isArray(responses.DEFAULT_SCOPES)) {
+//     responses.DEFAULT_SCOPES = responses.DEFAULT_SCOPES.join(",");
+//   }
+//   if (Array.isArray(responses.EXTRA_SCOPES)) {
+//     responses.EXTRA_SCOPES = responses.EXTRA_SCOPES.join(",");
+//   }
+
+//   if (responses.STORE_TYPE === "UPSTASH") {
+//     const upstashQuestions = [
+//       {
+//         type: "text",
+//         name: "UPSTASH_REDIS_REST_URL",
+//         message: "Enter your Upstash Redis REST URL",
+//         initial: existingConfig.UPSTASH_REDIS_REST_URL || "",
+//       },
+//       {
+//         type: "text",
+//         name: "UPSTASH_REDIS_REST_TOKEN",
+//         message: "Enter your Upstash Redis REST Token",
+//         initial: existingConfig.UPSTASH_REDIS_REST_TOKEN || "",
+//       },
+//     ];
+//     const upstashResponses = await prompts(upstashQuestions);
+
+//     if (typeof upstashResponses.UPSTASH_REDIS_REST_URL === "undefined") {
+//       console.log("Initialization cancelled during Upstash configuration.");
+//       return;
+//     }
+//     Object.assign(responses, upstashResponses);
+//   }
+
+//   // --- Confirmation Step ---
+//   console.log("\n------------------ Summary ------------------");
+//   Object.entries(responses).forEach(([key, value]) => {
+//     if (value !== undefined) console.log(`${key}: ${value}`);
+//   });
+//   console.log("-------------------------------------------");
+
+//   const confirmSave = await prompts({
+//     type: "confirm",
+//     name: "save",
+//     message: `Save this configuration to ${envPath}?`,
+//     initial: true,
+//   });
+
+//   if (!confirmSave.save) {
+//     console.log("Configuration discarded. No changes were made.");
+//     return;
+//   }
+
+//   // --- File Writing Logic ---
+//   console.log(`Writing configuration to ${envPath}...`);
+
+//   const finalConfig = { ...existingConfig, ...responses };
+
+//   let envContent = `
+// # Google Cloud Project ID (required)
+// GCP_PROJECT_ID="${finalConfig.GCP_PROJECT_ID || ""}"
+
+// # Path to OAuth client credentials for restricted scopes (optional)
+// CLIENT_CREDENTIAL_FILE="${finalConfig.CLIENT_CREDENTIAL_FILE || ""}"
+
+// # A test file ID for checking authentication (optional)
+// DRIVE_TEST_FILE_ID="${finalConfig.DRIVE_TEST_FILE_ID || ""}"
+
+// # Storage configuration for PropertiesService and CacheService ('FILE' or 'UPSTASH')
+// STORE_TYPE="${finalConfig.STORE_TYPE || "FILE"}"
+
+// # Logging destination for Logger.log() ('CONSOLE', 'CLOUD', 'BOTH', 'NONE')
+// LOG_DESTINATION="${finalConfig.LOG_DESTINATION || "CONSOLE"}"
+
+// # Scopes for authentication
+// DEFAULT_SCOPES="${finalConfig.DEFAULT_SCOPES || ""}"
+// EXTRA_SCOPES="${finalConfig.EXTRA_SCOPES || ""}"
+// `.trim();
+
+//   if (finalConfig.STORE_TYPE === "UPSTASH") {
+//     envContent += `
+
+// # Upstash credentials (only used if STORE_TYPE is 'UPSTASH')
+// UPSTASH_REDIS_REST_URL="${finalConfig.UPSTASH_REDIS_REST_URL || ""}"
+// UPSTASH_REDIS_REST_TOKEN="${finalConfig.UPSTASH_REDIS_REST_TOKEN || ""}"
+// `;
+//   }
+
+//   writeFileSync(envPath, envContent + "\n", "utf8");
+
+//   console.log("--------------------------------------------------");
+//   console.log("Setup complete. Your .env file has been updated.");
+//   console.log("--------------------------------------------------");
+// }
+// setup.jsに記載する新しいinitializeConfiguration関数（ファイル存在確認機能付き）
+
 export async function initializeConfiguration(options = {}) {
   let envPath;
 
@@ -87,13 +374,39 @@ export async function initializeConfiguration(options = {}) {
     envPath = path.resolve(process.cwd(), options.env);
     console.log(`-> Using specified .env path: ${envPath}`);
   } else {
-    envPath = path.join(process.cwd(), ".env");
     const foundFiles = await findEnvFiles(process.cwd());
     if (foundFiles.length > 0) {
-      const results = foundFiles
-        .map((file) => file.split(path.sep))
-        .sort((a, b) => (a.length > b.length ? 1 : -1));
-      envPath = results[0].join(path.sep);
+      const choices = foundFiles.map((file) => ({
+        title: file,
+        value: file,
+      }));
+      choices.push({
+        title: "Create a new .env file in the current directory",
+        value: "new",
+      });
+
+      const response = await prompts({
+        type: "select",
+        name: "envPathSelection",
+        message: "Found .env file(s). Which one would you like to use?",
+        choices: choices,
+      });
+
+      if (typeof response.envPathSelection === "undefined") {
+        console.log("Initialization cancelled.");
+        return;
+      }
+
+      if (response.envPathSelection === "new") {
+        envPath = path.join(process.cwd(), ".env");
+      } else {
+        envPath = response.envPathSelection;
+      }
+    } else {
+      console.log(
+        "No .env file found. A new one will be created in the current directory."
+      );
+      envPath = path.join(process.cwd(), ".env");
     }
     console.log(`-> Using .env file at: ${envPath}`);
   }
@@ -112,14 +425,10 @@ export async function initializeConfiguration(options = {}) {
   console.log("Use Space to select/deselect scopes.");
   console.log("--------------------------------------------------");
 
-  const existingDefaultScopes = existingConfig.DEFAULT_SCOPES
-    ? existingConfig.DEFAULT_SCOPES.split(",")
-    : [];
   const existingExtraScopes = existingConfig.EXTRA_SCOPES
     ? existingConfig.EXTRA_SCOPES.split(",").filter((s) => s)
     : [];
 
-  // Structure for staged questions
   const responses = {};
 
   // --- Stage 1: Basic Info ---
@@ -136,12 +445,6 @@ export async function initializeConfiguration(options = {}) {
       message: "Enter a test Drive file ID for authentication checks",
       initial: existingConfig.DRIVE_TEST_FILE_ID || "",
     },
-    {
-      type: "text",
-      name: "CLIENT_CREDENTIAL_FILE",
-      message: "Enter path to OAuth client credentials JSON (optional)",
-      initial: existingConfig.CLIENT_CREDENTIAL_FILE || "",
-    },
   ];
 
   const basicInfoResponses = await prompts(basicInfoQuestions);
@@ -152,84 +455,133 @@ export async function initializeConfiguration(options = {}) {
   Object.assign(responses, basicInfoResponses);
 
   // --- Stage 2: Scopes ---
-  const scopeQuestions = [
-    {
-      type: "multiselect",
-      name: "DEFAULT_SCOPES",
-      message: "Select default scopes (required for basic operations)",
-      choices: [
-        {
-          title: "User Info (email)",
-          value: "https://www.googleapis.com/auth/userinfo.email",
-        },
-        { title: "OpenID", value: "openid" },
-        {
-          title: "Google Cloud Platform (general access)",
-          value: "https://www.googleapis.com/auth/cloud-platform",
-        },
-      ].map((scope) => ({
-        ...scope,
-        selected:
-          existingDefaultScopes.length > 0
-            ? existingDefaultScopes.includes(scope.value)
-            : true,
-      })),
-      hint: "- Use space to select/deselect. Press Enter to submit.",
-    },
-    {
-      type: "multiselect",
-      name: "EXTRA_SCOPES",
-      message: "Select any extra scopes your script requires",
-      choices: [
-        {
-          title: "Drive (full access)",
-          value: "https://www.googleapis.com/auth/drive",
-        },
-        {
-          title: "Sheets (full access)",
-          value: "https://www.googleapis.com/auth/spreadsheets",
-        },
-        {
-          title: "Docs (full access)",
-          value: "https://www.googleapis.com/auth/documents",
-        },
-        {
-          title: "Forms (full access)",
-          value: "https://www.googleapis.com/auth/forms",
-        },
-        {
-          title: "Gmail (send mail)",
-          value: "https://www.googleapis.com/auth/gmail.send",
-        },
-        {
-          title: "Gmail (full access)",
-          value: "https://www.googleapis.com/auth/gmail.modify",
-        },
-      ].map((scope) => ({
-        ...scope,
-        selected: existingExtraScopes.includes(scope.value),
-      })),
-      hint: "- Use space to select/deselect. Press Enter to submit.",
-    },
+
+  const DEFAULT_SCOPES_VALUES = [
+    "https://www.googleapis.com/auth/userinfo.email",
+    "openid",
+    "https://www.googleapis.com/auth/cloud-platform",
+  ];
+  console.log(
+    "\nThe following default scopes are required for basic operations and will be enabled automatically:"
+  );
+  DEFAULT_SCOPES_VALUES.forEach((scope) => console.log(`  - ${scope}`));
+  responses.DEFAULT_SCOPES = DEFAULT_SCOPES_VALUES;
+
+  const SENSITIVE_SCOPES_LIST = [
+    "https://www.googleapis.com/auth/gmail.labels",
+    "https://www.googleapis.com/auth/gmail.compose",
   ];
 
-  const scopeResponses = await prompts(scopeQuestions);
-  if (typeof scopeResponses.DEFAULT_SCOPES === "undefined") {
+  const extraScopeQuestion = {
+    type: "multiselect",
+    name: "EXTRA_SCOPES",
+    message: "Select any extra scopes your script requires",
+    choices: [
+      {
+        title: "Drive (full access)",
+        value: "https://www.googleapis.com/auth/drive",
+      },
+      {
+        title: "Sheets (full access)",
+        value: "https://www.googleapis.com/auth/spreadsheets",
+      },
+      {
+        title: "Docs (full access)",
+        value: "https://www.googleapis.com/auth/documents",
+      },
+      {
+        title: "Forms (full access)",
+        value: "https://www.googleapis.com/auth/forms",
+      },
+      {
+        title: "Gmail (send mail)",
+        value: "https://www.googleapis.com/auth/gmail.send",
+      },
+      {
+        title: "Gmail (full access)",
+        value: "https://www.googleapis.com/auth/gmail.modify",
+      },
+      {
+        title: "Gmail (labels access - sensitive)",
+        value: "https://www.googleapis.com/auth/gmail.labels",
+      },
+      {
+        title: "Gmail (compose access - sensitive)",
+        value: "https://www.googleapis.com/auth/gmail.compose",
+      },
+    ].map((scope) => ({
+      ...scope,
+      selected:
+        existingExtraScopes.length > 0
+          ? existingExtraScopes.includes(scope.value)
+          : scope.value === "https://www.googleapis.com/auth/drive",
+    })),
+    hint: "- Use space to select/deselect. Press Enter to submit.",
+  };
+
+  const extraScopeResponses = await prompts(extraScopeQuestion);
+  if (typeof extraScopeResponses.EXTRA_SCOPES === "undefined") {
     console.log("Initialization cancelled.");
     return;
   }
-  Object.assign(responses, scopeResponses);
+  Object.assign(responses, extraScopeResponses);
 
-  const defaultScopesDisplay =
-    responses.DEFAULT_SCOPES && responses.DEFAULT_SCOPES.length > 0
-      ? `\n  - Default: [${responses.DEFAULT_SCOPES.join(", ")}]`
-      : "\n  - Default: [None]";
+  const selectedExtraScopes = responses.EXTRA_SCOPES || [];
+  const usesSensitiveScopes = SENSITIVE_SCOPES_LIST.some((s) =>
+    selectedExtraScopes.includes(s)
+  );
+
+  if (usesSensitiveScopes) {
+    console.log(
+      "\n[!] You have selected sensitive scopes. An OAuth client credential file is required for these."
+    );
+  }
+
+  const clientCredentialQuestion = {
+    type: "text",
+    name: "CLIENT_CREDENTIAL_FILE",
+    message: usesSensitiveScopes
+      ? "Enter the path and filename for your OAuth client credentials JSON"
+      : "Enter path to OAuth client credentials JSON (optional)",
+    initial: existingConfig.CLIENT_CREDENTIAL_FILE || "",
+    validate: (input) => {
+      const trimmedInput = input.trim();
+
+      if (usesSensitiveScopes) {
+        if (trimmedInput === "") {
+          return "This field is required for the selected sensitive scopes.";
+        }
+      } else {
+        if (trimmedInput === "") {
+          return true;
+        }
+      }
+
+      const resolvedPath = path.resolve(process.cwd(), trimmedInput);
+      if (!existsSync(resolvedPath)) {
+        return `File not found at '${resolvedPath}'. Please check the path and try again.`;
+      }
+
+      return true;
+    },
+  };
+
+  const clientCredentialResponse = await prompts(clientCredentialQuestion);
+  if (typeof clientCredentialResponse.CLIENT_CREDENTIAL_FILE === "undefined") {
+    console.log("Initialization cancelled.");
+    return;
+  }
+  Object.assign(responses, clientCredentialResponse);
+
+  // --- Stage 3: Remaining Config ---
+  const defaultScopesDisplay = `\n  - Default: [${responses.DEFAULT_SCOPES.join(
+    ", "
+  )}]`;
   const extraScopesDisplay =
     responses.EXTRA_SCOPES && responses.EXTRA_SCOPES.length > 0
       ? `\n  - Extra:   [${responses.EXTRA_SCOPES.join(", ")}]`
       : "\n  - Extra:   [None]";
 
-  // --- Stage 3: Remaining Config ---
   const remainingQuestions = [
     {
       type: "select",
