@@ -31,7 +31,7 @@ const VERSION = pjson.version;
 // CONSTANTS & UTILITIES
 // -----------------------------------------------------------------------------
 
-const CLI_VERSION = "0.0.11";
+const CLI_VERSION = "0.0.12";
 const MCP_VERSION = "0.0.3";
 const execAsync = promisify(exec);
 
