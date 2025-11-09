@@ -34,7 +34,7 @@ There are various ways to do this.
 The simplest and most complete way is to use the gas-fakes-cli, and available from v1.2.19
 
 Install gas-fakes globally 
-- npm install i -g @mcpher/gas-fakes
+- npm i -g @mcpher/gas-fakes
 - or use npx @mcpher/gas-fakes 
   
 Then you can use these commands to guide you through the process:
