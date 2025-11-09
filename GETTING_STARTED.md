@@ -115,26 +115,24 @@ Recent Google security policies require extra steps to access certain APIs (like
     *   Click **Create**. A popup will show your Client ID and Secret. Click **Download JSON** and save the file to a secure location in your project (e.g., a `private/` folder that is included in your `.gitignore`).
 
 5.  **Update `.env` with Credentials Path**: Add a new line to your `.env` file pointing to the JSON file you just downloaded.
-    If you used `setup.sh`, you can re-run it to add or update this value.
+    Use your preferred method to update your .env file. Simplest is to rerun `gas-fakes init` which will prompt you through adding this value and your new restricted scopes(s)
     ```
     CLIENT_CREDENTIAL_FILE="private/your-downloaded-credentials-file.json"
     ```
 
 ## Step 4: Authorize Your Application
 
-Now, run the provided shell scripts to use your new configuration to log in and authorize the application.
+Now, run the auth process again.
 
-1.  **Login with ADC**: This script initiates the Google login flow. It will open a browser window where you'll need to sign in and grant permission for the scopes you configured. This creates the initial Application Default Credentials file.
-
+1.  **Login with ADC**: This script initiates the Google login flow. It will open a browser window where you'll need to sign in and grant permission for the scopes you configured. 
     ```bash
-    cd shells
-    bash setaccount.sh
+    gas-fakes auth
     ```
 
-2.  **Enable Workspace APIs**: If this is a new GCP project, you need to enable the necessary APIs (Drive, Sheets, Docs, etc.). The `enable.sh` script does this for you.
+2.  **Enable Workspace APIs**: You may need to enable the any new APIs (Drive, Sheets, Docs, etc.). use can use gas-fakes cli to check and do this for you.
 
     ```bash
-    bash enable.sh
+    gas-fakes enableAPIs
     ```
 
 ## Step 5: Configure Your Project Files
@@ -157,6 +155,7 @@ Now, run the provided shell scripts to use your new configuration to log in and 
     }
     ```
     *   `scriptId`: It's recommended to set a unique but static value here. This ensures that local data stores for `PropertiesService` and `CacheService` are persistent between runs.
+  
 
 ---
 
@@ -169,7 +168,7 @@ This is especially useful for integration testing, where you can write data in a
 ### 1. Configure `gas-fakes` (Local Environment)
 
 *   **Get Upstash Credentials**: Sign up for a free Upstash Redis database and get your REST URL and Token.
-*   **Update your `.env` file**: Set `STORE_TYPE` to `UPSTASH` and add your credentials. You can do this by re-running the interactive `setup.sh` script or by editing the file manually.
+*   **Update your `.env` file**: Set `STORE_TYPE` to `UPSTASH` and add your credentials. You can do this by rerunning `gas-fakse init`
 
     ```env
     # ... other settings
