@@ -145,16 +145,17 @@ export async function initializeConfiguration(options = {}) {
       type: "text",
       name: "GCP_PROJECT_ID",
       message: "Enter your GCP Project ID",
-      initial: existingConfig.GCP_PROJECT_ID || process.env.GOOGLE_CLOUD_PROJECT,
+      initial:
+        existingConfig.GCP_PROJECT_ID || process.env.GOOGLE_CLOUD_PROJECT,
     },
     {
       type: "text",
       name: "DRIVE_TEST_FILE_ID",
-      message: "Enter a test Drive file ID for authentication checks (optional)",
+      message:
+        "Enter a test Drive file ID for authentication checks (optional)",
       initial: existingConfig.DRIVE_TEST_FILE_ID || "",
     },
   ];
-
 
   const basicInfoResponses = await prompts(basicInfoQuestions);
   if (typeof basicInfoResponses.GCP_PROJECT_ID === "undefined") {
@@ -175,7 +176,6 @@ export async function initializeConfiguration(options = {}) {
   );
   DEFAULT_SCOPES_VALUES.forEach((scope) => console.log(`  - ${scope}`));
   responses.DEFAULT_SCOPES = DEFAULT_SCOPES_VALUES;
-
 
   const extraScopeQuestion = {
     type: "multiselect",
@@ -220,10 +220,11 @@ export async function initializeConfiguration(options = {}) {
         title: "Gmail compose",
         value: "https://www.googleapis.com/auth/gmail.compose",
       },
-
     ].map((scope) => ({
       ...scope,
-      title: scope.sensitivity ? `[${scope.sensitivity}] ${scope.title}` : scope.title,
+      title: scope.sensitivity
+        ? `[${scope.sensitivity}] ${scope.title}`
+        : scope.title,
       // because we always need drive for ant extra scopes
       selected:
         existingExtraScopes.length > 0
@@ -252,14 +253,16 @@ export async function initializeConfiguration(options = {}) {
     selectedExtraScopes.includes(s.value)
   );
 
-
   if (usesSensitiveScopes) {
     console.log("\n--------------------------------------------------");
-    console.log("You have selected sensitive or restricted scopes. Google requires an OAuth client credential file for these.");
-    console.log('See the getting started guide https://github.com/brucemcpherson/gas-fakes/blob/main/GETTING_STARTED.md for how.')
+    console.log(
+      "You have selected sensitive or restricted scopes. Google requires an OAuth client credential file for these."
+    );
+    console.log(
+      "See the getting started guide https://github.com/brucemcpherson/gas-fakes/blob/main/GETTING_STARTED.md for how."
+    );
     console.log("--------------------------------------------------");
   }
-
 
   const clientCredentialQuestion = {
     type: "text",
@@ -306,45 +309,46 @@ export async function initializeConfiguration(options = {}) {
       ? `\n  - Extra:   [${responses.EXTRA_SCOPES.join(", ")}]`
       : "\n  - Extra:   [None]";
 
-  const remainingQuestions = [{
-    type: "toggle",
-    name: "QUIET",
-    message: "Run gas-fakes package in quiet mode",
-    initial: existingConfig.QUIET === "true" ? true : false,
-  },
-  {
-    type: "select",
-    name: "LOG_DESTINATION",
-    message: `Selected Scopes:${defaultScopesDisplay}${extraScopesDisplay}\n\nEnter logging destination`,
-    choices: [
-      { title: "CONSOLE", value: "CONSOLE" },
-      { title: "CLOUD", value: "CLOUD" },
-      { title: "BOTH", value: "BOTH" },
-      { title: "NONE", value: "NONE" },
-    ],
-    initial:
-      ["CONSOLE", "CLOUD", "BOTH", "NONE"].indexOf(
-        existingConfig.LOG_DESTINATION
-      ) > -1
-        ? ["CONSOLE", "CLOUD", "BOTH", "NONE"].indexOf(
+  const remainingQuestions = [
+    {
+      type: "toggle",
+      name: "QUIET",
+      message: "Run gas-fakes package in quiet mode",
+      initial: existingConfig.QUIET === "true" ? true : false,
+    },
+    {
+      type: "select",
+      name: "LOG_DESTINATION",
+      message: `Selected Scopes:${defaultScopesDisplay}${extraScopesDisplay}\n\nEnter logging destination`,
+      choices: [
+        { title: "CONSOLE", value: "CONSOLE" },
+        { title: "CLOUD", value: "CLOUD" },
+        { title: "BOTH", value: "BOTH" },
+        { title: "NONE", value: "NONE" },
+      ],
+      initial:
+        ["CONSOLE", "CLOUD", "BOTH", "NONE"].indexOf(
           existingConfig.LOG_DESTINATION
-        )
-        : 0,
-  },
-  {
-    type: "select",
-    name: "STORE_TYPE",
-    message: "Enter storage type",
-    choices: [
-      { title: "FILE", value: "FILE" },
-      { title: "UPSTASH", value: "UPSTASH" },
-    ],
-    initial:
-      ["FILE", "UPSTASH"].indexOf(existingConfig.STORE_TYPE?.toUpperCase()) >
+        ) > -1
+          ? ["CONSOLE", "CLOUD", "BOTH", "NONE"].indexOf(
+              existingConfig.LOG_DESTINATION
+            )
+          : 0,
+    },
+    {
+      type: "select",
+      name: "STORE_TYPE",
+      message: "Enter storage type",
+      choices: [
+        { title: "FILE", value: "FILE" },
+        { title: "UPSTASH", value: "UPSTASH" },
+      ],
+      initial:
+        ["FILE", "UPSTASH"].indexOf(existingConfig.STORE_TYPE?.toUpperCase()) >
         -1
-        ? ["FILE", "UPSTASH"].indexOf(existingConfig.STORE_TYPE.toUpperCase())
-        : 0,
-  }
+          ? ["FILE", "UPSTASH"].indexOf(existingConfig.STORE_TYPE.toUpperCase())
+          : 0,
+    },
   ];
 
   const remainingResponses = await prompts(remainingQuestions);
@@ -406,16 +410,22 @@ export async function initializeConfiguration(options = {}) {
   }
 
   // --- File Writing Logic ---
-  console.log(`Writing configuration to ${envPath}...`);
-  const inits = responses.STORE_TYPE !== "UPSTASH" ? { UPSTASH_REDIS_REST_TOKEN: "", UPSTASH_REDIS_REST_URL: "" } : {}
+  console.log(`Writing configuration to "${envPath}"...`);
+  const inits =
+    responses.STORE_TYPE !== "UPSTASH"
+      ? { UPSTASH_REDIS_REST_TOKEN: "", UPSTASH_REDIS_REST_URL: "" }
+      : {};
   const finalConfig = { ...existingConfig, ...responses, ...inits };
 
-  const envContent = Reflect.ownKeys(finalConfig).map((key) => {
-
-    const item = finalConfig[key];
-        console.log (key, item)
-    return `${key}="${(item.toString() || "").trim()}"`;
-  }).join("\n")
+  console.log("\n------------------ Final output ------------------");
+  const envContent = Reflect.ownKeys(finalConfig)
+    .map((key) => {
+      const item = finalConfig[key];
+      const res = `${key}="${(item.toString() || "").trim()}"`;
+      console.log(res);
+      return res;
+    })
+    .join("\n");
   /* replacing this to include existing values
     let envContent = `
   # Google Cloud Project ID (required)

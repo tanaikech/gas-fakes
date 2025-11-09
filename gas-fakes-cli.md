@@ -81,6 +81,9 @@ Options:
   -h, --help                                display help for command
 
 Commands:
+  init [options]                            Initializes the configuration by creating or updating the .env file.
+  auth                                      Runs the Google Cloud authentication and authorization flow.
+  enableAPIs [options]                      Enables or disables required Google Cloud APIs for the project.
   mcp                                       Launch gas-fakes as an MCP server.
 ```
 
