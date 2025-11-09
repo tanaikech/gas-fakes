@@ -31,7 +31,7 @@ const VERSION = pjson.version;
 // CONSTANTS & UTILITIES
 // -----------------------------------------------------------------------------
 
-const CLI_VERSION = "0.0.12";
+const CLI_VERSION = "0.0.13";
 const MCP_VERSION = "0.0.3";
 const execAsync = promisify(exec);
 
@@ -475,9 +475,9 @@ async function main() {
         // We check if the command is not one of the others.
         const knownCommands = program.commands.map((cmd) => cmd.name());
         if (!process.argv.slice(2).some((arg) => knownCommands.includes(arg))) {
-          console.error(
-            "Error: You must provide a script via --filename or --script, or use a specific command (e.g., init, auth, mcp)."
-          );
+          // console.error(
+          //   "Error: You must provide a script via --filename or --script, or use a specific command (e.g., init, auth, mcp)."
+          // );
           program.help();
           process.exit(1);
         }
