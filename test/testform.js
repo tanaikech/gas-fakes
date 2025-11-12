@@ -18,6 +18,7 @@ export const testForm = (pack) => {
     t.is(form.toString(), 'Form', 'form.toString() should be "Form"');
     t.true(is.nonEmptyString(form.getId()), 'created form should have an ID');
     t.true(form.getEditUrl().includes(form.getId()), 'created form URL should contain ID');
+    t.true(form.getPublishedUrl().includes('/viewform'), 'published form URL should contain "/viewform"');
 
     // Verify that create() sets the file name in Drive, but not the form's internal title.
     t.is(file.getName(), formName, 'create() should set the file name in Drive');
@@ -41,12 +42,14 @@ export const testForm = (pack) => {
     // Test openByUrl() with invalid URL
     t.threw(() => FormApp.openByUrl('http://invalid.url/'), 'openByUrl() should throw on invalid URL');
 
-    // Test setTitle() - affects internal form title
+    // Test setTitle() and description - affects internal form title
     const newTitle = `gas-fakes-test-form-renamed-${new Date().getTime()}`;
-    form.setTitle(newTitle);
+    const description = newTitle + '-description';
+    form.setTitle(newTitle).setDescription (description);;
     const reopenedForm = FormApp.openById(form.getId());
     t.is(reopenedForm.getTitle(), newTitle, 'setTitle() should update the form title');
     t.is(file.getName(), formName, 'setTitle() should NOT change the file name');
+    t.is (form.getDescription(), description, 'setDescription')
 
     // Test getActiveForm()
     const activeForm = FormApp.getActiveForm();
@@ -233,6 +236,18 @@ export const testForm = (pack) => {
     const retrievedItem = form.getItemById(checkboxItem.getId()).asCheckboxItem();
     t.is(retrievedItem.getTitle(), 'What are your favorite colors?', 'Title should be set correctly');
     t.deepEqual(retrievedItem.getChoices().map(c => c.getValue()), newChoiceValues, 'Choices should be set correctly');
+
+    if (FormApp.isFake) console.log('...cumulative forms cache performance', getFormsPerformance());
+  });
+
+  unit.section('Form.addGridItem', (t) => {
+    const form = FormApp.create('Add GridItem Test Form');
+    toTrash.push(DriveApp.getFileById(form.getId()));
+
+    const gridItem = form.addGridItem();
+    t.is(gridItem.toString(), 'GridItem', 'addGridItem should return a GridItem');
+    t.is(gridItem.getIndex(), 0, 'The first added item should be at index 0');
+    t.is(gridItem.getType(), FormApp.ItemType.GRID, 'Item type should be GRID');
 
     if (FormApp.isFake) console.log('...cumulative forms cache performance', getFormsPerformance());
   });

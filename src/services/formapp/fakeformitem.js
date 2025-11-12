@@ -148,7 +148,8 @@ export class FakeFormItem {
       if (question.scaleQuestion) return ItemType.SCALE;
       if (question.rowQuestion) return ItemType.GRID;
     } else if (item.questionGroupItem) {
-      const gridType = item.questionGroupItem.grid.columns[0].choiceQuestion.type;
+      // For GRID and CHECKBOX_GRID, columns is an object, not an array.
+      const gridType = item.questionGroupItem.grid.columns.type;
       return gridType === 'RADIO' ? ItemType.GRID : ItemType.CHECKBOX_GRID;
     } else if (item.pageBreakItem) {
       return ItemType.PAGE_BREAK;

@@ -1,5 +1,6 @@
 import { Proxies } from '../../support/proxies.js';
 import { newFakeFormItem } from './fakeformitem.js';
+import { newFakeGridItem } from './fakegriditem.js';
 import './formitems.js'; // Import for side effects (item class registration)
 import { newFakeCheckboxItem } from './fakecheckboxitem.js';
 
@@ -29,7 +30,7 @@ export class FakeForm {
     // this is a no-op in fake environment since it is stateless
   }
 
-  _addItem(itemResource, itemFactory) {
+  __addItem(itemResource, itemFactory) {
     const createRequest = Forms.newRequest().setCreateItem({
       item: itemResource,
       location: {
@@ -69,8 +70,66 @@ export class FakeForm {
         },
       },
     };
-    return this._addItem(itemResource, newFakeCheckboxItem);
+    return this.__addItem(itemResource, newFakeCheckboxItem);
   }
+
+  /**
+   * Appends a new question item, presented as a grid of columns and rows, that allows the
+   * respondent to select one choice per row from a sequence of radio buttons.
+   * @returns {import('./fakegriditem.js').FakeGridItem} The new grid item.
+   */
+  addGridItem() { 
+    const itemResource = {
+      questionGroupItem: {
+        grid: {
+          columns: {
+            type: 'RADIO',
+            // The API requires at least one column
+            options: [{ value: 'Column 1' }],
+          },
+        },
+        // and at least one row
+        questions: [
+          {
+            rowQuestion: {
+              title: 'Row 1',
+            },
+          },
+        ],
+      },
+    };
+    return this.__addItem(itemResource, newFakeGridItem);
+  }
+
+  /**
+   * Appends a new question item, presented as a grid of columns and rows, that allows the
+   * respondent to select multiple choices per row from a sequence of checkboxes.
+   * @returns {import('./fakecheckboxgriditem.js').FakeCheckboxGridItem} The new checkbox grid item.
+   */
+  addCheckboxGridItem() {
+    const itemResource = {
+      questionGroupItem: {
+        grid: {
+          columns: {
+            type: 'CHECKBOX',
+            // The API requires at least one column
+            options: [{ value: 'Column 1' }],
+          },
+        },
+        // and at least one row
+        questions: [
+          {
+            rowQuestion: {
+              title: 'Row 1',
+            },
+          },
+        ],
+      },
+    };
+    // Note: This will require a newFakeCheckboxGridItem factory.
+    return this.__addItem(itemResource, newFakeCheckboxGridItem);
+  }
+
 
   /**
    * Gets the ID of the form.
@@ -114,7 +173,13 @@ export class FakeForm {
   getTitle() {
     return this.__resource.info.title;
   }
-
+  /**
+   * Gets the title of the form.
+   * @returns {string} The form title.
+   */
+  getDescription() {
+    return this.__resource.info.description;
+  }
   /**
    * Gets the name of the form file in Google Drive.
    * @returns {string} The file name.
@@ -133,6 +198,13 @@ export class FakeForm {
     return this;
   }
 
+  __update (updateRequest) {
+    const batchRequest = Forms.newBatchUpdateFormRequest()
+      .setRequests([updateRequest]);
+    Forms.Form.batchUpdate(batchRequest, this.getId());
+    return this
+  }
+
   /**
    * Sets the title of the form.
    * @param {string} title The new title for the form.
@@ -145,12 +217,22 @@ export class FakeForm {
         .setInfo(updateInfo)
         .setUpdateMask("title")
     );
-    const batchRequest = Forms.newBatchUpdateFormRequest()
-      .setRequests([updateRequest]);
+    return this.__update (updateRequest)
+  }
 
-    Forms.Form.batchUpdate(batchRequest, this.getId());
-
-    return this;
+  /**
+   * sets the description of the form.
+   * @param {string} description The new title for the form.
+   * @returns {FakeForm} The form, for chaining.
+   */
+  setDescription(description) {
+    const updateInfo = Forms.newFormInfo().setDescription(description);
+    const updateRequest = Forms.newRequest().setUpdateFormInfo(
+      Forms.newUpdateFormInfoRequest()
+        .setInfo(updateInfo)
+        .setUpdateMask("description")
+    );
+    return this.__update (updateRequest)
   }
 
   /**
@@ -159,6 +241,14 @@ export class FakeForm {
    */
   getEditUrl() {
     return `https://docs.google.com/forms/d/${this.getId()}/edit`;
+  }
+
+  /**
+   * Gets the URL to respond to the form.
+   * @returns {string} The form URL.
+   */
+  getPublishedUrl() {
+    return `https://docs.google.com/forms/d/e/${this.getId()}/viewform`;
   }
 
   toString() {
