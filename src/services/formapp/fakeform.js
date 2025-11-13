@@ -1,6 +1,8 @@
 import { Proxies } from '../../support/proxies.js';
 import { newFakeFormItem } from './fakeformitem.js';
 import { newFakeGridItem } from './fakegriditem.js';
+import { newFakeSectionHeaderItem } from './fakesectionheaderitem.js';
+import { newFakeScaleItem } from './fakescaleitem.js';
 import './formitems.js'; // Import for side effects (item class registration)
 import { newFakeCheckboxItem } from './fakecheckboxitem.js';
 
@@ -129,6 +131,38 @@ export class FakeForm {
     // Note: This will require a newFakeCheckboxGridItem factory.
     return this.__addItem(itemResource, newFakeCheckboxGridItem);
   }
+
+  /**
+   * Appends a new layout item that visually indicates the start of a section.
+   * @returns {import('./fakesectionheaderitem.js').FakeSectionHeaderItem} The new section header item.
+   */
+  addSectionHeaderItem() {
+    const itemResource = {
+      title: 'Section Title', // Default title
+      textItem: {},
+    };
+    return this.__addItem(itemResource, newFakeSectionHeaderItem);
+  }
+
+  /**
+   * Appends a new question item that allows the respondent to choose one option
+   * from a numbered sequence of radio buttons.
+   * @returns {import('./fakescaleitem.js').FakeScaleItem} The new scale item.
+   */
+  addScaleItem() {
+    const itemResource = {
+      questionItem: {
+        question: {
+          scaleQuestion: {
+            low: 1,
+            high: 5,
+          },
+        },
+      },
+    };
+    return this.__addItem(itemResource, newFakeScaleItem);
+  }
+
 
 
   /**

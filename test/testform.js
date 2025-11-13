@@ -249,6 +249,59 @@ export const testForm = (pack) => {
     t.is(gridItem.getIndex(), 0, 'The first added item should be at index 0');
     t.is(gridItem.getType(), FormApp.ItemType.GRID, 'Item type should be GRID');
 
+    // Test isRequired() and setRequired()
+    t.false(gridItem.isRequired(), 'GridItem should not be required by default');
+    gridItem.setRequired(true);
+    t.true(gridItem.isRequired(), 'isRequired() should be true after setRequired(true)');
+    gridItem.setRequired(false);
+    t.false(gridItem.isRequired(), 'isRequired() should be false after setRequired(false)');
+
+    // Test setRows() and setColumns()
+    const rows = ['Row A', 'Row B'];
+    const cols = ['Col 1', 'Col 2', 'Col 3'];
+    gridItem.setRows(rows).setColumns(cols);
+    t.deepEqual(gridItem.getRows(), rows, 'getRows() should return the correct rows');
+    t.deepEqual(gridItem.getColumns(), cols, 'getColumns() should return the correct columns');
+
+    if (FormApp.isFake) console.log('...cumulative forms cache performance', getFormsPerformance());
+  });
+
+  unit.section('Form.addSectionHeaderItem', (t) => {
+    const form = FormApp.create('Add SectionHeaderItem Test Form');
+    toTrash.push(DriveApp.getFileById(form.getId()));
+
+    const sectionHeaderItem = form.addSectionHeaderItem();
+    t.is(sectionHeaderItem.toString(), 'SectionHeaderItem', 'addSectionHeaderItem should return a SectionHeaderItem');
+    t.is(sectionHeaderItem.getIndex(), 0, 'The first added item should be at index 0');
+    t.is(sectionHeaderItem.getType(), FormApp.ItemType.SECTION_HEADER, 'Item type should be SECTION_HEADER');
+    t.is(sectionHeaderItem.getTitle(), 'Section Title', 'Default title should be "Section Title"');
+
+    sectionHeaderItem.setTitle('New Section Title').setHelpText('Some help text');
+    t.is(sectionHeaderItem.getTitle(), 'New Section Title', 'Title should be updated');
+    t.is(sectionHeaderItem.getHelpText(), 'Some help text', 'Help text should be updated');
+
+    if (FormApp.isFake) console.log('...cumulative forms cache performance', getFormsPerformance());
+  });
+
+  unit.section('Form.addScaleItem', (t) => {
+    const form = FormApp.create('Add ScaleItem Test Form');
+    toTrash.push(DriveApp.getFileById(form.getId()));
+
+    const scaleItem = form.addScaleItem();
+    t.is(scaleItem.toString(), 'ScaleItem', 'addScaleItem should return a ScaleItem');
+    t.is(scaleItem.getIndex(), 0, 'The first added item should be at index 0');
+    t.is(scaleItem.getType(), FormApp.ItemType.SCALE, 'Item type should be SCALE');
+
+    // Test default bounds
+    t.is(scaleItem.getLowerBound(), 1, 'Default lower bound should be 1');
+    t.is(scaleItem.getUpperBound(), 5, 'Default upper bound should be 5');
+
+    scaleItem.setBounds(0, 10).setLabels('Bad', 'Good');
+    t.is(scaleItem.getLowerBound(), 0, 'Lower bound should be updated');
+    t.is(scaleItem.getUpperBound(), 10, 'Upper bound should be updated');
+    t.is(scaleItem.getLeftLabel(), 'Bad', 'Left label should be updated');
+    t.is(scaleItem.getRightLabel(), 'Good', 'Right label should be updated');
+
     if (FormApp.isFake) console.log('...cumulative forms cache performance', getFormsPerformance());
   });
 

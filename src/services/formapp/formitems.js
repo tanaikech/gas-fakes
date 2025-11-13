@@ -2,5 +2,7 @@
 // with the formitemRegistry. By importing them here, we trigger their
 // registration code.
 
-import './fakecheckboxitem.js';
+import './fakecheckboxitem.js'
+import './fakegriditem.js';
+import './fakescaleitem.js';
 // Add other item types here as they are implemented (e.g., './faketextitem.js')

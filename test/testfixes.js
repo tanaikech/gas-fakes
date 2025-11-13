@@ -35,6 +35,6 @@ export const testFixes = {
   "RANDOM_IMAGE": "https:\/\/picsum.photos\/200",
   "API_URL": "http:\/\/suggestqueries.google.com\/complete\/search?client=chrome&hl=en&q=trump",
   "API_TYPE": "text\/javascript",
-  "CLEAN": false,
+  "CLEAN": true,
   "PREFIX": Drive.isFake ? "--f" : "--g",
 }

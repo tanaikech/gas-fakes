@@ -162,6 +162,12 @@ export class FakeFormItem {
     }
     throw new Error(`Unknown item type for resource: ${JSON.stringify(item)}`);
   }
+  __update(updateRequest) {
+    const response = this.__form.__update(updateRequest);
+    // The local resource is now stale, so we need to update it.
+    // The response from batchUpdate contains the updated form resource.
+    return this;
+  }
 
   setHelpText(text) {
     const { nargs, matchThrow } = signatureArgs(arguments, 'Item.setHelpText');
@@ -182,10 +188,7 @@ export class FakeFormItem {
       // Crucially, only ask the API to update the description field.
       updateMask: 'description',
     });
-
-    const batchRequest = Forms.newBatchUpdateFormRequest().setRequests([updateRequest]);
-    Forms.Form.batchUpdate(batchRequest, this.__form.getId());
-    return this;
+    return this.__update (updateRequest)
   }
 
   setTitle(title) {
@@ -208,9 +211,56 @@ export class FakeFormItem {
       updateMask: 'title',
     });
 
-    const batchRequest = Forms.newBatchUpdateFormRequest().setRequests([updateRequest]);
-    Forms.Form.batchUpdate(batchRequest, this.__form.getId());
-    return this;
+    return this.__update (updateRequest)
+
+  }
+
+  /**
+   * Determines whether the respondent must answer the question.
+   * @returns {boolean} whether the respondent must answer the question
+   */
+  isRequired() {
+    if (this.__resource.questionItem) {
+      return this.__resource.questionItem.question.required || false;
+    } else if (this.__resource.questionGroupItem) {
+      return this.__resource.questionGroupItem.questions?.some(q => q.required) || false;
+    }
+    return false;
+  }
+
+  /**
+   * Sets whether the respondent must answer the question.
+   * @param {boolean} enabled
+   * @returns {FakeFormItem} the current item (for chaining)
+   */
+  setRequired(enabled) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Item.setRequired');
+    if (nargs !== 1 || !is.boolean(enabled)) matchThrow('Invalid arguments');
+
+    let updateMask;
+    const updatedResource = JSON.parse(JSON.stringify(this.__resource));
+
+    if (updatedResource.questionItem) {
+      updatedResource.questionItem.question.required = enabled;
+      updateMask = 'questionItem.question.required';
+    } else if (updatedResource.questionGroupItem) {
+      if (updatedResource.questionGroupItem.questions) {
+        updatedResource.questionGroupItem.questions.forEach(q => {
+          q.required = enabled;
+        });
+      }
+      updateMask = 'questionGroupItem.questions';
+    } else {
+      throw new Error('This item type does not support setRequired.');
+    }
+
+    const updateRequest = Forms.newRequest().setUpdateItem({
+      item: updatedResource,
+      location: { index: this.getIndex() },
+      updateMask: updateMask,
+    });
+
+    return this.__update (updateRequest)
   }
 
   toString() {
