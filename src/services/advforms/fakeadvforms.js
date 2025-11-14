@@ -42,7 +42,8 @@ class FakeAdvForms {
       "newFormInfo": [
         "title",
         "documentTitle",
-        "description"
+        "description",
+        "state"
       ],
       "newUpdateSettingsRequest": [
         "settings",

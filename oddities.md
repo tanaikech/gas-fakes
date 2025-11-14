@@ -806,6 +806,24 @@ The expected behavior would be for `FormApp.create(title)` to set both the Drive
 
 https://issuetracker.google.com/issues/442747794
 
+#### Inability to Programmatically Set Published State (`setPublished`)
+
+Another significant limitation of the public Google Forms API is the inability to programmatically change whether a form is accepting responses.
+
+##### Live Apps Script Behavior
+
+In Apps Script, `form.setPublished(false)` successfully closes a form to new responses, and `form.setPublished(true)` re-opens it. This suggests that the `FormApp` service has access to a private API endpoint to modify the form's `state` property (`ACTIVE` or `INACTIVE`).
+
+##### The Problem with API Emulation
+
+The public Google Forms API v1 does **not** expose an endpoint to modify this `state`. Attempts to use the `forms.batchUpdate` method with either an `updateSettings` or `updateFormInfo` request to change the `state` will fail with an `Invalid JSON payload` error, as the API does not recognize the `state` field in these request bodies.
+
+This has been confirmed through experimentation and is a known limitation.
+
+##### `gas-fakes` Implementation
+
+Because `gas-fakes` relies exclusively on public APIs, it is impossible to emulate the live behavior of `setPublished()`. To accurately reflect this limitation of the public API, the `setPublished()` method in the fake `FormApp` service throws a "not yet implemented" error. This prevents developers from writing code that works in the local fake environment but would fail if migrated to a context that uses the public API directly.
+
 ### Enums
 
 All Apps Script enums are imitated using a seperate class 'newFakeGasenum()'. A complete write up of that is in [fakegasenum](https://github.com/brucemcpherson/fakegasenum). The same functionality is also available as an Apps Script library if you'd like to make your own enums over on GAS just like you find in Apps Script.

@@ -40,7 +40,8 @@ export const testForm = (pack) => {
 
 
     // Test openByUrl() with invalid URL
-    t.threw(() => FormApp.openByUrl('http://invalid.url/'), 'openByUrl() should throw on invalid URL');
+    const err1 = t.threw(() => FormApp.openByUrl('http://invalid.url/'));
+    t.rxMatch(err1.message, /invalid form url/i, 'openByUrl() should throw on invalid URL');
 
     // Test setTitle() and description - affects internal form title
     const newTitle = `gas-fakes-test-form-renamed-${new Date().getTime()}`;
@@ -58,6 +59,14 @@ export const testForm = (pack) => {
     // Test enums
     t.is(FormApp.ItemType.CHECKBOX.toString(), 'CHECKBOX', 'should have ItemType enum');
     t.is(FormApp.Alignment.LEFT.toString(), 'LEFT', 'should have Alignment enum');
+
+    // Test isPublished()
+    t.true(form.isPublished(), 'A new form should be published (accepting responses) by default');
+
+    // Test setPublished() - should throw an error
+    const err2 = t.threw(() => form.setPublished(false));
+    t.rxMatch(err2.message, /not yet implemented/i, 'setPublished() should throw a "not yet implemented" error');
+
 
     if (FormApp.isFake) {
       console.log('...cumulative forms cache performance', getFormsPerformance());
@@ -303,6 +312,33 @@ export const testForm = (pack) => {
     t.is(scaleItem.getRightLabel(), 'Good', 'Right label should be updated');
 
     if (FormApp.isFake) console.log('...cumulative forms cache performance', getFormsPerformance());
+  });
+
+  unit.section('Form.moveItem', (t) => {
+    const form = FormApp.create('Move Item Test Form');
+    toTrash.push(DriveApp.getFileById(form.getId()));
+
+    // Add a few items to have something to move
+    const itemA = form.addCheckboxItem().setTitle('A');
+    const itemB = form.addSectionHeaderItem().setTitle('B');
+    const itemC = form.addScaleItem().setTitle('C');
+
+    // Check initial positions
+    t.is(itemA.getIndex(), 0, 'Item A should be at index 0 initially');
+    t.is(itemB.getIndex(), 1, 'Item B should be at index 1 initially');
+    t.is(itemC.getIndex(), 2, 'Item C should be at index 2 initially');
+
+    // Move the last item to the beginning
+    form.moveItem(itemC, 0);
+    t.is(itemC.getIndex(), 0, 'Item C should now be at index 0');
+    t.is(itemA.getIndex(), 1, 'Item A should now be at index 1');
+    t.is(itemB.getIndex(), 2, 'Item B should now be at index 2');
+
+    // Move the first item (now C) to the end
+    form.moveItem(itemC, 2);
+    t.is(itemA.getIndex(), 0, 'Item A should be back at index 0');
+    t.is(itemB.getIndex(), 1, 'Item B should be back at index 1');
+    t.is(itemC.getIndex(), 2, 'Item C should now be at the end, index 2');
   });
 
   if (!pack) {

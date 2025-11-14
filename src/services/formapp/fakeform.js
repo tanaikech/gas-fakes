@@ -22,6 +22,9 @@ export class FakeForm {
   constructor(resource) {
     this.__id = resource.formId;
     this.__file = DriveApp.getFileById(this.__id);
+    // Since the API doesn't allow setting the published state, we'll manage it internally for the fake.
+    // A new form defaults to accepting responses (true).
+    this.__publishedState = this.__resource.settings?.state !== 'INACTIVE';
   }
 
   get __resource() {
@@ -223,6 +226,15 @@ export class FakeForm {
   }
 
   /**
+   * Gets whether the form is accepting responses.
+   * @returns {boolean} true if the form is accepting responses; false otherwise.
+   */
+  isPublished() {
+    // ACTIVE is the state for accepting responses. The default if not set is ACTIVE.
+    return this.__publishedState;
+  }
+
+  /**
    * Sets the name of the form file in Google Drive.
    * @param {string} name The new file name.
    * @returns {FakeForm} The form, for chaining.
@@ -232,11 +244,47 @@ export class FakeForm {
     return this;
   }
 
+  /**
+   * Deletes the item at the given index.
+   * @param {Integer} index The 0-indexed position of the item to delete.
+   * @returns {FakeForm} The form, for chaining.
+   */
+  deleteItem(index) {
+    const deleteRequest = Forms.newRequest().setDeleteItem({
+      location: { index: index },
+    });
+    return this.__update(deleteRequest);
+  }
+
+  /**
+   * Moves the given form item to the specified index.
+   * @param {import('./fakeformitem.js').FakeFormItem} item The item to move.
+   * @param {Integer} toIndex The 0-indexed position to move the item to.
+   * @returns {import('./fakeformitem.js').FakeFormItem} The moved item.
+   */
+  moveItem(item, toIndex) {
+    const fromIndex = item.getIndex();
+    const moveRequest = Forms.newRequest().setMoveItem({
+      originalLocation: { index: fromIndex },
+      newLocation: { index: toIndex },
+    });
+    this.__update(moveRequest);
+    return item;
+  }
+  /**
+   * Sets whether the form is accepting responses.
+   * @param {boolean} enabled true if the form should accept responses; false otherwise.
+   * @returns {FakeForm} The form, for chaining.
+   */
+  setPublished(enabled) {
+    throw new Error('setPublished is not yet implemented in the fake environment.');
+  }
+
   __update (updateRequest) {
     const batchRequest = Forms.newBatchUpdateFormRequest()
-      .setRequests([updateRequest]);
+      .setRequests([updateRequest])
     Forms.Form.batchUpdate(batchRequest, this.getId());
-    return this
+    return this;
   }
 
   /**
