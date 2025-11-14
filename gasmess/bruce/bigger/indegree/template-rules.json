@@ -16,11 +16,11 @@
       "sections": [
         {
           "title": "Flourishing",
+          "description": "Below are 8 statements with which you may agree or disagree. Using the 1-7 scale below, indicate your agreement with each item by indicating that response for each statement.",
           "items": [
             {
               "questionType": "multiple_choice_grid",
               "required": false,
-              "title": "Below are 8 statements with which you may agree or disagree. Using the 1-7 scale below, indicate your agreement with each item by indicating that response for each statement.",
               "labels": {
                 "Strongly disagree": 1,
                 "Disagree": 2,
@@ -76,24 +76,45 @@
       "description": "Subjective happiness / global life satisfaction.",
       "sections": [
         {
-          "title": "For each of the following statements and/or questions, please mark the point on the scale that you feel is most appropriate in describing you.",
+          "title": "Happiness",
+          "description": "For each of the following statements and/or questions, please mark the point on the scale that you feel is most appropriate in describing you.",
           "items": [
             {
               "questionType": "linear_scale",
               "required": false,
               "labels": {
-                "1": 1,
-                "7": 7
+                "not a very happy person": 1,
+                "a very happy person": 7
               },
               "questions": [
                 {
                   "id": "hs_consider",
                   "text": "In general, I consider myself:"
-                },
+                }
+              ]
+            },
+            {
+              "questionType": "linear_scale",
+              "required": false,
+              "labels": {
+                "less happy": 1,
+                "more happy": 7
+              },
+              "questions": [
                 {
-                  "id": "hs_compare",
-                  "text": "Compared to most of my peers, I consider myself:"
-                },
+                  "id": "hs_general",
+                  "text": "Some people are generally very happy. They enjoy life regardless of what is going on, getting the most out of everything. To what extent does this characterization describe you?"
+                }
+              ]
+            },
+            {
+              "questionType": "linear_scale",
+              "required": false,
+              "labels": {
+                "not at all": 1,
+                "a great deal": 7
+              },
+              "questions": [
                 {
                   "id": "hs_general",
                   "text": "Some people are generally very happy. They enjoy life regardless of what is going on, getting the most out of everything. To what extent does this characterization describe you?"
@@ -115,7 +136,8 @@
       "description": "Alcohol use",
       "sections": [
         {
-          "title": "Answer about your drinking.",
+          "title": "Alcohol Use",
+          "description": "Answer about your drinking.",
           "items": [
             {
               "questionType": "multiple_choice_grid",
@@ -175,11 +197,12 @@
     "hazing": {
       "reference": "Hazing Prevention (HPA-9) [Custom/Research-Derived]",
       "type": "measure_set",
-      "concept": "Hazing_related skills, knowledge, commitments.",
-      "description": "Hazing_related skills, knowledge, commitments.",
+      "concept": "Hazing-related skills, knowledge, commitments.",
+      "description": "Hazing-related skills, knowledge, commitments.",
       "sections": [
         {
-          "title": "Select the response that best represents your agreement.",
+          "title": "Hazing",
+          "description": "Select the response that best represents your agreement.",
           "items": [
             {
               "questionType": "linear_scale",
@@ -227,11 +250,11 @@
       "sections": [
         {
           "title": "Depression",
+          "description": "Over the last 2 weeks, how often have you been bothered by the following problems?",
           "items": [
             {
               "questionType": "multiple_choice_grid",
               "required": false,
-              "title": "Over the last 2 weeks, how often have you been bothered by the following problems?",
               "labels": {
                 "Not at all": 0,
                 "Several days": 1,
@@ -289,11 +312,11 @@
       "sections": [
         {
           "title": "Anxiety",
+          "description": "Over the last 2 weeks, how often have you been bothered by the following problems?",
           "items": [
             {
               "questionType": "multiple_choice_grid",
               "required": false,
-              "title": "Over the last 2 weeks, how often have you been bothered by the following problems?",
               "labels": {
                 "Not at all": 0,
                 "Several days": 1,
@@ -339,11 +362,11 @@
       "sections": [
         {
           "title": "Loneliness",
+          "description": "How often do you feel...",
           "items": [
             {
               "questionType": "multiple_choice_grid",
               "required": false,
-              "title": "How often do you feel...",
               "labels": {
                 "Hardly ever": 1,
                 "Left out": 2,
@@ -376,11 +399,11 @@
       "sections": [
         {
           "title": "Engagement",
+          "description": "Please rate your agreement based on your experiences this semester.",
           "items": [
             {
               "questionType": "multiple_choice_grid",
               "required": false,
-              "title": "Please rate your agreement based on your experiences this semester.",
               "questions": [
                 {
                   "id": "en_community",
@@ -423,7 +446,8 @@
       "description": "Academic well-being across five domains",
       "sections": [
         {
-          "title": "Respond about your experiences in this class.",
+          "title": "Academic well-being",
+          "description": "Respond about your experiences in this class.",
           "items": [
             {
               "questionType": "linear_scale",
@@ -566,6 +590,32 @@
               }
             }
           ]
+        }
+      ]
+    },
+    "membership": {
+      "sections": [
+        {
+          "title": "Membership Characteristics",
+          "description": "For each of the following questions, please select the option that best deacribes you.",
+          "items": [{
+            "questionType": "multiple_choice",
+            "required": false,
+            "labels": {
+              "Joined this term": null,
+              "Less than 1 year": null,
+              "One year": null,
+              "Two years": null,
+              "Three years": null,
+              "More than 3 years": null
+            },
+            "questions": [
+              {
+                "id": "membership",
+                "text": "How long have you been a member of your sorority?"
+              }
+            ]
+          }]
         }
       ]
     }
@@ -784,7 +834,8 @@
         "alcohol_use",
         "depression",
         "anxiety",
-        "loneliness"
+        "loneliness",
+        "membership"
       ],
       "edges": []
     }
