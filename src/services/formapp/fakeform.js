@@ -4,6 +4,7 @@ import { newFakeGridItem } from './fakegriditem.js';
 import { newFakeSectionHeaderItem } from './fakesectionheaderitem.js';
 import { newFakeScaleItem } from './fakescaleitem.js';
 import './formitems.js'; // Import for side effects (item class registration)
+import { newFakeMultipleChoiceItem } from './fakemultiplechoiceitem.js';
 import { newFakeCheckboxItem } from './fakecheckboxitem.js';
 
 export const newFakeForm = (...args) => {
@@ -133,6 +134,27 @@ export class FakeForm {
     };
     // Note: This will require a newFakeCheckboxGridItem factory.
     return this.__addItem(itemResource, newFakeCheckboxGridItem);
+  }
+
+  /**
+   * Appends a new question item that allows the respondent to choose one option
+   * from a list of choices.
+   * @returns {import('./fakemultiplechoiceitem.js').FakeMultipleChoiceItem} The new multiple choice item.
+   */
+  addMultipleChoiceItem() {
+    const itemResource = {
+      questionItem: {
+        question: {
+          choiceQuestion: {
+            type: 'RADIO',
+            // The API requires at least one non-empty option. Live Apps Script creates one with an empty value.
+            // We'll emulate by creating a default "Option 1" in the fake environment.
+            options: [{ value: 'Option 1' }],
+          },
+        },
+      },
+    };
+    return this.__addItem(itemResource, newFakeMultipleChoiceItem);
   }
 
   /**

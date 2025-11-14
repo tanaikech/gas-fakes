@@ -223,6 +223,61 @@ export const testForm = (pack) => {
     }
   });
 
+  unit.section('MultipleChoiceItem methods', (t) => {
+    // This test can only run in the fake environment
+    if (!FormApp.isFake) {
+      console.log('...skipping MultipleChoiceItem methods test on live Apps Script');
+      return;
+    }
+
+    const form = FormApp.create('MultipleChoiceItem Test Form');
+    toTrash.push(DriveApp.getFileById(form.getId()));
+
+    // Use advanced service to add a multiple-choice item.
+    const createMcRequest = Forms.newRequest().setCreateItem(
+      Forms.newCreateItemRequest()
+        .setItem(
+          Forms.newItem()
+            .setTitle('MultipleChoice Question')
+            .setQuestionItem(
+              Forms.newQuestionItem().setQuestion(
+                Forms.newQuestion().setChoiceQuestion(
+                  Forms.newChoiceQuestion()
+                    .setType('RADIO') // RADIO corresponds to MultipleChoice
+                    .setOptions([
+                      Forms.newOption().setValue('Option X'),
+                      Forms.newOption().setValue('Option Y')
+                    ])
+                )
+              )
+            )
+        )
+        .setLocation(Forms.newLocation().setIndex(0))
+    );
+
+    const batchRequest = Forms.newBatchUpdateFormRequest()
+      .setRequests([createMcRequest])
+      .setIncludeFormInResponse(true);
+
+    const batchResponse = Forms.Form.batchUpdate(batchRequest, form.getId());
+    const itemId = batchResponse.replies[0].createItem.itemId;
+
+    const updatedForm = FormApp.openById(form.getId());
+    const item = updatedForm.getItemById(itemId);
+
+    t.is(item.getType(), FormApp.ItemType.MULTIPLE_CHOICE, 'Item type should be MULTIPLE_CHOICE');
+
+    const mcItem = item.asMultipleChoiceItem();
+    t.is(mcItem.toString(), 'MultipleChoiceItem', 'asMultipleChoiceItem() should return a MultipleChoiceItem');
+
+    const newChoiceValues = ['Choice A', 'Choice B'];
+    const newChoices = newChoiceValues.map(val => mcItem.createChoice(val));
+    mcItem.setChoices(newChoices);
+    t.deepEqual(mcItem.getChoices().map(c => c.getValue()), newChoiceValues, 'getChoices() should return new choices after setChoices()');
+
+    if (FormApp.isFake) console.log('...cumulative forms cache performance', getFormsPerformance());
+  });
+
   unit.section('Form.addCheckboxItem', (t) => {
     const form = FormApp.create('Add Item Test Form');
     toTrash.push(DriveApp.getFileById(form.getId()));
@@ -244,6 +299,32 @@ export const testForm = (pack) => {
 
     const retrievedItem = form.getItemById(checkboxItem.getId()).asCheckboxItem();
     t.is(retrievedItem.getTitle(), 'What are your favorite colors?', 'Title should be set correctly');
+    t.deepEqual(retrievedItem.getChoices().map(c => c.getValue()), newChoiceValues, 'Choices should be set correctly');
+
+    if (FormApp.isFake) console.log('...cumulative forms cache performance', getFormsPerformance());
+  });
+
+  unit.section('Form.addMultipleChoiceItem', (t) => {
+    const form = FormApp.create('Add MC Item Test Form');
+    toTrash.push(DriveApp.getFileById(form.getId()));
+
+    const mcItem = form.addMultipleChoiceItem();
+    t.is(mcItem.toString(), 'MultipleChoiceItem', 'addMultipleChoiceItem should return a MultipleChoiceItem');
+    t.is(mcItem.getIndex(), 0, 'The first added item should be at index 0');
+
+    const defaultChoices = mcItem.getChoices();
+    t.is(defaultChoices.length, 1, 'A new multiple choice item should have one choice by default');
+    const expectedDefaultValue = FormApp.isFake ? 'Option 1' : '';
+    t.is(defaultChoices[0].getValue(), expectedDefaultValue, 'The default choice should have the correct value for the environment');
+
+    mcItem.setTitle('What is your favorite color?');
+
+    const newChoiceValues = ['Red', 'Green', 'Blue'];
+    const newChoices = newChoiceValues.map(val => mcItem.createChoice(val));
+    mcItem.setChoices(newChoices);
+
+    const retrievedItem = form.getItemById(mcItem.getId()).asMultipleChoiceItem();
+    t.is(retrievedItem.getTitle(), 'What is your favorite color?', 'Title should be set correctly');
     t.deepEqual(retrievedItem.getChoices().map(c => c.getValue()), newChoiceValues, 'Choices should be set correctly');
 
     if (FormApp.isFake) console.log('...cumulative forms cache performance', getFormsPerformance());

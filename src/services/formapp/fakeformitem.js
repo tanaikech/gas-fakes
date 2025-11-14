@@ -61,7 +61,7 @@ export class FakeFormItem {
   asGridItem() { return this.__cast(ItemType.GRID); }
   asImageItem() { return this.__cast(ItemType.IMAGE); }
   asListItem() { return this.__cast(ItemType.LIST); }
-  asMultipleChoiceItem() { return this.__cast(ItemType.MULTIPLE_CHOICE); }
+  asMultipleChoiceItem() { return this.__cast(ItemType.MULTIPLE_CHOICE, true); }
   asPageBreakItem() { return this.__cast(ItemType.PAGE_BREAK); }
   asParagraphTextItem() { return this.__cast(ItemType.PARAGRAPH_TEXT); }
   asScaleItem() { return this.__cast(ItemType.SCALE); }

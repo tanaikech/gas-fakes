@@ -67,9 +67,9 @@ export class FormGenerator {
   addAmble (formItem, index, {description, title, required}) {
     const form = this.form
     form.moveItem(formItem, index)
-    if (required) form.setRequired(Boolean(required))
-    if (title) form.setTitle (title)
-    if (description) form.setDescription(description)
+    if (required) formItem.setRequired(Boolean(required))
+    if (title) formItem.setTitle (title)
+    if (description) formItem.setHelpText(description)
     return formItem
   }
   addGridItem({ item, index }) {
@@ -86,27 +86,31 @@ export class FormGenerator {
   addMultipleChoiceItem( {item, index}) {
     const form = this.form
     const formItem = form.addMultipleChoiceItem()
-    this.addAmble (formItem, index, item)
-    const choices = item.questions.map(({text})=> formItem.createChoice(text))
+    // for a multiple choice, the question text is the title
+    const title = item.questions.length ? item.questions[0].text : item.title;
+    this.addAmble (formItem, index, {...item, title})
+    const choices = Object.keys(item.labels).map(key => formItem.createChoice(key));
     formItem.setChoices(choices)
     return 1
   }
   
   addScaleItem({ item, index }) {
     const form = this.form
+    const {labels, required} = item;
     // each question in a linear scale block is a separate scale item
     item.questions.forEach((question, i) => {
       const scaleItem = form.addScaleItem();
-      this.addAmble (scaleItem, index+i, item)
-      const bounds = Object.values(item.labels)
-      const labels = Object.keys(item.labels);
+      // the title for the scale item is the question text
+      this.addAmble (scaleItem, index+i, {title:question.text, required})
+      const bounds = Object.values(labels)
+      const labelKeys = Object.keys(labels);
       scaleItem.setBounds(bounds[0], bounds[bounds.length - 1])
-        .setLabels(labels[0], labels[labels.length - 1]);
+        .setLabels(labelKeys[0], labelKeys[labelKeys.length - 1]);
     });
     return item.questions.length;
   }
 
-  addSection({ section, description, index }) {
+  addSection({ section, index }) {
     const form = this.form
     // can be just a title, or a title and description
     const formItem = form.addSectionHeaderItem()
@@ -164,7 +168,7 @@ export class FormGenerator {
 
       sections.forEach(section => {
         console.log (section.title)
-        currentIndex += this.addSection({ section, description, index: currentIndex })
+        currentIndex += this.addSection({ section, index: currentIndex })
         if (!Array.isArray (section.items)) {
           throw new Error(`section.items should be an array in replacement for ${blockData.block}`)
         }
