@@ -1,0 +1,792 @@
+{
+  "templates": {
+    "test": {
+      "templateId": "1RGUYVxCHlYw4aG1jJM2YJ8TLi8lnKaDTQ9jcvGhGAeE",
+      "formTitle": "copy of test measures form",
+      "formName": "test A",
+      "formDescription": "experimenting with blocks"
+    }
+  },
+  "blocks": {
+    "flourishing": {
+      "reference": "Flourishing (Diener-8) [Validated Scale]",
+      "type": "measure_set",
+      "concept": "Psychological flourishing (meaning, relationships, engagement, optimism, purpose).",
+      "description": "Measures meaning, relationships, engagement, optimism, and purpose.",
+      "sections": [
+        {
+          "title": "Flourishing",
+          "items": [
+            {
+              "questionType": "multiple_choice_grid",
+              "required": false,
+              "title": "Below are 8 statements with which you may agree or disagree. Using the 1-7 scale below, indicate your agreement with each item by indicating that response for each statement.",
+              "labels": {
+                "Strongly disagree": 1,
+                "Disagree": 2,
+                "Slightly disagree": 3,
+                "Mixed or neither agree nor disagree": 4,
+                "Slightly agree": 5,
+                "Agree": 6,
+                "Strongly agree": 7
+              },
+              "questions": [
+                {
+                  "id": "fl_competent",
+                  "text": "I am competent and capable in the activities that are important to me."
+                },
+                {
+                  "id": "fl_good",
+                  "text": "I am a good person and live a good life."
+                },
+                {
+                  "id": "fl_optimistic",
+                  "text": "I am optimistic about my future."
+                },
+                {
+                  "id": "fl_respect",
+                  "text": "People respect me."
+                },
+                {
+                  "id": "fl_meaningful",
+                  "text": "I lead a purposeful and meaningful life."
+                },
+                {
+                  "id": "fl_rewarding",
+                  "text": "My social relationships are supportive and rewarding."
+                },
+                {
+                  "id": "fl_engaged",
+                  "text": "I am engaged and interested in my daily activities."
+                },
+                {
+                  "id": "fl_contribute",
+                  "text": "I actively contribute to the happiness and well-being of others."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "happiness": {
+      "reference": "Happiness (Subjective Happiness Scale-4) [Validated Scale]",
+      "type": "measure_set",
+      "concept": "Subjective happiness / global life satisfaction.",
+      "description": "Subjective happiness / global life satisfaction.",
+      "sections": [
+        {
+          "title": "For each of the following statements and/or questions, please mark the point on the scale that you feel is most appropriate in describing you.",
+          "items": [
+            {
+              "questionType": "linear_scale",
+              "required": false,
+              "labels": {
+                "1": 1,
+                "7": 7
+              },
+              "questions": [
+                {
+                  "id": "hs_consider",
+                  "text": "In general, I consider myself:"
+                },
+                {
+                  "id": "hs_compare",
+                  "text": "Compared to most of my peers, I consider myself:"
+                },
+                {
+                  "id": "hs_general",
+                  "text": "Some people are generally very happy. They enjoy life regardless of what is going on, getting the most out of everything. To what extent does this characterization describe you?"
+                },
+                {
+                  "id": "hs_not_general",
+                  "text": "Some people are generally not very happy. Although they are not depressed, they never seem as happy as they might be. To what extent does this characterization describe you?"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "alcohol_use": {
+      "reference": "Alcohol Use (AUDIT-C-3) [Validated Scale]",
+      "type": "measure_set",
+      "concept": "Hazardous or risky alcohol use.",
+      "description": "Alcohol use",
+      "sections": [
+        {
+          "title": "Answer about your drinking.",
+          "items": [
+            {
+              "questionType": "multiple_choice_grid",
+              "required": false,
+              "labels": {
+                "Never": 0,
+                "Monthly or less": 1,
+                "2_4 times a month": 2,
+                "2_3 times a week": 3,
+                "Over 4 times a week": 4
+              },
+              "questions": [
+                {
+                  "id": "au_often",
+                  "text": "How often do you have a drink containing alcohol?"
+                }
+              ]
+            },
+            {
+              "questionType": "multiple_choice_grid",
+              "required": false,
+              "labels": {
+                "1_2": 0,
+                "3_4": 1,
+                "5_6": 2,
+                "7_9": 3,
+                "10+": 4
+              },
+              "questions": [
+                {
+                  "id": "au_many",
+                  "text": "How many drinks containing alcohol do you have on a typical day when you are drinking?"
+                }
+              ]
+            },
+            {
+              "questionType": "multiple_choice_grid",
+              "required": false,
+              "labels": {
+                "Never": 0,
+                "Less than monthly": 1,
+                "Monthly": 2,
+                "Weekly": 3,
+                "Daily/almost daily": 4
+              },
+              "questions": [
+                {
+                  "id": "au_often_45",
+                  "text": "How often do you have 4 (female)/5 (male) or more drinks on one occasion?"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "hazing": {
+      "reference": "Hazing Prevention (HPA-9) [Custom/Research-Derived]",
+      "type": "measure_set",
+      "concept": "Hazing_related skills, knowledge, commitments.",
+      "description": "Hazing_related skills, knowledge, commitments.",
+      "sections": [
+        {
+          "title": "Select the response that best represents your agreement.",
+          "items": [
+            {
+              "questionType": "linear_scale",
+              "required": false,
+              "labels": {
+                "Strongly disagree": 1,
+                "Strongly agree": 6
+              },
+              "questions": [
+                {
+                  "id": "hp_skills_recognize",
+                  "text": "I am confident in my ability to recognize hazing."
+                },
+                {
+                  "id": "hp_skills_knowledge",
+                  "text": "I am confident in my skills to intervene in hazing."
+                },
+                {
+                  "id": "hp_skills_program",
+                  "text": "Attending the program altered my readiness to address hazing."
+                },
+                {
+                  "id": "hp_perspective_positive",
+                  "text": "I hold a positive view about hazing."
+                },
+                {
+                  "id": "hp_perspective_engage",
+                  "text": "I am willing to engage in hazing behaviors."
+                },
+                {
+                  "id": "hp_perspective_intervene",
+                  "text": "I am willing to intervene in hazing activities."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "depression": {
+      "reference": "Depression (PHQ-9) [Validated Scale]",
+      "type": "measure_set",
+      "concept": "Depressive symptoms.",
+      "description": "Depressive symptoms.",
+      "sections": [
+        {
+          "title": "Depression",
+          "items": [
+            {
+              "questionType": "multiple_choice_grid",
+              "required": false,
+              "title": "Over the last 2 weeks, how often have you been bothered by the following problems?",
+              "labels": {
+                "Not at all": 0,
+                "Several days": 1,
+                "More than half the days": 2,
+                "Nearly every day": 3
+              },
+              "questions": [
+                {
+                  "id": "de_interest",
+                  "text": "Little interest or pleasure in doing things."
+                },
+                {
+                  "id": "de_down",
+                  "text": "Feeling down, depressed, or hopeless."
+                },
+                {
+                  "id": "de_sleep",
+                  "text": "Trouble falling or staying asleep, or sleeping too much."
+                },
+                {
+                  "id": "de_tired",
+                  "text": "Feeling tired or having little energy."
+                },
+                {
+                  "id": "de_appetite",
+                  "text": "Poor appetite or overeating."
+                },
+                {
+                  "id": "de_bad",
+                  "text": "Feeling bad about yourself — or that you are a failure or have let yourself or your family down."
+                },
+                {
+                  "id": "de_concentration",
+                  "text": "Trouble concentrating on things, such as reading the newspaper or watching television."
+                },
+                {
+                  "id": "de_fidget",
+                  "text": "IMoving or speaking so slowly that other people could have noticed, or the opposite — being so fidgety or restless that you have been moving around a lot more than usual."
+                },
+                {
+                  "id": "de_hurt",
+                  "text": "Thoughts that you would be better off dead or of hurting yourself in some way."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "anxiety": {
+      "reference": "Anxiety (GAD-7) [Validated Scale]",
+      "type": "measure_set",
+      "concept": "Generalized anxiety symptoms.",
+      "description": "Anxiety symptoms.",
+      "sections": [
+        {
+          "title": "Anxiety",
+          "items": [
+            {
+              "questionType": "multiple_choice_grid",
+              "required": false,
+              "title": "Over the last 2 weeks, how often have you been bothered by the following problems?",
+              "labels": {
+                "Not at all": 0,
+                "Several days": 1,
+                "More than half the days": 2,
+                "Nearly every day": 3
+              },
+              "questions": [
+                {
+                  "id": "ax_nervous",
+                  "text": "Feeling nervous, anxious, or on edge."
+                },
+                {
+                  "id": "ax_worry",
+                  "text": "Not being able to stop or control worrying."
+                },
+                {
+                  "id": "ax_things",
+                  "text": "Worrying too much about different things."
+                },
+                {
+                  "id": "ax_restless",
+                  "text": "Being so restless that it is hard to sit still."
+                },
+                {
+                  "id": "ax_irritable",
+                  "text": "Becoming easily annoyed or irritable."
+                },
+                {
+                  "id": "ax_afraid",
+                  "text": "Feeling afraid as if something awful might happen."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "loneliness": {
+      "reference": "Loneliness (UCLA-3) [Validated Scale]",
+      "type": "measure_set",
+      "concept": "Loneliness / social isolation.",
+      "description": "Loneliness / social isolation.",
+      "sections": [
+        {
+          "title": "Loneliness",
+          "items": [
+            {
+              "questionType": "multiple_choice_grid",
+              "required": false,
+              "title": "How often do you feel...",
+              "labels": {
+                "Hardly ever": 1,
+                "Left out": 2,
+                "Isolated from others": 3
+              },
+              "questions": [
+                {
+                  "id": "lo_companionship",
+                  "text": "That you lack companionship?"
+                },
+                {
+                  "id": "lo_left",
+                  "text": "Left out?"
+                },
+                {
+                  "id": "lo_isolated",
+                  "text": "Isolated from others?"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "engagement": {
+      "reference": "Engagement & Confidence (University Pulse-5) [Custom Item Set]",
+      "type": "measure_set",
+      "concept": "Belonging, engagement, academic efficacy, career confidence.",
+      "description": "Belonging, engagement, academic efficacy, career confidence.",
+      "sections": [
+        {
+          "title": "Engagement",
+          "items": [
+            {
+              "questionType": "multiple_choice_grid",
+              "required": false,
+              "title": "Please rate your agreement based on your experiences this semester.",
+              "questions": [
+                {
+                  "id": "en_community",
+                  "text": "I feel that I am part of this university community."
+                },
+                {
+                  "id": "en_social",
+                  "text": "I engage and participate in social activities with other students at this university."
+                },
+                {
+                  "id": "en_academic",
+                  "text": "I engage and participate in academic activities with other students at this university."
+                },
+                {
+                  "id": "en_excel",
+                  "text": "I believe that I will excel academically at this university."
+                },
+                {
+                  "id": "en_confident",
+                  "text": "I am confident in my plans for after college."
+                }
+              ],
+              "labels": {
+                "Strongly disagree": 1,
+                "Disagree": 2,
+                "Somewhat disagree": 3,
+                "Somewhat agree": 4,
+                "Agree": 5,
+                "Strongly agree": 6
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "academic": {
+      "reference": "Academic Well-Being (PERMA Adapted-15) [Validated Scale, Adapted]",
+      "type": "measure_set",
+      "concept": "Academic well-being across five domains",
+      "description": "Academic well-being across five domains",
+      "sections": [
+        {
+          "title": "Respond about your experiences in this class.",
+          "items": [
+            {
+              "questionType": "linear_scale",
+              "required": false,
+              "questions": [
+                {
+                  "id": "ac_emotion_enjoy",
+                  "text": "How often do you enjoy this class?"
+                },
+                {
+                  "id": "ac_emotion_good",
+                  "text": "How often do you feel good about this class?"
+                }
+              ],
+              "labels": {
+                "Never": 0,
+                "Always": 10
+              }
+            },
+            {
+              "questionType": "linear_scale",
+              "required": false,
+              "questions": [
+                {
+                  "id": "ac_emotion_contented",
+                  "text": "To what extent do you feel contented in this class?"
+                }
+              ],
+              "labels": {
+                "Not at all": 0,
+                "Completely": 10
+              }
+            },
+            {
+              "questionType": "linear_scale",
+              "required": false,
+              "questions": [
+                {
+                  "id": "ac_engagement_absorbed",
+                  "text": "How often do you become absorbed in what you are doing in this class?"
+                }
+              ],
+              "labels": {
+                "Never": 0,
+                "Always": 10
+              }
+            },
+            {
+              "questionType": "linear_scale",
+              "required": false,
+              "questions": [
+                {
+                  "id": "ac_engagement_excited",
+                  "text": "To what extent do you feel excited and interested in this class?"
+                }
+              ],
+              "labels": {
+                "Not at all": 0,
+                "Completely": 10
+              }
+            },
+            {
+              "questionType": "linear_scale",
+              "required": false,
+              "questions": [
+                {
+                  "id": "ac_engagement_time",
+                  "text": "How often do you lose track of time while doing work in this class?"
+                }
+              ],
+              "labels": {
+                "Never": 0,
+                "Always": 10
+              }
+            },
+            {
+              "questionType": "linear_scale",
+              "required": false,
+              "questions": [
+                {
+                  "id": "ac_relationships_support",
+                  "text": "To what extent do you receive help and support from others when you need it in this class?"
+                },
+                {
+                  "id": "ac_relationships_cared",
+                  "text": "To what extent do you feel cared for by the instructors and/or tutors in this class?"
+                },
+                {
+                  "id": "ac_relationships_satisfied",
+                  "text": "How satisfied are you with your relationship with your instructors and/or tutors in this class?"
+                }
+              ],
+              "labels": {
+                "Not at all": 0,
+                "Completely": 10
+              }
+            },
+            {
+              "questionType": "linear_scale",
+              "required": false,
+              "questions": [
+                {
+                  "id": "ac_meaning_meaningful",
+                  "text": "To what extent do you believe your work in this class is purposeful and meaningful?"
+                },
+                {
+                  "id": "ac_meaning_valuable",
+                  "text": "To what extent do you feel that what you learn in this class is valuable and worthwhile?"
+                },
+                {
+                  "id": "ac_meaning_direction",
+                  "text": "To what extent do you generally feel you have a sense of direction in this class?"
+                }
+              ],
+              "labels": {
+                "Not at all": 0,
+                "Completely": 10
+              }
+            },
+            {
+              "questionType": "linear_scale",
+              "required": false,
+              "questions": [
+                {
+                  "id": "ac_accomplish_progress",
+                  "text": "How much of the time do you feel you are making progress toward accomplishing your goals in this class?"
+                },
+                {
+                  "id": "ac_accomplish_goals",
+                  "text": "How often do you achieve the important goals you have set for yourself in this class?"
+                },
+                {
+                  "id": "ac_accomplish_handle",
+                  "text": "How often are you able to handle your responsibilities in this class?"
+                }
+              ],
+              "labels": {
+                "Never": 0,
+                "Always": 10
+              }
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "processing": {
+    "scoring": [
+      {
+        "method": "mean",
+        "output": "academic",
+        "inputs": [
+          "ac_emotion_enjoy",
+          "ac_emotion_good",
+          "ac_emotion_contented",
+          "ac_engagement_absorbed",
+          "ac_engagement_excited",
+          "ac_engagement_time",
+          "ac_relationships_support",
+          "ac_relationships_cared",
+          "ac_relationships_satisfied",
+          "ac_meaning_meaningful",
+          "ac_meaning_valuable",
+          "ac_meaning_direction",
+          "ac_accomplish_progress",
+          "ac_accomplish_goals",
+          "ac_accomplish_handle"
+        ]
+      },
+      {
+        "method": "mean",
+        "output": "academic_emotion",
+        "inputs": [
+          "ac_emotion_enjoy",
+          "ac_emotion_good",
+          "ac_emotion_contented"
+        ]
+      },
+      {
+        "method": "mean",
+        "output": "academic_engagement",
+        "inputs": [
+          "ac_engagement_absorbed",
+          "ac_engagement_excited",
+          "ac_engagement_time"
+        ]
+      },
+      {
+        "method": "mean",
+        "output": "academic_relationships",
+        "inputs": [
+          "ac_relationships_support",
+          "ac_relationships_cared",
+          "ac_relationships_satisfied"
+        ]
+      },
+      {
+        "method": "mean",
+        "output": "academic_meaning",
+        "inputs": [
+          "ac_meaning_meaningful",
+          "ac_meaning_valuable",
+          "ac_meaning_direction"
+        ]
+      },
+      {
+        "method": "mean",
+        "output": "academic_accomplish",
+        "inputs": [
+          "ac_accomplish_progress",
+          "ac_accomplish_goals",
+          "ac_accomplish_handle"
+        ]
+      },
+      {
+        "method": "mean",
+        "output": "engagement",
+        "inputs": [
+          "en_community",
+          "en_social",
+          "en_academic",
+          "en_excel",
+          "en_confident"
+        ]
+      },
+      {
+        "method": "sum",
+        "output": "loneliness",
+        "inputs": [
+          "lo_companionship",
+          "lo_left",
+          "lo_isolated"
+        ]
+      },
+      {
+        "method": "mean",
+        "output": "hazing_skills",
+        "inputs": [
+          "hp_skills_recognize",
+          "hp_skills_knowledge",
+          "hp_skills_program"
+        ]
+      },
+      {
+        "method": "mean",
+        "output": "hazing_knowledge",
+        "inputs": [
+          "hp_knowledge_consequences",
+          "hp_knowledge_legal",
+          "hp_knowledge_program"
+        ]
+      },
+      {
+        "method": "mean",
+        "output": "hazing_perspective",
+        "inputs": [
+          "hp_perspective_positive",
+          "hp_perspective_engage",
+          "hp_perspective_intervene"
+        ],
+        "reverse": [
+          "hp_perspective_positive",
+          "hp_perspective_engage"
+        ]
+      },
+      {
+        "method": "mean",
+        "output": "hazing",
+        "inputs": [
+          "hp_skills_recognize",
+          "hp_skills_knowledge",
+          "hp_skills_program",
+          "hp_knowledge_consequences",
+          "hp_knowledge_legal",
+          "hp_knowledge_program",
+          "hp_perspective_positive",
+          "hp_perspective_engage",
+          "hp_perspective_intervene"
+        ],
+        "reverse": [
+          "hp_perspective_positive",
+          "hp_perspective_engage"
+        ]
+      },
+      {
+        "method": "sum",
+        "output": "alcohol_use",
+        "inputs": [
+          "au_often",
+          "au_many",
+          "au_often_45"
+        ]
+      },
+      {
+        "method": "mean",
+        "output": "flourishing",
+        "inputs": [
+          "fl_competent",
+          "fl_good",
+          "fl_optimistic",
+          "fl_respect",
+          "fl_meaningful",
+          "fl_rewarding",
+          "fl_engaged",
+          "fl_contribute"
+        ]
+      },
+      {
+        "method": "mean",
+        "output": "happiness",
+        "inputs": [
+          "hs_consider",
+          "hs_compare",
+          "hs_general",
+          "hs_not_general"
+        ],
+        "reverse": [
+          "hs_not_general"
+        ]
+      },
+      {
+        "method": "sum",
+        "output": "depression",
+        "inputs": [
+          "de_interest",
+          "de_down",
+          "de_sleep",
+          "de_tired",
+          "de_appetite",
+          "de_bad",
+          "de_concentration",
+          "de_fidget",
+          "de_hurt"
+        ]
+      },
+      {
+        "method": "sum",
+        "output": "anxiety",
+        "inputs": [
+          "ax_nervous",
+          "ax_things",
+          "ax_restless",
+          "ax_irritable",
+          "ax_afraid"
+        ]
+      }
+    ]
+  },
+  "network": {
+    "outputs": {
+      "vertices": [
+        "flourishing",
+        "happiness",
+        "hazing",
+        "hazing_skills",
+        "hazing_knowledge",
+        "hazing_perspective",
+        "alcohol_use",
+        "depression",
+        "anxiety",
+        "loneliness"
+      ],
+      "edges": []
+    }
+  }
+}
