@@ -598,24 +598,69 @@
         {
           "title": "Membership Characteristics",
           "description": "For each of the following questions, please select the option that best deacribes you.",
-          "items": [{
-            "questionType": "multiple_choice",
-            "required": false,
-            "labels": {
-              "Joined this term": null,
-              "Less than 1 year": null,
-              "One year": null,
-              "Two years": null,
-              "Three years": null,
-              "More than 3 years": null
-            },
+          "items": [
+            {
+              "questionType": "multiple_choice",
+              "required": false,
+              "labels": {
+                "Joined this term": 1,
+                "Less than 1 year": 2,
+                "One year": 3,
+                "Two years": 4,
+                "Three years": 5,
+                "More than 3 years": 6
+              },
+              "questions": [
+                {
+                  "id": "membership",
+                  "text": "How long have you been a member of your sorority?"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "name": {
+      "sections": {
+        "title": "About You",
+        "notes": "labels are generated frim the roster - it also has a routing action for name is not listed",
+        "description": "Please select your name from the list for data linking purposes.\nAs a reminder, your responses will be anonymized and kept confidential.",
+        "items": [
+          {
+            "questionType": "dropdown",
+            "required": true,
+            "rosterField": "name",
+            "routing": {"name":"My name is not listed", "gotoMatch": "next", "gotoElse": "skip_next"},
             "questions": [
               {
-                "id": "membership",
-                "text": "How long have you been a member of your sorority?"
+                "id": "name",
+                "text": "Select your name from the list."
               }
             ]
-          }]
+          }
+        ]
+      }
+    },
+    "missing_name": {
+      "sections": [
+        {
+          "title": "Your name was not listed. Please provide your name below",
+          "description": "",
+          "notes": "this one has routing action to submit the form on completion",
+          "items": [
+            {
+              "questionType": "short_answer",
+              "required": false,
+              "routing": {"goto": "submit"},
+              "questions": [
+                {
+                  "text":"My name",
+                  "id": "my_name"
+                }
+              ]
+            }
+          ]
         }
       ]
     }
@@ -819,12 +864,21 @@
           "ax_irritable",
           "ax_afraid"
         ]
+      },
+      {
+        "method": "ab1234",
+        "output": "id",
+        "inputs": [
+          "name"
+        ]
       }
     ]
   },
   "network": {
     "outputs": {
       "vertices": [
+        "id",
+        "name.text",
         "flourishing",
         "happiness",
         "hazing",
@@ -835,7 +889,8 @@
         "depression",
         "anxiety",
         "loneliness",
-        "membership"
+        "membership.text",
+        "my_name"
       ],
       "edges": []
     }
