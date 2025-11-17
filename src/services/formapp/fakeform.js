@@ -6,6 +6,9 @@ import { newFakeScaleItem } from './fakescaleitem.js';
 import './formitems.js'; // Import for side effects (item class registration)
 import { newFakeMultipleChoiceItem } from './fakemultiplechoiceitem.js';
 import { newFakeCheckboxItem } from './fakecheckboxitem.js';
+import { newFakeListItem } from './fakelistitem.js';
+import { newFakePageBreakItem } from './fakepagebreakitem.js';
+import { newFakeTextItem } from './faketextitem.js';
 
 export const newFakeForm = (...args) => {
   return Proxies.guard(new FakeForm(...args));
@@ -69,8 +72,7 @@ export class FakeForm {
         question: {
           choiceQuestion: {
             type: 'CHECKBOX',
-            // The API requires at least one non-empty option. Live Apps Script creates one with an empty value.
-            // We'll emulate by creating a default "Option 1" in the fake environment.
+            // The API requires at least one option on creation.
             options: [{ value: 'Option 1' }],
           },
         },
@@ -137,6 +139,39 @@ export class FakeForm {
   }
 
   /**
+   * Appends a new layout item that marks the beginning of a new page in the form.
+   * @returns {import('./fakepagebreakitem.js').FakePageBreakItem} The new page-break item.
+   */
+  addPageBreakItem() {
+    const itemResource = {
+      pageBreakItem: {},
+    };
+    return this.__addItem(itemResource, newFakePageBreakItem);
+  }
+
+
+  /**
+   * Appends a new question item that allows the respondent to choose one option
+   * from a drop-down list.
+   * @returns {import('./fakelistitem.js').FakeListItem} The new list item.
+   */
+  addListItem() {
+    const itemResource = {
+      questionItem: {
+        question: {
+          choiceQuestion: {
+            type: 'DROP_DOWN',
+            // The API requires at least one option on creation.
+            options: [{ value: 'Option 1' }],
+          },
+        },
+      },
+    };
+    return this.__addItem(itemResource, newFakeListItem);
+  }
+
+
+  /**
    * Appends a new question item that allows the respondent to choose one option
    * from a list of choices.
    * @returns {import('./fakemultiplechoiceitem.js').FakeMultipleChoiceItem} The new multiple choice item.
@@ -147,8 +182,7 @@ export class FakeForm {
         question: {
           choiceQuestion: {
             type: 'RADIO',
-            // The API requires at least one non-empty option. Live Apps Script creates one with an empty value.
-            // We'll emulate by creating a default "Option 1" in the fake environment.
+            // The API requires at least one option on creation.
             options: [{ value: 'Option 1' }],
           },
         },
@@ -163,7 +197,9 @@ export class FakeForm {
    */
   addSectionHeaderItem() {
     const itemResource = {
-      title: 'Section Title', // Default title
+      // The API resource for a section header is an item with a title and description.
+      // It is identified by the presence of the `textItem` property.
+      title: '',
       textItem: {},
     };
     return this.__addItem(itemResource, newFakeSectionHeaderItem);
@@ -186,6 +222,24 @@ export class FakeForm {
       },
     };
     return this.__addItem(itemResource, newFakeScaleItem);
+  }
+
+  /**
+   * Appends a new question item that allows the respondent to enter a single
+   * line of text.
+   * @returns {import('./faketextitem.js').FakeTextItem} The new text item.
+   */
+  addTextItem() {
+    const itemResource = {
+      questionItem: {
+        question: {
+          textQuestion: {
+            paragraph: false, // false for short-answer
+          },
+        },
+      },
+    };
+    return this.__addItem(itemResource, newFakeTextItem);
   }
 
 
@@ -280,18 +334,26 @@ export class FakeForm {
 
   /**
    * Moves the given form item to the specified index.
-   * @param {import('./fakeformitem.js').FakeFormItem} item The item to move.
+   * @param {Integer} from The 0-indexed position of the item to move.
    * @param {Integer} toIndex The 0-indexed position to move the item to.
    * @returns {import('./fakeformitem.js').FakeFormItem} The moved item.
    */
-  moveItem(item, toIndex) {
-    const fromIndex = item.getIndex();
+  moveItem(from, toIndex) {
+    // Enforce the live Apps Script signature: moveItem(from, to)
+    if (typeof from !== 'number') {
+      throw new Error(`The parameters (${typeof from},number) don't match the method signature for FormApp.Form.moveItem.`);
+    }
+    const items = this.getItems();
+    if (from < 0 || from >= items.length) {
+      throw new Error(`The starting position ${from} is out of bounds.`);
+    }
+    const itemToMove = items[from];
     const moveRequest = Forms.newRequest().setMoveItem({
-      originalLocation: { index: fromIndex },
+      originalLocation: { index: from },
       newLocation: { index: toIndex },
     });
     this.__update(moveRequest);
-    return item;
+    return itemToMove;
   }
   /**
    * Sets whether the form is accepting responses.

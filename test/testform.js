@@ -5,7 +5,46 @@ import { getFormsPerformance, wrapupTest, getDrivePerformance, trasher } from '.
 
 export const testForm = (pack) => {
   const toTrash = [];
+  
   const { unit, fixes } = pack || initTests();
+
+    unit.section('Form.addPageBreakItem & Routing', (t) => {
+    const form = FormApp.create('Add PageBreakItem Test Form');
+    toTrash.push(DriveApp.getFileById(form.getId()));
+
+    const question1 = form.addListItem().setTitle('Go to page 2?');
+    const pageBreak1 = form.addPageBreakItem();
+    form.addTextItem().setTitle('This is Page 2');
+    const pageBreak2 = form.addPageBreakItem();
+    form.addTextItem().setTitle('This is Page 3');
+
+    t.is(pageBreak1.toString(), 'PageBreakItem', 'addPageBreakItem should return a PageBreakItem');
+    t.is(pageBreak1.getIndex(), 1, 'The first page break should be at index 1');
+    t.is(pageBreak1.getType(), FormApp.ItemType.PAGE_BREAK, 'Item type should be PAGE_BREAK');
+
+    // Test routing from a choice item
+    const choiceYes = question1.createChoice('Yes', pageBreak2); // Go to page 3
+    const choiceNo = question1.createChoice('No', FormApp.PageNavigationType.CONTINUE); // Go to next page (page 2)
+    question1.setChoices([choiceYes, choiceNo]);
+
+    const updatedChoices = form.getItemById(question1.getId()).asListItem().getChoices();
+    // On a ListItem, getGoToPage() is not available on the choice.
+    // We check the navigation type instead.
+    t.is(updatedChoices[0].getPageNavigationType(), FormApp.PageNavigationType.GO_TO_PAGE, 'Choice "Yes" should have GO_TO_PAGE navigation');
+    t.is(updatedChoices[1].getPageNavigationType(), FormApp.PageNavigationType.CONTINUE, 'Choice "No" should have CONTINUE navigation');
+    // Live Apps Script throws a TypeError when calling getGoToPage() on a ListItem choice.
+    t.threw(() => updatedChoices[0].getGoToPage(), 'getGoToPage() should throw for ListItem choices');
+
+    // Test setting navigation on a page break itself
+    // This is not supported by the public Forms API, so the fake throws an error.
+    if (FormApp.isFake) {
+      const err = t.threw(() => pageBreak1.setGoToPage(pageBreak2));
+      t.truthy(err, 'setGoToPage on PageBreakItem should throw in fake environment');
+      t.is(pageBreak1.getGoToPage(), null, 'getGoToPage on PageBreakItem should return null');
+    }
+
+    if (FormApp.isFake) console.log('...cumulative forms cache performance', getFormsPerformance());
+  });
 
   unit.section('FormApp basics', (t) => {
     // Test create()
@@ -41,7 +80,11 @@ export const testForm = (pack) => {
 
     // Test openByUrl() with invalid URL
     const err1 = t.threw(() => FormApp.openByUrl('http://invalid.url/'));
-    t.rxMatch(err1.message, /invalid form url/i, 'openByUrl() should throw on invalid URL');
+    if (err1) {
+      // The fake should be updated to throw the same error as the live environment.
+      t.is(err1.message, 'Invalid argument: url', 'openByUrl() should throw on invalid URL');
+    }
+    t.truthy(err1, 'openByUrl() should throw an error for an invalid URL');
 
     // Test setTitle() and description - affects internal form title
     const newTitle = `gas-fakes-test-form-renamed-${new Date().getTime()}`;
@@ -64,8 +107,11 @@ export const testForm = (pack) => {
     t.true(form.isPublished(), 'A new form should be published (accepting responses) by default');
 
     // Test setPublished() - should throw an error
-    const err2 = t.threw(() => form.setPublished(false));
-    t.rxMatch(err2.message, /not yet implemented/i, 'setPublished() should throw a "not yet implemented" error');
+    if (FormApp.isFake) {
+      const err2 = t.threw(() => form.setPublished(false));
+      t.truthy(err2, 'setPublished() should throw in the fake environment');
+      t.rxMatch(err2?.message, /not yet implemented/i, 'setPublished() should throw a "not yet implemented" error');
+    }
 
 
     if (FormApp.isFake) {
@@ -153,131 +199,6 @@ export const testForm = (pack) => {
     }
   });
 
-  unit.section('CheckboxItem methods', (t) => {
-    // This test can only run in the fake environment because it uses the advanced Forms service
-    // to add items to the form, which is not available in live Apps Script.
-    if (!FormApp.isFake) {
-      console.log('...skipping CheckboxItem methods test on live Apps Script');
-      return;
-    }
-
-    const form = FormApp.create('CheckboxItem Test Form');
-    toTrash.push(DriveApp.getFileById(form.getId()));
-
-    // Use advanced service to add a checkbox item.
-    const createCheckboxRequest = Forms.newRequest().setCreateItem(
-      Forms.newCreateItemRequest()
-        .setItem(
-          Forms.newItem()
-            .setTitle('Checkbox Question')
-            .setQuestionItem(
-              Forms.newQuestionItem().setQuestion(
-                Forms.newQuestion().setChoiceQuestion(
-                  Forms.newChoiceQuestion()
-                    .setType('CHECKBOX')
-                    .setOptions([
-                      Forms.newOption().setValue('Option A'),
-                      Forms.newOption().setValue('Option B')
-                    ])
-                )
-              )
-            )
-        )
-        .setLocation(Forms.newLocation().setIndex(0))
-    );
-
-    const batchRequest = Forms.newBatchUpdateFormRequest()
-      .setRequests([createCheckboxRequest])
-      .setIncludeFormInResponse(true);
-
-    const batchResponse = Forms.Form.batchUpdate(batchRequest, form.getId());
-    const itemId = batchResponse.replies[0].createItem.itemId;
-
-    // Re-open the form to get the item
-    const updatedForm = FormApp.openById(form.getId());
-    const item = updatedForm.getItemById(itemId);
-
-    t.is(item.getType(), FormApp.ItemType.CHECKBOX, 'Item type should be CHECKBOX');
-
-    // Test asCheckboxItem()
-    const checkboxItem = item.asCheckboxItem();
-    t.is(checkboxItem.toString(), 'CheckboxItem', 'asCheckboxItem() should return a CheckboxItem');
-
-    // Test isRequired() and setRequired()
-    t.false(checkboxItem.isRequired(), 'Checkbox should not be required by default');
-    checkboxItem.setRequired(true);
-    t.true(checkboxItem.isRequired(), 'isRequired() should be true after setRequired(true)');
-    checkboxItem.setRequired(false);
-    t.false(checkboxItem.isRequired(), 'isRequired() should be false after setRequired(false)');
-
-    // Test getChoices() and setChoices()
-    t.deepEqual(checkboxItem.getChoices().map(c => c.getValue()), ['Option A', 'Option B'], 'getChoices() should return initial choices');
-
-    const newChoiceValues = ['Choice 1', 'Choice 2', 'Choice 3'];
-    const newChoices = newChoiceValues.map(val => checkboxItem.createChoice(val));
-    checkboxItem.setChoices(newChoices);
-    t.deepEqual(checkboxItem.getChoices().map(c => c.getValue()), newChoiceValues, 'getChoices() should return new choices after setChoices()');
-
-    if (FormApp.isFake) {
-      console.log('...cumulative forms cache performance', getFormsPerformance());
-    }
-  });
-
-  unit.section('MultipleChoiceItem methods', (t) => {
-    // This test can only run in the fake environment
-    if (!FormApp.isFake) {
-      console.log('...skipping MultipleChoiceItem methods test on live Apps Script');
-      return;
-    }
-
-    const form = FormApp.create('MultipleChoiceItem Test Form');
-    toTrash.push(DriveApp.getFileById(form.getId()));
-
-    // Use advanced service to add a multiple-choice item.
-    const createMcRequest = Forms.newRequest().setCreateItem(
-      Forms.newCreateItemRequest()
-        .setItem(
-          Forms.newItem()
-            .setTitle('MultipleChoice Question')
-            .setQuestionItem(
-              Forms.newQuestionItem().setQuestion(
-                Forms.newQuestion().setChoiceQuestion(
-                  Forms.newChoiceQuestion()
-                    .setType('RADIO') // RADIO corresponds to MultipleChoice
-                    .setOptions([
-                      Forms.newOption().setValue('Option X'),
-                      Forms.newOption().setValue('Option Y')
-                    ])
-                )
-              )
-            )
-        )
-        .setLocation(Forms.newLocation().setIndex(0))
-    );
-
-    const batchRequest = Forms.newBatchUpdateFormRequest()
-      .setRequests([createMcRequest])
-      .setIncludeFormInResponse(true);
-
-    const batchResponse = Forms.Form.batchUpdate(batchRequest, form.getId());
-    const itemId = batchResponse.replies[0].createItem.itemId;
-
-    const updatedForm = FormApp.openById(form.getId());
-    const item = updatedForm.getItemById(itemId);
-
-    t.is(item.getType(), FormApp.ItemType.MULTIPLE_CHOICE, 'Item type should be MULTIPLE_CHOICE');
-
-    const mcItem = item.asMultipleChoiceItem();
-    t.is(mcItem.toString(), 'MultipleChoiceItem', 'asMultipleChoiceItem() should return a MultipleChoiceItem');
-
-    const newChoiceValues = ['Choice A', 'Choice B'];
-    const newChoices = newChoiceValues.map(val => mcItem.createChoice(val));
-    mcItem.setChoices(newChoices);
-    t.deepEqual(mcItem.getChoices().map(c => c.getValue()), newChoiceValues, 'getChoices() should return new choices after setChoices()');
-
-    if (FormApp.isFake) console.log('...cumulative forms cache performance', getFormsPerformance());
-  });
-
   unit.section('Form.addCheckboxItem', (t) => {
     const form = FormApp.create('Add Item Test Form');
     toTrash.push(DriveApp.getFileById(form.getId()));
@@ -288,10 +209,16 @@ export const testForm = (pack) => {
 
     const defaultChoices = checkboxItem.getChoices();
     t.is(defaultChoices.length, 1, 'A new checkbox item should have one choice by default');
-    const expectedDefaultValue = FormApp.isFake ? 'Option 1' : '';
+    const expectedDefaultValue = FormApp.isFake ? 'Option 1' : ''; // Live creates empty, fake API needs a value
     t.is(defaultChoices[0].getValue(), expectedDefaultValue, 'The default choice should have the correct value for the environment');
 
     checkboxItem.setTitle('What are your favorite colors?');
+
+    // Test isRequired() and setRequired()
+    t.false(checkboxItem.isRequired(), 'Checkbox should not be required by default');
+    checkboxItem.setRequired(true);
+    t.true(checkboxItem.isRequired(), 'isRequired() should be true after setRequired(true)');
+    checkboxItem.setRequired(false);
 
     const newChoiceValues = ['Red', 'Green', 'Blue'];
     const newChoices = newChoiceValues.map(val => checkboxItem.createChoice(val));
@@ -314,10 +241,16 @@ export const testForm = (pack) => {
 
     const defaultChoices = mcItem.getChoices();
     t.is(defaultChoices.length, 1, 'A new multiple choice item should have one choice by default');
-    const expectedDefaultValue = FormApp.isFake ? 'Option 1' : '';
+    const expectedDefaultValue = FormApp.isFake ? 'Option 1' : ''; // Live creates empty, fake API needs a value
     t.is(defaultChoices[0].getValue(), expectedDefaultValue, 'The default choice should have the correct value for the environment');
 
     mcItem.setTitle('What is your favorite color?');
+
+    // Test isRequired() and setRequired()
+    t.false(mcItem.isRequired(), 'MC item should not be required by default');
+    mcItem.setRequired(true);
+    t.true(mcItem.isRequired(), 'isRequired() should be true after setRequired(true)');
+    mcItem.setRequired(false);
 
     const newChoiceValues = ['Red', 'Green', 'Blue'];
     const newChoices = newChoiceValues.map(val => mcItem.createChoice(val));
@@ -364,7 +297,7 @@ export const testForm = (pack) => {
     t.is(sectionHeaderItem.toString(), 'SectionHeaderItem', 'addSectionHeaderItem should return a SectionHeaderItem');
     t.is(sectionHeaderItem.getIndex(), 0, 'The first added item should be at index 0');
     t.is(sectionHeaderItem.getType(), FormApp.ItemType.SECTION_HEADER, 'Item type should be SECTION_HEADER');
-    t.is(sectionHeaderItem.getTitle(), 'Section Title', 'Default title should be "Section Title"');
+    t.is(sectionHeaderItem.getTitle(), '', 'Default title should be empty to match live environment');
 
     sectionHeaderItem.setTitle('New Section Title').setHelpText('Some help text');
     t.is(sectionHeaderItem.getTitle(), 'New Section Title', 'Title should be updated');
@@ -410,17 +343,66 @@ export const testForm = (pack) => {
     t.is(itemC.getIndex(), 2, 'Item C should be at index 2 initially');
 
     // Move the last item to the beginning
-    form.moveItem(itemC, 0);
+    form.moveItem(2, 0);
     t.is(itemC.getIndex(), 0, 'Item C should now be at index 0');
     t.is(itemA.getIndex(), 1, 'Item A should now be at index 1');
     t.is(itemB.getIndex(), 2, 'Item B should now be at index 2');
 
     // Move the first item (now C) to the end
-    form.moveItem(itemC, 2);
+    form.moveItem(0, 2);
     t.is(itemA.getIndex(), 0, 'Item A should be back at index 0');
     t.is(itemB.getIndex(), 1, 'Item B should be back at index 1');
     t.is(itemC.getIndex(), 2, 'Item C should now be at the end, index 2');
   });
+
+  unit.section('Form.addListItem', (t) => {
+    const form = FormApp.create('Add ListItem Test Form');
+    toTrash.push(DriveApp.getFileById(form.getId()));
+
+    const listItem = form.addListItem();
+    t.is(listItem.toString(), 'ListItem', 'addListItem should return a ListItem');
+    t.is(listItem.getIndex(), 0, 'The first added item should be at index 0');
+    t.is(listItem.getType(), FormApp.ItemType.LIST, 'Item type should be LIST');
+
+    const defaultChoices = listItem.getChoices();
+    t.is(defaultChoices.length, 1, 'A new list item should have one choice by default');
+    // Live Apps Script creates a default choice with an empty string value.
+    const expectedDefaultValue = FormApp.isFake ? 'Option 1' : ''; // Live creates empty, fake API needs a value
+    t.is(defaultChoices[0].getValue(), expectedDefaultValue, 'The default choice should have the correct value for the environment');
+
+    listItem.setTitle('Select an option');
+
+    const newChoiceValues = ['Option X', 'Option Y', 'Option Z'];
+    const newChoices = newChoiceValues.map(val => listItem.createChoice(val));
+    listItem.setChoices(newChoices);
+
+    const retrievedItem = form.getItemById(listItem.getId()).asListItem();
+    t.is(retrievedItem.getTitle(), 'Select an option', 'Title should be set correctly');
+    t.deepEqual(retrievedItem.getChoices().map(c => c.getValue()), newChoiceValues, 'Choices should be set correctly');
+
+    if (FormApp.isFake) console.log('...cumulative forms cache performance', getFormsPerformance());
+  });
+
+  unit.section('Form.addTextItem', (t) => {
+    const form = FormApp.create('Add TextItem Test Form');
+    toTrash.push(DriveApp.getFileById(form.getId()));
+
+    const textItem = form.addTextItem();
+    t.is(textItem.toString(), 'TextItem', 'addTextItem should return a TextItem');
+    t.is(textItem.getIndex(), 0, 'The first added item should be at index 0');
+    t.is(textItem.getType(), FormApp.ItemType.TEXT, 'Item type should be TEXT');
+
+    textItem.setTitle('Enter your name');
+    textItem.setRequired(true);
+
+    const retrievedItem = form.getItemById(textItem.getId()).asTextItem();
+    t.is(retrievedItem.getTitle(), 'Enter your name', 'Title should be set correctly');
+    t.true(retrievedItem.isRequired(), 'Item should be required');
+
+    if (FormApp.isFake) console.log('...cumulative forms cache performance', getFormsPerformance());
+  });
+
+
 
   if (!pack) {
     unit.report();

@@ -5,4 +5,6 @@
 import './fakecheckboxitem.js'
 import './fakegriditem.js';
 import './fakescaleitem.js';
+import './fakepagebreakitem.js';
+import './fakelistitem.js';
 // Add other item types here as they are implemented (e.g., './faketextitem.js')

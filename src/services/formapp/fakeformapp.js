@@ -96,7 +96,7 @@ class FakeFormApp {
   openByUrl(url) {
     const id = Url.getIdFromUrl(url);
     if (!id) {
-      throw new Error(`Invalid form URL: ${url}`);
+      throw new Error(`Invalid argument: url`);
     }
     return this.openById(id);
   }

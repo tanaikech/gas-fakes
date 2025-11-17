@@ -806,6 +806,77 @@ The expected behavior would be for `FormApp.create(title)` to set both the Drive
 
 https://issuetracker.google.com/issues/442747794
 
+#### Default Choice Values for New Items
+
+There is a notable difference in how the live `FormApp` service and the underlying Google Forms API handle the creation of default choices for new choice-based items like `ListItem`, `CheckboxItem`, and `MultipleChoiceItem`.
+
+##### Live Apps Script Behavior
+
+When you create a choice-based item using the `FormApp` service, it automatically generates a single default choice. The value of this default choice is an empty string (`""`).
+
+```javascript
+// In live Apps Script
+const form = FormApp.create("Test");
+const item = form.addListItem();
+const choices = item.getChoices();
+console.log(choices.getValue()); // Logs: ""
+```
+
+##### The Problem with API Emulation
+
+The public Google Forms API v1, which `gas-fakes` uses for its backend, has stricter requirements for item creation:
+
+1.  **`options` is Required**: When creating a `ChoiceQuestion` via a `createItem` request, the `options` array must be present and contain at least one choice. Sending an empty array results in a `ChoiceQuestion.options is required` error.
+2.  **`value` is Required**: Each choice object within the `options` array must have a non-empty `value` property. Sending a choice with `value: ""` results in an `option.value was not provided` error.
+
+These constraints make it impossible to use the public API to create an item that exactly matches the initial state of one created by `FormApp`.
+
+##### `gas-fakes` Implementation
+
+To satisfy the API's requirements while still providing a default choice, `gas-fakes` creates these items with a single placeholder choice, like `"Option 1"`. This is a necessary divergence to work around the limitations of the public API. Tests that check for this default value must be written conditionally to account for the difference between the live and fake environments.
+
+```javascript
+// In the gas-fakes environment
+const form = FormApp.create("Test");
+const item = form.addListItem();
+const choices = item.getChoices();
+console.log(choices.getValue()); // Logs: "Option 1"
+```
+#### Inability to Set PageBreakItem Navigation
+
+A significant discrepancy exists between the Apps Script FormApp service and the public Google Forms API regarding the ability to set the navigation flow after a page break. 
+
+##### Live Apps Script Behavior
+
+In the live Apps Script environment, the PageBreakItem.setGoToPage(navigation) method allows a developer to control what happens after a user completes a page. The form can be directed to continue to the next page, submit the form, or jump to a specific, different page (another PageBreakItem). 
+
+##### The Problem with API Emulation 
+
+The public Google Forms API v1 provides no mechanism to set this "after page" navigation. The PageBreakItem object within the API's Item resource is an empty object ({}), and the parent Item resource itself does not contain any navigation fields (goToAction or goToSectionId) when the item is a page break. This means that while choice-based navigation can be set via the API, page-based navigation cannot. 
+
+##### gas-fakes Implementation 
+
+Because gas-fakes relies exclusively on the public Forms API, it is impossible to emulate the live behavior of PageBreakItem.setGoToPage(). To accurately reflect this limitation and prevent developers from writing code that would only work in the fake environment, the setGoToPage() method on FakePageBreakItem throws a "not supported" error. 
+
+Consequently, FakePageBreakItem.getGoToPage() will always return null, as there is no way to set this value through the API. 
+
+#### `Choice.getGoToPage()` Behavior on `ListItem` Choices
+
+There is a direct contradiction between the official Google Apps Script documentation and the live environment's behavior for the `Choice.getGoToPage()` method.
+
+##### Documented vs. Live Behavior
+
+The official documentation states that `getGoToPage()` applies only to choices from `MultipleChoiceItem` and that "for other choices, it returns `null`."
+
+However, extensive testing against the live environment reveals that when `getGoToPage()` is called on a `Choice` object belonging to a `ListItem`, it does **not** return `null`. Instead, it throws a `TypeError`, stating that the method is not a function.
+
+##### `gas-fakes` Implementation
+
+To ensure the highest fidelity, `gas-fakes` emulates the *live behavior*, not the documented behavior. The `FakeChoice` class will check the type of its parent item. If the parent is a `ListItem`, calling `getGoToPage()` will throw a `TypeError`, just as it does in a live Apps Script environment. This ensures that tests written for `gas-fakes` will behave identically when run against the live service.
+
+This is a critical distinction for developers, as code that defensively checks for a `null` return value (as the documentation would suggest) will behave differently than code that uses a `try...catch` block to handle a potential `TypeError`.
+
+
 #### Inability to Programmatically Set Published State (`setPublished`)
 
 Another significant limitation of the public Google Forms API is the inability to programmatically change whether a form is accepting responses.

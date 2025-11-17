@@ -7,12 +7,14 @@ const sandbox = true
 const folderId = '1ypdMgsdRyb5ggJ3oX2UdWNx0k2eSdCnV'
 
 const main = () => {
-  const bb = JSON.parse(readFileSync('template-rules.json', 'utf8'))
-  const { templates, blocks } = bb
+  const {blocks} = JSON.parse(readFileSync('template-rules.json', 'utf8'))
+  const {rosters} = JSON.parse(readFileSync('rosters.json', 'utf8'))
+  const {templates} = JSON.parse(readFileSync('templates.json', 'utf8'))
   const template = templates.test
+  const roster = rosters.vegetables
 
   // copy the form, and fill in the template
-  const formg = new FormGenerator({ template, blocks, folderId }).create()
+  const formg = new FormGenerator({ template, blocks, folderId, roster }).create()
   console.log ('using template', formg.inputForm.getEditUrl())
   // add the building blocks
   formg.addBlocks()

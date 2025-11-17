@@ -1,0 +1,29 @@
+{
+  "rosters": {
+    "vegetables": [{
+        "idField": "alias",
+        "nameField": "name",
+        "members": [{
+          "name": "melissa cucumber",
+          "node selector": "green",
+          "group": "raw"
+        }, {
+          "name": "donald turnip",
+          "node selector": "",
+          "group": "cooked"
+        }, {
+          "name": "becky beetroot",
+          "node selector": "red",
+          "group": ""
+        }, {
+          "name": "norma neep",
+          "node selector": "",
+          "group": "cooked"
+        } , {
+          "name": "fava beans",
+          "node selector": "green",
+          "group": "cooked"
+        }]
+      }]
+  }
+}

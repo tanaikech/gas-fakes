@@ -1,12 +1,4 @@
 {
-  "templates": {
-    "test": {
-      "templateId": "1RGUYVxCHlYw4aG1jJM2YJ8TLi8lnKaDTQ9jcvGhGAeE",
-      "formTitle": "copy of test measures form",
-      "formName": "test A",
-      "formDescription": "experimenting with blocks"
-    }
-  },
   "blocks": {
     "flourishing": {
       "reference": "Flourishing (Diener-8) [Validated Scale]",
@@ -622,7 +614,7 @@
       ]
     },
     "name": {
-      "sections": {
+      "sections": [{
         "title": "About You",
         "notes": "labels are generated frim the roster - it also has a routing action for name is not listed",
         "description": "Please select your name from the list for data linking purposes.\nAs a reminder, your responses will be anonymized and kept confidential.",
@@ -631,7 +623,7 @@
             "questionType": "dropdown",
             "required": true,
             "rosterField": "name",
-            "routing": {"name":"My name is not listed", "gotoMatch": "next", "gotoElse": "skip_next"},
+            "routing": {"name":"My name is not listed.", "gotoMatch": "next_section", "gotoElse": "skip_next_section"},
             "questions": [
               {
                 "id": "name",
@@ -640,7 +632,7 @@
             ]
           }
         ]
-      }
+      }]
     },
     "missing_name": {
       "sections": [
