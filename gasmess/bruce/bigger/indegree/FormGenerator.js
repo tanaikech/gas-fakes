@@ -1,7 +1,8 @@
 export class FormGenerator {
   // create a copy from a template and apply the block rules
-  constructor({ templateId, template, blocks, folderId, roster }) {
-    this.__template = template
+  constructor({ formName, templateId, templates, blocks, folderId, roster }) {
+    this.__formName = formName
+    this.__templates = templates
     this.__blocks = blocks
     if (!templateId) throw new Error(`missing templateId`)
     this.__templateId = templateId
@@ -13,6 +14,9 @@ export class FormGenerator {
     this.__postProcessTasks = [];
     this.__roster = roster
   }
+  get formName () {
+    return this.__formName || this.input.getName() + '_copy'
+  }
   get roster() {
     return this.__roster
   }
@@ -22,17 +26,16 @@ export class FormGenerator {
   get templateId() {
     return this.__templateId
   }
-  get template() {
-    return this.__template
+  get templates() {
+    return this.__templates
   }
   create() {
     // first create a copy of the template
-    const { title = 'no title', formName = 'nonname', description = 'no description' } = this.template
     const templateId = this.templateId
     this.input = DriveApp.getFileById(templateId)
     this.inputForm = FormApp.openById(templateId)
     if (!this.input) throw new Error(`failed to find template ${templateId}`)
-    this.file = this.input.makeCopy(formName, this.folder)
+    this.file = this.input.makeCopy(this.formName, this.folder)
     this.form = FormApp.openById(this.file.getId())
     return this
   }
@@ -240,18 +243,14 @@ export class FormGenerator {
 
   addBlocks() {
     const blocks = this.blocks;
-
-    // Instead of using setTitle, which corrupts the form, insert the title/description as the first section.
-    const { title = 'no title', description = 'no description' } = this.template
-    const titleSection = this.form.addSectionHeaderItem()
-    this.addAmble(titleSection, 0, { title, description })
-
-    // Now get the items again, since we've added one.
     const allItems = this.form.getItems();
 
     // Find all placeholders and plan the replacements.
     const formItems = allItems.map((item, index) => {
-      const marked = extractJsonFromDoubleBraces(item.getTitle());
+      // A placeholder can be in the title or the help text (description).
+      const titleText = item.getTitle() || '';
+      const helpText = item.getHelpText() || '';
+      const marked = extractJsonFromDoubleBraces(titleText + helpText);
       if (marked.length > 0) {
         const [blockData] = marked;
         const blockDefinition = blocks[blockData.block];
@@ -269,43 +268,55 @@ export class FormGenerator {
     replacements.forEach (formItem=> {
 
       const { item: placeholderItem, blockDefinition, blockData } = formItem;
-      // just set this empty got now
-      const itemContext = {}
-      const { sections } = blockDefinition;
-      if (!sections || !Array.isArray(sections)) {
-        throw new Error(`'sections' array not found or invalid in replacement for ${blockData.block}`);
-      }
-      sections.forEach(section => {
 
-        // as we add new sections the index will change so we pick it up each time
-        let insertionIndex = placeholderItem.getIndex() + 1
+      if (blockDefinition.type === 'section') {
+        // This is a substitution for a section header's title and description.
+        const templateData = this.template[blockData.block];
+        if (templateData) {
+          const { title, description } = templateData;
+          placeholderItem.setTitle(title).setHelpText(description);
+        } else {
+          console.warn(`Template data not found for section block: ${blockData.block}`);
+        }
+      } else {
+        // This is the standard block replacement for measure_sets, etc.
+        const itemContext = {}
+        const { sections } = blockDefinition;
+        if (!sections || !Array.isArray(sections)) {
+          throw new Error(`'sections' array not found or invalid in replacement for ${blockData.block}`);
+        }
+        sections.forEach(section => {
 
-        console.log(`Inserting section: ${section.title} at ${insertionIndex}`);
-        insertionIndex += this.addSection({ section, index: insertionIndex });
+          // as we add new sections the index will change so we pick it up each time
+          let insertionIndex = placeholderItem.getIndex() + 1
 
-        section.items.forEach(item => {
-          console.log(`  Inserting item: ${item.title || item.questionType} at ${insertionIndex}`);
-          switch (item.questionType.toLowerCase()) {
-            case "multiple_choice_grid":
-              insertionIndex += this.addGridItem({ item: { ...item, ...itemContext }, index: insertionIndex });
-              break;
-            case "linear_scale":
-              insertionIndex += this.addScaleItem({ item: { ...item, ...itemContext }, index: insertionIndex });
-              break;
-            case "multiple_choice":
-              insertionIndex += this.addMultipleChoiceItem({ item: { ...item, ...itemContext }, index: insertionIndex });
-              break;
-            case "dropdown":
-              insertionIndex += this.addListItem({ item: { ...item, ...itemContext }, index: insertionIndex });
-              break;
-            case "short_answer":
-              insertionIndex += this.addTextItem({ item: { ...item, ...itemContext }, index: insertionIndex });
-              break;
-            default:
-              throw new Error(`invalid question type ${item.questionType}`);
-          }
+          console.log(`Inserting section: ${section.title} at ${insertionIndex}`);
+          insertionIndex += this.addSection({ section, index: insertionIndex });
+
+          section.items.forEach(item => {
+            console.log(`  Inserting item: ${item.title || item.questionType} at ${insertionIndex}`);
+            switch (item.questionType.toLowerCase()) {
+              case "multiple_choice_grid":
+                insertionIndex += this.addGridItem({ item: { ...item, ...itemContext }, index: insertionIndex });
+                break;
+              case "linear_scale":
+                insertionIndex += this.addScaleItem({ item: { ...item, ...itemContext }, index: insertionIndex });
+                break;
+              case "multiple_choice":
+                insertionIndex += this.addMultipleChoiceItem({ item: { ...item, ...itemContext }, index: insertionIndex });
+                break;
+              case "dropdown":
+                insertionIndex += this.addListItem({ item: { ...item, ...itemContext }, index: insertionIndex });
+                break;
+              case "short_answer":
+                insertionIndex += this.addTextItem({ item: { ...item, ...itemContext }, index: insertionIndex });
+                break;
+              default:
+                throw new Error(`invalid question type ${item.questionType}`);
+            }
+          });
         });
-      });
+      }
 
 
     })
@@ -318,7 +329,6 @@ export class FormGenerator {
     // Run all the deferred navigation tasks now that the form structure is complete.
     this.__postProcessTasks.forEach(task => task());
 
-    // The title/description are now part of the form content, so no need to set them here.
 
     return this
 

@@ -2,7 +2,6 @@
     "templates": {
       "first_section": {
         "title": "From a blocks template form",
-        "name": "test A",
         "description": "experimenting with blocks"
       }
     }
