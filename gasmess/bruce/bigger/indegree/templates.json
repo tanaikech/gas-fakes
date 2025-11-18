@@ -1,10 +1,9 @@
   {
     "templates": {
-      "test": {
-        "templateId": "1RGUYVxCHlYw4aG1jJM2YJ8TLi8lnKaDTQ9jcvGhGAeE",
-        "formTitle": "copy of test measures form",
-        "formName": "test A",
-        "formDescription": "experimenting with blocks"
+      "first_section": {
+        "title": "From a blocks template form",
+        "name": "test A",
+        "description": "experimenting with blocks"
       }
     }
   }

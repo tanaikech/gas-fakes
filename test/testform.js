@@ -36,11 +36,12 @@ export const testForm = (pack) => {
     t.threw(() => updatedChoices[0].getGoToPage(), 'getGoToPage() should throw for ListItem choices');
 
     // Test setting navigation on a page break itself
-    // This is not supported by the public Forms API, so the fake throws an error.
     if (FormApp.isFake) {
-      const err = t.threw(() => pageBreak1.setGoToPage(pageBreak2));
-      t.truthy(err, 'setGoToPage on PageBreakItem should throw in fake environment');
+      // Setting any navigation on a PageBreakItem is not supported by the public API.
+      const errAction = t.threw(() => pageBreak1.setGoToPage(FormApp.PageNavigationType.SUBMIT));
+      t.truthy(errAction, 'setGoToPage(PageNavigationType) should throw in fake environment');
       t.is(pageBreak1.getGoToPage(), null, 'getGoToPage on PageBreakItem should return null');
+      t.is(pageBreak1.getPageNavigationType(), FormApp.PageNavigationType.CONTINUE, 'getPageNavigationType should always be CONTINUE');
     }
 
     if (FormApp.isFake) console.log('...cumulative forms cache performance', getFormsPerformance());

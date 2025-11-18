@@ -4,25 +4,49 @@
         "idField": "alias",
         "nameField": "name",
         "members": [{
-          "name": "melissa cucumber",
-          "node selector": "green",
-          "group": "raw"
-        }, {
           "name": "donald turnip",
           "node selector": "",
           "group": "cooked"
         }, {
-          "name": "becky beetroot",
+          "name": "marco rhubarb",
           "node selector": "red",
+          "group": "raw"
+        }, {
+          "name": "kirsti kohlrabi",
+          "node selector": "white",
           "group": ""
         }, {
           "name": "norma neep",
           "node selector": "",
           "group": "cooked"
         } , {
-          "name": "fava beans",
-          "node selector": "green",
+          "name": "nikki kale",
+          "node_selector":"",
           "group": "cooked"
+        },{
+          "name": "ryan zucchini",
+          "node_selector":"",
+          "group": "cooked"
+        },{
+          "name": "ben parsnip",
+          "node selector": "",
+          "group": "cooked"
+        }, {
+          "name": "pamela bean",
+          "node selector": "",
+          "group": "cooked"
+        }, {
+          "name": "jf cranberry jr",
+          "node selector": "",
+          "group": "cooked"
+        }, {
+          "name": "howard nut",
+          "node selector": "",
+          "group": "raw"
+        }, {
+          "name": "john radish",
+          "node selector": "",
+          "group": "raw"
         }]
       }]
   }

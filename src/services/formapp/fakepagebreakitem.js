@@ -1,7 +1,7 @@
 import { Proxies } from '../../support/proxies.js';
 import { FakeFormItem } from './fakeformitem.js';
 import { registerFormItem } from './formitemregistry.js';
-import { ItemType } from '../enums/formsenums.js';
+import { ItemType, PageNavigationType } from '../enums/formsenums.js';
 
 export const newFakePageBreakItem = (...args) => {
   return Proxies.guard(new FakePageBreakItem(...args));
@@ -32,8 +32,21 @@ export class FakePageBreakItem extends FakeFormItem {
    * @returns {FakePageBreakItem | null} The page-break item, or null if the page does not navigate to a specific page.
    */
   getGoToPage() {
-    // Since setGoToPage cannot be implemented, this will always return null.
+    // The API does not support setting a specific page destination for a page break.
     return null;
+  }
+
+  getPageNavigationType() {
+    // Since navigation cannot be set via the API, the navigation type will always be the default.
+    return PageNavigationType.CONTINUE;
+  }
+
+  /**
+   * Gets the ID of the item.
+   * @returns {Integer} The item's ID.
+   */
+  getId() {
+    return this.__id;
   }
 
   /**

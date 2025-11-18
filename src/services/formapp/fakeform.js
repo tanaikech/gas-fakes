@@ -322,34 +322,56 @@ export class FakeForm {
 
   /**
    * Deletes the item at the given index.
-   * @param {Integer} index The 0-indexed position of the item to delete.
+   * @param {import('./fakeformitem.js').FakeFormItem | Integer} itemOrIndex The item to delete, or its 0-indexed position.
    * @returns {FakeForm} The form, for chaining.
    */
-  deleteItem(index) {
+  deleteItem(itemOrIndex) {
+    let indexToDelete
+    if (typeof itemOrIndex === 'number') {
+      indexToDelete = itemOrIndex
+    } else if (typeof itemOrIndex === 'object' && typeof itemOrIndex.getIndex === 'function') {
+      // It's an Item object, get its index.
+      indexToDelete = itemOrIndex.getIndex()
+    } else {
+      // This handles the case where an invalid object is passed, which can happen during development.
+      // The error from the API ("Starting an object on a scalar field") is because the fake was
+      // passing the whole object into the batchUpdate request instead of an index.
+      // By handling the object case properly, we now get the correct behavior.
+      throw new Error(
+        `The parameters (${typeof itemOrIndex}) don't match the method signature for FormApp.Form.deleteItem.`
+      )
+    }
     const deleteRequest = Forms.newRequest().setDeleteItem({
-      location: { index: index },
+      location: { index: indexToDelete },
     });
     return this.__update(deleteRequest);
   }
 
   /**
    * Moves the given form item to the specified index.
-   * @param {Integer} from The 0-indexed position of the item to move.
+   * @param {import('./fakeformitem.js').FakeFormItem | Integer} itemOrFrom The item to move, or its 0-indexed position.
    * @param {Integer} toIndex The 0-indexed position to move the item to.
    * @returns {import('./fakeformitem.js').FakeFormItem} The moved item.
    */
-  moveItem(from, toIndex) {
-    // Enforce the live Apps Script signature: moveItem(from, to)
-    if (typeof from !== 'number') {
-      throw new Error(`The parameters (${typeof from},number) don't match the method signature for FormApp.Form.moveItem.`);
+  moveItem(itemOrFrom, toIndex) {
+    let fromIndex;
+    if (typeof itemOrFrom === 'number') {
+      fromIndex = itemOrFrom;
+    } else if (typeof itemOrFrom === 'object' && typeof itemOrFrom.getIndex === 'function') {
+      fromIndex = itemOrFrom.getIndex();
+    } else {
+      throw new Error(`The parameters (${typeof itemOrFrom},number) don't match the method signature for FormApp.Form.moveItem.`);
     }
+
     const items = this.getItems();
-    if (from < 0 || from >= items.length) {
-      throw new Error(`The starting position ${from} is out of bounds.`);
+    if (fromIndex < 0 || fromIndex >= items.length) {
+      throw new Error(`The starting position ${fromIndex} is out of bounds.`);
     }
-    const itemToMove = items[from];
+
+    // The item to return is the one at the original 'from' index.
+    const itemToMove = items[fromIndex];
     const moveRequest = Forms.newRequest().setMoveItem({
-      originalLocation: { index: from },
+      originalLocation: { index: fromIndex },
       newLocation: { index: toIndex },
     });
     this.__update(moveRequest);

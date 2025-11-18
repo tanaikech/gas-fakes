@@ -4,17 +4,20 @@ import { FormGenerator } from './FormGenerator.js'
 
 const clean = false
 const sandbox = true
+
 const folderId = '1ypdMgsdRyb5ggJ3oX2UdWNx0k2eSdCnV'
+const rulesId = '11L29nlZakItr2mNJbOeOJPJ377BxeJ8G'
+const templateId = '1RGUYVxCHlYw4aG1jJM2YJ8TLi8lnKaDTQ9jcvGhGAeE'
 
 const main = () => {
-  const {blocks} = JSON.parse(readFileSync('template-rules.json', 'utf8'))
   const {rosters} = JSON.parse(readFileSync('rosters.json', 'utf8'))
   const {templates} = JSON.parse(readFileSync('templates.json', 'utf8'))
   const template = templates.test
   const roster = rosters.vegetables
-
+  const rules = DriveApp.getFileById (rulesId).getBlob().getDataAsString()
+  const {blocks} = JSON.parse(rules)
   // copy the form, and fill in the template
-  const formg = new FormGenerator({ template, blocks, folderId, roster }).create()
+  const formg = new FormGenerator({ templateId, template, blocks, folderId, roster }).create()
   console.log ('using template', formg.inputForm.getEditUrl())
   // add the building blocks
   formg.addBlocks()
@@ -24,8 +27,9 @@ const main = () => {
 if (ScriptApp.isFake && sandbox) {
   const behavior = ScriptApp.__behavior
   behavior.sandboxMode = true
+  behavior.addIdWhitelist(behavior.newIdWhitelistItem(rulesId));
   behavior.addIdWhitelist(behavior.newIdWhitelistItem(folderId));
-  behavior.addIdWhitelist(behavior.newIdWhitelistItem("1RGUYVxCHlYw4aG1jJM2YJ8TLi8lnKaDTQ9jcvGhGAeE"));
+  behavior.addIdWhitelist(behavior.newIdWhitelistItem(templateId));
 }
 
 const form = main()

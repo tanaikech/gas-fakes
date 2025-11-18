@@ -1,5 +1,9 @@
 {
   "blocks": {
+    "first_section": {
+      "type": "section",
+      "notes": "replaces the title and deescription of the section it appears in -from a template prop of the same name"
+    },
     "flourishing": {
       "reference": "Flourishing (Diener-8) [Validated Scale]",
       "type": "measure_set",
@@ -614,40 +618,48 @@
       ]
     },
     "name": {
-      "sections": [{
-        "title": "About You",
-        "notes": "labels are generated frim the roster - it also has a routing action for name is not listed",
-        "description": "Please select your name from the list for data linking purposes.\nAs a reminder, your responses will be anonymized and kept confidential.",
-        "items": [
-          {
-            "questionType": "dropdown",
-            "required": true,
-            "rosterField": "name",
-            "routing": {"name":"My name is not listed.", "gotoMatch": "next_section", "gotoElse": "skip_next_section"},
-            "questions": [
-              {
-                "id": "name",
-                "text": "Select your name from the list."
-              }
-            ]
-          }
-        ]
-      }]
+      "sections": [
+        {
+          "title": "About You",
+          "notes": "labels are generated frim the roster - it also has a routing action for name is not listed",
+          "description": "Please select your name from the list for data linking purposes.\nAs a reminder, your responses will be anonymized and kept confidential.",
+          "items": [
+            {
+              "questionType": "dropdown",
+              "required": true,
+              "rosterField": "name",
+              "routing": {
+                "name": "My name is not listed.",
+                "gotoMatch": "next_section",
+                "gotoElse": "skip_next_section"
+              },
+              "questions": [
+                {
+                  "id": "name",
+                  "text": "Select your name from the list."
+                }
+              ]
+            }
+          ]
+        }
+      ]
     },
     "missing_name": {
       "sections": [
         {
           "title": "Your name was not listed. Please provide your name below",
           "description": "",
-          "notes": "this one has routing action to submit the form on completion",
+          "notes": "this one has routing action to submit the form on completion- however this is not supported on gas-fakes so its built into the source template for now",
           "items": [
             {
               "questionType": "short_answer",
               "required": false,
-              "routing": {"goto": "submit"},
+              "routing": {
+                "goto": "submit"
+              },
               "questions": [
                 {
-                  "text":"My name",
+                  "text": "My name",
                   "id": "my_name"
                 }
               ]
@@ -864,6 +876,25 @@
           "name"
         ]
       }
+    ],
+    "phaseAggregation": [
+      {
+        "method": "difference",
+        "output": "happiness_change",
+        "inputs": ["happiness"]
+      }, {
+        "method": "difference",
+        "output": "flourishing_change",
+        "inputs": ["flourishing"]
+      }, {
+        "method": "mean",
+        "inputs": ["alcohol_use_mean"],
+        "output": "alcohol_use"
+      }, {
+        "method": "max",
+        "inputs": ["depression", "anxiety"],
+        "output": "concern_max"
+      }
     ]
   },
   "network": {
@@ -882,7 +913,11 @@
         "anxiety",
         "loneliness",
         "membership.text",
-        "my_name"
+        "my_name",
+        "happiness_change",
+        "flourishing_change",
+        "alcohol_use_mean",
+        "concern_max"
       ],
       "edges": []
     }

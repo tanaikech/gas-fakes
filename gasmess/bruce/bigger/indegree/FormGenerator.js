@@ -1,9 +1,10 @@
 export class FormGenerator {
   // create a copy from a template and apply the block rules
-  constructor({ template, blocks, folderId, roster }) {
+  constructor({ templateId, template, blocks, folderId, roster }) {
     this.__template = template
     this.__blocks = blocks
-    if (!template.templateId) throw new error(`missing templateId in template entry ${template.name}`)
+    if (!templateId) throw new Error(`missing templateId`)
+    this.__templateId = templateId
     this.__form = null
     this.__file = null
     this.__input = null
@@ -18,22 +19,21 @@ export class FormGenerator {
   get blocks() {
     return this.__blocks
   }
+  get templateId() {
+    return this.__templateId
+  }
   get template() {
     return this.__template
   }
   create() {
     // first create a copy of the template
-    const { templateId, title = 'no title', formName = 'nonname', description = 'no description' } = this.template
+    const { title = 'no title', formName = 'nonname', description = 'no description' } = this.template
+    const templateId = this.templateId
     this.input = DriveApp.getFileById(templateId)
     this.inputForm = FormApp.openById(templateId)
     if (!this.input) throw new Error(`failed to find template ${templateId}`)
     this.file = this.input.makeCopy(formName, this.folder)
     this.form = FormApp.openById(this.file.getId())
-    this.form.setTitle(title).setDescription(description)
-    if (!ScriptApp.isFake) {
-      //https://github.com/brucemcpherson/gas-fakes/issues/105
-      this.form.setPublished(true)
-    }
     return this
   }
 
@@ -96,7 +96,7 @@ export class FormGenerator {
 
     // The 'name' block uses a rosterField, implying dynamic choices.
     // This is where you would fetch the roster and populate the choices.
-    let choices;
+    let choices = [];
     if (item.rosterField && this.roster) {
       // Find the first roster that has a matching nameField.
       // this.roster is already the specific roster array, so we just need to find the definition within it.
@@ -126,7 +126,7 @@ export class FormGenerator {
     }
 
     // Fallback to labels if roster logic doesn't produce choices.
-    if (choiceDefinitions.length === 0) {
+    if (choices.length === 0) {
       Object.keys(item.labels || {}).forEach(key => {
         choices.push({ value: key, isMatch: false });
       });
@@ -138,12 +138,22 @@ export class FormGenerator {
     // After all items and pages are created, we can resolve the navigation.
     this.addPostProcessTask(() => {
       const { routing } = item;
-      if (routing && choices.length > 0) {
+      // The context for routing (nextBlock, skipBlock) is passed in via the item.
+      if (routing && item.nextBlock && choices.length > 0) {
         const { gotoMatch, gotoElse } = routing;
-        const allPageBreaks = this.form.getItems(FormApp.ItemType.PAGE_BREAK);
-        const itemIndex = formItem.getIndex();
-        const matchPage = allPageBreaks.find(pb => pb.getIndex() > itemIndex);
-        const elsePage = allPageBreaks.find(pb => pb.getIndex() > matchPage?.getIndex());
+
+        // Find the page breaks associated with the target sections.
+        // We need to find the SectionHeaderItem first by its title, then find the PageBreakItem right after it.
+        const findPageBreakBySectionTitle = (title) => {
+          const sectionHeader = this.form.getItems(FormApp.ItemType.SECTION_HEADER)
+            .find(sh => sh.getTitle() === title);
+          return sectionHeader ? this.form.getItems(FormApp.ItemType.PAGE_BREAK).find(pb => pb.getIndex() > sectionHeader.getIndex()) : null;
+        };
+
+        // The "name" block is followed by "missing_name", which is the "next_section" (matchPage).
+        // The "missing_name" block is followed by "demographics", which is the "skip_next_section" (elsePage).
+        const matchPage = findPageBreakBySectionTitle(item.nextBlock.sections[0].title);
+        const elsePage = item.skipBlock ? findPageBreakBySectionTitle(item.skipBlock.sections[0].title) : null;
 
         const finalChoices = choices.map(def => {
           if (def.isMatch) {
@@ -199,8 +209,18 @@ export class FormGenerator {
 
       // handle routing if it exists
       if (routing && routing.goto === 'submit') {
-        // As discovered, TextItem.setGoToPage() is not a function in the live environment.
-        console.warn(`Routing rule "submit" for TextItem "${question.text}" cannot be implemented as TextItem does not support navigation.`);
+        // A TextItem itself doesn't support navigation. However, we can apply the navigation
+        // to the PageBreakItem at the end of the section containing this TextItem.
+        this.addPostProcessTask(() => {
+          const allPageBreaks = this.form.getItems(FormApp.ItemType.PAGE_BREAK);
+          const pageBreak = allPageBreaks.find(pb => pb.getIndex() > textItem.getIndex());
+          if (pageBreak) {
+            // In the live environment, this works. In the fake environment, it throws an error.
+            // We'll log a warning in the fake env to note the discrepancy.
+            if (FormApp.isFake) console.warn(`Routing rule "submit" for TextItem "${question.text}" cannot be fully emulated as PageBreakItem.setGoToPage is not supported by the public API.`);
+            else pageBreak.setGoToPage(FormApp.PageNavigationType.SUBMIT);
+          }
+        });
       }
     });
     return item.questions.length;
@@ -213,99 +233,97 @@ export class FormGenerator {
     this.addAmble(sectionHeader, index, section);
 
     // Add a page break after the section header to enable routing.
-    const pageBreak = form.addPageBreakItem();
-    form.moveItem(pageBreak, index + 1);
-    return 2; // We added two items: the header and the page break.
+    //const pageBreak = form.addPageBreakItem();
+    //form.moveItem(pageBreak, index + 1);
+    return 1; // We added two items: the header and the page break.
   }
 
   addBlocks() {
-    const items = this.form.getItems();
     const blocks = this.blocks;
-    const replacements = [];
 
-    // look through all the sections in the form
-    items.forEach((item, originalIndex) => {
-      const itemType = item.getType().name()
-      const title = item.getTitle()
-      // console.log (title,itemType) // Keep for debugging if needed
-      // because sometimes the section is treated as a page break
-      if (itemType === "SECTION_HEADER" || itemType === "PAGE_BREAK") {
-        const marked = extractJsonFromDoubleBraces(title)
-        if (marked.length > 1) {
-          throw new Error(`found multiple substitutions ${JSON.stringify(marked)}`)
-        }
-        if (marked.length > 0) {
-          const [blockData] = marked; // Assuming one JSON object per title
-          const blockDefinition = blocks[blockData.block]
-          if (!blockDefinition) {
-            throw new Error(`${marked} was found in the template, but it's not defined in the definition json`)
-          }
-          replacements.push({
-            index: originalIndex, // Store original index
-            blockData,
-            blockDefinition
-          });
+    // Instead of using setTitle, which corrupts the form, insert the title/description as the first section.
+    const { title = 'no title', description = 'no description' } = this.template
+    const titleSection = this.form.addSectionHeaderItem()
+    this.addAmble(titleSection, 0, { title, description })
+
+    // Now get the items again, since we've added one.
+    const allItems = this.form.getItems();
+
+    // Find all placeholders and plan the replacements.
+    const formItems = allItems.map((item, index) => {
+      const marked = extractJsonFromDoubleBraces(item.getTitle());
+      if (marked.length > 0) {
+        const [blockData] = marked;
+        const blockDefinition = blocks[blockData.block];
+        if (blockDefinition) {
+          return { isPlaceholder: true, item, index, blockData, blockDefinition };
         }
       }
+      return { isPlaceholder: false };
     });
 
-    // Sort replacements by index in descending order to avoid index shifting issues
-    replacements.sort((a, b) => b.index - a.index);
+    const replacements = formItems.filter(p=>p.isPlaceholder)
+    const keepers = formItems.filter(p=>!p.isPlaceholder)
+    
+    // now lets do the the substituations
+    replacements.forEach (formItem=> {
 
-    // Second pass: perform deletions and insertions
-    replacements.forEach(replacement => {
-      const { index, blockData, blockDefinition } = replacement;
-
-      // 1. Delete the original item at its current index
-      this.form.deleteItem(index);
-
-      // 2. Insert new content based on blockName
-      const { sections, description } = blockDefinition
-      if (!sections) throw new Error(`no sections found in replacement for ${blockData.block}`)
-      if (!Array.isArray(sections)) {
-        throw new Error(`sections should be an array in replacement for ${blockData.block}`)
+      const { item: placeholderItem, blockDefinition, blockData } = formItem;
+      // just set this empty got now
+      const itemContext = {}
+      const { sections } = blockDefinition;
+      if (!sections || !Array.isArray(sections)) {
+        throw new Error(`'sections' array not found or invalid in replacement for ${blockData.block}`);
       }
-      // Keep track of where to insert the next item.
-      let currentIndex = index;
-
       sections.forEach(section => {
-        console.log(section.title)
-        currentIndex += this.addSection({ section, index: currentIndex })
-        if (!Array.isArray(section.items)) {
-          throw new Error(`section.items should be an array in replacement for ${blockData.block}`)
-        }
+
+        // as we add new sections the index will change so we pick it up each time
+        let insertionIndex = placeholderItem.getIndex() + 1
+
+        console.log(`Inserting section: ${section.title} at ${insertionIndex}`);
+        insertionIndex += this.addSection({ section, index: insertionIndex });
+
         section.items.forEach(item => {
-          // add the questions
-          console.log(item.title)
+          console.log(`  Inserting item: ${item.title || item.questionType} at ${insertionIndex}`);
           switch (item.questionType.toLowerCase()) {
             case "multiple_choice_grid":
-              currentIndex += this.addGridItem({ item, index: currentIndex });
+              insertionIndex += this.addGridItem({ item: { ...item, ...itemContext }, index: insertionIndex });
               break;
             case "linear_scale":
-              currentIndex += this.addScaleItem({ item, index: currentIndex });
+              insertionIndex += this.addScaleItem({ item: { ...item, ...itemContext }, index: insertionIndex });
               break;
             case "multiple_choice":
-              currentIndex += this.addMultipleChoiceItem({ item, index: currentIndex });
+              insertionIndex += this.addMultipleChoiceItem({ item: { ...item, ...itemContext }, index: insertionIndex });
               break;
             case "dropdown":
-              currentIndex += this.addListItem({ item, index: currentIndex });
+              insertionIndex += this.addListItem({ item: { ...item, ...itemContext }, index: insertionIndex });
               break;
             case "short_answer":
-              currentIndex += this.addTextItem({ item, index: currentIndex });
+              insertionIndex += this.addTextItem({ item: { ...item, ...itemContext }, index: insertionIndex });
               break;
             default:
-              throw new Error(`invalid question type ${item.questionType}`)
+              throw new Error(`invalid question type ${item.questionType}`);
           }
-        })
-      })
+        });
+      });
+
+
     })
+
+    // Finally, delete all the placeholder items we remembered.
+    replacements.forEach(p => {
+      this.form.deleteItem(p.item);
+    });
 
     // Run all the deferred navigation tasks now that the form structure is complete.
     this.__postProcessTasks.forEach(task => task());
 
+    // The title/description are now part of the form content, so no need to set them here.
+
     return this
 
   }
+
 
   addPostProcessTask(task) {
     this.__postProcessTasks.push(task);
@@ -315,10 +333,13 @@ export class FormGenerator {
     switch (goto) {
       case 'next_section':
         // This should navigate to the page break immediately following the current item.
-        return matchPage;
+        // If no next page, submit the form.
+        return matchPage || FormApp.PageNavigationType.SUBMIT;
       case 'skip_next_section':
         // This should navigate to the page break *after* the next one.
-        return elsePage;
+        // If there is no page to skip to, it means we're at the end.
+        // The logical action is to submit the form.
+        return elsePage || FormApp.PageNavigationType.SUBMIT;
       case 'submit':
         return FormApp.PageNavigationType.SUBMIT;
       case 'restart':
