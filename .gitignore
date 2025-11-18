@@ -9,3 +9,5 @@ ghissues
 articles
 **/gasfakes.json
 gprompts
+**/gas-dist
+**/bundle
