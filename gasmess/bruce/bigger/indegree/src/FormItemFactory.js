@@ -35,26 +35,6 @@ export class FormItemFactory {
   }
 
   /**
-   * A generic helper to move a new item to its correct position and set its title,
-   * description, and required status.
-   * @param {GoogleAppsScript.Forms.Item} formItem The item to configure.
-   * @param {number} index The target index for the item.
-   * @param {object} amble The configuration object.
-   * @param {string} [amble.description] The item's help text.
-   * @param {string} [amble.title] The item's title.
-   * @param {boolean} [amble.required] The item's required status.
-   * @returns {GoogleAppsScript.Forms.Item} The configured item.
-   */
-  addAmble(formItem, index, { description, title, required }) {
-    const itemIndex = formItem.getIndex()
-    this.form.moveItem(itemIndex, index);
-    if (required) formItem.setRequired(Boolean(required));
-    if (title) formItem.setTitle(title);
-    if (description) formItem.setHelpText(description);
-    return formItem;
-  }
-
-  /**
    * Adds a grid item (multiple choice grid) to the form.
    * @param {object} options The options for the grid item.
    * @param {object} options.item The item definition from the template.
@@ -63,11 +43,17 @@ export class FormItemFactory {
    */
   addGridItem({ item, index }) {
     const gridItem = this.form.addGridItem();
-    this.addAmble(gridItem, index, item);
+    if (item.required) gridItem.setRequired(Boolean(item.required));
+    // A grid item's title is set directly on the item.
+    if (item.title) gridItem.setTitle(item.title);
+    if (item.description) gridItem.setHelpText(item.description);
+    
     const rows = item.questions.map(f => f.text);
     gridItem.setRows(rows);
     const columns = Reflect.ownKeys(item.labels);
     gridItem.setColumns(columns);
+
+    this.form.moveItem(gridItem.getIndex(), index);
     return 1;
   }
 
@@ -80,7 +66,12 @@ export class FormItemFactory {
    */
   addListItem({ item, index }) {
     const formItem = this.form.addListItem();
+    // For a dropdown, the question text is the title.
     const title = item.questions.length ? item.questions[0].text : item.title;
+
+    if (item.required) formItem.setRequired(Boolean(item.required));
+    formItem.setTitle(title);
+    if (item.description) formItem.setHelpText(item.description);
 
     let choices = [];
     if (item.rosterField && this.roster) {
@@ -104,7 +95,7 @@ export class FormItemFactory {
       });
     }
 
-    this.addAmble(formItem, index, { ...item, title });
+    this.form.moveItem(formItem.getIndex(), index);
 
     this.addPostProcessTask(() => {
       const { routing } = item;
@@ -140,59 +131,77 @@ export class FormItemFactory {
   addMultipleChoiceItem({ item, index }) {
     const formItem = this.form.addMultipleChoiceItem();
     const title = item.questions.length ? item.questions[0].text : item.title;
-    this.addAmble(formItem, index, { ...item, title });
+    
+    if (item.required) formItem.setRequired(Boolean(item.required));
+    formItem.setTitle(title);
+    if (item.description) formItem.setHelpText(item.description);
+
     const choices = Object.keys(item.labels).map(key => formItem.createChoice(key));
     formItem.setChoices(choices);
+
+    this.form.moveItem(formItem.getIndex(), index);
     return 1;
   }
 
   /**
-   * Adds one or more linear scale items to the form.
+   * Adds a single linear scale item to the form.
    * @param {object} options The options for the item.
    * @param {object} options.item The item definition from the template.
    * @param {number} options.index The insertion index.
-   * @returns {number} The number of items added.
+   * @returns {number} The number of items added (always 1).
    */
   addScaleItem({ item, index }) {
     const { labels, required } = item;
-    item.questions.forEach((question, i) => {
-      const scaleItem = this.form.addScaleItem();
-      this.addAmble(scaleItem, index + i, { title: question.text, required });
-      const bounds = Object.values(labels);
-      const labelKeys = Object.keys(labels);
-      scaleItem.setBounds(bounds[0], bounds[bounds.length - 1])
-        .setLabels(labelKeys[0], labelKeys[labelKeys.length - 1]);
-    });
-    return item.questions.length;
+    // A scale item block can have multiple questions, but the generator now calls this
+    // method once per question. We assume the first question is the one to use.
+    const question = item.questions[0];
+    if (!question) return 0;
+
+    const scaleItem = this.form.addScaleItem();
+    
+    if (required) scaleItem.setRequired(Boolean(required));
+    scaleItem.setTitle(question.text);
+
+    const bounds = Object.values(labels);
+    const labelKeys = Object.keys(labels);
+    scaleItem.setBounds(bounds[0], bounds[bounds.length - 1])
+      .setLabels(labelKeys[0], labelKeys[labelKeys.length - 1]);
+    
+    this.form.moveItem(scaleItem.getIndex(), index);
+    return 1;
   }
 
   /**
-   * Adds one or more text items (short answer) to the form.
+   * Adds a single text item (short answer) to the form.
    * @param {object} options The options for the item.
    * @param {object} options.item The item definition from the template.
    * @param {number} options.index The insertion index.
-   * @returns {number} The number of items added.
+   * @returns {number} The number of items added (always 1).
    */
   addTextItem({ item, index }) {
     const { required, routing } = item;
-    item.questions.forEach((question, i) => {
-      const textItem = this.form.addTextItem();
-      this.addAmble(textItem, index + i, { title: question.text, required });
+    // A text item block can have multiple questions, but the generator now calls this
+    // method once per question. We assume the first question is the one to use.
+    const question = item.questions[0];
+    if (!question) return 0;
 
-      if (routing && routing.goto === 'submit') {
-        this.addPostProcessTask(() => {
-          const allPageBreaks = this.form.getItems(FormApp.ItemType.PAGE_BREAK);
-          const pageBreak = allPageBreaks.find(pb => pb.getIndex() > textItem.getIndex());
-          if (pageBreak) {
-            // The live Apps Script environment does not actually implement setGoToPage on PageBreakItem,
-            // despite its presence in the documentation. The fake environment correctly throws an error.
-            // We will log a warning here to indicate the intended behavior cannot be achieved.
-            console.warn(`Routing rule "submit" for TextItem "${question.text}" cannot be set programmatically on its subsequent page break.`);
-          }
-        });
-      }
-    });
-    return item.questions.length;
+    const textItem = this.form.addTextItem();
+
+    if (required) textItem.setRequired(Boolean(required));
+    textItem.setTitle(question.text);
+
+    this.form.moveItem(textItem.getIndex(), index);
+
+    if (routing && routing.goto === 'submit') {
+      this.addPostProcessTask(() => {
+        const allPageBreaks = this.form.getItems(FormApp.ItemType.PAGE_BREAK);
+        const pageBreak = allPageBreaks.find(pb => pb.getIndex() > textItem.getIndex());
+        if (pageBreak) {
+          console.warn(`Routing rule "submit" for TextItem "${question.text}" cannot be set programmatically on its subsequent page break.`);
+        }
+      });
+    }
+    return 1;
   }
 
   /**
@@ -204,13 +213,24 @@ export class FormItemFactory {
    */
   addSection({ section, index }) {
     const sectionHeader = this.form.addSectionHeaderItem();
-    this.addAmble(sectionHeader, index, section);
-
-    // A complete section requires a PageBreakItem after the header.
-    const pageBreak = this.form.addPageBreakItem();
-    this.form.moveItem(pageBreak.getIndex(), index + 1);
-
-    // We added two items: the header and the page break.
-    return 2;
+    
+    if (section.title) sectionHeader.setTitle(section.title);
+    if (section.description) sectionHeader.setHelpText(section.description);
+    
+    this.form.moveItem(sectionHeader.getIndex(), index);
+    return 1;
   }
+
+  /**
+   * Adds a page break item to the form at a specific index.
+   * @param {object} options The options for the page break.
+   * @param {number} options.index The insertion index.
+   * @returns {number} The number of items added (always 1).
+   */
+  addPageBreak({ index }) {
+    const pageBreak = this.form.addPageBreakItem();
+    this.form.moveItem(pageBreak.getIndex(), index);
+    return 1;
+  }
+
 }

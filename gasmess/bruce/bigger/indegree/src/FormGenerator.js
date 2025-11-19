@@ -10,22 +10,22 @@ export class FormGenerator {
    * @param {object} config The configuration object for the generator.
    * @param {string} config.formName The name for the new form.
    * @param {string} config.templateId The Google Drive ID of the template form.
-   * @param {object} config.templates The template data for substitutions.
    * @param {object} config.blocks The block definitions that drive the form structure.
    * @param {string} [config.folderId] The ID of the Google Drive folder to save the new form in.
    * @param {object} [config.roster] Roster data for populating dynamic questions.
    */
-  constructor({ formName, templateId, templates, blocks, folderId, roster }) {
-    /**
-     * @type {string}
-     * @private
-     */
-    this.__formName = formName
+  constructor({ formName, formTitle, formDescription, templateId, blocks, folderId, roster }) {
     /**
      * @type {object}
      * @private
      */
-    this.__templates = templates
+    this.__formProps = {
+      formName,
+      formTitle,
+      formDescription 
+    }
+
+
     /**
      * @type {object}
      * @private
@@ -76,6 +76,7 @@ export class FormGenerator {
      * @type {FormItemFactory}
      * @private
      */
+    
     this.__itemFactory = new FormItemFactory(this);
   }
 
@@ -84,7 +85,21 @@ export class FormGenerator {
    * @returns {string}
    */
   get formName () {
-    return this.__formName || this.input.getName() + '_copy'
+    return this.__formProps.formName || this.input.getName() + '_copy'
+  }
+  /**
+   * The title of the form to be created.
+   * @returns {string}
+   */
+  get formTitle () {
+    return this.__formProps.formTitle || this.input.getTitle() + ' copy'
+  }
+  /**
+   * The description of the form to be created.
+   * @returns {string}
+   */
+  get formDescription () {
+    return this.__formProps.formDescription || this.inputForm.getDescription() + ' copy'
   }
   /**
    * The roster data for dynamic questions.
@@ -107,9 +122,6 @@ export class FormGenerator {
   get templateId() {
     return this.__templateId
   }
-  get templates() {
-    return this.__templates;
-  }
   /**
    * Creates a new form by copying the template.
    * This is the entry point for the generation process.
@@ -124,6 +136,8 @@ export class FormGenerator {
     if (!this.input) throw new Error(`failed to find template ${templateId}`)
     this.file = this.input.makeCopy(this.formName, this.folder)
     this.form = FormApp.openById(this.file.getId())
+    this.form.setTitle (this.formTitle)
+    this.form.setDescription (this.formDescription)
     return this
   }
 
@@ -207,8 +221,13 @@ export class FormGenerator {
    */
   addBlocks() {
     const placeholders = this._findPlaceholders();
-    this._processPlaceholders(placeholders);
-    this._cleanupPlaceholders(placeholders);
+
+    // First pass: update all the section headers in-place.
+    this._substituteSectionHeaders(placeholders);
+
+    // Second pass: insert all the question items into their respective sections.
+    this._insertSectionItems(placeholders);
+
     this._runPostProcessTasks();
     return this;
   }
@@ -238,89 +257,107 @@ export class FormGenerator {
   }
 
   /**
-   * Iterates through placeholders and applies the appropriate substitution or insertion logic.
+   * First pass: Iterates through placeholders and updates the title/description
+   * of the placeholder item in-place.
    * @private
    * @param {Array<object>} placeholders The list of placeholder objects.
    */
-  _processPlaceholders(placeholders) {
+  _substituteSectionHeaders(placeholders) {
     placeholders.forEach(placeholder => {
-      const { blockDefinition } = placeholder;
-      if (blockDefinition.type === 'section') {
-        this._substituteSectionHeader(placeholder);
-      } else {
-        this._insertBlockContent(placeholder);
+      const { item: placeholderItem, blockDefinition } = placeholder;
+
+      // The placeholder item takes the title/desc from the *first* section of the block.
+      const firstSection = blockDefinition.sections?.[0];
+      if (!firstSection) {
+        console.warn(`Block definition for placeholder at index ${placeholder.index} has no sections.`);
+        return;
+      }
+
+      // Update the placeholder item (which is a SectionHeaderItem) in-place.
+      placeholderItem.setTitle(firstSection.title || '');
+      placeholderItem.setHelpText(firstSection.description || '');
+    });
+  }
+
+  /**
+   * Second pass: Iterates through placeholders and inserts the question items
+   * for all sections of their corresponding block.
+   * @private
+   * @param {Array<object>} placeholders The list of placeholder objects.
+   */
+  _insertSectionItems(placeholders) {
+    // Process placeholders in reverse order of their original index.
+    // This is critical to ensure that insertions do not invalidate the indices of earlier placeholders.
+    const sortedPlaceholders = [...placeholders].sort((a, b) => b.index - a.index);
+
+    sortedPlaceholders.forEach(placeholder => {
+      const { item: placeholderItem, blockDefinition } = placeholder;
+      const sections = blockDefinition.sections;
+
+      if (!sections || sections.length === 0) return;
+
+      const itemContext = {};
+      // The insertion point starts immediately after the first section's header (the placeholder).
+      let insertionIndex = placeholderItem.getIndex() + 1;
+
+      // Handle the first section's items.
+      const firstSection = sections[0];
+      if (firstSection.items) {
+        // Insert items in reverse to maintain their correct final order.
+        [...firstSection.items].reverse().forEach(item => {
+          this._insertSingleItem(item, itemContext, insertionIndex);
+        });
+      }
+
+      // Handle any additional sections (sections[1], sections[2], etc.).
+      const additionalSections = sections.slice(1);
+      if (additionalSections.length > 0) {
+        // These need to be inserted after the items of the first section.
+        // We calculate this new starting point.
+        let subsequentInsertionIndex = insertionIndex + (firstSection.items?.length || 0);
+
+        // We insert these sections and their items in reverse order as well.
+        [...additionalSections].reverse().forEach(section => {
+          // 2. Add all items for this section, also in reverse.
+          if (section.items) {
+            [...section.items].reverse().forEach(item => {
+              this._insertSingleItem(item, itemContext, subsequentInsertionIndex);
+            });
+          }
+
+          // 1. Add the section header last.
+          console.log(`Inserting new section: ${section.title} at ${subsequentInsertionIndex}`);
+          this.__itemFactory.addSection({ section, index: subsequentInsertionIndex });
+        });
       }
     });
   }
 
   /**
-   * Handles 'section' type placeholders by updating the title and description of the placeholder item itself.
+   * Helper to insert a single question item using the factory.
    * @private
-   * @param {object} placeholder The placeholder object.
    */
-  _substituteSectionHeader({ item: placeholderItem, blockData }) {
-    const templateData = this.templates[blockData.block];
-    if (templateData) {
-      const { title, description } = templateData;
-      placeholderItem.setTitle(title).setHelpText(description);
-    } else {
-      console.warn(`Template data not found for section block: ${blockData.block}`);
+  _insertSingleItem(item, itemContext, insertionIndex) {
+    console.log(`  Inserting item: ${item.title || item.questionType} at ${insertionIndex}`);
+    switch (item.questionType.toLowerCase()) {
+      case "multiple_choice_grid":
+        this.__itemFactory.addGridItem({ item: { ...item, ...itemContext }, index: insertionIndex });
+        break;
+      case "linear_scale":
+        this.__itemFactory.addScaleItem({ item: { ...item, ...itemContext }, index: insertionIndex });
+        break;
+      case "multiple_choice":
+        this.__itemFactory.addMultipleChoiceItem({ item: { ...item, ...itemContext }, index: insertionIndex });
+        break;
+      case "dropdown":
+        this.__itemFactory.addListItem({ item: { ...item, ...itemContext }, index: insertionIndex });
+        break;
+      case "short_answer":
+        this.__itemFactory.addTextItem({ item: { ...item, ...itemContext }, index: insertionIndex });
+        break;
+      default:
+        throw new Error(`Invalid question type: ${item.questionType}`);
     }
-  }
-
-  /**
-   * Handles 'measure_set' and other block types by inserting new sections and items into the form.
-   * @private
-   * @param {object} placeholder The placeholder object.
-   */
-  _insertBlockContent({ item: placeholderItem, blockDefinition }) {
-    const itemContext = {};
-    const { sections } = blockDefinition;
-    if (!sections || !Array.isArray(sections)) {
-      throw new Error(`'sections' array not found or invalid in replacement for ${blockDefinition.block}`);
-    }
-
-    sections.forEach(section => {
-      let insertionIndex = placeholderItem.getIndex() + 1;
-      console.log(`Inserting section: ${section.title} at ${insertionIndex}`);
-      insertionIndex += this.__itemFactory.addSection({ section, index: insertionIndex });
-
-      section.items.forEach(item => {
-        console.log(`  Inserting item: ${item.title || item.questionType} at ${insertionIndex}`);
-        switch (item.questionType.toLowerCase()) {
-          case "multiple_choice_grid":
-            insertionIndex += this.__itemFactory.addGridItem({ item: { ...item, ...itemContext }, index: insertionIndex });
-            break;
-          case "linear_scale":
-            insertionIndex += this.__itemFactory.addScaleItem({ item: { ...item, ...itemContext }, index: insertionIndex });
-            break;
-          case "multiple_choice":
-            insertionIndex += this.__itemFactory.addMultipleChoiceItem({ item: { ...item, ...itemContext }, index: insertionIndex });
-            break;
-          case "dropdown":
-            insertionIndex += this.__itemFactory.addListItem({ item: { ...item, ...itemContext }, index: insertionIndex });
-            break;
-          case "short_answer":
-            insertionIndex += this.__itemFactory.addTextItem({ item: { ...item, ...itemContext }, index: insertionIndex });
-            break;
-          default:
-            throw new Error(`invalid question type ${item.questionType}`);
-        }
-      });
-    });
-  }
-
-  /**
-   * Deletes the original placeholder items from the form.
-   * @private
-   * @param {Array<object>} placeholders The list of placeholder objects that were processed.
-   */
-  _cleanupPlaceholders(placeholders) {
-    // We only delete placeholders that were used for content insertion, not for in-place substitution.
-    const placeholdersToDelete = placeholders.filter(p => p.blockDefinition.type !== 'section');
-    placeholdersToDelete.forEach(p => {
-      this.form.deleteItem(p.item);
-    });
   }
 
   /**
@@ -350,13 +387,10 @@ export class FormGenerator {
   getNavigationAction(goto, matchPage, elsePage) {
     switch (goto) {
       case 'next_section':
-        // This should navigate to the page break immediately following the current item.
-        // If no next page, submit the form.
+        // 'next_section' should always navigate to the page defined as the "match" page.
         return matchPage || FormApp.PageNavigationType.SUBMIT;
       case 'skip_next_section':
-        // This should navigate to the page break *after* the next one.
-        // If there is no page to skip to, it means we're at the end.
-        // The logical action is to submit the form.
+        // 'skip_next_section' should always navigate to the page defined as the "else" page.
         return elsePage || FormApp.PageNavigationType.SUBMIT;
       case 'submit':
         return FormApp.PageNavigationType.SUBMIT;
@@ -381,25 +415,17 @@ export class FormGenerator {
  */
 function extractJsonFromDoubleBraces(text) {
   const foundObjects = [];
-  // Regex to find content enclosed in {{...}}.
-  // The 'g' flag ensures it finds all occurrences, not just the first.
-  // The '(.*?)' is a non-greedy capture group to get the content inside the braces.
   const regex = /\{\{(.*?)\}\}/g;
   let match;
 
-  // Loop through all matches found in the string
   while ((match = regex.exec(text)) !== null) {
-    const jsonString = match[1]; // This is the captured content inside the braces
+    const jsonString = match[1]; 
 
     try {
-      // The captured group is the content *inside* the braces.
-      // We need to re-add the braces to make it a valid JSON object string for parsing.
       const objectToParse = `{${jsonString}}`;
       const parsedJson = JSON.parse(objectToParse);
       foundObjects.push(parsedJson);
     } catch (e) {
-      // If parsing fails, it means the content was not valid JSON.
-      // We can ignore it or log a warning.
       console.warn(`Found content enclosed in {{...}} that was not valid JSON: "${jsonString}"`);
     }
   }
