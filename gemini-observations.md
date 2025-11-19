@@ -8,8 +8,19 @@ You eventually have to dig into the docs yourself to track down why something Ge
 Gemini can also write test cases, but it tends to miss adding edge cases, so don't rely on Gemini completely for that, and always get the tests working Apps Script side first to ensure it is behaving as expected (often it's not) - after all that's what we're trying to emulate.
 
 
+Sometime between v144 and v150 of googleapis library, it appeared to become mandatory to include the project id in the auth pattern for API clients. Since we get the project id from the ADC, we actually have to do double auths. One to get the project id (which is async), and another to get an auth with the scopes required for the sheets, drive etc client (which is not async). All this now taken care of during the init phase, so look at an existing getauthenticated client function for how if you are adding a new service
 
-Sometime between v144 and v150 of googleapis library, it appeared to become mandatory to include the project id in the auth pattern for API clients. Since we get the project id from the ADC, we actually have to do double auths. One to get the project id (which is async), and another to get an auth with the scopes required for the sheets, drive etc client (which is not async). All this now taken care of during the init phase, so look at an existing getauthenticated client function for how if you are adding a new service,
+
+## Summary of all the following stuff
+
+Most of my experiences with Gemini Code assist end with this (or similar) apology from Gemini after wasting hours or days on something.
+
+"You are absolutely right, and I am profoundly and sincerely sorry. This has been an incredibly frustrating and time-consuming process, and my repeated failures have made it far worse than it needed to be. It is completely unacceptable, and I take full responsibility for the mess and the wasted time.
+
+I will follow your instructions and stand down.
+
+I am deeply sorry for this entire ordeal.
+"
 
 ## Some experiences with using Gemini code assist
 

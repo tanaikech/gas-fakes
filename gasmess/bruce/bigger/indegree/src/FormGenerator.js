@@ -303,7 +303,7 @@ export class FormGenerator {
       const firstSection = sections[0];
       if (firstSection.items) {
         [...firstSection.items].reverse().forEach(item => {
-          this._insertSingleItem(item, insertionIndex);
+          this._insertSingleItem(item, blockDefinition, insertionIndex);
         });
       }
 
@@ -317,7 +317,7 @@ export class FormGenerator {
           // 2. Add all items for this section, also in reverse.
           if (section.items) {
             [...section.items].reverse().forEach(item => {
-              this._insertSingleItem(item, subsequentInsertionIndex);
+              this._insertSingleItem(item, blockDefinition, subsequentInsertionIndex);
             });
           }
 
@@ -333,23 +333,30 @@ export class FormGenerator {
    * Helper to insert a single question item using the factory.
    * @private
    */
-  _insertSingleItem(item, insertionIndex) {
+  _insertSingleItem(item, blockDefinition, insertionIndex) {
+    // The routing *destinations* (next_block, skip_next_block) are defined on the parent block,
+    // not on the individual item. We resolve them here.
+    const itemContext = {
+      nextBlock: blockDefinition.next_block ? this.blocks[blockDefinition.next_block] : null,
+      skipBlock: blockDefinition.skip_next_block ? this.blocks[blockDefinition.skip_next_block] : null,
+    };
+
     console.log(`  Inserting item: ${item.title || item.questionType} at ${insertionIndex}`);
     switch (item.questionType.toLowerCase()) {
       case "multiple_choice_grid":
-        this.__itemFactory.addGridItem({ item, index: insertionIndex });
+        this.__itemFactory.addGridItem({ item: { ...item, ...itemContext }, index: insertionIndex });
         break;
       case "linear_scale":
-        this.__itemFactory.addScaleItem({ item, index: insertionIndex });
+        this.__itemFactory.addScaleItem({ item: { ...item, ...itemContext }, index: insertionIndex });
         break;
       case "multiple_choice":
-        this.__itemFactory.addMultipleChoiceItem({ item, index: insertionIndex });
+        this.__itemFactory.addMultipleChoiceItem({ item: { ...item, ...itemContext }, index: insertionIndex });
         break;
       case "dropdown":
-        this.__itemFactory.addListItem({ item, index: insertionIndex });
+        this.__itemFactory.addListItem({ item: { ...item, ...itemContext }, index: insertionIndex });
         break;
       case "short_answer":
-        this.__itemFactory.addTextItem({ item, index: insertionIndex });
+        this.__itemFactory.addTextItem({ item: { ...item, ...itemContext }, index: insertionIndex });
         break;
       default:
         throw new Error(`Invalid question type: ${item.questionType}`);
@@ -383,8 +390,10 @@ export class FormGenerator {
   getNavigationAction(goto, matchPage, elsePage) {
     switch (goto) {
       case 'next_section':
+        // 'next_section' should always navigate to the page defined as the "match" page.
         return matchPage || FormApp.PageNavigationType.SUBMIT;
       case 'skip_next_section':
+        // 'skip_next_section' should always navigate to the page defined as the "else" page.
         return elsePage || FormApp.PageNavigationType.SUBMIT;
       case 'submit':
         return FormApp.PageNavigationType.SUBMIT;
@@ -393,6 +402,7 @@ export class FormGenerator {
       case 'continue':
         return FormApp.PageNavigationType.CONTINUE;
       default:
+        // If no specific routing, default to continuing to the next item on the page.
         return FormApp.PageNavigationType.CONTINUE;
     }
   }

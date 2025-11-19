@@ -47,7 +47,7 @@ export class FormItemFactory {
     // A grid item's title is set directly on the item.
     if (item.title) gridItem.setTitle(item.title);
     if (item.description) gridItem.setHelpText(item.description);
-    
+
     const rows = item.questions.map(f => f.text);
     gridItem.setRows(rows);
     const columns = Reflect.ownKeys(item.labels);
@@ -103,7 +103,7 @@ export class FormItemFactory {
         const { gotoMatch, gotoElse, name: matchName } = routing;
 
         // Find all page breaks in the form *after* this item.
-        const allPageBreaks = this.form.getItems(FormApp.ItemType.PAGE_BREAK);
+        const allPageBreaks = this.form.getItems(FormApp.ItemType.PAGE_BREAK).map(f=>f.asPageBreakItem());
         const subsequentPageBreaks = allPageBreaks.filter(pb => pb.getIndex() > formItem.getIndex());
 
         // The "next_section" is the first page break after this item.
@@ -118,7 +118,9 @@ export class FormItemFactory {
           const navDirective = isMatch ? gotoMatch : gotoElse;
           // Get the final navigation action.
           const navAction = this.__generator.getNavigationAction(navDirective, matchPage, elsePage);
-          return formItem.createChoice(def.value, navAction);
+          const choice = navAction ? formItem.createChoice(def.value,navAction) : formItem.createChoice(def.value)
+
+          return choice;
         });
         formItem.setChoices(finalChoices);
       } else if (choices.length > 0) {
@@ -139,7 +141,7 @@ export class FormItemFactory {
   addMultipleChoiceItem({ item, index }) {
     const formItem = this.form.addMultipleChoiceItem();
     const title = item.questions.length ? item.questions[0].text : item.title;
-    
+
     if (item.required) formItem.setRequired(Boolean(item.required));
     formItem.setTitle(title);
     if (item.description) formItem.setHelpText(item.description);
@@ -166,7 +168,7 @@ export class FormItemFactory {
     if (!question) return 0;
 
     const scaleItem = this.form.addScaleItem();
-    
+
     if (required) scaleItem.setRequired(Boolean(required));
     scaleItem.setTitle(question.text);
 
@@ -174,7 +176,7 @@ export class FormItemFactory {
     const labelKeys = Object.keys(labels);
     scaleItem.setBounds(bounds[0], bounds[bounds.length - 1])
       .setLabels(labelKeys[0], labelKeys[labelKeys.length - 1]);
-    
+
     this.form.moveItem(scaleItem.getIndex(), index);
     return 1;
   }
@@ -221,10 +223,10 @@ export class FormItemFactory {
    */
   addSection({ section, index }) {
     const sectionHeader = this.form.addSectionHeaderItem();
-    
+
     if (section.title) sectionHeader.setTitle(section.title);
     if (section.description) sectionHeader.setHelpText(section.description);
-    
+
     this.form.moveItem(sectionHeader.getIndex(), index);
     return 1;
   }
