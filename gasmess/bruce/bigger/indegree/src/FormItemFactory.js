@@ -99,17 +99,25 @@ export class FormItemFactory {
 
     this.addPostProcessTask(() => {
       const { routing } = item;
-      if (routing && item.nextBlock && choices.length > 0) {
-        const { gotoMatch, gotoElse } = routing;
-        const findPageBreakBySectionTitle = (title) => {
-          const sectionHeader = this.form.getItems(FormApp.ItemType.SECTION_HEADER).find(sh => sh.getTitle() === title);
-          return sectionHeader ? this.form.getItems(FormApp.ItemType.PAGE_BREAK).find(pb => pb.getIndex() > sectionHeader.getIndex()) : null;
-        };
-        const matchPage = findPageBreakBySectionTitle(item.nextBlock.sections[0].title);
-        const elsePage = item.skipBlock ? findPageBreakBySectionTitle(item.skipBlock.sections[0].title) : null;
+      if (routing && choices.length > 0) {
+        const { gotoMatch, gotoElse, name: matchName } = routing;
+
+        // Find all page breaks in the form *after* this item.
+        const allPageBreaks = this.form.getItems(FormApp.ItemType.PAGE_BREAK);
+        const subsequentPageBreaks = allPageBreaks.filter(pb => pb.getIndex() > formItem.getIndex());
+
+        // The "next_section" is the first page break after this item.
+        const matchPage = subsequentPageBreaks.length > 0 ? subsequentPageBreaks[0] : null;
+        // The "skip_next_section" is the second page break after this item.
+        const elsePage = subsequentPageBreaks.length > 1 ? subsequentPageBreaks[1] : null;
 
         const finalChoices = choices.map(def => {
-          const navAction = this.__generator.getNavigationAction(def.isMatch ? gotoMatch : gotoElse, matchPage, elsePage);
+          // Determine if this choice is the special matching choice.
+          const isMatch = def.value === matchName;
+          // Select the routing directive based on whether it's a match.
+          const navDirective = isMatch ? gotoMatch : gotoElse;
+          // Get the final navigation action.
+          const navAction = this.__generator.getNavigationAction(navDirective, matchPage, elsePage);
           return formItem.createChoice(def.value, navAction);
         });
         formItem.setChoices(finalChoices);

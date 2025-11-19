@@ -403,6 +403,26 @@ export const testForm = (pack) => {
     if (FormApp.isFake) console.log('...cumulative forms cache performance', getFormsPerformance());
   });
 
+  unit.section('Form.getItems by type', (t) => {
+    const form = FormApp.create('Item Type Filter Test');
+    toTrash.push(DriveApp.getFileById(form.getId()));
+
+    const textItem = form.addTextItem().setTitle('Text Question');
+    const pageBreak1 = form.addPageBreakItem().setTitle('Page 2');
+    const listItem = form.addListItem().setTitle('List Question');
+    const pageBreak2 = form.addPageBreakItem().setTitle('Page 3');
+
+    const allItems = form.getItems();
+    t.is(4, allItems.length, 'should return all items when no type is specified');
+
+    const pageBreaks = form.getItems(FormApp.ItemType.PAGE_BREAK);
+    t.is(2, pageBreaks.length, 'should return only PageBreakItems');
+    t.is(pageBreak1.getId(), pageBreaks[0].getId(), 'First page break should match');
+
+    const textItems = form.getItems(FormApp.ItemType.TEXT);
+    t.is(1, textItems.length, 'should return only TextItems');
+    t.is(textItem.getId(), textItems[0].getId(), 'The text item should match');
+  });
 
 
   if (!pack) {

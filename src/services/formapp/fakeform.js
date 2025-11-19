@@ -273,10 +273,19 @@ export class FakeForm {
 
   /**
    * Gets all items in the form.
+   * @param {import('../enums/formsenums.js').ItemType} [itemType] If provided, only items of this type are returned.
    * @returns {import('./fakeformitem.js').FakeFormItem[]} An array of all items in the form.
    */
-  getItems() {
-    return this.__resource.items?.map((item) => newFakeFormItem(this, item.itemId)) || [];
+  getItems(itemType) {
+    const allItems = this.__resource.items?.map((item) => newFakeFormItem(this, item.itemId)) || [];
+
+    if (itemType) {
+      // The itemType from the enum will be an object, so we compare its string representation
+      // against the string representation of the item's type.
+      return allItems.filter(item => item.getType().toString() === itemType.toString());
+    }
+
+    return allItems;
   }
 
   /**

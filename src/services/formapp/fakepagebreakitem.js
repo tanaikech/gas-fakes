@@ -46,7 +46,7 @@ export class FakePageBreakItem extends FakeFormItem {
    * @returns {Integer} The item's ID.
    */
   getId() {
-    return this.__id;
+    return this.__resource.itemId;
   }
 
   /**

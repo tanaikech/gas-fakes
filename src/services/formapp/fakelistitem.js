@@ -84,7 +84,7 @@ export class FakeListItem extends FakeFormItem {
         switch (navType) {
           case 'GO_TO_PAGE':
             // For navigating to a specific page, you ONLY set the goToSectionId.
-            // The goToAction field should be omitted.
+            // The pageId is the itemId of the PageBreakItem.
             option.goToSectionId = choice.__pageId;
             break;
           case 'CONTINUE':
@@ -116,7 +116,7 @@ export class FakeListItem extends FakeFormItem {
    * @returns {Integer} The item's ID.
    */
   getId() {
-    return this.__id;
+    return this.__itemId;
   }
 
   /**

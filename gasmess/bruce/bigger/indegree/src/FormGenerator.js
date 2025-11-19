@@ -296,16 +296,14 @@ export class FormGenerator {
 
       if (!sections || sections.length === 0) return;
 
-      const itemContext = {};
       // The insertion point starts immediately after the first section's header (the placeholder).
       let insertionIndex = placeholderItem.getIndex() + 1;
 
       // Handle the first section's items.
       const firstSection = sections[0];
       if (firstSection.items) {
-        // Insert items in reverse to maintain their correct final order.
         [...firstSection.items].reverse().forEach(item => {
-          this._insertSingleItem(item, itemContext, insertionIndex);
+          this._insertSingleItem(item, insertionIndex);
         });
       }
 
@@ -313,15 +311,13 @@ export class FormGenerator {
       const additionalSections = sections.slice(1);
       if (additionalSections.length > 0) {
         // These need to be inserted after the items of the first section.
-        // We calculate this new starting point.
         let subsequentInsertionIndex = insertionIndex + (firstSection.items?.length || 0);
 
-        // We insert these sections and their items in reverse order as well.
         [...additionalSections].reverse().forEach(section => {
           // 2. Add all items for this section, also in reverse.
           if (section.items) {
             [...section.items].reverse().forEach(item => {
-              this._insertSingleItem(item, itemContext, subsequentInsertionIndex);
+              this._insertSingleItem(item, subsequentInsertionIndex);
             });
           }
 
@@ -337,23 +333,23 @@ export class FormGenerator {
    * Helper to insert a single question item using the factory.
    * @private
    */
-  _insertSingleItem(item, itemContext, insertionIndex) {
+  _insertSingleItem(item, insertionIndex) {
     console.log(`  Inserting item: ${item.title || item.questionType} at ${insertionIndex}`);
     switch (item.questionType.toLowerCase()) {
       case "multiple_choice_grid":
-        this.__itemFactory.addGridItem({ item: { ...item, ...itemContext }, index: insertionIndex });
+        this.__itemFactory.addGridItem({ item, index: insertionIndex });
         break;
       case "linear_scale":
-        this.__itemFactory.addScaleItem({ item: { ...item, ...itemContext }, index: insertionIndex });
+        this.__itemFactory.addScaleItem({ item, index: insertionIndex });
         break;
       case "multiple_choice":
-        this.__itemFactory.addMultipleChoiceItem({ item: { ...item, ...itemContext }, index: insertionIndex });
+        this.__itemFactory.addMultipleChoiceItem({ item, index: insertionIndex });
         break;
       case "dropdown":
-        this.__itemFactory.addListItem({ item: { ...item, ...itemContext }, index: insertionIndex });
+        this.__itemFactory.addListItem({ item, index: insertionIndex });
         break;
       case "short_answer":
-        this.__itemFactory.addTextItem({ item: { ...item, ...itemContext }, index: insertionIndex });
+        this.__itemFactory.addTextItem({ item, index: insertionIndex });
         break;
       default:
         throw new Error(`Invalid question type: ${item.questionType}`);
@@ -387,10 +383,8 @@ export class FormGenerator {
   getNavigationAction(goto, matchPage, elsePage) {
     switch (goto) {
       case 'next_section':
-        // 'next_section' should always navigate to the page defined as the "match" page.
         return matchPage || FormApp.PageNavigationType.SUBMIT;
       case 'skip_next_section':
-        // 'skip_next_section' should always navigate to the page defined as the "else" page.
         return elsePage || FormApp.PageNavigationType.SUBMIT;
       case 'submit':
         return FormApp.PageNavigationType.SUBMIT;
@@ -399,7 +393,6 @@ export class FormGenerator {
       case 'continue':
         return FormApp.PageNavigationType.CONTINUE;
       default:
-        // If no specific routing, default to continuing to the next item on the page.
         return FormApp.PageNavigationType.CONTINUE;
     }
   }
