@@ -112,14 +112,6 @@ export class FakeListItem extends FakeFormItem {
   }
 
   /**
-   * Gets the ID of the item.
-   * @returns {Integer} The item's ID.
-   */
-  getId() {
-    return this.__itemId;
-  }
-
-  /**
    * Returns the string "ListItem" to identify the class.
    * @returns {string} The string "ListItem".
    */

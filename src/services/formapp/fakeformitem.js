@@ -114,6 +114,7 @@ export class FakeFormItem {
   }
 
   getId() {
+    // Live Apps Script returns IDs as decimal numbers, not the hex strings from the API.
     return this.__resource.itemId;
   }
 

@@ -4,6 +4,7 @@ import { signatureArgs, ssError, gError } from '../../support/helpers.js';
 
 import { Proxies } from '../../support/proxies.js';
 import { Utils } from '../../support/utils.js';
+import { newFakeResponses } from './fakeresponses.js';
 const { is } = Utils
 
 export const newFakeAdvFormsForm = (...args) => Proxies.guard(new FakeAdvFormsForm(...args))
@@ -13,6 +14,17 @@ class FakeAdvFormsForm extends FakeAdvResource {
     super(mainService, 'forms', Syncit.fxForms);
     this.forms = mainService;
     this.__fakeObjectType = 'Forms.Forms';
+    this.__responses = null;
+  }
+
+  /**
+   * @returns {import('./fakeresponses.js').FakeResponses}
+   */
+  get Responses() {
+    if (!this.__responses) {
+      this.__responses = newFakeResponses(this);
+    }
+    return this.__responses;
   }
 
   /**

@@ -1,0 +1,48 @@
+import { Proxies } from '../../support/proxies.js';
+import { newFakeFormItem } from './fakeformitem.js';
+
+export const newFakeItemResponse = (...args) => {
+  return Proxies.guard(new FakeItemResponse(...args));
+};
+
+/**
+ * @class FakeItemResponse
+ * @see https://developers.google.com/apps-script/reference/forms/item-response
+ */
+export class FakeItemResponse {
+  /**
+   *
+   * @param {import('./fakeformitem.js').FakeFormItem} item the item this is a response to
+   * @param {object[]} answers an array of answer objects from the Forms API response
+   */
+  constructor(item, answers) {
+    this.__item = item;
+    this.__answers = answers; // This is now an array of answer objects
+  }
+
+  /**
+   * Gets the Item object for the question that this response answers.
+   */
+  getItem() {
+    return this.__item;
+  }
+
+  /**
+   * Gets the answer to the question as a string.
+   * @returns {string} the response
+   */
+  getResponse() {
+    // Flatten the 'textAnswers.answers' arrays from all answer objects.
+    // This correctly combines all row answers for a grid item.
+    const allTextAnswers = this.__answers.flatMap(
+      (answer) => answer?.textAnswers?.answers || []
+    );
+
+    if (allTextAnswers.length === 0) {
+      return '';
+    }
+
+    // For items like grids, there can be multiple answer values. The live script joins them with a comma.
+    return allTextAnswers.map(a => a.value).join(',');
+  }
+}

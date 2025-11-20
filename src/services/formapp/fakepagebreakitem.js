@@ -42,14 +42,6 @@ export class FakePageBreakItem extends FakeFormItem {
   }
 
   /**
-   * Gets the ID of the item.
-   * @returns {Integer} The item's ID.
-   */
-  getId() {
-    return this.__resource.itemId;
-  }
-
-  /**
    * Returns the string "PageBreakItem" to identify the class.
    * @returns {string} The string "PageBreakItem".
    */

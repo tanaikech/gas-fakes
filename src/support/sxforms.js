@@ -12,7 +12,7 @@ import { getFormsApiClient } from '../services/advforms/formsapis.js';
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-export const sxForms = async (Auth, { prop, method, params, options = {} }) => {
+export const sxForms = async (Auth, { prop, subProp, method, params, options = {} }) => {
 
   const apiClient = getFormsApiClient();
 
@@ -24,7 +24,11 @@ export const sxForms = async (Auth, { prop, method, params, options = {} }) => {
     let error;
 
     try {
-      const callish = apiClient[prop];
+      // Access the base property (e.g., 'forms'), then the sub-property if it exists (e.g., 'responses').
+      let callish = apiClient[prop];
+      if (subProp) {
+        callish = callish[subProp];
+      }
       response = await callish[method](params, options);
     } catch (err) {
       error = err;
@@ -35,14 +39,14 @@ export const sxForms = async (Auth, { prop, method, params, options = {} }) => {
 
     if (isRetryable && i < maxRetries - 1) {
       const jitter = Math.floor(Math.random() * 1000);
-      syncWarn(`Retryable error on Forms API call ${prop}.${method} (status: ${response?.status}). Retrying in ${delay + jitter}ms...`);
+      syncWarn(`Retryable error on Forms API call ${prop}${subProp ? '.' + subProp : ''}.${method} (status: ${response?.status}). Retrying in ${delay + jitter}ms...`);
       await sleep(delay + jitter);
       delay *= 2;
       continue;
     }
 
     if (error || isRetryable) {
-      syncError(`Failed in sxForms for ${prop}.${method}`, error);
+      syncError(`Failed in sxForms for ${prop}${subProp ? '.' + subProp : ''}.${method}`, error);
       return { data: null, response: responseSyncify(response) };
     }
     return { data: response.data, response: responseSyncify(response) };

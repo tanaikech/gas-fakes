@@ -1,5 +1,6 @@
 import { Proxies } from '../../support/proxies.js';
 import { newFakeFormItem } from './fakeformitem.js';
+import { newFakeFormResponse } from './fakeformresponse.js';
 import { newFakeGridItem } from './fakegriditem.js';
 import { newFakeSectionHeaderItem } from './fakesectionheaderitem.js';
 import { newFakeScaleItem } from './fakescaleitem.js';
@@ -24,15 +25,13 @@ export class FakeForm {
    * @param {object} resource the form resource from Forms API
    */
   constructor(resource) {
+    // Store the resource provided at creation as the single source of truth for this instance.
     this.__id = resource.formId;
+    this.__resource = resource;
     this.__file = DriveApp.getFileById(this.__id);
     // Since the API doesn't allow setting the published state, we'll manage it internally for the fake.
     // A new form defaults to accepting responses (true).
-    this.__publishedState = this.__resource.settings?.state !== 'INACTIVE';
-  }
-
-  get __resource() {
-    return Forms.Form.get(this.__id);
+    this.__publishedState = resource.settings?.state !== 'INACTIVE';
   }
 
   saveAndClose() {
@@ -261,10 +260,17 @@ export class FakeForm {
     if (!this.__resource.items) {
       return null;
     }
-    // The API uses string IDs, but Apps Script often uses numbers.
-    // We'll handle both by converting the input to a string for comparison.
-    const stringId = id.toString();
-    const itemResource = this.__resource.items.find(item => item.itemId === stringId);
+    const isKnownItem = (id, item) => {
+      if (item.itemId === id) return true;
+      if (item.questionItem?.question?.questionId === id) return true; 
+      const qgroup= item.questionGroupItem?.questions
+      if (!qgroup) return false
+      const found = qgroup.some(q => q.questionId === id) 
+      return found
+    }
+
+    const itemResource = this.__resource.items.find((item) => isKnownItem(id, item));
+
     if (!itemResource) {
       return null;
     }
@@ -308,6 +314,25 @@ export class FakeForm {
    */
   getName() {
     return this.__file.getName();
+  }
+
+  /**
+   * Gets all of the form's responses.
+   * @returns {import('./fakeformresponse.js').FakeFormResponse[]} An array of form responses.
+   */
+  getResponses() {
+    // The advanced Forms service is needed here, but it's an implementation detail of the fake.
+    if (!Forms.Form?.Responses) {
+      throw new Error(
+        'The faked Advanced Forms Service (Forms.Form.Responses) must be available to use getResponses().'
+      );
+    }
+    const responseList = Forms.Form.Responses.list(this.getId());
+    const responses = responseList.responses?.map((r) => newFakeFormResponse(this, r)) || [];
+
+    // The live Apps Script getResponses() method returns responses in chronological order.
+    // The API returns them in reverse chronological order, so we must sort them.
+    return responses.sort((a, b) => a.getTimestamp() - b.getTimestamp());
   }
 
   /**

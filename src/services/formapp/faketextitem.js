@@ -14,14 +14,6 @@ export class FakeTextItem extends FakeFormItem {
     super(...args);
   }
 
-  /**
-   * Gets the ID of the item.
-   * @returns {Integer} The item's ID.
-   */
-  getId() {
-    return this.__itemId;
-  }
-
   toString() {
     return 'TextItem';
   }
