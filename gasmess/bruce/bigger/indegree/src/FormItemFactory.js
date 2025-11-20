@@ -49,9 +49,19 @@ export class FormItemFactory {
     if (item.description) gridItem.setHelpText(item.description);
 
     const rows = item.questions.map(f => f.text);
-    gridItem.setRows(rows);
-    const columns = Reflect.ownKeys(item.labels);
-    gridItem.setColumns(columns);
+    const labelTexts = Reflect.ownKeys(item.labels);
+    gridItem.setRows(rows);    
+    gridItem.setColumns(labelTexts);
+
+    // For a grid, all questions in the definition map to this single created item.
+    item.questions.forEach(q => {
+      this.__generator.addMapping({
+        sourceId: q.id,
+        createdId: gridItem.getId(),
+        labelId: item.labelsId,
+        labels: item.labels
+      });
+    });
 
     this.form.moveItem(gridItem.getIndex(), index);
     return 1;
@@ -95,6 +105,15 @@ export class FormItemFactory {
       });
     }
 
+    // A dropdown has only one question, so we create one mapping.
+    if (item.questions && item.questions.length > 0) {
+      this.__generator.addMapping({
+        sourceId: item.questions[0].id,
+        createdId: formItem.getId(),
+        labelId: item.labelsId,
+        labels: item.labels || {}
+      });
+    }
     this.form.moveItem(formItem.getIndex(), index);
 
     this.addPostProcessTask(() => {
@@ -146,8 +165,18 @@ export class FormItemFactory {
     formItem.setTitle(title);
     if (item.description) formItem.setHelpText(item.description);
 
-    const choices = Object.keys(item.labels).map(key => formItem.createChoice(key));
-    formItem.setChoices(choices);
+    const labelTexts = Object.keys(item.labels);
+    formItem.setChoices(labelTexts.map(key => formItem.createChoice(key)));
+
+    // A multiple choice item has only one question.
+    if (item.questions && item.questions.length > 0) {
+      this.__generator.addMapping({
+        sourceId: item.questions[0].id,
+        createdId: formItem.getId(),
+        labelId: item.labelsId,
+        labels: item.labels
+      });
+    }
 
     this.form.moveItem(formItem.getIndex(), index);
     return 1;

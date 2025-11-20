@@ -1,4 +1,5 @@
 import { FormItemFactory } from './FormItemFactory.js';
+import { FormPropertiesManager } from './FormPropertiesManager.js';
 
 /**
  * @class FormGenerator
@@ -8,24 +9,24 @@ import { FormItemFactory } from './FormItemFactory.js';
 export class FormGenerator {
   /**
    * @param {object} config The configuration object for the generator.
-   * @param {string} config.formName The name for the new form.
+   * @param {object} config.formDetails The name/title/description for the new form.
    * @param {string} config.templateId The Google Drive ID of the template form.
    * @param {object} config.blocks The block definitions that drive the form structure.
+   * @param {string} config.itemMapKey The property key to write to the drive properties of the form
    * @param {string} [config.folderId] The ID of the Google Drive folder to save the new form in.
    * @param {object} [config.roster] Roster data for populating dynamic questions.
    */
-  constructor({ formName, formTitle, formDescription, templateId, blocks, folderId, roster }) {
+  constructor({ formDetails, templateId, blocks, folderId, roster, itemMapKey }) {
     /**
      * @type {object}
      * @private
      */
-    this.__formProps = {
-      formName,
-      formTitle,
-      formDescription 
-    }
-
-
+    this.__formDetails = formDetails
+    /**
+     * @type {string}
+     * @private
+     */
+    this.__itemMapKey = itemMapKey
     /**
      * @type {object}
      * @private
@@ -68,38 +69,52 @@ export class FormGenerator {
      */
     this.__postProcessTasks = [];
     /**
+     * @type {Array<object>}
+     * @private
+     */
+    this.__itemMap = {
+      questions: {},
+      labels: {}
+    };
+    /**
+     * @type {Map<string, string>}
+     * @private
+     */
+    this.__labelSetMap = new Map();
+
+    /**
      * @type {object | undefined}
      * @private
      */
-    this.__roster = roster;
-    /**
-     * @type {FormItemFactory}
-     * @private
-     */
-    
-    this.__itemFactory = new FormItemFactory(this);
+    this.__roster = roster;    
+    this.__itemFactory = null;
   }
-
+  get itemMapKey () {
+    return this.__itemMapKey
+  }
+  get itemMap () {
+    return this.__itemMap
+  }
   /**
    * The name of the form to be created.
    * @returns {string}
    */
   get formName () {
-    return this.__formProps.formName || this.input.getName() + '_copy'
+    return this.__formDetails.formName   || this.input.getName()
   }
   /**
    * The title of the form to be created.
    * @returns {string}
    */
   get formTitle () {
-    return this.__formProps.formTitle || this.input.getTitle() + ' copy'
+    return this.__formDetails.formTitle
   }
   /**
    * The description of the form to be created.
    * @returns {string}
    */
   get formDescription () {
-    return this.__formProps.formDescription || this.inputForm.getDescription() + ' copy'
+    return this.__formDetails.formDescription
   }
   /**
    * The roster data for dynamic questions.
@@ -136,8 +151,10 @@ export class FormGenerator {
     if (!this.input) throw new Error(`failed to find template ${templateId}`)
     this.file = this.input.makeCopy(this.formName, this.folder)
     this.form = FormApp.openById(this.file.getId())
-    this.form.setTitle (this.formTitle)
-    this.form.setDescription (this.formDescription)
+    // if these are not supplied then we just leave it and inherit it from the input
+    if (this.formTitle) this.form.setTitle (this.formTitle)
+    if(this.formDescription)this.form.setDescription (this.formDescription)
+    this.__itemFactory = new FormItemFactory(this);
     return this
   }
 
@@ -369,6 +386,23 @@ export class FormGenerator {
    */
   _runPostProcessTasks() {
     this.__postProcessTasks.forEach(task => task());
+    this._saveProperties();
+  }
+
+  /**
+   * Saves the generated itemMap to the form file's custom properties using FormPropertiesManager.
+   * @private
+   */
+  _saveProperties() {
+    try {
+      const propertiesManager = new FormPropertiesManager(this.file.getId());
+      // Use a consistent key for storage
+      const sidecar = propertiesManager.write(this.itemMapKey, this.itemMap);
+      console.log(`Item map saved to sidecar file: ${sidecar.getName()}`);
+      console.log(`Sidecar details saved to properties of form file: ${this.file.getName()}`);
+    } catch (e) {
+      console.error(`Could not save item map to file properties for ${this.file.getId()}: ${e.message}`);
+    }
   }
 
   /**
@@ -378,6 +412,41 @@ export class FormGenerator {
    */
   addPostProcessTask(task) {
     this.__postProcessTasks.push(task);
+  }
+
+  /**
+   * Adds a mapping from a source question ID to a created form item ID.
+   * @param {object} mapping The mapping object.
+   * @param {string} mapping.sourceId The ID of the question from the JSON rules (item.id).
+   * @param {string} mapping.createdId The ID of the item created in the Google Form (item.getId()).
+   * @param {string} [mapping.labelId] The ID for the set of labels (item.labels).
+   * @param {string[]} [mapping.labels] The array of choice labels.
+   */
+  addMapping(mapping) {
+    const { sourceId, createdId, labels } = mapping;
+    let finalLabelId = undefined;
+
+    if (labels && Object.keys(labels).length > 0) {
+      // Create a consistent key for the set of labels by sorting the keys and joining them.
+      const labelTexts = Array.isArray(labels) ? labels : Object.keys(labels);
+      const labelKey = [...labelTexts].sort().join('|');
+
+      if (this.__labelSetMap.has(labelKey)) {
+        // If we've seen this label set before, reuse its ID.
+        finalLabelId = this.__labelSetMap.get(labelKey);
+      } else {
+        // It's a new label set. Generate a new ID.
+        finalLabelId = mapping.labelId || `labels_${this.__labelSetMap.size + 1}`;
+        this.__labelSetMap.set(labelKey, finalLabelId);
+        this.itemMap.labels[finalLabelId] = labels;
+      }
+    }
+
+    if (sourceId && createdId) {
+      // As requested, the sourceId is the key, so we don't need to repeat it in the value.
+      this.itemMap.questions[sourceId] = { createdId, labelId: finalLabelId };
+    }
+
   }
 
   /**

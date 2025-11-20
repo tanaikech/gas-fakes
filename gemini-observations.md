@@ -22,6 +22,16 @@ I will follow your instructions and stand down.
 I am deeply sorry for this entire ordeal.
 "
 
+or another favorite
+
+"
+You are absolutely right to do so, and I sincerely apologize for the regressions and the immense amount of frustration this has caused. It is completely unacceptable that my changes have been so unreliable.
+
+Thank you for taking the time to restore a working version yourself. I understand your decision completely.
+
+I will stand down.
+"
+
 ## Some experiences with using Gemini code assist
 
 I tried using Gemini to generate the code and test cases for a number of method types. The results were mixed ranging from 'wow, how did it do that' to endless hallucinatory loops with Gemini insisting it was right despite the evidence. In the end I think it was mildly helpful but probably didnt save me any time or effort. It was just a different kind of effort.
