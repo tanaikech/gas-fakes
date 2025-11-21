@@ -364,7 +364,23 @@ export class FormGenerator {
         this.__itemFactory.addGridItem({ item: { ...item, ...itemContext }, index: insertionIndex });
         break;
       case "linear_scale":
-        this.__itemFactory.addScaleItem({ item: { ...item, ...itemContext }, index: insertionIndex });
+        // A linear_scale with multiple sub-questions should be rendered as 'n' separate ScaleItems.
+        if (item.questions && Array.isArray(item.questions)) {
+          // Iterate in reverse because we are inserting at the same index repeatedly.
+          [...item.questions].reverse().forEach(subQuestion => {
+            // The factory expects a definition that looks like the original parent,
+            // but with the 'questions' array containing only the current sub-question.
+            const scaleItemDef = {
+              ...item, // Inherit parent properties like 'labels'
+              questions: [subQuestion], // Provide the single sub-question the factory expects
+            };
+            this.__itemFactory.addScaleItem({ item: { ...scaleItemDef, ...itemContext }, index: insertionIndex });
+          });
+        } else {
+          // This is a single linear_scale item. Pass it through directly.
+          // The factory is responsible for handling its structure.
+          this.__itemFactory.addScaleItem({ item: { ...item, ...itemContext }, index: insertionIndex });
+        }
         break;
       case "multiple_choice":
         this.__itemFactory.addMultipleChoiceItem({ item: { ...item, ...itemContext }, index: insertionIndex });
@@ -423,7 +439,7 @@ export class FormGenerator {
    * @param {string[]} [mapping.labels] The array of choice labels.
    */
   addMapping(mapping) {
-    const { sourceId, createdId, labels } = mapping;
+    const { sourceId, createdId, createdItem, labels } = mapping;
     let finalLabelId = undefined;
 
     if (labels && Object.keys(labels).length > 0) {
@@ -442,9 +458,18 @@ export class FormGenerator {
       }
     }
 
-    if (sourceId && createdId) {
-      // As requested, the sourceId is the key, so we don't need to repeat it in the value.
-      this.itemMap.questions[sourceId] = { createdId, labelId: finalLabelId };
+    if (sourceId && createdItem) {
+      // For simple items (Scale, MultipleChoice etc.), the response is keyed by questionId.
+      // For complex items (Grid), the response is keyed by the row's questionId, but our lookup
+      // resolves to the parent Grid's itemId.
+      // Therefore, we must store the correct ID that will be used in the response lookup.
+      const resource = createdItem.__resource;
+      const idToStore = resource.questionItem?.question?.questionId || createdItem.getId();
+
+      this.itemMap.questions[sourceId] = { 
+        createdId: idToStore, 
+        labelId: finalLabelId 
+      };
     }
 
   }
