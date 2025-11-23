@@ -1,7 +1,7 @@
 import '@mcpher/gas-fakes';
 import { FormPropertiesManager } from './FormPropertiesManager.js';
-import { Exports } from './utils.js';
-import { writeFileSync } from 'fs';
+import { ResponseProcessor } from './ResponseProcessor.js';
+import { NetworkOutput } from './NetworkOutput.js';
 
 const ITEM_MAP_KEY = 'formItemMap'
 // Replace with the ID of the form you want to read responses from.
@@ -12,63 +12,6 @@ const getDriveObject = (id) => {
   return JSON.parse(DriveApp.getFileById(id).getBlob().getDataAsString())
 }
 
-/**
- * Calculate a score based on the specified method and input values.
- * @param {string} method - The aggregation method (sum, mean, max, min, ab1234)
- * @param {string[]} inputs - Array of question IDs to aggregate (may have .text suffix)
- * @param {Object} valuesMap - Map of questionId to numeric value
- * @param {Object} textsMap - Map of questionId to text response
- * @returns {number|string|null} The calculated score, or null if calculation fails
- */
-const calculateScore = (method, inputs, valuesMap, textsMap) => {
-  if (method === 'ab1234') {
-    // For ab1234, collect all text inputs
-    const texts = inputs
-      .map(inputId => {
-        // Check if this input has .text suffix
-        const isTextInput = inputId.endsWith('.text');
-        const questionId = isTextInput ? inputId.slice(0, -5) : inputId;
-        return textsMap[questionId];
-      })
-      .filter(text => text !== undefined && text !== null);
-
-    if (texts.length === 0) {
-      return null;
-    }
-
-    // Concatenate all texts and pass to abx
-    const combinedText = texts.join(' ');
-    return Exports.Utils.abx({ text: combinedText });
-  }
-
-  // For other methods, collect numeric values
-  const values = inputs
-    .map(inputId => {
-      // Remove .text suffix if present (shouldn't be for numeric methods, but handle it)
-      const questionId = inputId.endsWith('.text') ? inputId.slice(0, -5) : inputId;
-      return valuesMap[questionId];
-    })
-    .filter(val => val !== undefined && val !== null && !isNaN(val))
-    .map(val => Number(val));
-
-  if (values.length === 0) {
-    return null; // No valid values to aggregate
-  }
-
-  switch (method) {
-    case 'sum':
-      return values.reduce((acc, val) => acc + val, 0);
-    case 'mean':
-      return values.reduce((acc, val) => acc + val, 0) / values.length;
-    case 'max':
-      return Math.max(...values);
-    case 'min':
-      return Math.min(...values);
-    default:
-      console.warn(`Unknown scoring method: ${method}`);
-      return null;
-  }
-};
 
 /**
  * Reads and logs all responses from a Google Form.
@@ -80,22 +23,26 @@ const readResponses = () => {
   }
 
   // Fetch scoring rules and output specification
-  let scoringRules = [];
-  let outputVertices = [];
+  let processor = null;
+  let networkOutput = null;
   try {
     if (ScriptApp.isFake) {
       const behavior = ScriptApp.__behavior;
       behavior.addIdWhitelist(behavior.newIdWhitelistItem(rulesId));
     }
     const rulesObject = getDriveObject(rulesId);
+
+    // Initialize ResponseProcessor
     if (rulesObject.processing && rulesObject.processing.scoring) {
-      scoringRules = rulesObject.processing.scoring;
+      processor = new ResponseProcessor(rulesObject.processing.scoring);
     }
+
+    // Initialize NetworkOutput
     if (rulesObject.network && rulesObject.network.outputs && rulesObject.network.outputs.vertices) {
-      outputVertices = rulesObject.network.outputs.vertices;
+      networkOutput = new NetworkOutput(rulesObject.network.outputs.vertices);
     }
   } catch (error) {
-    console.warn(`Could not load scoring rules: ${error.toString()}`);
+    console.warn(`Could not load rules: ${error.toString()}`);
   }
 
   try {
@@ -237,53 +184,19 @@ const readResponses = () => {
         }
       });
 
-      // Calculate and log scores
-      const calculatedScores = {};
-      if (scoringRules.length > 0) {
-        console.log('\n  --- Calculated Scores ---');
-        scoringRules.forEach(rule => {
-          const score = calculateScore(rule.method, rule.inputs, submissionValues, submissionTexts);
-          if (score !== null) {
-            calculatedScores[rule.output] = score;
-            console.log(`  ${rule.output}: ${score} (method: ${rule.method})`);
-          } else {
-            console.log(`  ${rule.output}: Unable to calculate (insufficient data)`);
-          }
-        });
-      }
+      // Calculate and log scores using ResponseProcessor
+      const calculatedScores = processor ? processor.calculateAndLogScores(submissionValues, submissionTexts) : {};
 
-      // Build output object for this respondent
-      if (outputVertices.length > 0) {
-        const outputObject = {};
-        outputVertices.forEach(field => {
-          // Check if field ends with .text
-          if (field.endsWith('.text')) {
-            const baseField = field.slice(0, -5);
-            if (submissionTexts[baseField] !== undefined) {
-              outputObject[field] = submissionTexts[baseField];
-            }
-          } else if (calculatedScores[field] !== undefined) {
-            // Use calculated score
-            outputObject[field] = calculatedScores[field];
-          } else if (submissionValues[field] !== undefined) {
-            // Use original numeric value
-            outputObject[field] = submissionValues[field];
-          } else if (submissionTexts[field] !== undefined) {
-            // Fallback to text value
-            outputObject[field] = submissionTexts[field];
-          }
-        });
+      // Build output object using NetworkOutput
+      if (networkOutput) {
+        const outputObject = networkOutput.buildOutputObject(submissionValues, submissionTexts, calculatedScores);
         outputArray.push(outputObject);
       }
     });
 
-    // Write output array to JSON file
-    if (outputArray.length > 0) {
-      const outputFilePath = 'responses_output.json';
-      writeFileSync(outputFilePath, JSON.stringify(outputArray, null, 2));
-      console.log(`\n✅ JSON output written to ${outputFilePath}`);
-      console.log(`   Total respondents: ${outputArray.length}`);
-      console.log(`   Fields per respondent: ${outputVertices.length}`);
+    // Write output array to JSON file using NetworkOutput
+    if (networkOutput) {
+      networkOutput.writeOutputFile(outputArray);
     }
   } catch (error) {
     console.error(`Error reading form responses: ${error.toString()}`);
