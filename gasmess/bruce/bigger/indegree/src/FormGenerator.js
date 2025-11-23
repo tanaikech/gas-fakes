@@ -86,34 +86,34 @@ export class FormGenerator {
      * @type {object | undefined}
      * @private
      */
-    this.__roster = roster;    
+    this.__roster = roster;
     this.__itemFactory = null;
   }
-  get itemMapKey () {
+  get itemMapKey() {
     return this.__itemMapKey
   }
-  get itemMap () {
+  get itemMap() {
     return this.__itemMap
   }
   /**
    * The name of the form to be created.
    * @returns {string}
    */
-  get formName () {
-    return this.__formDetails.formName   || this.input.getName()
+  get formName() {
+    return this.__formDetails.formName || this.input.getName()
   }
   /**
    * The title of the form to be created.
    * @returns {string}
    */
-  get formTitle () {
+  get formTitle() {
     return this.__formDetails.formTitle
   }
   /**
    * The description of the form to be created.
    * @returns {string}
    */
-  get formDescription () {
+  get formDescription() {
     return this.__formDetails.formDescription
   }
   /**
@@ -152,8 +152,8 @@ export class FormGenerator {
     this.file = this.input.makeCopy(this.formName, this.folder)
     this.form = FormApp.openById(this.file.getId())
     // if these are not supplied then we just leave it and inherit it from the input
-    if (this.formTitle) this.form.setTitle (this.formTitle)
-    if(this.formDescription)this.form.setDescription (this.formDescription)
+    if (this.formTitle) this.form.setTitle(this.formTitle)
+    if (this.formDescription) this.form.setDescription(this.formDescription)
     this.__itemFactory = new FormItemFactory(this);
     return this
   }
@@ -368,7 +368,7 @@ export class FormGenerator {
         if (item.questions && Array.isArray(item.questions)) {
           // Iterate in reverse because we are inserting at the same index repeatedly.
           [...item.questions].reverse().forEach(subQuestion => {
-            // The factory expects a definition that looks like the original parent,
+            // The factory expects a definition that looks like the original parent, but with the 'id' and 'questions' array containing only the current sub-question.
             // but with the 'questions' array containing only the current sub-question.
             const scaleItemDef = {
               ...item, // Inherit parent properties like 'labels'
@@ -378,18 +378,18 @@ export class FormGenerator {
           });
         } else {
           // This is a single linear_scale item. Pass it through directly.
-          // The factory is responsible for handling its structure.
+          // The factory is responsible for handling its structure. We must include the item's original 'id'.
           this.__itemFactory.addScaleItem({ item: { ...item, ...itemContext }, index: insertionIndex });
         }
         break;
       case "multiple_choice":
-        this.__itemFactory.addMultipleChoiceItem({ item: { ...item, ...itemContext }, index: insertionIndex });
+        this.__itemFactory.addMultipleChoiceItem({ item: { ...item, ...itemContext, id: item.id }, index: insertionIndex });
         break;
       case "dropdown":
-        this.__itemFactory.addListItem({ item: { ...item, ...itemContext }, index: insertionIndex });
+        this.__itemFactory.addListItem({ item: { ...item, ...itemContext, id: item.id }, index: insertionIndex });
         break;
       case "short_answer":
-        this.__itemFactory.addTextItem({ item: { ...item, ...itemContext }, index: insertionIndex });
+        this.__itemFactory.addTextItem({ item: { ...item, ...itemContext, id: item.id }, index: insertionIndex });
         break;
       default:
         throw new Error(`Invalid question type: ${item.questionType}`);
@@ -402,7 +402,53 @@ export class FormGenerator {
    */
   _runPostProcessTasks() {
     this.__postProcessTasks.forEach(task => task());
-    this._saveProperties();
+    this._mapRemainingItems();
+    this._saveProperties(); // This was missing
+  }
+
+  /**
+   * Scans the form for items that haven't been mapped (e.g. from the template)
+   * and adds them to the itemMap with a generated ID.
+   * @private
+   */
+  _mapRemainingItems() {
+    const allItems = this.form.getItems();
+    const mappedIds = new Set();
+
+    // Collect all currently mapped IDs
+    Object.values(this.itemMap.questions).forEach(mapping => {
+      mappedIds.add(String(mapping.createdId));
+    });
+
+    const nonQuestionTypes = [
+      FormApp.ItemType.PAGE_BREAK,
+      FormApp.ItemType.SECTION_HEADER,
+      FormApp.ItemType.IMAGE,
+      FormApp.ItemType.VIDEO
+    ];
+
+    allItems.forEach(item => {
+      const itemId = String(item.getId());
+      const itemType = item.getType();
+
+      if (nonQuestionTypes.includes(itemType)) return;
+
+      if (!mappedIds.has(itemId)) {
+        const title = item.getTitle();
+        if (title) {
+          // Generate a simple ID from the title
+          const generatedId = title.toLowerCase()
+            .replace(/[^a-z0-9]+/g, '_') // Replace non-alphanumeric with underscore
+            .replace(/^_+|_+$/g, ''); // Trim leading/trailing underscores
+
+          this.addMapping({
+            sourceId: generatedId,
+            createdId: itemId
+          });
+          console.log(`Auto-mapped template item: "${title}" -> ${generatedId} (${itemId})`);
+        }
+      }
+    });
   }
 
   /**
@@ -414,7 +460,7 @@ export class FormGenerator {
       const propertiesManager = new FormPropertiesManager(this.file.getId());
       // Use a consistent key for storage
       const sidecar = propertiesManager.write(this.itemMapKey, this.itemMap);
-      console.log(`Item map saved to sidecar file: ${sidecar.getName()}`);
+      console.log(`Item map saved to sidecar file: ${sidecar.getName()} (ID: ${sidecar.getId()})`);
       console.log(`Sidecar details saved to properties of form file: ${this.file.getName()}`);
     } catch (e) {
       console.error(`Could not save item map to file properties for ${this.file.getId()}: ${e.message}`);
@@ -439,7 +485,7 @@ export class FormGenerator {
    * @param {string[]} [mapping.labels] The array of choice labels.
    */
   addMapping(mapping) {
-    const { sourceId, createdId, createdItem, labels } = mapping;
+    const { sourceId, createdId, createdItem, labels, rowIndex } = mapping;
     let finalLabelId = undefined;
 
     if (labels && Object.keys(labels).length > 0) {
@@ -458,18 +504,24 @@ export class FormGenerator {
       }
     }
 
-    if (sourceId && createdItem) {
+    if (sourceId && (createdItem || createdId)) {
       // For simple items (Scale, MultipleChoice etc.), the response is keyed by questionId.
       // For complex items (Grid), the response is keyed by the row's questionId, but our lookup
       // resolves to the parent Grid's itemId.
       // Therefore, we must store the correct ID that will be used in the response lookup.
-      const resource = createdItem.__resource;
-      const idToStore = resource.questionItem?.question?.questionId || createdItem.getId();
+      let idToStore = createdId;
+      if (createdItem && createdItem.__resource) {
+        const resource = createdItem.__resource;
+        idToStore = resource.questionItem?.question?.questionId || createdItem.getId();
+      }
 
-      this.itemMap.questions[sourceId] = { 
-        createdId: idToStore, 
-        labelId: finalLabelId 
+      this.itemMap.questions[sourceId] = {
+        createdId: idToStore,
+        labelId: finalLabelId,
+        rowIndex: rowIndex
       };
+    } else if (labels && Object.keys(labels).length > 0) {
+      console.warn(`[Diagnostic] Label set "${finalLabelId}" created but no sourceId provided! Mapping:`, JSON.stringify(mapping));
     }
 
   }
@@ -516,7 +568,7 @@ function extractJsonFromDoubleBraces(text) {
   let match;
 
   while ((match = regex.exec(text)) !== null) {
-    const jsonString = match[1]; 
+    const jsonString = match[1];
 
     try {
       const objectToParse = `{${jsonString}}`;

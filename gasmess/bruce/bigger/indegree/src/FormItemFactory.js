@@ -50,16 +50,17 @@ export class FormItemFactory {
 
     const rows = item.questions.map(f => f.text);
     const labelTexts = Reflect.ownKeys(item.labels);
-    gridItem.setRows(rows);    
+    gridItem.setRows(rows);
     gridItem.setColumns(labelTexts);
 
     // For a grid, all questions in the definition map to this single created item.
-    item.questions.forEach(q => {
+    item.questions.forEach((q, i) => {
       this.__generator.addMapping({
         sourceId: q.id,
         createdId: gridItem.getId(),
         labelId: item.labelsId,
-        labels: item.labels
+        labels: item.labels,
+        rowIndex: i
       });
     });
 
@@ -113,6 +114,13 @@ export class FormItemFactory {
         labelId: item.labelsId,
         labels: item.labels || {}
       });
+    } else if (item.id) {
+      this.__generator.addMapping({
+        sourceId: item.id,
+        createdId: formItem.getId(),
+        labelId: item.labelsId,
+        labels: item.labels || {}
+      });
     }
     this.form.moveItem(formItem.getIndex(), index);
 
@@ -122,7 +130,7 @@ export class FormItemFactory {
         const { gotoMatch, gotoElse, name: matchName } = routing;
 
         // Find all page breaks in the form *after* this item.
-        const allPageBreaks = this.form.getItems(FormApp.ItemType.PAGE_BREAK).map(f=>f.asPageBreakItem());
+        const allPageBreaks = this.form.getItems(FormApp.ItemType.PAGE_BREAK).map(f => f.asPageBreakItem());
         const subsequentPageBreaks = allPageBreaks.filter(pb => pb.getIndex() > formItem.getIndex());
 
         // The "next_section" is the first page break after this item.
@@ -137,7 +145,7 @@ export class FormItemFactory {
           const navDirective = isMatch ? gotoMatch : gotoElse;
           // Get the final navigation action.
           const navAction = this.__generator.getNavigationAction(navDirective, matchPage, elsePage);
-          const choice = navAction ? formItem.createChoice(def.value,navAction) : formItem.createChoice(def.value)
+          const choice = navAction ? formItem.createChoice(def.value, navAction) : formItem.createChoice(def.value)
 
           return choice;
         });
@@ -176,6 +184,13 @@ export class FormItemFactory {
         labelId: item.labelsId,
         labels: item.labels
       });
+    } else if (item.id) {
+      this.__generator.addMapping({
+        sourceId: item.id,
+        createdId: formItem.getId(),
+        labelId: item.labelsId,
+        labels: item.labels
+      });
     }
 
     this.form.moveItem(formItem.getIndex(), index);
@@ -207,6 +222,15 @@ export class FormItemFactory {
       .setLabels(labelKeys[0], labelKeys[labelKeys.length - 1]);
 
     this.form.moveItem(scaleItem.getIndex(), index);
+
+    if (question.id) {
+      this.__generator.addMapping({
+        sourceId: question.id,
+        createdId: scaleItem.getId(),
+        labelId: item.labelsId,
+        labels: item.labels
+      });
+    }
     return 1;
   }
 
@@ -230,6 +254,13 @@ export class FormItemFactory {
     textItem.setTitle(question.text);
 
     this.form.moveItem(textItem.getIndex(), index);
+
+    if (question.id) {
+      this.__generator.addMapping({
+        sourceId: question.id,
+        createdId: textItem.getId()
+      });
+    }
 
     if (routing && routing.goto === 'submit') {
       this.addPostProcessTask(() => {

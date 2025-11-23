@@ -23,8 +23,33 @@ const t = () => {
 }
 //t()
 const process = () => {
-  const { rosters } = getDriveObject(rostersId)
-  const { blocks } = getDriveObject(rulesId)
+  const rostersObject = getDriveObject(rostersId)
+  console.log('Rosters object keys:', Object.keys(rostersObject))
+  const { rosters } = rostersObject
+  const rulesObject = getDriveObject(rulesId)
+  console.log('Rules object keys:', Object.keys(rulesObject))
+  if (rulesObject.processing) console.log('Processing keys:', Object.keys(rulesObject.processing))
+  if (rulesObject.network) console.log('Network keys:', Object.keys(rulesObject.network))
+  const { blocks, labels } = rulesObject
+  if (blocks.flourishing) {
+    console.log('Flourishing block:', JSON.stringify(blocks.flourishing, null, 2))
+  }
+  if (rulesObject.processing && rulesObject.processing.scoring) {
+    console.log('Scoring keys:', Object.keys(rulesObject.processing.scoring))
+    if (JSON.stringify(rulesObject.processing.scoring).includes('labels_3')) {
+      console.log('Found "labels_3" in scoring!')
+    }
+    console.log('Scoring[0]:', JSON.stringify(rulesObject.processing.scoring['0'], null, 2))
+  }
+  const rulesString = JSON.stringify(rulesObject)
+  if (rulesString.includes('labels_3')) {
+    console.log('Found "labels_3" in rules object!')
+    // Try to find context
+    const index = rulesString.indexOf('labels_3')
+    console.log('Context:', rulesString.substring(index - 50, index + 50))
+  } else {
+    console.log('"labels_3" NOT found in rules object.')
+  }
   const roster = rosters.vegetables
   // copy the form, and fill in the template
   const formDetails = {
@@ -33,24 +58,19 @@ const process = () => {
     formName
   }
 
-const formg = new FormGenerator({
-  formDetails,
-  templateId,
-  blocks,
-  folderId,
-  roster,
-  itemMapKey: ITEM_MAP_KEY
-}).create()
-console.log('using template', formg.inputForm.getEditUrl())
-// add the building blocks
-formg.addBlocks()
+  const formg = new FormGenerator({
+    formDetails,
+    templateId,
+    blocks,
+    folderId,
+    roster,
+    itemMapKey: ITEM_MAP_KEY
+  }).create()
+  console.log('using template', formg.inputForm.getEditUrl())
+  // add the building blocks
+  formg.addBlocks()
 
-
-const propertiesManager = new FormPropertiesManager(formg.file.getId());
-console.log(propertiesManager.read(ITEM_MAP_KEY))
-
-
-return formg.form
+  return formg.form
 }
 
 const main = () => {
@@ -78,7 +98,3 @@ const main = () => {
 if (ScriptApp.isFake) {
   main()
 }
-
-
-
-

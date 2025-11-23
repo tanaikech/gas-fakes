@@ -27,13 +27,15 @@ export class FakeForm {
   constructor(resource) {
     // Store the resource provided at creation as the single source of truth for this instance.
     this.__id = resource.formId;
-    this.__resource = resource;
     this.__file = DriveApp.getFileById(this.__id);
     // Since the API doesn't allow setting the published state, we'll manage it internally for the fake.
     // A new form defaults to accepting responses (true).
     this.__publishedState = resource.settings?.state !== 'INACTIVE';
   }
 
+  get __resource() {
+    return Forms.Form.get(this.__id);
+  }
   saveAndClose() {
     // this is a no-op in fake environment since it is stateless
   }

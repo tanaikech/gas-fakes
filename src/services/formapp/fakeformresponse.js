@@ -29,6 +29,14 @@ export class FakeFormResponse {
   }
 
   /**
+   * Gets the unique ID for this form response.
+   * @returns {string} the unique ID
+   */
+  getId() {
+    return this.__resource.responseId;
+  }
+
+  /**
    * Gets the date and time the response was submitted.
    * @returns {Date} the submission timestamp
    */

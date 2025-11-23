@@ -28,6 +28,14 @@ export class FakeItemResponse {
   }
 
   /**
+   * Gets the ID of the item this response is for. Note: This is a custom method for gas-fakes.
+   * @returns {string} the item's ID
+   */
+  getId() {
+    return this.__item.getId();
+  }
+
+  /**
    * Gets the answer to the question as a string.
    * @returns {string} the response
    */
