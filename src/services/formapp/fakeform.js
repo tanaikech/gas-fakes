@@ -32,7 +32,7 @@ export class FakeForm {
     // A new form defaults to accepting responses (true).
     this.__publishedState = resource.settings?.state !== 'INACTIVE';
   }
-
+  
   get __resource() {
     return Forms.Form.get(this.__id);
   }
