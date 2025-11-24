@@ -1,17 +1,18 @@
 import '@mcpher/gas-fakes';
-import { readFileSync } from 'fs';
+
 import { FormGenerator } from './FormGenerator.js'
 import { FormPropertiesManager } from './FormPropertiesManager.js';
+import { RulesValidator } from './RulesValidator.js';
 const clean = false
 const sandbox = true
 
 const folderId = '1ypdMgsdRyb5ggJ3oX2UdWNx0k2eSdCnV'
 const rulesId = '11L29nlZakItr2mNJbOeOJPJ377BxeJ8G'
 const templateId = '1RGUYVxCHlYw4aG1jJM2YJ8TLi8lnKaDTQ9jcvGhGAeE'
-const formName = "Vegetable patch"
+const formName = "Vegetable patch post"
 const rostersId = "1ja0P4WHkMmU0fjawA5egYqTFBSmB0uFX"
-const formTitle = "Vegetable questions 2"
-const formDescription = "A survey about vegetables 2"
+const formTitle = "Vegetable questions 2 post"
+const formDescription = "A survey about vegetables post"
 const ITEM_MAP_KEY = 'formItemMap'
 
 const getDriveObject = (id) => {
@@ -27,6 +28,23 @@ const process = () => {
   console.log('Rosters object keys:', Object.keys(rostersObject))
   const { rosters } = rostersObject
   const rulesObject = getDriveObject(rulesId)
+
+  // Validate Rules
+  const validator = new RulesValidator();
+  const validationResult = validator.validate(rulesObject);
+
+  if (!validationResult.valid) {
+    console.error('❌ Rules validation failed:');
+    validationResult.errors.forEach(err => console.error(`  - ${err}`));
+    throw new Error('Rules validation failed. See errors above.');
+  } else {
+    console.log('✅ Rules validation passed.');
+    if (validationResult.warnings.length > 0) {
+      console.warn('⚠️ Rules validation warnings:');
+      validationResult.warnings.forEach(warn => console.warn(`  - ${warn}`));
+    }
+  }
+
   console.log('Rules object keys:', Object.keys(rulesObject))
   if (rulesObject.processing) console.log('Processing keys:', Object.keys(rulesObject.processing))
   if (rulesObject.network) console.log('Network keys:', Object.keys(rulesObject.network))

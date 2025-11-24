@@ -16,27 +16,39 @@ export class NetworkOutput {
    * @param {Object} submissionValues - Map of questionId to numeric value
    * @param {Object} submissionTexts - Map of questionId to text response
    * @param {Object} calculatedScores - Map of output name to calculated score
+   * @param {string} [phase] - Optional phase suffix (e.g., 'pre', 'post')
+   * @param {string} [idOutputName] - The output name that serves as the ID (should not be suffixed)
    * @returns {Object} Output object with fields specified in outputVertices
    */
-  buildOutputObject(submissionValues, submissionTexts, calculatedScores) {
+  buildOutputObject(submissionValues, submissionTexts, calculatedScores, phase, idOutputName) {
     const outputObject = {};
 
     this.outputVertices.forEach(field => {
+      let value;
       // Check if field ends with .text
       if (field.endsWith('.text')) {
         const baseField = field.slice(0, -5);
         if (submissionTexts[baseField] !== undefined) {
-          outputObject[field] = submissionTexts[baseField];
+          value = submissionTexts[baseField];
         }
       } else if (calculatedScores[field] !== undefined) {
         // Use calculated score
-        outputObject[field] = calculatedScores[field];
+        value = calculatedScores[field];
       } else if (submissionValues[field] !== undefined) {
         // Use original numeric value
-        outputObject[field] = submissionValues[field];
+        value = submissionValues[field];
       } else if (submissionTexts[field] !== undefined) {
         // Fallback to text value
-        outputObject[field] = submissionTexts[field];
+        value = submissionTexts[field];
+      }
+
+      if (value !== undefined) {
+        // Determine the key to use
+        let key = field;
+        if (phase && field !== idOutputName) {
+          key = `${field}_${phase}`;
+        }
+        outputObject[key] = value;
       }
     });
 
