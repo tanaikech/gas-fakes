@@ -4,6 +4,7 @@
 
 import './fakecheckboxitem.js'
 import './fakegriditem.js';
+import './fakecheckboxgriditem.js';
 import './fakescaleitem.js';
 import './fakepagebreakitem.js';
 import './fakelistitem.js';

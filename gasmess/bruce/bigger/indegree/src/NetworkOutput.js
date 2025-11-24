@@ -56,16 +56,25 @@ export class NetworkOutput {
   }
 
   /**
-   * Write output array to JSON file.
-   * @param {Array<Object>} outputArray - Array of output objects
+   * Write output to JSON file with combined vertices and edges.
+   * @param {Array<Object>} vertices - Array of vertex objects
+   * @param {Array<Object>} edges - Array of edge objects
    * @param {string} filePath - Path to write JSON file
    */
-  writeOutputFile(outputArray, filePath = 'responses_output.json') {
-    if (outputArray.length > 0) {
-      writeFileSync(filePath, JSON.stringify(outputArray, null, 2));
+  writeOutputFile(vertices, edges = [], filePath = 'responses_output.json') {
+    const output = {
+      vertices: vertices,
+      edges: edges
+    };
+
+    if (vertices.length > 0 || edges.length > 0) {
+      writeFileSync(filePath, JSON.stringify(output, null, 2));
       console.log(`\n✅ JSON output written to ${filePath}`);
-      console.log(`   Total respondents: ${outputArray.length}`);
-      console.log(`   Fields per respondent: ${this.outputVertices.length}`);
+      console.log(`   Total vertices: ${vertices.length}`);
+      console.log(`   Total edges: ${edges.length}`);
+      if (vertices.length > 0) {
+        console.log(`   Fields per vertex: ${this.outputVertices.length}`);
+      }
     } else {
       console.log('\n⚠️  No output data to write');
     }

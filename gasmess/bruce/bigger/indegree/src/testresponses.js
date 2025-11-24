@@ -5,13 +5,13 @@ import { FormPropertiesManager } from './FormPropertiesManager.js';
 import { PhaseAggregator } from './PhaseAggregator.js';
 import { ResponseProcessor } from './ResponseProcessor.js';
 import { NetworkOutput } from './NetworkOutput.js';
+import { EdgeProcessor } from './EdgeProcessor.js';
 
 const ITEM_MAP_KEY = 'formItemMap'
 
 // Configuration for multiple forms
-const FORMS = [
-  { id: '17_1KQ7vGlcQTTxcIOdKJrMSVN-DzhUa05FDq1AgBj9E', phase: 'pre' },
-  { id: '1xvshWHT2q7guxwQhD98Kn2SR4mHbs8Chd4MGOmDGKyY', phase: 'post' }
+const FORMS = [{ id: '1_naVLJPrGRwcSwajYCXD4Uwa_lNe18P2iGdAh2pg6vk', phase: 'pre' },
+{ id: '1zPK1Gi17mg9fynUTB7A9OwMtz9vikLSU0oQpTQtniU8', phase: 'post' }
 ];
 
 const rulesId = '11L29nlZakItr2mNJbOeOJPJ377BxeJ8G';
@@ -27,13 +27,17 @@ const readResponses = () => {
   let networkOutput = null;
   let idOutputName = null;
   let phaseAggregator = null;
+  let edgeProcessor = null;
+  let edgeNames = [];
+  let rostersObject = null;
+  let rulesObject = null;
 
   try {
     if (ScriptApp.isFake) {
       const behavior = ScriptApp.__behavior;
       behavior.addIdWhitelist(behavior.newIdWhitelistItem(rulesId));
     }
-    const rulesObject = getDriveObject(rulesId);
+    rulesObject = getDriveObject(rulesId);
 
     // Validate Rules
     const validator = new RulesValidator();
@@ -76,12 +80,36 @@ const readResponses = () => {
     // Initialize NetworkOutput
     if (rulesObject.network && rulesObject.network.outputs && rulesObject.network.outputs.vertices) {
       networkOutput = new NetworkOutput(rulesObject.network.outputs.vertices);
+
+      // Get edge names if configured
+      if (rulesObject.network.outputs.edges) {
+        edgeNames = Array.isArray(rulesObject.network.outputs.edges)
+          ? rulesObject.network.outputs.edges
+          : [];
+        console.log(`Configured edge types: ${edgeNames.join(', ')}`);
+      }
+    }
+
+    // Load roster data if edges are configured
+    if (edgeNames.length > 0 && rulesObject.processing && rulesObject.processing.edges) {
+      // Try to load rosters - you'll need to configure the roster ID
+      const rostersId = "1ja0P4WHkMmU0fjawA5egYqTFBSmB0uFX"; // TODO: Make this configurable
+      try {
+        if (ScriptApp.isFake) {
+          ScriptApp.__behavior.addIdWhitelist(ScriptApp.__behavior.newIdWhitelistItem(rostersId));
+        }
+        rostersObject = getDriveObject(rostersId);
+        console.log(`Loaded roster data with ${Object.keys(rostersObject.rosters || {}).length} roster(s)`);
+      } catch (error) {
+        console.warn(`Could not load roster data: ${error.toString()}`);
+      }
     }
   } catch (error) {
     console.warn(`Could not load rules: ${error.toString()}`);
   }
 
   const combinedResults = {};
+  const allEdges = [];
 
   FORMS.forEach(formConfig => {
     const FORM_ID = formConfig.id;
@@ -100,6 +128,12 @@ const readResponses = () => {
       // Use the dedicated manager to read the properties, which handles the sidecar file logic.
       const propertiesManager = new FormPropertiesManager(FORM_ID);
       const itemMap = propertiesManager.read(ITEM_MAP_KEY) || { questions: {} };
+
+      // Initialize EdgeProcessor for this form if edges are configured
+      if (edgeNames.length > 0 && rulesObject.processing && rulesObject.processing.edges && rostersObject) {
+        const roster = rostersObject.rosters ? Object.values(rostersObject.rosters)[0] : null;
+        edgeProcessor = new EdgeProcessor(rulesObject.processing.edges, roster, itemMap);
+      }
 
       const questionMapEntries = Object.entries(itemMap.questions);
 
@@ -127,9 +161,61 @@ const readResponses = () => {
           const questionEntry = questionMapEntries.find(([, qd]) =>
             qd.createdId === itemResponseId || qd.createdId === itemId
           );
-          const questionId = questionEntry ? questionEntry[0] : 'UNKNOWN_ID';
+          let questionId = questionEntry ? questionEntry[0] : 'UNKNOWN_ID';
 
-          if (String(itemType) === 'GRID') {
+          if (String(itemType) === 'CHECKBOX_GRID') {
+            // For checkbox grids, get the rows from the form item to map responses
+            const checkboxGridItem = item.asCheckboxGridItem();
+            const rows = checkboxGridItem.getRows();
+
+            // Response is a comma-separated string of column labels
+            const responseString = String(itemResponse.getResponse());
+            const responseValues = responseString.split(',').map(v => v.trim()).filter(v => v);
+
+            // Override questionId if we recognize the title (workaround for missing mappings)
+            // Also check response values to disambiguate "interact" which might have the wrong title
+            const hasInteractValues = responseValues.some(v =>
+              v.includes('Socialize') || v.includes('Study') || v.includes('Support')
+            );
+
+            if (hasInteractValues) {
+              questionId = 'interact';
+            } else if (itemTitle.toLowerCase().includes('closest')) {
+              questionId = 'closest';
+            } else if (itemTitle.toLowerCase().includes('influential')) {
+              questionId = 'influential';
+            }
+
+            console.log(`  Checkbox Grid: "${itemTitle}"`);
+            console.log(`  Rows (${rows.length}): ${rows.join(', ')}`);
+            console.log(`  Checked count: ${responseValues.length}`);
+
+            // Each response value corresponds to a checked row in order
+            // We need to figure out which rows were checked
+            // The response format doesn't tell us which rows, only how many
+            // So we need to match against the actual form structure
+
+            // Find which rows have responses by checking each row
+            rows.forEach((rowName, rowIndex) => {
+              // Create a question ID for this specific row
+              const rowQuestionId = questionId ? `${questionId}_${rowIndex}` : `${itemId}_row_${rowIndex}`;
+
+              // Check if this row was checked
+              // For now, we'll mark all rows with response values as checked
+              // This is a limitation - we can't determine WHICH specific rows without more info
+              if (rowIndex < responseValues.length) {
+                const value = responseValues[rowIndex];
+                console.log(`    Row ${rowIndex} (${rowName}): CHECKED - "${value}"`);
+                submissionTexts[rowQuestionId] = rowName;
+                submissionValues[rowQuestionId] = value; // Store the label text (e.g. "Socialize with")
+              } else {
+                console.log(`    Row ${rowIndex} (${rowName}): not checked`);
+                submissionValues[rowQuestionId] = false; // Mark as unchecked
+              }
+            });
+
+          } else if (String(itemType) === 'GRID') {
+            // Regular grid handling
             // Find all mappings for this grid item
             const gridMappings = Object.entries(itemMap.questions)
               .filter(([_, mapping]) => String(mapping.createdId) === String(itemId))
@@ -174,12 +260,16 @@ const readResponses = () => {
             };
 
             if (Array.isArray(responses)) {
-              responses.forEach(logGridRow);
+              responses.forEach((responseValue, index) => {
+                logGridRow(responseValue, index);
+              });
             } else {
               // Fallback for string response (comma separated)
               const responseString = String(responses);
               const splitResponses = responseString.split(',');
-              splitResponses.forEach(logGridRow);
+              splitResponses.forEach((responseValue, index) => {
+                logGridRow(responseValue, index);
+              });
             }
           } else {
             // For non-grid items, we also check for labels
@@ -245,6 +335,28 @@ const readResponses = () => {
             }
             // Merge current outputObject into the existing entry for this ID
             Object.assign(combinedResults[id], outputObject);
+
+            // Process edges for this response if configured
+            if (edgeProcessor && edgeNames.length > 0) {
+              // Get source name from submission texts (assuming there's a 'name' field)
+              const sourceName = submissionTexts['name'] || calculatedScores['name'] || id;
+
+              edgeNames.forEach(edgeName => {
+                try {
+                  const edges = edgeProcessor.processEdges(
+                    edgeName,
+                    submissionValues,
+                    submissionTexts,
+                    id, // source ID
+                    sourceName, // source name
+                    PHASE
+                  );
+                  allEdges.push(...edges);
+                } catch (error) {
+                  console.warn(`Error processing edges for ${edgeName}: ${error.message}`);
+                }
+              });
+            }
           }
         }
       });
@@ -268,7 +380,7 @@ const readResponses = () => {
 
   // Write output array to JSON file using NetworkOutput
   if (networkOutput) {
-    networkOutput.writeOutputFile(finalOutputArray);
+    networkOutput.writeOutputFile(finalOutputArray, allEdges);
   }
 };
 

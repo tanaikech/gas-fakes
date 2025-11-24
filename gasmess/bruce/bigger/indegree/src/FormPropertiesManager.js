@@ -36,7 +36,7 @@ export class FormPropertiesManager {
       const folder = file.getParents().next();
 
       // 1. Create the sidecar file with the large JSON data.
-      const blob = Utilities.newBlob(value, 'application/json', `${key}.${file.getId()}.json`);
+      const blob = Utilities.newBlob(value, 'application/json', `${file.getName()}-${file.getId()}-${key}.json`);
       const sidecarFile = folder.createFile(blob);
   
       // 2. Store the ID of the sidecar file in the original file's (tiny) properties.

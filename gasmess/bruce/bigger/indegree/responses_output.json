@@ -1,47 +1,414 @@
-[
-  {
-    "id": "BO-6704",
-    "name.text_pre": "pamela bean",
-    "flourishing_pre": 4.25,
-    "happiness_pre": 2,
-    "hazing_pre": 3.5,
-    "hazing_skills_pre": 2,
-    "hazing_perspective_pre": 5,
-    "alcohol_use_pre": 3,
-    "depression_pre": 12,
-    "anxiety_pre": 6,
-    "loneliness_pre": 6,
-    "membership.text_pre": "Joined this term",
-    "name.text_post": "pamela bean",
-    "flourishing_post": 3.3333333333333335,
-    "happiness_post": 4.666666666666667,
-    "hazing_post": 4,
-    "hazing_skills_post": 3.3333333333333335,
-    "hazing_perspective_post": 5,
-    "alcohol_use_post": 6,
-    "depression_post": 7,
-    "anxiety_post": 7,
-    "loneliness_post": 3,
-    "membership.text_post": "Two years",
-    "happiness_change": 2.666666666666667,
-    "flourishing_change": -0.9166666666666665,
-    "concern_max": 12
-  },
-  {
-    "id": "BC-9952",
-    "name.text_post": "kirsti kohlrabi",
-    "flourishing_post": 3.25,
-    "happiness_post": 4.333333333333333,
-    "hazing_post": 3.4,
-    "hazing_skills_post": 3.6666666666666665,
-    "hazing_perspective_post": 3,
-    "alcohol_use_post": 4,
-    "depression_post": 11,
-    "anxiety_post": 4,
-    "loneliness_post": 6,
-    "membership.text_post": "More than 3 years",
-    "happiness_change": 4.333333333333333,
-    "flourishing_change": 3.25,
-    "concern_max": 11
-  }
-]
+{
+  "vertices": [
+    {
+      "id": "HK-4912",
+      "name.text_pre": "jf cranberry jr",
+      "flourishing_pre": 4.25,
+      "happiness_pre": 3.3333333333333335,
+      "hazing_pre": 2.875,
+      "hazing_skills_pre": 5,
+      "hazing_knowledge_pre": 2.6666666666666665,
+      "hazing_perspective_pre": 1.6666666666666667,
+      "alcohol_use_pre": 9,
+      "depression_pre": 10,
+      "anxiety_pre": 5,
+      "loneliness_pre": 6,
+      "membership.text_pre": "Joined this term",
+      "happiness_change": -3.3333333333333335,
+      "flourishing_change": -4.25,
+      "concern_max": 10
+    },
+    {
+      "id": "HO-3360",
+      "name.text_pre": "donald turnip",
+      "flourishing_pre": 4.25,
+      "happiness_pre": 5.333333333333333,
+      "hazing_pre": 4.714285714285714,
+      "hazing_skills_pre": 5.5,
+      "hazing_knowledge_pre": 5,
+      "hazing_perspective_pre": 4,
+      "alcohol_use_pre": 5,
+      "depression_pre": 14,
+      "anxiety_pre": 5,
+      "loneliness_pre": 6,
+      "membership.text_pre": "Less than 1 year",
+      "name.text_post": "donald turnip",
+      "flourishing_post": 4.25,
+      "happiness_post": 4.333333333333333,
+      "hazing_post": 4.5,
+      "hazing_skills_post": 5,
+      "hazing_knowledge_post": 4,
+      "hazing_perspective_post": 4.666666666666667,
+      "alcohol_use_post": 6,
+      "depression_post": 18,
+      "anxiety_post": 10,
+      "loneliness_post": 6,
+      "membership.text_post": "Less than 1 year",
+      "happiness_change": -1,
+      "flourishing_change": 0,
+      "concern_max": 18
+    }
+  ],
+  "edges": [
+    {
+      "source": "HK-4912",
+      "target": "HO-3360",
+      "edge_type": "closest_edges",
+      "phase": "pre",
+      "source_name": "jf cranberry jr",
+      "target_name": "donald turnip",
+      "column.text": "Tick 10 closest"
+    },
+    {
+      "source": "HK-4912",
+      "target": "NK-7152",
+      "edge_type": "closest_edges",
+      "phase": "pre",
+      "source_name": "jf cranberry jr",
+      "target_name": "marco rhubarb",
+      "column.text": "Tick 10 closest"
+    },
+    {
+      "source": "HK-4912",
+      "target": "BC-9952",
+      "edge_type": "closest_edges",
+      "phase": "pre",
+      "source_name": "jf cranberry jr",
+      "target_name": "kirsti kohlrabi",
+      "column.text": "Tick 10 closest"
+    },
+    {
+      "source": "HK-4912",
+      "target": "HO-3792",
+      "edge_type": "closest_edges",
+      "phase": "pre",
+      "source_name": "jf cranberry jr",
+      "target_name": "norma neep",
+      "column.text": "Tick 10 closest"
+    },
+    {
+      "source": "HK-4912",
+      "target": "HO-3360",
+      "edge_type": "influential_edges",
+      "phase": "pre",
+      "source_name": "jf cranberry jr",
+      "target_name": "donald turnip",
+      "column.text": "Tick 5 influential"
+    },
+    {
+      "source": "HK-4912",
+      "target": "NK-7152",
+      "edge_type": "influential_edges",
+      "phase": "pre",
+      "source_name": "jf cranberry jr",
+      "target_name": "marco rhubarb",
+      "column.text": "Tick 5 influential"
+    },
+    {
+      "source": "HK-4912",
+      "target": "BC-9952",
+      "edge_type": "influential_edges",
+      "phase": "pre",
+      "source_name": "jf cranberry jr",
+      "target_name": "kirsti kohlrabi",
+      "column.text": "Tick 5 influential"
+    },
+    {
+      "source": "HK-4912",
+      "target": "HO-3360",
+      "edge_type": "interact_edges",
+      "phase": "pre",
+      "source_name": "jf cranberry jr",
+      "target_name": "donald turnip",
+      "column.text": "Seek support from"
+    },
+    {
+      "source": "HK-4912",
+      "target": "NK-7152",
+      "edge_type": "interact_edges",
+      "phase": "pre",
+      "source_name": "jf cranberry jr",
+      "target_name": "marco rhubarb",
+      "column.text": "Socialize with"
+    },
+    {
+      "source": "HK-4912",
+      "target": "BC-9952",
+      "edge_type": "interact_edges",
+      "phase": "pre",
+      "source_name": "jf cranberry jr",
+      "target_name": "kirsti kohlrabi",
+      "column.text": "Study with"
+    },
+    {
+      "source": "HK-4912",
+      "target": "HO-3792",
+      "edge_type": "interact_edges",
+      "phase": "pre",
+      "source_name": "jf cranberry jr",
+      "target_name": "norma neep",
+      "column.text": "Socialize with"
+    },
+    {
+      "source": "HK-4912",
+      "target": "NG-6304",
+      "edge_type": "interact_edges",
+      "phase": "pre",
+      "source_name": "jf cranberry jr",
+      "target_name": "nikki kale",
+      "column.text": "Study with"
+    },
+    {
+      "source": "HK-4912",
+      "target": "CA-8896",
+      "edge_type": "interact_edges",
+      "phase": "pre",
+      "source_name": "jf cranberry jr",
+      "target_name": "ryan zucchini",
+      "column.text": "Socialize with"
+    },
+    {
+      "source": "HO-3360",
+      "target": "NK-7152",
+      "edge_type": "closest_edges",
+      "phase": "pre",
+      "source_name": "donald turnip",
+      "target_name": "marco rhubarb",
+      "column.text": "Tick 10 closest"
+    },
+    {
+      "source": "HO-3360",
+      "target": "BC-9952",
+      "edge_type": "closest_edges",
+      "phase": "pre",
+      "source_name": "donald turnip",
+      "target_name": "kirsti kohlrabi",
+      "column.text": "Tick 10 closest"
+    },
+    {
+      "source": "HO-3360",
+      "target": "NK-7152",
+      "edge_type": "influential_edges",
+      "phase": "pre",
+      "source_name": "donald turnip",
+      "target_name": "marco rhubarb",
+      "column.text": "Tick 5 influential"
+    },
+    {
+      "source": "HO-3360",
+      "target": "BC-9952",
+      "edge_type": "influential_edges",
+      "phase": "pre",
+      "source_name": "donald turnip",
+      "target_name": "kirsti kohlrabi",
+      "column.text": "Tick 5 influential"
+    },
+    {
+      "source": "HO-3360",
+      "target": "NK-7152",
+      "edge_type": "interact_edges",
+      "phase": "pre",
+      "source_name": "donald turnip",
+      "target_name": "marco rhubarb",
+      "column.text": "Seek support from"
+    },
+    {
+      "source": "HO-3360",
+      "target": "BC-9952",
+      "edge_type": "interact_edges",
+      "phase": "pre",
+      "source_name": "donald turnip",
+      "target_name": "kirsti kohlrabi",
+      "column.text": "Seek support from"
+    },
+    {
+      "source": "HO-3360",
+      "target": "HO-3792",
+      "edge_type": "interact_edges",
+      "phase": "pre",
+      "source_name": "donald turnip",
+      "target_name": "norma neep",
+      "column.text": "Study with"
+    },
+    {
+      "source": "HO-3360",
+      "target": "NG-6304",
+      "edge_type": "interact_edges",
+      "phase": "pre",
+      "source_name": "donald turnip",
+      "target_name": "nikki kale",
+      "column.text": "Study with"
+    },
+    {
+      "source": "HO-3360",
+      "target": "CA-8896",
+      "edge_type": "interact_edges",
+      "phase": "pre",
+      "source_name": "donald turnip",
+      "target_name": "ryan zucchini",
+      "column.text": "Socialize with"
+    },
+    {
+      "source": "HO-3360",
+      "target": "XS-4512",
+      "edge_type": "interact_edges",
+      "phase": "pre",
+      "source_name": "donald turnip",
+      "target_name": "ben parsnip",
+      "column.text": "Study with"
+    },
+    {
+      "source": "HO-3360",
+      "target": "BO-6704",
+      "edge_type": "interact_edges",
+      "phase": "pre",
+      "source_name": "donald turnip",
+      "target_name": "pamela bean",
+      "column.text": "Study with"
+    },
+    {
+      "source": "HO-3360",
+      "target": "NK-7152",
+      "edge_type": "closest_edges",
+      "phase": "post",
+      "source_name": "donald turnip",
+      "target_name": "marco rhubarb",
+      "column.text": "Tick 10 closest"
+    },
+    {
+      "source": "HO-3360",
+      "target": "BC-9952",
+      "edge_type": "closest_edges",
+      "phase": "post",
+      "source_name": "donald turnip",
+      "target_name": "kirsti kohlrabi",
+      "column.text": "Tick 10 closest"
+    },
+    {
+      "source": "HO-3360",
+      "target": "HO-3792",
+      "edge_type": "closest_edges",
+      "phase": "post",
+      "source_name": "donald turnip",
+      "target_name": "norma neep",
+      "column.text": "Tick 10 closest"
+    },
+    {
+      "source": "HO-3360",
+      "target": "NG-6304",
+      "edge_type": "closest_edges",
+      "phase": "post",
+      "source_name": "donald turnip",
+      "target_name": "nikki kale",
+      "column.text": "Tick 10 closest"
+    },
+    {
+      "source": "HO-3360",
+      "target": "NK-7152",
+      "edge_type": "influential_edges",
+      "phase": "post",
+      "source_name": "donald turnip",
+      "target_name": "marco rhubarb",
+      "column.text": "Tick 5 influential"
+    },
+    {
+      "source": "HO-3360",
+      "target": "BC-9952",
+      "edge_type": "influential_edges",
+      "phase": "post",
+      "source_name": "donald turnip",
+      "target_name": "kirsti kohlrabi",
+      "column.text": "Tick 5 influential"
+    },
+    {
+      "source": "HO-3360",
+      "target": "NK-7152",
+      "edge_type": "interact_edges",
+      "phase": "post",
+      "source_name": "donald turnip",
+      "target_name": "marco rhubarb",
+      "column.text": "Seek support from"
+    },
+    {
+      "source": "HO-3360",
+      "target": "BC-9952",
+      "edge_type": "interact_edges",
+      "phase": "post",
+      "source_name": "donald turnip",
+      "target_name": "kirsti kohlrabi",
+      "column.text": "Seek support from"
+    },
+    {
+      "source": "HO-3360",
+      "target": "HO-3792",
+      "edge_type": "interact_edges",
+      "phase": "post",
+      "source_name": "donald turnip",
+      "target_name": "norma neep",
+      "column.text": "Study with"
+    },
+    {
+      "source": "HO-3360",
+      "target": "NG-6304",
+      "edge_type": "interact_edges",
+      "phase": "post",
+      "source_name": "donald turnip",
+      "target_name": "nikki kale",
+      "column.text": "Seek support from"
+    },
+    {
+      "source": "HO-3360",
+      "target": "CA-8896",
+      "edge_type": "interact_edges",
+      "phase": "post",
+      "source_name": "donald turnip",
+      "target_name": "ryan zucchini",
+      "column.text": "Socialize with"
+    },
+    {
+      "source": "HO-3360",
+      "target": "XS-4512",
+      "edge_type": "interact_edges",
+      "phase": "post",
+      "source_name": "donald turnip",
+      "target_name": "ben parsnip",
+      "column.text": "Socialize with"
+    },
+    {
+      "source": "HO-3360",
+      "target": "BO-6704",
+      "edge_type": "interact_edges",
+      "phase": "post",
+      "source_name": "donald turnip",
+      "target_name": "pamela bean",
+      "column.text": "Study with"
+    },
+    {
+      "source": "HO-3360",
+      "target": "HK-4912",
+      "edge_type": "interact_edges",
+      "phase": "post",
+      "source_name": "donald turnip",
+      "target_name": "jf cranberry jr",
+      "column.text": "Socialize with"
+    },
+    {
+      "source": "HO-3360",
+      "target": "XS-1504",
+      "edge_type": "interact_edges",
+      "phase": "post",
+      "source_name": "donald turnip",
+      "target_name": "howard nut",
+      "column.text": "Socialize with"
+    },
+    {
+      "source": "HO-3360",
+      "target": "IE-2032",
+      "edge_type": "interact_edges",
+      "phase": "post",
+      "source_name": "donald turnip",
+      "target_name": "john radish",
+      "column.text": "Study with"
+    }
+  ]
+}

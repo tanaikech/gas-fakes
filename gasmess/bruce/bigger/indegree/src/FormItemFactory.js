@@ -50,6 +50,17 @@ export class FormItemFactory {
 
     const rows = item.questions.map(f => f.text);
     const labelTexts = Reflect.ownKeys(item.labels);
+
+    // Add any additional rows specified in the item definition
+    if (item.additionalRows && Array.isArray(item.additionalRows)) {
+      item.additionalRows.forEach(additionalRow => {
+        // Only add if not already present
+        if (!rows.includes(additionalRow)) {
+          rows.push(additionalRow);
+        }
+      });
+    }
+
     gridItem.setRows(rows);
     gridItem.setColumns(labelTexts);
 
@@ -61,6 +72,110 @@ export class FormItemFactory {
         labelId: item.labelsId,
         labels: item.labels,
         rowIndex: i
+      });
+    });
+
+    // Add mappings for additional rows
+    if (item.additionalRows && Array.isArray(item.additionalRows)) {
+      item.additionalRows.forEach((additionalRow, idx) => {
+        const sourceId = item.id ? `${item.id}_additional_${idx}` : `additional_${idx}`;
+        const rowIndex = item.questions.length + idx;
+        this.__generator.addMapping({
+          sourceId: sourceId,
+          createdId: gridItem.getId(),
+          labelId: item.labelsId,
+          labels: item.labels,
+          rowIndex: rowIndex
+        });
+      });
+    }
+
+    this.form.moveItem(gridItem.getIndex(), index);
+    return 1;
+  }
+
+  /**
+   * Adds a checkbox grid item to the form, optionally populating rows from a roster.
+   * @param {object} options The options for the grid item.
+   * @param {object} options.item The item definition from the template.
+   * @param {number} options.index The insertion index.
+   * @returns {number} The number of items added (always 1).
+   */
+  addCheckboxGridItem({ item, index }) {
+    const gridItem = this.form.addCheckboxGridItem();
+    if (item.required) gridItem.setRequired(Boolean(item.required));
+    if (item.title) gridItem.setTitle(item.title);
+    if (item.description) gridItem.setHelpText(item.description);
+
+    let rows = [];
+    let rowMappings = [];
+
+    // Case 1: Rows from Roster
+    if (item.rosterField && this.roster) {
+      const rosterData = this.roster.find(r => r.nameField === item.rosterField);
+      if (rosterData && rosterData.members) {
+        const memberNames = rosterData.members.map(member => member[item.rosterField]);
+        const validMemberNames = memberNames.filter(Boolean);
+        if (validMemberNames.length !== rosterData.members.length) {
+          throw new Error(`Roster for field '${item.rosterField}' contains members with missing or empty names.`);
+        }
+        rows = validMemberNames;
+
+        // Generate mappings for dynamic rows
+        rowMappings = rosterData.members.map((member, i) => {
+          // Use member ID if available, otherwise fallback to name or index
+          const memberId = member.id || member[item.rosterField] || i;
+          // Construct a sourceId. If item.id exists, use it as prefix.
+          const sourceId = item.id ? `${item.id}_${memberId}` : `dynamic_${item.rosterField}_${memberId}`;
+          return {
+            sourceId: sourceId,
+            rowIndex: i
+          };
+        });
+      }
+    }
+    // Case 2: Rows from 'questions' array (standard)
+    else if (item.questions) {
+      rows = item.questions.map(f => f.text);
+      rowMappings = item.questions.map((q, i) => ({
+        sourceId: q.id,
+        rowIndex: i
+      }));
+    }
+
+    // Add any additional rows specified in the item definition
+    if (item.additionalRows && Array.isArray(item.additionalRows)) {
+      item.additionalRows.forEach(additionalRow => {
+        // Only add if not already present
+        const exists = rows.includes(additionalRow);
+        if (!exists) {
+          rows.push(additionalRow);
+          // Create a mapping for the additional row
+          const sourceId = item.id ? `${item.id}_additional_${rows.length - 1}` : `additional_${rows.length - 1}`;
+          rowMappings.push({
+            sourceId: sourceId,
+            rowIndex: rows.length - 1
+          });
+        }
+      });
+    }
+
+    if (rows.length === 0) {
+      console.warn(`Checkbox grid "${item.title}" has no rows defined.`);
+    }
+
+    const labelTexts = Reflect.ownKeys(item.labels || {});
+    gridItem.setRows(rows);
+    gridItem.setColumns(labelTexts);
+
+    // Add mappings
+    rowMappings.forEach(mapping => {
+      this.__generator.addMapping({
+        sourceId: mapping.sourceId,
+        createdId: gridItem.getId(),
+        labelId: item.labelsId,
+        labels: item.labels,
+        rowIndex: mapping.rowIndex
       });
     });
 
@@ -94,8 +209,30 @@ export class FormItemFactory {
           throw new Error(`Roster for field '${item.rosterField}' contains members with missing or empty names.`);
         }
         choices = memberNames.map(name => ({ value: name, isMatch: false }));
+
+        // Add routing name only if it's not already in the roster
         if (item.routing && item.routing.name) {
-          choices.push({ value: item.routing.name, isMatch: true });
+          const routingNameExists = memberNames.includes(item.routing.name);
+          if (!routingNameExists) {
+            choices.push({ value: item.routing.name, isMatch: true });
+          } else {
+            // Mark the existing choice as the match target
+            const existingChoice = choices.find(c => c.value === item.routing.name);
+            if (existingChoice) {
+              existingChoice.isMatch = true;
+            }
+          }
+        }
+
+        // Add any additional rows specified in the item definition
+        if (item.additionalRows && Array.isArray(item.additionalRows)) {
+          item.additionalRows.forEach(additionalRow => {
+            // Only add if not already present
+            const exists = choices.some(c => c.value === additionalRow);
+            if (!exists) {
+              choices.push({ value: additionalRow, isMatch: false });
+            }
+          });
         }
       }
     }
@@ -166,6 +303,11 @@ export class FormItemFactory {
    * @returns {number} The number of items added (always 1).
    */
   addMultipleChoiceItem({ item, index }) {
+    // Validate that additionalRows is not used on this question type
+    if (item.additionalRows) {
+      throw new Error(`additionalRows is not supported for multiple choice items. Use it with grids or dropdowns instead.`);
+    }
+
     const formItem = this.form.addMultipleChoiceItem();
     const title = item.questions.length ? item.questions[0].text : item.title;
 
@@ -205,6 +347,11 @@ export class FormItemFactory {
    * @returns {number} The number of items added (always 1).
    */
   addScaleItem({ item, index }) {
+    // Validate that additionalRows is not used on this question type
+    if (item.additionalRows) {
+      throw new Error(`additionalRows is not supported for scale items. Use it with grids or dropdowns instead.`);
+    }
+
     const { labels, required } = item;
     // A scale item block can have multiple questions, but the generator now calls this
     // method once per question. We assume the first question is the one to use.
@@ -242,6 +389,11 @@ export class FormItemFactory {
    * @returns {number} The number of items added (always 1).
    */
   addTextItem({ item, index }) {
+    // Validate that additionalRows is not used on this question type
+    if (item.additionalRows) {
+      throw new Error(`additionalRows is not supported for text items. Use it with grids or dropdowns instead.`);
+    }
+
     const { required, routing } = item;
     // A text item block can have multiple questions, but the generator now calls this
     // method once per question. We assume the first question is the one to use.

@@ -6,6 +6,7 @@ export class RulesValidator {
   constructor() {
     this.allowedScoringMethods = ['sum', 'mean', 'max', 'min', 'ab1234'];
     this.allowedAggregationMethods = ['difference', 'sum', 'mean', 'max', 'min'];
+    this.allowedEdgeMethods = ['checkbox_grid', 'multiple_choice_grid'];
   }
 
   /**
@@ -107,6 +108,36 @@ export class RulesValidator {
       }
     }
 
+    // 3.5. Validate Edge Rules
+    const definedEdgeNames = new Set();
+    if (rulesObject.processing && rulesObject.processing.edges) {
+      if (typeof rulesObject.processing.edges !== 'object' || Array.isArray(rulesObject.processing.edges)) {
+        result.errors.push('"processing.edges" must be an object.');
+      } else {
+        Object.entries(rulesObject.processing.edges).forEach(([edgeName, rule]) => {
+          definedEdgeNames.add(edgeName);
+
+          if (!rule.method) {
+            result.errors.push(`Edge rule "${edgeName}": Missing "method".`);
+          } else if (!this.allowedEdgeMethods.includes(rule.method)) {
+            result.errors.push(`Edge rule "${edgeName}": Unknown method "${rule.method}". Allowed: ${this.allowedEdgeMethods.join(', ')}.`);
+          }
+
+          if (!rule.input) {
+            result.errors.push(`Edge rule "${edgeName}": Missing "input" (question ID).`);
+          }
+
+          if (!rule.rosterField) {
+            result.errors.push(`Edge rule "${edgeName}": Missing "rosterField".`);
+          }
+
+          if (rule.attributes && !Array.isArray(rule.attributes)) {
+            result.errors.push(`Edge rule "${edgeName}": "attributes" must be an array.`);
+          }
+        });
+      }
+    }
+
     // 4. Validate Network Outputs
     if (rulesObject.network && rulesObject.network.outputs && rulesObject.network.outputs.vertices) {
       if (!Array.isArray(rulesObject.network.outputs.vertices)) {
@@ -119,6 +150,21 @@ export class RulesValidator {
           // For now, just ensuring it's a string.
           if (typeof vertex !== 'string') {
             result.errors.push(`Network output vertex #${index} must be a string.`);
+          }
+        });
+      }
+    }
+
+    // 4.5. Validate Network Edge Outputs
+    if (rulesObject.network && rulesObject.network.outputs && rulesObject.network.outputs.edges) {
+      if (!Array.isArray(rulesObject.network.outputs.edges)) {
+        result.errors.push('"network.outputs.edges" must be an array.');
+      } else {
+        rulesObject.network.outputs.edges.forEach((edgeName, index) => {
+          if (typeof edgeName !== 'string') {
+            result.errors.push(`Network output edge #${index} must be a string.`);
+          } else if (!definedEdgeNames.has(edgeName)) {
+            result.errors.push(`Network output edge "${edgeName}" is not defined in processing.edges.`);
           }
         });
       }

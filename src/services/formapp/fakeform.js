@@ -2,6 +2,7 @@ import { Proxies } from '../../support/proxies.js';
 import { newFakeFormItem } from './fakeformitem.js';
 import { newFakeFormResponse } from './fakeformresponse.js';
 import { newFakeGridItem } from './fakegriditem.js';
+import { newFakeCheckboxGridItem } from './fakecheckboxgriditem.js';
 import { newFakeSectionHeaderItem } from './fakesectionheaderitem.js';
 import { newFakeScaleItem } from './fakescaleitem.js';
 import './formitems.js'; // Import for side effects (item class registration)
@@ -32,7 +33,7 @@ export class FakeForm {
     // A new form defaults to accepting responses (true).
     this.__publishedState = resource.settings?.state !== 'INACTIVE';
   }
-  
+
   get __resource() {
     return Forms.Form.get(this.__id);
   }
@@ -87,7 +88,7 @@ export class FakeForm {
    * respondent to select one choice per row from a sequence of radio buttons.
    * @returns {import('./fakegriditem.js').FakeGridItem} The new grid item.
    */
-  addGridItem() { 
+  addGridItem() {
     const itemResource = {
       questionGroupItem: {
         grid: {
@@ -264,10 +265,10 @@ export class FakeForm {
     }
     const isKnownItem = (id, item) => {
       if (item.itemId === id) return true;
-      if (item.questionItem?.question?.questionId === id) return true; 
-      const qgroup= item.questionGroupItem?.questions
+      if (item.questionItem?.question?.questionId === id) return true;
+      const qgroup = item.questionGroupItem?.questions
       if (!qgroup) return false
-      const found = qgroup.some(q => q.questionId === id) 
+      const found = qgroup.some(q => q.questionId === id)
       return found
     }
 
@@ -422,7 +423,7 @@ export class FakeForm {
     throw new Error('setPublished is not yet implemented in the fake environment.');
   }
 
-  __update (updateRequest) {
+  __update(updateRequest) {
     const batchRequest = Forms.newBatchUpdateFormRequest()
       .setRequests([updateRequest])
     Forms.Form.batchUpdate(batchRequest, this.getId());
@@ -441,7 +442,7 @@ export class FakeForm {
         .setInfo(updateInfo)
         .setUpdateMask("title")
     );
-    return this.__update (updateRequest)
+    return this.__update(updateRequest)
   }
 
   /**
@@ -456,7 +457,7 @@ export class FakeForm {
         .setInfo(updateInfo)
         .setUpdateMask("description")
     );
-    return this.__update (updateRequest)
+    return this.__update(updateRequest)
   }
 
   /**

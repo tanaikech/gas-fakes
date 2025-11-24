@@ -5,10 +5,10 @@ import { getFormsPerformance, wrapupTest, getDrivePerformance, trasher } from '.
 
 export const testForm = (pack) => {
   const toTrash = [];
-  
+
   const { unit, fixes } = pack || initTests();
 
-    unit.section('Form.addPageBreakItem & Routing', (t) => {
+  unit.section('Form.addPageBreakItem & Routing', (t) => {
     const form = FormApp.create('Add PageBreakItem Test Form');
     toTrash.push(DriveApp.getFileById(form.getId()));
 
@@ -63,20 +63,20 @@ export const testForm = (pack) => {
     // Verify that create() sets the file name in Drive, but not the form's internal title.
     t.is(file.getName(), formName, 'create() should set the file name in Drive');
     // see issue https://issuetracker.google.com/issues/442747794 for discrepancy in platform
-  
-    t.is(form.getTitle(), FormApp.isFake ? formName: '', 'create() should result in an empty form title on gas');
+
+    t.is(form.getTitle(), FormApp.isFake ? formName : '', 'create() should result in an empty form title on gas');
 
 
     // Test openById()
     const openedForm = FormApp.openById(form.getId());
     t.is(openedForm.getId(), form.getId(), 'openById() should open the correct form');
-    t.is(openedForm.getTitle(), FormApp.isFake ? formName: '', 'opened form should have correct (empty) title');
+    t.is(openedForm.getTitle(), FormApp.isFake ? formName : '', 'opened form should have correct (empty) title');
 
 
     // Test openByUrl()
     const openedByUrl = FormApp.openByUrl(form.getEditUrl());
     t.is(openedByUrl.getId(), form.getId(), 'openByUrl() should open the correct form');
-    t.is(openedByUrl.getTitle(), FormApp.isFake ? formName: '', 'opened form by URL should have correct (empty) title');
+    t.is(openedByUrl.getTitle(), FormApp.isFake ? formName : '', 'opened form by URL should have correct (empty) title');
 
 
     // Test openByUrl() with invalid URL
@@ -90,11 +90,11 @@ export const testForm = (pack) => {
     // Test setTitle() and description - affects internal form title
     const newTitle = `gas-fakes-test-form-renamed-${new Date().getTime()}`;
     const description = newTitle + '-description';
-    form.setTitle(newTitle).setDescription (description);;
+    form.setTitle(newTitle).setDescription(description);;
     const reopenedForm = FormApp.openById(form.getId());
     t.is(reopenedForm.getTitle(), newTitle, 'setTitle() should update the form title');
     t.is(file.getName(), formName, 'setTitle() should NOT change the file name');
-    t.is (form.getDescription(), description, 'setDescription')
+    t.is(form.getDescription(), description, 'setDescription')
 
     // Test getActiveForm()
     const activeForm = FormApp.getActiveForm();
@@ -286,6 +286,38 @@ export const testForm = (pack) => {
     gridItem.setRows(rows).setColumns(cols);
     t.deepEqual(gridItem.getRows(), rows, 'getRows() should return the correct rows');
     t.deepEqual(gridItem.getColumns(), cols, 'getColumns() should return the correct columns');
+
+    if (FormApp.isFake) console.log('...cumulative forms cache performance', getFormsPerformance());
+  });
+
+  unit.section('Form.addCheckboxGridItem', (t) => {
+    const form = FormApp.create('Add CheckboxGridItem Test Form');
+    toTrash.push(DriveApp.getFileById(form.getId()));
+
+    const checkboxGridItem = form.addCheckboxGridItem();
+    t.is(checkboxGridItem.toString(), 'CheckboxGridItem', 'addCheckboxGridItem should return a CheckboxGridItem');
+    t.is(checkboxGridItem.getIndex(), 0, 'The first added item should be at index 0');
+    t.is(checkboxGridItem.getType(), FormApp.ItemType.CHECKBOX_GRID, 'Item type should be CHECKBOX_GRID');
+
+    // Test isRequired() and setRequired()
+    t.false(checkboxGridItem.isRequired(), 'CheckboxGridItem should not be required by default');
+    checkboxGridItem.setRequired(true);
+    t.true(checkboxGridItem.isRequired(), 'isRequired() should be true after setRequired(true)');
+    checkboxGridItem.setRequired(false);
+    t.false(checkboxGridItem.isRequired(), 'isRequired() should be false after setRequired(false)');
+
+    // Test setRows() and setColumns()
+    const rows = ['Item A', 'Item B', 'Item C'];
+    const cols = ['Option 1', 'Option 2', 'Option 3'];
+    checkboxGridItem.setRows(rows).setColumns(cols);
+    t.deepEqual(checkboxGridItem.getRows(), rows, 'getRows() should return the correct rows');
+    t.deepEqual(checkboxGridItem.getColumns(), cols, 'getColumns() should return the correct columns');
+
+    // Test setting title and help text
+    checkboxGridItem.setTitle('Select all that apply').setHelpText('You may select multiple options per row');
+    const retrievedItem = form.getItemById(checkboxGridItem.getId()).asCheckboxGridItem();
+    t.is(retrievedItem.getTitle(), 'Select all that apply', 'Title should be set correctly');
+    t.is(retrievedItem.getHelpText(), 'You may select multiple options per row', 'Help text should be set correctly');
 
     if (FormApp.isFake) console.log('...cumulative forms cache performance', getFormsPerformance());
   });

@@ -263,9 +263,25 @@ export class FormGenerator {
         const marked = extractJsonFromDoubleBraces(titleText + helpText);
         if (marked.length > 0) {
           const [blockData] = marked;
+
+          // 1. Check if 'block' property exists
+          if (!blockData || typeof blockData.block === 'undefined') {
+            console.warn(`⚠️ Placeholder at index ${index} is missing required "block" property. Parsed data: ${JSON.stringify(blockData)}`);
+
+            // Heuristic check for common typos
+            const typoKey = Object.keys(blockData).find(k => k.startsWith('block:') || k.toLowerCase() === 'block');
+            if (typoKey && typoKey !== 'block') {
+              console.warn(`   ↳ Possible typo detected: Found key "${typoKey}". Did you mean "block"?`);
+            }
+            return null;
+          }
+
+          // 2. Check if the block exists in the rules
           const blockDefinition = this.blocks[blockData.block];
           if (blockDefinition) {
             return { item, index, blockData, blockDefinition };
+          } else {
+            console.warn(`⚠️ Placeholder referenced block "${blockData.block}" at index ${index}, but no such block is defined in the rules.`);
           }
         }
         return null;
@@ -362,6 +378,9 @@ export class FormGenerator {
     switch (item.questionType.toLowerCase()) {
       case "multiple_choice_grid":
         this.__itemFactory.addGridItem({ item: { ...item, ...itemContext }, index: insertionIndex });
+        break;
+      case "checkbox_grid":
+        this.__itemFactory.addCheckboxGridItem({ item: { ...item, ...itemContext }, index: insertionIndex });
         break;
       case "linear_scale":
         // A linear_scale with multiple sub-questions should be rendered as 'n' separate ScaleItems.
@@ -575,7 +594,8 @@ function extractJsonFromDoubleBraces(text) {
       const parsedJson = JSON.parse(objectToParse);
       foundObjects.push(parsedJson);
     } catch (e) {
-      console.warn(`Found content enclosed in {{...}} that was not valid JSON: "${jsonString}"`);
+      console.warn(`⚠️ Found content enclosed in {{...}} that was not valid JSON: "${jsonString}"`);
+      console.warn(`   ↳ Error: ${e.message}`);
     }
   }
 
