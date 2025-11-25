@@ -6,6 +6,7 @@ import { PhaseAggregator } from './PhaseAggregator.js';
 import { ResponseProcessor } from './ResponseProcessor.js';
 import { NetworkOutput } from './NetworkOutput.js';
 import { EdgeProcessor } from './EdgeProcessor.js';
+import { PostProcessor } from './PostProcessor.js';
 
 const ITEM_MAP_KEY = 'formItemMap'
 
@@ -15,9 +16,46 @@ const FORMS = [{ id: '1_naVLJPrGRwcSwajYCXD4Uwa_lNe18P2iGdAh2pg6vk', phase: 'pre
 ];
 
 const rulesId = '11L29nlZakItr2mNJbOeOJPJ377BxeJ8G';
-
+const filters = [{
+  "input": "node_selector",
+}, {
+  "input": "group", "values": ["cooked"]
+}];
+const rostersId = "1ja0P4WHkMmU0fjawA5egYqTFBSmB0uFX"
 const getDriveObject = (id) => {
   return JSON.parse(DriveApp.getFileById(id).getBlob().getDataAsString())
+}
+
+/**
+ * Generate an ID from a name using the ab1234 logic
+ */
+const generateIdFromName = (name) => {
+  return Exports.Utils.abx({ text: name });
+}
+
+/**
+ * Find a roster member by respondent ID
+ */
+const findRosterMemberById = (respondentId, rostersObject) => {
+  if (!rostersObject || !rostersObject.rosters) return null;
+
+  for (const [rosterName, roster] of Object.entries(rostersObject.rosters)) {
+    // Check if roster has members array
+    if (!roster || !Array.isArray(roster.members)) {
+      console.warn(`Roster ${rosterName} has no members array`);
+      continue;
+    }
+
+    const member = roster.members.find(m => {
+      // Generate ID from member name and check if it matches
+      const memberName = m[roster.idField || 'name'];
+      if (!memberName) return false;
+      const memberId = generateIdFromName(memberName);
+      return memberId === respondentId;
+    });
+    if (member) return member;
+  }
+  return null;
 }
 
 const readResponses = () => {
@@ -28,16 +66,20 @@ const readResponses = () => {
   let idOutputName = null;
   let phaseAggregator = null;
   let edgeProcessor = null;
+  let postProcessor = null;
   let edgeNames = [];
   let rostersObject = null;
   let rulesObject = null;
 
   try {
+    const rulesId = '11L29nlZakItr2mNJbOeOJPJ377BxeJ8G'; // Moved declaration here
     if (ScriptApp.isFake) {
       const behavior = ScriptApp.__behavior;
       behavior.addIdWhitelist(behavior.newIdWhitelistItem(rulesId));
     }
     rulesObject = getDriveObject(rulesId);
+    rostersObject = getDriveObject(rostersId);
+    console.log('Rosters object loaded:', JSON.stringify(rostersObject, null, 2).slice(0, 200));
 
     // Validate Rules
     const validator = new RulesValidator();
@@ -55,6 +97,11 @@ const readResponses = () => {
       }
     }
 
+    // Initialize PostProcessor
+    if (rulesObject.processing && rulesObject.processing.post) {
+      const phases = FORMS.map(f => f.phase);
+      postProcessor = new PostProcessor(rulesObject.processing.post, phases);
+    }
     // Initialize ResponseProcessor
     if (rulesObject.processing && rulesObject.processing.scoring) {
 
@@ -64,7 +111,6 @@ const readResponses = () => {
       const idRule = rulesObject.processing.scoring.find(rule => rule.method === 'ab1234');
       if (idRule) {
         idOutputName = idRule.output;
-        console.log(`Identified ID output name: "${idOutputName}"`);
       } else {
         console.warn('No scoring rule with method "ab1234" found. ID merging may not work as expected.');
       }
@@ -74,7 +120,6 @@ const readResponses = () => {
     if (rulesObject.processing && rulesObject.processing.phaseAggregation) {
       const phases = FORMS.map(f => f.phase);
       phaseAggregator = new PhaseAggregator(rulesObject.processing.phaseAggregation, phases);
-      console.log(`Initialized PhaseAggregator with phases: ${phases.join(', ')}`);
     }
 
     // Initialize NetworkOutput
@@ -86,7 +131,6 @@ const readResponses = () => {
         edgeNames = Array.isArray(rulesObject.network.outputs.edges)
           ? rulesObject.network.outputs.edges
           : [];
-        console.log(`Configured edge types: ${edgeNames.join(', ')}`);
       }
     }
 
@@ -99,7 +143,6 @@ const readResponses = () => {
           ScriptApp.__behavior.addIdWhitelist(ScriptApp.__behavior.newIdWhitelistItem(rostersId));
         }
         rostersObject = getDriveObject(rostersId);
-        console.log(`Loaded roster data with ${Object.keys(rostersObject.rosters || {}).length} roster(s)`);
       } catch (error) {
         console.warn(`Could not load roster data: ${error.toString()}`);
       }
@@ -123,7 +166,6 @@ const readResponses = () => {
     try {
       // Open the form by ID
       const form = FormApp.openById(FORM_ID);
-      console.log(`\nReading responses from form: "${form.getTitle()}" (Phase: ${PHASE})`);
 
       // Use the dedicated manager to read the properties, which handles the sidecar file logic.
       const propertiesManager = new FormPropertiesManager(FORM_ID);
@@ -139,11 +181,9 @@ const readResponses = () => {
 
       // Get all form responses
       const formResponses = form.getResponses();
-      console.log(`Found ${formResponses.length} response(s) for Form ID: ${FORM_ID}`);
 
       // Iterate through each response
       formResponses.forEach((formResponse, index) => {
-        console.log(`\n--- Response #${index + 1} (Phase: ${PHASE}) ---`);
 
         // Initialize maps to collect all values and texts for this submission
         const submissionValues = {};
@@ -186,10 +226,6 @@ const readResponses = () => {
               questionId = 'influential';
             }
 
-            console.log(`  Checkbox Grid: "${itemTitle}"`);
-            console.log(`  Rows (${rows.length}): ${rows.join(', ')}`);
-            console.log(`  Checked count: ${responseValues.length}`);
-
             // Each response value corresponds to a checked row in order
             // We need to figure out which rows were checked
             // The response format doesn't tell us which rows, only how many
@@ -205,11 +241,9 @@ const readResponses = () => {
               // This is a limitation - we can't determine WHICH specific rows without more info
               if (rowIndex < responseValues.length) {
                 const value = responseValues[rowIndex];
-                console.log(`    Row ${rowIndex} (${rowName}): CHECKED - "${value}"`);
                 submissionTexts[rowQuestionId] = rowName;
                 submissionValues[rowQuestionId] = value; // Store the label text (e.g. "Socialize with")
               } else {
-                console.log(`    Row ${rowIndex} (${rowName}): not checked`);
                 submissionValues[rowQuestionId] = false; // Mark as unchecked
               }
             });
@@ -228,17 +262,6 @@ const readResponses = () => {
             const logGridRow = (responseValue, index) => {
               const mapping = gridMappings.find(m => m.rowIndex === index);
               const qId = mapping ? mapping.qId : 'UNKNOWN_GRID_ROW';
-
-              let valueLog = '';
-              if (mapping && mapping.labelId && itemMap.labels && itemMap.labels[mapping.labelId]) {
-                const labels = itemMap.labels[mapping.labelId];
-                const mappedValue = labels[responseValue];
-                if (mappedValue !== undefined) {
-                  valueLog = `, Value: "${mappedValue}"`;
-                }
-              }
-
-              console.log(`  Question ID: "${qId}", Type: "${itemType}", Question: "${itemTitle} [Row ${index}]", Answer: "${responseValue}"${valueLog}`);
 
               // Store the text response
               submissionTexts[qId] = responseValue;
@@ -274,17 +297,7 @@ const readResponses = () => {
           } else {
             // For non-grid items, we also check for labels
             const mapping = itemMap.questions[questionId];
-            let valueLog = '';
             const answer = itemResponse.getResponse();
-
-            if (mapping && mapping.labelId && itemMap.labels && itemMap.labels[mapping.labelId]) {
-              const labels = itemMap.labels[mapping.labelId];
-              const mappedValue = labels[answer];
-              if (mappedValue !== undefined) {
-                valueLog = `, Value: "${mappedValue}"`;
-              }
-            }
-            console.log(`  Question ID: "${questionId}", Type: "${itemType}", Question: "${itemTitle}", Answer: "${answer}"${valueLog}`);
 
             // Store the text response
             submissionTexts[questionId] = answer;
@@ -366,9 +379,93 @@ const readResponses = () => {
     }
   });
 
+  // Extract roster fields and add to respondent data
+  if (rulesObject.processing && rulesObject.processing.roster && rostersObject) {
+    console.log('\n--- Extracting Roster Fields ---');
+    const rosterFields = rulesObject.processing.roster;
+    let extractedCount = 0;
+
+    Object.entries(combinedResults).forEach(([respondentId, respondentData]) => {
+      const rosterMember = findRosterMemberById(respondentId, rostersObject);
+
+      if (rosterMember) {
+        rosterFields.forEach(fieldName => {
+          if (rosterMember[fieldName] !== undefined) {
+            respondentData[fieldName] = rosterMember[fieldName];
+            extractedCount++;
+          }
+        });
+      }
+    });
+    console.log(`Extracted ${extractedCount} roster field values for ${Object.keys(combinedResults).length} respondents`);
+  }
+
+  // Apply filters to respondents
+  if (filters && filters.length > 0) {
+    console.log('\n--- Applying Filters ---');
+    const filteredIds = new Set();
+
+    Object.entries(combinedResults).forEach(([respondentId, respondentData]) => {
+      const passesAllFilters = filters.every(filter => {
+        const fieldValue = respondentData[filter.input];
+
+        // Check if field has a value
+        if (!fieldValue || fieldValue === '') {
+          return false;
+        }
+
+        // If no values specified, any non-blank value passes
+        if (!filter.values || filter.values.length === 0) {
+          return true;
+        }
+
+        // Check if value matches any allowed value
+        return filter.values.includes(fieldValue);
+      });
+
+      if (!passesAllFilters) {
+        filteredIds.add(respondentId);
+      }
+    });
+
+    // Remove filtered respondents
+    filteredIds.forEach(id => delete combinedResults[id]);
+    console.log(`Filtered out ${filteredIds.size} respondents, ${Object.keys(combinedResults).length} remaining`);
+  }
+
+  // Create ghost vertices for individuals who appear in edges but didn't complete the survey
+  console.log('\n--- Creating Ghost Vertices ---');
+  const allEdgeIds = new Set();
+  allEdges.forEach(edge => {
+    if (edge.source) allEdgeIds.add(edge.source);
+    if (edge.target) allEdgeIds.add(edge.target);
+  });
+
+  let ghostCount = 0;
+  allEdgeIds.forEach(edgeId => {
+    if (!combinedResults[edgeId]) {
+      // Find first edge with this ID to get name
+      const edge = allEdges.find(e => e.source === edgeId || e.target === edgeId);
+      const ghostName = edge.source === edgeId ? edge.source_name : edge.target_name;
+
+      combinedResults[edgeId] = {
+        id: edgeId,
+        'name.text_ghost': ghostName,
+        is_ghost: true
+      };
+      ghostCount++;
+      console.log(`  Created ghost vertex for ${edgeId} (${ghostName})`);
+    }
+  });
+  console.log(`Total ghost vertices created: ${ghostCount}`);
+
+  // Perform Post Processing (BEFORE phase aggregation so degrees can be aggregated)
+  if (postProcessor) {
+    postProcessor.process(combinedResults, allEdges);
+  }
+
   // Perform Phase Aggregation
   if (phaseAggregator) {
-    console.log('\n--- Performing Phase Aggregation ---');
     Object.values(combinedResults).forEach(respondentData => {
       const aggregates = phaseAggregator.calculateAggregates(respondentData);
       Object.assign(respondentData, aggregates);

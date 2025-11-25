@@ -65,10 +65,6 @@ export class EdgeProcessor {
     // Find all mapped items for this input question
     // For checkbox grids with a single question, there will be multiple mappings
     // (one per row), all with the same base question ID
-    const allMappingKeys = Object.keys(this.itemMap.questions || {});
-    console.log(`Looking for mappings for input: "${inputQuestionId}"`);
-    console.log(`Available mapping keys: ${allMappingKeys.slice(0, 10).join(', ')}${allMappingKeys.length > 10 ? '...' : ''}`);
-
     const mappedItems = Object.entries(this.itemMap.questions || {})
       .filter(([mappedSourceId, mapping]) => {
         // Check if this mapping is for our input question
@@ -123,7 +119,7 @@ export class EdgeProcessor {
       }
 
       if (!targetName) {
-        console.warn(`No name found for target at rowIndex ${rowIndex} (Source: ${mappedSourceId})`);
+        // This is expected for additionalRows like "Name not listed" - skip silently
         return;
       }
 
