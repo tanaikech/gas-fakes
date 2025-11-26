@@ -40,6 +40,37 @@ export class FakeItemResponse {
    * @returns {string} the response
    */
   getResponse() {
+
+    const itemType = this.__item.getType().toString();
+    if (itemType === 'GRID' || itemType === 'CHECKBOX_GRID') {
+      const rows = this.__item.getRows();
+      // Initialize with empty string for GRID, empty array for CHECKBOX_GRID
+      // This matches Apps Script behavior: String[] for Grid, String[][] for CheckboxGrid
+      const rowAnswers = new Array(rows.length).fill(itemType === 'CHECKBOX_GRID' ? [] : '');
+      
+      const questionIdMap = new Map();
+      if (this.__item.__resource.questionGroupItem?.questions) {
+        this.__item.__resource.questionGroupItem.questions.forEach((q, index) => {
+          questionIdMap.set(q.questionId, index);
+        });
+      }
+      this.__answers.forEach(answer => {
+        if (answer.questionId && questionIdMap.has(answer.questionId)) {
+          const rowIndex = questionIdMap.get(answer.questionId);
+          const values = answer.textAnswers?.answers?.map(a => a.value) || [];
+          
+          if (itemType === 'CHECKBOX_GRID') {
+            rowAnswers[rowIndex] = values;
+          } else {
+            // For GRID, take the first value
+            rowAnswers[rowIndex] = values[0] || '';
+          }
+        }
+      });
+      
+      return rowAnswers;
+    }
+
     // Flatten the 'textAnswers.answers' arrays from all answer objects.
     // This correctly combines all row answers for a grid item.
     const allTextAnswers = this.__answers.flatMap(

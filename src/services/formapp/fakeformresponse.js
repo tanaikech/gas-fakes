@@ -69,7 +69,8 @@ export class FakeFormResponse {
         }
         // Add the raw answer object from the API response to the item's answer list.
         // This correctly groups all row answers for a grid under the same parent item.
-        groupedAnswers.get(itemId).answers.push(answer);
+        // We also attach the questionId to the answer object so we can identify the row later.
+        groupedAnswers.get(itemId).answers.push({ ...answer, questionId });
       }
     }
 
