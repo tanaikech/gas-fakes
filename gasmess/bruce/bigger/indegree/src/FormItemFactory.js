@@ -112,17 +112,28 @@ export class FormItemFactory {
 
     // Case 1: Rows from Roster
     if (item.rosterField && this.roster) {
-      const rosterData = this.roster.find(r => r.nameField === item.rosterField);
-      if (rosterData && rosterData.members) {
-        const memberNames = rosterData.members.map(member => member[item.rosterField]);
+      let members = null;
+
+      // Check if this.roster is the members array directly
+      if (Array.isArray(this.roster) && this.roster.length > 0 && !this.roster[0].members) {
+        members = this.roster;
+      }
+      // Check if this.roster is an array of roster definitions
+      else if (Array.isArray(this.roster)) {
+        const rosterData = this.roster.find(r => r.nameField === item.rosterField);
+        if (rosterData) members = rosterData.members;
+      }
+
+      if (members) {
+        const memberNames = members.map(member => member[item.rosterField]);
         const validMemberNames = memberNames.filter(Boolean);
-        if (validMemberNames.length !== rosterData.members.length) {
+        if (validMemberNames.length !== members.length) {
           throw new Error(`Roster for field '${item.rosterField}' contains members with missing or empty names.`);
         }
         rows = validMemberNames;
 
         // Generate mappings for dynamic rows
-        rowMappings = rosterData.members.map((member, i) => {
+        rowMappings = members.map((member, i) => {
           // Use member ID if available, otherwise fallback to name or index
           const memberId = member.id || member[item.rosterField] || i;
           // Construct a sourceId. If item.id exists, use it as prefix.
@@ -201,11 +212,22 @@ export class FormItemFactory {
 
     let choices = [];
     if (item.rosterField && this.roster) {
-      const rosterData = this.roster.find(r => r.nameField === item.rosterField);
-      if (rosterData && rosterData.members) {
-        const memberNames = rosterData.members.map(member => member[item.rosterField]);
+      let members = null;
+
+      // Check if this.roster is the members array directly
+      if (Array.isArray(this.roster) && this.roster.length > 0 && !this.roster[0].members) {
+        members = this.roster;
+      }
+      // Check if this.roster is an array of roster definitions
+      else if (Array.isArray(this.roster)) {
+        const rosterData = this.roster.find(r => r.nameField === item.rosterField);
+        if (rosterData) members = rosterData.members;
+      }
+
+      if (members) {
+        const memberNames = members.map(member => member[item.rosterField]);
         const validMemberNames = memberNames.filter(Boolean);
-        if (validMemberNames.length !== rosterData.members.length) {
+        if (validMemberNames.length !== members.length) {
           throw new Error(`Roster for field '${item.rosterField}' contains members with missing or empty names.`);
         }
         choices = memberNames.map(name => ({ value: name, isMatch: false }));

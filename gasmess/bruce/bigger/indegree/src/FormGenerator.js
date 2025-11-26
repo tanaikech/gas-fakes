@@ -15,8 +15,9 @@ export class FormGenerator {
    * @param {string} config.itemMapKey The property key to write to the drive properties of the form
    * @param {string} [config.folderId] The ID of the Google Drive folder to save the new form in.
    * @param {object} [config.roster] Roster data for populating dynamic questions.
+   * @param {object} [config.rosterData] Full roster data object to be saved to sidecar.
    */
-  constructor({ formDetails, templateId, blocks, folderId, roster, itemMapKey }) {
+  constructor({ formDetails, templateId, blocks, folderId, roster, itemMapKey, rosterData }) {
     /**
      * @type {object}
      * @private
@@ -74,7 +75,8 @@ export class FormGenerator {
      */
     this.__itemMap = {
       questions: {},
-      labels: {}
+      labels: {},
+      rosterData: rosterData || {}
     };
     /**
      * @type {Map<string, string>}

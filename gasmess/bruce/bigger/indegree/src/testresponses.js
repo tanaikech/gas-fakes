@@ -1,4 +1,5 @@
 import { RulesValidator } from './RulesValidator.js';
+import { Exports } from './utils.js';
 
 import '@mcpher/gas-fakes';
 import { FormPropertiesManager } from './FormPropertiesManager.js';
@@ -11,17 +12,14 @@ import { PostProcessor } from './PostProcessor.js';
 const ITEM_MAP_KEY = 'formItemMap'
 
 // Configuration for multiple forms
-const FORMS = [{ id: '1_naVLJPrGRwcSwajYCXD4Uwa_lNe18P2iGdAh2pg6vk', phase: 'pre' },
-{ id: '1zPK1Gi17mg9fynUTB7A9OwMtz9vikLSU0oQpTQtniU8', phase: 'post' }
+const FORMS = [{ id: '1IB9KzNByORsp-cY97G0oVN_vJw5cWLmc55_Fo8dtA9c', phase: 'pre' },
+{ id: '1-WTE4qysKaapZle7s1KWumkm1c5gnhJ8oNI-bA-TMVo', phase: 'post' }
 ];
 
 const rulesId = '11L29nlZakItr2mNJbOeOJPJ377BxeJ8G';
 const filters = [{
-  "input": "node_selector",
-}, {
-  "input": "group", "values": ["cooked"]
+  "input": "node_selector"
 }];
-const rostersId = "1ja0P4WHkMmU0fjawA5egYqTFBSmB0uFX"
 const getDriveObject = (id) => {
   return JSON.parse(DriveApp.getFileById(id).getBlob().getDataAsString())
 }
@@ -36,26 +34,17 @@ const generateIdFromName = (name) => {
 /**
  * Find a roster member by respondent ID
  */
-const findRosterMemberById = (respondentId, rostersObject) => {
-  if (!rostersObject || !rostersObject.rosters) return null;
+const findRosterMemberById = (respondentId, roster) => {
+  if (!roster || !roster.members) return null;
 
-  for (const [rosterName, roster] of Object.entries(rostersObject.rosters)) {
-    // Check if roster has members array
-    if (!roster || !Array.isArray(roster.members)) {
-      console.warn(`Roster ${rosterName} has no members array`);
-      continue;
-    }
-
-    const member = roster.members.find(m => {
-      // Generate ID from member name and check if it matches
-      const memberName = m[roster.idField || 'name'];
-      if (!memberName) return false;
-      const memberId = generateIdFromName(memberName);
-      return memberId === respondentId;
-    });
-    if (member) return member;
-  }
-  return null;
+  const member = roster.members.find(m => {
+    // Generate ID from member name using the nameField (this should match how respondent IDs are generated)
+    const memberName = m[roster.nameField || 'name'];
+    if (!memberName) return false;
+    const memberId = generateIdFromName(memberName);
+    return memberId === respondentId;
+  });
+  return member || null;
 }
 
 const readResponses = () => {
@@ -68,7 +57,6 @@ const readResponses = () => {
   let edgeProcessor = null;
   let postProcessor = null;
   let edgeNames = [];
-  let rostersObject = null;
   let rulesObject = null;
 
   try {
@@ -78,8 +66,6 @@ const readResponses = () => {
       behavior.addIdWhitelist(behavior.newIdWhitelistItem(rulesId));
     }
     rulesObject = getDriveObject(rulesId);
-    rostersObject = getDriveObject(rostersId);
-    console.log('Rosters object loaded:', JSON.stringify(rostersObject, null, 2).slice(0, 200));
 
     // Validate Rules
     const validator = new RulesValidator();
@@ -134,19 +120,6 @@ const readResponses = () => {
       }
     }
 
-    // Load roster data if edges are configured
-    if (edgeNames.length > 0 && rulesObject.processing && rulesObject.processing.edges) {
-      // Try to load rosters - you'll need to configure the roster ID
-      const rostersId = "1ja0P4WHkMmU0fjawA5egYqTFBSmB0uFX"; // TODO: Make this configurable
-      try {
-        if (ScriptApp.isFake) {
-          ScriptApp.__behavior.addIdWhitelist(ScriptApp.__behavior.newIdWhitelistItem(rostersId));
-        }
-        rostersObject = getDriveObject(rostersId);
-      } catch (error) {
-        console.warn(`Could not load roster data: ${error.toString()}`);
-      }
-    }
   } catch (error) {
     console.warn(`Could not load rules: ${error.toString()}`);
   }
@@ -170,11 +143,15 @@ const readResponses = () => {
       // Use the dedicated manager to read the properties, which handles the sidecar file logic.
       const propertiesManager = new FormPropertiesManager(FORM_ID);
       const itemMap = propertiesManager.read(ITEM_MAP_KEY) || { questions: {} };
+      const roster = itemMap.rosterData;
+      if (!roster) {
+        console.error(`Roster data not found in sidecar for form ${FORM_ID}. Skipping form.`);
+        return;
+      }
 
       // Initialize EdgeProcessor for this form if edges are configured
-      if (edgeNames.length > 0 && rulesObject.processing && rulesObject.processing.edges && rostersObject) {
-        const roster = rostersObject.rosters ? Object.values(rostersObject.rosters)[0] : null;
-        edgeProcessor = new EdgeProcessor(rulesObject.processing.edges, roster, itemMap);
+      if (edgeNames.length > 0 && rulesObject.processing && rulesObject.processing.edges) {
+        edgeProcessor = new EdgeProcessor(rulesObject.processing.edges, [roster], itemMap);
       }
 
       const questionMapEntries = Object.entries(itemMap.questions);
@@ -380,18 +357,31 @@ const readResponses = () => {
   });
 
   // Extract roster fields and add to respondent data
-  if (rulesObject.processing && rulesObject.processing.roster && rostersObject) {
+  if (rulesObject.processing && rulesObject.processing.roster) {
     console.log('\n--- Extracting Roster Fields ---');
     const rosterFields = rulesObject.processing.roster;
     let extractedCount = 0;
 
-    Object.entries(combinedResults).forEach(([respondentId, respondentData]) => {
-      const rosterMember = findRosterMemberById(respondentId, rostersObject);
+    const lastFormConfig = FORMS[FORMS.length - 1];
+    const propertiesManager = new FormPropertiesManager(lastFormConfig.id);
+    const lastItemMap = propertiesManager.read(ITEM_MAP_KEY) || {};
+    const roster = lastItemMap.rosterData;
 
+    Object.entries(combinedResults).forEach(([respondentId, respondentData]) => {
+      const rosterMember = findRosterMemberById(respondentId, roster);
       if (rosterMember) {
         rosterFields.forEach(fieldName => {
-          if (rosterMember[fieldName] !== undefined) {
-            respondentData[fieldName] = rosterMember[fieldName];
+          // Try the field name as-is first
+          let value = rosterMember[fieldName];
+
+          // If not found, try with spaces instead of underscores (normalize field names)
+          if (value === undefined) {
+            const fieldNameWithSpaces = fieldName.replace(/_/g, ' ');
+            value = rosterMember[fieldNameWithSpaces];
+          }
+
+          if (value !== undefined) {
+            respondentData[fieldName] = value;
             extractedCount++;
           }
         });

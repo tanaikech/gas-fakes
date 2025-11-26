@@ -13,6 +13,7 @@ const rostersId = "1ja0P4WHkMmU0fjawA5egYqTFBSmB0uFX"
 const formTitle = "Vegetable questions 2 post"
 const formDescription = "A survey about vegetables post"
 const ITEM_MAP_KEY = 'formItemMap'
+const rosterName = 'vegetables'
 
 const getDriveObject = (id) => {
   return JSON.parse(DriveApp.getFileById(id).getBlob().getDataAsString())
@@ -40,7 +41,11 @@ const process = () => {
   }
 
   const { blocks, labels } = rulesObject
-  const roster = rosters.vegetables
+  const roster = rosters[rosterName].members
+  if (!roster) {
+    console.error(`Roster ${rosterName} not found in rosters object`)
+    return
+  }
   // copy the form, and fill in the template
   const formDetails = {
     formTitle,
@@ -54,7 +59,8 @@ const process = () => {
     blocks,
     folderId,
     roster,
-    itemMapKey: ITEM_MAP_KEY
+    itemMapKey: ITEM_MAP_KEY,
+    rosterData: rosters[rosterName]
   }).create()
   console.log('using template', formg.inputForm.getEditUrl())
   // add the building blocks
