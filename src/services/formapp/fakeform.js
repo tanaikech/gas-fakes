@@ -475,7 +475,16 @@ export class FakeForm {
   getPublishedUrl() {
     return `https://docs.google.com/forms/d/e/${this.getId()}/viewform`;
   }
-
+  /**
+   * Gets the URL to respond to the form
+   * https://github.com/brucemcpherson/gas-fakes/issues/111
+   * shorten url no longer supported by google
+   * @returns {string} The form URL.
+   */
+  shortenFormUrl() {
+    return this.getPublishedUrl()
+  }
+  
   toString() {
     return 'Form';
   }

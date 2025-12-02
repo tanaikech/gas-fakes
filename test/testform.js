@@ -59,6 +59,12 @@ export const testForm = (pack) => {
     t.true(is.nonEmptyString(form.getId()), 'created form should have an ID');
     t.true(form.getEditUrl().includes(form.getId()), 'created form URL should contain ID');
     t.true(form.getPublishedUrl().includes('/viewform'), 'published form URL should contain "/viewform"');
+    // note that shortenFormUrl() is not supported by the public API so we'll get the full published url from gasfakes
+    if (FormApp.isFake) {
+      t.is(form.shortenFormUrl(), form.getPublishedUrl(), 'shortenFormUrl() should return the full published URL');
+    } else {
+      t.true(form.shortenFormUrl().includes('/viewform'), 'shortenFormUrl() should contain "/viewform"');
+    }
 
     // Verify that create() sets the file name in Drive, but not the form's internal title.
     t.is(file.getName(), formName, 'create() should set the file name in Drive');

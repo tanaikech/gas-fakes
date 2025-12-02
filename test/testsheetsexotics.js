@@ -17,6 +17,27 @@ export const testSheetsExotics = (pack) => {
   const toTrash = [];
   const { unit, fixes } = pack || initTests()
 
+  unit.section("SpreadsheetApp active spreadsheet", (t) => {
+    const { ss, sheet } = maketss(t.options.description, toTrash, fixes);
+
+    // getActiveSpreadsheet should return the container-bound spreadsheet by default
+    const activeSs = SpreadsheetApp.getActiveSpreadsheet();
+    t.not(activeSs, null, "should get an active spreadsheet");
+    t.is(
+      activeSs.getId(),
+      fixes.TEST_AIRPORTS_ID,
+      "should get the container-bound spreadsheet"
+    );
+
+    // test setActiveSpreadsheet
+    SpreadsheetApp.setActiveSpreadsheet(ss);
+    const newActiveSs = SpreadsheetApp.getActiveSpreadsheet();
+    t.is(
+      newActiveSs.getId(),
+      ss.getId(),
+      "should get the newly set active spreadsheet"
+    );
+  });
 
   unit.section("RangeList exotic methods", t => {
 

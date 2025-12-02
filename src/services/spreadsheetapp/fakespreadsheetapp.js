@@ -1,4 +1,5 @@
 import { Proxies } from "../../support/proxies.js";
+import { Auth } from "../../support/auth.js";
 import { newFakeSpreadsheet } from "./fakespreadsheet.js";
 import {
   notYetImplemented,
@@ -34,6 +35,8 @@ export const newFakeSpreadsheetApp = (...args) => {
  */
 export class FakeSpreadsheetApp {
   constructor() {
+    // in the context of gas-fakes we start with the activespreadsheet being the one mentioned in gasfakes.json
+    this.__activeSpreadsheet = null
     const enumProps = [
       "AutoFillSeries", //	AutoFillSeries	An enumeration of the types of series used to calculate auto-filled values.
       "BandingTheme", //	BandingTheme	An enumeration of the possible banding themes.
@@ -75,24 +78,19 @@ export class FakeSpreadsheetApp {
     });
 
     const props = [
-
-
       "getActive",
       "newConditionalFormatRule",
-      "getActiveSpreadsheet",
       "getActiveSheet",
       "getCurrentCell",
       "getActiveRange",
       "getActiveRangeList",
       "getSelection",
-      "setActiveSpreadsheet",
       "setActiveSheet",
       "setCurrentCell",
       "setActiveRange",
       "setActiveRangeList",
       "newCellImage",
       "getUi",
-
       "open",
 
       "ChartAggregationType",
@@ -107,6 +105,20 @@ export class FakeSpreadsheetApp {
   }
   toString() {
     return "SpreadsheetApp";
+  }
+  getActiveSpreadsheet() {
+    if (this.__activeSpreadsheet) return this.__activeSpreadsheet;
+    // because this is a faked container bound app, we need to get the documentId from the config file
+    const documentId = Auth.getDocumentId();
+    if (documentId) {
+      return this.openById(documentId);
+    }
+    return null;
+  }
+
+  setActiveSpreadsheet(ss) {
+    this.__activeSpreadsheet = ss;
+    return this;
   }
 
 

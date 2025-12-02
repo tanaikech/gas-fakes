@@ -73,7 +73,11 @@ class FakeDocumentApp {
     }
     return this.openById(match[1]);
   }
-
+  /**
+   * note that this in gas-fakes uses the documentId from gasfakes.json config file
+   * Returns the document to which the script is container-bound. To interact with document to which the script is not container-bound, use openById(id) or openByUrl(url) instead.
+   * @returns {Document}
+   */
   getActiveDocument() {
     const documentId = Auth.getDocumentId();
     if (!documentId) return null;
