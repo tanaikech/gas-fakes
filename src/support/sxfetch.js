@@ -20,10 +20,31 @@ export const sxFetch = async (Auth, url, options, responseFields) => {
 
   // Always fetch as a buffer to prevent corruption of binary data like images.
   // The caller (UrlFetchApp/HttpResponse) will be responsible for decoding to text if needed.
+  // we need to fiddle with options as apps script is diffeent
+  let fixedOptions = {}
+  if (options) {
+    fixedOptions = { ...options }
+    Object.keys(fixedOptions).forEach(k => {
+      if (k.match(/Content-Type/i)) {
+        fixedOptions.contentType = fixedOptions[k]
+        delete fixedOptions[k]
+      }
+      if (k.match(/payload/i)) {
+        fixedOptions.body = fixedOptions[k]
+        delete fixedOptions[k]
+      }
+      if(k.match(/muteHttpExceptions/i)) {
+        fixedOptions.throwHttpErrors = !fixedOptions[k]
+        delete fixedOptions[k]
+      }
+    })
+  }
+
   const response = await got(url, {
-    ...options,
+    ...fixedOptions,
     responseType: 'buffer'
   })
+
   // we cant return the response from this as it cant be serialized
   // so we;ll extract oout the fields required
   const result = responseFields.reduce((p, c) => {

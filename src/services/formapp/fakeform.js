@@ -3,15 +3,18 @@ import { newFakeFormItem } from './fakeformitem.js';
 import { newFakeFormResponse } from './fakeformresponse.js';
 import { newFakeGridItem } from './fakegriditem.js';
 import { newFakeCheckboxGridItem } from './fakecheckboxgriditem.js';
+import { DestinationType } from '../enums/formsenums.js';
 import { newFakeSectionHeaderItem } from './fakesectionheaderitem.js';
 import { newFakeScaleItem } from './fakescaleitem.js';
-import './formitems.js'; // Import for side effects (item class registration)
+//import './formitems.js'; // Import for side effects (item class registration)
 import { newFakeMultipleChoiceItem } from './fakemultiplechoiceitem.js';
 import { newFakeCheckboxItem } from './fakecheckboxitem.js';
 import { newFakeListItem } from './fakelistitem.js';
 import { newFakePageBreakItem } from './fakepagebreakitem.js';
 import { newFakeTextItem } from './faketextitem.js';
-
+import { signatureArgs } from '../../support/helpers.js';
+import {Utils} from '../../support/utils.js';
+const { is } = Utils
 export const newFakeForm = (...args) => {
   return Proxies.guard(new FakeForm(...args));
 };
@@ -29,14 +32,28 @@ export class FakeForm {
     // Store the resource provided at creation as the single source of truth for this instance.
     this.__id = resource.formId;
     this.__file = DriveApp.getFileById(this.__id);
-    // Since the API doesn't allow setting the published state, we'll manage it internally for the fake.
-    // A new form defaults to accepting responses (true).
-    this.__publishedState = resource.settings?.state !== 'INACTIVE';
+    this.__destinationId = resource.linkedSheetId || null;
+    this.__destinationType = this.__destinationId ? DestinationType.SPREADSHEET : null;
   }
 
   get __resource() {
     return Forms.Form.get(this.__id);
   }
+  get __publishSettings() {
+    return this.__resource.publishSettings;
+  }
+  isAcceptingResponses() {
+    return this.__publishSettings.isAcceptingResponses;
+  }
+  isPublished() {
+    return this.__publishSettings.isPublished;
+  }
+  setPublished(enabled) {
+    throw new Error('setPublished is not yet implemented in the fake environment.');
+    return this;
+  }
+
+    
   saveAndClose() {
     // this is a no-op in fake environment since it is stateless
   }
@@ -244,6 +261,24 @@ export class FakeForm {
     return this.__addItem(itemResource, newFakeTextItem);
   }
 
+  /**
+   * Gets the ID of the form's response destination.
+   * @returns {string | null} The destination ID, or null if no destination is set.
+   */
+  getDestinationId() {
+    return this.__resource.linkedSheetId || null;
+  }
+
+  /**
+   * Gets the type of the form's response destination.
+   * @returns {import('../enums/formsenums.js').DestinationType | null} The destination type, or null if no destination is set.
+   */
+  getDestinationType() {
+    if (this.getDestinationId()) {
+      return DestinationType.SPREADSHEET;
+    }
+    return null;
+  }
 
 
   /**
@@ -338,14 +373,6 @@ export class FakeForm {
     return responses.sort((a, b) => a.getTimestamp() - b.getTimestamp());
   }
 
-  /**
-   * Gets whether the form is accepting responses.
-   * @returns {boolean} true if the form is accepting responses; false otherwise.
-   */
-  isPublished() {
-    // ACTIVE is the state for accepting responses. The default if not set is ACTIVE.
-    return this.__publishedState;
-  }
 
   /**
    * Sets the name of the form file in Google Drive.
@@ -415,7 +442,32 @@ export class FakeForm {
     return itemToMove;
   }
   /**
-   * Sets whether the form is accepting responses.
+   * Unlinks the form from its response destination.
+   * @returns {FakeForm} The form, for chaining.
+   */
+  removeDestination() {
+    // This is not supported by the REST API, so we manage it internally for the fake.
+    this.__destinationId = null;
+    this.__destinationType = null;
+    return this;
+  }
+  /**
+   * Sets the destination for form responses.
+   * @param {import('../enums/formsenums.js').DestinationType} type The type of destination.
+   * @param {string} id The ID of the destination (spreadsheet ID).
+   * @returns {FakeForm} The form, for chaining.
+   */
+  setDestination(type, id) {
+    if (type !== DestinationType.SPREADSHEET) {
+      throw new Error('Only SPREADSHEET destination type is supported.');
+    }
+    // This is not supported by the REST API, so we manage it internally for the fake.
+    this.__destinationId = id;
+    this.__destinationType = DestinationType.SPREADSHEET;
+    return this;
+  }
+  /**
+   * Sets whether the form is published responses.
    * @param {boolean} enabled true if the form should accept responses; false otherwise.
    * @returns {FakeForm} The form, for chaining.
    */
@@ -423,11 +475,22 @@ export class FakeForm {
     throw new Error('setPublished is not yet implemented in the fake environment.');
   }
 
+
   __update(updateRequest) {
     const batchRequest = Forms.newBatchUpdateFormRequest()
       .setRequests([updateRequest])
     Forms.Form.batchUpdate(batchRequest, this.getId());
     return this;
+  }
+
+  /**
+   * Sets whether the form is accepting responses.
+   * @param {boolean} enabled true if the form should accept responses; false otherwise.
+   * @returns {FakeForm} The form, for chaining.
+   */
+  setAcceptingResponses(enabled) {
+    // The REST API does not expose a way to set this. The fake will manage it internally.
+    throw new Error('setAcceptingResponses is not yet implemented in the fake environment.');
   }
 
   /**
@@ -481,10 +544,16 @@ export class FakeForm {
    * shorten url no longer supported by google
    * @returns {string} The form URL.
    */
-  shortenFormUrl() {
+  shortenFormUrl(url) {
+    // just validate the atgs would work on apps script
+    const { nargs, matchThrow } = signatureArgs(arguments, 'shortenFormUrl');
+    if (nargs !== 1 || !is.nonEmptyString(url)) {
+      matchThrow();
+    }
+    // apps script expects a url, but we return the published url and just ignore the url anyway
     return this.getPublishedUrl()
   }
-  
+
   toString() {
     return 'Form';
   }

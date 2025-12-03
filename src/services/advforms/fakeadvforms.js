@@ -42,8 +42,7 @@ class FakeAdvForms {
       "newFormInfo": [
         "title",
         "documentTitle",
-        "description",
-        "state"
+        "description"
       ],
       "newUpdateSettingsRequest": [
         "settings",
@@ -53,7 +52,7 @@ class FakeAdvForms {
         "emailCollectionType",
         "quizSettings"
       ],
-      "newQuizSettings" : [
+      "newQuizSettings": [
         "isQuiz"
       ],
       "newItem": [
@@ -188,7 +187,7 @@ class FakeAdvForms {
         "properties",
         "youtubeUri"
       ],
-        
+
     }
 
     Reflect.ownKeys(propLists).forEach(p => {

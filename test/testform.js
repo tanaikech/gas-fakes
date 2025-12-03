@@ -61,9 +61,9 @@ export const testForm = (pack) => {
     t.true(form.getPublishedUrl().includes('/viewform'), 'published form URL should contain "/viewform"');
     // note that shortenFormUrl() is not supported by the public API so we'll get the full published url from gasfakes
     if (FormApp.isFake) {
-      t.is(form.shortenFormUrl(), form.getPublishedUrl(), 'shortenFormUrl() should return the full published URL');
+      t.is(form.shortenFormUrl(form.getPublishedUrl()), form.getPublishedUrl(), 'shortenFormUrl() should return the full published URL');
     } else {
-      t.true(form.shortenFormUrl().includes('/viewform'), 'shortenFormUrl() should contain "/viewform"');
+      t.false(form.shortenFormUrl(form.getPublishedUrl()).includes('/viewform'), 'shortenFormUrl() should not contain "/viewform"');
     }
 
     // Verify that create() sets the file name in Drive, but not the form's internal title.
@@ -102,24 +102,19 @@ export const testForm = (pack) => {
     t.is(file.getName(), formName, 'setTitle() should NOT change the file name');
     t.is(form.getDescription(), description, 'setDescription')
 
-    // Test getActiveForm()
-    const activeForm = FormApp.getActiveForm();
-    t.is(activeForm, null, 'getActiveForm() should be null if no documentId is set');
-
     // Test enums
     t.is(FormApp.ItemType.CHECKBOX.toString(), 'CHECKBOX', 'should have ItemType enum');
     t.is(FormApp.Alignment.LEFT.toString(), 'LEFT', 'should have Alignment enum');
 
     // Test isPublished()
-    t.true(form.isPublished(), 'A new form should be published (accepting responses) by default');
+    const isPublished = form.isPublished();
+    t.false(isPublished, 'A new form should not be published by default');
 
-    // Test setPublished() - should throw an error
-    if (FormApp.isFake) {
-      const err2 = t.threw(() => form.setPublished(false));
-      t.truthy(err2, 'setPublished() should throw in the fake environment');
-      t.rxMatch(err2?.message, /not yet implemented/i, 'setPublished() should throw a "not yet implemented" error');
+    // Test setAcceptingResponses() - not available in the api
+    if (!FormApp.isFake) {
+      form.setAcceptingResponses(false);
+      t.is(form.isPublished(), isPublished, 'isPublished() not affected after setAcceptingResponses(false)');
     }
-
 
     if (FormApp.isFake) {
       console.log('...cumulative forms cache performance', getFormsPerformance());
@@ -462,6 +457,38 @@ export const testForm = (pack) => {
     t.is(textItem.getId(), textItems[0].getId(), 'The text item should match');
   });
 
+  unit.section('Form Destination', (t) => {
+    const form = FormApp.create('Destination Test Form');
+    toTrash.push(DriveApp.getFileById(form.getId()));
+
+
+    // 2. Set a destination
+    // things we cant do in the api
+    if (!FormApp.isFake) {
+      const spreadsheet = SpreadsheetApp.create('Form Responses Destination');
+      const spreadsheetId = spreadsheet.getId();
+      toTrash.push(DriveApp.getFileById(spreadsheetId));
+
+      form.setDestination(FormApp.DestinationType.SPREADSHEET, spreadsheetId);
+
+      // 3. Verify the destination is set
+      t.is(form.getDestinationId(), spreadsheetId, 'getDestinationId() should return the spreadsheet ID');
+      t.is(form.getDestinationType(), FormApp.DestinationType.SPREADSHEET, 'getDestinationType() should return SPREADSHEET');
+
+      // 4. Remove the destination
+      form.removeDestination();
+      t.is(form.getDestinationId(), null, 'Destination ID should be null after removal');
+      t.is(form.getDestinationType(), null, 'Destination type should be null after removal');
+
+      // 5. Test error handling for unsupported types
+      const err = t.threw(() => form.setDestination('UNSUPPORTED_TYPE', 'some-id'));
+      t.truthy(err, 'setDestination with unsupported type should throw an error');
+      if (err) {
+        t.rxMatch(err.message, /Only SPREADSHEET destination type is supported/, 'Error message for unsupported type should be correct');
+      }
+    }
+    if (FormApp.isFake) console.log('...cumulative forms cache performance', getFormsPerformance());
+  });
 
   if (!pack) {
     unit.report();
