@@ -5221,7 +5221,7 @@
             "returnType": "Document",
             "returnDescription": "the document instance",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakedocumentapp.js#L77"
+            "implementationLink": "src/services/documentapp/fakedocumentapp.js#L81"
           },
           {
             "method": "getUi()",
@@ -5230,7 +5230,7 @@
             "returnType": "Ui",
             "returnDescription": "an instance of this document's user-interface environment",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakedocumentapp.js#L82"
+            "implementationLink": "src/services/documentapp/fakedocumentapp.js#L86"
           },
           {
             "method": "openById(String)",
@@ -19069,8 +19069,8 @@
             "description": "Converts a long URL for a form to a short URL. Throws an exception if the long URL does not\nbelong to Google Forms.",
             "returnType": "String",
             "returnDescription": "A URL in the form http://goo.gl/forms/1234.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeform.js#L484"
           },
           {
             "method": "submitGrades(FormResponse)",
@@ -33521,7 +33521,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L140"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L152"
           },
           {
             "method": "create(String)",
@@ -33530,7 +33530,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "a new spreadsheet",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L22"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L23"
           },
           {
             "method": "create(String,Integer,Integer)",
@@ -33539,7 +33539,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L22"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L23"
           },
           {
             "method": "enableAllDataSourcesExecution()",
@@ -33548,7 +33548,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L122"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L134"
           },
           {
             "method": "enableBigQueryExecution()",
@@ -33557,7 +33557,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L113"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L125"
           },
           {
             "method": "enableLookerExecution()",
@@ -33566,7 +33566,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L131"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L143"
           },
           {
             "method": "flush()",
@@ -33575,7 +33575,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L140"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L152"
           },
           {
             "method": "getActive()",
@@ -33584,7 +33584,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "the active Spreadsheet object",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L80"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L81"
           },
           {
             "method": "getActiveRange()",
@@ -33620,7 +33620,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "the active Spreadsheet object",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L82"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L109"
           },
           {
             "method": "getCurrentCell()",
@@ -33647,7 +33647,7 @@
             "returnType": "Ui",
             "returnDescription": "an instance of this spreadsheet's user-interface environment",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L94"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L93"
           },
           {
             "method": "newCellImage()",
@@ -33656,7 +33656,7 @@
             "returnType": "CellImageBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L93"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L92"
           },
           {
             "method": "newColor()",
@@ -33665,7 +33665,7 @@
             "returnType": "ColorBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L220"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L232"
           },
           {
             "method": "newConditionalFormatRule()",
@@ -33674,7 +33674,7 @@
             "returnType": "ConditionalFormatRuleBuilder",
             "returnDescription": "the new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L81"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L82"
           },
           {
             "method": "newDataSourceSpec()",
@@ -33683,7 +33683,7 @@
             "returnType": "DataSourceSpecBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L264"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L276"
           },
           {
             "method": "newDataValidation()",
@@ -33692,7 +33692,7 @@
             "returnType": "DataValidationBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L238"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L250"
           },
           {
             "method": "newFilterCriteria()",
@@ -33701,7 +33701,7 @@
             "returnType": "FilterCriteriaBuilder",
             "returnDescription": "the new builder",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L256"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L268"
           },
           {
             "method": "newRichTextValue()",
@@ -33710,7 +33710,7 @@
             "returnType": "RichTextValueBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L247"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L259"
           },
           {
             "method": "newTextStyle()",
@@ -33719,7 +33719,7 @@
             "returnType": "TextStyleBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L229"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L241"
           },
           {
             "method": "open(File)",
@@ -33728,7 +33728,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "the spreadsheet",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L96"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L94"
           },
           {
             "method": "openById(String)",
@@ -33737,7 +33737,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "the Spreadsheet object with the given id",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L149"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L114"
           },
           {
             "method": "openByUrl(String)",
@@ -33746,7 +33746,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "The spreadsheet object with the given URL.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L211"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L223"
           },
           {
             "method": "setActiveRange(Range)",
@@ -33755,7 +33755,7 @@
             "returnType": "Range",
             "returnDescription": "the new active Range",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L91"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L90"
           },
           {
             "method": "setActiveRangeList(RangeList)",
@@ -33764,7 +33764,7 @@
             "returnType": "RangeList",
             "returnDescription": "the newly selected list of ranges",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L92"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L91"
           },
           {
             "method": "setActiveSheet(Sheet)",
@@ -33773,7 +33773,7 @@
             "returnType": "Sheet",
             "returnDescription": "the sheet that has been made the new active sheet",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L89"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L88"
           },
           {
             "method": "setActiveSheet(Sheet,Boolean)",
@@ -33782,7 +33782,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L89"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L88"
           },
           {
             "method": "setActiveSpreadsheet(Spreadsheet)",
@@ -33791,7 +33791,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L88"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L119"
           },
           {
             "method": "setCurrentCell(Range)",
@@ -33800,7 +33800,7 @@
             "returnType": "Range",
             "returnDescription": "the newly set current cell",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L90"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L89"
           }
         ]
       },
