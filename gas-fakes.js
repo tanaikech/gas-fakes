@@ -6,8 +6,7 @@
 
 import fs from "fs";
 import path from "path";
-import { exec } from "child_process";
-import { promisify } from "util";
+import { spawn } from "child_process";
 import { Command } from "commander";
 import dotenv from "dotenv";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -31,9 +30,8 @@ const VERSION = pjson.version;
 // CONSTANTS & UTILITIES
 // -----------------------------------------------------------------------------
 
-const CLI_VERSION = "0.0.13";
-const MCP_VERSION = "0.0.3";
-const execAsync = promisify(exec);
+const CLI_VERSION = "0.0.14";
+const MCP_VERSION = "0.0.4";
 
 /**
  * Replaces escaped newline characters ('\\n') with actual newlines,
@@ -237,132 +235,327 @@ async function executeGasScript(options) {
 // -----------------------------------------------------------------------------
 
 /**
- * Defines and runs the MCP server for gas-fakes.
+ * Helper: Constructs the CLI arguments array for gas-fakes execution.
+ * Modified to return an array suitable for spawn (no shell escaping needed).
+ * @param {object} params Configuration parameters
+ * @returns {string[]} Array of CLI arguments
  */
-async function startMcpServer() {
-  const server = new McpServer({
-    name: "gas-fakes-mcp",
-    version: MCP_VERSION,
-  });
+function buildCliArguments(params) {
+  const {
+    filename,
+    script,
+    args,
+    sandbox,
+    whitelistRead,
+    whitelistReadWrite,
+    whitelistReadWriteTrash,
+    json,
+  } = params;
 
-  const mcpToolSchema = {
+  const cliArgs = [];
+
+  // Input source
+  if (filename) {
+    cliArgs.push("-f", filename);
+  }
+  if (script) {
+    cliArgs.push("-s", script);
+  }
+
+  // Execution arguments
+  if (args) {
+    cliArgs.push("-a", JSON.stringify(args));
+  }
+
+  // Sandbox & Permissions
+  if (sandbox) cliArgs.push("-x");
+  if (whitelistRead) cliArgs.push("-w", whitelistRead);
+  if (whitelistReadWrite) cliArgs.push("--ww", whitelistReadWrite);
+  if (whitelistReadWriteTrash) cliArgs.push("--wt", whitelistReadWriteTrash);
+  if (json) cliArgs.push("-j", JSON.stringify(json));
+
+  return cliArgs;
+}
+
+/**
+ * Helper: Executes the gas-fakes command via child_process.spawn.
+ * Uses spawn instead of exec to avoid shell interpretation of arguments.
+ * @param {string[]} cliArgs Arguments to pass to the command
+ * @returns {Promise<object>} MCP tool result object
+ */
+async function runGasFakesProcess(cliArgs) {
+  return new Promise((resolve) => {
+    // We invoke the current node executable with the current script
+    const child = spawn(process.execPath, [process.argv[1], ...cliArgs], {
+      env: process.env,
+      stdio: ["ignore", "pipe", "pipe"], // ignore stdin, capture stdout/stderr
+      shell: false, // Important: Disable shell execution
+    });
+
+    let stdoutData = "";
+    let stderrData = "";
+
+    child.stdout.on("data", (data) => {
+      stdoutData += data.toString();
+    });
+
+    child.stderr.on("data", (data) => {
+      stderrData += data.toString();
+    });
+
+    child.on("close", (code) => {
+      if (code === 0) {
+        resolve({
+          content: [
+            { type: "text", text: stdoutData || "Execution finished." },
+          ],
+          isError: false,
+        });
+      } else {
+        // If there's content in stdout, it might contain the error info from gas-fakes
+        const output = stderrData || stdoutData || "Unknown error occurred";
+        resolve({
+          content: [{ type: "text", text: output }],
+          isError: true,
+        });
+      }
+    });
+
+    child.on("error", (err) => {
+      resolve({
+        content: [{ type: "text", text: err.message }],
+        isError: true,
+      });
+    });
+  });
+}
+
+/**
+ * Registers the default "run-gas-by-gas-fakes" tool.
+ */
+function registerDefaultTool(server) {
+  const schema1 = {
     description: [
       `Use this to safely run Google Apps Script in a sandbox using gas-fakes.`,
       `# Important`,
       `- Use the extension of the Google Apps Script files as \`js\`. Don't use \`gs\``,
-      `- When you provide the generated Google Apps Script to the tool "gas-fakes" of the MCP server "gas-development-kit-extension", please be careful of the following rule. For example, when you generated a Google Apps Script like \`function sample() { script }\`, please add \`sample();\` to execute the function. Or, you can also create a Google Apps Script without enclosing the script with \`function sample() { script }\`.`,
+      `- When providing script content, ensure functions are called (e.g., add \`sample();\`).`,
     ].join("\n"),
     inputSchema: {
       filename: z
         .string()
-        .describe(
-          `Provide a filename with the path of the file, including Google Apps Script. Write the Google Apps Script into a file and use this.`
-        ),
+        .optional() // Made optional because script can be provided
+        .describe(`Path to the file containing Google Apps Script.`),
+      script: z
+        .string()
+        .optional()
+        .describe(`Direct GAS script content string.`),
       sandbox: z
         .boolean()
         .describe("Use to run Google Apps Script in a sandbox."),
       whitelistRead: z
         .string()
+        .optional()
         .describe(
-          "Whitelist of file IDs for readonly access (comma-separated). Enables sandbox mode."
-        )
-        .optional(),
+          "Whitelist of file IDs for readonly access (comma-separated). When the file IDs and folder IDs are used or provided, use `whiteListRead`, `whitelistReadWrite`, or `whitelistReadWriteTrash` by judging from the prompt."
+        ),
       whitelistReadWrite: z
         .string()
+        .optional()
         .describe(
-          "Whitelist of file IDs for read/write access (comma-separated). Enables sandbox mode."
-        )
-        .optional(),
+          "Whitelist of file IDs for read/write access (comma-separated). When the file IDs and folder IDs are used or provided, use `whiteListRead`, `whitelistReadWrite`, or `whitelistReadWriteTrash` by judging from the prompt."
+        ),
       whitelistReadWriteTrash: z
         .string()
+        .optional()
         .describe(
-          "Whitelist of file IDs for read/write/trash access (comma-separated). Enables sandbox mode."
-        )
-        .optional(),
+          "Whitelist of file IDs for read/write/trash access (comma-separated). When the file IDs and folder IDs are used or provided, use `whiteListRead`, `whitelistReadWrite`, or `whitelistReadWriteTrash` by judging from the prompt."
+        ),
       json: z
         .object({
           whitelistItems: z
             .array(
               z.object({
-                itemId: z
-                  .string()
-                  .describe("The file or folder ID on Google Drive."),
-                read: z.boolean().optional().default(true),
-                write: z.boolean().optional().default(false),
-                trash: z.boolean().optional().default(false),
+                itemId: z.string(),
+                read: z.boolean().default(true).optional(),
+                write: z.boolean().default(false).optional(),
+                trash: z.boolean().default(false).optional(),
               })
             )
-            .describe("A list of items to be whitelisted."),
+            .optional(),
           whitelistServices: z
             .array(
               z.object({
-                className: z
-                  .string()
-                  .describe("The class name of the GAS service."),
-                methodNames: z
-                  .array(z.string())
-                  .describe(
-                    "A list of method names for the class to be whitelisted."
-                  )
-                  .optional(),
+                className: z.string(),
+                methodNames: z.array(z.string()).optional(),
               })
             )
-            .describe("A list of services to be whitelisted.")
             .optional(),
-          blacklistServices: z
-            .array(z.string())
-            .describe("A list of GAS services to be blacklisted.")
-            .optional(),
+          blacklistServices: z.array(z.string()).optional(),
         })
-        .describe("A JSON object for advanced sandbox configuration.")
-        .optional(),
+        .optional()
+        .describe("Advanced sandbox configuration JSON."),
     },
   };
 
-  const mcpToolFunc = async (options = {}) => {
-    const {
-      filename,
-      sandbox,
-      whitelistRead,
-      whitelistReadWrite,
-      whitelistReadWriteTrash,
-      json,
-    } = options;
-
-    if (!filename) {
+  server.registerTool("run-gas-by-gas-fakes", schema1, async (args) => {
+    if (!args.filename && !args.script) {
       return {
         content: [
-          { type: "text", text: "Error: `filename` is a required parameter." },
+          {
+            type: "text",
+            text: "Error: Either `filename` or `script` is required.",
+          },
         ],
         isError: true,
       };
     }
+    const cliArgs = buildCliArguments(args);
+    return await runGasFakesProcess(cliArgs);
+  });
 
-    try {
-      const cliArgs = [];
-      cliArgs.push(`-f "${filename}"`);
-      if (sandbox) cliArgs.push("-x");
-      if (whitelistRead) cliArgs.push(`-w "${whitelistRead}"`);
-      if (whitelistReadWrite) cliArgs.push(`--ww "${whitelistReadWrite}"`);
-      if (whitelistReadWriteTrash)
-        cliArgs.push(`--wt "${whitelistReadWriteTrash}"`);
-      if (json) cliArgs.push(`-j '${JSON.stringify(json)}'`);
-
-      const command = `gas-fakes ${cliArgs.join(" ")}`;
-      const { stdout } = await execAsync(command);
+  const schema2 = {
+    description: [
+      `Use this to create the tools of the MCP server using Google Apps Script as a new file. If a file \`settings.json\` or \`mcp_config.json\` or and so on for loading the MCP servers include \`--tools\` and the tool file to \`gas-fakes\` MCP server, ask the current client which you want to create a new file including the tools or you want to add the tools to the existing tool file. When a new tool file is created, show how to use the tool file as follows. When the created tool file is \`toolFile.js\`, modify the MCP server setting to \`"mcpServers": { "gas-fakes": { "command": "gas-fakes", "args": [ "mcp", "--tools", "{Absolute path}/toolFile.js" ] } }\`. Don't forget to replace \`{Absolute path}\` with the actual path.`,
+    ].join("\n"),
+    inputSchema: {
+      filename: z
+        .string()
+        .describe(
+          "Filename of the tool file built by Google Apps Script. The extension is required to be `.js`."
+        ),
+      tools: z
+        .array(
+          z
+            .object({
+              name: z.string().describe("Tool name."),
+              schema: z
+                .string()
+                .describe(
+                  `JSON schema of the arguments to \`gas-script\`. This is required to be an object by creating zod. The simple sample script of Zod is \`{ description: "Use this to search files by a filename on Google Drive.", inputSchema: { filename: z.string().describe("Filename of the search file.") } }\`. Generate a JSON schema using Zod by following this sample. You are required to generate the JSON schema using Zod. This object of inputSchema will be used as "object" in Google Apps Script.`
+                ),
+              gas_script: z
+                .string()
+                .describe(
+                  `Generated Google Apps Script. Please be careful of the following rule. For example, when you generated a Google Apps Script like \`function sample(object) { script }\`, please add \`return sample(object);\` to execute the function. This is a very important point. When the prompt says "Create a function", please create a function and add a line of script for calling the function and returning the response like \`return sample(object);\`. Or, you can also create a Google Apps Script without enclosing the script with \`function sample(object) { script }\`. When you want to return the value, show the value using \`console.log\` in the script, or return the value using \`return\`. The simple sample script is \`const { filename } = object; const files = DriveApp.getFilesByName(filename); const ar = []; while (files.hasNext()) { const file = files.next(); ar.push({ filename: file.getName(), fileId: file.getId() }); } return ar;\` This tool is required to be used for creating tools as a new file. When you want to add more tools to the existing file, add them to an array \`tools\` in the file by following the specification of \`tools\`. If you cannot find the array, please create it as a new file.`
+                ),
+            })
+            .describe("An object for each tool.")
+        )
+        .describe("An array including tools."),
+    },
+  };
+  server.registerTool("create-new-tools", schema2, async (args) => {
+    if (!args.filename || !args.tools) {
       return {
-        content: [{ type: "text", text: stdout || "Execution finished." }],
-        isError: false,
-      };
-    } catch (err) {
-      return {
-        content: [{ type: "text", text: err.message }],
+        content: [
+          {
+            type: "text",
+            text: "Error: `filename` and `tools` are required.",
+          },
+        ],
         isError: true,
       };
     }
-  };
+    const tool_ar = args.tools
+      .map(
+        ({ name, schema, gas_script }) =>
+          `{ name: "${name}", schema: ${schema}, func: (object = {}) => { ${gas_script} } }`
+      )
+      .join(", ");
+    const tool_script = [
+      `import { z } from "zod";`,
+      ``,
+      `const tools = [${tool_ar}];`,
+    ].join("\n");
+    const absolutePath = path.resolve(process.cwd(), args.filename);
+    fs.writeFileSync(absolutePath, tool_script);
+    return {
+      content: [
+        {
+          type: "text",
+          text: `A new file including tools for gas-fakes-mcp was successfully created as "${absolutePath}".`,
+        },
+      ],
+      isError: false,
+    };
+  });
+}
 
-  server.registerTool("run-gas-by-gas-fakes", mcpToolSchema, mcpToolFunc);
+/**
+ * Loads and registers custom tools from an external file.
+ */
+async function registerCustomTools(server, toolsPath) {
+  if (!toolsPath || !fs.existsSync(toolsPath)) {
+    if (toolsPath) console.error(`No tool file: ${toolsPath}`);
+    return;
+  }
+
+  const absolutePath = path.resolve(process.cwd(), toolsPath);
+  let toolsStr = fs.readFileSync(absolutePath, "utf8");
+  toolsStr = toolsStr.replace(/^import.*/gm, "");
+  const getTools = new Function("z", `${toolsStr} return tools || [];`);
+  const tools = getTools(z);
+
+  if (!tools || tools.length === 0) return;
+
+  tools.forEach((tool) => {
+    // Extend the custom tool schema with sandbox options
+    const extendedSchema = { ...tool.schema };
+    extendedSchema.inputSchema = {
+      gas_args: z
+        .object(tool.schema.inputSchema)
+        .describe("Arguments for Google Apps Script."),
+      sandbox: z.boolean().describe("Run in sandbox."),
+      whitelistRead: z.string().optional().describe("Read-only whitelist IDs."),
+      whitelistReadWrite: z
+        .string()
+        .optional()
+        .describe("Read/Write whitelist IDs."),
+      whitelistReadWriteTrash: z
+        .string()
+        .optional()
+        .describe("Read/Write/Trash whitelist IDs."),
+      json: z.any().optional().describe("Advanced sandbox JSON configuration."),
+    };
+
+    const originalFuncStr = tool.func.toString();
+
+    const toolHandler = async (opts) => {
+      // Wrap the original function string to execute it with args
+      const wrappedScript = `return (${originalFuncStr})(args)`;
+
+      const cliArgs = buildCliArguments({
+        script: wrappedScript,
+        args: opts.gas_args,
+        ...opts,
+      });
+
+      return await runGasFakesProcess(cliArgs);
+    };
+
+    server.registerTool(tool.name, extendedSchema, toolHandler);
+  });
+}
+
+/**
+ * Defines and runs the MCP server for gas-fakes.
+ */
+async function startMcpServer(options) {
+  const { tools } = options;
+
+  const server = new McpServer({
+    name: "gas-fakes-mcp",
+    version: MCP_VERSION,
+  });
+
+  // Register the built-in generic runner
+  registerDefaultTool(server);
+
+  // Register dynamic custom tools if provided
+  if (tools) {
+    await registerCustomTools(server, tools);
+  }
 
   const transport = new StdioServerTransport();
   await server.connect(transport);
@@ -561,6 +754,10 @@ async function main() {
   program
     .command("mcp")
     .description("Launch gas-fakes as an MCP server.")
+    .option(
+      "-t, --tools <string>",
+      "A filename of the custom MCP server tools built by Google Apps Script."
+    )
     .action(startMcpServer);
 
   program.showHelpAfterError("(add --help for additional information)");

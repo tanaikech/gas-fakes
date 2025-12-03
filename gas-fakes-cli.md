@@ -391,9 +391,53 @@ When this is used for the Gemini CLI, the following result is obtained.
 
 Configured MCP servers:
 
-🟢 gas-fakes - Ready (1 tool)
+🟢 gas-fakes - Ready (2 tools)
   Tools:
+  - create-new-tools
   - run-gas-by-gas-fakes
+```
+
+When you want to load your custom tools to `gas-fakes` MCP, please use the following setting.
+
+```json
+"mcpServers": {
+  "gas-fakes": {
+    "command": "gas-fakes",
+    "args": [
+      "mcp",
+      "--tools",
+      "tools.js" // <--- A script file including custom tools.
+    ]
+  }
+}
+```
+
+The simple sample script for `tools.js` is as follows. This tool searches files on Google Drive. The script is Google Apps Script. When this tool is used as the above, a tool `searchGoogleDriveFiles` will be added to the MCP server.
+
+```javascript
+import { z } from "zod";
+
+const tools = [
+  {
+    name: "searchGoogleDriveFiles",
+    schema: {
+      description: "Use this to search files by a filename on Google Drive.",
+      inputSchema: {
+        filename: z.string().describe("Filename of the search file."),
+      },
+    },
+    func: (object = {}) => {
+      const { filename } = object;
+      const files = DriveApp.getFilesByName(filename);
+      const ar = [];
+      while (files.hasNext()) {
+        const file = files.next();
+        ar.push({ filename: file.getName(), fileId: file.getId() });
+      }
+      return ar;
+    },
+  },
+];
 ```
 
 ## <img src="./logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
