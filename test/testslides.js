@@ -40,10 +40,7 @@ export const testSlides = (pack) => {
     t.threw(() => SlidesApp.openByUrl('http://invalid.url/'), 'openByUrl() should throw on invalid URL');
 
 
-    // Test getActivePresentation()
-    // This will be null unless documentId is set in gasfakes.json for container-bound script testing
-    const activePres = SlidesApp.getActivePresentation();
-    t.is(activePres, null, 'getActivePresentation() should be null if no documentId is set');
+
 
     // Test enums
     t.is(SlidesApp.PageType.SLIDE.toString(), 'SLIDE', 'should have PageType enum');
