@@ -32,7 +32,7 @@ export class FakeItemResponse {
    * @returns {string} the item's ID
    */
   getId() {
-    return this.__item.getId();
+    return parseInt(this.__item.getId(), 16); // Convert to decimal
   }
 
   /**

@@ -30,10 +30,10 @@ export class FakeFormResponse {
 
   /**
    * Gets the unique ID for this form response.
-   * @returns {string} the unique ID
+   * @returns {number} the unique hex ID converted to a decimal number
    */
   getId() {
-    return this.__resource.responseId;
+    return parseInt(this.__resource.responseId, 16);
   }
 
   /**

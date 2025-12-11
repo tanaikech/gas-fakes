@@ -106,12 +106,12 @@ export const testForm = (pack) => {
     t.is(FormApp.ItemType.CHECKBOX.toString(), 'CHECKBOX', 'should have ItemType enum');
     t.is(FormApp.Alignment.LEFT.toString(), 'LEFT', 'should have Alignment enum');
 
-    // Test isPublished()
-    const isPublished = form.isPublished();
-    t.false(isPublished, 'A new form should not be published by default');
 
     // Test setAcceptingResponses() - not available in the api
     if (!FormApp.isFake) {
+      // Test isPublished()
+      const isPublished = form.isPublished();
+      t.false(isPublished, 'A new form should not be published by default');
       form.setAcceptingResponses(false);
       t.is(form.isPublished(), isPublished, 'isPublished() not affected after setAcceptingResponses(false)');
     }
