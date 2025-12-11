@@ -65,7 +65,7 @@ Usage: gas-fakes [options] [command]
 Execute a Google Apps Script file or string.
 
 Options:
-  -v, --version                             Display the current version
+  -v, --version                             Display the current version of gas-fakes
   -f, --filename <string>                   Path to the Google Apps Script file.
   -s, --script <string>                     A string containing the Google Apps Script.
   -e, --env <path>                          Path to a custom .env file. (default: "./.env")
@@ -76,15 +76,18 @@ Options:
   --wt, --whitelistReadWriteTrash <string>  Comma-separated file IDs for read/write/trash access (enables sandbox).
   -j, --json <string>                       JSON string for advanced sandbox configuration (overrides whitelist flags).
   -d, --display                             Display the generated script before execution. (default: false)
-  -a, --args <string>                       Arguments for the function of Google Apps Script. Provide it as a JSON string. The name of the argument is "args" as a fixed name. For example, when the function of GAS is `function
-                                            sample(args) { script }`, you can provide the arguments like `-a '{"key": "value"}'`. (default: null)
+  -a, --args <string>                       Arguments for the function of Google Apps Script. Provide it as a JSON string. The name of the argument is "args" as
+                                            a fixed name. For example, when the function of GAS is `function sample(args) { script }`, you can provide the
+                                            arguments like `-a '{"key": "value"}'`. (default: null)
+  -l, --libraries <string...>               Libraries. You can run the Google Apps Script with libraries. When you use 2 libraries "Lib1" and "Lib" which are
+                                            the identifiers of library, provide '--libraries "Lib1@{filename}" --libraries "Lib2@{file URL}"'. (default: null)
   -h, --help                                display help for command
 
 Commands:
   init [options]                            Initializes the configuration by creating or updating the .env file.
   auth                                      Runs the Google Cloud authentication and authorization flow.
   enableAPIs [options]                      Enables or disables required Google Cloud APIs for the project.
-  mcp                                       Launch gas-fakes as an MCP server.
+  mcp [options]                             Launch gas-fakes as an MCP server.
 ```
 
 ### Running a Script from a File
@@ -316,6 +319,66 @@ When this command is run, the following result is returned. You can see that the
 ```text
 The provided argument is sample
 ```
+
+### Using GAS libraries
+
+gas-fakes CLI can run Google Apps Script using libraries as follows.
+
+**1. Create a library file**
+
+Create a sample library file named `sampleLib.js` by copying and pasting the following script.
+
+```javascript
+function function1() {
+  return "function1";
+}
+
+var value1 = "value1";
+```
+
+**2. Create a main script**
+
+Create a sample script named `sample.js` that utilizes the library. In this example, the library identifier is defined as `LIB`.
+
+```javascript
+const res1 = LIB.function1();
+const res2 = LIB.value1;
+console.log({ res1, res2 });
+```
+
+**3. Run the script**
+
+Execute the following command to link the library file to the identifier `LIB` and run the script:
+
+```bash
+gas-fakes -f sample.js -l LIB@sampleLib.js
+```
+
+`LIB@sampleLib.js`: `LIB` and `sampleLib.js` are the identifier and the file of library, respectively. At gas-fakes CLI, the file, the hyperlink, and the library key (File ID) of Google Apps Script library can be used.
+
+**Output:**
+
+```text
+$ gas-fakes -f sample.js -l LIB@sampleLib.js
+...using env file in /workspace/.env
+...using gasfakes settings file in /workspace/gasfakes.json
+[Worker] ...importing Drive API
+[Worker] ...importing Sheets API
+[Worker] ...importing Slides API
+[Worker] ...didnt find /workspace/gasfakes.json ... skipping
+[Worker] ...didnt find /workspace/appsscript.json ... skipping
+[Worker] ...didnt find /workspace/.clasp.json ... skipping
+[Worker] ...cache will be in /tmp/gas-fakes/cache
+[Worker] ...properties will be in /tmp/gas-fakes/properties
+[Worker] ...writing to /workspace/gasfakes.json
+[Worker] ...initializing auth and discovering project ID
+[Worker] ...discovered and set projectId to for-testing
+...gas-fakes version 1.2.##
+{ res1: 'function1', res2: 'value1' }
+...terminating worker thread
+```
+
+The output confirms that the function and variable from the library were correctly retrieved.
 
 ## Using non default locations
 
