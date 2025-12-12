@@ -116,13 +116,33 @@ class FakeGmailApp {
    * @param {number} [max] - The maximum number of threads to return.
    * @returns {GmailThread[]} An array of Gmail threads in the Inbox.
    */
-  getInboxThreads(start = 0, max = 500) {
+  getInboxThreads(start, max) {
+    return this._getThreads('in:inbox', start, max);
+  }
+
+  /**
+   * Gets the number of unread threads in the inbox.
+   * @returns {number} The number of threads in the inbox that have unread messages.
+   */
+  getInboxUnreadCount() {
+    return this._getThreads('in:inbox is:unread', 0, 500).length;
+  }
+
+  /**
+   * Private helper to get threads with pagination.
+   * @param {string} q The query string.
+   * @param {number} [start=0] The index of the first thread to return.
+   * @param {number} [max=500] The maximum number of threads to return.
+   * @returns {GmailThread[]} An array of Gmail threads.
+   * @private
+   */
+  _getThreads(q, start = 0, max = 500) {
     const threads = [];
     let pageToken;
     
     do {
       const params = { 
-        q: 'in:inbox', 
+        q,
         pageToken,
         maxResults: Math.min(max, 500) // The API max is 500
       };
@@ -137,16 +157,6 @@ class FakeGmailApp {
     
     const sliced = threads.slice(start, max !== undefined ? start + max : undefined);
     return sliced.map(thread => newFakeGmailThread(thread));
-  }
-
-  /**
-   * Gets the number of unread threads in the inbox.
-   * @returns {number} The number of threads in the inbox that have unread messages.
-   */
-  getInboxUnreadCount() {
-    const params = { q: 'in:inbox is:unread' };
-    const { threads } = Gmail.Users.Threads.list('me', params);
-    return threads ? threads.length : 0;
   }
 }
 
