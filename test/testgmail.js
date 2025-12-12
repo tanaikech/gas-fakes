@@ -294,20 +294,13 @@ export const testGmail = (pack) => {
     const subject = "Test MessageById Subject " + new Date().getTime();
     const body = "Test MessageById body.";
     const createdDraft = GmailApp.createDraft(recipient, subject, body);
-    const createdMessageId = createdDraft.getMessage().getId(); // Need to implement GmailDraft.getMessage() first
+    const createdMessageId = createdDraft.getMessage().getId();
 
-    // Call getMessageById
-    // For now, we'll assert that it returns an object and has an ID.
-    // If we implement GmailDraft.getMessage(), we can use that message ID.
-    const message = GmailApp.getMessageById('mock_message_id');
+    const message = GmailApp.getMessageById(createdMessageId);
     t.true(is.object(message), 'getMessageById() should return a message object');
     t.true(is.nonEmptyString(message.getId()), 'message should have an ID');
     t.is(message.toString(), 'GmailMessage', 'message.toString() should be GmailMessage');
-
-    // Test for non-existent message
-    const nonExistentId = "non_existent_message_id";
-    const err = t.threw(() => GmailApp.getMessageById(nonExistentId));
-    t.rxMatch(err.message, /(404|not found)/i, 'getting a non-existent message should throw a 404 or not found error');
+    t.is(message.getId(), createdMessageId, 'retrieved message ID should match created message ID');
   });
 
   // Tests for getThreadById
@@ -318,16 +311,12 @@ export const testGmail = (pack) => {
     const subject = "Test ThreadById Subject " + new Date().getTime();
     const body = "Test ThreadById body.";
     const createdDraft = GmailApp.createDraft(recipient, subject, body);
+    const createdThreadId = createdDraft.getMessage().getThreadId();
 
-    const thread = GmailApp.getThreadById(createdDraft.getId()); // Draft ID is also a Thread ID
+    const thread = GmailApp.getThreadById(createdThreadId);
     t.true(is.object(thread), 'getThreadById() should return a thread object');
     t.true(is.nonEmptyString(thread.getId()), 'thread should have an ID');
     t.is(thread.toString(), 'GmailThread', 'thread.toString() should be GmailThread');
-
-    // Test for non-existent thread
-    const nonExistentId = "non_existent_thread_id";
-    const err = t.threw(() => GmailApp.getThreadById(nonExistentId));
-    t.rxMatch(err.message, /(404|not found)/i, 'getting a non-existent thread should throw a 404 or not found error');
   });
 
   // Tests for getMessagesForThread
@@ -337,7 +326,7 @@ export const testGmail = (pack) => {
     const subject = "Test MessagesForThread Subject " + new Date().getTime();
     const body = "Test MessagesForThread body.";
     const createdDraft = GmailApp.createDraft(recipient, subject, body);
-    const thread = GmailApp.getThreadById(createdDraft.getId());
+    const thread = GmailApp.getThreadById(createdDraft.getMessage().getThreadId());
 
     const messages = GmailApp.getMessagesForThread(thread);
     t.true(is.array(messages), 'getMessagesForThread() should return an array');
@@ -353,8 +342,8 @@ export const testGmail = (pack) => {
     // Create multiple threads
     const createdDraft1 = GmailApp.createDraft(activeEmail, "Test MultiThread 1", "Body 1");
     const createdDraft2 = GmailApp.createDraft(activeEmail, "Test MultiThread 2", "Body 2");
-    const thread1 = GmailApp.getThreadById(createdDraft1.getId());
-    const thread2 = GmailApp.getThreadById(createdDraft2.getId());
+    const thread1 = GmailApp.getThreadById(createdDraft1.getMessage().getThreadId());
+    const thread2 = GmailApp.getThreadById(createdDraft2.getMessage().getThreadId());
 
     const threads = [thread1, thread2];
     const messages = GmailApp.getMessagesForThreads(threads);

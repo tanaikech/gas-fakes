@@ -19,6 +19,14 @@ class FakeGmailMessage {
   getId() {
     return this.__messageResource.id;
   }
+
+  /**
+   * Gets the ID of the thread that contains this message.
+   * @returns {string} The thread ID.
+   */
+  getThreadId() {
+    return this.__messageResource.threadId;
+  }
   
   toString() {
     return this.__fakeObjectType;
