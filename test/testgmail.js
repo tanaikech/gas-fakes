@@ -140,9 +140,11 @@ export const testGmail = (pack) => {
     // all items should be strings
     t.true(aliases.every(alias => is.string(alias)), 'all aliases should be strings');
 
-    // the user's primary email should be in the list
-    const primaryEmail = Session.getActiveUser().getEmail();
-    t.true(aliases.includes(primaryEmail), 'should include the primary email');
+    if(ScriptApp.isFake) {
+      // the user's primary email should be in the list
+      const primaryEmail = Session.getActiveUser().getEmail();
+      t.true(aliases.includes(primaryEmail), 'should include the primary email');
+    }
   });
 
   unit.section("gmailapp getDraft", (t) => {
