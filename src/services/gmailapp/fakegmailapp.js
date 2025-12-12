@@ -52,6 +52,24 @@ class FakeGmailApp {
     // The live environment follows this, so we will filter for type 'user'.
     return labels ? labels.filter(l => l.type === 'user').map(labelResource => newFakeGmailLabel(labelResource)) : [];
   }
+  /**
+   * Deletes the specified label.
+   * @param {GmailLabel} label The label to delete.
+   * @returns {GmailApp} The Gmail service, useful for chaining.
+   */
+  deleteLabel(label) {
+    Gmail.Users.Labels.remove('me', label.getId());
+    return this;
+  }
+
+  /**
+   * Gets a list of the emails that are set up as aliases for this account in Gmail.
+   * @returns {string[]} An array of aliases for this account.
+   */
+  getAliases() {
+    const { sendAs } = Gmail.Users.Settings.SendAs.list('me');
+    return sendAs ? sendAs.map(alias => alias.sendAsEmail) : [];
+  }
 }
 
 export const newFakeGmailApp = (...args) => Proxies.guard(new FakeGmailApp(...args));

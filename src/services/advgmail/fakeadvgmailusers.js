@@ -3,6 +3,7 @@ import { Syncit } from '../../support/syncit.js';
 import { signatureArgs, ssError, gError } from '../../support/helpers.js';
 import { newFakeAdvGmailLabels } from './fakeadvgmaillabels.js';
 import { newFakeAdvGmailDrafts } from './fakeadvgmaildrafts.js';
+import { newFakeAdvGmailSettings } from './fakeadvgmailsettings.js';
 
 import { Proxies } from '../../support/proxies.js';
 import { Utils } from '../../support/utils.js';
@@ -23,6 +24,10 @@ class FakeAdvGmailUsers extends FakeAdvResource {
 
   get Drafts() {
     return newFakeAdvGmailDrafts(this.gmail);
+  }
+
+  get Settings() {
+    return newFakeAdvGmailSettings(this.gmail);
   }
 
 }

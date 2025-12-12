@@ -111,6 +111,39 @@ export const testGmail = (pack) => {
     t.is(draft.toString(), "GmailDraft", "should be a gmail draft object");
   });
 
+  unit.section("gmailapp deleteLabel", (t) => {
+    const labelName = `${fixes.PREFIX}-delete-label-${new Date().getTime()}`;
+    let newLabel = GmailApp.createLabel(labelName);
+    t.is(newLabel.getName(), labelName, 'createLabel should return a label with the correct name for deletion test');
+
+    let labels = GmailApp.getUserLabels();
+    t.true(labels.some(l => l.getName() === labelName), 'should find the newly created label before deletion');
+
+    GmailApp.deleteLabel(newLabel);
+
+    labels = GmailApp.getUserLabels();
+    t.false(labels.some(l => l.getName() === labelName), 'should not find the deleted label');
+
+    // For now, just ensure it doesn't break.
+    try {
+      GmailApp.deleteLabel(newLabel);
+      t.true(true, 'deleting an already deleted label should not throw');
+    } catch (e) {
+      t.true(false, `deleting an already deleted label threw an error: ${e.message}`);
+    }
+  });
+
+  unit.section("gmailapp getAliases", (t) => {
+    const aliases = GmailApp.getAliases();
+    t.true(is.array(aliases), 'getAliases() should return an array');
+    t.is(aliases.length, 2, 'should return the correct number of aliases');
+    t.true(aliases.includes('primary@example.com'), 'should include the primary alias');
+    t.true(aliases.includes('alias@example.com'), 'should include the alias');
+  });
+
+
+
+
 
 
   if (!pack) {
