@@ -107,13 +107,27 @@ class FakeGmailApp {
    * @param {number} [max] - The maximum number of threads to return.
    * @returns {GmailThread[]} An array of Gmail threads in the Inbox.
    */
-  getInboxThreads(start, max) {
-    const params = { q: 'in:inbox' };
-    if (start !== undefined) params.pageToken = start; // Gmail API uses pageToken for start
-    if (max !== undefined) params.maxResults = max;
+  getInboxThreads(start = 0, max = 500) {
+    const threads = [];
+    let pageToken;
+    
+    do {
+      const params = { 
+        q: 'in:inbox', 
+        pageToken,
+        maxResults: Math.min(max, 500) // The API max is 500
+      };
+      
+      const page = Gmail.Users.Threads.list('me', params);
+      if (page.threads) {
+        threads.push(...page.threads);
+      }
+      pageToken = page.nextPageToken;
 
-    const { threads } = Gmail.Users.Threads.list('me', params);
-    return threads ? threads.map(thread => newFakeGmailThread(thread)) : [];
+    } while (pageToken && threads.length < start + max);
+    
+    const sliced = threads.slice(start, max !== undefined ? start + max : undefined);
+    return sliced.map(thread => newFakeGmailThread(thread));
   }
 }
 

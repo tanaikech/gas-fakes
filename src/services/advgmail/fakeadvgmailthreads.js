@@ -23,7 +23,7 @@ class FakeAdvGmailThreads extends FakeAdvResource {
     // Implement filtering based on params.q if needed for more complex scenarios
     const { data, response } = this._call(
       'list',
-      { ...params, userId },
+      { ...params, userId, maxResults: 500 },
       null,
       'threads'
     );

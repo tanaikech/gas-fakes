@@ -12,12 +12,6 @@ class FakeAdvGmailDrafts extends FakeAdvResource {
     this.__fakeObjectType = 'Gmail.Users.Drafts';
   }
 
-  /**
-   * Creates a new draft with the DRAFT label.
-   * @param {object} resource - The draft resource to create.
-   * @param {string} userId - The user's email address. The special value me can be used to indicate the authenticated user.
-   * @returns {object} The created draft resource.
-   */
   create(resource, userId) {
     const { data, response } = this._call(
       'create',
@@ -29,12 +23,6 @@ class FakeAdvGmailDrafts extends FakeAdvResource {
     return data;
   }
 
-  /**
-   * Gets the specified draft.
-   * @param {string} userId - The user's email address. The special value me can be used to indicate the authenticated user.
-   * @param {string} id - The ID of the draft to retrieve.
-   * @returns {object} The draft resource.
-   */
   get(userId, id) {
     const { data, response } = this._call(
       'get',
@@ -42,23 +30,24 @@ class FakeAdvGmailDrafts extends FakeAdvResource {
       null,
       'drafts'
     );
-    gError(response, 'gmail', 'users.drafts.get');
+    gError(response, 'gmail', 'users.drafts.get', true);
     return data;
   }
 
-  /**
-   * Lists the drafts in the user's mailbox.
-   * @param {string} userId - The user's email address. The special value me can be used to indicate the authenticated user.
-   * @returns {object} The list of draft resources.
-   */
-  list(userId) {
+  list(userId, params = {}) {
     const { data, response } = this._call(
       'list',
-      { userId },
+      { userId, ...params, maxResults: 500 },
       null,
       'drafts'
     );
     gError(response, 'gmail', 'users.drafts.list');
+    return data;
+  }
+
+  remove(userId, id) {
+    const { data, response } = this._call('delete', { userId, id }, null, 'drafts');
+    gError(response, 'gmail', 'users.drafts.delete', true);
     return data;
   }
 }

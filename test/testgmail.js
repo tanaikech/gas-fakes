@@ -126,36 +126,23 @@ export const testGmail = (pack) => {
     t.false(labels.some(l => l.getName() === labelName), 'should not find the deleted label');
 
     // Deleting a non-existent label should throw an error
-    try {
-      GmailApp.deleteLabel(newLabel);
-      t.true(false, 'deleting an already deleted label should have thrown an error');
-    } catch (e) {
-      t.rxMatch(e.message, /(not found|invalid)/i, 'error message should indicate not found or invalid');
-    }
+    const err = t.threw(() => GmailApp.deleteLabel(newLabel));
+    t.rxMatch(err.message, /(not found|invalid)/i, 'deleting an already deleted label should throw an error');
   });
 
   unit.section("gmailapp getAliases", (t) => {
     const aliases = GmailApp.getAliases();
     t.true(is.array(aliases), 'getAliases() should return an array');
     
-    // In the fake env, we have the primary user plus 2 hardcoded aliases
-    if (ScriptApp.isFake) {
-      t.is(aliases.length, 3, 'should return 3 aliases in fake env');
-      t.true(aliases.includes('alias@example.com'), 'should include the hardcoded alias');
-      t.true(aliases.includes('alias2@example.com'), 'should include the second hardcoded alias');
-    } else {
-      // In live env, we just check that there is at least one.
-      t.true(aliases.length > 0, 'should return at least one alias');
-    }
+    // a user will always have at least their primary email as an alias
+    t.true(aliases.length > 0, 'should return at least one alias');
 
     // all items should be strings
     t.true(aliases.every(alias => is.string(alias)), 'all aliases should be strings');
 
-    if(ScriptApp.isFake) {
-      // the user's primary email should be in the list
-      const primaryEmail = Session.getActiveUser().getEmail();
-      t.true(aliases.includes(primaryEmail), 'should include the primary email');
-    }
+    // the user's primary email should be in the list
+    const primaryEmail = Session.getActiveUser().getEmail();
+    t.true(aliases.includes(primaryEmail), 'should include the primary email');
   });
 
   unit.section("gmailapp getDraft", (t) => {
