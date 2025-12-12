@@ -311,7 +311,7 @@ export const testGmail = (pack) => {
     const subject = "Test ThreadById Subject " + new Date().getTime();
     const body = "Test ThreadById body.";
     const createdDraft = GmailApp.createDraft(recipient, subject, body);
-    const createdThreadId = createdDraft.getMessage().getThreadId();
+    const createdThreadId = createdDraft.getMessage().getThread().getId();
 
     const thread = GmailApp.getThreadById(createdThreadId);
     t.true(is.object(thread), 'getThreadById() should return a thread object');
@@ -326,7 +326,7 @@ export const testGmail = (pack) => {
     const subject = "Test MessagesForThread Subject " + new Date().getTime();
     const body = "Test MessagesForThread body.";
     const createdDraft = GmailApp.createDraft(recipient, subject, body);
-    const thread = GmailApp.getThreadById(createdDraft.getMessage().getThreadId());
+    const thread = GmailApp.getThreadById(createdDraft.getMessage().getThread().getId());
 
     const messages = GmailApp.getMessagesForThread(thread);
     t.true(is.array(messages), 'getMessagesForThread() should return an array');
@@ -342,8 +342,8 @@ export const testGmail = (pack) => {
     // Create multiple threads
     const createdDraft1 = GmailApp.createDraft(activeEmail, "Test MultiThread 1", "Body 1");
     const createdDraft2 = GmailApp.createDraft(activeEmail, "Test MultiThread 2", "Body 2");
-    const thread1 = GmailApp.getThreadById(createdDraft1.getMessage().getThreadId());
-    const thread2 = GmailApp.getThreadById(createdDraft2.getMessage().getThreadId());
+    const thread1 = GmailApp.getThreadById(createdDraft1.getMessage().getThread().getId());
+    const thread2 = GmailApp.getThreadById(createdDraft2.getMessage().getThread().getId());
 
     const threads = [thread1, thread2];
     const messages = GmailApp.getMessagesForThreads(threads);

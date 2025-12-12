@@ -1,4 +1,5 @@
 import { Proxies } from '../../support/proxies.js';
+import { newFakeGmailThread } from './fakegmailthread.js';
 
 export const newFakeGmailMessage = (...args) => Proxies.guard(new FakeGmailMessage(...args));
 
@@ -21,11 +22,13 @@ class FakeGmailMessage {
   }
 
   /**
-   * Gets the ID of the thread that contains this message.
-   * @returns {string} The thread ID.
+   * Gets the thread that contains this message.
+   * @returns {GmailThread} The thread.
    */
-  getThreadId() {
-    return this.__messageResource.threadId;
+  getThread() {
+    // The threadId is available in the message resource
+    const threadResource = Gmail.Users.Threads.get('me', this.__messageResource.threadId);
+    return newFakeGmailThread(threadResource);
   }
   
   toString() {
