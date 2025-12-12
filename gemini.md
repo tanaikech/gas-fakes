@@ -4,7 +4,8 @@
 - The full repo for gas-fakes is here https://github.com/brucemcpherson/gas-fakes
 - Getting started with gas-fakes is here https://github.com/brucemcpherson/gas-fakes/blob/main/README.md
 - How to use sandboxes is here https://github.com/brucemcpherson/gas-fakes/blob/main/sandbox.md
-- All Apps Script documentation is here https://github.com/brucemcpherson/gas-fakes/blob/main/apps-script.md
+- All Apps Script documentation is here https://github.com/brucemcpherson/gas-fakes/tree/main/progress
+
 
 
 You can run the following command to run any script you generate, adding any optional sandbox flags as requested.

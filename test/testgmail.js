@@ -84,6 +84,34 @@ export const testGmail = (pack) => {
     }
   });
 
+  unit.section("gmailapp createDraft advanced", (t) => {
+    const recipient = "test@example.com";
+    const subject = "Test Draft Subject advanced " + new Date().getTime();
+    const body = "Test draft body.";
+    const htmlBody = "<html><body><p>Test draft body with inline image <img src='cid:myImage' /></p></body></html>";
+    const attachment = Utilities.newBlob("test attachment", "text/plain", "attachment.txt");
+    const inlineImage = UrlFetchApp.fetch(fixes.RANDOM_IMAGE).getBlob();
+
+    const options = {
+      htmlBody,
+      attachments: [attachment],
+      inlineImages: {
+        myImage: inlineImage,
+      },
+      cc: "cc@example.com",
+      bcc: "bcc@example.com",
+      from: "from@example.com",
+      name: "Test Sender",
+      replyTo: "replyto@example.com",
+    };
+
+    const draft = GmailApp.createDraft(recipient, subject, body, options);
+    t.true(is.object(draft), "should create a draft object with advanced options");
+    t.true(is.nonEmptyString(draft.getId()), "advanced draft should have an id");
+    t.is(draft.toString(), "GmailDraft", "should be a gmail draft object");
+  });
+
+
 
   if (!pack) {
     unit.report();
