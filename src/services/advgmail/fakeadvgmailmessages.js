@@ -28,4 +28,22 @@ class FakeAdvGmailMessages extends FakeAdvResource {
     gError(response, 'gmail', 'users.messages.get', true);
     return data;
   }
+
+  /**
+   * Sends a message.
+   * @param {object} resource - The message to send.
+   * @param {string} userId - The user's email address.
+   * @param {object} media - Media payload (optional).
+   * @returns {object} The sent message resource.
+   */
+  send(resource, userId, media) {
+    const { data, response } = this._call(
+      'send',
+      { userId, resource, media },
+      null,
+      'messages'
+    );
+    gError(response, 'gmail', 'users.messages.send');
+    return data;
+  }
 }

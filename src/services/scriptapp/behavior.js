@@ -1,6 +1,6 @@
 import { Proxies } from '../../support/proxies.js'
 import { Utils } from '../../support/utils.js'
-import {slogger } from "../../support/slogger.js";
+import { slogger } from "../../support/slogger.js";
 
 const { is } = Utils
 const checkArgs = (actual, expect = "boolean") => {
@@ -14,7 +14,11 @@ const serviceModel = {
   enabled: null,
   sandboxStrict: null,
   sandboxMode: null,
-  methodWhitelist: null
+  methodWhitelist: null,
+  emailWhitelist: null,
+  labelWhitelist: null,
+  usageLimit: null,
+  usageCount: 0
 }
 const idWhitelistModel = {
   id: null,
@@ -57,7 +61,7 @@ class FakeIdWhitelistItem {
   setTrash(value) {
     this.__model.trash = checkArgs(value)
     return this
-  } 
+  }
 }
 /**
  * create a new behavior instance
@@ -134,6 +138,50 @@ class FakeSandboxService {
     return this
   }
 
+  set emailWhitelist(value) {
+    if (!is.null(value)) {
+      checkArgs(value, "array")
+      value.forEach(f => {
+        if (!is.nonEmptyString(f)) throw new Error(`expected an array of nonEmptyStrings for emailWhitelist`)
+      })
+    }
+    this.__state.emailWhitelist = value
+  }
+  get emailWhitelist() {
+    return this.__state.emailWhitelist
+  }
+
+  set labelWhitelist(value) {
+    if (!is.null(value)) {
+      checkArgs(value, "array")
+      // We expect objects like { label: 'name', read: true, write: false, delete: false }
+      // but for simplicity in config validation we'll just check it's an array for now
+    }
+    this.__state.labelWhitelist = value
+  }
+  get labelWhitelist() {
+    return this.__state.labelWhitelist
+  }
+
+  set usageLimit(value) {
+    if (!is.null(value)) {
+      checkArgs(value, "number")
+    }
+    this.__state.usageLimit = value
+  }
+  get usageLimit() {
+    return this.__state.usageLimit
+  }
+
+  get usageCount() {
+    return this.__state.usageCount
+  }
+
+  incrementUsage() {
+    this.__state.usageCount++
+    return this.__state.usageCount
+  }
+
   set enabled(value) {
     this.__state.enabled = checkArgs(value)
   }
@@ -158,6 +206,7 @@ class FakeBehavior {
     // the idea is that we can use this to clean up after tests or to emulate drive.file scope
     // key is the file id
     this.__createdIds = new Set();
+    this.__createdGmailIds = new Set();
     // in sandbox mode we only allow access to files created in this instance
     // this is to emulate the behavior of a drive.file scope
     this.__sandboxMode = false;
@@ -253,6 +302,18 @@ class FakeBehavior {
       if (!this.isKnown(id)) {
         slogger.log(`...adding file ${id} to sandbox allowed list`);
         this.__createdIds.add(id);
+      }
+    }
+    return id
+  }
+  addGmailId(id) {
+    if (this.sandboxMode) {
+      if (!is.nonEmptyString(id)) {
+        throw new Error(`Invalid sandbox id parameter (${id}) - must be a non-empty string`);
+      }
+      if (!this.isKnownGmail(id)) {
+        slogger.log(`...adding gmail id ${id} to sandbox allowed list`);
+        this.__createdGmailIds.add(id);
       }
     }
     return id
@@ -364,11 +425,55 @@ class FakeBehavior {
       return acc;
     }, []);
 
+    // Clean up Gmail artifacts
+    const trashedGmail = Array.from(this.__createdGmailIds).reduce((acc, id) => {
+      // Try to determine type or just try deleting as label, then message/thread?
+      // IDs for labels vs threads/messages might overlap or be distinct formats.
+      // Label IDs are usually strings like 'Label_123'. Thread IDs are hex strings.
+      // We can try fetching as label first.
+      try {
+        // Try as label
+        // We use Gmail.Users.Labels.remove('me', id) directly as accessors via GmailApp might have sandbox checks we want to bypass/or use?
+        // Cleanup should probably bypass checks or operate as 'system'.
+        // But we are in `behavior` which doesn't have direct access to internal fake objects easily without import.
+        // However `Gmail` service is global in this env usually? 
+        // `Gmail.Users.Labels.remove` usage in `fakegmailapp.js` suggests `Gmail` global is available.
+        Gmail.Users.Labels.remove('me', id);
+        slogger.log(`...deleted gmail label ${id}`);
+        acc.push(id);
+        return acc;
+      } catch (e) { /* not a label or failed */ }
+
+      try {
+        // Try as thread - move to trash
+        Gmail.Users.Threads.trash('me', id);
+        slogger.log(`...trashed gmail thread ${id}`);
+        acc.push(id);
+        return acc;
+      } catch (e) { /* not a thread */ }
+
+      try {
+        // Try as message - move to trash (batchModify or individual?)
+        // Message trash often implicit via thread, but individual messages can be trashed? Not easily in Apps Script GmailApp (only moveThreadToTrash). 
+        // Advanced Gmail service allows trashing message.
+        Gmail.Users.Messages.trash('me', id);
+        slogger.log(`...trashed gmail message ${id}`);
+        acc.push(id);
+        return acc;
+      } catch (e) { /* not a message */ }
+
+      return acc;
+    }, []);
+
     this.__createdIds.clear();
-    slogger.log(`...trashed ${trashed.length} sandboxed files`);
+    this.__createdGmailIds.clear();
+    slogger.log(`...trashed ${trashed.length} sandboxed files and ${trashedGmail.length} gmail items`);
     return trashed;
   }
   isKnown(id) {
     return this.__createdIds.has(id);
+  }
+  isKnownGmail(id) {
+    return this.__createdGmailIds.has(id);
   }
 }

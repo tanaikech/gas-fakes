@@ -39,6 +39,7 @@ import { testForm } from "./testform.js";
 import { testFormsAdv } from "./testformsadv.js";
 import { testSheetsText } from "./testsheetstext.js";
 import { testGmail } from "./testgmail.js";
+import { testSandboxGmail } from "./testsandboxgmail.js";
 import { testSheetsRange } from "./testsheetsrange.js";
 import { testDocsImages } from "./testdocsimages.js";
 import { testSandbox } from "./testsandbox.js";
@@ -91,6 +92,8 @@ const testFakes = () => {
   testFormsAdv(pack);
   console.log("\n----Test gmail----");
   testGmail(pack);
+  console.log("\n----Test sandbox gmail----");
+  testSandboxGmail(pack);
   console.log("\n----Test docsadv----");
   testDocsAdv(pack);
   console.log("\n----Test docs----");

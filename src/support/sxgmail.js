@@ -31,7 +31,7 @@ export const sxGmail = async (Auth, { subProp, prop, method, params, options }) 
     }
 
     const isRetryable = [429, 500, 503].includes(response?.status) || error?.code == 429;
-    
+
     if (isRetryable && i < maxRetries - 1) {
       const jitter = Math.floor(Math.random() * 1000);
       syncWarn(`Retryable error on Gmail API call ${methodName} (status: ${response?.status}). Retrying in ${delay + jitter}ms...`);
@@ -41,8 +41,8 @@ export const sxGmail = async (Auth, { subProp, prop, method, params, options }) 
     }
 
     if (error || isRetryable) {
-      // Don't log 404 as an error, it's an expected outcome for some tests (e.g., get deleted item)
-      if (response?.status !== 404) {
+      // Don't log 404 or 409 as an error, it's an expected outcome for some tests (e.g., get deleted item or label exists)
+      if (response?.status !== 404 && response?.status !== 409) {
         syncError(`Failed in sxGmail for ${methodName}`, error);
       }
       return { data: null, response: responseSyncify(response) };

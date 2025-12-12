@@ -47,4 +47,39 @@ class FakeAdvGmailThreads extends FakeAdvResource {
     gError(response, 'gmail', 'users.threads.get', true);
     return data;
   }
+
+  /**
+   * Modifies the labels applied to the thread.
+   * @param {object} resource - The modifications to apply.
+   * @param {string} userId - The user's email address.
+   * @param {string} id - The ID of the thread to modify.
+   * @returns {object} The modified thread resource.
+   */
+  modify(resource, userId, id) {
+    const { data, response } = this._call(
+      'modify',
+      { userId, id, resource },
+      null,
+      'threads'
+    );
+    gError(response, 'gmail', 'users.threads.modify');
+    return data;
+  }
+
+  /**
+   * Moves the specified thread to the trash.
+   * @param {string} userId - The user's email address.
+   * @param {string} id - The ID of the thread to trash.
+   * @returns {object} The trashed thread resource.
+   */
+  trash(userId, id) {
+    const { data, response } = this._call(
+      'trash',
+      { userId, id },
+      null,
+      'threads'
+    );
+    gError(response, 'gmail', 'users.threads.trash');
+    return data;
+  }
 }

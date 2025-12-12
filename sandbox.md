@@ -162,6 +162,78 @@ try {
 }
 ```
 
+
+## Gmail Sandbox Checks
+
+In addition to standard file restrictions, `gas-fakes` provides specific sandbox controls for `GmailApp` to prevent unintended emails or changes to your Gmail account during testing.
+
+These rules are configured in `ScriptApp.__behavior.sandboxService.GmailApp`.
+
+### Configuration Properties
+
+| Property | Type | Default | Description |
+|---|---|---|---|
+| `emailWhitelist` | `string[]` | `[]` | List of email addresses allowed to receive emails. Emails sent to addresses not in this list (or allowed by session rules) will throw an error. |
+| `usageLimit` | `number` | `undefined` | Maximum number of emails allowed to be sent in a single session. If exceeded, `sendEmail` will throw an error. |
+| `labelWhitelist` | `LabelWhitelistConfig[]` | `[]` | Configuration for allowed labels, specifying `name` and permissions (`read`, `write`, `delete`). |
+
+### Session Tracking & Cleanup
+
+- **Session Access**: Any email, thread, or label created *during* the sandbox session is automatically whitelisted and tracking in `__createdGmailIds`. You can access and modify these items freely.
+- **Cleanup**: When `ScriptApp.__behavior.trash()` is called (and `cleanup` is `true`), `gas-fakes` will attempt to delete labels and trash threads created during the session.
+
+### Label Whitelist
+
+Restricts which *existing* threads and messages your script can access.
+
+`LabelWhitelistConfig` has the structure: `{ name: string, read?: boolean, write?: boolean, delete?: boolean }` (defaults are `false`).
+
+- **Access Rule**: `GmailApp.getThreadById(id)` or `GmailApp.search(...)` will only return threads that either:
+    1. Were created in the current session.
+    2. Have at least one label present in `labelWhitelist` with `read: true`.
+- **Modification Rule**: `GmailApp.createLabel(name)` or `deleteLabel(label)` requires the label name to be in the whitelist (with `write` or `delete` permissions respectively), or be a new session label.
+- **Deletion Rule**: `GmailApp.moveThreadToTrash(thread)` requires the thread to be accessible (session-created or whitelisted label).
+
+### Gmail Example
+
+```javascript
+const behavior = ScriptApp.__behavior;
+behavior.sandboxMode = true;
+
+// Configure Gmail Sandbox
+const gmailSettings = behavior.sandboxService.GmailApp;
+gmailSettings.emailWhitelist = ['allowed@example.com'];
+gmailSettings.usageLimit = 5;
+gmailSettings.labelWhitelist = [
+  { name: 'AllowedLabel', read: true, write: true, delete: false },
+  { name: 'Inbox', read: true } // Allow reading inbox threads
+];
+
+// --- Sending Emails ---
+
+// Succeeds
+GmailApp.sendEmail('allowed@example.com', 'Subject', 'Body');
+
+// Fails (email not in whitelist)
+// GmailApp.sendEmail('random@example.com', ...);
+
+// --- Accessing Threads ---
+
+// Succeeds (thread has 'AllowedLabel' or 'Inbox')
+const threads = GmailApp.search('label:AllowedLabel');
+
+// Fails (access denied if thread doesn't match rules)
+// const forbiddenThread = GmailApp.getThreadById('some-hidden-thread-id');
+
+// --- Creating Labels ---
+
+// Succeeds (in whitelist with write: true)
+GmailApp.createLabel('AllowedLabel');
+
+// Fails (not in whitelist)
+// GmailApp.createLabel('SecretLabel');
+```
+
 ## <img src="./logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
 
 - [getting started](GETTING_STARTED.md) - how to handle authentication for restricted scopes.
