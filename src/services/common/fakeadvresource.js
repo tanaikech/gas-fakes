@@ -22,7 +22,22 @@ export class FakeAdvResource {
       params,
       options
     };
-    return this.__syncitMethod(pack);
+    const result = this.__syncitMethod(pack);
+    if (!result || !result.response) {
+      // Simulate an error response if the worker didn't provide one.
+      return {
+        data: null,
+        response: {
+          status: 500,
+          statusText: 'Internal Server Error',
+          error: {
+            code: 500,
+            message: `API call to ${this.__serviceName}.${subProp}.${method} failed with no response from worker.`
+          }
+        }
+      };
+    }
+    return result;
   }
 
   toString() {

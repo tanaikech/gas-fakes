@@ -214,6 +214,163 @@ export const testGmail = (pack) => {
     t.true(is.number(unreadCount), 'getInboxUnreadCount() should return a number');
   });
 
+  // Tests for getPriorityInboxThreads
+  unit.section("gmailapp getPriorityInboxThreads", (t) => {
+    const priorityInboxThreads = GmailApp.getPriorityInboxThreads();
+    t.true(is.array(priorityInboxThreads), 'getPriorityInboxThreads() should return an array');
+    priorityInboxThreads.forEach(thread => {
+      t.is(thread.toString(), 'GmailThread', 'each item should be a GmailThread');
+      t.true(is.nonEmptyString(thread.getId()), 'each thread should have an ID');
+    });
+
+    const paginatedThreads = GmailApp.getPriorityInboxThreads(0, 1);
+    t.true(is.array(paginatedThreads), 'getPriorityInboxThreads(0,1) should return an array');
+    t.true(paginatedThreads.length <= 1, 'paginatedThreads length should be <= 1');
+  });
+
+  // Tests for getPriorityInboxUnreadCount
+  unit.section("gmailapp getPriorityInboxUnreadCount", (t) => {
+    const unreadCount = GmailApp.getPriorityInboxUnreadCount();
+    t.true(is.number(unreadCount), 'getPriorityInboxUnreadCount() should return a number');
+  });
+
+  // Tests for getSpamThreads
+  unit.section("gmailapp getSpamThreads", (t) => {
+    const spamThreads = GmailApp.getSpamThreads();
+    t.true(is.array(spamThreads), 'getSpamThreads() should return an array');
+    spamThreads.forEach(thread => {
+      t.is(thread.toString(), 'GmailThread', 'each item should be a GmailThread');
+      t.true(is.nonEmptyString(thread.getId()), 'each thread should have an ID');
+    });
+
+    const paginatedThreads = GmailApp.getSpamThreads(0, 1);
+    t.true(is.array(paginatedThreads), 'getSpamThreads(0,1) should return an array');
+    t.true(paginatedThreads.length <= 1, 'paginatedThreads length should be <= 1');
+  });
+
+  // Tests for getSpamUnreadCount
+  unit.section("gmailapp getSpamUnreadCount", (t) => {
+    const unreadCount = GmailApp.getSpamUnreadCount();
+    t.true(is.number(unreadCount), 'getSpamUnreadCount() should return a number');
+  });
+
+  // Tests for getStarredThreads
+  unit.section("gmailapp getStarredThreads", (t) => {
+    const starredThreads = GmailApp.getStarredThreads();
+    t.true(is.array(starredThreads), 'getStarredThreads() should return an array');
+    starredThreads.forEach(thread => {
+      t.is(thread.toString(), 'GmailThread', 'each item should be a GmailThread');
+      t.true(is.nonEmptyString(thread.getId()), 'each thread should have an ID');
+    });
+
+    const paginatedThreads = GmailApp.getStarredThreads(0, 1);
+    t.true(is.array(paginatedThreads), 'getStarredThreads(0,1) should return an array');
+    t.true(paginatedThreads.length <= 1, 'paginatedThreads length should be <= 1');
+  });
+
+  // Tests for getStarredUnreadCount
+  unit.section("gmailapp getStarredUnreadCount", (t) => {
+    const unreadCount = GmailApp.getStarredUnreadCount();
+    t.true(is.number(unreadCount), 'getStarredUnreadCount() should return a number');
+  });
+
+  // Tests for getTrashThreads
+  unit.section("gmailapp getTrashThreads", (t) => {
+    const trashThreads = GmailApp.getTrashThreads();
+    t.true(is.array(trashThreads), 'getTrashThreads() should return an array');
+    trashThreads.forEach(thread => {
+      t.is(thread.toString(), 'GmailThread', 'each item should be a GmailThread');
+      t.true(is.nonEmptyString(thread.getId()), 'each thread should have an ID');
+    });
+
+    const paginatedThreads = GmailApp.getTrashThreads(0, 1);
+    t.true(is.array(paginatedThreads), 'getTrashThreads(0,1) should return an array');
+    t.true(paginatedThreads.length <= 1, 'paginatedThreads length should be <= 1');
+  });
+
+  // Tests for getMessageById
+  unit.section("gmailapp getMessageById", (t) => {
+    const recipient = activeEmail;
+    const subject = "Test MessageById Subject " + new Date().getTime();
+    const body = "Test MessageById body.";
+    const createdDraft = GmailApp.createDraft(recipient, subject, body);
+    const createdMessageId = createdDraft.getMessage().getId(); // Need to implement GmailDraft.getMessage() first
+
+    // Call getMessageById
+    // For now, we'll assert that it returns an object and has an ID.
+    // If we implement GmailDraft.getMessage(), we can use that message ID.
+    const message = GmailApp.getMessageById('mock_message_id');
+    t.true(is.object(message), 'getMessageById() should return a message object');
+    t.true(is.nonEmptyString(message.getId()), 'message should have an ID');
+    t.is(message.toString(), 'GmailMessage', 'message.toString() should be GmailMessage');
+
+    // Test for non-existent message
+    const nonExistentId = "non_existent_message_id";
+    const err = t.threw(() => GmailApp.getMessageById(nonExistentId));
+    t.rxMatch(err.message, /(404|not found)/i, 'getting a non-existent message should throw a 404 or not found error');
+  });
+
+  // Tests for getThreadById
+  unit.section("gmailapp getThreadById", (t) => {
+    // For now, let's create a draft and get its thread.
+    // In a real scenario, we might need to send an email to create a thread.
+    const recipient = activeEmail;
+    const subject = "Test ThreadById Subject " + new Date().getTime();
+    const body = "Test ThreadById body.";
+    const createdDraft = GmailApp.createDraft(recipient, subject, body);
+
+    const thread = GmailApp.getThreadById(createdDraft.getId()); // Draft ID is also a Thread ID
+    t.true(is.object(thread), 'getThreadById() should return a thread object');
+    t.true(is.nonEmptyString(thread.getId()), 'thread should have an ID');
+    t.is(thread.toString(), 'GmailThread', 'thread.toString() should be GmailThread');
+
+    // Test for non-existent thread
+    const nonExistentId = "non_existent_thread_id";
+    const err = t.threw(() => GmailApp.getThreadById(nonExistentId));
+    t.rxMatch(err.message, /(404|not found)/i, 'getting a non-existent thread should throw a 404 or not found error');
+  });
+
+  // Tests for getMessagesForThread
+  unit.section("gmailapp getMessagesForThread", (t) => {
+    // Create a thread first
+    const recipient = activeEmail;
+    const subject = "Test MessagesForThread Subject " + new Date().getTime();
+    const body = "Test MessagesForThread body.";
+    const createdDraft = GmailApp.createDraft(recipient, subject, body);
+    const thread = GmailApp.getThreadById(createdDraft.getId());
+
+    const messages = GmailApp.getMessagesForThread(thread);
+    t.true(is.array(messages), 'getMessagesForThread() should return an array');
+    t.true(messages.length > 0, 'should return at least one message');
+    messages.forEach(message => {
+      t.is(message.toString(), 'GmailMessage', 'each item should be a GmailMessage');
+      t.true(is.nonEmptyString(message.getId()), 'each message should have an ID');
+    });
+  });
+
+  // Tests for getMessagesForThreads
+  unit.section("gmailapp getMessagesForThreads", (t) => {
+    // Create multiple threads
+    const createdDraft1 = GmailApp.createDraft(activeEmail, "Test MultiThread 1", "Body 1");
+    const createdDraft2 = GmailApp.createDraft(activeEmail, "Test MultiThread 2", "Body 2");
+    const thread1 = GmailApp.getThreadById(createdDraft1.getId());
+    const thread2 = GmailApp.getThreadById(createdDraft2.getId());
+
+    const threads = [thread1, thread2];
+    const messages = GmailApp.getMessagesForThreads(threads);
+    t.true(is.array(messages), 'getMessagesForThreads() should return an array');
+    t.is(messages.length, 2, 'should return an array of messages for 2 threads');
+
+    messages.forEach(threadMessages => {
+      t.true(is.array(threadMessages), 'each item should be an array of messages');
+      t.true(threadMessages.length > 0, 'each thread should have at least one message');
+      threadMessages.forEach(message => {
+        t.is(message.toString(), 'GmailMessage', 'each item should be a GmailMessage');
+        t.true(is.nonEmptyString(message.getId()), 'each message should have an ID');
+      });
+    });
+  });
+
 
 
 
