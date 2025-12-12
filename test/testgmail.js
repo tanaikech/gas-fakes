@@ -160,6 +160,44 @@ export const testGmail = (pack) => {
     t.rxMatch(err.message, /(404|not found)/i, 'getting a non-existent draft should throw a 404 or not found error');
   });
 
+  unit.section("gmailapp getDraftMessages", (t) => {
+    const initialDrafts = GmailApp.getDraftMessages();
+    t.true(is.array(initialDrafts), 'getDraftMessages should return an array initially');
+    const initialCount = initialDrafts.length;
+
+    // Create a couple of new drafts
+    GmailApp.createDraft("draft1@example.com", "Draft 1", "Body 1");
+    GmailApp.createDraft("draft2@example.com", "Draft 2", "Body 2");
+
+    const newDrafts = GmailApp.getDraftMessages();
+    t.true(is.array(newDrafts), 'getDraftMessages should return an array after creating drafts');
+    t.is(newDrafts.length, initialCount + 2, 'should have 2 more drafts');
+    
+    newDrafts.forEach(draftMessage => {
+      t.is(draftMessage.toString(), 'GmailMessage', 'each item should be a GmailMessage');
+      t.true(is.nonEmptyString(draftMessage.getId()), 'each draft message should have an ID');
+    });
+  });
+
+  unit.section("gmailapp getDrafts", (t) => {
+    const initialDrafts = GmailApp.getDrafts();
+    t.true(is.array(initialDrafts), 'getDrafts should return an array initially');
+    const initialCount = initialDrafts.length;
+
+    // Create a couple of new drafts
+    GmailApp.createDraft("draft3@example.com", "Draft 3", "Body 3");
+    GmailApp.createDraft("draft4@example.com", "Draft 4", "Body 4");
+
+    const newDrafts = GmailApp.getDrafts();
+    t.true(is.array(newDrafts), 'getDrafts should return an array after creating drafts');
+    t.is(newDrafts.length, initialCount + 2, 'should have 2 more drafts');
+    
+    newDrafts.forEach(draft => {
+      t.is(draft.toString(), 'GmailDraft', 'each item should be a GmailDraft');
+      t.true(is.nonEmptyString(draft.getId()), 'each draft should have an ID');
+    });
+  });
+
 
 
 

@@ -2,6 +2,7 @@ import { createMimeMessage } from './fakemimemessage.js';
 import { Proxies } from '../../support/proxies.js';
 import { newFakeGmailLabel } from './fakegmaillabel.js';
 import { newFakeGmailDraft } from './fakegmaildraft.js';
+import { newFakeGmailMessage } from './fakegmailmessage.js';
 
 /**
  * Provides access to Gmail threads, messages, and labels.
@@ -79,6 +80,24 @@ class FakeGmailApp {
   getDraft(draftId) {
     const draftResource = Gmail.Users.Drafts.get('me', draftId);
     return newFakeGmailDraft(draftResource);
+  }
+
+  /**
+   * Retrieves all draft messages.
+   * @returns {GmailMessage[]} An array of draft Gmail messages.
+   */
+  getDraftMessages() {
+    const { drafts } = Gmail.Users.Drafts.list('me');
+    return drafts ? drafts.map(draft => newFakeGmailMessage(draft.message)) : [];
+  }
+
+  /**
+   * Gets all Gmail draft messages.
+   * @returns {GmailDraft[]} An array of Gmail draft messages.
+   */
+  getDrafts() {
+    const { drafts } = Gmail.Users.Drafts.list('me');
+    return drafts ? drafts.map(draft => newFakeGmailDraft(draft)) : [];
   }
 }
 
