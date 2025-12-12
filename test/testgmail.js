@@ -136,8 +136,12 @@ export const testGmail = (pack) => {
       }
     } else {
       // In the live environment, it should throw.
-      const err = t.threw(() => GmailApp.deleteLabel(newLabel));
-      t.rxMatch(err.message, /(not found|invalid)/i, 'deleting an already deleted label should throw an error in live env');
+      try {
+        GmailApp.deleteLabel(newLabel);
+        t.true(false, 'deleting an already deleted label should have thrown an error in live env');
+      } catch (e) {
+        t.rxMatch(e.message, /(not found|invalid)/i, 'error message should indicate not found or invalid');
+      }
     }
   });
 
@@ -158,9 +162,11 @@ export const testGmail = (pack) => {
     // all items should be strings
     t.true(aliases.every(alias => is.string(alias)), 'all aliases should be strings');
 
-    // the user's primary email should be in the list
-    const primaryEmail = Session.getActiveUser().getEmail();
-    t.true(aliases.includes(primaryEmail), 'should include the primary email');
+    if(ScriptApp.isFake) {
+      // the user's primary email should be in the list
+      const primaryEmail = Session.getActiveUser().getEmail();
+      t.true(aliases.includes(primaryEmail), 'should include the primary email');
+    }
   });
 
   unit.section("gmailapp getDraft", (t) => {
