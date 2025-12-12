@@ -5,6 +5,7 @@ import { newFakeAdvGmailLabels } from './fakeadvgmaillabels.js';
 import { newFakeAdvGmailDrafts } from './fakeadvgmaildrafts.js';
 import { newFakeAdvGmailSettings } from './fakeadvgmailsettings.js';
 import { newFakeAdvGmailThreads } from './fakeadvgmailthreads.js';
+import { newFakeAdvGmailMessages } from './fakeadvgmailmessages.js';
 
 import { Proxies } from '../../support/proxies.js';
 import { Utils } from '../../support/utils.js';
@@ -33,6 +34,10 @@ class FakeAdvGmailUsers extends FakeAdvResource {
 
   get Threads() {
     return newFakeAdvGmailThreads(this.gmail);
+  }
+
+  get Messages() {
+    return newFakeAdvGmailMessages(this.gmail);
   }
 
 }

@@ -30,4 +30,21 @@ class FakeAdvGmailThreads extends FakeAdvResource {
     gError(response, 'gmail', 'users.threads.list');
     return data;
   }
+
+  /**
+   * Gets the specified thread.
+   * @param {string} userId The user's email address. The special value me can be used to indicate the authenticated user.
+   * @param {string} id The ID of the thread to retrieve.
+   * @returns {object} The thread resource.
+   */
+  get(userId, id) {
+    const { data, response } = this._call(
+      'get',
+      { userId, id },
+      null,
+      'threads'
+    );
+    gError(response, 'gmail', 'users.threads.get', true);
+    return data;
+  }
 }

@@ -128,6 +128,34 @@ class FakeGmailApp {
     return this._getThreads('in:inbox is:unread', 0, 500).length;
   }
 
+  getPriorityInboxThreads(start, max) {
+    return this._getThreads('in:inbox is:important', start, max);
+  }
+
+  getPriorityInboxUnreadCount() {
+    return this._getThreads('in:inbox is:important is:unread', 0, 500).length;
+  }
+  
+  getSpamThreads(start, max) {
+    return this._getThreads('in:spam', start, max);
+  }
+
+  getSpamUnreadCount() {
+    return this._getThreads('in:spam is:unread', 0, 500).length;
+  }
+  
+  getStarredThreads(start, max) {
+    return this._getThreads('is:starred', start, max);
+  }
+
+  getStarredUnreadCount() {
+    return this._getThreads('is:starred is:unread', 0, 500).length;
+  }
+  
+  getTrashThreads(start, max) {
+    return this._getThreads('in:trash', start, max);
+  }
+
   /**
    * Private helper to get threads with pagination.
    * @param {string} q The query string.
@@ -136,28 +164,47 @@ class FakeGmailApp {
    * @returns {GmailThread[]} An array of Gmail threads.
    * @private
    */
-  _getThreads(q, start = 0, max = 500) {
-    const threads = [];
-    let pageToken;
-    
-    do {
-      const params = { 
-        q,
-        pageToken,
-        maxResults: Math.min(max, 500) // The API max is 500
-      };
+    _getThreads(q, start = 0, max = 500) {
+      const threads = [];
+      let pageToken;
       
-      const page = Gmail.Users.Threads.list('me', params);
-      if (page.threads) {
-        threads.push(...page.threads);
-      }
-      pageToken = page.nextPageToken;
-
-    } while (pageToken && threads.length < start + max);
-    
-    const sliced = threads.slice(start, max !== undefined ? start + max : undefined);
-    return sliced.map(thread => newFakeGmailThread(thread));
+      do {
+        const params = { 
+          q, 
+          pageToken,
+          maxResults: Math.min(max, 500) // The API max is 500
+        };
+        
+        const page = Gmail.Users.Threads.list('me', params);
+        if (page.threads) {
+          threads.push(...page.threads);
+        }
+        pageToken = page.nextPageToken;
+  
+      } while (pageToken && threads.length < start + max);
+      
+      const sliced = threads.slice(start, max !== undefined ? start + max : undefined);
+      return sliced.map(thread => newFakeGmailThread(thread));
+    }
+  
+    getMessageById(id) {
+      const messageResource = Gmail.Users.Messages.get('me', id);
+      return newFakeGmailMessage(messageResource);
+    }
+  
+    getMessagesForThread(thread) {
+      const threadResource = Gmail.Users.Threads.get('me', thread.getId());
+      return threadResource.messages ? threadResource.messages.map(message => newFakeGmailMessage(message)) : [];
+    }
+  
+    getMessagesForThreads(threads) {
+      return threads.map(thread => this.getMessagesForThread(thread));
+    }
+  
+    getThreadById(id) {
+      const threadResource = Gmail.Users.Threads.get('me', id);
+      return newFakeGmailThread(threadResource);
+    }
   }
-}
-
-export const newFakeGmailApp = (...args) => Proxies.guard(new FakeGmailApp(...args));
+  
+  export const newFakeGmailApp = (...args) => Proxies.guard(new FakeGmailApp(...args));

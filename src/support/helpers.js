@@ -209,7 +209,10 @@ export const unimplementedProps = (self, props) => {
 }
 
 export const gError = (response, service, method, throw404 = false) => {
-  if (response && response.error) {
+  if (!response) {
+    throw new Error(`GoogleJsonResponseException: API call to ${service}.${method} failed with error: No response`);
+  }
+  if (response.error) {
     if (throw404 || response.error.code !== 404) {
       throw new Error(`GoogleJsonResponseException: API call to ${service}.${method} failed with error: ${response?.error?.message}`);
     }
