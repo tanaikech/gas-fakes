@@ -41,7 +41,7 @@ class FakeAdvGmailLabels extends FakeAdvResource {
       null,
       'labels'
     );
-    gError(response, 'gmail', 'users.labels.delete');
+    gError(response, 'gmail', 'users.labels.delete', true);
     return data;
   }
 

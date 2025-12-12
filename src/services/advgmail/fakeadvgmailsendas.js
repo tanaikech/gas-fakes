@@ -10,7 +10,11 @@ export class FakeAdvGmailSendAs extends FakeAdvResource {
     super(mainService, 'users', Syncit.fxGmail); // The resource path for SendAs is typically under 'users'
     this.gmail = mainService;
     this.__fakeObjectType = 'Gmail.Users.Settings.SendAs';
-    this.__aliases = [
+  }
+
+  list(userId) {
+    // In a real scenario, this would fetch from a mocked Gmail API or an internal store.
+    const aliases = [
       {
         sendAsEmail: Session.getActiveUser().getEmail(),
         isPrimary: true,
@@ -33,11 +37,6 @@ export class FakeAdvGmailSendAs extends FakeAdvResource {
         verificationStatus: 'accepted',
       },
     ];
-  }
-
-  list(userId) {
-    // In a real scenario, this would fetch from a mocked Gmail API or an internal store.
-    // For now, return the hardcoded aliases.
-    return { sendAs: this.__aliases };
+    return { sendAs: aliases };
   }
 }

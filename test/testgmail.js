@@ -125,23 +125,12 @@ export const testGmail = (pack) => {
     labels = GmailApp.getUserLabels();
     t.false(labels.some(l => l.getName() === labelName), 'should not find the deleted label');
 
-    // On live GAS, deleting a non-existent label throws an error.
-    if (ScriptApp.isFake) {
-      // In the fake environment, it doesn't throw.
-      try {
-        GmailApp.deleteLabel(newLabel);
-        t.true(true, 'deleting an already deleted label should not throw in fake env');
-      } catch (e) {
-        t.true(false, `deleting an already deleted label threw an error in fake env: ${e.message}`);
-      }
-    } else {
-      // In the live environment, it should throw.
-      try {
-        GmailApp.deleteLabel(newLabel);
-        t.true(false, 'deleting an already deleted label should have thrown an error in live env');
-      } catch (e) {
-        t.rxMatch(e.message, /(not found|invalid)/i, 'error message should indicate not found or invalid');
-      }
+    // Deleting a non-existent label should throw an error
+    try {
+      GmailApp.deleteLabel(newLabel);
+      t.true(false, 'deleting an already deleted label should have thrown an error');
+    } catch (e) {
+      t.rxMatch(e.message, /(not found|invalid)/i, 'error message should indicate not found or invalid');
     }
   });
 
