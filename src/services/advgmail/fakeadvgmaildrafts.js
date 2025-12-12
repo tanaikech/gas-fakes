@@ -28,4 +28,21 @@ class FakeAdvGmailDrafts extends FakeAdvResource {
     gError(response, 'gmail', 'users.drafts.create');
     return data;
   }
+
+  /**
+   * Gets the specified draft.
+   * @param {string} userId - The user's email address. The special value me can be used to indicate the authenticated user.
+   * @param {string} id - The ID of the draft to retrieve.
+   * @returns {object} The draft resource.
+   */
+  get(userId, id) {
+    const { data, response } = this._call(
+      'get',
+      { userId, id },
+      null,
+      'drafts'
+    );
+    gError(response, 'gmail', 'users.drafts.get');
+    return data;
+  }
 }

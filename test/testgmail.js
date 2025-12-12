@@ -141,6 +141,25 @@ export const testGmail = (pack) => {
     t.true(aliases.includes('alias@example.com'), 'should include the alias');
   });
 
+  unit.section("gmailapp getDraft", (t) => {
+    const recipient = "test_getDraft@example.com";
+    const subject = "Test getDraft Subject " + new Date().getTime();
+    const body = "Test getDraft body.";
+    const createdDraft = GmailApp.createDraft(recipient, subject, body);
+    
+    t.true(is.object(createdDraft), "createDraft should return a valid draft object");
+    t.true(is.nonEmptyString(createdDraft.getId()), "created draft should have an ID");
+
+    const retrievedDraft = GmailApp.getDraft(createdDraft.getId());
+    t.true(is.object(retrievedDraft), "getDraft should return a valid draft object");
+    t.is(retrievedDraft.getId(), createdDraft.getId(), "retrieved draft ID should match created draft ID");
+    
+    // Test for non-existent draft
+    const nonExistentId = "non_existent_draft_id";
+    const err = t.threw(() => GmailApp.getDraft(nonExistentId));
+    t.rxMatch(err.message, /(404|not found)/i, 'getting a non-existent draft should throw a 404 or not found error');
+  });
+
 
 
 

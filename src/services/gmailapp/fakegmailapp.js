@@ -70,6 +70,16 @@ class FakeGmailApp {
     const { sendAs } = Gmail.Users.Settings.SendAs.list('me');
     return sendAs ? sendAs.map(alias => alias.sendAsEmail) : [];
   }
+
+  /**
+   * Retrieve an email message draft by ID.
+   * @param {string} draftId The ID of the draft to retrieve.
+   * @returns {GmailDraft} The draft with the given ID.
+   */
+  getDraft(draftId) {
+    const draftResource = Gmail.Users.Drafts.get('me', draftId);
+    return newFakeGmailDraft(draftResource);
+  }
 }
 
 export const newFakeGmailApp = (...args) => Proxies.guard(new FakeGmailApp(...args));
