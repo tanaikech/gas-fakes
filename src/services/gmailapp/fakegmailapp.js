@@ -66,11 +66,20 @@ class FakeGmailApp {
 
   /**
    * Gets a list of the emails that are set up as aliases for this account in Gmail.
+   * // TODO it looks like live apps script does not count the primary email as an alias, but the api does
    * @returns {string[]} An array of aliases for this account.
    */
   getAliases() {
     const { sendAs } = Gmail.Users.Settings.SendAs.list('me');
-    return sendAs ? sendAs.map(alias => alias.sendAsEmail) : [];
+    let aliases = sendAs ? sendAs.map(alias => alias.sendAsEmail) : [];
+
+    // The live Apps Script environment typically does not include the primary email in getAliases()
+    // even though the underlying Gmail API might return it as a 'sendAs' address.
+    if (!ScriptApp.isFake) {
+      const primaryEmail = Session.getActiveUser().getEmail();
+      aliases = aliases.filter(alias => alias !== primaryEmail);
+    }
+    return aliases;
   }
 
   /**
