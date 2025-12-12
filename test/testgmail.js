@@ -198,6 +198,11 @@ export const testGmail = (pack) => {
     });
   });
 
+  unit.section("gmailapp getInboxThreads", (t) => {
+    const inboxThreads = GmailApp.getInboxThreads();
+    t.true(is.array(inboxThreads), 'getInboxThreads() should return an array');
+  });
+
 
 
 

@@ -4,6 +4,7 @@ import { signatureArgs, ssError, gError } from '../../support/helpers.js';
 import { newFakeAdvGmailLabels } from './fakeadvgmaillabels.js';
 import { newFakeAdvGmailDrafts } from './fakeadvgmaildrafts.js';
 import { newFakeAdvGmailSettings } from './fakeadvgmailsettings.js';
+import { newFakeAdvGmailThreads } from './fakeadvgmailthreads.js';
 
 import { Proxies } from '../../support/proxies.js';
 import { Utils } from '../../support/utils.js';
@@ -28,6 +29,10 @@ class FakeAdvGmailUsers extends FakeAdvResource {
 
   get Settings() {
     return newFakeAdvGmailSettings(this.gmail);
+  }
+
+  get Threads() {
+    return newFakeAdvGmailThreads(this.gmail);
   }
 
 }

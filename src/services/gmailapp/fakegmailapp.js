@@ -3,6 +3,7 @@ import { Proxies } from '../../support/proxies.js';
 import { newFakeGmailLabel } from './fakegmaillabel.js';
 import { newFakeGmailDraft } from './fakegmaildraft.js';
 import { newFakeGmailMessage } from './fakegmailmessage.js';
+import { newFakeGmailThread } from './fakegmailthread.js';
 
 /**
  * Provides access to Gmail threads, messages, and labels.
@@ -98,6 +99,21 @@ class FakeGmailApp {
   getDrafts() {
     const { drafts } = Gmail.Users.Drafts.list('me');
     return drafts ? drafts.map(draft => newFakeGmailDraft(draft)) : [];
+  }
+
+  /**
+   * Retrieves all Inbox threads irrespective of labels.
+   * @param {number} [start] - The index of the first thread to return.
+   * @param {number} [max] - The maximum number of threads to return.
+   * @returns {GmailThread[]} An array of Gmail threads in the Inbox.
+   */
+  getInboxThreads(start, max) {
+    const params = { q: 'in:inbox' };
+    if (start !== undefined) params.pageToken = start; // Gmail API uses pageToken for start
+    if (max !== undefined) params.maxResults = max;
+
+    const { threads } = Gmail.Users.Threads.list('me', params);
+    return threads ? threads.map(thread => newFakeGmailThread(thread)) : [];
   }
 }
 
