@@ -3644,8 +3644,8 @@
             "description": "Returns a copy of this blob.",
             "returnType": "Blob",
             "returnDescription": "The new copy.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailattachment.js#L31"
           },
           {
             "method": "getAs(String)",
@@ -3662,8 +3662,8 @@
             "description": "Gets the data stored in this blob.",
             "returnType": "Byte[]",
             "returnDescription": "The stored bytes.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailattachment.js#L27"
           },
           {
             "method": "getContentType()",
@@ -3671,8 +3671,8 @@
             "description": "Gets the content type of the bytes in this blob.",
             "returnType": "String",
             "returnDescription": "The content type of this data, if known, or null.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailattachment.js#L39"
           },
           {
             "method": "getDataAsString()",
@@ -3680,8 +3680,8 @@
             "description": "Gets the data of this blob as a String with UTF-8 encoding.",
             "returnType": "String",
             "returnDescription": "The data as a string.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailattachment.js#L43"
           },
           {
             "method": "getDataAsString(String)",
@@ -3689,8 +3689,8 @@
             "description": "Gets the data of this blob as a string with the specified encoding.",
             "returnType": "String",
             "returnDescription": "The data as a string.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailattachment.js#L43"
           },
           {
             "method": "getHash()",
@@ -3698,8 +3698,8 @@
             "description": "Gets the SHA1 content hash for this attachment. This method does not count against the Gmail\nread quota.",
             "returnType": "String",
             "returnDescription": "The SHA1 content hash, as a string.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailattachment.js#L24"
           },
           {
             "method": "getName()",
@@ -3707,8 +3707,8 @@
             "description": "Gets the name of this blob.",
             "returnType": "String",
             "returnDescription": "The name of this data, if known, or null.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailattachment.js#L47"
           },
           {
             "method": "getSize()",
@@ -3716,8 +3716,8 @@
             "description": "Gets the size of this attachment. This method is faster than calling getBytes().length and does not count against the Gmail read quota.",
             "returnType": "Integer",
             "returnDescription": "The size of the attachment, in bytes.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailattachment.js#L20"
           },
           {
             "method": "isGoogleType()",
@@ -3725,8 +3725,8 @@
             "description": "Returns whether this blob is a Google Workspace file (Sheets, Docs, etc.).",
             "returnType": "Boolean",
             "returnDescription": "true if this blob is a Google Workspace file; false if not.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailattachment.js#L51"
           },
           {
             "method": "setBytes(Byte)",
@@ -3734,8 +3734,8 @@
             "description": "Sets the data stored in this blob.",
             "returnType": "Blob",
             "returnDescription": "This blob, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailattachment.js#L55"
           },
           {
             "method": "setContentType(String)",
@@ -3743,8 +3743,8 @@
             "description": "Sets the content type of the bytes in this blob.",
             "returnType": "Blob",
             "returnDescription": "This blob, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailattachment.js#L60"
           },
           {
             "method": "setContentTypeFromExtension()",
@@ -3752,8 +3752,8 @@
             "description": "Sets the content type of the bytes in this blob based on the file extension. The contentType is\nnull if it cannot be guessed from its extension.",
             "returnType": "Blob",
             "returnDescription": "This blob, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailattachment.js#L65"
           },
           {
             "method": "setDataFromString(String)",
@@ -3761,8 +3761,8 @@
             "description": "Sets the data of this blob from a string with UTF-8 encoding.",
             "returnType": "Blob",
             "returnDescription": "This blob, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailattachment.js#L70"
           },
           {
             "method": "setDataFromString(String,String)",
@@ -3770,8 +3770,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailattachment.js#L70"
           },
           {
             "method": "setName(String)",
@@ -3779,8 +3779,8 @@
             "description": "Sets the name of this blob.",
             "returnType": "Blob",
             "returnDescription": "This blob, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailattachment.js#L75"
           }
         ]
       },
@@ -3904,7 +3904,7 @@
             "returnType": "String",
             "returnDescription": "the draft ID",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmaildraft.js#L19"
+            "implementationLink": "src/services/gmailapp/fakegmaildraft.js#L20"
           },
           {
             "method": "getMessage()",
@@ -3912,8 +3912,8 @@
             "description": "Returns a GmailMessage representing this draft.",
             "returnType": "GmailMessage",
             "returnDescription": "the message that represents the contents of this draft",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmaildraft.js#L28"
           },
           {
             "method": "getMessageId()",
@@ -3966,7 +3966,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L20"
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L24"
           },
           {
             "method": "createDraft(String,String,String,Object)",
@@ -3975,7 +3975,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L20"
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L24"
           },
           {
             "method": "createLabel(String)",
@@ -3984,7 +3984,7 @@
             "returnType": "GmailLabel",
             "returnDescription": "the newly created label",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L43"
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L41"
           },
           {
             "method": "deleteLabel(GmailLabel)",
@@ -3992,8 +3992,8 @@
             "description": "Deletes the specified label.",
             "returnType": "GmailApp",
             "returnDescription": "the Gmail service, useful for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L62"
           },
           {
             "method": "getAliases()",
@@ -4001,8 +4001,8 @@
             "description": "Gets a list of the emails that are set up as aliases for this account in Gmail.",
             "returnType": "String[]",
             "returnDescription": "an array of aliases for this account",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L72"
           },
           {
             "method": "getDraft(String)",
@@ -4010,8 +4010,8 @@
             "description": "Retrieve an email message draft by ID.",
             "returnType": "GmailDraft",
             "returnDescription": "the draft with the given ID",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L90"
           },
           {
             "method": "getDraftMessages()",
@@ -4019,8 +4019,8 @@
             "description": "Retrieves all draft messages.",
             "returnType": "GmailMessage[]",
             "returnDescription": "an array of draft Gmail messages",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L99"
           },
           {
             "method": "getDrafts()",
@@ -4028,8 +4028,8 @@
             "description": "Gets all Gmail draft messages.",
             "returnType": "GmailDraft[]",
             "returnDescription": "an array of Gmail draft messages",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L108"
           },
           {
             "method": "getInboxThreads()",
@@ -4037,8 +4037,8 @@
             "description": "Retrieves all Inbox threads irrespective of labels.",
             "returnType": "GmailThread[]",
             "returnDescription": "an array of Gmail threads in the Inbox",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L119"
           },
           {
             "method": "getInboxThreads(Integer,Integer)",
@@ -4046,8 +4046,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L119"
           },
           {
             "method": "getInboxUnreadCount()",
@@ -4055,8 +4055,8 @@
             "description": "Gets the number of unread threads in the inbox.",
             "returnType": "Integer",
             "returnDescription": "the number of threads in the inbox that have unread messages",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L127"
           },
           {
             "method": "getMessageById(String)",
@@ -4064,8 +4064,8 @@
             "description": "Gets a message by ID.",
             "returnType": "GmailMessage",
             "returnDescription": "the message with the given ID",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L190"
           },
           {
             "method": "getMessagesForThread(GmailThread)",
@@ -4073,8 +4073,8 @@
             "description": "Retrieve all messages in the specified thread.",
             "returnType": "GmailMessage[]",
             "returnDescription": "array of messages corresponding to this thread",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L195"
           },
           {
             "method": "getMessagesForThreads(GmailThread)",
@@ -4082,8 +4082,8 @@
             "description": "Retrieve all messages in the specified threads.",
             "returnType": "GmailMessage[][]",
             "returnDescription": "an array of arrays of messages, where each item in the outer array corresponds to a\n    thread and the inner array contains the messages in that thread",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L200"
           },
           {
             "method": "getPriorityInboxThreads()",
@@ -4091,8 +4091,8 @@
             "description": "Retrieves all Priority Inbox threads irrespective of labels.",
             "returnType": "GmailThread[]",
             "returnDescription": "an array of Gmail threads in the Priority Inbox",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L131"
           },
           {
             "method": "getPriorityInboxThreads(Integer,Integer)",
@@ -4100,8 +4100,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L131"
           },
           {
             "method": "getPriorityInboxUnreadCount()",
@@ -4109,8 +4109,8 @@
             "description": "Gets the number of unread threads in the Priority Inbox.",
             "returnType": "Integer",
             "returnDescription": "the number of threads in the Priority Inbox that have unread messages",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L135"
           },
           {
             "method": "getSpamThreads()",
@@ -4118,8 +4118,8 @@
             "description": "Retrieves all spam threads irrespective of labels.",
             "returnType": "GmailThread[]",
             "returnDescription": "an array of Gmail threads in the spam folder",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L139"
           },
           {
             "method": "getSpamThreads(Integer,Integer)",
@@ -4127,8 +4127,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L139"
           },
           {
             "method": "getSpamUnreadCount()",
@@ -4136,8 +4136,8 @@
             "description": "Gets the number of unread threads that are spam.",
             "returnType": "Integer",
             "returnDescription": "the number spam threads that have unread messages",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L143"
           },
           {
             "method": "getStarredThreads()",
@@ -4145,8 +4145,8 @@
             "description": "Retrieves all starred threads irrespective of labels.",
             "returnType": "GmailThread[]",
             "returnDescription": "an array of starred Gmail threads",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L147"
           },
           {
             "method": "getStarredThreads(Integer,Integer)",
@@ -4154,8 +4154,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L147"
           },
           {
             "method": "getStarredUnreadCount()",
@@ -4163,8 +4163,8 @@
             "description": "Gets the number of unread threads that are starred.",
             "returnType": "Integer",
             "returnDescription": "the number of starred threads that have unread messages",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L151"
           },
           {
             "method": "getThreadById(String)",
@@ -4172,8 +4172,8 @@
             "description": "Gets a thread by ID.",
             "returnType": "GmailThread",
             "returnDescription": "The thread with the given ID or null if not found.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L204"
           },
           {
             "method": "getTrashThreads()",
@@ -4181,8 +4181,8 @@
             "description": "Retrieves all trash threads irrespective of labels.",
             "returnType": "GmailThread[]",
             "returnDescription": "an array of Gmail threads in the trash",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L155"
           },
           {
             "method": "getTrashThreads(Integer,Integer)",
@@ -4190,8 +4190,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L155"
           },
           {
             "method": "getUserLabelByName(String)",
@@ -4209,7 +4209,7 @@
             "returnType": "GmailLabel[]",
             "returnDescription": "array of user created labels",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L53"
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L51"
           },
           {
             "method": "markMessageRead(GmailMessage)",
@@ -4666,8 +4666,8 @@
             "description": "Gets the ID of this message.",
             "returnType": "String",
             "returnDescription": "The message ID.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailmessage.js#L20"
           },
           {
             "method": "getPlainBody()",
@@ -4711,8 +4711,8 @@
             "description": "Gets the thread that contains this message.",
             "returnType": "GmailThread",
             "returnDescription": "The GmailThread that contains this message.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailmessage.js#L28"
           },
           {
             "method": "getTo()",
@@ -4953,8 +4953,8 @@
             "description": "Gets the ID of this thread. The ID of a thread varies based on the messages it contains; for a\nconsistent ID for a particular message in the thread, call getMessages()[0].getId()\ninstead.",
             "returnType": "String",
             "returnDescription": "the ID of this thread",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailthread.js#L19"
           },
           {
             "method": "getLabels()",
