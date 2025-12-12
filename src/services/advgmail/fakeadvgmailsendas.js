@@ -12,7 +12,7 @@ export class FakeAdvGmailSendAs extends FakeAdvResource {
     this.__fakeObjectType = 'Gmail.Users.Settings.SendAs';
     this.__aliases = [
       {
-        sendAsEmail: 'primary@example.com',
+        sendAsEmail: Session.getActiveUser().getEmail(),
         isPrimary: true,
         displayName: 'Primary Account',
         isDefault: true,
@@ -22,6 +22,13 @@ export class FakeAdvGmailSendAs extends FakeAdvResource {
         sendAsEmail: 'alias@example.com',
         isPrimary: false,
         displayName: 'Alias Account',
+        isDefault: false,
+        verificationStatus: 'accepted',
+      },
+      {
+        sendAsEmail: 'alias2@example.com',
+        isPrimary: false,
+        displayName: 'Alias Account 2',
         isDefault: false,
         verificationStatus: 'accepted',
       },

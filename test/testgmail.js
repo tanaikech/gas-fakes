@@ -6,11 +6,12 @@ import { initTests } from './testinit.js';
 import { getGmailPerformance, wrapupTest, trasher } from './testassist.js';
 
 export const testGmail = (pack) => {
+  const activeEmail = Session.getActiveUser().getEmail();
   const toTrash = [];
   const { unit, fixes } = pack || initTests();
 
   unit.section("gmailapp createDraft", (t) => {
-    const recipient = "test@example.com";
+    const recipient = activeEmail;
     const subject = "Test Draft Subject " + new Date().getTime();
     const body = "Test draft body.";
     const draft = GmailApp.createDraft(recipient, subject, body);
@@ -85,7 +86,7 @@ export const testGmail = (pack) => {
   });
 
   unit.section("gmailapp createDraft advanced", (t) => {
-    const recipient = "test@example.com";
+    const recipient = fixes.EMAIL;
     const subject = "Test Draft Subject advanced " + new Date().getTime();
     const body = "Test draft body.";
     const htmlBody = "<html><body><p>Test draft body with inline image <img src='cid:myImage' /></p></body></html>";
@@ -98,11 +99,11 @@ export const testGmail = (pack) => {
       inlineImages: {
         myImage: inlineImage,
       },
-      cc: "cc@example.com",
-      bcc: "bcc@example.com",
-      from: "from@example.com",
-      name: "Test Sender",
-      replyTo: "replyto@example.com",
+      cc: activeEmail,
+      bcc: activeEmail,
+      from: activeEmail,
+      name: fixes.OWNER_NAME,
+      replyTo: activeEmail,
     };
 
     const draft = GmailApp.createDraft(recipient, subject, body, options);
@@ -124,25 +125,46 @@ export const testGmail = (pack) => {
     labels = GmailApp.getUserLabels();
     t.false(labels.some(l => l.getName() === labelName), 'should not find the deleted label');
 
-    // For now, just ensure it doesn't break.
-    try {
-      GmailApp.deleteLabel(newLabel);
-      t.true(true, 'deleting an already deleted label should not throw');
-    } catch (e) {
-      t.true(false, `deleting an already deleted label threw an error: ${e.message}`);
+    // On live GAS, deleting a non-existent label throws an error.
+    if (ScriptApp.isFake) {
+      // In the fake environment, it doesn't throw.
+      try {
+        GmailApp.deleteLabel(newLabel);
+        t.true(true, 'deleting an already deleted label should not throw in fake env');
+      } catch (e) {
+        t.true(false, `deleting an already deleted label threw an error in fake env: ${e.message}`);
+      }
+    } else {
+      // In the live environment, it should throw.
+      const err = t.threw(() => GmailApp.deleteLabel(newLabel));
+      t.rxMatch(err.message, /(not found|invalid)/i, 'deleting an already deleted label should throw an error in live env');
     }
   });
 
   unit.section("gmailapp getAliases", (t) => {
     const aliases = GmailApp.getAliases();
     t.true(is.array(aliases), 'getAliases() should return an array');
-    t.is(aliases.length, 2, 'should return the correct number of aliases');
-    t.true(aliases.includes('primary@example.com'), 'should include the primary alias');
-    t.true(aliases.includes('alias@example.com'), 'should include the alias');
+    
+    // In the fake env, we have the primary user plus 2 hardcoded aliases
+    if (ScriptApp.isFake) {
+      t.is(aliases.length, 3, 'should return 3 aliases in fake env');
+      t.true(aliases.includes('alias@example.com'), 'should include the hardcoded alias');
+      t.true(aliases.includes('alias2@example.com'), 'should include the second hardcoded alias');
+    } else {
+      // In live env, we just check that there is at least one.
+      t.true(aliases.length > 0, 'should return at least one alias');
+    }
+
+    // all items should be strings
+    t.true(aliases.every(alias => is.string(alias)), 'all aliases should be strings');
+
+    // the user's primary email should be in the list
+    const primaryEmail = Session.getActiveUser().getEmail();
+    t.true(aliases.includes(primaryEmail), 'should include the primary email');
   });
 
   unit.section("gmailapp getDraft", (t) => {
-    const recipient = "test_getDraft@example.com";
+    const recipient = activeEmail;
     const subject = "Test getDraft Subject " + new Date().getTime();
     const body = "Test getDraft body.";
     const createdDraft = GmailApp.createDraft(recipient, subject, body);
@@ -166,8 +188,8 @@ export const testGmail = (pack) => {
     const initialCount = initialDrafts.length;
 
     // Create a couple of new drafts
-    GmailApp.createDraft("draft1@example.com", "Draft 1", "Body 1");
-    GmailApp.createDraft("draft2@example.com", "Draft 2", "Body 2");
+    GmailApp.createDraft(activeEmail, "Draft 1", "Body 1");
+    GmailApp.createDraft(activeEmail, "Draft 2", "Body 2");
 
     const newDrafts = GmailApp.getDraftMessages();
     t.true(is.array(newDrafts), 'getDraftMessages should return an array after creating drafts');
@@ -185,8 +207,8 @@ export const testGmail = (pack) => {
     const initialCount = initialDrafts.length;
 
     // Create a couple of new drafts
-    GmailApp.createDraft("draft3@example.com", "Draft 3", "Body 3");
-    GmailApp.createDraft("draft4@example.com", "Draft 4", "Body 4");
+    GmailApp.createDraft(activeEmail, "Draft 3", "Body 3");
+    GmailApp.createDraft(activeEmail, "Draft 4", "Body 4");
 
     const newDrafts = GmailApp.getDrafts();
     t.true(is.array(newDrafts), 'getDrafts should return an array after creating drafts');
