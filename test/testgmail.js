@@ -209,6 +209,11 @@ export const testGmail = (pack) => {
     t.true(is.array(inboxThreads), 'getInboxThreads() should return an array');
   });
 
+  unit.section("gmailapp getInboxUnreadCount", (t) => {
+    const unreadCount = GmailApp.getInboxUnreadCount();
+    t.true(is.number(unreadCount), 'getInboxUnreadCount() should return a number');
+  });
+
 
 
 

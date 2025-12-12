@@ -138,6 +138,16 @@ class FakeGmailApp {
     const sliced = threads.slice(start, max !== undefined ? start + max : undefined);
     return sliced.map(thread => newFakeGmailThread(thread));
   }
+
+  /**
+   * Gets the number of unread threads in the inbox.
+   * @returns {number} The number of threads in the inbox that have unread messages.
+   */
+  getInboxUnreadCount() {
+    const params = { q: 'in:inbox is:unread' };
+    const { threads } = Gmail.Users.Threads.list('me', params);
+    return threads ? threads.length : 0;
+  }
 }
 
 export const newFakeGmailApp = (...args) => Proxies.guard(new FakeGmailApp(...args));
