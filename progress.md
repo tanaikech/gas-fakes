@@ -10,7 +10,7 @@
 | [Document](./progress/document.md) | 47 | 1032 | 460 | 22 | 550 |
 | [Drive](./progress/drive.md) | 8 | 164 | 98 | 35 | 31 |
 | [Forms](./progress/forms.md) | 41 | 504 | 218 | 0 | 286 |
-| [Gmail](./progress/gmail.md) | 6 | 168 | 58 | 0 | 110 |
+| [Gmail](./progress/Gmail.md) | 6 | 168 | 58 | 0 | 110 |
 | [HTML](./progress/html.md) | 6 | 39 | 0 | 0 | 39 |
 | [JDBC](./progress/jdbc.md) | 20 | 749 | 0 | 0 | 749 |
 | [Lock](./progress/Lock.md) | 2 | 7 | 7 | 0 | 0 |

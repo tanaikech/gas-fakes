@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { main } from "./gas-fakes-cli/app.js";
+import { main } from "./src/cli/app.js";
 
 main().catch((error) => {
   console.error("\x1b[31mAn unexpected error occurred:\x1b[0m");

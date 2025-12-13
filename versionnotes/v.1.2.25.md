@@ -1,0 +1,2 @@
+- gas-cli now supports libraries
+- sandbox updated with gmail sandbox protections

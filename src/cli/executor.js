@@ -86,7 +86,7 @@ function generateExecutionScript({ scriptText, useSandbox, sandboxConfig }) {
   const gasScript = gasScriptLines.join("\n");
   const mainScript = [
     "async function runGas() {",
-    '  await import("../main.js"); // This will trigger the fxInit call',
+    '  await import("../../main.js"); // This will trigger the fxInit call',
     gasScript,
     "}",
     "return runGas();",

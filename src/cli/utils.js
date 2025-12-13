@@ -2,7 +2,7 @@ import { spawn } from "child_process";
 import { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
-const pjson = require("../package.json");
+const pjson = require("../../package.json");
 
 export const VERSION = pjson.version;
 export const CLI_VERSION = "0.0.16"; // Kept from original logic

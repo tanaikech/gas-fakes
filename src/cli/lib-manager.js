@@ -1,6 +1,6 @@
 import fs from "fs";
 import { parse } from "acorn";
-import { Auth } from "../src/support/auth.js"; // Relative to gas-fakes-cli directory
+import { Auth } from "../support/auth.js"; // Relative to gas-fakes-cli directory
 import { checkForGcloudCli, spawnCommand } from "./utils.js";
 
 async function getAccessToken(pattern) {
