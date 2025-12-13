@@ -22,6 +22,8 @@ class FakeGmailApp {
    * @returns {GmailDraft} the newly created draft
    */
   createDraft(recipient, subject, body, options) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'createDraft');
+    this.__checkUsage('write');
     // this is a fairly naive implementation of rfc2822
     const raw = createMimeMessage(recipient, subject, body, options);
 
@@ -44,6 +46,8 @@ class FakeGmailApp {
    * @returns {GmailLabel} The new label.
    */
   createLabel(name) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'createLabel');
+    this.__checkUsage('write');
     const behavior = ScriptApp.__behavior;
     if (behavior.sandboxMode) {
       const settings = behavior.sandboxService.GmailApp;
@@ -66,6 +70,8 @@ class FakeGmailApp {
    * @returns {GmailLabel[]} An array of user-created labels.
    */
   getUserLabels() {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'getUserLabels');
+    this.__checkUsage('read');
     const { labels } = Gmail.Users.Labels.list('me');
     // The documentation for GmailApp.getUserLabels() says "user-created labels".
     // The live environment follows this, so we will filter for type 'user'.
@@ -77,6 +83,8 @@ class FakeGmailApp {
    * @returns {GmailApp} The Gmail service, useful for chaining.
    */
   deleteLabel(label) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'deleteLabel');
+    this.__checkUsage('trash');
     const behavior = ScriptApp.__behavior;
     if (behavior.sandboxMode) {
       const settings = behavior.sandboxService.GmailApp;
@@ -99,6 +107,7 @@ class FakeGmailApp {
    * @returns {string[]} An array of aliases for this account.
    */
   getAliases() {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'getAliases');
     const { sendAs } = Gmail.Users.Settings.SendAs.list('me');
     let aliases = sendAs ? sendAs.map(alias => alias.sendAsEmail) : [];
 
@@ -117,6 +126,8 @@ class FakeGmailApp {
    * @returns {GmailDraft} The draft with the given ID.
    */
   getDraft(draftId) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'getDraft');
+    this.__checkUsage('read');
     const draftResource = Gmail.Users.Drafts.get('me', draftId);
     return newFakeGmailDraft(draftResource);
   }
@@ -126,6 +137,8 @@ class FakeGmailApp {
    * @returns {GmailMessage[]} An array of draft Gmail messages.
    */
   getDraftMessages() {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'getDraftMessages');
+    this.__checkUsage('read');
     const { drafts } = Gmail.Users.Drafts.list('me');
     return drafts ? drafts.map(draft => newFakeGmailMessage(draft.message)) : [];
   }
@@ -135,6 +148,8 @@ class FakeGmailApp {
    * @returns {GmailDraft[]} An array of Gmail draft messages.
    */
   getDrafts() {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'getDrafts');
+    this.__checkUsage('read');
     const { drafts } = Gmail.Users.Drafts.list('me');
     return drafts ? drafts.map(draft => newFakeGmailDraft(draft)) : [];
   }
@@ -146,7 +161,8 @@ class FakeGmailApp {
    * @returns {GmailThread[]} An array of Gmail threads in the Inbox.
    */
   getInboxThreads(start, max) {
-    return this._getThreads('in:inbox', start, max);
+    ScriptApp.__behavior.checkMethod('GmailApp', 'getInboxThreads');
+    return this.__getThreads('in:inbox', start, max);
   }
 
   /**
@@ -154,35 +170,43 @@ class FakeGmailApp {
    * @returns {number} The number of threads in the inbox that have unread messages.
    */
   getInboxUnreadCount() {
-    return this._getThreads('in:inbox is:unread', 0, 500).length;
+    ScriptApp.__behavior.checkMethod('GmailApp', 'getInboxUnreadCount');
+    return this.__getThreads('in:inbox is:unread', 0, 500).length;
   }
 
   getPriorityInboxThreads(start, max) {
-    return this._getThreads('in:inbox is:important', start, max);
+    ScriptApp.__behavior.checkMethod('GmailApp', 'getPriorityInboxThreads');
+    return this.__getThreads('in:inbox is:important', start, max);
   }
 
   getPriorityInboxUnreadCount() {
-    return this._getThreads('in:inbox is:important is:unread', 0, 500).length;
+    ScriptApp.__behavior.checkMethod('GmailApp', 'getPriorityInboxUnreadCount');
+    return this.__getThreads('in:inbox is:important is:unread', 0, 500).length;
   }
 
   getSpamThreads(start, max) {
-    return this._getThreads('in:spam', start, max);
+    ScriptApp.__behavior.checkMethod('GmailApp', 'getSpamThreads');
+    return this.__getThreads('in:spam', start, max);
   }
 
   getSpamUnreadCount() {
-    return this._getThreads('in:spam is:unread', 0, 500).length;
+    ScriptApp.__behavior.checkMethod('GmailApp', 'getSpamUnreadCount');
+    return this.__getThreads('in:spam is:unread', 0, 500).length;
   }
 
   getStarredThreads(start, max) {
-    return this._getThreads('is:starred', start, max);
+    ScriptApp.__behavior.checkMethod('GmailApp', 'getStarredThreads');
+    return this.__getThreads('is:starred', start, max);
   }
 
   getStarredUnreadCount() {
-    return this._getThreads('is:starred is:unread', 0, 500).length;
+    ScriptApp.__behavior.checkMethod('GmailApp', 'getStarredUnreadCount');
+    return this.__getThreads('is:starred is:unread', 0, 500).length;
   }
 
   getTrashThreads(start, max) {
-    return this._getThreads('in:trash', start, max);
+    ScriptApp.__behavior.checkMethod('GmailApp', 'getTrashThreads');
+    return this.__getThreads('in:trash', start, max);
   }
 
   /**
@@ -193,7 +217,8 @@ class FakeGmailApp {
    * @returns {GmailThread[]} An array of Gmail threads.
    */
   search(query, start, max) {
-    return this._getThreads(query, start, max);
+    ScriptApp.__behavior.checkMethod('GmailApp', 'search');
+    return this.__getThreads(query, start, max);
   }
 
 
@@ -206,7 +231,8 @@ class FakeGmailApp {
    * @returns {GmailThread[]} An array of Gmail threads.
    * @private
    */
-  _getThreads(q, start = 0, max = 500) {
+  __getThreads(q, start = 0, max = 500) {
+    this.__checkUsage('read');
 
     // Sandbox label read check
     const behavior = ScriptApp.__behavior;
@@ -248,7 +274,7 @@ class FakeGmailApp {
     // Filter threads for access
     const accessibleThreads = threads.filter(t => {
       try {
-        this._checkThreadAccess(t.id);
+        this.__checkThreadAccess(t.id);
         return true;
       } catch (e) {
         return false;
@@ -260,20 +286,25 @@ class FakeGmailApp {
   }
 
   getMessageById(id) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'getMessageById');
+    this.__checkUsage('read');
     const messageResource = Gmail.Users.Messages.get('me', id);
     return newFakeGmailMessage(messageResource);
   }
 
   getMessagesForThread(thread) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'getMessagesForThread');
+    this.__checkUsage('read');
     const threadResource = Gmail.Users.Threads.get('me', thread.getId());
     return threadResource.messages ? threadResource.messages.map(message => newFakeGmailMessage(message)) : [];
   }
 
   getMessagesForThreads(threads) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'getMessagesForThreads');
     return threads.map(thread => this.getMessagesForThread(thread));
   }
 
-  _checkThreadAccess(threadId) {
+  __checkThreadAccess(threadId) {
     const behavior = ScriptApp.__behavior;
     if (!behavior.sandboxMode) return true;
 
@@ -344,9 +375,41 @@ class FakeGmailApp {
   }
 
   getThreadById(id) {
-    this._checkThreadAccess(id);
+    ScriptApp.__behavior.checkMethod('GmailApp', 'getThreadById');
+    this.__checkUsage('read');
+    this.__checkThreadAccess(id);
     const threadResource = Gmail.Users.Threads.get('me', id);
     return newFakeGmailThread(threadResource);
+  }
+
+  __checkUsage(type) {
+    const serviceName = 'GmailApp';
+    const behavior = ScriptApp.__behavior;
+    if (behavior.sandboxMode) {
+      const settings = behavior.sandboxService[serviceName];
+      let limit = settings && settings.usageLimit; // object or number
+      if (limit) {
+        // handle number vs object
+        if (typeof limit === 'number') {
+          const total = (settings.usageCount.read || 0) + (settings.usageCount.write || 0) + (settings.usageCount.trash || 0) + (settings.usageCount.send || 0);
+          if (total >= limit) {
+            throw new Error(`Gmail total usage limit of ${limit} exceeded`);
+          }
+          settings.incrementUsage(type);
+          return;
+        }
+
+        // Object: granular limits
+        let specificLimit = limit[type];
+        if (specificLimit !== undefined) {
+          const current = settings.usageCount[type] || 0;
+          if (current >= specificLimit) {
+            throw new Error(`Gmail ${type} usage limit of ${specificLimit} exceeded`);
+          }
+          settings.incrementUsage(type);
+        }
+      }
+    }
   }
   /**
    * Sends an email message.
@@ -357,6 +420,7 @@ class FakeGmailApp {
    * @returns {GmailApp} - The Gmail service.
    */
   sendEmail(recipient, subject, body, options) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'sendEmail');
     const serviceName = 'GmailApp';
     const behavior = ScriptApp.__behavior;
 
@@ -380,14 +444,10 @@ class FakeGmailApp {
         });
       }
 
-      // 2. Usage Limit
-      if (usageLimit !== null && usageLimit !== undefined) {
-        if (settings.usageCount >= usageLimit) {
-          throw new Error(`Email usage limit of ${usageLimit} exceeded`);
-        }
-        settings.incrementUsage();
-      }
+      // 2. Usage Limit - now checked via _checkUsage('write') call below
     }
+
+    this.__checkUsage('send');
 
     // Reuse createMimeMessage logic from createDraft
     const raw = createMimeMessage(recipient, subject, body, options);
@@ -409,7 +469,9 @@ class FakeGmailApp {
    * @returns {GmailApp} - The Gmail service.
    */
   moveThreadToTrash(thread) {
-    this._checkThreadAccess(thread.getId());
+    ScriptApp.__behavior.checkMethod('GmailApp', 'moveThreadToTrash');
+    this.__checkUsage('trash');
+    this.__checkThreadAccess(thread.getId());
     Gmail.Users.Threads.trash('me', thread.getId());
     return this;
   }

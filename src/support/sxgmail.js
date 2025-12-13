@@ -41,8 +41,9 @@ export const sxGmail = async (Auth, { subProp, prop, method, params, options }) 
     }
 
     if (error || isRetryable) {
-      // Don't log 404 or 409 as an error, it's an expected outcome for some tests (e.g., get deleted item or label exists)
-      if (response?.status !== 404 && response?.status !== 409) {
+      // Don't log 404, 409, or 400 as an error. 
+      // 400 (Invalid delete request) happens when we try to delete an ID as a label but it's not a label.
+      if (response?.status !== 404 && response?.status !== 409 && response?.status !== 400) {
         syncError(`Failed in sxGmail for ${methodName}`, error);
       }
       return { data: null, response: responseSyncify(response) };

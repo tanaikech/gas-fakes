@@ -174,8 +174,9 @@ These rules are configured in `ScriptApp.__behavior.sandboxService.GmailApp`.
 | Property | Type | Default | Description |
 |---|---|---|---|
 | `emailWhitelist` | `string[]` | `[]` | List of email addresses allowed to receive emails. Emails sent to addresses not in this list (or allowed by session rules) will throw an error. |
-| `usageLimit` | `number` | `undefined` | Maximum number of emails allowed to be sent in a single session. If exceeded, `sendEmail` will throw an error. |
-| `labelWhitelist` | `LabelWhitelistConfig[]` | `[]` | Configuration for allowed labels, specifying `name` and permissions (`read`, `write`, `delete`). |
+| `usageLimit` | `object` or `number` | `undefined` | Limits for operations. Can be a number (implies **total** limit for all operations combined) or an object `{ read?: number, write?: number, trash?: number, send?: number }`. |
+| `labelWhitelist` | `LabelWhitelistConfig[]` | `[]` | Configuration for allowed labels, specifying `name` and permissions (`read`, `write`, `delete`, `send`). |
+| `cleanup` | `boolean` | Global `cleanup` | Controls whether Gmail artifacts (labels, threads) created in the session are trashed on cleanup. Defaults to global setting if not set. |
 
 ### Session Tracking & Cleanup
 
@@ -186,7 +187,7 @@ These rules are configured in `ScriptApp.__behavior.sandboxService.GmailApp`.
 
 Restricts which *existing* threads and messages your script can access.
 
-`LabelWhitelistConfig` has the structure: `{ name: string, read?: boolean, write?: boolean, delete?: boolean }` (defaults are `false`).
+`LabelWhitelistConfig` has the structure: `{ name: string, read?: boolean, write?: boolean, delete?: boolean, send?: boolean }` (defaults are `false`).
 
 - **Access Rule**: `GmailApp.getThreadById(id)` or `GmailApp.search(...)` will only return threads that either:
     1. Were created in the current session.
@@ -203,7 +204,12 @@ behavior.sandboxMode = true;
 // Configure Gmail Sandbox
 const gmailSettings = behavior.sandboxService.GmailApp;
 gmailSettings.emailWhitelist = ['allowed@example.com'];
-gmailSettings.usageLimit = 5;
+gmailSettings.cleanup = false; // Keep Gmail artifacts after test (overrides global cleanup=true)
+
+// Granular limits
+gmailSettings.usageLimit = { write: 5, read: 20, trash: 1 };
+// Or simple write limit: gmailSettings.usageLimit = 5;
+
 gmailSettings.labelWhitelist = [
   { name: 'AllowedLabel', read: true, write: true, delete: false },
   { name: 'Inbox', read: true } // Allow reading inbox threads

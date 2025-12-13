@@ -11,7 +11,7 @@ const checkArgs = (actual, expect = "boolean") => {
 }
 
 const serviceModel = {
-  enabled: null,
+  cleanup: null,
   sandboxStrict: null,
   sandboxMode: null,
   methodWhitelist: null,
@@ -100,6 +100,12 @@ class FakeSandboxService {
   set sandboxMode(value) {
     this.__state.sandboxMode = checkArgs(value)
   }
+  set cleanup(value) {
+    this.__state.cleanup = checkArgs(value)
+  }
+  get cleanup() {
+    return is.nullOrUndefined(this.__state.cleanup) ? this.__behavior.cleanup : this.__state.cleanup
+  }
 
   setMethodWhitelist(value) {
     if (!is.null(value)) {
@@ -165,7 +171,22 @@ class FakeSandboxService {
 
   set usageLimit(value) {
     if (!is.null(value)) {
-      checkArgs(value, "number")
+      // expect object with read, write, trash keys optionally
+      // if passing number, assume it's "write" limit for backward compat? or throw?
+      // User requested granular limits. Let's support object.
+      // If we want backward compat, could map number -> {write: number}.
+      // But strictly speaking:
+      if (typeof value === 'object') {
+        ['read', 'write', 'trash', 'send'].forEach(k => {
+          if (Reflect.has(value, k) && !is.number(value[k])) throw new Error(`usageLimit.${k} must be a number`);
+        });
+      } else {
+        // If it's a number, it implies a TOTAL limit for all operations (read + write + trash + send).
+        if (!is.number(value)) {
+          throw new Error(`usageLimit must be an object {read, write, trash, send} or a number (implies total limit)`);
+        }
+        // value remains a number
+      }
     }
     this.__state.usageLimit = value
   }
@@ -174,12 +195,20 @@ class FakeSandboxService {
   }
 
   get usageCount() {
+    // ensure it's initialized as object if strict
+    if (!this.__state.usageCount || typeof this.__state.usageCount !== 'object') {
+      this.__state.usageCount = { read: 0, write: 0, trash: 0, send: 0 };
+    }
     return this.__state.usageCount
   }
 
-  incrementUsage() {
-    this.__state.usageCount++
-    return this.__state.usageCount
+  incrementUsage(type = 'write') {
+    if (!['read', 'write', 'trash', 'send'].includes(type)) throw new Error(`Invalid usage type ${type}`);
+    if (!this.__state.usageCount || typeof this.__state.usageCount !== 'object') {
+      this.__state.usageCount = { read: 0, write: 0, trash: 0, send: 0 };
+    }
+    this.__state.usageCount[type] = (this.__state.usageCount[type] || 0) + 1;
+    return this.__state.usageCount[type];
   }
 
   set enabled(value) {
@@ -404,69 +433,83 @@ class FakeBehavior {
     return true;
   }
   trash() {
-    // this is where we would trash all the created files
-    if (!this.__cleanup) {
-      slogger.log('...skipping cleaning up sandbox files')
-      return [];
+    let trashed = [];
+
+    // Drive cleanup
+    // Use DriveApp.cleanup if exists? DriveApp doesn't map 1:1 to services list exactly for this, but 'DriveApp' defaults to global.
+    // Let's use global cleanup setting for Drive for now, OR DriveApp specific if we want consistent granularity.
+    // For now, keep behavior: this.__cleanup controls generic/drive files.
+    // OR: check `this.sandboxService.DriveApp.cleanup`?
+    // Let's stick to user request: "separate cleanup property for gmail settings".
+    // So global `this.__cleanup` works for Drive.
+
+    // Actually, `this.__cleanup` getter on global overrides? No.
+    // The prompt says "separate cleanup property for gmail settings".
+    // So if I set `ScriptApp.__behavior.cleanup` it applies to everything unless overridden?
+    // My implementation in FakeSandboxService maps `cleanup` to global if null.
+    // So `gmailSettings.cleanup` will return strict boolean.
+
+    if (this.__cleanup) {
+      trashed = Array.from(this.__createdIds).reduce((acc, id) => {
+        let d = null
+        try {
+          d = DriveApp.getFileById(id)
+        } catch (e) {
+          d = DriveApp.getFolderById(id)
+        }
+        if (d) {
+          d.setTrashed(true);
+          slogger.log(`...trashed file ${d.getName()} (${id})`);
+          acc.push(id);
+        }
+        return acc;
+      }, []);
+      this.__createdIds.clear();
+    } else {
+      slogger.log('...skipping cleaning up sandbox files (Drive)');
     }
 
-    const trashed = Array.from(this.__createdIds).reduce((acc, id) => {
-      let d = null
-      try {
-        d = DriveApp.getFileById(id)
-      } catch (e) {
-        d = DriveApp.getFolderById(id)
-      }
-      if (d) {
-        d.setTrashed(true);
-        slogger.log(`...trashed file ${d.getName()} (${id})`);
-        acc.push(id);
-      }
-      return acc;
-    }, []);
-
     // Clean up Gmail artifacts
-    const trashedGmail = Array.from(this.__createdGmailIds).reduce((acc, id) => {
-      // Try to determine type or just try deleting as label, then message/thread?
-      // IDs for labels vs threads/messages might overlap or be distinct formats.
-      // Label IDs are usually strings like 'Label_123'. Thread IDs are hex strings.
-      // We can try fetching as label first.
-      try {
-        // Try as label
-        // We use Gmail.Users.Labels.remove('me', id) directly as accessors via GmailApp might have sandbox checks we want to bypass/or use?
-        // Cleanup should probably bypass checks or operate as 'system'.
-        // But we are in `behavior` which doesn't have direct access to internal fake objects easily without import.
-        // However `Gmail` service is global in this env usually? 
-        // `Gmail.Users.Labels.remove` usage in `fakegmailapp.js` suggests `Gmail` global is available.
-        Gmail.Users.Labels.remove('me', id);
-        slogger.log(`...deleted gmail label ${id}`);
-        acc.push(id);
+    let trashedGmail = [];
+    const gmailSettings = this.sandboxService.GmailApp;
+    const gmailCleanup = gmailSettings && gmailSettings.cleanup; // This will return true/false (inherits or specific)
+
+    if (gmailCleanup) {
+      trashedGmail = Array.from(this.__createdGmailIds).reduce((acc, id) => {
+        // Try to determine type or just try deleting as label, then message/thread?
+        // IDs for labels vs threads/messages might overlap or be distinct formats.
+        // Label IDs are usually strings like 'Label_123'. Thread IDs are hex strings.
+        // We can try fetching as label first.
+        try {
+          // Try as label
+          Gmail.Users.Labels.remove('me', id);
+          slogger.log(`...deleted gmail label ${id}`);
+          acc.push(id);
+          return acc;
+        } catch (e) { /* not a label or failed */ }
+
+        try {
+          // Try as thread - move to trash
+          Gmail.Users.Threads.trash('me', id);
+          slogger.log(`...trashed gmail thread ${id}`);
+          acc.push(id);
+          return acc;
+        } catch (e) { /* not a thread */ }
+
+        try {
+          Gmail.Users.Messages.trash('me', id);
+          slogger.log(`...trashed gmail message ${id}`);
+          acc.push(id);
+          return acc;
+        } catch (e) { /* not a message */ }
+
         return acc;
-      } catch (e) { /* not a label or failed */ }
+      }, []);
+      this.__createdGmailIds.clear();
+    } else {
+      slogger.log('...skipping cleaning up sandbox files (Gmail)');
+    }
 
-      try {
-        // Try as thread - move to trash
-        Gmail.Users.Threads.trash('me', id);
-        slogger.log(`...trashed gmail thread ${id}`);
-        acc.push(id);
-        return acc;
-      } catch (e) { /* not a thread */ }
-
-      try {
-        // Try as message - move to trash (batchModify or individual?)
-        // Message trash often implicit via thread, but individual messages can be trashed? Not easily in Apps Script GmailApp (only moveThreadToTrash). 
-        // Advanced Gmail service allows trashing message.
-        Gmail.Users.Messages.trash('me', id);
-        slogger.log(`...trashed gmail message ${id}`);
-        acc.push(id);
-        return acc;
-      } catch (e) { /* not a message */ }
-
-      return acc;
-    }, []);
-
-    this.__createdIds.clear();
-    this.__createdGmailIds.clear();
     slogger.log(`...trashed ${trashed.length} sandboxed files and ${trashedGmail.length} gmail items`);
     return trashed;
   }
