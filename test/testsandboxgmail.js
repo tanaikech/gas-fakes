@@ -35,23 +35,131 @@ export const testSandboxGmail = () => {
     t.rxMatch(err?.message, /Email sending to denied@example.com is denied/, 'Should fail for denied email');
   });
 
+  unit.section('Gmail Sandbox - Granular Usage Limits', t => {
+    resetSandbox();
+    const behavior = ScriptApp.__behavior;
+    const gmail = behavior.sandboxService.GmailApp;
+
+    // Setup - ensure clean state for usage limit test labels
+    behavior.sandboxMode = false;
+    try {
+      const labels = GmailApp.getUserLabels();
+      ['WriteTest1', 'WriteTest2', 'TrashTest', 'CleanupSkipTest'].forEach(name => {
+        const l = labels.find(lab => lab.getName() === name);
+        if (l) GmailApp.deleteLabel(l);
+      });
+    } catch (e) { }
+    behavior.sandboxMode = true;
+
+    // Test Write Limit
+    gmail.usageLimit = { write: 2 };
+    t.not(GmailApp.createLabel('WriteTest1'), undefined, 'Should succeed (write 1/2)');
+    t.not(GmailApp.createLabel('WriteTest2'), undefined, 'Should succeed (write 2/2)');
+    t.threw(() => GmailApp.createLabel('WriteTest3'), undefined, 'Should fail write limit exceeded');
+
+    behavior.sandboxService.GmailApp.clear();
+    gmail.usageLimit = { read: 2 };
+
+    // Test Read Limit
+    // getUserLabels = 1 read
+    t.not(GmailApp.getUserLabels(), undefined, 'Should succeed (read 1/2)');
+    // search = 1 read
+    t.not(GmailApp.search('is:unread', 0, 1), undefined, 'Should succeed (read 2/2)');
+    t.threw(() => GmailApp.getInboxThreads(0, 1), undefined, 'Should fail read limit exceeded');
+
+    behavior.sandboxService.GmailApp.clear();
+    gmail.usageLimit = { trash: 1 };
+    gmail.labelWhitelist = [{ name: 'TrashTest', read: true, delete: true }];
+
+    // Seed a label to delete and a thread to trash
+    behavior.sandboxMode = false;
+    try {
+      GmailApp.createLabel('TrashTest');
+      // Seed a thread? We need one for moveThreadToTrash. 
+      // We can just create one.
+      GmailApp.sendEmail('example@example.com', 'Trash Subject', 'Body');
+      const th = GmailApp.search('subject:"Trash Subject"')[0];
+      const lb = GmailApp.getUserLabels().find(l => l.getName() === 'TrashTest');
+      th.addLabel(lb);
+    } catch (e) { }
+    behavior.sandboxMode = true;
+
+    // Test Trash Limit
+    const labelToDelete = GmailApp.getUserLabels().find(l => l.getName() === 'TrashTest');
+    if (labelToDelete) {
+      t.not(GmailApp.deleteLabel(labelToDelete), undefined, 'Should succeed (trash 1/1)');
+    }
+
+    // Next trash op should fail
+    // We need a thread to trash.
+    const threadToTrash = GmailApp.search('subject:"Trash Subject"')[0];
+    if (threadToTrash) {
+      t.threw(() => GmailApp.moveThreadToTrash(threadToTrash), undefined, 'Should fail trash limit exceeded');
+    }
+
+    behavior.sandboxService.GmailApp.clear();
+  });
+
+  unit.section("Gmail Sandbox - Separate Cleanup", (t) => {
+    resetSandbox();
+    const behavior = ScriptApp.__behavior;
+    const gmail = behavior.sandboxService.GmailApp;
+
+    // 1. cleanup = false for Gmail, global defaults
+    gmail.cleanup = false;
+    behavior.cleanup = true;
+
+    // Create label and thread
+    const labelName = 'CleanupSkipTest';
+    GmailApp.createLabel(labelName);
+
+    // Verify it exists in tracking
+    const tracked = Array.from(behavior.__createdGmailIds);
+    t.is(tracked.length > 0, true, 'Should track created items');
+
+    // Run trash - SHOULD NOT clean gmail
+    behavior.trash();
+
+    // trash() clears the set if it deleted them.
+    t.is(behavior.__createdGmailIds.size > 0, true, 'Should NOT clear tracking set if cleanup disabled');
+
+    // Verify label still exists
+    const labels = GmailApp.getUserLabels();
+    t.is(labels.some(l => l.getName() === labelName), true, 'Label should still exist');
+
+    // 2. Enable cleanup
+    gmail.cleanup = true;
+    behavior.trash();
+
+    t.is(behavior.__createdGmailIds.size, 0, 'Should clear tracking set if cleanup enabled');
+    const labelsAfter = GmailApp.getUserLabels();
+    t.is(labelsAfter.some(l => l.getName() === labelName), false, 'Label should be deleted');
+
+    behavior.sandboxService.GmailApp.clear();
+  });
+
   unit.section("Gmail Sandbox - Usage Limit", (t) => {
     resetSandbox();
     const behavior = ScriptApp.__behavior;
     const gmailSettings = behavior.sandboxService.GmailApp;
 
-    // Limit setup
-    gmailSettings.usageLimit = 1;
-    // We also need whitelist to pass the email check if we reuse sendEmail
+    // Set usage limit to 2 (total limit)
+    gmailSettings.usageLimit = 2;
     gmailSettings.emailWhitelist = ['allowed@example.com'];
 
-    // First email - ok
+    // 1. Write op (sendEmail)
     GmailApp.sendEmail('allowed@example.com', 'Subject 1', 'Body');
-    t.is(gmailSettings.usageCount, 1, 'Usage count should increment');
+    t.is(gmailSettings.usageCount.send, 1, 'Send count should increment');
 
-    // Second email - fail
-    const err = t.threw(() => GmailApp.sendEmail('allowed@example.com', 'Subject 2', 'Body'));
-    t.rxMatch(err?.message, /Email usage limit of 1 exceeded/, 'Should fail when limit exceeded');
+    // 2. Read op (getUserLabels)
+    GmailApp.getUserLabels();
+    t.is(gmailSettings.usageCount.read, 1, 'Read count should increment');
+
+    // Total usage is now 2. Next op should fail.
+
+    // 3. Any op should fail (e.g. read)
+    const err = t.threw(() => GmailApp.getUserLabels());
+    t.rxMatch(err?.message, /Gmail total usage limit of 2 exceeded/, 'Should fail when total limit exceeded');
   });
 
   unit.section("Gmail Sandbox - Label Whitelist", (t) => {
@@ -113,11 +221,7 @@ export const testSandboxGmail = () => {
       // else: pass, sandbox allowed the attempt
     }
 
-    const createErr = t.threw(() => GmailApp.createLabel('labelA')); // labelA exists but we try to create it? API would fail/return existing? 
-    // But sandbox check happens first. 
-    // "Create label access to labelA is denied" should test the sandbox rule, not API validity.
-    // If I didn't have sandbox check, createLabel('labelA') might return existing or throw "exists".
-    // But here we expect sandbox error.
+    const createErr = t.threw(() => GmailApp.createLabel('labelA'));
     t.rxMatch(createErr?.message, /Create label access to labelA is denied/, 'Should fail creating read-only label');
 
     // Delete Label (needs delete)
@@ -127,17 +231,7 @@ export const testSandboxGmail = () => {
       t.true(false, 'Could not seed labelC for delete test');
     }
 
-    // labelB was created above. It has 'write' permission but NOT 'delete' permission in our whitelist.
-    // { name: 'labelB', write: true } -> implicit delete: false.
-    // So delete should fail.
-    // We need to fetch labelB object first.
-    // GmailApp.getUserLabels() -> filter for labelB?
-    // Or just make a mock object with correct ID? 
-    // We don't know the ID of labelB created above easily without fetching.
-    // But we know the name is 'labelB'.
-    // createLabel returns the label.
-    // Let's capture it.
-    // ... I need to restructure the create test to capture the result.
+
 
     // ... restarting section logic in replacement content ... 
     // refetch labelB
@@ -153,28 +247,12 @@ export const testSandboxGmail = () => {
 
     // Read Access (getThreads with query)
     // query "label:labelA" -> ok
-    const resA = GmailApp.search('label:labelA'); // search uses getInboxThreads internal logic? No, search calls _getThreads? checks fakegmailapp.
-    // search is not implemented in fakegmailapp.js? 
-    // Wait, I didn't check if `search` exists. `getInboxThreads` calls `_getThreads`.
-    // `search` usually exists in GmailApp. Let me check `fakegmailapp.js` again.
-    // If `search` is missing, I should test `_getThreads` via `getInboxThreads` if possible, but `getInboxThreads` uses `in:inbox`.
-    // I added check in `_getThreads`. `getInboxThreads` calls `_getThreads('in:inbox', ...)`
-    // So I should whitelist `inbox` for that to work?
-    // My implementation: `q.match(/(?:label|l|in):(\S+)/g)`
-    // `in:inbox` -> matches `inbox`.
-    // If I didn't whitelist `inbox`, `getInboxThreads` will fail if strict.
-    // Let's add `inbox` to whitelist for this test case or expect failure.
+    const resA = GmailApp.search('label:labelA');
 
     // Let's update whitelist for this specific test part
     gmailSettings.labelWhitelist.push({ name: 'inbox', read: true });
 
     t.not(GmailApp.getInboxThreads(), undefined, 'Should read inbox if whitelisted');
-
-    // Test denied read
-    // "label:denied"
-    // I need a method that takes a custom query. 
-    // `search` method?
-    // If `search` is not in fakegmailapp.js, I can't test it easily unless I add it or use `getTrashThreads` (in:trash).
 
   });
 
@@ -270,15 +348,6 @@ export const testSandboxGmail = () => {
 
     // Test Denied MoveToTrash
     if (deniedThreadId) {
-      // Temporarily allow read to get the thread object, then test trash
-      // Or just try to trash if we could get the object.
-      // But we can't get the object via getThreadById (it throws).
-      // Maybe we get it via search? search uses _getThreads -> _checkThreadAccess -> filters it out.
-      // So we can't even GET the thread object in sandbox mode.
-      // This confirms "deleting an email... should be prevented" because you can't even reach it.
-      // But what if we had the thread object from BEFORE sandbox mode? 
-      // (Unlikely scenario in real script, but possible in test)
-
       behavior.sandboxMode = false;
       const deniedThread = GmailApp.getThreadById(deniedThreadId);
       behavior.sandboxMode = true;
@@ -286,6 +355,92 @@ export const testSandboxGmail = () => {
       const trashErr = t.threw(() => GmailApp.moveThreadToTrash(deniedThread));
       t.rxMatch(trashErr?.message, /Access to thread .* is denied/, 'Should deny trashing thread with non-whitelisted label');
     }
+
+    // Manual Cleanup for items created outside of sandbox
+    behavior.sandboxMode = false;
+    if (deniedThreadId) GmailApp.moveThreadToTrash(GmailApp.getThreadById(deniedThreadId));
+    if (allowedThreadId) {
+      try {
+        GmailApp.moveThreadToTrash(GmailApp.getThreadById(allowedThreadId));
+      } catch (e) { } // might be already trashed
+    }
+    behavior.sandboxMode = true;
+  });
+
+  unit.section("Gmail Sandbox - Service & Method Whitelisting", (t) => {
+    resetSandbox();
+    const behavior = ScriptApp.__behavior;
+    const gmailSettings = behavior.sandboxService.GmailApp;
+
+    // 1. Test Service Disabling
+    gmailSettings.enabled = false;
+    const errDisabled = t.threw(() => GmailApp.getInboxThreads());
+    t.rxMatch(errDisabled?.message, /GmailApp service is disabled by sandbox settings/, 'Should fail when service is disabled');
+
+    // Re-enable
+    gmailSettings.enabled = true;
+
+    // 2. Test Method Whitelisting
+    // Only allow 'getInboxThreads'. Internal __getThreads bypasses check.
+    gmailSettings.setMethodWhitelist(['getInboxThreads']);
+
+    t.not(GmailApp.getInboxThreads(0, 1), undefined, 'Should succeed for whitelisted method');
+
+    // Attempt non-whitelisted method
+    const errMethod = t.threw(() => GmailApp.createLabel('TestLabel'));
+    t.rxMatch(errMethod?.message, /Method GmailApp.createLabel is not allowed by sandbox settings/, 'Should fail for non-whitelisted method');
+
+    behavior.sandboxService.GmailApp.clear();
+  });
+
+
+  unit.section("Gmail Sandbox - Sending Limits & Label Security", (t) => {
+    resetSandbox();
+    const behavior = ScriptApp.__behavior;
+    const gmailSettings = behavior.sandboxService.GmailApp;
+    gmailSettings.emailWhitelist = ['allowed@example.com'];
+
+    // 1. Test Send Limit
+    gmailSettings.usageLimit = { send: 1 };
+
+    GmailApp.sendEmail('allowed@example.com', 'Subject 1', 'Body');
+    t.is(gmailSettings.usageCount.send, 1, 'Send count should increment');
+
+    const errSend = t.threw(() => GmailApp.sendEmail('allowed@example.com', 'Subject 2', 'Body'));
+    t.rxMatch(errSend?.message, /Gmail send usage limit of 1 exceeded/, 'Should fail when send limit exceeded');
+
+    // 2. Test Label Security (addLabel)
+    // Setup: Create thread and label
+    gmailSettings.usageLimit = null; // clear limit
+    const labelName = 'DeniedLabelTest';
+    // We need to create label first. Whitelist 'write' for creation to succeed.
+    gmailSettings.labelWhitelist = [{ name: labelName, write: true }];
+
+    // But we want to DENY adding it later? 
+    // If it's whitelisted for 'write', `addLabel` (which checks 'write') will succeed.
+    // If we want to fail, we need a label that exists but is NOT in whitelist (or write=false).
+    // Pre-seed a label "ExistingDenied"?
+    // Or change whitelist dynamically.
+
+    // Create label while allowed
+    const l = GmailApp.createLabel(labelName);
+
+    // Now REMOVE from whitelist (or set write: false)
+    gmailSettings.labelWhitelist = [{ name: labelName, read: true, write: false }];
+
+    // Create thread (allowed)
+    GmailApp.sendEmail('allowed@example.com', 'Label Test', 'Body');
+    const thread = GmailApp.search('subject:"Label Test"')[0];
+
+    // Attempt addLabel - should fail
+    const errLabel = t.threw(() => thread.addLabel(l));
+    t.rxMatch(errLabel?.message, /Access to add label DeniedLabelTest is denied/, 'Should deny adding label without write permission');
+
+    // Cleanup
+    behavior.sandboxMode = false;
+    GmailApp.moveThreadToTrash(thread);
+    GmailApp.deleteLabel(l);
+    behavior.sandboxMode = true;
   });
 
   unit.report();
