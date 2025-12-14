@@ -2,17 +2,26 @@ import prompts from "prompts";
 import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
+import os from "os";
 import { execSync } from "child_process";
 import { checkForGcloudCli, runCommandSync } from "./utils.js";
 
-// --- Utility: Search .env ---
+// --- Utility Functions ---
+
+/**
+ * Recursively searches for .env files starting from a directory.
+ * @param {string} dir - Start directory
+ * @returns {Promise<string[]>} List of found .env file paths
+ */
 async function findEnvFiles(dir) {
   try {
     const entries = await fs.promises.readdir(dir, { withFileTypes: true });
     const promises = entries.map((entry) => {
       const fullPath = path.join(dir, entry.name);
       if (entry.isDirectory()) {
-        if (entry.name === "node_modules") return Promise.resolve([]);
+        if (entry.name === "node_modules") {
+          return Promise.resolve([]);
+        }
         return findEnvFiles(fullPath);
       } else if (entry.isFile() && entry.name === ".env") {
         return Promise.resolve(fullPath);
@@ -27,7 +36,7 @@ async function findEnvFiles(dir) {
   }
 }
 
-// --- Commands ---
+// --- Exported Command Implementations ---
 
 export async function initializeConfiguration(options = {}) {
   let envPath;
@@ -38,7 +47,10 @@ export async function initializeConfiguration(options = {}) {
   } else {
     const foundFiles = await findEnvFiles(process.cwd());
     if (foundFiles.length > 0) {
-      const choices = foundFiles.map((file) => ({ title: file, value: file }));
+      const choices = foundFiles.map((file) => ({
+        title: file,
+        value: file,
+      }));
       choices.push({
         title: "Create a new .env file in the current directory",
         value: "new",
@@ -56,10 +68,11 @@ export async function initializeConfiguration(options = {}) {
         return;
       }
 
-      envPath =
-        response.envPathSelection === "new"
-          ? path.join(process.cwd(), ".env")
-          : response.envPathSelection;
+      if (response.envPathSelection === "new") {
+        envPath = path.join(process.cwd(), ".env");
+      } else {
+        envPath = response.envPathSelection;
+      }
     } else {
       console.log(
         "No .env file found. A new one will be created in the current directory."
@@ -79,15 +92,18 @@ export async function initializeConfiguration(options = {}) {
 
   console.log("--------------------------------------------------");
   console.log("Configuring .env for gas-fakes");
+  console.log("Press Enter to accept the default value in brackets.");
+  console.log("Use Space to select/deselect scopes.");
   console.log("--------------------------------------------------");
 
   const existingExtraScopes = existingConfig.EXTRA_SCOPES
     ? existingConfig.EXTRA_SCOPES.split(",").filter((s) => s)
     : [];
+
   const responses = {};
 
-  // Stage 1: Basic Info
-  const basicInfoResponses = await prompts([
+  // --- Stage 1: Basic Info ---
+  const basicInfoQuestions = [
     {
       type: "text",
       name: "GCP_PROJECT_ID",
@@ -102,17 +118,26 @@ export async function initializeConfiguration(options = {}) {
         "Enter a test Drive file ID for authentication checks (optional)",
       initial: existingConfig.DRIVE_TEST_FILE_ID || "",
     },
-  ]);
+  ];
 
-  if (typeof basicInfoResponses.GCP_PROJECT_ID === "undefined") return;
+  const basicInfoResponses = await prompts(basicInfoQuestions);
+  if (typeof basicInfoResponses.GCP_PROJECT_ID === "undefined") {
+    console.log("Initialization cancelled.");
+    return;
+  }
   Object.assign(responses, basicInfoResponses);
 
-  // Stage 2: Scopes
+  // --- Stage 2: Scopes ---
+
   const DEFAULT_SCOPES_VALUES = [
     "https://www.googleapis.com/auth/userinfo.email",
     "openid",
     "https://www.googleapis.com/auth/cloud-platform",
   ];
+  console.log(
+    "\nThe following default scopes are required for basic operations and will be enabled automatically:"
+  );
+  DEFAULT_SCOPES_VALUES.forEach((scope) => console.log(`  - ${scope}`));
   responses.DEFAULT_SCOPES = DEFAULT_SCOPES_VALUES;
 
   const extraScopeQuestion = {
@@ -124,7 +149,30 @@ export async function initializeConfiguration(options = {}) {
         title: "Workspace resources",
         value: "https://www.googleapis.com/auth/drive",
       },
+      /*
       {
+        title: "Sheets (full access)",
+        value: "https://www.googleapis.com/auth/spreadsheets",
+      },
+      {
+        title: "Docs (full access)",
+        value: "https://www.googleapis.com/auth/documents",
+      },
+      {
+        title: "Forms (full access)",
+        value: "https://www.googleapis.com/auth/forms",
+      },
+      {
+        title: "Gmail (send mail)",
+        value: "https://www.googleapis.com/auth/gmail.send",
+      },
+      {
+        title: "Gmail (full access)",
+        value: "https://www.googleapis.com/auth/gmail.modify",
+      },
+      */
+      {
+        // actually labels are not sensitive
         title: "Gmail labels",
         value: "https://www.googleapis.com/auth/gmail.labels",
       },
@@ -133,49 +181,130 @@ export async function initializeConfiguration(options = {}) {
         title: "Gmail compose",
         value: "https://www.googleapis.com/auth/gmail.compose",
       },
+      {
+        sensitivity: "sensitive",
+        title: "Gmail modify",
+        value: "https://www.googleapis.com/auth/gmail.modify",
+      },
+      {
+        sensitivity: "sensitive",
+        title: "Gmail send",
+        value: "https://www.googleapis.com/auth/gmail.send",
+      },
     ].map((scope) => ({
       ...scope,
       title: scope.sensitivity
         ? `[${scope.sensitivity}] ${scope.title}`
         : scope.title,
+      // because we always need drive for ant extra scopes
       selected:
         existingExtraScopes.length > 0
           ? existingExtraScopes.includes(scope.value)
           : scope.value === "https://www.googleapis.com/auth/drive",
     })),
+    hint: "- Use space to select/deselect. Press Enter to submit.",
   };
 
+  // Check for any kind of sensitivity
+  const sensitiveScopesList = extraScopeQuestion.choices.filter(
+    (scope) => scope.sensitivity
+  );
+
   const extraScopeResponses = await prompts(extraScopeQuestion);
-  if (typeof extraScopeResponses.EXTRA_SCOPES === "undefined") return;
+
+  if (typeof extraScopeResponses.EXTRA_SCOPES === "undefined") {
+    console.log("Initialization cancelled.");
+    return;
+  }
   Object.assign(responses, extraScopeResponses);
 
-  const clientCredentialResponse = await prompts({
+  const selectedExtraScopes = responses.EXTRA_SCOPES || [];
+
+  const usesSensitiveScopes = sensitiveScopesList.some((s) =>
+    selectedExtraScopes.includes(s.value)
+  );
+
+  if (usesSensitiveScopes) {
+    console.log("\n--------------------------------------------------");
+    console.log(
+      "You have selected sensitive or restricted scopes. Google requires an OAuth client credential file for these."
+    );
+    console.log(
+      "See the getting started guide https://github.com/brucemcpherson/gas-fakes/blob/main/GETTING_STARTED.md for how."
+    );
+    console.log("--------------------------------------------------");
+  }
+
+  const clientCredentialQuestion = {
     type: "text",
     name: "CLIENT_CREDENTIAL_FILE",
-    message: "Enter path to OAuth client credentials JSON (optional)",
+    message: usesSensitiveScopes
+      ? "Enter the path and filename for your OAuth client credentials JSON"
+      : "Enter path to OAuth client credentials JSON (optional)",
     initial: existingConfig.CLIENT_CREDENTIAL_FILE || "",
-  });
+    validate: (input) => {
+      const trimmedInput = input.trim();
+
+      if (usesSensitiveScopes) {
+        if (trimmedInput === "") {
+          return "This field is required for the selected sensitive scopes.";
+        }
+      } else {
+        if (trimmedInput === "") {
+          return true;
+        }
+      }
+
+      const resolvedPath = path.resolve(process.cwd(), trimmedInput);
+      if (!fs.existsSync(resolvedPath)) {
+        return `File not found at '${resolvedPath}'. Please check the path and try again.`;
+      }
+
+      return true;
+    },
+  };
+
+  const clientCredentialResponse = await prompts(clientCredentialQuestion);
+  if (typeof clientCredentialResponse.CLIENT_CREDENTIAL_FILE === "undefined") {
+    console.log("Initialization cancelled.");
+    return;
+  }
   Object.assign(responses, clientCredentialResponse);
 
-  // Stage 3: Remaining Config
-  const remainingResponses = await prompts([
+  // --- Stage 3: Remaining Config ---
+  const defaultScopesDisplay = `\n  - Default: [${responses.DEFAULT_SCOPES.join(
+    ", "
+  )}]`;
+  const extraScopesDisplay =
+    responses.EXTRA_SCOPES && responses.EXTRA_SCOPES.length > 0
+      ? `\n  - Extra:   [${responses.EXTRA_SCOPES.join(", ")}]`
+      : "\n  - Extra:   [None]";
+
+  const remainingQuestions = [
     {
       type: "toggle",
       name: "QUIET",
       message: "Run gas-fakes package in quiet mode",
-      initial: existingConfig.QUIET === "true",
+      initial: existingConfig.QUIET === "true" ? true : false,
     },
     {
       type: "select",
       name: "LOG_DESTINATION",
-      message: "Enter logging destination",
+      message: `Selected Scopes:${defaultScopesDisplay}${extraScopesDisplay}\n\nEnter logging destination`,
       choices: [
         { title: "CONSOLE", value: "CONSOLE" },
         { title: "CLOUD", value: "CLOUD" },
         { title: "BOTH", value: "BOTH" },
         { title: "NONE", value: "NONE" },
       ],
-      initial: 0,
+      initial:
+        ["CONSOLE", "CLOUD", "BOTH", "NONE"].indexOf(
+          existingConfig.LOG_DESTINATION
+        ) > -1
+          ? ["CONSOLE", "CLOUD", "BOTH", "NONE"].indexOf(
+              existingConfig.LOG_DESTINATION
+            )
+          : 0,
     },
     {
       type: "select",
@@ -185,18 +314,31 @@ export async function initializeConfiguration(options = {}) {
         { title: "FILE", value: "FILE" },
         { title: "UPSTASH", value: "UPSTASH" },
       ],
-      initial: 0,
+      initial:
+        ["FILE", "UPSTASH"].indexOf(existingConfig.STORE_TYPE?.toUpperCase()) >
+        -1
+          ? ["FILE", "UPSTASH"].indexOf(existingConfig.STORE_TYPE.toUpperCase())
+          : 0,
     },
-  ]);
+  ];
+
+  const remainingResponses = await prompts(remainingQuestions);
+  if (typeof remainingResponses.LOG_DESTINATION === "undefined") {
+    console.log("Initialization cancelled.");
+    return;
+  }
   Object.assign(responses, remainingResponses);
 
-  if (Array.isArray(responses.DEFAULT_SCOPES))
+  // Convert scope arrays to comma-separated strings for saving
+  if (Array.isArray(responses.DEFAULT_SCOPES)) {
     responses.DEFAULT_SCOPES = responses.DEFAULT_SCOPES.join(",");
-  if (Array.isArray(responses.EXTRA_SCOPES))
+  }
+  if (Array.isArray(responses.EXTRA_SCOPES)) {
     responses.EXTRA_SCOPES = responses.EXTRA_SCOPES.join(",");
+  }
 
   if (responses.STORE_TYPE === "UPSTASH") {
-    const upstashResponses = await prompts([
+    const upstashQuestions = [
       {
         type: "text",
         name: "UPSTASH_REDIS_REST_URL",
@@ -209,9 +351,22 @@ export async function initializeConfiguration(options = {}) {
         message: "Enter your Upstash Redis REST Token",
         initial: existingConfig.UPSTASH_REDIS_REST_TOKEN || "",
       },
-    ]);
+    ];
+    const upstashResponses = await prompts(upstashQuestions);
+
+    if (typeof upstashResponses.UPSTASH_REDIS_REST_URL === "undefined") {
+      console.log("Initialization cancelled during Upstash configuration.");
+      return;
+    }
     Object.assign(responses, upstashResponses);
   }
+
+  // --- Confirmation Step ---
+  console.log("\n------------------ Summary ------------------");
+  Object.entries(responses).forEach(([key, value]) => {
+    if (value !== undefined) console.log(`${key}: ${value}`);
+  });
+  console.log("-------------------------------------------");
 
   const confirmSave = await prompts({
     type: "confirm",
@@ -221,33 +376,51 @@ export async function initializeConfiguration(options = {}) {
   });
 
   if (!confirmSave.save) {
-    console.log("Configuration discarded.");
+    console.log("Configuration discarded. No changes were made.");
     return;
   }
 
+  // --- File Writing Logic ---
+  console.log(`Writing configuration to "${envPath}"...`);
   const inits =
     responses.STORE_TYPE !== "UPSTASH"
       ? { UPSTASH_REDIS_REST_TOKEN: "", UPSTASH_REDIS_REST_URL: "" }
       : {};
   const finalConfig = { ...existingConfig, ...responses, ...inits };
 
+  console.log("\n------------------ Final output ------------------");
   const envContent = Reflect.ownKeys(finalConfig)
-    .map((key) => `${key}="${(finalConfig[key] || "").toString().trim()}"`)
+    .map((key) => {
+      const item = finalConfig[key];
+      const res = `${key}="${(item.toString() || "").trim()}"`;
+      console.log(res);
+      return res;
+    })
     .join("\n");
 
   fs.writeFileSync(envPath, envContent + "\n", "utf8");
+
+  console.log("--------------------------------------------------");
   console.log("Setup complete. Your .env file has been updated.");
+  console.log("--------------------------------------------------");
 }
 
+/**
+ * Handles the 'auth' command to authenticate with Google Cloud.
+ */
 export function authenticateUser() {
+  // First, check if gcloud CLI is available.
   checkForGcloudCli();
-  const envPath = path.join(process.cwd(), ".env");
+
+  const rootDirectory = process.cwd();
+  const envPath = path.join(rootDirectory, ".env");
 
   if (!fs.existsSync(envPath)) {
     console.error(`Error: .env file not found at '${envPath}'`);
     console.error("Please run './gas-fakes.js init' first.");
     process.exit(1);
   }
+
   dotenv.config({ path: envPath, quiet: true });
 
   const {
@@ -263,42 +436,149 @@ export function authenticateUser() {
     process.exit(1);
   }
 
-  let scopes =
+  const defaultScopes =
     DEFAULT_SCOPES ||
     "https://www.googleapis.com/auth/userinfo.email,openid,https://www.googleapis.com/auth/cloud-platform";
-  if (EXTRA_SCOPES && EXTRA_SCOPES.length > 0) {
-    scopes += "," + EXTRA_SCOPES;
+  const extraScopes =
+    EXTRA_SCOPES ||
+    "https://www.googleapis.com/auth/drive,https://www.googleapis.com/auth/spreadsheets";
+
+  let scopes = defaultScopes;
+  if (extraScopes && extraScopes.length > 0) {
+    scopes += (extraScopes.startsWith(",") ? "" : ",") + extraScopes;
   }
+
+  const driveAccessFlag = "--enable-gdrive-access";
+
+  console.log(`...requesting scopes ${scopes}`);
 
   let clientFlag = "";
-  if (CLIENT_CREDENTIAL_FILE && fs.existsSync(CLIENT_CREDENTIAL_FILE)) {
-    clientFlag = `--client-id-file="${CLIENT_CREDENTIAL_FILE}"`;
+  if (CLIENT_CREDENTIAL_FILE) {
+    console.log("...attempting to use enhanced client credentials");
+
+    let clientPath = CLIENT_CREDENTIAL_FILE;
+    if (!path.isAbsolute(clientPath)) {
+      clientPath = path.join(rootDirectory, clientPath);
+    }
+
+    if (fs.existsSync(clientPath)) {
+      clientFlag = `--client-id-file="${clientPath}"`;
+    } else {
+      console.error(
+        `Error: Client credential file specified in .env not found at '${clientPath}'`
+      );
+      process.exit(1);
+    }
+  } else {
+    console.log(
+      "\n...CLIENT_CREDENTIAL_FILE is not set. Using default Application Default Credentials (ADC)."
+    );
+    console.log(
+      "...if you have requested any sensitive scopes, you'll see 'This app is blocked message.'"
+    );
+    console.log(
+      "...To allow them see - https://github.com/brucemcpherson/gas-fakes/blob/main/GETTING_STARTED.md\n"
+    );
   }
 
+  const projectId = GCP_PROJECT_ID;
   const activeConfig = AC || "default";
 
+  console.log("Revoking previous credentials...");
   try {
     execSync("gcloud auth revoke --quiet", { stdio: "ignore" });
-  } catch (e) {}
-
-  try {
-    runCommandSync(`gcloud config configurations activate "${activeConfig}"`);
   } catch (e) {
-    runCommandSync(`gcloud config configurations create "${activeConfig}"`);
-    runCommandSync(`gcloud config configurations activate "${activeConfig}"`);
+    /* ignore */
+  }
+  try {
+    execSync("gcloud auth application-default revoke --quiet", {
+      stdio: "ignore",
+    });
+  } catch (e) {
+    /* ignore */
   }
 
-  runCommandSync(`gcloud config set project ${GCP_PROJECT_ID}`);
-  runCommandSync(`gcloud auth login --enable-gdrive-access`);
+  console.log(`Ensuring gcloud configuration '${activeConfig}' exists...`);
+  try {
+    execSync(`gcloud config configurations describe "${activeConfig}"`, {
+      stdio: "ignore",
+    });
+    console.log(`Configuration '${activeConfig}' already exists.`);
+  } catch (error) {
+    console.log(`Configuration '${activeConfig}' not found. Creating it...`);
+    runCommandSync(`gcloud config configurations create "${activeConfig}"`);
+  }
+
+  console.log(`Activating gcloud configuration: ${activeConfig}`);
+  runCommandSync(`gcloud config configurations activate "${activeConfig}"`);
+
+  console.log(`Setting project to: ${projectId}`);
+  runCommandSync(`gcloud config set project ${projectId}`);
+  runCommandSync(`gcloud config set billing/quota_project ${projectId}`);
+
+  console.log("Initiating user login...");
+  runCommandSync(`gcloud auth login ${driveAccessFlag}`);
+
+  console.log("Initiating Application Default Credentials (ADC) login...");
   runCommandSync(
     `gcloud auth application-default login --scopes="${scopes}" ${clientFlag}`
   );
+  runCommandSync(
+    `gcloud auth application-default set-quota-project ${projectId}`
+  );
 
+  // --- Verification ---
+  console.log("\nVerifying configuration...");
+
+  const gcloudConfigDir =
+    process.env.CLOUDSDK_CONFIG || path.join(os.homedir(), ".config", "gcloud");
+  const activeConfigPath = path.join(gcloudConfigDir, "active_config");
+
+  let currentConfig = "unknown";
+  if (fs.existsSync(activeConfigPath)) {
+    currentConfig = fs.readFileSync(activeConfigPath, "utf8").trim();
+  } else {
+    console.warn(
+      `Warning: Could not find active_config file at ${activeConfigPath}`
+    );
+  }
+
+  const currentProject = execSync("gcloud config get project")
+    .toString()
+    .trim();
+  console.log(
+    `Active config is ${currentConfig} - project is ${currentProject}`
+  );
+
+  console.log("\nFetching token information...");
+  const userToken = execSync("gcloud auth print-access-token")
+    .toString()
+    .trim();
+  const appDefaultToken = execSync(
+    "gcloud auth application-default print-access-token"
+  )
+    .toString()
+    .trim();
+
+  console.log("\n...user token scopes");
+  runCommandSync(
+    `curl https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${userToken}`
+  );
+
+  console.log("\n...application default token scopes");
+  runCommandSync(
+    `curl https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${appDefaultToken}`
+  );
   console.log("\nAuthentication process finished.");
 }
 
+/**
+ * Handles the 'enableAPIs' command to enable or disable necessary Google Cloud services based on options.
+ * @param {object} options Options object provided by commander.js.
+ */
 export function enableGoogleAPIs(options) {
   checkForGcloudCli();
+
   const API_SERVICES = {
     drive: "drive.googleapis.com",
     sheets: "sheets.googleapis.com",
@@ -308,22 +588,45 @@ export function enableGoogleAPIs(options) {
     logging: "logging.googleapis.com",
   };
 
-  const enable = [];
-  const disable = [];
-
+  const servicesToEnable = new Set();
+  const servicesToDisable = new Set();
   if (options.all || Object.keys(options).length === 0) {
-    enable.push(...Object.values(API_SERVICES));
+    Object.values(API_SERVICES).forEach((service) =>
+      servicesToEnable.add(service)
+    );
   } else {
     for (const key in API_SERVICES) {
-      if (options[`e${key}`]) enable.push(API_SERVICES[key]);
-      if (options[`d${key}`]) disable.push(API_SERVICES[key]);
+      if (options[`e${key}`]) {
+        servicesToEnable.add(API_SERVICES[key]);
+      }
+      if (options[`d${key}`]) {
+        servicesToDisable.add(API_SERVICES[key]);
+      }
     }
   }
-
-  if (enable.length > 0) {
-    runCommandSync(`gcloud services enable ${enable.join(" ")}`);
+  if (servicesToEnable.size > 0) {
+    const enableList = Array.from(servicesToEnable);
+    console.log(`Enabling Google Cloud services: ${enableList.join(", ")}...`);
+    runCommandSync(`gcloud services enable ${enableList.join(" ")}`);
+    console.log("Services enabled successfully.");
   }
-  if (disable.length > 0) {
-    runCommandSync(`gcloud services disable ${disable.join(" ")}`);
+  if (servicesToDisable.size > 0) {
+    const disableList = Array.from(servicesToDisable);
+    console.log(
+      `Disabling Google Cloud services: ${disableList.join(", ")}...`
+    );
+    runCommandSync(`gcloud services disable ${disableList.join(" ")}`);
+    console.log("Services disabled successfully.");
+  }
+  if (
+    servicesToEnable.size === 0 &&
+    servicesToDisable.size === 0 &&
+    Object.keys(options).length > 0 &&
+    !options.all
+  ) {
+    console.log("No specific APIs were selected to enable or disable.");
+    console.log(
+      "Use '--all' to enable all default APIs, or specify flags like '--edrive' or '--ddrive'."
+    );
   }
 }

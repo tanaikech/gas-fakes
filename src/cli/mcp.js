@@ -157,7 +157,10 @@ function registerDefaultTool(server) {
     if (!args.filename || !args.tools) {
       return {
         content: [
-          { type: "text", text: "Error: `filename` and `tools` are required." },
+          {
+            type: "text",
+            text: "Error: `filename` and `tools` are required.",
+          },
         ],
         isError: true,
       };
@@ -166,11 +169,9 @@ function registerDefaultTool(server) {
     const tool_ar = [];
     for (let i = 0; i < args.tools.length; i++) {
       const { name, schema, gas_script, libraries } = args.tools[i];
-      // Note: This generation logic is complex; assuming gas_library is empty for generation context,
-      // or simply rendering the array strings.
       tool_ar.push(
         `{ name: "${name}", schema: ${schema}, func: (object = {}) => { \n\n${gas_script} }, libraries: ${JSON.stringify(
-          libraries
+          libraries || []
         )} }`
       );
     }

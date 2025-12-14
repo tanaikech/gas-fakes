@@ -5,8 +5,8 @@ const require = createRequire(import.meta.url);
 const pjson = require("../../package.json");
 
 export const VERSION = pjson.version;
-export const CLI_VERSION = "0.0.16"; // Kept from original logic
-export const MCP_VERSION = "0.0.6";
+export const CLI_VERSION = "0.0.17"; // Kept from original logic
+export const MCP_VERSION = "0.0.7";
 
 /**
  * Replaces escaped newline characters ('\\n') with actual newlines,
