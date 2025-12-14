@@ -138,9 +138,24 @@ export async function main() {
     .command("enableAPIs")
     .description("Enables or disables required Google Cloud APIs.")
     .option("--all", "Enable all default APIs.")
+    // Drive
     .option("--edrive", "Enable drive.googleapis.com")
     .option("--ddrive", "Disable drive.googleapis.com")
-    // ... (other flags implied by setup.js logic)
+    // Sheets
+    .option("--esheets", "Enable sheets.googleapis.com")
+    .option("--dsheets", "Disable sheets.googleapis.com")
+    // Forms
+    .option("--eforms", "Enable forms.googleapis.com")
+    .option("--dforms", "Disable forms.googleapis.com")
+    // Docs
+    .option("--edocs", "Enable docs.googleapis.com")
+    .option("--ddocs", "Disable docs.googleapis.com")
+    // Gmail
+    .option("--egmail", "Enable gmail.googleapis.com")
+    .option("--dgmail", "Disable gmail.googleapis.com")
+    // Logging
+    .option("--elogging", "Enable logging.googleapis.com")
+    .option("--dlogging", "Disable logging.googleapis.com")
     .action(enableGoogleAPIs);
 
   // --- MCP Command ---

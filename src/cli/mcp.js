@@ -157,7 +157,10 @@ function registerDefaultTool(server) {
     if (!args.filename || !args.tools) {
       return {
         content: [
-          { type: "text", text: "Error: `filename` and `tools` are required." },
+          {
+            type: "text",
+            text: "Error: `filename` and `tools` are required.",
+          },
         ],
         isError: true,
       };
@@ -166,11 +169,9 @@ function registerDefaultTool(server) {
     const tool_ar = [];
     for (let i = 0; i < args.tools.length; i++) {
       const { name, schema, gas_script, libraries } = args.tools[i];
-      // Note: This generation logic is complex; assuming gas_library is empty for generation context,
-      // or simply rendering the array strings.
       tool_ar.push(
         `{ name: "${name}", schema: ${schema}, func: (object = {}) => { \n\n${gas_script} }, libraries: ${JSON.stringify(
-          libraries
+          libraries || []
         )} }`
       );
     }
@@ -192,6 +193,46 @@ function registerDefaultTool(server) {
       isError: false,
     };
   });
+
+  // server.registerTool("create-new-tools", schema2, async (args) => {
+  //   if (!args.filename || !args.tools) {
+  //     return {
+  //       content: [
+  //         { type: "text", text: "Error: `filename` and `tools` are required." },
+  //       ],
+  //       isError: true,
+  //     };
+  //   }
+
+  //   const tool_ar = [];
+  //   for (let i = 0; i < args.tools.length; i++) {
+  //     const { name, schema, gas_script, libraries } = args.tools[i];
+  //     // Note: This generation logic is complex; assuming gas_library is empty for generation context,
+  //     // or simply rendering the array strings.
+  //     tool_ar.push(
+  //       `{ name: "${name}", schema: ${schema}, func: (object = {}) => { \n\n${gas_script} }, libraries: ${JSON.stringify(
+  //         libraries
+  //       )} }`
+  //     );
+  //   }
+
+  //   const tool_script = [
+  //     `import { z } from "zod";`,
+  //     ``,
+  //     `const tools = [${tool_ar.join(", ")}];`,
+  //   ].join("\n");
+  //   const absolutePath = path.resolve(process.cwd(), args.filename);
+  //   fs.writeFileSync(absolutePath, tool_script);
+  //   return {
+  //     content: [
+  //       {
+  //         type: "text",
+  //         text: `A new file including tools for gas-fakes-mcp was successfully created as "${absolutePath}".`,
+  //       },
+  //     ],
+  //     isError: false,
+  //   };
+  // });
 }
 
 async function registerCustomTools(server, toolsPath) {
