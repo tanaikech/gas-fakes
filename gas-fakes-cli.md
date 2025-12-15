@@ -243,6 +243,38 @@ The JSON object used with the `-j` option follows this schema:
         "required": ["itemId"]
       }
     },
+    "gmailSandbox": {
+      "emailWhitelist": {
+        "description": "List of email addresses allowed to receive emails. Emails sent to addresses not in this list (or allowed by session rules) will throw an error.",
+        "type": "array",
+        "items": {
+          "description": "List of email addresses allowed to receive emails. Emails sent to addresses not in this list (or allowed by session rules) will throw an error.",
+          "type": "string"
+        }
+      },
+      "usageLimit": {
+        "description": "Limits for operations. Can be a number (implies total limit for all operations combined) or an object { read?: number, write?: number, trash?: number, send?: number }.",
+        "type": ["number", "object"]
+      },
+      "labelWhitelist": {
+        "description": "Configuration for allowed labels, specifying name and permissions (read, write, delete, send).",
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": { "description": "Label name", "type": "string" },
+            "read": { "description": "read", "type": "boolean" },
+            "write": { "description": "write", "type": "boolean" },
+            "delete": { "description": "delete", "type": "boolean" },
+            "send": { "description": "send", "type": "boolean" }
+          }
+        }
+      },
+      "cleanup": {
+        "description": "Controls whether Gmail artifacts (labels, threads) created in the session are trashed on cleanup. Defaults to global setting if not set.",
+        "type": "boolean"
+      }
+    },
     "whitelistServices": {
       "description": "A list of services to be whitelisted.",
       "type": "array",

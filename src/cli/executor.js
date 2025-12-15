@@ -43,6 +43,29 @@ function generateItemWhitelistScript(items) {
   return `behavior.setIdWhitelist([${whitelistItemsString}]);`;
 }
 
+function generateGmailSandbox(gmailSandbox) {
+  if (!gmailSandbox) return [];
+  const { emailWhitelist, usageLimit, labelWhitelist, cleanup } = gmailSandbox;
+  const temp = ["const gmailSettings = behavior.sandboxService.GmailApp;"];
+  if (emailWhitelist && emailWhitelist.length > 0) {
+    temp.push(
+      `gmailSettings.emailWhitelist = ${JSON.stringify(emailWhitelist)};`
+    );
+  }
+  if (gmailSandbox.hasOwnProperty("cleanup")) {
+    temp.push(`gmailSettings.cleanup = ${cleanup};`);
+  }
+  if (usageLimit) {
+    temp.push(`gmailSettings.usageLimit = ${usageLimit};`);
+  }
+  if (labelWhitelist && labelWhitelist.length > 0) {
+    temp.push(
+      `gmailSettings.labelWhitelist = ${JSON.stringify(labelWhitelist)};`
+    );
+  }
+  return temp;
+}
+
 function generateSandboxSetupScript(sandboxConfig) {
   const script = [
     "const behavior = ScriptApp.__behavior;",
@@ -50,11 +73,12 @@ function generateSandboxSetupScript(sandboxConfig) {
     "behavior.strictSandbox = true;",
   ];
 
-  const { whitelistServices, blacklistServices, whitelistItems } =
+  const { whitelistServices, blacklistServices, whitelistItems, gmailSandbox } =
     sandboxConfig;
 
   script.push(...generateServiceWhitelistScript(whitelistServices));
   script.push(...generateServiceBlacklistScript(blacklistServices));
+  script.push(...generateGmailSandbox(gmailSandbox));
 
   const itemWhitelist = generateItemWhitelistScript(whitelistItems);
   if (itemWhitelist) {
