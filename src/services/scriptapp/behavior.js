@@ -348,7 +348,7 @@ class FakeBehavior {
     return id
   }
   isAccessible(id, serviceName, accessType = 'read') {
-    if (!is.nonEmptyString(id)) {
+    if (this.sandboxMode && !is.nonEmptyString(id)) {
       throw new Error(`Invalid sandbox id parameter (${id}) - must be a non-empty string`);
     }
 

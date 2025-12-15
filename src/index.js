@@ -24,5 +24,6 @@ import './services/formapp/app.js'
 import './services/slidesapp/app.js'
 import './services/mimetype/app.js'
 import './services/lock/app.js'
+import './services/libhandlerapp/app.js'
 // should be last
 import './services/stores/app.js'

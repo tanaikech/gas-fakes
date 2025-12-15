@@ -64,6 +64,7 @@ class FakeAdvDriveFiles {
   }
 
   /**
+   * TODO implement the correct download method
    * this is fairly pointless in apps script as it returns an operation, and Drive.Operations are not supported
    * TODO - look into what actually happens to the operation - it may be possible to do something with it using the operations ap directly
    * for the moment we'll just return a fake operation that looks like adv returns
@@ -193,47 +194,23 @@ class FakeAdvDriveFiles {
 
   }
 
-  export() {
-    return notYetImplemented()
+  export(fileId, mimeType) {
+
+    if (!is.nonEmptyString(fileId)) {
+      throw new Error(`API call to drive.files.export failed with error: Required`)
+    }
+    ScriptApp.__behavior.isAccessible(fileId, 'Drive', 'read');
+    const params = {
+      id: fileId,
+      mimeType,
+    }
+
+    const { response, data } = Syncit.fxDriveExport(params)
+    return data
+    
   }
 
 }
-
-
-/**
- * tidy up a fields parameter
- * @param {object} p
- * @param {string} [p.fields=minFields] which fields to get
- * @return {string[]} an array of the fields required merged with the minimum fields required to support caching
- */
-const tidyFieldsFar = ({ fields = "" } = {}, mf = minFields) => {
-  if (!is.string(fields)) {
-    throw new Error(`invalid fields definition`, fields)
-  }
-
-  return Array.from(
-    new Set((mf.split(",").concat(fields.split(","))
-      .map(f => f.replace(/\s/g, ""))
-      .filter(f => f)))
-      .keys()
-  )
-}
-
-
-/**
- * enhance the array of required fields by adding any propertyies already in cache
- * @param {object} p
- * @param {File} p.cachedFile meta data
- * @returns {string} an enhanced fields as a string with the dedupped fields already in cache
- */
-const enhanceFar = ({ cachedFile, far }) => {
-  // we'll enhance the cache with the current value of any already fetched key by fetching it again
-  far = cachedFile ? Array.from(new Set(far.concat(Reflect.ownKeys(cachedFile))).keys()) : far
-
-  // now construct an appropriate fields arg
-  return far.join(",")
-}
-
 
   /**
    * ceate/patch a file and optionally upload some data

@@ -15,16 +15,6 @@
   "dependencies": {
     "libraries": [
       {
-        "userSymbol": "bmUnitTester",
-        "version": "20",
-        "libraryId": "1zOlHMOpO89vqLPe5XpC-wzA9r5yaBkWt_qFjKqFNsIZtNJ-iUjBYDt-x"
-      },
-      {
-        "userSymbol": "bmIs",
-        "version": "1",
-        "libraryId": "1tFa7Gc68142wiiZaNmj0zA-ELDHh0q31eDXodeeCf1LxRR1LeSr3opAd"
-      },
-      {
         "userSymbol": "bmFiddler",
         "version": "30",
         "libraryId": "13EWG4-lPrEf34itxQhAQ7b9JEbmCBfO8uE4Mhr99CHi3Pw65oxXtq-rU",

@@ -139,25 +139,17 @@ export const sxStreamUpMedia = async (Auth, { resource, bytes, fields, method, m
   }
 
 }
-
-/**
- * sync a call to download data from drive
- * @param {object} p pargs
- * @param {string} p.id file id
- * @return {SxResult} from the api
- */
-export const sxDriveMedia = async (Auth, { id }) => {
-
+const sxStreamer = async ({
+  params,
+  options = {},
+  method = 'get' }) => {
   // this is the node drive service
   const drive = getDriveApiClient();
-  const streamed = await drive.files.get({
-    fileId: id,
-    alt: 'media'
-  }, {
-    responseType: 'stream'
+  const streamed = await drive.files[method](params, {
+    responseType: 'stream',
+    ...options
   })
   const response = responseSyncify(streamed)
-
   if (response.status === 200) {
     const buf = await getStreamAsBuffer(streamed.data)
     const data = Array.from(buf)
@@ -172,8 +164,36 @@ export const sxDriveMedia = async (Auth, { id }) => {
       response
     }
   }
+}
+/**
+ * sync a call to export data from drive
+ * @param {object} p pargs
+ * @param {string} p.id file id
+ * @return {SxResult} from the api
+ */
+export const sxDriveExport = async (_, { id: fileId, mimeType }) => {
+
+  return sxStreamer({ params: {
+    fileId,
+    mimeType
+  }, method: 'export' })
 
 }
+/**
+ * sync a call to download data from drive
+ * @param {object} p pargs
+ * @param {string} p.id file id
+ * @return {SxResult} from the api
+ */
+export const sxDriveMedia = async (_, { id: fileId }) => {
+
+  return sxStreamer({params: {
+    fileId,
+    alt: 'media'
+  }, method: 'get' })
+
+}
+
 
 export const sxDriveGet = (Auth, { id, params, options }) => {
   return sxDrive(Auth, {

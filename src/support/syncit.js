@@ -333,6 +333,23 @@ const fxDriveMedia = ({ id }) => {
     id,
   });
 };
+/**
+ * sync a call to Drive api to stream a download
+ * @param {object} p pargs
+ * @param {string} p.prop the prop of drive eg 'files' for drive.files
+ * @param {string} p.method the method of drive eg 'list' for drive.files.list
+ * @param {object} p.params the params to add to the request
+ * @return {DriveResponse} from the drive api
+ */
+const fxDriveExport = ({ id, mimeType , options ={alt: 'media'}}) => {
+  // see issue https://issuetracker.google.com/issues/468534237
+  // live apps script failes without this alt option
+  return callSync("sxDriveExport", {
+    id,
+    mimeType,
+    options
+  });
+};
 
 /**
  * a sync version of fetching
@@ -399,5 +416,5 @@ export const Syncit = {
   fxDocs,
   fxForms,
   fxGmail,
-  // fxGetImagesFromXlsx
-};
+  fxDriveExport
+}
