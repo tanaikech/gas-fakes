@@ -13,7 +13,7 @@ import { newFakeListItem } from './fakelistitem.js';
 import { newFakePageBreakItem } from './fakepagebreakitem.js';
 import { newFakeTextItem } from './faketextitem.js';
 import { signatureArgs } from '../../support/helpers.js';
-import {Utils} from '../../support/utils.js';
+import { Utils } from '../../support/utils.js';
 const { is } = Utils
 export const newFakeForm = (...args) => {
   return Proxies.guard(new FakeForm(...args));
@@ -53,7 +53,7 @@ export class FakeForm {
     return this;
   }
 
-    
+
   saveAndClose() {
     // this is a no-op in fake environment since it is stateless
   }
@@ -299,12 +299,25 @@ export class FakeForm {
       return null;
     }
     const isKnownItem = (id, item) => {
+      // Check main item ID
       if (item.itemId === id) return true;
-      if (item.questionItem?.question?.questionId === id) return true;
-      const qgroup = item.questionGroupItem?.questions
-      if (!qgroup) return false
-      const found = qgroup.some(q => q.questionId === id)
-      return found
+      if (parseInt(item.itemId, 16) === id) return true;
+
+      // Check nested question ID
+      if (item.questionItem?.question?.questionId) {
+        if (item.questionItem.question.questionId === id) return true;
+        if (parseInt(item.questionItem.question.questionId, 16) === id) return true;
+      }
+
+      // Check questions in group
+      const qgroup = item.questionGroupItem?.questions;
+      if (qgroup) {
+        return qgroup.some(q =>
+          q.questionId === id ||
+          (q.questionId && parseInt(q.questionId, 16) === id)
+        );
+      }
+      return false;
     }
 
     const itemResource = this.__resource.items.find((item) => isKnownItem(id, item));

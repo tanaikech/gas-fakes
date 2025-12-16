@@ -123,6 +123,19 @@ I've come across various Apps Script bugs/issues as I work through this which I'
 
 Just a few things I've come across when digging into the differences between what the sheets API and Apps Script do. Whether or not you use gas fakes, some of this stuff might be useful if you are using the APIs directly, or indeed the Advanced service. I'll just make a growing list of stuff I've found, in no particular order.
 
+### DriveApp -vs- Drive Advanced services
+
+The Drive.File.export needs an additional parameter (alt:'media') to return converted content. This is missing from the Autocomplete in the IDE. Without this parameter it fails. The service should add it automatically (presumably this is the intention, since the method is useless without it).
+
+In live Apps Script, this works
+```
+const x= Drive.Files.export ('xxx','application/vnd.google-apps.script+json', {alt: "media"})
+```
+But according to the docs it does not need the alt parameter.   It's likely that the Apps Script advanced service is mistakenly calling the 'get' method of the API rather than the 'export' method which would likely cause this error
+```
+GoogleJsonResponseException: API call to drive.files.export failed with error: Export requires alt=media to download the exported content.
+```
+gas-fakes will accept the alt parameter if provided, but ignore it,, since it uses the export method of the API it isn't needed anway. See https://issuetracker.google.com/issues/468534237 for more details and to track if and when google fix this bug in Advanced Drive service.
 
 ### Named Colors
 
@@ -894,6 +907,12 @@ This has been confirmed through experimentation and is a known limitation.
 ##### `gas-fakes` Implementation
 
 Because `gas-fakes` relies exclusively on public APIs, it is impossible to emulate the live behavior of `setPublished()`. To accurately reflect this limitation of the public API, the `setPublished()` method in the fake `FormApp` service throws a "not yet implemented" error. This prevents developers from writing code that works in the local fake environment but would fail if migrated to a context that uses the public API directly.
+
+### item ids Forms API -vs- FormApp
+
+The Forms API returns item ids as hex strings, while Apps Script FormApp returns them as numbers. This leads to all kinds of complications when using the API and Apps Script interoperably. gas-fakes attempts to bridge this gap by providing returning all Ids from the FormApp emulation as numbers, and converting them to and from hex strings when interacting with the Forms API.
+
+see https://issuetracker.google.com/issues/469115766
 
 ### Enums
 

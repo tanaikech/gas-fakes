@@ -45,7 +45,7 @@ export class FakeChoiceItem extends newFakeFormItem().constructor {
 
     const updateRequest = Forms.newRequest().setUpdateItem({
       item: {
-        itemId: this.getId(),
+        itemId: this.__itemId,
         questionItem: {
           question: {
             choiceQuestion: choiceQuestion,
