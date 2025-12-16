@@ -107,6 +107,8 @@ export const testSandboxGmail = () => {
 
     // 1. cleanup = false for Gmail, global defaults
     gmail.cleanup = false;
+
+    // we don
     behavior.cleanup = true;
 
     // Create label and thread

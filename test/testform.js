@@ -189,7 +189,7 @@ export const testForm = (pack) => {
     // Test getItemById()
     const item1 = updatedForm.getItemById(item1Id);
     t.truthy(item1, 'getItemById() should find the first item');
-    t.is(item1.getId(), item1Id, 'Found item should have the correct ID');
+    t.is(item1.getId(), parseInt(item1Id, 16), 'Found item should have the correct ID');
     t.is(item1.getTitle(), 'First Question', 'Found item should have the correct title');
 
     // Test getItemById() with a non-existent ID

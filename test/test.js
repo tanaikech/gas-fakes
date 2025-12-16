@@ -38,8 +38,7 @@ import { testSlides } from "./testslides.js";
 import { testForm } from "./testform.js";
 import { testFormsAdv } from "./testformsadv.js";
 import { testSheetsText } from "./testsheetstext.js";
-import { testGmail } from "./testgmail.js";
-import { testSandboxGmail } from "./testsandboxgmail.js";
+
 import { testSheetsRange } from "./testsheetsrange.js";
 import { testDocsImages } from "./testdocsimages.js";
 import { testSandbox } from "./testsandbox.js";
@@ -52,6 +51,9 @@ import { testWorkspaceEvents } from './testworkspaceevents.js';
 import { testLogger } from "./testlogger.js";
 import { testMimeType } from './testmimetype.js';
 import { testLock } from './testlock.js';
+// important - run this last for now - see https://github.com/brucemcpherson/gas-fakes/issues/118
+import { testGmail } from "./testgmail.js";
+import { testSandboxGmail } from "./testsandboxgmail.js"; 
 
 const testFakes = () => {
   const pack = initTests();
@@ -90,10 +92,7 @@ const testFakes = () => {
   testForm(pack);
   console.log("\n----Test formsadv----");
   testFormsAdv(pack);
-  console.log("\n----Test gmail----");
-  testGmail(pack);
-  console.log("\n----Test sandbox gmail----");
-  testSandboxGmail(pack);
+
   console.log("\n----Test docsadv----");
   testDocsAdv(pack);
   console.log("\n----Test docs----");
@@ -145,6 +144,13 @@ const testFakes = () => {
   console.log("\n----Test Sheets Range----");
   testSheetsRange(pack);
   console.log("\n----TEST FILES COMPLETE----");
+
+
+  // important - run this last for now - see https://github.com/brucemcpherson/gas-fakes/issues/118
+  console.log("\n----Test gmail----");
+  testGmail(pack);
+  console.log("\n----Test sandbox gmail----");
+  testSandboxGmail(pack);
 
   // reports on cache performance
   if (ScriptApp.isFake) {
