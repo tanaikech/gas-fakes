@@ -3,6 +3,7 @@ import { FakeFormItem } from './fakeformitem.js';
 import { newFakeChoice } from './fakechoice.js';
 import { registerFormItem } from './formitemregistry.js';
 import { ItemType } from '../enums/formsenums.js';
+import { Utils } from '../../support/utils.js';
 
 export const newFakeListItem = (...args) => {
   return Proxies.guard(new FakeListItem(...args));
@@ -56,7 +57,7 @@ export class FakeListItem extends FakeFormItem {
       // Translate from API format back to Apps Script format.
       if (option.goToSectionId) {
         navType = 'GO_TO_PAGE';
-        pageId = option.goToSectionId;
+        pageId = Utils.fromHex(option.goToSectionId);
       } else if (option.goToAction) {
         switch (option.goToAction) {
           case 'NEXT_SECTION': navType = 'CONTINUE'; break;
@@ -85,7 +86,7 @@ export class FakeListItem extends FakeFormItem {
           case 'GO_TO_PAGE':
             // For navigating to a specific page, you ONLY set the goToSectionId.
             // The pageId is the itemId of the PageBreakItem.
-            option.goToSectionId = choice.__pageId.toString(16);
+            option.goToSectionId = Utils.toHex(choice.__pageId);
             break;
           case 'CONTINUE':
             option.goToAction = 'NEXT_SECTION';

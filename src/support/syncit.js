@@ -151,7 +151,7 @@ const fxGeneric = ({
   if (method === "get") {
     return register(resourceId, cacher, result, false, otherParams);
   }
-  
+
   else if (resourceId) {
     cacher.clear(resourceId);
   }

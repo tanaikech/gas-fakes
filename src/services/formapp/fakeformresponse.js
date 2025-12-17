@@ -1,5 +1,6 @@
 import { Proxies } from '../../support/proxies.js';
 import { newFakeItemResponse } from './fakeitemresponse.js';
+import { Utils } from '../../support/utils.js';
 
 export const newFakeFormResponse = (...args) => {
   return Proxies.guard(new FakeFormResponse(...args));
@@ -33,7 +34,7 @@ export class FakeFormResponse {
    * @returns {number} the unique hex ID converted to a decimal number
    */
   getId() {
-    return parseInt(this.__resource.responseId, 16);
+    return Utils.fromHex(this.__resource.responseId);
   }
 
   /**
@@ -59,7 +60,7 @@ export class FakeFormResponse {
     const groupedAnswers = new Map();
 
     for (const [questionId, answer] of Object.entries(this.__resource.answers)) {
-      const item = this.__form.getItemById(questionId);
+      const item = this.__form.getItemById(Utils.fromHex(questionId));
 
       if (item) {
         const itemId = item.getId(); // Use the unique item ID as the key.

@@ -18,7 +18,7 @@ export const sxForms = async (Auth, { prop, subProp, method, params, options = {
 
   const maxRetries = 7;
   let delay = 1777;
-  //syncLog (`in sxforms  ${prop} ${method} ${JSON.stringify(params)}}`)
+  // syncLog(`Forms API Call: ${prop}${subProp ? '.' + subProp : ''}.${method}, Params: ${JSON.stringify(params)}`);
   for (let i = 0; i < maxRetries; i++) {
     let response;
     let error;
@@ -30,9 +30,11 @@ export const sxForms = async (Auth, { prop, subProp, method, params, options = {
         callish = callish[subProp];
       }
       response = await callish[method](params, options);
+      //syncLog(`Forms API Response: ${prop}${subProp ? '.' + subProp : ''}.${method}, Status: ${response?.status}, Data: ${JSON.stringify(response?.data)}`);
     } catch (err) {
       error = err;
       response = err.response;
+      syncError(`Forms API Error Response: ${prop}${subProp ? '.' + subProp : ''}.${method}, Status: ${response?.status}, Error: ${JSON.stringify(error)}`);
     }
 
     const isRetryable = [429, 500, 503].includes(response?.status) || error?.code == 429;

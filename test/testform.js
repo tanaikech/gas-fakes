@@ -175,6 +175,7 @@ export const testForm = (pack) => {
 
     const item1Id = batchResponse.replies[0].createItem.itemId;
     t.true(is.nonEmptyString(item1Id), 'First created item should have an ID');
+    t.true(/^[0-9a-fA-F]+$/.test(item1Id), 'Forms API item ID should be a hex string');
 
     // Re-open the form to test getItems and getItemById
     const updatedForm = FormApp.openById(form.getId());
@@ -187,9 +188,11 @@ export const testForm = (pack) => {
     t.is(items[1].getTitle(), 'Second Question', 'Second item should have correct title');
 
     // Test getItemById()
-    const item1 = updatedForm.getItemById(item1Id);
+    const item1IdAsDec = parseInt(item1Id, 16);
+    const item1 = updatedForm.getItemById(item1IdAsDec);
     t.truthy(item1, 'getItemById() should find the first item');
-    t.is(item1.getId(), parseInt(item1Id, 16), 'Found item should have the correct ID');
+    t.true(is.number(item1.getId()), 'FormApp item ID should be a number');
+    t.is(item1.getId(), item1IdAsDec, 'Found item should have the correct ID');
     t.is(item1.getTitle(), 'First Question', 'Found item should have the correct title');
 
     // Test getItemById() with a non-existent ID
@@ -208,6 +211,7 @@ export const testForm = (pack) => {
     const checkboxItem = form.addCheckboxItem();
     t.is(checkboxItem.toString(), 'CheckboxItem', 'addCheckboxItem should return a CheckboxItem');
     t.is(checkboxItem.getIndex(), 0, 'The first added item should be at index 0');
+    t.true(is.number(checkboxItem.getId()), 'Checkbox item ID should be a number');
 
     const defaultChoices = checkboxItem.getChoices();
     t.is(defaultChoices.length, 1, 'A new checkbox item should have one choice by default');
@@ -240,6 +244,7 @@ export const testForm = (pack) => {
     const mcItem = form.addMultipleChoiceItem();
     t.is(mcItem.toString(), 'MultipleChoiceItem', 'addMultipleChoiceItem should return a MultipleChoiceItem');
     t.is(mcItem.getIndex(), 0, 'The first added item should be at index 0');
+    t.true(is.number(mcItem.getId()), 'Multiple choice item ID should be a number');
 
     const defaultChoices = mcItem.getChoices();
     t.is(defaultChoices.length, 1, 'A new multiple choice item should have one choice by default');
@@ -273,6 +278,7 @@ export const testForm = (pack) => {
     t.is(gridItem.toString(), 'GridItem', 'addGridItem should return a GridItem');
     t.is(gridItem.getIndex(), 0, 'The first added item should be at index 0');
     t.is(gridItem.getType(), FormApp.ItemType.GRID, 'Item type should be GRID');
+    t.true(is.number(gridItem.getId()), 'Grid item ID should be a number');
 
     // Test isRequired() and setRequired()
     t.false(gridItem.isRequired(), 'GridItem should not be required by default');
@@ -299,6 +305,7 @@ export const testForm = (pack) => {
     t.is(checkboxGridItem.toString(), 'CheckboxGridItem', 'addCheckboxGridItem should return a CheckboxGridItem');
     t.is(checkboxGridItem.getIndex(), 0, 'The first added item should be at index 0');
     t.is(checkboxGridItem.getType(), FormApp.ItemType.CHECKBOX_GRID, 'Item type should be CHECKBOX_GRID');
+    t.true(is.number(checkboxGridItem.getId()), 'Checkbox grid item ID should be a number');
 
     // Test isRequired() and setRequired()
     t.false(checkboxGridItem.isRequired(), 'CheckboxGridItem should not be required by default');
@@ -332,6 +339,7 @@ export const testForm = (pack) => {
     t.is(sectionHeaderItem.getIndex(), 0, 'The first added item should be at index 0');
     t.is(sectionHeaderItem.getType(), FormApp.ItemType.SECTION_HEADER, 'Item type should be SECTION_HEADER');
     t.is(sectionHeaderItem.getTitle(), '', 'Default title should be empty to match live environment');
+    t.true(is.number(sectionHeaderItem.getId()), 'Section header item ID should be a number');
 
     sectionHeaderItem.setTitle('New Section Title').setHelpText('Some help text');
     t.is(sectionHeaderItem.getTitle(), 'New Section Title', 'Title should be updated');
@@ -348,6 +356,7 @@ export const testForm = (pack) => {
     t.is(scaleItem.toString(), 'ScaleItem', 'addScaleItem should return a ScaleItem');
     t.is(scaleItem.getIndex(), 0, 'The first added item should be at index 0');
     t.is(scaleItem.getType(), FormApp.ItemType.SCALE, 'Item type should be SCALE');
+    t.true(is.number(scaleItem.getId()), 'Scale item ID should be a number');
 
     // Test default bounds
     t.is(scaleItem.getLowerBound(), 1, 'Default lower bound should be 1');
@@ -375,6 +384,9 @@ export const testForm = (pack) => {
     t.is(itemA.getIndex(), 0, 'Item A should be at index 0 initially');
     t.is(itemB.getIndex(), 1, 'Item B should be at index 1 initially');
     t.is(itemC.getIndex(), 2, 'Item C should be at index 2 initially');
+    t.true(is.number(itemA.getId()), 'Item A ID should be a number');
+    t.true(is.number(itemB.getId()), 'Item B ID should be a number');
+    t.true(is.number(itemC.getId()), 'Item C ID should be a number');
 
     // Move the last item to the beginning
     form.moveItem(2, 0);
@@ -397,6 +409,7 @@ export const testForm = (pack) => {
     t.is(listItem.toString(), 'ListItem', 'addListItem should return a ListItem');
     t.is(listItem.getIndex(), 0, 'The first added item should be at index 0');
     t.is(listItem.getType(), FormApp.ItemType.LIST, 'Item type should be LIST');
+    t.true(is.number(listItem.getId()), 'List item ID should be a number');
 
     const defaultChoices = listItem.getChoices();
     t.is(defaultChoices.length, 1, 'A new list item should have one choice by default');
@@ -425,6 +438,7 @@ export const testForm = (pack) => {
     t.is(textItem.toString(), 'TextItem', 'addTextItem should return a TextItem');
     t.is(textItem.getIndex(), 0, 'The first added item should be at index 0');
     t.is(textItem.getType(), FormApp.ItemType.TEXT, 'Item type should be TEXT');
+    t.true(is.number(textItem.getId()), 'Text item ID should be a number');
 
     textItem.setTitle('Enter your name');
     textItem.setRequired(true);
@@ -444,6 +458,10 @@ export const testForm = (pack) => {
     const pageBreak1 = form.addPageBreakItem().setTitle('Page 2');
     const listItem = form.addListItem().setTitle('List Question');
     const pageBreak2 = form.addPageBreakItem().setTitle('Page 3');
+    t.true(is.number(textItem.getId()), 'Text item ID should be a number');
+    t.true(is.number(pageBreak1.getId()), 'Page break 1 ID should be a number');
+    t.true(is.number(listItem.getId()), 'List item ID should be a number');
+    t.true(is.number(pageBreak2.getId()), 'Page break 2 ID should be a number');
 
     const allItems = form.getItems();
     t.is(4, allItems.length, 'should return all items when no type is specified');

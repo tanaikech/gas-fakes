@@ -17381,7 +17381,7 @@
             "returnType": "Integer",
             "returnDescription": "the index of the item",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L121"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L120"
           },
           {
             "method": "getPoints()",
@@ -17399,7 +17399,7 @@
             "returnType": "String",
             "returnDescription": "the item's title or header text",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L126"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L125"
           },
           {
             "method": "getType()",
@@ -17426,7 +17426,7 @@
             "returnType": "Boolean",
             "returnDescription": "whether the respondent must answer the question",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L223"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L222"
           },
           {
             "method": "setChoiceValues(String)",
@@ -17471,7 +17471,7 @@
             "returnType": "CheckboxItem",
             "returnDescription": "this CheckboxItem, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L173"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L172"
           },
           {
             "method": "setPoints(Integer)",
@@ -17489,7 +17489,7 @@
             "returnType": "CheckboxItem",
             "returnDescription": "the current item (for chaining)",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L237"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L236"
           },
           {
             "method": "setTitle(String)",
@@ -17498,7 +17498,7 @@
             "returnType": "CheckboxItem",
             "returnDescription": "this CheckboxItem, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L195"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L194"
           },
           {
             "method": "setValidation(CheckboxValidation)",
@@ -17605,7 +17605,7 @@
             "returnType": "String",
             "returnDescription": "the item's title or header text",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L126"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L125"
           },
           {
             "method": "getType()",
@@ -17623,7 +17623,7 @@
             "returnType": "Boolean",
             "returnDescription": "whether the respondent must answer the question",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L223"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L222"
           },
           {
             "method": "setColumns(String)",
@@ -17641,7 +17641,7 @@
             "returnType": "CheckboxGridItem",
             "returnDescription": "this CheckboxGridItem, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L173"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L172"
           },
           {
             "method": "setRequired(Boolean)",
@@ -17650,7 +17650,7 @@
             "returnType": "CheckboxGridItem",
             "returnDescription": "the current item (for chaining)",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L237"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L236"
           },
           {
             "method": "setRows(String)",
@@ -17668,7 +17668,7 @@
             "returnType": "CheckboxGridItem",
             "returnDescription": "this CheckboxGridItem, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L195"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L194"
           },
           {
             "method": "setValidation(CheckboxGridValidation)",
@@ -17948,7 +17948,7 @@
             "returnType": "Integer",
             "returnDescription": "the index of the item",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L121"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L120"
           },
           {
             "method": "getPoints()",
@@ -17966,7 +17966,7 @@
             "returnType": "String",
             "returnDescription": "the item's title or header text",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L126"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L125"
           },
           {
             "method": "getType()",
@@ -17993,7 +17993,7 @@
             "returnType": "Boolean",
             "returnDescription": "whether the respondent must answer the question",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L223"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L222"
           },
           {
             "method": "setGeneralFeedback(QuizFeedback)",
@@ -18011,7 +18011,7 @@
             "returnType": "DateItem",
             "returnDescription": "this DateItem, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L173"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L172"
           },
           {
             "method": "setIncludesYear(Boolean)",
@@ -18038,7 +18038,7 @@
             "returnType": "DateItem",
             "returnDescription": "the current item (for chaining)",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L237"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L236"
           },
           {
             "method": "setTitle(String)",
@@ -18047,7 +18047,7 @@
             "returnType": "DateItem",
             "returnDescription": "this DateItem, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L195"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L194"
           }
         ]
       },
@@ -18109,7 +18109,7 @@
             "returnType": "Integer",
             "returnDescription": "the index of the item",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L121"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L120"
           },
           {
             "method": "getPoints()",
@@ -18127,7 +18127,7 @@
             "returnType": "String",
             "returnDescription": "the item's title or header text",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L126"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L125"
           },
           {
             "method": "getType()",
@@ -18154,7 +18154,7 @@
             "returnType": "Boolean",
             "returnDescription": "whether the respondent must answer the question",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L223"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L222"
           },
           {
             "method": "setGeneralFeedback(QuizFeedback)",
@@ -18172,7 +18172,7 @@
             "returnType": "DateTimeItem",
             "returnDescription": "this DateTimeItem, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L173"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L172"
           },
           {
             "method": "setIncludesYear(Boolean)",
@@ -18199,7 +18199,7 @@
             "returnType": "DateTimeItem",
             "returnDescription": "the current item (for chaining)",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L237"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L236"
           },
           {
             "method": "setTitle(String)",
@@ -18208,7 +18208,7 @@
             "returnType": "DateTimeItem",
             "returnDescription": "this DateTimeItem, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L195"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L194"
           }
         ]
       },
@@ -18270,7 +18270,7 @@
             "returnType": "Integer",
             "returnDescription": "the index of the item",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L121"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L120"
           },
           {
             "method": "getPoints()",
@@ -18288,7 +18288,7 @@
             "returnType": "String",
             "returnDescription": "the item's title or header text",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L126"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L125"
           },
           {
             "method": "getType()",
@@ -18306,7 +18306,7 @@
             "returnType": "Boolean",
             "returnDescription": "whether the respondent must answer the question",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L223"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L222"
           },
           {
             "method": "setGeneralFeedback(QuizFeedback)",
@@ -18324,7 +18324,7 @@
             "returnType": "DurationItem",
             "returnDescription": "this DurationItem, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L173"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L172"
           },
           {
             "method": "setPoints(Integer)",
@@ -18342,7 +18342,7 @@
             "returnType": "DurationItem",
             "returnDescription": "the current item (for chaining)",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L237"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L236"
           },
           {
             "method": "setTitle(String)",
@@ -18351,7 +18351,7 @@
             "returnType": "DurationItem",
             "returnDescription": "this DurationItem, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L195"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L194"
           }
         ]
       },
@@ -18611,7 +18611,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeform.js#L405"
+            "implementationLink": "src/services/formapp/fakeform.js#L393"
           },
           {
             "method": "deleteItem(Item)",
@@ -18620,7 +18620,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeform.js#L405"
+            "implementationLink": "src/services/formapp/fakeform.js#L393"
           },
           {
             "method": "deleteResponse(String)",
@@ -18656,7 +18656,7 @@
             "returnType": "String",
             "returnDescription": "The form's description.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeform.js#L359"
+            "implementationLink": "src/services/formapp/fakeform.js#L347"
           },
           {
             "method": "getDestinationId()",
@@ -18683,7 +18683,7 @@
             "returnType": "String",
             "returnDescription": "The URL to edit the form.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeform.js#L543"
+            "implementationLink": "src/services/formapp/fakeform.js#L531"
           },
           {
             "method": "getEditors()",
@@ -18719,7 +18719,7 @@
             "returnType": "Item[]",
             "returnDescription": "An array of all items in the form.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeform.js#L336"
+            "implementationLink": "src/services/formapp/fakeform.js#L324"
           },
           {
             "method": "getItems(ItemType)",
@@ -18728,7 +18728,7 @@
             "returnType": "Item[]",
             "returnDescription": "An array of all items of that type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeform.js#L336"
+            "implementationLink": "src/services/formapp/fakeform.js#L324"
           },
           {
             "method": "getPublishedReaders()",
@@ -18746,7 +18746,7 @@
             "returnType": "String",
             "returnDescription": "The URL to respond to the form.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeform.js#L551"
+            "implementationLink": "src/services/formapp/fakeform.js#L539"
           },
           {
             "method": "getResponse(String)",
@@ -18755,7 +18755,7 @@
             "returnType": "FormResponse",
             "returnDescription": "The form response.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeform.js#L374"
+            "implementationLink": "src/services/formapp/fakeform.js#L362"
           },
           {
             "method": "getResponses()",
@@ -18764,7 +18764,7 @@
             "returnType": "FormResponse[]",
             "returnDescription": "An array of all of the form's responses.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeform.js#L374"
+            "implementationLink": "src/services/formapp/fakeform.js#L362"
           },
           {
             "method": "getResponses(Date)",
@@ -18773,7 +18773,7 @@
             "returnType": "FormResponse[]",
             "returnDescription": "The list of form responses.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeform.js#L374"
+            "implementationLink": "src/services/formapp/fakeform.js#L362"
           },
           {
             "method": "getShuffleQuestions()",
@@ -18800,7 +18800,7 @@
             "returnType": "String",
             "returnDescription": "The form's title.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeform.js#L352"
+            "implementationLink": "src/services/formapp/fakeform.js#L340"
           },
           {
             "method": "hasLimitOneResponsePerUser()",
@@ -18872,7 +18872,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeform.js#L433"
+            "implementationLink": "src/services/formapp/fakeform.js#L421"
           },
           {
             "method": "moveItem(Item,Integer)",
@@ -18881,7 +18881,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeform.js#L433"
+            "implementationLink": "src/services/formapp/fakeform.js#L421"
           },
           {
             "method": "removeDestination()",
@@ -18890,7 +18890,7 @@
             "returnType": "Form",
             "returnDescription": "This Form, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeform.js#L461"
+            "implementationLink": "src/services/formapp/fakeform.js#L449"
           },
           {
             "method": "removeEditor(String)",
@@ -18935,7 +18935,7 @@
             "returnType": "Form",
             "returnDescription": "This Form, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeform.js#L504"
+            "implementationLink": "src/services/formapp/fakeform.js#L492"
           },
           {
             "method": "setAllowResponseEdits(Boolean)",
@@ -18980,7 +18980,7 @@
             "returnType": "Form",
             "returnDescription": "This Form, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeform.js#L529"
+            "implementationLink": "src/services/formapp/fakeform.js#L517"
           },
           {
             "method": "setDestination(DestinationType,String)",
@@ -18989,7 +18989,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeform.js#L473"
+            "implementationLink": "src/services/formapp/fakeform.js#L461"
           },
           {
             "method": "setIsQuiz(Boolean)",
@@ -19061,7 +19061,7 @@
             "returnType": "Form",
             "returnDescription": "This Form, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeform.js#L514"
+            "implementationLink": "src/services/formapp/fakeform.js#L502"
           },
           {
             "method": "shortenFormUrl(String)",
@@ -19070,7 +19070,7 @@
             "returnType": "String",
             "returnDescription": "A URL in the form http://goo.gl/forms/1234.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeform.js#L560"
+            "implementationLink": "src/services/formapp/fakeform.js#L548"
           },
           {
             "method": "submitGrades(FormResponse)",
@@ -19132,7 +19132,7 @@
             "returnType": "String",
             "returnDescription": "The ID of the form response, or null if the form response has not been\n    submitted.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformresponse.js#L35"
+            "implementationLink": "src/services/formapp/fakeformresponse.js#L36"
           },
           {
             "method": "getItemResponses()",
@@ -19141,7 +19141,7 @@
             "returnType": "ItemResponse[]",
             "returnDescription": "An array of responses to every question item within the form for which the respondent\n    provided an answer.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformresponse.js#L51"
+            "implementationLink": "src/services/formapp/fakeformresponse.js#L52"
           },
           {
             "method": "getRespondentEmail()",
@@ -19150,7 +19150,7 @@
             "returnType": "String",
             "returnDescription": "The email address of the person who submitted this response, if available, or null if the script created this response but has not yet submitted it.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformresponse.js#L27"
+            "implementationLink": "src/services/formapp/fakeformresponse.js#L28"
           },
           {
             "method": "getResponseForItem(Item)",
@@ -19168,7 +19168,7 @@
             "returnType": "Date",
             "returnDescription": "The timestamp at which this response was submitted, or null if the script\n    created this response but has not yet submitted it.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformresponse.js#L43"
+            "implementationLink": "src/services/formapp/fakeformresponse.js#L44"
           },
           {
             "method": "submit()",
@@ -19177,7 +19177,7 @@
             "returnType": "FormResponse",
             "returnDescription": "A newly created response saved to the form's response store.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformresponse.js#L40"
+            "implementationLink": "src/services/formapp/fakeformresponse.js#L41"
           },
           {
             "method": "toPrefilledUrl()",
@@ -19307,7 +19307,7 @@
             "returnType": "Choice",
             "returnDescription": "the new choice",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakelistitem.js#L26"
+            "implementationLink": "src/services/formapp/fakelistitem.js#L27"
           },
           {
             "method": "createChoice(String,Boolean)",
@@ -19316,7 +19316,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakelistitem.js#L26"
+            "implementationLink": "src/services/formapp/fakelistitem.js#L27"
           },
           {
             "method": "createChoice(String,PageBreakItem)",
@@ -19325,7 +19325,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakelistitem.js#L26"
+            "implementationLink": "src/services/formapp/fakelistitem.js#L27"
           },
           {
             "method": "createChoice(String,PageNavigationType)",
@@ -19334,7 +19334,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakelistitem.js#L26"
+            "implementationLink": "src/services/formapp/fakelistitem.js#L27"
           },
           {
             "method": "createResponse(String)",
@@ -19361,7 +19361,7 @@
             "returnType": "Choice[]",
             "returnDescription": "an array of choices",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakelistitem.js#L50"
+            "implementationLink": "src/services/formapp/fakelistitem.js#L51"
           },
           {
             "method": "getFeedbackForCorrect()",
@@ -19397,7 +19397,7 @@
             "returnType": "Integer",
             "returnDescription": "the item's ID",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakelistitem.js#L32"
+            "implementationLink": "src/services/formapp/fakelistitem.js#L33"
           },
           {
             "method": "getIndex()",
@@ -19406,7 +19406,7 @@
             "returnType": "Integer",
             "returnDescription": "the index of the item",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakelistitem.js#L107"
+            "implementationLink": "src/services/formapp/fakelistitem.js#L108"
           },
           {
             "method": "getPoints()",
@@ -19433,7 +19433,7 @@
             "returnType": "ItemType",
             "returnDescription": "the item's type",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakelistitem.js#L40"
+            "implementationLink": "src/services/formapp/fakelistitem.js#L41"
           },
           {
             "method": "isRequired()",
@@ -19460,7 +19460,7 @@
             "returnType": "ListItem",
             "returnDescription": "this ListItem, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakelistitem.js#L75"
+            "implementationLink": "src/services/formapp/fakelistitem.js#L76"
           },
           {
             "method": "setFeedbackForCorrect(QuizFeedback)",
@@ -19603,7 +19603,7 @@
             "returnType": "String",
             "returnDescription": "the item's title or header text",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L126"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L125"
           },
           {
             "method": "getType()",
@@ -19621,7 +19621,7 @@
             "returnType": "Boolean",
             "returnDescription": "whether the respondent must answer the question",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L223"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L222"
           },
           {
             "method": "setColumns(String)",
@@ -19639,7 +19639,7 @@
             "returnType": "GridItem",
             "returnDescription": "this GridItem, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L173"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L172"
           },
           {
             "method": "setRequired(Boolean)",
@@ -19648,7 +19648,7 @@
             "returnType": "GridItem",
             "returnDescription": "the current item (for chaining)",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L237"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L236"
           },
           {
             "method": "setRows(String)",
@@ -19666,7 +19666,7 @@
             "returnType": "GridItem",
             "returnDescription": "this GridItem, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L195"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L194"
           },
           {
             "method": "setValidation(GridValidation)",
@@ -19791,7 +19791,7 @@
             "returnType": "Integer",
             "returnDescription": "the index of the item",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L121"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L120"
           },
           {
             "method": "getPoints()",
@@ -19809,7 +19809,7 @@
             "returnType": "String",
             "returnDescription": "the item's title or header text",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L126"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L125"
           },
           {
             "method": "getType()",
@@ -19836,7 +19836,7 @@
             "returnType": "Boolean",
             "returnDescription": "whether the respondent must answer the question",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L223"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L222"
           },
           {
             "method": "setChoiceValues(String)",
@@ -19881,7 +19881,7 @@
             "returnType": "MultipleChoiceItem",
             "returnDescription": "this MultipleChoiceItem, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L173"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L172"
           },
           {
             "method": "setPoints(Integer)",
@@ -19899,7 +19899,7 @@
             "returnType": "MultipleChoiceItem",
             "returnDescription": "the current item (for chaining)",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L237"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L236"
           },
           {
             "method": "setTitle(String)",
@@ -19908,7 +19908,7 @@
             "returnType": "MultipleChoiceItem",
             "returnDescription": "this MultipleChoiceItem, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L195"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L194"
           },
           {
             "method": "showOtherOption(Boolean)",
@@ -19979,7 +19979,7 @@
             "returnType": "Integer",
             "returnDescription": "the index of the item",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L121"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L120"
           },
           {
             "method": "getTitle()",
@@ -19988,7 +19988,7 @@
             "returnType": "String",
             "returnDescription": "the item's title or header text",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L126"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L125"
           },
           {
             "method": "getType()",
@@ -20024,7 +20024,7 @@
             "returnType": "ImageItem",
             "returnDescription": "this ImageItem, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L173"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L172"
           },
           {
             "method": "setImage(BlobSource)",
@@ -20042,7 +20042,7 @@
             "returnType": "ImageItem",
             "returnDescription": "this ImageItem, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L195"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L194"
           },
           {
             "method": "setWidth(Integer)",
@@ -20122,7 +20122,7 @@
             "returnType": "Integer",
             "returnDescription": "the index of the item",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L121"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L120"
           },
           {
             "method": "getPoints()",
@@ -20140,7 +20140,7 @@
             "returnType": "String",
             "returnDescription": "the item's title or header text",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L126"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L125"
           },
           {
             "method": "getType()",
@@ -20158,7 +20158,7 @@
             "returnType": "Boolean",
             "returnDescription": "whether the respondent must answer the question",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L223"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L222"
           },
           {
             "method": "setGeneralFeedback(QuizFeedback)",
@@ -20176,7 +20176,7 @@
             "returnType": "ParagraphTextItem",
             "returnDescription": "this ParagraphTextItem, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L173"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L172"
           },
           {
             "method": "setPoints(Integer)",
@@ -20194,7 +20194,7 @@
             "returnType": "ParagraphTextItem",
             "returnDescription": "the current item (for chaining)",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L237"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L236"
           },
           {
             "method": "setTitle(String)",
@@ -20203,7 +20203,7 @@
             "returnType": "ParagraphTextItem",
             "returnDescription": "this ParagraphTextItem, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L195"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L194"
           },
           {
             "method": "setValidation(ParagraphTextValidation)",
@@ -20272,7 +20272,7 @@
             "returnType": "Integer",
             "returnDescription": "the index of the item",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L121"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L120"
           },
           {
             "method": "getPageNavigationType()",
@@ -20290,7 +20290,7 @@
             "returnType": "String",
             "returnDescription": "the item's title or header text",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L126"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L125"
           },
           {
             "method": "getType()",
@@ -20326,7 +20326,7 @@
             "returnType": "PageBreakItem",
             "returnDescription": "this PageBreakItem, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L173"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L172"
           },
           {
             "method": "setTitle(String)",
@@ -20335,7 +20335,7 @@
             "returnType": "PageBreakItem",
             "returnDescription": "this PageBreakItem, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L195"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L194"
           }
         ]
       },
@@ -20530,7 +20530,7 @@
             "returnType": "String",
             "returnDescription": "the item's title or header text",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L126"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L125"
           },
           {
             "method": "getType()",
@@ -20557,7 +20557,7 @@
             "returnType": "Boolean",
             "returnDescription": "whether the respondent must answer the question",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L223"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L222"
           },
           {
             "method": "setBounds(Integer,Integer)",
@@ -20584,7 +20584,7 @@
             "returnType": "ScaleItem",
             "returnDescription": "this ScaleItem, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L173"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L172"
           },
           {
             "method": "setLabels(String,String)",
@@ -20611,7 +20611,7 @@
             "returnType": "ScaleItem",
             "returnDescription": "the current item (for chaining)",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L237"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L236"
           },
           {
             "method": "setTitle(String)",
@@ -20620,7 +20620,7 @@
             "returnType": "ScaleItem",
             "returnDescription": "this ScaleItem, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L195"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L194"
           }
         ]
       },
@@ -20682,7 +20682,7 @@
             "returnType": "Integer",
             "returnDescription": "the index of the item",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L121"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L120"
           },
           {
             "method": "getPoints()",
@@ -20718,7 +20718,7 @@
             "returnType": "String",
             "returnDescription": "the item's title or header text",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L126"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L125"
           },
           {
             "method": "getType()",
@@ -20736,7 +20736,7 @@
             "returnType": "Boolean",
             "returnDescription": "whether the respondent must answer the question",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L223"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L222"
           },
           {
             "method": "setGeneralFeedback(QuizFeedback)",
@@ -20754,7 +20754,7 @@
             "returnType": "RatingItem",
             "returnDescription": "this RatingItem, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L173"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L172"
           },
           {
             "method": "setPoints(Integer)",
@@ -20790,7 +20790,7 @@
             "returnType": "RatingItem",
             "returnDescription": "the current item (for chaining)",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L237"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L236"
           },
           {
             "method": "setTitle(String)",
@@ -20799,7 +20799,7 @@
             "returnType": "RatingItem",
             "returnDescription": "this RatingItem, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L195"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L194"
           }
         ]
       },
@@ -20843,7 +20843,7 @@
             "returnType": "Integer",
             "returnDescription": "the index of the item",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L121"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L120"
           },
           {
             "method": "getTitle()",
@@ -20852,7 +20852,7 @@
             "returnType": "String",
             "returnDescription": "the item's title or header text",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L126"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L125"
           },
           {
             "method": "getType()",
@@ -20870,7 +20870,7 @@
             "returnType": "SectionHeaderItem",
             "returnDescription": "this SectionHeaderItem, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L173"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L172"
           },
           {
             "method": "setTitle(String)",
@@ -20879,7 +20879,7 @@
             "returnType": "SectionHeaderItem",
             "returnDescription": "this SectionHeaderItem, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L195"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L194"
           }
         ]
       },
@@ -21388,7 +21388,7 @@
             "returnType": "Integer",
             "returnDescription": "the index of the item",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L121"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L120"
           },
           {
             "method": "getPoints()",
@@ -21406,7 +21406,7 @@
             "returnType": "String",
             "returnDescription": "the item's title or header text",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L126"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L125"
           },
           {
             "method": "getType()",
@@ -21424,7 +21424,7 @@
             "returnType": "Boolean",
             "returnDescription": "whether the respondent must answer the question",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L223"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L222"
           },
           {
             "method": "setGeneralFeedback(QuizFeedback)",
@@ -21442,7 +21442,7 @@
             "returnType": "TimeItem",
             "returnDescription": "this TimeItem, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L173"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L172"
           },
           {
             "method": "setPoints(Integer)",
@@ -21460,7 +21460,7 @@
             "returnType": "TimeItem",
             "returnDescription": "the current item (for chaining)",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L237"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L236"
           },
           {
             "method": "setTitle(String)",
@@ -21469,7 +21469,7 @@
             "returnType": "TimeItem",
             "returnDescription": "this TimeItem, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L195"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L194"
           }
         ]
       },
@@ -21699,7 +21699,7 @@
             "returnType": "Integer",
             "returnDescription": "the index of the item",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L121"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L120"
           },
           {
             "method": "getTitle()",
@@ -21708,7 +21708,7 @@
             "returnType": "String",
             "returnDescription": "the item's title or header text",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L126"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L125"
           },
           {
             "method": "getType()",
@@ -21744,7 +21744,7 @@
             "returnType": "VideoItem",
             "returnDescription": "this VideoItem, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L173"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L172"
           },
           {
             "method": "setTitle(String)",
@@ -21753,7 +21753,7 @@
             "returnType": "VideoItem",
             "returnDescription": "this VideoItem, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformitem.js#L195"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L194"
           },
           {
             "method": "setVideoUrl(String)",

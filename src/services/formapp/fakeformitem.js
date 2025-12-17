@@ -114,8 +114,7 @@ export class FakeFormItem {
   }
 
   getId() {
-    // Live Apps Script returns IDs as decimal numbers, not the hex strings from the API.
-    return parseInt(this.__itemId, 16); // Convert to decimal
+    return Utils.fromHex(this.__itemId);
   }
 
   getIndex() {

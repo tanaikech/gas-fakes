@@ -466,4 +466,6 @@ export const Utils = {
   deepEqual,
   colorNameToHex,
   normalizeColorStringToHex,
+  toHex: (n) => is.number(n) ? n.toString(16).padStart(8, '0') : n,
+  fromHex: (n) => is.string(n) ? parseInt(n, 16) : n,
 }

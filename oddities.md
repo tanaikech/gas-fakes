@@ -910,7 +910,7 @@ Because `gas-fakes` relies exclusively on public APIs, it is impossible to emula
 
 ### item ids Forms API -vs- FormApp
 
-The Forms API returns item ids as hex strings, while Apps Script FormApp returns them as numbers. This leads to all kinds of complications when using the API and Apps Script interoperably. gas-fakes attempts to bridge this gap by providing returning all Ids from the FormApp emulation as numbers, and converting them to and from hex strings when interacting with the Forms API.
+The Forms API returns item ids as hex strings, while Apps Script FormApp returns them as numbers. This leads to all kinds of complications when using the API and Apps Script interoperably. gas-fakes attempts to bridge this gap by providing returning all Ids from the FormApp emulation as numbers, and converting them to and from hex strings when interacting with the Forms API. This was very tricky as there are all kinds od ids embedded in the forms API responses and requests. It's possible I've missed some so if you get apis errors about id types/mismatches please raise an issue in the repo.
 
 see https://issuetracker.google.com/issues/469115766
 
