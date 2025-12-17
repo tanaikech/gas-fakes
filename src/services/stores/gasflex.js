@@ -12,7 +12,7 @@ export const storeModels = {
     },
     DOCUMENT: {
         scriptId: ScriptApp.getScriptId(),
-        documentId: Auth.getDocumentId
+        documentId: Auth.getDocumentId()
     }
 }
 
