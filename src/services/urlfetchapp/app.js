@@ -90,6 +90,21 @@ const fetch = (url, options = {}) => {
   return responsify(response)
 }
 
+// this has been syncified
+const fetchAll = (requests) => {
+
+  const responseFields = [
+    'rawHeaders',
+    'statusCode',
+    'body',
+    'headers',
+    'rawBody'
+  ]
+
+  const responses = Syncit.fxFetchAll(requests, responseFields)
+  return responses.map(r => responsify(r))
+}
+
 
 // This will eventually hold a proxy for DriveApp
 let _app = null
@@ -104,7 +119,8 @@ if (typeof globalThis[name] === typeof undefined) {
     // if it hasne been intialized yet then do that
     if (!_app) {
       _app = {
-        fetch
+        fetch,
+        fetchAll
       }
     }
     // this is the actual driveApp we'll return from the proxy

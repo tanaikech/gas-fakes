@@ -341,7 +341,7 @@ const fxDriveMedia = ({ id }) => {
  * @param {object} p.params the params to add to the request
  * @return {DriveResponse} from the drive api
  */
-const fxDriveExport = ({ id, mimeType , options ={alt: 'media'}}) => {
+const fxDriveExport = ({ id, mimeType, options = { alt: 'media' } }) => {
   // see issue https://issuetracker.google.com/issues/468534237
   // live apps script failes without this alt option
   return callSync("sxDriveExport", {
@@ -360,6 +360,10 @@ const fxDriveExport = ({ id, mimeType , options ={alt: 'media'}}) => {
  */
 const fxFetch = (url, options, responseFields) => {
   return callSync("sxFetch", url, options, responseFields);
+};
+
+const fxFetchAll = (requests, responseFields) => {
+  return callSync("sxFetchAll", requests, responseFields);
 };
 
 const fxSheets = (args) =>
@@ -402,6 +406,7 @@ const fxGmail = (args) =>
 
 export const Syncit = {
   fxFetch,
+  fxFetchAll,
   fxDrive,
   fxDriveMedia,
   fxDriveGet,

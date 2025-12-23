@@ -32,6 +32,18 @@ export const testFetch = (pack) => {
 
   })
 
+  unit.section('urlfetchapp fetchAll', t => {
+    const requests = [
+      { url: fixes.API_URL },
+      { url: fixes.RANDOM_IMAGE }
+    ];
+    const responses = UrlFetchApp.fetchAll(requests);
+    t.is(responses.length, 2);
+    t.is(responses[0].getResponseCode(), 200);
+    t.is(responses[1].getResponseCode(), 200);
+    t.is(responses[1].getBlob().getContentType(), 'image/jpeg', 'assumes the random image is a jpeg');
+  });
+
   if (!pack) {
     unit.report()
   }
