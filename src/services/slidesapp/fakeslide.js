@@ -1,11 +1,9 @@
 import { Proxies } from '../../support/proxies.js';
-import {
-  newFakeNotesPage,
-  newFakeLayout,
-  newFakeMaster,
-  newFakePageElement,
-  newFakePageBackground
-} from './fakesupporting.js';
+import { newFakeNotesPage } from './fakenotespage.js';
+import { newFakeLayout } from './fakelayout.js';
+import { newFakeMaster } from './fakemaster.js';
+import { newFakePageElement } from './fakepageelement.js';
+import { newFakePageBackground } from './fakepagebackground.js';
 
 export const newFakeSlide = (...args) => {
   return Proxies.guard(new FakeSlide(...args));
@@ -50,7 +48,7 @@ export class FakeSlide {
    */
   getNotesPage() {
     const notesPage = this.__resource.slideProperties?.notesPage;
-    return notesPage ? newFakeNotesPage(notesPage) : null;
+    return notesPage ? newFakeNotesPage(this) : null;
   }
 
   /**
@@ -65,30 +63,17 @@ export class FakeSlide {
     const presentationId = this.__presentation.getId();
     const presentation = Slides.Presentations.get(presentationId);
     const layout = presentation.layouts.find(l => l.objectId === layoutId);
-    return layout ? newFakeLayout(layout) : null;
+    return layout ? newFakeLayout(layout, this.__presentation) : null;
   }
 
-  /**
-   * Gets the master the slide is based on.
-   * @returns {FakeMaster} The master.
-   */
-  getMaster() {
-    const masterId = this.__resource.slideProperties?.masterObjectId;
-    if (!masterId) return null;
 
-    // We need to find the master in the presentation
-    const presentationId = this.__presentation.getId();
-    const presentation = Slides.Presentations.get(presentationId);
-    const master = presentation.masters.find(m => m.objectId === masterId);
-    return master ? newFakeMaster(master) : null;
-  }
 
   /**
    * Gets the list of page elements on the slide.
    * @returns {FakePageElement[]} The page elements.
    */
   getPageElements() {
-    return (this.__resource.pageElements || []).map(pe => newFakePageElement(pe));
+    return (this.__resource.pageElements || []).map(pe => newFakePageElement(pe, this));
   }
 
   /**
@@ -97,7 +82,7 @@ export class FakeSlide {
    */
   getBackground() {
     const background = this.__resource.pageBackgroundFill;
-    return background ? newFakePageBackground(background) : null;
+    return background ? newFakePageBackground(this) : null;
   }
 
   /**
@@ -139,19 +124,10 @@ export class FakeSlide {
   move(index) {
     const presentationId = this.__presentation.getId();
 
-    // Calculate current index to adjust insertionIndex if moving forward
-    const slides = this.__presentation.__resource.slides || [];
-    const currentIndex = slides.findIndex(s => s.objectId === this.getObjectId());
-
-    let insertionIndex = index;
-    if (currentIndex !== -1 && index > currentIndex) {
-      insertionIndex = index + 1;
-    }
-
     Slides.Presentations.batchUpdate([{
       updateSlidesPosition: {
         slideObjectIds: [this.getObjectId()],
-        insertionIndex: insertionIndex
+        insertionIndex: index
       }
     }], presentationId);
   }
