@@ -35,6 +35,7 @@
     "testformsadv": "node --env-file ./.env testformsadv.js execute",
     "testdocs": "node --env-file ./.env testdocs.js execute",
     "testslides": "node --env-file ./.env testslides.js execute",
+    "testslidesslide": "node --env-file ./.env testslidesslide.js execute",
     "testdocsnext": "node --env-file ./.env testdocsnext.js execute",
     "testsheetstext": "node --env-file ./.env testsheetstext.js execute",
     "testsheetsrange": "node --env-file ./.env testsheetsrange.js execute",

@@ -12,10 +12,16 @@ export const newFakePresentation = (...args) => {
  */
 export class FakePresentation {
   /**
-   * @param {object} resource the presentation resource from Slides API
+   * @param {object} resource the presentation resurce from Slides API
    */
   constructor(resource) {
-    this.__resource = resource;
+    this.__id = resource.presentationId;
+  }
+  get __file () {
+    return DriveApp.getFileById(this.__id);
+  }
+  get __resource () {
+    return Slides.Presentations.get(this.__id);
   }
   saveAndClose() {
     // this is a no-op in fake environment since it is stateless
@@ -25,7 +31,7 @@ export class FakePresentation {
    * @returns {string} The presentation ID.
    */
   getId() {
-    return this.__resource.presentationId;
+    return this.__id;
   }
 
   /**
@@ -49,9 +55,6 @@ export class FakePresentation {
    * @returns {FakeSlide[]} The slides.
    */
   getSlides() {
-    // We need to ensure we have the latest resource
-    const presentation = Slides.Presentations.get(this.getId());
-    this.__resource = presentation;
     return (this.__resource.slides || []).map(s => newFakeSlide(s, this));
   }
 

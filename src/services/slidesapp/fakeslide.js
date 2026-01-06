@@ -22,8 +22,18 @@ export class FakeSlide {
    * @param {FakePresentation} presentation the parent presentation
    */
   constructor(resource, presentation) {
-    this.__resource = resource;
+    this.__id = resource.objectId;
     this.__presentation = presentation;
+  }
+
+  get __resource() {
+    const presentationResource = this.__presentation.__resource;
+    const slide = (presentationResource.slides || []).find(s => s.objectId === this.__id);
+
+    if (!slide) {
+      throw new Error(`Slide with ID ${this.__id} not found`);
+    }
+    return slide;
   }
 
   /**
@@ -31,7 +41,7 @@ export class FakeSlide {
    * @returns {string} The slide ID.
    */
   getObjectId() {
-    return this.__resource.objectId;
+    return this.__id;
   }
 
   /**
@@ -128,10 +138,20 @@ export class FakeSlide {
    */
   move(index) {
     const presentationId = this.__presentation.getId();
+
+    // Calculate current index to adjust insertionIndex if moving forward
+    const slides = this.__presentation.__resource.slides || [];
+    const currentIndex = slides.findIndex(s => s.objectId === this.getObjectId());
+
+    let insertionIndex = index;
+    if (currentIndex !== -1 && index > currentIndex) {
+      insertionIndex = index + 1;
+    }
+
     Slides.Presentations.batchUpdate([{
       updateSlidesPosition: {
         slideObjectIds: [this.getObjectId()],
-        insertionIndex: index
+        insertionIndex: insertionIndex
       }
     }], presentationId);
   }

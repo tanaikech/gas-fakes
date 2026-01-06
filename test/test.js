@@ -35,6 +35,7 @@ import { testDocsFootnotes } from "./testdocsfootnotes.js";
 import { testDocsListItems } from "./testdocslistitems.js";
 import { testSlidesAdv } from "./testslidesadv.js";
 import { testSlides } from "./testslides.js";
+import { testSlidesSlide } from "./testslideslide.js";
 import { testForm } from "./testform.js";
 import { testFormsAdv } from "./testformsadv.js";
 import { testSheetsText } from "./testsheetstext.js";
@@ -88,6 +89,8 @@ const testFakes = () => {
   testSlides(pack);
   console.log("\n----Test slidesadv----");
   testSlidesAdv(pack);
+  console.log("\n----Test slidesslide----");
+  testSlidesSlide(pack);
   console.log("\n----Test form----");
   testForm(pack);
   console.log("\n----Test formsadv----");
