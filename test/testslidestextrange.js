@@ -57,4 +57,4 @@ export const testSlidesTextRange = (pack) => {
   return { unit, fixes };
 };
 
-if (ScriptApp.isFake) testSlidesTextRange();
+wrapupTest(testSlidesTextRange);

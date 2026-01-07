@@ -60,4 +60,4 @@ export const testSlidesParagraph = (pack) => {
   return { unit, fixes };
 };
 
-if (ScriptApp.isFake) testSlidesParagraph();
+wrapupTest(testSlidesParagraph);

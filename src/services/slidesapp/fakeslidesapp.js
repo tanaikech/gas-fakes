@@ -1,4 +1,5 @@
 import { Proxies } from '../../support/proxies.js';
+import { newFakeAffineTransformBuilder } from './fakeaffinetransformbuilder.js';
 import * as Enums from '../enums/slidesenums.js';
 import { newFakePresentation } from './fakepresentation.js';
 import { Auth } from '../../support/auth.js';
@@ -51,6 +52,10 @@ class FakeSlidesApp {
     enumProps.forEach((f) => {
       this[f] = Enums[f];
     });
+  }
+
+  newAffineTransformBuilder() {
+    return newFakeAffineTransformBuilder();
   }
 
   /**

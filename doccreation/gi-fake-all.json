@@ -52976,8 +52976,8 @@
             "description": "Returns the page element as a shape.",
             "returnType": "Shape",
             "returnDescription": "This page element as a shape.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L31"
           },
           {
             "method": "asSheetsChart()",
@@ -53112,7 +53112,7 @@
             "returnType": "String",
             "returnDescription": "The unique ID for this object.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepageelement.js#L22"
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L23"
           },
           {
             "method": "getPageElementType()",
@@ -53120,8 +53120,8 @@
             "description": "Returns the page element's type, represented as a PageElementType enum.",
             "returnType": "PageElementType",
             "returnDescription": "The page element's type.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L42"
           },
           {
             "method": "getParentGroup()",
@@ -54158,8 +54158,8 @@
             "description": "Returns the index of the paragraph's newline. Returns null if the newline has been\ndeleted.",
             "returnType": "",
             "returnDescription": "Integer",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeparagraph.js#L25"
           },
           {
             "method": "getRange()",
@@ -54167,8 +54167,8 @@
             "description": "Returns a TextRange spanning the text in the paragraph ended by this object's newline\ncharacter. Returns null if the paragraph's newline has been deleted.",
             "returnType": "",
             "returnDescription": "TextRange",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeparagraph.js#L17"
           }
         ]
       },
@@ -54989,8 +54989,8 @@
             "description": "Returns the unique ID for this object. Object IDs used by pages and page elements share the\nsame namespace.",
             "returnType": "String",
             "returnDescription": "The unique ID for this object.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeshape.js#L32"
           },
           {
             "method": "getPageElementType()",
@@ -55070,8 +55070,8 @@
             "description": "Returns the text content of the shape.",
             "returnType": "TextRange",
             "returnDescription": "The text content of this shape.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeshape.js#L40"
           },
           {
             "method": "getTitle()",
@@ -56165,7 +56165,7 @@
             "returnType": "Slide",
             "returnDescription": "The duplicated slide.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakeslide.js#L104"
+            "implementationLink": "src/services/slidesapp/fakeslide.js#L159"
           },
           {
             "method": "getBackground()",
@@ -56470,8 +56470,8 @@
             "description": "Inserts a copy of the provided Shape on the page.",
             "returnType": "Shape",
             "returnDescription": "The inserted shape.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeslide.js#L109"
           },
           {
             "method": "insertShape(ShapeType)",
@@ -56479,8 +56479,8 @@
             "description": "Inserts a shape on the page.",
             "returnType": "Shape",
             "returnDescription": "The inserted shape.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeslide.js#L109"
           },
           {
             "method": "insertShape(ShapeType,Number,Number,Number,Number)",
@@ -56488,8 +56488,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeslide.js#L109"
           },
           {
             "method": "insertSheetsChart(EmbeddedChart)",
@@ -57418,8 +57418,8 @@
             "description": "Returns the rendered text bounded by this range of the associated shape or table cell in a\nformat appropriate to display to end users.",
             "returnType": "String",
             "returnDescription": "The rendered text in the range.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L56"
           },
           {
             "method": "asString()",
@@ -57427,8 +57427,8 @@
             "description": "Returns the raw text bounded by this range of the associated shape or table cell.",
             "returnType": "String",
             "returnDescription": "The raw text in the range.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L32"
           },
           {
             "method": "clear()",
@@ -57436,8 +57436,8 @@
             "description": "Clears the text bounded by this range.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L111"
           },
           {
             "method": "clear(Integer,Integer)",
@@ -57445,8 +57445,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L111"
           },
           {
             "method": "find(String)",
@@ -57481,8 +57481,8 @@
             "description": "Returns the exclusive, 0-based index for the last character in this range. If the start and end\nindices are equal, the range is considered to be empty.",
             "returnType": "Integer",
             "returnDescription": "The end index of the range.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L26"
           },
           {
             "method": "getLength()",
@@ -57535,8 +57535,8 @@
             "description": "Returns the paragraphs that overlap the current text range.",
             "returnType": "Paragraph[]",
             "returnDescription": "A list of paragraphs.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L29"
           },
           {
             "method": "getRange(Integer,Integer)",
@@ -57562,8 +57562,8 @@
             "description": "Returns the inclusive, 0-based index for the first character in this range. If the start and\nend indices are equal, the range is considered to be empty.",
             "returnType": "Integer",
             "returnDescription": "The start index of the range.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L21"
           },
           {
             "method": "getTextStyle()",
@@ -57607,8 +57607,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L96"
           },
           {
             "method": "isEmpty()",
@@ -57616,8 +57616,8 @@
             "description": "Returns true if there are no characters in this range, and returns false\notherwise.",
             "returnType": "Boolean",
             "returnDescription": "true if there are no characters in this range, and returns false\n    otherwise.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L153"
           },
           {
             "method": "replaceAllText(String,String)",
@@ -57652,8 +57652,8 @@
             "description": "Sets the text bounded by this range of the associated shape or table cell. The text maintains\nthe styling of the start of the existing text.",
             "returnType": "TextRange",
             "returnDescription": "The text range representing the set text.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L65"
           }
         ]
       },

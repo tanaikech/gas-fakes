@@ -40,6 +40,8 @@ import { testSlidesSlide } from "./testslideslide.js";
 import { testForm } from "./testform.js";
 import { testFormsAdv } from "./testformsadv.js";
 import { testSheetsText } from "./testsheetstext.js";
+import { testSlidesParagraph } from "./testslidesparagraph.js";
+import { testSlidesAffineTransform } from "./testslidesaffinetransform.js";
 
 import { testSheetsRange } from "./testsheetsrange.js";
 import { testDocsImages } from "./testdocsimages.js";
@@ -55,7 +57,7 @@ import { testMimeType } from './testmimetype.js';
 import { testLock } from './testlock.js';
 // important - run this last for now - see https://github.com/brucemcpherson/gas-fakes/issues/118
 import { testGmail } from "./testgmail.js";
-import { testSandboxGmail } from "./testsandboxgmail.js"; 
+import { testSandboxGmail } from "./testsandboxgmail.js";
 
 const testFakes = () => {
   const pack = initTests();
@@ -90,6 +92,10 @@ const testFakes = () => {
   testSlides(pack);
   console.log("\n----Test slides text range----");
   testSlidesTextRange(pack);
+  console.log("\n----Test slidesparagraph----");
+  testSlidesParagraph(pack);
+  console.log("\n----Test slidesaffinetransform----");
+  testSlidesAffineTransform(pack);
   console.log("\n----Test slidesadv----");
   testSlidesAdv(pack);
   console.log("\n----Test slidesslide----");

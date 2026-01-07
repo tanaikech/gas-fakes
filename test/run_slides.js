@@ -6,14 +6,12 @@ import { testSlidesAdv } from "./testslidesadv.js";
 import { testSlidesSlide } from "./testslidesslide.js";
 import { testSlidesTextRange } from "./testslidestextrange.js";
 import { testSlidesParagraph } from "./testslidesparagraph.js";
-import { probeSlidesParagraph } from "./probeslides.js";
+import { testSlidesAffineTransform } from "./testslidesaffinetransform.js";
 import { trasher } from "./testassist.js";
 
 const runSlidesTests = () => {
   const pack = initTests();
   const { unit } = pack;
-
-  // if (!ScriptApp.isFake) probeSlidesParagraph();
 
   console.log("\n----Test slides----");
   testSlides(pack);
@@ -25,6 +23,8 @@ const runSlidesTests = () => {
   testSlidesTextRange(pack);
   console.log("\n----Test slidesparagraph----");
   testSlidesParagraph(pack);
+  console.log("\n----Test slidesaffinetransform----");
+  testSlidesAffineTransform(pack);
 
   // final cleanup
   if (ScriptApp.isFake) {
