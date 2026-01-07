@@ -34,6 +34,7 @@ import { testDocsFooters } from "./testdocsfooters.js";
 import { testDocsFootnotes } from "./testdocsfootnotes.js";
 import { testDocsListItems } from "./testdocslistitems.js";
 import { testSlidesAdv } from "./testslidesadv.js";
+import { testSlidesTextRange } from "./testslidestextrange.js";
 import { testSlides } from "./testslides.js";
 import { testSlidesSlide } from "./testslideslide.js";
 import { testForm } from "./testform.js";
@@ -87,6 +88,8 @@ const testFakes = () => {
   testDocsFootnotes(pack);
   console.log("\n----Test slides----");
   testSlides(pack);
+  console.log("\n----Test slides text range----");
+  testSlidesTextRange(pack);
   console.log("\n----Test slidesadv----");
   testSlidesAdv(pack);
   console.log("\n----Test slidesslide----");

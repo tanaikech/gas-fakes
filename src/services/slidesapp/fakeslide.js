@@ -98,9 +98,64 @@ export class FakeSlide {
   }
 
   /**
-   * Duplicates the slide.
-   * @returns {FakeSlide} The new slide.
+   * Inserts a shape.
+   * @param {SlidesApp.ShapeType} shapeType The shape type.
+   * @param {number} [left] The left position.
+   * @param {number} [top] The top position.
+   * @param {number} [width] The width.
+   * @param {number} [height] The height.
+   * @returns {FakeShape} The new shape.
    */
+  insertShape(shapeType, left = 0, top = 0, width = 300, height = 300) {
+    // Default size and position if not provided
+    // shapeType should be string e.g. TEXT_BOX
+    const presentationId = this.__presentation.getId();
+    const result = Slides.Presentations.batchUpdate([{
+      createShape: {
+        shapeType: shapeType,
+        elementProperties: {
+          pageObjectId: this.getObjectId(),
+          size: {
+            width: { magnitude: width * 12700, unit: 'EMU' }, // 1 pt = 12700 EMU
+            height: { magnitude: height * 12700, unit: 'EMU' }
+          },
+          transform: {
+            scaleX: 1,
+            scaleY: 1,
+            translateX: left * 12700,
+            translateY: top * 12700,
+            unit: 'EMU'
+          }
+        }
+      }
+    }], presentationId);
+
+    // The result contains the new object ID
+    const newObjectId = result.replies[0].createShape.objectId;
+
+    // We assume the shape is added to the slide and we can retrieve it
+    // Wait, we need to return a FakeShape.
+    // We can fetch the updated slide and find it.
+    // Or just create a FakeShape with the partial resource if we trust it?
+    // Better to fetch fresh.
+
+    // We can use getPageElements() to find it by ID.
+    // But getPageElements returns FakePageElements.
+    // We want FakeShape. FakePageElement has asShape().
+
+    // Need to import newFakeShape if we want to return it directly, OR use getPageElements().
+    // Let's use getPageElements since we already import newFakePageElement?
+    // No, fakeslide.js imports newFakePageElement.
+
+    // We need to invalidate cache? FakePresentation.batchUpdate logic handles cache clearing.
+    // So subsequent access should be fresh.
+
+    const elements = this.getPageElements();
+    const newElement = elements.find(e => e.getObjectId() === newObjectId);
+    if (!newElement) throw new Error('New shape not found');
+    return newElement.asShape();
+  }
+
   duplicate() {
     const presentationId = this.__presentation.getId();
     const result = Slides.Presentations.batchUpdate([{

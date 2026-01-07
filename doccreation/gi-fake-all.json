@@ -23098,8 +23098,8 @@
             "description": "Makes multiple requests to fetch multiple URLs using optional advanced parameters.",
             "returnType": "HTTPResponse[]",
             "returnDescription": "An array of HTTP response data from each input request.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/urlfetchapp/app.js#L94"
           },
           {
             "method": "getRequest(String)",
@@ -51785,8 +51785,8 @@
             "description": "Gets the master that the layout is based on.",
             "returnType": "",
             "returnDescription": "Master",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakelayout.js#L23"
           },
           {
             "method": "getObjectId()",
@@ -51794,8 +51794,8 @@
             "description": "Gets the unique ID for the page. Object IDs used by pages and page elements share the same\nnamespace.",
             "returnType": "",
             "returnDescription": "String",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakelayout.js#L32"
           },
           {
             "method": "getPageElementById(String)",
@@ -52340,8 +52340,8 @@
             "description": "Gets the unique ID for the page. Object IDs used by pages and page elements share the same\nnamespace.",
             "returnType": "",
             "returnDescription": "String",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakemaster.js#L22"
           },
           {
             "method": "getPageElementById(String)",
@@ -53111,8 +53111,8 @@
             "description": "Returns the unique ID for this object. Object IDs used by pages and page elements share the\nsame namespace.",
             "returnType": "String",
             "returnDescription": "The unique ID for this object.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L22"
           },
           {
             "method": "getPageElementType()",
@@ -54478,8 +54478,8 @@
             "description": "Appends a slide to the end of the presentation using the PredefinedLayout.BLANK\npredefined layout based on the current master. The current master is one of the following:",
             "returnType": "Slide",
             "returnDescription": "The new slide that is appended.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L75"
           },
           {
             "method": "appendSlide(Layout)",
@@ -54487,8 +54487,8 @@
             "description": "Appends a slide to the end of the presentation using the specified layout based on the current\nmaster. The current master is one of the following:",
             "returnType": "Slide",
             "returnDescription": "The new slide that is appended.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L75"
           },
           {
             "method": "appendSlide(PredefinedLayout)",
@@ -54496,8 +54496,8 @@
             "description": "Appends a slide to the end of the presentation using the specified predefined layout based on\nthe current master. The current master is one of the following:",
             "returnType": "Slide",
             "returnDescription": "The new slide that is appended.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L75"
           },
           {
             "method": "appendSlide(Slide)",
@@ -54505,8 +54505,8 @@
             "description": "Appends a copy of the provided Slide to the end of the presentation.",
             "returnType": "Slide",
             "returnDescription": "The new slide that is appended.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L75"
           },
           {
             "method": "appendSlide(Slide,SlideLinkingMode)",
@@ -54514,8 +54514,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L75"
           },
           {
             "method": "getEditors()",
@@ -54533,7 +54533,7 @@
             "returnType": "String",
             "returnDescription": "The ID of this presentation.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepresentation.js#L26"
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L33"
           },
           {
             "method": "getLayouts()",
@@ -54560,7 +54560,7 @@
             "returnType": "String",
             "returnDescription": "The title of this presentation.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepresentation.js#L34"
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L41"
           },
           {
             "method": "getNotesMaster()",
@@ -54631,8 +54631,8 @@
             "description": "Returns the Slide with the given ID, or null if none exists.",
             "returnType": "Slide",
             "returnDescription": "The slide with the given ID.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L66"
           },
           {
             "method": "getSlides()",
@@ -54640,8 +54640,8 @@
             "description": "Gets the slides in the presentation.",
             "returnType": "Slide[]",
             "returnDescription": "The list of slides in this presentation.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L57"
           },
           {
             "method": "getUrl()",
@@ -54650,7 +54650,7 @@
             "returnType": "String",
             "returnDescription": "The URL to access the current presentation.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepresentation.js#L42"
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L49"
           },
           {
             "method": "getViewers()",
@@ -54667,8 +54667,8 @@
             "description": "Inserts a slide at the specified index in the presentation using the PredefinedLayout.BLANK predefined layout based on the current master. The current master is\none of the following:",
             "returnType": "Slide",
             "returnDescription": "The new slide that is inserted.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L92"
           },
           {
             "method": "insertSlide(Integer,Layout)",
@@ -54676,8 +54676,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L92"
           },
           {
             "method": "insertSlide(Integer,PredefinedLayout)",
@@ -54685,8 +54685,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L92"
           },
           {
             "method": "insertSlide(Integer,Slide)",
@@ -54694,8 +54694,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L92"
           },
           {
             "method": "insertSlide(Integer,Slide,SlideLinkingMode)",
@@ -54703,8 +54703,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L92"
           },
           {
             "method": "removeEditor(String)",
@@ -54767,7 +54767,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepresentation.js#L19"
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L26"
           },
           {
             "method": "setName(String)",
@@ -56164,8 +56164,8 @@
             "description": "Duplicates the slide.",
             "returnType": "Slide",
             "returnDescription": "The duplicated slide.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeslide.js#L104"
           },
           {
             "method": "getBackground()",
@@ -56173,8 +56173,8 @@
             "description": "Gets the page's background.",
             "returnType": "PageBackground",
             "returnDescription": "The page's background.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeslide.js#L83"
           },
           {
             "method": "getColorScheme()",
@@ -56209,8 +56209,8 @@
             "description": "Gets the layout that the slide is based on or null if the slide is not based on a\nlayout.",
             "returnType": "",
             "returnDescription": "Layout",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeslide.js#L58"
           },
           {
             "method": "getLines()",
@@ -56227,8 +56227,8 @@
             "description": "Returns the notes page associated with the slide.",
             "returnType": "",
             "returnDescription": "NotesPage",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeslide.js#L49"
           },
           {
             "method": "getObjectId()",
@@ -56236,8 +56236,8 @@
             "description": "Gets the unique ID for the page. Object IDs used by pages and page elements share the same\nnamespace.",
             "returnType": "",
             "returnDescription": "String",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeslide.js#L41"
           },
           {
             "method": "getPageElementById(String)",
@@ -56254,8 +56254,8 @@
             "description": "Returns the list of PageElement objects rendered on the page.",
             "returnType": "",
             "returnDescription": "PageElement[]",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeslide.js#L75"
           },
           {
             "method": "getPageType()",
@@ -56632,8 +56632,8 @@
             "description": "Move the slide to the specified index.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeslide.js#L91"
           },
           {
             "method": "refreshSlide()",
@@ -56650,8 +56650,8 @@
             "description": "Removes the page.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeslide.js#L91"
           },
           {
             "method": "replaceAllText(String,String)",

@@ -39,13 +39,8 @@ export const testSlidesSlide = (pack) => {
     // Test move()
     const slideToMove = slidesAfterDuplicate[0];
     const originalId = slideToMove.getObjectId();
-    console.log('Slides before move:', slidesAfterDuplicate.map(s => s.getObjectId()));
-    console.log('Moving slide with ID:', originalId, 'to index 2');
-
     slideToMove.move(2);
-
     const slidesAfterMove = pres.getSlides();
-    console.log('Slides after move:', slidesAfterMove.map(s => s.getObjectId()));
 
     // Moving 0 to 2 means insert before item at index 2 (which is the 3rd item).
     // Original list: [s0, s1, s2, s3]
