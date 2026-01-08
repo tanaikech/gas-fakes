@@ -1,4 +1,4 @@
-import { newFakeGasenum} from "@mcpher/fake-gasenum";
+import { newFakeGasenum } from "@mcpher/fake-gasenum";
 
 export const AlignmentPosition = newFakeGasenum([
   "CENTER",

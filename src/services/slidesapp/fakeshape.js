@@ -1,6 +1,7 @@
 import { Proxies } from '../../support/proxies.js';
 import { newFakeTextRange } from './faketextrange.js';
 import { newFakeAutofit } from './fakeautofit.js';
+import { newFakeConnectionSite } from './fakeconnectionsite.js';
 
 export const newFakeShape = (...args) => {
   return Proxies.guard(new FakeShape(...args));
@@ -44,6 +45,16 @@ export class FakeShape {
 
   getAutofit() {
     return newFakeAutofit(this);
+  }
+
+  /**
+   * Gets the connection sites on the shape.
+   * @returns {FakeConnectionSite[]} The connection sites.
+   */
+  getConnectionSites() {
+    // Standard shapes usually have 4 connection sites (top, right, bottom, left).
+    // For now, let's return a fixed number as a mock.
+    return [0, 1, 2, 3].map(index => newFakeConnectionSite(this, index));
   }
 
   toString() {

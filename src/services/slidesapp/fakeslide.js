@@ -156,6 +156,44 @@ export class FakeSlide {
     return newElement.asShape();
   }
 
+  /**
+   * Inserts a line.
+   * @param {SlidesApp.LineCategory} lineCategory The line category.
+   * @param {number} [left]
+   * @param {number} [top]
+   * @param {number} [width]
+   * @param {number} [height]
+   * @returns {FakeLine} The new line.
+   */
+  insertLine(lineCategory, left = 0, top = 0, width = 100, height = 100) {
+    const presentationId = this.__presentation.getId();
+    const result = Slides.Presentations.batchUpdate([{
+      createLine: {
+        lineCategory: lineCategory,
+        elementProperties: {
+          pageObjectId: this.getObjectId(),
+          size: {
+            width: { magnitude: width * 12700, unit: 'EMU' },
+            height: { magnitude: height * 12700, unit: 'EMU' }
+          },
+          transform: {
+            scaleX: 1,
+            scaleY: 1,
+            translateX: left * 12700,
+            translateY: top * 12700,
+            unit: 'EMU'
+          }
+        }
+      }
+    }], presentationId);
+
+    const newObjectId = result.replies[0].createLine.objectId;
+    const elements = this.getPageElements();
+    const newElement = elements.find(e => e.getObjectId() === newObjectId);
+    if (!newElement) throw new Error('New line not found');
+    return newElement.asLine();
+  }
+
   duplicate() {
     const presentationId = this.__presentation.getId();
     const result = Slides.Presentations.batchUpdate([{

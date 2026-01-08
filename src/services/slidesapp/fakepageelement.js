@@ -1,5 +1,7 @@
 import { Proxies } from '../../support/proxies.js';
 import { newFakeShape } from './fakeshape.js';
+import { newFakeConnectionSite } from './fakeconnectionsite.js';
+import { newFakeLine } from './fakeline.js';
 
 export const newFakePageElement = (...args) => {
   return Proxies.guard(new FakePageElement(...args));
@@ -36,17 +38,38 @@ export class FakePageElement {
   }
 
   /**
+   * Returns the page element as a line.
+   * @returns {FakeLine} The line.
+   */
+  asLine() {
+    if (this.__resource.line) {
+      return newFakeLine(this.__resource, this.__page);
+    }
+    throw new Error('PageElement is not a line.');
+  }
+
+  /**
    * Gets the type of the page element.
    * @returns {SlidesApp.PageElementType} The type.
    */
   getPageElementType() {
     if (this.__resource.shape) {
-      return 'SHAPE'; // Simplified string, real enum needed?
-      // SlidesApp.PageElementType.SHAPE
-      // If we need strict enum, we need to import or mock it.
-      // For now returning string might check if 'SHAPE' matches generic enum usage.
+      return 'SHAPE';
+    }
+    if (this.__resource.line) {
+      return 'LINE';
     }
     return 'UNSUPPORTED';
+  }
+
+  /**
+   * Gets the connection sites on the page element.
+   * @returns {FakeConnectionSite[]} The connection sites.
+   */
+  getConnectionSites() {
+    // Standard shapes usually have 4 connection sites (top, right, bottom, left).
+    // For now, let's return a fixed number as a mock.
+    return [0, 1, 2, 3].map(index => newFakeConnectionSite(this, index));
   }
   toString() {
     return 'PageElement';
