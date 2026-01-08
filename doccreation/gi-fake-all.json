@@ -23098,8 +23098,8 @@
             "description": "Makes multiple requests to fetch multiple URLs using optional advanced parameters.",
             "returnType": "HTTPResponse[]",
             "returnDescription": "An array of HTTP response data from each input request.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/urlfetchapp/app.js#L94"
           },
           {
             "method": "getRequest(String)",
@@ -49631,7 +49631,7 @@
             "returnType": "Presentation",
             "returnDescription": "the presentation with the given name.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakeslidesapp.js#L61"
+            "implementationLink": "src/services/slidesapp/fakeslidesapp.js#L66"
           },
           {
             "method": "getActivePresentation()",
@@ -49640,7 +49640,7 @@
             "returnType": "",
             "returnDescription": "Presentation",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakeslidesapp.js#L74"
+            "implementationLink": "src/services/slidesapp/fakeslidesapp.js#L79"
           },
           {
             "method": "getUi()",
@@ -49657,8 +49657,8 @@
             "description": "Returns a new AffineTransformBuilder to build an AffineTransform. The builder\nis preset with the identity affine transform.",
             "returnType": "",
             "returnDescription": "AffineTransformBuilder",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeslidesapp.js#L57"
           },
           {
             "method": "openById(String)",
@@ -49667,7 +49667,7 @@
             "returnType": "Presentation",
             "returnDescription": "the presentation with the given ID",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakeslidesapp.js#L80"
+            "implementationLink": "src/services/slidesapp/fakeslidesapp.js#L85"
           },
           {
             "method": "openByUrl(String)",
@@ -49676,7 +49676,7 @@
             "returnType": "Presentation",
             "returnDescription": "the presentation with the given URL",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakeslidesapp.js#L102"
+            "implementationLink": "src/services/slidesapp/fakeslidesapp.js#L107"
           }
         ]
       },
@@ -49692,8 +49692,8 @@
             "description": "Sets the AutofitType of a shape to AutofitType.NONE.",
             "returnType": "Autofit",
             "returnDescription": "The autofit, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeautofit.js#L30"
           },
           {
             "method": "getAutofitType()",
@@ -49701,8 +49701,8 @@
             "description": "Gets the AutofitType of the shape.",
             "returnType": "AutofitType",
             "returnDescription": "The autofit type.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeautofit.js#L25"
           },
           {
             "method": "getFontScale()",
@@ -49710,8 +49710,8 @@
             "description": "Gets the font scale applied to the shape. For shapes with AutofitType AutofitType.NONE or AutofitType.SHAPE_AUTOFIT, this value is the default value of 1.\nFor AutofitType.TEXT_AUTOFIT, the value returned is what the original font size is\nmultiplied by to fit within the shape.",
             "returnType": "Number",
             "returnDescription": "The font scale.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeautofit.js#L38"
           },
           {
             "method": "getLineSpacingReduction()",
@@ -49719,8 +49719,8 @@
             "description": "Gets the line spacing reduction applied to the shape. For shapes with AutofitType\nAutofitType.NONE or AutofitType.SHAPE_AUTOFIT, this value is the default value\nof 0. For AutofitType.TEXT_AUTOFIT, the returned value is the amount of spacing\nsubtracted from the original spacing to make the text fit within the shape.",
             "returnType": "Number",
             "returnDescription": "The line spacing.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeautofit.js#L42"
           }
         ]
       },
@@ -49736,8 +49736,8 @@
             "description": "Returns the type of auto text. Returns null if the auto text has been deleted.",
             "returnType": "",
             "returnDescription": "AutoTextType",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeautotext.js#L22"
           },
           {
             "method": "getIndex()",
@@ -49745,8 +49745,8 @@
             "description": "Returns the index of the auto text. Returns null if the auto text has been deleted.",
             "returnType": "",
             "returnDescription": "Integer",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeautotext.js#L14"
           },
           {
             "method": "getRange()",
@@ -49754,8 +49754,8 @@
             "description": "Returns a TextRange spanning the auto text. Returns null if the auto text has\nbeen deleted.",
             "returnType": "",
             "returnDescription": "TextRange",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeautotext.js#L18"
           }
         ]
       },
@@ -49771,8 +49771,8 @@
             "description": "Gets the X coordinate scaling element.",
             "returnType": "",
             "returnDescription": "Number",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeaffinetransform.js#L18"
           },
           {
             "method": "getScaleY()",
@@ -49780,8 +49780,8 @@
             "description": "Gets the Y coordinate scaling element.",
             "returnType": "",
             "returnDescription": "Number",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeaffinetransform.js#L22"
           },
           {
             "method": "getShearX()",
@@ -49789,8 +49789,8 @@
             "description": "Gets the X coordinate shearing element.",
             "returnType": "",
             "returnDescription": "Number",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeaffinetransform.js#L26"
           },
           {
             "method": "getShearY()",
@@ -49798,8 +49798,8 @@
             "description": "Gets the Y coordinate shearing element.",
             "returnType": "",
             "returnDescription": "Number",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeaffinetransform.js#L30"
           },
           {
             "method": "getTranslateX()",
@@ -49807,8 +49807,8 @@
             "description": "Gets the X coordinate translation element in points.",
             "returnType": "",
             "returnDescription": "Number",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeaffinetransform.js#L34"
           },
           {
             "method": "getTranslateY()",
@@ -49816,8 +49816,8 @@
             "description": "Gets the Y coordinate translation element in points.",
             "returnType": "",
             "returnDescription": "Number",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeaffinetransform.js#L38"
           },
           {
             "method": "toBuilder()",
@@ -49825,8 +49825,8 @@
             "description": "Returns a new AffineTransformBuilder based on this transform.",
             "returnType": "",
             "returnDescription": "AffineTransformBuilder",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeaffinetransform.js#L42"
           }
         ]
       },
@@ -49842,8 +49842,8 @@
             "description": "Creates an AffineTransform object initialized with the elements set in the builder.",
             "returnType": "",
             "returnDescription": "AffineTransform",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeaffinetransformbuilder.js#L20"
           },
           {
             "method": "setScaleX(Number)",
@@ -49851,8 +49851,8 @@
             "description": "Sets the X coordinate scaling element and returns the builder.",
             "returnType": "",
             "returnDescription": "AffineTransformBuilder",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeaffinetransformbuilder.js#L31"
           },
           {
             "method": "setScaleY(Number)",
@@ -49860,8 +49860,8 @@
             "description": "Sets the Y coordinate scaling element and returns the builder.",
             "returnType": "",
             "returnDescription": "AffineTransformBuilder",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeaffinetransformbuilder.js#L36"
           },
           {
             "method": "setShearX(Number)",
@@ -49869,8 +49869,8 @@
             "description": "Sets the X coordinate shearing element and returns the builder.",
             "returnType": "",
             "returnDescription": "AffineTransformBuilder",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeaffinetransformbuilder.js#L41"
           },
           {
             "method": "setShearY(Number)",
@@ -49878,8 +49878,8 @@
             "description": "Sets the Y coordinate shearing element and returns the builder.",
             "returnType": "",
             "returnDescription": "AffineTransformBuilder",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeaffinetransformbuilder.js#L46"
           },
           {
             "method": "setTranslateX(Number)",
@@ -49887,8 +49887,8 @@
             "description": "Sets the X coordinate translation element in points, and returns the builder.",
             "returnType": "",
             "returnDescription": "AffineTransformBuilder",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeaffinetransformbuilder.js#L51"
           },
           {
             "method": "setTranslateY(Number)",
@@ -49896,8 +49896,8 @@
             "description": "Sets the Y coordinate translation element in points, and returns the builder.",
             "returnType": "",
             "returnDescription": "AffineTransformBuilder",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeaffinetransformbuilder.js#L56"
           }
         ]
       },
@@ -51785,8 +51785,8 @@
             "description": "Gets the master that the layout is based on.",
             "returnType": "",
             "returnDescription": "Master",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakelayout.js#L23"
           },
           {
             "method": "getObjectId()",
@@ -51794,8 +51794,8 @@
             "description": "Gets the unique ID for the page. Object IDs used by pages and page elements share the same\nnamespace.",
             "returnType": "",
             "returnDescription": "String",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakelayout.js#L32"
           },
           {
             "method": "getPageElementById(String)",
@@ -52340,8 +52340,8 @@
             "description": "Gets the unique ID for the page. Object IDs used by pages and page elements share the same\nnamespace.",
             "returnType": "",
             "returnDescription": "String",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakemaster.js#L22"
           },
           {
             "method": "getPageElementById(String)",
@@ -52976,8 +52976,8 @@
             "description": "Returns the page element as a shape.",
             "returnType": "Shape",
             "returnDescription": "This page element as a shape.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L31"
           },
           {
             "method": "asSheetsChart()",
@@ -53111,8 +53111,8 @@
             "description": "Returns the unique ID for this object. Object IDs used by pages and page elements share the\nsame namespace.",
             "returnType": "String",
             "returnDescription": "The unique ID for this object.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L23"
           },
           {
             "method": "getPageElementType()",
@@ -53120,8 +53120,8 @@
             "description": "Returns the page element's type, represented as a PageElementType enum.",
             "returnType": "PageElementType",
             "returnDescription": "The page element's type.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L42"
           },
           {
             "method": "getParentGroup()",
@@ -54158,8 +54158,8 @@
             "description": "Returns the index of the paragraph's newline. Returns null if the newline has been\ndeleted.",
             "returnType": "",
             "returnDescription": "Integer",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeparagraph.js#L25"
           },
           {
             "method": "getRange()",
@@ -54167,8 +54167,8 @@
             "description": "Returns a TextRange spanning the text in the paragraph ended by this object's newline\ncharacter. Returns null if the paragraph's newline has been deleted.",
             "returnType": "",
             "returnDescription": "TextRange",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeparagraph.js#L17"
           }
         ]
       },
@@ -54478,8 +54478,8 @@
             "description": "Appends a slide to the end of the presentation using the PredefinedLayout.BLANK\npredefined layout based on the current master. The current master is one of the following:",
             "returnType": "Slide",
             "returnDescription": "The new slide that is appended.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L75"
           },
           {
             "method": "appendSlide(Layout)",
@@ -54487,8 +54487,8 @@
             "description": "Appends a slide to the end of the presentation using the specified layout based on the current\nmaster. The current master is one of the following:",
             "returnType": "Slide",
             "returnDescription": "The new slide that is appended.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L75"
           },
           {
             "method": "appendSlide(PredefinedLayout)",
@@ -54496,8 +54496,8 @@
             "description": "Appends a slide to the end of the presentation using the specified predefined layout based on\nthe current master. The current master is one of the following:",
             "returnType": "Slide",
             "returnDescription": "The new slide that is appended.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L75"
           },
           {
             "method": "appendSlide(Slide)",
@@ -54505,8 +54505,8 @@
             "description": "Appends a copy of the provided Slide to the end of the presentation.",
             "returnType": "Slide",
             "returnDescription": "The new slide that is appended.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L75"
           },
           {
             "method": "appendSlide(Slide,SlideLinkingMode)",
@@ -54514,8 +54514,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L75"
           },
           {
             "method": "getEditors()",
@@ -54533,7 +54533,7 @@
             "returnType": "String",
             "returnDescription": "The ID of this presentation.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepresentation.js#L26"
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L33"
           },
           {
             "method": "getLayouts()",
@@ -54560,7 +54560,7 @@
             "returnType": "String",
             "returnDescription": "The title of this presentation.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepresentation.js#L34"
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L41"
           },
           {
             "method": "getNotesMaster()",
@@ -54631,8 +54631,8 @@
             "description": "Returns the Slide with the given ID, or null if none exists.",
             "returnType": "Slide",
             "returnDescription": "The slide with the given ID.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L66"
           },
           {
             "method": "getSlides()",
@@ -54640,8 +54640,8 @@
             "description": "Gets the slides in the presentation.",
             "returnType": "Slide[]",
             "returnDescription": "The list of slides in this presentation.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L57"
           },
           {
             "method": "getUrl()",
@@ -54650,7 +54650,7 @@
             "returnType": "String",
             "returnDescription": "The URL to access the current presentation.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepresentation.js#L42"
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L49"
           },
           {
             "method": "getViewers()",
@@ -54667,8 +54667,8 @@
             "description": "Inserts a slide at the specified index in the presentation using the PredefinedLayout.BLANK predefined layout based on the current master. The current master is\none of the following:",
             "returnType": "Slide",
             "returnDescription": "The new slide that is inserted.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L92"
           },
           {
             "method": "insertSlide(Integer,Layout)",
@@ -54676,8 +54676,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L92"
           },
           {
             "method": "insertSlide(Integer,PredefinedLayout)",
@@ -54685,8 +54685,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L92"
           },
           {
             "method": "insertSlide(Integer,Slide)",
@@ -54694,8 +54694,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L92"
           },
           {
             "method": "insertSlide(Integer,Slide,SlideLinkingMode)",
@@ -54703,8 +54703,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L92"
           },
           {
             "method": "removeEditor(String)",
@@ -54767,7 +54767,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepresentation.js#L19"
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L26"
           },
           {
             "method": "setName(String)",
@@ -54890,8 +54890,8 @@
             "description": "Returns the Autofit of the text within this shape. This is null if the shape\ndoesn't allow text.",
             "returnType": "Autofit",
             "returnDescription": "The autofit of the text within this shape.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeshape.js#L45"
           },
           {
             "method": "getBorder()",
@@ -54989,8 +54989,8 @@
             "description": "Returns the unique ID for this object. Object IDs used by pages and page elements share the\nsame namespace.",
             "returnType": "String",
             "returnDescription": "The unique ID for this object.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeshape.js#L33"
           },
           {
             "method": "getPageElementType()",
@@ -55070,8 +55070,8 @@
             "description": "Returns the text content of the shape.",
             "returnType": "TextRange",
             "returnDescription": "The text content of this shape.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeshape.js#L41"
           },
           {
             "method": "getTitle()",
@@ -56164,8 +56164,8 @@
             "description": "Duplicates the slide.",
             "returnType": "Slide",
             "returnDescription": "The duplicated slide.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeslide.js#L159"
           },
           {
             "method": "getBackground()",
@@ -56173,8 +56173,8 @@
             "description": "Gets the page's background.",
             "returnType": "PageBackground",
             "returnDescription": "The page's background.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeslide.js#L83"
           },
           {
             "method": "getColorScheme()",
@@ -56209,8 +56209,8 @@
             "description": "Gets the layout that the slide is based on or null if the slide is not based on a\nlayout.",
             "returnType": "",
             "returnDescription": "Layout",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeslide.js#L58"
           },
           {
             "method": "getLines()",
@@ -56227,8 +56227,8 @@
             "description": "Returns the notes page associated with the slide.",
             "returnType": "",
             "returnDescription": "NotesPage",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeslide.js#L49"
           },
           {
             "method": "getObjectId()",
@@ -56236,8 +56236,8 @@
             "description": "Gets the unique ID for the page. Object IDs used by pages and page elements share the same\nnamespace.",
             "returnType": "",
             "returnDescription": "String",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeslide.js#L41"
           },
           {
             "method": "getPageElementById(String)",
@@ -56254,8 +56254,8 @@
             "description": "Returns the list of PageElement objects rendered on the page.",
             "returnType": "",
             "returnDescription": "PageElement[]",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeslide.js#L75"
           },
           {
             "method": "getPageType()",
@@ -56470,8 +56470,8 @@
             "description": "Inserts a copy of the provided Shape on the page.",
             "returnType": "Shape",
             "returnDescription": "The inserted shape.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeslide.js#L109"
           },
           {
             "method": "insertShape(ShapeType)",
@@ -56479,8 +56479,8 @@
             "description": "Inserts a shape on the page.",
             "returnType": "Shape",
             "returnDescription": "The inserted shape.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeslide.js#L109"
           },
           {
             "method": "insertShape(ShapeType,Number,Number,Number,Number)",
@@ -56488,8 +56488,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeslide.js#L109"
           },
           {
             "method": "insertSheetsChart(EmbeddedChart)",
@@ -56632,8 +56632,8 @@
             "description": "Move the slide to the specified index.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeslide.js#L91"
           },
           {
             "method": "refreshSlide()",
@@ -56650,8 +56650,8 @@
             "description": "Removes the page.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeslide.js#L91"
           },
           {
             "method": "replaceAllText(String,String)",
@@ -57418,8 +57418,8 @@
             "description": "Returns the rendered text bounded by this range of the associated shape or table cell in a\nformat appropriate to display to end users.",
             "returnType": "String",
             "returnDescription": "The rendered text in the range.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L65"
           },
           {
             "method": "asString()",
@@ -57427,8 +57427,8 @@
             "description": "Returns the raw text bounded by this range of the associated shape or table cell.",
             "returnType": "String",
             "returnDescription": "The raw text in the range.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L37"
           },
           {
             "method": "clear()",
@@ -57436,8 +57436,8 @@
             "description": "Clears the text bounded by this range.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L126"
           },
           {
             "method": "clear(Integer,Integer)",
@@ -57445,8 +57445,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L126"
           },
           {
             "method": "find(String)",
@@ -57454,8 +57454,8 @@
             "description": "Returns all the ranges matching the search pattern in the current text range. The search is\ncase sensitive.",
             "returnType": "TextRange[]",
             "returnDescription": "A list of text ranges.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L182"
           },
           {
             "method": "find(String,Integer)",
@@ -57463,8 +57463,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L182"
           },
           {
             "method": "getAutoTexts()",
@@ -57472,8 +57472,8 @@
             "description": "Returns the auto texts within the current text range.",
             "returnType": "AutoText[]",
             "returnDescription": "A list of auto texts.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L176"
           },
           {
             "method": "getEndIndex()",
@@ -57481,8 +57481,8 @@
             "description": "Returns the exclusive, 0-based index for the last character in this range. If the start and end\nindices are equal, the range is considered to be empty.",
             "returnType": "Integer",
             "returnDescription": "The end index of the range.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L31"
           },
           {
             "method": "getLength()",
@@ -57535,8 +57535,8 @@
             "description": "Returns the paragraphs that overlap the current text range.",
             "returnType": "Paragraph[]",
             "returnDescription": "A list of paragraphs.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L34"
           },
           {
             "method": "getRange(Integer,Integer)",
@@ -57562,8 +57562,8 @@
             "description": "Returns the inclusive, 0-based index for the first character in this range. If the start and\nend indices are equal, the range is considered to be empty.",
             "returnType": "Integer",
             "returnDescription": "The start index of the range.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L26"
           },
           {
             "method": "getTextStyle()",
@@ -57607,8 +57607,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L105"
           },
           {
             "method": "isEmpty()",
@@ -57616,8 +57616,8 @@
             "description": "Returns true if there are no characters in this range, and returns false\notherwise.",
             "returnType": "Boolean",
             "returnDescription": "true if there are no characters in this range, and returns false\n    otherwise.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L246"
           },
           {
             "method": "replaceAllText(String,String)",
@@ -57652,8 +57652,8 @@
             "description": "Sets the text bounded by this range of the associated shape or table cell. The text maintains\nthe styling of the start of the existing text.",
             "returnType": "TextRange",
             "returnDescription": "The text range representing the set text.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L74"
           }
         ]
       },

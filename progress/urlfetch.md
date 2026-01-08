@@ -25,7 +25,7 @@ Fetch resources and communicate with other hosts over the Internet.
 |--- |--- |--- |--- |--- |--- |
 | [fetch(String,Object)](https://developers.google.com/apps-script/reference/url-fetch/url-fetch-app#fetch(String,Object)) |  |  |  | completed | [link](../src/services/urlfetchapp/app.js#L76) |
 | [fetch(String)](https://developers.google.com/apps-script/reference/url-fetch/url-fetch-app#fetch(String)) | Makes a request to fetch a URL. | [HTTPResponse](#class-httpresponse) | The HTTP response data. | completed | [link](../src/services/urlfetchapp/app.js#L76) |
-| [fetchAll(Object)](https://developers.google.com/apps-script/reference/url-fetch/url-fetch-app#fetchAll(Object)) | Makes multiple requests to fetch multiple URLs using optional advanced parameters. | [HTTPResponse[]](#class-httpresponse) | An array of HTTP response data from each input request. | not started |  |
+| [fetchAll(Object)](https://developers.google.com/apps-script/reference/url-fetch/url-fetch-app#fetchAll(Object)) | Makes multiple requests to fetch multiple URLs using optional advanced parameters. | [HTTPResponse[]](#class-httpresponse) | An array of HTTP response data from each input request. | completed | [link](../src/services/urlfetchapp/app.js#L94) |
 | [getRequest(String,Object)](https://developers.google.com/apps-script/reference/url-fetch/url-fetch-app#getRequest(String,Object)) |  |  |  | not started |  |
 | [getRequest(String)](https://developers.google.com/apps-script/reference/url-fetch/url-fetch-app#getRequest(String)) | Returns the request that is made if the operation was invoked. | Object | A map of Field Name to Value. The map has at least the following keys: url, method, contentType, payload, and headers. | not started |  |
 

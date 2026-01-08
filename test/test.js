@@ -34,10 +34,18 @@ import { testDocsFooters } from "./testdocsfooters.js";
 import { testDocsFootnotes } from "./testdocsfootnotes.js";
 import { testDocsListItems } from "./testdocslistitems.js";
 import { testSlidesAdv } from "./testslidesadv.js";
+import { testSlidesTextRange } from "./testslidestextrange.js";
 import { testSlides } from "./testslides.js";
+import { testSlidesSlide } from "./testslidesslide.js";
 import { testForm } from "./testform.js";
 import { testFormsAdv } from "./testformsadv.js";
 import { testSheetsText } from "./testsheetstext.js";
+import { testSlidesParagraph } from "./testslidesparagraph.js";
+import { testSlidesAffineTransform } from "./testslidesaffinetransform.js";
+import { testSlidesAutofit } from "./testslidesautofit.js";
+import { testSlidesAutoText } from "./testslidesautotext.js";
+import { testSlidesConnectionSite } from "./testslidesconnectionsite.js";
+import { testSlidesLineProps } from "./testslideslineprops.js";
 
 import { testSheetsRange } from "./testsheetsrange.js";
 import { testDocsImages } from "./testdocsimages.js";
@@ -53,7 +61,7 @@ import { testMimeType } from './testmimetype.js';
 import { testLock } from './testlock.js';
 // important - run this last for now - see https://github.com/brucemcpherson/gas-fakes/issues/118
 import { testGmail } from "./testgmail.js";
-import { testSandboxGmail } from "./testsandboxgmail.js"; 
+import { testSandboxGmail } from "./testsandboxgmail.js";
 
 const testFakes = () => {
   const pack = initTests();
@@ -86,8 +94,24 @@ const testFakes = () => {
   testDocsFootnotes(pack);
   console.log("\n----Test slides----");
   testSlides(pack);
+  console.log("\n----Test slides text range----");
+  testSlidesTextRange(pack);
+  console.log("\n----Test slidesparagraph----");
+  testSlidesParagraph(pack);
+  console.log("\n----Test slidesaffinetransform----");
+  testSlidesAffineTransform(pack);
+  console.log("\n----Test slidesautofit----");
+  testSlidesAutofit(pack);
+  console.log("\n----Test slidesautotext----");
+  testSlidesAutoText(pack);
+  console.log("\n----Test slidesconnectionsite----");
+  testSlidesConnectionSite(pack);
+  console.log("\n----Test slideslineprops----");
+  testSlidesLineProps(pack);
   console.log("\n----Test slidesadv----");
   testSlidesAdv(pack);
+  console.log("\n----Test slidesslide----");
+  testSlidesSlide(pack);
   console.log("\n----Test form----");
   testForm(pack);
   console.log("\n----Test formsadv----");

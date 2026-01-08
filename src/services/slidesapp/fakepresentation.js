@@ -1,4 +1,5 @@
 import { Proxies } from '../../support/proxies.js';
+import { newFakeSlide } from './fakeslide.js';
 
 export const newFakePresentation = (...args) => {
   return Proxies.guard(new FakePresentation(...args));
@@ -11,10 +12,16 @@ export const newFakePresentation = (...args) => {
  */
 export class FakePresentation {
   /**
-   * @param {object} resource the presentation resource from Slides API
+   * @param {object} resource the presentation resurce from Slides API
    */
   constructor(resource) {
-    this.__resource = resource;
+    this.__id = resource.presentationId;
+  }
+  get __file () {
+    return DriveApp.getFileById(this.__id);
+  }
+  get __resource () {
+    return Slides.Presentations.get(this.__id);
   }
   saveAndClose() {
     // this is a no-op in fake environment since it is stateless
@@ -24,7 +31,7 @@ export class FakePresentation {
    * @returns {string} The presentation ID.
    */
   getId() {
-    return this.__resource.presentationId;
+    return this.__id;
   }
 
   /**
@@ -41,6 +48,57 @@ export class FakePresentation {
    */
   getUrl() {
     return `https://docs.google.com/presentation/d/${this.getId()}/edit`;
+  }
+
+  /**
+   * Gets the slides in the presentation.
+   * @returns {FakeSlide[]} The slides.
+   */
+  getSlides() {
+    return (this.__resource.slides || []).map(s => newFakeSlide(s, this));
+  }
+
+  /**
+   * Gets a slide by its ID.
+   * @param {string} id The slide ID.
+   * @returns {FakeSlide | null} The slide, or null if not found.
+   */
+  getSlideById(id) {
+    return this.getSlides().find(s => s.getObjectId() === id) || null;
+  }
+
+  /**
+   * Appends a new slide to the presentation.
+   * @param {string} [layout] The layout to use (optional).
+   * @returns {FakeSlide} The new slide.
+   */
+  appendSlide(layout) {
+    const requests = [{
+      createSlide: {
+        slideLayoutReference: layout ? { predefinedLayout: layout } : { predefinedLayout: 'BLANK' }
+      }
+    }];
+    const result = Slides.Presentations.batchUpdate(requests, this.getId());
+    const newObjectId = result.replies[0].createSlide.objectId;
+    return this.getSlideById(newObjectId);
+  }
+
+  /**
+   * Inserts a new slide at the specified index.
+   * @param {number} index The index to insert at.
+   * @param {string} [layout] The layout to use (optional).
+   * @returns {FakeSlide} The new slide.
+   */
+  insertSlide(index, layout) {
+    const requests = [{
+      createSlide: {
+        insertionIndex: index,
+        slideLayoutReference: layout ? { predefinedLayout: layout } : { predefinedLayout: 'BLANK' }
+      }
+    }];
+    const result = Slides.Presentations.batchUpdate(requests, this.getId());
+    const newObjectId = result.replies[0].createSlide.objectId;
+    return this.getSlideById(newObjectId);
   }
 
   toString() {
