@@ -4,6 +4,7 @@ import { newFakeLayout } from './fakelayout.js';
 import { newFakeMaster } from './fakemaster.js';
 import { newFakePageElement } from './fakepageelement.js';
 import { newFakePageBackground } from './fakepagebackground.js';
+import { asSpecificPageElement } from './pageelementfactory.js';
 
 export const newFakeSlide = (...args) => {
   return Proxies.guard(new FakeSlide(...args));
@@ -73,7 +74,7 @@ export class FakeSlide {
    * @returns {FakePageElement[]} The page elements.
    */
   getPageElements() {
-    return (this.__resource.pageElements || []).map(pe => newFakePageElement(pe, this));
+    return (this.__resource.pageElements || []).map(pe => asSpecificPageElement(newFakePageElement(pe, this)));
   }
 
   /**
@@ -116,15 +117,15 @@ export class FakeSlide {
         elementProperties: {
           pageObjectId: this.getObjectId(),
           size: {
-            width: { magnitude: width * 12700, unit: 'EMU' }, // 1 pt = 12700 EMU
-            height: { magnitude: height * 12700, unit: 'EMU' }
+            width: { magnitude: width, unit: 'PT' },
+            height: { magnitude: height, unit: 'PT' }
           },
           transform: {
             scaleX: 1,
             scaleY: 1,
-            translateX: left * 12700,
-            translateY: top * 12700,
-            unit: 'EMU'
+            translateX: left,
+            translateY: top,
+            unit: 'PT'
           }
         }
       }
@@ -173,15 +174,15 @@ export class FakeSlide {
         elementProperties: {
           pageObjectId: this.getObjectId(),
           size: {
-            width: { magnitude: width * 12700, unit: 'EMU' },
-            height: { magnitude: height * 12700, unit: 'EMU' }
+            width: { magnitude: width, unit: 'PT' },
+            height: { magnitude: height, unit: 'PT' }
           },
           transform: {
             scaleX: 1,
             scaleY: 1,
-            translateX: left * 12700,
-            translateY: top * 12700,
-            unit: 'EMU'
+            translateX: left,
+            translateY: top,
+            unit: 'PT'
           }
         }
       }

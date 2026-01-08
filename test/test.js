@@ -45,6 +45,7 @@ import { testSlidesAffineTransform } from "./testslidesaffinetransform.js";
 import { testSlidesAutofit } from "./testslidesautofit.js";
 import { testSlidesAutoText } from "./testslidesautotext.js";
 import { testSlidesConnectionSite } from "./testslidesconnectionsite.js";
+import { testSlidesLineProps } from "./testslideslineprops.js";
 
 import { testSheetsRange } from "./testsheetsrange.js";
 import { testDocsImages } from "./testdocsimages.js";
@@ -105,6 +106,8 @@ const testFakes = () => {
   testSlidesAutoText(pack);
   console.log("\n----Test slidesconnectionsite----");
   testSlidesConnectionSite(pack);
+  console.log("\n----Test slideslineprops----");
+  testSlidesLineProps(pack);
   console.log("\n----Test slidesadv----");
   testSlidesAdv(pack);
   console.log("\n----Test slidesslide----");
