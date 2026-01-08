@@ -1,6 +1,5 @@
-import { spawn } from "child_process";
+import { spawn, execSync } from "child_process";
 import { createRequire } from "node:module";
-
 const require = createRequire(import.meta.url);
 const pjson = require("../../package.json");
 
@@ -73,8 +72,7 @@ export async function checkForGcloudCli() {
 /**
  * Helper function to run a shell command sync (used in setup).
  */
-export async function runCommandSync(command) {
-  const { execSync } = await import("child_process");
+export function runCommandSync(command) {
   try {
     execSync(command, { stdio: "inherit" });
   } catch (error) {

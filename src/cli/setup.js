@@ -302,8 +302,8 @@ export async function initializeConfiguration(options = {}) {
           existingConfig.LOG_DESTINATION
         ) > -1
           ? ["CONSOLE", "CLOUD", "BOTH", "NONE"].indexOf(
-              existingConfig.LOG_DESTINATION
-            )
+            existingConfig.LOG_DESTINATION
+          )
           : 0,
     },
     {
@@ -316,7 +316,7 @@ export async function initializeConfiguration(options = {}) {
       ],
       initial:
         ["FILE", "UPSTASH"].indexOf(existingConfig.STORE_TYPE?.toUpperCase()) >
-        -1
+          -1
           ? ["FILE", "UPSTASH"].indexOf(existingConfig.STORE_TYPE.toUpperCase())
           : 0,
     },
@@ -408,9 +408,9 @@ export async function initializeConfiguration(options = {}) {
 /**
  * Handles the 'auth' command to authenticate with Google Cloud.
  */
-export function authenticateUser() {
+export async function authenticateUser() {
   // First, check if gcloud CLI is available.
-  checkForGcloudCli();
+  await checkForGcloudCli();
 
   const rootDirectory = process.cwd();
   const envPath = path.join(rootDirectory, ".env");
