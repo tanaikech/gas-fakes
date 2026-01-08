@@ -1,5 +1,6 @@
 import { Proxies } from '../../support/proxies.js';
 import { newFakeTextRange } from './faketextrange.js';
+import { newFakeAutofit } from './fakeautofit.js';
 
 export const newFakeShape = (...args) => {
   return Proxies.guard(new FakeShape(...args));
@@ -39,6 +40,10 @@ export class FakeShape {
    */
   getText() {
     return newFakeTextRange(this);
+  }
+
+  getAutofit() {
+    return newFakeAutofit(this);
   }
 
   toString() {

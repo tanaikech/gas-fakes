@@ -36,12 +36,14 @@ import { testDocsListItems } from "./testdocslistitems.js";
 import { testSlidesAdv } from "./testslidesadv.js";
 import { testSlidesTextRange } from "./testslidestextrange.js";
 import { testSlides } from "./testslides.js";
-import { testSlidesSlide } from "./testslideslide.js";
+import { testSlidesSlide } from "./testslidesslide.js";
 import { testForm } from "./testform.js";
 import { testFormsAdv } from "./testformsadv.js";
 import { testSheetsText } from "./testsheetstext.js";
 import { testSlidesParagraph } from "./testslidesparagraph.js";
 import { testSlidesAffineTransform } from "./testslidesaffinetransform.js";
+import { testSlidesAutofit } from "./testslidesautofit.js";
+import { testSlidesAutoText } from "./testslidesautotext.js";
 
 import { testSheetsRange } from "./testsheetsrange.js";
 import { testDocsImages } from "./testdocsimages.js";
@@ -96,6 +98,10 @@ const testFakes = () => {
   testSlidesParagraph(pack);
   console.log("\n----Test slidesaffinetransform----");
   testSlidesAffineTransform(pack);
+  console.log("\n----Test slidesautofit----");
+  testSlidesAutofit(pack);
+  console.log("\n----Test slidesautotext----");
+  testSlidesAutoText(pack);
   console.log("\n----Test slidesadv----");
   testSlidesAdv(pack);
   console.log("\n----Test slidesslide----");

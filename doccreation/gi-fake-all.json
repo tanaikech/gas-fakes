@@ -49631,7 +49631,7 @@
             "returnType": "Presentation",
             "returnDescription": "the presentation with the given name.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakeslidesapp.js#L61"
+            "implementationLink": "src/services/slidesapp/fakeslidesapp.js#L66"
           },
           {
             "method": "getActivePresentation()",
@@ -49640,7 +49640,7 @@
             "returnType": "",
             "returnDescription": "Presentation",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakeslidesapp.js#L74"
+            "implementationLink": "src/services/slidesapp/fakeslidesapp.js#L79"
           },
           {
             "method": "getUi()",
@@ -49657,8 +49657,8 @@
             "description": "Returns a new AffineTransformBuilder to build an AffineTransform. The builder\nis preset with the identity affine transform.",
             "returnType": "",
             "returnDescription": "AffineTransformBuilder",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeslidesapp.js#L57"
           },
           {
             "method": "openById(String)",
@@ -49667,7 +49667,7 @@
             "returnType": "Presentation",
             "returnDescription": "the presentation with the given ID",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakeslidesapp.js#L80"
+            "implementationLink": "src/services/slidesapp/fakeslidesapp.js#L85"
           },
           {
             "method": "openByUrl(String)",
@@ -49676,7 +49676,7 @@
             "returnType": "Presentation",
             "returnDescription": "the presentation with the given URL",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakeslidesapp.js#L102"
+            "implementationLink": "src/services/slidesapp/fakeslidesapp.js#L107"
           }
         ]
       },
@@ -49692,8 +49692,8 @@
             "description": "Sets the AutofitType of a shape to AutofitType.NONE.",
             "returnType": "Autofit",
             "returnDescription": "The autofit, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeautofit.js#L30"
           },
           {
             "method": "getAutofitType()",
@@ -49701,8 +49701,8 @@
             "description": "Gets the AutofitType of the shape.",
             "returnType": "AutofitType",
             "returnDescription": "The autofit type.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeautofit.js#L25"
           },
           {
             "method": "getFontScale()",
@@ -49710,8 +49710,8 @@
             "description": "Gets the font scale applied to the shape. For shapes with AutofitType AutofitType.NONE or AutofitType.SHAPE_AUTOFIT, this value is the default value of 1.\nFor AutofitType.TEXT_AUTOFIT, the value returned is what the original font size is\nmultiplied by to fit within the shape.",
             "returnType": "Number",
             "returnDescription": "The font scale.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeautofit.js#L38"
           },
           {
             "method": "getLineSpacingReduction()",
@@ -49719,8 +49719,8 @@
             "description": "Gets the line spacing reduction applied to the shape. For shapes with AutofitType\nAutofitType.NONE or AutofitType.SHAPE_AUTOFIT, this value is the default value\nof 0. For AutofitType.TEXT_AUTOFIT, the returned value is the amount of spacing\nsubtracted from the original spacing to make the text fit within the shape.",
             "returnType": "Number",
             "returnDescription": "The line spacing.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeautofit.js#L42"
           }
         ]
       },
@@ -49736,8 +49736,8 @@
             "description": "Returns the type of auto text. Returns null if the auto text has been deleted.",
             "returnType": "",
             "returnDescription": "AutoTextType",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeautotext.js#L22"
           },
           {
             "method": "getIndex()",
@@ -49745,8 +49745,8 @@
             "description": "Returns the index of the auto text. Returns null if the auto text has been deleted.",
             "returnType": "",
             "returnDescription": "Integer",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeautotext.js#L14"
           },
           {
             "method": "getRange()",
@@ -49754,8 +49754,8 @@
             "description": "Returns a TextRange spanning the auto text. Returns null if the auto text has\nbeen deleted.",
             "returnType": "",
             "returnDescription": "TextRange",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeautotext.js#L18"
           }
         ]
       },
@@ -49771,8 +49771,8 @@
             "description": "Gets the X coordinate scaling element.",
             "returnType": "",
             "returnDescription": "Number",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeaffinetransform.js#L18"
           },
           {
             "method": "getScaleY()",
@@ -49780,8 +49780,8 @@
             "description": "Gets the Y coordinate scaling element.",
             "returnType": "",
             "returnDescription": "Number",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeaffinetransform.js#L22"
           },
           {
             "method": "getShearX()",
@@ -49789,8 +49789,8 @@
             "description": "Gets the X coordinate shearing element.",
             "returnType": "",
             "returnDescription": "Number",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeaffinetransform.js#L26"
           },
           {
             "method": "getShearY()",
@@ -49798,8 +49798,8 @@
             "description": "Gets the Y coordinate shearing element.",
             "returnType": "",
             "returnDescription": "Number",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeaffinetransform.js#L30"
           },
           {
             "method": "getTranslateX()",
@@ -49807,8 +49807,8 @@
             "description": "Gets the X coordinate translation element in points.",
             "returnType": "",
             "returnDescription": "Number",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeaffinetransform.js#L34"
           },
           {
             "method": "getTranslateY()",
@@ -49816,8 +49816,8 @@
             "description": "Gets the Y coordinate translation element in points.",
             "returnType": "",
             "returnDescription": "Number",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeaffinetransform.js#L38"
           },
           {
             "method": "toBuilder()",
@@ -49825,8 +49825,8 @@
             "description": "Returns a new AffineTransformBuilder based on this transform.",
             "returnType": "",
             "returnDescription": "AffineTransformBuilder",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeaffinetransform.js#L42"
           }
         ]
       },
@@ -49842,8 +49842,8 @@
             "description": "Creates an AffineTransform object initialized with the elements set in the builder.",
             "returnType": "",
             "returnDescription": "AffineTransform",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeaffinetransformbuilder.js#L20"
           },
           {
             "method": "setScaleX(Number)",
@@ -49851,8 +49851,8 @@
             "description": "Sets the X coordinate scaling element and returns the builder.",
             "returnType": "",
             "returnDescription": "AffineTransformBuilder",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeaffinetransformbuilder.js#L31"
           },
           {
             "method": "setScaleY(Number)",
@@ -49860,8 +49860,8 @@
             "description": "Sets the Y coordinate scaling element and returns the builder.",
             "returnType": "",
             "returnDescription": "AffineTransformBuilder",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeaffinetransformbuilder.js#L36"
           },
           {
             "method": "setShearX(Number)",
@@ -49869,8 +49869,8 @@
             "description": "Sets the X coordinate shearing element and returns the builder.",
             "returnType": "",
             "returnDescription": "AffineTransformBuilder",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeaffinetransformbuilder.js#L41"
           },
           {
             "method": "setShearY(Number)",
@@ -49878,8 +49878,8 @@
             "description": "Sets the Y coordinate shearing element and returns the builder.",
             "returnType": "",
             "returnDescription": "AffineTransformBuilder",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeaffinetransformbuilder.js#L46"
           },
           {
             "method": "setTranslateX(Number)",
@@ -49887,8 +49887,8 @@
             "description": "Sets the X coordinate translation element in points, and returns the builder.",
             "returnType": "",
             "returnDescription": "AffineTransformBuilder",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeaffinetransformbuilder.js#L51"
           },
           {
             "method": "setTranslateY(Number)",
@@ -49896,8 +49896,8 @@
             "description": "Sets the Y coordinate translation element in points, and returns the builder.",
             "returnType": "",
             "returnDescription": "AffineTransformBuilder",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeaffinetransformbuilder.js#L56"
           }
         ]
       },
@@ -54890,8 +54890,8 @@
             "description": "Returns the Autofit of the text within this shape. This is null if the shape\ndoesn't allow text.",
             "returnType": "Autofit",
             "returnDescription": "The autofit of the text within this shape.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeshape.js#L45"
           },
           {
             "method": "getBorder()",
@@ -54990,7 +54990,7 @@
             "returnType": "String",
             "returnDescription": "The unique ID for this object.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakeshape.js#L32"
+            "implementationLink": "src/services/slidesapp/fakeshape.js#L33"
           },
           {
             "method": "getPageElementType()",
@@ -55071,7 +55071,7 @@
             "returnType": "TextRange",
             "returnDescription": "The text content of this shape.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakeshape.js#L40"
+            "implementationLink": "src/services/slidesapp/fakeshape.js#L41"
           },
           {
             "method": "getTitle()",
@@ -57419,7 +57419,7 @@
             "returnType": "String",
             "returnDescription": "The rendered text in the range.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/faketextrange.js#L56"
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L65"
           },
           {
             "method": "asString()",
@@ -57428,7 +57428,7 @@
             "returnType": "String",
             "returnDescription": "The raw text in the range.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/faketextrange.js#L32"
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L37"
           },
           {
             "method": "clear()",
@@ -57437,7 +57437,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/faketextrange.js#L111"
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L126"
           },
           {
             "method": "clear(Integer,Integer)",
@@ -57446,7 +57446,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/faketextrange.js#L111"
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L126"
           },
           {
             "method": "find(String)",
@@ -57454,8 +57454,8 @@
             "description": "Returns all the ranges matching the search pattern in the current text range. The search is\ncase sensitive.",
             "returnType": "TextRange[]",
             "returnDescription": "A list of text ranges.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L182"
           },
           {
             "method": "find(String,Integer)",
@@ -57463,8 +57463,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L182"
           },
           {
             "method": "getAutoTexts()",
@@ -57472,8 +57472,8 @@
             "description": "Returns the auto texts within the current text range.",
             "returnType": "AutoText[]",
             "returnDescription": "A list of auto texts.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L176"
           },
           {
             "method": "getEndIndex()",
@@ -57482,7 +57482,7 @@
             "returnType": "Integer",
             "returnDescription": "The end index of the range.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/faketextrange.js#L26"
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L31"
           },
           {
             "method": "getLength()",
@@ -57536,7 +57536,7 @@
             "returnType": "Paragraph[]",
             "returnDescription": "A list of paragraphs.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/faketextrange.js#L29"
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L34"
           },
           {
             "method": "getRange(Integer,Integer)",
@@ -57563,7 +57563,7 @@
             "returnType": "Integer",
             "returnDescription": "The start index of the range.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/faketextrange.js#L21"
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L26"
           },
           {
             "method": "getTextStyle()",
@@ -57608,7 +57608,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/faketextrange.js#L96"
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L105"
           },
           {
             "method": "isEmpty()",
@@ -57617,7 +57617,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if there are no characters in this range, and returns false\n    otherwise.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/faketextrange.js#L153"
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L246"
           },
           {
             "method": "replaceAllText(String,String)",
@@ -57653,7 +57653,7 @@
             "returnType": "TextRange",
             "returnDescription": "The text range representing the set text.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/faketextrange.js#L65"
+            "implementationLink": "src/services/slidesapp/faketextrange.js#L74"
           }
         ]
       },

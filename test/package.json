@@ -39,6 +39,8 @@
     "testslidesslide": "node --env-file ./.env testslidesslide.js execute",
     "testslidesparagraph": "node --env-file ./.env testslidesparagraph.js execute",
     "testslidesaffinetransform": "node --env-file ./.env testslidesaffinetransform.js execute",
+    "testslidesautofit": "node --env-file ./.env testslidesautofit.js execute",
+    "testslidesautotext": "node --env-file ./.env testslidesautotext.js execute",
     "testdocsnext": "node --env-file ./.env testdocsnext.js execute",
     "testsheetstext": "node --env-file ./.env testsheetstext.js execute",
     "testsheetsrange": "node --env-file ./.env testsheetsrange.js execute",

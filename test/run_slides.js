@@ -7,6 +7,8 @@ import { testSlidesSlide } from "./testslidesslide.js";
 import { testSlidesTextRange } from "./testslidestextrange.js";
 import { testSlidesParagraph } from "./testslidesparagraph.js";
 import { testSlidesAffineTransform } from "./testslidesaffinetransform.js";
+import { testSlidesAutofit } from "./testslidesautofit.js";
+import { testSlidesAutoText } from "./testslidesautotext.js";
 import { trasher } from "./testassist.js";
 
 const runSlidesTests = () => {
@@ -25,6 +27,10 @@ const runSlidesTests = () => {
   testSlidesParagraph(pack);
   console.log("\n----Test slidesaffinetransform----");
   testSlidesAffineTransform(pack);
+  console.log("\n----Test slidesautofit----");
+  testSlidesAutofit(pack);
+  console.log("\n----Test slidesautotext----");
+  testSlidesAutoText(pack);
 
   // final cleanup
   if (ScriptApp.isFake) {
