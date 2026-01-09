@@ -172,6 +172,11 @@ export async function initializeConfiguration(options = {}) {
       },
       */
       {
+        sensitivity: "sensitive",
+        title: "Calendar (full access)",
+        value: "https://www.googleapis.com/auth/calendar",
+      },
+      {
         // actually labels are not sensitive
         title: "Gmail labels",
         value: "https://www.googleapis.com/auth/gmail.labels",
@@ -586,6 +591,7 @@ export function enableGoogleAPIs(options) {
     docs: "docs.googleapis.com",
     gmail: "gmail.googleapis.com",
     logging: "logging.googleapis.com",
+    calendar: "calendar"
   };
 
   const servicesToEnable = new Set();

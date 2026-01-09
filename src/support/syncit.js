@@ -17,6 +17,7 @@ import { gmailCacher } from "./gmailcacher.js";
 import { formsCacher } from "./formscacher.js";
 import { slidesCacher } from "./slidescacher.js";
 import { sheetsCacher } from "./sheetscacher.js";
+import { calendarCacher } from "./calendarcacher.js";
 import is from "@sindresorhus/is";
 import { callSync } from "./workersync/synchronizer.js";
 
@@ -401,6 +402,13 @@ const fxGmail = (args) =>
     cacher: gmailCacher,
     idField: "id",
   });
+const fxCalendar = (args) =>
+  fxGeneric({
+    ...args,
+    serviceName: "Calendar",
+    cacher: calendarCacher,
+    idField: "calendarId",
+  });
 
 // const fxGetImagesFromXlsx = (args) => callSync("sxGetImagesFromXlsx", args);
 
@@ -421,5 +429,6 @@ export const Syncit = {
   fxDocs,
   fxForms,
   fxGmail,
+  fxCalendar,
   fxDriveExport
 }

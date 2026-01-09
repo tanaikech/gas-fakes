@@ -8,6 +8,7 @@ export * from "../sxstore.js";
 export * from "../sxzip.js";
 export * from "../sxauth.js";
 export * from "../sxgmail.js";
+export * from "../sxcalendar.js";
 export * from "../sxxlsx.js";
 
 

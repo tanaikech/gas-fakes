@@ -240,6 +240,97 @@ GmailApp.createLabel('AllowedLabel');
 // GmailApp.createLabel('SecretLabel');
 ```
 
+## CalendarApp Sandbox Checks
+
+Similar to `GmailApp`, `gas-fakes` provides specific sandbox controls for `CalendarApp` to prevent unintended calendar modifications during testing.
+
+These rules are configured in `ScriptApp.__behavior.sandboxService.CalendarApp`.
+
+### Configuration Properties
+
+| Property | Type | Default | Description |
+|---|---|---|---|
+| `calendarWhitelist` | `CalendarWhitelistConfig[]` | `[]` | Configuration for allowed calendars, specifying `name` and permissions (`read`, `write`, `delete`). |
+| `usageLimit` | `object` or `number` | `undefined` | Limits for operations. Can be a number (implies **total** limit for all operations combined) or an object `{ read?: number, write?: number, trash?: number }`. |
+| `cleanup` | `boolean` | Global `cleanup` | Controls whether calendars created in the session are deleted on cleanup. Defaults to global setting if not set. |
+
+### Session Tracking & Cleanup
+
+- **Session Access**: Any calendar created *during* the sandbox session is automatically whitelisted and tracked in `__createdCalendarIds`. You can access and modify these calendars freely.
+- **Cleanup**: When `ScriptApp.__behavior.trash()` is called (and `cleanup` is `true`), `gas-fakes` will delete calendars created during the session.
+
+### Calendar Whitelist
+
+Restricts which *existing* calendars your script can access.
+
+`CalendarWhitelistConfig` has the structure: `{ name: string, read?: boolean, write?: boolean, delete?: boolean }` (defaults are `false`).
+
+- **Access Rule**: `CalendarApp.getCalendarById(id)` or `CalendarApp.getAllCalendars()` will only return calendars that either:
+    1. Were created in the current session.
+    2. Are the primary calendar (`'primary'`).
+    3. Have a name present in `calendarWhitelist` with `read: true`.
+- **Modification Rule**: `Calendar.setName()`, `setDescription()`, or `setTimeZone()` requires the calendar to be session-created, primary, or in the whitelist with `write: true`.
+- **Deletion Rule**: Deleting calendars requires appropriate permissions (to be implemented with event-level sandboxing).
+
+### CalendarApp Example
+
+```javascript
+const behavior = ScriptApp.__behavior;
+behavior.sandboxMode = true;
+
+// Configure Calendar Sandbox
+const calendarSettings = behavior.sandboxService.CalendarApp;
+calendarSettings.cleanup = true; // Delete calendars created during test
+
+// Granular limits
+calendarSettings.usageLimit = { write: 5, read: 20, trash: 1 };
+// Or simple total limit: calendarSettings.usageLimit = 10;
+
+calendarSettings.calendarWhitelist = [
+  { name: 'Work Calendar', read: true, write: true, delete: false },
+  { name: 'Personal', read: true, write: false }
+];
+
+// --- Accessing Calendars ---
+
+// Succeeds (primary calendar always accessible)
+const primary = CalendarApp.getDefaultCalendar();
+
+// Succeeds (in whitelist with read: true)
+const workCals = CalendarApp.getCalendarsByName('Work Calendar');
+
+// Fails (not in whitelist)
+// const secretCal = CalendarApp.getCalendarsByName('Secret Calendar');
+
+// --- Creating Calendars ---
+
+// Succeeds (session-created calendars are always accessible)
+const newCal = CalendarApp.createCalendar('Test Calendar');
+newCal.setDescription('Created during test'); // Succeeds (session-created)
+
+// --- Modifying Calendars ---
+
+// Succeeds (in whitelist with write: true)
+workCals[0].setDescription('Updated description');
+
+// Fails (in whitelist but write: false)
+// const personalCal = CalendarApp.getCalendarsByName('Personal')[0];
+// personalCal.setName('New Name'); // Throws error
+
+// --- Cleanup ---
+
+// At end of test, newCal will be automatically deleted
+ScriptApp.__behavior.trash();
+```
+
+### Future Calendar Sandbox Features
+
+The following features are planned for future implementation:
+
+- **Event-level sandboxing**: Control access to specific events within calendars
+- **Invitee sandboxing**: Use Gmail's `emailWhitelist` to control which email addresses can be added as event attendees
+
+
 ## <img src="./logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
 
 - [getting started](GETTING_STARTED.md) - how to handle authentication for restricted scopes.

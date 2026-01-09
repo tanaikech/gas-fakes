@@ -17,6 +17,7 @@ const serviceModel = {
   methodWhitelist: null,
   emailWhitelist: null,
   labelWhitelist: null,
+  calendarWhitelist: null,
   usageLimit: null,
   usageCount: 0
 }
@@ -169,6 +170,17 @@ class FakeSandboxService {
     return this.__state.labelWhitelist
   }
 
+  set calendarWhitelist(value) {
+    if (!is.null(value)) {
+      checkArgs(value, "array")
+      // We expect objects like { name: 'calendar-name', read?: boolean, write?: boolean, delete?: boolean }
+    }
+    this.__state.calendarWhitelist = value
+  }
+  get calendarWhitelist() {
+    return this.__state.calendarWhitelist
+  }
+
   set usageLimit(value) {
     if (!is.null(value)) {
       // expect object with read, write, trash keys optionally
@@ -211,6 +223,11 @@ class FakeSandboxService {
     return this.__state.usageCount[type];
   }
 
+  resetUsageCount() {
+    this.__state.usageCount = { read: 0, write: 0, trash: 0, send: 0 };
+    return this;
+  }
+
   set enabled(value) {
     this.__state.enabled = checkArgs(value)
   }
@@ -236,6 +253,7 @@ class FakeBehavior {
     // key is the file id
     this.__createdIds = new Set();
     this.__createdGmailIds = new Set();
+    this.__createdCalendarIds = new Set();
     // in sandbox mode we only allow access to files created in this instance
     // this is to emulate the behavior of a drive.file scope
     this.__sandboxMode = false;
@@ -343,6 +361,18 @@ class FakeBehavior {
       if (!this.isKnownGmail(id)) {
         slogger.log(`...adding gmail id ${id} to sandbox allowed list`);
         this.__createdGmailIds.add(id);
+      }
+    }
+    return id
+  }
+  addCalendarId(id) {
+    if (this.sandboxMode) {
+      if (!is.nonEmptyString(id)) {
+        throw new Error(`Invalid sandbox id parameter (${id}) - must be a non-empty string`);
+      }
+      if (!this.isKnownCalendar(id)) {
+        slogger.log(`...adding calendar id ${id} to sandbox allowed list`);
+        this.__createdCalendarIds.add(id);
       }
     }
     return id
@@ -510,7 +540,29 @@ class FakeBehavior {
       slogger.log('...skipping cleaning up sandbox files (Gmail)');
     }
 
-    slogger.log(`...trashed ${trashed.length} sandboxed files and ${trashedGmail.length} gmail items`);
+    // Clean up Calendar artifacts
+    let trashedCalendars = [];
+    const calendarSettings = this.sandboxService.CalendarApp;
+    const calendarCleanup = calendarSettings && calendarSettings.cleanup;
+
+    if (calendarCleanup) {
+      trashedCalendars = Array.from(this.__createdCalendarIds).reduce((acc, id) => {
+        try {
+          // Delete calendar
+          Calendar.Calendars.delete(id);
+          slogger.log(`...deleted calendar ${id}`);
+          acc.push(id);
+        } catch (e) {
+          slogger.log(`...failed to delete calendar ${id}: ${e.message}`);
+        }
+        return acc;
+      }, []);
+      this.__createdCalendarIds.clear();
+    } else {
+      slogger.log('...skipping cleaning up sandbox calendars');
+    }
+
+    slogger.log(`...trashed ${trashed.length} sandboxed files, ${trashedGmail.length} gmail items, and ${trashedCalendars.length} calendars`);
     return trashed;
   }
   isKnown(id) {
@@ -518,5 +570,8 @@ class FakeBehavior {
   }
   isKnownGmail(id) {
     return this.__createdGmailIds.has(id);
+  }
+  isKnownCalendar(id) {
+    return this.__createdCalendarIds.has(id);
   }
 }
