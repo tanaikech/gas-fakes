@@ -15823,8 +15823,8 @@
             "description": "Deletes the calendar permanently. A user can only delete a calendar they own.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L84"
           },
           {
             "method": "getColor()",

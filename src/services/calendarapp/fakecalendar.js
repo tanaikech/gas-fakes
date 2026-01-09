@@ -79,6 +79,16 @@ export class FakeCalendar {
   }
 
   /**
+   * Permanently deletes a calendar.
+   * A user can only delete a calendar they own.
+   * @see https://developers.google.com/apps-script/reference/calendar/calendar#deleteCalendar()
+   */
+  deleteCalendar() {
+    this.__checkDeleteAccess();
+    Calendar.Calendars.delete(this.getId());
+  }
+
+  /**
    * Synchronizes changes back to the Advanced service.
    * @param {object} patch The changes to apply.
    * @private
@@ -89,7 +99,8 @@ export class FakeCalendar {
     this.__internalResource = resource; // Update local cache
   }
 
-  __checkWriteAccess() {
+
+  __checkAccess(accessType) {
     const behavior = ScriptApp.__behavior;
     if (!behavior.sandboxMode) return true;
 
@@ -98,24 +109,27 @@ export class FakeCalendar {
     // Session-created calendars are always writable
     if (behavior.isKnownCalendar(calendarId)) return true;
 
-    // Primary calendar is always writable
-    if (calendarId === 'primary') return true;
-
     // Check whitelist
     const settings = behavior.sandboxService.CalendarApp;
     const whitelist = settings && settings.calendarWhitelist;
 
     if (!whitelist) {
-      throw new Error(`Write access to calendar ${calendarId} is denied. No calendar whitelist configured.`);
+      throw new Error(`Access to calendar ${calendarId} is denied. No calendar whitelist configured.`);
     }
 
     const calendarName = this.getName();
     const entry = whitelist.find(item => item.name === calendarName);
-    if (entry && entry.write) {
+    if (entry && entry[accessType]) {
       return true;
     }
 
-    throw new Error(`Write access to calendar "${calendarName}" (${calendarId}) is denied by sandbox rules`);
+    throw new Error(`${accessType} access to calendar "${calendarName}" (${calendarId}) is denied by sandbox rules`);
+  }
+  __checkDeleteAccess() {
+    return this.__checkAccess('delete');
+  }
+  __checkWriteAccess() {
+    return this.__checkAccess('write');
   }
 
   toString() {
