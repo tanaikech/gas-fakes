@@ -330,7 +330,6 @@ The following features are planned for future implementation:
 - **Event-level sandboxing**: Control access to specific events within calendars
 - **Invitee sandboxing**: Use Gmail's `emailWhitelist` to control which email addresses can be added as event attendees
 
-
 ## <img src="./logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
 
 - [getting started](GETTING_STARTED.md) - how to handle authentication for restricted scopes.

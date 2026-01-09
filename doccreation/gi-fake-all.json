@@ -15841,8 +15841,8 @@
             "description": "Gets the description of the calendar.",
             "returnType": "String",
             "returnDescription": "The description of this calendar.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L42"
           },
           {
             "method": "getEventById(String)",
@@ -15904,8 +15904,8 @@
             "description": "Gets the ID of the calendar. The ID for a user's default calendar is their email address.",
             "returnType": "String",
             "returnDescription": "The ID of the calendar.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L28"
           },
           {
             "method": "getName()",
@@ -15913,8 +15913,8 @@
             "description": "Gets the name of the calendar.",
             "returnType": "String",
             "returnDescription": "This calendar's name.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L32"
           },
           {
             "method": "getTimeZone()",
@@ -15922,8 +15922,8 @@
             "description": "Gets the time zone of the calendar.",
             "returnType": "String",
             "returnDescription": "The time zone, specified in \"long\" format (for example, \"America/New_York\", as listed\n    by Joda.org).",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L52"
           },
           {
             "method": "isHidden()",
@@ -15931,8 +15931,8 @@
             "description": "Determines whether the calendar is hidden in the user interface.",
             "returnType": "Boolean",
             "returnDescription": "true if the calendar is hidden in the user interface; false if it\n    isn't.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L73"
           },
           {
             "method": "isMyPrimaryCalendar()",
@@ -15940,8 +15940,8 @@
             "description": "Determines whether the calendar is the primary calendar for the effective user.",
             "returnType": "Boolean",
             "returnDescription": "true if the calendar is the default calendar for the effective user; false if it isn't.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L62"
           },
           {
             "method": "isOwnedByMe()",
@@ -15949,8 +15949,8 @@
             "description": "Determines whether the calendar is owned by you.",
             "returnType": "Boolean",
             "returnDescription": "true if the calendar is owned by you; false if not.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L68"
           },
           {
             "method": "isSelected()",
@@ -15958,8 +15958,8 @@
             "description": "Determines whether the calendar's events are displayed in the user interface.",
             "returnType": "Boolean",
             "returnDescription": "true if the calendar's events are displayed in the user interface; false if not",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L77"
           },
           {
             "method": "setColor(String)",
@@ -15976,8 +15976,8 @@
             "description": "Sets the description of a calendar.",
             "returnType": "Calendar",
             "returnDescription": "this calendar for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L46"
           },
           {
             "method": "setHidden(Boolean)",
@@ -15994,8 +15994,8 @@
             "description": "Sets the name of the calendar.",
             "returnType": "Calendar",
             "returnDescription": "this calendar for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L36"
           },
           {
             "method": "setSelected(Boolean)",
@@ -16012,8 +16012,8 @@
             "description": "Sets the time zone of the calendar.",
             "returnType": "Calendar",
             "returnDescription": "This calendar for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L56"
           },
           {
             "method": "unsubscribeFromCalendar()",
@@ -16092,8 +16092,8 @@
             "description": "Creates a new calendar, owned by the user.",
             "returnType": "Calendar",
             "returnDescription": "the newly created calendar",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L23"
           },
           {
             "method": "createCalendar(String,Object)",
@@ -16101,8 +16101,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L23"
           },
           {
             "method": "createEvent(String,Date,Date)",
@@ -16155,8 +16155,8 @@
             "description": "Gets all calendars that the user owns or is subscribed to.",
             "returnType": "Calendar[]",
             "returnDescription": "all calendars that the user can access",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L56"
           },
           {
             "method": "getAllOwnedCalendars()",
@@ -16164,8 +16164,8 @@
             "description": "Gets all calendars that the user owns.",
             "returnType": "Calendar[]",
             "returnDescription": "all calendars that the user owns",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L65"
           },
           {
             "method": "getCalendarById(String)",
@@ -16173,8 +16173,8 @@
             "description": "Gets the calendar with the given ID.",
             "returnType": "Calendar",
             "returnDescription": "the calendar with the given ID, or null if the calendar does not exist, if the\n    user cannot access it, or if the user is not subscribed to the calendar",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L33"
           },
           {
             "method": "getCalendarsByName(String)",
@@ -16182,8 +16182,8 @@
             "description": "Gets all calendars with a given name that the user owns or is subscribed to. Names are not\ncase-sensitive.",
             "returnType": "Calendar[]",
             "returnDescription": "all calendars with this name that the user can access",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L46"
           },
           {
             "method": "getColor()",
@@ -16200,8 +16200,8 @@
             "description": "Gets the user's default calendar.",
             "returnType": "Calendar",
             "returnDescription": "the user's default calendar",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L41"
           },
           {
             "method": "getDescription()",

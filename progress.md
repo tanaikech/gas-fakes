@@ -4,11 +4,12 @@
 |---|---|---|---|---|---|
 | [Base](./progress/base.md) | 17 | 127 | 28 | 0 | 99 |
 | [Cache](./progress/cache.md) | 2 | 11 | 7 | 4 | 0 |
-| [Calendar](./progress/calendar.md) | 13 | 273 | 0 | 0 | 273 |
+| [Calendar](./progress/calendar.md) | 13 | 273 | 18 | 0 | 255 |
 | [Charts](./progress/charts.md) | 29 | 238 | 3 | 0 | 235 |
 | [Content](./progress/content.md) | 3 | 16 | 0 | 0 | 16 |
 | [Document](./progress/document.md) | 47 | 1032 | 460 | 22 | 550 |
 | [Drive](./progress/drive.md) | 8 | 164 | 98 | 35 | 31 |
+| [Forms](./progress/forms.md) | 41 | 504 | 218 | 0 | 286 |
 | [Gmail](./progress/Gmail.md) | 6 | 168 | 58 | 0 | 110 |
 | [HTML](./progress/html.md) | 6 | 39 | 0 | 0 | 39 |
 | [JDBC](./progress/jdbc.md) | 20 | 749 | 0 | 0 | 749 |
@@ -21,4 +22,4 @@
 | [URL Fetch](./progress/urlfetch.md) | 2 | 13 | 11 | 0 | 2 |
 | [Utilities](./progress/utilities.md) | 5 | 59 | 27 | 3 | 29 |
 | [XML](./progress/xml.md) | 14 | 149 | 0 | 0 | 149 |
-| **Total** | **379** | **6204** | **1511** | **80** | **4613** |
+| **Total** | **420** | **6708** | **1747** | **80** | **4881** |
