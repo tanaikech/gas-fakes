@@ -61,6 +61,7 @@
     "testpeople": "node --env-file ./.env testpeople.js execute",
     "testtasks": "node --env-file ./.env testtasks.js execute",
     "testcalendar": "node --env-file ./.env testcalendar.js execute",
+    "testcalendarapp": "node --env-file ./.env testcalendarapp.js execute",
     "testworkspaceevents": "node --env-file ./.env testworkspaceevents.js execute",
     "testmimetype": "node --env-file ./.env testmimetype.js execute"
   },
