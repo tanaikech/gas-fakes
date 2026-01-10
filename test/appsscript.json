@@ -11,7 +11,9 @@
     "https://www.googleapis.com/auth/presentations",
     "https://www.googleapis.com/auth/forms",
     "https://mail.google.com/",
-    "openid"
+    "openid",
+    "https://www.googleapis.com/auth/calendar"
+
   ],
   "dependencies": {
     "libraries": [

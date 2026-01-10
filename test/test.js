@@ -55,6 +55,7 @@ import { testChat } from './testchat.js';
 import { testPeople } from './testpeople.js';
 import { testCalendar } from './testcalendar.js';
 import { testCalendarApp } from './testcalendarapp.js';
+import { testCalendarClass } from './testcalendarclass.js';
 import { testTasks } from './testtasks.js';
 import { testWorkspaceEvents } from './testworkspaceevents.js';
 import { testLogger } from "./testlogger.js";
@@ -79,6 +80,8 @@ const testFakes = () => {
   testCalendar(pack);
   console.log("\n----Test calendarapp----");
   testCalendarApp(pack);
+  console.log("\n----Test calendarclass----");
+  testCalendarClass(pack);
   console.log("\n----Test tasks----");
   testTasks(pack);
   console.log("\n----Test people----");

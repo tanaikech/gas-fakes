@@ -2,11 +2,11 @@ import '@mcpher/gas-fakes';
 import is from '@sindresorhus/is';
 import { initTests } from './testinit.js';
 import { wrapupTest, compareValue } from './testassist.js';
-const tidyCalendars = new Set();
+
 
 export const testCalendarApp = (pack) => {
   const { unit } = pack || initTests();
-
+  const tidyCalendars = new Set();
   unit.section('CalendarApp general', (t) => {
     t.truthy(CalendarApp, 'CalendarApp should be defined');
 
@@ -316,17 +316,17 @@ export const testCalendarApp = (pack) => {
     });
   }
 
+  // delete test calendars
+  for (const id of tidyCalendars) {
+    const cal = CalendarApp.getCalendarById(id)
+    if (cal) cal.deleteCalendar();
+  }
   if (!pack) {
     unit.report();
   }
   return { unit };
 };
 
-// delete test calendars
-for (const id of tidyCalendars) {
-  const cal = CalendarApp.getCalendarById(id)
-  if (cal) cal.deleteCalendar();
-}
 
 wrapupTest(testCalendarApp);
 
