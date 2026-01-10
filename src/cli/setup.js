@@ -307,8 +307,8 @@ export async function initializeConfiguration(options = {}) {
           existingConfig.LOG_DESTINATION
         ) > -1
           ? ["CONSOLE", "CLOUD", "BOTH", "NONE"].indexOf(
-            existingConfig.LOG_DESTINATION
-          )
+              existingConfig.LOG_DESTINATION
+            )
           : 0,
     },
     {
@@ -321,7 +321,7 @@ export async function initializeConfiguration(options = {}) {
       ],
       initial:
         ["FILE", "UPSTASH"].indexOf(existingConfig.STORE_TYPE?.toUpperCase()) >
-          -1
+        -1
           ? ["FILE", "UPSTASH"].indexOf(existingConfig.STORE_TYPE.toUpperCase())
           : 0,
     },
@@ -491,13 +491,14 @@ export async function authenticateUser() {
 
   console.log("Revoking previous credentials...");
   try {
-    execSync("gcloud auth revoke --quiet", { stdio: "ignore" });
+    execSync("gcloud auth revoke --quiet", { stdio: "ignore", shell: true });
   } catch (e) {
     /* ignore */
   }
   try {
     execSync("gcloud auth application-default revoke --quiet", {
       stdio: "ignore",
+      shell: true,
     });
   } catch (e) {
     /* ignore */
@@ -507,6 +508,7 @@ export async function authenticateUser() {
   try {
     execSync(`gcloud config configurations describe "${activeConfig}"`, {
       stdio: "ignore",
+      shell: true,
     });
     console.log(`Configuration '${activeConfig}' already exists.`);
   } catch (error) {
@@ -523,6 +525,26 @@ export async function authenticateUser() {
 
   console.log("Initiating user login...");
   runCommandSync(`gcloud auth login ${driveAccessFlag}`);
+
+  // --- Verify that the user is actually logged in ---
+  try {
+    const currentAccount = execSync("gcloud config get-value account", {
+      encoding: "utf8",
+      shell: true,
+    }).trim();
+
+    if (!currentAccount || currentAccount === "(unset)") {
+      console.error("\n[Error] Login appeared to fail or no account selected.");
+      console.error(
+        "Please try running 'gcloud auth login' manually to diagnose issues."
+      );
+      process.exit(1);
+    }
+    console.log(`Successfully logged in as: ${currentAccount}`);
+  } catch (error) {
+    console.error("\n[Error] Failed to verify logged-in account.");
+    process.exit(1);
+  }
 
   console.log("Initiating Application Default Credentials (ADC) login...");
   runCommandSync(
@@ -548,7 +570,7 @@ export async function authenticateUser() {
     );
   }
 
-  const currentProject = execSync("gcloud config get project")
+  const currentProject = execSync("gcloud config get project", { shell: true })
     .toString()
     .trim();
   console.log(
@@ -556,11 +578,12 @@ export async function authenticateUser() {
   );
 
   console.log("\nFetching token information...");
-  const userToken = execSync("gcloud auth print-access-token")
+  const userToken = execSync("gcloud auth print-access-token", { shell: true })
     .toString()
     .trim();
   const appDefaultToken = execSync(
-    "gcloud auth application-default print-access-token"
+    "gcloud auth application-default print-access-token",
+    { shell: true }
   )
     .toString()
     .trim();

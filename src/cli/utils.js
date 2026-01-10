@@ -4,7 +4,7 @@ const require = createRequire(import.meta.url);
 const pjson = require("../../package.json");
 
 export const VERSION = pjson.version;
-export const CLI_VERSION = "0.0.18"; // Kept from original logic
+export const CLI_VERSION = "0.0.19";
 export const MCP_VERSION = "0.0.7";
 
 /**
@@ -25,7 +25,8 @@ export function normalizeScriptNewlines(text) {
  */
 export function spawnCommand(command, args) {
   return new Promise((resolve, reject) => {
-    const child = spawn(command, args);
+    // shell: true is important for Windows to find .cmd/.bat files correctly
+    const child = spawn(command, args, { shell: true });
     let stdout = "";
     let stderr = "";
 
@@ -74,7 +75,9 @@ export async function checkForGcloudCli() {
  */
 export function runCommandSync(command) {
   try {
-    execSync(command, { stdio: "inherit" });
+    // shell: true is explicitly added to ensure compatibility on Windows,
+    // especially for handling interactive commands or batch files like gcloud.cmd
+    execSync(command, { stdio: "inherit", shell: true });
   } catch (error) {
     console.error(`\nError executing command: ${command}`);
     process.exit(1);
