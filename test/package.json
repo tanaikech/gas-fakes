@@ -64,6 +64,7 @@
     "testcalendarapp": "node --env-file ./.env testcalendarapp.js execute",
     "testcalendarclass": "node --env-file ./.env testcalendarclass.js execute",
     "testworkspaceevents": "node --env-file ./.env testworkspaceevents.js execute",
+    "testcalendarsandbox": "node --env-file ./.env testcalendarsandbox.js execute",
     "testmimetype": "node --env-file ./.env testmimetype.js execute"
   },
   "name": "test-gas-fakes",

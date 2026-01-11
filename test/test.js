@@ -16,7 +16,8 @@ import {
   getSheetsPerformance,
   getDocsPerformance,
   getSlidesPerformance,
-  getFormsPerformance
+  getFormsPerformance,
+  getCalendarPerformance,
 } from "./testassist.js";
 import { testFiddler } from "./testfiddler.js";
 import { testSheetsDataValidations } from "./testsheetsdatavalidations.js";
@@ -55,6 +56,7 @@ import { testChat } from './testchat.js';
 import { testPeople } from './testpeople.js';
 import { testCalendar } from './testcalendar.js';
 import { testCalendarApp } from './testcalendarapp.js';
+import { testCalendarSandbox } from './testcalendarsandbox.js';
 import { testCalendarClass } from './testcalendarclass.js';
 import { testTasks } from './testtasks.js';
 import { testWorkspaceEvents } from './testworkspaceevents.js';
@@ -80,6 +82,8 @@ const testFakes = () => {
   testCalendar(pack);
   console.log("\n----Test calendarapp----");
   testCalendarApp(pack);
+  console.log("\n----Test calendarsandbox----");
+  testCalendarSandbox(pack);
   console.log("\n----Test calendarclass----");
   testCalendarClass(pack);
   console.log("\n----Test tasks----");
@@ -192,6 +196,7 @@ const testFakes = () => {
     console.log("...cumulative docs cache performance", getDocsPerformance());
     console.log("...cumulative slides cache performance", getSlidesPerformance());
     console.log("...cumulative forms cache performance", getFormsPerformance());
+    console.log("...cumulative calendar cache performance", getCalendarPerformance ());
   }
   // final cleanup of all files created during the test run
   if (ScriptApp.isFake) {
