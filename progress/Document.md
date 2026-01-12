@@ -1200,7 +1200,7 @@ An enumeration of all the element types.
 | TABLE_OF_CONTENTS | The type corresponding to the TableOfContents element. | completed | [link](../src/services/enums/docsenums.js#L70) |
 | TABLE_ROW | The type corresponding to the TableRow element. | completed | [link](../src/services/enums/docsenums.js#L71) |
 | TEXT | The type corresponding to the Text element. | completed | [link](../src/services/enums/docsenums.js#L72) |
-| UNSUPPORTED | The type corresponding to UnsupportedElement. Unsupported elements represent document portions that do not support scripting. | not started |  |
+| UNSUPPORTED | The type corresponding to UnsupportedElement. Unsupported elements represent document portions that do not support scripting. | completed | [link](../src/services/enums/docsenums.js#L74) |
 
 ## Enum: [FontFamily](https://developers.google.com/apps-script/reference/document/font-family)
 
@@ -1239,7 +1239,7 @@ Deprecated. The methods getFontFamily() and setFontFamily(String) now use string
 | TIMES_NEW_ROMAN | The Times New Roman font family. | completed | [link](../src/services/enums/docsenums.js#L105) |
 | TREBUCHET_MS | The Trebuchet MS font family. | completed | [link](../src/services/enums/docsenums.js#L106) |
 | UBUNTU | The Ubuntu font family. | completed | [link](../src/services/enums/docsenums.js#L107) |
-| VERDANA | The Verdana font family. | not started |  |
+| VERDANA | The Verdana font family. | completed | [link](../src/services/enums/docsenums.js#L108) |
 
 ## Enum: [GlyphType](https://developers.google.com/apps-script/reference/document/glyph-type)
 
@@ -1252,7 +1252,7 @@ An enumeration of the supported glyph types.
 | LATIN_LOWER | A latin, lowercase bullet. | completed | [link](../src/services/enums/docsenums.js#L116) |
 | LATIN_UPPER | A latin, uppercase bullet. | completed | [link](../src/services/enums/docsenums.js#L115) |
 | NUMBER | A number based bullet. | completed | [link](../src/services/enums/docsenums.js#L114) |
-| ROMAN_LOWER | A roman numeral, lowercase bullet. | not started |  |
+| ROMAN_LOWER | A roman numeral, lowercase bullet. | completed | [link](../src/services/enums/docsenums.js#L118) |
 | ROMAN_UPPER | A roman numeral, uppercase bullet. | completed | [link](../src/services/enums/docsenums.js#L117) |
 | SQUARE_BULLET | A square bullet. | completed | [link](../src/services/enums/docsenums.js#L113) |
 
@@ -1263,7 +1263,7 @@ An enumeration of the supported horizontal alignment types.
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
 | CENTER | The center-alignment option. | completed | [link](../src/services/enums/docsenums.js#L122) |
-| JUSTIFY | The justify-alignment option. | not started |  |
+| JUSTIFY | The justify-alignment option. | completed | [link](../src/services/enums/docsenums.js#L124) |
 | LEFT | The left-alignment option. | completed | [link](../src/services/enums/docsenums.js#L19) |
 | RIGHT | The right-alignment option. | completed | [link](../src/services/enums/docsenums.js#L19) |
 
@@ -1280,7 +1280,7 @@ An enumeration of the standard paragraph headings.
 | HEADING5 | The fifth heading option. | completed | [link](../src/services/enums/docsenums.js#L132) |
 | HEADING6 | The lowest heading option. | completed | [link](../src/services/enums/docsenums.js#L133) |
 | NORMAL | The heading option for normal text. | completed | [link](../src/services/enums/docsenums.js#L127) |
-| SUBTITLE | The subtitle heading option. | not started |  |
+| SUBTITLE | The subtitle heading option. | completed | [link](../src/services/enums/docsenums.js#L135) |
 | TITLE | The title heading option. | completed | [link](../src/services/enums/docsenums.js#L134) |
 
 ## Enum: [PositionedLayout](https://developers.google.com/apps-script/reference/document/positioned-layout)
@@ -1293,7 +1293,7 @@ An enumeration that specifies how to lay out a PositionedImage in relation to su
 | BREAK_BOTH | The image breaks the text on the left and right. | completed | [link](../src/services/enums/docsenums.js#L139) |
 | BREAK_LEFT | The image breaks the text on the left. | completed | [link](../src/services/enums/docsenums.js#L140) |
 | BREAK_RIGHT | The image breaks the text on the right. | completed | [link](../src/services/enums/docsenums.js#L141) |
-| WRAP_TEXT | The image is wrapped by text. | not started |  |
+| WRAP_TEXT | The image is wrapped by text. | completed | [link](../src/services/enums/docsenums.js#L142) |
 
 ## Enum: [TabType](https://developers.google.com/apps-script/reference/document/tab-type)
 
@@ -1301,7 +1301,7 @@ An enumeration of all the tab types.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| DOCUMENT_TAB | The type corresponding to DocumentTab. | not started |  |
+| DOCUMENT_TAB | The type corresponding to DocumentTab. | completed | [link](../src/services/enums/docsenums.js#L145) |
 
 ## Enum: [TextAlignment](https://developers.google.com/apps-script/reference/document/text-alignment)
 
@@ -1310,7 +1310,7 @@ An enumeration of the type of text alignments.
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
 | NORMAL | The normal text alignment. | completed | [link](../src/services/enums/docsenums.js#L127) |
-| SUBSCRIPT | The subscript text alignment. | not started |  |
+| SUBSCRIPT | The subscript text alignment. | completed | [link](../src/services/enums/docsenums.js#L150) |
 | SUPERSCRIPT | The superscript text alignment. | completed | [link](../src/services/enums/docsenums.js#L149) |
 
 ## Enum: [VerticalAlignment](https://developers.google.com/apps-script/reference/document/vertical-alignment)

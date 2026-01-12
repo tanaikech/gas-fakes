@@ -104,8 +104,8 @@ Represents a single calendar event.
 | [addGuest(String)](https://developers.google.com/apps-script/reference/calendar/calendar-event#addGuest(String)) | Adds a guest to the event. | [CalendarEvent](#class-calendarevent) | This CalendarEvent for chaining. | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L150) |
 | [addPopupReminder(Integer)](https://developers.google.com/apps-script/reference/calendar/calendar-event#addPopupReminder(Integer)) | Adds a new pop-up notification to the event. The notification must be at least 5 minutes, and at most 4 weeks (40320 minutes), before the event. | [CalendarEvent](#class-calendarevent) | this CalendarEvent for chaining | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L201) |
 | [addSmsReminder(Integer)](https://developers.google.com/apps-script/reference/calendar/calendar-event#addSmsReminder(Integer)) | Adds a new SMS reminder to the event. The reminder must be at least 5 minutes, and at most 4 weeks (40320 minutes), before the event. | [CalendarEvent](#class-calendarevent) | this CalendarEvent for chaining | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L207) |
-| [anyoneCanAddSelf()](https://developers.google.com/apps-script/reference/calendar/calendar-event#anyoneCanAddSelf()) | Determines whether people can add themselves as guests to a Calendar event. | Boolean | true if non-guests can add themselves to the event; false if not | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L406) |
-| [deleteEvent()](https://developers.google.com/apps-script/reference/calendar/calendar-event#deleteEvent()) | Deletes a Calendar event. |  |  | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L418) |
+| [anyoneCanAddSelf()](https://developers.google.com/apps-script/reference/calendar/calendar-event#anyoneCanAddSelf()) | Determines whether people can add themselves as guests to a Calendar event. | Boolean | true if non-guests can add themselves to the event; false if not | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L447) |
+| [deleteEvent()](https://developers.google.com/apps-script/reference/calendar/calendar-event#deleteEvent()) | Deletes a Calendar event. |  |  | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L459) |
 | [deleteTag(String)](https://developers.google.com/apps-script/reference/calendar/calendar-event#deleteTag(String)) | Deletes a key/value tag from the event. | [CalendarEvent](#class-calendarevent) | this CalendarEvent for chaining | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L284) |
 | [getAllDayEndDate()](https://developers.google.com/apps-script/reference/calendar/calendar-event#getAllDayEndDate()) | Gets the date on which this all-day calendar event ends. (If this is not an all-day event, then this method throws an exception.) The returned Date represents midnight at the beginning of the day after the event ends in the script's time zone. To use the calendar's time zone instead, call getEndTime(). | Date | this all-day calendar event's end date | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L127) |
 | [getAllDayStartDate()](https://developers.google.com/apps-script/reference/calendar/calendar-event#getAllDayStartDate()) | Gets the date on which this all-day calendar event begins. (If this is not an all-day event, then this method throws an exception.) The returned Date represents midnight at the beginning of the day on which the event starts in the script's time zone. To use the calendar's time zone instead, call getStartTime(). | Date | this all-day calendar event's start date | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L121) |
@@ -124,18 +124,18 @@ Represents a single calendar event.
 | [getId()](https://developers.google.com/apps-script/reference/calendar/calendar-event#getId()) | Gets the unique iCalUID of the event. Note that the iCalUID and the event id used by the Calendar v3 API and Calendar advanced service are not identical and cannot be used interchangeably. One difference in their semantics is that in recurring events all occurrences of one event have different ids while they all share the same iCalUIDs. | String | the iCalUID of the event | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L38) |
 | [getLastUpdated()](https://developers.google.com/apps-script/reference/calendar/calendar-event#getLastUpdated()) | Gets the date the event was last updated. | Date | the last updated date | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L300) |
 | [getLocation()](https://developers.google.com/apps-script/reference/calendar/calendar-event#getLocation()) | Gets the location of the event. | String | the event location | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L68) |
-| [getMyStatus()](https://developers.google.com/apps-script/reference/calendar/calendar-event#getMyStatus()) | Gets the event status (such as attending or invited) of the effective user. Always returns GuestStatus.OWNER if the effective user is the owner of the event. | [GuestStatus](#enum-gueststatus) | the status | not started |  |
+| [getMyStatus()](https://developers.google.com/apps-script/reference/calendar/calendar-event#getMyStatus()) | Gets the event status (such as attending or invited) of the effective user. Always returns GuestStatus.OWNER if the effective user is the owner of the event. | [GuestStatus](#enum-gueststatus) | the status | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L352) |
 | [getOriginalCalendarId()](https://developers.google.com/apps-script/reference/calendar/calendar-event#getOriginalCalendarId()) | Get the ID of the calendar where this event was originally created. | String | the ID of the original calendar | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L42) |
 | [getPopupReminders()](https://developers.google.com/apps-script/reference/calendar/calendar-event#getPopupReminders()) | Gets the minute values for all pop-up reminders for the event. | Integer[] | an array in which each value corresponds to the number of minutes before the event that a reminder triggers | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L235) |
 | [getSmsReminders()](https://developers.google.com/apps-script/reference/calendar/calendar-event#getSmsReminders()) | Gets the minute values for all SMS reminders for the event. | Integer[] | an array in which each value corresponds to the number of minutes before the event that a reminder triggers | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L239) |
 | [getStartTime()](https://developers.google.com/apps-script/reference/calendar/calendar-event#getStartTime()) | Gets the date and time at which this calendar event begins. For non–all-day events, this is the instant in time at which the event was defined to start. For all-day events, which only store a start date (not a date and time), this is midnight at the beginning of the day on which the event starts in the calendar's time zone. This allows meaningful comparison of start times for all types of events; however, it is not necessarily preserve the original day-of-year unmodified. | Date | this calendar event's start time | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L80) |
 | [getTag(String)](https://developers.google.com/apps-script/reference/calendar/calendar-event#getTag(String)) | Gets a tag value of the event. | String | the tag value | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L274) |
 | [getTitle()](https://developers.google.com/apps-script/reference/calendar/calendar-event#getTitle()) | Gets the title of the event. | String | the title | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L48) |
-| [getTransparency()](https://developers.google.com/apps-script/reference/calendar/calendar-event#getTransparency()) | Gets the transparency of the event. Use this method to determine whether an event is TRANSPARENT, meaning the calendar shows as Available during that time, or OPAQUE , meaning the calendar shows as Busy during that time. | [EventTransparency](#enum-eventtransparency) | The transparency value. | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L352) |
+| [getTransparency()](https://developers.google.com/apps-script/reference/calendar/calendar-event#getTransparency()) | Gets the transparency of the event. Use this method to determine whether an event is TRANSPARENT, meaning the calendar shows as Available during that time, or OPAQUE , meaning the calendar shows as Busy during that time. | [EventTransparency](#enum-eventtransparency) | The transparency value. | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L393) |
 | [getVisibility()](https://developers.google.com/apps-script/reference/calendar/calendar-event#getVisibility()) | Gets the visibility of the event. | [Visibility](#enum-visibility) | the visibility value | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L311) |
-| [guestsCanInviteOthers()](https://developers.google.com/apps-script/reference/calendar/calendar-event#guestsCanInviteOthers()) | Determines whether guests can invite other guests. | Boolean | true if guests can invite others; false if not | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L376) |
-| [guestsCanModify()](https://developers.google.com/apps-script/reference/calendar/calendar-event#guestsCanModify()) | Determines whether guests can modify the event. | Boolean | true if guests can modify the event; false if not | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L386) |
-| [guestsCanSeeGuests()](https://developers.google.com/apps-script/reference/calendar/calendar-event#guestsCanSeeGuests()) | Determines whether guests can see other guests. | Boolean | true if guests can see other guests; false if not | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L396) |
+| [guestsCanInviteOthers()](https://developers.google.com/apps-script/reference/calendar/calendar-event#guestsCanInviteOthers()) | Determines whether guests can invite other guests. | Boolean | true if guests can invite others; false if not | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L417) |
+| [guestsCanModify()](https://developers.google.com/apps-script/reference/calendar/calendar-event#guestsCanModify()) | Determines whether guests can modify the event. | Boolean | true if guests can modify the event; false if not | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L427) |
+| [guestsCanSeeGuests()](https://developers.google.com/apps-script/reference/calendar/calendar-event#guestsCanSeeGuests()) | Determines whether guests can see other guests. | Boolean | true if guests can see other guests; false if not | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L437) |
 | [isAllDayEvent()](https://developers.google.com/apps-script/reference/calendar/calendar-event#isAllDayEvent()) | Determines whether this is an all-day event. | Boolean | true if the event is all-day; false if not | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L116) |
 | [isOwnedByMe()](https://developers.google.com/apps-script/reference/calendar/calendar-event#isOwnedByMe()) | Determines whether you're the owner of the event. | Boolean | true if the event is owned by the effective user; false if not | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L304) |
 | [isRecurringEvent()](https://developers.google.com/apps-script/reference/calendar/calendar-event#isRecurringEvent()) | Determines whether the event is part of an event series. | Boolean | true if the event is part of an event series; false if not | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L135) |
@@ -143,19 +143,19 @@ Represents a single calendar event.
 | [removeGuest(String)](https://developers.google.com/apps-script/reference/calendar/calendar-event#removeGuest(String)) | Removes a guest from the event. | [CalendarEvent](#class-calendarevent) | this CalendarEvent for chaining | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L164) |
 | [resetRemindersToDefault()](https://developers.google.com/apps-script/reference/calendar/calendar-event#resetRemindersToDefault()) | Resets the reminders using the calendar's default settings. | [CalendarEvent](#class-calendarevent) | this CalendarEvent for chaining | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L256) |
 | [setAllDayDate(Date)](https://developers.google.com/apps-script/reference/calendar/calendar-event#setAllDayDate(Date)) | Sets the date of the event. Applying this method changes a regular event into an all-day event. | [CalendarEvent](#class-calendarevent) | this CalendarEvent for chaining | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L103) |
-| [setAllDayDates(Date,Date)](https://developers.google.com/apps-script/reference/calendar/calendar-event#setAllDayDates(Date,Date)) |  |  |  | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L365) |
-| [setAnyoneCanAddSelf(Boolean)](https://developers.google.com/apps-script/reference/calendar/calendar-event#setAnyoneCanAddSelf(Boolean)) | Sets whether non-guests can add themselves to the event. | [CalendarEvent](#class-calendarevent) | this CalendarEvent for chaining | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L410) |
+| [setAllDayDates(Date,Date)](https://developers.google.com/apps-script/reference/calendar/calendar-event#setAllDayDates(Date,Date)) |  |  |  | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L406) |
+| [setAnyoneCanAddSelf(Boolean)](https://developers.google.com/apps-script/reference/calendar/calendar-event#setAnyoneCanAddSelf(Boolean)) | Sets whether non-guests can add themselves to the event. | [CalendarEvent](#class-calendarevent) | this CalendarEvent for chaining | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L451) |
 | [setColor(String)](https://developers.google.com/apps-script/reference/calendar/calendar-event#setColor(String)) | Sets the color of the calendar event. | [CalendarEvent](#class-calendarevent) | This calendar event, for chaining. | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L330) |
 | [setDescription(String)](https://developers.google.com/apps-script/reference/calendar/calendar-event#setDescription(String)) | Sets the description of the event. | [CalendarEvent](#class-calendarevent) | this CalendarEvent for chaining | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L62) |
-| [setGuestsCanInviteOthers(Boolean)](https://developers.google.com/apps-script/reference/calendar/calendar-event#setGuestsCanInviteOthers(Boolean)) | Sets whether guests can invite other guests. | [CalendarEvent](#class-calendarevent) | this CalendarEvent for chaining | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L380) |
-| [setGuestsCanModify(Boolean)](https://developers.google.com/apps-script/reference/calendar/calendar-event#setGuestsCanModify(Boolean)) | Sets whether guests can modify the event. | [CalendarEvent](#class-calendarevent) | this CalendarEvent for chaining | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L390) |
-| [setGuestsCanSeeGuests(Boolean)](https://developers.google.com/apps-script/reference/calendar/calendar-event#setGuestsCanSeeGuests(Boolean)) | Sets whether guests can see other guests. | [CalendarEvent](#class-calendarevent) | this CalendarEvent for chaining | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L400) |
+| [setGuestsCanInviteOthers(Boolean)](https://developers.google.com/apps-script/reference/calendar/calendar-event#setGuestsCanInviteOthers(Boolean)) | Sets whether guests can invite other guests. | [CalendarEvent](#class-calendarevent) | this CalendarEvent for chaining | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L421) |
+| [setGuestsCanModify(Boolean)](https://developers.google.com/apps-script/reference/calendar/calendar-event#setGuestsCanModify(Boolean)) | Sets whether guests can modify the event. | [CalendarEvent](#class-calendarevent) | this CalendarEvent for chaining | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L431) |
+| [setGuestsCanSeeGuests(Boolean)](https://developers.google.com/apps-script/reference/calendar/calendar-event#setGuestsCanSeeGuests(Boolean)) | Sets whether guests can see other guests. | [CalendarEvent](#class-calendarevent) | this CalendarEvent for chaining | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L441) |
 | [setLocation(String)](https://developers.google.com/apps-script/reference/calendar/calendar-event#setLocation(String)) | Sets the location of the event. | [CalendarEvent](#class-calendarevent) | this CalendarEvent for chaining | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L72) |
-| [setMyStatus(GuestStatus)](https://developers.google.com/apps-script/reference/calendar/calendar-event#setMyStatus(GuestStatus)) | Sets the event status (such as attending or invited) of the effective user. | [CalendarEvent](#class-calendarevent) | this CalendarEvent for chaining | not started |  |
+| [setMyStatus(GuestStatus)](https://developers.google.com/apps-script/reference/calendar/calendar-event#setMyStatus(GuestStatus)) | Sets the event status (such as attending or invited) of the effective user. | [CalendarEvent](#class-calendarevent) | this CalendarEvent for chaining | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L367) |
 | [setTag(String,String)](https://developers.google.com/apps-script/reference/calendar/calendar-event#setTag(String,String)) |  |  |  | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L264) |
 | [setTime(Date,Date)](https://developers.google.com/apps-script/reference/calendar/calendar-event#setTime(Date,Date)) |  |  |  | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L94) |
 | [setTitle(String)](https://developers.google.com/apps-script/reference/calendar/calendar-event#setTitle(String)) | Sets the title of the event. | [CalendarEvent](#class-calendarevent) | this CalendarEvent for chaining | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L52) |
-| [setTransparency(EventTransparency)](https://developers.google.com/apps-script/reference/calendar/calendar-event#setTransparency(EventTransparency)) | Sets the transparency of the event. Use this method to set whether an event is TRANSPARENT, meaning the calendar shows as Available during that time, or OPAQUE , meaning the calendar shows as Busy during that time. | [CalendarEvent](#class-calendarevent) | This CalendarEvent for chaining. | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L358) |
+| [setTransparency(EventTransparency)](https://developers.google.com/apps-script/reference/calendar/calendar-event#setTransparency(EventTransparency)) | Sets the transparency of the event. Use this method to set whether an event is TRANSPARENT, meaning the calendar shows as Available during that time, or OPAQUE , meaning the calendar shows as Busy during that time. | [CalendarEvent](#class-calendarevent) | This CalendarEvent for chaining. | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L399) |
 | [setVisibility(Visibility)](https://developers.google.com/apps-script/reference/calendar/calendar-event#setVisibility(Visibility)) | Sets the visibility of the event. | [CalendarEvent](#class-calendarevent) | this CalendarEvent for chaining | completed | [link](../src/services/calendarapp/fakecalendarevent.js#L318) |
 
 ## Class: [CalendarEventSeries](https://developers.google.com/apps-script/reference/calendar/calendar-event-series)
@@ -281,27 +281,27 @@ An enum representing the named colors available in the Calendar service.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| BLUE | Blue (#2952A3). | not started |  |
-| BROWN | Brown (#8D6F47). | not started |  |
-| CHARCOAL | Charcoal (#4E5D6C). | not started |  |
-| CHESTNUT | Chestnut (#865A5A). | not started |  |
-| GRAY | Gray (#5A6986). | not started |  |
-| GREEN | Green (#0D7813). | not started |  |
-| INDIGO | Indigo (#5229A3). | not started |  |
-| LIME | Lime (#528800). | not started |  |
-| MUSTARD | Mustard (#88880E). | not started |  |
-| OLIVE | Olive (#6E6E41). | not started |  |
-| ORANGE | Orange (#BE6D00). | not started |  |
-| PINK | Pink (#B1365F). | not started |  |
-| PLUM | Plum (#705770). | not started |  |
-| PURPLE | Purple (#7A367A). | not started |  |
-| RED | Red (#A32929). | not started |  |
-| RED_ORANGE | Red-Orange (#B1440E). | not started |  |
-| SEA_BLUE | Sea Blue (#29527A). | not started |  |
-| SLATE | Slate (#4A716C). | not started |  |
-| TEAL | Teal (#28754E). | not started |  |
-| TURQOISE | Turquoise (#1B887A). | not started |  |
-| YELLOW | Yellow (#AB8B00). | not started |  |
+| BLUE | Blue (#2952A3). | completed | [link](../src/services/enums/calendarenums.js#L3) |
+| BROWN | Brown (#8D6F47). | completed | [link](../src/services/enums/calendarenums.js#L4) |
+| CHARCOAL | Charcoal (#4E5D6C). | completed | [link](../src/services/enums/calendarenums.js#L5) |
+| CHESTNUT | Chestnut (#865A5A). | completed | [link](../src/services/enums/calendarenums.js#L6) |
+| GRAY | Gray (#5A6986). | completed | [link](../src/services/enums/calendarenums.js#L7) |
+| GREEN | Green (#0D7813). | completed | [link](../src/services/enums/calendarenums.js#L8) |
+| INDIGO | Indigo (#5229A3). | completed | [link](../src/services/enums/calendarenums.js#L9) |
+| LIME | Lime (#528800). | completed | [link](../src/services/enums/calendarenums.js#L10) |
+| MUSTARD | Mustard (#88880E). | completed | [link](../src/services/enums/calendarenums.js#L11) |
+| OLIVE | Olive (#6E6E41). | completed | [link](../src/services/enums/calendarenums.js#L12) |
+| ORANGE | Orange (#BE6D00). | completed | [link](../src/services/enums/calendarenums.js#L13) |
+| PINK | Pink (#B1365F). | completed | [link](../src/services/enums/calendarenums.js#L14) |
+| PLUM | Plum (#705770). | completed | [link](../src/services/enums/calendarenums.js#L15) |
+| PURPLE | Purple (#7A367A). | completed | [link](../src/services/enums/calendarenums.js#L16) |
+| RED | Red (#A32929). | completed | [link](../src/services/enums/calendarenums.js#L17) |
+| RED_ORANGE | Red-Orange (#B1440E). | completed | [link](../src/services/enums/calendarenums.js#L18) |
+| SEA_BLUE | Sea Blue (#29527A). | completed | [link](../src/services/enums/calendarenums.js#L19) |
+| SLATE | Slate (#4A716C). | completed | [link](../src/services/enums/calendarenums.js#L20) |
+| TEAL | Teal (#28754E). | completed | [link](../src/services/enums/calendarenums.js#L21) |
+| TURQOISE | Turquoise (#1B887A). | completed | [link](../src/services/enums/calendarenums.js#L22) |
+| YELLOW | Yellow (#AB8B00). | completed | [link](../src/services/enums/calendarenums.js#L23) |
 
 ## Enum: [EventColor](https://developers.google.com/apps-script/reference/calendar/event-color)
 
@@ -309,17 +309,17 @@ An enum representing the named event colors available in the Calendar service.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| BLUE | Blue ("9"), referred to as "Blueberry" in th Calendar UI. | not started |  |
-| CYAN | Cyan ("7"), referred to as "Lavender" in th Calendar UI. | not started |  |
-| GRAY | Gray ("8"), referred to as "Graphite" in th Calendar UI. | not started |  |
-| GREEN | Green ("10"), referred to as "Basil" in th Calendar UI. | not started |  |
-| MAUVE | Mauve ("3"),, referred to as "Grape" in th Calendar UI. | not started |  |
-| ORANGE | Orange ("6"), referred to as "Tangerine" in th Calendar UI. | not started |  |
-| PALE_BLUE | Pale Blue ("1"), referred to as "Peacock" in th Calendar UI. | not started |  |
-| PALE_GREEN | Pale Green ("2"), referred to as "Sage" in th Calendar UI. | not started |  |
-| PALE_RED | Pale Red ("4"), referred to as "Flamingo" in th Calendar UI. | not started |  |
-| RED | Red ("11"), referred to as "Tomato" in th Calendar UI. | not started |  |
-| YELLOW | Yellow ("5"), referred to as "Banana" in th Calendar UI. | not started |  |
+| BLUE | Blue ("9"), referred to as "Blueberry" in th Calendar UI. | completed | [link](../src/services/enums/calendarenums.js#L3) |
+| CYAN | Cyan ("7"), referred to as "Lavender" in th Calendar UI. | completed | [link](../src/services/enums/calendarenums.js#L27) |
+| GRAY | Gray ("8"), referred to as "Graphite" in th Calendar UI. | completed | [link](../src/services/enums/calendarenums.js#L7) |
+| GREEN | Green ("10"), referred to as "Basil" in th Calendar UI. | completed | [link](../src/services/enums/calendarenums.js#L8) |
+| MAUVE | Mauve ("3"),, referred to as "Grape" in th Calendar UI. | completed | [link](../src/services/enums/calendarenums.js#L30) |
+| ORANGE | Orange ("6"), referred to as "Tangerine" in th Calendar UI. | completed | [link](../src/services/enums/calendarenums.js#L13) |
+| PALE_BLUE | Pale Blue ("1"), referred to as "Peacock" in th Calendar UI. | completed | [link](../src/services/enums/calendarenums.js#L32) |
+| PALE_GREEN | Pale Green ("2"), referred to as "Sage" in th Calendar UI. | completed | [link](../src/services/enums/calendarenums.js#L33) |
+| PALE_RED | Pale Red ("4"), referred to as "Flamingo" in th Calendar UI. | completed | [link](../src/services/enums/calendarenums.js#L34) |
+| RED | Red ("11"), referred to as "Tomato" in th Calendar UI. | completed | [link](../src/services/enums/calendarenums.js#L17) |
+| YELLOW | Yellow ("5"), referred to as "Banana" in th Calendar UI. | completed | [link](../src/services/enums/calendarenums.js#L23) |
 
 ## Enum: [EventTransparency](https://developers.google.com/apps-script/reference/calendar/event-transparency)
 
@@ -327,8 +327,8 @@ An enum representing the transparency of an event.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| OPAQUE | The event does block time on the calendar. This is equivalent to setting "Show me as" to "Busy" in the Calendar UI. | not started |  |
-| TRANSPARENT | The event does not block time on the calendar. This is equivalent to setting "Show me as" to "Available" in the Calendar UI. | not started |  |
+| OPAQUE | The event does block time on the calendar. This is equivalent to setting "Show me as" to "Busy" in the Calendar UI. | completed | [link](../src/services/enums/calendarenums.js#L39) |
+| TRANSPARENT | The event does not block time on the calendar. This is equivalent to setting "Show me as" to "Available" in the Calendar UI. | completed | [link](../src/services/enums/calendarenums.js#L40) |
 
 ## Enum: [EventType](https://developers.google.com/apps-script/reference/calendar/event-type)
 
@@ -336,12 +336,12 @@ An enum representing the type of an event.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| BIRTHDAY | The event is a special all-day event with an annual recurrence. | not started |  |
-| DEFAULT | The event is a regular event. | not started |  |
-| FOCUS_TIME | The event is a focus-time event. | not started |  |
-| FROM_GMAIL | The event is an event from Gmail. | not started |  |
-| OUT_OF_OFFICE | The event is an out-of-office event. | not started |  |
-| WORKING_LOCATION | The event is a working location event. | not started |  |
+| BIRTHDAY | The event is a special all-day event with an annual recurrence. | completed | [link](../src/services/enums/calendarenums.js#L44) |
+| DEFAULT | The event is a regular event. | completed | [link](../src/services/enums/calendarenums.js#L43) |
+| FOCUS_TIME | The event is a focus-time event. | completed | [link](../src/services/enums/calendarenums.js#L45) |
+| FROM_GMAIL | The event is an event from Gmail. | completed | [link](../src/services/enums/calendarenums.js#L46) |
+| OUT_OF_OFFICE | The event is an out-of-office event. | completed | [link](../src/services/enums/calendarenums.js#L47) |
+| WORKING_LOCATION | The event is a working location event. | completed | [link](../src/services/enums/calendarenums.js#L48) |
 
 ## Enum: [GuestStatus](https://developers.google.com/apps-script/reference/calendar/guest-status)
 
@@ -349,11 +349,11 @@ An enum representing the statuses a guest can have for an event.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| INVITED | The guest has been invited, but has not indicated whether they are attending. | not started |  |
-| MAYBE | The guest has indicated they might attend. | not started |  |
-| NO | The guest has indicated they are not attending. | not started |  |
-| OWNER | The guest is the owner of the event. | not started |  |
-| YES | The guest has indicated they are attending. | not started |  |
+| INVITED | The guest has been invited, but has not indicated whether they are attending. | completed | [link](../src/services/enums/calendarenums.js#L51) |
+| MAYBE | The guest has indicated they might attend. | completed | [link](../src/services/enums/calendarenums.js#L52) |
+| NO | The guest has indicated they are not attending. | completed | [link](../src/services/enums/calendarenums.js#L53) |
+| OWNER | The guest is the owner of the event. | completed | [link](../src/services/enums/calendarenums.js#L54) |
+| YES | The guest has indicated they are attending. | completed | [link](../src/services/enums/calendarenums.js#L55) |
 
 ## Enum: [Visibility](https://developers.google.com/apps-script/reference/calendar/visibility)
 
@@ -361,8 +361,8 @@ An enum representing the visibility of an event.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| CONFIDENTIAL | The event is private. This value is provided for compatibility reasons. | not started |  |
-| DEFAULT | Uses the default visibility for events on the calendar. | not started |  |
-| PRIVATE | The event is private and only event attendees may view event details. | not started |  |
-| PUBLIC | The event is public and event details are visible to all readers of the calendar. | not started |  |
+| CONFIDENTIAL | The event is private. This value is provided for compatibility reasons. | completed | [link](../src/services/enums/calendarenums.js#L72) |
+| DEFAULT | Uses the default visibility for events on the calendar. | completed | [link](../src/services/enums/calendarenums.js#L43) |
+| PRIVATE | The event is private and only event attendees may view event details. | completed | [link](../src/services/enums/calendarenums.js#L74) |
+| PUBLIC | The event is public and event details are visible to all readers of the calendar. | completed | [link](../src/services/enums/calendarenums.js#L75) |
 

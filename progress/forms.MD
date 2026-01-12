@@ -692,9 +692,9 @@ An enum representing the supported types of image alignment. Alignment types can
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| CENTER | Align the image to the center of the form. | not started |  |
-| LEFT | Align the image to the left side of the form. | not started |  |
-| RIGHT | Align the image to the right side of the form. | not started |  |
+| CENTER | Align the image to the center of the form. | completed | [link](../src/services/enums/formsenums.js#L4) |
+| LEFT | Align the image to the left side of the form. | completed | [link](../src/services/enums/formsenums.js#L3) |
+| RIGHT | Align the image to the right side of the form. | completed | [link](../src/services/enums/formsenums.js#L5) |
 
 ## Enum: [DestinationType](https://developers.google.com/apps-script/reference/forms/destination-type)
 
@@ -702,7 +702,7 @@ An enum representing the supported types of form-response destinations. All form
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| SPREADSHEET | A Google Sheets spreadsheet as a destination for form responses. | not started |  |
+| SPREADSHEET | A Google Sheets spreadsheet as a destination for form responses. | completed | [link](../src/services/enums/formsenums.js#L9) |
 
 ## Enum: [FeedbackType](https://developers.google.com/apps-script/reference/forms/feedback-type)
 
@@ -710,9 +710,9 @@ An enum representing the supported types of feedback. Feedback types can be acce
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| CORRECT | Feedback that is automatically displayed to respondents for a question answered correctly. Correct feedback can only be attached to a question type that supports autograding (e.g. radio, checkbox, select) | not started |  |
-| GENERAL | Feedback that is automatically displayed to respondents when they submit their response. General feedback can only be attached to question types that do not support auto-grading, but are gradeable (ie everything but grid) | not started |  |
-| INCORRECT | Feedback that is automatically displayed to respondents for a question answered incorrectly. Incorrect feedback can only be attached to a question type that supports autograding (e.g. radio, checkbox, select) | not started |  |
+| CORRECT | Feedback that is automatically displayed to respondents for a question answered correctly. Correct feedback can only be attached to a question type that supports autograding (e.g. radio, checkbox, select) | completed | [link](../src/services/enums/formsenums.js#L17) |
+| GENERAL | Feedback that is automatically displayed to respondents when they submit their response. General feedback can only be attached to question types that do not support auto-grading, but are gradeable (ie everything but grid) | completed | [link](../src/services/enums/formsenums.js#L19) |
+| INCORRECT | Feedback that is automatically displayed to respondents for a question answered incorrectly. Incorrect feedback can only be attached to a question type that supports autograding (e.g. radio, checkbox, select) | completed | [link](../src/services/enums/formsenums.js#L18) |
 
 ## Enum: [ItemType](https://developers.google.com/apps-script/reference/forms/item-type)
 
@@ -720,25 +720,25 @@ An enum representing the supported types of form items. Item types can be access
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| CHECKBOX | A question item that allows the respondent to select one or more checkboxes, as well as an optional "other" field. | not started |  |
-| CHECKBOX_GRID | A question item, presented as a grid of columns and rows, that allows the respondent to select multiple choices per row from a sequence of checkboxes. | not started |  |
-| DATE | A question item that allows the respondent to indicate a date. | not started |  |
-| DATETIME | A question item that allows the respondent to indicate a date and time. | not started |  |
-| DURATION | A question item that allows the respondent to indicate a length of time. | not started |  |
-| FILE_UPLOAD | A question item that lets the respondent upload a file. | not started |  |
-| GRID | A question item, presented as a grid of columns and rows, that allows the respondent to select one choice per row from a sequence of radio buttons. | not started |  |
-| IMAGE | A layout item that displays an image. | not started |  |
-| LIST | A question item that allows the respondent to select one choice from a drop-down list. | not started |  |
-| MULTIPLE_CHOICE | A question item that allows the respondent to select one choice from a list of radio buttons or an optional "other" field. | not started |  |
-| PAGE_BREAK | A layout item that marks the start of a page. | not started |  |
-| PARAGRAPH_TEXT | A question item that allows the respondent to enter a block of text. | not started |  |
-| RATING | A question item that allows the respondent to give a rating. | not started |  |
-| SCALE | A question item that allows the respondent to choose one option from a numbered sequence of radio buttons. | not started |  |
-| SECTION_HEADER | A layout item that visually indicates the start of a section. | not started |  |
-| TEXT | A question item that allows the respondent to enter a single line of text. | not started |  |
-| TIME | A question item that allows the respondent to indicate a time of day. | not started |  |
-| UNSUPPORTED | An item that is currently not supported through APIs. | not started |  |
-| VIDEO | A layout item that displays a YouTube video. | not started |  |
+| CHECKBOX | A question item that allows the respondent to select one or more checkboxes, as well as an optional "other" field. | completed | [link](../src/services/enums/formsenums.js#L32) |
+| CHECKBOX_GRID | A question item, presented as a grid of columns and rows, that allows the respondent to select multiple choices per row from a sequence of checkboxes. | completed | [link](../src/services/enums/formsenums.js#L33) |
+| DATE | A question item that allows the respondent to indicate a date. | completed | [link](../src/services/enums/formsenums.js#L34) |
+| DATETIME | A question item that allows the respondent to indicate a date and time. | completed | [link](../src/services/enums/formsenums.js#L35) |
+| DURATION | A question item that allows the respondent to indicate a length of time. | completed | [link](../src/services/enums/formsenums.js#L36) |
+| FILE_UPLOAD | A question item that lets the respondent upload a file. | completed | [link](../src/services/enums/formsenums.js#L49) |
+| GRID | A question item, presented as a grid of columns and rows, that allows the respondent to select one choice per row from a sequence of radio buttons. | completed | [link](../src/services/enums/formsenums.js#L33) |
+| IMAGE | A layout item that displays an image. | completed | [link](../src/services/enums/formsenums.js#L27) |
+| LIST | A question item that allows the respondent to select one choice from a drop-down list. | completed | [link](../src/services/enums/formsenums.js#L39) |
+| MULTIPLE_CHOICE | A question item that allows the respondent to select one choice from a list of radio buttons or an optional "other" field. | completed | [link](../src/services/enums/formsenums.js#L40) |
+| PAGE_BREAK | A layout item that marks the start of a page. | completed | [link](../src/services/enums/formsenums.js#L41) |
+| PARAGRAPH_TEXT | A question item that allows the respondent to enter a block of text. | completed | [link](../src/services/enums/formsenums.js#L42) |
+| RATING | A question item that allows the respondent to give a rating. | completed | [link](../src/services/enums/formsenums.js#L43) |
+| SCALE | A question item that allows the respondent to choose one option from a numbered sequence of radio buttons. | completed | [link](../src/services/enums/formsenums.js#L44) |
+| SECTION_HEADER | A layout item that visually indicates the start of a section. | completed | [link](../src/services/enums/formsenums.js#L45) |
+| TEXT | A question item that allows the respondent to enter a single line of text. | completed | [link](../src/services/enums/formsenums.js#L22) |
+| TIME | A question item that allows the respondent to indicate a time of day. | completed | [link](../src/services/enums/formsenums.js#L35) |
+| UNSUPPORTED | An item that is currently not supported through APIs. | completed | [link](../src/services/enums/formsenums.js#L50) |
+| VIDEO | A layout item that displays a YouTube video. | completed | [link](../src/services/enums/formsenums.js#L28) |
 
 ## Enum: [PageNavigationType](https://developers.google.com/apps-script/reference/forms/page-navigation-type)
 
@@ -746,10 +746,10 @@ An enum representing the supported types of page navigation. Page navigation typ
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| CONTINUE | Continue to the next page of the form after completing the current page. | not started |  |
-| GO_TO_PAGE | Jump to a specified page of the form after completing the current page. | not started |  |
-| RESTART | Restart the form from the beginning, without clearing answers entered so far, after completing the current page. | not started |  |
-| SUBMIT | Submit the form response after completing the current page. | not started |  |
+| CONTINUE | Continue to the next page of the form after completing the current page. | completed | [link](../src/services/enums/formsenums.js#L53) |
+| GO_TO_PAGE | Jump to a specified page of the form after completing the current page. | completed | [link](../src/services/enums/formsenums.js#L54) |
+| RESTART | Restart the form from the beginning, without clearing answers entered so far, after completing the current page. | completed | [link](../src/services/enums/formsenums.js#L55) |
+| SUBMIT | Submit the form response after completing the current page. | completed | [link](../src/services/enums/formsenums.js#L56) |
 
 ## Enum: [RatingIconType](https://developers.google.com/apps-script/reference/forms/rating-icon-type)
 
@@ -757,9 +757,9 @@ An enum representing the supported types of rating icons.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| HEART | A heart icon. | not started |  |
-| STAR | A star icon. | not started |  |
-| THUMB_UP | A thumb up icon. | not started |  |
+| HEART | A heart icon. | completed | [link](../src/services/enums/formsenums.js#L60) |
+| STAR | A star icon. | completed | [link](../src/services/enums/formsenums.js#L55) |
+| THUMB_UP | A thumb up icon. | completed | [link](../src/services/enums/formsenums.js#L61) |
 
 ## Interface: [Item](https://developers.google.com/apps-script/reference/forms/item)
 

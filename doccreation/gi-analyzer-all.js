@@ -203,9 +203,26 @@ for (const service of giData) {
                 }
             }
             
-            // also check in enums folder directly for enums
-            if (classData.type === 'Enum' && serviceName === 'Document') {
-                 const filePath = allJsFiles.find(p => p.endsWith(`enums/docsenums.js`));
+            // Check in the src/services/enums folder for all services
+            if (classData.type === 'Enum') {
+                 // Common pattern: src/services/enums/servicenameenums.js
+                 // e.g. calendarapp -> calendarenums.js, documentapp -> docsenums.js
+                 // We need to map serviceName to the prefix used in the enums folder.
+                 // Service names in gi.json are capitalized, e.g., 'Calendar', 'Document'.
+                 // The enum files seem to follow a pattern: calendarenums.js, docsenums.js, formsenums.js
+                 
+                 let enumPrefix = serviceName.toLowerCase();
+                 // Handle specific mapping quirks if any (e.g. Document -> docs, Spreadsheet -> sheets)
+                 if (serviceName === 'Document') enumPrefix = 'docs';
+                 if (serviceName === 'Spreadsheet') enumPrefix = 'sheets';
+                 if (serviceName === 'Forms') enumPrefix = 'forms'; 
+                 // Calendar -> calendar (default works)
+                 // Gmail -> gmail (default works)
+                 // Slides -> slides (default works)
+
+                 const enumFileName = `${enumPrefix}enums.js`;
+                 const filePath = allJsFiles.find(p => p.endsWith(`enums/${enumFileName}`));
+                 
                  if (filePath && fileCache.has(filePath) && !fileContents.some(f => f.filePath === filePath)) {
                      fileContents.push({ filePath, content: fileCache.get(filePath) });
                  }
@@ -223,7 +240,8 @@ for (const service of giData) {
                     let isImplemented;
                     if (classData.type === 'Enum') {
                         // Enums can be keys in an object literal or quoted strings in an array
-                        const enumRegex = new RegExp(`["']?${methodName}["']?[:\s,]`);
+                        // Fix: escape \s properly and allow ] or } for the last item in a list/object
+                        const enumRegex = new RegExp(`["']?${methodName}["']?\\s*[:,\\]\\}]`);
                         isImplemented = enumRegex.test(file.content);
                     } else {
                         isImplemented = file.content.includes(methodName);

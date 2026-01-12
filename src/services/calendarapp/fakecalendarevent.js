@@ -349,6 +349,47 @@ export class FakeCalendarEvent {
     return typeMap[r.eventType] || CalendarEnums.EventType.DEFAULT;
   }
 
+  getMyStatus() {
+    const r = this.__resource;
+    const me = Session.getEffectiveUser().getEmail();
+    const attendee = (r.attendees || []).find(a => a.email === me);
+    if (!attendee) return CalendarEnums.GuestStatus.NO; 
+    
+    const map = {
+        'accepted': CalendarEnums.GuestStatus.YES,
+        'declined': CalendarEnums.GuestStatus.NO,
+        'tentative': CalendarEnums.GuestStatus.MAYBE,
+        'needsAction': CalendarEnums.GuestStatus.INVITED
+    };
+    return map[attendee.responseStatus] || CalendarEnums.GuestStatus.INVITED;
+  }
+
+  setMyStatus(status) {
+    this.__checkWriteAccess();
+    const me = Session.getEffectiveUser().getEmail();
+    const r = this.__resource;
+    const attendees = r.attendees || [];
+    let attendee = attendees.find(a => a.email === me);
+    
+    const map = {};
+    map[CalendarEnums.GuestStatus.YES] = 'accepted';
+    map[CalendarEnums.GuestStatus.NO] = 'declined';
+    map[CalendarEnums.GuestStatus.MAYBE] = 'tentative';
+    map[CalendarEnums.GuestStatus.INVITED] = 'needsAction';
+    
+    const apiStatus = map[status];
+    if (!apiStatus) return this;
+
+    if (!attendee) {
+        attendee = { email: me, responseStatus: apiStatus };
+        attendees.push(attendee);
+    } else {
+        attendee.responseStatus = apiStatus;
+    }
+    Calendar.Events.patch({ attendees }, this.__calendarId, this.__id);
+    return this;
+  }
+
   getTransparency() {
     const r = this.__resource;
     const t = r.transparency || 'opaque';

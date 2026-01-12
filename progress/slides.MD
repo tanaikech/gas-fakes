@@ -1313,9 +1313,9 @@ The alignment position to apply.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| CENTER | Align to the center. | not started |  |
-| HORIZONTAL_CENTER | Align to the horizontal center. | not started |  |
-| VERTICAL_CENTER | Align to the vertical center. | not started |  |
+| CENTER | Align to the center. | completed | [link](../src/services/enums/slidesenums.js#L4) |
+| HORIZONTAL_CENTER | Align to the horizontal center. | completed | [link](../src/services/enums/slidesenums.js#L5) |
+| VERTICAL_CENTER | Align to the vertical center. | completed | [link](../src/services/enums/slidesenums.js#L6) |
 
 ## Enum: [ArrowStyle](https://developers.google.com/apps-script/reference/slides/arrow-style)
 
@@ -1323,17 +1323,17 @@ The kinds of start and end forms with which linear geometry can be rendered.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| FILL_ARROW | Filled arrow. Corresponds to ECMA-376 ST_LineEndType value 'triangle'. | not started |  |
-| FILL_CIRCLE | Filled circle. Corresponds to ECMA-376 ST_LineEndType value 'oval'. | not started |  |
-| FILL_DIAMOND | Filled diamond. Corresponds to ECMA-376 ST_LineEndType value 'diamond'. | not started |  |
-| FILL_SQUARE | Filled square. | not started |  |
-| NONE | No arrow. | not started |  |
-| OPEN_ARROW | Hollow arrow. | not started |  |
-| OPEN_CIRCLE | Hollow circle. | not started |  |
-| OPEN_DIAMOND | Hollow diamond. | not started |  |
-| OPEN_SQUARE | Hollow square. | not started |  |
-| STEALTH_ARROW | Arrow with notched back. Corresponds to ECMA-376 ST_LineEndType value 'stealth'. | not started |  |
-| UNSUPPORTED | An arrow style that is not supported. | not started |  |
+| FILL_ARROW | Filled arrow. Corresponds to ECMA-376 ST_LineEndType value 'triangle'. | completed | [link](../src/services/enums/slidesenums.js#L13) |
+| FILL_CIRCLE | Filled circle. Corresponds to ECMA-376 ST_LineEndType value 'oval'. | completed | [link](../src/services/enums/slidesenums.js#L14) |
+| FILL_DIAMOND | Filled diamond. Corresponds to ECMA-376 ST_LineEndType value 'diamond'. | completed | [link](../src/services/enums/slidesenums.js#L16) |
+| FILL_SQUARE | Filled square. | completed | [link](../src/services/enums/slidesenums.js#L15) |
+| NONE | No arrow. | completed | [link](../src/services/enums/slidesenums.js#L11) |
+| OPEN_ARROW | Hollow arrow. | completed | [link](../src/services/enums/slidesenums.js#L17) |
+| OPEN_CIRCLE | Hollow circle. | completed | [link](../src/services/enums/slidesenums.js#L18) |
+| OPEN_DIAMOND | Hollow diamond. | completed | [link](../src/services/enums/slidesenums.js#L20) |
+| OPEN_SQUARE | Hollow square. | completed | [link](../src/services/enums/slidesenums.js#L19) |
+| STEALTH_ARROW | Arrow with notched back. Corresponds to ECMA-376 ST_LineEndType value 'stealth'. | completed | [link](../src/services/enums/slidesenums.js#L12) |
+| UNSUPPORTED | An arrow style that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
 
 ## Enum: [AutofitType](https://developers.google.com/apps-script/reference/slides/autofit-type)
 
@@ -1341,10 +1341,10 @@ The autofit types.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| NONE | Autofit isn't applied. | not started |  |
-| SHAPE_AUTOFIT | Resizes the shape to fit the text. | not started |  |
-| TEXT_AUTOFIT | Shrinks the text on overflow. | not started |  |
-| UNSUPPORTED | An autofit type that is not supported. | not started |  |
+| NONE | Autofit isn't applied. | completed | [link](../src/services/enums/slidesenums.js#L11) |
+| SHAPE_AUTOFIT | Resizes the shape to fit the text. | completed | [link](../src/services/enums/slidesenums.js#L34) |
+| TEXT_AUTOFIT | Shrinks the text on overflow. | completed | [link](../src/services/enums/slidesenums.js#L33) |
+| UNSUPPORTED | An autofit type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
 
 ## Enum: [AutoTextType](https://developers.google.com/apps-script/reference/slides/auto-text-type)
 
@@ -1352,8 +1352,8 @@ The types of auto text.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| SLIDE_NUMBER | A slide number. | not started |  |
-| UNSUPPORTED | An auto text type that is not supported. | not started |  |
+| SLIDE_NUMBER | A slide number. | completed | [link](../src/services/enums/slidesenums.js#L28) |
+| UNSUPPORTED | An auto text type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
 
 ## Enum: [CellMergeState](https://developers.google.com/apps-script/reference/slides/cell-merge-state)
 
@@ -1361,9 +1361,9 @@ The table cell merge states.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| HEAD | The cell is merged and it is the head (i.e. upper left) cell within the merged set of cells. As an example, assume the following table. ------------------- |(0,0)|(0,1)|(0,2)| ------------------- If the first two cells are merged to form the following table, cell (0,0) is the head cell and (0,1) is a merged cell. ------------------- |(0,0) |(0,2)| ------------------- | not started |  |
-| MERGED | The cell is merged but is not the head (i.e. upper left) cell. As an example, assume the following table. ------------------- |(0,0)|(0,1)|(0,2)| ------------------- If the first two cells are merged to form the following table, cell (0,0) is the head cell and (0,1) is a merged cell. ------------------- |(0,0) |(0,2)| ------------------- | not started |  |
-| NORMAL | The cell is not merged. | not started |  |
+| HEAD | The cell is merged and it is the head (i.e. upper left) cell within the merged set of cells. As an example, assume the following table. ------------------- |(0,0)|(0,1)|(0,2)| ------------------- If the first two cells are merged to form the following table, cell (0,0) is the head cell and (0,1) is a merged cell. ------------------- |(0,0) |(0,2)| ------------------- | completed | [link](../src/services/enums/slidesenums.js#L38) |
+| MERGED | The cell is merged but is not the head (i.e. upper left) cell. As an example, assume the following table. ------------------- |(0,0)|(0,1)|(0,2)| ------------------- If the first two cells are merged to form the following table, cell (0,0) is the head cell and (0,1) is a merged cell. ------------------- |(0,0) |(0,2)| ------------------- | completed | [link](../src/services/enums/slidesenums.js#L39) |
+| NORMAL | The cell is not merged. | completed | [link](../src/services/enums/slidesenums.js#L37) |
 
 ## Enum: [ContentAlignment](https://developers.google.com/apps-script/reference/slides/content-alignment)
 
@@ -1371,10 +1371,10 @@ The content alignments for a Shape or TableCell. The supported alignments corres
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| BOTTOM | Aligns the content to the bottom of the content holder. Corresponds to ECMA-376 ST_TextAnchoringType 'b'. | not started |  |
-| MIDDLE | Aligns the content to the middle of the content holder. Corresponds to ECMA-376 ST_TextAnchoringType 'ctr'. | not started |  |
-| TOP | Aligns the content to the top of the content holder. Corresponds to ECMA-376 ST_TextAnchoringType 't'. | not started |  |
-| UNSUPPORTED | A content alignment that is not supported. | not started |  |
+| BOTTOM | Aligns the content to the bottom of the content holder. Corresponds to ECMA-376 ST_TextAnchoringType 'b'. | completed | [link](../src/services/enums/slidesenums.js#L50) |
+| MIDDLE | Aligns the content to the middle of the content holder. Corresponds to ECMA-376 ST_TextAnchoringType 'ctr'. | completed | [link](../src/services/enums/slidesenums.js#L49) |
+| TOP | Aligns the content to the top of the content holder. Corresponds to ECMA-376 ST_TextAnchoringType 't'. | completed | [link](../src/services/enums/slidesenums.js#L48) |
+| UNSUPPORTED | A content alignment that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
 
 ## Enum: [DashStyle](https://developers.google.com/apps-script/reference/slides/dash-style)
 
@@ -1382,13 +1382,13 @@ The kinds of dashes with which linear geometry can be rendered. These values are
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| DASH | Dashed line. Corresponds to ECMA-376 ST_PresetLineDashVal value 'dash'. | not started |  |
-| DASH_DOT | Alternating dashes and dots. Corresponds to ECMA-376 ST_PresetLineDashVal value 'dashDot'. | not started |  |
-| DOT | Dotted line. Corresponds to ECMA-376 ST_PresetLineDashVal value 'dot'. | not started |  |
-| LONG_DASH | Line with large dashes. Corresponds to ECMA-376 ST_PresetLineDashVal value 'lgDash'. | not started |  |
-| LONG_DASH_DOT | Alternating large dashes and dots. Corresponds to ECMA-376 ST_PresetLineDashVal value 'lgDashDot'. | not started |  |
-| SOLID | Solid line. Corresponds to ECMA-376 ST_PresetLineDashVal value 'solid'. This is the default dash style. | not started |  |
-| UNSUPPORTED | A dash style that is not supported. | not started |  |
+| DASH | Dashed line. Corresponds to ECMA-376 ST_PresetLineDashVal value 'dash'. | completed | [link](../src/services/enums/slidesenums.js#L53) |
+| DASH_DOT | Alternating dashes and dots. Corresponds to ECMA-376 ST_PresetLineDashVal value 'dashDot'. | completed | [link](../src/services/enums/slidesenums.js#L58) |
+| DOT | Dotted line. Corresponds to ECMA-376 ST_PresetLineDashVal value 'dot'. | completed | [link](../src/services/enums/slidesenums.js#L56) |
+| LONG_DASH | Line with large dashes. Corresponds to ECMA-376 ST_PresetLineDashVal value 'lgDash'. | completed | [link](../src/services/enums/slidesenums.js#L59) |
+| LONG_DASH_DOT | Alternating large dashes and dots. Corresponds to ECMA-376 ST_PresetLineDashVal value 'lgDashDot'. | completed | [link](../src/services/enums/slidesenums.js#L60) |
+| SOLID | Solid line. Corresponds to ECMA-376 ST_PresetLineDashVal value 'solid'. This is the default dash style. | completed | [link](../src/services/enums/slidesenums.js#L55) |
+| UNSUPPORTED | A dash style that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
 
 ## Enum: [FillType](https://developers.google.com/apps-script/reference/slides/fill-type)
 
@@ -1396,9 +1396,9 @@ The kinds of fill.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| NONE | No fill, so the background is transparent. | not started |  |
-| SOLID | A solid color fill. | not started |  |
-| UNSUPPORTED | A fill type that is not supported. | not started |  |
+| NONE | No fill, so the background is transparent. | completed | [link](../src/services/enums/slidesenums.js#L11) |
+| SOLID | A solid color fill. | completed | [link](../src/services/enums/slidesenums.js#L55) |
+| UNSUPPORTED | A fill type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
 
 ## Enum: [LineCategory](https://developers.google.com/apps-script/reference/slides/line-category)
 
@@ -1406,10 +1406,10 @@ The line category.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| BENT | Bent connectors, including bent connector 2 to 5. | not started |  |
-| CURVED | Curved connectors, including curved connector 2 to 5. | not started |  |
-| STRAIGHT | Straight connectors, including straight connector 1. | not started |  |
-| UNSUPPORTED | A line category that is not supported. | not started |  |
+| BENT | Bent connectors, including bent connector 2 to 5. | completed | [link](../src/services/enums/slidesenums.js#L72) |
+| CURVED | Curved connectors, including curved connector 2 to 5. | completed | [link](../src/services/enums/slidesenums.js#L73) |
+| STRAIGHT | Straight connectors, including straight connector 1. | completed | [link](../src/services/enums/slidesenums.js#L71) |
+| UNSUPPORTED | A line category that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
 
 ## Enum: [LineFillType](https://developers.google.com/apps-script/reference/slides/line-fill-type)
 
@@ -1417,9 +1417,9 @@ The kinds of line fill.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| NONE | No fill, so the line or outline is transparent. | not started |  |
-| SOLID | A solid color fill. | not started |  |
-| UNSUPPORTED | A line fill type that is not supported. | not started |  |
+| NONE | No fill, so the line or outline is transparent. | completed | [link](../src/services/enums/slidesenums.js#L11) |
+| SOLID | A solid color fill. | completed | [link](../src/services/enums/slidesenums.js#L55) |
+| UNSUPPORTED | A line fill type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
 
 ## Enum: [LineType](https://developers.google.com/apps-script/reference/slides/line-type)
 
@@ -1427,17 +1427,17 @@ The line types.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| BENT_CONNECTOR_2 | Bent connector 2 form. Corresponds to ECMA-376 ST_ShapeType 'bentConnector2'. | not started |  |
-| BENT_CONNECTOR_3 | Bent connector 3 form. Corresponds to ECMA-376 ST_ShapeType 'bentConnector3'. | not started |  |
-| BENT_CONNECTOR_4 | Bent connector 4 form. Corresponds to ECMA-376 ST_ShapeType 'bentConnector4'. | not started |  |
-| BENT_CONNECTOR_5 | Bent connector 5 form. Corresponds to ECMA-376 ST_ShapeType 'bentConnector5'. | not started |  |
-| CURVED_CONNECTOR_2 | Curved connector 2 form. Corresponds to ECMA-376 ST_ShapeType 'curvedConnector2'. | not started |  |
-| CURVED_CONNECTOR_3 | Curved connector 3 form. Corresponds to ECMA-376 ST_ShapeType 'curvedConnector3'. | not started |  |
-| CURVED_CONNECTOR_4 | Curved connector 4 form. Corresponds to ECMA-376 ST_ShapeType 'curvedConnector4'. | not started |  |
-| CURVED_CONNECTOR_5 | Curved connector 5 form. Corresponds to ECMA-376 ST_ShapeType 'curvedConnector5'. | not started |  |
-| STRAIGHT_CONNECTOR_1 | Straight connector 1 form. Corresponds to ECMA-376 ST_ShapeType 'straightConnector1'. | not started |  |
-| STRAIGHT_LINE | Straight line. Corresponds to ECMA-376 ST_ShapeType 'line'. This line type is not a connector. | not started |  |
-| UNSUPPORTED | A line type that is not supported. | not started |  |
+| BENT_CONNECTOR_2 | Bent connector 2 form. Corresponds to ECMA-376 ST_ShapeType 'bentConnector2'. | completed | [link](../src/services/enums/slidesenums.js#L84) |
+| BENT_CONNECTOR_3 | Bent connector 3 form. Corresponds to ECMA-376 ST_ShapeType 'bentConnector3'. | completed | [link](../src/services/enums/slidesenums.js#L85) |
+| BENT_CONNECTOR_4 | Bent connector 4 form. Corresponds to ECMA-376 ST_ShapeType 'bentConnector4'. | completed | [link](../src/services/enums/slidesenums.js#L86) |
+| BENT_CONNECTOR_5 | Bent connector 5 form. Corresponds to ECMA-376 ST_ShapeType 'bentConnector5'. | completed | [link](../src/services/enums/slidesenums.js#L87) |
+| CURVED_CONNECTOR_2 | Curved connector 2 form. Corresponds to ECMA-376 ST_ShapeType 'curvedConnector2'. | completed | [link](../src/services/enums/slidesenums.js#L88) |
+| CURVED_CONNECTOR_3 | Curved connector 3 form. Corresponds to ECMA-376 ST_ShapeType 'curvedConnector3'. | completed | [link](../src/services/enums/slidesenums.js#L89) |
+| CURVED_CONNECTOR_4 | Curved connector 4 form. Corresponds to ECMA-376 ST_ShapeType 'curvedConnector4'. | completed | [link](../src/services/enums/slidesenums.js#L90) |
+| CURVED_CONNECTOR_5 | Curved connector 5 form. Corresponds to ECMA-376 ST_ShapeType 'curvedConnector5'. | completed | [link](../src/services/enums/slidesenums.js#L91) |
+| STRAIGHT_CONNECTOR_1 | Straight connector 1 form. Corresponds to ECMA-376 ST_ShapeType 'straightConnector1'. | completed | [link](../src/services/enums/slidesenums.js#L83) |
+| STRAIGHT_LINE | Straight line. Corresponds to ECMA-376 ST_ShapeType 'line'. This line type is not a connector. | completed | [link](../src/services/enums/slidesenums.js#L92) |
+| UNSUPPORTED | A line type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
 
 ## Enum: [LinkType](https://developers.google.com/apps-script/reference/slides/link-type)
 
@@ -1445,11 +1445,11 @@ The types of a Link.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| SLIDE_ID | A link to a specific slide in this presentation, addressed by its ID. | not started |  |
-| SLIDE_INDEX | A link to a specific slide in this presentation, addressed by its zero-based index. | not started |  |
-| SLIDE_POSITION | A link to a specific slide in this presentation, addressed by its position. | not started |  |
-| UNSUPPORTED | A link type that is not supported. | not started |  |
-| URL | A link to an external web page. | not started |  |
+| SLIDE_ID | A link to a specific slide in this presentation, addressed by its ID. | completed | [link](../src/services/enums/slidesenums.js#L98) |
+| SLIDE_INDEX | A link to a specific slide in this presentation, addressed by its zero-based index. | completed | [link](../src/services/enums/slidesenums.js#L99) |
+| SLIDE_POSITION | A link to a specific slide in this presentation, addressed by its position. | completed | [link](../src/services/enums/slidesenums.js#L97) |
+| UNSUPPORTED | A link type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
+| URL | A link to an external web page. | completed | [link](../src/services/enums/slidesenums.js#L96) |
 
 ## Enum: [ListPreset](https://developers.google.com/apps-script/reference/slides/list-preset)
 
@@ -1457,21 +1457,21 @@ Preset patterns of glyphs for lists in text.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| ARROW_DIAMOND_DISC | A list with a `ARROW`, `DIAMOND` and `DISC` glyphs for the first 3 list nesting levels. | not started |  |
-| ARROW3D_CIRCLE_SQUARE | A list with a `ARROW3D`, `CIRCLE` and `SQUARE` glyphs for the first 3 list nesting levels. | not started |  |
-| CHECKBOX | A list with `CHECKBOX` glyphs for all list nesting levels. | not started |  |
-| DIAMOND_CIRCLE_SQUARE | A list with a `DIAMOND`, `CIRCLE` and `SQUARE` glyphs for the first 3 list nesting levels. | not started |  |
-| DIAMONDX_ARROW3D_SQUARE | A list with a `DIAMONDX`, `ARROW3D` and `SQUARE` glyphs for the first 3 list nesting levels. | not started |  |
-| DIAMONDX_HOLLOWDIAMOND_SQUARE | A list with a `DIAMONDX`, `HOLLOWDIAMOND` and `SQUARE` glyphs for the first 3 list nesting levels. | not started |  |
-| DIGIT_ALPHA_ROMAN | A list with `DIGIT`, `ALPHA` and `ROMAN` glyphs for the first 3 list nesting levels, followed by periods. | not started |  |
-| DIGIT_ALPHA_ROMAN_PARENS | A list with `DIGIT`, `ALPHA` and `ROMAN` glyphs for the first 3 list nesting levels, followed by parenthesis. | not started |  |
-| DIGIT_NESTED | A list with `DIGIT` glyphs separated by periods, where each nesting level uses the previous nesting level's glyph as a prefix. For example: '1.', '1.1.', '2.', '2.2.'. | not started |  |
-| DISC_CIRCLE_SQUARE | A list with a `DISC`, `CIRCLE` and `SQUARE` glyphs for the first 3 list nesting levels. | not started |  |
-| LEFTTRIANGLE_DIAMOND_DISC | A list with a `LEFTTRIANGLE`, `DIAMOND` and `DISC` glyphs for the first 3 list nesting levels. | not started |  |
-| STAR_CIRCLE_SQUARE | A list with a `STAR`, `CIRCLE` and `SQUARE` glyphs for the first 3 list nesting levels. | not started |  |
-| UPPERALPHA_ALPHA_ROMAN | A list with `UPPERALPHA`, `ALPHA` and `ROMAN` glyphs for the first 3 list nesting levels, followed by periods. | not started |  |
-| UPPERROMAN_UPPERALPHA_DIGIT | A list with `UPPERROMAN`, `UPPERALPHA` and `DIGIT` glyphs for the first 3 list nesting levels, followed by periods. | not started |  |
-| ZERODIGIT_ALPHA_ROMAN | A list with `ZERODIGIT`, `ALPHA` and `ROMAN` glyphs for the first 3 list nesting levels, followed by periods. | not started |  |
+| ARROW_DIAMOND_DISC | A list with a `ARROW`, `DIAMOND` and `DISC` glyphs for the first 3 list nesting levels. | completed | [link](../src/services/enums/slidesenums.js#L105) |
+| ARROW3D_CIRCLE_SQUARE | A list with a `ARROW3D`, `CIRCLE` and `SQUARE` glyphs for the first 3 list nesting levels. | completed | [link](../src/services/enums/slidesenums.js#L107) |
+| CHECKBOX | A list with `CHECKBOX` glyphs for all list nesting levels. | completed | [link](../src/services/enums/slidesenums.js#L104) |
+| DIAMOND_CIRCLE_SQUARE | A list with a `DIAMOND`, `CIRCLE` and `SQUARE` glyphs for the first 3 list nesting levels. | completed | [link](../src/services/enums/slidesenums.js#L110) |
+| DIAMONDX_ARROW3D_SQUARE | A list with a `DIAMONDX`, `ARROW3D` and `SQUARE` glyphs for the first 3 list nesting levels. | completed | [link](../src/services/enums/slidesenums.js#L103) |
+| DIAMONDX_HOLLOWDIAMOND_SQUARE | A list with a `DIAMONDX`, `HOLLOWDIAMOND` and `SQUARE` glyphs for the first 3 list nesting levels. | completed | [link](../src/services/enums/slidesenums.js#L109) |
+| DIGIT_ALPHA_ROMAN | A list with `DIGIT`, `ALPHA` and `ROMAN` glyphs for the first 3 list nesting levels, followed by periods. | completed | [link](../src/services/enums/slidesenums.js#L111) |
+| DIGIT_ALPHA_ROMAN_PARENS | A list with `DIGIT`, `ALPHA` and `ROMAN` glyphs for the first 3 list nesting levels, followed by parenthesis. | completed | [link](../src/services/enums/slidesenums.js#L112) |
+| DIGIT_NESTED | A list with `DIGIT` glyphs separated by periods, where each nesting level uses the previous nesting level's glyph as a prefix. For example: '1.', '1.1.', '2.', '2.2.'. | completed | [link](../src/services/enums/slidesenums.js#L113) |
+| DISC_CIRCLE_SQUARE | A list with a `DISC`, `CIRCLE` and `SQUARE` glyphs for the first 3 list nesting levels. | completed | [link](../src/services/enums/slidesenums.js#L102) |
+| LEFTTRIANGLE_DIAMOND_DISC | A list with a `LEFTTRIANGLE`, `DIAMOND` and `DISC` glyphs for the first 3 list nesting levels. | completed | [link](../src/services/enums/slidesenums.js#L108) |
+| STAR_CIRCLE_SQUARE | A list with a `STAR`, `CIRCLE` and `SQUARE` glyphs for the first 3 list nesting levels. | completed | [link](../src/services/enums/slidesenums.js#L106) |
+| UPPERALPHA_ALPHA_ROMAN | A list with `UPPERALPHA`, `ALPHA` and `ROMAN` glyphs for the first 3 list nesting levels, followed by periods. | completed | [link](../src/services/enums/slidesenums.js#L114) |
+| UPPERROMAN_UPPERALPHA_DIGIT | A list with `UPPERROMAN`, `UPPERALPHA` and `DIGIT` glyphs for the first 3 list nesting levels, followed by periods. | completed | [link](../src/services/enums/slidesenums.js#L115) |
+| ZERODIGIT_ALPHA_ROMAN | A list with `ZERODIGIT`, `ALPHA` and `ROMAN` glyphs for the first 3 list nesting levels, followed by periods. | completed | [link](../src/services/enums/slidesenums.js#L116) |
 
 ## Enum: [PageBackgroundType](https://developers.google.com/apps-script/reference/slides/page-background-type)
 
@@ -1479,10 +1479,10 @@ The kinds of page backgrounds.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| NONE | No fill, so the background is rendered white. | not started |  |
-| PICTURE | A picture that is stretched to fill the page. | not started |  |
-| SOLID | A solid color fill. | not started |  |
-| UNSUPPORTED | A page background type that is not supported. | not started |  |
+| NONE | No fill, so the background is rendered white. | completed | [link](../src/services/enums/slidesenums.js#L11) |
+| PICTURE | A picture that is stretched to fill the page. | completed | [link](../src/services/enums/slidesenums.js#L122) |
+| SOLID | A solid color fill. | completed | [link](../src/services/enums/slidesenums.js#L55) |
+| UNSUPPORTED | A page background type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
 
 ## Enum: [PageElementType](https://developers.google.com/apps-script/reference/slides/page-element-type)
 
@@ -1490,16 +1490,16 @@ The page element type.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| GROUP | Represents a collection of page elements joined as a single unit. | not started |  |
-| IMAGE | Represents an image. | not started |  |
-| LINE | Represents a line. | not started |  |
-| SHAPE | Represents a generic shape that does not have a more specific classification. | not started |  |
-| SHEETS_CHART | Represents a linked chart embedded from Google Sheets. | not started |  |
-| SPEAKER_SPOTLIGHT | Represents a speaker spotlight. | not started |  |
-| TABLE | Represents a table. | not started |  |
-| UNSUPPORTED | Represents a page element that is not supported and cannot be further classified. | not started |  |
-| VIDEO | Represents a video. | not started |  |
-| WORD_ART | Represents word art. | not started |  |
+| GROUP | Represents a collection of page elements joined as a single unit. | completed | [link](../src/services/enums/slidesenums.js#L133) |
+| IMAGE | Represents an image. | completed | [link](../src/services/enums/slidesenums.js#L130) |
+| LINE | Represents a line. | completed | [link](../src/services/enums/slidesenums.js#L66) |
+| SHAPE | Represents a generic shape that does not have a more specific classification. | completed | [link](../src/services/enums/slidesenums.js#L34) |
+| SHEETS_CHART | Represents a linked chart embedded from Google Sheets. | completed | [link](../src/services/enums/slidesenums.js#L136) |
+| SPEAKER_SPOTLIGHT | Represents a speaker spotlight. | completed | [link](../src/services/enums/slidesenums.js#L138) |
+| TABLE | Represents a table. | completed | [link](../src/services/enums/slidesenums.js#L132) |
+| UNSUPPORTED | Represents a page element that is not supported and cannot be further classified. | completed | [link](../src/services/enums/slidesenums.js#L10) |
+| VIDEO | Represents a video. | completed | [link](../src/services/enums/slidesenums.js#L131) |
+| WORD_ART | Represents word art. | completed | [link](../src/services/enums/slidesenums.js#L135) |
 
 ## Enum: [PageType](https://developers.google.com/apps-script/reference/slides/page-type)
 
@@ -1507,10 +1507,10 @@ The page types.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| LAYOUT | A layout page. | not started |  |
-| MASTER | A master page. | not started |  |
-| SLIDE | A slide page. | not started |  |
-| UNSUPPORTED | A page type that is not supported. | not started |  |
+| LAYOUT | A layout page. | completed | [link](../src/services/enums/slidesenums.js#L144) |
+| MASTER | A master page. | completed | [link](../src/services/enums/slidesenums.js#L145) |
+| SLIDE | A slide page. | completed | [link](../src/services/enums/slidesenums.js#L28) |
+| UNSUPPORTED | A page type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
 
 ## Enum: [ParagraphAlignment](https://developers.google.com/apps-script/reference/slides/paragraph-alignment)
 
@@ -1518,11 +1518,11 @@ The types of text alignment for a paragraph.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| CENTER | The paragraph is centered. | not started |  |
-| END | The paragraph is aligned to the end of the line. Right-aligned for left-to-right text, left-aligned otherwise. | not started |  |
-| JUSTIFIED | The paragraph is justified. | not started |  |
-| START | The paragraph is aligned to the start of the line. Left-aligned for left-to-right text, right-aligned otherwise. | not started |  |
-| UNSUPPORTED | A paragraph alignment that is not supported. | not started |  |
+| CENTER | The paragraph is centered. | completed | [link](../src/services/enums/slidesenums.js#L4) |
+| END | The paragraph is aligned to the end of the line. Right-aligned for left-to-right text, left-aligned otherwise. | completed | [link](../src/services/enums/slidesenums.js#L151) |
+| JUSTIFIED | The paragraph is justified. | completed | [link](../src/services/enums/slidesenums.js#L152) |
+| START | The paragraph is aligned to the start of the line. Left-aligned for left-to-right text, right-aligned otherwise. | completed | [link](../src/services/enums/slidesenums.js#L149) |
+| UNSUPPORTED | A paragraph alignment that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
 
 ## Enum: [PlaceholderType](https://developers.google.com/apps-script/reference/slides/placeholder-type)
 
@@ -1530,24 +1530,24 @@ The placeholder types. Many of these placeholder types correspond to placeholder
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| BODY | Body text. | not started |  |
-| CENTERED_TITLE | Title centered. | not started |  |
-| CHART | Chart or graph. | not started |  |
-| CLIP_ART | Clip art image. | not started |  |
-| DATE_AND_TIME | Date and time. | not started |  |
-| DIAGRAM | Diagram. | not started |  |
-| FOOTER | Footer text. | not started |  |
-| HEADER | Header text. | not started |  |
-| MEDIA | Multimedia. | not started |  |
-| NONE | Not a Placeholder. | not started |  |
-| OBJECT | Any content type. | not started |  |
-| PICTURE | Picture. | not started |  |
-| SLIDE_IMAGE | Slide image. | not started |  |
-| SLIDE_NUMBER | Number of a slide. | not started |  |
-| SUBTITLE | Subtitle. | not started |  |
-| TABLE | Table. | not started |  |
-| TITLE | Slide title. | not started |  |
-| UNSUPPORTED | A placeholder type that is not supported. | not started |  |
+| BODY | Body text. | completed | [link](../src/services/enums/slidesenums.js#L158) |
+| CENTERED_TITLE | Title centered. | completed | [link](../src/services/enums/slidesenums.js#L161) |
+| CHART | Chart or graph. | completed | [link](../src/services/enums/slidesenums.js#L136) |
+| CLIP_ART | Clip art image. | completed | [link](../src/services/enums/slidesenums.js#L160) |
+| DATE_AND_TIME | Date and time. | completed | [link](../src/services/enums/slidesenums.js#L163) |
+| DIAGRAM | Diagram. | completed | [link](../src/services/enums/slidesenums.js#L162) |
+| FOOTER | Footer text. | completed | [link](../src/services/enums/slidesenums.js#L164) |
+| HEADER | Header text. | completed | [link](../src/services/enums/slidesenums.js#L165) |
+| MEDIA | Multimedia. | completed | [link](../src/services/enums/slidesenums.js#L166) |
+| NONE | Not a Placeholder. | completed | [link](../src/services/enums/slidesenums.js#L11) |
+| OBJECT | Any content type. | completed | [link](../src/services/enums/slidesenums.js#L167) |
+| PICTURE | Picture. | completed | [link](../src/services/enums/slidesenums.js#L122) |
+| SLIDE_IMAGE | Slide image. | completed | [link](../src/services/enums/slidesenums.js#L173) |
+| SLIDE_NUMBER | Number of a slide. | completed | [link](../src/services/enums/slidesenums.js#L28) |
+| SUBTITLE | Subtitle. | completed | [link](../src/services/enums/slidesenums.js#L170) |
+| TABLE | Table. | completed | [link](../src/services/enums/slidesenums.js#L132) |
+| TITLE | Slide title. | completed | [link](../src/services/enums/slidesenums.js#L161) |
+| UNSUPPORTED | A placeholder type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
 
 ## Enum: [PredefinedLayout](https://developers.google.com/apps-script/reference/slides/predefined-layout)
 
@@ -1555,18 +1555,18 @@ Predefined layouts. These are commonly found layouts in presentations. However, 
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| BIG_NUMBER | Layout with a big number heading. | not started |  |
-| BLANK | Blank layout, with no placeholders. | not started |  |
-| CAPTION_ONLY | Layout with a caption at the bottom. | not started |  |
-| MAIN_POINT | Layout with a main point. | not started |  |
-| ONE_COLUMN_TEXT | Layout with one title and one body, arranged in a single column. | not started |  |
-| SECTION_HEADER | Layout with a section title. | not started |  |
-| SECTION_TITLE_AND_DESCRIPTION | Layout with a title and subtitle on one side and description on the other. | not started |  |
-| TITLE | Layout with a title and a subtitle. | not started |  |
-| TITLE_AND_BODY | Layout with a title and body. | not started |  |
-| TITLE_AND_TWO_COLUMNS | Layout with a title and two columns. | not started |  |
-| TITLE_ONLY | Layout with only a title. | not started |  |
-| UNSUPPORTED | A layout that is not supported. | not started |  |
+| BIG_NUMBER | Layout with a big number heading. | completed | [link](../src/services/enums/slidesenums.js#L188) |
+| BLANK | Blank layout, with no placeholders. | completed | [link](../src/services/enums/slidesenums.js#L178) |
+| CAPTION_ONLY | Layout with a caption at the bottom. | completed | [link](../src/services/enums/slidesenums.js#L179) |
+| MAIN_POINT | Layout with a main point. | completed | [link](../src/services/enums/slidesenums.js#L187) |
+| ONE_COLUMN_TEXT | Layout with one title and one body, arranged in a single column. | completed | [link](../src/services/enums/slidesenums.js#L186) |
+| SECTION_HEADER | Layout with a section title. | completed | [link](../src/services/enums/slidesenums.js#L184) |
+| SECTION_TITLE_AND_DESCRIPTION | Layout with a title and subtitle on one side and description on the other. | completed | [link](../src/services/enums/slidesenums.js#L185) |
+| TITLE | Layout with a title and a subtitle. | completed | [link](../src/services/enums/slidesenums.js#L161) |
+| TITLE_AND_BODY | Layout with a title and body. | completed | [link](../src/services/enums/slidesenums.js#L181) |
+| TITLE_AND_TWO_COLUMNS | Layout with a title and two columns. | completed | [link](../src/services/enums/slidesenums.js#L182) |
+| TITLE_ONLY | Layout with only a title. | completed | [link](../src/services/enums/slidesenums.js#L183) |
+| UNSUPPORTED | A layout that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
 
 ## Enum: [SelectionType](https://developers.google.com/apps-script/reference/slides/selection-type)
 
@@ -1574,13 +1574,13 @@ Type of Selection.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| CURRENT_PAGE | Current page selection. | not started |  |
-| NONE | No selection. | not started |  |
-| PAGE | Page selection in the thumbnail flimstrip. | not started |  |
-| PAGE_ELEMENT | Page element selection. | not started |  |
-| TABLE_CELL | Table cell selection. | not started |  |
-| TEXT | Text selection. | not started |  |
-| UNSUPPORTED | A selection type that is not supported. | not started |  |
+| CURRENT_PAGE | Current page selection. | completed | [link](../src/services/enums/slidesenums.js#L217) |
+| NONE | No selection. | completed | [link](../src/services/enums/slidesenums.js#L11) |
+| PAGE | Page selection in the thumbnail flimstrip. | completed | [link](../src/services/enums/slidesenums.js#L127) |
+| PAGE_ELEMENT | Page element selection. | completed | [link](../src/services/enums/slidesenums.js#L127) |
+| TABLE_CELL | Table cell selection. | completed | [link](../src/services/enums/slidesenums.js#L214) |
+| TEXT | Text selection. | completed | [link](../src/services/enums/slidesenums.js#L33) |
+| UNSUPPORTED | A selection type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
 
 ## Enum: [ShapeType](https://developers.google.com/apps-script/reference/slides/shape-type)
 
@@ -1588,149 +1588,149 @@ The shape types. Many of these shapes correspond to predefined shapes from the E
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| ARC | Curved arc shape. Corresponds to ECMA-376 ST_ShapeType 'arc'. | not started |  |
-| ARROW_EAST | East arrow shape. | not started |  |
-| ARROW_NORTH | North arrow shape. | not started |  |
-| ARROW_NORTH_EAST | Northeast arrow shape. | not started |  |
-| BENT_ARROW | Bent arrow shape. Corresponds to ECMA-376 ST_ShapeType 'bentArrow'. | not started |  |
-| BENT_UP_ARROW | Bent up arrow shape. Corresponds to ECMA-376 ST_ShapeType 'bentUpArrow'. | not started |  |
-| BEVEL | Bevel shape. Corresponds to ECMA-376 ST_ShapeType 'bevel'. | not started |  |
-| BLOCK_ARC | Block arc shape. Corresponds to ECMA-376 ST_ShapeType 'blockArc'. | not started |  |
-| BRACE_PAIR | Brace pair shape. Corresponds to ECMA-376 ST_ShapeType 'bracePair'. | not started |  |
-| BRACKET_PAIR | Bracket pair shape. Corresponds to ECMA-376 ST_ShapeType 'bracketPair'. | not started |  |
-| CAN | Can shape. Corresponds to ECMA-376 ST_ShapeType 'can'. | not started |  |
-| CHEVRON | Chevron shape. Corresponds to ECMA-376 ST_ShapeType 'chevron'. | not started |  |
-| CHORD | Chord shape. Corresponds to ECMA-376 ST_ShapeType 'chord'. | not started |  |
-| CLOUD | Cloud shape. Corresponds to ECMA-376 ST_ShapeType 'cloud'. | not started |  |
-| CLOUD_CALLOUT | Callout cloud shape. Corresponds to ECMA-376 ST_ShapeType 'cloudCallout'. | not started |  |
-| CORNER | Corner shape. Corresponds to ECMA-376 ST_ShapeType 'corner'. | not started |  |
-| CUBE | Cube shape. Corresponds to ECMA-376 ST_ShapeType 'cube'. | not started |  |
-| CURVED_DOWN_ARROW | Curved down arrow shape. Corresponds to ECMA-376 ST_ShapeType 'curvedDownArrow'. | not started |  |
-| CURVED_LEFT_ARROW | Curved left arrow shape. Corresponds to ECMA-376 ST_ShapeType 'curvedLeftArrow'. | not started |  |
-| CURVED_RIGHT_ARROW | Curved right arrow shape. Corresponds to ECMA-376 ST_ShapeType 'curvedRightArrow'. | not started |  |
-| CURVED_UP_ARROW | Curved up arrow shape. Corresponds to ECMA-376 ST_ShapeType 'curvedUpArrow'. | not started |  |
-| CUSTOM | Custom shape. | not started |  |
-| DECAGON | Decagon shape. Corresponds to ECMA-376 ST_ShapeType 'decagon'. | not started |  |
-| DIAGONAL_STRIPE | Diagonal stripe shape. Corresponds to ECMA-376 ST_ShapeType 'diagStripe'. | not started |  |
-| DIAMOND | Diamond shape. Corresponds to ECMA-376 ST_ShapeType 'diamond'. | not started |  |
-| DODECAGON | Dodecagon shape. Corresponds to ECMA-376 ST_ShapeType 'dodecagon'. | not started |  |
-| DONUT | Donut shape. Corresponds to ECMA-376 ST_ShapeType 'donut'. | not started |  |
-| DOUBLE_WAVE | Double wave shape. Corresponds to ECMA-376 ST_ShapeType 'doubleWave'. | not started |  |
-| DOWN_ARROW | Down arrow shape. Corresponds to ECMA-376 ST_ShapeType 'downArrow'. | not started |  |
-| DOWN_ARROW_CALLOUT | Callout down arrow shape. Corresponds to ECMA-376 ST_ShapeType 'downArrowCallout'. | not started |  |
-| ELLIPSE | Ellipse shape. Corresponds to ECMA-376 ST_ShapeType 'ellipse'. | not started |  |
-| ELLIPSE_RIBBON | Ellipse ribbon shape. Corresponds to ECMA-376 ST_ShapeType 'ellipseRibbon'. | not started |  |
-| ELLIPSE_RIBBON_2 | Ellipse ribbon 2 shape. Corresponds to ECMA-376 ST_ShapeType 'ellipseRibbon2'. | not started |  |
-| FLOW_CHART_ALTERNATE_PROCESS | Alternate process flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartAlternateProcess'. | not started |  |
-| FLOW_CHART_COLLATE | Collate flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartCollate'. | not started |  |
-| FLOW_CHART_CONNECTOR | Connector flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartConnector'. | not started |  |
-| FLOW_CHART_DECISION | Decision flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartDecision'. | not started |  |
-| FLOW_CHART_DELAY | Delay flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartDelay'. | not started |  |
-| FLOW_CHART_DISPLAY | Display flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartDisplay'. | not started |  |
-| FLOW_CHART_DOCUMENT | Document flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartDocument'. | not started |  |
-| FLOW_CHART_EXTRACT | Extract flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartExtract'. | not started |  |
-| FLOW_CHART_INPUT_OUTPUT | Input output flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartInputOutput'. | not started |  |
-| FLOW_CHART_INTERNAL_STORAGE | Internal storage flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartInternalStorage'. | not started |  |
-| FLOW_CHART_MAGNETIC_DISK | Magnetic disk flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartMagneticDisk'. | not started |  |
-| FLOW_CHART_MAGNETIC_DRUM | Magnetic drum flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartMagneticDrum'. | not started |  |
-| FLOW_CHART_MAGNETIC_TAPE | Magnetic tape flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartMagneticTape'. | not started |  |
-| FLOW_CHART_MANUAL_INPUT | Manual input flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartManualInput'. | not started |  |
-| FLOW_CHART_MANUAL_OPERATION | Manual operation flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartManualOperation'. | not started |  |
-| FLOW_CHART_MERGE | Merge flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartMerge'. | not started |  |
-| FLOW_CHART_MULTIDOCUMENT | Multi-document flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartMultidocument'. | not started |  |
-| FLOW_CHART_OFFLINE_STORAGE | Offline storage flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartOfflineStorage'. | not started |  |
-| FLOW_CHART_OFFPAGE_CONNECTOR | Off-page connector flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartOffpageConnector'. | not started |  |
-| FLOW_CHART_ONLINE_STORAGE | Online storage flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartOnlineStorage'. | not started |  |
-| FLOW_CHART_OR | Or flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartOr'. | not started |  |
-| FLOW_CHART_PREDEFINED_PROCESS | Predefined process flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartPredefinedProcess'. | not started |  |
-| FLOW_CHART_PREPARATION | Preparation flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartPreparation'. | not started |  |
-| FLOW_CHART_PROCESS | Process flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartProcess'. | not started |  |
-| FLOW_CHART_PUNCHED_CARD | Punched card flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartPunchedCard'. | not started |  |
-| FLOW_CHART_PUNCHED_TAPE | Punched tape flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartPunchedTape'. | not started |  |
-| FLOW_CHART_SORT | Sort flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartSort'. | not started |  |
-| FLOW_CHART_SUMMING_JUNCTION | Summing junction flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartSummingJunction'. | not started |  |
-| FLOW_CHART_TERMINATOR | Terminator flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartTerminator'. | not started |  |
-| FOLDED_CORNER | Folded corner shape. Corresponds to ECMA-376 ST_ShapeType 'foldedCorner'. | not started |  |
-| FRAME | Frame shape. Corresponds to ECMA-376 ST_ShapeType 'frame'. | not started |  |
-| HALF_FRAME | Half frame shape. Corresponds to ECMA-376 ST_ShapeType 'halfFrame'. | not started |  |
-| HEART | Heart shape. Corresponds to ECMA-376 ST_ShapeType 'heart'. | not started |  |
-| HEPTAGON | Heptagon shape. Corresponds to ECMA-376 ST_ShapeType 'heptagon'. | not started |  |
-| HEXAGON | Hexagon shape. Corresponds to ECMA-376 ST_ShapeType 'hexagon'. | not started |  |
-| HOME_PLATE | Home plate shape. Corresponds to ECMA-376 ST_ShapeType 'homePlate'. | not started |  |
-| HORIZONTAL_SCROLL | Horizontal scroll shape. Corresponds to ECMA-376 ST_ShapeType 'horizontalScroll'. | not started |  |
-| IRREGULAR_SEAL_1 | Irregular seal 1 shape. Corresponds to ECMA-376 ST_ShapeType 'irregularSeal1'. | not started |  |
-| IRREGULAR_SEAL_2 | Irregular seal 2 shape. Corresponds to ECMA-376 ST_ShapeType 'irregularSeal2'. | not started |  |
-| LEFT_ARROW | Left arrow shape. Corresponds to ECMA-376 ST_ShapeType 'leftArrow'. | not started |  |
-| LEFT_ARROW_CALLOUT | Callout left arrow shape. Corresponds to ECMA-376 ST_ShapeType 'leftArrowCallout'. | not started |  |
-| LEFT_BRACE | Left brace shape. Corresponds to ECMA-376 ST_ShapeType 'leftBrace'. | not started |  |
-| LEFT_BRACKET | Left bracket shape. Corresponds to ECMA-376 ST_ShapeType 'leftBracket'. | not started |  |
-| LEFT_RIGHT_ARROW | Left right arrow shape. Corresponds to ECMA-376 ST_ShapeType 'leftRightArrow'. | not started |  |
-| LEFT_RIGHT_ARROW_CALLOUT | Callout left right arrow shape. Corresponds to ECMA-376 ST_ShapeType 'leftRightArrowCallout'. | not started |  |
-| LEFT_RIGHT_UP_ARROW | Left right up arrow shape. Corresponds to ECMA-376 ST_ShapeType 'leftRightUpArrow'. | not started |  |
-| LEFT_UP_ARROW | Left up arrow shape. Corresponds to ECMA-376 ST_ShapeType 'leftUpArrow'. | not started |  |
-| LIGHTNING_BOLT | Lightning bolt shape. Corresponds to ECMA-376 ST_ShapeType 'lightningBolt'. | not started |  |
-| MATH_DIVIDE | Divide math shape. Corresponds to ECMA-376 ST_ShapeType 'mathDivide'. | not started |  |
-| MATH_EQUAL | Equal math shape. Corresponds to ECMA-376 ST_ShapeType 'mathEqual'. | not started |  |
-| MATH_MINUS | Minus math shape. Corresponds to ECMA-376 ST_ShapeType 'mathMinus'. | not started |  |
-| MATH_MULTIPLY | Multiply math shape. Corresponds to ECMA-376 ST_ShapeType 'mathMultiply'. | not started |  |
-| MATH_NOT_EQUAL | Not equal math shape. Corresponds to ECMA-376 ST_ShapeType 'mathNotEqual'. | not started |  |
-| MATH_PLUS | Plus math shape. Corresponds to ECMA-376 ST_ShapeType 'mathPlus'. | not started |  |
-| MOON | Moon shape. Corresponds to ECMA-376 ST_ShapeType 'moon'. | not started |  |
-| NO_SMOKING | No smoking shape. Corresponds to ECMA-376 ST_ShapeType 'noSmoking'. | not started |  |
-| NOTCHED_RIGHT_ARROW | Notched right arrow shape. Corresponds to ECMA-376 ST_ShapeType 'notchedRightArrow'. | not started |  |
-| OCTAGON | Octagon shape. Corresponds to ECMA-376 ST_ShapeType 'octagon'. | not started |  |
-| PARALLELOGRAM | Parallelogram shape. Corresponds to ECMA-376 ST_ShapeType 'parallelogram'. | not started |  |
-| PENTAGON | Pentagon shape. Corresponds to ECMA-376 ST_ShapeType 'pentagon'. | not started |  |
-| PIE | Pie shape. Corresponds to ECMA-376 ST_ShapeType 'pie'. | not started |  |
-| PLAQUE | Plaque shape. Corresponds to ECMA-376 ST_ShapeType 'plaque'. | not started |  |
-| PLUS | Plus shape. Corresponds to ECMA-376 ST_ShapeType 'plus'. | not started |  |
-| QUAD_ARROW | Quad-arrow shape. Corresponds to ECMA-376 ST_ShapeType 'quadArrow'. | not started |  |
-| QUAD_ARROW_CALLOUT | Callout quad-arrow shape. Corresponds to ECMA-376 ST_ShapeType 'quadArrowCallout'. | not started |  |
-| RECTANGLE | Rectangle shape. Corresponds to ECMA-376 ST_ShapeType 'rect'. | not started |  |
-| RIBBON | Ribbon shape. Corresponds to ECMA-376 ST_ShapeType 'ribbon'. | not started |  |
-| RIBBON_2 | Ribbon 2 shape. Corresponds to ECMA-376 ST_ShapeType 'ribbon2'. | not started |  |
-| RIGHT_ARROW | Right arrow shape. Corresponds to ECMA-376 ST_ShapeType 'rightArrow'. | not started |  |
-| RIGHT_ARROW_CALLOUT | Callout right arrow shape. Corresponds to ECMA-376 ST_ShapeType 'rightArrowCallout'. | not started |  |
-| RIGHT_BRACE | Right brace shape. Corresponds to ECMA-376 ST_ShapeType 'rightBrace'. | not started |  |
-| RIGHT_BRACKET | Right bracket shape. Corresponds to ECMA-376 ST_ShapeType 'rightBracket'. | not started |  |
-| RIGHT_TRIANGLE | Right triangle shape. Corresponds to ECMA-376 ST_ShapeType 'rtTriangle'. | not started |  |
-| ROUND_1_RECTANGLE | One round corner rectangle shape. Corresponds to ECMA-376 ST_ShapeType 'round1Rect'. | not started |  |
-| ROUND_2_DIAGONAL_RECTANGLE | Two diagonal round corner rectangle shape. Corresponds to ECMA-376 ST_ShapeType 'round2DiagRect'. | not started |  |
-| ROUND_2_SAME_RECTANGLE | Two same-side round corner rectangle shape. Corresponds to ECMA-376 ST_ShapeType 'round2SameRect'. | not started |  |
-| ROUND_RECTANGLE | Round corner rectangle shape. Corresponds to ECMA-376 ST_ShapeType 'roundRect'. | not started |  |
-| SMILEY_FACE | Smiley face shape. Corresponds to ECMA-376 ST_ShapeType 'smileyFace'. | not started |  |
-| SNIP_1_RECTANGLE | One snip corner rectangle shape. Corresponds to ECMA-376 ST_ShapeType 'snip1Rect'. | not started |  |
-| SNIP_2_DIAGONAL_RECTANGLE | Two diagonal snip corner rectangle shape. Corresponds to ECMA-376 ST_ShapeType 'snip2DiagRect'. | not started |  |
-| SNIP_2_SAME_RECTANGLE | Two same-side snip corner rectangle shape. Corresponds to ECMA-376 ST_ShapeType 'snip2SameRect'. | not started |  |
-| SNIP_ROUND_RECTANGLE | One snip one round corner rectangle shape. Corresponds to ECMA-376 ST_ShapeType 'snipRoundRect'. | not started |  |
-| SPEECH | Speech shape. | not started |  |
-| STAR_10 | Ten pointed star shape. Corresponds to ECMA-376 ST_ShapeType 'star10'. | not started |  |
-| STAR_12 | Twelve pointed star shape. Corresponds to ECMA-376 ST_ShapeType 'star12'. | not started |  |
-| STAR_16 | Sixteen pointed star shape. Corresponds to ECMA-376 ST_ShapeType 'star16'. | not started |  |
-| STAR_24 | Twenty four pointed star shape. Corresponds to ECMA-376 ST_ShapeType 'star24'. | not started |  |
-| STAR_32 | Thirty two pointed star shape. Corresponds to ECMA-376 ST_ShapeType 'star32'. | not started |  |
-| STAR_4 | Four pointed star shape. Corresponds to ECMA-376 ST_ShapeType 'star4'. | not started |  |
-| STAR_5 | Five pointed star shape. Corresponds to ECMA-376 ST_ShapeType 'star5'. | not started |  |
-| STAR_6 | Six pointed star shape. Corresponds to ECMA-376 ST_ShapeType 'star6'. | not started |  |
-| STAR_7 | Seven pointed star shape. Corresponds to ECMA-376 ST_ShapeType 'star7'. | not started |  |
-| STAR_8 | Eight pointed star shape. Corresponds to ECMA-376 ST_ShapeType 'star8'. | not started |  |
-| STARBURST | Star burst shape. | not started |  |
-| STRIPED_RIGHT_ARROW | Striped right arrow shape. Corresponds to ECMA-376 ST_ShapeType 'stripedRightArrow'. | not started |  |
-| SUN | Sun shape. Corresponds to ECMA-376 ST_ShapeType 'sun'. | not started |  |
-| TEARDROP | Teardrop shape. Corresponds to ECMA-376 ST_ShapeType 'teardrop'. | not started |  |
-| TEXT_BOX | Text box shape. | not started |  |
-| TRAPEZOID | Trapezoid shape. Corresponds to ECMA-376 ST_ShapeType 'trapezoid'. | not started |  |
-| TRIANGLE | Triangle shape. Corresponds to ECMA-376 ST_ShapeType 'triangle'. | not started |  |
-| UNSUPPORTED | A shape type that is not supported. | not started |  |
-| UP_ARROW | Up arrow shape. Corresponds to ECMA-376 ST_ShapeType 'upArrow'. | not started |  |
-| UP_ARROW_CALLOUT | Callout up arrow shape. Corresponds to ECMA-376 ST_ShapeType 'upArrowCallout'. | not started |  |
-| UP_DOWN_ARROW | Up down arrow shape. Corresponds to ECMA-376 ST_ShapeType 'upDownArrow'. | not started |  |
-| UTURN_ARROW | U-turn arrow shape. Corresponds to ECMA-376 ST_ShapeType 'uturnArrow'. | not started |  |
-| VERTICAL_SCROLL | Vertical scroll shape. Corresponds to ECMA-376 ST_ShapeType 'verticalScroll'. | not started |  |
-| WAVE | Wave shape. Corresponds to ECMA-376 ST_ShapeType 'wave'. | not started |  |
-| WEDGE_ELLIPSE_CALLOUT | Callout wedge ellipse shape. Corresponds to ECMA-376 ST_ShapeType 'wedgeEllipseCallout'. | not started |  |
-| WEDGE_RECTANGLE_CALLOUT | Callout wedge rectangle shape. Corresponds to ECMA-376 ST_ShapeType 'wedgeRectCallout'. | not started |  |
-| WEDGE_ROUND_RECTANGLE_CALLOUT | Callout wedge round rectangle shape. Corresponds to ECMA-376 ST_ShapeType 'wedgeRoundRectCallout'. | not started |  |
+| ARC | Curved arc shape. Corresponds to ECMA-376 ST_ShapeType 'arc'. | completed | [link](../src/services/enums/slidesenums.js#L230) |
+| ARROW_EAST | East arrow shape. | completed | [link](../src/services/enums/slidesenums.js#L358) |
+| ARROW_NORTH | North arrow shape. | completed | [link](../src/services/enums/slidesenums.js#L359) |
+| ARROW_NORTH_EAST | Northeast arrow shape. | completed | [link](../src/services/enums/slidesenums.js#L359) |
+| BENT_ARROW | Bent arrow shape. Corresponds to ECMA-376 ST_ShapeType 'bentArrow'. | completed | [link](../src/services/enums/slidesenums.js#L231) |
+| BENT_UP_ARROW | Bent up arrow shape. Corresponds to ECMA-376 ST_ShapeType 'bentUpArrow'. | completed | [link](../src/services/enums/slidesenums.js#L232) |
+| BEVEL | Bevel shape. Corresponds to ECMA-376 ST_ShapeType 'bevel'. | completed | [link](../src/services/enums/slidesenums.js#L233) |
+| BLOCK_ARC | Block arc shape. Corresponds to ECMA-376 ST_ShapeType 'blockArc'. | completed | [link](../src/services/enums/slidesenums.js#L234) |
+| BRACE_PAIR | Brace pair shape. Corresponds to ECMA-376 ST_ShapeType 'bracePair'. | completed | [link](../src/services/enums/slidesenums.js#L235) |
+| BRACKET_PAIR | Bracket pair shape. Corresponds to ECMA-376 ST_ShapeType 'bracketPair'. | completed | [link](../src/services/enums/slidesenums.js#L236) |
+| CAN | Can shape. Corresponds to ECMA-376 ST_ShapeType 'can'. | completed | [link](../src/services/enums/slidesenums.js#L237) |
+| CHEVRON | Chevron shape. Corresponds to ECMA-376 ST_ShapeType 'chevron'. | completed | [link](../src/services/enums/slidesenums.js#L238) |
+| CHORD | Chord shape. Corresponds to ECMA-376 ST_ShapeType 'chord'. | completed | [link](../src/services/enums/slidesenums.js#L239) |
+| CLOUD | Cloud shape. Corresponds to ECMA-376 ST_ShapeType 'cloud'. | completed | [link](../src/services/enums/slidesenums.js#L240) |
+| CLOUD_CALLOUT | Callout cloud shape. Corresponds to ECMA-376 ST_ShapeType 'cloudCallout'. | completed | [link](../src/services/enums/slidesenums.js#L366) |
+| CORNER | Corner shape. Corresponds to ECMA-376 ST_ShapeType 'corner'. | completed | [link](../src/services/enums/slidesenums.js#L241) |
+| CUBE | Cube shape. Corresponds to ECMA-376 ST_ShapeType 'cube'. | completed | [link](../src/services/enums/slidesenums.js#L242) |
+| CURVED_DOWN_ARROW | Curved down arrow shape. Corresponds to ECMA-376 ST_ShapeType 'curvedDownArrow'. | completed | [link](../src/services/enums/slidesenums.js#L243) |
+| CURVED_LEFT_ARROW | Curved left arrow shape. Corresponds to ECMA-376 ST_ShapeType 'curvedLeftArrow'. | completed | [link](../src/services/enums/slidesenums.js#L244) |
+| CURVED_RIGHT_ARROW | Curved right arrow shape. Corresponds to ECMA-376 ST_ShapeType 'curvedRightArrow'. | completed | [link](../src/services/enums/slidesenums.js#L245) |
+| CURVED_UP_ARROW | Curved up arrow shape. Corresponds to ECMA-376 ST_ShapeType 'curvedUpArrow'. | completed | [link](../src/services/enums/slidesenums.js#L246) |
+| CUSTOM | Custom shape. | completed | [link](../src/services/enums/slidesenums.js#L367) |
+| DECAGON | Decagon shape. Corresponds to ECMA-376 ST_ShapeType 'decagon'. | completed | [link](../src/services/enums/slidesenums.js#L247) |
+| DIAGONAL_STRIPE | Diagonal stripe shape. Corresponds to ECMA-376 ST_ShapeType 'diagStripe'. | completed | [link](../src/services/enums/slidesenums.js#L248) |
+| DIAMOND | Diamond shape. Corresponds to ECMA-376 ST_ShapeType 'diamond'. | completed | [link](../src/services/enums/slidesenums.js#L16) |
+| DODECAGON | Dodecagon shape. Corresponds to ECMA-376 ST_ShapeType 'dodecagon'. | completed | [link](../src/services/enums/slidesenums.js#L250) |
+| DONUT | Donut shape. Corresponds to ECMA-376 ST_ShapeType 'donut'. | completed | [link](../src/services/enums/slidesenums.js#L251) |
+| DOUBLE_WAVE | Double wave shape. Corresponds to ECMA-376 ST_ShapeType 'doubleWave'. | completed | [link](../src/services/enums/slidesenums.js#L252) |
+| DOWN_ARROW | Down arrow shape. Corresponds to ECMA-376 ST_ShapeType 'downArrow'. | completed | [link](../src/services/enums/slidesenums.js#L243) |
+| DOWN_ARROW_CALLOUT | Callout down arrow shape. Corresponds to ECMA-376 ST_ShapeType 'downArrowCallout'. | completed | [link](../src/services/enums/slidesenums.js#L254) |
+| ELLIPSE | Ellipse shape. Corresponds to ECMA-376 ST_ShapeType 'ellipse'. | completed | [link](../src/services/enums/slidesenums.js#L229) |
+| ELLIPSE_RIBBON | Ellipse ribbon shape. Corresponds to ECMA-376 ST_ShapeType 'ellipseRibbon'. | completed | [link](../src/services/enums/slidesenums.js#L364) |
+| ELLIPSE_RIBBON_2 | Ellipse ribbon 2 shape. Corresponds to ECMA-376 ST_ShapeType 'ellipseRibbon2'. | completed | [link](../src/services/enums/slidesenums.js#L365) |
+| FLOW_CHART_ALTERNATE_PROCESS | Alternate process flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartAlternateProcess'. | completed | [link](../src/services/enums/slidesenums.js#L329) |
+| FLOW_CHART_COLLATE | Collate flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartCollate'. | completed | [link](../src/services/enums/slidesenums.js#L330) |
+| FLOW_CHART_CONNECTOR | Connector flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartConnector'. | completed | [link](../src/services/enums/slidesenums.js#L331) |
+| FLOW_CHART_DECISION | Decision flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartDecision'. | completed | [link](../src/services/enums/slidesenums.js#L332) |
+| FLOW_CHART_DELAY | Delay flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartDelay'. | completed | [link](../src/services/enums/slidesenums.js#L333) |
+| FLOW_CHART_DISPLAY | Display flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartDisplay'. | completed | [link](../src/services/enums/slidesenums.js#L334) |
+| FLOW_CHART_DOCUMENT | Document flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartDocument'. | completed | [link](../src/services/enums/slidesenums.js#L335) |
+| FLOW_CHART_EXTRACT | Extract flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartExtract'. | completed | [link](../src/services/enums/slidesenums.js#L336) |
+| FLOW_CHART_INPUT_OUTPUT | Input output flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartInputOutput'. | completed | [link](../src/services/enums/slidesenums.js#L337) |
+| FLOW_CHART_INTERNAL_STORAGE | Internal storage flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartInternalStorage'. | completed | [link](../src/services/enums/slidesenums.js#L338) |
+| FLOW_CHART_MAGNETIC_DISK | Magnetic disk flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartMagneticDisk'. | completed | [link](../src/services/enums/slidesenums.js#L339) |
+| FLOW_CHART_MAGNETIC_DRUM | Magnetic drum flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartMagneticDrum'. | completed | [link](../src/services/enums/slidesenums.js#L340) |
+| FLOW_CHART_MAGNETIC_TAPE | Magnetic tape flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartMagneticTape'. | completed | [link](../src/services/enums/slidesenums.js#L341) |
+| FLOW_CHART_MANUAL_INPUT | Manual input flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartManualInput'. | completed | [link](../src/services/enums/slidesenums.js#L342) |
+| FLOW_CHART_MANUAL_OPERATION | Manual operation flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartManualOperation'. | completed | [link](../src/services/enums/slidesenums.js#L343) |
+| FLOW_CHART_MERGE | Merge flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartMerge'. | completed | [link](../src/services/enums/slidesenums.js#L344) |
+| FLOW_CHART_MULTIDOCUMENT | Multi-document flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartMultidocument'. | completed | [link](../src/services/enums/slidesenums.js#L345) |
+| FLOW_CHART_OFFLINE_STORAGE | Offline storage flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartOfflineStorage'. | completed | [link](../src/services/enums/slidesenums.js#L346) |
+| FLOW_CHART_OFFPAGE_CONNECTOR | Off-page connector flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartOffpageConnector'. | completed | [link](../src/services/enums/slidesenums.js#L347) |
+| FLOW_CHART_ONLINE_STORAGE | Online storage flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartOnlineStorage'. | completed | [link](../src/services/enums/slidesenums.js#L348) |
+| FLOW_CHART_OR | Or flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartOr'. | completed | [link](../src/services/enums/slidesenums.js#L349) |
+| FLOW_CHART_PREDEFINED_PROCESS | Predefined process flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartPredefinedProcess'. | completed | [link](../src/services/enums/slidesenums.js#L350) |
+| FLOW_CHART_PREPARATION | Preparation flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartPreparation'. | completed | [link](../src/services/enums/slidesenums.js#L351) |
+| FLOW_CHART_PROCESS | Process flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartProcess'. | completed | [link](../src/services/enums/slidesenums.js#L352) |
+| FLOW_CHART_PUNCHED_CARD | Punched card flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartPunchedCard'. | completed | [link](../src/services/enums/slidesenums.js#L353) |
+| FLOW_CHART_PUNCHED_TAPE | Punched tape flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartPunchedTape'. | completed | [link](../src/services/enums/slidesenums.js#L354) |
+| FLOW_CHART_SORT | Sort flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartSort'. | completed | [link](../src/services/enums/slidesenums.js#L355) |
+| FLOW_CHART_SUMMING_JUNCTION | Summing junction flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartSummingJunction'. | completed | [link](../src/services/enums/slidesenums.js#L356) |
+| FLOW_CHART_TERMINATOR | Terminator flow shape. Corresponds to ECMA-376 ST_ShapeType 'flowChartTerminator'. | completed | [link](../src/services/enums/slidesenums.js#L357) |
+| FOLDED_CORNER | Folded corner shape. Corresponds to ECMA-376 ST_ShapeType 'foldedCorner'. | completed | [link](../src/services/enums/slidesenums.js#L255) |
+| FRAME | Frame shape. Corresponds to ECMA-376 ST_ShapeType 'frame'. | completed | [link](../src/services/enums/slidesenums.js#L256) |
+| HALF_FRAME | Half frame shape. Corresponds to ECMA-376 ST_ShapeType 'halfFrame'. | completed | [link](../src/services/enums/slidesenums.js#L257) |
+| HEART | Heart shape. Corresponds to ECMA-376 ST_ShapeType 'heart'. | completed | [link](../src/services/enums/slidesenums.js#L258) |
+| HEPTAGON | Heptagon shape. Corresponds to ECMA-376 ST_ShapeType 'heptagon'. | completed | [link](../src/services/enums/slidesenums.js#L259) |
+| HEXAGON | Hexagon shape. Corresponds to ECMA-376 ST_ShapeType 'hexagon'. | completed | [link](../src/services/enums/slidesenums.js#L260) |
+| HOME_PLATE | Home plate shape. Corresponds to ECMA-376 ST_ShapeType 'homePlate'. | completed | [link](../src/services/enums/slidesenums.js#L261) |
+| HORIZONTAL_SCROLL | Horizontal scroll shape. Corresponds to ECMA-376 ST_ShapeType 'horizontalScroll'. | completed | [link](../src/services/enums/slidesenums.js#L262) |
+| IRREGULAR_SEAL_1 | Irregular seal 1 shape. Corresponds to ECMA-376 ST_ShapeType 'irregularSeal1'. | completed | [link](../src/services/enums/slidesenums.js#L263) |
+| IRREGULAR_SEAL_2 | Irregular seal 2 shape. Corresponds to ECMA-376 ST_ShapeType 'irregularSeal2'. | completed | [link](../src/services/enums/slidesenums.js#L264) |
+| LEFT_ARROW | Left arrow shape. Corresponds to ECMA-376 ST_ShapeType 'leftArrow'. | completed | [link](../src/services/enums/slidesenums.js#L244) |
+| LEFT_ARROW_CALLOUT | Callout left arrow shape. Corresponds to ECMA-376 ST_ShapeType 'leftArrowCallout'. | completed | [link](../src/services/enums/slidesenums.js#L266) |
+| LEFT_BRACE | Left brace shape. Corresponds to ECMA-376 ST_ShapeType 'leftBrace'. | completed | [link](../src/services/enums/slidesenums.js#L267) |
+| LEFT_BRACKET | Left bracket shape. Corresponds to ECMA-376 ST_ShapeType 'leftBracket'. | completed | [link](../src/services/enums/slidesenums.js#L268) |
+| LEFT_RIGHT_ARROW | Left right arrow shape. Corresponds to ECMA-376 ST_ShapeType 'leftRightArrow'. | completed | [link](../src/services/enums/slidesenums.js#L269) |
+| LEFT_RIGHT_ARROW_CALLOUT | Callout left right arrow shape. Corresponds to ECMA-376 ST_ShapeType 'leftRightArrowCallout'. | completed | [link](../src/services/enums/slidesenums.js#L270) |
+| LEFT_RIGHT_UP_ARROW | Left right up arrow shape. Corresponds to ECMA-376 ST_ShapeType 'leftRightUpArrow'. | completed | [link](../src/services/enums/slidesenums.js#L271) |
+| LEFT_UP_ARROW | Left up arrow shape. Corresponds to ECMA-376 ST_ShapeType 'leftUpArrow'. | completed | [link](../src/services/enums/slidesenums.js#L272) |
+| LIGHTNING_BOLT | Lightning bolt shape. Corresponds to ECMA-376 ST_ShapeType 'lightningBolt'. | completed | [link](../src/services/enums/slidesenums.js#L273) |
+| MATH_DIVIDE | Divide math shape. Corresponds to ECMA-376 ST_ShapeType 'mathDivide'. | completed | [link](../src/services/enums/slidesenums.js#L274) |
+| MATH_EQUAL | Equal math shape. Corresponds to ECMA-376 ST_ShapeType 'mathEqual'. | completed | [link](../src/services/enums/slidesenums.js#L275) |
+| MATH_MINUS | Minus math shape. Corresponds to ECMA-376 ST_ShapeType 'mathMinus'. | completed | [link](../src/services/enums/slidesenums.js#L276) |
+| MATH_MULTIPLY | Multiply math shape. Corresponds to ECMA-376 ST_ShapeType 'mathMultiply'. | completed | [link](../src/services/enums/slidesenums.js#L277) |
+| MATH_NOT_EQUAL | Not equal math shape. Corresponds to ECMA-376 ST_ShapeType 'mathNotEqual'. | completed | [link](../src/services/enums/slidesenums.js#L278) |
+| MATH_PLUS | Plus math shape. Corresponds to ECMA-376 ST_ShapeType 'mathPlus'. | completed | [link](../src/services/enums/slidesenums.js#L279) |
+| MOON | Moon shape. Corresponds to ECMA-376 ST_ShapeType 'moon'. | completed | [link](../src/services/enums/slidesenums.js#L280) |
+| NO_SMOKING | No smoking shape. Corresponds to ECMA-376 ST_ShapeType 'noSmoking'. | completed | [link](../src/services/enums/slidesenums.js#L281) |
+| NOTCHED_RIGHT_ARROW | Notched right arrow shape. Corresponds to ECMA-376 ST_ShapeType 'notchedRightArrow'. | completed | [link](../src/services/enums/slidesenums.js#L282) |
+| OCTAGON | Octagon shape. Corresponds to ECMA-376 ST_ShapeType 'octagon'. | completed | [link](../src/services/enums/slidesenums.js#L283) |
+| PARALLELOGRAM | Parallelogram shape. Corresponds to ECMA-376 ST_ShapeType 'parallelogram'. | completed | [link](../src/services/enums/slidesenums.js#L284) |
+| PENTAGON | Pentagon shape. Corresponds to ECMA-376 ST_ShapeType 'pentagon'. | completed | [link](../src/services/enums/slidesenums.js#L285) |
+| PIE | Pie shape. Corresponds to ECMA-376 ST_ShapeType 'pie'. | completed | [link](../src/services/enums/slidesenums.js#L286) |
+| PLAQUE | Plaque shape. Corresponds to ECMA-376 ST_ShapeType 'plaque'. | completed | [link](../src/services/enums/slidesenums.js#L287) |
+| PLUS | Plus shape. Corresponds to ECMA-376 ST_ShapeType 'plus'. | completed | [link](../src/services/enums/slidesenums.js#L279) |
+| QUAD_ARROW | Quad-arrow shape. Corresponds to ECMA-376 ST_ShapeType 'quadArrow'. | completed | [link](../src/services/enums/slidesenums.js#L289) |
+| QUAD_ARROW_CALLOUT | Callout quad-arrow shape. Corresponds to ECMA-376 ST_ShapeType 'quadArrowCallout'. | completed | [link](../src/services/enums/slidesenums.js#L290) |
+| RECTANGLE | Rectangle shape. Corresponds to ECMA-376 ST_ShapeType 'rect'. | completed | [link](../src/services/enums/slidesenums.js#L227) |
+| RIBBON | Ribbon shape. Corresponds to ECMA-376 ST_ShapeType 'ribbon'. | completed | [link](../src/services/enums/slidesenums.js#L291) |
+| RIBBON_2 | Ribbon 2 shape. Corresponds to ECMA-376 ST_ShapeType 'ribbon2'. | completed | [link](../src/services/enums/slidesenums.js#L292) |
+| RIGHT_ARROW | Right arrow shape. Corresponds to ECMA-376 ST_ShapeType 'rightArrow'. | completed | [link](../src/services/enums/slidesenums.js#L245) |
+| RIGHT_ARROW_CALLOUT | Callout right arrow shape. Corresponds to ECMA-376 ST_ShapeType 'rightArrowCallout'. | completed | [link](../src/services/enums/slidesenums.js#L270) |
+| RIGHT_BRACE | Right brace shape. Corresponds to ECMA-376 ST_ShapeType 'rightBrace'. | completed | [link](../src/services/enums/slidesenums.js#L295) |
+| RIGHT_BRACKET | Right bracket shape. Corresponds to ECMA-376 ST_ShapeType 'rightBracket'. | completed | [link](../src/services/enums/slidesenums.js#L296) |
+| RIGHT_TRIANGLE | Right triangle shape. Corresponds to ECMA-376 ST_ShapeType 'rtTriangle'. | completed | [link](../src/services/enums/slidesenums.js#L300) |
+| ROUND_1_RECTANGLE | One round corner rectangle shape. Corresponds to ECMA-376 ST_ShapeType 'round1Rect'. | completed | [link](../src/services/enums/slidesenums.js#L297) |
+| ROUND_2_DIAGONAL_RECTANGLE | Two diagonal round corner rectangle shape. Corresponds to ECMA-376 ST_ShapeType 'round2DiagRect'. | completed | [link](../src/services/enums/slidesenums.js#L298) |
+| ROUND_2_SAME_RECTANGLE | Two same-side round corner rectangle shape. Corresponds to ECMA-376 ST_ShapeType 'round2SameRect'. | completed | [link](../src/services/enums/slidesenums.js#L299) |
+| ROUND_RECTANGLE | Round corner rectangle shape. Corresponds to ECMA-376 ST_ShapeType 'roundRect'. | completed | [link](../src/services/enums/slidesenums.js#L228) |
+| SMILEY_FACE | Smiley face shape. Corresponds to ECMA-376 ST_ShapeType 'smileyFace'. | completed | [link](../src/services/enums/slidesenums.js#L301) |
+| SNIP_1_RECTANGLE | One snip corner rectangle shape. Corresponds to ECMA-376 ST_ShapeType 'snip1Rect'. | completed | [link](../src/services/enums/slidesenums.js#L302) |
+| SNIP_2_DIAGONAL_RECTANGLE | Two diagonal snip corner rectangle shape. Corresponds to ECMA-376 ST_ShapeType 'snip2DiagRect'. | completed | [link](../src/services/enums/slidesenums.js#L303) |
+| SNIP_2_SAME_RECTANGLE | Two same-side snip corner rectangle shape. Corresponds to ECMA-376 ST_ShapeType 'snip2SameRect'. | completed | [link](../src/services/enums/slidesenums.js#L304) |
+| SNIP_ROUND_RECTANGLE | One snip one round corner rectangle shape. Corresponds to ECMA-376 ST_ShapeType 'snipRoundRect'. | completed | [link](../src/services/enums/slidesenums.js#L305) |
+| SPEECH | Speech shape. | completed | [link](../src/services/enums/slidesenums.js#L361) |
+| STAR_10 | Ten pointed star shape. Corresponds to ECMA-376 ST_ShapeType 'star10'. | completed | [link](../src/services/enums/slidesenums.js#L306) |
+| STAR_12 | Twelve pointed star shape. Corresponds to ECMA-376 ST_ShapeType 'star12'. | completed | [link](../src/services/enums/slidesenums.js#L307) |
+| STAR_16 | Sixteen pointed star shape. Corresponds to ECMA-376 ST_ShapeType 'star16'. | completed | [link](../src/services/enums/slidesenums.js#L308) |
+| STAR_24 | Twenty four pointed star shape. Corresponds to ECMA-376 ST_ShapeType 'star24'. | completed | [link](../src/services/enums/slidesenums.js#L309) |
+| STAR_32 | Thirty two pointed star shape. Corresponds to ECMA-376 ST_ShapeType 'star32'. | completed | [link](../src/services/enums/slidesenums.js#L310) |
+| STAR_4 | Four pointed star shape. Corresponds to ECMA-376 ST_ShapeType 'star4'. | completed | [link](../src/services/enums/slidesenums.js#L311) |
+| STAR_5 | Five pointed star shape. Corresponds to ECMA-376 ST_ShapeType 'star5'. | completed | [link](../src/services/enums/slidesenums.js#L312) |
+| STAR_6 | Six pointed star shape. Corresponds to ECMA-376 ST_ShapeType 'star6'. | completed | [link](../src/services/enums/slidesenums.js#L313) |
+| STAR_7 | Seven pointed star shape. Corresponds to ECMA-376 ST_ShapeType 'star7'. | completed | [link](../src/services/enums/slidesenums.js#L314) |
+| STAR_8 | Eight pointed star shape. Corresponds to ECMA-376 ST_ShapeType 'star8'. | completed | [link](../src/services/enums/slidesenums.js#L315) |
+| STARBURST | Star burst shape. | completed | [link](../src/services/enums/slidesenums.js#L362) |
+| STRIPED_RIGHT_ARROW | Striped right arrow shape. Corresponds to ECMA-376 ST_ShapeType 'stripedRightArrow'. | completed | [link](../src/services/enums/slidesenums.js#L316) |
+| SUN | Sun shape. Corresponds to ECMA-376 ST_ShapeType 'sun'. | completed | [link](../src/services/enums/slidesenums.js#L317) |
+| TEARDROP | Teardrop shape. Corresponds to ECMA-376 ST_ShapeType 'teardrop'. | completed | [link](../src/services/enums/slidesenums.js#L363) |
+| TEXT_BOX | Text box shape. | completed | [link](../src/services/enums/slidesenums.js#L226) |
+| TRAPEZOID | Trapezoid shape. Corresponds to ECMA-376 ST_ShapeType 'trapezoid'. | completed | [link](../src/services/enums/slidesenums.js#L318) |
+| TRIANGLE | Triangle shape. Corresponds to ECMA-376 ST_ShapeType 'triangle'. | completed | [link](../src/services/enums/slidesenums.js#L108) |
+| UNSUPPORTED | A shape type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
+| UP_ARROW | Up arrow shape. Corresponds to ECMA-376 ST_ShapeType 'upArrow'. | completed | [link](../src/services/enums/slidesenums.js#L232) |
+| UP_ARROW_CALLOUT | Callout up arrow shape. Corresponds to ECMA-376 ST_ShapeType 'upArrowCallout'. | completed | [link](../src/services/enums/slidesenums.js#L321) |
+| UP_DOWN_ARROW | Up down arrow shape. Corresponds to ECMA-376 ST_ShapeType 'upDownArrow'. | completed | [link](../src/services/enums/slidesenums.js#L322) |
+| UTURN_ARROW | U-turn arrow shape. Corresponds to ECMA-376 ST_ShapeType 'uturnArrow'. | completed | [link](../src/services/enums/slidesenums.js#L323) |
+| VERTICAL_SCROLL | Vertical scroll shape. Corresponds to ECMA-376 ST_ShapeType 'verticalScroll'. | completed | [link](../src/services/enums/slidesenums.js#L324) |
+| WAVE | Wave shape. Corresponds to ECMA-376 ST_ShapeType 'wave'. | completed | [link](../src/services/enums/slidesenums.js#L252) |
+| WEDGE_ELLIPSE_CALLOUT | Callout wedge ellipse shape. Corresponds to ECMA-376 ST_ShapeType 'wedgeEllipseCallout'. | completed | [link](../src/services/enums/slidesenums.js#L326) |
+| WEDGE_RECTANGLE_CALLOUT | Callout wedge rectangle shape. Corresponds to ECMA-376 ST_ShapeType 'wedgeRectCallout'. | completed | [link](../src/services/enums/slidesenums.js#L327) |
+| WEDGE_ROUND_RECTANGLE_CALLOUT | Callout wedge round rectangle shape. Corresponds to ECMA-376 ST_ShapeType 'wedgeRoundRectCallout'. | completed | [link](../src/services/enums/slidesenums.js#L328) |
 
 ## Enum: [SheetsChartEmbedType](https://developers.google.com/apps-script/reference/slides/sheets-chart-embed-type)
 
@@ -1738,8 +1738,8 @@ The Sheets chart's embed type.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| IMAGE | Indicates that the chart is embedded as an image. | not started |  |
-| UNSUPPORTED | Represents a chart that is not supported and cannot be further classified. | not started |  |
+| IMAGE | Indicates that the chart is embedded as an image. | completed | [link](../src/services/enums/slidesenums.js#L130) |
+| UNSUPPORTED | Represents a chart that is not supported and cannot be further classified. | completed | [link](../src/services/enums/slidesenums.js#L10) |
 
 ## Enum: [SlideLinkingMode](https://developers.google.com/apps-script/reference/slides/slide-linking-mode)
 
@@ -1747,9 +1747,9 @@ The mode of links between slides.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| LINKED | Indicates that slides are linked. | not started |  |
-| NOT_LINKED | Indicates that slides aren't linked. | not started |  |
-| UNSUPPORTED | A slide linking mode that isn't supported. | not started |  |
+| LINKED | Indicates that slides are linked. | completed | [link](../src/services/enums/slidesenums.js#L376) |
+| NOT_LINKED | Indicates that slides aren't linked. | completed | [link](../src/services/enums/slidesenums.js#L377) |
+| UNSUPPORTED | A slide linking mode that isn't supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
 
 ## Enum: [SlidePosition](https://developers.google.com/apps-script/reference/slides/slide-position)
 
@@ -1757,10 +1757,10 @@ The relative position of a Slide.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| FIRST_SLIDE | The first slide in the presentation. | not started |  |
-| LAST_SLIDE | The last slide in the presentation. | not started |  |
-| NEXT_SLIDE | The next slide. | not started |  |
-| PREVIOUS_SLIDE | The previous slide. | not started |  |
+| FIRST_SLIDE | The first slide in the presentation. | completed | [link](../src/services/enums/slidesenums.js#L382) |
+| LAST_SLIDE | The last slide in the presentation. | completed | [link](../src/services/enums/slidesenums.js#L383) |
+| NEXT_SLIDE | The next slide. | completed | [link](../src/services/enums/slidesenums.js#L380) |
+| PREVIOUS_SLIDE | The previous slide. | completed | [link](../src/services/enums/slidesenums.js#L381) |
 
 ## Enum: [SpacingMode](https://developers.google.com/apps-script/reference/slides/spacing-mode)
 
@@ -1768,9 +1768,9 @@ The different modes for paragraph spacing.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| COLLAPSE_LISTS | Paragraph spacing is skipped between list elements. | not started |  |
-| NEVER_COLLAPSE | Paragraph spacing is always rendered. | not started |  |
-| UNSUPPORTED | A spacing mode that is not supported. | not started |  |
+| COLLAPSE_LISTS | Paragraph spacing is skipped between list elements. | completed | [link](../src/services/enums/slidesenums.js#L388) |
+| NEVER_COLLAPSE | Paragraph spacing is always rendered. | completed | [link](../src/services/enums/slidesenums.js#L387) |
+| UNSUPPORTED | A spacing mode that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
 
 ## Enum: [TextBaselineOffset](https://developers.google.com/apps-script/reference/slides/text-baseline-offset)
 
@@ -1778,10 +1778,10 @@ The text vertical offset from its normal position.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| NONE | The text is not vertically offset. | not started |  |
-| SUBSCRIPT | The text is vertically offset downwards. | not started |  |
-| SUPERSCRIPT | The text is vertically offset upwards. | not started |  |
-| UNSUPPORTED | An text baseline offset that is not supported. | not started |  |
+| NONE | The text is not vertically offset. | completed | [link](../src/services/enums/slidesenums.js#L11) |
+| SUBSCRIPT | The text is vertically offset downwards. | completed | [link](../src/services/enums/slidesenums.js#L394) |
+| SUPERSCRIPT | The text is vertically offset upwards. | completed | [link](../src/services/enums/slidesenums.js#L393) |
+| UNSUPPORTED | An text baseline offset that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
 
 ## Enum: [TextDirection](https://developers.google.com/apps-script/reference/slides/text-direction)
 
@@ -1789,9 +1789,9 @@ The directions text can flow in.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| LEFT_TO_RIGHT | The text goes from left to right. | not started |  |
-| RIGHT_TO_LEFT | The text goes from right to left. | not started |  |
-| UNSUPPORTED | A text direction that is not supported. | not started |  |
+| LEFT_TO_RIGHT | The text goes from left to right. | completed | [link](../src/services/enums/slidesenums.js#L398) |
+| RIGHT_TO_LEFT | The text goes from right to left. | completed | [link](../src/services/enums/slidesenums.js#L399) |
+| UNSUPPORTED | A text direction that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
 
 ## Enum: [ThemeColorType](https://developers.google.com/apps-script/reference/slides/theme-color-type)
 
@@ -1799,19 +1799,19 @@ The name of an entry in the page's color scheme.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| ACCENT1 | Represents the first accent color. | not started |  |
-| ACCENT2 | Represents the second accent color. | not started |  |
-| ACCENT3 | Represents the third accent color. | not started |  |
-| ACCENT4 | Represents the fourth accent color. | not started |  |
-| ACCENT5 | Represents the fifth accent color. | not started |  |
-| ACCENT6 | Represents the sixth accent color. | not started |  |
-| DARK1 | Represents the first dark color. | not started |  |
-| DARK2 | Represents the second dark color. | not started |  |
-| FOLLOWED_HYPERLINK | Represents the color to use for visited hyperlinks. | not started |  |
-| HYPERLINK | Represents the color to use for hyperlinks. | not started |  |
-| LIGHT1 | Represents the first light color. | not started |  |
-| LIGHT2 | Represents the second light color. | not started |  |
-| UNSUPPORTED | Represents a theme color that is not supported. | not started |  |
+| ACCENT1 | Represents the first accent color. | completed | [link](../src/services/enums/slidesenums.js#L407) |
+| ACCENT2 | Represents the second accent color. | completed | [link](../src/services/enums/slidesenums.js#L408) |
+| ACCENT3 | Represents the third accent color. | completed | [link](../src/services/enums/slidesenums.js#L409) |
+| ACCENT4 | Represents the fourth accent color. | completed | [link](../src/services/enums/slidesenums.js#L410) |
+| ACCENT5 | Represents the fifth accent color. | completed | [link](../src/services/enums/slidesenums.js#L411) |
+| ACCENT6 | Represents the sixth accent color. | completed | [link](../src/services/enums/slidesenums.js#L412) |
+| DARK1 | Represents the first dark color. | completed | [link](../src/services/enums/slidesenums.js#L403) |
+| DARK2 | Represents the second dark color. | completed | [link](../src/services/enums/slidesenums.js#L405) |
+| FOLLOWED_HYPERLINK | Represents the color to use for visited hyperlinks. | completed | [link](../src/services/enums/slidesenums.js#L414) |
+| HYPERLINK | Represents the color to use for hyperlinks. | completed | [link](../src/services/enums/slidesenums.js#L413) |
+| LIGHT1 | Represents the first light color. | completed | [link](../src/services/enums/slidesenums.js#L404) |
+| LIGHT2 | Represents the second light color. | completed | [link](../src/services/enums/slidesenums.js#L406) |
+| UNSUPPORTED | Represents a theme color that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
 
 ## Enum: [VideoSourceType](https://developers.google.com/apps-script/reference/slides/video-source-type)
 
@@ -1819,6 +1819,6 @@ The video source types.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| UNSUPPORTED | A video source type that is not supported. | not started |  |
-| YOUTUBE | YouTube video. | not started |  |
+| UNSUPPORTED | A video source type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
+| YOUTUBE | YouTube video. | completed | [link](../src/services/enums/slidesenums.js#L419) |
 
