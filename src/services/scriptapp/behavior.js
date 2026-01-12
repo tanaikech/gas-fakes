@@ -342,38 +342,32 @@ class FakeBehavior {
     return this.__sandboxMode;
   }
   addFile(id) {
-    if (this.sandboxMode) {
-      if (!is.nonEmptyString(id)) {
-        throw new Error(`Invalid sandbox id parameter (${id}) - must be a non-empty string`);
-      }
-      if (!this.isKnown(id)) {
-        slogger.log(`...adding file ${id} to sandbox allowed list`);
-        this.__createdIds.add(id);
-      }
+    if (!is.nonEmptyString(id)) {
+      throw new Error(`Invalid sandbox id parameter (${id}) - must be a non-empty string`);
+    }
+    if (!this.isKnown(id)) {
+      slogger.log(`...adding file ${id} to sandbox allowed list`);
+      this.__createdIds.add(id);
     }
     return id
   }
   addGmailId(id) {
-    if (this.sandboxMode) {
-      if (!is.nonEmptyString(id)) {
-        throw new Error(`Invalid sandbox id parameter (${id}) - must be a non-empty string`);
-      }
-      if (!this.isKnownGmail(id)) {
-        slogger.log(`...adding gmail id ${id} to sandbox allowed list`);
-        this.__createdGmailIds.add(id);
-      }
+    if (!is.nonEmptyString(id)) {
+      throw new Error(`Invalid sandbox id parameter (${id}) - must be a non-empty string`);
+    }
+    if (!this.isKnownGmail(id)) {
+      slogger.log(`...adding gmail id ${id} to sandbox allowed list`);
+      this.__createdGmailIds.add(id);
     }
     return id
   }
   addCalendarId(id) {
-    if (this.sandboxMode) {
-      if (!is.nonEmptyString(id)) {
-        throw new Error(`Invalid sandbox id parameter (${id}) - must be a non-empty string`);
-      }
-      if (!this.isKnownCalendar(id)) {
-        slogger.log(`...adding calendar id ${id} to sandbox allowed list`);
-        this.__createdCalendarIds.add(id);
-      }
+    if (!is.nonEmptyString(id)) {
+      throw new Error(`Invalid sandbox id parameter (${id}) - must be a non-empty string`);
+    }
+    if (!this.isKnownCalendar(id)) {
+      slogger.log(`...adding calendar id ${id} to sandbox allowed list`);
+      this.__createdCalendarIds.add(id);
     }
     return id
   }

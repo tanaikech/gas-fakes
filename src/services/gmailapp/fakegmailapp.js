@@ -32,11 +32,9 @@ class FakeGmailApp {
       .replace(/\+/g, '-').replace(/\//g, '_');
 
     const draft = Gmail.Users.Drafts.create({ message: { raw: encoded } }, 'me');
-    if (ScriptApp.__behavior.sandboxMode) {
-      if (draft.id) ScriptApp.__behavior.addGmailId(draft.id);
-      if (draft.message && draft.message.id) ScriptApp.__behavior.addGmailId(draft.message.id);
-      if (draft.message && draft.message.threadId) ScriptApp.__behavior.addGmailId(draft.message.threadId);
-    }
+    if (draft.id) ScriptApp.__behavior.addGmailId(draft.id);
+    if (draft.message && draft.message.id) ScriptApp.__behavior.addGmailId(draft.message.id);
+    if (draft.message && draft.message.threadId) ScriptApp.__behavior.addGmailId(draft.message.threadId);
     return newFakeGmailDraft(draft);
   }
 
@@ -61,7 +59,7 @@ class FakeGmailApp {
     }
     const newLabelResource = Gmail.newLabel().setName(name);
     const createdLabelResource = Gmail.Users.Labels.create(newLabelResource, 'me');
-    if (behavior.sandboxMode) behavior.addGmailId(createdLabelResource.id);
+    behavior.addGmailId(createdLabelResource.id);
     return newFakeGmailLabel(createdLabelResource);
   }
 
@@ -456,10 +454,8 @@ class FakeGmailApp {
       .replace(/\+/g, '-').replace(/\//g, '_');
 
     const res = Gmail.Users.Messages.send({ raw: encoded }, 'me');
-    if (behavior.sandboxMode) {
-      if (res.id) behavior.addGmailId(res.id);
-      if (res.threadId) behavior.addGmailId(res.threadId);
-    }
+    if (res.id) behavior.addGmailId(res.id);
+    if (res.threadId) behavior.addGmailId(res.threadId);
     return this;
   }
 

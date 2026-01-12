@@ -1,20 +1,18 @@
 import '@mcpher/gas-fakes';
 import is from '@sindresorhus/is';
 import { initTests } from './testinit.js';
-import { wrapupTest, compareValue } from './testassist.js';
+import { wrapupTest, compareValue, maketcal, trasher } from './testassist.js';
 
 
 export const testCalendarSandbox = (pack) => {
-  const { unit } = pack || initTests();
-  const tidyCalendars = new Set();
+  const { unit, fixes } = pack || initTests();
+  const toTrash = [];
 
   // only sandbox tests in fakes
   if (ScriptApp.isFake) {
     unit.section('Calendar Management', (t) => {
       // Test creating a new calendar
-      const newName = 'Gas Fakes Test Calendar ' + Date.now();
-      const newCal = CalendarApp.createCalendar(newName);
-      tidyCalendars.add(newCal.getId());
+      const { cal: newCal, calName: newName } = maketcal(toTrash, fixes, { nameSuffix: 'sandbox-A' });
       t.truthy(newCal, 'Created calendar should exist');
       t.is(newCal.getName(), newName, 'New calendar name should match');
 
@@ -45,13 +43,13 @@ export const testCalendarSandbox = (pack) => {
         behavior.sandboxMode = true;
 
         // Create a test calendar that will be in the whitelist
-        const whitelistedName = 'Whitelisted Calendar ' + Date.now();
-        const whitelistedCal = CalendarApp.createCalendar(whitelistedName);
+        const { cal: whitelistedCal } = maketcal(toTrash, fixes, { nameSuffix: 'sandbox-A' });
+        const whitelistedName = whitelistedCal.getName();
         t.truthy(whitelistedCal, 'Should create whitelisted calendar');
 
         // Create another calendar that won't be in the whitelist
-        const restrictedName = 'Restricted Calendar ' + Date.now();
-        const restrictedCal = CalendarApp.createCalendar(restrictedName);
+        const { cal: restrictedCal } = maketcal(toTrash, fixes, { nameSuffix: 'sandbox-B' });
+        const restrictedName = restrictedCal.getName();
         t.truthy(restrictedCal, 'Should create restricted calendar');
 
         // Clear the session tracking to simulate external calendars
@@ -66,7 +64,7 @@ export const testCalendarSandbox = (pack) => {
         // Test: Primary calendar should always be accessible
         const primary = CalendarApp.getDefaultCalendar();
         t.truthy(primary, 'Primary calendar should be accessible');
-        t.is(primary.getId(), 'primary', 'Should get primary calendar');
+        t.is(primary.getId(), Session.getEffectiveUser().getEmail(), 'Should get primary calendar');
 
         // Test: Whitelisted calendar should be readable
         const foundWhitelisted = CalendarApp.getCalendarsByName(whitelistedName);
@@ -100,11 +98,11 @@ export const testCalendarSandbox = (pack) => {
         behavior.sandboxMode = true;
 
         // Create test calendars
-        const readOnlyName = 'Read Only Calendar ' + Date.now();
-        const readOnlyCal = CalendarApp.createCalendar(readOnlyName);
+        const { cal: readOnlyCal } = maketcal(toTrash, fixes, { nameSuffix: 'sandbox-A' });
+        const readOnlyName = readOnlyCal.getName();
 
-        const writableName = 'Writable Calendar ' + Date.now();
-        const writableCal = CalendarApp.createCalendar(writableName);
+        const { cal: writableCal } = maketcal(toTrash, fixes, { nameSuffix: 'sandbox-B' });
+        const writableName = writableCal.getName();
 
         // Clear session tracking
         behavior.__createdCalendarIds.clear();
@@ -150,8 +148,7 @@ export const testCalendarSandbox = (pack) => {
         behavior.sandboxMode = true;
 
         // Create a test calendar
-        const testName = 'Usage Test Calendar ' + Date.now();
-        const testCal = CalendarApp.createCalendar(testName);
+        const { cal: testCal, calName: testName } = maketcal(toTrash, fixes, { nameSuffix: 'sandbox-A' });
 
         // Clear session and set up whitelist
         behavior.__createdCalendarIds.clear();
@@ -213,8 +210,7 @@ export const testCalendarSandbox = (pack) => {
         calendarSettings.calendarWhitelist = [];
 
         // Test: Session-created calendars should be accessible even without whitelist
-        const sessionName = 'Session Calendar ' + Date.now();
-        const sessionCal = CalendarApp.createCalendar(sessionName);
+        const { cal: sessionCal, calName: sessionName } = maketcal(toTrash, fixes, { nameSuffix: 'sandbox-A' });
         t.truthy(sessionCal, 'Should create session calendar');
 
         // Should be able to read and write to session calendar
@@ -244,14 +240,14 @@ export const testCalendarSandbox = (pack) => {
       try {
         behavior.sandboxMode = true;
 
-        // Set up method whitelist
-        calendarSettings.setMethodWhitelist(['getDefaultCalendar', 'getCalendarById', 'createCalendar']);
+        // Set up method whitelist - include getCalendarsByName for maketcal
+        calendarSettings.setMethodWhitelist(['getDefaultCalendar', 'getCalendarById', 'createCalendar', 'getCalendarsByName']);
 
         // Test: Whitelisted methods should work
         const primary = CalendarApp.getDefaultCalendar();
         t.truthy(primary, 'Whitelisted method should work');
 
-        const newCal = CalendarApp.createCalendar('Method Test ' + Date.now());
+        const { cal: newCal } = maketcal(toTrash, fixes, { nameSuffix: 'sandbox-A' });
         t.truthy(newCal, 'Whitelisted createCalendar should work');
 
         // Test: Non-whitelisted methods should fail
@@ -267,16 +263,93 @@ export const testCalendarSandbox = (pack) => {
         calendarSettings.clearMethodWhitelist();
       }
     });
+
+    unit.section('Calendar Event Sandbox', (t) => {
+      const behavior = ScriptApp.__behavior;
+      const originalSandboxMode = behavior.sandboxMode;
+      const calendarSettings = behavior.sandboxService.CalendarApp;
+      const gmailSettings = behavior.sandboxService.GmailApp;
+      const originalCalWhitelist = calendarSettings.calendarWhitelist;
+      const originalGmailWhitelist = gmailSettings.emailWhitelist;
+      const originalUsageLimit = calendarSettings.usageLimit;
+
+      try {
+        behavior.sandboxMode = true;
+
+        // Setup: Create a calendar and an event to test with
+        const { cal, calName } = maketcal(toTrash, fixes, { nameSuffix: 'sandbox-A' });
+        const event = cal.createEvent('Test Event', new Date(), new Date(new Date().getTime() + 3600000));
+        
+        // Clear session tracking so we rely on whitelist
+        behavior.__createdCalendarIds.clear();
+        
+        // 1. Test Event Modification Permissions
+        // Make calendar read-only
+        calendarSettings.calendarWhitelist = [
+            { name: calName, read: true, write: false }
+        ];
+        
+        try {
+            event.setTitle('New Title');
+            t.fail('Should not allow setting title on read-only calendar event');
+        } catch(e) {
+            t.truthy(e.message.includes('denied'), 'Should throw access denied for setTitle');
+        }
+        
+        // Make calendar writable
+        calendarSettings.calendarWhitelist = [
+            { name: calName, read: true, write: true }
+        ];
+        
+        event.setTitle('New Title');
+        t.is(event.getTitle(), 'New Title', 'Should allow setting title on writable calendar event');
+
+        // 2. Test Guest Whitelist (Gmail integration)
+        gmailSettings.emailWhitelist = ['friend@example.com'];
+        
+        try {
+            event.addGuest('stranger@example.com');
+            t.fail('Should not allow adding non-whitelisted guest');
+        } catch(e) {
+            t.truthy(e.message.includes('Gmail sandbox whitelist'), 'Should throw error for non-whitelisted guest');
+        }
+        
+        event.addGuest('friend@example.com');
+        // Verify guest added (fake implementation might just update resource, assumes API success)
+        // We can't easily check attendees on fake event object unless we implemented getGuestList or check internal resource
+        // But if no error thrown, we assume success for this test.
+
+        // 3. Test Usage Limits on Events
+        calendarSettings.usageLimit = { write: 2 };
+        calendarSettings.resetUsageCount();
+        
+        event.setDescription('Desc 1'); // write 1
+        event.setLocation('Loc 1');    // write 2
+        
+        try {
+            event.setTitle('Fail Title'); // write 3
+            t.fail('Should enforce write usage limit on event');
+        } catch(e) {
+            t.truthy(e.message.includes('usage limit'), 'Should throw usage limit error for event modification');
+        }
+
+      } finally {
+        behavior.sandboxMode = originalSandboxMode;
+        calendarSettings.calendarWhitelist = originalCalWhitelist;
+        gmailSettings.emailWhitelist = originalGmailWhitelist;
+        calendarSettings.usageLimit = originalUsageLimit;
+        calendarSettings.resetUsageCount();
+      }
+    });
+
   }
 
   // delete test calendars
-  for (const id of tidyCalendars) {
-    const cal = CalendarApp.getCalendarById(id)
-    if (cal) cal.deleteCalendar();
-  }
+  // Now handled by maketcal/cleanup but we ensure explicit cleanup if requested
   if (!pack) {
     unit.report();
   }
+  if (fixes.CLEAN) trasher(toTrash);
   return { unit };
 };
 

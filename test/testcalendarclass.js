@@ -1,19 +1,17 @@
 import '@mcpher/gas-fakes';
 import is from '@sindresorhus/is';
 import { initTests } from './testinit.js';
-import { wrapupTest, compareValue } from './testassist.js';
+import { wrapupTest, compareValue, maketcal, trasher } from './testassist.js';
 
 
 
 export const testCalendarClass = (pack) => {
-  const tidyCalendars = new Set();
-  const { unit } = pack || initTests();
+  const { unit, fixes } = pack || initTests();
+  const toTrash = [];
 
   unit.section('Calendar Class Properties', (t) => {
     // Create a calendar for testing properties
-    const calName = 'Prop Test ' + Date.now();
-    const cal = CalendarApp.createCalendar(calName);
-    tidyCalendars.add(cal.getId());
+    const { cal } = maketcal(toTrash, fixes, { nameSuffix: 'general' });
 
     t.truthy(cal, 'Should create calendar for prop test');
 
@@ -41,9 +39,7 @@ export const testCalendarClass = (pack) => {
   });
 
   unit.section('Calendar Events Creation', (t) => {
-    const calName = 'Event Test ' + Date.now();
-    const cal = CalendarApp.createCalendar(calName);
-    tidyCalendars.add(cal.getId());
+    const { cal } = maketcal(toTrash, fixes, { nameSuffix: 'general' });
 
     const now = new Date();
     const later = new Date(now.getTime() + 3600000); // 1 hour later
@@ -83,17 +79,11 @@ export const testCalendarClass = (pack) => {
     // createEventFromDescription
     const quickEvent = cal.createEventFromDescription('Lunch with Bob tomorrow at 12pm');
     t.truthy(quickEvent, 'Should create event from description');
-    // Note: title might be 'Lunch with Bob' or similar depending on quickAdd parsing.
-    // In fake environment, quickAdd might just use description as title or fail if API not fully mocked?
-    // Calendar.Events.quickAdd in gas-fakes environment calls API. 
-    // If running in pure local fake without real API, this might fail or just return something basic.
-    // We'll see.
+
   });
 
   unit.section('Calendar Events Retrieval', (t) => {
-      const calName = 'Retrieve Test ' + Date.now();
-      const cal = CalendarApp.createCalendar(calName);
-      tidyCalendars.add(cal.getId());
+      const { cal } = maketcal(toTrash, fixes, { nameSuffix: 'general' });
       
       const now = new Date();
       const later = new Date(now.getTime() + 3600000);
@@ -119,18 +109,10 @@ export const testCalendarClass = (pack) => {
       t.truthy(foundInDay, 'Should find event in day view');
   });
 
-
-  
-  // Cleanup
-  for (const id of tidyCalendars) {
-      try {
-        const c = CalendarApp.getCalendarById(id);
-        if (c) c.deleteCalendar();
-      } catch(e) {}
-  }
   if (!pack) {
     unit.report();
   }
+  if (fixes.CLEAN) trasher(toTrash);
   return { unit };
 };
 

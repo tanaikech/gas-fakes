@@ -1,12 +1,13 @@
 import '@mcpher/gas-fakes';
 import is from '@sindresorhus/is';
 import { initTests } from './testinit.js';
-import { wrapupTest, compareValue } from './testassist.js';
+import { wrapupTest, compareValue, maketcal, trasher } from './testassist.js';
 
 
 export const testCalendarApp = (pack) => {
-  const { unit } = pack || initTests();
-  const tidyCalendars = new Set();
+  const { unit, fixes } = pack || initTests();
+  const toTrash = [];
+
   unit.section('CalendarApp general', (t) => {
     t.truthy(CalendarApp, 'CalendarApp should be defined');
 
@@ -27,15 +28,17 @@ export const testCalendarApp = (pack) => {
   unit.section('Calendar Class Metadata', (t) => {
     const calendar = CalendarApp.getDefaultCalendar();
     t.truthy(calendar, 'Default calendar should exist');
-    t.is(calendar.getId(), 'primary', 'Default calendar ID should be primary');
+    
+    // In both fake and live environments, the ID should now be the canonical ID (email), not 'primary'
+    // Session is usually available in fake environment too via the worker
+    const expectedId = Session.getEffectiveUser().getEmail();
+    t.is(calendar.getId(), expectedId, 'Default calendar ID should match user email');
 
 
     // now create a test calendar
-    const tname = 'Test Calendar ' + Date.now();
-    const testCalendar = CalendarApp.createCalendar(tname);
+    const { cal: testCalendar, calName: tname } = maketcal(toTrash, fixes, { nameSuffix: 'general' });
     t.truthy(testCalendar, 'Test calendar should exist');
     t.is(testCalendar.getName(), tname, 'Test calendar name should match');
-    tidyCalendars.add(testCalendar.getId());
 
     // Test setters and getters
     const originalName = testCalendar.getName();
@@ -56,14 +59,10 @@ export const testCalendarApp = (pack) => {
   });
 
 
-  // delete test calendars
-  for (const id of tidyCalendars) {
-    const cal = CalendarApp.getCalendarById(id)
-    if (cal) cal.deleteCalendar();
-  }
   if (!pack) {
     unit.report();
   }
+  if (fixes.CLEAN) trasher(toTrash);
   return { unit };
 };
 

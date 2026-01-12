@@ -3984,7 +3984,7 @@
             "returnType": "GmailLabel",
             "returnDescription": "the newly created label",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L48"
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L46"
           },
           {
             "method": "deleteLabel(GmailLabel)",
@@ -3993,7 +3993,7 @@
             "returnType": "GmailApp",
             "returnDescription": "the Gmail service, useful for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L85"
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L83"
           },
           {
             "method": "getAliases()",
@@ -4002,7 +4002,7 @@
             "returnType": "String[]",
             "returnDescription": "an array of aliases for this account",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L109"
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L107"
           },
           {
             "method": "getDraft(String)",
@@ -4011,7 +4011,7 @@
             "returnType": "GmailDraft",
             "returnDescription": "the draft with the given ID",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L128"
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L126"
           },
           {
             "method": "getDraftMessages()",
@@ -4020,7 +4020,7 @@
             "returnType": "GmailMessage[]",
             "returnDescription": "an array of draft Gmail messages",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L139"
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L137"
           },
           {
             "method": "getDrafts()",
@@ -4029,7 +4029,7 @@
             "returnType": "GmailDraft[]",
             "returnDescription": "an array of Gmail draft messages",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L150"
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L148"
           },
           {
             "method": "getInboxThreads()",
@@ -4038,7 +4038,7 @@
             "returnType": "GmailThread[]",
             "returnDescription": "an array of Gmail threads in the Inbox",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L163"
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L161"
           },
           {
             "method": "getInboxThreads(Integer,Integer)",
@@ -4047,7 +4047,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L163"
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L161"
           },
           {
             "method": "getInboxUnreadCount()",
@@ -4056,7 +4056,7 @@
             "returnType": "Integer",
             "returnDescription": "the number of threads in the inbox that have unread messages",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L172"
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L170"
           },
           {
             "method": "getMessageById(String)",
@@ -4065,7 +4065,7 @@
             "returnType": "GmailMessage",
             "returnDescription": "the message with the given ID",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L288"
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L286"
           },
           {
             "method": "getMessagesForThread(GmailThread)",
@@ -4074,7 +4074,7 @@
             "returnType": "GmailMessage[]",
             "returnDescription": "array of messages corresponding to this thread",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L295"
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L293"
           },
           {
             "method": "getMessagesForThreads(GmailThread)",
@@ -4083,7 +4083,7 @@
             "returnType": "GmailMessage[][]",
             "returnDescription": "an array of arrays of messages, where each item in the outer array corresponds to a\n    thread and the inner array contains the messages in that thread",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L302"
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L300"
           },
           {
             "method": "getPriorityInboxThreads()",
@@ -4092,7 +4092,7 @@
             "returnType": "GmailThread[]",
             "returnDescription": "an array of Gmail threads in the Priority Inbox",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L177"
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L175"
           },
           {
             "method": "getPriorityInboxThreads(Integer,Integer)",
@@ -4101,7 +4101,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L177"
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L175"
           },
           {
             "method": "getPriorityInboxUnreadCount()",
@@ -4110,7 +4110,7 @@
             "returnType": "Integer",
             "returnDescription": "the number of threads in the Priority Inbox that have unread messages",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L182"
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L180"
           },
           {
             "method": "getSpamThreads()",
@@ -4119,7 +4119,7 @@
             "returnType": "GmailThread[]",
             "returnDescription": "an array of Gmail threads in the spam folder",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L187"
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L185"
           },
           {
             "method": "getSpamThreads(Integer,Integer)",
@@ -4128,7 +4128,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L187"
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L185"
           },
           {
             "method": "getSpamUnreadCount()",
@@ -4137,7 +4137,7 @@
             "returnType": "Integer",
             "returnDescription": "the number spam threads that have unread messages",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L192"
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L190"
           },
           {
             "method": "getStarredThreads()",
@@ -4146,7 +4146,7 @@
             "returnType": "GmailThread[]",
             "returnDescription": "an array of starred Gmail threads",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L197"
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L195"
           },
           {
             "method": "getStarredThreads(Integer,Integer)",
@@ -4155,7 +4155,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L197"
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L195"
           },
           {
             "method": "getStarredUnreadCount()",
@@ -4164,7 +4164,7 @@
             "returnType": "Integer",
             "returnDescription": "the number of starred threads that have unread messages",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L202"
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L200"
           },
           {
             "method": "getThreadById(String)",
@@ -4173,7 +4173,7 @@
             "returnType": "GmailThread",
             "returnDescription": "The thread with the given ID or null if not found.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L377"
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L375"
           },
           {
             "method": "getTrashThreads()",
@@ -4182,7 +4182,7 @@
             "returnType": "GmailThread[]",
             "returnDescription": "an array of Gmail threads in the trash",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L207"
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L205"
           },
           {
             "method": "getTrashThreads(Integer,Integer)",
@@ -4191,7 +4191,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L207"
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L205"
           },
           {
             "method": "getUserLabelByName(String)",
@@ -4209,7 +4209,7 @@
             "returnType": "GmailLabel[]",
             "returnDescription": "array of user created labels",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L72"
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L70"
           },
           {
             "method": "markMessageRead(GmailMessage)",
@@ -4371,7 +4371,7 @@
             "returnType": "GmailApp",
             "returnDescription": "the Gmail service, useful for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L471"
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L467"
           },
           {
             "method": "moveThreadsToArchive(GmailThread)",
@@ -4452,7 +4452,7 @@
             "returnType": "GmailThread[]",
             "returnDescription": "an array of Gmail threads matching this query",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L219"
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L217"
           },
           {
             "method": "search(String,Integer,Integer)",
@@ -4461,7 +4461,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L219"
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L217"
           },
           {
             "method": "sendEmail(String,String,String)",
@@ -4470,7 +4470,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L422"
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L420"
           },
           {
             "method": "sendEmail(String,String,String,Object)",
@@ -4479,7 +4479,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L422"
+            "implementationLink": "src/services/gmailapp/fakegmailapp.js#L420"
           },
           {
             "method": "setCurrentMessageAccessToken(String)",
@@ -14754,8 +14754,8 @@
             "description": "Adds a new email reminder to the event. The reminder must be at least 5 minutes, and at most 4\nweeks (40320 minutes), before the event.",
             "returnType": "CalendarEventSeries",
             "returnDescription": "this CalendarEventSeries for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L110"
           },
           {
             "method": "addGuest(String)",
@@ -14763,8 +14763,8 @@
             "description": "Adds a guest to the event.",
             "returnType": "CalendarEventSeries",
             "returnDescription": "This CalendarEventSeries for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L67"
           },
           {
             "method": "addPopupReminder(Integer)",
@@ -14772,8 +14772,8 @@
             "description": "Adds a new pop-up notification to the event. The notification must be at least 5 minutes, and\nat most 4 weeks (40320 minutes), before the event.",
             "returnType": "CalendarEventSeries",
             "returnDescription": "this CalendarEventSeries for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L116"
           },
           {
             "method": "addSmsReminder(Integer)",
@@ -14781,8 +14781,8 @@
             "description": "Adds a new SMS reminder to the event. The reminder must be at least 5 minutes, and at most 4\nweeks (40320 minutes), before the event.",
             "returnType": "CalendarEventSeries",
             "returnDescription": "this CalendarEventSeries for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L122"
           },
           {
             "method": "anyoneCanAddSelf()",
@@ -14790,8 +14790,8 @@
             "description": "Determines whether people can add themselves as guests to a Calendar event.",
             "returnType": "Boolean",
             "returnDescription": "true if non-guests can add themselves to the event; false if not",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L350"
           },
           {
             "method": "deleteEventSeries()",
@@ -14799,8 +14799,8 @@
             "description": "Deletes the event series.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L378"
           },
           {
             "method": "deleteTag(String)",
@@ -14808,8 +14808,8 @@
             "description": "Deletes a key/value tag from the event.",
             "returnType": "CalendarEventSeries",
             "returnDescription": "this CalendarEventSeries for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L199"
           },
           {
             "method": "getAllTagKeys()",
@@ -14817,8 +14817,8 @@
             "description": "Gets all keys for tags that have been set on the event.",
             "returnType": "String[]",
             "returnDescription": "an array of string keys",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L194"
           },
           {
             "method": "getColor()",
@@ -14826,8 +14826,8 @@
             "description": "Returns the color of the calendar event.",
             "returnType": "String",
             "returnDescription": "The string representation of the event color, as an index (1-11) of values from CalendarApp.EventColor.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L242"
           },
           {
             "method": "getCreators()",
@@ -14835,8 +14835,8 @@
             "description": "Gets the creators of an event.",
             "returnType": "String[]",
             "returnDescription": "the email addresses of the event's creators",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L103"
           },
           {
             "method": "getDateCreated()",
@@ -14844,8 +14844,8 @@
             "description": "Gets the date the event was created. You must have access to the calendar.",
             "returnType": "Date",
             "returnDescription": "the date of creation",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L211"
           },
           {
             "method": "getDescription()",
@@ -14853,8 +14853,8 @@
             "description": "Gets the description of the event. You must have edit access to the calendar.",
             "returnType": "String",
             "returnDescription": "the description",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L45"
           },
           {
             "method": "getEmailReminders()",
@@ -14862,8 +14862,8 @@
             "description": "Gets the minute values for all email reminders for the event. You must have edit access to the\ncalendar.",
             "returnType": "Integer[]",
             "returnDescription": "an array in which each value corresponds to the number of minutes before the event that\n    a reminder triggers",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L146"
           },
           {
             "method": "getEventType()",
@@ -14871,8 +14871,8 @@
             "description": "Gets the EventType of this event.",
             "returnType": "EventType",
             "returnDescription": "The event type.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L252"
           },
           {
             "method": "getGuestByEmail(String)",
@@ -14880,8 +14880,8 @@
             "description": "Gets a guest by email address.",
             "returnType": "EventGuest",
             "returnDescription": "the guest, or null if the email address does not correspond to a guest",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L98"
           },
           {
             "method": "getGuestList()",
@@ -14889,8 +14889,8 @@
             "description": "Gets the guests for the event, not including the event owner.",
             "returnType": "EventGuest[]",
             "returnDescription": "an array of the guests",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L92"
           },
           {
             "method": "getGuestList(Boolean)",
@@ -14898,8 +14898,8 @@
             "description": "Gets the guests for the event, potentially including the event owners.",
             "returnType": "EventGuest[]",
             "returnDescription": "an array of the guests",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L92"
           },
           {
             "method": "getId()",
@@ -14908,7 +14908,7 @@
             "returnType": "String",
             "returnDescription": "the iCalUID of the event",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L29"
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L31"
           },
           {
             "method": "getLastUpdated()",
@@ -14916,8 +14916,8 @@
             "description": "Gets the date the event was last updated.",
             "returnType": "Date",
             "returnDescription": "the last updated date",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L215"
           },
           {
             "method": "getLocation()",
@@ -14925,8 +14925,8 @@
             "description": "Gets the location of the event.",
             "returnType": "String",
             "returnDescription": "the event location",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L55"
           },
           {
             "method": "getMyStatus()",
@@ -14934,8 +14934,8 @@
             "description": "Gets the event status (such as attending or invited) of the effective user. Always returns\nGuestStatus.OWNER if the effective user is the owner of the event.",
             "returnType": "GuestStatus",
             "returnDescription": "the status",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L263"
           },
           {
             "method": "getOriginalCalendarId()",
@@ -14943,8 +14943,8 @@
             "description": "Get the ID of the calendar where this event was originally created.",
             "returnType": "String",
             "returnDescription": "the ID of the original calendar",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L225"
           },
           {
             "method": "getPopupReminders()",
@@ -14952,8 +14952,8 @@
             "description": "Gets the minute values for all pop-up reminders for the event.",
             "returnType": "Integer[]",
             "returnDescription": "an array in which each value corresponds to the number of minutes before the event that\n    a reminder triggers",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L150"
           },
           {
             "method": "getSmsReminders()",
@@ -14961,8 +14961,8 @@
             "description": "Gets the minute values for all SMS reminders for the event.",
             "returnType": "Integer[]",
             "returnDescription": "an array in which each value corresponds to the number of minutes before the event that\n    a reminder triggers",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L154"
           },
           {
             "method": "getTag(String)",
@@ -14970,8 +14970,8 @@
             "description": "Gets a tag value of the event.",
             "returnType": "String",
             "returnDescription": "the tag value",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L189"
           },
           {
             "method": "getTitle()",
@@ -14979,8 +14979,8 @@
             "description": "Gets the title of the event.",
             "returnType": "String",
             "returnDescription": "the title",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L35"
           },
           {
             "method": "getTransparency()",
@@ -14988,8 +14988,8 @@
             "description": "Gets the transparency of the event. Use this method to determine whether an event is \nTRANSPARENT, meaning the calendar shows as Available during that time, or OPAQUE\n, meaning the calendar shows as Busy during that time.",
             "returnType": "EventTransparency",
             "returnDescription": "The transparency value.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L307"
           },
           {
             "method": "getVisibility()",
@@ -14997,8 +14997,8 @@
             "description": "Gets the visibility of the event.",
             "returnType": "Visibility",
             "returnDescription": "the visibility value",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L229"
           },
           {
             "method": "guestsCanInviteOthers()",
@@ -15006,8 +15006,8 @@
             "description": "Determines whether guests can invite other guests.",
             "returnType": "Boolean",
             "returnDescription": "true if guests can invite others; false if not",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L320"
           },
           {
             "method": "guestsCanModify()",
@@ -15015,8 +15015,8 @@
             "description": "Determines whether guests can modify the event.",
             "returnType": "Boolean",
             "returnDescription": "true if guests can modify the event; false if not",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L330"
           },
           {
             "method": "guestsCanSeeGuests()",
@@ -15024,8 +15024,8 @@
             "description": "Determines whether guests can see other guests.",
             "returnType": "Boolean",
             "returnDescription": "true if guests can see other guests; false if not",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L340"
           },
           {
             "method": "isOwnedByMe()",
@@ -15033,8 +15033,8 @@
             "description": "Determines whether you're the owner of the event.",
             "returnType": "Boolean",
             "returnDescription": "true if the event is owned by the effective user; false if not",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L219"
           },
           {
             "method": "removeAllReminders()",
@@ -15042,8 +15042,8 @@
             "description": "Removes all reminders from the event.",
             "returnType": "CalendarEventSeries",
             "returnDescription": "this CalendarEventSeries for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L165"
           },
           {
             "method": "removeGuest(String)",
@@ -15051,8 +15051,8 @@
             "description": "Removes a guest from the event.",
             "returnType": "CalendarEventSeries",
             "returnDescription": "this CalendarEventSeries for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L81"
           },
           {
             "method": "resetRemindersToDefault()",
@@ -15060,8 +15060,8 @@
             "description": "Resets the reminders using the calendar's default settings.",
             "returnType": "CalendarEventSeries",
             "returnDescription": "this CalendarEventSeries for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L171"
           },
           {
             "method": "setAnyoneCanAddSelf(Boolean)",
@@ -15069,8 +15069,8 @@
             "description": "Sets whether non-guests can add themselves to the event.",
             "returnType": "CalendarEventSeries",
             "returnDescription": "this CalendarEventSeries for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L354"
           },
           {
             "method": "setColor(String)",
@@ -15078,8 +15078,8 @@
             "description": "Sets the color of the calendar event.",
             "returnType": "CalendarEventSeries",
             "returnDescription": "This calendar event, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L246"
           },
           {
             "method": "setDescription(String)",
@@ -15087,8 +15087,8 @@
             "description": "Sets the description of the event.",
             "returnType": "CalendarEventSeries",
             "returnDescription": "this CalendarEventSeries for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L49"
           },
           {
             "method": "setGuestsCanInviteOthers(Boolean)",
@@ -15096,8 +15096,8 @@
             "description": "Sets whether guests can invite other guests.",
             "returnType": "CalendarEventSeries",
             "returnDescription": "this CalendarEventSeries for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L324"
           },
           {
             "method": "setGuestsCanModify(Boolean)",
@@ -15105,8 +15105,8 @@
             "description": "Sets whether guests can modify the event.",
             "returnType": "CalendarEventSeries",
             "returnDescription": "this CalendarEventSeries for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L334"
           },
           {
             "method": "setGuestsCanSeeGuests(Boolean)",
@@ -15114,8 +15114,8 @@
             "description": "Sets whether guests can see other guests.",
             "returnType": "CalendarEventSeries",
             "returnDescription": "this CalendarEventSeries for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L344"
           },
           {
             "method": "setLocation(String)",
@@ -15123,8 +15123,8 @@
             "description": "Sets the location of the event.",
             "returnType": "CalendarEventSeries",
             "returnDescription": "this CalendarEventSeries for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L59"
           },
           {
             "method": "setMyStatus(GuestStatus)",
@@ -15132,8 +15132,8 @@
             "description": "Sets the event status (such as attending or invited) of the effective user.",
             "returnType": "CalendarEventSeries",
             "returnDescription": "this CalendarEventSeries for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L278"
           },
           {
             "method": "setRecurrence(EventRecurrence,Date)",
@@ -15141,8 +15141,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L362"
           },
           {
             "method": "setRecurrence(EventRecurrence,Date,Date)",
@@ -15150,8 +15150,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L362"
           },
           {
             "method": "setTag(String,String)",
@@ -15159,8 +15159,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L179"
           },
           {
             "method": "setTitle(String)",
@@ -15168,8 +15168,8 @@
             "description": "Sets the title of the event.",
             "returnType": "CalendarEventSeries",
             "returnDescription": "this CalendarEventSeries for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L39"
           },
           {
             "method": "setTransparency(EventTransparency)",
@@ -15177,8 +15177,8 @@
             "description": "Sets the transparency of the event. Use this method to set whether an event is \nTRANSPARENT, meaning the calendar shows as Available during that time, or OPAQUE\n, meaning the calendar shows as Busy during that time.",
             "returnType": "CalendarEventSeries",
             "returnDescription": "This CalendarEventSeries for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L313"
           },
           {
             "method": "setVisibility(Visibility)",
@@ -15186,8 +15186,8 @@
             "description": "Sets the visibility of the event.",
             "returnType": "CalendarEventSeries",
             "returnDescription": "this CalendarEventSeries for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L235"
           }
         ]
       },
@@ -15203,8 +15203,8 @@
             "description": "Adds a new email reminder to the event. The reminder must be at least 5 minutes, and at most 4\nweeks (40320 minutes), before the event.",
             "returnType": "CalendarEvent",
             "returnDescription": "this CalendarEvent for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L195"
           },
           {
             "method": "addGuest(String)",
@@ -15212,8 +15212,8 @@
             "description": "Adds a guest to the event.",
             "returnType": "CalendarEvent",
             "returnDescription": "This CalendarEvent for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L150"
           },
           {
             "method": "addPopupReminder(Integer)",
@@ -15221,8 +15221,8 @@
             "description": "Adds a new pop-up notification to the event. The notification must be at least 5 minutes, and\nat most 4 weeks (40320 minutes), before the event.",
             "returnType": "CalendarEvent",
             "returnDescription": "this CalendarEvent for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L201"
           },
           {
             "method": "addSmsReminder(Integer)",
@@ -15230,8 +15230,8 @@
             "description": "Adds a new SMS reminder to the event. The reminder must be at least 5 minutes, and at most 4\nweeks (40320 minutes), before the event.",
             "returnType": "CalendarEvent",
             "returnDescription": "this CalendarEvent for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L207"
           },
           {
             "method": "anyoneCanAddSelf()",
@@ -15239,8 +15239,8 @@
             "description": "Determines whether people can add themselves as guests to a Calendar event.",
             "returnType": "Boolean",
             "returnDescription": "true if non-guests can add themselves to the event; false if not",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L406"
           },
           {
             "method": "deleteEvent()",
@@ -15248,8 +15248,8 @@
             "description": "Deletes a Calendar event.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L418"
           },
           {
             "method": "deleteTag(String)",
@@ -15257,8 +15257,8 @@
             "description": "Deletes a key/value tag from the event.",
             "returnType": "CalendarEvent",
             "returnDescription": "this CalendarEvent for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L284"
           },
           {
             "method": "getAllDayEndDate()",
@@ -15266,8 +15266,8 @@
             "description": "Gets the date on which this all-day calendar event ends. (If this is not an all-day event, then\nthis method throws an exception.) The returned Date represents midnight at the\nbeginning of the day after the event ends in the script's time zone. To use the\ncalendar's time zone instead, call getEndTime().",
             "returnType": "Date",
             "returnDescription": "this all-day calendar event's end date",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L127"
           },
           {
             "method": "getAllDayStartDate()",
@@ -15275,8 +15275,8 @@
             "description": "Gets the date on which this all-day calendar event begins. (If this is not an all-day event,\nthen this method throws an exception.) The returned Date represents midnight at the\nbeginning of the day on which the event starts in the script's time zone. To use the\ncalendar's time zone instead, call getStartTime().",
             "returnType": "Date",
             "returnDescription": "this all-day calendar event's start date",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L121"
           },
           {
             "method": "getAllTagKeys()",
@@ -15284,8 +15284,8 @@
             "description": "Gets all keys for tags that have been set on the event.",
             "returnType": "String[]",
             "returnDescription": "an array of string keys",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L279"
           },
           {
             "method": "getColor()",
@@ -15293,8 +15293,8 @@
             "description": "Returns the color of the calendar event.",
             "returnType": "String",
             "returnDescription": "The string representation of the event color, as an index (1-11) of values from CalendarApp.EventColor.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L325"
           },
           {
             "method": "getCreators()",
@@ -15302,8 +15302,8 @@
             "description": "Gets the creators of an event.",
             "returnType": "String[]",
             "returnDescription": "the email addresses of the event's creators",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L186"
           },
           {
             "method": "getDateCreated()",
@@ -15311,8 +15311,8 @@
             "description": "Gets the date the event was created. You must have access to the calendar.",
             "returnType": "Date",
             "returnDescription": "the date of creation",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L296"
           },
           {
             "method": "getDescription()",
@@ -15320,8 +15320,8 @@
             "description": "Gets the description of the event. You must have edit access to the calendar.",
             "returnType": "String",
             "returnDescription": "the description",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L58"
           },
           {
             "method": "getEmailReminders()",
@@ -15329,8 +15329,8 @@
             "description": "Gets the minute values for all email reminders for the event. You must have edit access to the\ncalendar.",
             "returnType": "Integer[]",
             "returnDescription": "an array in which each value corresponds to the number of minutes before the event that\n    a reminder triggers",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L231"
           },
           {
             "method": "getEndTime()",
@@ -15338,8 +15338,8 @@
             "description": "Gets the date and time at which this calendar event ends. You must have access to the calendar.\nFor non–all-day events, this is the instant in time at which the event was defined to\nend. For all-day events, which only store an end date (not a date and time), this is midnight\nat the beginning of the day after the event ends in the calendar's time zone. This\nallows meaningful comparison of end times for all types of events; however, it does not\nnecessarily preserve the original day-of-year unmodified.",
             "returnType": "Date",
             "returnDescription": "this calendar event's end time",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L87"
           },
           {
             "method": "getEventSeries()",
@@ -15347,8 +15347,8 @@
             "description": "Gets the series of recurring events that this event belongs to. You must have access to the\ncalendar. A CalendarEventSeries object is returned even if this event doesn't belong to\na series, so that you can add new recurrence settings.",
             "returnType": "CalendarEventSeries",
             "returnDescription": "the event series this event belongs to, or a new event series if it does not yet belong\n    to a series",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L140"
           },
           {
             "method": "getEventType()",
@@ -15356,8 +15356,8 @@
             "description": "Gets the EventType of this event.",
             "returnType": "EventType",
             "returnDescription": "The event type.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L341"
           },
           {
             "method": "getGuestByEmail(String)",
@@ -15365,8 +15365,8 @@
             "description": "Gets a guest by email address.",
             "returnType": "EventGuest",
             "returnDescription": "the guest, or null if the email address does not correspond to a guest",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L181"
           },
           {
             "method": "getGuestList()",
@@ -15374,8 +15374,8 @@
             "description": "Gets the guests for the event, not including the event owner.",
             "returnType": "EventGuest[]",
             "returnDescription": "an array of the guests",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L175"
           },
           {
             "method": "getGuestList(Boolean)",
@@ -15383,8 +15383,8 @@
             "description": "Gets the guests for the event, potentially including the event owners.",
             "returnType": "EventGuest[]",
             "returnDescription": "an array of the guests",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L175"
           },
           {
             "method": "getId()",
@@ -15393,7 +15393,7 @@
             "returnType": "String",
             "returnDescription": "the iCalUID of the event",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L33"
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L38"
           },
           {
             "method": "getLastUpdated()",
@@ -15401,8 +15401,8 @@
             "description": "Gets the date the event was last updated.",
             "returnType": "Date",
             "returnDescription": "the last updated date",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L300"
           },
           {
             "method": "getLocation()",
@@ -15410,8 +15410,8 @@
             "description": "Gets the location of the event.",
             "returnType": "String",
             "returnDescription": "the event location",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L68"
           },
           {
             "method": "getMyStatus()",
@@ -15428,8 +15428,8 @@
             "description": "Get the ID of the calendar where this event was originally created.",
             "returnType": "String",
             "returnDescription": "the ID of the original calendar",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L42"
           },
           {
             "method": "getPopupReminders()",
@@ -15437,8 +15437,8 @@
             "description": "Gets the minute values for all pop-up reminders for the event.",
             "returnType": "Integer[]",
             "returnDescription": "an array in which each value corresponds to the number of minutes before the event that\n    a reminder triggers",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L235"
           },
           {
             "method": "getSmsReminders()",
@@ -15446,8 +15446,8 @@
             "description": "Gets the minute values for all SMS reminders for the event.",
             "returnType": "Integer[]",
             "returnDescription": "an array in which each value corresponds to the number of minutes before the event that\n    a reminder triggers",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L239"
           },
           {
             "method": "getStartTime()",
@@ -15455,8 +15455,8 @@
             "description": "Gets the date and time at which this calendar event begins. For non–all-day events, this\nis the instant in time at which the event was defined to start. For all-day events, which only\nstore a start date (not a date and time), this is midnight at the beginning of the day on which\nthe event starts in the calendar's time zone. This allows meaningful comparison of\nstart times for all types of events; however, it is not necessarily preserve the original\nday-of-year unmodified.",
             "returnType": "Date",
             "returnDescription": "this calendar event's start time",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L80"
           },
           {
             "method": "getTag(String)",
@@ -15464,8 +15464,8 @@
             "description": "Gets a tag value of the event.",
             "returnType": "String",
             "returnDescription": "the tag value",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L274"
           },
           {
             "method": "getTitle()",
@@ -15474,7 +15474,7 @@
             "returnType": "String",
             "returnDescription": "the title",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L37"
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L48"
           },
           {
             "method": "getTransparency()",
@@ -15482,8 +15482,8 @@
             "description": "Gets the transparency of the event. Use this method to determine whether an event is \nTRANSPARENT, meaning the calendar shows as Available during that time, or OPAQUE\n, meaning the calendar shows as Busy during that time.",
             "returnType": "EventTransparency",
             "returnDescription": "The transparency value.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L352"
           },
           {
             "method": "getVisibility()",
@@ -15491,8 +15491,8 @@
             "description": "Gets the visibility of the event.",
             "returnType": "Visibility",
             "returnDescription": "the visibility value",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L311"
           },
           {
             "method": "guestsCanInviteOthers()",
@@ -15500,8 +15500,8 @@
             "description": "Determines whether guests can invite other guests.",
             "returnType": "Boolean",
             "returnDescription": "true if guests can invite others; false if not",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L376"
           },
           {
             "method": "guestsCanModify()",
@@ -15509,8 +15509,8 @@
             "description": "Determines whether guests can modify the event.",
             "returnType": "Boolean",
             "returnDescription": "true if guests can modify the event; false if not",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L386"
           },
           {
             "method": "guestsCanSeeGuests()",
@@ -15518,8 +15518,8 @@
             "description": "Determines whether guests can see other guests.",
             "returnType": "Boolean",
             "returnDescription": "true if guests can see other guests; false if not",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L396"
           },
           {
             "method": "isAllDayEvent()",
@@ -15527,8 +15527,8 @@
             "description": "Determines whether this is an all-day event.",
             "returnType": "Boolean",
             "returnDescription": "true if the event is all-day; false if not",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L116"
           },
           {
             "method": "isOwnedByMe()",
@@ -15536,8 +15536,8 @@
             "description": "Determines whether you're the owner of the event.",
             "returnType": "Boolean",
             "returnDescription": "true if the event is owned by the effective user; false if not",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L304"
           },
           {
             "method": "isRecurringEvent()",
@@ -15545,8 +15545,8 @@
             "description": "Determines whether the event is part of an event series.",
             "returnType": "Boolean",
             "returnDescription": "true if the event is part of an event series; false if not",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L135"
           },
           {
             "method": "removeAllReminders()",
@@ -15554,8 +15554,8 @@
             "description": "Removes all reminders from the event.",
             "returnType": "CalendarEvent",
             "returnDescription": "this CalendarEvent for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L250"
           },
           {
             "method": "removeGuest(String)",
@@ -15563,8 +15563,8 @@
             "description": "Removes a guest from the event.",
             "returnType": "CalendarEvent",
             "returnDescription": "this CalendarEvent for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L164"
           },
           {
             "method": "resetRemindersToDefault()",
@@ -15572,8 +15572,8 @@
             "description": "Resets the reminders using the calendar's default settings.",
             "returnType": "CalendarEvent",
             "returnDescription": "this CalendarEvent for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L256"
           },
           {
             "method": "setAllDayDate(Date)",
@@ -15581,8 +15581,8 @@
             "description": "Sets the date of the event. Applying this method changes a regular event into an all-day event.",
             "returnType": "CalendarEvent",
             "returnDescription": "this CalendarEvent for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L103"
           },
           {
             "method": "setAllDayDates(Date,Date)",
@@ -15590,8 +15590,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L365"
           },
           {
             "method": "setAnyoneCanAddSelf(Boolean)",
@@ -15599,8 +15599,8 @@
             "description": "Sets whether non-guests can add themselves to the event.",
             "returnType": "CalendarEvent",
             "returnDescription": "this CalendarEvent for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L410"
           },
           {
             "method": "setColor(String)",
@@ -15608,8 +15608,8 @@
             "description": "Sets the color of the calendar event.",
             "returnType": "CalendarEvent",
             "returnDescription": "This calendar event, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L330"
           },
           {
             "method": "setDescription(String)",
@@ -15617,8 +15617,8 @@
             "description": "Sets the description of the event.",
             "returnType": "CalendarEvent",
             "returnDescription": "this CalendarEvent for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L62"
           },
           {
             "method": "setGuestsCanInviteOthers(Boolean)",
@@ -15626,8 +15626,8 @@
             "description": "Sets whether guests can invite other guests.",
             "returnType": "CalendarEvent",
             "returnDescription": "this CalendarEvent for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L380"
           },
           {
             "method": "setGuestsCanModify(Boolean)",
@@ -15635,8 +15635,8 @@
             "description": "Sets whether guests can modify the event.",
             "returnType": "CalendarEvent",
             "returnDescription": "this CalendarEvent for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L390"
           },
           {
             "method": "setGuestsCanSeeGuests(Boolean)",
@@ -15644,8 +15644,8 @@
             "description": "Sets whether guests can see other guests.",
             "returnType": "CalendarEvent",
             "returnDescription": "this CalendarEvent for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L400"
           },
           {
             "method": "setLocation(String)",
@@ -15653,8 +15653,8 @@
             "description": "Sets the location of the event.",
             "returnType": "CalendarEvent",
             "returnDescription": "this CalendarEvent for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L72"
           },
           {
             "method": "setMyStatus(GuestStatus)",
@@ -15671,8 +15671,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L264"
           },
           {
             "method": "setTime(Date,Date)",
@@ -15680,8 +15680,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L94"
           },
           {
             "method": "setTitle(String)",
@@ -15689,8 +15689,8 @@
             "description": "Sets the title of the event.",
             "returnType": "CalendarEvent",
             "returnDescription": "this CalendarEvent for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L52"
           },
           {
             "method": "setTransparency(EventTransparency)",
@@ -15698,8 +15698,8 @@
             "description": "Sets the transparency of the event. Use this method to set whether an event is \nTRANSPARENT, meaning the calendar shows as Available during that time, or OPAQUE\n, meaning the calendar shows as Busy during that time.",
             "returnType": "CalendarEvent",
             "returnDescription": "This CalendarEvent for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L358"
           },
           {
             "method": "setVisibility(Visibility)",
@@ -15707,8 +15707,8 @@
             "description": "Sets the visibility of the event.",
             "returnType": "CalendarEvent",
             "returnDescription": "this CalendarEvent for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L318"
           }
         ]
       },
@@ -15725,7 +15725,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L158"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L163"
           },
           {
             "method": "createAllDayEvent(String,Date,Date)",
@@ -15734,7 +15734,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L158"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L163"
           },
           {
             "method": "createAllDayEvent(String,Date,Date,Object)",
@@ -15743,7 +15743,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L158"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L163"
           },
           {
             "method": "createAllDayEvent(String,Date,Object)",
@@ -15752,7 +15752,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L158"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L163"
           },
           {
             "method": "createAllDayEventSeries(String,Date,EventRecurrence)",
@@ -15761,7 +15761,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L260"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L277"
           },
           {
             "method": "createAllDayEventSeries(String,Date,EventRecurrence,Object)",
@@ -15770,7 +15770,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L260"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L277"
           },
           {
             "method": "createEvent(String,Date,Date)",
@@ -15779,7 +15779,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L137"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L141"
           },
           {
             "method": "createEvent(String,Date,Date,Object)",
@@ -15788,7 +15788,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L137"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L141"
           },
           {
             "method": "createEventFromDescription(String)",
@@ -15797,7 +15797,7 @@
             "returnType": "CalendarEvent",
             "returnDescription": "the created event",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L201"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L207"
           },
           {
             "method": "createEventSeries(String,Date,Date,EventRecurrence)",
@@ -15806,7 +15806,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L254"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L263"
           },
           {
             "method": "createEventSeries(String,Date,Date,EventRecurrence,Object)",
@@ -15815,7 +15815,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L254"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L263"
           },
           {
             "method": "deleteCalendar()",
@@ -15824,7 +15824,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L125"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L127"
           },
           {
             "method": "getColor()",
@@ -15833,7 +15833,7 @@
             "returnType": "String",
             "returnDescription": "A hexadecimal color string (\"#rrggbb\").",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L80"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L82"
           },
           {
             "method": "getDescription()",
@@ -15842,7 +15842,7 @@
             "returnType": "String",
             "returnDescription": "The description of this calendar.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L60"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L62"
           },
           {
             "method": "getEventById(String)",
@@ -15851,7 +15851,7 @@
             "returnType": "CalendarEvent",
             "returnDescription": "The event with the given ID, or null if the event doesn't exist or the user\n    cannot access it.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L234"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L242"
           },
           {
             "method": "getEventSeriesById(String)",
@@ -15860,7 +15860,7 @@
             "returnType": "CalendarEventSeries",
             "returnDescription": "The series with the given ID, or null if the series doesn't exist or the user\n    cannot access it.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L265"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L296"
           },
           {
             "method": "getEvents(Date,Date)",
@@ -15869,7 +15869,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L207"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L214"
           },
           {
             "method": "getEvents(Date,Date,Object)",
@@ -15878,7 +15878,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L207"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L214"
           },
           {
             "method": "getEventsForDay(Date)",
@@ -15887,7 +15887,7 @@
             "returnType": "CalendarEvent[]",
             "returnDescription": "the events that occur on the given date",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L226"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L234"
           },
           {
             "method": "getEventsForDay(Date,Object)",
@@ -15896,7 +15896,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L226"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L234"
           },
           {
             "method": "getId()",
@@ -15905,7 +15905,7 @@
             "returnType": "String",
             "returnDescription": "The ID of the calendar.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L42"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L20"
           },
           {
             "method": "getName()",
@@ -15914,7 +15914,7 @@
             "returnType": "String",
             "returnDescription": "This calendar's name.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L46"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L48"
           },
           {
             "method": "getTimeZone()",
@@ -15923,7 +15923,7 @@
             "returnType": "String",
             "returnDescription": "The time zone, specified in \"long\" format (for example, \"America/New_York\", as listed\n    by Joda.org).",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L70"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L72"
           },
           {
             "method": "isHidden()",
@@ -15932,7 +15932,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the calendar is hidden in the user interface; false if it\n    isn't.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L91"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L93"
           },
           {
             "method": "isMyPrimaryCalendar()",
@@ -15941,7 +15941,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the calendar is the default calendar for the effective user; false if it isn't.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L113"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L115"
           },
           {
             "method": "isOwnedByMe()",
@@ -15950,7 +15950,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the calendar is owned by you; false if not.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L117"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L119"
           },
           {
             "method": "isSelected()",
@@ -15959,7 +15959,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the calendar's events are displayed in the user interface; false if not",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L102"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L104"
           },
           {
             "method": "setColor(String)",
@@ -15968,7 +15968,7 @@
             "returnType": "Calendar",
             "returnDescription": "This calendar for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L85"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L87"
           },
           {
             "method": "setDescription(String)",
@@ -15977,7 +15977,7 @@
             "returnType": "Calendar",
             "returnDescription": "this calendar for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L64"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L66"
           },
           {
             "method": "setHidden(Boolean)",
@@ -15986,7 +15986,7 @@
             "returnType": "Calendar",
             "returnDescription": "this calendar for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L96"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L98"
           },
           {
             "method": "setName(String)",
@@ -15995,7 +15995,7 @@
             "returnType": "Calendar",
             "returnDescription": "this calendar for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L53"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L55"
           },
           {
             "method": "setSelected(Boolean)",
@@ -16004,7 +16004,7 @@
             "returnType": "Calendar",
             "returnDescription": "this calendar for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L107"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L109"
           },
           {
             "method": "setTimeZone(String)",
@@ -16013,7 +16013,7 @@
             "returnType": "Calendar",
             "returnDescription": "This calendar for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L74"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L76"
           },
           {
             "method": "unsubscribeFromCalendar()",
@@ -16022,7 +16022,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L130"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L133"
           }
         ]
       },
@@ -16038,8 +16038,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L106"
           },
           {
             "method": "createAllDayEvent(String,Date,Date)",
@@ -16047,8 +16047,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L106"
           },
           {
             "method": "createAllDayEvent(String,Date,Date,Object)",
@@ -16056,8 +16056,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L106"
           },
           {
             "method": "createAllDayEvent(String,Date,Object)",
@@ -16065,8 +16065,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L106"
           },
           {
             "method": "createAllDayEventSeries(String,Date,EventRecurrence)",
@@ -16074,8 +16074,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L110"
           },
           {
             "method": "createAllDayEventSeries(String,Date,EventRecurrence,Object)",
@@ -16083,8 +16083,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L110"
           },
           {
             "method": "createCalendar(String)",
@@ -16093,7 +16093,7 @@
             "returnType": "Calendar",
             "returnDescription": "the newly created calendar",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L23"
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L31"
           },
           {
             "method": "createCalendar(String,Object)",
@@ -16102,7 +16102,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L23"
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L31"
           },
           {
             "method": "createEvent(String,Date,Date)",
@@ -16110,8 +16110,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L114"
           },
           {
             "method": "createEvent(String,Date,Date,Object)",
@@ -16119,8 +16119,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L114"
           },
           {
             "method": "createEventFromDescription(String)",
@@ -16128,8 +16128,8 @@
             "description": "Creates an event from a free-form description.",
             "returnType": "CalendarEvent",
             "returnDescription": "the created event",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L118"
           },
           {
             "method": "createEventSeries(String,Date,Date,EventRecurrence)",
@@ -16137,8 +16137,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L122"
           },
           {
             "method": "createEventSeries(String,Date,Date,EventRecurrence,Object)",
@@ -16146,8 +16146,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L122"
           },
           {
             "method": "getAllCalendars()",
@@ -16156,7 +16156,7 @@
             "returnType": "Calendar[]",
             "returnDescription": "all calendars that the user can access",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L56"
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L85"
           },
           {
             "method": "getAllOwnedCalendars()",
@@ -16165,7 +16165,7 @@
             "returnType": "Calendar[]",
             "returnDescription": "all calendars that the user owns",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L65"
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L94"
           },
           {
             "method": "getCalendarById(String)",
@@ -16174,7 +16174,7 @@
             "returnType": "Calendar",
             "returnDescription": "the calendar with the given ID, or null if the calendar does not exist, if the\n    user cannot access it, or if the user is not subscribed to the calendar",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L33"
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L49"
           },
           {
             "method": "getCalendarsByName(String)",
@@ -16183,7 +16183,7 @@
             "returnType": "Calendar[]",
             "returnDescription": "all calendars with this name that the user can access",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L46"
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L62"
           },
           {
             "method": "getColor()",
@@ -16191,8 +16191,8 @@
             "description": "Gets the color of the calendar.",
             "returnType": "String",
             "returnDescription": "A hexadecimal color string (\"#rrggbb\").",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L144"
           },
           {
             "method": "getDefaultCalendar()",
@@ -16201,7 +16201,7 @@
             "returnType": "Calendar",
             "returnDescription": "the user's default calendar",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L41"
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L57"
           },
           {
             "method": "getDescription()",
@@ -16209,8 +16209,8 @@
             "description": "Gets the description of the calendar.",
             "returnType": "String",
             "returnDescription": "The description of this calendar.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L152"
           },
           {
             "method": "getEventById(String)",
@@ -16218,8 +16218,8 @@
             "description": "Gets the event with the given ID. If the series belongs to a calendar other than the default\ncalendar, this method must be called from that calendar. Calling getEventById(iCalId) only\nreturns an event in the default calendar.",
             "returnType": "CalendarEvent",
             "returnDescription": "The event with the given ID, or null if the event doesn't exist or the user\n    cannot access it.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L127"
           },
           {
             "method": "getEventSeriesById(String)",
@@ -16227,8 +16227,8 @@
             "description": "Gets the event series with the given ID. If the ID given is for a single CalendarEvent,\nthen a CalendarEventSeries is returned with a single event in the series. Note that if\nthe event series belongs to a calendar other than the default calendar, this method must be\ncalled from that CalendarApp; calling getEventSeriesById(iCalId)\ndirectly only returns an event series that exists in the default calendar.",
             "returnType": "CalendarEventSeries",
             "returnDescription": "The series with the given ID, or null if the series doesn't exist or the user\n    cannot access it.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L139"
           },
           {
             "method": "getEvents(Date,Date)",
@@ -16236,8 +16236,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L131"
           },
           {
             "method": "getEvents(Date,Date,Object)",
@@ -16245,8 +16245,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L131"
           },
           {
             "method": "getEventsForDay(Date)",
@@ -16254,8 +16254,8 @@
             "description": "Gets all events that occur on a given day.",
             "returnType": "CalendarEvent[]",
             "returnDescription": "the events that occur on the given date",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L135"
           },
           {
             "method": "getEventsForDay(Date,Object)",
@@ -16263,8 +16263,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L135"
           },
           {
             "method": "getId()",
@@ -16272,8 +16272,8 @@
             "description": "Gets the ID of the calendar. The ID for a user's default calendar is their email address.",
             "returnType": "String",
             "returnDescription": "The ID of the calendar.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L160"
           },
           {
             "method": "getName()",
@@ -16281,8 +16281,8 @@
             "description": "Gets the name of the calendar.",
             "returnType": "String",
             "returnDescription": "This calendar's name.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L164"
           },
           {
             "method": "getOwnedCalendarById(String)",
@@ -16290,8 +16290,8 @@
             "description": "Gets the calendar with the given ID, if the user owns it.",
             "returnType": "Calendar",
             "returnDescription": "the calendar with the given ID, or null if the calendar does not exist or the\n    user does not own it",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L78"
           },
           {
             "method": "getOwnedCalendarsByName(String)",
@@ -16299,8 +16299,8 @@
             "description": "Gets all calendars with a given name that the user owns. Names are not case-sensitive.",
             "returnType": "Calendar[]",
             "returnDescription": "all calendars with this name that the user owns",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L72"
           },
           {
             "method": "getTimeZone()",
@@ -16308,8 +16308,8 @@
             "description": "Gets the time zone of the calendar.",
             "returnType": "String",
             "returnDescription": "The time zone, specified in \"long\" format (for example, \"America/New_York\", as listed\n    by Joda.org).",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L172"
           },
           {
             "method": "isHidden()",
@@ -16317,8 +16317,8 @@
             "description": "Determines whether the calendar is hidden in the user interface.",
             "returnType": "Boolean",
             "returnDescription": "true if the calendar is hidden in the user interface; false if it\n    isn't.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L180"
           },
           {
             "method": "isMyPrimaryCalendar()",
@@ -16326,8 +16326,8 @@
             "description": "Determines whether the calendar is the primary calendar for the effective user.",
             "returnType": "Boolean",
             "returnDescription": "true if the calendar is the default calendar for the effective user; false if it isn't.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L196"
           },
           {
             "method": "isOwnedByMe()",
@@ -16335,8 +16335,8 @@
             "description": "Determines whether the calendar is owned by you.",
             "returnType": "Boolean",
             "returnDescription": "true if the calendar is owned by you; false if not.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L75"
           },
           {
             "method": "isSelected()",
@@ -16344,8 +16344,8 @@
             "description": "Determines whether the calendar's events are displayed in the user interface.",
             "returnType": "Boolean",
             "returnDescription": "true if the calendar's events are displayed in the user interface; false if not",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L188"
           },
           {
             "method": "newRecurrence()",
@@ -16353,8 +16353,8 @@
             "description": "Creates a new recurrence object, which can be used to create rules for event recurrence.",
             "returnType": "EventRecurrence",
             "returnDescription": "a new recurrence object with no rules set (behaves as a weekly recurrence)",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L26"
           },
           {
             "method": "setColor(String)",
@@ -16362,8 +16362,8 @@
             "description": "Sets the color of the calendar.",
             "returnType": "Calendar",
             "returnDescription": "This calendar for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L148"
           },
           {
             "method": "setDescription(String)",
@@ -16371,8 +16371,8 @@
             "description": "Sets the description of a calendar.",
             "returnType": "Calendar",
             "returnDescription": "this calendar for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L156"
           },
           {
             "method": "setHidden(Boolean)",
@@ -16380,8 +16380,8 @@
             "description": "Sets whether the calendar is visible in the user interface.",
             "returnType": "Calendar",
             "returnDescription": "this calendar for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L184"
           },
           {
             "method": "setName(String)",
@@ -16389,8 +16389,8 @@
             "description": "Sets the name of the calendar.",
             "returnType": "Calendar",
             "returnDescription": "this calendar for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L168"
           },
           {
             "method": "setSelected(Boolean)",
@@ -16398,8 +16398,8 @@
             "description": "Sets whether the calendar's events are displayed in the user interface.",
             "returnType": "Calendar",
             "returnDescription": "this calendar for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L192"
           },
           {
             "method": "setTimeZone(String)",
@@ -16407,8 +16407,8 @@
             "description": "Sets the time zone of the calendar.",
             "returnType": "Calendar",
             "returnDescription": "This calendar for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L176"
           },
           {
             "method": "subscribeToCalendar(String)",
@@ -16416,8 +16416,8 @@
             "description": "Subscribes the user to the calendar with the given ID, if the user is allowed to subscribe.",
             "returnType": "Calendar",
             "returnDescription": "the newly subscribed to calendar",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L41"
           },
           {
             "method": "subscribeToCalendar(String,Object)",
@@ -16425,8 +16425,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakecalendarapp.js#L41"
           }
         ]
       },
@@ -16442,8 +16442,8 @@
             "description": "Gets the number of additional people that this guest has said are attending.",
             "returnType": "Integer",
             "returnDescription": "the number of additional people this guest has said are attending",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakeeventguest.js#L37"
           },
           {
             "method": "getEmail()",
@@ -16451,8 +16451,8 @@
             "description": "Gets the email address of the guest.",
             "returnType": "String",
             "returnDescription": "the guest's email address",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakeeventguest.js#L17"
           },
           {
             "method": "getGuestStatus()",
@@ -16460,8 +16460,8 @@
             "description": "Gets the status of the guest for the event.",
             "returnType": "GuestStatus",
             "returnDescription": "the status of this guest",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakeeventguest.js#L25"
           },
           {
             "method": "getName()",
@@ -16469,8 +16469,8 @@
             "description": "Gets the name of the guest. If the name of the guest is not available, this method returns the\nguest's email address.",
             "returnType": "String",
             "returnDescription": "the guest's name, or the guest's email address if the name is not available",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakeeventguest.js#L21"
           }
         ]
       },
@@ -16486,8 +16486,8 @@
             "description": "Adds a rule that excludes occurrences on a daily basis.",
             "returnType": "RecurrenceRule",
             "returnDescription": "the new RecurrenceRule",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakeeventrecurrence.js#L17"
           },
           {
             "method": "addDailyRule()",
@@ -16495,8 +16495,8 @@
             "description": "Adds a rule that causes the event to recur on a daily basis.",
             "returnType": "RecurrenceRule",
             "returnDescription": "the new RecurrenceRule",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakeeventrecurrence.js#L18"
           },
           {
             "method": "addDate(Date)",
@@ -16504,8 +16504,8 @@
             "description": "Adds a rule that causes the event to recur on a specific date.",
             "returnType": "EventRecurrence",
             "returnDescription": "this EventRecurrence for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakeeventrecurrence.js#L26"
           },
           {
             "method": "addDateExclusion(Date)",
@@ -16513,8 +16513,8 @@
             "description": "Adds a rule that excludes an occurrence for a specific date.",
             "returnType": "EventRecurrence",
             "returnDescription": "this EventRecurrence for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakeeventrecurrence.js#L35"
           },
           {
             "method": "addMonthlyExclusion()",
@@ -16522,8 +16522,8 @@
             "description": "Adds a rule that excludes occurrences on a monthly basis.",
             "returnType": "RecurrenceRule",
             "returnDescription": "the new RecurrenceRule",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakeeventrecurrence.js#L19"
           },
           {
             "method": "addMonthlyRule()",
@@ -16531,8 +16531,8 @@
             "description": "Adds a rule that causes the event to recur on a monthly basis.",
             "returnType": "RecurrenceRule",
             "returnDescription": "the new RecurrenceRule",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakeeventrecurrence.js#L20"
           },
           {
             "method": "addWeeklyExclusion()",
@@ -16540,8 +16540,8 @@
             "description": "Adds a rule that excludes occurrences on a weekly basis.",
             "returnType": "RecurrenceRule",
             "returnDescription": "the new RecurrenceRule",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakeeventrecurrence.js#L21"
           },
           {
             "method": "addWeeklyRule()",
@@ -16549,8 +16549,8 @@
             "description": "Adds a rule that causes the event to recur on a weekly basis.",
             "returnType": "RecurrenceRule",
             "returnDescription": "the new RecurrenceRule",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakeeventrecurrence.js#L22"
           },
           {
             "method": "addYearlyExclusion()",
@@ -16558,8 +16558,8 @@
             "description": "Adds a rule that excludes occurrences on a yearly basis.",
             "returnType": "RecurrenceRule",
             "returnDescription": "the new RecurrenceRule",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakeeventrecurrence.js#L23"
           },
           {
             "method": "addYearlyRule()",
@@ -16567,8 +16567,8 @@
             "description": "Adds a rule that causes the event to recur on a yearly basis.",
             "returnType": "RecurrenceRule",
             "returnDescription": "the new RecurrenceRule",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakeeventrecurrence.js#L24"
           },
           {
             "method": "setTimeZone(String)",
@@ -16576,8 +16576,8 @@
             "description": "Sets the time zone for this recurrence. This affects the date and time that events recur on,\nand whether the event shifts with daylight savings time. Defaults to the calendar's time zone.",
             "returnType": "EventRecurrence",
             "returnDescription": "this EventRecurrence for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakeeventrecurrence.js#L42"
           }
         ]
       },
@@ -16593,8 +16593,8 @@
             "description": "Adds a rule that excludes occurrences on a daily basis.",
             "returnType": "RecurrenceRule",
             "returnDescription": "the new RecurrenceRule",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakerecurrencerule.js#L16"
           },
           {
             "method": "addDailyRule()",
@@ -16602,8 +16602,8 @@
             "description": "Adds a rule that causes the event to recur on a daily basis.",
             "returnType": "RecurrenceRule",
             "returnDescription": "the new RecurrenceRule",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakerecurrencerule.js#L17"
           },
           {
             "method": "addDate(Date)",
@@ -16611,8 +16611,8 @@
             "description": "Adds a rule that causes the event to recur on a specific date.",
             "returnType": "EventRecurrence",
             "returnDescription": "this EventRecurrence for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakerecurrencerule.js#L25"
           },
           {
             "method": "addDateExclusion(Date)",
@@ -16620,8 +16620,8 @@
             "description": "Adds a rule that excludes an occurrence for a specific date.",
             "returnType": "EventRecurrence",
             "returnDescription": "this EventRecurrence for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakerecurrencerule.js#L26"
           },
           {
             "method": "addMonthlyExclusion()",
@@ -16629,8 +16629,8 @@
             "description": "Adds a rule that excludes occurrences on a monthly basis.",
             "returnType": "RecurrenceRule",
             "returnDescription": "the new RecurrenceRule",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakerecurrencerule.js#L18"
           },
           {
             "method": "addMonthlyRule()",
@@ -16638,8 +16638,8 @@
             "description": "Adds a rule that causes the event to recur on a monthly basis.",
             "returnType": "RecurrenceRule",
             "returnDescription": "the new RecurrenceRule",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakerecurrencerule.js#L19"
           },
           {
             "method": "addWeeklyExclusion()",
@@ -16647,8 +16647,8 @@
             "description": "Adds a rule that excludes occurrences on a weekly basis.",
             "returnType": "RecurrenceRule",
             "returnDescription": "the new RecurrenceRule",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakerecurrencerule.js#L20"
           },
           {
             "method": "addWeeklyRule()",
@@ -16656,8 +16656,8 @@
             "description": "Adds a rule that causes the event to recur on a weekly basis.",
             "returnType": "RecurrenceRule",
             "returnDescription": "the new RecurrenceRule",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakerecurrencerule.js#L21"
           },
           {
             "method": "addYearlyExclusion()",
@@ -16665,8 +16665,8 @@
             "description": "Adds a rule that excludes occurrences on a yearly basis.",
             "returnType": "RecurrenceRule",
             "returnDescription": "the new RecurrenceRule",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakerecurrencerule.js#L22"
           },
           {
             "method": "addYearlyRule()",
@@ -16674,8 +16674,8 @@
             "description": "Adds a rule that causes the event to recur on a yearly basis.",
             "returnType": "RecurrenceRule",
             "returnDescription": "the new RecurrenceRule",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakerecurrencerule.js#L23"
           },
           {
             "method": "interval(Integer)",
@@ -16683,8 +16683,8 @@
             "description": "Configures the rule to only apply at this interval of the rule's time unit.",
             "returnType": "RecurrenceRule",
             "returnDescription": "this RecurrenceRule for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakerecurrencerule.js#L28"
           },
           {
             "method": "onlyInMonth(Month)",
@@ -16692,8 +16692,8 @@
             "description": "Configures the rule to only apply to a specific month.",
             "returnType": "RecurrenceRule",
             "returnDescription": "this RecurrenceRule for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakerecurrencerule.js#L29"
           },
           {
             "method": "onlyInMonths(Month)",
@@ -16701,8 +16701,8 @@
             "description": "Configures the rule to only apply to specific months.",
             "returnType": "RecurrenceRule",
             "returnDescription": "this RecurrenceRule for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakerecurrencerule.js#L30"
           },
           {
             "method": "onlyOnMonthDay(Integer)",
@@ -16710,8 +16710,8 @@
             "description": "Configures the rule to only apply to a specific day of the month.",
             "returnType": "RecurrenceRule",
             "returnDescription": "this RecurrenceRule for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakerecurrencerule.js#L31"
           },
           {
             "method": "onlyOnMonthDays(Integer)",
@@ -16719,8 +16719,8 @@
             "description": "Configures the rule to only apply to specific days of the month.",
             "returnType": "RecurrenceRule",
             "returnDescription": "this RecurrenceRule for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakerecurrencerule.js#L32"
           },
           {
             "method": "onlyOnWeek(Integer)",
@@ -16728,8 +16728,8 @@
             "description": "Configures the rule to only apply to a specific week of the year.",
             "returnType": "RecurrenceRule",
             "returnDescription": "this RecurrenceRule for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakerecurrencerule.js#L34"
           },
           {
             "method": "onlyOnWeekday(Weekday)",
@@ -16737,8 +16737,8 @@
             "description": "Configures the rule to only apply to a specific day of the week.",
             "returnType": "RecurrenceRule",
             "returnDescription": "this RecurrenceRule for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakerecurrencerule.js#L35"
           },
           {
             "method": "onlyOnWeekdays(Weekday)",
@@ -16746,8 +16746,8 @@
             "description": "Configures the rule to only apply to specific days of the week.",
             "returnType": "RecurrenceRule",
             "returnDescription": "this RecurrenceRule for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakerecurrencerule.js#L36"
           },
           {
             "method": "onlyOnWeeks(Integer)",
@@ -16755,8 +16755,8 @@
             "description": "Configures the rule to only apply to specific weeks of the year.",
             "returnType": "RecurrenceRule",
             "returnDescription": "this RecurrenceRule for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakerecurrencerule.js#L37"
           },
           {
             "method": "onlyOnYearDay(Integer)",
@@ -16764,8 +16764,8 @@
             "description": "Configures the rule to only apply to a specific day of the year.",
             "returnType": "RecurrenceRule",
             "returnDescription": "this RecurrenceRule for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakerecurrencerule.js#L38"
           },
           {
             "method": "onlyOnYearDays(Integer)",
@@ -16773,8 +16773,8 @@
             "description": "Configures the rule to only apply to specific days of the year.",
             "returnType": "RecurrenceRule",
             "returnDescription": "this RecurrenceRule for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakerecurrencerule.js#L39"
           },
           {
             "method": "setTimeZone(String)",
@@ -16782,8 +16782,8 @@
             "description": "Sets the time zone for this recurrence. This affects the date and time that events recur on,\nand whether the event shifts with daylight savings time. Defaults to the calendar's time zone.",
             "returnType": "EventRecurrence",
             "returnDescription": "this EventRecurrence for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakerecurrencerule.js#L43"
           },
           {
             "method": "times(Integer)",
@@ -16791,8 +16791,8 @@
             "description": "Configures the rule to end after a given number of occurrences.",
             "returnType": "RecurrenceRule",
             "returnDescription": "this RecurrenceRule for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakerecurrencerule.js#L40"
           },
           {
             "method": "until(Date)",
@@ -16800,8 +16800,8 @@
             "description": "Configures the rule to end on a given date (inclusive).",
             "returnType": "RecurrenceRule",
             "returnDescription": "this RecurrenceRule for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakerecurrencerule.js#L41"
           },
           {
             "method": "weekStartsOn(Weekday)",
@@ -16809,8 +16809,8 @@
             "description": "Configures which day a week starts on, for the purposes of applying the rule.",
             "returnType": "RecurrenceRule",
             "returnDescription": "this RecurrenceRule for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/calendarapp/fakerecurrencerule.js#L42"
           }
         ]
       },

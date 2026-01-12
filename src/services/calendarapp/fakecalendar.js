@@ -16,7 +16,9 @@ export class FakeCalendar {
    * @param {object} resource The underlying Calendar resource (Advanced).
    */
   constructor(id, resource) {
-    this.__id = id;
+    // If a resource is provided, use its canonical ID (e.g. email) instead of the lookup ID (e.g. 'primary')
+    // This matches GAS behavior where getId() returns the email even if retrieved via 'primary'
+    this.__id = (resource && resource.id) ? resource.id : id;
   }
 
   /**
@@ -123,11 +125,13 @@ export class FakeCalendar {
    * Permanently deletes a calendar.
    */
   deleteCalendar() {
+    this.__checkUsage('write');
     this.__checkDeleteAccess();
-    Calendar.Calendars.remove(this.getId());
+    Calendar.Calendars.delete(this.getId());
   }
 
   unsubscribeFromCalendar() {
+    this.__checkUsage('write');
     // Unsubscribes the user from a calendar (removes from list).
     Calendar.CalendarList.remove(this.getId());
   }
@@ -138,6 +142,7 @@ export class FakeCalendar {
     if (startTime.getTime() >= endTime.getTime()) {
       throw new Error('Event start date must be before event end date.');
     }
+    this.__checkUsage('write');
     this.__checkWriteAccess();
     const resource = {
       summary: title,
@@ -156,6 +161,7 @@ export class FakeCalendar {
   }
 
   createAllDayEvent(title, startDate, endDateOrOptions, options) {
+    this.__checkUsage('write');
     this.__checkWriteAccess();
     
     let endDate = startDate;
@@ -199,12 +205,14 @@ export class FakeCalendar {
   }
 
   createEventFromDescription(description) {
+    this.__checkUsage('write');
     this.__checkWriteAccess();
     const event = Calendar.Events.quickAdd(this.getId(), description);
     return newFakeCalendarEvent(this.getId(), event);
   }
 
   getEvents(startTime, endTime, options) {
+    this.__checkUsage('read');
     this.__checkReadAccess();
     const args = {
         timeMin: startTime.toISOString(),
@@ -232,6 +240,7 @@ export class FakeCalendar {
   }
 
   getEventById(iCalId) {
+    this.__checkUsage('read');
     this.__checkReadAccess();
     // Apps Script expects iCalUID. Try finding by iCalUID first using list.
     // This avoids "Not Found" errors in the worker when passing iCalUID to events.get (which expects eventId)
@@ -252,18 +261,48 @@ export class FakeCalendar {
   // --- Series ---
   
   createEventSeries(title, startTime, endTime, recurrence, options) {
-      // TODO: Implement recurrence conversion to RRULE
-      // For now, simple insert without proper RRULE if Recurrence object not fully implemented
-      return this.createEvent(title, startTime, endTime, options); // Fallback
+      this.__checkUsage('write');
+      this.__checkWriteAccess();
+      const resource = {
+          summary: title,
+          start: { dateTime: startTime.toISOString() },
+          end: { dateTime: endTime.toISOString() },
+          recurrence: [ recurrence.toString() ] // Assuming recurrence has proper RRULE string representation or handled
+      };
+      this.__applyEventOptions(resource, options);
+      const event = Calendar.Events.insert(resource, this.getId());
+      return newFakeCalendarEventSeries(this.getId(), event);
   }
 
   createAllDayEventSeries(title, startDate, recurrence, options) {
-       // TODO
-       return this.createAllDayEvent(title, startDate, options); // Fallback
+       this.__checkUsage('write');
+       this.__checkWriteAccess();
+       const toDateString = (date) => date.toISOString().split('T')[0];
+       // For all day series, end date is usually next day for the first instance
+       const endDate = new Date(startDate);
+       endDate.setDate(endDate.getDate() + 1);
+
+       const resource = {
+           summary: title,
+           start: { date: toDateString(startDate) },
+           end: { date: toDateString(endDate) },
+           recurrence: [ recurrence.toString() ]
+       };
+       this.__applyEventOptions(resource, options);
+       const event = Calendar.Events.insert(resource, this.getId());
+       return newFakeCalendarEventSeries(this.getId(), event);
   }
 
   getEventSeriesById(iCalId) {
-      // TODO
+      this.__checkUsage('read');
+      this.__checkReadAccess();
+      try {
+          const event = Calendar.Events.get(this.getId(), iCalId);
+          // Check if it's actually a recurring event (has recurrence or is instance)
+          if (event.recurrence || event.recurringEventId) {
+              return newFakeCalendarEventSeries(this.getId(), event);
+          }
+      } catch (e) {}
       return null;
   }
 
@@ -274,6 +313,34 @@ export class FakeCalendar {
         if (options.description) resource.description = options.description;
         if (options.location) resource.location = options.location;
         if (options.guests) resource.attendees = options.guests.split(',').map(e => ({ email: e.trim() }));
+    }
+  }
+
+  __checkUsage(type) {
+    const serviceName = 'CalendarApp';
+    const behavior = ScriptApp.__behavior;
+    if (behavior.sandboxMode) {
+      const settings = behavior.sandboxService[serviceName];
+      let limit = settings && settings.usageLimit;
+      if (limit) {
+        if (typeof limit === 'number') {
+          const total = (settings.usageCount.read || 0) + (settings.usageCount.write || 0) + (settings.usageCount.trash || 0);
+          if (total >= limit) {
+            throw new Error(`Calendar total usage limit of ${limit} exceeded`);
+          }
+          settings.incrementUsage(type);
+          return;
+        }
+
+        let specificLimit = limit[type];
+        if (specificLimit !== undefined) {
+          const current = settings.usageCount[type] || 0;
+          if (current >= specificLimit) {
+            throw new Error(`Calendar ${type} usage limit of ${specificLimit} exceeded`);
+          }
+          settings.incrementUsage(type);
+        }
+      }
     }
   }
 

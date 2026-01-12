@@ -323,12 +323,20 @@ workCals[0].setDescription('Updated description');
 ScriptApp.__behavior.trash();
 ```
 
+### Calendar Event Sandbox
+
+`gas-fakes` extends calendar sandboxing to individual events.
+
+- **Event Modification**: Methods that modify an event (e.g., `setTitle()`, `setDescription()`, `setTime()`) are subject to the same read/write/delete permissions as the parent calendar.
+- **Usage Limits**: Event modifications count towards the `CalendarApp` usage limits (`read`, `write`, `trash`).
+- **Invitee Sandboxing**: Adding guests to an event using `addGuest()` is restricted by the `GmailApp` `emailWhitelist`. Only email addresses in the whitelist (if configured) can be added as guests.
+
 ### Future Calendar Sandbox Features
 
 The following features are planned for future implementation:
 
-- **Event-level sandboxing**: Control access to specific events within calendars
-- **Invitee sandboxing**: Use Gmail's `emailWhitelist` to control which email addresses can be added as event attendees
+- **Recurrence sandboxing**: Control access and modifications to recurring event series.
+- **Advanced event properties**: Granular control over attachments, visibility, and other advanced event fields.
 
 ## <img src="./logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
 

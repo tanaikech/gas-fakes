@@ -41,7 +41,13 @@ export const sxCalendar = async (Auth, { prop, method, params, options = {} }) =
       response = err.response;
     }
 
-    const isRetryable = [429, 500, 503].includes(response?.status) || error?.code == 429;
+    const isRetryable = [429, 500, 503].includes(response?.status) || 
+      error?.code == 429 ||
+      (response?.status === 403 && (
+        error?.message?.toLowerCase().includes('usage limit') ||
+        error?.message?.toLowerCase().includes('rate limit') ||
+        error?.errors?.some(e => ['rateLimitExceeded', 'userRateLimitExceeded', 'calendarUsageLimitsExceeded'].includes(e.reason))
+      ));
 
     if (isRetryable && i < maxRetries - 1) {
       // add a random jitter to avoid thundering herd

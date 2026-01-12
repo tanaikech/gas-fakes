@@ -2,6 +2,7 @@ import is from '@sindresorhus/is';
 let __mss = null
 let __mdoc = null
 let __mfolder = null
+let __mcals = new Map();
 
 export let getDrivePerformance
 export let getSheetsPerformance
@@ -56,10 +57,31 @@ export const wrapupTest = (func) => {
 }
 
 export const trasher = (toTrash) => {
-  toTrash.forEach(f => {
-    console.log('trashing temp file', f.getId())
-    f.setTrashed(true)
-  })
+  const behavior = ScriptApp.isFake ? ScriptApp.__behavior : null;
+  const originalMode = behavior ? behavior.sandboxMode : false;
+  if (behavior) behavior.sandboxMode = false;
+
+  try {
+    toTrash.forEach(f => {
+      if (typeof f.deleteCalendar === 'function') {
+        console.log('deleting temp calendar', f.getId());
+        try {
+          f.deleteCalendar();
+        } catch (e) {
+          console.log('...failed to delete calendar', f.getId(), e.message);
+        }
+      } else {
+        console.log('trashing temp file', f.getId());
+        try {
+          f.setTrashed(true);
+        } catch (e) {
+          console.log('...failed to trash file', f.getId(), e.message);
+        }
+      }
+    });
+  } finally {
+    if (behavior) behavior.sandboxMode = originalMode;
+  }
 }
 
 export const moveToTestFolder = (id) => {
@@ -82,6 +104,75 @@ export const getTestFolder = (fixes) => {
   console.log("...test files will be in", __mfolder.getName(), __mfolder.getId())
   return __mfolder
 }
+
+export const maketcal = (toTrash, fixes, { nameSuffix = 'default', clear = true } = {}) => {
+  const behavior = ScriptApp.isFake ? ScriptApp.__behavior : null;
+  const originalMode = behavior ? behavior.sandboxMode : false;
+  if (behavior) behavior.sandboxMode = false;
+
+  const calName = fixes.PREFIX + "tss-calendar-" + nameSuffix;
+  let cal = __mcals.get(calName);
+  let reuse = false;
+
+  try {
+    if (!cal) {
+      // Check if it exists in account (in case of restart)
+      const existing = CalendarApp.getCalendarsByName(calName);
+      if (existing.length > 0) {
+        cal = existing[0];
+        if (existing.length > 1) {
+          console.log('...cleaning up duplicate calendars for', calName);
+          for (let i = 1; i < existing.length; i++) {
+             try { existing[i].deleteCalendar(); } catch(e) { console.log('failed to delete duplicate', e.message); }
+          }
+        }
+        console.log('...found existing calendar', cal.getName(), cal.getId());
+        reuse = true;
+      } else {
+        cal = CalendarApp.createCalendar(calName);
+        console.log('...created calendar', cal.getName(), cal.getId());
+      }
+      __mcals.set(calName, cal);
+    } else {
+      try {
+        // Refresh reference
+        cal = CalendarApp.getCalendarById(cal.getId());
+        if (!cal) throw new Error('Calendar not found');
+        reuse = true;
+      } catch (e) {
+        // Recreate if it was deleted
+        cal = CalendarApp.createCalendar(calName);
+        __mcals.set(calName, cal);
+        console.log('...re-created calendar (was deleted)', cal.getName(), cal.getId());
+        reuse = false;
+      }
+    }
+  } finally {
+    if (behavior) behavior.sandboxMode = originalMode;
+  }
+  
+  // If we are in sandbox mode (or were), we want this calendar to be accessible
+  // as if it were created in this session.
+  if (behavior && originalMode && cal) {
+      behavior.addCalendarId(cal.getId());
+  }
+
+  // Register for cleanup
+  if (toTrash && cal) {
+    // Avoid duplicates in toTrash
+    if (!toTrash.some(item => item.getId && item.getId() === cal.getId())) {
+      toTrash.push(cal);
+    }
+  }
+
+  return {
+    cal,
+    calName,
+    reuse
+  };
+};
+
+
 export const maketdoc = (toTrash, fixes, { clear = true, forceNew = false } = {}) => {
   const docName = fixes.PREFIX + "tss-docs";
   const folder = getTestFolder(fixes);

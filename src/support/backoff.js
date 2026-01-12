@@ -7,7 +7,13 @@ const defaultOptions = {
   initialDelay: 100,
   factor: 2,
   jitter: true,
-  shouldRetry: (err) => [429, 500, 503].includes(err.response?.status) || err.code == 429,
+  shouldRetry: (err) => [429, 500, 503].includes(err.response?.status) || 
+    err.code == 429 || 
+    (err.response?.status === 403 && (
+      err.message?.toLowerCase().includes('usage limit') || 
+      err.message?.toLowerCase().includes('rate limit') ||
+      err.errors?.some(e => ['rateLimitExceeded', 'userRateLimitExceeded', 'calendarUsageLimitsExceeded'].includes(e.reason))
+    )),
   onRetry: () => {},
 };
 
