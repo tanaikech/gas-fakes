@@ -1,7 +1,7 @@
 import { Proxies } from '../../support/proxies.js';
 import { newFakeCalendarEvent } from './fakecalendarevent.js';
 import { newFakeCalendarEventSeries } from './fakecalendareventseries.js';
-
+import { Utils } from '../../support/utils.js';
 export const newFakeCalendar = (...args) => {
   return Proxies.guard(new FakeCalendar(...args));
 };
@@ -83,10 +83,13 @@ export class FakeCalendar {
     const entry = this.__listEntry;
     return entry ? entry.backgroundColor : '';
   }
-
+  // this can be an enum, or a hex code
   setColor(color) {
     this.__checkWriteAccess();
-    Calendar.CalendarList.patch({ backgroundColor: color }, this.getId());
+    if (Utils.isEnum(color)) {
+      color = color.toString();
+    }
+    Calendar.CalendarList.patch({ backgroundColor: color }, this.getId(), {colorRgbFormat: true});
     return this;
   }
 

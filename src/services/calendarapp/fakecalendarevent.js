@@ -329,12 +329,9 @@ export class FakeCalendarEvent {
 
   setColor(color) {
     this.__checkWriteAccess();
-    // Maps EventColor enum to colorId. 
-    // This is tricky as colorIds are integers in API but strings/enums in Apps Script.
-    // For fake implementation, we might just store it as a property or try to map standard ones.
-    // Simplified: Just store a mapped ID or 1 for now if we don't have full map.
-    // Ideally we'd have a map.
-    Calendar.Events.patch({ colorId: '1' }, this.__calendarId, this.__id); // Placeholder
+    // color should be an enum value or a colorId string
+    const colorId = color.toString();
+    Calendar.Events.patch({ colorId }, this.__calendarId, this.__id); 
     return this;
   }
 

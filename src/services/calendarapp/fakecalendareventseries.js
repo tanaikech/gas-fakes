@@ -245,7 +245,9 @@ export class FakeCalendarEventSeries {
 
   setColor(color) {
     this.__checkWriteAccess();
-    Calendar.Events.patch({ colorId: '1' }, this.__calendarId, this.__id); // Placeholder
+    // color should be an enum value or a colorId string
+    const colorId = color.toString();
+    Calendar.Events.patch({ colorId }, this.__calendarId, this.__id); 
     return this;
   }
 

@@ -543,7 +543,7 @@ class FakeBehavior {
       trashedCalendars = Array.from(this.__createdCalendarIds).reduce((acc, id) => {
         try {
           // Delete calendar
-          Calendar.Calendars.delete(id);
+          Calendar.Calendars.delete(id, { noLog404: true });
           slogger.log(`...deleted calendar ${id}`);
           acc.push(id);
         } catch (e) {

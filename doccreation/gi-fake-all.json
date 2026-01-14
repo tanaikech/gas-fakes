@@ -14791,7 +14791,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if non-guests can add themselves to the event; false if not",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L350"
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L352"
           },
           {
             "method": "deleteEventSeries()",
@@ -14800,7 +14800,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L378"
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L380"
           },
           {
             "method": "deleteTag(String)",
@@ -14872,7 +14872,7 @@
             "returnType": "EventType",
             "returnDescription": "The event type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L252"
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L254"
           },
           {
             "method": "getGuestByEmail(String)",
@@ -14935,7 +14935,7 @@
             "returnType": "GuestStatus",
             "returnDescription": "the status",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L263"
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L265"
           },
           {
             "method": "getOriginalCalendarId()",
@@ -14989,7 +14989,7 @@
             "returnType": "EventTransparency",
             "returnDescription": "The transparency value.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L307"
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L309"
           },
           {
             "method": "getVisibility()",
@@ -15007,7 +15007,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if guests can invite others; false if not",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L320"
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L322"
           },
           {
             "method": "guestsCanModify()",
@@ -15016,7 +15016,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if guests can modify the event; false if not",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L330"
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L332"
           },
           {
             "method": "guestsCanSeeGuests()",
@@ -15025,7 +15025,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if guests can see other guests; false if not",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L340"
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L342"
           },
           {
             "method": "isOwnedByMe()",
@@ -15070,7 +15070,7 @@
             "returnType": "CalendarEventSeries",
             "returnDescription": "this CalendarEventSeries for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L354"
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L356"
           },
           {
             "method": "setColor(String)",
@@ -15097,7 +15097,7 @@
             "returnType": "CalendarEventSeries",
             "returnDescription": "this CalendarEventSeries for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L324"
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L326"
           },
           {
             "method": "setGuestsCanModify(Boolean)",
@@ -15106,7 +15106,7 @@
             "returnType": "CalendarEventSeries",
             "returnDescription": "this CalendarEventSeries for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L334"
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L336"
           },
           {
             "method": "setGuestsCanSeeGuests(Boolean)",
@@ -15115,7 +15115,7 @@
             "returnType": "CalendarEventSeries",
             "returnDescription": "this CalendarEventSeries for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L344"
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L346"
           },
           {
             "method": "setLocation(String)",
@@ -15133,7 +15133,7 @@
             "returnType": "CalendarEventSeries",
             "returnDescription": "this CalendarEventSeries for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L278"
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L280"
           },
           {
             "method": "setRecurrence(EventRecurrence,Date)",
@@ -15142,7 +15142,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L362"
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L364"
           },
           {
             "method": "setRecurrence(EventRecurrence,Date,Date)",
@@ -15151,7 +15151,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L362"
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L364"
           },
           {
             "method": "setTag(String,String)",
@@ -15178,7 +15178,7 @@
             "returnType": "CalendarEventSeries",
             "returnDescription": "This CalendarEventSeries for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L313"
+            "implementationLink": "src/services/calendarapp/fakecalendareventseries.js#L315"
           },
           {
             "method": "setVisibility(Visibility)",
@@ -15240,7 +15240,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if non-guests can add themselves to the event; false if not",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L447"
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L444"
           },
           {
             "method": "deleteEvent()",
@@ -15249,7 +15249,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L459"
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L456"
           },
           {
             "method": "deleteTag(String)",
@@ -15357,7 +15357,7 @@
             "returnType": "EventType",
             "returnDescription": "The event type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L341"
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L338"
           },
           {
             "method": "getGuestByEmail(String)",
@@ -15420,7 +15420,7 @@
             "returnType": "GuestStatus",
             "returnDescription": "the status",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L352"
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L349"
           },
           {
             "method": "getOriginalCalendarId()",
@@ -15483,7 +15483,7 @@
             "returnType": "EventTransparency",
             "returnDescription": "The transparency value.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L393"
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L390"
           },
           {
             "method": "getVisibility()",
@@ -15501,7 +15501,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if guests can invite others; false if not",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L417"
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L414"
           },
           {
             "method": "guestsCanModify()",
@@ -15510,7 +15510,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if guests can modify the event; false if not",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L427"
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L424"
           },
           {
             "method": "guestsCanSeeGuests()",
@@ -15519,7 +15519,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if guests can see other guests; false if not",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L437"
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L434"
           },
           {
             "method": "isAllDayEvent()",
@@ -15591,7 +15591,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L406"
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L403"
           },
           {
             "method": "setAnyoneCanAddSelf(Boolean)",
@@ -15600,7 +15600,7 @@
             "returnType": "CalendarEvent",
             "returnDescription": "this CalendarEvent for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L451"
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L448"
           },
           {
             "method": "setColor(String)",
@@ -15627,7 +15627,7 @@
             "returnType": "CalendarEvent",
             "returnDescription": "this CalendarEvent for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L421"
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L418"
           },
           {
             "method": "setGuestsCanModify(Boolean)",
@@ -15636,7 +15636,7 @@
             "returnType": "CalendarEvent",
             "returnDescription": "this CalendarEvent for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L431"
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L428"
           },
           {
             "method": "setGuestsCanSeeGuests(Boolean)",
@@ -15645,7 +15645,7 @@
             "returnType": "CalendarEvent",
             "returnDescription": "this CalendarEvent for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L441"
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L438"
           },
           {
             "method": "setLocation(String)",
@@ -15663,7 +15663,7 @@
             "returnType": "CalendarEvent",
             "returnDescription": "this CalendarEvent for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L367"
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L364"
           },
           {
             "method": "setTag(String,String)",
@@ -15699,7 +15699,7 @@
             "returnType": "CalendarEvent",
             "returnDescription": "This CalendarEvent for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L399"
+            "implementationLink": "src/services/calendarapp/fakecalendarevent.js#L396"
           },
           {
             "method": "setVisibility(Visibility)",
@@ -15725,7 +15725,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L163"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L166"
           },
           {
             "method": "createAllDayEvent(String,Date,Date)",
@@ -15734,7 +15734,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L163"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L166"
           },
           {
             "method": "createAllDayEvent(String,Date,Date,Object)",
@@ -15743,7 +15743,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L163"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L166"
           },
           {
             "method": "createAllDayEvent(String,Date,Object)",
@@ -15752,7 +15752,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L163"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L166"
           },
           {
             "method": "createAllDayEventSeries(String,Date,EventRecurrence)",
@@ -15761,7 +15761,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L277"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L280"
           },
           {
             "method": "createAllDayEventSeries(String,Date,EventRecurrence,Object)",
@@ -15770,7 +15770,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L277"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L280"
           },
           {
             "method": "createEvent(String,Date,Date)",
@@ -15779,7 +15779,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L141"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L144"
           },
           {
             "method": "createEvent(String,Date,Date,Object)",
@@ -15788,7 +15788,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L141"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L144"
           },
           {
             "method": "createEventFromDescription(String)",
@@ -15797,7 +15797,7 @@
             "returnType": "CalendarEvent",
             "returnDescription": "the created event",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L207"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L210"
           },
           {
             "method": "createEventSeries(String,Date,Date,EventRecurrence)",
@@ -15806,7 +15806,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L263"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L266"
           },
           {
             "method": "createEventSeries(String,Date,Date,EventRecurrence,Object)",
@@ -15815,7 +15815,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L263"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L266"
           },
           {
             "method": "deleteCalendar()",
@@ -15824,7 +15824,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L127"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L130"
           },
           {
             "method": "getColor()",
@@ -15851,7 +15851,7 @@
             "returnType": "CalendarEvent",
             "returnDescription": "The event with the given ID, or null if the event doesn't exist or the user\n    cannot access it.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L242"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L245"
           },
           {
             "method": "getEventSeriesById(String)",
@@ -15860,7 +15860,7 @@
             "returnType": "CalendarEventSeries",
             "returnDescription": "The series with the given ID, or null if the series doesn't exist or the user\n    cannot access it.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L296"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L299"
           },
           {
             "method": "getEvents(Date,Date)",
@@ -15869,7 +15869,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L214"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L217"
           },
           {
             "method": "getEvents(Date,Date,Object)",
@@ -15878,7 +15878,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L214"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L217"
           },
           {
             "method": "getEventsForDay(Date)",
@@ -15887,7 +15887,7 @@
             "returnType": "CalendarEvent[]",
             "returnDescription": "the events that occur on the given date",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L234"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L237"
           },
           {
             "method": "getEventsForDay(Date,Object)",
@@ -15896,7 +15896,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L234"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L237"
           },
           {
             "method": "getId()",
@@ -15932,7 +15932,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the calendar is hidden in the user interface; false if it\n    isn't.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L93"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L96"
           },
           {
             "method": "isMyPrimaryCalendar()",
@@ -15941,7 +15941,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the calendar is the default calendar for the effective user; false if it isn't.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L115"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L118"
           },
           {
             "method": "isOwnedByMe()",
@@ -15950,7 +15950,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the calendar is owned by you; false if not.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L119"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L122"
           },
           {
             "method": "isSelected()",
@@ -15959,7 +15959,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the calendar's events are displayed in the user interface; false if not",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L104"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L107"
           },
           {
             "method": "setColor(String)",
@@ -15986,7 +15986,7 @@
             "returnType": "Calendar",
             "returnDescription": "this calendar for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L98"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L101"
           },
           {
             "method": "setName(String)",
@@ -16004,7 +16004,7 @@
             "returnType": "Calendar",
             "returnDescription": "this calendar for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L109"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L112"
           },
           {
             "method": "setTimeZone(String)",
@@ -16022,7 +16022,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/calendarapp/fakecalendar.js#L133"
+            "implementationLink": "src/services/calendarapp/fakecalendar.js#L136"
           }
         ]
       },
@@ -16826,7 +16826,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L32"
+            "implementationLink": "src/services/enums/calendarenums.js#L36"
           },
           {
             "method": "PALE_GREEN",
@@ -16834,7 +16834,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L33"
+            "implementationLink": "src/services/enums/calendarenums.js#L37"
           },
           {
             "method": "MAUVE",
@@ -16842,7 +16842,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L30"
+            "implementationLink": "src/services/enums/calendarenums.js#L34"
           },
           {
             "method": "PALE_RED",
@@ -16850,7 +16850,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L34"
+            "implementationLink": "src/services/enums/calendarenums.js#L38"
           },
           {
             "method": "YELLOW",
@@ -16858,7 +16858,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L23"
+            "implementationLink": "src/services/enums/calendarenums.js#L25"
           },
           {
             "method": "ORANGE",
@@ -16866,7 +16866,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L13"
+            "implementationLink": "src/services/enums/calendarenums.js#L15"
           },
           {
             "method": "CYAN",
@@ -16874,7 +16874,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L27"
+            "implementationLink": "src/services/enums/calendarenums.js#L31"
           },
           {
             "method": "GRAY",
@@ -16882,7 +16882,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L7"
+            "implementationLink": "src/services/enums/calendarenums.js#L9"
           },
           {
             "method": "BLUE",
@@ -16890,7 +16890,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L3"
+            "implementationLink": "src/services/enums/calendarenums.js#L5"
           },
           {
             "method": "GREEN",
@@ -16898,7 +16898,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L8"
+            "implementationLink": "src/services/enums/calendarenums.js#L10"
           },
           {
             "method": "RED",
@@ -16906,7 +16906,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L17"
+            "implementationLink": "src/services/enums/calendarenums.js#L19"
           }
         ]
       },
@@ -16922,7 +16922,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L3"
+            "implementationLink": "src/services/enums/calendarenums.js#L5"
           },
           {
             "method": "BROWN",
@@ -16930,7 +16930,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L4"
+            "implementationLink": "src/services/enums/calendarenums.js#L6"
           },
           {
             "method": "CHARCOAL",
@@ -16938,7 +16938,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L5"
+            "implementationLink": "src/services/enums/calendarenums.js#L7"
           },
           {
             "method": "CHESTNUT",
@@ -16946,7 +16946,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L6"
+            "implementationLink": "src/services/enums/calendarenums.js#L8"
           },
           {
             "method": "GRAY",
@@ -16954,7 +16954,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L7"
+            "implementationLink": "src/services/enums/calendarenums.js#L9"
           },
           {
             "method": "GREEN",
@@ -16962,7 +16962,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L8"
+            "implementationLink": "src/services/enums/calendarenums.js#L10"
           },
           {
             "method": "INDIGO",
@@ -16970,7 +16970,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L9"
+            "implementationLink": "src/services/enums/calendarenums.js#L11"
           },
           {
             "method": "LIME",
@@ -16978,7 +16978,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L10"
+            "implementationLink": "src/services/enums/calendarenums.js#L12"
           },
           {
             "method": "MUSTARD",
@@ -16986,7 +16986,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L11"
+            "implementationLink": "src/services/enums/calendarenums.js#L13"
           },
           {
             "method": "OLIVE",
@@ -16994,7 +16994,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L12"
+            "implementationLink": "src/services/enums/calendarenums.js#L14"
           },
           {
             "method": "ORANGE",
@@ -17002,7 +17002,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L13"
+            "implementationLink": "src/services/enums/calendarenums.js#L15"
           },
           {
             "method": "PINK",
@@ -17010,7 +17010,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L14"
+            "implementationLink": "src/services/enums/calendarenums.js#L16"
           },
           {
             "method": "PLUM",
@@ -17018,7 +17018,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L15"
+            "implementationLink": "src/services/enums/calendarenums.js#L17"
           },
           {
             "method": "PURPLE",
@@ -17026,7 +17026,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L16"
+            "implementationLink": "src/services/enums/calendarenums.js#L18"
           },
           {
             "method": "RED",
@@ -17034,7 +17034,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L17"
+            "implementationLink": "src/services/enums/calendarenums.js#L19"
           },
           {
             "method": "RED_ORANGE",
@@ -17042,7 +17042,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L18"
+            "implementationLink": "src/services/enums/calendarenums.js#L20"
           },
           {
             "method": "SEA_BLUE",
@@ -17050,7 +17050,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L19"
+            "implementationLink": "src/services/enums/calendarenums.js#L21"
           },
           {
             "method": "SLATE",
@@ -17058,7 +17058,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L20"
+            "implementationLink": "src/services/enums/calendarenums.js#L22"
           },
           {
             "method": "TEAL",
@@ -17066,7 +17066,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L21"
+            "implementationLink": "src/services/enums/calendarenums.js#L23"
           },
           {
             "method": "TURQOISE",
@@ -17074,7 +17074,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L22"
+            "implementationLink": "src/services/enums/calendarenums.js#L24"
           },
           {
             "method": "YELLOW",
@@ -17082,7 +17082,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L23"
+            "implementationLink": "src/services/enums/calendarenums.js#L25"
           }
         ]
       },
@@ -17098,7 +17098,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L51"
+            "implementationLink": "src/services/enums/calendarenums.js#L56"
           },
           {
             "method": "MAYBE",
@@ -17106,7 +17106,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L52"
+            "implementationLink": "src/services/enums/calendarenums.js#L57"
           },
           {
             "method": "NO",
@@ -17114,7 +17114,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L53"
+            "implementationLink": "src/services/enums/calendarenums.js#L58"
           },
           {
             "method": "OWNER",
@@ -17122,7 +17122,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L54"
+            "implementationLink": "src/services/enums/calendarenums.js#L59"
           },
           {
             "method": "YES",
@@ -17130,7 +17130,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L55"
+            "implementationLink": "src/services/enums/calendarenums.js#L60"
           }
         ]
       },
@@ -17146,7 +17146,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L43"
+            "implementationLink": "src/services/enums/calendarenums.js#L48"
           },
           {
             "method": "BIRTHDAY",
@@ -17154,7 +17154,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L44"
+            "implementationLink": "src/services/enums/calendarenums.js#L49"
           },
           {
             "method": "FOCUS_TIME",
@@ -17162,7 +17162,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L45"
+            "implementationLink": "src/services/enums/calendarenums.js#L50"
           },
           {
             "method": "FROM_GMAIL",
@@ -17170,7 +17170,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L46"
+            "implementationLink": "src/services/enums/calendarenums.js#L51"
           },
           {
             "method": "OUT_OF_OFFICE",
@@ -17178,7 +17178,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L47"
+            "implementationLink": "src/services/enums/calendarenums.js#L52"
           },
           {
             "method": "WORKING_LOCATION",
@@ -17186,7 +17186,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L48"
+            "implementationLink": "src/services/enums/calendarenums.js#L53"
           }
         ]
       },
@@ -17202,7 +17202,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L72"
+            "implementationLink": "src/services/enums/calendarenums.js#L77"
           },
           {
             "method": "DEFAULT",
@@ -17210,7 +17210,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L43"
+            "implementationLink": "src/services/enums/calendarenums.js#L48"
           },
           {
             "method": "PRIVATE",
@@ -17218,7 +17218,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L74"
+            "implementationLink": "src/services/enums/calendarenums.js#L79"
           },
           {
             "method": "PUBLIC",
@@ -17226,7 +17226,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L75"
+            "implementationLink": "src/services/enums/calendarenums.js#L80"
           }
         ]
       },
@@ -17242,7 +17242,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L39"
+            "implementationLink": "src/services/enums/calendarenums.js#L44"
           },
           {
             "method": "TRANSPARENT",
@@ -17250,7 +17250,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/calendarenums.js#L40"
+            "implementationLink": "src/services/enums/calendarenums.js#L45"
           }
         ]
       }

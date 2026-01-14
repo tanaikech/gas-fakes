@@ -342,6 +342,8 @@ export const testCalendarSandbox = (pack) => {
       }
     });
 
+  } else {
+    console.log ('...skipping sandbox tests in live apps script environment');
   }
 
   // delete test calendars

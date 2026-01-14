@@ -54,10 +54,8 @@ import { testSandbox } from "./testsandbox.js";
 import { testDocsStyles } from "./testdocsstyles.js";
 import { testChat } from './testchat.js';
 import { testPeople } from './testpeople.js';
-import { testCalendar } from './testcalendar.js';
-import { testCalendarApp } from './testcalendarapp.js';
+import { testCalendars } from './testcalendars.js';
 import { testCalendarSandbox } from './testcalendarsandbox.js';
-import { testCalendarClass } from './testcalendarclass.js';
 import { testTasks } from './testtasks.js';
 import { testWorkspaceEvents } from './testworkspaceevents.js';
 import { testLogger } from "./testlogger.js";
@@ -78,14 +76,12 @@ const testFakes = () => {
   testMimeType(pack);
   console.log("\n----Test workspaceevents----");
   testWorkspaceEvents(pack);
+
   console.log("\n----Test calendar----");
-  testCalendar(pack);
-  console.log("\n----Test calendarapp----");
-  testCalendarApp(pack);
+  testCalendars(pack);
   console.log("\n----Test calendarsandbox----");
   testCalendarSandbox(pack);
-  console.log("\n----Test calendarclass----");
-  testCalendarClass(pack);
+
   console.log("\n----Test tasks----");
   testTasks(pack);
   console.log("\n----Test people----");

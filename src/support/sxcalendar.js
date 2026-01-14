@@ -29,19 +29,21 @@ export const sxCalendar = async (Auth, { prop, method, params, options = {} }) =
   const maxRetries = 7;
   let delay = 1777;
 
+  const { noLog404, ...validParams } = params || {};
+
   for (let i = 0; i < maxRetries; i++) {
     let response;
     let error;
 
     try {
       const callish = apiClient[prop];
-      response = await callish[method](params, options);
+      response = await callish[method](validParams, options);
     } catch (err) {
       error = err;
       response = err.response;
     }
 
-    const isRetryable = [429, 500, 503].includes(response?.status) || 
+    const isRetryable = [429, 500, 503].includes(response?.status) ||
       error?.code == 429 ||
       (response?.status === 403 && (
         error?.message?.toLowerCase().includes('usage limit') ||
@@ -59,7 +61,11 @@ export const sxCalendar = async (Auth, { prop, method, params, options = {} }) =
     }
 
     if (error || isRetryable) {
-      syncError(`Failed in sxCalendar for ${prop}.${method}`, error);
+      if (noLog404 && (response?.status === 404 || error?.code === 404 || response?.status === 400 || error?.code === 400)) {
+        // Suppress logging for expected 404s (or 400s which can happen if already deleted)
+      } else {
+        syncError(`Failed in sxCalendar for ${prop}.${method}`, error);
+      }
       return { data: null, response: responseSyncify(response) };
     }
     return { data: response.data, response: responseSyncify(response) };
