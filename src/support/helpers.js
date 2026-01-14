@@ -33,7 +33,7 @@ export const wontBeImplemented = (item="That") => {
   throw new Error(mess)
 }
 // added parents to the minfield length as its often needed
-const minFieldsList = ["name","id","mimeType","kind","parents"]
+const minFieldsList = ["name","id","mimeType","kind","parents","md5Checksum","size"]
 /**
  * minimum fields  these are the filds I'll take back from  the API to enable basic DriveApp - these are the defaults returned by the api
  * any other will be picked up on demand
