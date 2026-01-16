@@ -244,35 +244,94 @@ The JSON object used with the `-j` option follows this schema:
       }
     },
     "gmailSandbox": {
-      "emailWhitelist": {
-        "description": "List of email addresses allowed to receive emails. Emails sent to addresses not in this list (or allowed by session rules) will throw an error.",
-        "type": "array",
-        "items": {
+      "description": "Configuration for Gmail sandbox settings.",
+      "type": "object",
+      "properties": {
+        "emailWhitelist": {
           "description": "List of email addresses allowed to receive emails. Emails sent to addresses not in this list (or allowed by session rules) will throw an error.",
-          "type": "string"
-        }
-      },
-      "usageLimit": {
-        "description": "Limits for operations. Can be a number (implies total limit for all operations combined) or an object { read?: number, write?: number, trash?: number, send?: number }.",
-        "type": ["number", "object"]
-      },
-      "labelWhitelist": {
-        "description": "Configuration for allowed labels, specifying name and permissions (read, write, delete, send).",
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "name": { "description": "Label name", "type": "string" },
-            "read": { "description": "read", "type": "boolean" },
-            "write": { "description": "write", "type": "boolean" },
-            "delete": { "description": "delete", "type": "boolean" },
-            "send": { "description": "send", "type": "boolean" }
+          "type": "array",
+          "items": {
+            "description": "List of email addresses allowed to receive emails. Emails sent to addresses not in this list (or allowed by session rules) will throw an error.",
+            "type": "string"
           }
+        },
+        "usageLimit": {
+          "description": "Limits for operations. Can be a number (implies total limit for all operations combined) or an object { read?: number, write?: number, trash?: number, send?: number }.",
+          "type": ["number", "object"]
+        },
+        "labelWhitelist": {
+          "description": "Configuration for allowed labels, specifying name and permissions (read, write, delete, send).",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "description": "Label name",
+                "type": "string"
+              },
+              "read": {
+                "description": "read",
+                "type": "boolean"
+              },
+              "write": {
+                "description": "write",
+                "type": "boolean"
+              },
+              "delete": {
+                "description": "delete",
+                "type": "boolean"
+              },
+              "send": {
+                "description": "send",
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "cleanup": {
+          "description": "Controls whether Gmail artifacts (labels, threads) created in the session are trashed on cleanup. Defaults to global setting if not set.",
+          "type": "boolean"
         }
-      },
-      "cleanup": {
-        "description": "Controls whether Gmail artifacts (labels, threads) created in the session are trashed on cleanup. Defaults to global setting if not set.",
-        "type": "boolean"
+      }
+    },
+    "calendarSandbox": {
+      "description": "Configuration for Calendar sandbox settings.",
+      "type": "object",
+      "properties": {
+        "calendarWhitelist": {
+          "description": "Configuration for allowed calendars, specifying name and permissions (read, write, delete).",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "description": "Calendar name",
+                "type": "string"
+              },
+              "read": {
+                "description": "read",
+                "type": "boolean"
+              },
+              "write": {
+                "description": "write",
+                "type": "boolean"
+              },
+              "delete": {
+                "description": "delete",
+                "type": "boolean"
+              }
+            },
+            "required": ["name"]
+          }
+        },
+        "usageLimit": {
+          "description": "Limits for operations. Can be a number (implies total limit for all operations combined) or an object { read?: number, write?: number, trash?: number }.",
+          "type": ["number", "object"]
+        },
+        "cleanup": {
+          "description": "Controls whether calendars created in the session are deleted on cleanup. Defaults to global setting if not set.",
+          "type": "boolean"
+        }
       }
     },
     "whitelistServices": {
