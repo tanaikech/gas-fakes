@@ -66,6 +66,30 @@ function generateGmailSandbox(gmailSandbox) {
   return temp;
 }
 
+function generateCalendarSandbox(calendarSandbox) {
+  if (!calendarSandbox) return [];
+  const { calendarWhitelist, usageLimit, cleanup } = calendarSandbox;
+  const temp = [
+    "const calendarSettings = behavior.sandboxService.CalendarApp;",
+  ];
+
+  if (calendarWhitelist && calendarWhitelist.length > 0) {
+    temp.push(
+      `calendarSettings.calendarWhitelist = ${JSON.stringify(
+        calendarWhitelist
+      )};`
+    );
+  }
+  if (calendarSandbox.hasOwnProperty("cleanup")) {
+    temp.push(`calendarSettings.cleanup = ${cleanup};`);
+  }
+  if (usageLimit) {
+    // usageLimit can be a number or an object, so stringify ensures correct format.
+    temp.push(`calendarSettings.usageLimit = ${JSON.stringify(usageLimit)};`);
+  }
+  return temp;
+}
+
 function generateSandboxSetupScript(sandboxConfig) {
   const script = [
     "const behavior = ScriptApp.__behavior;",
@@ -73,12 +97,18 @@ function generateSandboxSetupScript(sandboxConfig) {
     "behavior.strictSandbox = true;",
   ];
 
-  const { whitelistServices, blacklistServices, whitelistItems, gmailSandbox } =
-    sandboxConfig;
+  const {
+    whitelistServices,
+    blacklistServices,
+    whitelistItems,
+    gmailSandbox,
+    calendarSandbox,
+  } = sandboxConfig;
 
   script.push(...generateServiceWhitelistScript(whitelistServices));
   script.push(...generateServiceBlacklistScript(blacklistServices));
   script.push(...generateGmailSandbox(gmailSandbox));
+  script.push(...generateCalendarSandbox(calendarSandbox));
 
   const itemWhitelist = generateItemWhitelistScript(whitelistItems);
   if (itemWhitelist) {

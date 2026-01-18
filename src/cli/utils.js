@@ -4,7 +4,7 @@ const require = createRequire(import.meta.url);
 const pjson = require("../../package.json");
 
 export const VERSION = pjson.version;
-export const CLI_VERSION = "0.0.19";
+export const CLI_VERSION = "0.0.20";
 export const MCP_VERSION = "0.0.7";
 
 /**
