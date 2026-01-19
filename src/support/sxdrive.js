@@ -11,6 +11,7 @@ import intoStream from 'into-stream';
 import { getStreamAsBuffer } from 'get-stream';
 import { syncWarn, syncError, syncLog } from './workersync/synclogger.js';
 import { getDriveApiClient } from '../services/advdrive/drapis.js';
+import { translateFieldsToV2 } from './utils.js';
 
 
 /**
@@ -59,6 +60,17 @@ export const sxDrive = async (Auth, { prop, method, params, options }) => {
     }
 
     const isRetryable = [429, 500, 503].includes(response?.status) || error?.code == 429;
+
+    // handle invalid field selection - sometimes old files dont support createdTime or modifiedTime
+    // we'll try to fallback to createdDate and modifiedDate
+    const isInvalidField = error?.message?.includes("Invalid field selection") && (params?.fields?.includes("createdTime") || params?.fields?.includes("modifiedTime"));
+
+    if (isInvalidField && i < maxRetries - 1) {
+      const fileId = params?.fileId ? ` for file ${params.fileId}` : "";
+      syncWarn(`Invalid field selection error on Drive API call ${prop}.${method}${fileId}. Retrying with v2 field names...`);
+      params.fields = translateFieldsToV2(params.fields);
+      continue;
+    }
 
     if (isRetryable && i < maxRetries - 1) {
       // add a random jitter to avoid thundering herd
@@ -173,10 +185,12 @@ const sxStreamer = async ({
  */
 export const sxDriveExport = async (_, { id: fileId, mimeType }) => {
 
-  return sxStreamer({ params: {
-    fileId,
-    mimeType
-  }, method: 'export' })
+  return sxStreamer({
+    params: {
+      fileId,
+      mimeType
+    }, method: 'export'
+  })
 
 }
 /**
@@ -187,10 +201,12 @@ export const sxDriveExport = async (_, { id: fileId, mimeType }) => {
  */
 export const sxDriveMedia = async (_, { id: fileId }) => {
 
-  return sxStreamer({params: {
-    fileId,
-    alt: 'media'
-  }, method: 'get' })
+  return sxStreamer({
+    params: {
+      fileId,
+      alt: 'media'
+    }, method: 'get'
+  })
 
 }
 

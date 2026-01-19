@@ -137,6 +137,12 @@ GoogleJsonResponseException: API call to drive.files.export failed with error: E
 ```
 gas-fakes will accept the alt parameter if provided, but ignore it,, since it uses the export method of the API it isn't needed anway. See https://issuetracker.google.com/issues/468534237 for more details and to track if and when google fix this bug in Advanced Drive service.
 
+#### Invalid field selection createdTime/modifiedTime
+
+Even though `gas-fakes` uses Drive API v3, some files (particularly old files or those created by external applications) occasionally trigger an "Invalid field selection createdTime" (or modifiedTime) error. These fields are standard in v3, but some files seem to only support the v2 equivalents: `createdDate` and `modifiedDate`.
+
+`gas-fakes` handles this by automatically detecting this specific error, translating the requested fields to their v2 equivalents, and retrying the request.
+
 ### Named Colors
 
 Apps script and gas-fakes supports named colors - there's a list here [named colors](named-colors.md) - colors supported by Apps Script

@@ -2,7 +2,7 @@
 
 import is from '@sindresorhus/is';
 import { assert } from '@sindresorhus/is'
-import {slogger} from './slogger.js'
+import { slogger } from './slogger.js'
 
 const isNU = (item) => is.null(item) || is.undefined(item)
 
@@ -169,6 +169,18 @@ export const mergeParamStrings = (...args) => {
       ? key
       : `${key}(${Array.from(value.keys()).sort().join(",")})`
   }).sort().join(",")
+}
+
+/**
+ * translated field names from v3 to v2
+ * @param {string} fields a comma separated fields string 
+ * @returns {string} the modified string
+ */
+export const translateFieldsToV2 = (fields) => {
+  if (!is.string(fields)) return fields
+  return fields
+    .replace(/\bcreatedTime\b/g, 'createdDate')
+    .replace(/\bmodifiedTime\b/g, 'modifiedDate')
 }
 
 const capital = (str) => str.substring(0, 1).toUpperCase() + str.substring(1)
