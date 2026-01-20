@@ -146,13 +146,11 @@ gcloud iam service-accounts keys create "$KEY_FILE" --iam-account="$SA_EMAIL"
 # ==========================================
 echo -e "${GREEN}--- Updating .env file ---${NC}"
 
-# 1. Always update the Key File path
-update_env_var "SERVICE_ACCOUNT_FILE" "$KEY_FILE"
-
-# 2. Optionally update the Service Account Email
+# Optionally update the Service Account file path
 echo ""
 read -p "Do you want to add SERVICE_ACCOUNT_FILE to .env? (y/N) " add_key_choice
-if [[ "$add_key_choice" =~ ^[Yy]$ ]]; then
+echo $add_key_choice
+if [[ "$add_key_choice" == "y" || "$add_key_choice" == "Y" ]]; then
     update_env_var "SERVICE_ACCOUNT_FILE" "$KEY_FILE"
 fi
 
