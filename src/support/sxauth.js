@@ -107,7 +107,7 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, cachePath,
       syncError("ADC 'invalid_grant' Error: The underlying Application Default Credentials have expired or been revoked.");
       syncError("Helpful note: in your admin console under security/access amd data control there are a couple of settings to fiddle with token life")
       syncError("Use your settaccount.sh to reauthenticate");
-      throw new Error ('failed to get access token info : Use your settaccount.sh to reauthenticate')
+      throw new Error('failed to get access token info : Use your settaccount.sh to reauthenticate')
     }
     throw error; // Re-throw any other errors
   }

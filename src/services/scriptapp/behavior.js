@@ -254,6 +254,10 @@ class FakeBehavior {
     this.__createdIds = new Set();
     this.__createdGmailIds = new Set();
     this.__createdCalendarIds = new Set();
+    // Specifically for sandbox mode - files created when sandbox mode is on
+    this.__allowedIds = new Set();
+    this.__allowedGmailIds = new Set();
+    this.__allowedCalendarIds = new Set();
     // in sandbox mode we only allow access to files created in this instance
     // this is to emulate the behavior of a drive.file scope
     this.__sandboxMode = false;
@@ -345,9 +349,12 @@ class FakeBehavior {
     if (!is.nonEmptyString(id)) {
       throw new Error(`Invalid sandbox id parameter (${id}) - must be a non-empty string`);
     }
-    if (!this.isKnown(id)) {
-      slogger.log(`...adding file ${id} to sandbox allowed list`);
-      this.__createdIds.add(id);
+    this.__createdIds.add(id);
+    if (this.sandboxMode) {
+      if (!this.__allowedIds.has(id)) {
+        slogger.log(`...adding file ${id} to sandbox allowed list`);
+        this.__allowedIds.add(id);
+      }
     }
     return id
   }
@@ -355,9 +362,12 @@ class FakeBehavior {
     if (!is.nonEmptyString(id)) {
       throw new Error(`Invalid sandbox id parameter (${id}) - must be a non-empty string`);
     }
-    if (!this.isKnownGmail(id)) {
-      slogger.log(`...adding gmail id ${id} to sandbox allowed list`);
-      this.__createdGmailIds.add(id);
+    this.__createdGmailIds.add(id);
+    if (this.sandboxMode) {
+      if (!this.__allowedGmailIds.has(id)) {
+        slogger.log(`...adding gmail id ${id} to sandbox allowed list`);
+        this.__allowedGmailIds.add(id);
+      }
     }
     return id
   }
@@ -365,9 +375,12 @@ class FakeBehavior {
     if (!is.nonEmptyString(id)) {
       throw new Error(`Invalid sandbox id parameter (${id}) - must be a non-empty string`);
     }
-    if (!this.isKnownCalendar(id)) {
-      slogger.log(`...adding calendar id ${id} to sandbox allowed list`);
-      this.__createdCalendarIds.add(id);
+    this.__createdCalendarIds.add(id);
+    if (this.sandboxMode) {
+      if (!this.__allowedCalendarIds.has(id)) {
+        slogger.log(`...adding calendar id ${id} to sandbox allowed list`);
+        this.__allowedCalendarIds.add(id);
+      }
     }
     return id
   }
@@ -458,114 +471,105 @@ class FakeBehavior {
   }
   trash() {
     let trashed = [];
-
-    // Drive cleanup
-    // Use DriveApp.cleanup if exists? DriveApp doesn't map 1:1 to services list exactly for this, but 'DriveApp' defaults to global.
-    // Let's use global cleanup setting for Drive for now, OR DriveApp specific if we want consistent granularity.
-    // For now, keep behavior: this.__cleanup controls generic/drive files.
-    // OR: check `this.sandboxService.DriveApp.cleanup`?
-    // Let's stick to user request: "separate cleanup property for gmail settings".
-    // So global `this.__cleanup` works for Drive.
-
-    // Actually, `this.__cleanup` getter on global overrides? No.
-    // The prompt says "separate cleanup property for gmail settings".
-    // So if I set `ScriptApp.__behavior.cleanup` it applies to everything unless overridden?
-    // My implementation in FakeSandboxService maps `cleanup` to global if null.
-    // So `gmailSettings.cleanup` will return strict boolean.
-
-    if (this.__cleanup) {
-      trashed = Array.from(this.__createdIds).reduce((acc, id) => {
-        let d = null
-        try {
-          d = DriveApp.getFileById(id)
-        } catch (e) {
-          d = DriveApp.getFolderById(id)
-        }
-        if (d) {
-          d.setTrashed(true);
-          slogger.log(`...trashed file ${d.getName()} (${id})`);
-          acc.push(id);
-        }
-        return acc;
-      }, []);
-      this.__createdIds.clear();
-    } else {
-      slogger.log('...skipping cleaning up sandbox files (Drive)');
-    }
-
-    // Clean up Gmail artifacts
-    let trashedGmail = [];
-    const gmailSettings = this.sandboxService.GmailApp;
-    const gmailCleanup = gmailSettings && gmailSettings.cleanup; // This will return true/false (inherits or specific)
-
-    if (gmailCleanup) {
-      trashedGmail = Array.from(this.__createdGmailIds).reduce((acc, id) => {
-        // Try to determine type or just try deleting as label, then message/thread?
-        // IDs for labels vs threads/messages might overlap or be distinct formats.
-        // Label IDs are usually strings like 'Label_123'. Thread IDs are hex strings.
-        // We can try fetching as label first.
-        try {
-          // Try as label
-          Gmail.Users.Labels.remove('me', id);
-          slogger.log(`...deleted gmail label ${id}`);
-          acc.push(id);
+    const wasSandbox = this.sandboxMode;
+    this.sandboxMode = false;
+    try {
+      // Drive cleanup
+      if (this.__cleanup) {
+        trashed = Array.from(this.__createdIds).reduce((acc, id) => {
+          let d = null
+          try {
+            d = DriveApp.getFileById(id)
+          } catch (e) {
+            d = DriveApp.getFolderById(id)
+          }
+          if (d) {
+            d.setTrashed(true);
+            slogger.log(`...trashed file ${d.getName()} (${id})`);
+            acc.push(id);
+          }
           return acc;
-        } catch (e) { /* not a label or failed */ }
+        }, []);
+        this.__createdIds.clear();
+        this.__allowedIds.clear();
+      } else {
+        slogger.log('...skipping cleaning up sandbox files (Drive)');
+      }
 
-        try {
-          // Try as thread - move to trash
-          Gmail.Users.Threads.trash('me', id);
-          slogger.log(`...trashed gmail thread ${id}`);
-          acc.push(id);
+      // Clean up Gmail artifacts
+      let trashedGmail = [];
+      const gmailSettings = this.sandboxService.GmailApp;
+      const gmailCleanup = gmailSettings && gmailSettings.cleanup; // This will return true/false (inherits or specific)
+
+      if (gmailCleanup) {
+        trashedGmail = Array.from(this.__createdGmailIds).reduce((acc, id) => {
+          try {
+            // Try as label
+            Gmail.Users.Labels.remove('me', id);
+            slogger.log(`...deleted gmail label ${id}`);
+            acc.push(id);
+            return acc;
+          } catch (e) { /* not a label or failed */ }
+
+          try {
+            // Try as thread - move to trash
+            Gmail.Users.Threads.trash('me', id);
+            slogger.log(`...trashed gmail thread ${id}`);
+            acc.push(id);
+            return acc;
+          } catch (e) { /* not a thread */ }
+
+          try {
+            Gmail.Users.Messages.trash('me', id);
+            slogger.log(`...trashed gmail message ${id}`);
+            acc.push(id);
+            return acc;
+          } catch (e) { /* not a message */ }
+
           return acc;
-        } catch (e) { /* not a thread */ }
+        }, []);
+        this.__createdGmailIds.clear();
+        this.__allowedGmailIds.clear();
+      } else {
+        slogger.log('...skipping cleaning up sandbox files (Gmail)');
+      }
 
-        try {
-          Gmail.Users.Messages.trash('me', id);
-          slogger.log(`...trashed gmail message ${id}`);
-          acc.push(id);
+      // Clean up Calendar artifacts
+      let trashedCalendars = [];
+      const calendarSettings = this.sandboxService.CalendarApp;
+      const calendarCleanup = calendarSettings && calendarSettings.cleanup;
+
+      if (calendarCleanup) {
+        trashedCalendars = Array.from(this.__createdCalendarIds).reduce((acc, id) => {
+          try {
+            // Delete calendar
+            Calendar.Calendars.delete(id, { noLog404: true });
+            slogger.log(`...deleted calendar ${id}`);
+            acc.push(id);
+          } catch (e) {
+            slogger.log(`...failed to delete calendar ${id}: ${e.message}`);
+          }
           return acc;
-        } catch (e) { /* not a message */ }
+        }, []);
+        this.__createdCalendarIds.clear();
+        this.__allowedCalendarIds.clear();
+      } else {
+        slogger.log('...skipping cleaning up sandbox calendars');
+      }
 
-        return acc;
-      }, []);
-      this.__createdGmailIds.clear();
-    } else {
-      slogger.log('...skipping cleaning up sandbox files (Gmail)');
+      slogger.log(`...trashed ${trashed.length} sandboxed files, ${trashedGmail.length} gmail items, and ${trashedCalendars.length} calendars`);
+    } finally {
+      this.sandboxMode = wasSandbox;
     }
-
-    // Clean up Calendar artifacts
-    let trashedCalendars = [];
-    const calendarSettings = this.sandboxService.CalendarApp;
-    const calendarCleanup = calendarSettings && calendarSettings.cleanup;
-
-    if (calendarCleanup) {
-      trashedCalendars = Array.from(this.__createdCalendarIds).reduce((acc, id) => {
-        try {
-          // Delete calendar
-          Calendar.Calendars.delete(id, { noLog404: true });
-          slogger.log(`...deleted calendar ${id}`);
-          acc.push(id);
-        } catch (e) {
-          slogger.log(`...failed to delete calendar ${id}: ${e.message}`);
-        }
-        return acc;
-      }, []);
-      this.__createdCalendarIds.clear();
-    } else {
-      slogger.log('...skipping cleaning up sandbox calendars');
-    }
-
-    slogger.log(`...trashed ${trashed.length} sandboxed files, ${trashedGmail.length} gmail items, and ${trashedCalendars.length} calendars`);
     return trashed;
   }
   isKnown(id) {
-    return this.__createdIds.has(id);
+    return this.__allowedIds.has(id);
   }
   isKnownGmail(id) {
-    return this.__createdGmailIds.has(id);
+    return this.__allowedGmailIds.has(id);
   }
   isKnownCalendar(id) {
-    return this.__createdCalendarIds.has(id);
+    return this.__allowedCalendarIds.has(id);
   }
 }
