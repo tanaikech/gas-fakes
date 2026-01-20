@@ -3,6 +3,8 @@ import { newFakeDriveFile } from './fakedrivefile.js'
 import { newFakeFolderApp } from './fakefolderapp.js'
 import { notYetImplemented, isFolder } from '../../support/helpers.js'
 import { Proxies } from '../../support/proxies.js'
+import { Utils } from '../../support/utils.js'
+const { is } = Utils
 
 
 /**
@@ -42,11 +44,17 @@ export class FakeDriveApp {
    * @returns {newFakeDriveFile|null}
    */
   getFileById(id) {
+    if (!is.nonEmptyString(id)) {
+      throw new Error(`API call to DriveApp.getFileById failed with error: Invalid argument: id`)
+    }
     const file = Drive.Files.get(id, {}, { allow404: true })
     return file ? newFakeDriveFile(file) : null
   }
 
   getFolderById(id) {
+    if (!is.nonEmptyString(id)) {
+      throw new Error(`API call to DriveApp.getFolderById failed with error: Invalid argument: id`)
+    }
     const file = Drive.Files.get(id, {}, { allow404: true })
     return file ? newFakeDriveFolder(file) : null
   }
@@ -86,9 +94,9 @@ export class FakeDriveApp {
   }
 
   searchFiles(params) {
-    return this.folderApp.searchFiles({  params })
+    return this.folderApp.searchFiles({ params })
   }
-  
+
   searchFolders(params) {
     return this.folderApp.searchFolders({ params })
   }

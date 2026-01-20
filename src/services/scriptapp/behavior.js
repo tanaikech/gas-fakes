@@ -372,8 +372,8 @@ class FakeBehavior {
     return id
   }
   isAccessible(id, serviceName, accessType = 'read') {
-    if (this.sandboxMode && !is.nonEmptyString(id)) {
-      throw new Error(`Invalid sandbox id parameter (${id}) - must be a non-empty string`);
+    if (!is.nonEmptyString(id)) {
+      throw new Error(`API call to ${serviceName} failed with error: Invalid argument: id`);
     }
 
     // Advanced services should inherit sandbox rules from their App counterparts.

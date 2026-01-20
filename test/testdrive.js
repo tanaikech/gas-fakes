@@ -756,6 +756,19 @@ export const testDrive = (pack) => {
   })
 
 
+  unit.section('trap null ids', t => {
+    t.rxMatch(t.threw(() => DriveApp.getFileById(null)).toString(), /Invalid argument: id/)
+    t.rxMatch(t.threw(() => DriveApp.getFileById(undefined)).toString(), /Invalid argument: id/)
+    t.rxMatch(t.threw(() => DriveApp.getFileById("")).toString(), /Invalid argument: id/)
+    t.rxMatch(t.threw(() => DriveApp.getFolderById(null)).toString(), /Invalid argument: id/)
+    t.rxMatch(t.threw(() => DriveApp.getFolderById(undefined)).toString(), /Invalid argument: id/)
+    t.rxMatch(t.threw(() => DriveApp.getFolderById("")).toString(), /Invalid argument: id/)
+    t.rxMatch(t.threw(() => Drive.Files.get(null)).toString(), /Invalid argument: id/)
+    t.rxMatch(t.threw(() => Drive.Files.get(undefined)).toString(), /Invalid argument: id/)
+    t.rxMatch(t.threw(() => Drive.Files.get("")).toString(), /Invalid argument: id/)
+  })
+
+
   if (!pack) {
     unit.report()
   }

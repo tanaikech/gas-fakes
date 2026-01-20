@@ -18,6 +18,12 @@
   "dependencies": {
     "libraries": [
       {
+        "userSymbol": "bmPreFiddler",
+        "version": "34",
+        "libraryId": "13JUFGY18RHfjjuKmIRRfvmGlCYrEkEtN6uUm-iLUcxOUFRJD-WBX-tkR",
+        "developmentMode": false
+      },
+      {
         "userSymbol": "bmUnitTester",
         "version": "20",
         "libraryId": "1zOlHMOpO89vqLPe5XpC-wzA9r5yaBkWt_qFjKqFNsIZtNJ-iUjBYDt-x"
