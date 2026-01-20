@@ -1,7 +1,7 @@
 import { GoogleAuth } from "google-auth-library";
 import is from "@sindresorhus/is";
 import { createHash } from "node:crypto";
-import { syncLog } from "./workersync/synclogger.js";
+import { syncLog, syncError  } from "./workersync/synclogger.js";
 
 const _authScopes = new Set([]);
 
@@ -74,13 +74,38 @@ const setAuth = async (scopes = [], keyFile = null, mcpLoading = false) => {
       syncLog(`...initializing auth and discovering project ID`);
     }
 
-    // 1. Create the GoogleAuth manager instance (this instance has getProjectId)
-    _auth = new GoogleAuth({ scopes });
+    // scopes is the same regardless of auth method
+    const authOptions = {
+      scopes,
+    };
+    // we can use a key file, env variable, or ADC, or raw content
+    if (keyFile) {
+      syncLog(`...using key file ${keyFile}`);
+      authOptions.keyFilename = keyFile;
+    } else if (process.env.SERVICE_ACCOUNT_FILE) {
+      syncLog(`...using key file from env variable ${process.env.SERVICE_ACCOUNT_FILE}`);
+      authOptions.keyFilename = process.env.SERVICE_ACCOUNT_FILE;
+    } else {
+      syncLog(`...using ADC`);
+    }
+    // or raw JSON content via custom ENV var
+    if (process.env.SERVICE_ACCOUNT_JSON) {
+      syncLog(`...using key data from env variable`);
+      try {
+        authOptions.credentials = JSON.parse(process.env.SERVICE_ACCOUNT_JSON);
+      } catch (e) {
+        syncError("Failed to parse SERVICE_ACCOUNT_JSON environment variable", e);
+        throw e;
+      }
+    }
 
-    // 2. Use the manager to get the authenticated client (this is passed to API methods)
+   // now make the client
+    _auth = new GoogleAuth(authOptions);
+
+    // get the authenticated client (this is passed to API methods)
     _authClient = await _auth.getClient();
 
-    // 3. Use the manager to reliably get the project ID
+    // reliably get the project ID
     _projectId = await _auth.getProjectId();
 
     if (!_projectId) {
