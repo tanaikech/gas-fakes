@@ -1,13 +1,9 @@
 
 // all these imports 
 // this is loaded by npm, but is a library on Apps Script side
+import '@mcpher/gas-fakes';
 import { Exports as unitExports } from '@mcpher/unit'
 import { testFixes } from './testfixes.js'
-
-// all the fake services are here
-//import '@mcpher/gas-fakes/main.js'
-
-import '@mcpher/gas-fakes';
 import { Proxies } from '../src/support/proxies.js';
 
 export const initTests = () => {

@@ -95,19 +95,34 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, cachePath,
   try {
     accessToken = await auth.getAccessToken()
   } catch (error) {
-
+    syncError(`Authentication failed: ${error.message}`)
+    if (error.message.includes('unauthorized_client')) {
+      syncError("This usually means Domain-Wide Delegation is not configured correctly for the subject email.");
+      syncError(`Check that the service account client ID is authorized for the subject: ${process.env.GOOGLE_WORKSPACE_SUBJ}`);
+    }
+    throw error;
   }
+
+  if (!accessToken) {
+    syncError(`Application default credentials needs attention: No access token could be retrieved.`)
+    syncError("Use your setup-sa.sh to reauthenticate or check your SERVICE_ACCOUNT_FILE environment variable.");
+    throw new Error('Failed to get access token: check your credentials.')
+  }
+
   let tokenInfo = null
   try {
     tokenInfo = await got(`https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=${accessToken}`).json()
-  } catch (err) {
+  } catch (error) {
     syncError(`Application default credentials needs attention`)
-    if (error.code === 400 && error.message.includes('invalid_grant')) {
-      // Log a specific, actionable error for the developer/operator
-      syncError("ADC 'invalid_grant' Error: The underlying Application Default Credentials have expired or been revoked.");
-      syncError("Helpful note: in your admin console under security/access amd data control there are a couple of settings to fiddle with token life")
-      syncError("Use your settaccount.sh to reauthenticate");
-      throw new Error('failed to get access token info : Use your settaccount.sh to reauthenticate')
+    if (error.response?.statusCode === 400) {
+      const body = error.response.body ? JSON.parse(error.response.body) : {};
+      if (body.error_description?.includes('invalid_grant')) {
+        // Log a specific, actionable error for the developer/operator
+        syncError("ADC 'invalid_grant' Error: The underlying Application Default Credentials have expired or been revoked.");
+        syncError("Helpful note: in your admin console under security/access amd data control there are a couple of settings to fiddle with token life")
+        syncError("Use your setup-sa.sh to reauthenticate");
+        throw new Error('failed to get access token info : Use your setup-sa.sh to reauthenticate')
+      }
     }
     throw error; // Re-throw any other errors
   }

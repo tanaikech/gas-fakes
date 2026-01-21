@@ -7,141 +7,188 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 CYAN='\033[0;36m'
-NC='\033[0m' # No Color
+NC='\033[0m' 
 
 MANIFEST_FILE="appsscript.json"
+SA_NAME="gas-fakes-worker"
+KEY_DIR="private"
+ENV_FILE=".env"
+GITIGNORE=".gitignore"
 
-# Helper function to update .env safely
+# ==========================================
+# HELPER FUNCTIONS
+# ==========================================
 update_env_var() {
     local key=$1
     local val=$2
-    local file=".env"
-    if grep -q "^${key}=" "$file"; then
-        [[ "$OSTYPE" == "darwin"* ]] && sed -i '' "s|^${key}=.*|${key}=\"${val}\"|" "$file" || sed -i "s|^${key}=.*|${key}=\"${val}\"|" "$file"
-        echo -e "Updated ${YELLOW}$key${NC}"
+    touch "$ENV_FILE"
+    
+    if grep -q "^${key}=" "$ENV_FILE"; then
+        perl -i -pe "s|^${key}=.*|${key}=\"${val}\"|" "$ENV_FILE"
+        echo -e "Updated ${YELLOW}$key${NC} in .env"
     else
-        echo "${key}=\"${val}\"" >> "$file"
-        echo -e "Added ${YELLOW}$key${NC}"
+        echo "${key}=\"${val}\"" >> "$ENV_FILE"
+        echo -e "Added ${YELLOW}$key${NC} to .env"
     fi
 }
 
-# 1. Load .env
-[ -f .env ] && { set -a; source .env; set +a; } || touch .env
-
-# 2. Get Gcloud Identity
-CURRENT_USER=$(gcloud config get-value account 2>/dev/null)
-GCP_PROJECT_ID=$(gcloud config get-value project 2>/dev/null)
-
-if [[ -z "$CURRENT_USER" || "$CURRENT_USER" == "(unset)" ]]; then
-    echo -e "${RED}Error: Run 'gcloud auth login' first.${NC}"; exit 1
-fi
-
-# Constants
-SA_NAME="gas-fakes-worker"
-SA_EMAIL="$SA_NAME@$GCP_PROJECT_ID.iam.gserviceaccount.com"
-KEY_DIR="private"
-KEY_FILE="$KEY_DIR/$SA_NAME.json"
-
 # ==========================================
-# SCOPE RESOLUTION (Optional Manifest Extraction)
+# INPUT COLLECTION PHASE
 # ==========================================
-USE_MANIFEST=false
-if [ -f "$MANIFEST_FILE" ]; then
-    echo -e "${CYAN}Found $MANIFEST_FILE.${NC}"
-    read -p "Extract oauthScopes from manifest into .env? (y/N): " manifest_choice
-    [[ "$manifest_choice" == "y" || "$manifest_choice" == "Y" ]] && USE_MANIFEST=true
-fi
-
-if [ "$USE_MANIFEST" = true ]; then
-    echo -e "${GREEN}--- Extracting oauthScopes from $MANIFEST_FILE ---${NC}"
+collect_inputs() {
+    clear
+    echo -e "${CYAN}--- Google Workspace & Cloud Run Setup ---${NC}"
     
-    # Robust extraction: Finds the oauthScopes array and pulls strings between quotes
-    # It handles multi-line arrays and ignores other properties
-    EXTRACTED_SCOPES=$(awk '/"oauthScopes": \[/,/\]/' "$MANIFEST_FILE" | grep 'http\|openid' | sed 's/[", ]//g' | tr '\n' ',' | sed 's/,$//')
+    # Load existing env and check manifest
+    [ -f "$ENV_FILE" ] && { set -a; source "$ENV_FILE"; set +a; }
+    HAS_MANIFEST=$( [ -f "$MANIFEST_FILE" ] && echo "true" || echo "false" )
 
-    if [ -n "$EXTRACTED_SCOPES" ]; then
-        update_env_var "EXTRA_SCOPES" "$EXTRACTED_SCOPES"
-        # Reload env variables for the final printout
-        set -a; source .env; set +a
-    else
-        echo -e "${RED}Error: Could not find oauthScopes in $MANIFEST_FILE${NC}"
+    GCP_PROJECT_ID=$(gcloud config get-value project 2>/dev/null)
+    CURRENT_USER=$(gcloud config get-value account 2>/dev/null)
+    SA_EMAIL="$SA_NAME@$GCP_PROJECT_ID.iam.gserviceaccount.com"
+
+    if [[ -z "$GCP_PROJECT_ID" ]]; then
+        echo -e "${RED}Error: No active GCP project. Run 'gcloud auth login' first.${NC}"; exit 1
     fi
-else
-    echo -e "${YELLOW}--- Using existing EXTRA_SCOPES from .env ---${NC}"
-fi
+
+    # 1. Auth Method
+    echo -e "\n${YELLOW}1) Choose Authentication Method:${NC}"
+    echo "  [1] Local JSON Key (Standard Development)"
+    echo "  [2] Cloud Run (Workload Identity / Keyless)"
+    read -p "Selection [1-2]: " AUTH_METHOD_CHOICE
+
+    # 2. Scope Source
+    echo -e "\n${YELLOW}2) Scope Resolution:${NC}"
+    if [ "$HAS_MANIFEST" = "true" ]; then
+        echo "  [1] Extract/Sync scopes from $MANIFEST_FILE (Default)"
+        echo "  [2] Use existing EXTRA_SCOPES/DEFAULT_SCOPES from .env"
+        read -p "Selection [1-2, default 1]: " SCOPE_CHOICE
+        SCOPE_CHOICE=${SCOPE_CHOICE:-1}
+    else
+        echo -e "${RED}No manifest found. Defaulting to .env scopes.${NC}"
+        SCOPE_CHOICE=2
+    fi
+
+    # 3. .env Update Choice
+    echo -e "\n${YELLOW}3) Environment Update:${NC}"
+    echo "  [1] Automatically update $ENV_FILE with results (Recommended)"
+    echo "  [2] Do not update .env"
+    read -p "Selection [1-2]: " WRITE_TO_ENV_CHOICE
+
+    # 4. Service Account Lifecycle
+    echo -e "\n${YELLOW}4) Service Account Action:${NC}"
+    if gcloud iam service-accounts describe "$SA_EMAIL" > /dev/null 2>&1; then
+        echo "  [1] Keep/Rotate existing Service Account"
+        echo "  [2] Replace/Recreate Service Account"
+        read -p "Selection [1-2]: " SA_ACTION_CHOICE
+        [[ "$SA_ACTION_CHOICE" == "2" ]] && SA_ACTION="replace" || SA_ACTION="keep"
+    else
+        echo "  [1] Create new Service Account"
+        read -p "Selection [1]: " SA_ACTION_CHOICE
+        SA_ACTION="create"
+    fi
+}
 
 # ==========================================
-# SERVICE ACCOUNT & KEY LOGIC
+# CONFIRMATION PHASE
 # ==========================================
-gcloud config set project "$GCP_PROJECT_ID" --quiet > /dev/null 2>&1
-
-if gcloud iam service-accounts describe "$SA_EMAIL" > /dev/null 2>&1; then
-    echo -e "${YELLOW}Service Account '$SA_NAME' exists.${NC}"
-    echo "Options: [r] Replace, [k] Keep/Rotate Keys, [c] Cancel"
-    read -p "Choice: " choice
-    case "$choice" in 
-        r|R ) 
-            gcloud iam service-accounts delete "$SA_EMAIL" --quiet
-            CREATE_NEW=true ;;
-        k|K ) 
-            CREATE_NEW=false ;;
-        * ) exit 0 ;;
+confirm_inputs() {
+    echo -e "\n${GREEN}==========================================${NC}"
+    echo -e "${GREEN}    CONFIGURATION SUMMARY${NC}"
+    echo -e "${GREEN}==========================================${NC}"
+    echo -e "Project:         ${CYAN}$GCP_PROJECT_ID${NC}"
+    echo -e "Auth Mode:       ${CYAN}$([ "$AUTH_METHOD_CHOICE" == "2" ] && echo "Cloud Run (Keyless)" || echo "Local JSON Key")${NC}"
+    echo -e "Scope Source:    ${CYAN}$([ "$SCOPE_CHOICE" == "1" ] && echo "Manifest File" || echo ".env Variables")${NC}"
+    echo -e "Update .env:     ${CYAN}$([ "$WRITE_TO_ENV_CHOICE" == "1" ] && echo "Yes" || echo "No")${NC}"
+    echo -e "SA Action:       ${CYAN}$SA_ACTION${NC}"
+    echo -e "------------------------------------------"
+    
+    echo "  [1] Proceed with execution"
+    echo "  [2] Restart configuration"
+    echo "  [3] Cancel"
+    read -p "Selection [1-3]: " CONFIRM
+    case "$CONFIRM" in
+        1 ) return 0 ;;
+        2 ) collect_inputs; confirm_inputs ;;
+        * ) echo "Cancelled."; exit 0 ;;
     esac
-else
-    CREATE_NEW=true
-fi
-
-echo -e "${GREEN}--- Enabling APIs ---${NC}"
-gcloud services enable iam.googleapis.com drive.googleapis.com sheets.googleapis.com gmail.googleapis.com --quiet
-
-if [ "$CREATE_NEW" = true ]; then
-    echo -e "${GREEN}--- Creating Service Account ---${NC}"
-    gcloud iam service-accounts create "$SA_NAME" --display-name="GAS Fakes Worker"
-    sleep 2
-fi
-
-# Permissions
-echo -e "${GREEN}--- Updating Permissions ---${NC}"
-gcloud projects add-iam-policy-binding "$GCP_PROJECT_ID" --member="serviceAccount:$SA_EMAIL" --role="roles/editor" --condition=None --quiet > /dev/null
-gcloud iam service-accounts add-iam-policy-binding "$SA_EMAIL" --member="user:$CURRENT_USER" --role="roles/iam.serviceAccountTokenCreator" --condition=None --quiet > /dev/null
-
-# Key Generation
-mkdir -p "$KEY_DIR"
-[ -f "$KEY_FILE" ] && rm "$KEY_FILE"
-gcloud iam service-accounts keys create "$KEY_FILE" --iam-account="$SA_EMAIL" --quiet
-
-SA_UNIQUE_ID=$(gcloud iam service-accounts describe "$SA_EMAIL" --format='get(uniqueId)')
-
-#
-# optionally write filename and subject to .env
-read -p "Write filename and subject to .env? (y/N): " env_choice
-[[ "$env_choice" == "y" || "$env_choice" == "Y" ]] && update_env_var "SERVICE_ACCOUNT_FILE" "$SA_NAME.json" && update_env_var "GOOGLE_WORKSPACE_SUBJ" "$SA_EMAIL"
-
+}
 
 # ==========================================
-# FINAL STRING GENERATION
+# EXECUTION PHASE
 # ==========================================
-# 1. Merge the variables
-ALL_SCOPES_RAW="${DEFAULT_SCOPES},${EXTRA_SCOPES}"
+execute_logic() {
+    echo -e "\n${GREEN}--- Starting Execution ---${NC}"
 
-# 2. Advanced Cleanup:
-#    - tr -d: Removes quotes and spaces
-#    - tr ',': Splits into lines for sorting
-#    - sort -u: Deduplicates
-#    - paste: Joins lines with commas
-#    - sed: Removes any possible leading/trailing comma or double commas
-FINAL_ADMIN_SCOPES=$(echo "$ALL_SCOPES_RAW" | tr -d '" ' | tr ',' '\n' | sort -u | paste -sd "," - | sed 's/^,//; s/,,*/,/g; s/,$//')
+    # 1. APIs
+    gcloud services enable iam.googleapis.com iamcredentials.googleapis.com drive.googleapis.com sheets.googleapis.com gmail.googleapis.com --quiet
+
+    # 2. SA Management
+    if [[ "$SA_ACTION" == "replace" ]]; then
+        gcloud iam service-accounts delete "$SA_EMAIL" --quiet
+        sleep 2
+    fi
+    if ! gcloud iam service-accounts describe "$SA_EMAIL" > /dev/null 2>&1; then
+        gcloud iam service-accounts create "$SA_NAME" --display-name="GAS Fakes Worker"
+        sleep 2
+    fi
+
+    # 3. Permissions
+    gcloud projects add-iam-policy-binding "$GCP_PROJECT_ID" --member="serviceAccount:$SA_EMAIL" --role="roles/editor" --quiet > /dev/null
+    gcloud iam service-accounts add-iam-policy-binding "$SA_EMAIL" --member="serviceAccount:$SA_EMAIL" --role="roles/iam.serviceAccountTokenCreator" --quiet > /dev/null
+    gcloud iam service-accounts add-iam-policy-binding "$SA_EMAIL" --member="user:$CURRENT_USER" --role="roles/iam.serviceAccountTokenCreator" --quiet > /dev/null
+
+    # 4. Auth Credential Generation
+    if [ "$AUTH_METHOD_CHOICE" == "1" ]; then
+        mkdir -p "$KEY_DIR"
+        FULL_KEY_PATH="$KEY_DIR/$SA_NAME.json"
+        
+        [ -f "$FULL_KEY_PATH" ] && rm "$FULL_KEY_PATH"
+        gcloud iam service-accounts keys create "$FULL_KEY_PATH" --iam-account="$SA_EMAIL" --quiet
+        
+        echo -e "${GREEN}Key file created at $FULL_KEY_PATH${NC}"
+        
+        # .gitignore Safety
+        if [ ! -f "$GITIGNORE" ]; then
+            echo "$KEY_DIR/" > "$GITIGNORE"
+            echo -e "${YELLOW}Created $GITIGNORE and added /$KEY_DIR/${NC}"
+        elif ! grep -q "$KEY_DIR" "$GITIGNORE"; then
+            echo "$KEY_DIR/" >> "$GITIGNORE"
+            echo -e "${YELLOW}Added /$KEY_DIR/ to existing $GITIGNORE${NC}"
+        fi
+
+        # Ensure path is written to .env
+        [[ "$WRITE_TO_ENV_CHOICE" == "1" ]] && update_env_var "SERVICE_ACCOUNT_FILE" "$FULL_KEY_PATH"
+    fi
+
+    # 5. Scopes Resolution
+    if [[ "$SCOPE_CHOICE" == "1" ]]; then
+        RAW_SCOPES=$(awk '/"oauthScopes": \[/,/\]/' "$MANIFEST_FILE" | grep 'http\|openid' | sed 's/[", ]//g' | tr '\n' ',' | sed 's/,$//')
+    else
+        RAW_SCOPES="${DEFAULT_SCOPES},${EXTRA_SCOPES}"
+    fi
+
+    FINAL_ADMIN_SCOPES=$(echo "$RAW_SCOPES" | tr -d '" ' | tr ',' '\n' | sort -u | paste -sd "," - | sed 's/^,//; s/,,*/,/g; s/,$//')
+    if [[ "$WRITE_TO_ENV_CHOICE" == "1" ]]; then
+        update_env_var "EXTRA_SCOPES" "$FINAL_ADMIN_SCOPES"
+        update_env_var "GOOGLE_WORKSPACE_SUBJ" "$CURRENT_USER"
+    fi
+
+    SA_UNIQUE_ID=$(gcloud iam service-accounts describe "$SA_EMAIL" --format='get(uniqueId)')
+
+    # Success Screen
+    printf "\n${GREEN}==========================================${NC}\n"
+    printf "SUCCESS! CONFIGURATION COMPLETE\n"
+    printf "==========================================${NC}\n"
+    printf "CLIENT ID:  ${CYAN}$SA_UNIQUE_ID${NC}\n"
+    printf "SCOPES:     ${CYAN}${FINAL_ADMIN_SCOPES:-No scopes found}${NC}\n\n"
+    printf "${YELLOW}Next Step: Add these scopes and client ID to Domain-Wide Delegation in Admin Console:${NC}\n"
+    printf "https://admin.google.com/ac/owl/domainwidedelegation\n\n"
+}
 
 # ==========================================
-# OUTPUT
+# MAIN
 # ==========================================
-printf "\n${GREEN}==========================================${NC}\n"
-printf "${GREEN}SUCCESS! CONFIGURATION COMPLETE${NC}\n"
-printf "${GREEN}==========================================${NC}\n"
-printf "${YELLOW}You need to copy the following client ID and scopes to the Workspace Admin Console${NC}\n"
-printf "${YELLOW}This will enable domain wide delegation for the service account${NC}\n"
-printf "Project:    ${CYAN}$GCP_PROJECT_ID${NC}\n"
-printf "Client ID:  ${CYAN}$SA_UNIQUE_ID${NC}\n"
-printf "\n"
-printf "URL: https://admin.google.com/ac/owl/domainwidedelegation\n"
-printf "\n${CYAN}$FINAL_ADMIN_SCOPES${NC}\n\n"
+collect_inputs
+confirm_inputs
+execute_logic
