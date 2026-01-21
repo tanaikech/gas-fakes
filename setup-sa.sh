@@ -112,6 +112,12 @@ gcloud iam service-accounts keys create "$KEY_FILE" --iam-account="$SA_EMAIL" --
 
 SA_UNIQUE_ID=$(gcloud iam service-accounts describe "$SA_EMAIL" --format='get(uniqueId)')
 
+#
+# optionally write filename and subject to .env
+read -p "Write filename and subject to .env? (y/N): " env_choice
+[[ "$env_choice" == "y" || "$env_choice" == "Y" ]] && update_env_var "SERVICE_ACCOUNT_FILE" "$SA_NAME.json" && update_env_var "GOOGLE_WORKSPACE_SUBJ" "$SA_EMAIL"
+
+
 # ==========================================
 # FINAL STRING GENERATION
 # ==========================================
@@ -132,9 +138,10 @@ FINAL_ADMIN_SCOPES=$(echo "$ALL_SCOPES_RAW" | tr -d '" ' | tr ',' '\n' | sort -u
 printf "\n${GREEN}==========================================${NC}\n"
 printf "${GREEN}SUCCESS! CONFIGURATION COMPLETE${NC}\n"
 printf "${GREEN}==========================================${NC}\n"
+printf "${YELLOW}You need to copy the following client ID and scopes to the Workspace Admin Console${NC}\n"
+printf "${YELLOW}This will enable domain wide delegation for the service account${NC}\n"
 printf "Project:    ${CYAN}$GCP_PROJECT_ID${NC}\n"
 printf "Client ID:  ${CYAN}$SA_UNIQUE_ID${NC}\n"
 printf "\n"
-printf "${YELLOW}!!! COPY TO WORKSPACE ADMIN CONSOLE !!!${NC}\n"
 printf "URL: https://admin.google.com/ac/owl/domainwidedelegation\n"
 printf "\n${CYAN}$FINAL_ADMIN_SCOPES${NC}\n\n"
