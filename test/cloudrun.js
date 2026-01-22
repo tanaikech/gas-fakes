@@ -1,6 +1,7 @@
-import http from 'http';
+
+import '@mcpher/gas-fakes'
 import { testStores } from './teststores.js';
-import { initTests } from './testinit.js';
+import http from 'http';
 
 const server = http.createServer(async (req, res) => {
   console.log(`Received request: ${req.method} ${req.url}`);

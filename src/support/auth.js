@@ -58,6 +58,61 @@ const isTokenExpired = () =>
 let _authClient = null;
 const getAuthClient = () => _authClient;
 
+let _cachedDwdToken = null;
+let _dwdTokenExpiresAt = 0;
+
+/**
+ * Handles keyless DWD by signing a JWT with IAM and exchanging it for a token
+ * @param {import("google-auth-library").AuthClient} client 
+ * @param {string} saEmail 
+ * @param {string} subject 
+ * @param {string[]} scopes 
+ */
+async function getKeylessDwdToken(client, saEmail, subject, scopes) {
+  const iat = Math.floor(Date.now() / 1000);
+  const exp = iat + 3600;
+  const payload = {
+    iss: saEmail,
+    sub: subject,
+    aud: "https://oauth2.googleapis.com/token",
+    iat,
+    exp,
+    scope: scopes.join(" "),
+  };
+
+  const name = `projects/-/serviceAccounts/${saEmail}`;
+  const url = `https://iamcredentials.googleapis.com/v1/${name}:signJwt`;
+
+  // 1. Sign the JWT using the IAM Credentials API
+  const signRes = await client.request({
+    url,
+    method: 'POST',
+    data: {
+      payload: JSON.stringify(payload)
+    }
+  });
+
+  const signedJwt = signRes.data.signedJwt;
+
+  // 2. Exchange the signed JWT for an access token
+  const tokenRes = await client.request({
+    url: "https://oauth2.googleapis.com/token",
+    method: 'POST',
+    data: new URLSearchParams({
+      grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
+      assertion: signedJwt
+    }).toString(),
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    }
+  });
+
+  return {
+    token: tokenRes.data.access_token,
+    res: tokenRes
+  };
+}
+
 const setAuth = async (scopes = [], keyFile = null, mcpLoading = false) => {
   const hasCurrentAuth = hasAuth() && scopes.every((s) => _authScopes.has(s));
 
@@ -93,8 +148,32 @@ const setAuth = async (scopes = [], keyFile = null, mcpLoading = false) => {
       _auth = new GoogleAuth({ scopes });
       _authClient = await _auth.getClient();
 
-      if (subject && typeof _authClient.setSubject === 'function') {
-        _authClient.setSubject(subject);
+      if (subject) {
+        if (typeof _authClient.setSubject === 'function') {
+          _authClient.setSubject(subject);
+        } else if (typeof _authClient.getServiceAccountEmail === 'function') {
+          // Keyless DWD (Workload Identity)
+          try {
+            const saEmail = await _authClient.getServiceAccountEmail();
+            if (saEmail && saEmail.includes('@')) {
+              if (!mcpLoading) syncLog(`...detected Service Account ${saEmail}, enabling keyless DWD for ${subject}`);
+              const originalGetAccessToken = _authClient.getAccessToken.bind(_authClient);
+              _authClient.getAccessToken = async () => {
+                if (_cachedDwdToken && Date.now() < _dwdTokenExpiresAt) {
+                  return { token: _cachedDwdToken };
+                }
+                const { token, res } = await getKeylessDwdToken(_authClient, saEmail, subject, scopes);
+                _cachedDwdToken = token;
+                // Use a 5-minute buffer
+                const expiresIn = res.data.expires_in || 3600;
+                _dwdTokenExpiresAt = Date.now() + (expiresIn - 300) * 1000;
+                return { token, res };
+              };
+            }
+          } catch (e) {
+            if (!mcpLoading) syncLog(`...ADC is not a service account, keyless DWD not available: ${e.message}`);
+          }
+        }
       }
     }
 

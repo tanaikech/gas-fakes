@@ -4,7 +4,6 @@
 
 import '@mcpher/gas-fakes'
 import { wrapupTest } from './testassist.js'
-import is from '@sindresorhus/is'
 import { initTests } from './testinit.js'
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
