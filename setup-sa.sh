@@ -153,7 +153,7 @@ execute_logic() {
     gcloud projects add-iam-policy-binding "$GCP_PROJECT_ID" --member="serviceAccount:$SA_EMAIL" --role="roles/editor" --quiet > /dev/null
     gcloud iam service-accounts add-iam-policy-binding "$SA_EMAIL" --member="serviceAccount:$SA_EMAIL" --role="roles/iam.serviceAccountTokenCreator" --quiet > /dev/null
     gcloud iam service-accounts add-iam-policy-binding "$SA_EMAIL" --member="user:$CURRENT_USER" --role="roles/iam.serviceAccountTokenCreator" --quiet > /dev/null
-
+    gcloud projects add-iam-policy-binding "$GCP_PROJECT_ID" --member="serviceAccount:$SA_EMAIL" --role="roles/logging.logWriter" --quiet > /dev/null
     # 4. Auth Credential Generation
     if [ "$AUTH_METHOD_CHOICE" == "1" ]; then
         mkdir -p "$KEY_DIR"
@@ -214,7 +214,8 @@ execute_logic() {
     FINAL_ADMIN_SCOPES=$(echo "$RAW_SCOPES" | tr -d '" ' | tr ',' '\n' | sort -u | paste -sd "," - | sed 's/^,//; s/,,*/,/g; s/,$//')
     if [[ "$WRITE_TO_ENV_CHOICE" == "1" ]]; then
         update_env_var "EXTRA_SCOPES" "$FINAL_ADMIN_SCOPES"
-        update_env_var "GOOGLE_WORKSPACE_SUBJ" "$CURRENT_USER"
+        update_env_var "GOOGLE_WORKSPACE_SUBJECT" "$CURRENT_USER"
+        update_env_var "SA_EMAIL" "$SA_EMAIL"
     fi
 
     SA_UNIQUE_ID=$(gcloud iam service-accounts describe "$SA_EMAIL" --format='get(uniqueId)')

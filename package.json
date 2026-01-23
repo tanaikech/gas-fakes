@@ -21,7 +21,6 @@
     "mime": "^4.0.7",
     "prompts": "^2.4.2",
     "sleep-synchronously": "^2.0.0",
-    "tape": "^5.9.0",
     "unzipper": "^0.12.3",
     "zod": "^3.25.76"
   },

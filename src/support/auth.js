@@ -114,17 +114,26 @@ async function getKeylessDwdToken(client, saEmail, subject, scopes) {
 }
 
 const setAuth = async (scopes = [], keyFile = null, mcpLoading = false) => {
+
+  // suppress synclog if mcpLoading
+  const mayLog = mcpLoading ? ()=>null : syncLog;
+
+  // if scopes are the same as current auth, we dont need to do anything
   const hasCurrentAuth = hasAuth() && scopes.every((s) => _authScopes.has(s));
 
   if (!hasCurrentAuth) {
-    if (!mcpLoading) syncLog(`...initializing auth and discovering project ID`);
+    mayLog(`...initializing auth and discovering project ID`);
 
-    const subject = process.env.GOOGLE_WORKSPACE_SUBJ;
-    const effectiveKeyFile = keyFile || process.env.SERVICE_ACCOUNT_FILE;
-    syncLog(`...asking for scopes ${scopes.join(",")}`);
+    // this would be the user being impersonated if it was a service account or a workload identity
+    const subject = process.env.GOOGLE_WORKSPACE_SUBJECT;
+
+    // this would be the service account file if it was a service account
+    const effectiveKeyFile = (keyFile || process.env.SERVICE_ACCOUNT_FILE);
+    // mayLog(`...asking for scopes ${scopes.join(",")}`);
+
     // 3. Handle Service Account + DWD explicitly
     if (effectiveKeyFile && fs.existsSync(effectiveKeyFile)) {
-      if (!mcpLoading) syncLog(`...loading Service Account from ${effectiveKeyFile}`);
+      mayLog(`...loading Service Account from ${effectiveKeyFile}`);
 
       const keys = JSON.parse(fs.readFileSync(effectiveKeyFile, 'utf8'));
 
@@ -139,49 +148,72 @@ const setAuth = async (scopes = [], keyFile = null, mcpLoading = false) => {
       // Still initialize GoogleAuth for helper methods like getProjectId
       _auth = new GoogleAuth({ scopes, keyFilename: effectiveKeyFile });
 
-      if (subject && !mcpLoading) {
-        syncLog(`...SUCCESS: Impersonating Workspace user: ${subject}`);
+      if (subject) {
+        mayLog(`...Impersonating Workspace user: ${subject}`);
       }
+
     } else {
-      // Fallback for local ADC (works for your local user account)
-      if (!mcpLoading) syncLog(`...using Application Default Credentials (ADC)`);
+      // Fallback for local ADC (works for your local user account) or workload identity
+
       _auth = new GoogleAuth({ scopes });
       _authClient = await _auth.getClient();
 
+
+
       if (subject) {
+
         if (typeof _authClient.setSubject === 'function') {
+          mayLog('...using legacy method to set subject')
           _authClient.setSubject(subject);
-        } else if (typeof _authClient.getServiceAccountEmail === 'function') {
+
+        } else if (typeof _authClient.getServiceAccountEmail === 'function' || _authClient.constructor.name === 'Compute') {
           // Keyless DWD (Workload Identity)
           try {
             const saEmail = await _authClient.getServiceAccountEmail();
+            mayLog(`...ADC metadata detected. Email: ${saEmail}`);
+
+            // this would be the service account email 
             if (saEmail && saEmail.includes('@')) {
-              if (!mcpLoading) syncLog(`...detected Service Account ${saEmail}, enabling keyless DWD for ${subject}`);
-              const originalGetAccessToken = _authClient.getAccessToken.bind(_authClient);
+
+              mayLog(`...detected Service Account ${saEmail}, enabling keyless DWD for ${subject}`);
+              
+              // we need to change the way we.get the access token
               _authClient.getAccessToken = async () => {
+                // avoid if we have a cached token
                 if (_cachedDwdToken && Date.now() < _dwdTokenExpiresAt) {
-                  return { token: _cachedDwdToken };
+                  const token = _cachedDwdToken;
+                  mayLog ('...got token from cache')
+                  return { token };
                 }
+                // need to refresh the token
+                mayLog ('...refreshing token')
                 const { token, res } = await getKeylessDwdToken(_authClient, saEmail, subject, scopes);
                 _cachedDwdToken = token;
                 // Use a 5-minute buffer
                 const expiresIn = res.data.expires_in || 3600;
                 _dwdTokenExpiresAt = Date.now() + (expiresIn - 300) * 1000;
+                mayLog ('...got token from refresh')
                 return { token, res };
               };
+            } else {
+              mayLog(`...ADC is active but email '${saEmail}' is not a valid service account. Check Cloud Run identity.`);
             }
           } catch (e) {
-            if (!mcpLoading) syncLog(`...ADC is not a service account, keyless DWD not available: ${e.message}`);
+            mayLog(`...Error fetching Metadata Email: ${e.message}`);
           }
         }
+      } else {
+        mayLog(`...using ADC`)
       }
     }
 
     _projectId = await _auth.getProjectId();
     if (!_projectId) throw new Error("Failed to get project ID.");
 
-    if (!mcpLoading) syncLog(`...discovered and set projectId to ${_projectId}`);
+    mayLog(`...discovered and set projectId to ${_projectId}`);
     scopes.forEach((s) => _authScopes.add(s));
+
+    mayLog(`Is it keyless? ${typeof _authClient.getServiceAccountEmail === 'function'}`);
   }
 
   return getAuth();
@@ -254,18 +286,25 @@ const getAuth = () => {
 const setTokenInfo = (tokenInfo) => {
   _tokenInfo = tokenInfo;
 
-  // If we are impersonating, the tokeninfo might still return the SA email.
-  // We should prefer the subject email if it's available.
-  const subject = process.env.GOOGLE_WORKSPACE_SUBJ;
-  if (subject && _tokenInfo) {
-    _tokenInfo.email = subject;
+  // FIX: Ensure 'sub' exists for the cache library to use as a User ID
+  const subject = process.env.GOOGLE_WORKSPACE_SUBJECT;
+  syncLog ('...subject from env is '+ subject)
+  if (_tokenInfo) {
+    // If we are doing DWD, the 'sub' is the person we are impersonating
+    if (subject) {
+      _tokenInfo.sub = _tokenInfo.sub || subject;
+      _tokenInfo.email = _tokenInfo.email || subject;
+      syncLog ('...tokenInfo is subject found'+ JSON.stringify(_tokenInfo))
+    } else {
+      syncLog ('...tokenInfo is subject not found'+ JSON.stringify(_tokenInfo))
+    }
+
   }
 
-  // set expiry time with a 60 second buffer
+  // Set expiry...
   if (tokenInfo && tokenInfo.expires_in) {
     setTokenExpiresAt(Date.now() + (tokenInfo.expires_in - 60) * 1000);
   } else {
-    // no expiry info, so we'll have to fetch a new one next time
     setTokenExpiresAt(0);
   }
 };
