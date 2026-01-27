@@ -192,7 +192,7 @@ export const testFakes = () => {
     console.log("...cumulative docs cache performance", getDocsPerformance());
     console.log("...cumulative slides cache performance", getSlidesPerformance());
     console.log("...cumulative forms cache performance", getFormsPerformance());
-    console.log("...cumulative calendar cache performance", getCalendarPerformance ());
+    console.log("...cumulative calendar cache performance", getCalendarPerformance());
   }
   // final cleanup of all files created during the test run
   if (ScriptApp.isFake) {
@@ -204,4 +204,4 @@ export const testFakes = () => {
 };
 
 // this required on Node but not on Apps Script
-if (ScriptApp.isFake) testFakes();
+// if (ScriptApp.isFake) testFakes();

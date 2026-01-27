@@ -108,20 +108,25 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, cachePath,
     email: effectiveInfo.tokenInfo.email,
     token: effectiveInfo.token
   }
+
+  syncLog(`[Auth] Active User TokenInfo: ${JSON.stringify(activeInfo.tokenInfo)}`)
+  syncLog(`[Auth] Effective User TokenInfo: ${JSON.stringify(effectiveInfo.tokenInfo)}`)
   // check that mandatory scopes have been allowed
-  const effectiveScopes =  effectiveInfo.tokenInfo.scopes
-  if (!activeUser.id || !effectiveUser.id) {
-    const isOpenid = effectiveScopes.includes ('openid')
-    throw new Error (`...unable to figure out user id - openid scope was ${isOpenid ? '' : 'not'} granted`)
+  const effectiveScopes = effectiveInfo.tokenInfo.scopes
+  // we strictly need the effective user ID (the one we are impersonating)
+  // but the active user (the SA) might not have a 'sub' on Cloud Run
+  if (!effectiveUser.id) {
+    const isOpenid = effectiveScopes.includes('openid')
+    throw new Error(`...unable to figure out effective user id - openid scope was ${isOpenid ? '' : 'not'} granted`)
   }
   if (!activeUser.email || !effectiveUser.email) {
-    const isEmail = effectiveScopes.includes ('https://www.googleapis.com/auth/userinfo.email')
-    throw new Error (`...unable to figure out user email - userinfo.email scope was ${isEmail ? '' : 'not'} granted`)
+    const isEmail = effectiveScopes.includes('https://www.googleapis.com/auth/userinfo.email')
+    throw new Error(`...unable to figure out user email - userinfo.email scope was ${isEmail ? '' : 'not'} granted`)
   }
   const allowedScopes = new Set(effectiveScopes)
   const missingScopes = scopes.filter(scope => !allowedScopes.has(scope))
   if (missingScopes.length > 0) {
-    syncError (`...these scopes were asked for but not granted: ${missingScopes.join(', ')}`)
+    syncError(`...these scopes were asked for but not granted: ${missingScopes.join(', ')}`)
   }
   return {
     // these will be the scopes we're allowed to get

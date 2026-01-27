@@ -117,12 +117,11 @@ const setAuth = async (scopes = [], mcpLoading = false) => {
       const { tokenInfo: userInfo } = await getSourceAccessTokenInfo()
       mayLog(`...user verified as: ${userInfo.email}`);
 
-      // Manual Domain-Wide Delegation flow
-      // 1. Create a JWT payload with the user as the subject
-      // 2. Use the source client (SA or ADC user) to sign the JWT via IAM signJwt
-      // 3. Exchange the signed JWT for an access token
+      // DWD Subject priority:
+      // 1. GOOGLE_WORKSPACE_SUBJECT
+      // 2. Caller identity (from getSourceAccessTokenInfo)
       const saEmail = targetPrincipal
-      const userEmail = userInfo.email
+      const userEmail = process.env.GOOGLE_WORKSPACE_SUBJECT || userInfo.email
 
       const dwdClient = new OAuth2Client()
       dwdClient._token = null
@@ -143,6 +142,8 @@ const setAuth = async (scopes = [], mcpLoading = false) => {
           exp,
           scope: scopes.join(' ')
         }
+
+        mayLog(`[Auth] DWD Scopes: ${payload.scope}`)
 
         // Sign the JWT via IAM API
         // Note: The caller must have 'Service Account Token Creator' role on the target SA
