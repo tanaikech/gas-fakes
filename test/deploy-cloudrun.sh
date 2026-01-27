@@ -30,3 +30,13 @@ gcloud run deploy "gas-fakes-test-stores" \
     --region "europe-west1" \
     --service-account "$SA_EMAIL" \
     --set-env-vars "STORE_TYPE=$STORE_TYPE,GOOGLE_WORKSPACE_SUBJECT=$GOOGLE_WORKSPACE_SUBJECT,UPSTASH_REDIS_REST_URL=$UPSTASH_REDIS_REST_URL,UPSTASH_REDIS_REST_TOKEN=$UPSTASH_REDIS_REST_TOKEN"
+
+# 4. Prune old revisions (keep latest 2)
+echo "--- Pruning old revisions (keeping latest 2) ---"
+REVISIONS=$(gcloud run revisions list --service "gas-fakes-test-stores" --region "europe-west1" --format='value(metadata.name)' --sort-by='~metadata.creationTimestamp' | tail -n +3)
+if [ -n "$REVISIONS" ]; then
+    echo "Deleting old revisions: $REVISIONS"
+    gcloud run revisions delete $REVISIONS --region "europe-west1" --quiet
+else
+    echo "No old revisions to prune."
+fi

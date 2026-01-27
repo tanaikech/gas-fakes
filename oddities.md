@@ -983,9 +983,13 @@ patchStream(process.stdout);
 patchStream(process.stderr);
 ````
 
+### Active user -vs effective user when using workload identity/service account
+
+When using workload identity/service account, the active user is the user being impersonated by the service account, but the effective user is the user that the service account itself. In ADC mode, the effective user would be the same as the active user as you are not running with a service account. This distinction is important as the access token generated is from the effective user's scoped permissions.
+
 #### Google-auth-library changes
 
-Another issue with 10.4, is we now get this error "Method doesn't allow unregistered callers (callers without established identity)". I believe this is to do with the use of certain scopes being restricted. We are using ADC for authentication, but we can full it into thinking it's using an internal OAuth client by creating one in the console, then injecting its credentials into the file used by ADC. For a full explanation on setting this up see  this write up on setting up [getting started](GETTING_STARTED.md)
+Another issue with 10.4, is we now get this error "Method doesn't allow unregistered callers (callers without established identity)". I believe this is to do with the use of certain scopes being restricted. When we are using ADC for authentication, but we can full it into thinking it's using an internal OAuth client by creating one in the console, then injecting its credentials into the file used by ADC. For a full explanation on setting this up see  this write up on setting up [getting started](GETTING_STARTED.md)
 
 ## Testing
 

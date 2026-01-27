@@ -1,4 +1,4 @@
-import { GoogleAuth, JWT } from "google-auth-library";
+import { GoogleAuth, JWT, Impersonated } from "google-auth-library";
 import is from "@sindresorhus/is";
 import { createHash } from "node:crypto";
 import { syncLog, syncError } from "./workersync/synclogger.js";
@@ -9,13 +9,19 @@ const _authScopes = new Set([]);
 // all this stuff gets populated by the initial synced fxInit
 let _auth = null;
 let _projectId = null;
-let _tokenInfo = null;
 let _accessToken = null;
 let _tokenExpiresAt = null;
 let _manifest = null;
 let _clasp = null;
+let _activeUser = null;
+let _effectiveUser = null;
+
 
 let _settings = null;
+const getActiveUser = () => _activeUser
+const getEffectiveUser = () => _effectiveUser
+const setActiveUser = (user) => (_activeUser = user);
+const setEffectiveUser = (user) => (_effectiveUser = user)
 const setManifest = (manifest) => (_manifest = manifest);
 const setClasp = (clasp) => (_clasp = clasp);
 const getManifest = () => _manifest;
@@ -28,25 +34,108 @@ const setAccessToken = (accessToken) => (_accessToken = accessToken);
 const setSettings = (settings) => (_settings = settings);
 const getCachePath = () => getSettings().cache;
 const getPropertiesPath = () => getSettings().properties;
-const setTokenExpiresAt = (expiresAt) => (_tokenExpiresAt = expiresAt);
-const getTokenInfo = () => {
-  if (!_tokenInfo) throw `token info isnt set yet`;
-  return _tokenInfo;
-};
+
 
 const getTimeZone = () => getManifest().timeZone;
-const getUserId = () => getTokenInfo().sub;
-const getTokenScopes = () => getTokenInfo().scope;
+const getUserId = () => getEffectiveUser().id;
+const getTokenScopes = () => getAccessTokenInfo().tokenInfo.scope;
 const getHashedUserId = () =>
   createHash("md5")
     .update(getUserId() + "hud")
     .digest()
     .toString("hex");
 
-const getAccessToken = () => _accessToken;
+const _getTokenInfo = async (client) => {
+  const tokenResponse = await client.getAccessToken();
+  const token = tokenResponse.token;
+  const tokenInfo = await client.getTokenInfo(token);
+  return {
+    tokenInfo,
+    token
+  }
+}
+// this is the access token allowed to do the work - the one for the service account (or the user if using ADC)
+const getAccessTokenInfo = async () => {
+  if (!hasAuth()) throw `auth isnt set yet`;
+  return _getTokenInfo(_authClient);
+}
+
+// this is the access token info for the actual user
+const getSourceAccessTokenInfo = async () => {
+  if (!hasAuth()) throw `auth isnt set yet`;
+  return _getTokenInfo(_sourceClient);
+}
+
+
+// this returns the token that is authorized to do the work
+const getAccessToken = async () => {
+  if (!hasAuth()) throw `auth isnt set yet`;
+  return (await getAccessTokenInfo()).token;
+}
+
 
 const isTokenExpired = () =>
   !_accessToken || !_tokenExpiresAt || Date.now() >= _tokenExpiresAt;
+
+// the auth client is the one that has the scopes to do the work 
+// under adc, this is the source client
+// under service account, this is the impersonated client
+let _authClient = null;
+let _sourceClient = null;
+const getAuthClient = () => _authClient;
+const getSourceClient = () => _sourceClient;    
+
+
+// We'll support ADC, or workload identity
+// and the service account must be allowed to impersonate the user
+const setAuth = async (scopes = [], mcpLoading = false) => {
+  const mayLog = mcpLoading ? () => null : syncLog;
+  mayLog(`...initializing auth`)
+  
+  try {
+    _auth = new GoogleAuth()
+    _projectId = await _auth.getProjectId()
+    mayLog(`...discovered project ID: ${_projectId}`)
+
+    // if we dont have this, then we must be using ADC
+    const saName = process.env.GOOGLE_SERVICE_ACCOUNT_NAME
+    if (!saName) {
+      mayLog(`...using ADC`)
+      _authClient = await _auth.getClient({
+        scopes
+      })
+      _sourceClient = _authClient
+    } else {
+      mayLog(`...using service account: ${saName}`)
+      const targetPrincipal = `${saName}@${_projectId}.iam.gserviceaccount.com`
+      mayLog(`...attempting to use service account: ${targetPrincipal}`)
+
+      /// authclient will include the service account email
+      _sourceClient = await _auth.getClient()
+      _authClient = new Impersonated({
+        sourceClient: _sourceClient,
+        targetPrincipal,
+        targetScopes: scopes
+      })
+
+      const saEmail = _authClient.targetPrincipal
+      mayLog(`...using service account: ${saEmail}`)
+
+      // check we can get an access token - this is the access token of the service account
+      const {tokenInfo} = await getAccessTokenInfo()
+      mayLog(`...sa verified as: ${tokenInfo.email}`);
+    }
+
+    // now to get who the real user is
+    const {tokenInfo: userInfo} = await getSourceAccessTokenInfo()
+    mayLog(`...user verified as: ${userInfo.email}`);
+
+  } catch (error) {
+    mayLog(`...auth failed - check you are logged in with 'gcloud auth login' and have enabled workload identity: ${error}`)
+    throw error
+  }
+  return getAuth()
+}
 /**
  * we'll be using adc credentials so no need for any special auth here
  * the idea here is to keep addign scopes to any auth so we have them all
@@ -55,169 +144,7 @@ const isTokenExpired = () =>
  * @param {boolean} [mcpLoading=false] When the MCP server is loading, this value is true. By this, the invalid values can be hidden while the MCP server is loading. This is important for using Google Antigravity.
  * @returns {GoogleAuth.auth}
  */
-let _authClient = null;
-const getAuthClient = () => _authClient;
 
-let _cachedDwdToken = null;
-let _dwdTokenExpiresAt = 0;
-
-/**
- * Handles keyless DWD by signing a JWT with IAM and exchanging it for a token
- * @param {import("google-auth-library").AuthClient} client 
- * @param {string} saEmail 
- * @param {string} subject 
- * @param {string[]} scopes 
- */
-async function getKeylessDwdToken(client, saEmail, subject, scopes) {
-  const iat = Math.floor(Date.now() / 1000);
-  const exp = iat + 3600;
-  const payload = {
-    iss: saEmail,
-    sub: subject,
-    aud: "https://oauth2.googleapis.com/token",
-    iat,
-    exp,
-    scope: scopes.join(" "),
-  };
-
-  const name = `projects/-/serviceAccounts/${saEmail}`;
-  const url = `https://iamcredentials.googleapis.com/v1/${name}:signJwt`;
-
-  // 1. Sign the JWT using the IAM Credentials API
-  const signRes = await client.request({
-    url,
-    method: 'POST',
-    data: {
-      payload: JSON.stringify(payload)
-    }
-  });
-
-  const signedJwt = signRes.data.signedJwt;
-
-  // 2. Exchange the signed JWT for an access token
-  const tokenRes = await client.request({
-    url: "https://oauth2.googleapis.com/token",
-    method: 'POST',
-    data: new URLSearchParams({
-      grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
-      assertion: signedJwt
-    }).toString(),
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
-  });
-
-  return {
-    token: tokenRes.data.access_token,
-    res: tokenRes
-  };
-}
-
-const setAuth = async (scopes = [], keyFile = null, mcpLoading = false) => {
-
-  // suppress synclog if mcpLoading
-  const mayLog = mcpLoading ? ()=>null : syncLog;
-
-  // if scopes are the same as current auth, we dont need to do anything
-  const hasCurrentAuth = hasAuth() && scopes.every((s) => _authScopes.has(s));
-
-  if (!hasCurrentAuth) {
-    mayLog(`...initializing auth and discovering project ID`);
-
-    // this would be the user being impersonated if it was a service account or a workload identity
-    const subject = process.env.GOOGLE_WORKSPACE_SUBJECT;
-
-    // this would be the service account file if it was a service account
-    const effectiveKeyFile = (keyFile || process.env.SERVICE_ACCOUNT_FILE);
-    // mayLog(`...asking for scopes ${scopes.join(",")}`);
-
-    // 3. Handle Service Account + DWD explicitly
-    if (effectiveKeyFile && fs.existsSync(effectiveKeyFile)) {
-      mayLog(`...loading Service Account from ${effectiveKeyFile}`);
-
-      const keys = JSON.parse(fs.readFileSync(effectiveKeyFile, 'utf8'));
-
-      // We create a JWT client directly for DWD impersonation.
-      _authClient = new JWT({
-        email: keys.client_email,
-        key: keys.private_key,
-        scopes: scopes,
-        subject: subject,
-      });
-
-      // Still initialize GoogleAuth for helper methods like getProjectId
-      _auth = new GoogleAuth({ scopes, keyFilename: effectiveKeyFile });
-
-      if (subject) {
-        mayLog(`...Impersonating Workspace user: ${subject}`);
-      }
-
-    } else {
-      // Fallback for local ADC (works for your local user account) or workload identity
-
-      _auth = new GoogleAuth({ scopes });
-      _authClient = await _auth.getClient();
-
-
-
-      if (subject) {
-
-        if (typeof _authClient.setSubject === 'function') {
-          mayLog('...using legacy method to set subject')
-          _authClient.setSubject(subject);
-
-        } else if (typeof _authClient.getServiceAccountEmail === 'function' || _authClient.constructor.name === 'Compute') {
-          // Keyless DWD (Workload Identity)
-          try {
-            const saEmail = await _authClient.getServiceAccountEmail();
-            mayLog(`...ADC metadata detected. Email: ${saEmail}`);
-
-            // this would be the service account email 
-            if (saEmail && saEmail.includes('@')) {
-
-              mayLog(`...detected Service Account ${saEmail}, enabling keyless DWD for ${subject}`);
-              
-              // we need to change the way we.get the access token
-              _authClient.getAccessToken = async () => {
-                // avoid if we have a cached token
-                if (_cachedDwdToken && Date.now() < _dwdTokenExpiresAt) {
-                  const token = _cachedDwdToken;
-                  mayLog ('...got token from cache')
-                  return { token };
-                }
-                // need to refresh the token
-                mayLog ('...refreshing token')
-                const { token, res } = await getKeylessDwdToken(_authClient, saEmail, subject, scopes);
-                _cachedDwdToken = token;
-                // Use a 5-minute buffer
-                const expiresIn = res.data.expires_in || 3600;
-                _dwdTokenExpiresAt = Date.now() + (expiresIn - 300) * 1000;
-                mayLog ('...got token from refresh')
-                return { token, res };
-              };
-            } else {
-              mayLog(`...ADC is active but email '${saEmail}' is not a valid service account. Check Cloud Run identity.`);
-            }
-          } catch (e) {
-            mayLog(`...Error fetching Metadata Email: ${e.message}`);
-          }
-        }
-      } else {
-        mayLog(`...using ADC`)
-      }
-    }
-
-    _projectId = await _auth.getProjectId();
-    if (!_projectId) throw new Error("Failed to get project ID.");
-
-    mayLog(`...discovered and set projectId to ${_projectId}`);
-    scopes.forEach((s) => _authScopes.add(s));
-
-    mayLog(`Is it keyless? ${typeof _authClient.getServiceAccountEmail === 'function'}`);
-  }
-
-  return getAuth();
-};
 
 /**
  * if we're doing a fetch on drive API we need a special header
@@ -261,53 +188,21 @@ const getProjectId = () => {
 /**
  * @returns {Boolean} checks to see if auth has bee initialized yet
  */
-const hasAuth = () => Boolean(_auth);
+const hasAuth = () => Boolean(_authClient);
+
 
 /**
- * @returns {GoogleAuth.auth}
+ * @returns {import("google-auth-library").AuthClient}
  */
 const getAuth = () => {
   if (!hasAuth())
     throw new Error(`auth hasnt been intialized with setAuth yet`);
 
-  // Return a wrapper that ensures getAccessToken returns a string, 
-  // and uses the impersonated client if available.
-  return {
-    getAccessToken: async () => {
-      const client = getAuthClient();
-      const res = await client.getAccessToken();
-      return typeof res === 'string' ? res : res.token;
-    },
-    getClient: async () => getAuthClient(),
-    getProjectId: () => getProjectId()
-  };
+  // Simply return the client we've already prepared/patched
+  return getAuthClient();
 };
 
-const setTokenInfo = (tokenInfo) => {
-  _tokenInfo = tokenInfo;
 
-  // FIX: Ensure 'sub' exists for the cache library to use as a User ID
-  const subject = process.env.GOOGLE_WORKSPACE_SUBJECT;
-  syncLog ('...subject from env is '+ subject)
-  if (_tokenInfo) {
-    // If we are doing DWD, the 'sub' is the person we are impersonating
-    if (subject) {
-      _tokenInfo.sub = _tokenInfo.sub || subject;
-      _tokenInfo.email = _tokenInfo.email || subject;
-      syncLog ('...tokenInfo is subject found'+ JSON.stringify(_tokenInfo))
-    } else {
-      syncLog ('...tokenInfo is subject not found'+ JSON.stringify(_tokenInfo))
-    }
-
-  }
-
-  // Set expiry...
-  if (tokenInfo && tokenInfo.expires_in) {
-    setTokenExpiresAt(Date.now() + (tokenInfo.expires_in - 60) * 1000);
-  } else {
-    setTokenExpiresAt(0);
-  }
-};
 
 /**
  * why is this here ?
@@ -351,7 +246,6 @@ export const Auth = {
   googify,
   setProjectId,
   getUserId,
-  setTokenInfo,
   getAccessToken,
   getTokenScopes,
   getScriptId,
@@ -359,7 +253,6 @@ export const Auth = {
   setSettings,
   getCachePath,
   getPropertiesPath,
-  getTokenInfo,
   getHashedUserId,
   setManifest,
   setClasp,
@@ -368,5 +261,12 @@ export const Auth = {
   getTimeZone,
   setAccessToken,
   isTokenExpired,
-  getAuthClient
+  getAuthClient,
+  getSourceClient,
+  getAccessTokenInfo,
+  getSourceAccessTokenInfo,
+  setActiveUser,
+  getActiveUser,
+  setEffectiveUser,
+  getEffectiveUser
 };

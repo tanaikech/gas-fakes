@@ -345,6 +345,15 @@ class FakeBehavior {
   get sandBoxMode() {
     return this.__sandboxMode;
   }
+  reset() {
+    this.__createdIds.clear();
+    this.__createdGmailIds.clear();
+    this.__createdCalendarIds.clear();
+    this.__allowedIds.clear();
+    this.__allowedGmailIds.clear();
+    this.__allowedCalendarIds.clear();
+    return this;
+  }
   addFile(id) {
     if (!is.nonEmptyString(id)) {
       throw new Error(`Invalid sandbox id parameter (${id}) - must be a non-empty string`);

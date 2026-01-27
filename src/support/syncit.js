@@ -283,22 +283,21 @@ const fxInit = ({
 
   const {
     scopes,
+    activeUser,
+    effectiveUser,
     projectId,
-    tokenInfo,
-    accessToken,
     settings,
     manifest,
     clasp,
   } = synced;
 
-  // set these values from the subprocess for the main project
+  // set these values from the subprocess into the main project version of auth
   Auth.setProjectId(projectId);
-  //Auth.setAuth(scopes)
-  Auth.setTokenInfo(tokenInfo);
-  //Auth.setAccessToken(accessToken)
   Auth.setSettings(settings);
   Auth.setClasp(clasp);
   Auth.setManifest(manifest);
+  Auth.setActiveUser(activeUser);
+  Auth.setEffectiveUser(effectiveUser);
   return synced;
 };
 
@@ -367,6 +366,17 @@ const fxFetchAll = (requests, responseFields) => {
   return callSync("sxFetchAll", requests, responseFields);
 };
 
+const fxGetAccessToken = () => {
+  return callSync("sxGetAccessToken");
+};
+
+const fxGetAccessTokenInfo = () => {
+  return callSync("sxGetAccessTokenInfo");
+};
+const fxGetSourceAccessTokenInfo = () => {
+  return callSync("sxGetSourceAccessTokenInfo");
+};
+
 const fxSheets = (args) =>
   fxGeneric({
     ...args,
@@ -430,5 +440,8 @@ export const Syncit = {
   fxForms,
   fxGmail,
   fxCalendar,
-  fxDriveExport
+  fxDriveExport,
+  fxGetAccessToken,
+  fxGetAccessTokenInfo,
+  fxGetSourceAccessTokenInfo
 }

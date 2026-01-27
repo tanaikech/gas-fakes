@@ -1,10 +1,11 @@
 import { newFakeUser} from '../common/fakeuser.js'
-import { Auth } from '../../support/auth.js'
 import { Proxies } from '../../support/proxies.js'
-
+import { Syncit } from '../../support/syncit.js'
+import { Auth } from '../../support/auth.js'
 class FakeSession {
   constructor () { 
-    this._activeUser = newFakeUser (Auth.getTokenInfo())
+    this._effectiveUser = newFakeUser (Syncit.fxGetAccessTokenInfo().tokenInfo)
+    this._activeUser = newFakeUser (Syncit.fxGetSourceAccessTokenInfo().tokenInfo)
   }
   getActiveUser() {
     return this._activeUser
@@ -14,7 +15,7 @@ class FakeSession {
    * @returns {string}
    */
   getEffectiveUser() {
-    return this.getActiveUser()
+    return this._effectiveUser
   }
   /**
    * @returns {string}

@@ -1,21 +1,19 @@
 
 import '@mcpher/gas-fakes'
-import { testStores } from './teststores.js';
+import { testFakes } from './test.js';
 import http from 'http';
 
 const server = http.createServer(async (req, res) => {
   console.log(`Received request: ${req.method} ${req.url}`);
 
   if (req.url === '/run' || req.url === '/') {
-    console.log('--- Starting teststores ---');
+
     try {
-      // Mock the "execute" flag so wrapupTest actually runs things
-      process.argv.push("execute");
 
-      const pack = initTests();
-      testStores(pack);
 
-      console.log('--- teststores completed ---');
+      testFakes();
+
+
       res.writeHead(200, { 'Content-Type': 'text/plain' });
       res.end('Test execution completed. Check Cloud Run logs for details.');
     } catch (error) {

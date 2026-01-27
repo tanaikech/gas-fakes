@@ -65,7 +65,7 @@ import { testLock } from './testlock.js';
 import { testGmail } from "./testgmail.js";
 import { testSandboxGmail } from "./testsandboxgmail.js";
 
-const testFakes = () => {
+export const testFakes = () => {
   const pack = initTests();
   const { unit } = pack;
 
