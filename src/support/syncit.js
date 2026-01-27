@@ -270,11 +270,14 @@ const fxInit = ({
   // this is the path of the runing main process
   const mainDir = path.dirname(process.argv[1]);
 
+  // Resolve defaults relative to mainDir if they are relative
+  const resolve = (p) => path.isAbsolute(p) ? p : path.resolve(mainDir, p);
+
   // because this is all run in a synced subprocess it's not an async result
   const synced = callSync("sxInit", {
-    claspPath,
-    settingsPath,
-    manifestPath,
+    claspPath: resolve(claspPath),
+    settingsPath: resolve(settingsPath),
+    manifestPath: resolve(manifestPath),
     mainDir,
     cachePath,
     propertiesPath,
