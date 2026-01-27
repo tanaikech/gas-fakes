@@ -29,8 +29,13 @@ export const sxSheets = async (Auth, { subProp, prop, method, params, options })
       response = err.response;
     }
 
-    const isRetryable = [429, 500, 503].includes(response?.status) || error?.code == 429;
-    
+    const isRetryable = [429, 500, 503].includes(response?.status) ||
+      error?.code == 429 ||
+      error?.code === 'ETIMEDOUT' ||
+      error?.code === 'ECONNRESET' ||
+      error?.message?.includes('ETIMEDOUT') ||
+      error?.message?.includes('ECONNRESET');
+
     if (isRetryable && i < maxRetries - 1) {
       // add a random jitter to avoid thundering herd
       const jitter = Math.floor(Math.random() * 1000);

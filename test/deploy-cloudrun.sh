@@ -29,7 +29,8 @@ gcloud run deploy "gas-fakes-test-stores" \
     --image "$IMAGE_PATH" \
     --region "europe-west1" \
     --service-account "$SA_EMAIL" \
-    --set-env-vars "STORE_TYPE=$STORE_TYPE,GOOGLE_WORKSPACE_SUBJECT=$GOOGLE_WORKSPACE_SUBJECT,UPSTASH_REDIS_REST_URL=$UPSTASH_REDIS_REST_URL,UPSTASH_REDIS_REST_TOKEN=$UPSTASH_REDIS_REST_TOKEN"
+    --set-env-vars "STORE_TYPE=$STORE_TYPE,GOOGLE_SERVICE_ACCOUNT_NAME=$GOOGLE_SERVICE_ACCOUNT_NAME,UPSTASH_REDIS_REST_URL=$UPSTASH_REDIS_REST_URL,UPSTASH_REDIS_REST_TOKEN=$UPSTASH_REDIS_REST_TOKEN"
+    
 
 # 4. Prune old revisions (keep latest 2)
 echo "--- Pruning old revisions (keeping latest 2) ---"
