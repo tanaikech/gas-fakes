@@ -22,7 +22,6 @@ export const testSession = (pack) => {
     t.is(Session.getActiveUser().getEmail(), fixes.EMAIL)
     t.true(is.nonEmptyString(Session.getEffectiveUser().getEmail()))
     t.is(Session.getEffectiveUser().getEmail(), fixes.EMAIL, {
-      skip: ScriptApp.isFake,
       description: 'note that this coould be the service account if running in fakes, so we will skip'
     })
     // The locale can vary by environment (e.g., 'C.UTF-8' in some containers).

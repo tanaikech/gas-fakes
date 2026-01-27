@@ -1,4 +1,4 @@
-import { GoogleAuth, JWT, Impersonated } from "google-auth-library";
+import { GoogleAuth, JWT, Impersonated, OAuth2Client } from "google-auth-library";
 import is from "@sindresorhus/is";
 import { createHash } from "node:crypto";
 import { syncLog, syncError } from "./workersync/synclogger.js";
@@ -62,7 +62,7 @@ const getAccessTokenInfo = async () => {
 
 // this is the access token info for the actual user
 const getSourceAccessTokenInfo = async () => {
-  if (!hasAuth()) throw `auth isnt set yet`;
+  if (!_sourceClient) throw `source auth isnt set yet`;
   return _getTokenInfo(_sourceClient);
 }
 
@@ -83,7 +83,7 @@ const isTokenExpired = () =>
 let _authClient = null;
 let _sourceClient = null;
 const getAuthClient = () => _authClient;
-const getSourceClient = () => _sourceClient;    
+const getSourceClient = () => _sourceClient;
 
 
 // We'll support ADC, or workload identity
@@ -91,7 +91,7 @@ const getSourceClient = () => _sourceClient;
 const setAuth = async (scopes = [], mcpLoading = false) => {
   const mayLog = mcpLoading ? () => null : syncLog;
   mayLog(`...initializing auth`)
-  
+
   try {
     _auth = new GoogleAuth()
     _projectId = await _auth.getProjectId()
@@ -110,25 +110,95 @@ const setAuth = async (scopes = [], mcpLoading = false) => {
       const targetPrincipal = `${saName}@${_projectId}.iam.gserviceaccount.com`
       mayLog(`...attempting to use service account: ${targetPrincipal}`)
 
-      /// authclient will include the service account email
+      /// _sourceClient is the identity of the person/thing running the code
       _sourceClient = await _auth.getClient()
-      _authClient = new Impersonated({
-        sourceClient: _sourceClient,
-        targetPrincipal,
-        targetScopes: scopes
-      })
 
-      const saEmail = _authClient.targetPrincipal
-      mayLog(`...using service account: ${saEmail}`)
+      // now to get who the real user is
+      const { tokenInfo: userInfo } = await getSourceAccessTokenInfo()
+      mayLog(`...user verified as: ${userInfo.email}`);
 
-      // check we can get an access token - this is the access token of the service account
-      const {tokenInfo} = await getAccessTokenInfo()
-      mayLog(`...sa verified as: ${tokenInfo.email}`);
+      // Manual Domain-Wide Delegation flow
+      // 1. Create a JWT payload with the user as the subject
+      // 2. Use the source client (SA or ADC user) to sign the JWT via IAM signJwt
+      // 3. Exchange the signed JWT for an access token
+      const saEmail = targetPrincipal
+      const userEmail = userInfo.email
+
+      const dwdClient = new OAuth2Client()
+      dwdClient._token = null
+      dwdClient._expiresAt = 0
+
+      dwdClient.getAccessToken = async function () {
+        if (this._token && Date.now() < this._expiresAt - 60000) {
+          return { token: this._token }
+        }
+
+        const iat = Math.floor(Date.now() / 1000)
+        const exp = iat + 3600
+        const payload = {
+          iss: saEmail,
+          sub: userEmail,
+          aud: "https://oauth2.googleapis.com/token",
+          iat,
+          exp,
+          scope: scopes.join(' ')
+        }
+
+        // Sign the JWT via IAM API
+        // Note: The caller must have 'Service Account Token Creator' role on the target SA
+        const signUrl = `https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/${saEmail}:signJwt`
+        const signResponse = await _sourceClient.request({
+          url: signUrl,
+          method: 'POST',
+          data: {
+            payload: JSON.stringify(payload)
+          }
+        })
+
+        const { signedJwt } = signResponse.data
+
+        // Exchange JWT for access token
+        const tokenUrl = "https://oauth2.googleapis.com/token"
+        const tokenResponse = await fetch(tokenUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+            assertion: signedJwt
+          })
+        })
+
+        if (!tokenResponse.ok) {
+          const errorText = await tokenResponse.text()
+          throw new Error(`Failed to exchange JWT for token: ${errorText}`)
+        }
+
+        const tokenData = await tokenResponse.json()
+        this._token = tokenData.access_token
+        this._expiresAt = Date.now() + (tokenData.expires_in * 1000)
+        this.credentials = { access_token: this._token, expiry_date: this._expiresAt }
+
+        return { token: this._token }
+      }
+
+      // override request to ensure we use our token but leverage the existing transporter
+      const originalRequest = dwdClient.request.bind(dwdClient)
+      dwdClient.request = async function (options) {
+        // Ensure token is fresh
+        await this.getAccessToken()
+        return originalRequest(options)
+      }
+
+      _authClient = dwdClient
+      _authClient.targetPrincipal = saEmail
+
+      mayLog(`...using Domain-Wide Delegation for user: ${userEmail}`)
+
+      // check we can get an access token - this will trigger the signJwt flow
+      const { tokenInfo } = await getAccessTokenInfo()
+      mayLog(`...sa (acting as user) verified as: ${tokenInfo.email}`);
     }
 
-    // now to get who the real user is
-    const {tokenInfo: userInfo} = await getSourceAccessTokenInfo()
-    mayLog(`...user verified as: ${userInfo.email}`);
 
   } catch (error) {
     mayLog(`...auth failed - check you are logged in with 'gcloud auth login' and have enabled workload identity: ${error}`)
