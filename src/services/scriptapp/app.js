@@ -9,13 +9,21 @@ import { Auth } from '../../support/auth.js'
 import { Proxies } from '../../support/proxies.js'
 import { newFakeBehavior } from './behavior.js'
 import { newCacheDropin } from '@mcpher/gas-flex-cache'
-import {slogger } from "../../support/slogger.js";
+import { slogger } from "../../support/slogger.js";
 /**
  * fake ScriptApp.getOAuthToken 
  * @return {string} token
  */
 const getOAuthToken = () => {
   return Syncit.fxGetAccessToken(Auth)
+}
+
+/**
+ * gets the token of the person running the script
+ * @return {string} token
+ */
+const getSourceOAuthToken = () => {
+  return Syncit.fxGetSourceAccessTokenInfo(Auth).token
 }
 
 
@@ -110,6 +118,7 @@ if (typeof globalThis[name] === typeof undefined) {
 
       _app = {
         getOAuthToken,
+        __getSourceOAuthToken: getSourceOAuthToken,
         requireAllScopes,
         requireScopes,
         getScriptId: Auth.getScriptId,

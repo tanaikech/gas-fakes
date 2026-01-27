@@ -69,7 +69,9 @@ export const testFakes = () => {
   const pack = initTests();
   const { unit } = pack;
 
-  // add one of these for each service being tested
+  console.log("\n----Test Logger----");
+  testLogger(pack);
+
   console.log("\n----Test lock----");
   testLock(pack);
   console.log("\n----Test mimetype----");
@@ -167,8 +169,7 @@ export const testFakes = () => {
   testUtilities(pack);
   console.log("\n----Test Stores----");
   testStores(pack);
-  console.log("\n----Test Logger----");
-  testLogger(pack);
+
   console.log("\n----Test ScriptApp----");
   testScriptApp(pack);
   console.log("\n----Test Sheets Range----");
