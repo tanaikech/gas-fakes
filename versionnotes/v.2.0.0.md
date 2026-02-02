@@ -11,18 +11,18 @@ Up till now gas-fakes has relied on ADC for authentication. This is fine for run
 | **Primary Use** | Local development and quick start | Production-ready, cross-platform deployment |
 | **Platform Support** | Good for local, limited in some cloud environments | Universal (Local, Cloud Run, Kubernetes, Workload Identity) |
 | **Security** | Direct user or service account permissions | Secure service-account based impersonation |
-| **Configuration** | Prompt driven `gas-fakes init --adc` | Prompt driven `gas-fakes init --dwd` now the default. All service account creation etc is handled automatically.|
+| **Configuration** | Prompt driven `gas-fakes init --auth-type adc` | Prompt driven `gas-fakes init --auth-type dwd` now the default. All service account creation etc is handled automatically.|
 | **Admin action required** | Normally none | Yes, requires admin action to enable DWD for the service account. |
 | **Workspace Scopes** | Can involve complex restricted scope management | Simplifies and streamlines restricted scope handling |
 | **Scope setup** | From environment variables | Directly from project manifest |
 | **Consistency** | Variations between local and cloud artifacts | Identical artifacts across all environments |
 | **Service Account** | User or service account | Service account |
 
-### gas-fakes init --dwd
+### gas-fakes init --auth-type dwd
 
 This will now be the default method. All service account creation etc is handled automatically. A prompt driven dialog will guide you through the process.
 
-### gas-fakes init --adc
+### gas-fakes init --auth-type adc
 
 This is still supported and can be used in cases where you cannot get admin access to enable DWD for the service account (which can only be done via tha admin GUI). In this mode scopes are set up using environment variables and gas-fakes can only be run locally. 
 
@@ -58,7 +58,7 @@ To support long-running scripts and handle network transients (like `ETIMEDOUT`)
 | **UPSTASH_REDIS_REST_TOKEN** | REST Token for Upstash authentication. (if STORE_TYPE is UPSTASH).| `AVlrAA...` |
 | **QUIET** | Suppresses non-essential logging output. | `true` or `false` |
 | **GOOGLE_SERVICE_ACCOUNT_NAME** | Service account name used for DWD. | `gas-fakes-worker` |
-| **AUTH_TYPE** | Explicitly steer auth method. | `ADC`, `DWD` (Defaults to DWD if SA is present) |
+| **AUTH_TYPE** | Explicitly steer auth method. | `adc`, `dwd` (Defaults to dwd if GOOGLE_SERVICE_ACCOUNT_NAME is present) |
 
 ### Shell Scripts
 

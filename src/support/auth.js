@@ -111,8 +111,8 @@ const setAuth = async (scopes = [], mcpLoading = false) => {
     // 2. if AUTH_TYPE is ADC, use ADC
     // 3. if AUTH_TYPE is not set, use DWD if saName is present, else ADC
     const saName = process.env.GOOGLE_SERVICE_ACCOUNT_NAME
-    const authType = process.env.AUTH_TYPE
-    const useDwd = authType === 'DWD' || (authType !== 'ADC' && saName)
+    const authType = process.env.AUTH_TYPE?.toLowerCase() || 'dwd'
+    const useDwd = authType === 'dwd' || (authType !== 'adc' && saName)
 
     if (!useDwd) {
       mayLog(`...using ADC`)
