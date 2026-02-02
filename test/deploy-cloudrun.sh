@@ -15,9 +15,9 @@ fi
 REGION="europe-west1"
 JOB_NAME="gas-fakes-test-job" 
 REPO_NAME="gas-fakes-repo"
-IMAGE_PATH="$REGION-docker.pkg.dev/$GCP_PROJECT_ID/$REPO_NAME/$JOB_NAME"
+IMAGE_PATH="$REGION-docker.pkg.dev/$GOOGLE_CLOUD_PROJECT/$REPO_NAME/$JOB_NAME"
 CURRENT_USER=$(gcloud config get-value account)
-SA_EMAIL="${GOOGLE_SERVICE_ACCOUNT_NAME}@${GCP_PROJECT_ID}.iam.gserviceaccount.com"
+SA_EMAIL="${GOOGLE_SERVICE_ACCOUNT_NAME}@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com"
 
 # 2. Build
 echo "--- Building Container ---"

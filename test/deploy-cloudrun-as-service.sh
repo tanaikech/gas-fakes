@@ -15,7 +15,7 @@ fi
 REGION="europe-west1"
 SERVICE_NAME="gas-fakes-test-stores"
 REPO_NAME="gas-fakes-repo"
-IMAGE_PATH="$REGION-docker.pkg.dev/$GCP_PROJECT_ID/$REPO_NAME/$SERVICE_NAME"
+IMAGE_PATH="$REGION-docker.pkg.dev/$GOOGLE_CLOUD_PROJECT/$REPO_NAME/$SERVICE_NAME"
 CURRENT_USER=$(gcloud config get-value account)
 echo "--- Auto-detected deploying user: $CURRENT_USER ---"
 
@@ -43,4 +43,4 @@ gcloud run deploy "$SERVICE_NAME" \
 
 
 echo "--- Deployed to Cloud Run ---"
-echo "to stream logs: gcloud alpha run services logs tail $SERVICE_NAME --region $REGION --project $GCP_PROJECT_ID"
+echo "to stream logs: gcloud alpha run services logs tail $SERVICE_NAME --region $REGION --project $GOOGLE_CLOUD_PROJECT"

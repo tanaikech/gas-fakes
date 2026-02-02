@@ -143,10 +143,10 @@ export async function initializeConfiguration(options = {}) {
   const basicInfoQuestions = [
     {
       type: "text",
-      name: "GCP_PROJECT_ID",
+      name: "GOOGLE_CLOUD_PROJECT",
       message: "Enter your GCP Project ID",
       initial:
-        existingConfig.GCP_PROJECT_ID || process.env.GOOGLE_CLOUD_PROJECT,
+        existingConfig.GCP_PROJECT_ID || process.env.GOOGLE_CLOUD_PROJECT || process.env.GOOGLE_PROJECT_ID,
     },
     {
       type: "text",

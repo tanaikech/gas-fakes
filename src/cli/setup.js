@@ -430,14 +430,16 @@ export async function authenticateUser() {
 
   const {
     GCP_PROJECT_ID,
+    GOOGLE_CLOUD_PROJECT,
     DEFAULT_SCOPES,
     EXTRA_SCOPES,
     CLIENT_CREDENTIAL_FILE,
     AC,
   } = process.env;
 
-  if (!GCP_PROJECT_ID) {
-    console.error("Error: GCP_PROJECT_ID is not set in your .env file.");
+  const projectId = GOOGLE_CLOUD_PROJECT || GCP_PROJECT_ID;
+  if (!projectId) {
+    console.error("Error: GOOGLE_CLOUD_PROJECT is not set in your .env file.");
     process.exit(1);
   }
 
@@ -486,7 +488,6 @@ export async function authenticateUser() {
     );
   }
 
-  const projectId = GCP_PROJECT_ID;
   const activeConfig = AC || "default";
 
   console.log("Revoking previous credentials...");

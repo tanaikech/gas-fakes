@@ -65,7 +65,7 @@ If you really don't want to install and use gas-fakes-cli (or use npx gas-fakes)
         Alternatively, you can create a `.env` file in your project root manually. Here is an example with all possible variables:
         ```env
         # Google Cloud Project ID (required)
-        GCP_PROJECT_ID="your-gcp-project-id"
+        GOOGLE_CLOUD_PROJECT="your-gcp-project-id"
 
         # Path to OAuth client credentials for restricted scopes (optional, but recommended)
         CLIENT_CREDENTIAL_FILE="private/your-credentials.json"
