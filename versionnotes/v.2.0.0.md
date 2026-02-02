@@ -27,31 +27,40 @@ This will now be the default method. All service account creation etc is handled
 This is still supported and can be used in cases where you cannot get admin access to enable DWD for the service account (which can only be done via tha admin GUI). In this mode scopes are set up using environment variables and gas-fakes can only be run locally. 
 
 
-### environment variable name changes
+### Authentication Steering
 
-For now all environment variables are still supported but will be deprecated in the future
-GCP_PROJECT_ID -> GOOGLE_CLOUD_PROJECT
+Starting with v2.0.0, you can explicitly control the authentication method using the `AUTH_TYPE` environment variable. While `DWD` is the recommended default for production and cross-platform consistency, `ADC` remains available for local development without admin-level Workspace configuration.
 
-### other environment variables
+The steering logic is as follows:
+- **Explicit DWD**: Set `AUTH_TYPE="DWD"`.
+- **Explicit ADC**: Set `AUTH_TYPE="ADC"`.
+- **Automatic**: If `AUTH_TYPE` is not set, `gas-fakes` will use `DWD` if `GOOGLE_SERVICE_ACCOUNT_NAME` is present, otherwise it falls back to `ADC`.
 
-At the time of writing these are the other environment variables used by gas-fakes. None of them need to be set manually as the are all maintained by gas-fakes init
+### Reliability and Idempotency
 
+To support long-running scripts and handle network transients (like `ETIMEDOUT`), v2.0.0 introduces several reliability features:
+
+- **Idempotent Slides Mutations**: Slides operations (append, insert, duplicate, etc.) now use stable `objectId`s. This ensures that retries after timeouts do not result in duplicate slides or shapes.
+- **Graceful Error Recovery**: Service proxies now catch and handle "already exists" or "not found" errors during retries of mutative operations, treating them as success if the previous attempt actually reached the server.
+- **Robust XML Parsing**: Sheets `getImages()` now handles XLSX archives more robustly by filtering for XML content and skipping binary image data during the metadata extraction phase.
+
+### Environment Variable Changes
+...
 | Variable | Description | Example / Value |
 | :--- | :--- | :--- |
 | **GOOGLE_CLOUD_PROJECT** | The GCP Project ID where the services are hosted. | `your-gcp-project-id` |
 | **DRIVE_TEST_FILE_ID** | optional - ID of a Drive file used for integration testing. | `1iOqRbA6zbV3ry73iEf4y9cygtDchJvAh` |
 | **STORE_TYPE** | The storage backend for persistence.| `UPSTASH`, `FILE` |
 | **LOG_DESTINATION** | Destination for application logs. | `CONSOLE`, `CLOUD_LOGGING` |
-| **DEFAULT_SCOPES** | Not required for DWD mode which retrieves scopes from manifest. Baseline identity and auth scopes. | `.../auth/userinfo.email, openid, ...` |
-| **EXTRA_SCOPES** | Not required for DWD which retrieves scopes from manifest. Service-specific scopes (Drive, Sheets, etc.). | `.../auth/drive, .../auth/spreadsheets, ...` |
+| **DEFAULT_SCOPES** | Baseline identity and auth scopes (ADC mode only). | `.../auth/userinfo.email, openid, ...` |
+| **EXTRA_SCOPES** | Service-specific scopes (ADC mode only). | `.../auth/drive, .../auth/spreadsheets, ...` |
 | **UPSTASH_REDIS_REST_URL** | REST URL for Upstash (if STORE_TYPE is UPSTASH). | `https://...upstash.io` |
 | **UPSTASH_REDIS_REST_TOKEN** | REST Token for Upstash authentication. (if STORE_TYPE is UPSTASH).| `AVlrAA...` |
 | **QUIET** | Suppresses non-essential logging output. | `true` or `false` |
 | **GOOGLE_SERVICE_ACCOUNT_NAME** | Service account name used for DWD. | `gas-fakes-worker` |
-| **AUTH_TYPE** | Authentication type to use. | `ADC`, `DWD` |
+| **AUTH_TYPE** | Explicitly steer auth method. | `ADC`, `DWD` (Defaults to DWD if SA is present) |
 
-
-### shell scripts
-All set up shell scripts and env templates related to authentication have been deprecated in favor of using gas-fakes init. 
+### Shell Scripts
+...
 
 
