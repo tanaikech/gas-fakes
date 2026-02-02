@@ -42,9 +42,8 @@ export const sxCalendar = async (Auth, { prop, method, params, options = {} }) =
       error = err;
       response = err.response;
     }
-
-    const isRetryable = [429, 500, 503].includes(response?.status) ||
-      error?.code == 429 ||
+    const redoCodes = [429, 500, 503, 408]
+    const isRetryable = redoCodes.includes(error?.code) ||
       (response?.status === 403 && (
         error?.message?.toLowerCase().includes('usage limit') ||
         error?.message?.toLowerCase().includes('rate limit') ||

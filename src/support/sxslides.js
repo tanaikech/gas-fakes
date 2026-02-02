@@ -41,7 +41,9 @@ export const sxSlides = async (Auth, { prop, method, params, options = {} }) => 
       response = err.response;
     }
 
-    const isRetryable = [429, 500, 503].includes(response?.status) || error?.code == 429;
+    const redoCodes = [429, 500, 503, 408]
+    const isRetryable = redoCodes.includes(error?.code)
+
 
     if (isRetryable && i < maxRetries - 1) {
       // add a random jitter to avoid thundering herd
@@ -53,7 +55,10 @@ export const sxSlides = async (Auth, { prop, method, params, options = {} }) => 
     }
 
     if (error || isRetryable) {
-      syncError(`Failed in sxSlides for ${prop}.${method}`, error);
+      syncError (error?.message)
+      syncError (error?.code)
+      syncError (error?.stack)
+      syncError(`Failed in sxSlides for ${prop}.${method}`);
       return { data: null, response: responseSyncify(response) };
     }
     return { data: response.data, response: responseSyncify(response) };

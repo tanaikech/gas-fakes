@@ -26,7 +26,7 @@ export const sxDocs = async (Auth, { prop, method, params, options = {} }) => {
   // rate limit on docs is higher that the others so we may as well have a bigger delay
   const maxRetries = 7;
   let delay = 2789;
-    //syncLog(JSON.stringify({ prop, method, params, options }))
+  //syncLog(JSON.stringify({ prop, method, params, options }))
   for (let i = 0; i < maxRetries; i++) {
     let response;
     let error;
@@ -38,8 +38,8 @@ export const sxDocs = async (Auth, { prop, method, params, options = {} }) => {
       error = err;
       response = err.response;
     }
-
-    const isRetryable = [429, 500, 503].includes(response?.status) || error?.code == 429;
+    const redoCodes = [429, 500, 503, 408, 'ETIMEDOUT', 'ECONNRESET']
+    const isRetryable = redoCodes.includes(error?.code) || redoCodes.includes(error?.cause?.code)
 
     if (isRetryable && i < maxRetries - 1) {
       // add a random jitter to avoid thundering herd
@@ -51,7 +51,7 @@ export const sxDocs = async (Auth, { prop, method, params, options = {} }) => {
     }
 
     if (error || isRetryable) {
-      syncError(`Failed in sxDocs for ${prop}.${method}`, error);
+      syncError(`Failed in sxDocs for ${prop}.${method}` + error?.message);
       return {
         data: null,
         response: responseSyncify(response)

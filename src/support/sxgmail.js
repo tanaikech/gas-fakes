@@ -29,8 +29,8 @@ export const sxGmail = async (Auth, { subProp, prop, method, params, options }) 
       error = err;
       response = err.response;
     }
-
-    const isRetryable = [429, 500, 503].includes(response?.status) || error?.code == 429;
+    const redoCodes = [429, 500, 503, 408]
+    const isRetryable = redoCodes.includes(error?.code)
 
     if (isRetryable && i < maxRetries - 1) {
       const jitter = Math.floor(Math.random() * 1000);

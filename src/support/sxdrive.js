@@ -58,8 +58,9 @@ export const sxDrive = async (Auth, { prop, method, params, options }) => {
       error = err;
       response = err.response;
     }
+    const redoCodes = [429, 500, 503, 408]
+    const isRetryable = redoCodes.includes(error?.code)
 
-    const isRetryable = [429, 500, 503].includes(response?.status) || error?.code == 429;
 
     // handle invalid field selection - sometimes old files dont support createdTime or modifiedTime
     // we'll try to fallback to createdDate and modifiedDate

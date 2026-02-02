@@ -53,7 +53,7 @@ export const testCalendarSandbox = (pack) => {
         t.truthy(restrictedCal, 'Should create restricted calendar');
 
         // Clear the session tracking to simulate external calendars
-        behavior.reset();
+        behavior.resetCalendar();
 
         // Set up whitelist
         calendarSettings.calendarWhitelist = [
@@ -105,7 +105,7 @@ export const testCalendarSandbox = (pack) => {
         const writableName = writableCal.getName();
 
         // Clear session tracking
-        behavior.reset();
+        behavior.resetCalendar();
 
         // Set up whitelist with different permissions
         calendarSettings.calendarWhitelist = [
@@ -151,7 +151,7 @@ export const testCalendarSandbox = (pack) => {
         const { cal: testCal, calName: testName } = maketcal(toTrash, fixes, { nameSuffix: 'sandbox-A' });
 
         // Clear session and set up whitelist
-        behavior.reset();
+        behavior.resetCalendar();
         calendarSettings.calendarWhitelist = [
           { name: testName, read: true, write: true }
         ];
@@ -281,7 +281,7 @@ export const testCalendarSandbox = (pack) => {
         const event = cal.createEvent('Test Event', new Date(), new Date(new Date().getTime() + 3600000));
 
         // Clear session tracking so we rely on whitelist
-        behavior.reset();
+        behavior.resetCalendar();
 
         // 1. Test Event Modification Permissions
         // Make calendar read-only

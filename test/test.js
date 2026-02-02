@@ -69,6 +69,22 @@ export const testFakes = () => {
   const pack = initTests();
   const { unit } = pack;
 
+
+  console.log("\n----Test docsadv----");
+  testDocsAdv(pack);
+  console.log("\n----Test docs----");
+  testDocs(pack);
+  console.log("\n----Test docs images----");
+  testDocsImages(pack);
+  console.log("\n----Test docs next----");
+  testDocsNext(pack);
+  console.log("\n----Test docs list items----");
+  testDocsListItems(pack);
+  console.log("\n----Test Enums----");
+  testEnums(pack);
+  console.log("\n----Test Sheets text----");
+  testSheetsText(pack);
+
   console.log("\n----Test SheetsExotics----");
   testSheetsExotics(pack);
 
@@ -128,20 +144,8 @@ export const testFakes = () => {
   console.log("\n----Test formsadv----");
   testFormsAdv(pack);
 
-  console.log("\n----Test docsadv----");
-  testDocsAdv(pack);
-  console.log("\n----Test docs----");
-  testDocs(pack);
-  console.log("\n----Test docs images----");
-  testDocsImages(pack);
-  console.log("\n----Test docs next----");
-  testDocsNext(pack);
-  console.log("\n----Test docs list items----");
-  testDocsListItems(pack);
-  console.log("\n----Test Enums----");
-  testEnums(pack);
-  console.log("\n----Test Sheets text----");
-  testSheetsText(pack);
+
+
   console.log("\n----Test Sheets Data----");
   testSheetsData(pack);
   console.log("\n----Test Sheets DataValidations----");
@@ -207,4 +211,4 @@ export const testFakes = () => {
 };
 
 // this required on Node but not on Apps Script
-// if (ScriptApp.isFake) testFakes();
+if (ScriptApp.isFake) testFakes();

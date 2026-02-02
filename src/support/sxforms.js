@@ -36,8 +36,9 @@ export const sxForms = async (Auth, { prop, subProp, method, params, options = {
       response = err.response;
       syncError(`Forms API Error Response: ${prop}${subProp ? '.' + subProp : ''}.${method}, Status: ${response?.status}, Error: ${JSON.stringify(error)}`);
     }
+    const redoCodes = [429, 500, 503, 408]
+    const isRetryable = redoCodes.includes(error?.code)
 
-    const isRetryable = [429, 500, 503].includes(response?.status) || error?.code == 429;
 
     if (isRetryable && i < maxRetries - 1) {
       const jitter = Math.floor(Math.random() * 1000);

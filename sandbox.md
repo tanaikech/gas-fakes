@@ -16,6 +16,16 @@ You can set the overall behavior of the sandbox using these top-level properties
 | `strictSandbox` | `boolean` | `true` | When `true` (and `sandboxMode` is active), any attempt to access a non-whitelisted, non-session file will throw an error. If `false`, access is allowed, which is useful for debugging but doesn't strictly emulate the `drive.file` scope. |
 | `cleanup` | `boolean` | `true` | If `true`, calling `ScriptApp.__behavior.trash()` will move all files created during the session to the Google Drive trash. Set to `false` to leave test artifacts for inspection. |
 
+### Sandbox Management Methods
+
+| Method | Description |
+|---|---|
+| `resetDrive()` | Clears the session tracking for DriveApp files (created and allowed IDs). |
+| `resetGmail()` | Clears the session tracking for GmailApp resources (threads and labels). |
+| `resetCalendar()` | Clears the session tracking for CalendarApp calendars. |
+| `reset()` | Clears session tracking for all services (calls the three above). |
+| `trash()` | Moves all files created during the session to the Google Drive trash (if `cleanup` is `true`). |
+
 ### Basic Usage
 
 ```javascript

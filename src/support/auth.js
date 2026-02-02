@@ -143,7 +143,7 @@ const setAuth = async (scopes = [], mcpLoading = false) => {
           scope: scopes.join(' ')
         }
 
-        mayLog(`[Auth] DWD Scopes: ${payload.scope}`)
+        //mayLog(`[Auth] DWD Scopes: ${payload.scope}`)
 
         // Sign the JWT via IAM API
         // Note: The caller must have 'Service Account Token Creator' role on the target SA

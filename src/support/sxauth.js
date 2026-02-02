@@ -109,8 +109,8 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, cachePath,
     token: effectiveInfo.token
   }
 
-  syncLog(`[Auth] Active User TokenInfo: ${JSON.stringify(activeInfo.tokenInfo)}`)
-  syncLog(`[Auth] Effective User TokenInfo: ${JSON.stringify(effectiveInfo.tokenInfo)}`)
+  //syncLog(`[Auth] Active User TokenInfo: ${JSON.stringify(activeInfo.tokenInfo)}`)
+  //syncLog(`[Auth] Effective User TokenInfo: ${JSON.stringify(effectiveInfo.tokenInfo)}`)
   // check that mandatory scopes have been allowed
   const effectiveScopes = effectiveInfo.tokenInfo.scopes
   // we strictly need the effective user ID (the one we are impersonating)
