@@ -106,9 +106,15 @@ const setAuth = async (scopes = [], mcpLoading = false) => {
     _projectId = await _auth.getProjectId()
     mayLog(`...discovered project ID: ${_projectId}`)
 
-    // if we dont have this, then we must be using ADC
+    // steering for auth type
+    // 1. if AUTH_TYPE is DWD, use DWD
+    // 2. if AUTH_TYPE is ADC, use ADC
+    // 3. if AUTH_TYPE is not set, use DWD if saName is present, else ADC
     const saName = process.env.GOOGLE_SERVICE_ACCOUNT_NAME
-    if (!saName) {
+    const authType = process.env.AUTH_TYPE
+    const useDwd = authType === 'DWD' || (authType !== 'ADC' && saName)
+
+    if (!useDwd) {
       mayLog(`...using ADC`)
       _authClient = await _auth.getClient({
         scopes

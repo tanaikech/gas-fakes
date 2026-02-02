@@ -29,7 +29,7 @@ This is still supported and can be used in cases where you cannot get admin acce
 
 ### Authentication Steering
 
-Starting with v2.0.0, you can explicitly control the authentication method using the `AUTH_TYPE` environment variable. While `DWD` is the recommended default for production and cross-platform consistency, `ADC` remains available for local development without admin-level Workspace configuration.
+Starting with v2.0.0, you can explicitly control the authentication method using the `AUTH_TYPE` environment variable. While `DWD` is the recommended default for production and cross-platform consistency, `ADC` remains available for local development without admin-level Workspace configuration. Note that AUTH_TYPE is maintained by gas-fakes init, so you don't actually need to modify the .env file manually.
 
 The steering logic is as follows:
 - **Explicit DWD**: Set `AUTH_TYPE="DWD"`.
@@ -61,6 +61,7 @@ To support long-running scripts and handle network transients (like `ETIMEDOUT`)
 | **AUTH_TYPE** | Explicitly steer auth method. | `ADC`, `DWD` (Defaults to DWD if SA is present) |
 
 ### Shell Scripts
-...
+
+All legacy shell scripts associated with authentication have been removed, as this is now handled via gas-fakes init.
 
 
