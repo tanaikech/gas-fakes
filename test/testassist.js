@@ -64,7 +64,7 @@ export const trasher = (toTrash) => {
 
   try {
     toTrash.forEach(f => {
-      if (typeof f.adeleteCalendar === 'function') {
+      if (typeof f.deleteCalendar === 'function') {
         console.log('deleting temp calendar', f.getId());
         try {
           f.deleteCalendar();
