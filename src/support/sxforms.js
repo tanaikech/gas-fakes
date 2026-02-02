@@ -36,11 +36,14 @@ export const sxForms = async (Auth, { prop, subProp, method, params, options = {
       response = err.response;
       syncError(`Forms API Error Response: ${prop}${subProp ? '.' + subProp : ''}.${method}, Status: ${response?.status}, Error: ${JSON.stringify(error)}`);
     }
-    const redoCodes = [429, 500, 503, 408]
-    const isRetryable = redoCodes.includes(error?.code)
-
+    const redoCodes = [429, 500, 503, 408, 401]
+    const isRetryable = redoCodes.includes(error?.code) || redoCodes.includes(response?.status)
 
     if (isRetryable && i < maxRetries - 1) {
+      if (error?.code === 401 || response?.status === 401) {
+        Auth.invalidateToken();
+        syncWarn(`Authentication error (401) on Forms API call ${prop}${subProp ? '.' + subProp : ''}.${method}. Invalidated token and retrying...`);
+      }
       const jitter = Math.floor(Math.random() * 1000);
       syncWarn(`Retryable error on Forms API call ${prop}${subProp ? '.' + subProp : ''}.${method} (status: ${response?.status}). Retrying in ${delay + jitter}ms...`);
       await sleep(delay + jitter);

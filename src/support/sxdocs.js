@@ -38,10 +38,14 @@ export const sxDocs = async (Auth, { prop, method, params, options = {} }) => {
       error = err;
       response = err.response;
     }
-    const redoCodes = [429, 500, 503, 408, 'ETIMEDOUT', 'ECONNRESET']
-    const isRetryable = redoCodes.includes(error?.code) || redoCodes.includes(error?.cause?.code)
+    const redoCodes = [429, 500, 503, 408, 401, 'ETIMEDOUT', 'ECONNRESET']
+    const isRetryable = redoCodes.includes(error?.code) || redoCodes.includes(error?.cause?.code) || redoCodes.includes(response?.status)
 
     if (isRetryable && i < maxRetries - 1) {
+      if (error?.code === 401 || response?.status === 401) {
+        Auth.invalidateToken();
+        syncWarn(`Authentication error (401) on Docs API call ${prop}.${method}. Invalidated token and retrying...`);
+      }
       // add a random jitter to avoid thundering herd
       const jitter = Math.floor(Math.random() * 1000);
       syncWarn(`Retryable error on Docs API call ${prop}.${method} (status: ${response?.status}). Retrying in ${delay + jitter}ms...`);

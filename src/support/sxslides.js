@@ -41,11 +41,14 @@ export const sxSlides = async (Auth, { prop, method, params, options = {} }) => 
       response = err.response;
     }
 
-    const redoCodes = [429, 500, 503, 408]
-    const isRetryable = redoCodes.includes(error?.code)
-
+    const redoCodes = [429, 500, 503, 408, 401]
+    const isRetryable = redoCodes.includes(error?.code) || redoCodes.includes(response?.status)
 
     if (isRetryable && i < maxRetries - 1) {
+      if (error?.code === 401 || response?.status === 401) {
+        Auth.invalidateToken();
+        syncWarn(`Authentication error (401) on Slides API call ${prop}.${method}. Invalidated token and retrying...`);
+      }
       // add a random jitter to avoid thundering herd
       const jitter = Math.floor(Math.random() * 1000);
       syncWarn(`Retryable error on Slides API call ${prop}.${method} (status: ${response?.status}). Retrying in ${delay + jitter}ms...`);
@@ -55,9 +58,9 @@ export const sxSlides = async (Auth, { prop, method, params, options = {} }) => 
     }
 
     if (error || isRetryable) {
-      syncError (error?.message)
-      syncError (error?.code)
-      syncError (error?.stack)
+      syncError(error?.message)
+      syncError(error?.code)
+      syncError(error?.stack)
       syncError(`Failed in sxSlides for ${prop}.${method}`);
       return { data: null, response: responseSyncify(response) };
     }

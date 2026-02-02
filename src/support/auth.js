@@ -192,6 +192,11 @@ const setAuth = async (scopes = [], mcpLoading = false) => {
 
       _authClient = dwdClient
       _authClient.targetPrincipal = saEmail
+      _authClient.invalidateToken = function () {
+        this._token = null
+        this._expiresAt = 0
+        this.credentials = null
+      }
 
       mayLog(`...using Domain-Wide Delegation for user: ${userEmail}`)
 
@@ -206,6 +211,20 @@ const setAuth = async (scopes = [], mcpLoading = false) => {
     throw error
   }
   return getAuth()
+}
+
+/**
+ * force a token refresh on next request
+ */
+const invalidateToken = () => {
+  if (hasAuth()) {
+    const client = getAuthClient();
+    if (client.invalidateToken) {
+      client.invalidateToken();
+    } else {
+      client.credentials = null;
+    }
+  }
 }
 /**
  * we'll be using adc credentials so no need for any special auth here
@@ -339,5 +358,6 @@ export const Auth = {
   setActiveUser,
   getActiveUser,
   setEffectiveUser,
-  getEffectiveUser
+  getEffectiveUser,
+  invalidateToken
 };

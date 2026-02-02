@@ -29,10 +29,14 @@ export const sxGmail = async (Auth, { subProp, prop, method, params, options }) 
       error = err;
       response = err.response;
     }
-    const redoCodes = [429, 500, 503, 408]
-    const isRetryable = redoCodes.includes(error?.code)
+    const redoCodes = [429, 500, 503, 408, 401]
+    const isRetryable = redoCodes.includes(error?.code) || redoCodes.includes(response?.status)
 
     if (isRetryable && i < maxRetries - 1) {
+      if (error?.code === 401 || response?.status === 401) {
+        Auth.invalidateToken();
+        syncWarn(`Authentication error (401) on Gmail API call ${methodName}. Invalidated token and retrying...`);
+      }
       const jitter = Math.floor(Math.random() * 1000);
       syncWarn(`Retryable error on Gmail API call ${methodName} (status: ${response?.status}). Retrying in ${delay + jitter}ms...`);
       await sleep(delay + jitter);
