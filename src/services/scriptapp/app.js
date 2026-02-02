@@ -69,7 +69,7 @@ const checkScopesMatch = (required) => {
   const scopes = Auth.getTokenScopes()
 
   // now we're syncronous all the way
-  const tokened = new Set(scopes.split(" "))
+  const tokened = new Set((typeof scopes === 'string' ? scopes : "").split(" "))
 
   // see which ones are missing
   const missing = required.filter(s => {
@@ -127,7 +127,7 @@ if (typeof globalThis[name] === typeof undefined) {
         },
         get __userId() {
           // this is actually the active user/ not the effective user
-          return Auth.getActiveUser.id
+          return Auth.getActiveUser().id
         },
         AuthMode: {
           FULL: 'FULL'

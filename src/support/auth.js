@@ -15,6 +15,7 @@ let _manifest = null;
 let _clasp = null;
 let _activeUser = null;
 let _effectiveUser = null;
+let _tokenScopes = null;
 
 
 let _settings = null;
@@ -38,7 +39,15 @@ const getPropertiesPath = () => getSettings().properties;
 
 const getTimeZone = () => getManifest().timeZone;
 const getUserId = () => getEffectiveUser().id;
-const getTokenScopes = () => getAccessTokenInfo().tokenInfo.scope;
+const setTokenScopes = (scopes) => (_tokenScopes = Array.isArray(scopes) ? scopes.join(" ") : scopes);
+const getTokenScopes = () => {
+  if (_tokenScopes) return _tokenScopes;
+  // If not cached, we have to return the promise (which might break synchronous callers like ScriptApp)
+  return getAccessTokenInfo().then(info => {
+    _tokenScopes = info.tokenInfo.scope;
+    return _tokenScopes;
+  });
+};
 const getHashedUserId = () =>
   createHash("md5")
     .update(getUserId() + "hud")
@@ -359,5 +368,6 @@ export const Auth = {
   getActiveUser,
   setEffectiveUser,
   getEffectiveUser,
-  invalidateToken
+  invalidateToken,
+  setTokenScopes
 };

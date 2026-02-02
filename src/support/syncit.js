@@ -301,6 +301,7 @@ const fxInit = ({
   Auth.setManifest(manifest);
   Auth.setActiveUser(activeUser);
   Auth.setEffectiveUser(effectiveUser);
+  Auth.setTokenScopes(scopes);
   return synced;
 };
 

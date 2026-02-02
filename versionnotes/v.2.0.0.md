@@ -11,21 +11,20 @@ Up till now gas-fakes has relied on ADC for authentication. This is fine for run
 | **Primary Use** | Local development and quick start | Production-ready, cross-platform deployment |
 | **Platform Support** | Good for local, limited in some cloud environments | Universal (Local, Cloud Run, Kubernetes, Workload Identity) |
 | **Security** | Direct user or service account permissions | Secure service-account based impersonation |
-| **Configuration** | Prompt driven `gas-fakes auth init --adc` | Prompt driven `gas-fakes auth init --dwd` now the default. All service account creation etc is handled automatically.|
+| **Configuration** | Prompt driven `gas-fakes init --adc` | Prompt driven `gas-fakes init --dwd` now the default. All service account creation etc is handled automatically.|
 | **Admin action required** | Normally none | Yes, requires admin action to enable DWD for the service account. |
 | **Workspace Scopes** | Can involve complex restricted scope management | Simplifies and streamlines restricted scope handling |
 | **Scope setup** | From environment variables | Directly from project manifest |
 | **Consistency** | Variations between local and cloud artifacts | Identical artifacts across all environments |
 | **Service Account** | User or service account | Service account |
 
-### gas-fakes auth init --dwd
+### gas-fakes init --dwd
 
 This will now be the default method. All service account creation etc is handled automatically. A prompt driven dialog will guide you through the process.
 
-### gas-fakes auth init --adc
+### gas-fakes init --adc
 
 This is still supported and can be used in cases where you cannot get admin access to enable DWD for the service account (which can only be done via tha admin GUI). In this mode scopes are set up using environment variables and gas-fakes can only be run locally. 
-
 
 
 ### environment variable name changes
@@ -35,7 +34,7 @@ GCP_PROJECT_ID -> GOOGLE_CLOUD_PROJECT
 
 ### other environment variables
 
-At the time of writing these are the other environment variables used by gas-fakes. None of them need to be set manually as the are all maintained by gas-fakes-auth
+At the time of writing these are the other environment variables used by gas-fakes. None of them need to be set manually as the are all maintained by gas-fakes init
 
 | Variable | Description | Example / Value |
 | :--- | :--- | :--- |
@@ -53,6 +52,6 @@ At the time of writing these are the other environment variables used by gas-fak
 
 
 ### shell scripts
-All set up shell scripts related to authentication have been deprecated in favor of using gcloud auth application-default login in gavor of gas-fakes auth
+All set up shell scripts and env templates related to authentication have been deprecated in favor of using gas-fakes init. 
 
 
