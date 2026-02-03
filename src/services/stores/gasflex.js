@@ -15,4 +15,3 @@ export const storeModels = {
     documentId: Auth.getDocumentId()
   }
 }
-

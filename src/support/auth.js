@@ -63,20 +63,26 @@ const _getTokenInfo = async (client) => {
     token
   }
 }
-// this is the access token allowed to do the work - the one for the service account (or the user if using ADC)
+// this is the effective user's token info
+// - In DWD: The impersonated user (the one we are acting as)
+// - In ADC: The actual signed-in user
 const getAccessTokenInfo = async () => {
   if (!hasAuth()) throw `auth isnt set yet`;
   return _getTokenInfo(_authClient);
 }
 
-// this is the access token info for the actual user
+// this is the active identity's token info
+// - In DWD: The service account itself
+// - In ADC: Same as the effective user
 const getSourceAccessTokenInfo = async () => {
   if (!_sourceClient) throw `source auth isnt set yet`;
   return _getTokenInfo(_sourceClient);
 }
 
 
-// this returns the token that is authorized to do the work
+// this is the access token allowed to do the work - the one for the effective user
+// - In DWD: The impersonated user
+// - In ADC: The actual signed-in user
 const getAccessToken = async () => {
   if (!hasAuth()) throw `auth isnt set yet`;
   return (await getAccessTokenInfo()).token;
