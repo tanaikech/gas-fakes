@@ -133,7 +133,8 @@ if (typeof globalThis[name] === typeof undefined) {
           FULL: 'FULL'
         },
         __behavior: newFakeBehavior(),
-        __newCacheDropin: newCacheDropin
+        __newCacheDropin: newCacheDropin,
+        __proxies: Proxies
       }
 
 

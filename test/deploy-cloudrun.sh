@@ -57,7 +57,7 @@ gcloud artifacts repositories describe "$REPO_NAME" --location="$REGION" >/dev/n
     --location="$REGION" \
     --description="Docker repository for gas-fakes"
 
-gcloud builds submit .. --config=cloudbuild.yaml --substitutions=_IMAGE_PATH="$IMAGE_PATH"
+gcloud builds submit . --config=cloudbuild.yaml --substitutions=_IMAGE_PATH="$IMAGE_PATH"
 
 # 3. Create or Update Job
 COMMAND=$(gcloud run jobs describe "$JOB_NAME" --region "$REGION" >/dev/null 2>&1 && echo "update" || echo "create")
@@ -66,6 +66,11 @@ gcloud run jobs $COMMAND "$JOB_NAME" \
     --image "$IMAGE_PATH" \
     --region "$REGION" \
     --service-account "${GOOGLE_SERVICE_ACCOUNT_NAME}@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com" \
+    --tasks 1 \
+    --max-retries 0 \
+    --task-timeout 86400 \
+    --cpu 1 \
+    --memory 2Gi \
     --env-vars-file "$ENV_YAML"
 
 rm "$ENV_YAML"

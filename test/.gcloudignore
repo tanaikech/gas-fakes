@@ -1,4 +1,5 @@
-private/
 node_modules/
 .env*
 .env.yaml
+private/
+*.log

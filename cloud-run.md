@@ -19,15 +19,14 @@ The `Dockerfile` defines the environment. `gas-fakes` mimics the Apps Script env
 FROM node:22-slim
 WORKDIR /usr/src/app
 
-# 1. Copy root package files (to manage shared dependencies)
+# 1. Copy project-level package files
 COPY package*.json ./
 RUN npm install --omit=dev
 
-# 2. Copy the entire project context
+# 2. Copy the test folder content
 COPY . .
 
-# 3. Handle specific folder dependencies (e.g., the test folder)
-WORKDIR /usr/src/app/test
+# 3. Handle the test-specific dependencies
 RUN npm install
 
 # 4. Final setup
@@ -129,7 +128,7 @@ gcloud artifacts repositories describe "$REPO_NAME" --location="$REGION" >/dev/n
     --location="$REGION" \
     --description="Docker repository for gas-fakes"
 
-gcloud builds submit .. --config=cloudbuild.yaml --substitutions=_IMAGE_PATH="$IMAGE_PATH"
+gcloud builds submit . --config=cloudbuild.yaml --substitutions=_IMAGE_PATH="$IMAGE_PATH"
 
 # 3. Create or Update Job
 COMMAND=$(gcloud run jobs describe "$JOB_NAME" --region "$REGION" >/dev/null 2>&1 && echo "update" || echo "create")
@@ -138,6 +137,11 @@ gcloud run jobs $COMMAND "$JOB_NAME" \
     --image "$IMAGE_PATH" \
     --region "$REGION" \
     --service-account "${GOOGLE_SERVICE_ACCOUNT_NAME}@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com" \
+    --tasks 1 \
+    --max-retries 0 \
+    --task-timeout 86400 \
+    --cpu 1 \
+    --memory 2Gi \
     --env-vars-file "$ENV_YAML"
 
 rm "$ENV_YAML"
@@ -167,7 +171,23 @@ echo "--- Job $EXEC_NAME finished ---"
 
 ---
 
-## 4. Security and Identity
+## 4. Optimization with `.gcloudignore`
+
+To prevent `gcloud` from uploading large local directories like `node_modules` (which are rebuilt inside the container anyway), create a `.gcloudignore` file in the same directory as your deployment script:
+
+```text
+node_modules/
+.env*
+.env.yaml
+private/
+*.log
+```
+
+This will significantly reduce the time and bandwidth required for the `gcloud builds submit` command.
+
+---
+
+## 5. Security and Identity
 
 *   **Service Account**: `gas-fakes init` creates a service account specifically for your project. This identity is used by Cloud Run to impersonate the `GOOGLE_WORKSPACE_SUBJECT` via Domain-Wide Delegation.
 *   **`.gitignore`**: Ensure your temporary YAML file is ignored. Using a prefix like `.env.yaml` and having `**/.env*` in your `.gitignore` is a safe pattern.
@@ -175,7 +195,7 @@ echo "--- Job $EXEC_NAME finished ---"
 
 ---
 
-## 5. Troubleshooting
+## 6. Troubleshooting
 
 *   **Log Tailing**: If `gcloud run jobs logs tail` is not found, ensure you have the `alpha` or `beta` components installed (`gcloud components install alpha`).
 *   **Environment Limits**: Cloud Run has a limit on the number and size of environment variables. If your `.env` is extremely large, consider using Secret Manager.

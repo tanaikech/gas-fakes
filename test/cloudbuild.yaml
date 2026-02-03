@@ -3,7 +3,7 @@ steps:
     args: [
       'build', 
       '-t', '$_IMAGE_PATH', 
-      '-f', 'test/Dockerfile', 
+      '-f', 'Dockerfile', 
       '.'
     ]
 images:
