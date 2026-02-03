@@ -99,12 +99,12 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, cachePath,
   /// these all jst exist in this sub process so we need to send them back to parent process
   /// we'll send back the token, but it should be refreshed dynamically to handle expiry
   const activeUser = {
-    id: activeInfo.tokenInfo.sub,
+    id: activeInfo.tokenInfo.sub || activeInfo.tokenInfo.email || activeInfo.tokenInfo.user_id || 'unknown-active-user',
     email: activeInfo.tokenInfo.email,
     token: activeInfo.token
   }
   const effectiveUser = {
-    id: effectiveInfo.tokenInfo.sub,
+    id: effectiveInfo.tokenInfo.sub || effectiveInfo.tokenInfo.email || effectiveInfo.tokenInfo.user_id || 'unknown-effective-user',
     email: effectiveInfo.tokenInfo.email,
     token: effectiveInfo.token
   }

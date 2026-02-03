@@ -69,7 +69,8 @@ export const testFakes = () => {
   const pack = initTests();
   const { unit } = pack;
 
-
+  console.log("\n----Test ScriptApp----");
+  testScriptApp(pack);
   console.log("\n----Test docsadv----");
   testDocsAdv(pack);
   console.log("\n----Test docs----");
@@ -176,8 +177,7 @@ export const testFakes = () => {
   console.log("\n----Test Stores----");
   testStores(pack);
 
-  console.log("\n----Test ScriptApp----");
-  testScriptApp(pack);
+
   console.log("\n----Test Sheets Range----");
   testSheetsRange(pack);
   console.log("\n----TEST FILES COMPLETE----");

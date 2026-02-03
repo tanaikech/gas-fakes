@@ -132,7 +132,9 @@ const setAuth = async (scopes = [], mcpLoading = false) => {
       mayLog(`...attempting to use service account: ${targetPrincipal}`)
 
       /// _sourceClient is the identity of the person/thing running the code
-      _sourceClient = await _auth.getClient()
+      // we'll try to get the openid and email scopes for the source client too if they are in the manifest
+      const sourceScopes = scopes.filter(s => s === 'openid' || s === 'https://www.googleapis.com/auth/userinfo.email')
+      _sourceClient = await _auth.getClient(sourceScopes.length > 0 ? { scopes: sourceScopes } : {})
 
       // now to get who the real user is
       const { tokenInfo: userInfo } = await getSourceAccessTokenInfo()
