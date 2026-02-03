@@ -178,7 +178,7 @@ echo "--- Job $EXEC_NAME finished ---"
 ## 5. Troubleshooting
 
 *   **Log Tailing**: If `gcloud run jobs logs tail` is not found, ensure you have the `alpha` or `beta` components installed (`gcloud components install alpha`).
-*   **Environment Limits**: Cloud Run has a limit on the number and size of environment variables. If your `.env` is extremely large, consider using Secret Manager. 
+*   **Environment Limits**: Cloud Run has a limit on the number and size of environment variables. If your `.env` is extremely large, consider using Secret Manager.
 
 ## <img src="./logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
 
