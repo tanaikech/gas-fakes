@@ -45,9 +45,31 @@ CMD ["node", "cloudrun.js"]
 
 ---
 
-## 2. The Deployment Script (`deploy-cloudrun.sh`)
+## 2. The Cloud Build Configuration (`cloudbuild.yaml`)
 
-Deploying to Cloud Run Jobs requires passing environment variables. Using `--set-env-vars` can be brittle if values contain commas or spaces. The recommended approach is to generate a temporary YAML file. The example script below uses a `.env.yaml` file to store the environment variables and can be modified to your specific needs. The container is deployed as a Cloud Run Job, mimicing the typical Apps Script environment. This means that once deployed, you can run the job as many times as you like either from the gcloud cli or from the Cloud Run console. The section at the end using gcloud alpha run jobs logs tail is optional and will stream the logs to the terminal. If you don't need this, then just delete that section.
+Cloud Build uses a `cloudbuild.yaml` file to define the build steps. In this setup, it directs Docker to use the `test/Dockerfile` while maintaining the root of the project as the build context. You should adapt these paths to match your project structure.
+
+```yaml
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build', 
+      '-t', '$_IMAGE_PATH', 
+      '-f', 'test/Dockerfile', 
+      '.'
+    ]
+images:
+  - '$_IMAGE_PATH'
+```
+
+*   **Substitutions:** The `$_IMAGE_PATH` is a variable passed from the deployment script.
+*   **Context:** The `.` at the end of the build command ensures that the entire project (including parent directories if necessary) is available to the Docker daemon.
+
+---
+
+## 3. The Deployment Script (`deploy-cloudrun.sh`)
+
+Deploying to Cloud Run Jobs requires passing environment variables. Using `--set-env-vars` can be brittle if values contain commas or spaces. The recommended approach is to generate a temporary YAML file. The example script below uses a `.env.yaml` file to store the environment variables and can be modified to your specific needs. The container is deployed as a Cloud Run Job, mimicing the typical Apps Script environment. This means that once deployed, you can run the job as many times as you like either from the gcloud cli or from the Cloud Run console. The section at the end using gcloud alpha run jobs logs tail is optional and will stream the logs to the terminal in real time, and exit on job completion. If you don't need this, then just delete that section.
 
 ### Deployment Workflow:
 
@@ -145,7 +167,7 @@ echo "--- Job $EXEC_NAME finished ---"
 
 ---
 
-## 3. Security and Identity
+## 4. Security and Identity
 
 *   **Service Account**: `gas-fakes init` creates a service account specifically for your project. This identity is used by Cloud Run to impersonate the `GOOGLE_WORKSPACE_SUBJECT` via Domain-Wide Delegation.
 *   **`.gitignore`**: Ensure your temporary YAML file is ignored. Using a prefix like `.env.yaml` and having `**/.env*` in your `.gitignore` is a safe pattern.
@@ -153,10 +175,10 @@ echo "--- Job $EXEC_NAME finished ---"
 
 ---
 
-## 4. Troubleshooting
+## 5. Troubleshooting
 
 *   **Log Tailing**: If `gcloud run jobs logs tail` is not found, ensure you have the `alpha` or `beta` components installed (`gcloud components install alpha`).
-*   **Environment Limits**: Cloud Run has a limit on the number and size of environment variables. If your `.env` is extremely large, consider using Secret Manager.
+*   **Environment Limits**: Cloud Run has a limit on the number and size of environment variables. If your `.env` is extremely large, consider using Secret Manager. 
 
 ## <img src="./logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
 
