@@ -1,22 +1,35 @@
 import fs from 'node:fs';
 import { isQuiet } from '../slogger.js';
 
-const getTimestamp = () => new Date().toISOString() + ' ';
+const isCloudRun = !!process.env.K_SERVICE;
+const getTimestamp = () => new Date().toISOString();
+
+const writeSyncLog = (stream, severity, message) => {
+  if (isCloudRun) {
+    const entry = {
+      severity: severity,
+      message: message,
+      timestamp: getTimestamp()
+    };
+    fs.writeSync(stream, JSON.stringify(entry) + '\n');
+  } else {
+    fs.writeSync(stream, `${getTimestamp()} ${message}\n`);
+  }
+};
 
 export const syncLog = (message) => {
-  if (!isQuiet) fs.writeSync(1, `${getTimestamp()}[Worker] ${message}\n`);
+  if (!isQuiet) writeSyncLog(1, 'DEFAULT', `[Worker] ${message}`);
 };
 
 export const syncWarn = (message) => {
-  fs.writeSync(1, `${getTimestamp()}[Worker Warn] ${message}\n`);
+  writeSyncLog(1, 'WARNING', `[Worker Warn] ${message}`);
 };
 
 export const syncInfo = (message) => {
-  if (!isQuiet) fs.writeSync(1, `${getTimestamp()}[Worker Info] ${message}\n`);
+  if (!isQuiet) writeSyncLog(1, 'INFO', `[Worker Info] ${message}`);
 };
 
 export const syncError = (message, error) => {
-  // Providing the error object is optional
   const errorMessage = error ? `: ${error?.stack || error}` : '';
-  fs.writeSync(2, `${getTimestamp()}[Worker Error] ${message}${errorMessage}\n`);
+  writeSyncLog(2, 'ERROR', `[Worker Error] ${message}${errorMessage}`);
 };

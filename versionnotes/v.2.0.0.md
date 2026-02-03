@@ -68,3 +68,7 @@ All legacy shell scripts associated with authentication have been removed, as th
 ### Russian documentation
 
 The Russian README documentation has been removed as it is no longer up to date.
+
+### Logging from cloud run
+
+In order to ensure that cloud run correctly logs messages in the proper order, there's now a timestamp prefix added to all log messages. 

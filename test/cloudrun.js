@@ -1,8 +1,8 @@
 import '@mcpher/gas-fakes';
-import { testSession } from './testsession.js';
+import { testFakes } from './test.js';
 
 /// if we are runnning only 1 test we need to mock an execute arg
-const singleTest = true;
+const singleTest = false;
 
 if (singleTest){
   globalThis.process?.argv?.push('execute')
@@ -12,7 +12,7 @@ const runJob = () => {
   console.log('--- Starting Cloud Run Job Execution ---');
 
   try {
-    testSession();
+    testFakes();
     
     console.log('--- Test execution completed successfully ---');
     process.exit(0); 
