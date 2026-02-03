@@ -129,7 +129,7 @@ export async function main() {
     .option("-e, --env <path>", "Path to a custom .env file.")
     .addOption(
       new Option(
-        "--auth-type <string>",
+        "--at,--auth-type <string>",
         "Use Domain Wide Delegation (dwd) or Application Default Credentials (adc) for authentication (default)."
       )
         .choices(["dwd", "adc"])

@@ -12,7 +12,7 @@ Up till now gas-fakes has relied on ADC for authentication. This is fine for run
 | **Platform Support** | Good for local, limited in some cloud environments | Universal (Local, Cloud Run, Kubernetes, Workload Identity) |
 | **Security** | Direct user or service account permissions | Secure service-account based impersonation |
 | **Configuration** | Prompt driven `gas-fakes init --auth-type adc` | Prompt driven `gas-fakes init --auth-type dwd` now the default. All service account creation etc is handled automatically.|
-| **Admin action required** | Normally none | Yes, requires admin action to enable DWD for the service account. |
+| **Admin action required** | Normally none, unless you are using restricted or sensitive scopes | Yes, requires admin action to enable DWD for the service account. |
 | **Workspace Scopes** | Can involve complex restricted scope management | Simplifies and streamlines restricted scope handling |
 | **Scope setup** | From environment variables | Directly from project manifest |
 | **Consistency** | Variations between local and cloud artifacts | Identical artifacts across all environments |
@@ -65,3 +65,6 @@ To support long-running scripts and handle network transients (like `ETIMEDOUT`)
 All legacy shell scripts associated with authentication have been removed, as this is now handled via gas-fakes init.
 
 
+### Russian documentation
+
+The Russian README documentation has been removed as it is no longer up to date.

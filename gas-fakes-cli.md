@@ -8,6 +8,8 @@ Until now, `gas-fakes` has primarily been used as a library within Node.js scrip
 
 ## Getting Started
 
+See the [Getting Started](https://github.com/brucemcpherson/gas-fakes/blob/main/GETTING_STARTED.md) for more information on getting started with authentication.
+
 ### 1. Installation
 
 To install the `gas-fakes` CLI tool, run the following command in your terminal:
@@ -18,15 +20,12 @@ npm install -g @mcpher/gas-fakes
 
 ### 2. Authentication
 
-You can choose between two methods for authentication:
+See the [Getting Started](https://github.com/brucemcpherson/gas-fakes/blob/main/GETTING_STARTED.md) for more information on authentication.
 
-#### 1. Manual Setup
 
-After installation, you will need to authorize the tool to access your Google account. Detailed instructions for setting up authentication can be found in the official documentation: [Getting Started - Step 2: Set up authentication](https://github.com/brucemcpherson/gas-fakes/blob/main/GETTING_STARTED.md#step-2-set-up-authentication-shells-and-environment).
+#### Setup with the gas-fakes Command-Line Tool
 
-#### 2. Setup with the gas-fakes Command-Line Tool
-
-Alternatively, you can use the `gas-fakes` command-line interface (CLI) to assist with the setup. Before you begin, please have your Google Cloud Project ID ready.
+Ayou can use the `gas-fakes` command-line interface (CLI) to assist with the setup. Before you begin, please have your Google Cloud Project ID ready.
 
 First, create a `.env` file to store your project configuration:
 
@@ -65,6 +64,7 @@ Usage: gas-fakes [options] [command]
 Execute a Google Apps Script file or string.
 
 Options:
+  --at,--auth-type <string>                 The authentication type to use. ("adc" or "dwd", default: "dwd")
   -v, --version                             Display the current version of gas-fakes
   -f, --filename <string>                   Path to the Google Apps Script file.
   -s, --script <string>                     A string containing the Google Apps Script.

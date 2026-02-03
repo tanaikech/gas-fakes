@@ -23,9 +23,21 @@ class FakeSession {
    * @returns {string}
    */
   getActiveUserLocale() {
-    const lang = process.env.LANG || ''
+    const lang =
+      process.env.LANG ||
+      process.env.LANGUAGE ||
+      process.env.LC_ALL ||
+      process.env.LC_MESSAGES ||
+      (function () {
+        try {
+          return Intl.DateTimeFormat().resolvedOptions().locale
+        } catch (e) {
+          return 'en'
+        }
+      })() ||
+      'en'
     // it'll be a format like en_US.UTF-8 so we need to drop the encoding to be like apps script
-    return lang.replace(/\_.*/, '')
+    return lang.split(/[._-]/)[0]
   }
   /**
    * this'll come from the manifest on Node (on Apps Script it'll be where the user is running from)
