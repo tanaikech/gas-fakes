@@ -218,6 +218,9 @@ const userCache = newCacheDropin({creds:userCacheCreds});
 Your environment is now configured. You can start writing Apps Script code in your local `.js` files and run them with Node.js. Remember to import `gas-fakes` at the top of your main script file:
 
 ```javascript
+// this is not mandatory as you can pass your .env file via --env-file <path-to-env-file>
+// however if you have a local env file you want to use this is a good way to include it
+import 'dotenv/config';
 // The main entry point for gas-fakes
 import '@mcpher/gas-fakes';
 
