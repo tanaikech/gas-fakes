@@ -4,6 +4,9 @@ import { newFakeChoice } from './fakechoice.js';
 import { registerFormItem } from './formitemregistry.js';
 import { ItemType } from '../enums/formsenums.js';
 import { Utils } from '../../support/utils.js';
+import { signatureArgs } from '../../support/helpers.js';
+const { is } = Utils;
+import { newFakeItemResponse } from './fakeitemresponse.js';
 
 export const newFakeListItem = (...args) => {
   return Proxies.guard(new FakeListItem(...args));
@@ -16,6 +19,28 @@ export const newFakeListItem = (...args) => {
 export class FakeListItem extends FakeFormItem {
   constructor(...args) {
     super(...args);
+  }
+
+  /**
+   * Creates a new ItemResponse for this list item.
+   * @param {string} response the selected choice
+   * @returns {import('./fakeitemresponse.js').FakeItemResponse} the item response
+   */
+  createResponse(response) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'ListItem.createResponse');
+    if (nargs !== 1 || !is.string(response)) {
+      matchThrow('Invalid arguments: expected a string.');
+    }
+
+    const questionId = this.__resource.questionItem?.question?.questionId;
+    const answers = [{
+      questionId,
+      textAnswers: {
+        answers: [{ value: response }]
+      }
+    }];
+
+    return newFakeItemResponse(this, answers);
   }
 
   /**

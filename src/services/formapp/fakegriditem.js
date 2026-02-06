@@ -4,6 +4,7 @@ import { registerFormItem } from './formitemregistry.js';
 import { signatureArgs } from '../../support/helpers.js';
 import { Utils } from '../../support/utils.js';
 import { ItemType } from '../enums/formsenums.js';
+import { newFakeItemResponse } from './fakeitemresponse.js';
 
 export const newFakeGridItem = (...args) => {
   return Proxies.guard(new FakeGridItem(...args));
@@ -17,6 +18,35 @@ export const newFakeGridItem = (...args) => {
 export class FakeGridItem extends FakeFormItem {
   constructor(form, itemId) {
     super(form, itemId);
+  }
+
+  /**
+   * Creates a new ItemResponse for this grid item.
+   * @param {string[]} responses an array of responses, where each element represents the selected column for a row
+   * @returns {import('./fakeitemresponse.js').FakeItemResponse} the item response
+   */
+  createResponse(responses) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'GridItem.createResponse');
+    if (nargs !== 1 || !Utils.is.array(responses) || !responses.every(Utils.is.string)) {
+      matchThrow('Invalid arguments: expected a string array.');
+    }
+
+    const questions = this.__resource.questionGroupItem?.questions || [];
+    if (responses.length !== questions.length) {
+      throw new Error(`The number of responses (${responses.length}) must match the number of rows (${questions.length}).`);
+    }
+
+    const answers = responses.map((rowResponse, index) => {
+      const questionId = questions[index].questionId;
+      return {
+        questionId,
+        textAnswers: {
+          answers: [{ value: rowResponse }]
+        }
+      };
+    });
+
+    return newFakeItemResponse(this, answers);
   }
 
   /**
@@ -40,7 +70,7 @@ export class FakeGridItem extends FakeFormItem {
     if (!questions) {
       return [];
     }
-    return questions.map(question => question.rowQuestion?.title || null).filter(f=>f);
+    return questions.map(question => question.rowQuestion?.title || null).filter(f => f);
   }
 
   /**

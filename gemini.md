@@ -1,0 +1,1 @@
+Important: when working on this repo, always consult the .agent/workflows file for how to do things.

@@ -5,6 +5,7 @@ import { ItemType } from '../enums/formsenums.js';
 import { signatureArgs } from '../../support/helpers.js';
 import { Utils } from '../../support/utils.js';
 const { is } = Utils;
+import { newFakeItemResponse } from './fakeitemresponse.js';
 
 export const newFakeScaleItem = (...args) => {
   return Proxies.guard(new FakeScaleItem(...args));
@@ -18,6 +19,28 @@ export const newFakeScaleItem = (...args) => {
 export class FakeScaleItem extends FakeFormItem {
   constructor(form, itemId) {
     super(form, itemId);
+  }
+
+  /**
+   * Creates a new ItemResponse for this scale item.
+   * @param {number} response the selected value
+   * @returns {import('./fakeitemresponse.js').FakeItemResponse} the item response
+   */
+  createResponse(response) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'ScaleItem.createResponse');
+    if (nargs !== 1 || !is.number(response)) {
+      matchThrow('Invalid arguments: expected a number.');
+    }
+
+    const questionId = this.__resource.questionItem?.question?.questionId;
+    const answers = [{
+      questionId,
+      textAnswers: {
+        answers: [{ value: response.toString() }]
+      }
+    }];
+
+    return newFakeItemResponse(this, answers);
   }
 
   /**
