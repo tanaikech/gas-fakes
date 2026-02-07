@@ -78,7 +78,11 @@ export class FakeItemResponse {
     );
 
     if (allTextAnswers.length === 0) {
-      return '';
+      return itemType === 'CHECKBOX' ? [] : '';
+    }
+
+    if (itemType === 'CHECKBOX') {
+      return allTextAnswers.map(a => a.value);
     }
 
     // For items like grids, there can be multiple answer values. The live script joins them with a comma.

@@ -40,6 +40,7 @@ import { testSlides } from "./testslides.js";
 import { testSlidesSlide } from "./testslidesslide.js";
 import { testForm } from "./testform.js";
 import { testFormsAdv } from "./testformsadv.js";
+import { testFormResponse } from "./testformresponse.js";
 import { testSheetsText } from "./testsheetstext.js";
 import { testSlidesParagraph } from "./testslidesparagraph.js";
 import { testSlidesAffineTransform } from "./testslidesaffinetransform.js";
@@ -144,6 +145,8 @@ export const testFakes = () => {
   testForm(pack);
   console.log("\n----Test formsadv----");
   testFormsAdv(pack);
+  console.log("\n----Test formresponse----");
+  testFormResponse(pack);
 
 
 

@@ -186,7 +186,7 @@ export const testForm = (pack) => {
     // Test getItems()
     const items = updatedForm.getItems();
     t.is(items.length, 2, 'getItems() should return two items');
-    t.is(items[0].toString(), 'Item', 'First item should be of type Item');
+    t.is(items[0].toString(), 'TextItem', 'First item should be of type TextItem');
     t.is(items[0].getTitle(), 'First Question', 'First item should have correct title');
     t.is(items[1].getTitle(), 'Second Question', 'Second item should have correct title');
 
@@ -501,7 +501,8 @@ export const testForm = (pack) => {
           t.is(initialDestId, null, 'Initial destination ID should be null');
           t.is(initialDestType, null, 'Initial destination type should be null');
         } else {
-          console.log('...initial destination check:', initialDestId, initialDestType);
+          t.true (is.nonEmptyString(initialDestId), 'Initial destination ID should be a non-empty string');
+          t.true (is.nonEmptyString(initialDestType), 'Initial destination type should be a non-empty string');
         }
       } catch (e) {
         // live GAS throws if not set
@@ -524,7 +525,7 @@ export const testForm = (pack) => {
           t.is(removedDestId, null, 'Destination ID should be null after removal');
           t.is(removedDestType, null, 'Destination type should be null after removal');
         } else {
-          console.log('...destination after removal:', removedDestId, removedDestType);
+          t.true (is.nonEmptyString(removedDestId), 'Destination ID should be a non-empty string after removal');
         }
       } catch (e) {
         console.log('...warning: getDestinationId threw an error after removal', e.message);

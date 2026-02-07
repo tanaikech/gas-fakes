@@ -12,6 +12,9 @@ import { newFakeCheckboxItem } from './fakecheckboxitem.js';
 import { newFakeListItem } from './fakelistitem.js';
 import { newFakePageBreakItem } from './fakepagebreakitem.js';
 import { newFakeTextItem } from './faketextitem.js';
+import { newFakeDateItem } from './fakedateitem.js';
+import { newFakeTimeItem } from './faketimeitem.js';
+import { newFakeDurationItem } from './fakedurationitem.js';
 import { signatureArgs } from '../../support/helpers.js';
 import { Utils } from '../../support/utils.js';
 const { is } = Utils
@@ -259,6 +262,93 @@ export class FakeForm {
       },
     };
     return this.__addItem(itemResource, newFakeTextItem);
+  }
+
+  /**
+   * Appends a new question item that allows the respondent to enter a paragraph of text.
+   * @returns {import('./faketextitem.js').FakeTextItem} The new paragraph text item.
+   */
+  addParagraphTextItem() {
+    const itemResource = {
+      questionItem: {
+        question: {
+          textQuestion: {
+            paragraph: true,
+          },
+        },
+      },
+    };
+    return this.__addItem(itemResource, newFakeTextItem);
+  }
+
+  /**
+   * Appends a new question item that allows the respondent to choose a date.
+   * @returns {import('./fakedateitem.js').FakeDateItem} The new date item.
+   */
+  addDateItem() {
+    const itemResource = {
+      questionItem: {
+        question: {
+          dateQuestion: {
+            includeYear: true,
+            includeTime: false,
+          },
+        },
+      },
+    };
+    return this.__addItem(itemResource, newFakeDateItem);
+  }
+
+  /**
+   * Appends a new question item that allows the respondent to choose a date and time.
+   * @returns {import('./fakedateitem.js').FakeDateItem} The new date-time item.
+   */
+  addDateTimeItem() {
+    const itemResource = {
+      questionItem: {
+        question: {
+          dateQuestion: {
+            includeYear: true,
+            includeTime: true,
+          },
+        },
+      },
+    };
+    return this.__addItem(itemResource, newFakeDateItem);
+  }
+
+  /**
+   * Appends a new question item that allows the respondent to choose a time.
+   * @returns {import('./faketimeitem.js').FakeTimeItem} The new time item.
+   */
+  addTimeItem() {
+    const itemResource = {
+      questionItem: {
+        question: {
+          timeQuestion: {
+            duration: false,
+          },
+        },
+      },
+    };
+    return this.__addItem(itemResource, newFakeTimeItem);
+  }
+
+  /**
+   * Appends a new question item that allows the respondent to choose a duration.
+   * @returns {import('./fakedurationitem.js').FakeDurationItem} The new duration item.
+   */
+  addDurationItem() {
+    const itemResource = {
+      questionItem: {
+        question: {
+          timeQuestion: {
+            duration: true,
+          },
+        },
+      },
+    };
+    return this.__addItem(itemResource, newFakeDurationItem);
   }
 
   /**

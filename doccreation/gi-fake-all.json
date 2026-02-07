@@ -5525,7 +5525,7 @@
             "returnType": "Number",
             "returnDescription": "The bottom margin, in points.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakebody.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getMarginLeft()",
@@ -5534,7 +5534,7 @@
             "returnType": "Number",
             "returnDescription": "The left margin, in points.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakebody.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getMarginRight()",
@@ -5543,7 +5543,7 @@
             "returnType": "Number",
             "returnDescription": "The right margin, in points.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakebody.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getMarginTop()",
@@ -5552,7 +5552,7 @@
             "returnType": "Number",
             "returnDescription": "The top margin, in points.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakebody.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getNumChildren()",
@@ -5570,7 +5570,7 @@
             "returnType": "Number",
             "returnDescription": "The page height, in points.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakebody.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getPageWidth()",
@@ -5579,7 +5579,7 @@
             "returnType": "Number",
             "returnDescription": "The page width, in points.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakebody.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getParagraphs()",
@@ -5786,7 +5786,7 @@
             "returnType": "Body",
             "returnDescription": "The current element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakebody.js#L290"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setMarginLeft(Number)",
@@ -5795,7 +5795,7 @@
             "returnType": "Body",
             "returnDescription": "The current element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakebody.js#L296"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setMarginRight(Number)",
@@ -5804,7 +5804,7 @@
             "returnType": "Body",
             "returnDescription": "The current element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakebody.js#L302"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setMarginTop(Number)",
@@ -5813,7 +5813,7 @@
             "returnType": "Body",
             "returnDescription": "The current element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakebody.js#L308"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setPageHeight(Number)",
@@ -5822,7 +5822,7 @@
             "returnType": "Body",
             "returnDescription": "The current element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakebody.js#L314"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setPageWidth(Number)",
@@ -5831,7 +5831,7 @@
             "returnType": "Body",
             "returnDescription": "The current element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakebody.js#L320"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setText(String)",
@@ -6180,7 +6180,7 @@
             "returnType": "String",
             "returnDescription": "the link url, or null if the element contains multiple values for this attribute",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getNextSibling()",
@@ -6297,7 +6297,7 @@
             "returnType": "ContainerElement",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setTextAlignment(TextAlignment)",
@@ -9064,7 +9064,7 @@
             "returnType": "Integer",
             "returnDescription": "the image's height, in pixels",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeinlineimage.js#L96"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getLinkUrl()",
@@ -9073,7 +9073,7 @@
             "returnType": "String",
             "returnDescription": "The link URL, or null if the element contains multiple values for this\n    attribute.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeinlineimage.js#L104"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getNextSibling()",
@@ -9118,7 +9118,7 @@
             "returnType": "Integer",
             "returnDescription": "the image's width, in pixels",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeinlineimage.js#L100"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "isAtDocumentEnd()",
@@ -9181,7 +9181,7 @@
             "returnType": "InlineImage",
             "returnDescription": "the current object",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeinlineimage.js#L118"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setLinkUrl(String)",
@@ -9190,7 +9190,7 @@
             "returnType": "InlineImage",
             "returnDescription": "The current object.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeinlineimage.js#L128"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setWidth(Integer)",
@@ -9199,7 +9199,7 @@
             "returnType": "InlineImage",
             "returnDescription": "the current object",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeinlineimage.js#L123"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           }
         ]
       },
@@ -9387,7 +9387,7 @@
             "returnType": "GlyphType",
             "returnDescription": "the glyph type",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakelistitem.js#L52"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getHeading()",
@@ -9396,7 +9396,7 @@
             "returnType": "ParagraphHeading",
             "returnDescription": "the heading",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakelistitem.js#L126"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getIndentEnd()",
@@ -9405,7 +9405,7 @@
             "returnType": "Number",
             "returnDescription": "the end indentation, in points",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakelistitem.js#L207"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getIndentFirstLine()",
@@ -9414,7 +9414,7 @@
             "returnType": "Number",
             "returnDescription": "the first line indentation, in points",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakelistitem.js#L219"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getIndentStart()",
@@ -9423,7 +9423,7 @@
             "returnType": "Number",
             "returnDescription": "the start indentation",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakelistitem.js#L225"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getLineSpacing()",
@@ -9432,7 +9432,7 @@
             "returnType": "Number",
             "returnDescription": "the line spacing, in points",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakelistitem.js#L231"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getLinkUrl()",
@@ -9441,7 +9441,7 @@
             "returnType": "String",
             "returnDescription": "the link url, or null if the element contains multiple values for this attribute",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakelistitem.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getListId()",
@@ -9450,7 +9450,7 @@
             "returnType": "String",
             "returnDescription": "the list ID",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakelistitem.js#L55"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getNestingLevel()",
@@ -9459,7 +9459,7 @@
             "returnType": "Integer",
             "returnDescription": "the nesting level",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakelistitem.js#L58"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getNextSibling()",
@@ -9522,7 +9522,7 @@
             "returnType": "Number",
             "returnDescription": "the spacing after the element, in points",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakelistitem.js#L243"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getSpacingBefore()",
@@ -9531,7 +9531,7 @@
             "returnType": "Number",
             "returnDescription": "the spacing before the element, in points",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakelistitem.js#L255"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getText()",
@@ -9711,7 +9711,7 @@
             "returnType": "ListItem",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/app.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setHeading(ParagraphHeading)",
@@ -9720,7 +9720,7 @@
             "returnType": "ListItem",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakelistitem.js#L153"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setIndentEnd(Number)",
@@ -9729,7 +9729,7 @@
             "returnType": "ListItem",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakelistitem.js#L213"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setIndentFirstLine(Number)",
@@ -9738,7 +9738,7 @@
             "returnType": "ListItem",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakelistitem.js#L301"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setIndentStart(Number)",
@@ -9747,7 +9747,7 @@
             "returnType": "ListItem",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakelistitem.js#L313"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setLeftToRight(Boolean)",
@@ -9756,7 +9756,7 @@
             "returnType": "ListItem",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakelistitem.js#L276"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setLineSpacing(Number)",
@@ -9765,7 +9765,7 @@
             "returnType": "ListItem",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakelistitem.js#L237"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setLinkUrl(String)",
@@ -9774,7 +9774,7 @@
             "returnType": "ListItem",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakelistitem.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setListId(ListItem)",
@@ -9783,7 +9783,7 @@
             "returnType": "ListItem",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakelistitem.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setNestingLevel(Integer)",
@@ -9792,7 +9792,7 @@
             "returnType": "ListItem",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/app.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setSpacingAfter(Number)",
@@ -9801,7 +9801,7 @@
             "returnType": "ListItem",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakelistitem.js#L249"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setSpacingBefore(Number)",
@@ -9810,7 +9810,7 @@
             "returnType": "ListItem",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakelistitem.js#L261"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setText(String)",
@@ -10016,7 +10016,7 @@
             "returnType": "ParagraphHeading",
             "returnDescription": "The heading.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L128"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getIndentEnd()",
@@ -10025,7 +10025,7 @@
             "returnType": "Number",
             "returnDescription": "the end indentation, in points",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L177"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getIndentFirstLine()",
@@ -10034,7 +10034,7 @@
             "returnType": "Number",
             "returnDescription": "the first line indentation, in points",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L189"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getIndentStart()",
@@ -10043,7 +10043,7 @@
             "returnType": "Number",
             "returnDescription": "the start indentation",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L201"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getLineSpacing()",
@@ -10052,7 +10052,7 @@
             "returnType": "Number",
             "returnDescription": "the line spacing, in points",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L213"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getLinkUrl()",
@@ -10061,7 +10061,7 @@
             "returnType": "String",
             "returnDescription": "the link url, or null if the element contains multiple values for this attribute",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getNextSibling()",
@@ -10124,7 +10124,7 @@
             "returnType": "Number",
             "returnDescription": "the spacing after the element, in points",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L225"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getSpacingBefore()",
@@ -10133,7 +10133,7 @@
             "returnType": "Number",
             "returnDescription": "the spacing before the element, in points",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L237"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getText()",
@@ -10313,7 +10313,7 @@
             "returnType": "Paragraph",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L84"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setIndentEnd(Number)",
@@ -10322,7 +10322,7 @@
             "returnType": "Paragraph",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L183"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setIndentFirstLine(Number)",
@@ -10331,7 +10331,7 @@
             "returnType": "Paragraph",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L195"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setIndentStart(Number)",
@@ -10340,7 +10340,7 @@
             "returnType": "Paragraph",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L207"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setLeftToRight(Boolean)",
@@ -10349,7 +10349,7 @@
             "returnType": "Paragraph",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L258"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setLineSpacing(Number)",
@@ -10358,7 +10358,7 @@
             "returnType": "Paragraph",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L219"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setLinkUrl(String)",
@@ -10367,7 +10367,7 @@
             "returnType": "Paragraph",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setSpacingAfter(Number)",
@@ -10376,7 +10376,7 @@
             "returnType": "Paragraph",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L231"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setSpacingBefore(Number)",
@@ -10385,7 +10385,7 @@
             "returnType": "Paragraph",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L243"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setText(String)",
@@ -11239,7 +11239,7 @@
             "returnType": "String",
             "returnDescription": "The border color, formatted in CSS notation (like '#ffffff').",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketable.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getBorderWidth()",
@@ -11248,7 +11248,7 @@
             "returnType": "Number",
             "returnDescription": "The border width, in points.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketable.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getCell(Integer,Integer)",
@@ -11293,7 +11293,7 @@
             "returnType": "String",
             "returnDescription": "the link url, or null if the element contains multiple values for this attribute",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketable.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getNextSibling()",
@@ -11455,7 +11455,7 @@
             "returnType": "Table",
             "returnDescription": "The current element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketable.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setBorderWidth(Number)",
@@ -11464,7 +11464,7 @@
             "returnType": "Table",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketable.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setColumnWidth(Integer,Number)",
@@ -11482,7 +11482,7 @@
             "returnType": "Table",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketable.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setTextAlignment(TextAlignment)",
@@ -11670,7 +11670,7 @@
             "returnType": "String",
             "returnDescription": "the background color, formatted in CSS notation (like '#ffffff')",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketablecell.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getChild(Integer)",
@@ -11706,7 +11706,7 @@
             "returnType": "String",
             "returnDescription": "the link url, or null if the element contains multiple values for this attribute",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketablecell.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getNextSibling()",
@@ -11733,7 +11733,7 @@
             "returnType": "Number",
             "returnDescription": "the bottom padding, in points",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketablecell.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getPaddingLeft()",
@@ -11742,7 +11742,7 @@
             "returnType": "Number",
             "returnDescription": "the left padding, in points",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketablecell.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getPaddingRight()",
@@ -11751,7 +11751,7 @@
             "returnType": "Number",
             "returnDescription": "the right padding, in points",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketablecell.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getPaddingTop()",
@@ -11760,7 +11760,7 @@
             "returnType": "Number",
             "returnDescription": "the top padding, in points",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketablecell.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getParent()",
@@ -11841,7 +11841,7 @@
             "returnType": "VerticalAlignment",
             "returnDescription": "the vertical alignment",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketablecell.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getWidth()",
@@ -11850,7 +11850,7 @@
             "returnType": "Number",
             "returnDescription": "the column width, in points",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketablecell.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "insertHorizontalRule(Integer)",
@@ -12003,7 +12003,7 @@
             "returnType": "TableCell",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketablecell.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setLinkUrl(String)",
@@ -12012,7 +12012,7 @@
             "returnType": "TableCell",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketablecell.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setPaddingBottom(Number)",
@@ -12021,7 +12021,7 @@
             "returnType": "TableCell",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketablecell.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setPaddingLeft(Number)",
@@ -12030,7 +12030,7 @@
             "returnType": "TableCell",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketablecell.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setPaddingRight(Number)",
@@ -12039,7 +12039,7 @@
             "returnType": "TableCell",
             "returnDescription": "The current element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketablecell.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setPaddingTop(Number)",
@@ -12048,7 +12048,7 @@
             "returnType": "TableCell",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketablecell.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setText(String)",
@@ -12075,7 +12075,7 @@
             "returnType": "TableCell",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketablecell.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setWidth(Number)",
@@ -12084,7 +12084,7 @@
             "returnType": "TableCell",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketablecell.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           }
         ]
       },
@@ -12227,7 +12227,7 @@
             "returnType": "String",
             "returnDescription": "the link url, or null if the element contains multiple values for this attribute",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketablerow.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getMinimumHeight()",
@@ -12236,7 +12236,7 @@
             "returnType": "Number",
             "returnDescription": "the minimum height, in points",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketablerow.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getNextSibling()",
@@ -12416,7 +12416,7 @@
             "returnType": "TableRow",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketablerow.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setMinimumHeight(Number)",
@@ -12425,7 +12425,7 @@
             "returnType": "TableRow",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketablerow.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setTextAlignment(TextAlignment)",
@@ -13150,7 +13150,7 @@
             "returnType": "String",
             "returnDescription": "the background color, formatted in CSS notation (like '#ffffff'), or null\n    if the element contains multiple values for this attribute",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketext.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getBackgroundColor(Integer)",
@@ -13159,7 +13159,7 @@
             "returnType": "String",
             "returnDescription": "The background color, formatted in CSS notation (like '#ffffff').",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketext.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getFontFamily()",
@@ -13168,7 +13168,7 @@
             "returnType": "String",
             "returnDescription": "the font family, or null if the element contains multiple values for this attribute",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketext.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getFontFamily(Integer)",
@@ -13177,7 +13177,7 @@
             "returnType": "String",
             "returnDescription": "The font family.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketext.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getFontSize()",
@@ -13186,7 +13186,7 @@
             "returnType": "Number",
             "returnDescription": "the font size, or null if the element contains multiple values for this attribute",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketext.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getFontSize(Integer)",
@@ -13195,7 +13195,7 @@
             "returnType": "Number",
             "returnDescription": "The font size.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketext.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getForegroundColor()",
@@ -13204,7 +13204,7 @@
             "returnType": "String",
             "returnDescription": "the foreground color, formatted in CSS notation (like '#ffffff'), or null\n    if the element contains multiple values for this attribute",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketext.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getForegroundColor(Integer)",
@@ -13213,7 +13213,7 @@
             "returnType": "String",
             "returnDescription": "The foreground color, formatted in CSS notation (like '#ffffff').",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketext.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getLinkUrl()",
@@ -13222,7 +13222,7 @@
             "returnType": "String",
             "returnDescription": "the link url, or null if the element contains multiple values for this attribute",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketext.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getLinkUrl(Integer)",
@@ -13231,7 +13231,7 @@
             "returnType": "String",
             "returnDescription": "The link URL.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketext.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "getNextSibling()",
@@ -13447,7 +13447,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketext.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setBackgroundColor(String)",
@@ -13456,7 +13456,7 @@
             "returnType": "Text",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketext.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setBold(Boolean)",
@@ -13465,7 +13465,7 @@
             "returnType": "Text",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketext.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setBold(Integer,Integer,Boolean)",
@@ -13474,7 +13474,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketext.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setFontFamily(Integer,Integer,String)",
@@ -13483,7 +13483,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketext.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setFontFamily(String)",
@@ -13492,7 +13492,7 @@
             "returnType": "Text",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketext.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setFontSize(Integer,Integer,Number)",
@@ -13501,7 +13501,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketext.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setFontSize(Number)",
@@ -13510,7 +13510,7 @@
             "returnType": "Text",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketext.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setForegroundColor(Integer,Integer,String)",
@@ -13519,7 +13519,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketext.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setForegroundColor(String)",
@@ -13528,7 +13528,7 @@
             "returnType": "Text",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketext.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setItalic(Boolean)",
@@ -13537,7 +13537,7 @@
             "returnType": "Text",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketext.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setItalic(Integer,Integer,Boolean)",
@@ -13546,7 +13546,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketext.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setLinkUrl(Integer,Integer,String)",
@@ -13555,7 +13555,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketext.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setLinkUrl(String)",
@@ -13564,7 +13564,7 @@
             "returnType": "Text",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketext.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setStrikethrough(Boolean)",
@@ -13573,7 +13573,7 @@
             "returnType": "Text",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketext.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setStrikethrough(Integer,Integer,Boolean)",
@@ -13582,7 +13582,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketext.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setText(String)",
@@ -13618,7 +13618,7 @@
             "returnType": "Text",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketext.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           },
           {
             "method": "setUnderline(Integer,Integer,Boolean)",
@@ -13627,7 +13627,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketext.js#L0"
+            "implementationLink": "src/services/enums/docsenums.js#L1"
           }
         ]
       },
@@ -42588,7 +42588,7 @@
             "returnType": "Object",
             "returnDescription": "The value in this cell.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L502"
           },
           {
             "method": "getValues()",
@@ -42597,7 +42597,7 @@
             "returnType": "Object[][]",
             "returnDescription": "A two-dimensional array of values.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L502"
           },
           {
             "method": "activate()",
@@ -42966,7 +42966,7 @@
             "returnType": "String",
             "returnDescription": "The color code of the background.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L339"
           },
           {
             "method": "getBackgroundObject()",
@@ -42975,7 +42975,7 @@
             "returnType": "Color",
             "returnDescription": "The background color of the top-left cell in the range.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L343"
           },
           {
             "method": "getBackgroundObjects()",
@@ -42984,7 +42984,7 @@
             "returnType": "Color[][]",
             "returnDescription": "A two-dimensional array of background colors.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L343"
           },
           {
             "method": "getBackgrounds()",
@@ -42993,7 +42993,7 @@
             "returnType": "String[][]",
             "returnDescription": "A two-dimensional array of color codes of the backgrounds.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L339"
           },
           {
             "method": "getBandings()",
@@ -43110,7 +43110,7 @@
             "returnType": "DataValidation",
             "returnDescription": "The data validation rule for the top-left cell in the range.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L356"
           },
           {
             "method": "getDataValidations()",
@@ -43119,7 +43119,7 @@
             "returnType": "DataValidation[][]",
             "returnDescription": "A two-dimensional array of data validation rules associated with the cells in the\n    range.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L356"
           },
           {
             "method": "getDeveloperMetadata()",
@@ -43137,7 +43137,7 @@
             "returnType": "String",
             "returnDescription": "The displayed value in this cell.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L503"
           },
           {
             "method": "getDisplayValues()",
@@ -43146,7 +43146,7 @@
             "returnType": "String[][]",
             "returnDescription": "A two-dimensional array of values.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L503"
           },
           {
             "method": "getFilter()",
@@ -43164,7 +43164,7 @@
             "returnType": "Color",
             "returnDescription": "The font color of the top-left cell in the range.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L345"
           },
           {
             "method": "getFontColorObjects()",
@@ -43173,7 +43173,7 @@
             "returnType": "Color[][]",
             "returnDescription": "A two-dimensional array of font colors associated with cells in the range.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L345"
           },
           {
             "method": "getFontFamilies()",
@@ -43182,7 +43182,7 @@
             "returnType": "String[][]",
             "returnDescription": "A two-dimensional array of font families associated with cells in the range.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L346"
           },
           {
             "method": "getFontFamily()",
@@ -43191,7 +43191,7 @@
             "returnType": "String",
             "returnDescription": "The font family of the cell.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L346"
           },
           {
             "method": "getFontLine()",
@@ -43200,7 +43200,7 @@
             "returnType": "String",
             "returnDescription": "The font line.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L352"
           },
           {
             "method": "getFontLines()",
@@ -43209,7 +43209,7 @@
             "returnType": "String[][]",
             "returnDescription": "A two-dimensional array of font lines associated with cells in the range.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L352"
           },
           {
             "method": "getFontSize()",
@@ -43218,7 +43218,7 @@
             "returnType": "Integer",
             "returnDescription": "The font size in point size.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L347"
           },
           {
             "method": "getFontSizes()",
@@ -43227,7 +43227,7 @@
             "returnType": "Integer[][]",
             "returnDescription": "A two-dimensional array of font sizes of text associated with cells in the range.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L347"
           },
           {
             "method": "getFontStyle()",
@@ -43236,7 +43236,7 @@
             "returnType": "String",
             "returnDescription": "The font style of the text in the cell.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L341"
           },
           {
             "method": "getFontStyles()",
@@ -43245,7 +43245,7 @@
             "returnType": "String[][]",
             "returnDescription": "A two-dimensional array of font styles of text associated with cells in the range.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L341"
           },
           {
             "method": "getFontWeight()",
@@ -43254,7 +43254,7 @@
             "returnType": "String",
             "returnDescription": "The font weight of the text in the cell.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L340"
           },
           {
             "method": "getFontWeights()",
@@ -43263,7 +43263,7 @@
             "returnType": "String[][]",
             "returnDescription": "A two-dimensional array of font weights of text associated with cells in the range.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L340"
           },
           {
             "method": "getFormula()",
@@ -43272,7 +43272,7 @@
             "returnType": "String",
             "returnDescription": "The formula for the cell.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L504"
           },
           {
             "method": "getFormulaR1C1()",
@@ -43290,7 +43290,7 @@
             "returnType": "String[][]",
             "returnDescription": "A two-dimensional array of formulas in string format.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L504"
           },
           {
             "method": "getFormulasR1C1()",
@@ -43326,7 +43326,7 @@
             "returnType": "String",
             "returnDescription": "The horizontal alignment of the text in the cell.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L338"
           },
           {
             "method": "getHorizontalAlignments()",
@@ -43335,7 +43335,7 @@
             "returnType": "String[][]",
             "returnDescription": "A two-dimensional array of horizontal alignments of text associated with cells in the\n    range.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L338"
           },
           {
             "method": "getLastColumn()",
@@ -43380,7 +43380,7 @@
             "returnType": "String",
             "returnDescription": "The note associated with the given cell.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L355"
           },
           {
             "method": "getNotes()",
@@ -43389,7 +43389,7 @@
             "returnType": "String[][]",
             "returnDescription": "A two-dimensional array of notes associated with cells in the range.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L355"
           },
           {
             "method": "getNumColumns()",
@@ -43416,7 +43416,7 @@
             "returnType": "String",
             "returnDescription": "The number format of the top-left cell of the range.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L336"
           },
           {
             "method": "getNumberFormats()",
@@ -43425,7 +43425,7 @@
             "returnType": "String[][]",
             "returnDescription": "A two-dimensional array of number formats.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L336"
           },
           {
             "method": "getRichTextValue()",
@@ -43434,7 +43434,7 @@
             "returnType": "RichTextValue",
             "returnDescription": "The Rich Text value of the top left cell in the range, or null if the cell\n    value is not text.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L357"
           },
           {
             "method": "getRichTextValues()",
@@ -43443,7 +43443,7 @@
             "returnType": "RichTextValue[][]",
             "returnDescription": "A two-dimensional array of Rich Text values.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L357"
           },
           {
             "method": "getRow()",
@@ -43479,7 +43479,7 @@
             "returnType": "TextDirection",
             "returnDescription": "The text direction of the top left cell in the range.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L354"
           },
           {
             "method": "getTextDirections()",
@@ -43488,7 +43488,7 @@
             "returnType": "TextDirection[][]",
             "returnDescription": "A two-dimensional array of text directions.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L354"
           },
           {
             "method": "getTextRotation()",
@@ -43497,7 +43497,7 @@
             "returnType": "TextRotation",
             "returnDescription": "The text rotation settings.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L350"
           },
           {
             "method": "getTextRotations()",
@@ -43506,7 +43506,7 @@
             "returnType": "TextRotation[][]",
             "returnDescription": "A two-dimensional array of text rotations associated with cells in the range.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L350"
           },
           {
             "method": "getTextStyle()",
@@ -43515,7 +43515,7 @@
             "returnType": "TextStyle",
             "returnDescription": "The text style of the top left cell in the range.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L351"
           },
           {
             "method": "getTextStyles()",
@@ -43524,7 +43524,7 @@
             "returnType": "TextStyle[][]",
             "returnDescription": "A two-dimensional array of text styles.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L351"
           },
           {
             "method": "getVerticalAlignment()",
@@ -43533,7 +43533,7 @@
             "returnType": "String",
             "returnDescription": "The vertical alignment of the text in the cell.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L337"
           },
           {
             "method": "getVerticalAlignments()",
@@ -43542,7 +43542,7 @@
             "returnType": "String[][]",
             "returnDescription": "A two-dimensional array of vertical alignments of text associated with cells in the\n    range.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L337"
           },
           {
             "method": "getWidth()",
@@ -43560,7 +43560,7 @@
             "returnType": "Boolean",
             "returnDescription": "Whether the text in this cell wraps or not.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L349"
           },
           {
             "method": "getWrapStrategies()",
@@ -43569,7 +43569,7 @@
             "returnType": "WrapStrategy[][]",
             "returnDescription": "A two-dimensional array of text wrapping strategies.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L348"
           },
           {
             "method": "getWrapStrategy()",
@@ -43578,7 +43578,7 @@
             "returnType": "WrapStrategy",
             "returnDescription": "The text wrapping strategy of the top left cell in the range.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L348"
           },
           {
             "method": "getWraps()",
@@ -43587,7 +43587,7 @@
             "returnType": "Boolean[][]",
             "returnDescription": "A two-dimensional array of vertical alignments of text associated with cells in the\n    range.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L349"
           },
           {
             "method": "insertCells(Dimension)",
@@ -43632,7 +43632,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the range is blank; false otherwise.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L505"
           },
           {
             "method": "isChecked()",
@@ -43641,7 +43641,7 @@
             "returnType": "Boolean",
             "returnDescription": "true, if all cells in the range are checked, false if all cells in the\n    range are unchecked, or null if any of the cells are unchecked or do not have\n    checkbox data validation.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L353"
           },
           {
             "method": "isEndColumnBounded()",
@@ -43884,7 +43884,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L168"
           },
           {
             "method": "setFontColorObjects(Color)",
@@ -43893,7 +43893,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L168"
           },
           {
             "method": "setFontColors(Object)",
@@ -43911,7 +43911,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L174"
           },
           {
             "method": "setFontFamily(String)",
@@ -43920,7 +43920,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L174"
           },
           {
             "method": "setFontLine(String)",
@@ -43929,7 +43929,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L169"
           },
           {
             "method": "setFontLines(Object)",
@@ -43938,7 +43938,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L169"
           },
           {
             "method": "setFontSize(Integer)",
@@ -43947,7 +43947,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L173"
           },
           {
             "method": "setFontSizes(Object)",
@@ -43956,7 +43956,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L173"
           },
           {
             "method": "setFontStyle(String)",
@@ -43965,7 +43965,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L172"
           },
           {
             "method": "setFontStyles(Object)",
@@ -43974,7 +43974,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L172"
           },
           {
             "method": "setFontWeight(String)",
@@ -43983,7 +43983,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L171"
           },
           {
             "method": "setFontWeights(Object)",
@@ -43992,7 +43992,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L171"
           },
           {
             "method": "setFormula(String)",
@@ -44001,7 +44001,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L166"
           },
           {
             "method": "setFormulaR1C1(String)",
@@ -44019,7 +44019,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L166"
           },
           {
             "method": "setFormulasR1C1(String)",
@@ -44037,7 +44037,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L167"
           },
           {
             "method": "setHorizontalAlignments(Object)",
@@ -44046,7 +44046,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L167"
           },
           {
             "method": "setNote(String)",
@@ -44055,7 +44055,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L159"
           },
           {
             "method": "setNotes(Object)",
@@ -44064,7 +44064,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L159"
           },
           {
             "method": "setNumberFormat(String)",
@@ -44073,7 +44073,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L170"
           },
           {
             "method": "setNumberFormats(Object)",
@@ -44082,7 +44082,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L170"
           },
           {
             "method": "setRichTextValue(RichTextValue)",
@@ -44091,7 +44091,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L175"
           },
           {
             "method": "setRichTextValues(RichTextValue)",
@@ -44100,7 +44100,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L175"
           },
           {
             "method": "setShowHyperlink(Boolean)",
@@ -44109,7 +44109,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L176"
           },
           {
             "method": "setTextDirection(TextDirection)",
@@ -44118,7 +44118,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L164"
           },
           {
             "method": "setTextDirections(TextDirection)",
@@ -44127,7 +44127,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L164"
           },
           {
             "method": "setTextRotation(Integer)",
@@ -44136,7 +44136,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L163"
           },
           {
             "method": "setTextRotation(TextRotation)",
@@ -44145,7 +44145,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L163"
           },
           {
             "method": "setTextRotations(TextRotation)",
@@ -44154,7 +44154,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L163"
           },
           {
             "method": "setTextStyle(TextStyle)",
@@ -44163,7 +44163,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L161"
           },
           {
             "method": "setTextStyles(TextStyle)",
@@ -44172,7 +44172,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L161"
           },
           {
             "method": "setValue(Object)",
@@ -44199,7 +44199,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L165"
           },
           {
             "method": "setVerticalAlignments(Object)",
@@ -44208,7 +44208,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L165"
           },
           {
             "method": "setVerticalText(Boolean)",
@@ -44217,7 +44217,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L162"
           },
           {
             "method": "setWrap(Boolean)",
@@ -44226,7 +44226,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L158"
           },
           {
             "method": "setWrapStrategies(WrapStrategy)",
@@ -44235,7 +44235,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L160"
           },
           {
             "method": "setWrapStrategy(WrapStrategy)",
@@ -44244,7 +44244,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L160"
           },
           {
             "method": "setWraps(Object)",
@@ -44253,7 +44253,7 @@
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/app.js#L0"
+            "implementationLink": "src/services/spreadsheetapp/sheetrangemakers.js#L158"
           },
           {
             "method": "shiftColumnGroupDepth(Integer)",

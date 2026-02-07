@@ -4,6 +4,7 @@ import { registerFormItem } from './formitemregistry.js';
 import { signatureArgs } from '../../support/helpers.js';
 import { Utils } from '../../support/utils.js';
 import { ItemType } from '../enums/formsenums.js';
+import { newFakeItemResponse } from './fakeitemresponse.js';
 
 export const newFakeCheckboxGridItem = (...args) => {
   return Proxies.guard(new FakeCheckboxGridItem(...args));
@@ -17,6 +18,35 @@ export const newFakeCheckboxGridItem = (...args) => {
 export class FakeCheckboxGridItem extends FakeFormItem {
   constructor(form, itemId) {
     super(form, itemId);
+  }
+
+  /**
+   * Creates a new ItemResponse for this checkbox grid item.
+   * @param {string[][]} responses a two-dimensional array of responses, where each inner array represents the selected columns for a row
+   * @returns {import('./fakeitemresponse.js').FakeItemResponse} the item response
+   */
+  createResponse(responses) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'CheckboxGridItem.createResponse');
+    if (nargs !== 1 || !Utils.is.array(responses) || !responses.every(Utils.is.array)) {
+      matchThrow('Invalid arguments: expected a two-dimensional string array.');
+    }
+
+    const questions = this.__resource.questionGroupItem?.questions || [];
+    if (responses.length !== questions.length) {
+      throw new Error(`The number of responses (${responses.length}) must match the number of rows (${questions.length}).`);
+    }
+
+    const answers = responses.map((rowResponses, index) => {
+      const questionId = questions[index].questionId;
+      return {
+        questionId,
+        textAnswers: {
+          answers: rowResponses.map(value => ({ value }))
+        }
+      };
+    });
+
+    return newFakeItemResponse(this, answers);
   }
 
   /**

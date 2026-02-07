@@ -85,8 +85,22 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, cachePath,
   // get the required scopes and set them
   const scopes = manifest.oauthScopes || []
 
+  // Force mandatory scopes for DWD if not already present
+  // These are required to get user identity information when using Domain-Wide Delegation
+  const mandatoryScopes = [
+    "openid",
+    "https://www.googleapis.com/auth/userinfo.email",
+    "https://www.googleapis.com/auth/cloud-platform"
+  ]
+
+  const scopeSet = new Set(scopes)
+  mandatoryScopes.forEach(scope => scopeSet.add(scope))
+  const finalScopes = Array.from(scopeSet)
+
+  syncLog(`...using scopes: ${finalScopes.join(', ')}`)
+
   // Initialize auth. 
-  const auth = await Auth.setAuth(scopes);
+  const auth = await Auth.setAuth(finalScopes);
 
   // static things we need to get into the main thread we can do now
   const projectId = Auth.getProjectId();

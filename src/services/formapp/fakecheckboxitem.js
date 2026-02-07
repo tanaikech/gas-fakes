@@ -6,6 +6,7 @@ const { is } = Utils;
 import { registerFormItem } from './formitemregistry.js';
 import { newFakeChoice } from './fakechoice.js';
 import { ItemType } from '../enums/formsenums.js';
+import { newFakeItemResponse } from './fakeitemresponse.js';
 
 export const newFakeCheckboxItem = (...args) => {
   return Proxies.guard(new FakeCheckboxItem(...args));
@@ -23,6 +24,28 @@ export class FakeCheckboxItem extends FakeChoiceItem {
    */
   constructor(form, itemId) {
     super(form, itemId);
+  }
+
+  /**
+   * Creates a new ItemResponse for this checkbox item.
+   * @param {string[]} responses the selected choices
+   * @returns {import('./fakeitemresponse.js').FakeItemResponse} the item response
+   */
+  createResponse(responses) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'CheckboxItem.createResponse');
+    if (nargs !== 1 || !Utils.is.array(responses) || !responses.every(Utils.is.string)) {
+      matchThrow('Invalid arguments: expected a string array.');
+    }
+
+    const questionId = this.__resource.questionItem?.question?.questionId;
+    const answers = [{
+      questionId,
+      textAnswers: {
+        answers: responses.map(value => ({ value }))
+      }
+    }];
+
+    return newFakeItemResponse(this, answers);
   }
 
   toString() {
