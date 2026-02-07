@@ -483,7 +483,14 @@ export async function authenticateUser() {
     scopes += (extraScopes.startsWith(",") ? "" : ",") + extraScopes;
   }
   */
-  const scopes = Array.from(new Set([DEFAULT_SCOPES.split(",").concat(EXTRA_SCOPES.split(","))].filter(d => d))).join(",")
+  const scopes = Array.from(
+    new Set([
+      ...(DEFAULT_SCOPES || "").split(","),
+      ...(EXTRA_SCOPES || "").split(","),
+    ])
+  )
+    .filter((s) => s)
+    .join(",");
   const driveAccessFlag = "--enable-gdrive-access";
 
   console.log(`...requesting scopes ${scopes}`);
@@ -630,7 +637,7 @@ export async function authenticateUser() {
     // Service Account Lifecycle
     let existing_sa = false
     try {
-      execSync(`gcloud iam service-accounts describe "${sa_email}"`, { shell: true });
+      execSync(`gcloud iam service-accounts describe "${sa_email}"`, { stdio: "ignore", shell: true });
       existing_sa = true;
     } catch (error) {
       /* ignore */

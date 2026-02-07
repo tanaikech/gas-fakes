@@ -54,7 +54,20 @@ The optional `gasfakes.json` file holds various location and behavior parameters
 | properties | string | /tmp/gas-fakes/properties        | gas-fakes uses a local file to emulate apps script's PropertiesService. This is where it should put the files. You may want to put it somewhere other than /tmp to avoid accidental deletion, but don't put it in a place that'll get commited to public git repo                        |
 | scriptId   | string | from clasp, or some random value | If you have a clasp file, it'll pick up the scriptId from there. If not you can enter your scriptId manually, or just leave it to create a fake one. It's use for the moment is to return something useful from ScriptApp.getScriptId() and to partition the cache and properties stores |
 
+### Troubleshooting: Missing Environment Tags
 
+If you see a warning or error like `Project '...' lacks an 'environment' tag`, it means your Google Cloud Organization has a policy requiring projects to be designated with an environment tag (e.g., `Development`, `Production`).
+
+To resolve this, you need to bind an environment tag to your project. Replace `YOUR_ORG_ID` and `YOUR_PROJECT_ID` with your actual identifiers:
+
+```bash
+# Bind the 'Development' environment tag to your project
+gcloud resource-manager tags bindings create \
+  --tag-value=YOUR_ORG_ID/environment/Development \
+  --parent=//cloudresourcemanager.googleapis.com/projects/YOUR_PROJECT_ID
+```
+
+*Note: The tag key `environment` and the value `Development` must already exist at the organization level. If they don't, you (or your admin) will need to create them first using `gcloud resource-manager tags keys create` and `gcloud resource-manager tags values create`.*
 
 ### Cloud Logging Integration
 
