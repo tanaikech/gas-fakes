@@ -40,6 +40,7 @@ export class FakeSpreadsheetApp {
     const enumProps = [
       "AutoFillSeries", //	AutoFillSeries	An enumeration of the types of series used to calculate auto-filled values.
       "BandingTheme", //	BandingTheme	An enumeration of the possible banding themes.
+      "ChartType", //	ChartType	An enumeration of the possible chart types.
       "BooleanCriteria", //	BooleanCriteria	An enumeration of conditional formatting boolean criteria.
       "BorderStyle", //	BorderStyle	An enumeration of the valid styles for setting borders on a Range.
       "ColorType", //	ColorType	An enumeration of possible color types.

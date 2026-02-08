@@ -2,3 +2,5 @@ private/
 node_modules/
 .env*
 .env.yaml
+.agent/
+.gemini/
