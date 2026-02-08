@@ -15,7 +15,17 @@ The key principle is to use the exact same synchronous code you would write for 
 
 ---
 
-## Step 1: Install the Package
+## Step 1: Prepare your Manifest (`appsscript.json`)
+
+`gas-fakes` reads your local `appsscript.json` manifest to understand your script's configuration and required permissions. If you are syncing with a real Apps Script project via `clasp`, you will already have this file. If not, create one in your project root.
+
+Ensure your `oauthScopes` section includes all the scopes your script needs.
+
+> **Note on Mandatory Scopes:** `gas-fakes` automatically includes the following mandatory scopes:
+> - `openid` and `https://www.googleapis.com/auth/userinfo.email`: Used for user identity and stability across platforms.
+> - `https://www.googleapis.com/auth/cloud-platform`: A "super-scope" that often allows Workspace service operations to succeed even if their specific individual scopes (like `.../auth/spreadsheets`) are not explicitly granted.
+
+## Step 2: Install the Package
 
 In your Node.js project directory, install `gas-fakes` from npm:
 
@@ -23,7 +33,7 @@ In your Node.js project directory, install `gas-fakes` from npm:
 npm i @mcpher/gas-fakes
 ```
 
-## Step 2: Initialize gas-fakes
+## Step 3: Initialize gas-fakes
 
 The `gas-fakes-cli` is the recommended way to set up your environment. It handles authentication, API enablement, and configuration.
 
@@ -70,7 +80,7 @@ gas-fakes init --auth-type adc
 ```
 In this mode, you provide the scopes required by your project via a the cli's init dialog.
 
-## Step 3: Authorize and Enable APIs
+## Step 4: Authorize and Enable APIs
 
 Once initialized, use the CLI to complete the authentication and enable the APIS. The CLI will guide you through the process. Note that the selections made in the init stage are persisted in your .env file, whichever method you chose, and used to direct the CLI to the correct authentication method.
 
@@ -85,26 +95,22 @@ Once initialized, use the CLI to complete the authentication and enable the APIS
     gas-fakes enableAPIs
     ```
 
-## Step 4: Configure Your Project Files
+## Step 5: (Optional) Configure Settings (`gasfakes.json`)
 
-`gas-fakes` reads local project files to understand your script's configuration.
+This optional file tells `gas-fakes` where to find things. If you don't provide one, it will be created with sensible defaults. For a detailed explanation of each property, see the Settings section in the main [readme](README.md)
 
-1.  **Manifest (`appsscript.json`)**: If you are syncing with a real Apps Script project via `clasp`, you will already have this file. If not, create one in your project root. `gas-fakes` reads the `oauthScopes` from this file to request the correct permissions. This is the same manifest you would use when running in live apps script.
-
-2.  **Settings (`gasfakes.json`)**: This optional file tells `gas-fakes` where to find things. If you don't provide one, it will be created with sensible defaults. For a detailed explanation of each property, see the Settings section in the main [readme](README.md)
-
-    Here is an example with common settings:
-    ```json
-    {
-      "manifest": "./appsscript.json",
-      "clasp": "./.clasp.json",
-      "documentId": null,
-      "cache": "/tmp/gas-fakes/cache",
-      "properties": "/tmp/gas-fakes/properties",
-      "scriptId": "a-unique-id-for-your-local-project"
-    }
-    ```
-    *   `scriptId`: It's recommended to set a unique but static value here. This ensures that local data stores for `PropertiesService` and `CacheService` are persistent between runs. If you are runing the project in your apps script IDE as well as in gas-fakes you can make it the id of your live project. If a .clasp.json file is present gas-fakes will use the id from there. 
+Here is an example with common settings:
+```json
+{
+  "manifest": "./appsscript.json",
+  "clasp": "./.clasp.json",
+  "documentId": null,
+  "cache": "/tmp/gas-fakes/cache",
+  "properties": "/tmp/gas-fakes/properties",
+  "scriptId": "a-unique-id-for-your-local-project"
+}
+```
+*   `scriptId`: It's recommended to set a unique but static value here. This ensures that local data stores for `PropertiesService` and `CacheService` are persistent between runs. If you are runing the project in your apps script IDE as well as in gas-fakes you can make it the id of your live project. If a .clasp.json file is present gas-fakes will use the id from there. 
   
 
 ---
@@ -215,7 +221,9 @@ const userCache = newCacheDropin({creds:userCacheCreds});
 
 ## You're Ready to Code!
 
-Your environment is now configured. You can start writing Apps Script code in your local `.js` files and run them with Node.js. Remember to import `gas-fakes` at the top of your main script file:
+Your environment is now configured. You can start writing Apps Script code in your local `.js` files and run them with Node.js. You'll also need to ensure your script can read your .env file to be able to read the optional behavioral settings. 
+
+Remember to import `gas-fakes` at the top of your main script file, and to instruct node to read your .env file. gas-fakes will still work without reference to tne .env file but your stores and other settings will not be discovered, and the authetication method will fall back to application default credentials (adc- as it won't know which service account to use)
 
 ```javascript
 // this is not mandatory as you can pass your .env file via --env-file <path-to-env-file>

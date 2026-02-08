@@ -7,7 +7,7 @@
  */
 import got from 'got';
 import { Auth } from './auth.js';
-import { syncError, syncLog } from './workersync/synclogger.js';
+import { syncError, syncLog, syncWarn } from './workersync/synclogger.js';
 import { readFile, writeFile, mkdir } from 'fs/promises';
 import path from 'path'
 
@@ -140,7 +140,7 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, cachePath,
   const allowedScopes = new Set(effectiveScopes)
   const missingScopes = scopes.filter(scope => !allowedScopes.has(scope))
   if (missingScopes.length > 0) {
-    syncError(`...these scopes were asked for but not granted: ${missingScopes.join(', ')}`)
+    syncWarn(`...these scopes were asked for but not granted: ${missingScopes.join(', ')}. Note: Operations may still succeed if the 'https://www.googleapis.com/auth/cloud-platform' scope was granted.`)
   }
   return {
     // these will be the scopes we're allowed to get

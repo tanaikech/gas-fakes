@@ -117,7 +117,7 @@ const setAuth = async (scopes = [], mcpLoading = false) => {
     // 2. if AUTH_TYPE is ADC, use ADC
     // 3. if AUTH_TYPE is not set, use DWD if saName is present, else ADC
     const saName = process.env.GOOGLE_SERVICE_ACCOUNT_NAME
-    const authType = process.env.AUTH_TYPE?.toLowerCase() || 'dwd'
+    const authType = process.env.AUTH_TYPE?.toLowerCase()
     const useDwd = authType === 'dwd' || (authType !== 'adc' && saName)
 
     if (!useDwd) {
@@ -127,6 +127,9 @@ const setAuth = async (scopes = [], mcpLoading = false) => {
       })
       _sourceClient = _authClient
     } else {
+      if (!saName) {
+        throw new Error("Domain-Wide Delegation (DWD) requested or inferred, but GOOGLE_SERVICE_ACCOUNT_NAME is not set in environment.");
+      }
       mayLog(`...using service account: ${saName}`)
       const targetPrincipal = `${saName}@${_projectId}.iam.gserviceaccount.com`
       mayLog(`...attempting to use service account: ${targetPrincipal}`)
