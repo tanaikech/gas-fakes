@@ -10,5 +10,4 @@ articles
 gprompts
 **/gas-dist
 **/bundle
-**/.agent/
 **/.gemini/
