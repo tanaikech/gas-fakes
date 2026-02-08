@@ -65,7 +65,7 @@
     "testworkspaceevents": "node --env-file ./.env testworkspaceevents.js execute",
     "testcalendarsandbox": "node --env-file ./.env testcalendarsandbox.js execute",
     "testmimetype": "node --env-file ./.env testmimetype.js execute",
-    "testsheetchart": "node --env-file ./.env testinsertchart.js execute"
+    "testsheetschart": "node --env-file ./.env testsheetschart.js execute"
   },
   "name": "test-gas-fakes",
   "version": "1.2.8",

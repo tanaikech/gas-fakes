@@ -48,7 +48,7 @@ import { testSlidesAutofit } from "./testslidesautofit.js";
 import { testSlidesAutoText } from "./testslidesautotext.js";
 import { testSlidesConnectionSite } from "./testslidesconnectionsite.js";
 import { testSlidesLineProps } from "./testslideslineprops.js";
-
+import { testInsertChart } from "./testsheetschart.js";
 import { testSheetsRange } from "./testsheetsrange.js";
 import { testDocsImages } from "./testdocsimages.js";
 import { testSandbox } from "./testsandbox.js";
@@ -86,7 +86,8 @@ export const testFakes = () => {
   testEnums(pack);
   console.log("\n----Test Sheets text----");
   testSheetsText(pack);
-
+  console.log("\n----Test InsertChart----");
+  testInsertChart(pack);
   console.log("\n----Test SheetsExotics----");
   testSheetsExotics(pack);
 
