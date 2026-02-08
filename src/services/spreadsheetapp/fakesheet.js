@@ -14,6 +14,8 @@ import { FakeTextFinder, newFakeTextFinder } from "./faketextfinder.js";
 import { newFakeNamedRange } from "./fakenamedrange.js";
 import { newFakeProtection } from "./fakeprotection.js";
 import { newFakeOverGridImage } from "./fakeovergridimage.js";
+import { newFakeEmbeddedChart } from "./fakeembeddedchart.js";
+import { newFakeEmbeddedChartBuilder } from "./fakeembeddedchartbuilder.js";
 
 import { XMLParser } from "fast-xml-parser";
 import { slogger } from "../../support/slogger.js";
@@ -34,10 +36,6 @@ export class FakeSheet {
     this.__parent = parent;
 
     const props = [
-      "getCharts",
-      "insertChart",
-      "removeChart",
-      "updateChart",
       // "getImages",
       "insertImage",
       "removeImage",
@@ -397,6 +395,63 @@ export class FakeSheet {
       });
     });
     return pivotTables;
+  }
+
+  getCharts() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Sheet.getCharts");
+    if (nargs !== 0) matchThrow();
+
+    const meta = this.getParent().__getMetaProps(
+      `sheets(charts,properties.sheetId)`
+    );
+    const sheetMeta = meta.sheets.find(
+      (s) => s.properties.sheetId === this.getSheetId()
+    );
+
+    return (sheetMeta?.charts || []).map((c) => newFakeEmbeddedChart(c, this));
+  }
+
+  insertChart(chart) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Sheet.insertChart");
+    if (nargs !== 1 || !is.object(chart)) matchThrow();
+
+    const request = {
+      addChart: {
+        chart: chart.__apiChart,
+      },
+    };
+    batchUpdate({ spreadsheet: this.getParent(), requests: [request] });
+    return this;
+  }
+
+  newChart() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Sheet.newChart");
+    if (nargs !== 0) matchThrow();
+
+    return newFakeEmbeddedChartBuilder(this);
+  }
+
+  removeChart(chart) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Sheet.removeChart");
+    if (nargs !== 1 || !is.object(chart)) matchThrow();
+
+    chart.remove();
+    return this;
+  }
+
+  updateChart(chart) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Sheet.updateChart");
+    if (nargs !== 1 || !is.object(chart)) matchThrow();
+
+    const request = {
+      updateEmbeddedObjectPosition: {
+        objectId: chart.getChartId(),
+        newPosition: chart.__apiChart.position,
+        fields: "*",
+      },
+    };
+    batchUpdate({ spreadsheet: this.getParent(), requests: [request] });
+    return this;
   }
 
   getBandings() {

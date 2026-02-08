@@ -4,10 +4,11 @@ testongas
 **/.gas-fakes/store
 **/.env*
 ghissues
-**/.gemini
 .DS_Store
 articles
 **/gasfakes.json
 gprompts
 **/gas-dist
 **/bundle
+**/.agent/
+**/.gemini/
