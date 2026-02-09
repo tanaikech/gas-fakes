@@ -17,9 +17,9 @@ export const testSheetsChart = (pack) => {
     const range2 = sheet.getRange("B1:B5");
     builder.addRange(range1)
       .addRange(range2)
-      .setChartType(SpreadsheetApp.ChartType.COLUMN)
+      .setChartType(Charts.ChartType.COLUMN)
       .setPosition(1, 4, 0, 0)
-      .setTitle("Test Chart");
+      .setOption("title", "Test Chart");
 
     // 3. Build the chart
     const chart = builder.build();
@@ -66,3 +66,7 @@ export const testSheetsChart = (pack) => {
 };
 
 wrapupTest(testSheetsChart);
+
+function runTestSheetsChart() {
+  testSheetsChart();
+}

@@ -98,11 +98,21 @@ export class FakeEmbeddedChartBuilder {
     return this;
   }
 
-  setTitle(title) {
-    const { nargs, matchThrow } = signatureArgs(arguments, "EmbeddedChartBuilder.setTitle");
-    if (nargs !== 1 || !is.string(title)) matchThrow();
+  setOption(option, value) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "EmbeddedChartBuilder.setOption");
+    if (nargs !== 2) matchThrow();
 
-    this.__apiChart.spec.title = title;
+    if (option === "title") {
+      this.__apiChart.spec.title = value;
+    } else {
+      // For other options, we might want to store them in a general options object if needed,
+      // but for now, we'll just focus on "title" as requested.
+      // SpreadsheetApp.EmbeddedChartBuilder.setOption(option, value)
+      if (!this.__apiChart.spec.basicChart.options) {
+        this.__apiChart.spec.basicChart.options = {};
+      }
+      this.__apiChart.spec.basicChart.options[option] = value;
+    }
     return this;
   }
 

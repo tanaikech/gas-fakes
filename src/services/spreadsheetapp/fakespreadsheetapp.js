@@ -16,6 +16,7 @@ import { newFakeDataSourceSpecBuilder } from "./fakedatasourcespecbuilder.js";
 import { FakeTextFinder, newFakeTextFinder } from "./faketextfinder.js";
 
 import * as Enums from "../enums/sheetsenums.js";
+import { ChartType } from "../enums/chartsenums.js";
 
 const { is } = Utils;
 
@@ -75,7 +76,7 @@ export class FakeSpreadsheetApp {
 
     // import all known enums as props of spreadsheetapp
     enumProps.forEach((f) => {
-      this[f] = Enums[f];
+      this[f] = Enums[f] || (f === "ChartType" ? ChartType : undefined);
     });
 
     const props = [
