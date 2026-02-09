@@ -720,7 +720,7 @@ Builder used to edit an EmbeddedChart. Changes made to the chart are not saved u
 | [asPieChart()](https://developers.google.com/apps-script/reference/spreadsheet/embedded-chart-builder#asPieChart()) | Sets the chart type to PieChart and returns an EmbeddedPieChartBuilder. | [EmbeddedPieChartBuilder](#class-embeddedpiechartbuilder) | A builder for a pie chart. | not started |  |
 | [asScatterChart()](https://developers.google.com/apps-script/reference/spreadsheet/embedded-chart-builder#asScatterChart()) | Sets the chart type to ScatterChart and returns an EmbeddedScatterChartBuilder. | [EmbeddedScatterChartBuilder](#class-embeddedscatterchartbuilder) | A builder for a scatter chart. | not started |  |
 | [asTableChart()](https://developers.google.com/apps-script/reference/spreadsheet/embedded-chart-builder#asTableChart()) | Sets the chart type to TableChart and returns an EmbeddedTableChartBuilder. | [EmbeddedTableChartBuilder](#class-embeddedtablechartbuilder) | A builder for a table chart. | not started |  |
-| [build()](https://developers.google.com/apps-script/reference/spreadsheet/embedded-chart-builder#build()) | Builds the chart to reflect all changes made to it. | [EmbeddedChart](#class-embeddedchart) | The created chart, which must still be added to the spreadsheet. | completed | [link](../src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L109) |
+| [build()](https://developers.google.com/apps-script/reference/spreadsheet/embedded-chart-builder#build()) | Builds the chart to reflect all changes made to it. | [EmbeddedChart](#class-embeddedchart) | The created chart, which must still be added to the spreadsheet. | completed | [link](../src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L119) |
 | [clearRanges()](https://developers.google.com/apps-script/reference/spreadsheet/embedded-chart-builder#clearRanges()) | Removes all ranges from the chart this builder modifies. | [EmbeddedChartBuilder](#class-embeddedchartbuilder) | This builder, for chaining. | not started |  |
 | [getChartType()](https://developers.google.com/apps-script/reference/spreadsheet/embedded-chart-builder#getChartType()) | Returns the current chart type. | ChartType | The chart type. | not started |  |
 | [getContainer()](https://developers.google.com/apps-script/reference/spreadsheet/embedded-chart-builder#getContainer()) | Return the chart ContainerInfo, which encapsulates where the chart appears on the sheet. | [ContainerInfo](#class-containerinfo) | An object containing the chart container's position. | not started |  |
@@ -730,7 +730,7 @@ Builder used to edit an EmbeddedChart. Changes made to the chart are not saved u
 | [setHiddenDimensionStrategy(ChartHiddenDimensionStrategy)](https://developers.google.com/apps-script/reference/spreadsheet/embedded-chart-builder#setHiddenDimensionStrategy(ChartHiddenDimensionStrategy)) | Sets the strategy to use for hidden rows and columns. Defaults to IGNORE_ROWS. | [EmbeddedChartBuilder](#class-embeddedchartbuilder) | This builder, for chaining. | not started |  |
 | [setMergeStrategy(ChartMergeStrategy)](https://developers.google.com/apps-script/reference/spreadsheet/embedded-chart-builder#setMergeStrategy(ChartMergeStrategy)) | Sets the merge strategy to use when more than one range exists. If MERGE_ROWS, rows are merged; if MERGE_COLUMNS, columns are merged. Defaults to MERGE_COLUMNS. | [EmbeddedChartBuilder](#class-embeddedchartbuilder) | This builder, for chaining. | not started |  |
 | [setNumHeaders(Integer)](https://developers.google.com/apps-script/reference/spreadsheet/embedded-chart-builder#setNumHeaders(Integer)) | Sets the number of rows or columns of the range that should be treated as headers. | [EmbeddedChartBuilder](#class-embeddedchartbuilder) | This builder, for chaining. | not started |  |
-| [setOption(String,Object)](https://developers.google.com/apps-script/reference/spreadsheet/embedded-chart-builder#setOption(String,Object)) |  |  |  | not started |  |
+| [setOption(String,Object)](https://developers.google.com/apps-script/reference/spreadsheet/embedded-chart-builder#setOption(String,Object)) |  |  |  | completed | [link](../src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L101) |
 | [setPosition(Integer,Integer,Integer,Integer)](https://developers.google.com/apps-script/reference/spreadsheet/embedded-chart-builder#setPosition(Integer,Integer,Integer,Integer)) |  |  |  | completed | [link](../src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L90) |
 | [setTransposeRowsAndColumns(Boolean)](https://developers.google.com/apps-script/reference/spreadsheet/embedded-chart-builder#setTransposeRowsAndColumns(Boolean)) | Sets whether the chart's rows and columns are transposed. If set to true, the rows and columns are switched. Defaults to false. | [EmbeddedChartBuilder](#class-embeddedchartbuilder) | This builder, for chaining. | not started |  |
 
@@ -1998,38 +1998,38 @@ Access and create Google Sheets files. This class is the parent class for the Sp
 
 | Method | Description | Return Type | Return Description | Status | Implementation |
 |--- |--- |--- |--- |--- |--- |
-| [create(String,Integer,Integer)](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#create(String,Integer,Integer)) |  |  |  | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L23) |
-| [create(String)](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#create(String)) | Creates a new spreadsheet with the given name. | [Spreadsheet](#class-spreadsheet) | a new spreadsheet | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L23) |
-| [enableAllDataSourcesExecution()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#enableAllDataSourcesExecution()) | Turns data execution on for all types of data sources. |  |  | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L135) |
-| [enableBigQueryExecution()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#enableBigQueryExecution()) | Turns data execution on for BigQuery data sources. |  |  | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L126) |
-| [enableLookerExecution()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#enableLookerExecution()) | Turns data execution on for Looker data sources. |  |  | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L144) |
-| [flush](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#flush) |  |  |  | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L153) |
-| [flush()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#flush()) | Applies all pending Spreadsheet changes. |  |  | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L153) |
-| [getActive()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#getActive()) | Returns the currently active spreadsheet, or null if there is none. | [Spreadsheet](#class-spreadsheet) | the active Spreadsheet object | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L82) |
-| [getActiveRange()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#getActiveRange()) | Returns the selected range in the active sheet, or null if there is no active range. If multiple ranges are selected this method returns only the last selected range. | [Range](#class-range) | The active range. | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L86) |
-| [getActiveRangeList()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#getActiveRangeList()) | Returns the list of active ranges in the active sheet or null if there are no ranges selected. The active range containing the current highlighted cell is placed last in the list. | [RangeList](#class-rangelist) | the list of active ranges | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L87) |
-| [getActiveSheet()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#getActiveSheet()) | Gets the active sheet in a spreadsheet. | [Sheet](#class-sheet) | the active Sheet object | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L84) |
-| [getActiveSpreadsheet()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#getActiveSpreadsheet()) | Returns the currently active spreadsheet, or null if there is none. | [Spreadsheet](#class-spreadsheet) | the active Spreadsheet object | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L110) |
-| [getCurrentCell()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#getCurrentCell()) | Returns the current (highlighted) cell that is selected in one of the active ranges in the active sheet or null if there is no current cell. | [Range](#class-range) | the current cell | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L85) |
-| [getSelection()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#getSelection()) | Returns the current Selection in the spreadsheet. | [Selection](#class-selection) | the current selection | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L88) |
-| [getUi()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#getUi()) | Returns an instance of the spreadsheet's user-interface environment that allows the script to add features like menus, dialogs, and sidebars. A script can only interact with the UI for the current instance of an open spreadsheet, and only if the script is bound to the spreadsheet. For more information, see the guides to menus and dialogs and sidebars. | Ui | an instance of this spreadsheet's user-interface environment | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L94) |
-| [newCellImage()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#newCellImage()) | Creates a builder for a CellImage. | [CellImageBuilder](#class-cellimagebuilder) | The new builder. | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L93) |
-| [newColor()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#newColor()) | Creates a builder for a Color. | [ColorBuilder](#class-colorbuilder) | The new builder. | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L233) |
-| [newConditionalFormatRule()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#newConditionalFormatRule()) | Creates a builder for a conditional formatting rule. | [ConditionalFormatRuleBuilder](#class-conditionalformatrulebuilder) | the new builder. | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L83) |
-| [newDataSourceSpec()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#newDataSourceSpec()) | Creates a builder for a DataSourceSpec. | [DataSourceSpecBuilder](#class-datasourcespecbuilder) | The new builder. | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L277) |
-| [newDataValidation()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#newDataValidation()) | Creates a builder for a data validation rule. | [DataValidationBuilder](#class-datavalidationbuilder) | The new builder. | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L251) |
-| [newFilterCriteria()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#newFilterCriteria()) | Creates a builder for a FilterCriteria. | [FilterCriteriaBuilder](#class-filtercriteriabuilder) | the new builder | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L269) |
-| [newRichTextValue()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#newRichTextValue()) | Creates a builder for a Rich Text value. | [RichTextValueBuilder](#class-richtextvaluebuilder) | The new builder. | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L260) |
-| [newTextStyle()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#newTextStyle()) | Creates a builder for a text style. | [TextStyleBuilder](#class-textstylebuilder) | The new builder. | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L242) |
-| [open(File)](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#open(File)) | Opens the spreadsheet that corresponds to the given File object. | [Spreadsheet](#class-spreadsheet) | the spreadsheet | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L95) |
-| [openById(String)](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#openById(String)) | Opens the spreadsheet with the given ID. A spreadsheet ID can be extracted from its URL. For example, the spreadsheet ID in the URL https://docs.google.com/spreadsheets/d/abc1234567/edit#gid=0 is "abc1234567". | [Spreadsheet](#class-spreadsheet) | the Spreadsheet object with the given id | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L115) |
-| [openByUrl(String)](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#openByUrl(String)) | Opens the spreadsheet with the given URL. Throws a scripting exception if the URL doesn't exist or the user doesn't have permission to access it. | [Spreadsheet](#class-spreadsheet) | The spreadsheet object with the given URL. | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L224) |
-| [setActiveRange(Range)](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#setActiveRange(Range)) | Sets the specified range as the active range, with the top left cell in the range as the current cell. | [Range](#class-range) | the new active Range | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L91) |
-| [setActiveRangeList(RangeList)](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#setActiveRangeList(RangeList)) | Sets the specified list of ranges as the active ranges. The last range in the list is set as the active range. | [RangeList](#class-rangelist) | the newly selected list of ranges | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L92) |
-| [setActiveSheet(Sheet,Boolean)](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#setActiveSheet(Sheet,Boolean)) |  |  |  | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L89) |
-| [setActiveSheet(Sheet)](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#setActiveSheet(Sheet)) | Sets the active sheet in a spreadsheet. The Google Sheets UI displays the chosen sheet unless the sheet belongs to a different spreadsheet. | [Sheet](#class-sheet) | the sheet that has been made the new active sheet | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L89) |
-| [setActiveSpreadsheet(Spreadsheet)](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#setActiveSpreadsheet(Spreadsheet)) | Sets the active spreadsheet. |  |  | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L120) |
-| [setCurrentCell(Range)](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#setCurrentCell(Range)) | Sets the specified cell as the current cell. | [Range](#class-range) | the newly set current cell | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L90) |
+| [create(String,Integer,Integer)](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#create(String,Integer,Integer)) |  |  |  | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L24) |
+| [create(String)](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#create(String)) | Creates a new spreadsheet with the given name. | [Spreadsheet](#class-spreadsheet) | a new spreadsheet | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L24) |
+| [enableAllDataSourcesExecution()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#enableAllDataSourcesExecution()) | Turns data execution on for all types of data sources. |  |  | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L136) |
+| [enableBigQueryExecution()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#enableBigQueryExecution()) | Turns data execution on for BigQuery data sources. |  |  | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L127) |
+| [enableLookerExecution()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#enableLookerExecution()) | Turns data execution on for Looker data sources. |  |  | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L145) |
+| [flush](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#flush) |  |  |  | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L154) |
+| [flush()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#flush()) | Applies all pending Spreadsheet changes. |  |  | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L154) |
+| [getActive()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#getActive()) | Returns the currently active spreadsheet, or null if there is none. | [Spreadsheet](#class-spreadsheet) | the active Spreadsheet object | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L83) |
+| [getActiveRange()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#getActiveRange()) | Returns the selected range in the active sheet, or null if there is no active range. If multiple ranges are selected this method returns only the last selected range. | [Range](#class-range) | The active range. | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L87) |
+| [getActiveRangeList()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#getActiveRangeList()) | Returns the list of active ranges in the active sheet or null if there are no ranges selected. The active range containing the current highlighted cell is placed last in the list. | [RangeList](#class-rangelist) | the list of active ranges | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L88) |
+| [getActiveSheet()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#getActiveSheet()) | Gets the active sheet in a spreadsheet. | [Sheet](#class-sheet) | the active Sheet object | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L85) |
+| [getActiveSpreadsheet()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#getActiveSpreadsheet()) | Returns the currently active spreadsheet, or null if there is none. | [Spreadsheet](#class-spreadsheet) | the active Spreadsheet object | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L111) |
+| [getCurrentCell()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#getCurrentCell()) | Returns the current (highlighted) cell that is selected in one of the active ranges in the active sheet or null if there is no current cell. | [Range](#class-range) | the current cell | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L86) |
+| [getSelection()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#getSelection()) | Returns the current Selection in the spreadsheet. | [Selection](#class-selection) | the current selection | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L89) |
+| [getUi()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#getUi()) | Returns an instance of the spreadsheet's user-interface environment that allows the script to add features like menus, dialogs, and sidebars. A script can only interact with the UI for the current instance of an open spreadsheet, and only if the script is bound to the spreadsheet. For more information, see the guides to menus and dialogs and sidebars. | Ui | an instance of this spreadsheet's user-interface environment | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L95) |
+| [newCellImage()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#newCellImage()) | Creates a builder for a CellImage. | [CellImageBuilder](#class-cellimagebuilder) | The new builder. | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L94) |
+| [newColor()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#newColor()) | Creates a builder for a Color. | [ColorBuilder](#class-colorbuilder) | The new builder. | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L234) |
+| [newConditionalFormatRule()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#newConditionalFormatRule()) | Creates a builder for a conditional formatting rule. | [ConditionalFormatRuleBuilder](#class-conditionalformatrulebuilder) | the new builder. | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L84) |
+| [newDataSourceSpec()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#newDataSourceSpec()) | Creates a builder for a DataSourceSpec. | [DataSourceSpecBuilder](#class-datasourcespecbuilder) | The new builder. | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L278) |
+| [newDataValidation()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#newDataValidation()) | Creates a builder for a data validation rule. | [DataValidationBuilder](#class-datavalidationbuilder) | The new builder. | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L252) |
+| [newFilterCriteria()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#newFilterCriteria()) | Creates a builder for a FilterCriteria. | [FilterCriteriaBuilder](#class-filtercriteriabuilder) | the new builder | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L270) |
+| [newRichTextValue()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#newRichTextValue()) | Creates a builder for a Rich Text value. | [RichTextValueBuilder](#class-richtextvaluebuilder) | The new builder. | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L261) |
+| [newTextStyle()](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#newTextStyle()) | Creates a builder for a text style. | [TextStyleBuilder](#class-textstylebuilder) | The new builder. | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L243) |
+| [open(File)](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#open(File)) | Opens the spreadsheet that corresponds to the given File object. | [Spreadsheet](#class-spreadsheet) | the spreadsheet | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L96) |
+| [openById(String)](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#openById(String)) | Opens the spreadsheet with the given ID. A spreadsheet ID can be extracted from its URL. For example, the spreadsheet ID in the URL https://docs.google.com/spreadsheets/d/abc1234567/edit#gid=0 is "abc1234567". | [Spreadsheet](#class-spreadsheet) | the Spreadsheet object with the given id | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L116) |
+| [openByUrl(String)](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#openByUrl(String)) | Opens the spreadsheet with the given URL. Throws a scripting exception if the URL doesn't exist or the user doesn't have permission to access it. | [Spreadsheet](#class-spreadsheet) | The spreadsheet object with the given URL. | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L225) |
+| [setActiveRange(Range)](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#setActiveRange(Range)) | Sets the specified range as the active range, with the top left cell in the range as the current cell. | [Range](#class-range) | the new active Range | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L92) |
+| [setActiveRangeList(RangeList)](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#setActiveRangeList(RangeList)) | Sets the specified list of ranges as the active ranges. The last range in the list is set as the active range. | [RangeList](#class-rangelist) | the newly selected list of ranges | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L93) |
+| [setActiveSheet(Sheet,Boolean)](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#setActiveSheet(Sheet,Boolean)) |  |  |  | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L90) |
+| [setActiveSheet(Sheet)](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#setActiveSheet(Sheet)) | Sets the active sheet in a spreadsheet. The Google Sheets UI displays the chosen sheet unless the sheet belongs to a different spreadsheet. | [Sheet](#class-sheet) | the sheet that has been made the new active sheet | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L90) |
+| [setActiveSpreadsheet(Spreadsheet)](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#setActiveSpreadsheet(Spreadsheet)) | Sets the active spreadsheet. |  |  | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L121) |
+| [setCurrentCell(Range)](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#setCurrentCell(Range)) | Sets the specified cell as the current cell. | [Range](#class-range) | the newly set current cell | completed | [link](../src/services/spreadsheetapp/fakespreadsheetapp.js#L91) |
 
 ## Class: [SpreadsheetTheme](https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-theme)
 
@@ -2118,8 +2118,8 @@ An enumeration of the types of series used to calculate auto-filled values. The 
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| ALTERNATE_SERIES | Auto-filling with this setting results in the empty cells in the expanded range being filled with copies of the existing values. | completed | [link](../src/services/enums/sheetsenums.js#L25) |
-| DEFAULT_SERIES | Default. Auto-filling with this setting results in the empty cells in the expanded range being filled with increments of the existing values. | completed | [link](../src/services/enums/sheetsenums.js#L25) |
+| ALTERNATE_SERIES | Auto-filling with this setting results in the empty cells in the expanded range being filled with copies of the existing values. | completed | [link](../src/services/enums/sheetsenums.js#L3) |
+| DEFAULT_SERIES | Default. Auto-filling with this setting results in the empty cells in the expanded range being filled with increments of the existing values. | completed | [link](../src/services/enums/sheetsenums.js#L3) |
 
 ## Enum: [BandingTheme](https://developers.google.com/apps-script/reference/spreadsheet/banding-theme)
 
@@ -2127,18 +2127,18 @@ An enumeration of banding themes. Each theme consists of several complementary c
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| BLUE | A blue banding theme. | completed | [link](../src/services/enums/sheetsenums.js#L32) |
-| BROWN | A brown banding theme. | completed | [link](../src/services/enums/sheetsenums.js#L35) |
-| CYAN | A cyan banding theme. | completed | [link](../src/services/enums/sheetsenums.js#L28) |
-| GREEN | A green banding theme. | completed | [link](../src/services/enums/sheetsenums.js#L29) |
-| GREY | A grey banding theme. | completed | [link](../src/services/enums/sheetsenums.js#L27) |
-| INDIGO | An indigo banding theme. | completed | [link](../src/services/enums/sheetsenums.js#L37) |
-| LIGHT_GREEN | A light green banding theme. | completed | [link](../src/services/enums/sheetsenums.js#L36) |
-| LIGHT_GREY | A light grey banding theme. | completed | [link](../src/services/enums/sheetsenums.js#L27) |
-| ORANGE | An orange banding theme. | completed | [link](../src/services/enums/sheetsenums.js#L31) |
+| BLUE | A blue banding theme. | completed | [link](../src/services/enums/sheetsenums.js#L10) |
+| BROWN | A brown banding theme. | completed | [link](../src/services/enums/sheetsenums.js#L13) |
+| CYAN | A cyan banding theme. | completed | [link](../src/services/enums/sheetsenums.js#L6) |
+| GREEN | A green banding theme. | completed | [link](../src/services/enums/sheetsenums.js#L7) |
+| GREY | A grey banding theme. | completed | [link](../src/services/enums/sheetsenums.js#L5) |
+| INDIGO | An indigo banding theme. | completed | [link](../src/services/enums/sheetsenums.js#L15) |
+| LIGHT_GREEN | A light green banding theme. | completed | [link](../src/services/enums/sheetsenums.js#L14) |
+| LIGHT_GREY | A light grey banding theme. | completed | [link](../src/services/enums/sheetsenums.js#L5) |
+| ORANGE | An orange banding theme. | completed | [link](../src/services/enums/sheetsenums.js#L9) |
 | PINK | A pink banding theme. | not started |  |
-| TEAL | A teal banding theme. | completed | [link](../src/services/enums/sheetsenums.js#L33) |
-| YELLOW | A yellow banding theme. | completed | [link](../src/services/enums/sheetsenums.js#L30) |
+| TEAL | A teal banding theme. | completed | [link](../src/services/enums/sheetsenums.js#L11) |
+| YELLOW | A yellow banding theme. | completed | [link](../src/services/enums/sheetsenums.js#L8) |
 
 ## Enum: [BooleanCriteria](https://developers.google.com/apps-script/reference/spreadsheet/boolean-criteria)
 
@@ -2146,30 +2146,30 @@ An enumeration representing the boolean criteria that can be used in conditional
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| CELL_EMPTY | The criteria is met when a cell is empty. | completed | [link](../src/services/enums/sheetsenums.js#L41) |
-| CELL_NOT_EMPTY | The criteria is met when a cell is not empty. | completed | [link](../src/services/enums/sheetsenums.js#L42) |
-| CUSTOM_FORMULA | The criteria is met when the input makes the given formula evaluate to true. | completed | [link](../src/services/enums/sheetsenums.js#L64) |
-| DATE_AFTER | The criteria is met when a date is after the given value. | completed | [link](../src/services/enums/sheetsenums.js#L43) |
-| DATE_AFTER_RELATIVE | The criteria is met when a date is after the relative date value. | completed | [link](../src/services/enums/sheetsenums.js#L47) |
-| DATE_BEFORE | The criteria is met when a date is before the given value. | completed | [link](../src/services/enums/sheetsenums.js#L44) |
-| DATE_BEFORE_RELATIVE | The criteria is met when a date is before the relative date value. | completed | [link](../src/services/enums/sheetsenums.js#L48) |
-| DATE_EQUAL_TO | The criteria is met when a date is equal to the given value. | completed | [link](../src/services/enums/sheetsenums.js#L45) |
-| DATE_EQUAL_TO_RELATIVE | The criteria is met when a date is equal to the relative date value. | completed | [link](../src/services/enums/sheetsenums.js#L49) |
-| DATE_NOT_EQUAL_TO | The criteria is met when a date is not equal to the given value. | completed | [link](../src/services/enums/sheetsenums.js#L46) |
-| NUMBER_BETWEEN | The criteria is met when a number that is between the given values. | completed | [link](../src/services/enums/sheetsenums.js#L50) |
-| NUMBER_EQUAL_TO | The criteria is met when a number that is equal to the given value. | completed | [link](../src/services/enums/sheetsenums.js#L51) |
-| NUMBER_GREATER_THAN | The criteria is met when a number that is greater than the given value. | completed | [link](../src/services/enums/sheetsenums.js#L52) |
-| NUMBER_GREATER_THAN_OR_EQUAL_TO | The criteria is met when a number that is greater than or equal to the given value. | completed | [link](../src/services/enums/sheetsenums.js#L53) |
-| NUMBER_LESS_THAN | The criteria is met when a number that is less than the given value. | completed | [link](../src/services/enums/sheetsenums.js#L54) |
-| NUMBER_LESS_THAN_OR_EQUAL_TO | The criteria is met when a number that is less than or equal to the given value. | completed | [link](../src/services/enums/sheetsenums.js#L55) |
-| NUMBER_NOT_BETWEEN | The criteria is met when a number that is not between the given values. | completed | [link](../src/services/enums/sheetsenums.js#L56) |
-| NUMBER_NOT_EQUAL_TO | The criteria is met when a number that is not equal to the given value. | completed | [link](../src/services/enums/sheetsenums.js#L57) |
-| TEXT_CONTAINS | The criteria is met when the input contains the given value. | completed | [link](../src/services/enums/sheetsenums.js#L58) |
-| TEXT_DOES_NOT_CONTAIN | The criteria is met when the input does not contain the given value. | completed | [link](../src/services/enums/sheetsenums.js#L59) |
-| TEXT_ENDS_WITH | The criteria is met when the input ends with the given value. | completed | [link](../src/services/enums/sheetsenums.js#L63) |
-| TEXT_EQUAL_TO | The criteria is met when the input is equal to the given value. | completed | [link](../src/services/enums/sheetsenums.js#L60) |
-| TEXT_NOT_EQUAL_TO | The criteria is met when the input is not equal to the given value. | completed | [link](../src/services/enums/sheetsenums.js#L61) |
-| TEXT_STARTS_WITH | The criteria is met when the input begins with the given value. | completed | [link](../src/services/enums/sheetsenums.js#L62) |
+| CELL_EMPTY | The criteria is met when a cell is empty. | completed | [link](../src/services/enums/sheetsenums.js#L19) |
+| CELL_NOT_EMPTY | The criteria is met when a cell is not empty. | completed | [link](../src/services/enums/sheetsenums.js#L20) |
+| CUSTOM_FORMULA | The criteria is met when the input makes the given formula evaluate to true. | completed | [link](../src/services/enums/sheetsenums.js#L42) |
+| DATE_AFTER | The criteria is met when a date is after the given value. | completed | [link](../src/services/enums/sheetsenums.js#L21) |
+| DATE_AFTER_RELATIVE | The criteria is met when a date is after the relative date value. | completed | [link](../src/services/enums/sheetsenums.js#L25) |
+| DATE_BEFORE | The criteria is met when a date is before the given value. | completed | [link](../src/services/enums/sheetsenums.js#L22) |
+| DATE_BEFORE_RELATIVE | The criteria is met when a date is before the relative date value. | completed | [link](../src/services/enums/sheetsenums.js#L26) |
+| DATE_EQUAL_TO | The criteria is met when a date is equal to the given value. | completed | [link](../src/services/enums/sheetsenums.js#L23) |
+| DATE_EQUAL_TO_RELATIVE | The criteria is met when a date is equal to the relative date value. | completed | [link](../src/services/enums/sheetsenums.js#L27) |
+| DATE_NOT_EQUAL_TO | The criteria is met when a date is not equal to the given value. | completed | [link](../src/services/enums/sheetsenums.js#L24) |
+| NUMBER_BETWEEN | The criteria is met when a number that is between the given values. | completed | [link](../src/services/enums/sheetsenums.js#L28) |
+| NUMBER_EQUAL_TO | The criteria is met when a number that is equal to the given value. | completed | [link](../src/services/enums/sheetsenums.js#L29) |
+| NUMBER_GREATER_THAN | The criteria is met when a number that is greater than the given value. | completed | [link](../src/services/enums/sheetsenums.js#L30) |
+| NUMBER_GREATER_THAN_OR_EQUAL_TO | The criteria is met when a number that is greater than or equal to the given value. | completed | [link](../src/services/enums/sheetsenums.js#L31) |
+| NUMBER_LESS_THAN | The criteria is met when a number that is less than the given value. | completed | [link](../src/services/enums/sheetsenums.js#L32) |
+| NUMBER_LESS_THAN_OR_EQUAL_TO | The criteria is met when a number that is less than or equal to the given value. | completed | [link](../src/services/enums/sheetsenums.js#L33) |
+| NUMBER_NOT_BETWEEN | The criteria is met when a number that is not between the given values. | completed | [link](../src/services/enums/sheetsenums.js#L34) |
+| NUMBER_NOT_EQUAL_TO | The criteria is met when a number that is not equal to the given value. | completed | [link](../src/services/enums/sheetsenums.js#L35) |
+| TEXT_CONTAINS | The criteria is met when the input contains the given value. | completed | [link](../src/services/enums/sheetsenums.js#L36) |
+| TEXT_DOES_NOT_CONTAIN | The criteria is met when the input does not contain the given value. | completed | [link](../src/services/enums/sheetsenums.js#L37) |
+| TEXT_ENDS_WITH | The criteria is met when the input ends with the given value. | completed | [link](../src/services/enums/sheetsenums.js#L41) |
+| TEXT_EQUAL_TO | The criteria is met when the input is equal to the given value. | completed | [link](../src/services/enums/sheetsenums.js#L38) |
+| TEXT_NOT_EQUAL_TO | The criteria is met when the input is not equal to the given value. | completed | [link](../src/services/enums/sheetsenums.js#L39) |
+| TEXT_STARTS_WITH | The criteria is met when the input begins with the given value. | completed | [link](../src/services/enums/sheetsenums.js#L40) |
 
 ## Enum: [BorderStyle](https://developers.google.com/apps-script/reference/spreadsheet/border-style)
 
@@ -2177,12 +2177,12 @@ Styles that can be set on a range using Range.setBorder(top, left, bottom, right
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| DASHED | Dashed line borders. | completed | [link](../src/services/enums/sheetsenums.js#L68) |
-| DOTTED | Dotted line borders. | completed | [link](../src/services/enums/sheetsenums.js#L67) |
-| DOUBLE | Two solid line borders. | completed | [link](../src/services/enums/sheetsenums.js#L72) |
-| SOLID | Thin solid line borders. | completed | [link](../src/services/enums/sheetsenums.js#L69) |
-| SOLID_MEDIUM | Medium solid line borders. | completed | [link](../src/services/enums/sheetsenums.js#L70) |
-| SOLID_THICK | Thick solid line borders. | completed | [link](../src/services/enums/sheetsenums.js#L71) |
+| DASHED | Dashed line borders. | completed | [link](../src/services/enums/sheetsenums.js#L46) |
+| DOTTED | Dotted line borders. | completed | [link](../src/services/enums/sheetsenums.js#L45) |
+| DOUBLE | Two solid line borders. | completed | [link](../src/services/enums/sheetsenums.js#L50) |
+| SOLID | Thin solid line borders. | completed | [link](../src/services/enums/sheetsenums.js#L47) |
+| SOLID_MEDIUM | Medium solid line borders. | completed | [link](../src/services/enums/sheetsenums.js#L48) |
+| SOLID_THICK | Thick solid line borders. | completed | [link](../src/services/enums/sheetsenums.js#L49) |
 
 ## Enum: [CopyPasteType](https://developers.google.com/apps-script/reference/spreadsheet/copy-paste-type)
 
@@ -2191,13 +2191,13 @@ An enumeration of possible special paste types.
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
 | PASTE_COLUMN_WIDTHS | Paste the column widths only. | not started |  |
-| PASTE_CONDITIONAL_FORMATTING | Paste the color rules only. | completed | [link](../src/services/enums/sheetsenums.js#L86) |
-| PASTE_DATA_VALIDATION | Paste the data validation only. | completed | [link](../src/services/enums/sheetsenums.js#L84) |
-| PASTE_FORMAT | Paste the format only. | completed | [link](../src/services/enums/sheetsenums.js#L82) |
-| PASTE_FORMULA | Paste the formulas only. | completed | [link](../src/services/enums/sheetsenums.js#L83) |
-| PASTE_NO_BORDERS | Paste values, formulas, formats and merges but without borders. | completed | [link](../src/services/enums/sheetsenums.js#L81) |
-| PASTE_NORMAL | Paste values, formulas, formats and merges. | completed | [link](../src/services/enums/sheetsenums.js#L80) |
-| PASTE_VALUES | Paste the values ONLY without formats, formulas or merges. | completed | [link](../src/services/enums/sheetsenums.js#L85) |
+| PASTE_CONDITIONAL_FORMATTING | Paste the color rules only. | completed | [link](../src/services/enums/sheetsenums.js#L64) |
+| PASTE_DATA_VALIDATION | Paste the data validation only. | completed | [link](../src/services/enums/sheetsenums.js#L62) |
+| PASTE_FORMAT | Paste the format only. | completed | [link](../src/services/enums/sheetsenums.js#L60) |
+| PASTE_FORMULA | Paste the formulas only. | completed | [link](../src/services/enums/sheetsenums.js#L61) |
+| PASTE_NO_BORDERS | Paste values, formulas, formats and merges but without borders. | completed | [link](../src/services/enums/sheetsenums.js#L59) |
+| PASTE_NORMAL | Paste values, formulas, formats and merges. | completed | [link](../src/services/enums/sheetsenums.js#L58) |
+| PASTE_VALUES | Paste the values ONLY without formats, formulas or merges. | completed | [link](../src/services/enums/sheetsenums.js#L63) |
 
 ## Enum: [DataExecutionErrorCode](https://developers.google.com/apps-script/reference/spreadsheet/data-execution-error-code)
 
@@ -2205,21 +2205,21 @@ An enumeration of data execution error codes.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| DATA_EXECUTION_ERROR_CODE_UNSUPPORTED | A data execution error code that is not supported in Apps Script. | completed | [link](../src/services/enums/sheetsenums.js#L90) |
-| DATA_NOT_FOUND | The database referenced by the data source is not found. Please update the data source specification. | completed | [link](../src/services/enums/sheetsenums.js#L105) |
-| DUPLICATE_COLUMN_NAMES | The data execution returns duplicate column names. Please update the data source specification. | completed | [link](../src/services/enums/sheetsenums.js#L101) |
-| ENGINE | Data execution engine error. Use DataExecutionStatus.getErrorMessage() for details. | completed | [link](../src/services/enums/sheetsenums.js#L96) |
-| INTERRUPTED | The data execution is interrupted. Please refresh later. | completed | [link](../src/services/enums/sheetsenums.js#L102) |
-| NONE | The data execution has no error. | completed | [link](../src/services/enums/sheetsenums.js#L91) |
-| OTHER | Other errors. | completed | [link](../src/services/enums/sheetsenums.js#L103) |
-| PARAMETER_INVALID | Invalid data execution parameter. The source cell must exist and contain only a number or text. Please update the data source specification. | completed | [link](../src/services/enums/sheetsenums.js#L97) |
-| PERMISSION_DENIED | The user does not have access to the database referenced by the data source. Please update the data source specification or contact the owner of the billing project to request access. | completed | [link](../src/services/enums/sheetsenums.js#L106) |
-| TIME_OUT | The data execution timed out. Please update the data source specification. | completed | [link](../src/services/enums/sheetsenums.js#L92) |
-| TOO_MANY_CELLS | The data execution returns more cells than the limit. Please update the data source specification. | completed | [link](../src/services/enums/sheetsenums.js#L95) |
-| TOO_MANY_CHARS_PER_CELL | The data execution returns values that exceed the maximum characters allowed in a single cell. Please update the data source specification. | completed | [link](../src/services/enums/sheetsenums.js#L104) |
-| TOO_MANY_COLUMNS | The data execution returns more columns than the limit. Please update the data source specification. | completed | [link](../src/services/enums/sheetsenums.js#L94) |
-| TOO_MANY_ROWS | The data execution returns more rows than the limit. Please update the data source specification. | completed | [link](../src/services/enums/sheetsenums.js#L93) |
-| UNSUPPORTED_DATA_TYPE | The data execution returns unsupported data type. Please update the data source specification. For BigQuery, ARRAY or STRUCT type is not supported. | completed | [link](../src/services/enums/sheetsenums.js#L98) |
+| DATA_EXECUTION_ERROR_CODE_UNSUPPORTED | A data execution error code that is not supported in Apps Script. | completed | [link](../src/services/enums/sheetsenums.js#L68) |
+| DATA_NOT_FOUND | The database referenced by the data source is not found. Please update the data source specification. | completed | [link](../src/services/enums/sheetsenums.js#L83) |
+| DUPLICATE_COLUMN_NAMES | The data execution returns duplicate column names. Please update the data source specification. | completed | [link](../src/services/enums/sheetsenums.js#L79) |
+| ENGINE | Data execution engine error. Use DataExecutionStatus.getErrorMessage() for details. | completed | [link](../src/services/enums/sheetsenums.js#L74) |
+| INTERRUPTED | The data execution is interrupted. Please refresh later. | completed | [link](../src/services/enums/sheetsenums.js#L80) |
+| NONE | The data execution has no error. | completed | [link](../src/services/enums/sheetsenums.js#L69) |
+| OTHER | Other errors. | completed | [link](../src/services/enums/sheetsenums.js#L81) |
+| PARAMETER_INVALID | Invalid data execution parameter. The source cell must exist and contain only a number or text. Please update the data source specification. | completed | [link](../src/services/enums/sheetsenums.js#L75) |
+| PERMISSION_DENIED | The user does not have access to the database referenced by the data source. Please update the data source specification or contact the owner of the billing project to request access. | completed | [link](../src/services/enums/sheetsenums.js#L84) |
+| TIME_OUT | The data execution timed out. Please update the data source specification. | completed | [link](../src/services/enums/sheetsenums.js#L70) |
+| TOO_MANY_CELLS | The data execution returns more cells than the limit. Please update the data source specification. | completed | [link](../src/services/enums/sheetsenums.js#L73) |
+| TOO_MANY_CHARS_PER_CELL | The data execution returns values that exceed the maximum characters allowed in a single cell. Please update the data source specification. | completed | [link](../src/services/enums/sheetsenums.js#L82) |
+| TOO_MANY_COLUMNS | The data execution returns more columns than the limit. Please update the data source specification. | completed | [link](../src/services/enums/sheetsenums.js#L72) |
+| TOO_MANY_ROWS | The data execution returns more rows than the limit. Please update the data source specification. | completed | [link](../src/services/enums/sheetsenums.js#L71) |
+| UNSUPPORTED_DATA_TYPE | The data execution returns unsupported data type. Please update the data source specification. For BigQuery, ARRAY or STRUCT type is not supported. | completed | [link](../src/services/enums/sheetsenums.js#L76) |
 
 ## Enum: [DataExecutionState](https://developers.google.com/apps-script/reference/spreadsheet/data-execution-state)
 
@@ -2227,11 +2227,11 @@ An enumeration of data execution states.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| DATA_EXECUTION_STATE_UNSUPPORTED | A data execution state is not supported in Apps Script. | completed | [link](../src/services/enums/sheetsenums.js#L109) |
-| ERROR | The data execution is completed and has errors. | completed | [link](../src/services/enums/sheetsenums.js#L90) |
-| NOT_STARTED | The data execution has not started. | completed | [link](../src/services/enums/sheetsenums.js#L113) |
-| RUNNING | The data execution has started and is running. | completed | [link](../src/services/enums/sheetsenums.js#L110) |
-| SUCCESS | The data execution is completed and successful. | completed | [link](../src/services/enums/sheetsenums.js#L111) |
+| DATA_EXECUTION_STATE_UNSUPPORTED | A data execution state is not supported in Apps Script. | completed | [link](../src/services/enums/sheetsenums.js#L87) |
+| ERROR | The data execution is completed and has errors. | completed | [link](../src/services/enums/sheetsenums.js#L68) |
+| NOT_STARTED | The data execution has not started. | completed | [link](../src/services/enums/sheetsenums.js#L91) |
+| RUNNING | The data execution has started and is running. | completed | [link](../src/services/enums/sheetsenums.js#L88) |
+| SUCCESS | The data execution is completed and successful. | completed | [link](../src/services/enums/sheetsenums.js#L89) |
 
 ## Enum: [DataSourceParameterType](https://developers.google.com/apps-script/reference/spreadsheet/data-source-parameter-type)
 
@@ -2239,8 +2239,8 @@ An enumeration of data source parameter types.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| CELL | The data source parameter is valued based on a cell. | completed | [link](../src/services/enums/sheetsenums.js#L41) |
-| DATA_SOURCE_PARAMETER_TYPE_UNSUPPORTED | A data source parameter type that is not supported in Apps Script. | completed | [link](../src/services/enums/sheetsenums.js#L116) |
+| CELL | The data source parameter is valued based on a cell. | completed | [link](../src/services/enums/sheetsenums.js#L19) |
+| DATA_SOURCE_PARAMETER_TYPE_UNSUPPORTED | A data source parameter type that is not supported in Apps Script. | completed | [link](../src/services/enums/sheetsenums.js#L94) |
 
 ## Enum: [DataSourceRefreshScope](https://developers.google.com/apps-script/reference/spreadsheet/data-source-refresh-scope)
 
@@ -2248,8 +2248,8 @@ An enumeration of scopes for refreshes.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| ALL_DATA_SOURCES | The refresh applies to all data sources in the spreadsheet. | completed | [link](../src/services/enums/sheetsenums.js#L121) |
-| DATA_SOURCE_REFRESH_SCOPE_UNSUPPORTED | The data source refresh scope is unsupported. | completed | [link](../src/services/enums/sheetsenums.js#L120) |
+| ALL_DATA_SOURCES | The refresh applies to all data sources in the spreadsheet. | completed | [link](../src/services/enums/sheetsenums.js#L99) |
+| DATA_SOURCE_REFRESH_SCOPE_UNSUPPORTED | The data source refresh scope is unsupported. | completed | [link](../src/services/enums/sheetsenums.js#L98) |
 
 ## Enum: [DataSourceType](https://developers.google.com/apps-script/reference/spreadsheet/data-source-type)
 
@@ -2257,9 +2257,9 @@ An enumeration of data source types.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| BIGQUERY | A BigQuery data source. | completed | [link](../src/services/enums/sheetsenums.js#L125) |
-| DATA_SOURCE_TYPE_UNSUPPORTED | A data source type that is not supported in Apps Script. | completed | [link](../src/services/enums/sheetsenums.js#L124) |
-| LOOKER | A Looker data source. | completed | [link](../src/services/enums/sheetsenums.js#L126) |
+| BIGQUERY | A BigQuery data source. | completed | [link](../src/services/enums/sheetsenums.js#L103) |
+| DATA_SOURCE_TYPE_UNSUPPORTED | A data source type that is not supported in Apps Script. | completed | [link](../src/services/enums/sheetsenums.js#L102) |
+| LOOKER | A Looker data source. | completed | [link](../src/services/enums/sheetsenums.js#L104) |
 
 ## Enum: [DataValidationCriteria](https://developers.google.com/apps-script/reference/spreadsheet/data-validation-criteria)
 
@@ -2267,34 +2267,34 @@ An enumeration representing the data validation criteria that can be set on a ra
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| CHECKBOX | Requires that the input is a custom value or a boolean; rendered as a checkbox. | completed | [link](../src/services/enums/sheetsenums.js#L154) |
-| CUSTOM_FORMULA | Requires that the input makes the given formula evaluate to true. | completed | [link](../src/services/enums/sheetsenums.js#L64) |
-| DATE_AFTER | Requires a date that is after the given value. | completed | [link](../src/services/enums/sheetsenums.js#L43) |
-| DATE_AFTER_RELATIVE | Requires a date that is after the relative date value. | completed | [link](../src/services/enums/sheetsenums.js#L47) |
-| DATE_BEFORE | Requires a date that is before the given value. | completed | [link](../src/services/enums/sheetsenums.js#L44) |
-| DATE_BEFORE_RELATIVE | Requires a date that is before the relative date value. | completed | [link](../src/services/enums/sheetsenums.js#L48) |
-| DATE_BETWEEN | Requires a date that is between the given values. | completed | [link](../src/services/enums/sheetsenums.js#L132) |
-| DATE_EQUAL_TO | Requires a date that is equal to the given value. | completed | [link](../src/services/enums/sheetsenums.js#L45) |
-| DATE_EQUAL_TO_RELATIVE | Requires a date that is equal to the relative date value. | completed | [link](../src/services/enums/sheetsenums.js#L49) |
-| DATE_IS_VALID_DATE | Requires a date. | completed | [link](../src/services/enums/sheetsenums.js#L134) |
-| DATE_NOT_BETWEEN | Requires a date that is not between the given values. | completed | [link](../src/services/enums/sheetsenums.js#L135) |
-| DATE_ON_OR_AFTER | Require a date that is on or after the given value. | completed | [link](../src/services/enums/sheetsenums.js#L136) |
-| DATE_ON_OR_BEFORE | Requires a date that is on or before the given value. | completed | [link](../src/services/enums/sheetsenums.js#L137) |
-| NUMBER_BETWEEN | Requires a number that is between the given values. | completed | [link](../src/services/enums/sheetsenums.js#L50) |
-| NUMBER_EQUAL_TO | Requires a number that is equal to the given value. | completed | [link](../src/services/enums/sheetsenums.js#L51) |
-| NUMBER_GREATER_THAN | Require a number that is greater than the given value. | completed | [link](../src/services/enums/sheetsenums.js#L52) |
-| NUMBER_GREATER_THAN_OR_EQUAL_TO | Requires a number that is greater than or equal to the given value. | completed | [link](../src/services/enums/sheetsenums.js#L53) |
-| NUMBER_LESS_THAN | Requires a number that is less than the given value. | completed | [link](../src/services/enums/sheetsenums.js#L54) |
-| NUMBER_LESS_THAN_OR_EQUAL_TO | Requires a number that is less than or equal to the given value. | completed | [link](../src/services/enums/sheetsenums.js#L55) |
-| NUMBER_NOT_BETWEEN | Requires a number that is not between the given values. | completed | [link](../src/services/enums/sheetsenums.js#L56) |
-| NUMBER_NOT_EQUAL_TO | Requires a number that is not equal to the given value. | completed | [link](../src/services/enums/sheetsenums.js#L57) |
-| TEXT_CONTAINS | Requires that the input contains the given value. | completed | [link](../src/services/enums/sheetsenums.js#L58) |
-| TEXT_DOES_NOT_CONTAIN | Requires that the input does not contain the given value. | completed | [link](../src/services/enums/sheetsenums.js#L59) |
-| TEXT_EQUAL_TO | Requires that the input is equal to the given value. | completed | [link](../src/services/enums/sheetsenums.js#L60) |
-| TEXT_IS_VALID_EMAIL | Requires that the input is in the form of an email address. | completed | [link](../src/services/enums/sheetsenums.js#L149) |
-| TEXT_IS_VALID_URL | Requires that the input is in the form of a URL. | completed | [link](../src/services/enums/sheetsenums.js#L150) |
-| VALUE_IN_LIST | Requires that the input is equal to one of the given values. | completed | [link](../src/services/enums/sheetsenums.js#L151) |
-| VALUE_IN_RANGE | Requires that the input is equal to a value in the given range. | completed | [link](../src/services/enums/sheetsenums.js#L152) |
+| CHECKBOX | Requires that the input is a custom value or a boolean; rendered as a checkbox. | completed | [link](../src/services/enums/sheetsenums.js#L132) |
+| CUSTOM_FORMULA | Requires that the input makes the given formula evaluate to true. | completed | [link](../src/services/enums/sheetsenums.js#L42) |
+| DATE_AFTER | Requires a date that is after the given value. | completed | [link](../src/services/enums/sheetsenums.js#L21) |
+| DATE_AFTER_RELATIVE | Requires a date that is after the relative date value. | completed | [link](../src/services/enums/sheetsenums.js#L25) |
+| DATE_BEFORE | Requires a date that is before the given value. | completed | [link](../src/services/enums/sheetsenums.js#L22) |
+| DATE_BEFORE_RELATIVE | Requires a date that is before the relative date value. | completed | [link](../src/services/enums/sheetsenums.js#L26) |
+| DATE_BETWEEN | Requires a date that is between the given values. | completed | [link](../src/services/enums/sheetsenums.js#L110) |
+| DATE_EQUAL_TO | Requires a date that is equal to the given value. | completed | [link](../src/services/enums/sheetsenums.js#L23) |
+| DATE_EQUAL_TO_RELATIVE | Requires a date that is equal to the relative date value. | completed | [link](../src/services/enums/sheetsenums.js#L27) |
+| DATE_IS_VALID_DATE | Requires a date. | completed | [link](../src/services/enums/sheetsenums.js#L112) |
+| DATE_NOT_BETWEEN | Requires a date that is not between the given values. | completed | [link](../src/services/enums/sheetsenums.js#L113) |
+| DATE_ON_OR_AFTER | Require a date that is on or after the given value. | completed | [link](../src/services/enums/sheetsenums.js#L114) |
+| DATE_ON_OR_BEFORE | Requires a date that is on or before the given value. | completed | [link](../src/services/enums/sheetsenums.js#L115) |
+| NUMBER_BETWEEN | Requires a number that is between the given values. | completed | [link](../src/services/enums/sheetsenums.js#L28) |
+| NUMBER_EQUAL_TO | Requires a number that is equal to the given value. | completed | [link](../src/services/enums/sheetsenums.js#L29) |
+| NUMBER_GREATER_THAN | Require a number that is greater than the given value. | completed | [link](../src/services/enums/sheetsenums.js#L30) |
+| NUMBER_GREATER_THAN_OR_EQUAL_TO | Requires a number that is greater than or equal to the given value. | completed | [link](../src/services/enums/sheetsenums.js#L31) |
+| NUMBER_LESS_THAN | Requires a number that is less than the given value. | completed | [link](../src/services/enums/sheetsenums.js#L32) |
+| NUMBER_LESS_THAN_OR_EQUAL_TO | Requires a number that is less than or equal to the given value. | completed | [link](../src/services/enums/sheetsenums.js#L33) |
+| NUMBER_NOT_BETWEEN | Requires a number that is not between the given values. | completed | [link](../src/services/enums/sheetsenums.js#L34) |
+| NUMBER_NOT_EQUAL_TO | Requires a number that is not equal to the given value. | completed | [link](../src/services/enums/sheetsenums.js#L35) |
+| TEXT_CONTAINS | Requires that the input contains the given value. | completed | [link](../src/services/enums/sheetsenums.js#L36) |
+| TEXT_DOES_NOT_CONTAIN | Requires that the input does not contain the given value. | completed | [link](../src/services/enums/sheetsenums.js#L37) |
+| TEXT_EQUAL_TO | Requires that the input is equal to the given value. | completed | [link](../src/services/enums/sheetsenums.js#L38) |
+| TEXT_IS_VALID_EMAIL | Requires that the input is in the form of an email address. | completed | [link](../src/services/enums/sheetsenums.js#L127) |
+| TEXT_IS_VALID_URL | Requires that the input is in the form of a URL. | completed | [link](../src/services/enums/sheetsenums.js#L128) |
+| VALUE_IN_LIST | Requires that the input is equal to one of the given values. | completed | [link](../src/services/enums/sheetsenums.js#L129) |
+| VALUE_IN_RANGE | Requires that the input is equal to a value in the given range. | completed | [link](../src/services/enums/sheetsenums.js#L130) |
 
 ## Enum: [DateTimeGroupingRuleType](https://developers.google.com/apps-script/reference/spreadsheet/date-time-grouping-rule-type)
 
@@ -2302,22 +2302,22 @@ The types of date-time grouping rule.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| DAY_MONTH | Group date-time by day and month, for example 22-Nov. | completed | [link](../src/services/enums/sheetsenums.js#L170) |
-| DAY_OF_MONTH | Group date-time by day of month, from 1 to 31. | completed | [link](../src/services/enums/sheetsenums.js#L169) |
-| DAY_OF_WEEK | Group date-time by day of week, for example Sunday. | completed | [link](../src/services/enums/sheetsenums.js#L167) |
-| DAY_OF_YEAR | Group date-time by day of year, from 1 to 366. | completed | [link](../src/services/enums/sheetsenums.js#L168) |
-| HOUR | Group date-time by hour using a 24-hour system, from 0 to 23. | completed | [link](../src/services/enums/sheetsenums.js#L164) |
-| HOUR_MINUTE | Group date-time by hour and minute using a 24-hour system, for example 19:45. | completed | [link](../src/services/enums/sheetsenums.js#L165) |
-| HOUR_MINUTE_AMPM | Group date-time by hour and minute using a 12-hour system, for example 7:45 PM. | completed | [link](../src/services/enums/sheetsenums.js#L166) |
-| MINUTE | Group date-time by minute, from 0 to 59. | completed | [link](../src/services/enums/sheetsenums.js#L163) |
-| MONTH | Group date-time by month, for example Nov. | completed | [link](../src/services/enums/sheetsenums.js#L169) |
-| QUARTER | Group date-time by quarter, for example Q1 (which represents Jan-Mar). | completed | [link](../src/services/enums/sheetsenums.js#L172) |
-| SECOND | Group date-time by second, from 0 to 59. | completed | [link](../src/services/enums/sheetsenums.js#L162) |
-| UNSUPPORTED | A date-time grouping rule type that is not supported. | completed | [link](../src/services/enums/sheetsenums.js#L75) |
-| YEAR | Group date-time by year, for example 2008. | completed | [link](../src/services/enums/sheetsenums.js#L168) |
-| YEAR_MONTH | Group date-time by year and month, for example 2008-Nov. | completed | [link](../src/services/enums/sheetsenums.js#L174) |
-| YEAR_MONTH_DAY | Group date-time by year, month, and day, for example 2008-11-22. | completed | [link](../src/services/enums/sheetsenums.js#L176) |
-| YEAR_QUARTER | Group date-time by year and quarter, for example 2008 Q4 . | completed | [link](../src/services/enums/sheetsenums.js#L175) |
+| DAY_MONTH | Group date-time by day and month, for example 22-Nov. | completed | [link](../src/services/enums/sheetsenums.js#L148) |
+| DAY_OF_MONTH | Group date-time by day of month, from 1 to 31. | completed | [link](../src/services/enums/sheetsenums.js#L147) |
+| DAY_OF_WEEK | Group date-time by day of week, for example Sunday. | completed | [link](../src/services/enums/sheetsenums.js#L145) |
+| DAY_OF_YEAR | Group date-time by day of year, from 1 to 366. | completed | [link](../src/services/enums/sheetsenums.js#L146) |
+| HOUR | Group date-time by hour using a 24-hour system, from 0 to 23. | completed | [link](../src/services/enums/sheetsenums.js#L142) |
+| HOUR_MINUTE | Group date-time by hour and minute using a 24-hour system, for example 19:45. | completed | [link](../src/services/enums/sheetsenums.js#L143) |
+| HOUR_MINUTE_AMPM | Group date-time by hour and minute using a 12-hour system, for example 7:45 PM. | completed | [link](../src/services/enums/sheetsenums.js#L144) |
+| MINUTE | Group date-time by minute, from 0 to 59. | completed | [link](../src/services/enums/sheetsenums.js#L141) |
+| MONTH | Group date-time by month, for example Nov. | completed | [link](../src/services/enums/sheetsenums.js#L147) |
+| QUARTER | Group date-time by quarter, for example Q1 (which represents Jan-Mar). | completed | [link](../src/services/enums/sheetsenums.js#L150) |
+| SECOND | Group date-time by second, from 0 to 59. | completed | [link](../src/services/enums/sheetsenums.js#L140) |
+| UNSUPPORTED | A date-time grouping rule type that is not supported. | completed | [link](../src/services/enums/sheetsenums.js#L53) |
+| YEAR | Group date-time by year, for example 2008. | completed | [link](../src/services/enums/sheetsenums.js#L146) |
+| YEAR_MONTH | Group date-time by year and month, for example 2008-Nov. | completed | [link](../src/services/enums/sheetsenums.js#L152) |
+| YEAR_MONTH_DAY | Group date-time by year, month, and day, for example 2008-11-22. | completed | [link](../src/services/enums/sheetsenums.js#L154) |
+| YEAR_QUARTER | Group date-time by year and quarter, for example 2008 Q4 . | completed | [link](../src/services/enums/sheetsenums.js#L153) |
 
 ## Enum: [DeveloperMetadataLocationType](https://developers.google.com/apps-script/reference/spreadsheet/developer-metadata-location-type)
 
@@ -2325,10 +2325,10 @@ An enumeration of the types of developer metadata location types.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| COLUMN | The location type for developer metadata associated with a column. | completed | [link](../src/services/enums/sheetsenums.js#L6) |
-| ROW | The location type for developer metadata associated with a row. | completed | [link](../src/services/enums/sheetsenums.js#L35) |
-| SHEET | The location type for developer metadata associated with a whole sheet. | completed | [link](../src/services/enums/sheetsenums.js#L179) |
-| SPREADSHEET | The location type for developer metadata associated with the top-level spreadsheet. | completed | [link](../src/services/enums/sheetsenums.js#L179) |
+| COLUMN | The location type for developer metadata associated with a column. | completed | [link](../src/services/enums/sheetsenums.js#L65) |
+| ROW | The location type for developer metadata associated with a row. | completed | [link](../src/services/enums/sheetsenums.js#L13) |
+| SHEET | The location type for developer metadata associated with a whole sheet. | completed | [link](../src/services/enums/sheetsenums.js#L157) |
+| SPREADSHEET | The location type for developer metadata associated with the top-level spreadsheet. | completed | [link](../src/services/enums/sheetsenums.js#L157) |
 
 ## Enum: [DeveloperMetadataVisibility](https://developers.google.com/apps-script/reference/spreadsheet/developer-metadata-visibility)
 
@@ -2336,8 +2336,8 @@ An enumeration of the types of developer metadata visibility.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| DOCUMENT | Document-visible metadata is accessible from any developer project with access to the document. | completed | [link](../src/services/enums/sheetsenums.js#L185) |
-| PROJECT | Project-visible metadata is only visible to and accessible by the developer project that created the metadata. Do not use project-visible developer metadata as a security mechanism or to store secrets. It can be exposed to users with view access to the document. | completed | [link](../src/services/enums/sheetsenums.js#L186) |
+| DOCUMENT | Document-visible metadata is accessible from any developer project with access to the document. | completed | [link](../src/services/enums/sheetsenums.js#L163) |
+| PROJECT | Project-visible metadata is only visible to and accessible by the developer project that created the metadata. Do not use project-visible developer metadata as a security mechanism or to store secrets. It can be exposed to users with view access to the document. | completed | [link](../src/services/enums/sheetsenums.js#L164) |
 
 ## Enum: [Dimension](https://developers.google.com/apps-script/reference/spreadsheet/dimension)
 
@@ -2345,8 +2345,8 @@ An enumeration of possible directions along which data can be stored in a spread
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| COLUMNS | The column (vertical) dimension. | completed | [link](../src/services/enums/sheetsenums.js#L94) |
-| ROWS | The row (horizontal) dimension. | completed | [link](../src/services/enums/sheetsenums.js#L93) |
+| COLUMNS | The column (vertical) dimension. | completed | [link](../src/services/enums/sheetsenums.js#L72) |
+| ROWS | The row (horizontal) dimension. | completed | [link](../src/services/enums/sheetsenums.js#L71) |
 
 ## Enum: [Direction](https://developers.google.com/apps-script/reference/spreadsheet/direction)
 
@@ -2354,10 +2354,10 @@ An enumeration representing the possible directions that one can move within a s
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| DOWN | The direction of increasing row indices. | completed | [link](../src/services/enums/sheetsenums.js#L194) |
-| NEXT | The direction of increasing column indices. | completed | [link](../src/services/enums/sheetsenums.js#L196) |
-| PREVIOUS | The direction of decreasing column indices. | completed | [link](../src/services/enums/sheetsenums.js#L195) |
-| UP | The direction of decreasing row indices. | completed | [link](../src/services/enums/sheetsenums.js#L75) |
+| DOWN | The direction of increasing row indices. | completed | [link](../src/services/enums/sheetsenums.js#L172) |
+| NEXT | The direction of increasing column indices. | completed | [link](../src/services/enums/sheetsenums.js#L174) |
+| PREVIOUS | The direction of decreasing column indices. | completed | [link](../src/services/enums/sheetsenums.js#L173) |
+| UP | The direction of decreasing row indices. | completed | [link](../src/services/enums/sheetsenums.js#L53) |
 
 ## Enum: [FrequencyType](https://developers.google.com/apps-script/reference/spreadsheet/frequency-type)
 
@@ -2365,10 +2365,10 @@ An enumeration of frequency types.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| DAILY | Refresh daily. | completed | [link](../src/services/enums/sheetsenums.js#L200) |
-| FREQUENCY_TYPE_UNSUPPORTED | The frequency type is unsupported. | completed | [link](../src/services/enums/sheetsenums.js#L199) |
-| MONTHLY | Refresh monthly, on given days of the month. | completed | [link](../src/services/enums/sheetsenums.js#L202) |
-| WEEKLY | Refresh weekly, on given days of the week. | completed | [link](../src/services/enums/sheetsenums.js#L201) |
+| DAILY | Refresh daily. | completed | [link](../src/services/enums/sheetsenums.js#L178) |
+| FREQUENCY_TYPE_UNSUPPORTED | The frequency type is unsupported. | completed | [link](../src/services/enums/sheetsenums.js#L177) |
+| MONTHLY | Refresh monthly, on given days of the month. | completed | [link](../src/services/enums/sheetsenums.js#L180) |
+| WEEKLY | Refresh weekly, on given days of the week. | completed | [link](../src/services/enums/sheetsenums.js#L179) |
 
 ## Enum: [GroupControlTogglePosition](https://developers.google.com/apps-script/reference/spreadsheet/group-control-toggle-position)
 
@@ -2376,8 +2376,8 @@ An enumeration representing the possible positions that a group control toggle c
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| AFTER | The position where the control toggle is after the group (at higher indices). | completed | [link](../src/services/enums/sheetsenums.js#L43) |
-| BEFORE | The position where the control toggle is before the group (at lower indices). | completed | [link](../src/services/enums/sheetsenums.js#L44) |
+| AFTER | The position where the control toggle is after the group (at higher indices). | completed | [link](../src/services/enums/sheetsenums.js#L21) |
+| BEFORE | The position where the control toggle is before the group (at lower indices). | completed | [link](../src/services/enums/sheetsenums.js#L22) |
 
 ## Enum: [InterpolationType](https://developers.google.com/apps-script/reference/spreadsheet/interpolation-type)
 
@@ -2385,11 +2385,11 @@ An enumeration representing the interpolation options for calculating a value to
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| MAX | Infer the maximum number as a specific interpolation point for a gradient condition. | completed | [link](../src/services/enums/sheetsenums.js#L213) |
-| MIN | Infer the minimum number as a specific interpolation point for a gradient condition. | completed | [link](../src/services/enums/sheetsenums.js#L163) |
-| NUMBER | Use the number as as specific interpolation point for a gradient condition. | completed | [link](../src/services/enums/sheetsenums.js#L50) |
-| PERCENT | Use the number as a percentage interpolation point for a gradient condition. | completed | [link](../src/services/enums/sheetsenums.js#L210) |
-| PERCENTILE | Use the number as a percentile interpolation point for a gradient condition. | completed | [link](../src/services/enums/sheetsenums.js#L211) |
+| MAX | Infer the maximum number as a specific interpolation point for a gradient condition. | completed | [link](../src/services/enums/sheetsenums.js#L191) |
+| MIN | Infer the minimum number as a specific interpolation point for a gradient condition. | completed | [link](../src/services/enums/sheetsenums.js#L141) |
+| NUMBER | Use the number as as specific interpolation point for a gradient condition. | completed | [link](../src/services/enums/sheetsenums.js#L28) |
+| PERCENT | Use the number as a percentage interpolation point for a gradient condition. | completed | [link](../src/services/enums/sheetsenums.js#L188) |
+| PERCENTILE | Use the number as a percentile interpolation point for a gradient condition. | completed | [link](../src/services/enums/sheetsenums.js#L189) |
 
 ## Enum: [PivotTableSummarizeFunction](https://developers.google.com/apps-script/reference/spreadsheet/pivot-table-summarize-function)
 
@@ -2397,20 +2397,20 @@ An enumeration of functions that summarize pivot table data.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| AVERAGE | The AVERAGE function | completed | [link](../src/services/enums/sheetsenums.js#L221) |
-| COUNT | The COUNT function | completed | [link](../src/services/enums/sheetsenums.js#L218) |
-| COUNTA | The COUNTA function | completed | [link](../src/services/enums/sheetsenums.js#L218) |
-| COUNTUNIQUE | The COUNTUNIQUE function | completed | [link](../src/services/enums/sheetsenums.js#L220) |
-| CUSTOM | A custom function, this value is only valid for calculated fields. | completed | [link](../src/services/enums/sheetsenums.js#L64) |
-| MAX | The MAX function | completed | [link](../src/services/enums/sheetsenums.js#L213) |
-| MEDIAN | The MEDIAN function | completed | [link](../src/services/enums/sheetsenums.js#L224) |
-| MIN | The MIN function | completed | [link](../src/services/enums/sheetsenums.js#L163) |
-| PRODUCT | The PRODUCT function | completed | [link](../src/services/enums/sheetsenums.js#L225) |
-| STDEV | The STDEV function | completed | [link](../src/services/enums/sheetsenums.js#L226) |
-| STDEVP | The STDEVP function | completed | [link](../src/services/enums/sheetsenums.js#L227) |
-| SUM | The SUM function | completed | [link](../src/services/enums/sheetsenums.js#L217) |
-| VAR | The VAR function | completed | [link](../src/services/enums/sheetsenums.js#L228) |
-| VARP | The VARP function | completed | [link](../src/services/enums/sheetsenums.js#L229) |
+| AVERAGE | The AVERAGE function | completed | [link](../src/services/enums/sheetsenums.js#L199) |
+| COUNT | The COUNT function | completed | [link](../src/services/enums/sheetsenums.js#L196) |
+| COUNTA | The COUNTA function | completed | [link](../src/services/enums/sheetsenums.js#L196) |
+| COUNTUNIQUE | The COUNTUNIQUE function | completed | [link](../src/services/enums/sheetsenums.js#L198) |
+| CUSTOM | A custom function, this value is only valid for calculated fields. | completed | [link](../src/services/enums/sheetsenums.js#L42) |
+| MAX | The MAX function | completed | [link](../src/services/enums/sheetsenums.js#L191) |
+| MEDIAN | The MEDIAN function | completed | [link](../src/services/enums/sheetsenums.js#L202) |
+| MIN | The MIN function | completed | [link](../src/services/enums/sheetsenums.js#L141) |
+| PRODUCT | The PRODUCT function | completed | [link](../src/services/enums/sheetsenums.js#L203) |
+| STDEV | The STDEV function | completed | [link](../src/services/enums/sheetsenums.js#L204) |
+| STDEVP | The STDEVP function | completed | [link](../src/services/enums/sheetsenums.js#L205) |
+| SUM | The SUM function | completed | [link](../src/services/enums/sheetsenums.js#L195) |
+| VAR | The VAR function | completed | [link](../src/services/enums/sheetsenums.js#L206) |
+| VARP | The VARP function | completed | [link](../src/services/enums/sheetsenums.js#L207) |
 
 ## Enum: [PivotValueDisplayType](https://developers.google.com/apps-script/reference/spreadsheet/pivot-value-display-type)
 
@@ -2418,10 +2418,10 @@ An enumeration of ways to display a pivot value as a function of another value.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| DEFAULT | Default. Displays pivot values as the actual value and not as a function of another value. | completed | [link](../src/services/enums/sheetsenums.js#L25) |
-| PERCENT_OF_COLUMN_TOTAL | Displays pivot values as a percent of the total for that column. | completed | [link](../src/services/enums/sheetsenums.js#L234) |
-| PERCENT_OF_GRAND_TOTAL | Displays pivot values as a percent of the grand total. | completed | [link](../src/services/enums/sheetsenums.js#L235) |
-| PERCENT_OF_ROW_TOTAL | Displays pivot values as a percent of the total for that row. | completed | [link](../src/services/enums/sheetsenums.js#L233) |
+| DEFAULT | Default. Displays pivot values as the actual value and not as a function of another value. | completed | [link](../src/services/enums/sheetsenums.js#L3) |
+| PERCENT_OF_COLUMN_TOTAL | Displays pivot values as a percent of the total for that column. | completed | [link](../src/services/enums/sheetsenums.js#L212) |
+| PERCENT_OF_GRAND_TOTAL | Displays pivot values as a percent of the grand total. | completed | [link](../src/services/enums/sheetsenums.js#L213) |
+| PERCENT_OF_ROW_TOTAL | Displays pivot values as a percent of the total for that row. | completed | [link](../src/services/enums/sheetsenums.js#L211) |
 
 ## Enum: [ProtectionType](https://developers.google.com/apps-script/reference/spreadsheet/protection-type)
 
@@ -2429,8 +2429,8 @@ An enumeration representing the parts of a spreadsheet that can be protected fro
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| RANGE | Protection for a range. | completed | [link](../src/services/enums/sheetsenums.js#L31) |
-| SHEET | Protection for a sheet. | completed | [link](../src/services/enums/sheetsenums.js#L179) |
+| RANGE | Protection for a range. | completed | [link](../src/services/enums/sheetsenums.js#L9) |
+| SHEET | Protection for a sheet. | completed | [link](../src/services/enums/sheetsenums.js#L157) |
 
 ## Enum: [RecalculationInterval](https://developers.google.com/apps-script/reference/spreadsheet/recalculation-interval)
 
@@ -2438,9 +2438,9 @@ An enumeration representing the possible intervals used in spreadsheet recalcula
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| HOUR | Recalculate when values are changed, and every hour. | completed | [link](../src/services/enums/sheetsenums.js#L164) |
-| MINUTE | Recalculate when values are changed, and every minute. | completed | [link](../src/services/enums/sheetsenums.js#L163) |
-| ON_CHANGE | Recalculate only when values are changed. | completed | [link](../src/services/enums/sheetsenums.js#L242) |
+| HOUR | Recalculate when values are changed, and every hour. | completed | [link](../src/services/enums/sheetsenums.js#L142) |
+| MINUTE | Recalculate when values are changed, and every minute. | completed | [link](../src/services/enums/sheetsenums.js#L141) |
+| ON_CHANGE | Recalculate only when values are changed. | completed | [link](../src/services/enums/sheetsenums.js#L220) |
 
 ## Enum: [RelativeDate](https://developers.google.com/apps-script/reference/spreadsheet/relative-date)
 
@@ -2448,12 +2448,12 @@ An enumeration representing the relative date options for calculating a value to
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| PAST_MONTH | Dates that fall within the past month period. | completed | [link](../src/services/enums/sheetsenums.js#L251) |
-| PAST_WEEK | Dates that fall within the past week period. | completed | [link](../src/services/enums/sheetsenums.js#L250) |
-| PAST_YEAR | Dates that fall within the past year period. | completed | [link](../src/services/enums/sheetsenums.js#L252) |
-| TODAY | Dates compared against the current date. | completed | [link](../src/services/enums/sheetsenums.js#L247) |
-| TOMORROW | Dates compared against the date after the current date. | completed | [link](../src/services/enums/sheetsenums.js#L248) |
-| YESTERDAY | Dates compared against the date before the current date. | completed | [link](../src/services/enums/sheetsenums.js#L249) |
+| PAST_MONTH | Dates that fall within the past month period. | completed | [link](../src/services/enums/sheetsenums.js#L229) |
+| PAST_WEEK | Dates that fall within the past week period. | completed | [link](../src/services/enums/sheetsenums.js#L228) |
+| PAST_YEAR | Dates that fall within the past year period. | completed | [link](../src/services/enums/sheetsenums.js#L230) |
+| TODAY | Dates compared against the current date. | completed | [link](../src/services/enums/sheetsenums.js#L225) |
+| TOMORROW | Dates compared against the date after the current date. | completed | [link](../src/services/enums/sheetsenums.js#L226) |
+| YESTERDAY | Dates compared against the date before the current date. | completed | [link](../src/services/enums/sheetsenums.js#L227) |
 
 ## Enum: [SheetType](https://developers.google.com/apps-script/reference/spreadsheet/sheet-type)
 
@@ -2461,9 +2461,9 @@ The different types of sheets that can exist in a spreadsheet.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| DATASOURCE | A sheet containing a DataSource. | completed | [link](../src/services/enums/sheetsenums.js#L257) |
-| GRID | A sheet containing a grid. This is the default type. | completed | [link](../src/services/enums/sheetsenums.js#L255) |
-| OBJECT | A sheet containing a single embedded object such as an EmbeddedChart. | completed | [link](../src/services/enums/sheetsenums.js#L256) |
+| DATASOURCE | A sheet containing a DataSource. | completed | [link](../src/services/enums/sheetsenums.js#L235) |
+| GRID | A sheet containing a grid. This is the default type. | completed | [link](../src/services/enums/sheetsenums.js#L233) |
+| OBJECT | A sheet containing a single embedded object such as an EmbeddedChart. | completed | [link](../src/services/enums/sheetsenums.js#L234) |
 
 ## Enum: [SortOrder](https://developers.google.com/apps-script/reference/spreadsheet/sort-order)
 
@@ -2471,8 +2471,8 @@ An enumeration representing the sort order.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| ASCENDING | Ascending sort order. | completed | [link](../src/services/enums/sheetsenums.js#L260) |
-| DESCENDING | Descending sort order. | completed | [link](../src/services/enums/sheetsenums.js#L261) |
+| ASCENDING | Ascending sort order. | completed | [link](../src/services/enums/sheetsenums.js#L238) |
+| DESCENDING | Descending sort order. | completed | [link](../src/services/enums/sheetsenums.js#L239) |
 
 ## Enum: [TextDirection](https://developers.google.com/apps-script/reference/spreadsheet/text-direction)
 
@@ -2480,8 +2480,8 @@ An enumerations of text directions.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| LEFT_TO_RIGHT | Left-to-right text direction. | completed | [link](../src/services/enums/sheetsenums.js#L264) |
-| RIGHT_TO_LEFT | Right-to-left text direction. | completed | [link](../src/services/enums/sheetsenums.js#L265) |
+| LEFT_TO_RIGHT | Left-to-right text direction. | completed | [link](../src/services/enums/sheetsenums.js#L242) |
+| RIGHT_TO_LEFT | Right-to-left text direction. | completed | [link](../src/services/enums/sheetsenums.js#L243) |
 
 ## Enum: [TextToColumnsDelimiter](https://developers.google.com/apps-script/reference/spreadsheet/text-to-columns-delimiter)
 
@@ -2489,10 +2489,10 @@ An enumeration of the types of preset delimiters that can split a column of text
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| COMMA | "," delimiter. | completed | [link](../src/services/enums/sheetsenums.js#L268) |
-| PERIOD | "." delimiter. | completed | [link](../src/services/enums/sheetsenums.js#L270) |
-| SEMICOLON | ";" delimiter. | completed | [link](../src/services/enums/sheetsenums.js#L269) |
-| SPACE | " " delimiter. | completed | [link](../src/services/enums/sheetsenums.js#L271) |
+| COMMA | "," delimiter. | completed | [link](../src/services/enums/sheetsenums.js#L246) |
+| PERIOD | "." delimiter. | completed | [link](../src/services/enums/sheetsenums.js#L248) |
+| SEMICOLON | ";" delimiter. | completed | [link](../src/services/enums/sheetsenums.js#L247) |
+| SPACE | " " delimiter. | completed | [link](../src/services/enums/sheetsenums.js#L249) |
 
 ## Enum: [ThemeColorType](https://developers.google.com/apps-script/reference/spreadsheet/theme-color-type)
 
@@ -2500,16 +2500,16 @@ An enum which describes various color entries supported in themes.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| ACCENT1 | Represents the first accent color. | completed | [link](../src/services/enums/sheetsenums.js#L277) |
-| ACCENT2 | Represents the second accent color. | completed | [link](../src/services/enums/sheetsenums.js#L278) |
-| ACCENT3 | Represents the third accent color. | completed | [link](../src/services/enums/sheetsenums.js#L279) |
-| ACCENT4 | Represents the fourth accent color. | completed | [link](../src/services/enums/sheetsenums.js#L280) |
-| ACCENT5 | Represents the fifth accent color. | completed | [link](../src/services/enums/sheetsenums.js#L281) |
-| ACCENT6 | Represents the sixth accent color. | completed | [link](../src/services/enums/sheetsenums.js#L282) |
-| BACKGROUND | Represents the color to use for chart's background. | completed | [link](../src/services/enums/sheetsenums.js#L276) |
-| HYPERLINK | Represents the color to use for hyperlinks. | completed | [link](../src/services/enums/sheetsenums.js#L283) |
-| TEXT | Represents the text color. | completed | [link](../src/services/enums/sheetsenums.js#L58) |
-| UNSUPPORTED | Represents a theme color that is not supported. | completed | [link](../src/services/enums/sheetsenums.js#L75) |
+| ACCENT1 | Represents the first accent color. | completed | [link](../src/services/enums/sheetsenums.js#L255) |
+| ACCENT2 | Represents the second accent color. | completed | [link](../src/services/enums/sheetsenums.js#L256) |
+| ACCENT3 | Represents the third accent color. | completed | [link](../src/services/enums/sheetsenums.js#L257) |
+| ACCENT4 | Represents the fourth accent color. | completed | [link](../src/services/enums/sheetsenums.js#L258) |
+| ACCENT5 | Represents the fifth accent color. | completed | [link](../src/services/enums/sheetsenums.js#L259) |
+| ACCENT6 | Represents the sixth accent color. | completed | [link](../src/services/enums/sheetsenums.js#L260) |
+| BACKGROUND | Represents the color to use for chart's background. | completed | [link](../src/services/enums/sheetsenums.js#L254) |
+| HYPERLINK | Represents the color to use for hyperlinks. | completed | [link](../src/services/enums/sheetsenums.js#L261) |
+| TEXT | Represents the text color. | completed | [link](../src/services/enums/sheetsenums.js#L36) |
+| UNSUPPORTED | Represents a theme color that is not supported. | completed | [link](../src/services/enums/sheetsenums.js#L53) |
 
 ## Enum: [ValueType](https://developers.google.com/apps-script/reference/spreadsheet/value-type)
 
@@ -2517,7 +2517,7 @@ An enumeration of value types returned by Range.getValue() and Range.getValues()
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| IMAGE | The value type when the cell contains an image. | completed | [link](../src/services/enums/sheetsenums.js#L286) |
+| IMAGE | The value type when the cell contains an image. | completed | [link](../src/services/enums/sheetsenums.js#L264) |
 
 ## Enum: [WrapStrategy](https://developers.google.com/apps-script/reference/spreadsheet/wrap-strategy)
 

@@ -341,26 +341,26 @@ Chart types supported by the Charts service.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| AREA | Area chart | not started |  |
-| BAR | Bar chart | not started |  |
-| BUBBLE | Bubble chart. | not started |  |
-| CANDLESTICK | Candlestick chart. | not started |  |
-| COLUMN | Column chart | not started |  |
-| COMBO | Combo chart | not started |  |
-| GAUGE | Gauge chart. | not started |  |
+| AREA | Area chart | completed | [link](../src/services/enums/chartsenums.js#L4) |
+| BAR | Bar chart | completed | [link](../src/services/enums/chartsenums.js#L5) |
+| BUBBLE | Bubble chart. | completed | [link](../src/services/enums/chartsenums.js#L23) |
+| CANDLESTICK | Candlestick chart. | completed | [link](../src/services/enums/chartsenums.js#L21) |
+| COLUMN | Column chart | completed | [link](../src/services/enums/chartsenums.js#L6) |
+| COMBO | Combo chart | completed | [link](../src/services/enums/chartsenums.js#L7) |
+| GAUGE | Gauge chart. | completed | [link](../src/services/enums/chartsenums.js#L16) |
 | GEO | Geo chart. | not started |  |
-| HISTOGRAM | Histogram | not started |  |
-| LINE | Line chart | not started |  |
-| ORG | Org chart. | not started |  |
-| PIE | Pie chart | not started |  |
-| RADAR | Radar chart. | not started |  |
-| SCATTER | Scatter chart | not started |  |
+| HISTOGRAM | Histogram | completed | [link](../src/services/enums/chartsenums.js#L8) |
+| LINE | Line chart | completed | [link](../src/services/enums/chartsenums.js#L9) |
+| ORG | Org chart. | completed | [link](../src/services/enums/chartsenums.js#L17) |
+| PIE | Pie chart | completed | [link](../src/services/enums/chartsenums.js#L10) |
+| RADAR | Radar chart. | completed | [link](../src/services/enums/chartsenums.js#L15) |
+| SCATTER | Scatter chart | completed | [link](../src/services/enums/chartsenums.js#L11) |
 | SPARKLINE | Sparkline chart. | not started |  |
-| STEPPED_AREA | Stepped area chart. | not started |  |
-| TABLE | Table chart | not started |  |
-| TIMELINE | Timeline chart. | not started |  |
+| STEPPED_AREA | Stepped area chart. | completed | [link](../src/services/enums/chartsenums.js#L12) |
+| TABLE | Table chart | completed | [link](../src/services/enums/chartsenums.js#L20) |
+| TIMELINE | Timeline chart. | completed | [link](../src/services/enums/chartsenums.js#L18) |
 | TREEMAP | Treemap chart. | not started |  |
-| WATERFALL | Waterfall chart. | not started |  |
+| WATERFALL | Waterfall chart. | completed | [link](../src/services/enums/chartsenums.js#L13) |
 
 ## Enum: [ColumnType](https://developers.google.com/apps-script/reference/charts/column-type)
 

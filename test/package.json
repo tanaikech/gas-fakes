@@ -65,13 +65,14 @@
     "testworkspaceevents": "node --env-file ./.env testworkspaceevents.js execute",
     "testcalendarsandbox": "node --env-file ./.env testcalendarsandbox.js execute",
     "testmimetype": "node --env-file ./.env testmimetype.js execute",
-    "testsheetschart": "node --env-file ./.env testsheetschart.js execute"
+    "testsheetschart": "node --env-file ./.env testsheetschart.js execute",
+    "testchartsapp": "node --env-file ./.env testchartsapp.js execute"
   },
   "name": "test-gas-fakes",
-  "version": "1.2.8",
+  "version": "2.0.6",
   "license": "MIT",
   "main": "test.js",
-  "description": "test A proof of concept implementation of Apps Script Environment on Node",
+  "description": "test gas-fakes on both live and local apps script",
   "repository": "github:brucemcpherson/gas-fakes",
   "homepage": "https://ramblings.mcpher.com/a-proof-of-concept-implementation-of-apps-script-environment-on-node/",
   "devDependencies": {

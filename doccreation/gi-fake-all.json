@@ -25085,64 +25085,64 @@
             "description": "Timeline chart.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/chartsenums.js#L18"
           },
           {
             "method": "AREA",
             "description": "Area chart",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/chartsenums.js#L4"
           },
           {
             "method": "BAR",
             "description": "Bar chart",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/chartsenums.js#L5"
           },
           {
             "method": "BUBBLE",
             "description": "Bubble chart.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/chartsenums.js#L23"
           },
           {
             "method": "CANDLESTICK",
             "description": "Candlestick chart.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/chartsenums.js#L21"
           },
           {
             "method": "COLUMN",
             "description": "Column chart",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/chartsenums.js#L6"
           },
           {
             "method": "COMBO",
             "description": "Combo chart",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/chartsenums.js#L7"
           },
           {
             "method": "GAUGE",
             "description": "Gauge chart.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/chartsenums.js#L16"
           },
           {
             "method": "GEO",
@@ -25157,48 +25157,48 @@
             "description": "Histogram",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/chartsenums.js#L8"
           },
           {
             "method": "RADAR",
             "description": "Radar chart.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/chartsenums.js#L15"
           },
           {
             "method": "LINE",
             "description": "Line chart",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/chartsenums.js#L9"
           },
           {
             "method": "ORG",
             "description": "Org chart.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/chartsenums.js#L17"
           },
           {
             "method": "PIE",
             "description": "Pie chart",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/chartsenums.js#L10"
           },
           {
             "method": "SCATTER",
             "description": "Scatter chart",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/chartsenums.js#L11"
           },
           {
             "method": "SPARKLINE",
@@ -25213,16 +25213,16 @@
             "description": "Stepped area chart.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/chartsenums.js#L12"
           },
           {
             "method": "TABLE",
             "description": "Table chart",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/chartsenums.js#L20"
           },
           {
             "method": "TREEMAP",
@@ -25237,8 +25237,8 @@
             "description": "Waterfall chart.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/chartsenums.js#L13"
           }
         ]
       },
@@ -33521,7 +33521,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L153"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L154"
           },
           {
             "method": "create(String)",
@@ -33530,7 +33530,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "a new spreadsheet",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L23"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L24"
           },
           {
             "method": "create(String,Integer,Integer)",
@@ -33539,7 +33539,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L23"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L24"
           },
           {
             "method": "enableAllDataSourcesExecution()",
@@ -33548,7 +33548,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L135"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L136"
           },
           {
             "method": "enableBigQueryExecution()",
@@ -33557,7 +33557,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L126"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L127"
           },
           {
             "method": "enableLookerExecution()",
@@ -33566,7 +33566,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L144"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L145"
           },
           {
             "method": "flush()",
@@ -33575,7 +33575,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L153"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L154"
           },
           {
             "method": "getActive()",
@@ -33584,7 +33584,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "the active Spreadsheet object",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L82"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L83"
           },
           {
             "method": "getActiveRange()",
@@ -33593,7 +33593,7 @@
             "returnType": "Range",
             "returnDescription": "The active range.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L86"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L87"
           },
           {
             "method": "getActiveRangeList()",
@@ -33602,7 +33602,7 @@
             "returnType": "RangeList",
             "returnDescription": "the list of active ranges",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L87"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L88"
           },
           {
             "method": "getActiveSheet()",
@@ -33611,7 +33611,7 @@
             "returnType": "Sheet",
             "returnDescription": "the active Sheet object",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L84"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L85"
           },
           {
             "method": "getActiveSpreadsheet()",
@@ -33620,7 +33620,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "the active Spreadsheet object",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L110"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L111"
           },
           {
             "method": "getCurrentCell()",
@@ -33629,7 +33629,7 @@
             "returnType": "Range",
             "returnDescription": "the current cell",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L85"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L86"
           },
           {
             "method": "getSelection()",
@@ -33638,7 +33638,7 @@
             "returnType": "Selection",
             "returnDescription": "the current selection",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L88"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L89"
           },
           {
             "method": "getUi()",
@@ -33647,7 +33647,7 @@
             "returnType": "Ui",
             "returnDescription": "an instance of this spreadsheet's user-interface environment",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L94"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L95"
           },
           {
             "method": "newCellImage()",
@@ -33656,7 +33656,7 @@
             "returnType": "CellImageBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L93"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L94"
           },
           {
             "method": "newColor()",
@@ -33665,7 +33665,7 @@
             "returnType": "ColorBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L233"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L234"
           },
           {
             "method": "newConditionalFormatRule()",
@@ -33674,7 +33674,7 @@
             "returnType": "ConditionalFormatRuleBuilder",
             "returnDescription": "the new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L83"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L84"
           },
           {
             "method": "newDataSourceSpec()",
@@ -33683,7 +33683,7 @@
             "returnType": "DataSourceSpecBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L277"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L278"
           },
           {
             "method": "newDataValidation()",
@@ -33692,7 +33692,7 @@
             "returnType": "DataValidationBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L251"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L252"
           },
           {
             "method": "newFilterCriteria()",
@@ -33701,7 +33701,7 @@
             "returnType": "FilterCriteriaBuilder",
             "returnDescription": "the new builder",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L269"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L270"
           },
           {
             "method": "newRichTextValue()",
@@ -33710,7 +33710,7 @@
             "returnType": "RichTextValueBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L260"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L261"
           },
           {
             "method": "newTextStyle()",
@@ -33719,7 +33719,7 @@
             "returnType": "TextStyleBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L242"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L243"
           },
           {
             "method": "open(File)",
@@ -33728,7 +33728,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "the spreadsheet",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L95"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L96"
           },
           {
             "method": "openById(String)",
@@ -33737,7 +33737,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "the Spreadsheet object with the given id",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L115"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L116"
           },
           {
             "method": "openByUrl(String)",
@@ -33746,7 +33746,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "The spreadsheet object with the given URL.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L224"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L225"
           },
           {
             "method": "setActiveRange(Range)",
@@ -33755,7 +33755,7 @@
             "returnType": "Range",
             "returnDescription": "the new active Range",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L91"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L92"
           },
           {
             "method": "setActiveRangeList(RangeList)",
@@ -33764,7 +33764,7 @@
             "returnType": "RangeList",
             "returnDescription": "the newly selected list of ranges",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L92"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L93"
           },
           {
             "method": "setActiveSheet(Sheet)",
@@ -33773,7 +33773,7 @@
             "returnType": "Sheet",
             "returnDescription": "the sheet that has been made the new active sheet",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L89"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L90"
           },
           {
             "method": "setActiveSheet(Sheet,Boolean)",
@@ -33782,7 +33782,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L89"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L90"
           },
           {
             "method": "setActiveSpreadsheet(Spreadsheet)",
@@ -33791,7 +33791,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L120"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L121"
           },
           {
             "method": "setCurrentCell(Range)",
@@ -33800,7 +33800,7 @@
             "returnType": "Range",
             "returnDescription": "the newly set current cell",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L90"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L91"
           }
         ]
       },
@@ -37878,7 +37878,7 @@
             "returnType": "EmbeddedChart",
             "returnDescription": "The created chart, which must still be added to the spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L109"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L119"
           },
           {
             "method": "clearRanges()",
@@ -37967,8 +37967,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L101"
           },
           {
             "method": "setPosition(Integer,Integer,Integer,Integer)",
@@ -47660,7 +47660,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L25"
+            "implementationLink": "src/services/enums/sheetsenums.js#L3"
           },
           {
             "method": "ALTERNATE_SERIES",
@@ -47668,7 +47668,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L25"
+            "implementationLink": "src/services/enums/sheetsenums.js#L3"
           }
         ]
       },
@@ -47773,7 +47773,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L27"
+            "implementationLink": "src/services/enums/sheetsenums.js#L5"
           },
           {
             "method": "CYAN",
@@ -47781,7 +47781,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L28"
+            "implementationLink": "src/services/enums/sheetsenums.js#L6"
           },
           {
             "method": "GREEN",
@@ -47789,7 +47789,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L29"
+            "implementationLink": "src/services/enums/sheetsenums.js#L7"
           },
           {
             "method": "YELLOW",
@@ -47797,7 +47797,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L30"
+            "implementationLink": "src/services/enums/sheetsenums.js#L8"
           },
           {
             "method": "ORANGE",
@@ -47805,7 +47805,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L31"
+            "implementationLink": "src/services/enums/sheetsenums.js#L9"
           },
           {
             "method": "BLUE",
@@ -47813,7 +47813,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L32"
+            "implementationLink": "src/services/enums/sheetsenums.js#L10"
           },
           {
             "method": "TEAL",
@@ -47821,7 +47821,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L33"
+            "implementationLink": "src/services/enums/sheetsenums.js#L11"
           },
           {
             "method": "GREY",
@@ -47829,7 +47829,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L27"
+            "implementationLink": "src/services/enums/sheetsenums.js#L5"
           },
           {
             "method": "BROWN",
@@ -47837,7 +47837,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L35"
+            "implementationLink": "src/services/enums/sheetsenums.js#L13"
           },
           {
             "method": "LIGHT_GREEN",
@@ -47845,7 +47845,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L36"
+            "implementationLink": "src/services/enums/sheetsenums.js#L14"
           },
           {
             "method": "INDIGO",
@@ -47853,7 +47853,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L37"
+            "implementationLink": "src/services/enums/sheetsenums.js#L15"
           },
           {
             "method": "PINK",
@@ -47877,7 +47877,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L41"
+            "implementationLink": "src/services/enums/sheetsenums.js#L19"
           },
           {
             "method": "CELL_NOT_EMPTY",
@@ -47885,7 +47885,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L42"
+            "implementationLink": "src/services/enums/sheetsenums.js#L20"
           },
           {
             "method": "DATE_AFTER",
@@ -47893,7 +47893,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L43"
+            "implementationLink": "src/services/enums/sheetsenums.js#L21"
           },
           {
             "method": "DATE_BEFORE",
@@ -47901,7 +47901,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L44"
+            "implementationLink": "src/services/enums/sheetsenums.js#L22"
           },
           {
             "method": "DATE_EQUAL_TO",
@@ -47909,7 +47909,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L45"
+            "implementationLink": "src/services/enums/sheetsenums.js#L23"
           },
           {
             "method": "DATE_NOT_EQUAL_TO",
@@ -47917,7 +47917,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L46"
+            "implementationLink": "src/services/enums/sheetsenums.js#L24"
           },
           {
             "method": "DATE_AFTER_RELATIVE",
@@ -47925,7 +47925,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L47"
+            "implementationLink": "src/services/enums/sheetsenums.js#L25"
           },
           {
             "method": "DATE_BEFORE_RELATIVE",
@@ -47933,7 +47933,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L48"
+            "implementationLink": "src/services/enums/sheetsenums.js#L26"
           },
           {
             "method": "DATE_EQUAL_TO_RELATIVE",
@@ -47941,7 +47941,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L49"
+            "implementationLink": "src/services/enums/sheetsenums.js#L27"
           },
           {
             "method": "NUMBER_BETWEEN",
@@ -47949,7 +47949,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L50"
+            "implementationLink": "src/services/enums/sheetsenums.js#L28"
           },
           {
             "method": "NUMBER_EQUAL_TO",
@@ -47957,7 +47957,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L51"
+            "implementationLink": "src/services/enums/sheetsenums.js#L29"
           },
           {
             "method": "NUMBER_GREATER_THAN",
@@ -47965,7 +47965,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L52"
+            "implementationLink": "src/services/enums/sheetsenums.js#L30"
           },
           {
             "method": "NUMBER_GREATER_THAN_OR_EQUAL_TO",
@@ -47973,7 +47973,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L53"
+            "implementationLink": "src/services/enums/sheetsenums.js#L31"
           },
           {
             "method": "NUMBER_LESS_THAN",
@@ -47981,7 +47981,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L54"
+            "implementationLink": "src/services/enums/sheetsenums.js#L32"
           },
           {
             "method": "NUMBER_LESS_THAN_OR_EQUAL_TO",
@@ -47989,7 +47989,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L55"
+            "implementationLink": "src/services/enums/sheetsenums.js#L33"
           },
           {
             "method": "NUMBER_NOT_BETWEEN",
@@ -47997,7 +47997,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L56"
+            "implementationLink": "src/services/enums/sheetsenums.js#L34"
           },
           {
             "method": "NUMBER_NOT_EQUAL_TO",
@@ -48005,7 +48005,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L57"
+            "implementationLink": "src/services/enums/sheetsenums.js#L35"
           },
           {
             "method": "TEXT_CONTAINS",
@@ -48013,7 +48013,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L58"
+            "implementationLink": "src/services/enums/sheetsenums.js#L36"
           },
           {
             "method": "TEXT_DOES_NOT_CONTAIN",
@@ -48021,7 +48021,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L59"
+            "implementationLink": "src/services/enums/sheetsenums.js#L37"
           },
           {
             "method": "TEXT_EQUAL_TO",
@@ -48029,7 +48029,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L60"
+            "implementationLink": "src/services/enums/sheetsenums.js#L38"
           },
           {
             "method": "TEXT_NOT_EQUAL_TO",
@@ -48037,7 +48037,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L61"
+            "implementationLink": "src/services/enums/sheetsenums.js#L39"
           },
           {
             "method": "TEXT_STARTS_WITH",
@@ -48045,7 +48045,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L62"
+            "implementationLink": "src/services/enums/sheetsenums.js#L40"
           },
           {
             "method": "TEXT_ENDS_WITH",
@@ -48053,7 +48053,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L63"
+            "implementationLink": "src/services/enums/sheetsenums.js#L41"
           },
           {
             "method": "CUSTOM_FORMULA",
@@ -48061,7 +48061,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L64"
+            "implementationLink": "src/services/enums/sheetsenums.js#L42"
           }
         ]
       },
@@ -48077,7 +48077,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L67"
+            "implementationLink": "src/services/enums/sheetsenums.js#L45"
           },
           {
             "method": "DASHED",
@@ -48085,7 +48085,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L68"
+            "implementationLink": "src/services/enums/sheetsenums.js#L46"
           },
           {
             "method": "SOLID",
@@ -48093,7 +48093,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L69"
+            "implementationLink": "src/services/enums/sheetsenums.js#L47"
           },
           {
             "method": "SOLID_MEDIUM",
@@ -48101,7 +48101,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L70"
+            "implementationLink": "src/services/enums/sheetsenums.js#L48"
           },
           {
             "method": "SOLID_THICK",
@@ -48109,7 +48109,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L71"
+            "implementationLink": "src/services/enums/sheetsenums.js#L49"
           },
           {
             "method": "DOUBLE",
@@ -48117,7 +48117,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L72"
+            "implementationLink": "src/services/enums/sheetsenums.js#L50"
           }
         ]
       },
@@ -48159,7 +48159,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L80"
+            "implementationLink": "src/services/enums/sheetsenums.js#L58"
           },
           {
             "method": "PASTE_NO_BORDERS",
@@ -48167,7 +48167,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L81"
+            "implementationLink": "src/services/enums/sheetsenums.js#L59"
           },
           {
             "method": "PASTE_FORMAT",
@@ -48175,7 +48175,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L82"
+            "implementationLink": "src/services/enums/sheetsenums.js#L60"
           },
           {
             "method": "PASTE_FORMULA",
@@ -48183,7 +48183,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L83"
+            "implementationLink": "src/services/enums/sheetsenums.js#L61"
           },
           {
             "method": "PASTE_DATA_VALIDATION",
@@ -48191,7 +48191,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L84"
+            "implementationLink": "src/services/enums/sheetsenums.js#L62"
           },
           {
             "method": "PASTE_VALUES",
@@ -48199,7 +48199,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L85"
+            "implementationLink": "src/services/enums/sheetsenums.js#L63"
           },
           {
             "method": "PASTE_CONDITIONAL_FORMATTING",
@@ -48207,7 +48207,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L86"
+            "implementationLink": "src/services/enums/sheetsenums.js#L64"
           },
           {
             "method": "PASTE_COLUMN_WIDTHS",
@@ -48231,7 +48231,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L116"
+            "implementationLink": "src/services/enums/sheetsenums.js#L94"
           },
           {
             "method": "CELL",
@@ -48239,7 +48239,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L41"
+            "implementationLink": "src/services/enums/sheetsenums.js#L19"
           }
         ]
       },
@@ -48255,7 +48255,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L120"
+            "implementationLink": "src/services/enums/sheetsenums.js#L98"
           },
           {
             "method": "ALL_DATA_SOURCES",
@@ -48263,7 +48263,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L121"
+            "implementationLink": "src/services/enums/sheetsenums.js#L99"
           }
         ]
       },
@@ -48279,7 +48279,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L109"
+            "implementationLink": "src/services/enums/sheetsenums.js#L87"
           },
           {
             "method": "RUNNING",
@@ -48287,7 +48287,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L110"
+            "implementationLink": "src/services/enums/sheetsenums.js#L88"
           },
           {
             "method": "SUCCESS",
@@ -48295,7 +48295,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L111"
+            "implementationLink": "src/services/enums/sheetsenums.js#L89"
           },
           {
             "method": "ERROR",
@@ -48303,7 +48303,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L90"
+            "implementationLink": "src/services/enums/sheetsenums.js#L68"
           },
           {
             "method": "NOT_STARTED",
@@ -48311,7 +48311,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L113"
+            "implementationLink": "src/services/enums/sheetsenums.js#L91"
           }
         ]
       },
@@ -48327,7 +48327,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L90"
+            "implementationLink": "src/services/enums/sheetsenums.js#L68"
           },
           {
             "method": "NONE",
@@ -48335,7 +48335,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L91"
+            "implementationLink": "src/services/enums/sheetsenums.js#L69"
           },
           {
             "method": "TIME_OUT",
@@ -48343,7 +48343,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L92"
+            "implementationLink": "src/services/enums/sheetsenums.js#L70"
           },
           {
             "method": "TOO_MANY_ROWS",
@@ -48351,7 +48351,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L93"
+            "implementationLink": "src/services/enums/sheetsenums.js#L71"
           },
           {
             "method": "TOO_MANY_COLUMNS",
@@ -48359,7 +48359,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L94"
+            "implementationLink": "src/services/enums/sheetsenums.js#L72"
           },
           {
             "method": "TOO_MANY_CELLS",
@@ -48367,7 +48367,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L95"
+            "implementationLink": "src/services/enums/sheetsenums.js#L73"
           },
           {
             "method": "ENGINE",
@@ -48375,7 +48375,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L96"
+            "implementationLink": "src/services/enums/sheetsenums.js#L74"
           },
           {
             "method": "PARAMETER_INVALID",
@@ -48383,7 +48383,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L97"
+            "implementationLink": "src/services/enums/sheetsenums.js#L75"
           },
           {
             "method": "UNSUPPORTED_DATA_TYPE",
@@ -48391,7 +48391,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L98"
+            "implementationLink": "src/services/enums/sheetsenums.js#L76"
           },
           {
             "method": "DUPLICATE_COLUMN_NAMES",
@@ -48399,7 +48399,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L101"
+            "implementationLink": "src/services/enums/sheetsenums.js#L79"
           },
           {
             "method": "INTERRUPTED",
@@ -48407,7 +48407,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L102"
+            "implementationLink": "src/services/enums/sheetsenums.js#L80"
           },
           {
             "method": "OTHER",
@@ -48415,7 +48415,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L103"
+            "implementationLink": "src/services/enums/sheetsenums.js#L81"
           },
           {
             "method": "TOO_MANY_CHARS_PER_CELL",
@@ -48423,7 +48423,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L104"
+            "implementationLink": "src/services/enums/sheetsenums.js#L82"
           },
           {
             "method": "DATA_NOT_FOUND",
@@ -48431,7 +48431,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L105"
+            "implementationLink": "src/services/enums/sheetsenums.js#L83"
           },
           {
             "method": "PERMISSION_DENIED",
@@ -48439,7 +48439,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L106"
+            "implementationLink": "src/services/enums/sheetsenums.js#L84"
           }
         ]
       },
@@ -48455,7 +48455,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L43"
+            "implementationLink": "src/services/enums/sheetsenums.js#L21"
           },
           {
             "method": "DATE_BEFORE",
@@ -48463,7 +48463,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L44"
+            "implementationLink": "src/services/enums/sheetsenums.js#L22"
           },
           {
             "method": "DATE_BETWEEN",
@@ -48471,7 +48471,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L132"
+            "implementationLink": "src/services/enums/sheetsenums.js#L110"
           },
           {
             "method": "DATE_EQUAL_TO",
@@ -48479,7 +48479,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L45"
+            "implementationLink": "src/services/enums/sheetsenums.js#L23"
           },
           {
             "method": "DATE_IS_VALID_DATE",
@@ -48487,7 +48487,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L134"
+            "implementationLink": "src/services/enums/sheetsenums.js#L112"
           },
           {
             "method": "DATE_NOT_BETWEEN",
@@ -48495,7 +48495,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L135"
+            "implementationLink": "src/services/enums/sheetsenums.js#L113"
           },
           {
             "method": "DATE_ON_OR_AFTER",
@@ -48503,7 +48503,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L136"
+            "implementationLink": "src/services/enums/sheetsenums.js#L114"
           },
           {
             "method": "DATE_ON_OR_BEFORE",
@@ -48511,7 +48511,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L137"
+            "implementationLink": "src/services/enums/sheetsenums.js#L115"
           },
           {
             "method": "NUMBER_BETWEEN",
@@ -48519,7 +48519,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L50"
+            "implementationLink": "src/services/enums/sheetsenums.js#L28"
           },
           {
             "method": "NUMBER_EQUAL_TO",
@@ -48527,7 +48527,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L51"
+            "implementationLink": "src/services/enums/sheetsenums.js#L29"
           },
           {
             "method": "NUMBER_GREATER_THAN",
@@ -48535,7 +48535,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L52"
+            "implementationLink": "src/services/enums/sheetsenums.js#L30"
           },
           {
             "method": "NUMBER_GREATER_THAN_OR_EQUAL_TO",
@@ -48543,7 +48543,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L53"
+            "implementationLink": "src/services/enums/sheetsenums.js#L31"
           },
           {
             "method": "NUMBER_LESS_THAN",
@@ -48551,7 +48551,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L54"
+            "implementationLink": "src/services/enums/sheetsenums.js#L32"
           },
           {
             "method": "NUMBER_LESS_THAN_OR_EQUAL_TO",
@@ -48559,7 +48559,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L55"
+            "implementationLink": "src/services/enums/sheetsenums.js#L33"
           },
           {
             "method": "NUMBER_NOT_BETWEEN",
@@ -48567,7 +48567,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L56"
+            "implementationLink": "src/services/enums/sheetsenums.js#L34"
           },
           {
             "method": "NUMBER_NOT_EQUAL_TO",
@@ -48575,7 +48575,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L57"
+            "implementationLink": "src/services/enums/sheetsenums.js#L35"
           },
           {
             "method": "TEXT_CONTAINS",
@@ -48583,7 +48583,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L58"
+            "implementationLink": "src/services/enums/sheetsenums.js#L36"
           },
           {
             "method": "TEXT_DOES_NOT_CONTAIN",
@@ -48591,7 +48591,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L59"
+            "implementationLink": "src/services/enums/sheetsenums.js#L37"
           },
           {
             "method": "TEXT_EQUAL_TO",
@@ -48599,7 +48599,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L60"
+            "implementationLink": "src/services/enums/sheetsenums.js#L38"
           },
           {
             "method": "TEXT_IS_VALID_EMAIL",
@@ -48607,7 +48607,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L149"
+            "implementationLink": "src/services/enums/sheetsenums.js#L127"
           },
           {
             "method": "TEXT_IS_VALID_URL",
@@ -48615,7 +48615,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L150"
+            "implementationLink": "src/services/enums/sheetsenums.js#L128"
           },
           {
             "method": "VALUE_IN_LIST",
@@ -48623,7 +48623,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L151"
+            "implementationLink": "src/services/enums/sheetsenums.js#L129"
           },
           {
             "method": "VALUE_IN_RANGE",
@@ -48631,7 +48631,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L152"
+            "implementationLink": "src/services/enums/sheetsenums.js#L130"
           },
           {
             "method": "CUSTOM_FORMULA",
@@ -48639,7 +48639,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L64"
+            "implementationLink": "src/services/enums/sheetsenums.js#L42"
           },
           {
             "method": "CHECKBOX",
@@ -48647,7 +48647,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L154"
+            "implementationLink": "src/services/enums/sheetsenums.js#L132"
           },
           {
             "method": "DATE_AFTER_RELATIVE",
@@ -48655,7 +48655,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L47"
+            "implementationLink": "src/services/enums/sheetsenums.js#L25"
           },
           {
             "method": "DATE_BEFORE_RELATIVE",
@@ -48663,7 +48663,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L48"
+            "implementationLink": "src/services/enums/sheetsenums.js#L26"
           },
           {
             "method": "DATE_EQUAL_TO_RELATIVE",
@@ -48671,7 +48671,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L49"
+            "implementationLink": "src/services/enums/sheetsenums.js#L27"
           }
         ]
       },
@@ -48687,7 +48687,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L124"
+            "implementationLink": "src/services/enums/sheetsenums.js#L102"
           },
           {
             "method": "BIGQUERY",
@@ -48695,7 +48695,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L125"
+            "implementationLink": "src/services/enums/sheetsenums.js#L103"
           },
           {
             "method": "LOOKER",
@@ -48703,7 +48703,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L126"
+            "implementationLink": "src/services/enums/sheetsenums.js#L104"
           }
         ]
       },
@@ -48719,7 +48719,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L179"
+            "implementationLink": "src/services/enums/sheetsenums.js#L157"
           },
           {
             "method": "SHEET",
@@ -48727,7 +48727,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L179"
+            "implementationLink": "src/services/enums/sheetsenums.js#L157"
           },
           {
             "method": "ROW",
@@ -48735,7 +48735,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L35"
+            "implementationLink": "src/services/enums/sheetsenums.js#L13"
           },
           {
             "method": "COLUMN",
@@ -48743,7 +48743,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L6"
+            "implementationLink": "src/services/enums/sheetsenums.js#L65"
           }
         ]
       },
@@ -48759,7 +48759,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L75"
+            "implementationLink": "src/services/enums/sheetsenums.js#L53"
           },
           {
             "method": "SECOND",
@@ -48767,7 +48767,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L162"
+            "implementationLink": "src/services/enums/sheetsenums.js#L140"
           },
           {
             "method": "MINUTE",
@@ -48775,7 +48775,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L163"
+            "implementationLink": "src/services/enums/sheetsenums.js#L141"
           },
           {
             "method": "HOUR",
@@ -48783,7 +48783,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L164"
+            "implementationLink": "src/services/enums/sheetsenums.js#L142"
           },
           {
             "method": "HOUR_MINUTE",
@@ -48791,7 +48791,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L165"
+            "implementationLink": "src/services/enums/sheetsenums.js#L143"
           },
           {
             "method": "HOUR_MINUTE_AMPM",
@@ -48799,7 +48799,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L166"
+            "implementationLink": "src/services/enums/sheetsenums.js#L144"
           },
           {
             "method": "DAY_OF_WEEK",
@@ -48807,7 +48807,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L167"
+            "implementationLink": "src/services/enums/sheetsenums.js#L145"
           },
           {
             "method": "DAY_OF_YEAR",
@@ -48815,7 +48815,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L168"
+            "implementationLink": "src/services/enums/sheetsenums.js#L146"
           },
           {
             "method": "DAY_OF_MONTH",
@@ -48823,7 +48823,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L169"
+            "implementationLink": "src/services/enums/sheetsenums.js#L147"
           },
           {
             "method": "DAY_MONTH",
@@ -48831,7 +48831,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L170"
+            "implementationLink": "src/services/enums/sheetsenums.js#L148"
           },
           {
             "method": "MONTH",
@@ -48839,7 +48839,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L169"
+            "implementationLink": "src/services/enums/sheetsenums.js#L147"
           },
           {
             "method": "QUARTER",
@@ -48847,7 +48847,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L172"
+            "implementationLink": "src/services/enums/sheetsenums.js#L150"
           },
           {
             "method": "YEAR",
@@ -48855,7 +48855,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L168"
+            "implementationLink": "src/services/enums/sheetsenums.js#L146"
           },
           {
             "method": "YEAR_MONTH",
@@ -48863,7 +48863,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L174"
+            "implementationLink": "src/services/enums/sheetsenums.js#L152"
           },
           {
             "method": "YEAR_QUARTER",
@@ -48871,7 +48871,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L175"
+            "implementationLink": "src/services/enums/sheetsenums.js#L153"
           },
           {
             "method": "YEAR_MONTH_DAY",
@@ -48879,7 +48879,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L176"
+            "implementationLink": "src/services/enums/sheetsenums.js#L154"
           }
         ]
       },
@@ -48895,7 +48895,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L185"
+            "implementationLink": "src/services/enums/sheetsenums.js#L163"
           },
           {
             "method": "PROJECT",
@@ -48903,7 +48903,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L186"
+            "implementationLink": "src/services/enums/sheetsenums.js#L164"
           }
         ]
       },
@@ -48919,7 +48919,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L75"
+            "implementationLink": "src/services/enums/sheetsenums.js#L53"
           },
           {
             "method": "DOWN",
@@ -48927,7 +48927,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L194"
+            "implementationLink": "src/services/enums/sheetsenums.js#L172"
           },
           {
             "method": "PREVIOUS",
@@ -48935,7 +48935,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L195"
+            "implementationLink": "src/services/enums/sheetsenums.js#L173"
           },
           {
             "method": "NEXT",
@@ -48943,7 +48943,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L196"
+            "implementationLink": "src/services/enums/sheetsenums.js#L174"
           }
         ]
       },
@@ -48959,7 +48959,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L94"
+            "implementationLink": "src/services/enums/sheetsenums.js#L72"
           },
           {
             "method": "ROWS",
@@ -48967,7 +48967,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L93"
+            "implementationLink": "src/services/enums/sheetsenums.js#L71"
           }
         ]
       },
@@ -48983,7 +48983,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L199"
+            "implementationLink": "src/services/enums/sheetsenums.js#L177"
           },
           {
             "method": "DAILY",
@@ -48991,7 +48991,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L200"
+            "implementationLink": "src/services/enums/sheetsenums.js#L178"
           },
           {
             "method": "WEEKLY",
@@ -48999,7 +48999,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L201"
+            "implementationLink": "src/services/enums/sheetsenums.js#L179"
           },
           {
             "method": "MONTHLY",
@@ -49007,7 +49007,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L202"
+            "implementationLink": "src/services/enums/sheetsenums.js#L180"
           }
         ]
       },
@@ -49023,7 +49023,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L50"
+            "implementationLink": "src/services/enums/sheetsenums.js#L28"
           },
           {
             "method": "PERCENT",
@@ -49031,7 +49031,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L210"
+            "implementationLink": "src/services/enums/sheetsenums.js#L188"
           },
           {
             "method": "PERCENTILE",
@@ -49039,7 +49039,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L211"
+            "implementationLink": "src/services/enums/sheetsenums.js#L189"
           },
           {
             "method": "MIN",
@@ -49047,7 +49047,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L163"
+            "implementationLink": "src/services/enums/sheetsenums.js#L141"
           },
           {
             "method": "MAX",
@@ -49055,7 +49055,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L213"
+            "implementationLink": "src/services/enums/sheetsenums.js#L191"
           }
         ]
       },
@@ -49071,7 +49071,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L44"
+            "implementationLink": "src/services/enums/sheetsenums.js#L22"
           },
           {
             "method": "AFTER",
@@ -49079,7 +49079,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L43"
+            "implementationLink": "src/services/enums/sheetsenums.js#L21"
           }
         ]
       },
@@ -49095,7 +49095,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L31"
+            "implementationLink": "src/services/enums/sheetsenums.js#L9"
           },
           {
             "method": "SHEET",
@@ -49103,7 +49103,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L179"
+            "implementationLink": "src/services/enums/sheetsenums.js#L157"
           }
         ]
       },
@@ -49119,7 +49119,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L64"
+            "implementationLink": "src/services/enums/sheetsenums.js#L42"
           },
           {
             "method": "SUM",
@@ -49127,7 +49127,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L217"
+            "implementationLink": "src/services/enums/sheetsenums.js#L195"
           },
           {
             "method": "COUNTA",
@@ -49135,7 +49135,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L218"
+            "implementationLink": "src/services/enums/sheetsenums.js#L196"
           },
           {
             "method": "COUNT",
@@ -49143,7 +49143,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L218"
+            "implementationLink": "src/services/enums/sheetsenums.js#L196"
           },
           {
             "method": "COUNTUNIQUE",
@@ -49151,7 +49151,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L220"
+            "implementationLink": "src/services/enums/sheetsenums.js#L198"
           },
           {
             "method": "AVERAGE",
@@ -49159,7 +49159,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L221"
+            "implementationLink": "src/services/enums/sheetsenums.js#L199"
           },
           {
             "method": "MAX",
@@ -49167,7 +49167,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L213"
+            "implementationLink": "src/services/enums/sheetsenums.js#L191"
           },
           {
             "method": "MIN",
@@ -49175,7 +49175,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L163"
+            "implementationLink": "src/services/enums/sheetsenums.js#L141"
           },
           {
             "method": "MEDIAN",
@@ -49183,7 +49183,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L224"
+            "implementationLink": "src/services/enums/sheetsenums.js#L202"
           },
           {
             "method": "PRODUCT",
@@ -49191,7 +49191,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L225"
+            "implementationLink": "src/services/enums/sheetsenums.js#L203"
           },
           {
             "method": "STDEV",
@@ -49199,7 +49199,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L226"
+            "implementationLink": "src/services/enums/sheetsenums.js#L204"
           },
           {
             "method": "STDEVP",
@@ -49207,7 +49207,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L227"
+            "implementationLink": "src/services/enums/sheetsenums.js#L205"
           },
           {
             "method": "VAR",
@@ -49215,7 +49215,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L228"
+            "implementationLink": "src/services/enums/sheetsenums.js#L206"
           },
           {
             "method": "VARP",
@@ -49223,7 +49223,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L229"
+            "implementationLink": "src/services/enums/sheetsenums.js#L207"
           }
         ]
       },
@@ -49239,7 +49239,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L247"
+            "implementationLink": "src/services/enums/sheetsenums.js#L225"
           },
           {
             "method": "TOMORROW",
@@ -49247,7 +49247,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L248"
+            "implementationLink": "src/services/enums/sheetsenums.js#L226"
           },
           {
             "method": "YESTERDAY",
@@ -49255,7 +49255,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L249"
+            "implementationLink": "src/services/enums/sheetsenums.js#L227"
           },
           {
             "method": "PAST_WEEK",
@@ -49263,7 +49263,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L250"
+            "implementationLink": "src/services/enums/sheetsenums.js#L228"
           },
           {
             "method": "PAST_MONTH",
@@ -49271,7 +49271,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L251"
+            "implementationLink": "src/services/enums/sheetsenums.js#L229"
           },
           {
             "method": "PAST_YEAR",
@@ -49279,7 +49279,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L252"
+            "implementationLink": "src/services/enums/sheetsenums.js#L230"
           }
         ]
       },
@@ -49295,7 +49295,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L260"
+            "implementationLink": "src/services/enums/sheetsenums.js#L238"
           },
           {
             "method": "DESCENDING",
@@ -49303,7 +49303,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L261"
+            "implementationLink": "src/services/enums/sheetsenums.js#L239"
           }
         ]
       },
@@ -49319,7 +49319,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L25"
+            "implementationLink": "src/services/enums/sheetsenums.js#L3"
           },
           {
             "method": "PERCENT_OF_ROW_TOTAL",
@@ -49327,7 +49327,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L233"
+            "implementationLink": "src/services/enums/sheetsenums.js#L211"
           },
           {
             "method": "PERCENT_OF_COLUMN_TOTAL",
@@ -49335,7 +49335,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L234"
+            "implementationLink": "src/services/enums/sheetsenums.js#L212"
           },
           {
             "method": "PERCENT_OF_GRAND_TOTAL",
@@ -49343,7 +49343,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L235"
+            "implementationLink": "src/services/enums/sheetsenums.js#L213"
           }
         ]
       },
@@ -49359,7 +49359,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L255"
+            "implementationLink": "src/services/enums/sheetsenums.js#L233"
           },
           {
             "method": "OBJECT",
@@ -49367,7 +49367,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L256"
+            "implementationLink": "src/services/enums/sheetsenums.js#L234"
           },
           {
             "method": "DATASOURCE",
@@ -49375,7 +49375,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L257"
+            "implementationLink": "src/services/enums/sheetsenums.js#L235"
           }
         ]
       },
@@ -49391,7 +49391,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L242"
+            "implementationLink": "src/services/enums/sheetsenums.js#L220"
           },
           {
             "method": "MINUTE",
@@ -49399,7 +49399,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L163"
+            "implementationLink": "src/services/enums/sheetsenums.js#L141"
           },
           {
             "method": "HOUR",
@@ -49407,7 +49407,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L164"
+            "implementationLink": "src/services/enums/sheetsenums.js#L142"
           }
         ]
       },
@@ -49423,7 +49423,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L75"
+            "implementationLink": "src/services/enums/sheetsenums.js#L53"
           },
           {
             "method": "TEXT",
@@ -49431,7 +49431,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L58"
+            "implementationLink": "src/services/enums/sheetsenums.js#L36"
           },
           {
             "method": "BACKGROUND",
@@ -49439,7 +49439,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L276"
+            "implementationLink": "src/services/enums/sheetsenums.js#L254"
           },
           {
             "method": "ACCENT1",
@@ -49447,7 +49447,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L277"
+            "implementationLink": "src/services/enums/sheetsenums.js#L255"
           },
           {
             "method": "ACCENT2",
@@ -49455,7 +49455,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L278"
+            "implementationLink": "src/services/enums/sheetsenums.js#L256"
           },
           {
             "method": "ACCENT3",
@@ -49463,7 +49463,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L279"
+            "implementationLink": "src/services/enums/sheetsenums.js#L257"
           },
           {
             "method": "ACCENT4",
@@ -49471,7 +49471,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L280"
+            "implementationLink": "src/services/enums/sheetsenums.js#L258"
           },
           {
             "method": "ACCENT5",
@@ -49479,7 +49479,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L281"
+            "implementationLink": "src/services/enums/sheetsenums.js#L259"
           },
           {
             "method": "ACCENT6",
@@ -49487,7 +49487,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L282"
+            "implementationLink": "src/services/enums/sheetsenums.js#L260"
           },
           {
             "method": "HYPERLINK",
@@ -49495,7 +49495,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L283"
+            "implementationLink": "src/services/enums/sheetsenums.js#L261"
           }
         ]
       },
@@ -49511,7 +49511,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L268"
+            "implementationLink": "src/services/enums/sheetsenums.js#L246"
           },
           {
             "method": "SEMICOLON",
@@ -49519,7 +49519,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L269"
+            "implementationLink": "src/services/enums/sheetsenums.js#L247"
           },
           {
             "method": "PERIOD",
@@ -49527,7 +49527,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L270"
+            "implementationLink": "src/services/enums/sheetsenums.js#L248"
           },
           {
             "method": "SPACE",
@@ -49535,7 +49535,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L271"
+            "implementationLink": "src/services/enums/sheetsenums.js#L249"
           }
         ]
       },
@@ -49551,7 +49551,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L264"
+            "implementationLink": "src/services/enums/sheetsenums.js#L242"
           },
           {
             "method": "RIGHT_TO_LEFT",
@@ -49559,7 +49559,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L265"
+            "implementationLink": "src/services/enums/sheetsenums.js#L243"
           }
         ]
       },
@@ -49607,7 +49607,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/sheetsenums.js#L286"
+            "implementationLink": "src/services/enums/sheetsenums.js#L264"
           }
         ]
       }

@@ -48,7 +48,7 @@ import { testSlidesAutofit } from "./testslidesautofit.js";
 import { testSlidesAutoText } from "./testslidesautotext.js";
 import { testSlidesConnectionSite } from "./testslidesconnectionsite.js";
 import { testSlidesLineProps } from "./testslideslineprops.js";
-import { testInsertChart } from "./testsheetschart.js";
+import { testSheetsChart   } from "./testsheetschart.js";
 import { testSheetsRange } from "./testsheetsrange.js";
 import { testDocsImages } from "./testdocsimages.js";
 import { testSandbox } from "./testsandbox.js";
@@ -62,9 +62,11 @@ import { testWorkspaceEvents } from './testworkspaceevents.js';
 import { testLogger } from "./testlogger.js";
 import { testMimeType } from './testmimetype.js';
 import { testLock } from './testlock.js';
+import { testChartsApp } from "./testchartsapp.js";
 // important - run this last for now - see https://github.com/brucemcpherson/gas-fakes/issues/118
 import { testGmail } from "./testgmail.js";
 import { testSandboxGmail } from "./testsandboxgmail.js";
+
 
 export const testFakes = () => {
   const pack = initTests();
@@ -86,10 +88,12 @@ export const testFakes = () => {
   testEnums(pack);
   console.log("\n----Test Sheets text----");
   testSheetsText(pack);
-  console.log("\n----Test InsertChart----");
-  testInsertChart(pack);
+  console.log("\n----Test sheets chart----");
+  testSheetsChart(pack);
   console.log("\n----Test SheetsExotics----");
   testSheetsExotics(pack);
+  console.log("\n----Test charts app----");
+  testChartsApp(pack);
 
   console.log("\n----Test Logger----");
   testLogger(pack);
