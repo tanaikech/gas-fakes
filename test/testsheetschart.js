@@ -17,14 +17,14 @@ export const testSheetsChart = (pack) => {
     const range2 = sheet.getRange("B1:B5");
     builder.addRange(range1)
       .addRange(range2)
-      .setChartType(SpreadsheetApp.ChartType.COLUMN)
+      .setChartType(Charts.ChartType.COLUMN)
       .setPosition(1, 4, 0, 0)
-      .setTitle("Test Chart");
+      .setOption("title", "Test Chart");
 
     // 3. Build the chart
     const chart = builder.build();
     t.is(chart.toString(), "EmbeddedChart", "builder.build() should return an EmbeddedChart");
-    t.is(chart.getType().toString(), "COLUMN", "chart type should be COLUMN");
+    t.is(chart.getType().toString(), "Chart", "chart type should be Chart");
 
     // 4. Insert the chart
     sheet.insertChart(chart);
@@ -66,3 +66,7 @@ export const testSheetsChart = (pack) => {
 };
 
 wrapupTest(testSheetsChart);
+
+function runTestSheetsChart() {
+  testSheetsChart();
+}
