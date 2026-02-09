@@ -181,6 +181,7 @@ As I mentioned earlier, to take this further, I'm going to need a lot of help to
 - [oddities](oddities.md) - a collection of oddities uncovered during this project
 - [named colors](named-colors.md)
 - [sandbox](sandbox.md)
+- [senstive scopes](senstive_scopes.md)
 - [using apps script libraries with gas-fakes](libraries.md)
 - [how libhandler works](libhandler.md)
 - [article:using apps script libraries with gas-fakes](https://ramblings.mcpher.com/how-to-use-apps-script-libraries-directly-from-node/)

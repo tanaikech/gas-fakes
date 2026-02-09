@@ -128,6 +128,7 @@ execute `bash togas.sh` to copy all files to apps script IDE. All tests can be r
 - [oddities](oddities.md) - a collection of oddities uncovered during this project
 - [named colors](named-colors.md)
 - [sandbox](sandbox.md)
+- [senstive scopes](senstive_scopes.md)
 - [using apps script libraries with gas-fakes](libraries.md)
 - [how libhandler works](libhandler.md)
 - [article:using apps script libraries with gas-fakes](https://ramblings.mcpher.com/how-to-use-apps-script-libraries-directly-from-node/)
