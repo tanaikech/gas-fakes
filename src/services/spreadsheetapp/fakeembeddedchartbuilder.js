@@ -82,9 +82,29 @@ export class FakeEmbeddedChartBuilder {
     const { nargs, matchThrow } = signatureArgs(arguments, "EmbeddedChartBuilder.setChartType");
     if (nargs !== 1) matchThrow();
 
-    // type is SpreadsheetApp.ChartType enum (which should match API strings in our fakes)
+    // type is Charts.ChartType enum (which should match API strings in our fakes)
     this.__apiChart.spec.basicChart.chartType = type.toString();
     return this;
+  }
+
+  /**
+   * Returns the chart type.
+   * @returns {ChartType}
+   */
+  getChartType() {
+    const spec = this.__apiChart.spec;
+    const chartType = Charts.ChartType;
+    if (spec.basicChart) return chartType[spec.basicChart.chartType];
+    if (spec.pieChart) return chartType.PIE;
+    if (spec.bubbleChart) return chartType.BUBBLE;
+    if (spec.candlestickChart) return chartType.CANDLESTICK;
+    if (spec.orgChart) return chartType.ORG;
+    if (spec.waterfallChart) return chartType.WATERFALL;
+    if (spec.treemapChart) return chartType.TREE_MAP;
+    if (spec.scorecardChart) return chartType.SCORECARD;
+    if (spec.histogramChart) return chartType.HISTOGRAM;
+
+    return null;
   }
 
   setPosition(anchorRowPos, anchorColPos, offsetX, offsetY) {
@@ -128,6 +148,7 @@ export class FakeEmbeddedChartBuilder {
   }
 
   toString() {
-    return "EmbeddedChartBuilder";
+    const hex = Math.floor(Math.random() * 0xffffffff).toString(16).padStart(8, "0");
+    return `com.google.apps.maestro.server.beans.trix.impl.ChartPropertyApiEmbeddedChartBuilder@${hex}`;
   }
 }
