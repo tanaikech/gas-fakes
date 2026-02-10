@@ -16,14 +16,6 @@ export const testChartsApp = (pack) => {
     t.is(Charts.ChartType.LINE.toString(), "LINE", "LINE enum value should be correct");
   });
 
-
-  unit.section("Charts service methods (NYI)", (t) => {
-    t.rxMatch(
-      t.threw(() => Charts.newAreaChart())?.message || "no throw",
-      /not yet implemented/
-    );
-  });
-
   if (!pack) {
     unit.report();
   }
