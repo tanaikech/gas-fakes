@@ -3,10 +3,10 @@
     "node": ">=20.11.0"
   },
   "dependencies": {
-    "@mcpher/fiddler": "^1.0.1",
-    "@mcpher/gas-fakes": "file:../",
-    "@mcpher/unit": "^1.1.10",
-    "@sindresorhus/is": "^7.0.1"
+    "@mcpher/fiddler": "^1.0.2",
+    "@mcpher/gas-fakes": "file:..",
+    "@mcpher/unit": "^1.1.11",
+    "@sindresorhus/is": "^7.2.0"
   },
   "type": "module",
   "scripts": {
@@ -76,6 +76,6 @@
   "repository": "github:brucemcpherson/gas-fakes",
   "homepage": "https://ramblings.mcpher.com/a-proof-of-concept-implementation-of-apps-script-environment-on-node/",
   "devDependencies": {
-    "dotenv": "^17.2.3"
+    "dotenv": "^17.2.4"
   }
 }
