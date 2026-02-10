@@ -26,7 +26,6 @@ export class FakeEmbeddedChart {
       "getAs",
       "getBlob",
       "getContainerInfo",
-      "getOptions",
     ];
     props.forEach((f) => {
       this[f] = () => notYetImplemented(f);
@@ -50,24 +49,16 @@ export class FakeEmbeddedChart {
   }
 
   /**
-   * Returns the type of this chart.
-   * @returns {ChartType}
+   * Returns the options of this chart.
+   * @returns {object}
    */
-  getType() {
-    // Basic mapping from speculate chart type to GAS ChartType
-    // This is a simplification.
-    const spec = this.__apiChart.spec;
-    if (spec.basicChart) return SpreadsheetApp.ChartType[spec.basicChart.chartType];
-    if (spec.pieChart) return SpreadsheetApp.ChartType.PIE;
-    if (spec.bubbleChart) return SpreadsheetApp.ChartType.BUBBLE;
-    if (spec.candlestickChart) return SpreadsheetApp.ChartType.CANDLESTICK;
-    if (spec.orgChart) return SpreadsheetApp.ChartType.ORG;
-    if (spec.waterfallChart) return SpreadsheetApp.ChartType.WATERFALL;
-    if (spec.treemapChart) return SpreadsheetApp.ChartType.TREE_MAP;
-    if (spec.scorecardChart) return SpreadsheetApp.ChartType.SCORECARD;
-    if (spec.histogramChart) return SpreadsheetApp.ChartType.HISTOGRAM;
-
-    return null;
+  getOptions() {
+    return {
+      get: (key) => {
+        if (key === "title") return this.__apiChart.spec.title;
+        return this.__apiChart.spec.basicChart?.options?.[key];
+      }
+    };
   }
 
   /**

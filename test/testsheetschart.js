@@ -10,7 +10,7 @@ export const testSheetsChart = (pack) => {
 
     // 1. Create a chart builder
     const builder = sheet.newChart();
-    t.is(builder.toString(), "EmbeddedChartBuilder", "sheet.newChart() should return a builder");
+    t.is(builder.toString().startsWith("com.google.apps.maestro.server.beans.trix.impl.ChartPropertyApiEmbeddedChartBuilder@"), true, "sheet.newChart() should return a builder with GAS-style toString()");
 
     // 2. Configure the chart
     const range1 = sheet.getRange("A1:A5");
@@ -24,7 +24,7 @@ export const testSheetsChart = (pack) => {
     // 3. Build the chart
     const chart = builder.build();
     t.is(chart.toString(), "EmbeddedChart", "builder.build() should return an EmbeddedChart");
-    t.is(chart.getType().toString(), "Chart", "chart type should be Chart");
+    t.is(chart.modify().getChartType().toString(), "COLUMN", "chart type should be COLUMN");
 
     // 4. Insert the chart
     sheet.insertChart(chart);
@@ -33,7 +33,7 @@ export const testSheetsChart = (pack) => {
     // 5. Verify it exists
     const charts = sheet.getCharts();
     t.is(charts.length > 0, true, "sheet.getCharts() should contain the new chart");
-    const insertedChart = charts.find(c => c.__apiChart.spec.title === "Test Chart");
+    const insertedChart = charts.find(c => c.getOptions().get("title") === "Test Chart");
     t.is(!!insertedChart, true, "The inserted chart should be found in getCharts() by title");
     //console.log("Inserted chart ID:", insertedChart.getChartId());
     //console.log("Inserted chart API object:", JSON.stringify(insertedChart.__apiChart, null, 2));

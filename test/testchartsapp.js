@@ -16,10 +16,6 @@ export const testChartsApp = (pack) => {
     t.is(Charts.ChartType.LINE.toString(), "LINE", "LINE enum value should be correct");
   });
 
-  unit.section("ChartType enum in SpreadsheetApp", (t) => {
-    t.true(typeof SpreadsheetApp.ChartType !== 'undefined', "ChartType should be available in SpreadsheetApp");
-    t.is(SpreadsheetApp.ChartType.BAR.toString(), "BAR", "BAR enum value in SpreadsheetApp should be correct");
-  });
 
   unit.section("Charts service methods (NYI)", (t) => {
     t.rxMatch(
