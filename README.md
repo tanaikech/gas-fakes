@@ -1,8 +1,10 @@
 # <img src="./logo.png" alt="gas-fakes logo" width="50" align="top"> Run Native Apps Script code anywhere with gas-fakes
 
-I use clasp/antigravity to develop Google Apps Script (GAS) applications, but when using GAS native services, there's way too much back and forwards to the GAS IDE going while testing. I set myself the ambition of implementing a fake version of the GAS runtime environment on Node so I could at least do some testing and debugging of Apps Scripts locally on Node.
+## Google Apps Script, meet Local Development. 
 
-This is a proof of concept so I've implemented a growing subset of number of services and methods. There are a rigorous set of tests for all emulated classes and methods to make sure the same code produces the same result on both Node and Apps Script. Please report any inconsistencies in the issues of this repo.
+gas-fakes is a powerful emulation layer that lets you run Apps Script projects on Node.js as if they were native. By translating GAS service calls into granular Google API requests, it provides a secure, high-speed sandbox for local debugging and automated testing.
+
+Built for the modern stack, it features plug-and-play containerization—allowing you to package your scripts as portable microservices or isolated workers. Coupled with automated identity management, gas-fakes handles the heavy lifting of OAuth and credential cycling, enabling your scripts to act on behalf of users or service accounts without manual intervention. It’s the missing link for building robust, scalable Google Workspace automations and AI-driven workflows.
 
 
 ## Getting started as a package user
@@ -30,44 +32,24 @@ gas-fakes  -s "const files=DriveApp.getRootFolder().searchFiles('title contains 
 
 For details see [gas fakes cli](gas-fakes-cli.md)
 
-### Settings
+### Configuration
 
-The optional `gasfakes.json` file holds various location and behavior parameters for your local Node environment. It is not required on GAS, as you can't change anything over there. If you don't provide this file, `gas-fakes` will create one for you with sensible defaults.
+Configuration for your local Node environment is handled via environment variables, typically stored in a `.env` file and managed by the `gas-fakes init` process.
 
-```json
-{
-  "manifest": "./appsscript.json",
-  "clasp": "./.clasp.json",
-  "documentId": null,
-  "cache": "/tmp/gas-fakes/cache",
-  "properties": "/tmp/gas-fakes/properties",
-  "scriptId": "a-unique-id-for-your-local-project"
-}
-```
+| Environment Variable | Default | Description |
+|---|---|---|
+| `GF_MANIFEST_PATH` | `./appsscript.json` | Path to the `appsscript.json` manifest file. |
+| `GF_CLASP_PATH` | `./.clasp.json` | Path to the `.clasp.json` file. |
+| `GF_SCRIPT_ID` | from clasp, or random | Picked from `.clasp.json` if available. Used for `ScriptApp.getScriptId()` and partitioning stores. |
+| `GF_DOCUMENT_ID` | `null` | A bound document ID for testing container-bound scripts. |
+| `GF_CACHE_PATH` | `/tmp/gas-fakes/cache` | Path for `CacheService` local file emulation. |
+| `GF_PROPERTIES_PATH` | `/tmp/gas-fakes/properties` | Path for `PropertiesService` local file emulation. |
+| `GF_PLATFORM_AUTH` | `google` | Comma-separated list of backends to initialize (`google`, `ksuite`). |
+| `AUTH_TYPE` | `dwd` | Google auth type: `dwd` (Domain-Wide Delegation) or `adc` (Application Default Credentials). |
+| `LOG_DESTINATION` | `CONSOLE` | Logging destination: `CONSOLE`, `CLOUD`, `BOTH`, or `NONE`. |
+| `STORE_TYPE` | `FILE` | Internal storage type for properties/cache: `FILE` (local) or `UPSTASH` (Redis). |
 
-| property   | type   | default                          | description                                                                                                                                                                                                                                                                              |
-| ---------- | ------ | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| manifest   | string | ./appsscript.json                | the manifest path and name relative to your main module                                                                                                                                                                                                                                  |
-| clasp      | string | ./clasp.json                     | where to look for an optional clasp file                                                                                                                                                                                                                                                 |
-| documentId | string | null                             | a bound document id. This will allow testing of container bound script. The documentId will become your activeDocument (for the appropriate service)                                                                                                                                     |
-| cache      | string | /tmp/gas-fakes/cache             | gas-fakes uses a local file to emulate apps script's CacheService. This is where it should put the files                                                                                                                                                                                 |
-| properties | string | /tmp/gas-fakes/properties        | gas-fakes uses a local file to emulate apps script's PropertiesService. This is where it should put the files. You may want to put it somewhere other than /tmp to avoid accidental deletion, but don't put it in a place that'll get commited to public git repo                        |
-| scriptId   | string | from clasp, or some random value | If you have a clasp file, it'll pick up the scriptId from there. If not you can enter your scriptId manually, or just leave it to create a fake one. It's use for the moment is to return something useful from ScriptApp.getScriptId() and to partition the cache and properties stores |
 
-### Troubleshooting: Missing Environment Tags
-
-If you see a warning or error like `Project '...' lacks an 'environment' tag`, it means your Google Cloud Organization has a policy requiring projects to be designated with an environment tag (e.g., `Development`, `Production`).
-
-To resolve this, you need to bind an environment tag to your project. Replace `YOUR_ORG_ID` and `YOUR_PROJECT_ID` with your actual identifiers:
-
-```bash
-# Bind the 'Development' environment tag to your project
-gcloud resource-manager tags bindings create \
-  --tag-value=YOUR_ORG_ID/environment/Development \
-  --parent=//cloudresourcemanager.googleapis.com/projects/YOUR_PROJECT_ID
-```
-
-*Note: The tag key `environment` and the value `Development` must already exist at the organization level. If they don't, you (or your admin) will need to create them first using `gcloud resource-manager tags keys create` and `gcloud resource-manager tags values create`.*
 
 ### Cloud Logging Integration
 
@@ -123,7 +105,7 @@ If you have used Logging to cloud, you can get a link to the log data like this.
 console.log ('....example cloud log link for this session',Logger.__cloudLogLink)
 ```
 
-It contains a cloud logging query that will display any logging done in this session - the filter is based on the scriptId (from gasfakes.json), the projectId and userId (from Auth), as well as the start and end time of the session. 
+It contains a cloud logging query that will display any logging done in this session - the filter is based on the scriptId (from the environment), the projectId and userId (from Auth), as well as the start and end time of the session. 
 
 #### A note on .env location
 
@@ -146,6 +128,20 @@ Logger.__logDestination="BOTH"
 ```
 
 Do whichever one suits you best.
+
+### Troubleshooting: Missing Environment Tags
+
+If you see a warning or error like `Project '...' lacks an 'environment' tag`, it means your Google Cloud Organization has a policy requiring projects to be designated with an environment tag (e.g., `Development`, `Production`). 
+
+You can ignore this, but you can resolve it if you want to keep things tidy.  You need to bind an environment tag to your project. Replace `YOUR_ORG_ID` and `YOUR_PROJECT_ID` with your actual identifiers:
+```bash
+# Bind the 'Development' environment tag to your project
+gcloud resource-manager tags bindings create \
+  --tag-value=YOUR_ORG_ID/environment/Development \
+  --parent=//cloudresourcemanager.googleapis.com/projects/YOUR_PROJECT_ID
+```
+
+*Note: The tag key `environment` and the value `Development` must already exist at the organization level. If they don't, you (or your admin) will need to create them first using `gcloud resource-manager tags keys create` and `gcloud resource-manager tags values create`.*
 
 ### Pushing files to GAS
 

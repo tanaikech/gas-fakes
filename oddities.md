@@ -87,7 +87,7 @@ An iterator created by a generator does not have a `hasNext()` function, whereas
 ### Cache and Property services
 
 These services can be backed by two different storage types, configured via the `STORE_TYPE` variable in your `.env` file:
-- **`FILE` (Default)**: Implemented using keyv with the keyv-file storage adapter. This stores data in local files, with the path specified in `gasfakes.json`.
+- **`FILE` (Default)**: Implemented using keyv with the keyv-file storage adapter. This stores data in local files, with the path specified in `GF_CACHE_PATH` or `GF_PROPERTIES_PATH` in your `.env`.
 - **`UPSTASH`**: Uses Upstash Redis as a cloud-based backend. This requires setting `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` in your `.env` file. This option allows for interoperability testing, where data written by `gas-fakes` can be read by a live Apps Script project (and vice-versa) when using a compatible library like `gas-flex-cache`.
 
 #### Script, user and document store varieties
@@ -96,7 +96,7 @@ All 3 are supported for both properties and cache.
 
 ##### scriptId
 
-The local version may have no knowledge of the Apps ScriptId. If you are using clasp, it's picked up from the .clasp.json file. However if you are not using clasp, or want to use something else, you can set the scriptId in `gasfakes.json`, otherwise it'll create a fake id use that - but that means that each store will be different each time you run it, so the best approach is to add a value unique to the group of scripts that want to share the same stores in gas-fakes.json. All property and cache stores use the scriptId to partition data.
+The local version may have no knowledge of the Apps ScriptId. If you are using clasp, it's picked up from the .clasp.json file. However if you are not using clasp, or want to use something else, you can set the `GF_SCRIPT_ID` in your `.env`, otherwise it'll create a fake id use that - but that means that each store will be different each time you run it, so the best approach is to add a value unique to the group of scripts that want to share the same stores in your environment configuration. All property and cache stores use the scriptId to partition data.
 
 ##### userId
 
@@ -104,7 +104,7 @@ The userId is extracted from an accessToken and will match the id derived from A
 
 ##### documentId
 
-The documentId is only meaningful if you are working on a container bound scrip. We use the the documentId property of gasfakes.json to identify a container file. All document level property and cache stores use the scriptId and documentId to partition data.
+The documentId is only meaningful if you are working on a container bound scrip. We use the `GF_DOCUMENT_ID` environment variable to identify a container file. All document level property and cache stores use the scriptId and documentId to partition data.
 
 ### Settings and temporary files
 

@@ -80,9 +80,18 @@ Once initialized, use the CLI to complete the authentication and enable any requ
     gas-fakes enableAPIs --all
     ```
 
-## Step 5: (Optional) Configure Settings (`gasfakes.json`)
+## Step 5: Configure Paths and Behavior
 
-This file tells `gas-fakes` where to find local files and cache. For details, see the Settings section in the main [README.md](README.md).
+During the `init` process, you will also be prompted to configure various paths and behavior settings. These are saved to your `.env` file and allow `gas-fakes` to find your local files and manage storage.
+
+| Variable | Description |
+| :--- | :--- |
+| `GF_MANIFEST_PATH` | Path to your `appsscript.json`. |
+| `GF_CLASP_PATH` | Path to your `.clasp.json` (optional). |
+| `GF_CACHE_PATH` | Where to store local `CacheService` files. |
+| `GF_PROPERTIES_PATH` | Where to store local `PropertiesService` files. |
+
+These replace the old `gasfakes.json` configuration file, centralizing all settings in your `.env`.
 
 ---
 

@@ -32,11 +32,6 @@ export async function main() {
       "A string containing the Google Apps Script."
     )
     .option("-e, --env <path>", "Path to a custom .env file.", "./.env")
-    .option(
-      "-g, --gfsettings <path>",
-      "Path to a gasfakes.json settings file.",
-      "./gasfakes.json"
-    )
     .option("-x, --sandbox", "Run the script in a basic sandbox.")
     .option(
       "-w, --whitelistRead <string>",
@@ -70,7 +65,7 @@ export async function main() {
       null
     )
     .action(async (options) => {
-      const { filename, script, env, gfsettings } = options;
+      const { filename, script, env } = options;
 
       // If no script provided and no sub-command matched, show help
       if (!filename && !script) {
@@ -93,10 +88,6 @@ export async function main() {
         console.log(`...using env file in ${envPath}`);
         dotenv.config({ path: envPath, quiet: true });
       }
-
-      const settingsPath = path.resolve(process.cwd(), gfsettings);
-      console.log(`...using gasfakes settings file in ${settingsPath}`);
-      process.env.GF_SETTINGS_PATH = settingsPath;
 
       const sandboxConfig = buildSandboxConfig(options);
       const useSandbox = !!options.sandbox || !!sandboxConfig;
@@ -124,7 +115,6 @@ export async function main() {
         display: options.display,
         useSandbox,
         sandboxConfig,
-        gfSettings: settingsPath,
         args,
         gas_library,
       });

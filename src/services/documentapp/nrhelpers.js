@@ -25,11 +25,13 @@ export const getCurrentNr = (data) => {
     .filter(key => key.startsWith(shadowPrefix))
     .reduce((p, c) => {
       // strangly there's another level of .namedRanges property
-      if (data.namedRanges[c].namedRanges.length !== 1) {
-        // TODO I dont know if this true yet we'll need to investigate
-        throw new Error(`expected only 1 nr match but got ${data.namedRanges[c].namedRanges.length}`)
+      const nrs = data.namedRanges[c].namedRanges;
+      if (nrs.length > 1) {
+        // This can happen if a batchUpdate retries due to timeout but the first attempt actually succeeded.
+        // The duplicates will be automatically cleaned up by the caller (makeElementMap).
+        process.stderr.write(`...warning: found ${nrs.length} named ranges for ${c} - duplicates will be cleaned up\n`);
       }
-      data.namedRanges[c].namedRanges.forEach(r => {
+      nrs.forEach(r => {
         p.push(r)
       })
       return p

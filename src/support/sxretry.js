@@ -36,7 +36,7 @@ export const sxRetry = async (Auth, tag, func, options = {}) => {
       response = err.response;
     }
 
-    const redoCodes = [429, 500, 503, 408, 401];
+    const redoCodes = [429, 500, 502, 503, 408, 401];
     const networkErrorCodes = [
       'ETIMEDOUT',
       'ECONNRESET',

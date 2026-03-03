@@ -1,4 +1,5 @@
 import './support/env-loader.js';
+import './services/stores/app.js'
 import './services/scriptapp/app.js'
 import './services/driveapp/app.js'
 import './services/logger/app.js'
@@ -27,5 +28,3 @@ import './services/slidesapp/app.js'
 import './services/mimetype/app.js'
 import './services/lock/app.js'
 import './services/libhandlerapp/app.js'
-// should be last
-import './services/stores/app.js'

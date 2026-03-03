@@ -67,13 +67,17 @@ const setTokenScopes = (scopes, platform = _platform) => {
 const getTokenScopes = () => {
   const id = _getIdentity();
   if (id.tokenScopes) return id.tokenScopes;
-  if (_platform === 'ksuite') return ""; // KSuite doesn't use standard OAuth scopes in same way
+  if (_platform === 'ksuite') return ""; 
   
-  // Google fallback
-  return getAccessTokenInfo().then(info => {
-    id.tokenScopes = info.tokenInfo.scope;
-    return id.tokenScopes;
-  });
+  // If we have an authClient, we might be able to discover them
+  if (id.authClient) {
+    return getAccessTokenInfo().then(info => {
+      id.tokenScopes = info.tokenInfo.scope;
+      return id.tokenScopes;
+    });
+  }
+  
+  return "";
 };
 
 const getHashedUserId = () =>
@@ -219,6 +223,12 @@ const setAuth = async (scopes = [], mcpLoading = false) => {
         return { access_token: token };
       };
 
+      dwdClient.invalidateToken = function () {
+        this._token = null;
+        this._expiresAt = 0;
+        this.credentials = { access_token: 'dummy' };
+      };
+
       id.authClient = dwdClient
     }
   } catch (error) {
@@ -290,8 +300,17 @@ export const responseSyncify = (result) => {
 
 // Helper to populate identity from sxInit response
 const setIdentity = (platform, data) => {
+  if (!data) return;
+  // slogger.warn(`...DEBUG: Auth.setIdentity for platform=${platform}. data keys=${Object.keys(data).join(',')}`);
   const id = _getIdentity(platform);
   Object.assign(id, data);
+  // slogger.warn(`...DEBUG: Auth.setIdentity result for platform=${platform}. id.tokenScopes=${id.tokenScopes}`);
+};
+
+const getAuthedScopes = () => {
+  const id = _getIdentity('google');
+  const scopes = id.tokenScopes || "";
+  return new Set((typeof scopes === 'string' ? scopes : "").split(" ").filter(s => s));
 };
 
 export const Auth = {
@@ -305,6 +324,7 @@ export const Auth = {
   getUserId,
   getAccessToken,
   getTokenScopes,
+  getAuthedScopes,
   getScriptId,
   getDocumentId,
   setSettings,

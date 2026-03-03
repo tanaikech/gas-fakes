@@ -59,7 +59,7 @@ const limitMode = (mode) => {
 const requireAllScopes = (mode) => {
   limitMode(mode)
   ensureInit()
-  return checkScopesMatch(Array.from(Auth.getAuthedScopes().keys()))
+  return checkScopesMatch(Array.from(Auth.getAuthedScopes()))
 }
 
 /**
@@ -86,11 +86,28 @@ const checkScopesMatch = (required) => {
   ensureInit()
   const scopes = Auth.getTokenScopes()
 
+  // console.log('...DEBUG: scopes type:', typeof scopes, 'content:', scopes);
+
   // now we're syncronous all the way
-  const tokened = new Set((typeof scopes === 'string' ? scopes : "").split(" "))
+  // normalize tokened scopes by removing trailing slashes. 
+  // Handle both space and comma separation.
+  let scopeList = [];
+  if (Array.isArray(scopes)) {
+    scopeList = scopes;
+  } else if (typeof scopes === 'string') {
+    scopeList = scopes.split(/[ ,]/);
+  } else if (scopes && typeof scopes === 'object') {
+    // If it's a non-null object, maybe it's serializable but has a toString?
+    scopeList = String(scopes).split(/[ ,]/);
+  }
+
+  const tokened = new Set(scopeList.map(s => s.trim().replace(/\/$/, "")).filter(s => s))
 
   // see which ones are missing
   const missing = required.filter(s => {
+    // normalized required scope
+    const ns = s.trim().replace(/\/$/, "")
+
     // setting this scope causes gcloud to block
     // seem to manage without them anyway
     const ignores = [
@@ -99,13 +116,19 @@ const checkScopesMatch = (required) => {
       "https://www.googleapis.com/auth/presentations",
       "https://www.googleapis.com/auth/forms"
     ]
-    const hasIgnore = ignores.includes(s)
+    const hasIgnore = ignores.some(i => i.replace(/\/$/, "") === ns)
     if (hasIgnore) {
       slogger.warn('...ignoring requested scope for adc as google blocks it outside apps script' + s)
     }
-    // if drive is authorized and drive.readonly is required that's okay too
-    // if drive.readonly is authorized and drive is requested thats not
-    return !(hasIgnore || tokened.has(s.replace(/\.readonly$/, "")))
+    
+    // a scope is satisfied if:
+    // 1. It is explicitly in the tokened set
+    // 2. It is a .readonly scope AND the base scope is in the tokened set (e.g. drive satisfy drive.readonly)
+    
+    const baseNs = ns.replace(/\.readonly$/, "")
+    const isSatisfied = tokened.has(ns) || (ns.endsWith(".readonly") && tokened.has(baseNs))
+    
+    return !(hasIgnore || isSatisfied)
   })
 
   if (missing.length) {
@@ -178,6 +201,9 @@ if (typeof globalThis[name] === typeof undefined) {
         __proxies: Proxies,
         get __registeredServices() {
           return Proxies.getRegisteredServices()
+        },
+        get __loadedServices() {
+          return Proxies.getLoadedServices()
         }
       }
       
@@ -200,6 +226,12 @@ if (typeof globalThis[name] === typeof undefined) {
   const handler = {
     get(_, prop, receiver) {
       if (prop === 'isFake') return true;
+      
+      // BRIDGE: Inform LoadedRegistry about ScriptApp being loaded
+      if (prop !== '__behavior' && prop !== '__proxies') {
+         Proxies.__addLoaded(name);
+      }
+
       const app = getApp(prop);
       return Reflect.get(app, prop, receiver);
     },
@@ -216,4 +248,6 @@ if (typeof globalThis[name] === typeof undefined) {
     writable: false,
   });
 
+  // Manually add ScriptApp to service registry
+  Proxies.__addService(name);
 }

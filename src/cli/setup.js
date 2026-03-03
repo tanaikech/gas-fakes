@@ -118,7 +118,55 @@ export async function initializeConfiguration(options = {}) {
   if (typeof platforms === "string") platforms = platforms.split(",");
   responses.GF_PLATFORM_AUTH = platforms.join(",");
 
-  // --- Step 2: Google Workspace Configuration ---
+  // --- Step 2: Gas-Fakes Behavior Configuration ---
+  console.log("\n--- Configuring Gas-Fakes paths and behavior ---");
+  const gasFakesQuestions = [
+    {
+      type: "text",
+      name: "GF_MANIFEST_PATH",
+      message: "Path to appsscript.json",
+      initial: existingConfig.GF_MANIFEST_PATH || "./appsscript.json",
+    },
+    {
+      type: "text",
+      name: "GF_CLASP_PATH",
+      message: "Path to .clasp.json",
+      initial: existingConfig.GF_CLASP_PATH || "./.clasp.json",
+    },
+    {
+      type: "text",
+      name: "GF_SCRIPT_ID",
+      message: "Script ID (optional, overrides .clasp.json)",
+      initial: existingConfig.GF_SCRIPT_ID || "",
+    },
+    {
+      type: "text",
+      name: "GF_DOCUMENT_ID",
+      message: "Document ID (optional, for container-bound scripts)",
+      initial: existingConfig.GF_DOCUMENT_ID || "",
+    },
+    {
+      type: "text",
+      name: "GF_CACHE_PATH",
+      message: "Cache storage path",
+      initial: existingConfig.GF_CACHE_PATH || "/tmp/gas-fakes/cache",
+    },
+    {
+      type: "text",
+      name: "GF_PROPERTIES_PATH",
+      message: "Properties storage path",
+      initial: existingConfig.GF_PROPERTIES_PATH || "/tmp/gas-fakes/properties",
+    }
+  ];
+
+  const gasFakesResponses = await prompts(gasFakesQuestions);
+  if (typeof gasFakesResponses.GF_MANIFEST_PATH === "undefined") {
+    console.log("Initialization cancelled.");
+    return;
+  }
+  Object.assign(responses, gasFakesResponses);
+
+  // --- Step 3: Google Workspace Configuration ---
   if (platforms.includes("google")) {
     console.log("\n--- Configuring Google Workspace backend ---");
 
@@ -146,18 +194,18 @@ export async function initializeConfiguration(options = {}) {
     }
 
     // Discover Scopes from appsscript.json
-    const manifestPath = path.resolve(process.cwd(), "appsscript.json");
+    const manifestPath = path.resolve(process.cwd(), responses.GF_MANIFEST_PATH);
     let manifestScopes = [];
     if (fs.existsSync(manifestPath)) {
       try {
         const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
         manifestScopes = manifest.oauthScopes || [];
-        console.log(`...discovered ${manifestScopes.length} scopes in appsscript.json`);
+        console.log(`...discovered ${manifestScopes.length} scopes in ${responses.GF_MANIFEST_PATH}`);
       } catch (err) {
-        console.warn("...warning: failed to parse appsscript.json. Using default scopes only.");
+        console.warn(`...warning: failed to parse ${responses.GF_MANIFEST_PATH}. Using default scopes only.`);
       }
     } else {
-      console.log("...appsscript.json not found. Using default scopes only.");
+      console.log(`${responses.GF_MANIFEST_PATH} not found. Using default scopes only.`);
     }
 
     const DEFAULT_SCOPES_VALUES = [
@@ -184,9 +232,9 @@ export async function initializeConfiguration(options = {}) {
         initial: existingConfig.GOOGLE_SERVICE_ACCOUNT_NAME || "gas-fakes-sa",
       },
       {
-        type: responses.AUTH_TYPE === "adc" ? "text" : null,
+        type: "text",
         name: "CLIENT_CREDENTIAL_FILE",
-        message: "Enter path to OAuth client credentials JSON (optional, required for restricted scopes)",
+        message: "Enter path to OAuth client credentials JSON (optional, required for restricted scopes with ADC)",
         initial: existingConfig.CLIENT_CREDENTIAL_FILE || "",
       }
     ];
@@ -199,7 +247,7 @@ export async function initializeConfiguration(options = {}) {
     Object.assign(responses, googleResponses);
   }
 
-  // --- Step 3: Infomaniak KSuite Configuration ---
+  // --- Step 4: Infomaniak KSuite Configuration ---
   if (platforms.includes("ksuite")) {
     console.log("\n--- Configuring Infomaniak KSuite backend ---");
     const ksuiteQuestions = [
@@ -224,7 +272,7 @@ export async function initializeConfiguration(options = {}) {
     Object.assign(responses, ksuiteResponses);
   }
 
-  // --- Step 4: Shared Remaining Config ---
+  // --- Step 5: Shared Remaining Config ---
   const remainingQuestions = [
     {
       type: "toggle",
@@ -363,6 +411,7 @@ export async function authenticateUser(options = {}) {
       
       const {
         GOOGLE_CLOUD_PROJECT,
+        GCP_PROJECT_ID,
         DEFAULT_SCOPES,
         EXTRA_SCOPES,
         CLIENT_CREDENTIAL_FILE,
@@ -371,9 +420,9 @@ export async function authenticateUser(options = {}) {
         GOOGLE_SERVICE_ACCOUNT_NAME
       } = process.env;
 
-      const projectId = GOOGLE_CLOUD_PROJECT;
+      const projectId = GOOGLE_CLOUD_PROJECT || GCP_PROJECT_ID;
       if (!projectId) {
-        console.error("Error: GOOGLE_CLOUD_PROJECT is not set.");
+        console.error("Error: Project ID not set. Please run 'gas-fakes init' first.");
         continue;
       }
 
@@ -387,33 +436,38 @@ export async function authenticateUser(options = {}) {
       const driveAccessFlag = "--enable-gdrive-access";
       const activeConfig = AC || "default";
 
-      if (AUTH_TYPE === "adc") {
-        let clientFlag = "";
-        if (CLIENT_CREDENTIAL_FILE) {
-          const clientPath = path.resolve(process.cwd(), CLIENT_CREDENTIAL_FILE);
-          if (fs.existsSync(clientPath)) clientFlag = `--client-id-file="${clientPath}"`;
+      // --- Common Google Login (Normal Auth Dialog) ---
+      console.log("Revoking previous user credentials...");
+      try { execSync("gcloud auth revoke --quiet", { stdio: "ignore", shell: true }); } catch (e) {}
+      try { execSync("gcloud auth application-default revoke --quiet", { stdio: "ignore", shell: true }); } catch (e) {}
+
+      console.log(`Setting up gcloud config: ${activeConfig}`);
+      try { execSync(`gcloud config configurations describe "${activeConfig}"`, { stdio: "ignore", shell: true }); } 
+      catch (e) { runCommandSync(`gcloud config configurations create "${activeConfig}"`); }
+      runCommandSync(`gcloud config configurations activate "${activeConfig}"`);
+      
+      runCommandSync(`gcloud config set project ${projectId}`);
+      runCommandSync(`gcloud config set billing/quota_project ${projectId}`);
+      
+      console.log("Initiating user login...");
+      runCommandSync(`gcloud auth login ${driveAccessFlag}`);
+      
+      let clientFlag = "";
+      if (CLIENT_CREDENTIAL_FILE) {
+        const clientPath = path.resolve(process.cwd(), CLIENT_CREDENTIAL_FILE);
+        if (fs.existsSync(clientPath)) {
+          console.log(`...using client credentials from ${clientPath}`);
+          clientFlag = `--client-id-file="${clientPath}"`;
         }
-
-        console.log("Revoking previous ADC credentials...");
-        try { execSync("gcloud auth application-default revoke --quiet", { stdio: "ignore", shell: true }); } catch (e) {}
-
-        console.log(`Setting up gcloud config: ${activeConfig}`);
-        try { execSync(`gcloud config configurations describe "${activeConfig}"`, { stdio: "ignore", shell: true }); } 
-        catch (e) { runCommandSync(`gcloud config configurations create "${activeConfig}"`); }
-        runCommandSync(`gcloud config configurations activate "${activeConfig}"`);
-        
-        runCommandSync(`gcloud config set project ${projectId}`);
-        runCommandSync(`gcloud config set billing/quota_project ${projectId}`);
-        
-        console.log("Logging in...");
-        runCommandSync(`gcloud auth login ${driveAccessFlag}`);
-        
-        console.log("Setting up ADC...");
-        runCommandSync(`gcloud auth application-default login --scopes="${scopes}" ${clientFlag}`);
-        runCommandSync(`gcloud auth application-default set-quota-project ${projectId}`);
       }
 
+      console.log("Setting up Application Default Credentials (ADC)...");
+      runCommandSync(`gcloud auth application-default login --scopes="${scopes}" ${clientFlag}`);
+      runCommandSync(`gcloud auth application-default set-quota-project ${projectId}`);
+
+      // --- DWD Specific Setup (if configured) ---
       if (AUTH_TYPE === "dwd") {
+        console.log("\n--- Performing Domain-Wide Delegation (DWD) Setup ---");
         const current_user = execSync("gcloud config get-value account", { shell: true }).toString().trim();
         const sa_email = `${GOOGLE_SERVICE_ACCOUNT_NAME}@${projectId}.iam.gserviceaccount.com`;
         
@@ -446,7 +500,7 @@ export async function authenticateUser(options = {}) {
 }
 
 /**
- * Handles the 'enableAPIs' command to enable or disable necessary Google Cloud services based on options.
+ * Handles the 'enableAPIs' command to enable or disable required Google Cloud services based on options.
  * @param {object} options Options object provided by commander.js.
  */
 export function enableGoogleAPIs(options) {

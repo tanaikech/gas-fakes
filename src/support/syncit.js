@@ -23,7 +23,6 @@ import { callSync } from "./workersync/synchronizer.js";
 
 const manifestDefaultPath = "./appsscript.json";
 const claspDefaultPath = "./.clasp.json";
-const settingsDefaultPath = process.env.GF_SETTINGS_PATH || "./gasfakes.json";
 const propertiesDefaultPath = "/tmp/gas-fakes/properties";
 const cacheDefaultPath = "/tmp/gas-fakes/cache";
 
@@ -271,18 +270,16 @@ const fxUnzipper = ({ blob }) => {
  * initialize all the stuff at the beginning such as manifest content and settings
  * and register them all in Auth object for future reference
  * @param {object} p pargs
- * @param {string} p.manifestPath where to finfd the manifest by default
+ * @param {string} p.manifestPath where to find the manifest by default
  * @param {string} p.claspPath where to find the clasp file by default
- * @param {string} p.settingsPath where to find the settings file
  * @param {string} p.cachePath the cache files
  * @param {string} p.propertiesPath the properties file location
  * @param {string[]} [p.platformAuth] list of platforms to authenticate
- * @return {object} the finalized vesions of all the above
+ * @return {object} the finalized versions of all the above
  */
 export const fxInit = ({
   manifestPath = manifestDefaultPath,
   claspPath = claspDefaultPath,
-  settingsPath = settingsDefaultPath,
   cachePath = cacheDefaultPath,
   propertiesPath = propertiesDefaultPath,
   platformAuth
@@ -296,7 +293,6 @@ export const fxInit = ({
   // because this is all run in a synced subprocess it's not an async result
   const synced = callSync("sxInit", {
     claspPath: resolve(claspPath),
-    settingsPath: resolve(settingsPath),
     manifestPath: resolve(manifestPath),
     mainDir,
     cachePath,
@@ -317,9 +313,12 @@ export const fxInit = ({
   Auth.setClasp(clasp);
   Auth.setManifest(manifest);
   
+  // console.log(`...DEBUG: fxInit identities received keys=${Object.keys(identities || {}).join(',')}`);
+
   // Populate all identities
   if (identities) {
     Object.keys(identities).forEach(p => {
+      // console.log(`...DEBUG: fxInit populating identity for ${p}. scopes=${identities[p].tokenScopes}`);
       Auth.setIdentity(p, identities[p]);
     });
   }

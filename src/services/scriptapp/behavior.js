@@ -268,10 +268,38 @@ class FakeBehavior {
     this.__idWhitelist = null
 
     // individually settable services
-    const services = ScriptApp.__registeredServices
-    this.__sandboxService = {}
-    services.forEach(f => this.__sandboxService[f] = newFakeSandboxService(this, f))
+    // BRIDGE: Use a Proxy to dynamically handle services, even those registered later
+    this.__sandboxService = new Proxy({}, {
+      get: (target, name) => {
+        if (typeof name !== 'string' || name.startsWith('__')) return target[name]
+        
+        // EXCLUSION: CacheService and PropertiesService are NOT intended to be sandboxed
+        if (name === 'CacheService' || name === 'PropertiesService') return undefined;
 
+        if (!target[name]) {
+          target[name] = newFakeSandboxService(this, name)
+        }
+        return target[name]
+      },
+      ownKeys: (target) => {
+        // When asked for keys, ensure all registered services are present in the target
+        if (globalThis.ScriptApp?.__registeredServices) {
+          globalThis.ScriptApp.__registeredServices.forEach(s => {
+            // EXCLUSION: CacheService and PropertiesService are NOT intended to be sandboxed
+            if (s !== 'CacheService' && s !== 'PropertiesService' && !target[s]) {
+               target[s] = newFakeSandboxService(this, s)
+            }
+          })
+        }
+        return Reflect.ownKeys(target)
+      },
+      getOwnPropertyDescriptor: (target, name) => {
+        if (typeof name === 'string' && !name.startsWith('__') && name !== 'CacheService' && name !== 'PropertiesService' && !target[name]) {
+           target[name] = newFakeSandboxService(this, name)
+        }
+        return Reflect.getOwnPropertyDescriptor(target, name)
+      }
+    })
   }
   newIdWhitelistItem(id) {
     return newFakeIdWhitelistItem(id)
@@ -352,7 +380,7 @@ class FakeBehavior {
   }
   resetGmail() {
     this.__createdGmailIds.clear();
-    this.__allowedGmailIds.clear();
+    this.__allowedIds.clear();
     return this;
   }
   resetCalendar() {

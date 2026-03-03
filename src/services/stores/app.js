@@ -19,22 +19,18 @@ let _cacheApp = null
 /**
  * @returns {FakeService}
  */
-const registerApp = (_app, name, kind) => {
-  if (typeof globalThis[name] === typeof undefined) {
-
-
-    const getApp = () => {
-      // if it hasnt been intialized yet then do that
-      if (!_app) {
-        _app = newFakeService(kind)
-      }
-      // this is the actual driveApp we'll return from the proxy
-      return _app
+const registerApp = (name, kind) => {
+  let instance = null;
+  const getApp = () => {
+    // if it hasnt been intialized yet then do that
+    if (!instance) {
+      instance = newFakeService(kind)
     }
-    Proxies.registerProxy(name, getApp)
+    // this is the actual driveApp we'll return from the proxy
+    return instance
   }
+  Proxies.registerProxy(name, getApp)
 }
 
-_propertiesApp = registerApp(_propertiesApp, 'PropertiesService', 'PROPERTIES')
-_cacheApp = registerApp(_cacheApp, 'CacheService', 'CACHE')
-
+registerApp('PropertiesService', 'PROPERTIES')
+registerApp('CacheService', 'CACHE')

@@ -35,7 +35,7 @@ export const newFakeSpreadsheetApp = (...args) => {
  */
 export class FakeSpreadsheetApp {
   constructor() {
-    // in the context of gas-fakes we start with the activespreadsheet being the one mentioned in gasfakes.json
+    // in the context of gas-fakes we start with the activespreadsheet being the one mentioned in the environment (GF_DOCUMENT_ID)
     this.__activeSpreadsheet = null
     const enumProps = [
       "AutoFillSeries", //	AutoFillSeries	An enumeration of the types of series used to calculate auto-filled values.

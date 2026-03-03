@@ -525,6 +525,12 @@ export const testKSuiteDrive = (pack) => {
       }
     })
   }
+
+  // Reset platform back to workspace
+  if (ScriptApp.isFake) {
+    ScriptApp.__platform = 'workspace'
+  }
+
   return { unit, fixes: kFixes }
 }
 

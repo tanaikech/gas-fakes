@@ -134,4 +134,7 @@ export const Proxies = {
   guard,
   blanketProxy,
   getRegisteredServices: () => Array.from(serviceRegistry),
+  getLoadedServices: () => Array.from(loadedRegistry),
+  __addService: (name) => serviceRegistry.add(name),
+  __addLoaded: (name) => loadedRegistry.add(name),
 }

@@ -156,7 +156,6 @@ export async function executeGasScript(options) {
     filename,
     script,
     display,
-    gfSettings,
     useSandbox,
     sandboxConfig,
     args,
@@ -180,12 +179,6 @@ export async function executeGasScript(options) {
       `\n--- Generated GAS ---\n${gasScript}\n--- End Generated GAS ---\n`
     );
   }
-
-  Object.defineProperty(globalThis, "settingsPath", {
-    value: gfSettings,
-    writable: true,
-    configurable: true,
-  });
 
   if (gas_library && gas_library.length > 0) {
     const libs = gas_library.reduce((ar, { identifier, libScript }) => {

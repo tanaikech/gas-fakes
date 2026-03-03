@@ -15,17 +15,16 @@ import { KSuiteDrive } from './ksuite/kdrive.js';
 let _loggedSummary = false;
 
 /**
- * initialize ke stuff at the beginning such as manifest content and settings
+ * initialize key stuff at the beginning such as manifest content and settings
  * @param {object} p pargs
- * @param {string} p.manifestPath where to finfd the manifest by default
- * @param {string} p.authPath import the auth code 
+ * @param {string} p.manifestPath where to find the manifest by default
  * @param {string} p.claspPath where to find the clasp file by default
  * @param {string} p.settingsPath where to find the settings file
  * @param {string} p.cachePath the cache files
  * @param {string} p.propertiesPath the properties file location
  * @param {string} p.fakeId a fake script id to use if one isnt in the settings
  * @param {string[]} [p.platformAuth] list of platforms to authenticate
- * @return {object} the finalized vesions of all the above 
+ * @return {object} the finalized versions of all the above 
  */
 export const sxInit = async ({ manifestPath, claspPath, settingsPath, cachePath, propertiesPath, fakeId, platformAuth }) => {
 
@@ -34,6 +33,7 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, cachePath,
 
   // get a file and parse if it exists
   const getIfExists = async (file) => {
+    if (!file) return {};
     try {
       const content = await readFile(file, { encoding: 'utf8' })
       return JSON.parse(content)
@@ -42,30 +42,21 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, cachePath,
     }
   }
 
-  const settingsDir = path.dirname(settingsPath)
-  const _settings = await getIfExists(settingsPath)
-  const settings = { ..._settings }
+  const manifestFile = process.env.GF_MANIFEST_PATH || manifestPath;
+  const claspFile = process.env.GF_CLASP_PATH || claspPath;
 
-  settings.manifest = settings.manifest || manifestPath
-  settings.clasp = settings.clasp || claspPath
   const [manifest, clasp] = await Promise.all([
-    getIfExists(path.resolve(settingsDir, settings.manifest)),
-    getIfExists(path.resolve(settingsDir, settings.clasp))
+    getIfExists(manifestFile),
+    getIfExists(claspFile)
   ])
 
-  settings.scriptId = settings.scriptId || clasp.scriptId || fakeId
-  settings.documentId = settings.documentId || null
-  settings.cache = settings.cache || cachePath
-  settings.properties = settings.properties || propertiesPath
-
-  const strSet = JSON.stringify(settings, null, 2)
-  if (JSON.stringify(_settings, null, 2) !== strSet) {
-    try {
-      await mkdir(settingsDir, { recursive: true })
-      await writeFile(settingsPath, strSet, { flag: 'w' })
-    } catch (err) {
-      syncWarn(`...unable to write settings file: ${err}`)
-    }
+  const settings = {
+    manifest: manifestFile,
+    clasp: claspFile,
+    scriptId: process.env.GF_SCRIPT_ID || clasp.scriptId || fakeId,
+    documentId: process.env.GF_DOCUMENT_ID || null,
+    cache: process.env.GF_CACHE_PATH || cachePath,
+    properties: process.env.GF_PROPERTIES_PATH || propertiesPath
   }
 
   const identities = {};
@@ -73,6 +64,9 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, cachePath,
   // --- Google Auth Block ---
   if (platforms.includes('google') || platforms.includes('workspace')) {
     try {
+      // Ensure platform is set for info discovery
+      Auth.setPlatform('google');
+
       const scopes = manifest.oauthScopes || []
       const mandatoryScopes = [
         "openid",
@@ -105,7 +99,7 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, cachePath,
         activeUser,
         effectiveUser,
         projectId: Auth.getProjectId(),
-        tokenScopes: effectiveInfo.tokenInfo.scopes,
+        tokenScopes: effectiveInfo.tokenInfo.scopes || effectiveInfo.tokenInfo.scope,
         authMethod: Auth.getAuthMethod('google')
       };
 
@@ -125,6 +119,7 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, cachePath,
       syncWarn("ksuite requested in platformAuth but KSUITE_TOKEN is missing from environment.");
     } else {
       try {
+        Auth.setPlatform('ksuite');
         const kDrive = new KSuiteDrive(kToken);
         const accountId = await kDrive.getAccountId();
         
@@ -151,6 +146,10 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, cachePath,
       }
     }
   }
+
+  // Restore default platform context based on authorized backends
+  const defaultPlatform = platforms[0] === 'google' ? 'workspace' : platforms[0];
+  Auth.setPlatform(defaultPlatform);
 
   // Final Summary Report (Concise, single instance)
   if (!_loggedSummary) {
