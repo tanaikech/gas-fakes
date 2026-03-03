@@ -3,4 +3,4 @@ run.js
 node_modules/
 package.json
 package-lock.json
-.gemini/
+.gemini/gasmess/
