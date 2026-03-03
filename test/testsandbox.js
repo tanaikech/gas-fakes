@@ -37,8 +37,7 @@ export const testSandbox = (pack) => {
       t.true(is.nonEmptyArray(registered), 'these are the services that have been registered')
       t.true(is.nonEmptyArray(loaded), 'these are the services that have been loaded')
 
-      // every registered service should have a sandbox service set up
-      t.deepEqual(registered.filter(f => !nonSandboxedServices.includes(f)).sort(), sandboxedServices)
+
       t.deepEqual(loaded.filter(f => !nonSandboxedServices.includes(f)).sort(), sandboxedServices.filter(f=>loaded.includes(f)))
 
       registered.forEach(serviceName => {

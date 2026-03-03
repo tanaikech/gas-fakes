@@ -114,9 +114,7 @@ export class FakeFormItem {
   }
 
   getId() {
-    const resource = this.__resource;
-    const hexId = resource.questionItem?.question?.questionId || this.__itemId;
-    return Utils.fromHex(hexId);
+    return Utils.fromHex(this.__itemId);
   }
 
   getIndex() {
