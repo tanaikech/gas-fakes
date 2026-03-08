@@ -61748,7 +61748,7 @@
             "returnType": "String",
             "returnDescription": "the local name of the attribute",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/app.js#L41"
+            "implementationLink": "src/services/xmlservice/app.js#L42"
           },
           {
             "method": "getNamespace()",
@@ -61757,7 +61757,7 @@
             "returnType": "Namespace",
             "returnDescription": "the namespace for the attribute",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/app.js#L41"
+            "implementationLink": "src/services/xmlservice/app.js#L42"
           },
           {
             "method": "getValue()",
@@ -61909,7 +61909,7 @@
             "returnType": "Namespace",
             "returnDescription": "the newly created namespace",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/app.js#L41"
+            "implementationLink": "src/services/xmlservice/app.js#L42"
           },
           {
             "method": "getNamespace(String,String)",
@@ -61918,7 +61918,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/app.js#L41"
+            "implementationLink": "src/services/xmlservice/app.js#L42"
           },
           {
             "method": "getNoNamespace()",
@@ -61935,8 +61935,8 @@
             "description": "Creates a Format object for outputting a human-readable XML document. The formatter\ndefaults to UTF-8 encoding, two-space indentation, \\r\\n line separators after\nevery node, and includes the XML declaration and its encoding.",
             "returnType": "Format",
             "returnDescription": "the newly created formatter",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/app.js#L50"
           },
           {
             "method": "getRawFormat()",
@@ -61944,8 +61944,8 @@
             "description": "Creates a Format object for outputting a raw XML document. The formatter defaults to\nUTF-8 encoding, no indentation and no line breaks other than those provided in the XML\ndocument itself, and includes the XML declaration and its encoding.",
             "returnType": "Format",
             "returnDescription": "the newly created formatter",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/app.js#L58"
           },
           {
             "method": "getXmlNamespace()",
@@ -62141,7 +62141,7 @@
             "returnType": "String",
             "returnDescription": "the name of the EntityReference node",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/app.js#L41"
+            "implementationLink": "src/services/xmlservice/app.js#L42"
           },
           {
             "method": "getParentElement()",
@@ -62401,7 +62401,7 @@
             "returnType": "Namespace",
             "returnDescription": "the namespace for the Element node",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/app.js#L41"
+            "implementationLink": "src/services/xmlservice/app.js#L42"
           },
           {
             "method": "getNamespace(String)",
@@ -62410,7 +62410,7 @@
             "returnType": "Namespace",
             "returnDescription": "the namespace with the given prefix for the Element node",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/app.js#L41"
+            "implementationLink": "src/services/xmlservice/app.js#L42"
           },
           {
             "method": "getParentElement()",
@@ -62588,8 +62588,8 @@
             "description": "Outputs the given Document as a formatted string.",
             "returnType": "String",
             "returnDescription": "the formatted document",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeformat.js#L13"
           },
           {
             "method": "format(Element)",
@@ -62597,8 +62597,8 @@
             "description": "Outputs the given Element node as a formatted string.",
             "returnType": "String",
             "returnDescription": "the formatted element",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeformat.js#L13"
           },
           {
             "method": "setEncoding(String)",
