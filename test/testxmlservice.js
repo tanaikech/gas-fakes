@@ -47,6 +47,27 @@ export const testXmlService = (pack) => {
     t.is(child.getText(), "content");
   })
 
+  unit.section('XmlService.getPrettyFormat and getRawFormat', t => {
+    const xml = '<root attr="val"><child>text</child></root>';
+    const doc = XmlService.parse(xml);
+
+    const pretty = XmlService.getPrettyFormat().format(doc);
+    // console.log('Pretty:\n' + pretty.replace(/\r/g, '\\r').replace(/\n/g, '\\n\n'));
+
+    t.is(pretty.includes('<?xml version="1.0" encoding="UTF-8"?>'), true, "Declaration is present");
+    t.is(pretty.includes('\r\n'), true, "Line breaks are present (\r\n)");
+    t.is(pretty.includes('  <child>'), true, "Indentation is present (2 spaces)");
+    t.is(pretty.split('\r\n').length >= 4, true, "Has multiple lines");
+
+    const raw = XmlService.getRawFormat().format(doc);
+    // console.log('Raw as JSON:', JSON.stringify(raw));
+
+    t.is(raw.startsWith('<?xml version="1.0" encoding="UTF-8"?>'), true, "Declaration is present at start");
+    t.is(raw.includes('\r\n'), true, "Line break is present after declaration");
+    t.is(raw.split('\r\n').length, 3, "Exactly 3 lines for compact XML (declaration + content + trailing empty)");
+    t.is(raw.includes('<root attr="val"><child>text</child></root>'), true, "Content is present and compact");
+  })
+
   if (!pack) {
     unit.report()
   }

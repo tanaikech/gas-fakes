@@ -4,6 +4,7 @@ import { Proxies } from '../../support/proxies.js';
 import { FakeDocument } from './fakedocument.js';
 import { FakeElement } from './fakeelement.js';
 import { FakeNamespace } from './fakenamespace.js';
+import { FakeFormat } from './fakeformat.js';
 
 /**
  * Parses the given XML string and returns a Document object.
@@ -42,6 +43,22 @@ const getNamespace = (prefix, uri) => {
   return new FakeNamespace(prefix, uri);
 };
 
+/**
+ * Returns a Format object for pretty printing.
+ * @return {FakeFormat} The format object.
+ */
+const getPrettyFormat = () => {
+  return new FakeFormat({ pretty: true });
+};
+
+/**
+ * Returns a Format object for raw output.
+ * @return {FakeFormat} The format object.
+ */
+const getRawFormat = () => {
+  return new FakeFormat({ pretty: false });
+};
+
 // Singleton app object
 let _app = null;
 
@@ -52,6 +69,8 @@ if (typeof globalThis[name] === typeof undefined) {
       _app = {
         parse,
         getNamespace,
+        getPrettyFormat,
+        getRawFormat,
         toString: () => name
       };
     }
