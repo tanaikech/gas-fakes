@@ -7,7 +7,9 @@ If you are using the Advanced services, or the APIS directly, you may also find 
 
 ### Where to use (and not use) gas-fakes
 
-If you don't plan on using Apps Script at all, the Node Workspace APIs (which I use in the background for all these services in any case) will be more efficient when operating in their normal asynchronous mode. On the other hand, if you only casually want to access workspace resources from Node, and can't be bothered digging into how the Node Workspace APIs work, you could still use this as part of your node project. Apps Script services are much simpler than the full API. Apps Script advanced services are also available via gas-fakes if you want a hybrid solution.
+If you don't plan on using Apps Script at all, the Node Workspace APIs (which I use in the background for all these services in any case) will be more efficient when operating in their normal asynchronous mode. On the other hand, if you only casually want to access workspace resources from Node, and can't be bothered digging into how the Node Workspace APIs work, you could still use this as part of your node project. Apps Script services are much simpler than the full API. Apps Script advanced services are also available via gas-fakes if you want a hybrid solution. 
+
+gas-fakes can also be used to run Apps Script in cloud platforms such as Cloud Run, Azure, IBM and others - see [gas-fakes on Cloud Run](https://ramblings.mcpher.com/gas-fakes-on-cloud-run/)
 
 
 ## Approach
@@ -96,7 +98,11 @@ All 3 are supported for both properties and cache.
 
 ##### scriptId
 
-The local version may have no knowledge of the Apps ScriptId. If you are using clasp, it's picked up from the .clasp.json file. However if you are not using clasp, or want to use something else, you can set the `GF_SCRIPT_ID` in your `.env`, otherwise it'll create a fake id use that - but that means that each store will be different each time you run it, so the best approach is to add a value unique to the group of scripts that want to share the same stores in your environment configuration. All property and cache stores use the scriptId to partition data.
+A stable `scriptId` is required to partition property and cache stores. During `gas-fakes init`, the utility will attempt to discover your `scriptId` from `.clasp.json`. If no ID is found in your configuration or in `.clasp.json`, a random UUID is generated and saved to your `.env` file as `GF_SCRIPT_ID`. This ensures that your local stores remain consistent across different sessions.
+
+If you want to share stores between different folders, you need to ensure that the `GF_SCRIPT_ID` in your `.env` has the same value. This is especially important if you plan to share property and cache stores with live Apps Script (yes you can!). In this case, you set the `GF_SCRIPT_ID` in your `.env` to match the scriptId of the live apps script you want to share these stores with.
+
+If you choose not to use a `.env` file or provide a `GF_SCRIPT_ID`, a temporary random ID will be generated at runtime, but this means that each store will be different each time you run it.
 
 ##### userId
 

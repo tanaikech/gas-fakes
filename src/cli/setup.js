@@ -3,10 +3,35 @@ import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
 import os from "os";
+import { randomUUID } from "node:crypto";
 import { execSync } from "child_process";
 import { checkForGcloudCli, runCommandSync } from "./utils.js";
 
 // --- Utility Functions ---
+
+/**
+ * Retrieves the scriptId and its source.
+ * @returns {{scriptId: string, source: string}}
+ */
+function getScriptIdInfo() {
+  if (process.env.GF_SCRIPT_ID) {
+    return { scriptId: process.env.GF_SCRIPT_ID, source: "env (GF_SCRIPT_ID)" };
+  }
+
+  const claspPath = process.env.GF_CLASP_PATH || "./.clasp.json";
+  if (fs.existsSync(claspPath)) {
+    try {
+      const clasp = JSON.parse(fs.readFileSync(claspPath, "utf8"));
+      if (clasp.scriptId) {
+        return { scriptId: clasp.scriptId, source: `clasp (${claspPath})` };
+      }
+    } catch (e) {
+      // Ignore parsing errors
+    }
+  }
+
+  return { scriptId: "not set (will be random at runtime)", source: "none" };
+}
 
 /**
  * Recursively searches for .env files starting from a directory.
@@ -136,8 +161,33 @@ export async function initializeConfiguration(options = {}) {
     {
       type: "text",
       name: "GF_SCRIPT_ID",
-      message: "Script ID (optional, overrides .clasp.json)",
-      initial: existingConfig.GF_SCRIPT_ID || "",
+      message: (prev, values) => {
+        const claspPath = values.GF_CLASP_PATH || "./.clasp.json";
+        let hint = "";
+        if (fs.existsSync(claspPath)) {
+          try {
+            const clasp = JSON.parse(fs.readFileSync(claspPath, "utf8"));
+            if (clasp.scriptId) {
+              hint = ` (found in ${claspPath}: ${clasp.scriptId})`;
+            }
+          } catch (e) {}
+        }
+        if (!hint && !existingConfig.GF_SCRIPT_ID) {
+          hint = " (no ID found; a random one will be generated)";
+        }
+        return `Script ID (optional, overrides .clasp.json)${hint}`;
+      },
+      initial: (prev, values) => {
+        if (existingConfig.GF_SCRIPT_ID) return existingConfig.GF_SCRIPT_ID;
+        const claspPath = values.GF_CLASP_PATH || "./.clasp.json";
+        if (fs.existsSync(claspPath)) {
+          try {
+            const clasp = JSON.parse(fs.readFileSync(claspPath, "utf8"));
+            if (clasp.scriptId) return clasp.scriptId;
+          } catch (e) {}
+        }
+        return randomUUID();
+      },
     },
     {
       type: "text",
@@ -382,6 +432,9 @@ export async function authenticateUser(options = {}) {
     process.exit(1);
   }
   dotenv.config({ path: envPath, quiet: true });
+
+  const { scriptId, source } = getScriptIdInfo();
+  console.log(`...using scriptId: ${scriptId} (source: ${source})`);
 
   let platforms = (process.env.GF_PLATFORM_AUTH || "google").split(",");
   

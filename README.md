@@ -40,7 +40,7 @@ Configuration for your local Node environment is handled via environment variabl
 |---|---|---|
 | `GF_MANIFEST_PATH` | `./appsscript.json` | Path to the `appsscript.json` manifest file. |
 | `GF_CLASP_PATH` | `./.clasp.json` | Path to the `.clasp.json` file. |
-| `GF_SCRIPT_ID` | from clasp, or random | Picked from `.clasp.json` if available. Used for `ScriptApp.getScriptId()` and partitioning stores. |
+| `GF_SCRIPT_ID` | from clasp, or random | Discovered from `.clasp.json` or generated as a random UUID during `gas-fakes init`. Used for `ScriptApp.getScriptId()` and partitioning stores. |
 | `GF_DOCUMENT_ID` | `null` | A bound document ID for testing container-bound scripts. |
 | `GF_CACHE_PATH` | `/tmp/gas-fakes/cache` | Path for `CacheService` local file emulation. |
 | `GF_PROPERTIES_PATH` | `/tmp/gas-fakes/properties` | Path for `PropertiesService` local file emulation. |

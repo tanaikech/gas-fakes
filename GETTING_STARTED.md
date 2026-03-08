@@ -88,6 +88,7 @@ During the `init` process, you will also be prompted to configure various paths 
 | :--- | :--- |
 | `GF_MANIFEST_PATH` | Path to your `appsscript.json`. |
 | `GF_CLASP_PATH` | Path to your `.clasp.json` (optional). |
+| `GF_SCRIPT_ID` | Picked from `.clasp.json` or generated as a random UUID during `gas-fakes init`. Used for partitioning stores. |
 | `GF_CACHE_PATH` | Where to store local `CacheService` files. |
 | `GF_PROPERTIES_PATH` | Where to store local `PropertiesService` files. |
 

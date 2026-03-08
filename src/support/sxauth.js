@@ -165,7 +165,9 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, cachePath,
     }).join(', ');
     
     if (summary) {
+      const scriptIdSource = process.env.GF_SCRIPT_ID ? 'env' : (clasp.scriptId ? 'clasp' : 'random');
       syncLog(`...authorized backends: ${summary}`);
+      syncLog(`...using scriptId: ${settings.scriptId} (source: ${scriptIdSource})`);
       _loggedSummary = true;
     }
   }
