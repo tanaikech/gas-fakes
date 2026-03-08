@@ -108,6 +108,5 @@ Source Google ID: ${gId}`;
 }
 
 // Support running as a standalone test
-if (process.argv[1].includes('testmultibackend.js')) {
-  wrapupTest(testMultiBackend);
-}
+wrapupTest(testMultiBackend);
+
