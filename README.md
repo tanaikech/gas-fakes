@@ -20,11 +20,11 @@ Collaborators should fork the repo and use the local versions of these files - s
 
 ### Use exactly the same code as in Apps Script
 
-Just as on Apps Script, everything is executed synchronously so you don't need to bother with handling Promises/async/await. Just write normal Apps Script code. Usually you would have an associated App Script project if that's your eventual target, but it's not essential that you do. You can get started right away on Node. 
+Just as on Apps Script, everything is executed synchronously so you don't need to bother with handling Promises/async/await. Just write normal Apps Script code. Usually you would have an associated App Script project if that's your eventual target. Just like Apps Script, you need a manifest file (appsscript.json) so you can be sure that the correct scopes are authroized and asked for. 
 
 # gas-fakes-cli
 
-Now you can run apps script code directly from your console - for example 
+Now you can run apps script code directly from your console - for example
 
 ```bash
 gas-fakes  -s "const files=DriveApp.getRootFolder().searchFiles('title contains \"Untitled\"');while (files.hasNext()) {console.log(files.next().getName())};" 

@@ -284,21 +284,19 @@ export const fxInit = ({
   propertiesPath = propertiesDefaultPath,
   platformAuth
 } = {}) => {
-  // this is the path of the runing main process
-  const mainDir = path.dirname(process.argv[1]);
-
-  // Resolve defaults relative to mainDir if they are relative
-  const resolve = (p) => path.isAbsolute(p) ? p : path.resolve(mainDir, p);
+  // Use current working directory to resolve relative paths
+  const cwd = process.cwd();
+  const resolve = (p) => (path.isAbsolute(p) ? p : path.resolve(cwd, p));
 
   // because this is all run in a synced subprocess it's not an async result
   const synced = callSync("sxInit", {
     claspPath: resolve(claspPath),
     manifestPath: resolve(manifestPath),
-    mainDir,
+    cwd,
     cachePath,
     propertiesPath,
     fakeId: randomUUID(),
-    platformAuth: platformAuth || (global.ScriptApp?.__platformAuth)
+    platformAuth: platformAuth || global.ScriptApp?.__platformAuth,
   });
 
   const {
