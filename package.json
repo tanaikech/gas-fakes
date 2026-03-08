@@ -3,8 +3,10 @@
     "node": ">=20.11.0"
   },
   "dependencies": {
+    "@azure/identity": "^4.13.0",
     "@mcpher/fake-gasenum": "^1.0.6",
     "@mcpher/gas-flex-cache": "^1.1.5",
+    "@microsoft/microsoft-graph-client": "^3.0.7",
     "@modelcontextprotocol/sdk": "^1.26.0",
     "@sindresorhus/is": "^7.2.0",
     "acorn": "^8.15.0",
