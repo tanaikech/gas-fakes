@@ -5,7 +5,8 @@ import path from "path";
 import os from "os";
 import { randomUUID } from "node:crypto";
 import { execSync } from "child_process";
-import { checkForGcloudCli, runCommandSync } from "./utils.js";
+import { checkForGcloudCli, checkForAzCli, runCommandSync } from "./utils.js";
+import { getMsGraphToken, mapGasScopesToMsGraph } from "../support/msgraph/msauth.js";
 
 // --- Utility Functions ---
 
@@ -64,6 +65,7 @@ async function findEnvFiles(dir) {
 // --- Exported Command Implementations ---
 
 export async function initializeConfiguration(options = {}) {
+  console.log("...gas-fakes init v2.2.4 starting");
   let envPath;
 
   // need to figure out which env file we are operating on
@@ -122,13 +124,27 @@ export async function initializeConfiguration(options = {}) {
   // If backends provided via CLI, use them, otherwise prompt
   let platforms = options.backends;
   if (!platforms || (Array.isArray(platforms) && platforms.length === 0)) {
+    const currentPlatforms = existingConfig.GF_PLATFORM_AUTH || "google";
     const platformSelection = await prompts({
       type: "multiselect",
       name: "platforms",
       message: "Select backends to initialize",
       choices: [
-        { title: "Google Workspace", value: "google", selected: true },
-        { title: "Infomaniak KSuite", value: "ksuite", selected: existingConfig.KSUITE_TOKEN ? true : false },
+        {
+          title: "Google Workspace",
+          value: "google",
+          selected: currentPlatforms.includes("google")
+        },
+        {
+          title: "Microsoft Graph (Office 365)",
+          value: "msgraph",
+          selected: currentPlatforms.includes("msgraph")
+        },
+        {
+          title: "Infomaniak KSuite",
+          value: "ksuite",
+          selected: currentPlatforms.includes("ksuite")
+        },
       ],
       hint: "- Use space to select/deselect. Press Enter to submit.",
     });
@@ -139,9 +155,15 @@ export async function initializeConfiguration(options = {}) {
     }
     platforms = platformSelection.platforms;
   }
-  
+
+  // Normalize platforms to an array of individual strings
   if (typeof platforms === "string") platforms = platforms.split(",");
-  responses.GF_PLATFORM_AUTH = platforms.join(",");
+  if (Array.isArray(platforms)) {
+    platforms = platforms.flatMap(p => p.split(",")).map(p => p.trim());
+  }
+
+  responses.GF_PLATFORM_AUTH = (platforms || []).join(",");
+  console.log(`...active backends: ${responses.GF_PLATFORM_AUTH}`);
 
   // --- Step 2: Gas-Fakes Behavior Configuration ---
   console.log("\n--- Configuring Gas-Fakes paths and behavior ---");
@@ -170,7 +192,7 @@ export async function initializeConfiguration(options = {}) {
             if (clasp.scriptId) {
               hint = ` (found in ${claspPath}: ${clasp.scriptId})`;
             }
-          } catch (e) {}
+          } catch (e) { }
         }
         if (!hint && !existingConfig.GF_SCRIPT_ID) {
           hint = " (no ID found; a random one will be generated)";
@@ -184,7 +206,7 @@ export async function initializeConfiguration(options = {}) {
           try {
             const clasp = JSON.parse(fs.readFileSync(claspPath, "utf8"));
             if (clasp.scriptId) return clasp.scriptId;
-          } catch (e) {}
+          } catch (e) { }
         }
         return randomUUID();
       },
@@ -216,6 +238,19 @@ export async function initializeConfiguration(options = {}) {
   }
   Object.assign(responses, gasFakesResponses);
 
+  // Discover Scopes from appsscript.json (Shared across backends)
+  const manifestPath = path.resolve(process.cwd(), responses.GF_MANIFEST_PATH);
+  let manifestScopes = [];
+  if (fs.existsSync(manifestPath)) {
+    try {
+      const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
+      manifestScopes = manifest.oauthScopes || [];
+      console.log(`...discovered ${manifestScopes.length} scopes in ${responses.GF_MANIFEST_PATH}`);
+    } catch (err) {
+      console.warn(`...warning: failed to parse ${responses.GF_MANIFEST_PATH}.`);
+    }
+  }
+
   // --- Step 3: Google Workspace Configuration ---
   if (platforms.includes("google")) {
     console.log("\n--- Configuring Google Workspace backend ---");
@@ -241,21 +276,6 @@ export async function initializeConfiguration(options = {}) {
         return;
       }
       responses.AUTH_TYPE = authTypeResponse.AUTH_TYPE;
-    }
-
-    // Discover Scopes from appsscript.json
-    const manifestPath = path.resolve(process.cwd(), responses.GF_MANIFEST_PATH);
-    let manifestScopes = [];
-    if (fs.existsSync(manifestPath)) {
-      try {
-        const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
-        manifestScopes = manifest.oauthScopes || [];
-        console.log(`...discovered ${manifestScopes.length} scopes in ${responses.GF_MANIFEST_PATH}`);
-      } catch (err) {
-        console.warn(`...warning: failed to parse ${responses.GF_MANIFEST_PATH}. Using default scopes only.`);
-      }
-    } else {
-      console.log(`${responses.GF_MANIFEST_PATH} not found. Using default scopes only.`);
     }
 
     const DEFAULT_SCOPES_VALUES = [
@@ -297,6 +317,121 @@ export async function initializeConfiguration(options = {}) {
     Object.assign(responses, googleResponses);
   }
 
+  // --- Step 3.5: Microsoft Graph Configuration ---
+  if (platforms.includes("msgraph")) {
+    console.log("\n--- Configuring Microsoft Graph backend ---");
+
+    const msGraphNamePrompt = await prompts({
+      type: "text",
+      name: "MS_GRAPH_APP_NAME",
+      message: "Enter the name for your Microsoft App Registration",
+      initial: existingConfig.MS_GRAPH_APP_NAME || "gas-fakes-ms-sa",
+    });
+
+    if (typeof msGraphNamePrompt.MS_GRAPH_APP_NAME === "undefined") {
+      console.log("Initialization cancelled.");
+      return;
+    }
+    responses.MS_GRAPH_APP_NAME = msGraphNamePrompt.MS_GRAPH_APP_NAME;
+
+    // --- Account Type Prompt ---
+    const msAccountType = await prompts({
+      type: "select",
+      name: "type",
+      message: "What type of Microsoft account are you using?",
+      choices: [
+        { title: "Consumer (Personal, Outlook.com, Hotmail, etc.)", value: "consumers" },
+        { title: "Business/Education (Work or School)", value: "organizations" },
+        { title: "Standard Multi-tenant", value: "common" }
+      ],
+      initial: existingConfig.MS_GRAPH_TENANT_ID === "consumers" ? 0 : (existingConfig.MS_GRAPH_TENANT_ID === "organizations" ? 1 : 2)
+    });
+
+    if (typeof msAccountType.type === "undefined") {
+      console.log("Initialization cancelled.");
+      return;
+    }
+    responses.MS_GRAPH_TENANT_ID = msAccountType.type;
+
+    // --- Dynamic Discovery and Creation ---
+    let discoveredClientId = "";
+    console.log(`...searching Azure for '${responses.MS_GRAPH_APP_NAME}' registration`);
+    try {
+      const filter = `displayName eq '${responses.MS_GRAPH_APP_NAME}'`;
+      const cmd = `az ad app list --filter "${filter}" --query "[0].appId" -o tsv`;
+      const result = execSync(cmd, { stdio: ['ignore', 'pipe', 'ignore'], shell: true }).toString().trim();
+
+      if (result && result !== 'None' && result !== 'null') {
+        discoveredClientId = result;
+        console.log(`...found existing registration: ${discoveredClientId}`);
+      } else {
+        // Offer to create it
+        const confirmCreate = await prompts({
+          type: "confirm",
+          name: "create",
+          message: `App Registration '${responses.MS_GRAPH_APP_NAME}' not found. Would you like to create it now?`,
+          initial: true,
+        });
+
+        if (confirmCreate.create) {
+          console.log(`...creating '${responses.MS_GRAPH_APP_NAME}' as a Multitenant App`);
+          const createCmd = `az ad app create --display-name "${responses.MS_GRAPH_APP_NAME}" --public-client-redirect-uris "http://localhost" --sign-in-audience "AzureADandPersonalMicrosoftAccount" --query "appId" -o tsv`;
+          discoveredClientId = execSync(createCmd, { shell: true }).toString().trim();
+
+          if (discoveredClientId) {
+            console.log(`...created successfully! Client ID: ${discoveredClientId}`);
+            console.log("...waiting 5s for Azure propagation...");
+            execSync('sleep 5', { shell: true });
+
+            console.log("...discovering API permission IDs from Microsoft Graph");
+            try {
+              // Dynamically find the permission IDs for this environment
+              const graphId = "00000003-0000-0000-c000-000000000000";
+              const spCmd = `az ad sp show --id ${graphId} --query "oauth2PermissionScopes[?value=='Files.ReadWrite.All' || value=='User.Read' || value=='Mail.ReadWrite' || value=='Calendars.ReadWrite' || value=='offline_access' || value=='openid' || value=='profile' || value=='email'].{id:id, value:value}" -o json`;
+              const scopes = JSON.parse(execSync(spCmd, { shell: true }).toString());
+
+              if (scopes && scopes.length > 0) {
+                const resourceAccess = scopes.map(s => ({ id: s.id, type: "Scope" }));
+                const requiredAccess = [{
+                  resourceAppId: graphId,
+                  resourceAccess
+                }];
+
+                const tempFile = path.join(os.tmpdir(), `ms-perms-${randomUUID()}.json`);
+                fs.writeFileSync(tempFile, JSON.stringify(requiredAccess));
+
+                execSync(`az ad app update --id ${discoveredClientId} --required-resource-access @${tempFile}`, { shell: true });
+                console.log(`...successfully assigned ${scopes.length} permissions: ${scopes.map(s => s.value).join(', ')}`);
+                if (fs.existsSync(tempFile)) fs.unlinkSync(tempFile);
+              }
+            } catch (e) {
+              console.error(`...failed to dynamically assign permissions: ${e.message}`);
+              console.warn("...attempting fallback to standard IDs...");
+              // (Keep the previous fallback logic here if discovery fails entirely)
+            }
+          }
+        }
+      }
+    } catch (e) {
+      console.warn("...warning: Azure CLI discovery failed. Please ensure 'az login' has been run.");
+    }
+
+    const msgraphQuestions = [
+      {
+        type: "text",
+        name: "MS_GRAPH_CLIENT_ID",
+        message: "Microsoft Client ID (discovered or provided)",
+        initial: discoveredClientId || existingConfig.MS_GRAPH_CLIENT_ID || "",
+      }
+    ];
+    const msgraphResponses = await prompts(msgraphQuestions);
+    if (typeof msgraphResponses.MS_GRAPH_TENANT_ID === "undefined") {
+      console.log("Initialization cancelled.");
+      return;
+    }
+    Object.assign(responses, msgraphResponses);
+  }
+
   // --- Step 4: Infomaniak KSuite Configuration ---
   if (platforms.includes("ksuite")) {
     console.log("\n--- Configuring Infomaniak KSuite backend ---");
@@ -306,12 +441,6 @@ export async function initializeConfiguration(options = {}) {
         name: "KSUITE_TOKEN",
         message: "Enter your Infomaniak API Token",
         initial: existingConfig.KSUITE_TOKEN || "",
-      },
-      {
-        type: "text",
-        name: "KSUITE_EMAIL",
-        message: "Enter your Infomaniak user email",
-        initial: existingConfig.KSUITE_EMAIL || "",
       }
     ];
     const ksuiteResponses = await prompts(ksuiteQuestions);
@@ -341,8 +470,8 @@ export async function initializeConfiguration(options = {}) {
         { title: "NONE", value: "NONE" },
       ],
       initial: ["CONSOLE", "CLOUD", "BOTH", "NONE"].indexOf(existingConfig.LOG_DESTINATION) > -1
-          ? ["CONSOLE", "CLOUD", "BOTH", "NONE"].indexOf(existingConfig.LOG_DESTINATION)
-          : 0,
+        ? ["CONSOLE", "CLOUD", "BOTH", "NONE"].indexOf(existingConfig.LOG_DESTINATION)
+        : 0,
     },
     {
       type: "select",
@@ -353,8 +482,8 @@ export async function initializeConfiguration(options = {}) {
         { title: "UPSTASH (Redis)", value: "UPSTASH" },
       ],
       initial: ["FILE", "UPSTASH"].indexOf(existingConfig.STORE_TYPE?.toUpperCase()) > -1
-          ? ["FILE", "UPSTASH"].indexOf(existingConfig.STORE_TYPE.toUpperCase())
-          : 0,
+        ? ["FILE", "UPSTASH"].indexOf(existingConfig.STORE_TYPE.toUpperCase())
+        : 0,
     },
   ];
 
@@ -436,11 +565,14 @@ export async function authenticateUser(options = {}) {
   const { scriptId, source } = getScriptIdInfo();
   console.log(`...using scriptId: ${scriptId} (source: ${source})`);
 
-  let platforms = (process.env.GF_PLATFORM_AUTH || "google").split(",");
-  
+  let platforms;
+
   // If specific backend requested via CLI, only auth that one
-  if (options.backend) {
-    platforms = [options.backend];
+  if (options.backend && options.backend !== "google") {
+    platforms = [options.backend.trim()];
+  } else {
+    // Default to all platforms in GF_PLATFORM_AUTH, or just 'google' if not set
+    platforms = (process.env.GF_PLATFORM_AUTH || "google").split(",").map(p => p.trim());
   }
 
   for (const platform of platforms) {
@@ -458,10 +590,60 @@ export async function authenticateUser(options = {}) {
       }
     }
 
+    if (platform === "msgraph") {
+      console.log("\n--- Authenticating Microsoft Graph ---");
+
+      const gasScopes = Array.from(new Set([
+        ...(process.env.DEFAULT_SCOPES || "").split(","),
+        ...(process.env.EXTRA_SCOPES || "").split(","),
+      ])).filter(s => s);
+
+      const msScopes = mapGasScopesToMsGraph(gasScopes);
+
+      try {
+        const azCmd = `az login`;
+
+        const confirmAz = await prompts({
+          type: "confirm",
+          name: "login",
+          message: `Would you like to perform the one-time Azure CLI login now?\n(This will open a browser to populate the CLI cache for silent future runs)`,
+          initial: true
+        });
+
+        if (confirmAz.login) {
+          console.log(`Executing: ${azCmd}`);
+          try {
+            runCommandSync(azCmd);
+            console.log(`\n\x1b[1;32mSuccess!\x1b[0m Azure CLI cache populated.`);
+          } catch (e) {
+            console.error(`\x1b[1;31mAzure CLI Login failed.\x1b[0m`);
+            process.exit(1);
+          }
+        }
+
+        console.log(`...checking authentication status and fetching Graph token...`);
+        process.env.GF_AUTH_FLOW = 'true';
+        const token = await getMsGraphToken(msScopes);
+        console.log("Successfully authenticated with Microsoft Graph.");
+
+        // Diagnostic: Get user info and drive info
+        const { MsGraph } = await import('../support/msgraph/msclient.js');
+        const msGraph = new MsGraph(token);
+        const me = await msGraph.getMe();
+        const drive = await msGraph.getDrive();
+        console.log(`...Connected as: ${me.displayName} (${me.userPrincipalName || me.mail})`);
+        console.log(`...Primary Drive ID: ${drive.id} (Type: ${drive.driveType})`);
+
+      } catch (err) {
+        console.error(`Microsoft Graph authentication failed: ${err.message}`);
+        process.exit(1);
+      }
+    }
+
     if (platform === "google") {
       console.log("\n--- Authenticating Google Workspace ---");
       await checkForGcloudCli();
-      
+
       const {
         GOOGLE_CLOUD_PROJECT,
         GCP_PROJECT_ID,
@@ -491,20 +673,20 @@ export async function authenticateUser(options = {}) {
 
       // --- Common Google Login (Normal Auth Dialog) ---
       console.log("Revoking previous user credentials...");
-      try { execSync("gcloud auth revoke --quiet", { stdio: "ignore", shell: true }); } catch (e) {}
-      try { execSync("gcloud auth application-default revoke --quiet", { stdio: "ignore", shell: true }); } catch (e) {}
+      try { execSync("gcloud auth revoke --quiet", { stdio: "ignore", shell: true }); } catch (e) { }
+      try { execSync("gcloud auth application-default revoke --quiet", { stdio: "ignore", shell: true }); } catch (e) { }
 
       console.log(`Setting up gcloud config: ${activeConfig}`);
-      try { execSync(`gcloud config configurations describe "${activeConfig}"`, { stdio: "ignore", shell: true }); } 
+      try { execSync(`gcloud config configurations describe "${activeConfig}"`, { stdio: "ignore", shell: true }); }
       catch (e) { runCommandSync(`gcloud config configurations create "${activeConfig}"`); }
       runCommandSync(`gcloud config configurations activate "${activeConfig}"`);
-      
+
       runCommandSync(`gcloud config set project ${projectId}`);
       runCommandSync(`gcloud config set billing/quota_project ${projectId}`);
-      
+
       console.log("Initiating user login...");
       runCommandSync(`gcloud auth login ${driveAccessFlag}`);
-      
+
       let clientFlag = "";
       if (CLIENT_CREDENTIAL_FILE) {
         const clientPath = path.resolve(process.cwd(), CLIENT_CREDENTIAL_FILE);
@@ -523,11 +705,11 @@ export async function authenticateUser(options = {}) {
         console.log("\n--- Performing Domain-Wide Delegation (DWD) Setup ---");
         const current_user = execSync("gcloud config get-value account", { shell: true }).toString().trim();
         const sa_email = `${GOOGLE_SERVICE_ACCOUNT_NAME}@${projectId}.iam.gserviceaccount.com`;
-        
+
         console.log(`...service account: ${sa_email}`);
-        
+
         let sa_exists = false;
-        try { execSync(`gcloud iam service-accounts describe "${sa_email}"`, { stdio: "ignore", shell: true }); sa_exists = true; } catch (e) {}
+        try { execSync(`gcloud iam service-accounts describe "${sa_email}"`, { stdio: "ignore", shell: true }); sa_exists = true; } catch (e) { }
 
         if (!sa_exists) {
           console.log(`...creating service account: ${GOOGLE_SERVICE_ACCOUNT_NAME}`);
@@ -538,7 +720,7 @@ export async function authenticateUser(options = {}) {
         runCommandSync(`gcloud projects add-iam-policy-binding "${projectId}" --member="serviceAccount:${sa_email}" --role="roles/editor" --quiet`, true);
         runCommandSync(`gcloud iam service-accounts add-iam-policy-binding "${sa_email}" --member="serviceAccount:${sa_email}" --role="roles/iam.serviceAccountTokenCreator" --quiet`, true);
         runCommandSync(`gcloud iam service-accounts add-iam-policy-binding "${sa_email}" --member="user:${current_user}" --role="roles/iam.serviceAccountTokenCreator" --quiet`, true);
-        
+
         const saUniqueId = execSync(`gcloud iam service-accounts describe "${sa_email}" --format="value(uniqueId)"`, { shell: true }).toString().trim();
         console.log(`\n\x1b[1;33m************************************************************************`);
         console.log(`IMPORTANT: Add this to Admin Console (Domain-Wide Delegation):`);

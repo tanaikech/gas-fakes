@@ -68,6 +68,7 @@ import { testDriveSharing } from "./testdrivesharing.js";
 import { testDwdRefresh } from "./testdwdrefresh.js";
 import { testKSuiteDrive } from './testksuitedrive.js';
 import { testKSuiteDriveSharing } from './testksuitedrivesharing.js';
+import { testMsGraphDrive } from './testmsgraphdrive.js';
 // important - run this last for now - see https://github.com/brucemcpherson/gas-fakes/issues/118
 import { testGmail } from "./testgmail.js";
 import { testSandboxGmail } from "./testsandboxgmail.js";
@@ -80,6 +81,9 @@ export const testFakes = () => {
   console.log("\n----Test KSuite Integration----");
   testKSuiteDrive(pack);
   testKSuiteDriveSharing(pack);
+
+  console.log("\n----Test MS Graph Integration----");
+  testMsGraphDrive(pack);
 
   console.log("\n----Test Sheets text----");
   testSheetsText(pack);

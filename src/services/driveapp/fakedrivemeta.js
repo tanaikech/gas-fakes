@@ -36,13 +36,16 @@ export class FakeDriveMeta {
 
   __preventRootDamage = (operation) => {
     if (this.__isRoot) {
-      slogger.error(`Can't do ${operation} on root folder`)
+      // Slogger should be quiet about this during cleanup, as it's an expected skip for some platforms
+      slogger.log(`...skipping ${operation} on root folder`);
       throw new Error("Access denied: DriveApp")
     }
   }
   get __isRoot() {
-    const parents = this.__getDecorated("parents")
-    return is.null(parents)
+    // Strictly ID-based detection is most resilient to MS Graph propagation delays
+    // where new items might briefly appear to have no parents.
+    const rootId = globalThis.DriveApp?.getRootFolder()?.getId();
+    return this.getId() === 'root' || this.getId() === rootId;
   }
   /**
    * for enhancing the file with fields not retrieved by default

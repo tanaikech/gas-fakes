@@ -2,7 +2,7 @@ import { Worker } from 'worker_threads';
 import { fileURLToPath } from 'url';
 import path from 'path';
 import fs from 'node:fs';
-import { slogger} from '../slogger.js'
+import { slogger } from '../slogger.js'
 import { Auth } from '../auth.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -54,7 +54,9 @@ const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
 
 // The single, long-lived worker
-const worker = new Worker(path.resolve(__dirname, 'worker.js'));
+const worker = new Worker(path.resolve(__dirname, 'worker.js'), {
+  env: { ...process.env, GF_WORKER: 'true' }
+});
 
 // Pipe worker's output directly. The patch above will handle filtering.
 worker.stdout.pipe(process.stdout);
@@ -72,7 +74,7 @@ worker.on('error', (error) => {
 });
 
 worker.on('exit', (code) => {
-   console.error('Worker exited unexpectedly with code:', code);
+  console.error('Worker exited unexpectedly with code:', code);
   // This handles cases where the worker exits unexpectedly.
   if (code !== 0) {
     console.error(`Worker thread stopped with exit code ${code}`);
@@ -120,8 +122,25 @@ export function callSync(method, ...args) {
   // 2. Send the task to the worker.
   // Use Auth directly to get current platform context
   const platform = Auth.getPlatform();
-  
-  const payload = { method, args, platform };
+
+  // Send current identities to the worker so it remains in sync
+  const identitiesData = {};
+  const _identities = Auth._identities; // We'll need to export this or add a helper
+  if (_identities) {
+    for (const [p, id] of _identities.entries()) {
+      identitiesData[p] = {
+        activeUser: id.activeUser,
+        effectiveUser: id.effectiveUser,
+        accessToken: id.accessToken,
+        tokenExpiresAt: id.tokenExpiresAt,
+        tokenScopes: id.tokenScopes,
+        projectId: id.projectId,
+        authMethod: id.authMethod
+      };
+    }
+  }
+
+  const payload = { method, args, platform, identitiesData };
   worker.postMessage(payload);
 
   // 3. Block and wait for the worker to finish.

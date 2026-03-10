@@ -102,6 +102,13 @@ parentPort.on('message', async (task) => {
   // Ignore the initial setup message which has no 'method' property.
   if (!task.method) return;
 
+  // Apply any identities passed from the main thread to keep worker in sync
+  if (task.identitiesData) {
+    for (const [p, data] of Object.entries(task.identitiesData)) {
+      Auth.setIdentity(p, data);
+    }
+  }
+
 
   try {
     const asyncFn = allSxFunctions[task.method];
@@ -117,7 +124,7 @@ parentPort.on('message', async (task) => {
 
     } else {
       // All other sx* functions receive the worker's Auth object as their first argument.
-      
+
       // CRITICAL: Set platform BEFORE checking auth, as hasAuth() depends on the current platform context.
       if (task.platform) {
         Auth.setPlatform(task.platform);
@@ -127,7 +134,7 @@ parentPort.on('message', async (task) => {
       if (!Auth.hasAuth()) {
         throw new Error(`[Worker] Not initialized for platform '${Auth.getPlatform()}'. fxInit must be called first.`);
       }
-      
+
       result = await asyncFn(Auth, ...task.args);
 
     }

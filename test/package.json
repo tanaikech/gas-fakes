@@ -12,10 +12,11 @@
   "scripts": {
     "test": "node test.js",
     "testlock": "node testlock.js execute",
-    "testdrive": "GF_PLATFORM_AUTH=google node testdrive.js execute",
-    "testksuitedrive": "GF_PLATFORM_AUTH=ksuite node testksuitedrive.js execute",
+    "testdrive": "node testdrive.js execute",
+    "testksuitedrive": "node testksuitedrive.js execute",
+    "testmsgraphdrive": "node testmsgraphdrive.js execute",
     "testmultibackend": "node testmultibackend.js execute",
-    "testksuitedrivesharing": "GF_PLATFORM_AUTH=ksuite node testksuitedrivesharing.js execute",
+    "testksuitedrivesharing": "node testksuitedrivesharing.js execute",
     "testsheetsdatavalidations": "node testsheetsdatavalidations.js execute",
     "testsheetspermissions": "node testsheetspermissions.js execute",
     "testsheetsvalues": "node testsheetsvalues.js execute",
@@ -76,7 +77,7 @@
     "testxmlservice": "node testxmlservice.js execute"
   },
   "name": "test-gas-fakes",
-  "version": "2.2.1",
+  "version": "2.2.3",
   "license": "MIT",
   "main": "test.js",
   "description": "test gas-fakes on both live and local apps script - version number should match the gas-fakes version number it tests",

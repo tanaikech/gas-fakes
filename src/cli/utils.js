@@ -71,6 +71,22 @@ export async function checkForGcloudCli() {
 }
 
 /**
+ * Checks if the Azure CLI (az) is installed and available.
+ */
+export async function checkForAzCli() {
+  try {
+    await spawnCommand("az", ["--version"]);
+  } catch (error) {
+    console.error(
+      "\n[Error] Azure CLI (az) not found or failed to run."
+    );
+    console.error("Please install it by following the official instructions:");
+    console.error("https://learn.microsoft.com/en-us/cli/azure/install-azure-cli");
+    process.exit(1);
+  }
+}
+
+/**
  * Helper function to run a shell command sync (used in setup).
  */
 export function runCommandSync(command, silent = false) {

@@ -272,7 +272,7 @@ class FakeBehavior {
     this.__sandboxService = new Proxy({}, {
       get: (target, name) => {
         if (typeof name !== 'string' || name.startsWith('__')) return target[name]
-        
+
         // EXCLUSION: CacheService and PropertiesService are NOT intended to be sandboxed
         if (name === 'CacheService' || name === 'PropertiesService') return undefined;
 
@@ -287,7 +287,7 @@ class FakeBehavior {
           globalThis.ScriptApp.__registeredServices.forEach(s => {
             // EXCLUSION: CacheService and PropertiesService are NOT intended to be sandboxed
             if (s !== 'CacheService' && s !== 'PropertiesService' && !target[s]) {
-               target[s] = newFakeSandboxService(this, s)
+              target[s] = newFakeSandboxService(this, s)
             }
           })
         }
@@ -295,7 +295,7 @@ class FakeBehavior {
       },
       getOwnPropertyDescriptor: (target, name) => {
         if (typeof name === 'string' && !name.startsWith('__') && name !== 'CacheService' && name !== 'PropertiesService' && !target[name]) {
-           target[name] = newFakeSandboxService(this, name)
+          target[name] = newFakeSandboxService(this, name)
         }
         return Reflect.getOwnPropertyDescriptor(target, name)
       }
@@ -398,6 +398,13 @@ class FakeBehavior {
     if (!is.nonEmptyString(id)) {
       throw new Error(`Invalid sandbox id parameter (${id}) - must be a non-empty string`);
     }
+
+    // Prevent root folder from being added to the cleanup list
+    // OneDrive root uses a GUID, but DriveApp.getRootFolder().getId() finds it.
+    // We also skip 'root' for safety.
+    const isRootId = id === 'root' || (globalThis.DriveApp?.getRootFolder()?.getId() === id);
+    if (isRootId) return id;
+
     if (this.sandboxMode || force) {
       this.__createdIds.add(id);
       if (!this.__allowedIds.has(id)) {
@@ -525,17 +532,30 @@ class FakeBehavior {
     try {
       // Drive cleanup
       if (this.__cleanup) {
+        const rootId = DriveApp.getRootFolder().getId();
         trashed = Array.from(this.__createdIds).reduce((acc, id) => {
+          if (id === rootId) {
+            slogger.log(`...skipping trashing of root folder`);
+            return acc;
+          }
           let d = null
           try {
             d = DriveApp.getFileById(id)
           } catch (e) {
-            d = DriveApp.getFolderById(id)
+            try {
+              d = DriveApp.getFolderById(id)
+            } catch (ee) {
+              // Ignore if not found
+            }
           }
-          if (d) {
-            d.setTrashed(true);
-            slogger.log(`...trashed file ${d.getName()} (${id})`);
-            acc.push(id);
+          if (d && d.getId() !== rootId) {
+            try {
+              d.setTrashed(true);
+              slogger.log(`...trashed file ${d.getName()} (${id})`);
+              acc.push(id);
+            } catch (e) {
+              slogger.error(`...failed to trash file ${id}: ${e.message}`);
+            }
           }
           return acc;
         }, []);

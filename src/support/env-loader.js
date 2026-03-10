@@ -25,13 +25,13 @@ if (!hasEnvFileFlag) {
     // Try to find .env in the same directory as the main entry point script
     const envPath = join(dirname(mainScript), '.env');
     if (existsSync(envPath)) {
-      dotenv.config({ path: envPath, override: true, quiet: true });
+      dotenv.config({ path: envPath, override: false, quiet: true });
     } else {
       // Fallback to default dotenv behavior (CWD)
-      dotenv.config({ override: true, quiet: true });
+      dotenv.config({ override: false, quiet: true });
     }
   } else {
     // Fallback if mainScript is not available (e.g. REPL)
-    dotenv.config({ override: true, quiet: true });
+    dotenv.config({ override: false, quiet: true });
   }
 }

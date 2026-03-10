@@ -14,6 +14,113 @@ import { syncWarn, syncError, syncLog } from './workersync/synclogger.js';
 import { getDriveApiClient } from '../services/advdrive/drapis.js';
 import { translateFieldsToV2 } from './utils.js';
 import { KSuiteDrive } from './ksuite/kdrive.js';
+import { OneDrive } from './msgraph/onedrive.js';
+
+const handleOneDrive = async (Auth, { prop, method, params }) => {
+  const token = await Auth.getAccessToken();
+  const oneDrive = new OneDrive(token);
+
+  if (prop === 'files' && method === 'get') {
+    const isMedia = params.alt === 'media' || (params.params && params.params.alt === 'media');
+
+    if (isMedia) {
+      const data = await oneDrive.downloadFile(params.fileId);
+      return {
+        data: Array.from(data),
+        response: { status: 200 }
+      };
+    }
+    const data = await oneDrive.getFile(params.fileId);
+    return {
+      data,
+      response: { status: 200 }
+    };
+  }
+
+  if (prop === 'files' && method === 'list') {
+    let parentId = null;
+    let nameFilter = null;
+    let mimeOp = null;
+    let mimeType = null;
+
+    if (params.q) {
+      syncLog(`OneDrive: Parsing query: ${params.q}`);
+      // Robust mapping of Google search terms to MS Graph filters
+      const parentMatch = params.q.match(/'([^']*)' in parents/i);
+      if (parentMatch) parentId = parentMatch[1];
+
+      const mimeMatch = params.q.match(/mimeType\s*(!?=)\s*'([^']*)'/i);
+      if (mimeMatch) {
+        mimeOp = mimeMatch[1];
+        mimeType = mimeMatch[2];
+      }
+
+      const nameMatch = params.q.match(/(?:name|title)\s*=\s*'([^']*)'/i);
+      if (nameMatch) nameFilter = nameMatch[1];
+    }
+
+    const result = await oneDrive.listFiles(parentId, params);
+    let files = result.files;
+
+    if (mimeType) {
+      files = files.filter(f => mimeOp === '!=' ? f.mimeType !== mimeType : f.mimeType === mimeType);
+    }
+
+    if (nameFilter) {
+      const lowerFilter = nameFilter.toLowerCase().trim();
+      files = files.filter(f => f.name && f.name.toLowerCase().trim() === lowerFilter);
+    }
+
+    if (params.q) {
+      syncLog(`OneDrive: Final filtered result has ${files.length} items`);
+    }
+
+    return {
+      data: {
+        files,
+        nextPageToken: result.nextLink
+      },
+      response: { status: 200 }
+    };
+  }
+
+  if (prop === 'files' && method === 'create') {
+    const isDir = params.resource?.mimeType === 'application/vnd.google-apps.folder';
+    if (isDir) {
+      const parentId = params.resource?.parents?.[0];
+      const data = await oneDrive.createDirectory(parentId, params.resource.name);
+      return {
+        data,
+        response: { status: 200 }
+      };
+    }
+  }
+
+  if (prop === 'files' && method === 'update') {
+    if (params.resource && params.resource.name) {
+      const data = await oneDrive.renameFile(params.fileId, params.resource.name);
+      return { data, response: { status: 200 } };
+    }
+    if (params.addParents) {
+      const data = await oneDrive.moveFile(params.fileId, params.addParents);
+      return { data, response: { status: 200 } };
+    }
+    if (params.resource && typeof params.resource.trashed === 'boolean') {
+      if (params.resource.trashed) {
+        await oneDrive.deleteFile(params.fileId);
+      }
+      return { data: { id: params.fileId, trashed: params.resource.trashed }, response: { status: 200 } };
+    }
+  }
+
+  if (prop === 'files' && method === 'copy') {
+    const parentId = params.resource?.parents?.[0];
+    const data = await oneDrive.copyFile(params.fileId, parentId, params.resource?.name);
+    return { data, response: { status: 200 } };
+  }
+
+  throw new Error(`OneDrive API ${prop}.${method} not implemented`);
+};
 
 const handleKSuiteDrive = async (Auth, { prop, method, params }) => {
   const token = process.env.KSUITE_TOKEN;
@@ -27,7 +134,7 @@ const handleKSuiteDrive = async (Auth, { prop, method, params }) => {
   if (prop === 'files' && method === 'get') {
     // Be very flexible about where 'alt' might be
     const isMedia = params.alt === 'media' || (params.params && params.params.alt === 'media');
-    
+
     if (isMedia) {
       const data = await kDrive.downloadFile(params.fileId);
       return {
@@ -62,17 +169,17 @@ const handleKSuiteDrive = async (Auth, { prop, method, params }) => {
       const nameMatch = params.q.match(/name\s*=\s*'([^']*)'/);
       if (nameMatch) nameFilter = nameMatch[1];
     }
-    
+
     // Per user instruction: stay within private root.
     // If parentId is not specified, we do a recursive search from the Private root
     // to emulate GAS DriveApp.getFiles() behavior.
-    
+
     const getAllFilesRecursive = async (dirId, depth = 0) => {
       if (depth > 5) return []; // Limit depth to avoid infinite loops
-      
+
       const result = await kDrive.listFiles(dirId);
       let files = result.files;
-      
+
       const subDirs = files.filter(f => f.mimeType === 'application/vnd.google-apps.folder');
       for (const dir of subDirs) {
         // Skip root references
@@ -109,7 +216,7 @@ const handleKSuiteDrive = async (Auth, { prop, method, params }) => {
     return {
       data: {
         files,
-        nextPageToken: null 
+        nextPageToken: null
       },
       response: { status: 200 }
     };
@@ -246,6 +353,10 @@ export const sxDrive = async (Auth, { prop, method, params, options }) => {
     return handleKSuiteDrive(Auth, { prop, method, params, options });
   }
 
+  if (Auth.getPlatform() === 'msgraph') {
+    return handleOneDrive(Auth, { prop, method, params, options });
+  }
+
   const apiClient = getDriveApiClient();
   const tag = `sxDrive for ${prop}.${method}`;
 
@@ -284,6 +395,48 @@ export const sxDrive = async (Auth, { prop, method, params, options }) => {
 
 export const sxStreamUpMedia = async (Auth, { resource, bytes, fields, method, mimeType, fileId, params }) => {
 
+  if (Auth.getPlatform() === 'msgraph') {
+    const isDir = (resource?.mimeType || mimeType) === 'application/vnd.google-apps.folder';
+    const token = await Auth.getAccessToken();
+    const oneDrive = new OneDrive(token);
+    const parentId = resource?.parents?.[0];
+
+    if (method === 'update') {
+      if (resource?.name) {
+        const data = await oneDrive.renameFile(fileId, resource.name);
+        return {
+          data: { ...data, id: fileId, name: resource.name },
+          response: { status: 200 }
+        };
+      }
+      if (params && params.addParents) {
+        const data = await oneDrive.moveFile(fileId, params.addParents);
+        return { data, response: { status: 200 } };
+      }
+      // Handle trash
+      if (resource && typeof resource.trashed === 'boolean') {
+        if (resource.trashed) {
+          await oneDrive.deleteFile(fileId);
+        }
+        return { data: { id: fileId, trashed: resource.trashed }, response: { status: 200 } };
+      }
+      if (bytes) {
+        const data = await oneDrive.uploadFile(null, null, bytes, null, fileId);
+        return { data, response: { status: 200 } };
+      }
+      const data = await oneDrive.getFile(fileId);
+      return { data, response: { status: 200 } };
+    }
+
+    if (isDir) {
+      const data = await oneDrive.createDirectory(parentId, resource?.name);
+      return { data, response: { status: 200 } };
+    } else {
+      const data = await oneDrive.uploadFile(parentId, resource?.name || 'Untitled', bytes, resource?.mimeType || mimeType);
+      return { data, response: { status: 200 } };
+    }
+  }
+
   if (Auth.getPlatform() === 'ksuite') {
     const isDir = (resource?.mimeType || mimeType) === 'application/vnd.google-apps.folder';
     const token = process.env.KSUITE_TOKEN;
@@ -298,7 +451,7 @@ export const sxStreamUpMedia = async (Auth, { resource, bytes, fields, method, m
           response: { status: 200 }
         };
       }
-      
+
       if (resource && Reflect.has(resource, 'trashed')) {
         if (resource.trashed) {
           await kDrive.deleteFile(fileId);
@@ -329,7 +482,7 @@ export const sxStreamUpMedia = async (Auth, { resource, bytes, fields, method, m
           response: { status: 200 }
         };
       }
-      
+
       // If resource is empty or doesn't have supported fields for update, just return current metadata
       if (!resource || Object.keys(resource).length === 0) {
         const data = await kDrive.getFile(fileId);
@@ -433,7 +586,11 @@ const sxStreamer = async ({
 export const sxDriveExport = async (Auth, { id: fileId, mimeType }) => {
 
   if (Auth.getPlatform() === 'ksuite') {
-     throw new Error('sxDriveExport not implemented for KSuite in POC');
+    throw new Error('sxDriveExport not implemented for KSuite in POC');
+  }
+
+  if (Auth.getPlatform() === 'msgraph') {
+    throw new Error('sxDriveExport not implemented for MS Graph in POC');
   }
 
   return sxStreamer({
@@ -451,6 +608,18 @@ export const sxDriveExport = async (Auth, { id: fileId, mimeType }) => {
  * @return {SxResult} from the api
  */
 export const sxDriveMedia = async (Auth, { id: fileId }) => {
+
+  if (Auth.getPlatform() === 'msgraph') {
+    const token = await Auth.getAccessToken();
+    const oneDrive = new OneDrive(token);
+    const data = await oneDrive.downloadFile(fileId);
+    const meta = await oneDrive.getFile(fileId);
+    return {
+      data: Array.from(data),
+      metadata: meta,
+      response: { status: 200 }
+    };
+  }
 
   if (Auth.getPlatform() === 'ksuite') {
     const token = process.env.KSUITE_TOKEN;

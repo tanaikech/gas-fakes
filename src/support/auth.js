@@ -2,9 +2,10 @@ import { GoogleAuth, JWT, Impersonated, OAuth2Client } from "google-auth-library
 import is from "@sindresorhus/is";
 import { createHash } from "node:crypto";
 import { syncLog, syncError } from "./workersync/synclogger.js";
+import { clearFileCache } from "./filecache.js";
 
 // Multi-identity storage
-const _identities = new Map();
+export const _identities = new Map();
 // Default to the first authorized platform if specified in environment
 let _platform = process.env.GF_PLATFORM_AUTH ? process.env.GF_PLATFORM_AUTH.split(',')[0] : 'workspace';
 let _manifest = null;
@@ -53,7 +54,14 @@ const setSettings = (settings) => (_settings = settings);
 const getCachePath = () => getSettings()?.cache;
 const getPropertiesPath = () => getSettings()?.properties;
 const setPlatform = (platform) => {
-  _platform = platform;
+  if (_platform !== platform) {
+    _platform = platform;
+    try {
+      clearFileCache();
+    } catch (e) {
+      // ignore if not imported or failed
+    }
+  }
 };
 const getPlatform = () => _platform;
 
@@ -67,8 +75,8 @@ const setTokenScopes = (scopes, platform = _platform) => {
 const getTokenScopes = () => {
   const id = _getIdentity();
   if (id.tokenScopes) return id.tokenScopes;
-  if (_platform === 'ksuite') return ""; 
-  
+  if (_platform === 'ksuite') return "";
+
   // If we have an authClient, we might be able to discover them
   if (id.authClient) {
     return getAccessTokenInfo().then(info => {
@@ -76,7 +84,7 @@ const getTokenScopes = () => {
       return id.tokenScopes;
     });
   }
-  
+
   return "";
 };
 
@@ -89,7 +97,7 @@ const getHashedUserId = () =>
 const _getTokenInfo = async (client) => {
   const tokenResponse = await client.getAccessToken();
   const token = tokenResponse.token;
-  
+
   let tokenInfo;
   if (typeof client.getTokenInfo === 'function') {
     tokenInfo = await client.getTokenInfo(token);
@@ -99,12 +107,12 @@ const _getTokenInfo = async (client) => {
       method: 'GET'
     });
     tokenInfo = response.data;
-    
+
     if (!tokenInfo.email && process.env.GOOGLE_WORKSPACE_SUBJECT) {
       tokenInfo.email = process.env.GOOGLE_WORKSPACE_SUBJECT;
     }
   }
-  
+
   return {
     tokenInfo,
     token
@@ -114,7 +122,7 @@ const _getTokenInfo = async (client) => {
 const getAccessTokenInfo = async () => {
   const id = _getIdentity();
   if (id.authClient) return _getTokenInfo(id.authClient);
-  if (_platform === 'ksuite') {
+  if (_platform === 'ksuite' || _platform === 'msgraph') {
     return { token: id.accessToken, tokenInfo: { email: id.effectiveUser?.email } };
   }
   throw `auth isnt set yet for platform ${_platform}`;
@@ -123,7 +131,7 @@ const getAccessTokenInfo = async () => {
 const getSourceAccessTokenInfo = async () => {
   const id = _getIdentity();
   if (id.sourceClient) return _getTokenInfo(id.sourceClient);
-  if (_platform === 'ksuite') {
+  if (_platform === 'ksuite' || _platform === 'msgraph') {
     return { token: id.accessToken, tokenInfo: { email: id.activeUser?.email } };
   }
   throw `source auth isnt set yet for platform ${_platform}`;
@@ -131,7 +139,7 @@ const getSourceAccessTokenInfo = async () => {
 
 const getAccessToken = async () => {
   const id = _getIdentity();
-  if (_platform === 'ksuite') return id.accessToken;
+  if (_platform === 'ksuite' || _platform === 'msgraph') return id.accessToken;
   if (!id.authClient) throw `auth isnt set yet for platform ${_platform}`;
   return (await getAccessTokenInfo()).token;
 }
@@ -147,7 +155,7 @@ const getAuthMethod = (platform = _platform) => _getIdentity(platform).authMetho
 
 const setAuth = async (scopes = [], mcpLoading = false) => {
   const mayLog = mcpLoading ? () => null : syncLog;
-  const id = _getIdentity('google'); 
+  const id = _getIdentity('google');
 
   try {
     id.auth = new GoogleAuth()
@@ -163,23 +171,23 @@ const setAuth = async (scopes = [], mcpLoading = false) => {
       id.sourceClient = id.authClient
     } else {
       if (!saName) throw new Error("DWD requested but GOOGLE_SERVICE_ACCOUNT_NAME is not set.");
-      
+
       id.authMethod = 'dwd'
       const targetPrincipal = `${saName}@${id.projectId}.iam.gserviceaccount.com`
-      
+
       const sourceScopes = scopes.filter(s => s === 'openid' || s === 'https://www.googleapis.com/auth/userinfo.email')
       id.sourceClient = await id.auth.getClient(sourceScopes.length > 0 ? { scopes: sourceScopes } : {})
 
       const { tokenInfo: userInfo } = await _getTokenInfo(id.sourceClient);
       const userEmail = process.env.GOOGLE_WORKSPACE_SUBJECT || userInfo.email
-      
+
       const dwdClient = new OAuth2Client()
       dwdClient._token = null
       dwdClient._expiresAt = 0
 
       dwdClient.getAccessToken = async function () {
         if (this._token && Date.now() < this._expiresAt - 60000) return { token: this._token }
-        
+
         const iat = Math.floor(Date.now() / 1000)
         const payload = {
           iss: targetPrincipal,
@@ -209,10 +217,10 @@ const setAuth = async (scopes = [], mcpLoading = false) => {
         const tokenData = await tokenResponse.json()
         this._token = tokenData.access_token
         this._expiresAt = Date.now() + (tokenData.expires_in * 1000)
-        
+
         if (!this.credentials) this.credentials = {};
-        this.credentials.access_token = this._token; 
-        
+        this.credentials.access_token = this._token;
+
         return { token: this._token }
       }
 

@@ -16,6 +16,7 @@ The idea is to use the Google Apps Script API surface (e.g., `DriveApp`, `Spread
 A new property `__platform` was added to the `ScriptApp` global.
 *   `ScriptApp.__platform = 'workspace'` (Default): Hits Google APIs.
 *   `ScriptApp.__platform = 'ksuite'`: Intercepts calls and routes them to the KSuite translation layer.
+*   `ScriptApp.__platform = 'msgraph'`: Intercepts calls and routes them to the Microsoft Graph (OneDrive) translation layer.
 
 ### Interception Point
 The translation happens at the `Syncit` / Worker level. When a script calls `DriveApp.getRootFolder()`, the request is sent to the worker thread. The worker checks `Auth.getPlatform()` and, if set to `ksuite`, routes the request through the `KSuiteDrive` translator instead of the standard `googleapis` client.

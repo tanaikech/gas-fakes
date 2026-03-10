@@ -51,7 +51,7 @@ const normalizeSerialization = (ob) =>
  */
 const registerSx = (result, allow404 = false, fields) => {
   const { data, response } = result;
-  
+
   // If data is a file metadata object (has an id), register it in the cache.
   // If it's media content (array) or doesn't have an ID, skip registration.
   if (is.plainObject(data) && is.nonEmptyString(data.id)) {
@@ -60,8 +60,8 @@ const registerSx = (result, allow404 = false, fields) => {
       ...result,
       data: improveFileCache(data.id, data, fields),
     };
-  } 
-  
+  }
+
   // For other cases (like alt=media content), just return the result as is.
   return result;
 };
@@ -310,15 +310,22 @@ export const fxInit = ({
   Auth.setSettings(settings);
   Auth.setClasp(clasp);
   Auth.setManifest(manifest);
-  
+
   // console.log(`...DEBUG: fxInit identities received keys=${Object.keys(identities || {}).join(',')}`);
 
   // Populate all identities
   if (identities) {
     Object.keys(identities).forEach(p => {
-      // console.log(`...DEBUG: fxInit populating identity for ${p}. scopes=${identities[p].tokenScopes}`);
       Auth.setIdentity(p, identities[p]);
     });
+  }
+
+  // Set default platform only if none is set
+  const currentPlatform = Auth.getPlatform();
+  if (currentPlatform === 'workspace' || !currentPlatform) {
+    const initialPlatforms = platformAuth || global.ScriptApp?.__platformAuth || ['google'];
+    const firstPlatform = initialPlatforms[0] === 'google' ? 'workspace' : initialPlatforms[0];
+    Auth.setPlatform(firstPlatform);
   }
 
   return synced;

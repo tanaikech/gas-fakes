@@ -11,6 +11,8 @@ import { syncError, syncLog, syncWarn } from './workersync/synclogger.js';
 import { readFile, writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 import { KSuiteDrive } from './ksuite/kdrive.js';
+import { getMsGraphToken, mapGasScopesToMsGraph } from './msgraph/msauth.js';
+import { MsGraph } from './msgraph/msclient.js';
 
 let _loggedSummary = false;
 
@@ -78,7 +80,7 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, cachePath,
       const finalScopes = Array.from(scopeSet)
 
       await Auth.setAuth(finalScopes);
-      
+
       const [activeInfo, effectiveInfo] = await Promise.all([
         Auth.getSourceAccessTokenInfo(),
         Auth.getAccessTokenInfo()
@@ -105,10 +107,10 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, cachePath,
 
       // Set current worker identity to google for remainder of init if needed
       Auth.setIdentity('google', identities.google);
-      
+
     } catch (err) {
       syncWarn(`Google authentication failed: ${err.message}`);
-      if (!platforms.includes('ksuite')) throw err; // Fail if only google was requested
+      if (!platforms.includes('ksuite') && !platforms.includes('msgraph')) throw err;
     }
   }
 
@@ -122,7 +124,7 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, cachePath,
         Auth.setPlatform('ksuite');
         const kDrive = new KSuiteDrive(kToken);
         const accountId = await kDrive.getAccountId();
-        
+
         if (!accountId) throw new Error("Could not retrieve Infomaniak account info.");
 
         const kUser = {
@@ -138,32 +140,77 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, cachePath,
           projectId: null,
           authMethod: 'token'
         };
-        
+
         Auth.setIdentity('ksuite', identities.ksuite);
       } catch (err) {
         syncWarn(`KSuite authentication failed: ${err.message}`);
-        if (!platforms.includes('google')) throw err;
+        if (!platforms.includes('google') && !platforms.includes('msgraph')) throw err;
       }
     }
   }
 
-  // Restore default platform context based on authorized backends
-  const defaultPlatform = platforms[0] === 'google' ? 'workspace' : platforms[0];
-  Auth.setPlatform(defaultPlatform);
+  // --- MS Graph Auth Block ---
+  if (platforms.includes('msgraph')) {
+    try {
+      Auth.setPlatform('msgraph');
+
+      // If we already have a valid identity (passed from main thread), use it
+      if (Auth.hasAuth('msgraph')) {
+        const id = Auth.getActiveUser(); // This will return the sync-ed user
+        identities.msgraph = {
+          activeUser: Auth.getActiveUser(),
+          effectiveUser: Auth.getEffectiveUser(),
+          accessToken: await Auth.getAccessToken(),
+          projectId: null,
+          authMethod: Auth.getAuthMethod('msgraph') || 'native'
+        };
+        syncLog('...using MS Graph identity synchronized from main process');
+      } else {
+        const gasScopes = manifest.oauthScopes || [];
+        const msScopes = mapGasScopesToMsGraph(gasScopes);
+
+        const token = await getMsGraphToken(msScopes);
+        const msGraph = new MsGraph(token);
+        const me = await msGraph.getMe();
+
+        const msUser = {
+          id: me.id,
+          email: me.userPrincipalName || me.mail || 'msgraph-user@microsoft.com',
+          token: token
+        };
+
+        identities.msgraph = {
+          activeUser: msUser,
+          effectiveUser: msUser,
+          accessToken: token,
+          projectId: null,
+          authMethod: 'native'
+        };
+
+        Auth.setIdentity('msgraph', identities.msgraph);
+      }
+    } catch (err) {
+      syncWarn(`Microsoft Graph authentication failed: ${err.message}`);
+      if (!platforms.includes('google') && !platforms.includes('ksuite')) throw err;
+    }
+  }
+
+  // Restore default platform context only if not already set or defaulted
+  // Auth.setPlatform(defaultPlatform); 
 
   // Final Summary Report (Concise, single instance)
   if (!_loggedSummary) {
     const summary = Object.keys(identities).map(p => {
       const id = identities[p];
       const isImpersonating = id.activeUser?.email !== id.effectiveUser?.email;
-      const userPart = isImpersonating 
-        ? `${id.activeUser?.email} impersonating ${id.effectiveUser?.email}` 
+      const userPart = isImpersonating
+        ? `${id.activeUser?.email} impersonating ${id.effectiveUser?.email}`
         : id.effectiveUser?.email;
-      
+
       const methodPart = id.authMethod ? ` via ${id.authMethod.toUpperCase()}` : '';
       return `${p}${methodPart} (${userPart})`;
     }).join(', ');
-    
+
     if (summary) {
       const scriptIdSource = process.env.GF_SCRIPT_ID ? 'env' : (clasp.scriptId ? 'clasp' : 'random');
       syncLog(`...authorized backends: ${summary}`);
