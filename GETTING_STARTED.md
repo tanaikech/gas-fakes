@@ -51,6 +51,10 @@ During `init`, you can select one or more:
 | :--- | :--- | :--- |
 | **Google Workspace** | DWD (Default) or ADC | Standard Google Apps Script emulation. |
 | **Infomaniak KSuite** | API Token | Hybrid or standalone Infomaniak KDrive development. |
+| **Microsoft Graph** | Azure CLI | OneDrive Personal and Microsoft 365 OneDrive development. |
+
+> [!IMPORTANT]
+> **Microsoft Graph Caveat:** Currently, `gas-fakes` has been primarily tested with **Personal Microsoft Accounts**. Business accounts often require a specific "SharePoint Online (SPO) license" to access the Drive API. guest/EXT accounts may experience 400 errors if this license is missing.
 
 ### Google Authentication Types
 
@@ -126,10 +130,10 @@ import '@mcpher/gas-fakes';
 ScriptApp.__platformAuth = ['ksuite'];
 
 // 3. Switch active execution context
-ScriptApp.__platform = 'ksuite';
+ScriptApp.__platform = 'google';
 
 // 4. Use services - backend initialization happens here automatically
-const root = DriveApp.getRootFolder(); // Returns KDrive Private root
+const root = DriveApp.getRootFolder(); // Returns Google Drive root
 ```
 
 ---

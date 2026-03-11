@@ -38,9 +38,9 @@ To initialize Google with Application Default Credentials (ADC):
 gas-fakes init --auth-type adc
 ```
 
-To initialize multiple backends at once:
+To initialize multiple backends at once (e.g., Google, KSuite, and MS Graph):
 ```bash
-gas-fakes init -b google -b ksuite
+gas-fakes init -b google -b ksuite -b msgraph
 ```
 
 Next, authorize the tool. This command will guide you through the process of logging into your accounts. By default, it authenticates Google.
@@ -49,9 +49,11 @@ Next, authorize the tool. This command will guide you through the process of log
 gas-fakes auth
 ```
 
-To authenticate a specific backend like KSuite:
+To authenticate a specific backend like KSuite or MS Graph:
 ```bash
 gas-fakes auth --backend ksuite
+# or
+gas-fakes auth --backend msgraph
 ```
 
 If you need to enable the required Google APIs for your project, you can do so with the following command:
@@ -149,12 +151,18 @@ Starting with version 2.1.0, `gas-fakes` supports Infomaniak KSuite (kDrive) alo
 
 You can steer `gas-fakes` to use a specific backend by setting the `ScriptApp.__platform` property.
 
-- `ScriptApp.__platform = 'workspace'` (Default): Targets Google APIs.
+- `ScriptApp.__platform = 'google'` (Default): Targets Google APIs.
 - `ScriptApp.__platform = 'ksuite'`: Targets Infomaniak KSuite APIs.
 
 **Example:**
 
 ```javascript
+// Check auth status
+if (ScriptApp.__isPlatformAuthed('google')) {
+  console.log('Google is authorized');
+}
+console.log('Authorized platforms:', ScriptApp.__platforms);
+
 // Switch to KSuite
 ScriptApp.__platform = 'ksuite';
 

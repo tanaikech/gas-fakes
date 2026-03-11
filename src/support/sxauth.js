@@ -64,7 +64,7 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, cachePath,
   const identities = {};
 
   // --- Google Auth Block ---
-  if (platforms.includes('google') || platforms.includes('workspace')) {
+  if (platforms.includes('google')) {
     try {
       // Ensure platform is set for info discovery
       Auth.setPlatform('google');

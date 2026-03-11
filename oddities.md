@@ -1056,6 +1056,22 @@ To address high-severity ReDoS vulnerabilities and deprecation warnings in trans
 #### Read-only filesystems and settings persistence
 In ephemeral environments like Cloud Run, the filesystem is typically read-only. `gas-fakes` initialization (`sxInit`) is designed to handle this by skipping settings persistence if the write fails. A critical bug was fixed where these operations were not properly awaited, causing unhandled promise rejections that crashed the worker process. All filesystem operations during initialization are now correctly awaited and handled within `try...catch` blocks to ensure graceful degradation in read-only environments.
 
+### Microsoft Graph & OneDrive Oddities
+
+The Microsoft Graph implementation in `gas-fakes` is designed for a "Zero-Cache" and "Silent Runtime" experience using the Azure CLI. However, there are several platform-specific caveats:
+
+#### Personal (Consumer) Accounts Only
+As of now, `gas-fakes` has been primarily tested with **Personal Microsoft Accounts (OneDrive Personal)**. While technical support for custom App Registrations and Business tenants exists, personal accounts are the only tested path for the "Keyless" flow.
+
+#### The "SPO License" Requirement
+When using Business or Guest accounts (especially `EXT` identities), you may see a `Request failed with status code 400 (Bad Request): Tenant does not have a SPO license`. This is a Microsoft API requirement: you cannot access the `/me/drive` endpoint without an active SharePoint Online license. Personal accounts do not have this restriction.
+
+#### Interactive Fallback in Worker
+If the silent Azure CLI fallback fails (due to session expiry or directory mismatch), `gas-fakes` will open a browser window for an **additional interactive login** directly from the worker thread. This ensures the script continues to run, but interrupts the "silent" flow. Running `gas-fakes auth -b msgraph` manually usually restores the silent runtime for several hours/days.
+
+#### Primary Drive Only
+The current implementation focuses on the primary User Drive. Group drives, sites, and multiple drives are not yet fully supported or tested.
+
 ## Testing
 
 If you want to play with the testing suite , then take a look at the [collaborators](collaborators.md) writeup.

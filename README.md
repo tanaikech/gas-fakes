@@ -44,7 +44,7 @@ Configuration for your local Node environment is handled via environment variabl
 | `GF_DOCUMENT_ID` | `null` | A bound document ID for testing container-bound scripts. |
 | `GF_CACHE_PATH` | `/tmp/gas-fakes/cache` | Path for `CacheService` local file emulation. |
 | `GF_PROPERTIES_PATH` | `/tmp/gas-fakes/properties` | Path for `PropertiesService` local file emulation. |
-| `GF_PLATFORM_AUTH` | `google` | Comma-separated list of backends to initialize (`google`, `ksuite`). |
+| `GF_PLATFORM_AUTH` | `google` | Comma-separated list of backends to initialize (`google`, `ksuite`, `msgraph`). |
 | `AUTH_TYPE` | `dwd` | Google auth type: `dwd` (Domain-Wide Delegation) or `adc` (Application Default Credentials). |
 | `LOG_DESTINATION` | `CONSOLE` | Logging destination: `CONSOLE`, `CLOUD`, `BOTH`, or `NONE`. |
 | `STORE_TYPE` | `FILE` | Internal storage type for properties/cache: `FILE` (local) or `UPSTASH` (Redis). |
@@ -163,6 +163,7 @@ As I mentioned earlier, to take this further, I'm going to need a lot of help to
 
 - [getting started](GETTING_STARTED.md) - how to handle authentication for restricted scopes.
 - [readme](README.md)
+- [ms graph auth](src/support/msgraph/README.md)
 - [gas fakes cli](gas-fakes-cli.md)
 - [ksuite poc](ksuite_poc.md)
 - [apps script - a lingua franca for workspace platforms](https://ramblings.mcpher.com/apps-script-a-lingua-franca/)

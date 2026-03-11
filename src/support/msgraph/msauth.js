@@ -76,22 +76,32 @@ export async function getMsGraphToken(scopes = ['User.Read']) {
     const scopeArg = msScopes.join(' ');
 
     if (!isAuthFlow) {
+      // Revert to strictly tenant-aware fallback to avoid picking up business/EXT sessions.
+      const tenantArg = targetTenant ? `--tenant "${targetTenant}" ` : '';
+      const clientArg = clientId ? `--client-id "${clientId}" ` : '';
+
       try {
-        // Use .default for the CLI call to match what we consented to in the manual login.
-        // We use the tenant from ENV to ensure we don't accidentally pick up a guest session in a business directory.
-        const tenantArg = targetTenant ? `--tenant "${targetTenant}" ` : '';
-        const clientArg = clientId ? `--client-id "${clientId}" ` : '';
+        // Strategy 1: Custom Client ID + Tenant
         const cmd = `az account get-access-token --resource-type ms-graph ${tenantArg}${clientArg}--scope "https://graph.microsoft.com/.default" --query accessToken -o tsv`;
         const stdout = execSync(cmd, { encoding: 'utf-8', stdio: ['ignore', 'pipe', 'ignore'], shell: true });
         const token = stdout ? stdout.trim() : '';
-
         if (token && (token.match(/\./g) || []).length >= 2) {
           syncLog('...retrieved valid MS Graph token via Azure CLI (silent)');
           return token;
         }
       } catch (e) {
-        syncLog(`...silent CLI login failed: ${e.message}`);
-        // Silent failed - runtime interactive fallback will be triggered below
+        try {
+          // Strategy 2: First-party + Tenant (Magic bullet for SPO license fix)
+          const fallbackCmd = `az account get-access-token --resource-type ms-graph ${tenantArg}--scope "https://graph.microsoft.com/.default" --query accessToken -o tsv`;
+          const stdout = execSync(fallbackCmd, { encoding: 'utf-8', stdio: ['ignore', 'pipe', 'ignore'], shell: true });
+          const token = stdout ? stdout.trim() : '';
+          if (token && (token.match(/\./g) || []).length >= 2) {
+            syncLog(`...retrieved valid MS Graph token via Azure CLI (first-party ${targetTenant} fallback)`);
+            return token;
+          }
+        } catch (ee) {
+          syncLog(`...silent CLI fallback failed: ${ee.message}`);
+        }
       }
     }
 

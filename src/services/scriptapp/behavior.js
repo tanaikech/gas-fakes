@@ -551,7 +551,9 @@ class FakeBehavior {
           if (d && d.getId() !== rootId) {
             try {
               d.setTrashed(true);
-              slogger.log(`...trashed file ${d.getName()} (${id})`);
+              const name = d.getName();
+              const logLabel = name ? `${name} (${id})` : id;
+              slogger.log(`...trashed file ${logLabel}`);
               acc.push(id);
             } catch (e) {
               slogger.error(`...failed to trash file ${id}: ${e.message}`);

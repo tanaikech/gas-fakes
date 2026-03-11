@@ -601,24 +601,17 @@ export async function authenticateUser(options = {}) {
       const msScopes = mapGasScopesToMsGraph(gasScopes);
 
       try {
-        const azCmd = `az login`;
+        const azCmd = `az config set core.login_experience_v2=off && az login --allow-no-subscriptions --output none`;
 
-        const confirmAz = await prompts({
-          type: "confirm",
-          name: "login",
-          message: `Would you like to perform the one-time Azure CLI login now?\n(This will open a browser to populate the CLI cache for silent future runs)`,
-          initial: true
-        });
-
-        if (confirmAz.login) {
-          console.log(`Executing: ${azCmd}`);
-          try {
-            runCommandSync(azCmd);
-            console.log(`\n\x1b[1;32mSuccess!\x1b[0m Azure CLI cache populated.`);
-          } catch (e) {
-            console.error(`\x1b[1;31mAzure CLI Login failed.\x1b[0m`);
-            process.exit(1);
-          }
+        console.log(`Executing: ${azCmd}`);
+        try {
+          runCommandSync(azCmd);
+          console.log(`\n\x1b[1;32mSuccess!\x1b[0m Azure CLI session discovered.`);
+          const tenantId = process.env.MS_GRAPH_TENANT_ID || 'consumers';
+          console.log(`Silent fallback is now enabled for: \x1b[1;36m${tenantId}\x1b[0m`);
+        } catch (e) {
+          console.error(`\x1b[1;31mAzure CLI Login failed.\x1b[0m`);
+          process.exit(1);
         }
 
         console.log(`...checking authentication status and fetching Graph token...`);

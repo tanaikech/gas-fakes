@@ -7,7 +7,8 @@ import { clearFileCache } from "./filecache.js";
 // Multi-identity storage
 export const _identities = new Map();
 // Default to the first authorized platform if specified in environment
-let _platform = process.env.GF_PLATFORM_AUTH ? process.env.GF_PLATFORM_AUTH.split(',')[0] : 'workspace';
+// Default to the first authorized platform if specified in environment
+let _platform = process.env.GF_PLATFORM_AUTH ? process.env.GF_PLATFORM_AUTH.split(',')[0] : 'google';
 let _manifest = null;
 let _clasp = null;
 let _settings = null;
@@ -28,7 +29,7 @@ const createIdentityTemplate = () => ({
 
 // Helper to get current identity
 const _getIdentity = (platform = _platform) => {
-  const p = platform === 'workspace' ? 'google' : platform;
+  const p = platform;
   if (!_identities.has(p)) {
     _identities.set(p, createIdentityTemplate());
   }
@@ -255,7 +256,7 @@ const invalidateToken = () => {
 
 const googify = (options = {}) => {
   const { headers } = options;
-  if (!headers || _platform !== 'workspace' && _platform !== 'google') return options;
+  if (!headers || _platform !== 'google') return options;
   if (!headers.Authorization) return options;
 
   return {

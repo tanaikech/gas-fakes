@@ -18,7 +18,7 @@ let _platformAuth = process.env.GF_PLATFORM_AUTH ? process.env.GF_PLATFORM_AUTH.
 const ensureInit = () => {
   // If already initialized OR if another service already triggered Auth, skip
   if (!_initialized && !Auth.hasAuth()) {
-    _initialized = true 
+    _initialized = true
     Syncit.fxInit({ platformAuth: _platformAuth })
   }
   _initialized = true; // Mark as initialized even if Auth was already present
@@ -120,14 +120,14 @@ const checkScopesMatch = (required) => {
     if (hasIgnore) {
       slogger.warn('...ignoring requested scope for adc as google blocks it outside apps script' + s)
     }
-    
+
     // a scope is satisfied if:
     // 1. It is explicitly in the tokened set
     // 2. It is a .readonly scope AND the base scope is in the tokened set (e.g. drive satisfy drive.readonly)
-    
+
     const baseNs = ns.replace(/\.readonly$/, "")
     const isSatisfied = tokened.has(ns) || (ns.endsWith(".readonly") && tokened.has(baseNs))
-    
+
     return !(hasIgnore || isSatisfied)
   })
 
@@ -174,13 +174,13 @@ if (typeof globalThis[name] === typeof undefined) {
         },
         set __platformAuth(value) {
           const newVal = Array.isArray(value) ? value : [value];
-          
+
           if (_initialized || Auth.hasAuth()) {
             // Check if all requested platforms are already authorized
             const missing = newVal.filter(p => !Auth.hasAuth(p));
             if (missing.length > 0) {
-               // Trigger re-init for missing platforms
-               Syncit.fxInit({ platformAuth: newVal });
+              // Trigger re-init for missing platforms
+              Syncit.fxInit({ platformAuth: newVal });
             }
           }
           _platformAuth = newVal;
@@ -204,9 +204,18 @@ if (typeof globalThis[name] === typeof undefined) {
         },
         get __loadedServices() {
           return Proxies.getLoadedServices()
+        },
+        __isPlatformAuthed: (platform) => {
+          ensureInit();
+          return Auth.hasAuth(platform);
+        },
+        get __platforms() {
+          ensureInit();
+          // Backends initialized in this session
+          return _platformAuth.filter(p => Auth.hasAuth(p));
         }
       }
-      
+
       // Initialize behavior after _app is set to break recursion
       _app.__behavior = newFakeBehavior()
     }
@@ -226,10 +235,10 @@ if (typeof globalThis[name] === typeof undefined) {
   const handler = {
     get(_, prop, receiver) {
       if (prop === 'isFake') return true;
-      
+
       // BRIDGE: Inform LoadedRegistry about ScriptApp being loaded
       if (prop !== '__behavior' && prop !== '__proxies') {
-         Proxies.__addLoaded(name);
+        Proxies.__addLoaded(name);
       }
 
       const app = getApp(prop);

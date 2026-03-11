@@ -322,9 +322,9 @@ export const fxInit = ({
 
   // Set default platform only if none is set
   const currentPlatform = Auth.getPlatform();
-  if (currentPlatform === 'workspace' || !currentPlatform) {
+  if (currentPlatform === 'google' || !currentPlatform) {
     const initialPlatforms = platformAuth || global.ScriptApp?.__platformAuth || ['google'];
-    const firstPlatform = initialPlatforms[0] === 'google' ? 'workspace' : initialPlatforms[0];
+    const firstPlatform = initialPlatforms[0];
     Auth.setPlatform(firstPlatform);
   }
 

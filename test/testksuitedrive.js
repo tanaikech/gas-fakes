@@ -4,7 +4,7 @@ import { wrapupTest, getDrivePerformance, trasher } from './testassist.js'
 import is from '@sindresorhus/is'
 
 export const testKSuiteDrive = (pack) => {
-  
+
   // Set platform explicitly
   if (ScriptApp.isFake) {
     ScriptApp.__platform = 'ksuite'
@@ -35,7 +35,7 @@ export const testKSuiteDrive = (pack) => {
   unit.section('KSuite Fixture Setup', t => {
     const root = DriveApp.getRootFolder();
     const prefix = originalFixes.PREFIX;
-    
+
     // TEST_FOLDER_ID
     const folderName = prefix + "k-fix-folder";
     const existingFolders = root.getFoldersByName(folderName);
@@ -73,7 +73,7 @@ export const testKSuiteDrive = (pack) => {
       kFixes.PDF_ID = pdfFile.getId();
       toTrash.push(pdfFile);
     }
-    
+
     // Ensure some files in folder for searching tests
     const filesInFolder = testFolder.getFiles();
     let count = 0;
@@ -83,7 +83,7 @@ export const testKSuiteDrive = (pack) => {
     }
     if (count < 4) {
       for (let i = count; i < 4; i++) {
-          testFolder.createFile(`file-in-folder-${i}.txt`, `content ${i}`);
+        testFolder.createFile(`file-in-folder-${i}.txt`, `content ${i}`);
       }
       kFixes.TEST_FOLDER_FILES = 4;
     } else {
@@ -199,7 +199,7 @@ export const testKSuiteDrive = (pack) => {
     const rmffile = DriveApp.getFileById(mffile.getId())
     t.deepEqual(rblob.getBytes(), rmffile.getBlob().getBytes())
     t.is(rblob.getContentType(), rmffile.getMimeType())
-    
+
     // check errors are thrown
     t.rxMatch(t.threw(() => DriveApp.createFile()).toString(), /The parameters \(\) don't match/)
     t.rxMatch(t.threw(() => DriveApp.createFile("")).toString(), /The parameters \(String\)/)
@@ -223,7 +223,7 @@ export const testKSuiteDrive = (pack) => {
     file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.EDIT);
     t.is(file.getSharingAccess(), DriveApp.Access.ANYONE_WITH_LINK);
     t.is(file.getSharingPermission(), DriveApp.Permission.EDIT);
-    
+
     file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
     t.is(file.getSharingAccess(), DriveApp.Access.ANYONE_WITH_LINK);
     t.is(file.getSharingPermission(), DriveApp.Permission.VIEW);
@@ -238,13 +238,13 @@ export const testKSuiteDrive = (pack) => {
     t.true(is.nonEmptyString(Drive.toString()))
     t.true(is.nonEmptyString(Drive.Files.toString()))
     t.is(Drive.getVersion(), 'v3')
-    
+
     const file = Drive.Files.get(kFixes.TEXT_FILE_ID, { fields: "id,name,mimeType,kind" })
     t.is(file.id, kFixes.TEXT_FILE_ID)
     t.is(file.name, kFixes.TEXT_FILE_NAME)
     t.is(file.mimeType, kFixes.TEXT_FILE_TYPE)
     t.is(file.kind, 'drive#file')
-    
+
     if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
   })
 
@@ -256,7 +256,7 @@ export const testKSuiteDrive = (pack) => {
     } else {
       t.false(parents.hasNext(), 'Root should have no parents (Standard GAS)')
     }
-    
+
     const root = Drive.Files.get('root', { fields: 'parents' })
     t.true(is.undefined(root.parents) || is.null(root.parents) || (Array.isArray(root.parents) && (root.parents.length === 0 || root.parents[0] === '1')))
 
@@ -289,7 +289,7 @@ export const testKSuiteDrive = (pack) => {
       return folderPile
     }
     const folderPile = parentCheck(folders, root)
-    t.true(folderPile.length >= 0) 
+    t.true(folderPile.length >= 0)
 
     if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
   })
@@ -306,7 +306,7 @@ export const testKSuiteDrive = (pack) => {
 
     const folder = DriveApp.createFolder(kFixes.PREFIX + "move-target-" + Date.now())
     toTrash.push(folder)
-    
+
     const dfile = DriveApp.getFileById(pfile.id)
     const mfile = dfile.moveTo(folder)
     t.is(mfile.getId(), dfile.getId())
@@ -331,7 +331,7 @@ export const testKSuiteDrive = (pack) => {
   unit.section('driveapp and adv permissions', t => {
     const { permissions } = Drive.Permissions.list(kFixes.TEXT_FILE_ID)
     t.true(permissions.length >= 1)
-    
+
     const rootFolder = DriveApp.getRootFolder()
     const owner = rootFolder.getOwner()
     t.true(is.nonEmptyString(owner.getName()))
@@ -365,19 +365,19 @@ export const testKSuiteDrive = (pack) => {
     const df = Drive.Files.get(kFixes.TEXT_FILE_ID, { fields: "id,hasThumbnail,thumbnailLink" })
     t.is(df.id, kFixes.TEXT_FILE_ID)
     t.true(Reflect.has(df, 'id'))
-    
+
     if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
   })
 
   unit.section('driveapp basics and Drive equivalence', t => {
     t.is(DriveApp.toString(), "Drive")
-    
+
     const file = DriveApp.getFileById(kFixes.TEXT_FILE_ID)
     const folder = DriveApp.getFolderById(kFixes.TEST_FOLDER_ID)
     t.is(file.getMimeType(), 'text/plain')
     t.is(file.getName(), kFixes.TEXT_FILE_NAME)
     t.is(file.getParents().next().getId(), folder.getId())
-    
+
     const adv = Drive.Files.get(kFixes.TEXT_FILE_ID)
     t.is(adv.id, kFixes.TEXT_FILE_ID)
     t.is(adv.name, kFixes.TEXT_FILE_NAME)
@@ -390,14 +390,14 @@ export const testKSuiteDrive = (pack) => {
     t.true(is.object(data.metadata))
     t.is(data.metadata.name, kFixes.TEXT_FILE_NAME)
     t.true(is.nonEmptyString(data.response.downloadUri))
-    
+
     const token = ScriptApp.getOAuthToken()
     const headers = { Authorization: `Bearer ${token}` }
     const response = UrlFetchApp.fetch(data.response.downloadUri, { headers })
     t.is(response.getResponseCode(), 200)
     t.is(response.getContentText(), kFixes.TEXT_FILE_CONTENT)
 
-    const bytes = Drive.Files.get(kFixes.TEXT_FILE_ID, {alt: 'media'})
+    const bytes = Drive.Files.get(kFixes.TEXT_FILE_ID, { alt: 'media' })
     t.is(Utilities.newBlob(bytes).getDataAsString(), kFixes.TEXT_FILE_CONTENT)
 
     if (Drive.isFake) console.log('...cumulative drive cache performance', getDrivePerformance())
@@ -416,14 +416,14 @@ export const testKSuiteDrive = (pack) => {
       t.true(mt === "application/pdf" || mt === "application/octet-stream")
       count++
     }
-    
+
     // Fallback if none found by exact type
     if (count === 0) {
-       const allFiles = DriveApp.getFiles()
-       while (allFiles.hasNext()) {
-         const f = allFiles.next()
-         if (f.getName().endsWith('.pdf')) count++
-       }
+      const allFiles = DriveApp.getFiles()
+      while (allFiles.hasNext()) {
+        const f = allFiles.next()
+        if (f.getName().endsWith('.pdf')) count++
+      }
     }
     t.true(count >= 1)
 
@@ -496,16 +496,16 @@ export const testKSuiteDrive = (pack) => {
   if (!pack) {
     unit.report()
   }
-  
+
   if (originalFixes.CLEAN) {
     unit.section('KSuite Cleanup', t => {
       // 1. Trash items from current run
       trasher(toTrash);
-      
+
       // 2. Deep cleanup: find all junk from previous runs
       const root = DriveApp.getRootFolder();
       const prefix = originalFixes.PREFIX;
-      
+
       const allFiles = root.getFiles();
       while (allFiles.hasNext()) {
         const f = allFiles.next();
@@ -514,7 +514,7 @@ export const testKSuiteDrive = (pack) => {
           f.setTrashed(true);
         }
       }
-      
+
       const allFolders = root.getFolders();
       while (allFolders.hasNext()) {
         const f = allFolders.next();
@@ -528,7 +528,7 @@ export const testKSuiteDrive = (pack) => {
 
   // Reset platform back to workspace
   if (ScriptApp.isFake) {
-    ScriptApp.__platform = 'workspace'
+    ScriptApp.__platform = 'google'
   }
 
   return { unit, fixes: kFixes }

@@ -4,26 +4,34 @@ import { wrapupTest, trasher } from './testassist.js'
 import is from '@sindresorhus/is'
 
 export const testMsGraphDrive = (pack) => {
-  
-  // Set platform explicitly to Microsoft Graph
-  if (ScriptApp.isFake) {
-    ScriptApp.__platform = 'msgraph'
-  }
 
   const { unit, fixes: originalFixes } = pack || initTests()
 
-  // Only run this test in fake mode
   if (!ScriptApp.isFake) {
     console.log('...skipping MS Graph Drive tests as not in fake mode')
-    return { unit, fixes: originalFixes }
+    return {unit, fixes: originalFixes}
+  }
+  if (!is.array(ScriptApp.__platforms)) {
+    throw 'ScriptApp.__platforms- should be a list of supported platforms'
   }
 
+  if (!ScriptApp.__isPlatformAuthed('msgraph')) {
+    console.log('...skipping MS Graph Drive tests as not authenticated')
+    return {unit, fixes: originalFixes}
+  }
+  // Set platform explicitly to Microsoft Graph
+
+  ScriptApp.__platform = 'msgraph'
   const toTrash = []
 
   unit.section('MS Graph Identity', t => {
     const user = Session.getActiveUser();
     console.log(`...running as MS Graph user: ${user.getEmail()}`);
     t.true(user.getEmail().includes('@'), 'Should have a valid email');
+    t.is(Session.getActiveUser().toString(), originalFixes.EMAIL)
+    t.is(Session.getActiveUser().getEmail(), originalFixes.EMAIL)
+    t.is(Session.getEffectiveUser().toString(), originalFixes.EMAIL)
+    t.is(Session.getEffectiveUser().getEmail(), originalFixes.EMAIL)
   });
 
   unit.section('OneDrive Basic Operations', t => {
@@ -43,7 +51,7 @@ export const testMsGraphDrive = (pack) => {
     const file = folder.createFile(fileName, content);
     t.is(file.getName(), fileName);
     t.is(file.getBlob().getDataAsString(), content);
-    
+
     // Rename
     const newName = 'renamed-msgraph.txt';
     file.setName(newName);
@@ -54,14 +62,14 @@ export const testMsGraphDrive = (pack) => {
     let files;
     let attempts = 0;
     const maxAttempts = 5;
-    
+
     while (attempts < maxAttempts) {
       files = folder.getFilesByName(newName);
       if (files.hasNext()) break;
-      
+
       attempts++;
       console.log(`...waiting for propagation of ${newName} (attempt ${attempts}/${maxAttempts})...`);
-      Utilities.sleep(2000); 
+      Utilities.sleep(2000);
     }
 
     t.true(files.hasNext(), `File ${newName} should be found in folder after propagation`);
@@ -73,21 +81,33 @@ export const testMsGraphDrive = (pack) => {
   });
 
   unit.section('Switching Platforms', t => {
-    // Switch to Google
-    ScriptApp.__platform = 'workspace';
-    const googleRoot = DriveApp.getRootFolder();
-    t.is(googleRoot.getName(), 'My Drive');
+    // Switch to Google  
 
+    if (!ScriptApp.__isPlatformAuthed('google')) {
+      console.log('...skipping Google Drive tests as not authenticated')
+    } else {
+      ScriptApp.__platform = 'google';
+      const googleRoot = DriveApp.getRootFolder();
+      t.is(googleRoot.getName(), 'My Drive');
+    }
+
+    if (!ScriptApp.__isPlatformAuthed('ksuite')) {
+      console.log('...skipping KSuite Drive tests as not authenticated')
+    } else {
+      ScriptApp.__platform = 'ksuite';
+      const googleRoot = DriveApp.getRootFolder();
+      t.is(googleRoot.getName(), 'Private');
+    }
     // Switch back to MS Graph
     ScriptApp.__platform = 'msgraph';
     const msRoot = DriveApp.getRootFolder();
-    t.not(msRoot.getName(), 'My Drive');
+    t.is(msRoot.getName(), 'root');
   });
 
   if (!pack) {
     unit.report()
   }
-  
+
   // Cleanup
   if (originalFixes.CLEAN) {
     unit.section('MS Graph Cleanup', t => {

@@ -14,7 +14,7 @@ The idea is to use the Google Apps Script API surface (e.g., `DriveApp`, `Spread
 
 ### Platform Steering
 A new property `__platform` was added to the `ScriptApp` global.
-*   `ScriptApp.__platform = 'workspace'` (Default): Hits Google APIs.
+*   `ScriptApp.__platform = 'google'` (Default): Hits Google APIs.
 *   `ScriptApp.__platform = 'ksuite'`: Intercepts calls and routes them to the KSuite translation layer.
 *   `ScriptApp.__platform = 'msgraph'`: Intercepts calls and routes them to the Microsoft Graph (OneDrive) translation layer.
 
