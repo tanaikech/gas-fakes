@@ -2,10 +2,10 @@
 import is from '@sindresorhus/is';
 import '@mcpher/gas-fakes';
 import { initTests } from './testinit.js';
-import { wrapupTest, trasher, compareValue } from './testassist.js';
+import { wrapupTest, trasher, compareValue, createTrashCollector } from './testassist.js';
 
 export const testSlidesAutoText = (pack) => {
-  const toTrash = [];
+  const toTrash = createTrashCollector();
   const { unit, fixes } = pack || initTests();
 
   unit.section('AutoText class methods', (t) => {

@@ -12,6 +12,9 @@ class FakeSession {
   getActiveUser() {
     return this._activeUser
   }
+  get __activeUser() {
+    return this.getActiveUser()
+  }
   /**
    * there's no difference between active/effective on node
    * @returns {string}

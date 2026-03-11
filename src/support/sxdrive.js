@@ -44,7 +44,6 @@ const handleOneDrive = async (Auth, { prop, method, params }) => {
     let mimeType = null;
 
     if (params.q) {
-      syncLog(`OneDrive: Parsing query: ${params.q}`);
       // Robust mapping of Google search terms to MS Graph filters
       const parentMatch = params.q.match(/'([^']*)' in parents/i);
       if (parentMatch) parentId = parentMatch[1];
@@ -69,10 +68,6 @@ const handleOneDrive = async (Auth, { prop, method, params }) => {
     if (nameFilter) {
       const lowerFilter = nameFilter.toLowerCase().trim();
       files = files.filter(f => f.name && f.name.toLowerCase().trim() === lowerFilter);
-    }
-
-    if (params.q) {
-      syncLog(`OneDrive: Final filtered result has ${files.length} items`);
     }
 
     return {

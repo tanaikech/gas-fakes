@@ -7,6 +7,8 @@
 - **Zero-Cache**: Authentication tokens are **never** stored in local files. `gas-fakes` relies entirely on the OS-level Azure CLI cache or in-memory credentials.
 - **Silent Runtime**: Once authorized, subsequent executions are 100% silent, leveraging a hardened CLI fallback mechanism.
 - **Worker-Thread Auth**: All authentication logic, including interactive fallbacks, is handled within the worker thread to maintain synchronous execution in your main script.
+- **Local Cache (Security Risk)**: To eliminate redundant login prompts, tokens can be stored locally in `.msgraph-token.json`. **See Security Advisory below.**
+- **Automatic Refresh**: If the cached access token expires, `gas-fakes` automatically falls back to the Azure CLI to refresh it silently.
 
 ---
 
@@ -50,13 +52,29 @@ If the silent CLI fallback fails (e.g., your session expired or you logged into 
 
 ---
 
+## Security Advisory: Local Token Storage
+
+By default, `gas-fakes` now caches MS Graph tokens in a local file called `.msgraph-token.json` in your project root.
+
+### Risks
+1. **Plaintext Storage**: Tokens are stored in a simple JSON file. While `gas-fakes` attempts to set restrictive file permissions (`chmod 600`), the token is still readable by any process with your user privileges.
+2. **Persistence**: These tokens grant persistent access to your OneDrive/SharePoint resources until they expire.
+3. **Commit Risk**: **CRITICAL**: Ensure `**/.msgraph-token.json` is added to your `.gitignore`. Pushing this file to a public repository will expose your credentials.
+
+### Mitigations
+- `gas-fakes` automatically adds `.msgraph-token.json` to `.gitignore` during `init`.
+- If you prefer a "Zero-Cache" approach, delete the `.msgraph-token.json` file and rely on the Azure CLI cache (which may require occasional re-auth).
+
+---
+
 ## Technical Details
 
 ### Silent Fallback Hierarchy
 When your script requests a token, `gas-fakes` attempts the following in order:
-1. **Custom Client ID + Tenant**: Uses your `.env` configuration for your specific App Registration.
-2. **Universal CLI Fallback**: (The "Magic Bullet") Automatically picks up the active Azure CLI session from your machine, regardless of the tenant GUID.
-3. **Interactive Fallback**: Opens a browser if all silent methods fail.
+1. **Local Token Cache**: Checks `.msgraph-token.json` for a valid, non-expired token.
+2. **Custom Client ID + Tenant**: Uses your `.env` configuration for your specific App Registration.
+3. **Universal CLI Fallback**: (The "Magic Bullet") Automatically picks up the active Azure CLI session from your machine, regardless of the tenant GUID.
+4. **Interactive Fallback**: Opens a browser if all silent methods fail.
 
 ### Programmatic Auth Status
 You can check if a platform is authorized directly from your script:

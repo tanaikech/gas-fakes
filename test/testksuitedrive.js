@@ -1,30 +1,17 @@
 import '@mcpher/gas-fakes'
 import { initTests } from './testinit.js'
-import { wrapupTest, getDrivePerformance, trasher } from './testassist.js'
+import { wrapupTest, getDrivePerformance, trasher, checkBackend, createTrashCollector } from './testassist.js'
 import is from '@sindresorhus/is'
 
 export const testKSuiteDrive = (pack) => {
 
-  // Set platform explicitly
-  if (ScriptApp.isFake) {
-    ScriptApp.__platform = 'ksuite'
-  }
+  if (!checkBackend('ksuite')) return pack
 
   const { unit, fixes: originalFixes } = pack || initTests()
-
-  // Only run this test in fake mode as it requires KSUITE_TOKEN and platform switching
-  if (!ScriptApp.isFake) {
-    console.log('...skipping KSuite Drive tests as not in fake mode')
-    return { unit, fixes: originalFixes }
-  }
-
-  if (!process.env.KSUITE_TOKEN) {
-    console.log('...skipping KSuite Drive tests as KSUITE_TOKEN is not available')
-    return { unit, fixes: originalFixes }
-  }
+  ScriptApp.__platform = 'ksuite'
 
   const behavior = ScriptApp.__behavior
-  const toTrash = []
+  const toTrash = createTrashCollector()
 
   // sandbox check
   if (behavior) behavior.sandboxMode = false

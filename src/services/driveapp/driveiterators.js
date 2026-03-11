@@ -54,21 +54,22 @@ export const getFilesIterator = ({
     let pageToken = null
 
     do {
-      // if nothing in the tank, fill it upFdrive
-      if (!tank.length) {
+      // if nothing in the tank, fill it up
+      while (!tank.length) {
         const data = fileLister({
           qob, parentId, fields, folderTypes, fileTypes, pageToken
         })
-
-        // the presence of a nextPageToken is the signal that there's more to come
-        pageToken = data.nextPageToken
-
 
         // format the results into the folder or file object
         assert.array(data.files)
         assert.function(DriveApp.__settleClass)
         tank = data.files.map(DriveApp.__settleClass)
 
+        // the presence of a nextPageToken is the signal that there's more to come
+        pageToken = data.nextPageToken
+
+        // if we still have nothing in the tank but there's a page token, keep going
+        if (!tank.length && !pageToken) break;
       }
 
       // if we've got anything in the tank send back the oldest one

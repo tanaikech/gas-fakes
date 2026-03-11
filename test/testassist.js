@@ -46,6 +46,22 @@ export const cachePerformance = () => {
     console.log('...cumulative gmail cache performance', getGmailPerformance());
   }
 }
+export const checkBackend = (name)=> {
+    if (!ScriptApp.isFake) {
+    console.log('...skipping ' + name + ' tests as not in fake mode')
+    return false
+  }
+  if (!is.array(ScriptApp.__platforms)) {
+    throw 'ScriptApp.__platforms- should be a list of supported platforms'
+  }
+
+  if (!ScriptApp.__isPlatformAuthed(name)) {
+    console.log('...skipping ' + name + ' tests as not authenticated')
+    return false
+  } 
+  return true
+}
+
 export const wrapupTest = (func) => {
   if (ScriptApp.isFake && globalThis.process?.argv.slice(2).includes("execute")) {
     func()
@@ -58,22 +74,55 @@ export const wrapupTest = (func) => {
 
 }
 
+/**
+ * Creates a "smart" array for toTrash that automatically captures 
+ * the current platform when an item is pushed.
+ * Safe for both node/fake and live Apps Script environments.
+ */
+export const createTrashCollector = () => {
+  const list = [];
+  // Only override push if we are in a fake environment where platform matters
+  if (typeof ScriptApp !== 'undefined' && ScriptApp.isFake) {
+    const originalPush = list.push.bind(list);
+    list.push = function (item) {
+      // If already wrapped or is null/undefined, just push
+      if (!item || (typeof item === 'object' && !Array.isArray(item) && item.file && item.platform)) {
+        return originalPush(item);
+      }
+      // Wrap with current platform
+      return originalPush({ file: item, platform: ScriptApp.__platform });
+    };
+  }
+  return list;
+};
+
 export const trasher = (toTrash) => {
   const behavior = ScriptApp.isFake ? ScriptApp.__behavior : null;
   const originalMode = behavior ? behavior.sandboxMode : false;
   if (behavior) behavior.sandboxMode = false;
 
+  const originalPlatform = ScriptApp.isFake ? ScriptApp.__platform : null;
+
   try {
-    toTrash.forEach(f => {
-      if (typeof f.deleteCalendar === 'function') {
-        console.log('deleting temp calendar', f.getId());
+    toTrash.forEach(item => {
+      // item can be a file/calendar object or { file, platform }
+      // on live GAS, only the file object is relevant
+      const f = (item && item.file) ? item.file : item;
+      const platform = item && item.platform;
+
+      if (ScriptApp.isFake) {
+        ScriptApp.__platform = platform || originalPlatform;
+      }
+
+      if (f && typeof f.deleteCalendar === 'function') {
+        console.log(`deleting temp calendar ${f.getId()} on ${ScriptApp.isFake ? (ScriptApp.__platform || 'default') : 'live GAS'}`);
         try {
           f.deleteCalendar();
         } catch (e) {
           console.log('...warning:failed to delete calendar', f.getId(), e.message);
         }
-      } else {
-        console.log('trashing temp file', f.getId());
+      } else if (f && typeof f.setTrashed === 'function') {
+        console.log(`trashing temp file ${f.getId()} on ${ScriptApp.isFake ? (ScriptApp.__platform || 'default') : 'live GAS'}`);
         try {
           f.setTrashed(true);
         } catch (e) {
@@ -83,6 +132,7 @@ export const trasher = (toTrash) => {
     });
   } finally {
     if (behavior) behavior.sandboxMode = originalMode;
+    if (ScriptApp.isFake && originalPlatform) ScriptApp.__platform = originalPlatform;
   }
 }
 
@@ -160,8 +210,14 @@ export const maketcal = (toTrash, fixes, { nameSuffix = 'default', clear = true 
 
   // Register for cleanup
   if (toTrash && cal) {
+    const id = cal.getId();
     // Avoid duplicates in toTrash
-    if (!toTrash.some(item => item.getId && item.getId() === cal.getId())) {
+    const exists = toTrash.some(item => {
+      const f = (item && item.file) ? item.file : item;
+      return f && typeof f.getId === 'function' && f.getId() === id;
+    });
+
+    if (!exists) {
       toTrash.push(cal);
     }
   }
@@ -186,9 +242,16 @@ export const maketdoc = (toTrash, fixes, { clear = true, forceNew = false } = {}
     moveToTestFolder(__mdoc.getId());
 
     // no need to do this as sandbox mode will take care of it
-    if (!ScriptApp.isFake && fixes.CLEAN && !toTrash.find(f => f.getId() == __mdoc.getId())) {
-      console.log('...will be deleting it later');
-      toTrash.push(DriveApp.getFileById(__mdoc.getId()));
+    if (fixes.CLEAN) {
+      const id = __mdoc.getId();
+      const exists = toTrash.some(f => {
+        const fileObj = (f && f.file) ? f.file : f;
+        return fileObj && typeof fileObj.getId === 'function' && fileObj.getId() === id;
+      });
+      if (!exists) {
+        console.log('...will be deleting it later');
+        toTrash.push(DriveApp.getFileById(id));
+      }
     }
 
   } else {
@@ -233,9 +296,16 @@ export const maketss = (sheetName, toTrash, fixes, { clearContents = true, clear
     if (ScriptApp.isFake) ScriptApp.__behavior.addFile(__mss.getId(), true)
   }
   // no need to do this as sandbox mode will take care of it
-  if (!ScriptApp.isFake && fixes.CLEAN && !toTrash.find(f => f.getId() == __mss.getId())) {
-    console.log('...will be deleting it later')
-    toTrash.push(DriveApp.getFileById(__mss.getId()))
+  if (fixes.CLEAN) {
+    const id = __mss.getId();
+    const exists = toTrash.some(f => {
+      const fileObj = (f && f.file) ? f.file : f;
+      return fileObj && typeof fileObj.getId === 'function' && fileObj.getId() === id;
+    });
+    if (!exists) {
+      console.log('...will be deleting it later')
+      toTrash.push(DriveApp.getFileById(id))
+    }
   }
 
 

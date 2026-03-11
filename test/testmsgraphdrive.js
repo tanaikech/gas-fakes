@@ -1,25 +1,12 @@
 import '@mcpher/gas-fakes'
 import { initTests } from './testinit.js'
-import { wrapupTest, trasher } from './testassist.js'
+import { wrapupTest, trasher, checkBackend } from './testassist.js'
 import is from '@sindresorhus/is'
 
 export const testMsGraphDrive = (pack) => {
 
+  if (!checkBackend('msgraph')) return pack
   const { unit, fixes: originalFixes } = pack || initTests()
-
-  if (!ScriptApp.isFake) {
-    console.log('...skipping MS Graph Drive tests as not in fake mode')
-    return {unit, fixes: originalFixes}
-  }
-  if (!is.array(ScriptApp.__platforms)) {
-    throw 'ScriptApp.__platforms- should be a list of supported platforms'
-  }
-
-  if (!ScriptApp.__isPlatformAuthed('msgraph')) {
-    console.log('...skipping MS Graph Drive tests as not authenticated')
-    return {unit, fixes: originalFixes}
-  }
-  // Set platform explicitly to Microsoft Graph
 
   ScriptApp.__platform = 'msgraph'
   const toTrash = []
@@ -83,21 +70,19 @@ export const testMsGraphDrive = (pack) => {
   unit.section('Switching Platforms', t => {
     // Switch to Google  
 
-    if (!ScriptApp.__isPlatformAuthed('google')) {
-      console.log('...skipping Google Drive tests as not authenticated')
-    } else {
+
+    if (checkBackend('google')) {
       ScriptApp.__platform = 'google';
       const googleRoot = DriveApp.getRootFolder();
       t.is(googleRoot.getName(), 'My Drive');
     }
 
-    if (!ScriptApp.__isPlatformAuthed('ksuite')) {
-      console.log('...skipping KSuite Drive tests as not authenticated')
-    } else {
+    if (checkBackend('ksuite')) {
       ScriptApp.__platform = 'ksuite';
       const googleRoot = DriveApp.getRootFolder();
       t.is(googleRoot.getName(), 'Private');
     }
+  
     // Switch back to MS Graph
     ScriptApp.__platform = 'msgraph';
     const msRoot = DriveApp.getRootFolder();

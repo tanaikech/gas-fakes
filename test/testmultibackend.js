@@ -3,23 +3,17 @@
  */
 import '@mcpher/gas-fakes';
 import { initTests } from './testinit.js';
-import { wrapupTest, trasher } from './testassist.js';
+import { wrapupTest, trasher, checkBackend, createTrashCollector } from './testassist.js';
 import is from '@sindresorhus/is';
 
 export const testMultiBackend = (pack) => {
   
-  if (!ScriptApp.isFake) {
-    console.log('...skipping Multi-Backend tests as not in fake mode');
-    return pack;
-  }
 
-  // 1. IMPORT First to make ScriptApp available
-  // 2. Configure authorized platforms BEFORE they are used
-  // We want to authorize both for this test
-  ScriptApp.__platformAuth = ['google', 'ksuite'];
+  if (!checkBackend('google') || !checkBackend('ksuite') || !checkBackend('msgraph')) return pack
+  ScriptApp.__platformAuth = ['google', 'ksuite', 'msgraph'];
 
   const { unit, fixes } = pack || initTests();
-  const toTrash = [];
+  const toTrash = createTrashCollector();
 
   // sandbox check
   const behavior = ScriptApp.__behavior;
@@ -31,8 +25,8 @@ export const testMultiBackend = (pack) => {
     // Start with Google
     ScriptApp.__platform = 'google';
     const gRoot = DriveApp.getRootFolder();
+    
     t.is(gRoot.toString(), "My Drive", "Should start in Google Drive");
-
     const content = "Hello from Google Drive! Time: " + Date.now();
     const gFile = DriveApp.createFile("transfer-test-google.txt", content);
     toTrash.push(gFile);
@@ -69,6 +63,27 @@ Source Google ID: ${gId}`;
     t.true(receiptFile.getBlob().getDataAsString().includes(kId), "Receipt should contain KSuite ID");
   });
 
+  unit.section('MS Graph to KSuite data transfer', t => {
+    // Switch to MS Graph
+    ScriptApp.__platform = 'msgraph';
+    const msRoot = DriveApp.getRootFolder();
+    t.is(msRoot.getName(), "root", "Should be in MS Graph (OneDrive)");
+
+    const content = "Hello from MS Graph! Time: " + Date.now();
+    const msFile = DriveApp.createFile("transfer-test-msgraph.txt", content);
+    toTrash.push(msFile);
+    const msId = msFile.getId();
+
+    // Switch to KSuite
+    ScriptApp.__platform = 'ksuite';
+    const kFile = DriveApp.createFile("transferred-from-msgraph.txt", content);
+    toTrash.push(kFile);
+    const kId = kFile.getId();
+
+    t.is(kFile.getBlob().getDataAsString(), content, "Content transferred from MS Graph to KSuite correctly");
+    t.not(kId, msId, "File IDs should be different across platforms");
+  });
+
   unit.section('Advanced Drive cross-platform check', t => {
     // Advanced Drive 'Drive' also follows ScriptApp.__platform
     
@@ -81,6 +96,11 @@ Source Google ID: ${gId}`;
     ScriptApp.__platform = 'ksuite';
     const kFiles = Drive.Files.list({pageSize: 1});
     t.true(Array.isArray(kFiles.files), "Should be able to list KSuite files via Advanced service");
+
+    // Check MS Graph
+    ScriptApp.__platform = 'msgraph';
+    const msFiles = Drive.Files.list({pageSize: 1});
+    t.true(Array.isArray(msFiles.files), "Should be able to list MS Graph files via Advanced service");
   });
 
   if (!pack) {
@@ -89,19 +109,7 @@ Source Google ID: ${gId}`;
 
   // Cleanup
   unit.section('Multi-backend Cleanup', t => {
-    // We need to trash files on their respective platforms
-    toTrash.forEach(file => {
-      try {
-        const id = file.getId();
-        const isGoogle = id.length > 20; 
-        
-        ScriptApp.__platform = isGoogle ? 'google' : 'ksuite';
-        file.setTrashed(true);
-        console.log(`...trashed ${id} on ${ScriptApp.__platform}`);
-      } catch (err) {
-        // console.log(`...failed to trash ${file.getId()}: ${err.message}`);
-      }
-    });
+    trasher(toTrash);
   });
 
   return { unit, fixes };

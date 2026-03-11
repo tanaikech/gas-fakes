@@ -1,24 +1,15 @@
 import is from '@sindresorhus/is';
 import '@mcpher/gas-fakes';
 import { initTests } from './testinit.js';
-import { wrapupTest, trasher } from './testassist.js';
+import { wrapupTest, trasher, checkBackend, createTrashCollector } from './testassist.js';
 
 export const testKSuiteDriveSharing = (pack) => {
+  if (!checkBackend('ksuite')) return pack
+  ScriptApp.__platform = 'ksuite'
+
   const { unit, fixes } = pack || initTests();
-
-  // Only run this test in fake mode as it requires KSUITE_TOKEN and platform switching
-  if (!ScriptApp.isFake) {
-    console.log('...skipping KSuite Drive Sharing tests as not in fake mode');
-    return { unit, fixes };
-  }
-
-  if (!process.env.KSUITE_TOKEN) {
-    console.log('...skipping KSuite Drive Sharing tests as KSUITE_TOKEN is not available');
-    return { unit, fixes };
-  }
-
   const behavior = ScriptApp.__behavior;
-  const toTrash = [];
+  const toTrash = createTrashCollector();
 
   // Helper to run a section with KSuite platform active and sandbox disabled
   const kSection = (name, fn) => {

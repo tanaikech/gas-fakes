@@ -3,13 +3,13 @@ import '@mcpher/gas-fakes';
 import { initTests } from './testinit.js';
 import {
   wrapupTest,
-  getDocsPerformance, maketdoc, trasher
+  getDocsPerformance, maketdoc, trasher, createTrashCollector
 
 } from './testassist.js';
 
 ;
 export const testDocs = (pack) => {
-  const toTrash = [];
+  const toTrash = createTrashCollector();
   const { unit, fixes } = pack || initTests();
 
 

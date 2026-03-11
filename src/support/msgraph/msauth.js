@@ -6,6 +6,38 @@ import { execSync } from 'node:child_process';
 import { readFile, writeFile } from 'fs/promises';
 import { existsSync } from 'fs';
 import path from 'path';
+import { chmodSync } from 'fs';
+
+const TOKEN_CACHE_FILE = path.join(process.cwd(), '.msgraph-token.json');
+
+async function loadTokenCache() {
+  if (existsSync(TOKEN_CACHE_FILE)) {
+    try {
+      const data = await readFile(TOKEN_CACHE_FILE, 'utf-8');
+      const cache = JSON.parse(data);
+      // Check if expired (buffer of 5 mins)
+      if (cache.expiresOn && new Date(cache.expiresOn).getTime() > Date.now() + 300000) {
+        return cache.token;
+      }
+    } catch (e) {
+      console.warn(`...failed to load MS Graph token cache: ${e.message}`);
+    }
+  }
+  return null;
+}
+
+async function saveTokenCache(token, expiresOn) {
+  try {
+    await writeFile(TOKEN_CACHE_FILE, JSON.stringify({ token, expiresOn }, null, 2));
+    try {
+      chmodSync(TOKEN_CACHE_FILE, 0o600); // Read/Write only for owner
+    } catch (e) {
+      // Ignore if chmod fails (e.g. on non-posix)
+    }
+  } catch (e) {
+    console.warn(`...failed to save MS Graph token cache: ${e.message}`);
+  }
+}
 
 /**
  * Maps Google/GAS scopes to Microsoft Graph equivalents.
@@ -60,6 +92,13 @@ export async function getMsGraphToken(scopes = ['User.Read']) {
     return `https://graph.microsoft.com/${s.startsWith('/') ? s.slice(1) : s}`;
   });
 
+  // Check local cache first
+  const cachedToken = await loadTokenCache();
+  if (cachedToken) {
+    syncLog('...retrieved MS Graph token via local file cache');
+    return cachedToken;
+  }
+
   try {
     // 1. Service Principal (if configured) - "Keyless" for Business
     if (clientId && clientSecret) {
@@ -67,6 +106,7 @@ export async function getMsGraphToken(scopes = ['User.Read']) {
       const credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
       const tokenResponse = await credential.getToken(msScopes);
       syncLog('...retrieved MS Graph token via Client Secret (Service Principal)');
+      await saveTokenCache(tokenResponse.token, tokenResponse.expiresOnTimestamp);
       return tokenResponse.token;
     }
 
@@ -82,21 +122,26 @@ export async function getMsGraphToken(scopes = ['User.Read']) {
 
       try {
         // Strategy 1: Custom Client ID + Tenant
-        const cmd = `az account get-access-token --resource-type ms-graph ${tenantArg}${clientArg}--scope "https://graph.microsoft.com/.default" --query accessToken -o tsv`;
+        const cmd = `az account get-access-token --resource-type ms-graph ${tenantArg}${clientArg}--scope "https://graph.microsoft.com/.default" --output json`;
         const stdout = execSync(cmd, { encoding: 'utf-8', stdio: ['ignore', 'pipe', 'ignore'], shell: true });
-        const token = stdout ? stdout.trim() : '';
+        const res = JSON.parse(stdout);
+        const token = res.accessToken;
         if (token && (token.match(/\./g) || []).length >= 2) {
           syncLog('...retrieved valid MS Graph token via Azure CLI (silent)');
+          // az returns expiresOn in a format new Date() can parse
+          await saveTokenCache(token, res.expiresOn);
           return token;
         }
       } catch (e) {
         try {
           // Strategy 2: First-party + Tenant (Magic bullet for SPO license fix)
-          const fallbackCmd = `az account get-access-token --resource-type ms-graph ${tenantArg}--scope "https://graph.microsoft.com/.default" --query accessToken -o tsv`;
+          const fallbackCmd = `az account get-access-token --resource-type ms-graph ${tenantArg}--scope "https://graph.microsoft.com/.default" --output json`;
           const stdout = execSync(fallbackCmd, { encoding: 'utf-8', stdio: ['ignore', 'pipe', 'ignore'], shell: true });
-          const token = stdout ? stdout.trim() : '';
+          const res = JSON.parse(stdout);
+          const token = res.accessToken;
           if (token && (token.match(/\./g) || []).length >= 2) {
             syncLog(`...retrieved valid MS Graph token via Azure CLI (first-party ${targetTenant} fallback)`);
+            await saveTokenCache(token, res.expiresOn);
             return token;
           }
         } catch (ee) {
@@ -121,6 +166,7 @@ export async function getMsGraphToken(scopes = ['User.Read']) {
     });
     const tokenResponse = await credential.getToken(msScopes);
     syncLog('...retrieved MS Graph token via interactive login');
+    await saveTokenCache(tokenResponse.token, tokenResponse.expiresOnTimestamp);
     return tokenResponse.token;
 
   } catch (err) {

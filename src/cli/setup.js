@@ -425,7 +425,7 @@ export async function initializeConfiguration(options = {}) {
       }
     ];
     const msgraphResponses = await prompts(msgraphQuestions);
-    if (typeof msgraphResponses.MS_GRAPH_TENANT_ID === "undefined") {
+    if (typeof msgraphResponses.MS_GRAPH_CLIENT_ID === "undefined") {
       console.log("Initialization cancelled.");
       return;
     }
@@ -567,9 +567,11 @@ export async function authenticateUser(options = {}) {
 
   let platforms;
 
-  // If specific backend requested via CLI, only auth that one
-  if (options.backend && options.backend !== "google") {
-    platforms = [options.backend.trim()];
+  // If specific backend(s) requested via CLI, use them
+  if (options.backend) {
+    // Handle both single string and array of strings (from commander <string...>)
+    const rawBackends = Array.isArray(options.backend) ? options.backend : [options.backend];
+    platforms = rawBackends.flatMap(p => p.split(",")).map(p => p.trim());
   } else {
     // Default to all platforms in GF_PLATFORM_AUTH, or just 'google' if not set
     platforms = (process.env.GF_PLATFORM_AUTH || "google").split(",").map(p => p.trim());

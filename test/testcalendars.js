@@ -2,10 +2,10 @@ import '@mcpher/gas-fakes';
 import is from '@sindresorhus/is';
 
 import { initTests } from './testinit.js';
-import { getCalendarPerformance, wrapupTest, trasher, maketcal } from './testassist.js';
+import { getCalendarPerformance, wrapupTest, trasher, maketcal, createTrashCollector } from './testassist.js';
 
 export const testCalendars = (pack) => {
-  const toTrash = [];
+  const toTrash = createTrashCollector();
   const { unit, fixes } = pack || initTests();
 
 

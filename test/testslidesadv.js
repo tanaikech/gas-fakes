@@ -9,12 +9,12 @@ import '@mcpher/gas-fakes'
 //import '@mcpher/gas-fakes/main.js'
 
 import { initTests } from './testinit.js'
-import { wrapupTest, getSlidesPerformance, trasher } from './testassist.js';
+import { wrapupTest, getSlidesPerformance, trasher, createTrashCollector } from './testassist.js';
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 
 export const testSlidesAdv = (pack) => {
 
-  const toTrash = [];
+  const toTrash = createTrashCollector();
   const { unit, fixes } = pack || initTests()
 
 
@@ -26,7 +26,7 @@ export const testSlidesAdv = (pack) => {
       .filter(f => is.string(f) && f.match(/^new/))
       .forEach(f => {
         t.true(is.function(Slides[f]), `check ${f} is a function`);
-        const method = Slides[f];
+        const method = Calendar[f];
         const ob = method();
         t.true(Reflect.ownKeys(ob).every(g => is.function(ob[g])), "all Slides.newsubprops are functions")
       })

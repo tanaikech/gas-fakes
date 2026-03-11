@@ -1,10 +1,10 @@
 import is from '@sindresorhus/is';
 import '@mcpher/gas-fakes';
 import { initTests } from './testinit.js';
-import { wrapupTest, trasher } from './testassist.js';
+import { wrapupTest, trasher, createTrashCollector } from './testassist.js';
 
 export const testFormResponse = (pack) => {
-  const toTrash = [];
+  const toTrash = createTrashCollector();
   const { unit, fixes } = pack || initTests();
 
   unit.section('ItemResponse.createResponse and getResponse', (t) => {

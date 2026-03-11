@@ -3,12 +3,10 @@
 testongas
 **/.gas-fakes/store
 **/.env*
-ghissues
 .DS_Store
-articles
-**/gasfakes.json
 gprompts
 **/gas-dist
 **/bundle
 api-docs
 gasmess
+**/.msgraph-token.json

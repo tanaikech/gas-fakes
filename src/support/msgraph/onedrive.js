@@ -78,10 +78,23 @@ export class OneDrive {
   async listFiles(parentId, params = {}) {
     let path = (parentId === 'root' || !parentId) ? `${this.userPath}/drive/root/children` : `${this.userPath}/drive/items/${parentId}/children`;
 
+    // MS Graph pagination uses a full URL in @odata.nextLink
+    // If pageToken is already a full URL, use it directly
+    if (params.pageToken && params.pageToken.startsWith('http')) {
+      path = params.pageToken;
+    }
+
     // MS Graph uses $top instead of maxResults
     const searchParams = {};
-    if (params.maxResults) searchParams['$top'] = params.maxResults;
-    if (params.pageToken) searchParams['$skipToken'] = params.pageToken;
+    if (!path.startsWith('http')) {
+      if (params.maxResults) searchParams['$top'] = params.maxResults;
+      if (params.pageToken) searchParams['$skipToken'] = params.pageToken;
+    }
+
+    const response = await this._request('GET', path, { searchParams });
+    const data = response.body;
+
+    let files = (data.value || []).map(f => this.translateFile(f));
 
     let nameFilter = null;
     if (params.q) {
@@ -94,20 +107,9 @@ export class OneDrive {
 
     // On Personal OneDrive, $filter on children is often unsupported.
     // On Personal OneDrive, we bypass $filter and do it manually for 100% reliability
-    const response = await this._request('GET', path, { searchParams });
-    const data = response.body;
-
-    let files = (data.value || []).map(f => this.translateFile(f));
-
     if (nameFilter) {
       const lowerFilter = nameFilter.toLowerCase().trim();
-      // Debug: Log what we found to diagnose the test failure
-      const namesFound = files.map(f => f.name);
-      syncLog(`OneDrive: Found ${files.length} items. Filtering for '${nameFilter}'. Names in folder: ${JSON.stringify(namesFound)}`);
-
-      const filtered = files.filter(f => f.name && f.name.toLowerCase().trim() === lowerFilter);
-      syncLog(`OneDrive: Filter result has ${filtered.length} items`);
-      files = filtered;
+      files = files.filter(f => f.name && f.name.toLowerCase().trim() === lowerFilter);
     }
 
     return {

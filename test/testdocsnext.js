@@ -1,11 +1,12 @@
 
+
 import '@mcpher/gas-fakes'
 
 import { initTests } from "./testinit.js";
-import { wrapupTest, getDocsPerformance, maketdoc, docReport, getChildren, trasher, unpackedDoc } from "./testassist.js";
+import { wrapupTest, getDocsPerformance, maketdoc, docReport, getChildren, trasher, unpackedDoc, createTrashCollector } from "./testassist.js";
 ;
 export const testDocsNext = (pack) => {
-  const toTrash = [];
+  const toTrash = createTrashCollector();
   const { unit, fixes } = pack || initTests();
 
   unit.section("Body.getText() with mixed elements", t => {
