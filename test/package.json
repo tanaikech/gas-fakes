@@ -15,6 +15,7 @@
     "testdrive": "node testdrive.js execute",
     "testksuitedrive": "node testksuitedrive.js execute",
     "testmsgraphdrive": "node testmsgraphdrive.js execute",
+    "testmsgraphexcel": "node testmsgraphexcel.js execute",
     "testmultibackend": "node testmultibackend.js execute",
     "testksuitedrivesharing": "node testksuitedrivesharing.js execute",
     "testsheetsdatavalidations": "node testsheetsdatavalidations.js execute",

@@ -95,7 +95,7 @@ if (typeof ScriptApp !== 'undefined' && ScriptApp.isFake) {
 
 function runFiddler() {
   // Use the library loaded from the mock manifest
-  const result = bmPreFiddler.PreFiddler().getFiddler().getData();
+  const result = bmPreFiddler.PreFiddler().getFiddler({id:'xxx', sheetName:"yyy"}).getData();
   console.log(result.slice(0, 5));
 }
 

@@ -1,6 +1,7 @@
 import got from 'got';
 import { syncLog, syncWarn } from '../workersync/synclogger.js';
 import { Auth } from '../auth.js';
+import { MsExcel } from './msexcel.js';
 
 export class OneDrive {
   constructor(token) {
@@ -66,11 +67,17 @@ export class OneDrive {
 
   async getFile(fileId) {
     try {
+      // Heuristic: If it looks like a Google ID (long, no bang), and we're on MS backend,
+      // it's likely a platform leak in a multi-backend loop.
+      if (fileId && !fileId.includes('!') && fileId.length > 30) {
+        return null;
+      }
+
       const path = fileId === 'root' ? `${this.userPath}/drive/root` : `${this.userPath}/drive/items/${fileId}`;
       const response = await this._request('GET', path);
       return this.translateFile(response.body);
     } catch (err) {
-      if (err.statusCode === 404) return null;
+      if (err.statusCode === 404 || err.statusCode === 400) return null;
       throw err;
     }
   }
@@ -151,12 +158,29 @@ export class OneDrive {
   }
 
   async deleteFile(fileId) {
-    try {
-      await this._request('DELETE', `${this.userPath}/drive/items/${fileId}`);
-      return true;
-    } catch (err) {
-      if (err.statusCode === 404) return true;
-      throw err;
+    // Before deleting, try to close any active Excel sessions to avoid "Locked" error
+    const msExcel = new MsExcel(this.token);
+    await msExcel.closeSession(fileId);
+
+    let retries = 5;
+    let delay = 500;
+
+    while (retries > 0) {
+      try {
+        await this._request("DELETE", `${this.userPath}/drive/items/${fileId}`);
+        return true;
+      } catch (err) {
+        // If it's locked, wait and retry
+        if (err.statusCode === 423 && retries > 1) {
+          syncLog(`File ${fileId} is locked, retrying deletion in ${delay}ms... (${retries} retries left)`);
+          await new Promise((resolve) => setTimeout(resolve, delay));
+          retries--;
+          delay *= 2; // Exponential backoff
+          continue;
+        }
+        if (err.statusCode === 404) return true;
+        throw err;
+      }
     }
   }
 
