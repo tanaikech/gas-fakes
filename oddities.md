@@ -1084,7 +1084,8 @@ If you want to play with the testing suite , then take a look at the [collaborat
 - [getting started](GETTING_STARTED.md) - how to handle authentication for restricted scopes.
 - [readme](README.md)
 - [gas fakes cli](gas-fakes-cli.md)
-- [ksuite poc](ksuite_poc.md)
+- [ksuite as a back end](ksuite_poc.md)
+- [msgraph as a back end](msgraph.md)
 - [apps script - a lingua franca for workspace platforms](https://ramblings.mcpher.com/apps-script-a-lingua-franca/)
 - [Apps Script: A ‘Lingua Franca’ for the Multi-Cloud Era](https://ramblings.mcpher.com/apps-script-with-ksuite/)
 - [running gas-fakes on google cloud run](https://github.com/brucemcpherson/gas-fakes-containers)
