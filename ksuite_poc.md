@@ -109,6 +109,7 @@ The test suite validates the full lifecycle: Discovery -> Mapping -> Creation ->
 
 ## <img src="./logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
 
+- [gas fakes intro video](https://youtu.be/oEjpIrkYpEM)
 - [getting started](GETTING_STARTED.md) - how to handle authentication for restricted scopes.
 - [readme](README.md)
 - [gas fakes cli](gas-fakes-cli.md)
