@@ -129,14 +129,8 @@ ScriptApp.__behavior.trash ()
 
 ## <img src="./logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
 
-<iframe
-width="800"
-height="450"
-src="https://youtu.be/oEjpIrkYpEM"
-title="gas-fakes intro video"
-frameborder="0"
-allowfullscreen>
-</iframe>
+[![Watch the video](logo.png)](https://youtu.be/oEjpIrkYpEM)
+
 
 - [gas fakes intro video](https://youtu.be/oEjpIrkYpEM)
 - [getting started](GETTING_STARTED.md) - how to handle authentication for restricted scopes.
