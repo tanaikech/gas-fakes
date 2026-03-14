@@ -140,8 +140,11 @@ const root = DriveApp.getRootFolder(); // Returns Google Drive root
 
 ## <img src="./logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
 
+## Watch the video
+
 [![Watch the video](introvideo.png)](https://youtu.be/oEjpIrkYpEM)
 
+## Read more docs
 
 - [gas fakes intro video](https://youtu.be/oEjpIrkYpEM)
 - [getting started](GETTING_STARTED.md) - how to handle authentication for restricted scopes.
