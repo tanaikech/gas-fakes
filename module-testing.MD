@@ -114,7 +114,7 @@ execute `bash togas.sh` to copy all files to apps script IDE. All tests can be r
 
 ## <img src="./logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
 
-[![Watch the video](logo.png)](https://youtu.be/oEjpIrkYpEM)
+[![Watch the video](introvideo.png)](https://youtu.be/oEjpIrkYpEM)
 
 
 - [gas fakes intro video](https://youtu.be/oEjpIrkYpEM)
