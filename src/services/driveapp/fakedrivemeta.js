@@ -32,6 +32,32 @@ export class FakeDriveMeta {
   constructor(meta) {
     this.meta = meta
     this.__gas_fake_service = "DriveApp"
+    // The resource platform takes precedence over ScriptApp.__platform.
+    // ScriptApp.__platform is only used to determine the backend for new resources.
+    this.platform = ScriptApp.__platform || "google"
+  }
+
+  /**
+   * Internal helper to get the platform ID.
+   * @returns {string} The platform ID.
+   */
+  __getPlatform() {
+    return this.platform
+  }
+
+  /**
+   * Execute a function within the context of this resource's platform.
+   * This ensures the correct backend is used regardless of the global ScriptApp.__platform setting.
+   * @param {function} fn 
+   */
+  __withPlatform(fn) {
+    const currentPlatform = ScriptApp.__platform;
+    try {
+      ScriptApp.__platform = this.platform;
+      return fn();
+    } finally {
+      ScriptApp.__platform = currentPlatform;
+    }
   }
 
   __preventRootDamage = (operation) => {
@@ -62,7 +88,7 @@ export class FakeDriveMeta {
       return this
     }
 
-    const newMeta = Drive.Files.get(this.getId(), { fields }, { allow404: false })
+    const newMeta = this.__withPlatform(() => Drive.Files.get(this.getId(), { fields }, { allow404: false }))
     // need to merge this with already known fields
     this.meta = { ...this.meta, ...newMeta }
     improveFileCache(this.getId(), this.meta, fields)
@@ -103,7 +129,7 @@ export class FakeDriveMeta {
     const file = {}
     file[prop] = value
 
-    const data = Drive.Files.update(file, this.getId(), null, prop)
+    const data = this.__withPlatform(() => Drive.Files.update(file, this.getId(), null, prop))
     this.meta = { ...this.meta, ...data }
     improveFileCache(this.getId(), data)
 
@@ -232,7 +258,7 @@ export class FakeDriveMeta {
     }
 
     // need to make sure we get the new parents field back to improve cache with
-    const data = Drive.Files.update({}, this.getId(), null, "parents", params)
+    const data = this.__withPlatform(() => Drive.Files.update({}, this.getId(), null, "parents", params))
 
     // merge this with already known fields and improve cache   
     this.meta = { ...this.meta, ...data }
@@ -294,10 +320,10 @@ export class FakeDriveMeta {
       allowFileDiscovery = (access === Access.DOMAIN);
     } else if (access === Access.PRIVATE) {
       // For PRIVATE, we typically remove any 'anyone' or 'domain' permissions.
-      const { permissions } = Drive.Permissions.list(this.getId());
+      const { permissions } = this.__withPlatform(() => Drive.Permissions.list(this.getId()));
       permissions.forEach(p => {
         if (p.type === 'anyone' || p.type === 'domain') {
-          Drive.Permissions.delete(this.getId(), p.id);
+          this.__withPlatform(() => Drive.Permissions.delete(this.getId(), p.id));
         }
       });
       return this;
@@ -315,9 +341,9 @@ export class FakeDriveMeta {
     }
 
     // 3. Find existing permission of this type or create new
-    const { permissions } = Drive.Permissions.list(this.getId(), {
+    const { permissions } = this.__withPlatform(() => Drive.Permissions.list(this.getId(), {
       fields: "permissions(id,role,type,allowFileDiscovery,domain)"
-    });
+    }));
     const existing = permissions.find(p => p.type === type);
 
     if (existing) {
@@ -327,18 +353,18 @@ export class FakeDriveMeta {
         (type === 'domain' && existing.domain !== domain);
 
       if (identityChanged) {
-        Drive.Permissions.delete(this.getId(), existing.id);
+        this.__withPlatform(() => Drive.Permissions.delete(this.getId(), existing.id));
         const resource = { role, type, allowFileDiscovery };
         if (type === 'domain') resource.domain = domain;
-        Drive.Permissions.create(resource, this.getId());
+        this.__withPlatform(() => Drive.Permissions.create(resource, this.getId()));
       } else {
         // Only role is writable in update
-        Drive.Permissions.update({ role }, this.getId(), existing.id);
+        this.__withPlatform(() => Drive.Permissions.update({ role }, this.getId(), existing.id));
       }
     } else {
       const resource = { role, type, allowFileDiscovery };
       if (type === 'domain') resource.domain = Session.getActiveUser().getDomain();
-      Drive.Permissions.create(resource, this.getId());
+      this.__withPlatform(() => Drive.Permissions.create(resource, this.getId()));
     }
 
     improveFileCache(this.getId(), null);
@@ -379,18 +405,18 @@ export class FakeDriveMeta {
       // In Apps Script, this is not atomic. It just loops.
       emailAddresses.forEach(emailAddress => {
         const resource = { role, type: 'user', emailAddress };
-        Drive.Permissions.create(resource, this.getId());
+        this.__withPlatform(() => Drive.Permissions.create(resource, this.getId()));
       });
     } else {
       // To remove, we need to find the permission ID for each email.
-      const { permissions } = Drive.Permissions.list(this.getId(), {
+      const { permissions } = this.__withPlatform(() => Drive.Permissions.list(this.getId(), {
         fields: 'permissions(id,role,emailAddress)'
-      });
+      }));
 
       emailAddresses.forEach(emailAddress => {
         const permission = permissions.find(p => p.emailAddress === emailAddress && p.role === role);
         if (permission) {
-          Drive.Permissions.delete(this.getId(), permission.id);
+          this.__withPlatform(() => Drive.Permissions.delete(this.getId(), permission.id));
         }
         // Apps Script doesn't throw an error if the user isn't found.
       });

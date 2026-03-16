@@ -10,6 +10,7 @@ import {
   enableGoogleAPIs,
 } from "./setup.js";
 import { startMcpServer } from "./mcp.js";
+import { Platforms, PlatformDefaults } from "../services/enums/platformenums.js";
 
 export async function main() {
   const program = new Command();
@@ -121,11 +122,12 @@ export async function main() {
     });
 
   // --- Setup Commands ---
+  const validPlatforms = Object.values(Platforms).join(", ");
   program
     .command("init")
     .description("Initializes the configuration (.env).")
     .option("-e, --env <path>", "Path to a custom .env file.")
-    .option("-b, --backends <string...>", "List of backends to initialize (google, ksuite).", ["google"])
+    .option("-b, --backends <string...>", `List of backends to initialize (${validPlatforms}).`, [PlatformDefaults.DEFAULT])
     .addOption(
       new Option(
         "--at,--auth-type <string>",
@@ -139,7 +141,7 @@ export async function main() {
   program
     .command("auth")
     .description("Runs the authentication flow for a backend.")
-    .option("-b, --backend <string>", "Backend to authenticate (google, ksuite, msgraph). Defaults to configured platforms.")
+    .option("-b, --backend <string>", `Backend to authenticate (${validPlatforms}). Defaults to configured platforms.`)
     .action(authenticateUser);
 
   program

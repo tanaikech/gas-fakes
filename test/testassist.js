@@ -75,25 +75,11 @@ export const wrapupTest = (func) => {
 }
 
 /**
- * Creates a "smart" array for toTrash that automatically captures 
- * the current platform when an item is pushed.
- * Safe for both node/fake and live Apps Script environments.
+ * Creates a simple array for toTrash.
+ * Platform tracking is now handled natively by the resources.
  */
 export const createTrashCollector = () => {
-  const list = [];
-  // Only override push if we are in a fake environment where platform matters
-  if (typeof ScriptApp !== 'undefined' && ScriptApp.isFake) {
-    const originalPush = list.push.bind(list);
-    list.push = function (item) {
-      // If already wrapped or is null/undefined, just push
-      if (!item || (typeof item === 'object' && !Array.isArray(item) && item.file && item.platform)) {
-        return originalPush(item);
-      }
-      // Wrap with current platform
-      return originalPush({ file: item, platform: ScriptApp.__platform });
-    };
-  }
-  return list;
+  return [];
 };
 
 export const trasher = (toTrash) => {
@@ -101,28 +87,22 @@ export const trasher = (toTrash) => {
   const originalMode = behavior ? behavior.sandboxMode : false;
   if (behavior) behavior.sandboxMode = false;
 
-  const originalPlatform = ScriptApp.isFake ? ScriptApp.__platform : null;
-
   try {
     toTrash.forEach(item => {
-      // item can be a file/calendar object or { file, platform }
-      // on live GAS, only the file object is relevant
+      // For backwards compatibility with any remaining wrapped items
       const f = (item && item.file) ? item.file : item;
-      const platform = item && item.platform;
-
-      if (ScriptApp.isFake) {
-        ScriptApp.__platform = platform || originalPlatform;
-      }
 
       if (f && typeof f.deleteCalendar === 'function') {
-        console.log(`deleting temp calendar ${f.getId()} on ${ScriptApp.isFake ? (ScriptApp.__platform || 'default') : 'live GAS'}`);
+        const platformLabel = (typeof f.getPlatform === 'function') ? f.getPlatform() : (ScriptApp.isFake ? (ScriptApp.__platform || 'default') : 'live GAS');
+        console.log(`deleting temp calendar ${f.getId()} on ${platformLabel}`);
         try {
           f.deleteCalendar();
         } catch (e) {
           console.log('...warning:failed to delete calendar', f.getId(), e.message);
         }
       } else if (f && typeof f.setTrashed === 'function') {
-        console.log(`trashing temp file ${f.getId()} on ${ScriptApp.isFake ? (ScriptApp.__platform || 'default') : 'live GAS'}`);
+        const platformLabel = (typeof f.getPlatform === 'function') ? f.getPlatform() : (ScriptApp.isFake ? (ScriptApp.__platform || 'default') : 'live GAS');
+        console.log(`trashing temp file ${f.getId()} on ${platformLabel}`);
         try {
           f.setTrashed(true);
         } catch (e) {
@@ -132,7 +112,6 @@ export const trasher = (toTrash) => {
     });
   } finally {
     if (behavior) behavior.sandboxMode = originalMode;
-    if (ScriptApp.isFake && originalPlatform) ScriptApp.__platform = originalPlatform;
   }
 }
 
