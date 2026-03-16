@@ -160,12 +160,11 @@ export async function getMsGraphToken(scopes = ['User.Read']) {
 
     // 3. Azure CLI Direct Exec (Silent) - Primary Local "Keyless" Path
     const isAuthFlow = process.env.GF_AUTH_FLOW === 'true';
-    if (!isAuthFlow) {
-      const targetTenant = (envTenant && envTenant !== 'common') ? envTenant : 'consumers';
-      const tenantArg = `--tenant "${targetTenant}" `;
+    if (!isAuthFlow && !clientId) {
+      const tenantArg = (envTenant && envTenant !== 'common' && envTenant !== 'consumers') ? `--tenant "${envTenant}" ` : '';
 
       try {
-        const cmd = `az account get-access-token --resource-type ms-graph ${tenantArg}--scope "https://graph.microsoft.com/.default" --output json`;
+        const cmd = `az account get-access-token --resource-type ms-graph ${tenantArg}--output json`;
         const stdout = execSync(cmd, { encoding: 'utf-8', stdio: ['ignore', 'pipe', 'ignore'], shell: true });
         const res = JSON.parse(stdout);
         const token = res.accessToken;
@@ -180,8 +179,10 @@ export async function getMsGraphToken(scopes = ['User.Read']) {
     }
 
     // 4. Interactive Fallback
-    if (!isAuthFlow) {
+    if (!isAuthFlow && !clientId) {
       console.log(`...silent CLI login failed. Falling back to interactive SDK login in the worker...`);
+    } else if (!isAuthFlow && clientId) {
+      console.log(`...using custom MS_GRAPH_CLIENT_ID. Bypassing Azure CLI for Interactive SDK login...`);
     }
 
     // Try silent refresh first, then interactive if required

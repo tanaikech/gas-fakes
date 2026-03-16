@@ -1,0 +1,20 @@
+{
+  "engines": {
+    "node": ">=20.11.0"
+  },
+  "dependencies": {
+    "@mcpher/gas-fakes": "file:../../"
+  },
+  "type": "module",
+  "scripts": {
+
+  },
+  "name": "multicopy",
+  "author": "bruce mcpherson",
+  "version": "2.2.3",
+  "license": "MIT",
+  "main": "multicopy.js",
+  "description": "test multi copy",
+  "repository": "github:brucemcpherson/gas-fakes",
+  "homepage": "https://ramblings.mcpher.com/a-proof-of-concept-implementation-of-apps-script-environment-on-node/"
+}

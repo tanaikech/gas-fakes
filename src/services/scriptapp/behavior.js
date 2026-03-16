@@ -408,13 +408,26 @@ class FakeBehavior {
     if (this.sandboxMode || force) {
       const platform = ScriptApp.__platform;
       this.__createdIds.set(id, platform);
-      if (!this.__allowedIds.has(id)) {
-        slogger.log(`...adding file ${id} to sandbox allowed list on ${platform}`);
-        this.__allowedIds.set(id, platform);
-      }
+      this.whitelistFile(id);
     }
     return id
   }
+  
+  whitelistFile(id) {
+    if (!is.nonEmptyString(id)) {
+      throw new Error(`Invalid sandbox id parameter (${id}) - must be a non-empty string`);
+    }
+    const isRootId = id === 'root' || (globalThis.DriveApp?.getRootFolder()?.getId() === id);
+    if (isRootId) return id;
+
+    const platform = ScriptApp.__platform;
+    if (!this.__allowedIds.has(id)) {
+      slogger.log(`...whitelisting file ${id} on ${platform}`);
+      this.__allowedIds.set(id, platform);
+    }
+    return id;
+  }
+
   addGmailId(id, force = false) {
     if (!is.nonEmptyString(id)) {
       throw new Error(`Invalid sandbox id parameter (${id}) - must be a non-empty string`);
@@ -422,13 +435,23 @@ class FakeBehavior {
     if (this.sandboxMode || force) {
       const platform = ScriptApp.__platform;
       this.__createdGmailIds.set(id, platform);
-      if (!this.__allowedGmailIds.has(id)) {
-        slogger.log(`...adding gmail id ${id} to sandbox allowed list on ${platform}`);
-        this.__allowedGmailIds.set(id, platform);
-      }
+      this.whitelistGmailId(id);
     }
     return id
   }
+  
+  whitelistGmailId(id) {
+    if (!is.nonEmptyString(id)) {
+      throw new Error(`Invalid sandbox id parameter (${id}) - must be a non-empty string`);
+    }
+    const platform = ScriptApp.__platform;
+    if (!this.__allowedGmailIds.has(id)) {
+      slogger.log(`...whitelisting gmail id ${id} on ${platform}`);
+      this.__allowedGmailIds.set(id, platform);
+    }
+    return id;
+  }
+
   addCalendarId(id, force = false) {
     if (!is.nonEmptyString(id)) {
       throw new Error(`Invalid sandbox id parameter (${id}) - must be a non-empty string`);
@@ -436,12 +459,21 @@ class FakeBehavior {
     if (this.sandboxMode || force) {
       const platform = ScriptApp.__platform;
       this.__createdCalendarIds.set(id, platform);
-      if (!this.__allowedCalendarIds.has(id)) {
-        slogger.log(`...adding calendar id ${id} to sandbox allowed list on ${platform}`);
-        this.__allowedCalendarIds.set(id, platform);
-      }
+      this.whitelistCalendarId(id);
     }
     return id
+  }
+  
+  whitelistCalendarId(id) {
+    if (!is.nonEmptyString(id)) {
+      throw new Error(`Invalid sandbox id parameter (${id}) - must be a non-empty string`);
+    }
+    const platform = ScriptApp.__platform;
+    if (!this.__allowedCalendarIds.has(id)) {
+      slogger.log(`...whitelisting calendar id ${id} on ${platform}`);
+      this.__allowedCalendarIds.set(id, platform);
+    }
+    return id;
   }
   isAccessible(id, serviceName, accessType = 'read') {
     if (!is.nonEmptyString(id)) {
