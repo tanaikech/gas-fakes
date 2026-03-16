@@ -116,6 +116,10 @@ The documentId is only meaningful if you are working on a container bound scrip.
 
 As you will have noticed, there are various local support files for props/caching etc. Be careful that these do not get committed to a public repo if you are adding sensitive values to your stores. Note that the real user Id is not used when creating files, but rather an encrypted version of it. This avoids real user ids being revealed in your file system.
 
+### Testing stores - live apps script and gas-fakes
+
+Using Upstash Redis as your property stores means you can share data between live Apps Script and gas-fakes. The teststores scripts can check that this is working, but it checks that a shared value is accessible in Apps Script that was written by gas-fakes. This means that you should make sure that teststores runs on gas-fakes before you test it in Apps Script otherwise the live apps script wont find the (probably expired) cache value in Redis.
+
 
 ## Noticed differences
 
