@@ -324,8 +324,9 @@ export const fxInit = ({
   const currentPlatform = Auth.getPlatform();
   if (currentPlatform === 'google' || !currentPlatform) {
     const initialPlatforms = platformAuth || global.ScriptApp?.__platformAuth || ['google'];
-    const firstPlatform = initialPlatforms[0];
-    Auth.setPlatform(firstPlatform);
+    // Prefer google if available in authorized platforms, otherwise use the first available.
+    const defaultPlatform = initialPlatforms.includes('google') ? 'google' : initialPlatforms[0];
+    Auth.setPlatform(defaultPlatform);
   }
 
   return synced;

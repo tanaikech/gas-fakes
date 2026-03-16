@@ -9,7 +9,7 @@ import path from 'path';
 import { chmodSync } from 'fs';
 import got from 'got';
 
-const TOKEN_CACHE_FILE = path.join(process.cwd(), '.msgraph-token.jsobm fiddqhn');
+const TOKEN_CACHE_FILE = path.join(process.cwd(), '.msgraph-token.json');
 
 async function loadTokenCache() {
   if (existsSync(TOKEN_CACHE_FILE)) {
@@ -184,15 +184,36 @@ export async function getMsGraphToken(scopes = ['User.Read']) {
     if (!isAuthFlow) {
       console.log(`...silent CLI login failed. Falling back to interactive SDK login in the worker...`);
     }
-    const credential = new InteractiveBrowserCredential({
+
+    // Try silent refresh first, then interactive if required
+    let promptBehavior = isAuthFlow ? 'select_account' : 'none';
+    const credentialSilent = new InteractiveBrowserCredential({
       tenantId: envTenant === 'common' ? 'consumers' : envTenant,
       clientId,
-      prompt: 'select_account consent'
+      prompt: promptBehavior
     });
-    const tokenResponse = await credential.getToken(msScopes);
-    syncLog('...retrieved MS Graph token via interactive login');
-    await saveTokenCache(tokenResponse.token, tokenResponse.expiresOnTimestamp);
-    return tokenResponse.token;
+
+    try {
+      const tokenResponse = await credentialSilent.getToken(msScopes);
+      syncLog(`...retrieved MS Graph token via interactive login (prompt: ${promptBehavior})`);
+      await saveTokenCache(tokenResponse.token, tokenResponse.expiresOnTimestamp);
+      return tokenResponse.token;
+    } catch (silentErr) {
+       if (promptBehavior === 'none') {
+         console.log(`...silent refresh failed, prompting user...`);
+         const credentialInteractive = new InteractiveBrowserCredential({
+           tenantId: envTenant === 'common' ? 'consumers' : envTenant,
+           clientId,
+           prompt: 'select_account consent'
+         });
+         const tokenResponse = await credentialInteractive.getToken(msScopes);
+         syncLog('...retrieved MS Graph token via interactive login');
+         await saveTokenCache(tokenResponse.token, tokenResponse.expiresOnTimestamp);
+         return tokenResponse.token;
+       } else {
+         throw silentErr;
+       }
+    }
 
   } catch (err) {
     throw new Error(`MS Graph Auth failed. Error: ${err.message}`);

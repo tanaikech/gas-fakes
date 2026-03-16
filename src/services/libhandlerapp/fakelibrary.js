@@ -35,10 +35,17 @@ class FakeLibrary {
   get libContent() {
     if (!this.__libContent) {
       this.__allowSandboxAccess();
-      const data = Drive.Files.export(
-        this.libraryId,
-        'application/vnd.google-apps.script+json',
-      );
+      const currentPlatform = ScriptApp.__platform;
+      let data;
+      try {
+        ScriptApp.__platform = 'google';
+        data = Drive.Files.export(
+          this.libraryId,
+          'application/vnd.google-apps.script+json',
+        );
+      } finally {
+        ScriptApp.__platform = currentPlatform;
+      }
       if (!data) {
         throw new Error(`Library ${this.libraryId} not found`);
       }
