@@ -26,12 +26,6 @@
     "unzipper": "^0.12.3",
     "zod": "^4.3.6"
   },
-  "overrides": {
-    "glob": "^13.0.0",
-    "rimraf": "^6.1.3",
-    "minimatch": "^10.2.1",
-    "node-domexception": "^1.0.0"
-  },
   "type": "module",
   "scripts": {
     "pub": "npm publish --access public",
