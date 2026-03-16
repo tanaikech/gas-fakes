@@ -37,6 +37,8 @@ gas-fakes auth -b msgraph
 
 ## Important Caveats & "Oddities"
 
+Note that I don't have any Microsoft licenses, or a business account, and apparently I don't qualify for the Microsoft developer program that would allow me to get one. I've attempted to theoritically support theses and other scenarios, but I've only been able to test on personal accounts. If you're a gas-fakes user and have a business account,and other Microsoft license variants, I'd love to hear about your experiences - and would welcome any collaboration you can provide for this open source project. 
+
 ### 1. Consumer (Personal) Account Focus
 Currently, `gas-fakes` has been **primarily tested with Personal Microsoft Accounts (OneDrive Personal)**. While it supports custom App Registrations, personal accounts are the most stable path for "keyless" local development.
 
