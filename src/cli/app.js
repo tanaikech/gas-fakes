@@ -139,7 +139,7 @@ export async function main() {
   program
     .command("auth")
     .description("Runs the authentication flow for a backend.")
-    .option("-b, --backend <string>", "Backend to authenticate (google, ksuite).", "google")
+    .option("-b, --backend <string>", "Backend to authenticate (google, ksuite, msgraph). Defaults to configured platforms.")
     .action(authenticateUser);
 
   program

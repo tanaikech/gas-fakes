@@ -7,8 +7,9 @@ import { readFile, writeFile } from 'fs/promises';
 import { existsSync } from 'fs';
 import path from 'path';
 import { chmodSync } from 'fs';
+import got from 'got';
 
-const TOKEN_CACHE_FILE = path.join(process.cwd(), '.msgraph-token.json');
+const TOKEN_CACHE_FILE = path.join(process.cwd(), '.msgraph-token.jsobm fiddqhn');
 
 async function loadTokenCache() {
   if (existsSync(TOKEN_CACHE_FILE)) {
@@ -71,6 +72,11 @@ export function mapGasScopesToMsGraph(gasScopes = []) {
   return Array.from(msScopes);
 }
 
+async function isGcpEnv() {
+  if (process.env.K_SERVICE || process.env.FUNCTION_NAME) return true;
+  return false;
+}
+
 /**
  * Gets a Microsoft Graph token.
  */
@@ -78,13 +84,9 @@ export async function getMsGraphToken(scopes = ['User.Read']) {
   const envTenant = process.env.MS_GRAPH_TENANT_ID || 'common';
   const clientId = process.env.MS_GRAPH_CLIENT_ID;
   const clientSecret = process.env.MS_GRAPH_CLIENT_SECRET;
+  const msAuthType = process.env.MS_AUTH_TYPE;
 
-  // No local token caching - strictly "Keyless"
-
-  // Ensure no duplicate or empty scopes
   const uniqueScopes = Array.from(new Set(scopes)).filter(s => s);
-
-  // Format for MS Graph: core scopes are as are, resource scopes with full URL prefix
   const msScopes = uniqueScopes.map(s => {
     const core = ['openid', 'profile', 'email', 'offline_access'];
     if (core.some(c => s.startsWith(c))) return s;
@@ -92,17 +94,63 @@ export async function getMsGraphToken(scopes = ['User.Read']) {
     return `https://graph.microsoft.com/${s.startsWith('/') ? s.slice(1) : s}`;
   });
 
-  // Check local cache first
-  const cachedToken = await loadTokenCache();
-  if (cachedToken) {
-    syncLog('...retrieved MS Graph token via local file cache');
-    return cachedToken;
+  // Federated/WIF bypasses cache to ensure fresh identity exchange
+  if (msAuthType !== 'federated') {
+    const cachedToken = await loadTokenCache();
+    if (cachedToken) {
+      syncLog('...retrieved MS Graph token via local file cache');
+      return cachedToken;
+    }
   }
 
   try {
-    // 1. Service Principal (if configured) - "Keyless" for Business
+    // 1. Federated Flow (WIF) - For Cloud Run/GKE only
+    if (msAuthType === 'federated') {
+      const isGcp = await isGcpEnv();
+      if (isGcp) {
+        try {
+          syncLog('...initiating MS Graph Federated Identity (WIF) exchange (GCP)');
+          const audience = clientId || 'api://AzureADTokenExchange';
+          const metadataUrl = `http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/identity?audience=${audience}`;
+          
+          const googleTokenResponse = await got(metadataUrl, {
+            headers: { 'Metadata-Flavor': 'Google' },
+            timeout: { request: 2000 },
+            retry: { limit: 0 }
+          });
+          const googleIdToken = googleTokenResponse.body;
+
+          // Note: Personal apps registered in 'consumers' typically do not support WIF.
+          // This flow expects an App Registration in a Work/School tenant.
+          const tenant = (envTenant && envTenant !== 'common' && envTenant !== 'consumers') ? envTenant : 'organizations';
+          const msTokenUrl = `https://login.microsoftonline.com/${tenant}/oauth2/v2.0/token`;
+
+          const form = {
+            client_id: clientId,
+            grant_type: 'client_credentials',
+            client_assertion_type: 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
+            client_assertion: googleIdToken,
+            scope: 'https://graph.microsoft.com/.default'
+          };
+
+          const msTokenResponse = await got.post(msTokenUrl, { form, timeout: { request: 5000 } }).json();
+          const token = msTokenResponse.access_token;
+          const expiresOn = new Date(Date.now() + (msTokenResponse.expires_in * 1000)).toISOString();
+
+          syncLog('...retrieved MS Graph token via Federated Identity (WIF)');
+          await saveTokenCache(token, expiresOn);
+          return token;
+        } catch (wifErr) {
+          syncLog(`...MS WIF exchange failed: ${wifErr.message}`);
+        }
+      } else {
+        syncLog('...skipping Federated Identity (Local environment)');
+      }
+    }
+
+    // 2. Service Principal
     if (clientId && clientSecret) {
-      const tenantId = envTenant === 'common' || envTenant === 'consumers' ? 'organizations' : envTenant;
+      const tenantId = (envTenant === 'common' || envTenant === 'consumers') ? 'organizations' : envTenant;
       const credential = new ClientSecretCredential(tenantId, clientId, clientSecret);
       const tokenResponse = await credential.getToken(msScopes);
       syncLog('...retrieved MS Graph token via Client Secret (Service Principal)');
@@ -110,55 +158,32 @@ export async function getMsGraphToken(scopes = ['User.Read']) {
       return tokenResponse.token;
     }
 
-    // 2. Azure CLI Direct Exec (Silent flow - OS level "Keyless")
+    // 3. Azure CLI Direct Exec (Silent) - Primary Local "Keyless" Path
     const isAuthFlow = process.env.GF_AUTH_FLOW === 'true';
-    const targetTenant = envTenant === 'common' ? 'consumers' : envTenant;
-    const scopeArg = msScopes.join(' ');
-
     if (!isAuthFlow) {
-      // Revert to strictly tenant-aware fallback to avoid picking up business/EXT sessions.
-      const tenantArg = targetTenant ? `--tenant "${targetTenant}" ` : '';
+      const targetTenant = (envTenant && envTenant !== 'common') ? envTenant : 'consumers';
+      const tenantArg = `--tenant "${targetTenant}" `;
       const clientArg = clientId ? `--client-id "${clientId}" ` : '';
 
       try {
-        // Strategy 1: Custom Client ID + Tenant
         const cmd = `az account get-access-token --resource-type ms-graph ${tenantArg}${clientArg}--scope "https://graph.microsoft.com/.default" --output json`;
         const stdout = execSync(cmd, { encoding: 'utf-8', stdio: ['ignore', 'pipe', 'ignore'], shell: true });
         const res = JSON.parse(stdout);
         const token = res.accessToken;
         if (token && (token.match(/\./g) || []).length >= 2) {
           syncLog('...retrieved valid MS Graph token via Azure CLI (silent)');
-          // az returns expiresOn in a format new Date() can parse
           await saveTokenCache(token, res.expiresOn);
           return token;
         }
       } catch (e) {
-        try {
-          // Strategy 2: First-party + Tenant (Magic bullet for SPO license fix)
-          const fallbackCmd = `az account get-access-token --resource-type ms-graph ${tenantArg}--scope "https://graph.microsoft.com/.default" --output json`;
-          const stdout = execSync(fallbackCmd, { encoding: 'utf-8', stdio: ['ignore', 'pipe', 'ignore'], shell: true });
-          const res = JSON.parse(stdout);
-          const token = res.accessToken;
-          if (token && (token.match(/\./g) || []).length >= 2) {
-            syncLog(`...retrieved valid MS Graph token via Azure CLI (first-party ${targetTenant} fallback)`);
-            await saveTokenCache(token, res.expiresOn);
-            return token;
-          }
-        } catch (ee) {
-          syncLog(`...silent CLI fallback failed: ${ee.message}`);
-        }
+        syncLog(`...silent CLI fallback failed: ${e.message}`);
       }
     }
 
-    // 3. Auth Flow - Interactive Fallback
-
-    // If we're not in the dedicated auth flow, we still attempt interactive fallback
-    // if silent login failed, as requested by the user for "asynchronous" operations in the worker.
+    // 4. Interactive Fallback
     if (!isAuthFlow) {
       console.log(`...silent CLI login failed. Falling back to interactive SDK login in the worker...`);
     }
-
-    // Interactive login for setup or runtime fallback
     const credential = new InteractiveBrowserCredential({
       tenantId: envTenant === 'common' ? 'consumers' : envTenant,
       clientId,
@@ -175,6 +200,5 @@ export async function getMsGraphToken(scopes = ['User.Read']) {
 }
 
 function syncLog(msg) {
-  // Use worker sync log if available, otherwise console
   console.log(msg);
 }
