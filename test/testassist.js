@@ -69,6 +69,16 @@ export const wrapupTest = (func) => {
     // actually most of these should already have been trashed
 
     ScriptApp.__behavior.trash();
+    
+    // Clear global state to prevent hangovers between sequential test suites
+    __mss = null;
+    __mdoc = null;
+    __mfolder = null;
+    __mcals.clear();
+    
+    // Reset global platform back to default to avoid backend hangovers between test suites
+    ScriptApp.__platform = 'google';
+
     console.log('...its a wrap');
   }
 
@@ -122,6 +132,7 @@ export const moveToTestFolder = (id) => {
 }
 
 export const getTestFolder = (fixes) => {
+  const p = ScriptApp.__platform || 'google';
   if (!__mfolder) {
     const folderName = fixes.PREFIX + "gassy-mcfakeface"
     const folders = DriveApp.getFoldersByName(folderName)
@@ -130,9 +141,9 @@ export const getTestFolder = (fixes) => {
     } else {
       __mfolder = DriveApp.createFolder(folderName)
     }
-    console.log("...created folder", __mfolder.getName(), __mfolder.getId())
+    console.log("...created folder", __mfolder.getName(), __mfolder.getId(), "on", p)
   }
-  console.log("...test files will be in", __mfolder.getName(), __mfolder.getId())
+  console.log("...test files will be in", __mfolder.getName(), __mfolder.getId(), "on", p)
   return __mfolder
 }
 
@@ -140,6 +151,7 @@ export const maketcal = (toTrash, fixes, { nameSuffix = 'default', clear = true 
   const behavior = ScriptApp.isFake ? ScriptApp.__behavior : null;
   const originalMode = behavior ? behavior.sandboxMode : false;
   if (behavior) behavior.sandboxMode = false;
+  const p = ScriptApp.__platform || 'google';
 
   const calName = fixes.PREFIX + "tss-calendar-" + nameSuffix;
   let cal = __mcals.get(calName);
@@ -152,16 +164,16 @@ export const maketcal = (toTrash, fixes, { nameSuffix = 'default', clear = true 
       if (existing.length > 0) {
         cal = existing[0];
         if (existing.length > 1) {
-          console.log('...cleaning up duplicate calendars for', calName);
+          console.log('...cleaning up duplicate calendars for', calName, "on", p);
           for (let i = 1; i < existing.length; i++) {
             try { existing[i].deleteCalendar(); } catch (e) { console.log('failed to delete duplicate', e.message); }
           }
         }
-        console.log('...found existing calendar', cal.getName(), cal.getId());
+        console.log('...found existing calendar', cal.getName(), cal.getId(), "on", p);
         reuse = true;
       } else {
         cal = CalendarApp.createCalendar(calName);
-        console.log('...created calendar', cal.getName(), cal.getId());
+        console.log('...created calendar', cal.getName(), cal.getId(), "on", p);
       }
       __mcals.set(calName, cal);
     } else {
@@ -174,7 +186,7 @@ export const maketcal = (toTrash, fixes, { nameSuffix = 'default', clear = true 
         // Recreate if it was deleted
         cal = CalendarApp.createCalendar(calName);
         __mcals.set(calName, cal);
-        console.log('...re-created calendar (was deleted)', cal.getName(), cal.getId());
+        console.log('...re-created calendar (was deleted)', cal.getName(), cal.getId(), "on", p);
         reuse = false;
       }
     }
@@ -212,12 +224,13 @@ export const maketcal = (toTrash, fixes, { nameSuffix = 'default', clear = true 
 export const maketdoc = (toTrash, fixes, { clear = true, forceNew = false } = {}) => {
   const docName = fixes.PREFIX + "tss-docs";
   const folder = getTestFolder(fixes);
+  const p = ScriptApp.__platform || 'google';
   let reuse = false;
   // because some test may have renamed it and drive/document service on Apps Script 
   // might not actually be in sync - doesnt actually happen on Node but we'll leave for consistency.
   if (forceNew || !__mdoc || __mdoc.getName() !== docName) {
     __mdoc = DocumentApp.create(docName);
-    console.log('...created doc', __mdoc.getName(), __mdoc.getId());
+    console.log('...created doc', __mdoc.getName(), __mdoc.getId(), "on", p);
     moveToTestFolder(__mdoc.getId());
 
     // no need to do this as sandbox mode will take care of it
@@ -228,7 +241,7 @@ export const maketdoc = (toTrash, fixes, { clear = true, forceNew = false } = {}
         return fileObj && typeof fileObj.getId === 'function' && fileObj.getId() === id;
       });
       if (!exists) {
-        console.log('...will be deleting it later');
+        console.log('...will be deleting it later on', p);
         toTrash.push(DriveApp.getFileById(id));
       }
     }
@@ -236,7 +249,7 @@ export const maketdoc = (toTrash, fixes, { clear = true, forceNew = false } = {}
   } else {
     // in case there had been a save and close some point
     __mdoc = DocumentApp.openById(__mdoc.getId());
-    console.log('...re-opened doc', __mdoc.getName(), __mdoc.getId());
+    console.log('...re-opened doc', __mdoc.getName(), __mdoc.getId(), "on", p);
     if (ScriptApp.isFake) ScriptApp.__behavior.addFile(__mdoc.getId(), true);
     reuse = true;
   }
@@ -266,10 +279,11 @@ export const maketdoc = (toTrash, fixes, { clear = true, forceNew = false } = {}
 export const maketss = (sheetName, toTrash, fixes, { clearContents = true, clearFormats = true } = {}) => {
   const folder = getTestFolder(fixes)
   const aname = fixes.PREFIX + "tss-sheet"
+  const p = ScriptApp.__platform || 'google';
   if (!__mss || __mss.getName() !== aname) {
     __mss = SpreadsheetApp.create(aname)
     moveToTestFolder(__mss.getId())
-    console.log('...created ss', __mss.getName(), __mss.getId())
+    console.log('...created ss', __mss.getName(), __mss.getId(), "on", p)
   } else {
     // re-register with sandbox if it's a fake
     if (ScriptApp.isFake) ScriptApp.__behavior.addFile(__mss.getId(), true)
@@ -282,7 +296,7 @@ export const maketss = (sheetName, toTrash, fixes, { clearContents = true, clear
       return fileObj && typeof fileObj.getId === 'function' && fileObj.getId() === id;
     });
     if (!exists) {
-      console.log('...will be deleting it later')
+      console.log('...will be deleting it later on', p)
       toTrash.push(DriveApp.getFileById(id))
     }
   }
@@ -295,7 +309,7 @@ export const maketss = (sheetName, toTrash, fixes, { clearContents = true, clear
 
   if (!sheet) {
     sheet = __mss.insertSheet(sheetName)
-    console.log('...created sheet', sheet.getName(), sheet.getSheetId())
+    console.log('...created sheet', sheet.getName(), sheet.getSheetId(), "on", p)
   } else {
     if (clearContents || clearFormats) {
       sheet.clear({ contentsOnly: !clearFormats, formatsOnly: !clearContents })

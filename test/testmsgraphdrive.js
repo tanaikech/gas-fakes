@@ -100,6 +100,10 @@ export const testMsGraphDrive = (pack) => {
     });
   }
 
+  if (ScriptApp.isFake) {
+    ScriptApp.__platform = 'google';
+  }
+
   return { unit, fixes: originalFixes }
 }
 

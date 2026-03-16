@@ -205,7 +205,8 @@ export class OneDrive {
 
     const response = await this._request('PATCH', `${this.userPath}/drive/items/${fileId}`, {
       json: {
-        parentReference: { id: destId }
+        parentReference: { id: destId },
+        "@microsoft.graph.conflictBehavior": "replace"
       }
     });
     return this.translateFile(response.body);

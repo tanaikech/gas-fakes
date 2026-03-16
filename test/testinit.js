@@ -52,7 +52,8 @@ export const initTests = () => {
     // This allows tests to access fixture files without needing to disable the sandbox.
     Object.keys(fixes).forEach(key => {
       if (key.endsWith('_ID') && fixes[key]) {
-        console.log(`...whitelisting test file ${key}: ${fixes[key]}`);
+        const platform = ScriptApp.__platform || 'google';
+        console.log(`...whitelisting test file ${key}: ${fixes[key]} on ${platform}`);
         behavior.addIdWhitelist(behavior.newIdWhitelistItem(fixes[key]));
       }
     });
@@ -61,7 +62,8 @@ export const initTests = () => {
     // We'll add its ID to the whitelist to ensure tests that traverse
     // up to the root folder don't fail in sandbox mode.
     const rootFolderId = DriveApp.getRootFolder().getId();
-    console.log(`...whitelisting test file ROOT_FOLDER_ID: ${rootFolderId}`);
+    const platform = ScriptApp.__platform || 'google';
+    console.log(`...whitelisting test file ROOT_FOLDER_ID: ${rootFolderId} on ${platform}`);
     behavior.addIdWhitelist(behavior.newIdWhitelistItem(rootFolderId));
   }
   return {

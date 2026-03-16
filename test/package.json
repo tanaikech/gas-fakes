@@ -78,7 +78,7 @@
     "testxmlservice": "node testxmlservice.js execute"
   },
   "name": "test-gas-fakes",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "license": "MIT",
   "main": "test.js",
   "description": "test gas-fakes on both live and local apps script - version number should match the gas-fakes version number it tests",

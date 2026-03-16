@@ -1067,10 +1067,10 @@ As of now, `gas-fakes` has been primarily tested with **Personal Microsoft Accou
 When using Business or Guest accounts (especially `EXT` identities), you may see a `Request failed with status code 400 (Bad Request): Tenant does not have a SPO license`. This is a Microsoft API requirement: you cannot access the `/me/drive` endpoint without an active SharePoint Online license. Personal accounts do not have this restriction.
 
 #### Interactive Fallback in Worker
-If the silent Azure CLI fallback fails (due to session expiry or directory mismatch), `gas-fakes` will open a browser window for an **additional interactive login** directly from the worker thread. This ensures the script continues to run, but interrupts the "silent" flow. Running `gas-fakes auth -b msgraph` manually usually restores the silent runtime for several hours/days.
+If the silent Azure CLI fallback fails (due to session expiry or directory mismatch), `gas-fakes` will first attempt a silent refresh via the Azure SDK cache. If that also fails, it will open a browser window for an **additional interactive login** directly from the worker thread. This ensures the script continues to run, but interrupts the "silent" flow. Running `gas-fakes auth -b msgraph` manually usually restores the silent runtime for several hours/days.
 
 #### Local Caching Security (v2.2.3+)
-Tokens cached in `.msgraph-token.json` are stored in plaintext. While convenient for eliminating redundant logins, this introduces a security risk compared to the Azure CLI OS-level cache. Ensure the file is excluded from version control.
+Tokens cached in `.msgraph-token.json` are stored in plaintext. While convenient for eliminating redundant logins (and now enabling silent background refreshes when possible), this introduces a security risk compared to the Azure CLI OS-level cache. Ensure the file is excluded from version control.
 
 #### Primary Drive Only
 The current implementation focuses on the primary User Drive. Group drives, sites, and multiple drives are not yet fully supported or tested.

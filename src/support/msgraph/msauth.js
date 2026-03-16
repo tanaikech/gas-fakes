@@ -163,10 +163,9 @@ export async function getMsGraphToken(scopes = ['User.Read']) {
     if (!isAuthFlow) {
       const targetTenant = (envTenant && envTenant !== 'common') ? envTenant : 'consumers';
       const tenantArg = `--tenant "${targetTenant}" `;
-      const clientArg = clientId ? `--client-id "${clientId}" ` : '';
 
       try {
-        const cmd = `az account get-access-token --resource-type ms-graph ${tenantArg}${clientArg}--scope "https://graph.microsoft.com/.default" --output json`;
+        const cmd = `az account get-access-token --resource-type ms-graph ${tenantArg}--scope "https://graph.microsoft.com/.default" --output json`;
         const stdout = execSync(cmd, { encoding: 'utf-8', stdio: ['ignore', 'pipe', 'ignore'], shell: true });
         const res = JSON.parse(stdout);
         const token = res.accessToken;

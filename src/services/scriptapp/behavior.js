@@ -251,13 +251,13 @@ class FakeBehavior {
     // this is a set of all the files this instance of gas-fakes has created
     // the idea is that we can use this to clean up after tests or to emulate drive.file scope
     // key is the file id
-    this.__createdIds = new Set();
-    this.__createdGmailIds = new Set();
-    this.__createdCalendarIds = new Set();
+    this.__createdIds = new Map();
+    this.__createdGmailIds = new Map();
+    this.__createdCalendarIds = new Map();
     // Specifically for sandbox mode - files created when sandbox mode is on
-    this.__allowedIds = new Set();
-    this.__allowedGmailIds = new Set();
-    this.__allowedCalendarIds = new Set();
+    this.__allowedIds = new Map();
+    this.__allowedGmailIds = new Map();
+    this.__allowedCalendarIds = new Map();
     // in sandbox mode we only allow access to files created in this instance
     // this is to emulate the behavior of a drive.file scope
     this.__sandboxMode = false;
@@ -406,10 +406,11 @@ class FakeBehavior {
     if (isRootId) return id;
 
     if (this.sandboxMode || force) {
-      this.__createdIds.add(id);
+      const platform = ScriptApp.__platform;
+      this.__createdIds.set(id, platform);
       if (!this.__allowedIds.has(id)) {
-        slogger.log(`...adding file ${id} to sandbox allowed list`);
-        this.__allowedIds.add(id);
+        slogger.log(`...adding file ${id} to sandbox allowed list on ${platform}`);
+        this.__allowedIds.set(id, platform);
       }
     }
     return id
@@ -419,10 +420,11 @@ class FakeBehavior {
       throw new Error(`Invalid sandbox id parameter (${id}) - must be a non-empty string`);
     }
     if (this.sandboxMode || force) {
-      this.__createdGmailIds.add(id);
+      const platform = ScriptApp.__platform;
+      this.__createdGmailIds.set(id, platform);
       if (!this.__allowedGmailIds.has(id)) {
-        slogger.log(`...adding gmail id ${id} to sandbox allowed list`);
-        this.__allowedGmailIds.add(id);
+        slogger.log(`...adding gmail id ${id} to sandbox allowed list on ${platform}`);
+        this.__allowedGmailIds.set(id, platform);
       }
     }
     return id
@@ -432,10 +434,11 @@ class FakeBehavior {
       throw new Error(`Invalid sandbox id parameter (${id}) - must be a non-empty string`);
     }
     if (this.sandboxMode || force) {
-      this.__createdCalendarIds.add(id);
+      const platform = ScriptApp.__platform;
+      this.__createdCalendarIds.set(id, platform);
       if (!this.__allowedCalendarIds.has(id)) {
-        slogger.log(`...adding calendar id ${id} to sandbox allowed list`);
-        this.__allowedCalendarIds.add(id);
+        slogger.log(`...adding calendar id ${id} to sandbox allowed list on ${platform}`);
+        this.__allowedCalendarIds.set(id, platform);
       }
     }
     return id
@@ -528,21 +531,24 @@ class FakeBehavior {
   trash() {
     let trashed = [];
     const wasSandbox = this.sandboxMode;
+    const currentPlatform = ScriptApp.__platform;
     this.sandboxMode = false;
     try {
       // Drive cleanup
       if (this.__cleanup) {
         const rootId = DriveApp.getRootFolder().getId();
-        trashed = Array.from(this.__createdIds).reduce((acc, id) => {
+        trashed = Array.from(this.__createdIds.entries()).reduce((acc, [id, platform]) => {
           if (id === rootId) {
             slogger.log(`...skipping trashing of root folder`);
             return acc;
           }
           let d = null
           try {
+            ScriptApp.__platform = platform;
             d = DriveApp.getFileById(id)
           } catch (e) {
             try {
+              ScriptApp.__platform = platform;
               d = DriveApp.getFolderById(id)
             } catch (ee) {
               // Ignore if not found
@@ -550,10 +556,11 @@ class FakeBehavior {
           }
           if (d && d.getId() !== rootId) {
             try {
+              ScriptApp.__platform = platform;
               d.setTrashed(true);
               const name = d.getName();
               const logLabel = name ? `${name} (${id})` : id;
-              slogger.log(`...trashed file ${logLabel}`);
+              slogger.log(`...trashed file ${logLabel} on ${platform}`);
               acc.push(id);
             } catch (e) {
               slogger.error(`...failed to trash file ${id}: ${e.message}`);
@@ -573,8 +580,9 @@ class FakeBehavior {
       const gmailCleanup = gmailSettings && gmailSettings.cleanup; // This will return true/false (inherits or specific)
 
       if (gmailCleanup) {
-        trashedGmail = Array.from(this.__createdGmailIds).reduce((acc, id) => {
+        trashedGmail = Array.from(this.__createdGmailIds.entries()).reduce((acc, [id, platform]) => {
           try {
+            ScriptApp.__platform = platform;
             // Try as label
             Gmail.Users.Labels.remove('me', id);
             slogger.log(`...deleted gmail label ${id}`);
@@ -583,6 +591,7 @@ class FakeBehavior {
           } catch (e) { /* not a label or failed */ }
 
           try {
+            ScriptApp.__platform = platform;
             // Try as thread - move to trash
             Gmail.Users.Threads.trash('me', id);
             slogger.log(`...trashed gmail thread ${id}`);
@@ -591,6 +600,7 @@ class FakeBehavior {
           } catch (e) { /* not a thread */ }
 
           try {
+            ScriptApp.__platform = platform;
             Gmail.Users.Messages.trash('me', id);
             slogger.log(`...trashed gmail message ${id}`);
             acc.push(id);
@@ -611,8 +621,9 @@ class FakeBehavior {
       const calendarCleanup = calendarSettings && calendarSettings.cleanup;
 
       if (calendarCleanup) {
-        trashedCalendars = Array.from(this.__createdCalendarIds).reduce((acc, id) => {
+        trashedCalendars = Array.from(this.__createdCalendarIds.entries()).reduce((acc, [id, platform]) => {
           try {
+            ScriptApp.__platform = platform;
             // Delete calendar
             Calendar.Calendars.delete(id, { noLog404: true });
             slogger.log(`...deleted calendar ${id}`);
@@ -631,6 +642,7 @@ class FakeBehavior {
       slogger.log(`...trashed ${trashed.length} sandboxed files, ${trashedGmail.length} gmail items, and ${trashedCalendars.length} calendars`);
     } finally {
       this.sandboxMode = wasSandbox;
+      ScriptApp.__platform = currentPlatform;
     }
     return trashed;
   }

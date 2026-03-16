@@ -43,7 +43,7 @@
             "returnType": "File",
             "returnDescription": "This File, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L511"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L537"
           },
           {
             "method": "addEditor(User)",
@@ -52,7 +52,7 @@
             "returnType": "File",
             "returnDescription": "This File, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L511"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L537"
           },
           {
             "method": "addEditors(String)",
@@ -61,7 +61,7 @@
             "returnType": "File",
             "returnDescription": "This File, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L525"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L551"
           },
           {
             "method": "addViewer(String)",
@@ -70,7 +70,7 @@
             "returnType": "File",
             "returnDescription": "This File, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L490"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L516"
           },
           {
             "method": "addViewer(User)",
@@ -79,7 +79,7 @@
             "returnType": "File",
             "returnDescription": "This File, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L490"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L516"
           },
           {
             "method": "addViewers(String)",
@@ -88,7 +88,7 @@
             "returnType": "File",
             "returnDescription": "This File, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L490"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L516"
           },
           {
             "method": "getAccess(String)",
@@ -97,7 +97,7 @@
             "returnType": "Permission",
             "returnDescription": "The permissions granted to the user.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L476"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L502"
           },
           {
             "method": "getAccess(User)",
@@ -106,7 +106,7 @@
             "returnType": "Permission",
             "returnDescription": "The permissions granted to the user.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L476"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L502"
           },
           {
             "method": "getAs(String)",
@@ -133,7 +133,7 @@
             "returnType": "Date",
             "returnDescription": "the date the File was created",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L152"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L178"
           },
           {
             "method": "getDescription()",
@@ -142,7 +142,7 @@
             "returnType": "String",
             "returnDescription": "the description for the File",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L146"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L172"
           },
           {
             "method": "getDownloadUrl()",
@@ -160,7 +160,7 @@
             "returnType": "User[]",
             "returnDescription": "If the user has edit access for this File, returns the list of\n    editors. If the user doesn't have edit access, returns an empty array.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L194"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L220"
           },
           {
             "method": "getId()",
@@ -178,7 +178,7 @@
             "returnType": "Date",
             "returnDescription": "the date the File was last updated",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L142"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L168"
           },
           {
             "method": "getMimeType()",
@@ -205,7 +205,7 @@
             "returnType": "User",
             "returnDescription": "The file owner.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L175"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L201"
           },
           {
             "method": "getParents()",
@@ -223,7 +223,7 @@
             "returnType": "String",
             "returnDescription": "The resource key of the File.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L463"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L489"
           },
           {
             "method": "getSecurityUpdateEligible()",
@@ -232,7 +232,7 @@
             "returnType": "Boolean",
             "returnDescription": "Whether the resource key requirement can be applied for the File.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L467"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L493"
           },
           {
             "method": "getSecurityUpdateEnabled()",
@@ -241,7 +241,7 @@
             "returnType": "Boolean",
             "returnDescription": "Whether the resource key requirement is enabled for this File.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L470"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L496"
           },
           {
             "method": "getSharingAccess()",
@@ -250,7 +250,7 @@
             "returnType": "Access",
             "returnDescription": "which class of users can access the File",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L434"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L460"
           },
           {
             "method": "getSharingPermission()",
@@ -259,7 +259,7 @@
             "returnType": "Permission",
             "returnDescription": "the permissions granted to users who can access the File",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L405"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L431"
           },
           {
             "method": "getSize()",
@@ -268,7 +268,7 @@
             "returnType": "Integer",
             "returnDescription": "the number of bytes used to store the File in Drive",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L155"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L181"
           },
           {
             "method": "getTargetId()",
@@ -313,7 +313,7 @@
             "returnType": "String",
             "returnDescription": "the URL that can be used to view this File in a Google App like\n    Drive or Docs",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L202"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L228"
           },
           {
             "method": "getViewers()",
@@ -322,7 +322,7 @@
             "returnType": "User[]",
             "returnDescription": "If the user has edit access for this File, returns the list of\n    viewers and commenters. If the user doesn't have edit access, returns an empty array.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L186"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L212"
           },
           {
             "method": "isShareableByEditors()",
@@ -331,7 +331,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if users with edit permissions are allowed to share with other users or\n    change the permissions; false if not",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L352"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L378"
           },
           {
             "method": "isStarred()",
@@ -340,7 +340,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the File is starred in the user's Drive; false if not",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L134"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L160"
           },
           {
             "method": "isTrashed()",
@@ -349,7 +349,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the File is in the trash of the user's Drive;\n    false if not",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L138"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L164"
           },
           {
             "method": "makeCopy()",
@@ -394,7 +394,7 @@
             "returnType": "File",
             "returnDescription": "This File, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L211"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L237"
           },
           {
             "method": "removeCommenter(String)",
@@ -421,7 +421,7 @@
             "returnType": "File",
             "returnDescription": "This File, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L504"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L530"
           },
           {
             "method": "removeEditor(User)",
@@ -430,7 +430,7 @@
             "returnType": "File",
             "returnDescription": "This File, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L504"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L530"
           },
           {
             "method": "removeViewer(String)",
@@ -439,7 +439,7 @@
             "returnType": "File",
             "returnDescription": "This File for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L518"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L544"
           },
           {
             "method": "removeViewer(User)",
@@ -448,7 +448,7 @@
             "returnType": "File",
             "returnDescription": "This File for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L518"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L544"
           },
           {
             "method": "revokePermissions(String)",
@@ -457,7 +457,7 @@
             "returnType": "File",
             "returnDescription": "This File, for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L481"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L507"
           },
           {
             "method": "revokePermissions(User)",
@@ -466,7 +466,7 @@
             "returnType": "File",
             "returnDescription": "This File, for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L481"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L507"
           },
           {
             "method": "setContent(String)",
@@ -484,7 +484,7 @@
             "returnType": "File",
             "returnDescription": "this File, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L249"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L275"
           },
           {
             "method": "setName(String)",
@@ -493,7 +493,7 @@
             "returnType": "File",
             "returnDescription": "this File, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L257"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L283"
           },
           {
             "method": "setOwner(String)",
@@ -502,7 +502,7 @@
             "returnType": "File",
             "returnDescription": "this File, for chaining",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L486"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L512"
           },
           {
             "method": "setOwner(User)",
@@ -511,7 +511,7 @@
             "returnType": "File",
             "returnDescription": "this File, for chaining",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L486"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L512"
           },
           {
             "method": "setSecurityUpdateEnabled(Boolean)",
@@ -520,7 +520,7 @@
             "returnType": "File",
             "returnDescription": "This File, for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L473"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L499"
           },
           {
             "method": "setShareableByEditors(Boolean)",
@@ -529,7 +529,7 @@
             "returnType": "File",
             "returnDescription": "this File, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L266"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L292"
           },
           {
             "method": "setSharing(Access,Permission)",
@@ -538,7 +538,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L276"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L302"
           },
           {
             "method": "setStarred(Boolean)",
@@ -547,7 +547,7 @@
             "returnType": "File",
             "returnDescription": "this File, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L361"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L387"
           },
           {
             "method": "setTrashed(Boolean)",
@@ -556,7 +556,7 @@
             "returnType": "File",
             "returnDescription": "this File, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L370"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L396"
           }
         ]
       },
@@ -608,7 +608,7 @@
             "returnType": "Folder",
             "returnDescription": "This Folder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L511"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L537"
           },
           {
             "method": "addEditor(User)",
@@ -617,7 +617,7 @@
             "returnType": "Folder",
             "returnDescription": "This Folder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L511"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L537"
           },
           {
             "method": "addEditors(String)",
@@ -626,7 +626,7 @@
             "returnType": "Folder",
             "returnDescription": "This Folder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L525"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L551"
           },
           {
             "method": "addViewer(String)",
@@ -635,7 +635,7 @@
             "returnType": "Folder",
             "returnDescription": "This Folder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L490"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L516"
           },
           {
             "method": "addViewer(User)",
@@ -644,7 +644,7 @@
             "returnType": "Folder",
             "returnDescription": "This Folder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L490"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L516"
           },
           {
             "method": "addViewers(String)",
@@ -653,7 +653,7 @@
             "returnType": "Folder",
             "returnDescription": "This Folder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L490"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L516"
           },
           {
             "method": "createFile(BlobSource)",
@@ -716,7 +716,7 @@
             "returnType": "Permission",
             "returnDescription": "The permissions granted to the user.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L476"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L502"
           },
           {
             "method": "getAccess(User)",
@@ -725,7 +725,7 @@
             "returnType": "Permission",
             "returnDescription": "The permissions granted to the user.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L476"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L502"
           },
           {
             "method": "getDateCreated()",
@@ -734,7 +734,7 @@
             "returnType": "Date",
             "returnDescription": "the date the Folder was created",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L152"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L178"
           },
           {
             "method": "getDescription()",
@@ -743,7 +743,7 @@
             "returnType": "String",
             "returnDescription": "the description for the Folder",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L146"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L172"
           },
           {
             "method": "getEditors()",
@@ -752,7 +752,7 @@
             "returnType": "User[]",
             "returnDescription": "The list of editors for this Folder if the user has edit access or an\n    empty array otherwise.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L194"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L220"
           },
           {
             "method": "getFiles()",
@@ -815,7 +815,7 @@
             "returnType": "Date",
             "returnDescription": "the date the Folder was last updated",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L142"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L168"
           },
           {
             "method": "getName()",
@@ -824,7 +824,7 @@
             "returnType": "String",
             "returnDescription": "the name of the Folder",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L115"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L141"
           },
           {
             "method": "getOwner()",
@@ -833,7 +833,7 @@
             "returnType": "User",
             "returnDescription": "The owner of this Folder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L175"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L201"
           },
           {
             "method": "getParents()",
@@ -851,7 +851,7 @@
             "returnType": "String",
             "returnDescription": "The resource key of the Folder.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L463"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L489"
           },
           {
             "method": "getSecurityUpdateEligible()",
@@ -860,7 +860,7 @@
             "returnType": "Boolean",
             "returnDescription": "Whether the resource key requirement can be applied for the Folder.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L467"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L493"
           },
           {
             "method": "getSecurityUpdateEnabled()",
@@ -869,7 +869,7 @@
             "returnType": "Boolean",
             "returnDescription": "Whether the resource key requirement is enabled for this Folder.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L470"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L496"
           },
           {
             "method": "getSharingAccess()",
@@ -878,7 +878,7 @@
             "returnType": "Access",
             "returnDescription": "which class of users can access the Folder",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L434"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L460"
           },
           {
             "method": "getSharingPermission()",
@@ -887,7 +887,7 @@
             "returnType": "Permission",
             "returnDescription": "the permissions granted to users who can access the Folder",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L405"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L431"
           },
           {
             "method": "getSize()",
@@ -896,7 +896,7 @@
             "returnType": "Integer",
             "returnDescription": "the number of bytes used to store the Folder in Drive",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L155"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L181"
           },
           {
             "method": "getUrl()",
@@ -905,7 +905,7 @@
             "returnType": "String",
             "returnDescription": "the URL that can be used to view this Folder in a Google App like\n    Drive or Docs",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L202"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L228"
           },
           {
             "method": "getViewers()",
@@ -914,7 +914,7 @@
             "returnType": "User[]",
             "returnDescription": "The list of viewers and commenters for this Folder if the user has edit\n    access or an empty array otherwise.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L186"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L212"
           },
           {
             "method": "isShareableByEditors()",
@@ -923,7 +923,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if users with edit permissions are allowed to share with other users or\n    change the permissions; false if not",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L352"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L378"
           },
           {
             "method": "isStarred()",
@@ -932,7 +932,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the Folder is starred in the user's Drive; false if not",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L134"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L160"
           },
           {
             "method": "isTrashed()",
@@ -941,7 +941,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the Folder is in the trash of the user's Drive;\n    false if not",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L138"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L164"
           },
           {
             "method": "moveTo(Folder)",
@@ -950,7 +950,7 @@
             "returnType": "Folder",
             "returnDescription": "This Folder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L211"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L237"
           },
           {
             "method": "removeEditor(String)",
@@ -959,7 +959,7 @@
             "returnType": "Folder",
             "returnDescription": "This Folder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L504"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L530"
           },
           {
             "method": "removeEditor(User)",
@@ -968,7 +968,7 @@
             "returnType": "Folder",
             "returnDescription": "This Folder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L504"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L530"
           },
           {
             "method": "removeViewer(String)",
@@ -977,7 +977,7 @@
             "returnType": "Folder",
             "returnDescription": "This Folder for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L518"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L544"
           },
           {
             "method": "removeViewer(User)",
@@ -986,7 +986,7 @@
             "returnType": "Folder",
             "returnDescription": "This Folder for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L518"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L544"
           },
           {
             "method": "revokePermissions(String)",
@@ -995,7 +995,7 @@
             "returnType": "Folder",
             "returnDescription": "This Folder, for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L481"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L507"
           },
           {
             "method": "revokePermissions(User)",
@@ -1004,7 +1004,7 @@
             "returnType": "Folder",
             "returnDescription": "This Folder, for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L481"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L507"
           },
           {
             "method": "searchFiles(String)",
@@ -1031,7 +1031,7 @@
             "returnType": "Folder",
             "returnDescription": "this Folder, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L249"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L275"
           },
           {
             "method": "setName(String)",
@@ -1040,7 +1040,7 @@
             "returnType": "Folder",
             "returnDescription": "this Folder, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L257"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L283"
           },
           {
             "method": "setOwner(String)",
@@ -1049,7 +1049,7 @@
             "returnType": "Folder",
             "returnDescription": "this Folder, for chaining",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L486"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L512"
           },
           {
             "method": "setOwner(User)",
@@ -1058,7 +1058,7 @@
             "returnType": "Folder",
             "returnDescription": "this Folder, for chaining",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L486"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L512"
           },
           {
             "method": "setSecurityUpdateEnabled(Boolean)",
@@ -1067,7 +1067,7 @@
             "returnType": "Folder",
             "returnDescription": "This Folder, for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L473"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L499"
           },
           {
             "method": "setShareableByEditors(Boolean)",
@@ -1076,7 +1076,7 @@
             "returnType": "Folder",
             "returnDescription": "this Folder, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L266"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L292"
           },
           {
             "method": "setSharing(Access,Permission)",
@@ -1085,7 +1085,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L276"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L302"
           },
           {
             "method": "setStarred(Boolean)",
@@ -1094,7 +1094,7 @@
             "returnType": "Folder",
             "returnDescription": "this Folder, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L361"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L387"
           },
           {
             "method": "setTrashed(Boolean)",
@@ -1103,7 +1103,7 @@
             "returnType": "Folder",
             "returnDescription": "this Folder, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L370"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L396"
           }
         ]
       },

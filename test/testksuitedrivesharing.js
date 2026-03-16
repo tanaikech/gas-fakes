@@ -67,6 +67,10 @@ export const testKSuiteDriveSharing = (pack) => {
     unit.report();
   }
   if (fixes.CLEAN) trasher(toTrash);
+  
+  if (ScriptApp.isFake) {
+    ScriptApp.__platform = 'google';
+  }
   return { unit, fixes };
 };
 

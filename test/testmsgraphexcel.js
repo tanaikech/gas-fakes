@@ -52,6 +52,10 @@ export const testMsGraphExcel = (pack) => {
     });
   }
 
+  if (ScriptApp.isFake) {
+    ScriptApp.__platform = 'google';
+  }
+
   return { unit, fixes: originalFixes }
 }
 

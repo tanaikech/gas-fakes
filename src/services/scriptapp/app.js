@@ -160,7 +160,7 @@ if (typeof globalThis[name] === typeof undefined) {
           return Auth.getScriptId()
         },
         get __platform() {
-          return Auth.getPlatform()
+          return Auth.getPlatform() || 'google'
         },
         set __platform(value) {
           Auth.setPlatform(value)
