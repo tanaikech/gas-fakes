@@ -8,4 +8,4 @@ gprompts
 **/gas-dist
 **/bundle
 api-docs
-**/.msgraph-token.json
+**/.msgraph-token*.*

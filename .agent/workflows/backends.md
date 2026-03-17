@@ -9,6 +9,7 @@ Lets start with the drive service of ksuite, The ksuite drive api is described i
 
 - ScriptApp.__platform: "workspace" (the default) - gas-fakes will operate as now, hitting the workspace api
 - ScriptApp.__platform" "ksuite' = the sxdrive /Users/brucemcpherson/Documents/repos/gas-fakes/src/support/sxdrive.js function will have a new job of translating calls to the workspace api to the ksuite api, then tranforming the response to the smae properties that the drive api would have returned (as far as possible)
+- ScriptApp.__platform: "msgraph" - gas-fakes will operate as now, hitting the msgraph api
 
 This means that all that gas-fakes will see is workspace shaped data, but how sxDrive retreives that data and reshapes it will be platform dependent.
 

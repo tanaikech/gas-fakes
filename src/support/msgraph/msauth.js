@@ -8,16 +8,53 @@ import { existsSync } from 'fs';
 import path from 'path';
 import { chmodSync } from 'fs';
 import got from 'got';
+import crypto from 'node:crypto';
 
-const TOKEN_CACHE_FILE = path.join(process.cwd(), '.msgraph-token.json');
+const TOKEN_CACHE_FILE = path.join(process.cwd(), '.msgraph-token.jwt');
+const JWT_SECRET = 'gas-fakes-local-cache-secret';
+
+function encodeJWT(payload) {
+  const header = { alg: 'HS256', typ: 'JWT' };
+  const toBase64Url = (obj) => Buffer.from(JSON.stringify(obj)).toString('base64url');
+  const encodedHeader = toBase64Url(header);
+  const encodedPayload = toBase64Url(payload);
+  
+  const hmac = crypto.createHmac('sha256', JWT_SECRET);
+  hmac.update(`${encodedHeader}.${encodedPayload}`);
+  const signature = hmac.digest('base64url');
+  
+  return `${encodedHeader}.${encodedPayload}.${signature}`;
+}
+
+function decodeJWT(token) {
+  const parts = token.split('.');
+  if (parts.length !== 3) throw new Error('Invalid JWT format');
+  const [encodedHeader, encodedPayload, signature] = parts;
+  
+  const hmac = crypto.createHmac('sha256', JWT_SECRET);
+  hmac.update(`${encodedHeader}.${encodedPayload}`);
+  if (signature !== hmac.digest('base64url')) {
+    throw new Error('JWT signature mismatch');
+  }
+  
+  return JSON.parse(Buffer.from(encodedPayload, 'base64url').toString('utf-8'));
+}
 
 async function loadTokenCache() {
   if (existsSync(TOKEN_CACHE_FILE)) {
     try {
       const data = await readFile(TOKEN_CACHE_FILE, 'utf-8');
-      const cache = JSON.parse(data);
+      
+      let cache;
+      // Handle legacy plain-text JSON format gracefully
+      if (data.trim().startsWith('{')) {
+         cache = JSON.parse(data);
+      } else {
+         cache = decodeJWT(data.trim());
+      }
+
       // Check if expired (buffer of 5 mins)
-      if (cache.expiresOn && new Date(cache.expiresOn).getTime() > Date.now() + 300000) {
+      if (cache && cache.expiresOn && new Date(cache.expiresOn).getTime() > Date.now() + 300000) {
         return cache.token;
       }
     } catch (e) {
@@ -29,7 +66,9 @@ async function loadTokenCache() {
 
 async function saveTokenCache(token, expiresOn) {
   try {
-    await writeFile(TOKEN_CACHE_FILE, JSON.stringify({ token, expiresOn }, null, 2));
+    const cacheData = { token, expiresOn };
+    const jwtString = encodeJWT(cacheData);
+    await writeFile(TOKEN_CACHE_FILE, jwtString);
     try {
       chmodSync(TOKEN_CACHE_FILE, 0o600); // Read/Write only for owner
     } catch (e) {
@@ -161,7 +200,8 @@ export async function getMsGraphToken(scopes = ['User.Read']) {
     // 3. Azure CLI Direct Exec (Silent) - Primary Local "Keyless" Path
     const isAuthFlow = process.env.GF_AUTH_FLOW === 'true';
     if (!isAuthFlow && !clientId) {
-      const tenantArg = (envTenant && envTenant !== 'common' && envTenant !== 'consumers') ? `--tenant "${envTenant}" ` : '';
+      const tenant = (envTenant && envTenant !== 'common') ? envTenant : 'consumers';
+      const tenantArg = `--tenant "${tenant}" `;
 
       try {
         const cmd = `az account get-access-token --resource-type ms-graph ${tenantArg}--output json`;
@@ -188,7 +228,7 @@ export async function getMsGraphToken(scopes = ['User.Read']) {
     // Try silent refresh first, then interactive if required
     let promptBehavior = isAuthFlow ? 'select_account' : 'none';
     const credentialSilent = new InteractiveBrowserCredential({
-      tenantId: envTenant === 'common' ? 'consumers' : envTenant,
+      tenantId: (envTenant && envTenant !== 'common') ? envTenant : 'consumers',
       clientId,
       prompt: promptBehavior
     });
@@ -202,7 +242,7 @@ export async function getMsGraphToken(scopes = ['User.Read']) {
        if (promptBehavior === 'none') {
          console.log(`...silent refresh failed, prompting user...`);
          const credentialInteractive = new InteractiveBrowserCredential({
-           tenantId: envTenant === 'common' ? 'consumers' : envTenant,
+           tenantId: (envTenant && envTenant !== 'common') ? envTenant : 'consumers',
            clientId,
            prompt: 'select_account consent'
          });

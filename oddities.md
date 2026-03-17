@@ -1074,7 +1074,7 @@ When using Business or Guest accounts (especially `EXT` identities), you may see
 If the silent Azure CLI fallback fails (due to session expiry or directory mismatch), `gas-fakes` will first attempt a silent refresh via the Azure SDK cache. If that also fails, it will open a browser window for an **additional interactive login** directly from the worker thread. This ensures the script continues to run, but interrupts the "silent" flow. Running `gas-fakes auth -b msgraph` manually usually restores the silent runtime for several hours/days.
 
 #### Local Caching Security (v2.2.3+)
-Tokens cached in `.msgraph-token.json` are stored in plaintext. While convenient for eliminating redundant logins (and now enabling silent background refreshes when possible), this introduces a security risk compared to the Azure CLI OS-level cache. Ensure the file is excluded from version control.
+Tokens cached in `.msgraph-token.jwt` are stored as a locally-signed JWT (JSON Web Token), no longer in plaintext. While this improves local security by preventing casual viewing and tampering, it still represents a cached credential compared to the strictly OS-level Azure CLI cache. Ensure the file is excluded from version control.
 
 #### Primary Drive Only
 The current implementation focuses on the primary User Drive. Group drives, sites, and multiple drives are not yet fully supported or tested.
