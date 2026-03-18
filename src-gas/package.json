@@ -17,10 +17,13 @@
   "type": "module",
   "devDependencies": {
     "esbuild": "^0.25.11",
-    "glob": "^11.0.3"
+    "glob": "^13.0.6"
   },
   "sideEffects": true,
   "dependencies": {
-    "@mcpher/gas-fakes": "^1.2.5"
+    "@mcpher/gas-fakes": "^2.2.5"
+  },
+  "overrides": {
+    "glob": "^13.0.6"
   }
 }
