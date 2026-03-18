@@ -56,7 +56,7 @@ If you need to convert an existing .env file, there's a shell script for that.
 
 ##### authentication mandatory enhancement
 
-With recent security changes, and updates to the latest googleapis module, msny of the methods have now been restreicted for regular ADC access, so we have to do a little fiddling to ADC process to get round these - see [getting started](GETTING_STARTED.md) for additional guidance on how to do this -- better still use `gas-fakes init` to use keyless DWD authentication.
+With recent security changes, many methods requiring sensitive scopes have been restricted for regular local authentication. This affects both Application Default Credentials (ADC) and Domain-Wide Delegation (DWD) due to Google's token provenance tracking. We have to do a little fiddling to the local auth process to get around these - see [getting started](GETTING_STARTED.md) and [sensitive scopes](senstive_scopes.md) for additional guidance on how to configure a custom OAuth client to handle this.
 
 
 ##### how to redirect to use local files
@@ -168,7 +168,7 @@ As I mentioned earlier, to take this further, I'm going to need a lot of help to
 - [how libhandler works](libhandler.md)
 - [article:using apps script libraries with gas-fakes](https://ramblings.mcpher.com/how-to-use-apps-script-libraries-directly-from-node/)
 - [named range identity](named-range-identity.md)
-- [adc and restricted scopes](https://ramblings.mcpher.com/how-to-allow-access-to-sensitive-scopes-with-application-default-credentials/)
+- [sensitive scopes with local authentication](senstive_scopes.md)
 - [push test pull](pull-test-push.md)
 - [sharing cache and properties between gas-fakes and live apps script](https://ramblings.mcpher.com/sharing-cache-and-properties-between-gas-fakes-and-live-apps-script/)
 - [gas-fakes-cli now has built in mcp server and gemini extension](https://ramblings.mcpher.com/gas-fakes-cli-now-has-built-in-mcp-server-and-gemini-extension/)

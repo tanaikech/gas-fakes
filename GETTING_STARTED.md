@@ -61,7 +61,7 @@ During `init`, you can select one or more:
 If you select the Google backend, you can choose between:
 - **Domain-Wide Delegation (DWD)** (Default): Recommended for production-ready, cross-platform deployment. Requires admin action in the Workspace Admin Console.
 - **Application Default Credentials (ADC)**: Easier for quick local-only development. Uses your local user login.
-    > **Note on Sensitive Scopes (ADC only):** If your project requires sensitive or restricted scopes (e.g., full Gmail or Calendar access), the standard ADC login process may be blocked by Google during the `auth` step. To resolve this, you must provide an OAuth2 client credentials JSON file during the `init` process. For a detailed guide on how to set this up, see [How to allow access to sensitive scopes with ADC](https://ramblings.mcpher.com/how-to-allow-access-to-sensitive-scopes-with-application-default-credentials/).
+    > **Note on Sensitive Scopes (ADC & DWD):** If your project requires sensitive or restricted scopes (e.g., full Gmail or Calendar access), the standard Google CLI login process will be blocked by Google during the `auth` step. **This applies to both ADC and DWD modes** because local DWD relies on your local ADC identity (Token Provenance) to mint the service account tokens. To resolve this, you must provide a custom OAuth2 client credentials JSON file during the `init` process. For a detailed guide on how to set this up, see [How to allow access to sensitive scopes](senstive_scopes.md).
 
 ### Initialization Flow
 
@@ -175,7 +175,7 @@ const root = DriveApp.getRootFolder(); // Returns Google Drive root
 - [how libhandler works](libhandler.md)
 - [article:using apps script libraries with gas-fakes](https://ramblings.mcpher.com/how-to-use-apps-script-libraries-directly-from-node/)
 - [named range identity](named-range-identity.md)
-- [adc and restricted scopes](https://ramblings.mcpher.com/how-to-allow-access-to-sensitive-scopes-with-application-default-credentials/)
+- [sensitive scopes with local authentication](senstive_scopes.md)
 - [push test pull](pull-test-push.md)
 - [sharing cache and properties between gas-fakes and live apps script](https://ramblings.mcpher.com/sharing-cache-and-properties-between-gas-fakes-and-live-apps-script/)
 - [gas-fakes-cli now has built in mcp server and gemini extension](https://ramblings.mcpher.com/gas-fakes-cli-now-has-built-in-mcp-server-and-gemini-extension/)

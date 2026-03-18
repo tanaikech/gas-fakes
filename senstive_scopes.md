@@ -1,13 +1,17 @@
-# Allowing Access to Sensitive Scopes with Application Default Credentials
+# Allowing Access to Sensitive Scopes with Local Google Authentication
 
-This guide summarizes how to overcome the "Google has blocked access" error when using Application Default Credentials (ADC) with sensitive or restricted scopes (e.g., `gmail.compose`) during local development.
+This guide summarizes how to overcome the "Google has blocked access" error when using local Google authentication (either Application Default Credentials (ADC) or Domain-Wide Delegation (DWD)) with sensitive or restricted scopes (e.g., `gmail.compose`) during local development.
 
 ## Core Problem
-When using `gcloud auth application-default login`, the default Google-provided `client_id` is only pre-authorized for a limited set of non-sensitive scopes. If your application requests sensitive or restricted scopes, Google will block the request because the default client is not authorized for those permissions.
+When you run `gas-fakes auth` (which calls `gcloud auth application-default login`) without a `--client-id-file`, your local identity is minted using Google's generic, globally shared "Google Cloud CLI" OAuth Client ID. 
 
-## Solution: Using a Custom OAuth Client ID for Local ADC
+Recently, Google restricted this generic Client ID from requesting sensitive Workspace scopes to prevent phishing and unauthorized access via generic CLI tools.
 
-The solution is to create a custom OAuth Client ID within your own Google Cloud Project and instruct `gcloud` to use it for ADC authorization. This bypasses the default restrictions while maintaining the convenience of ADC.
+**Why this affects DWD:** Even when you use Domain-Wide Delegation (`authType: dwd`), `gas-fakes` locally uses your personal ADC identity to dynamically request the impersonated Service Account tokens (this avoids downloading permanent service account JSON keys). Google tracks the **provenance** of these tokens. Because the originating `gcloud` session is blocked from sensitive scopes, Google prevents the Service Account from escalating privileges into those sensitive scopes, resulting in a blocked request.
+
+## Solution: Using a Custom OAuth Client ID
+
+The solution is to create a custom OAuth Client ID within your own Google Cloud Project and instruct `gcloud` to use it for your local authorization. This bypasses the default restrictions while maintaining a secure, keyless chain of trust for both ADC and DWD.
 
 ### Step 1: Configure the OAuth Consent Screen
 
@@ -30,9 +34,14 @@ The solution is to create a custom OAuth Client ID within your own Google Cloud 
 4.  **Download Credentials:** Download the JSON file and save it locally (e.g., `private/adc-credentials.json`). 
     *   **CRITICAL:** Add this file to your `.gitignore`. Never commit it to a public repository.
 
-### Step 3: Authorize ADC Using the Custom Client ID
+### Step 3: Initialize gas-fakes with the Custom Client ID
 
-Execute the following command in your terminal, replacing the placeholders with your specific scopes and file path:
+If you are using the CLI (`gas-fakes init`), you will be asked:
+> "Do you want to use a custom OAuth2 client credentials file to support sensitive scopes?"
+
+Provide the path to the JSON file you downloaded in Step 2.
+
+Alternatively, if you are running manual `gcloud` commands, you execute the following:
 
 ```bash
 gcloud auth application-default login \
@@ -40,11 +49,8 @@ gcloud auth application-default login \
   --client-id-file=path/to/your/credentials.json
 ```
 
-*   **Scopes:** This list should match or be a subset of the scopes you configured in Step 1.
-*   **Client ID File:** The path to the JSON file you downloaded in Step 2.
-
 ### Completion
-A browser window will open. As an internal user of your own project, you can now grant access to the application, including the sensitive scopes. Your local ADC configuration will be updated with a refresh token linked to your custom, authorized Client ID.
+A browser window will open. As an internal user of your own project, you can now grant access to the application, including the sensitive scopes. Your local configuration will be updated with a refresh token linked to your custom, authorized Client ID, allowing both ADC and DWD modes to operate without restriction.
 
 ---
 *Summary of article: [How to allow access to sensitive scopes with Application Default Credentials](https://ramblings.mcpher.com/how-to-allow-access-to-sensitive-scopes-with-application-default-credentials)*
