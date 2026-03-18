@@ -3,7 +3,10 @@
     "node": ">=20.11.0"
   },
   "dependencies": {
-    "@mcpher/gas-fakes": "file:../../"
+    "@mcpher/gas-fakes": "file:../.."
+  },
+  "overrides": {
+    "glob": "^13.0.6"
   },
   "type": "module",
   "scripts": {
