@@ -41,13 +41,6 @@ If you are using the CLI (`gas-fakes init`), you will be asked:
 
 Provide the path to the JSON file you downloaded in Step 2.
 
-Alternatively, if you are running manual `gcloud` commands, you execute the following:
-
-```bash
-gcloud auth application-default login \
-  --scopes='https://www.googleapis.com/auth/userinfo.email,openid,https://www.googleapis.com/auth/cloud-platform,https://www.googleapis.com/auth/drive,https://www.googleapis.com/auth/spreadsheets' \
-  --client-id-file=path/to/your/credentials.json
-```
 
 ### Completion
 A browser window will open. As an internal user of your own project, you can now grant access to the application, including the sensitive scopes. Your local configuration will be updated with a refresh token linked to your custom, authorized Client ID, allowing both ADC and DWD modes to operate without restriction.
