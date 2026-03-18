@@ -1,7 +1,9 @@
 import {
   InteractiveBrowserCredential,
-  ClientSecretCredential
+  ClientSecretCredential,
+  useIdentityPlugin
 } from "@azure/identity";
+
 import { execSync } from 'node:child_process';
 import { readFile, writeFile } from 'fs/promises';
 import { existsSync } from 'fs';
@@ -40,20 +42,66 @@ function decodeJWT(token) {
   return JSON.parse(Buffer.from(encodedPayload, 'base64url').toString('utf-8'));
 }
 
+const customCachePlugin = (options) => {
+  return {
+    beforeCacheAccess: async (cacheContext) => {
+      if (existsSync(TOKEN_CACHE_FILE)) {
+        try {
+          const data = await readFile(TOKEN_CACHE_FILE, 'utf-8');
+          let cache;
+          if (data.trim().startsWith('{')) {
+             cache = JSON.parse(data);
+          } else {
+             cache = decodeJWT(data.trim());
+          }
+          if (cache && cache.msalCache) {
+             cacheContext.tokenCache.deserialize(cache.msalCache);
+          }
+        } catch (e) {
+          console.warn(`...failed to load MS Graph token cache: ${e.message}`);
+        }
+      }
+    },
+    afterCacheAccess: async (cacheContext) => {
+      if (cacheContext.cacheHasChanged) {
+        try {
+          const msalCache = cacheContext.tokenCache.serialize();
+          const cacheData = { 
+            msalCache, 
+            token: 'managed-by-msal', 
+            expiresOn: new Date(Date.now() + 86400000 * 30).getTime() // Keep valid for 30 days
+          };
+          const jwtString = encodeJWT(cacheData);
+          await writeFile(TOKEN_CACHE_FILE, jwtString);
+          try {
+            chmodSync(TOKEN_CACHE_FILE, 0o600);
+          } catch (e) {}
+        } catch (e) {
+          console.warn(`...failed to save MS Graph token cache: ${e.message}`);
+        }
+      }
+    }
+  };
+};
+
+useIdentityPlugin((context) => {
+  if (context.cachePluginControl) {
+    context.cachePluginControl.setPersistence(customCachePlugin);
+  }
+});
+
 async function loadTokenCache() {
   if (existsSync(TOKEN_CACHE_FILE)) {
     try {
       const data = await readFile(TOKEN_CACHE_FILE, 'utf-8');
       
       let cache;
-      // Handle legacy plain-text JSON format gracefully
       if (data.trim().startsWith('{')) {
          cache = JSON.parse(data);
       } else {
          cache = decodeJWT(data.trim());
       }
 
-      // Check if expired (buffer of 5 mins)
       if (cache && cache.expiresOn && new Date(cache.expiresOn).getTime() > Date.now() + 300000) {
         return cache.token;
       }
@@ -70,10 +118,8 @@ async function saveTokenCache(token, expiresOn) {
     const jwtString = encodeJWT(cacheData);
     await writeFile(TOKEN_CACHE_FILE, jwtString);
     try {
-      chmodSync(TOKEN_CACHE_FILE, 0o600); // Read/Write only for owner
-    } catch (e) {
-      // Ignore if chmod fails (e.g. on non-posix)
-    }
+      chmodSync(TOKEN_CACHE_FILE, 0o600);
+    } catch (e) {}
   } catch (e) {
     console.warn(`...failed to save MS Graph token cache: ${e.message}`);
   }
@@ -230,7 +276,11 @@ export async function getMsGraphToken(scopes = ['User.Read']) {
     const credentialSilent = new InteractiveBrowserCredential({
       tenantId: (envTenant && envTenant !== 'common') ? envTenant : 'consumers',
       clientId,
-      prompt: promptBehavior
+      prompt: promptBehavior,
+      tokenCachePersistenceOptions: {
+        enabled: true,
+        name: 'gas-fakes-msgraph-cache'
+      }
     });
 
     try {
@@ -244,7 +294,11 @@ export async function getMsGraphToken(scopes = ['User.Read']) {
          const credentialInteractive = new InteractiveBrowserCredential({
            tenantId: (envTenant && envTenant !== 'common') ? envTenant : 'consumers',
            clientId,
-           prompt: 'select_account consent'
+           prompt: 'select_account consent',
+           tokenCachePersistenceOptions: {
+             enabled: true,
+             name: 'gas-fakes-msgraph-cache'
+           }
          });
          const tokenResponse = await credentialInteractive.getToken(msScopes);
          syncLog('...retrieved MS Graph token via interactive login');

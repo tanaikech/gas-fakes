@@ -5,6 +5,7 @@
   "dependencies": {
     "@mcpher/fiddler": "^1.0.2",
     "@mcpher/gas-fakes": "file:..",
+    "@mcpher/gas-flex-cache": "^1.1.5",
     "@mcpher/unit": "^1.1.11",
     "@sindresorhus/is": "^7.2.0"
   },
@@ -83,8 +84,5 @@
   "main": "test.js",
   "description": "test gas-fakes on both live and local apps script - version number should match the gas-fakes version number it tests",
   "repository": "github:brucemcpherson/gas-fakes",
-  "homepage": "https://ramblings.mcpher.com/a-proof-of-concept-implementation-of-apps-script-environment-on-node/",
-  "devDependencies": {
-    "dotenv": "^17.3.1"
-  }
+  "homepage": "https://ramblings.mcpher.com/a-proof-of-concept-implementation-of-apps-script-environment-on-node/"
 }

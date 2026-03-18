@@ -11,8 +11,6 @@ shells
 .env*
 mainlocal.js
 mainnpm.js
-/.gemini/
-/.gemini
 gprompts
 gasmess
 _includes
@@ -20,3 +18,12 @@ progress
 src-gas
 .aiexclude
 doccreation
+versionnotes
+.npmignore
+.agent
+.gemini
+appscript.json
+**/*.jwt
+.DS_Store
+*.sh
+*.png
