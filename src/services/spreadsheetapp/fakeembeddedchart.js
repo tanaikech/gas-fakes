@@ -2,6 +2,7 @@ import { Proxies } from "../../support/proxies.js";
 import { notYetImplemented, signatureArgs } from "../../support/helpers.js";
 import { batchUpdate } from "./sheetrangehelpers.js";
 import { newFakeEmbeddedChartBuilder } from "./fakeembeddedchartbuilder.js";
+import { newFakeContainerInfo } from "./fakecontainerinfo.js";
 
 /**
  * @returns {FakeEmbeddedChart}
@@ -25,11 +26,18 @@ export class FakeEmbeddedChart {
     const props = [
       "getAs",
       "getBlob",
-      "getContainerInfo",
     ];
     props.forEach((f) => {
       this[f] = () => notYetImplemented(f);
     });
+  }
+
+  /**
+   * Returns information about where the chart is positioned within a sheet.
+   * @returns {FakeContainerInfo}
+   */
+  getContainerInfo() {
+    return newFakeContainerInfo(this.__apiChart.position?.overlayPosition);
   }
 
   /**
