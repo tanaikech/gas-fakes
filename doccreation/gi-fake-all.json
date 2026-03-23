@@ -34576,8 +34576,8 @@
             "description": "The chart's left side is anchored in this column.",
             "returnType": "Integer",
             "returnDescription": "1-indexed column (that is, column C is 3).",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakecontainerinfo.js#L27"
           },
           {
             "method": "getAnchorRow()",
@@ -34585,8 +34585,8 @@
             "description": "The chart's top side is anchored in this row.",
             "returnType": "Integer",
             "returnDescription": "1-indexed row (that is, row 5 returns 5).",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakecontainerinfo.js#L35"
           },
           {
             "method": "getOffsetX()",
@@ -34594,8 +34594,8 @@
             "description": "The chart's upper left hand corner is offset from the anchor column by this many pixels.",
             "returnType": "Integer",
             "returnDescription": "The horizontal offset in pixels for the upper left hand corner of the chart.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakecontainerinfo.js#L43"
           },
           {
             "method": "getOffsetY()",
@@ -34603,8 +34603,8 @@
             "description": "The chart's upper left hand corner is offset from the anchor row by this many pixels.",
             "returnType": "Integer",
             "returnDescription": "The vertical offset in pixels for the upper left hand corner of the chart.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakecontainerinfo.js#L51"
           }
         ]
       },
@@ -37313,7 +37313,7 @@
             "returnType": "Blob",
             "returnDescription": "The data as a blob.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchart.js#L26"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchart.js#L27"
           },
           {
             "method": "getBlob()",
@@ -37322,7 +37322,7 @@
             "returnType": "Blob",
             "returnDescription": "The data as a blob.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchart.js#L27"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchart.js#L28"
           },
           {
             "method": "getChartId()",
@@ -37331,7 +37331,7 @@
             "returnType": "Integer",
             "returnDescription": "A stable chart identifier.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchart.js#L39"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchart.js#L47"
           },
           {
             "method": "getContainerInfo()",
@@ -37340,7 +37340,7 @@
             "returnType": "ContainerInfo",
             "returnDescription": "An object containing the chart container's position.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchart.js#L28"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchart.js#L39"
           },
           {
             "method": "getHiddenDimensionStrategy()",
@@ -37376,7 +37376,7 @@
             "returnType": "ChartOptions",
             "returnDescription": "The options for this chart, such as height, colors, and axes.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchart.js#L55"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchart.js#L63"
           },
           {
             "method": "getRanges()",
@@ -37403,7 +37403,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "A builder for creating embedded charts.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchart.js#L65"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchart.js#L73"
           }
         ]
       },
