@@ -52,6 +52,23 @@ export const testSheetsChart = (pack) => {
     console.log("Chart removed.");
   });
 
+  unit.section("EmbeddedChart.getContainerInfo()", (t) => {
+    const { sheet } = maketss("container_info_test", toTrash, fixes);
+
+    const chart = sheet.newChart()
+      .setChartType(Charts.ChartType.COLUMN)
+      .addRange(sheet.getRange("A1:A5"))
+      .setPosition(2, 3, 10, 20)
+      .build();
+
+    const containerInfo = chart.getContainerInfo();
+    t.is(containerInfo.toString(), "ContainerInfo", "containerInfo.toString() should be ContainerInfo");
+    t.is(containerInfo.getAnchorRow(), 2, "getAnchorRow() should be 2");
+    t.is(containerInfo.getAnchorColumn(), 3, "getAnchorColumn() should be 3");
+    t.is(containerInfo.getOffsetX(), 10, "getOffsetX() should be 10");
+    t.is(containerInfo.getOffsetY(), 20, "getOffsetY() should be 20");
+  });
+
 
   // running standalone
   if (!pack) {
