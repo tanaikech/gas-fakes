@@ -166,7 +166,7 @@ async function isGcpEnv() {
  * Gets a Microsoft Graph token.
  */
 export async function getMsGraphToken(scopes = ['User.Read']) {
-  const envTenant = process.env.MS_GRAPH_TENANT_ID || 'common';
+  const envTenant = process.env.MS_GRAPH_TENANT_ID || 'consumers';
   const clientId = process.env.MS_GRAPH_CLIENT_ID;
   const clientSecret = process.env.MS_GRAPH_CLIENT_SECRET;
   const msAuthType = process.env.MS_AUTH_TYPE;

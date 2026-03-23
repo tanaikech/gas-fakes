@@ -283,6 +283,7 @@ export async function initializeConfiguration(options = {}) {
       "https://www.googleapis.com/auth/userinfo.email",
       "openid",
       "https://www.googleapis.com/auth/cloud-platform",
+      "https://www.googleapis.com/auth/drive.readonly",
     ];
     responses.DEFAULT_SCOPES = DEFAULT_SCOPES_VALUES.join(",");
     responses.EXTRA_SCOPES = manifestScopes
@@ -303,12 +304,12 @@ export async function initializeConfiguration(options = {}) {
         initial: existingConfig.GOOGLE_SERVICE_ACCOUNT_NAME || "gas-fakes-sa",
       },
       {
-        type: "text",
+        type: responses.AUTH_TYPE === "adc" ? "text" : null,
         name: "CLIENT_CREDENTIAL_FILE",
         message: "Enter path to OAuth client credentials JSON (optional, required for restricted scopes with ADC)",
         initial: existingConfig.CLIENT_CREDENTIAL_FILE || "",
       }
-    ];
+      ];
 
     const googleResponses = await prompts(googleQuestions);
     if (typeof googleResponses.GOOGLE_CLOUD_PROJECT === "undefined") {
@@ -342,10 +343,10 @@ export async function initializeConfiguration(options = {}) {
       message: "What type of Microsoft account are you using?",
       choices: [
         { title: "Consumer (Personal, Outlook.com, Hotmail, etc.)", value: "consumers" },
-        { title: "Business/Education (Work or School)", value: "organizations" },
+        { title: "Business/Education (Work or School) ", value: "organizations" },
         { title: "Standard Multi-tenant", value: "common" }
       ],
-      initial: existingConfig.MS_GRAPH_TENANT_ID === "consumers" ? 0 : (existingConfig.MS_GRAPH_TENANT_ID === "organizations" ? 1 : 2)
+      initial: existingConfig.MS_GRAPH_TENANT_ID === "organizations" ? 1 : (existingConfig.MS_GRAPH_TENANT_ID === "common" ? 2 : 0)
     });
 
     if (typeof msAccountType.type === "undefined") {
@@ -604,13 +605,13 @@ export async function authenticateUser(options = {}) {
       const msScopes = mapGasScopesToMsGraph(gasScopes);
 
       try {
+        const tenantId = process.env.MS_GRAPH_TENANT_ID || 'consumers';
         const azCmd = `az config set core.login_experience_v2=off && az login --allow-no-subscriptions --output none`;
 
         console.log(`Executing: ${azCmd}`);
         try {
           runCommandSync(azCmd);
           console.log(`\n\x1b[1;32mSuccess!\x1b[0m Azure CLI session discovered.`);
-          const tenantId = process.env.MS_GRAPH_TENANT_ID || 'consumers';
           console.log(`Silent fallback is now enabled for: \x1b[1;36m${tenantId}\x1b[0m`);
         } catch (e) {
           console.error(`\x1b[1;31mAzure CLI Login failed.\x1b[0m`);
@@ -662,7 +663,11 @@ export async function authenticateUser(options = {}) {
         ...(EXTRA_SCOPES || "").split(","),
       ])).filter(s => s).join(",");
 
-      console.log(`...requesting scopes: ${scopes}`);
+      const adcScopes = AUTH_TYPE === "dwd" 
+        ? Array.from(new Set((DEFAULT_SCOPES || "").split(","))).filter(s => s).join(",")
+        : scopes;
+
+      console.log(`...requesting scopes: ${adcScopes}`);
 
       const driveAccessFlag = "--enable-gdrive-access";
       const activeConfig = AC || "default";
@@ -684,7 +689,7 @@ export async function authenticateUser(options = {}) {
       runCommandSync(`gcloud auth login ${driveAccessFlag}`);
 
       let clientFlag = "";
-      if (CLIENT_CREDENTIAL_FILE) {
+      if (AUTH_TYPE !== "dwd" && CLIENT_CREDENTIAL_FILE) {
         const clientPath = path.resolve(process.cwd(), CLIENT_CREDENTIAL_FILE);
         if (fs.existsSync(clientPath)) {
           console.log(`...using client credentials from ${clientPath}`);
@@ -693,7 +698,8 @@ export async function authenticateUser(options = {}) {
       }
 
       console.log("Setting up Application Default Credentials (ADC)...");
-      runCommandSync(`gcloud auth application-default login --scopes="${scopes}" ${clientFlag}`);
+      const adcScopeFlag = `--scopes="${adcScopes}"`;
+      runCommandSync(`gcloud auth application-default login ${adcScopeFlag} ${clientFlag}`.trim());
       runCommandSync(`gcloud auth application-default set-quota-project ${projectId}`);
 
       // --- DWD Specific Setup (if configured) ---
