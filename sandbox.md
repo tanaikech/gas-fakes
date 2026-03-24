@@ -362,6 +362,7 @@ The following features are planned for future implementation:
 - [gas fakes cli](gas-fakes-cli.md)
 - [ksuite as a back end](ksuite_poc.md)
 - [msgraph as a back end](msgraph.md)
+- [gas-fakes in serverless containers](https://docs.google.com/presentation/d/1JlXF9T--DD4ERHopyP3WyAMhjRCxxHblgCP5ynxaJ3k/edit?usp=sharing)
 - [apps script - a lingua franca for workspace platforms](https://ramblings.mcpher.com/apps-script-a-lingua-franca/)
 - [Apps Script: A ‘Lingua Franca’ for the Multi-Cloud Era](https://ramblings.mcpher.com/apps-script-with-ksuite/)
 - [running gas-fakes on google cloud run](https://github.com/brucemcpherson/gas-fakes-containers)
