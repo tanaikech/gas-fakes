@@ -283,12 +283,28 @@ export async function initializeConfiguration(options = {}) {
       "https://www.googleapis.com/auth/userinfo.email",
       "openid",
       "https://www.googleapis.com/auth/cloud-platform",
-      "https://www.googleapis.com/auth/drive.readonly",
     ];
     responses.DEFAULT_SCOPES = DEFAULT_SCOPES_VALUES.join(",");
-    responses.EXTRA_SCOPES = manifestScopes
-      .filter(s => !DEFAULT_SCOPES_VALUES.includes(s))
-      .join(",");
+
+    let extraScopes = manifestScopes.filter(s => !DEFAULT_SCOPES_VALUES.includes(s));
+
+    // Restricted scopes that trigger blocks for the default 'well-known' ADC client ID
+    const restrictedMatch = (s) =>
+      s.includes("auth/drive") ||
+      s.includes("auth/spreadsheets") ||
+      s.includes("auth/documents") ||
+      s.includes("auth/forms") ||
+      s.includes("auth/presentations") ||
+      s.includes("auth/script.external_request");
+
+    if (responses.AUTH_TYPE === "adc" && !responses.CLIENT_CREDENTIAL_FILE) {
+      const toSkip = extraScopes.filter(restrictedMatch);
+      if (toSkip.length > 0) {
+        console.log(`\n\x1b[1;33mWarning: ADC requested with Workspace scopes (${toSkip.map(s => s.split("/").pop()).join(", ")}). Google now blocks these scopes when using the default gcloud CLI client ID. You MUST provide a custom OAuth client credential file.\x1b[0m`);
+      }
+    }
+
+    responses.EXTRA_SCOPES = extraScopes.join(",");
 
     const googleQuestions = [
       {
@@ -306,7 +322,7 @@ export async function initializeConfiguration(options = {}) {
       {
         type: responses.AUTH_TYPE === "adc" ? "text" : null,
         name: "CLIENT_CREDENTIAL_FILE",
-        message: "Enter path to OAuth client credentials JSON (optional, required for restricted scopes with ADC)",
+        message: "Enter path to OAuth client credentials JSON (optional, required for Workspace scopes with ADC)",
         initial: existingConfig.CLIENT_CREDENTIAL_FILE || "",
       }
       ];
@@ -663,9 +679,25 @@ export async function authenticateUser(options = {}) {
         ...(EXTRA_SCOPES || "").split(","),
       ])).filter(s => s).join(",");
 
-      const adcScopes = AUTH_TYPE === "dwd" 
+      let adcScopes = AUTH_TYPE === "dwd" 
         ? Array.from(new Set((DEFAULT_SCOPES || "").split(","))).filter(s => s).join(",")
         : scopes;
+
+      const hasClientId = CLIENT_CREDENTIAL_FILE && fs.existsSync(path.resolve(process.cwd(), CLIENT_CREDENTIAL_FILE));
+      if (AUTH_TYPE !== "dwd" && !hasClientId) {
+        const scopeList = adcScopes.split(",");
+        const workspaceScopes = scopeList.filter(s => 
+          s.includes("auth/drive") || 
+          s.includes("auth/spreadsheets") || 
+          s.includes("auth/documents") || 
+          s.includes("auth/forms") ||
+          s.includes("auth/presentations")
+        );
+        
+        if (workspaceScopes.length > 0) {
+          console.warn(`\n\x1b[1;33mWarning: Workspace scopes (${workspaceScopes.map(s => s.split("/").pop()).join(", ")}) requested with ADC and no CLIENT_CREDENTIAL_FILE. This is expected to be blocked by Google.\x1b[0m`);
+        }
+      }
 
       console.log(`...requesting scopes: ${adcScopes}`);
 

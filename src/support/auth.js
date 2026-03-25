@@ -167,6 +167,22 @@ const setAuth = async (scopes = [], mcpLoading = false) => {
 
     if (!useDwd) {
       id.authMethod = 'adc'
+      
+      const workspaceScopes = scopes.filter(s => 
+        s.includes('auth/drive') || 
+        s.includes('auth/spreadsheets') || 
+        s.includes('auth/documents') || 
+        s.includes('auth/forms') ||
+        s.includes('auth/presentations')
+      )
+      
+      const creds = await id.auth.getCredentials();
+      const isDefaultClient = creds && creds.client_id === '764086051850-6qr4p6gpi6hn506pt8ejuq83di341hur.apps.googleusercontent.com';
+
+      if (isDefaultClient && workspaceScopes.length > 0) {
+        throw new Error(`ADC error: Google no longer allows the use of the default gcloud client ID for regular Workspace scopes (${workspaceScopes.map(s => s.split('/').pop()).join(', ')}). You must use a custom client credential file. See https://docs.cloud.google.com/docs/authentication/troubleshoot-adc#access_blocked_when_using_scopes`);
+      }
+
       id.authClient = await id.auth.getClient({ scopes })
       id.sourceClient = id.authClient
     } else {
@@ -175,7 +191,14 @@ const setAuth = async (scopes = [], mcpLoading = false) => {
       id.authMethod = 'dwd'
       const targetPrincipal = `${saName}@${id.projectId}.iam.gserviceaccount.com`
 
-      const sourceScopes = scopes.filter(s => s === 'openid' || s === 'https://www.googleapis.com/auth/userinfo.email')
+      // For DWD source client, we only need identity and enough scope to sign JWT
+      // cloud-platform is sufficient for IAM signJwt and avoid Drive-related blocks
+      const sourceScopes = scopes.filter(s => 
+        s === 'openid' || 
+        s === 'https://www.googleapis.com/auth/userinfo.email' ||
+        s === 'https://www.googleapis.com/auth/cloud-platform'
+      )
+      
       id.sourceClient = await id.auth.getClient(sourceScopes.length > 0 ? { scopes: sourceScopes } : {})
 
       const { tokenInfo: userInfo } = await _getTokenInfo(id.sourceClient);

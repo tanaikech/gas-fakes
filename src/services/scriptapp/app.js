@@ -114,7 +114,9 @@ const checkScopesMatch = (required) => {
       "https://www.googleapis.com/auth/script.external_request",
       "https://www.googleapis.com/auth/documents",
       "https://www.googleapis.com/auth/presentations",
-      "https://www.googleapis.com/auth/forms"
+      "https://www.googleapis.com/auth/forms",
+      "https://www.googleapis.com/auth/drive",
+      "https://www.googleapis.com/auth/spreadsheets"
     ]
     const hasIgnore = ignores.some(i => i.replace(/\/$/, "") === ns)
     if (hasIgnore) {

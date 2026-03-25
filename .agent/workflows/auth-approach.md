@@ -3,7 +3,7 @@ description: how to handle auth for multi platforms
 ---
 
 So far we support 2 kinds of auth
-- google - we have dwd or adc options. If using adc we also have an oauth credentials file to support restricted/sensitive scopes. For dwd, the scopes are built into the service account it creates, but it relies on domain wide delegation via the workspace admin console. The set of scopes required can be found in the appsscript.json manifest files accessible at the time of `init`. these scopes are written to the .env file for consumption by the `auth`
+- google - we have dwd or adc options. If using adc we also have an oauth credentials file to support restricted/Workspace scopes. For dwd, the scopes are built into the service account it creates, but it relies on domain wide delegation via the workspace admin console. The set of scopes required can be found in the appsscript.json manifest files accessible at the time of `init`. these scopes are written to the .env file for consumption by the `auth`
 - ksuite - via a token from the ksuite ui. in this case the scopes are assigned at the time of creating the token =in the UI. There is current;y no connection or validation possible between the manifest and the ksuite token.
 
 

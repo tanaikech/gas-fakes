@@ -2,7 +2,7 @@
 
 ## Authentication 
 
-Up till now gas-fakes has relied on ADC for authentication. This is fine for running locally, but in order to support more platforms gas-fakes will now also support Keyless Domain Wide Delegation (DWD). This will be the default method ongoing. This means we can use the same artifacts when running locally or using workload identity. In addition to the increased security, this also allows gas-fakes to be used in environments where ADC is not available, such as Cloud Run and Kubernetes. Another advantage is that we can also remove the complexity associated with using restricted Workspace scopes.
+Up till now gas-fakes has relied on ADC for authentication. This is fine for running locally, but in order to support more platforms gas-fakes will now also support Keyless Domain Wide Delegation (DWD). This will be the default method ongoing. This means we can use the same artifacts when running locally or using workload identity. In addition to the increased security, this also allows gas-fakes to be used in environments where ADC is not available, such as Cloud Run and Kubernetes. Another advantage is that we can also remove the complexity associated with using regular Workspace scopes.
 
 ### DWD vs ADC Comparison
 
@@ -12,7 +12,7 @@ Up till now gas-fakes has relied on ADC for authentication. This is fine for run
 | **Platform Support** | Good for local, limited in some cloud environments | Universal (Local, Cloud Run, Kubernetes, Workload Identity) |
 | **Security** | Direct user or service account permissions | Secure service-account based impersonation |
 | **Configuration** | Prompt driven `gas-fakes init --auth-type adc` | Prompt driven `gas-fakes init --auth-type dwd` now the default. All service account creation etc is handled automatically.|
-| **Admin action required** | Normally none, unless you are using restricted or sensitive scopes | Yes, requires admin action to enable DWD for the service account. |
+| **Admin action required** | Normally none, unless you are using restricted or Workspace scopes | Yes, requires admin action to enable DWD for the service account. |
 | **Workspace Scopes** | Can involve complex restricted scope management | Simplifies and streamlines restricted scope handling |
 | **Scope setup** | From environment variables | Directly from project manifest |
 | **Consistency** | Variations between local and cloud artifacts | Identical artifacts across all environments |
@@ -82,7 +82,7 @@ In order to ensure that cloud run correctly logs messages in the proper order, t
 ## Read more docs
 
 - [gas fakes intro video](https://youtu.be/oEjpIrkYpEM)
-- [getting started](GETTING_STARTED.md) - how to handle authentication for restricted scopes.
+- [getting started](GETTING_STARTED.md) - how to handle authentication for Workspace scopes.
 - [readme](README.md)
 - [gas fakes cli](gas-fakes-cli.md)
 - [ksuite as a back end](ksuite_poc.md)
@@ -106,17 +106,17 @@ In order to ensure that cloud run correctly logs messages in the proper order, t
 - [oddities](oddities.md) - a collection of oddities uncovered during this project
 - [named colors](named-colors.md)
 - [sandbox](sandbox.md)
-- [senstive scopes](senstive_scopes.md)
+- [senstive scopes](workspace_scopes.md)
 - [using apps script libraries with gas-fakes](libraries.md)
 - [how libhandler works](libhandler.md)
 - [article:using apps script libraries with gas-fakes](https://ramblings.mcpher.com/how-to-use-apps-script-libraries-directly-from-node/)
 - [named range identity](named-range-identity.md)
-- [sensitive scopes with local authentication](senstive_scopes.md)
+- [Workspace scopes with local authentication](workspace_scopes.md)
 - [push test pull](pull-test-push.md)
 - [sharing cache and properties between gas-fakes and live apps script](https://ramblings.mcpher.com/sharing-cache-and-properties-between-gas-fakes-and-live-apps-script/)
 - [gas-fakes-cli now has built in mcp server and gemini extension](https://ramblings.mcpher.com/gas-fakes-cli-now-has-built-in-mcp-server-and-gemini-extension/)
 - [gas-fakes CLI: Run apps script code directly from your terminal](https://ramblings.mcpher.com/gas-fakes-cli-run-apps-script-code-directly-from-your-terminal/)
-- [How to allow access to sensitive scopes with Application Default Credentials](https://ramblings.mcpher.com/how-to-allow-access-to-sensitive-scopes-with-application-default-credentials/)
+- [How to allow access to Workspace scopes with Application Default Credentials](https://ramblings.mcpher.com/how-to-allow-access-to-sensitive-scopes-with-application-default-credentials/)
 - [Supercharge Your Google Apps Script Caching with GasFlexCache](https://ramblings.mcpher.com/supercharge-your-google-apps-script-caching-with-gasflexcache/)
 - [Fake-Sandbox for Google Apps Script: Granular controls.](https://ramblings.mcpher.com/fake-sandbox-for-google-apps-script-granular-controls/)
 - [A Fake-Sandbox for Google Apps Script: Securely Executing Code Generated by Gemini CLI](https://ramblings.mcpher.com/gas-fakes-sandbox/)

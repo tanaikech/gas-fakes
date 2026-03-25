@@ -1739,7 +1739,7 @@
             "returnType": "String",
             "returnDescription": "The script project's ID.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/scriptapp/app.js#L158"
+            "implementationLink": "src/services/scriptapp/app.js#L160"
           },
           {
             "method": "getService()",

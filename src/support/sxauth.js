@@ -52,6 +52,24 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, cachePath,
     getIfExists(claspFile)
   ])
 
+  // Emulate manifest scopes from .env if missing or empty
+  if (!manifest.oauthScopes || manifest.oauthScopes.length === 0) {
+    const envScopes = Array.from(new Set([
+      ...(process.env.DEFAULT_SCOPES || "").split(","),
+      ...(process.env.EXTRA_SCOPES || "").split(",")
+    ])).map(s => s.trim()).filter(s => s);
+
+    if (envScopes.length > 0) {
+      manifest.oauthScopes = envScopes;
+      if (!manifest.timeZone) {
+        manifest.timeZone = process.env.GF_TIMEZONE || "America/New_York";
+      }
+      if (!_loggedSummary) {
+        syncLog(`...appsscript.json missing or missing scopes. Emulating manifest using scopes from .env file`);
+      }
+    }
+  }
+
   const settings = {
     manifest: manifestFile,
     clasp: claspFile,

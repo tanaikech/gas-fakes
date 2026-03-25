@@ -6,8 +6,10 @@ import { checkForGcloudCli, spawnCommand } from "./utils.js";
 async function getAccessToken(pattern) {
   if (pattern == 1) {
     // Authorization pattern 1
+    // We use cloud-platform as it provides sufficient access for Drive API fetching
+    // while avoiding the 'well-known client ID' block that targets Workspace scopes like drive.readonly.
     const auth = await Auth.setAuth(
-      ["https://www.googleapis.com/auth/drive.readonly"],
+      ["https://www.googleapis.com/auth/cloud-platform"],
       true
     );
     auth.cachedCredential = null;
