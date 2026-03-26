@@ -51,6 +51,17 @@ Configuration for your local Node environment is handled via environment variabl
 | `LOG_DESTINATION` | `CONSOLE` | Logging destination: `CONSOLE`, `CLOUD`, `BOTH`, or `NONE`. |
 | `STORE_TYPE` | `FILE` | Internal storage type for properties/cache: `FILE` (local) or `UPSTASH` (Redis). |
 
+### Note on Consumer Accounts and ADC
+
+If you are using a consumer account (gmail.com) or do not have access to Domain-Wide Delegation (DWD), you must use Application Default Credentials (`AUTH_TYPE="adc"`) to authenticate with Google Workspace assets.
+
+**Important Security Note:** Due to recent Workspace security changes, you **must** create and provide a custom OAuth2 client credentials JSON file during initialization (`gas-fakes init`) to avoid `403 Access Blocked` errors when using Workspace scopes (like Gmail or Drive).
+
+- **Guide:** [How to allow access to Workspace scopes with Application Default Credentials](https://ramblings.mcpher.com/how-to-allow-access-to-sensitive-scopes-with-application-default-credentials/)
+- **Link to Create Credentials:** [Google Cloud Console Credentials Page](https://console.cloud.google.com/apis/credentials)
+
+**Security Warning:** Always add your client credentials JSON file to your `.gitignore` to prevent it from being committed to GitHub or other source control.
+
 
 
 ### Cloud Logging Integration
