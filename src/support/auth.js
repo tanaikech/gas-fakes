@@ -201,8 +201,11 @@ const setAuth = async (scopes = [], mcpLoading = false) => {
       
       id.sourceClient = await id.auth.getClient(sourceScopes.length > 0 ? { scopes: sourceScopes } : {})
 
-      const { tokenInfo: userInfo } = await _getTokenInfo(id.sourceClient);
-      const userEmail = process.env.GOOGLE_WORKSPACE_SUBJECT || userInfo.email
+      let userEmail = process.env.GOOGLE_WORKSPACE_SUBJECT;
+      if (!userEmail) {
+        const { tokenInfo: userInfo } = await _getTokenInfo(id.sourceClient);
+        userEmail = userInfo.email;
+      }
 
       const dwdClient = new OAuth2Client()
       dwdClient._token = null
