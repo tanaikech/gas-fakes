@@ -10,7 +10,7 @@
     "@modelcontextprotocol/sdk": "^1.28.0",
     "@sindresorhus/is": "^7.2.0",
     "acorn": "^8.16.0",
-    "archiver": "^4.0.2",
+    "archiver": "^7.0.1",
     "commander": "^14.0.3",
     "dotenv": "^17.3.1",
     "fast-xml-parser": "^5.5.9",
@@ -28,7 +28,7 @@
     "zod": "^4.3.6"
   },
   "overrides": {
-    "glob": "^13.0.6"
+    "minimatch": "^10.0.3"
   },
   "type": "module",
   "scripts": {
@@ -39,7 +39,7 @@
   },
   "name": "@mcpher/gas-fakes",
   "author": "bruce mcpherson",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "license": "MIT",
   "main": "main.js",
   "description": "An implementation of the Google Workspace Apps Script runtime: Run native App Script Code on Node and Cloud Run",
