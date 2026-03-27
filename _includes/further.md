@@ -10,6 +10,8 @@
 - [getting started](GETTING_STARTED.md) - how to handle authentication for Workspace scopes.
 - [readme](README.md)
 - [gas fakes cli](gas-fakes-cli.md)
+- [github actions using adc](https://github.com/brucemcpherson/gas-fakes-actions-adc)
+- [github actions using dwd and wif](https://github.com/brucemcpherson/gas-fakes-actions-dwd)
 - [ksuite as a back end](ksuite_poc.md)
 - [msgraph as a back end](msgraph.md)
 - [gas-fakes in serverless containers](https://docs.google.com/presentation/d/1JlXF9T--DD4ERHopyP3WyAMhjRCxxHblgCP5ynxaJ3k/edit?usp=sharing)
@@ -19,6 +21,7 @@
 - [running gas-fakes on google kubernetes engine](https://github.com/brucemcpherson/gas-fakes-containers)
 - [running gas-fakes on Amazon AWS lambda](https://github.com/brucemcpherson/gas-fakes-containers)
 - [running gas-fakes on Azure ACA](https://github.com/brucemcpherson/gas-fakes-containers)
+- [running gas-fakes on Github actions](https://github.com/brucemcpherson/gas-fakes-containers)
 - [Yes – you can run native apps script code on Azure ACA as well!](https://ramblings.mcpher.com/yes-you-can-run-native-apps-script-code-on-azure-aca-as-well/)
 - [Yes – you can run native apps script code on AWS Lambda!](https://ramblings.mcpher.com/apps-script-on-aws-lambda/)
 - [initial idea and thoughts](https://ramblings.mcpher.com/a-proof-of-concept-implementation-of-apps-script-environment-on-node/)
