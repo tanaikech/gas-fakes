@@ -69,6 +69,25 @@ export const testSheetsChart = (pack) => {
     t.is(containerInfo.getOffsetY(), 20, "getOffsetY() should be 20");
   });
 
+  unit.section("EmbeddedChart.getRanges()", (t) => {
+    const { sheet } = maketss("chart_ranges_test", toTrash, fixes);
+    const range1 = sheet.getRange("A1:A5");
+    const range2 = sheet.getRange("B1:B5");
+    
+    const chart = sheet.newChart()
+      .setChartType(Charts.ChartType.COLUMN)
+      .addRange(range1)
+      .addRange(range2)
+      .build();
+
+    const ranges = chart.getRanges();
+    t.is(ranges.length, 2, "chart should have 2 ranges");
+    // Depending on how addRange works internally, we'll verify the notations.
+    // In our implementation of addRange, the first goes to domain, the second to series.
+    t.is(ranges.some(r => r.getA1Notation() === "A1:A5"), true, "range A1:A5 should be present");
+    t.is(ranges.some(r => r.getA1Notation() === "B1:B5"), true, "range B1:B5 should be present");
+  });
+
 
   // running standalone
   if (!pack) {
