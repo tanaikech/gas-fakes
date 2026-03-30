@@ -37331,7 +37331,7 @@
             "returnType": "Integer",
             "returnDescription": "A stable chart identifier.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchart.js#L47"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchart.js#L127"
           },
           {
             "method": "getContainerInfo()",
@@ -37376,7 +37376,7 @@
             "returnType": "ChartOptions",
             "returnDescription": "The options for this chart, such as height, colors, and axes.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchart.js#L63"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchart.js#L143"
           },
           {
             "method": "getRanges()",
@@ -37384,8 +37384,8 @@
             "description": "Returns the ranges that this chart uses as a data source.",
             "returnType": "Range[]",
             "returnDescription": "An array of ranges that serve as this chart's data source.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchart.js#L47"
           },
           {
             "method": "getTransposeRowsAndColumns()",
@@ -37403,7 +37403,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "A builder for creating embedded charts.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchart.js#L73"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchart.js#L153"
           }
         ]
       },

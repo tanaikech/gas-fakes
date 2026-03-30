@@ -68,7 +68,16 @@ During `init`, you can select one or more:
 If you select the Google backend, you can choose between:
 - **Domain-Wide Delegation (DWD)** (Default): Recommended for production-ready, cross-platform deployment. Requires admin action in the Workspace Admin Console.
 - **Application Default Credentials (ADC)**: Uses your local user login.
-    > **Note on Workspace Scopes (ADC):** If your project requires Workspace scopes (e.g., full Gmail or Calendar access), the standard Google CLI login process will be blocked by Google during the `auth` step. To resolve this, you must provide a custom OAuth2 client credentials JSON file during the `init` process. For a detailed guide on how to set this up, see [How to allow access to Workspace scopes](workspace_scopes.md). Better still, use DWD
+    > **Note on Workspace Scopes (ADC):** If your project requires Workspace scopes (e.g., full Gmail or Calendar access), the standard Google CLI login process will be blocked by Google during the `auth` step. To resolve this, you must provide a custom OAuth2 client credentials JSON file during the `init` process. For a detailed guide on how to set this up, see [How to allow access to Workspace scopes](workspace_scopes.md). Better still, use DWD if your can. 
+
+### Consumer versus domain accounts
+
+Because you need to access permissions for your domain to allow your workspace assets to be delegated to a service acccount, consumer accounts will have to use ADC. If you have a domain account, use DWD if your organizational policies allow it.
+
+### Workload Identity Federation
+gas-fakes also supports a range of workload identity federation hich will allow you to run your workload on a selection of cloud providers. See the [gas-fakes container repo](https://github.com/brucemcpherson/gas-fakes-containers) and the github actions repos [gas-fakes-actions-adc](https://github.com/brucemcpherson/gas-fakes-actions-adc) and [gas-fakes-actions-dwd](https://github.com/brucemcpherson/gas-fakes-actions-dwd)
+
+
 
 ### Initialization Flow
 
