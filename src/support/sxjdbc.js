@@ -18,6 +18,9 @@ export const sxJdbcConnect = async (Auth, { url, user, password }) => {
     connectionString = url.replace('jdbc:postgresql:', 'postgresql:');
   }
 
+  // Parse custom flags
+  const disableSsl = connectionString.includes('ssl=false') || connectionString.includes('127.0.0.1');
+
   // Strip ssl parameters to avoid conflict with explicit ssl object
   connectionString = connectionString.replace(/([?&])ssl=[^&]*(&|$)/g, '$1').replace(/[?&]$/, '');
 
@@ -30,7 +33,7 @@ export const sxJdbcConnect = async (Auth, { url, user, password }) => {
 
   const clientConfig = {
     connectionString,
-    ssl: { rejectUnauthorized: false }
+    ssl: disableSsl ? false : { rejectUnauthorized: false }
   };
 
   let client;
