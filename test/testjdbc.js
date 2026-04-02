@@ -49,15 +49,19 @@ const convertToUniversalJdbc = (url) => {
   // Apps Script PostgreSQL driver requires a public IP.
   // If we detect a Cloud SQL instance format locally, we use gcloud to resolve its public IP
   // so the saved connection string uses the IP, bypassing the issue on Live Apps Script.
+  // We also ensure the local machine's IP is authorized to avoid local connection timeouts.
   if (isCloudSql && isPostgres && ScriptApp.isFake) {
     try {
       const instanceParts = hostWithoutPort.split(":");
       const instanceName = instanceParts[instanceParts.length - 1];
-      console.log(`...attempting to fetch Public IP for Cloud SQL instance: ${instanceName} via gcloud`);
+      console.log(`...fetching details for Cloud SQL instance: ${instanceName} via gcloud`);
       
-      const cmd = `gcloud sql instances describe ${instanceName} | grep -B 1 "PRIMARY" | grep "ipAddress" | awk '{print $3}'`;
-      const ip = execSync(cmd, { encoding: 'utf-8' }).trim();
+      const instanceInfoStr = execSync(`gcloud sql instances describe ${instanceName} --format=json`, { encoding: 'utf-8', stdio: 'pipe' });
+      const instanceInfo = JSON.parse(instanceInfoStr);
       
+      const primaryIpObj = instanceInfo.ipAddresses?.find(ip => ip.type === 'PRIMARY');
+      const ip = primaryIpObj ? primaryIpObj.ipAddress : null;
+
       if (ip && ip.match(/^[0-9.]+$/)) {
         publicIp = ip;
         console.log(`...resolved Public IP: ${publicIp}. Rewriting host in URL.`);
@@ -69,8 +73,26 @@ const convertToUniversalJdbc = (url) => {
       } else {
          console.warn(`...could not resolve valid Public IP for ${instanceName}, got: ${ip}`);
       }
+
+      // Check and authorize local IP
+      const localIp = execSync('curl -s https://ifconfig.me', { encoding: 'utf-8', stdio: 'pipe' }).trim();
+      if (localIp && localIp.match(/^[0-9.]+$/)) {
+        const authorizedNetworks = instanceInfo.settings?.ipConfiguration?.authorizedNetworks || [];
+        const isAuthorized = authorizedNetworks.some(net => net.value === localIp || net.value === `${localIp}/32`);
+        
+        if (!isAuthorized) {
+          console.log(`...authorizing local IP ${localIp} on ${instanceName} (this may take a minute)`);
+          const existingNetworks = authorizedNetworks.map(n => n.value);
+          existingNetworks.push(`${localIp}/32`);
+          const newNetworks = existingNetworks.join(',');
+          execSync(`gcloud sql instances patch ${instanceName} --authorized-networks="${newNetworks}" --quiet`, { encoding: 'utf-8', stdio: 'pipe' });
+          console.log(`...successfully authorized ${localIp}`);
+        } else {
+          console.log(`...local IP ${localIp} is already authorized.`);
+        }
+      }
     } catch (e) {
-      console.warn(`...failed to fetch Public IP via gcloud: ${e.message}`);
+      console.warn(`...failed to fetch or update Cloud SQL instance details via gcloud: ${e.message}`);
     }
   }
   
