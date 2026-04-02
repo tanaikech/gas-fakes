@@ -61,7 +61,7 @@ const convertToUniversalJdbc = (url) => {
   // If we detect a Cloud SQL instance format locally, we use gcloud to resolve its public IP
   // so the saved connection string uses the IP, bypassing the issue on Live Apps Script.
   // We also ensure the local machine's IP is authorized to avoid local connection timeouts.
-  if (isCloudSql && isPostgres && isNode()) {
+  if (isCloudSql && isPostgres && ScriptApp.isFake) {
     try {
       const instanceParts = hostWithoutPort.split(":");
       const instanceName = instanceParts[instanceParts.length - 1];
@@ -169,7 +169,7 @@ const convertToUniversalJdbc = (url) => {
 };
 
   const getUseProxy = (envVar) => {
-    if (!isNode()) return false;
+    if (!ScriptApp.isFake) return false;
     const val = process.env[envVar];
     if (!val) return false;
     const match = val.match(/^([^:]+):\/\/([^:]+):([^@]+)@([^/]+)\/([^?]+)/);
@@ -207,7 +207,7 @@ const convertToUniversalJdbc = (url) => {
   const props = getSharedScriptStore("property");
 
   // now we have a property store to target, we can write the creds if we are in fake
-  if (isNode() && ScriptApp.isFake) {
+  if (ScriptApp.isFake) {
     potentialBackends.forEach((f) => {
       const val = process.env[f.prop];
       if (val) {
@@ -236,7 +236,7 @@ const convertToUniversalJdbc = (url) => {
 
   // Run tests for each configured and credentialed backend
   backends.forEach((backend) => {
-    const { prop, label, isGoogle, type } = backend;
+    const { prop, label, isGoogle, type, useProxy } = backend;
     let connectionString = props.getProperty(prop);
 
     unit.section(`Jdbc Basics - ${label}`, (t) => {
@@ -275,10 +275,7 @@ const convertToUniversalJdbc = (url) => {
       // The URL is now guaranteed to be an IP-based standard JDBC connection string for Postgres (or local proxy)
       // On Apps Script, we must explicitly pass user/pass and use a queryless gasUrl to avoid unsupported properties.
       const connectFn = () => {
-        // if running in live apps script, ScriptApp.isFake is essentially false or undefined
-        const isFakeEnvironment = typeof ScriptApp !== 'undefined' && typeof ScriptApp.isFake !== 'undefined' ? ScriptApp.isFake : false;
-        
-        if (!isFakeEnvironment) {
+        if (!ScriptApp.isFake) {
            return Jdbc.getConnection(universal.gasUrl, universal.user, universal.pass);
         }
         return Jdbc.getConnection(jdbcUrl);
