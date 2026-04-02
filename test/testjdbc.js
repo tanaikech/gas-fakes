@@ -3,8 +3,6 @@ import { initTests } from "./testinit.js";
 import { wrapupTest, trasher, getSharedScriptStore } from "./testassist.js";
 import { execSync } from "child_process";
 
-const isNode = () => typeof process !== 'undefined' && process.versions && process.versions.node;
-
 /**
  * testJdbc
  * @param {object} pack - the result of initTests
@@ -14,7 +12,7 @@ export const testJdbc = (pack) => {
   const { unit, fixes } = pack || initTests();
 
   const isProxyRunning = (instanceName) => {
-    if (!isNode()) return false;
+    if (!ScriptApp.isFake) return false;
     try {
       execSync(`pgrep -f "cloud.*sql.*proxy.*${instanceName}"`, { stdio: 'ignore' });
       return true;
