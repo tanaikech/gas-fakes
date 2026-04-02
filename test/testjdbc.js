@@ -11,6 +11,16 @@ export const testJdbc = (pack) => {
   const toTrash = [];
   const { unit, fixes } = pack || initTests();
 
+  const isProxyRunning = (instanceName) => {
+    if (!ScriptApp.isFake) return false;
+    try {
+      execSync(`pgrep -f "cloud.*sql.*proxy.*${instanceName}"`, { stdio: 'ignore' });
+      return true;
+    } catch (e) {
+      return false;
+    }
+  };
+
 /**
  * Converts Database URLs to JDBC-compatible formats.
  * FIXES:
@@ -45,6 +55,7 @@ const convertToUniversalJdbc = (url) => {
   // If it still contains a ':', it's likely a Google Cloud SQL instance connection name (project:region:instance)
   let isCloudSql = hostWithoutPort.includes(":");
   let publicIp = null;
+  let useProxy = false;
   
   // Apps Script PostgreSQL driver requires a public IP.
   // If we detect a Cloud SQL instance format locally, we use gcloud to resolve its public IP
@@ -56,6 +67,8 @@ const convertToUniversalJdbc = (url) => {
       const instanceName = instanceParts[instanceParts.length - 1];
       console.log(`...fetching details for Cloud SQL instance: ${instanceName} via gcloud`);
       
+      useProxy = isProxyRunning(instanceName);
+
       const instanceInfoStr = execSync(`gcloud sql instances describe ${instanceName} --format=json`, { encoding: 'utf-8', stdio: 'pipe' });
       const instanceInfo = JSON.parse(instanceInfoStr);
       
@@ -74,21 +87,25 @@ const convertToUniversalJdbc = (url) => {
          console.warn(`...could not resolve valid Public IP for ${instanceName}, got: ${ip}`);
       }
 
-      // Check and authorize local IP
-      const localIp = execSync('curl -s https://ifconfig.me', { encoding: 'utf-8', stdio: 'pipe' }).trim();
-      if (localIp && localIp.match(/^[0-9.]+$/)) {
-        const authorizedNetworks = instanceInfo.settings?.ipConfiguration?.authorizedNetworks || [];
-        const isAuthorized = authorizedNetworks.some(net => net.value === localIp || net.value === `${localIp}/32`);
-        
-        if (!isAuthorized) {
-          console.log(`...authorizing local IP ${localIp} on ${instanceName} (this may take a minute)`);
-          const existingNetworks = authorizedNetworks.map(n => n.value);
-          existingNetworks.push(`${localIp}/32`);
-          const newNetworks = existingNetworks.join(',');
-          execSync(`gcloud sql instances patch ${instanceName} --authorized-networks="${newNetworks}" --quiet`, { encoding: 'utf-8', stdio: 'pipe' });
-          console.log(`...successfully authorized ${localIp}`);
-        } else {
-          console.log(`...local IP ${localIp} is already authorized.`);
+      if (useProxy) {
+        console.log(`...Cloud SQL Proxy detected for ${instanceName}. Skipping local IP authorization.`);
+      } else {
+        // Check and authorize local IP
+        const localIp = execSync('curl -s https://ifconfig.me', { encoding: 'utf-8', stdio: 'pipe' }).trim();
+        if (localIp && localIp.match(/^[0-9.]+$/)) {
+          const authorizedNetworks = instanceInfo.settings?.ipConfiguration?.authorizedNetworks || [];
+          const isAuthorized = authorizedNetworks.some(net => net.value === localIp || net.value === `${localIp}/32`);
+          
+          if (!isAuthorized) {
+            console.log(`...authorizing local IP ${localIp} on ${instanceName} (this may take a minute)`);
+            const existingNetworks = authorizedNetworks.map(n => n.value);
+            existingNetworks.push(`${localIp}/32`);
+            const newNetworks = existingNetworks.join(',');
+            execSync(`gcloud sql instances patch ${instanceName} --authorized-networks="${newNetworks}" --quiet`, { encoding: 'utf-8', stdio: 'pipe' });
+            console.log(`...successfully authorized ${localIp}`);
+          } else {
+            console.log(`...local IP ${localIp} is already authorized.`);
+          }
         }
       }
     } catch (e) {
@@ -137,7 +154,8 @@ const convertToUniversalJdbc = (url) => {
     encodedPass,
     ssl,
     port,
-    publicIp
+    publicIp,
+    useProxy
   };
 };
 
@@ -147,15 +165,13 @@ const convertToUniversalJdbc = (url) => {
       prop: "CLOUD_PG_SQL_DATABASE_PG_URL",
       label: "Google Cloud SQL PG",
       isGoogle: true,
-      type: "pg",
-      useProxy: ScriptApp.isFake && process.env.GF_USE_CLOUD_PG_SQL_PROXY === "true",
+      type: "pg"
     },
     {
       prop: "DATABASE_PG_URL",
       label: "Neon Postgres",
       type: "pg",
-      isGoogle: false,
-      useProxy: false,
+      isGoogle: false
     },
   ];
 
@@ -194,7 +210,7 @@ const convertToUniversalJdbc = (url) => {
 
   // Run tests for each configured and credentialed backend
   backends.forEach((backend) => {
-    const { prop, label, isGoogle, type, useProxy } = backend;
+    const { prop, label, isGoogle, type } = backend;
     let connectionString = props.getProperty(prop);
 
     unit.section(`Jdbc Basics - ${label}`, (t) => {
@@ -213,7 +229,7 @@ const convertToUniversalJdbc = (url) => {
 
       // another wrinkle is that we might be using a proxy if running locally
       // if so we need to redirect to 127.0.0.1
-      if (useProxy) {
+      if (universal.useProxy) {
         jdbcUrl = universal.localUrl;
       }
 
@@ -224,7 +240,7 @@ const convertToUniversalJdbc = (url) => {
       }
 
       console.log(
-        `...connecting to ${backend.label}${useProxy ? " (via local proxy)" : ""}`,
+        `...connecting to ${backend.label}${universal.useProxy ? " (via local proxy)" : ""}`,
       );
 
       // Test 1: Connection
