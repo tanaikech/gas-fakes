@@ -275,7 +275,7 @@ const convertToUniversalJdbc = (url) => {
       // The URL is now guaranteed to be an IP-based standard JDBC connection string for Postgres (or local proxy)
       const connectFn = () => {
         if (!ScriptApp.isFake) {
-           return Jdbc.getConnection(universal.standardUrl);
+           return Jdbc.getConnection(universal.gasUrl, universal.user, universal.pass);
         }
         return Jdbc.getConnection(jdbcUrl);
       };
