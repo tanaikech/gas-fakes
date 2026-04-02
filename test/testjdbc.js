@@ -3,6 +3,8 @@ import { initTests } from "./testinit.js";
 import { wrapupTest, trasher, getSharedScriptStore } from "./testassist.js";
 import { execSync } from "child_process";
 
+const isNode = () => typeof process !== 'undefined' && process.versions && process.versions.node;
+
 /**
  * testJdbc
  * @param {object} pack - the result of initTests
@@ -12,7 +14,7 @@ export const testJdbc = (pack) => {
   const { unit, fixes } = pack || initTests();
 
   const isProxyRunning = (instanceName) => {
-    if (!ScriptApp.isFake) return false;
+    if (!isNode()) return false;
     try {
       execSync(`pgrep -f "cloud.*sql.*proxy.*${instanceName}"`, { stdio: 'ignore' });
       return true;
@@ -61,7 +63,7 @@ const convertToUniversalJdbc = (url) => {
   // If we detect a Cloud SQL instance format locally, we use gcloud to resolve its public IP
   // so the saved connection string uses the IP, bypassing the issue on Live Apps Script.
   // We also ensure the local machine's IP is authorized to avoid local connection timeouts.
-  if (isCloudSql && isPostgres && ScriptApp.isFake) {
+  if (isCloudSql && isPostgres && isNode()) {
     try {
       const instanceParts = hostWithoutPort.split(":");
       const instanceName = instanceParts[instanceParts.length - 1];
@@ -129,17 +131,26 @@ const convertToUniversalJdbc = (url) => {
   const standardUrl = `${protocol}${hostWithoutPort}:${port}/${db}?user=${encodedUser}&password=${encodedPass}&${ssl}`;
 
   /**
+   * gasUrl (The "Clean" URL for Apps Script)
+   * Apps Script's Jdbc.getConnection does not support connection properties in the URL for Postgres (like ssl=true).
+   * It requires the credentials to be passed explicitly.
+   */
+  const gasUrl = `${protocol}${hostWithoutPort}:${port}/${db}`;
+
+  /**
    * localUrl (The "Proxy" URL)
    * Specifically for Node.js pg-client connecting via 127.0.0.1.
+   * The Cloud SQL Proxy handles SSL, so we disable it locally.
    */
-  const localUrl = `${scheme}://${encodedUser}:${encodedPass}@127.0.0.1:${port}/${db}`;
+  const localUrl = `${scheme}://${encodedUser}:${encodedPass}@127.0.0.1:${port}/${db}?ssl=false`;
 
   // If we rewrote the connection to use an IP, provide the updated full string
   // so we can store the valid IP-based string in the property store
   const rewrittenConnectionString = `${scheme}://${user}:${pass}@${hostWithoutPort}/${db}`;
 
   return {
-    jdbcUrl: standardUrl, // The standard URL is what we use now for everything
+    jdbcUrl: standardUrl, // Node defaults to standardUrl
+    gasUrl,        // Live Apps Script should use gasUrl
     standardUrl,
     localUrl,
     rewrittenConnectionString, // Clean, raw string with resolved IP
@@ -160,7 +171,7 @@ const convertToUniversalJdbc = (url) => {
 };
 
   const getUseProxy = (envVar) => {
-    if (!ScriptApp.isFake) return false;
+    if (!isNode()) return false;
     const val = process.env[envVar];
     if (!val) return false;
     const match = val.match(/^([^:]+):\/\/([^:]+):([^@]+)@([^/]+)\/([^?]+)/);
@@ -198,7 +209,7 @@ const convertToUniversalJdbc = (url) => {
   const props = getSharedScriptStore("property");
 
   // now we have a property store to target, we can write the creds if we are in fake
-  if (ScriptApp.isFake) {
+  if (isNode() && ScriptApp.isFake) {
     potentialBackends.forEach((f) => {
       const val = process.env[f.prop];
       if (val) {
@@ -246,7 +257,7 @@ const convertToUniversalJdbc = (url) => {
 
       // another wrinkle is that we might be using a proxy if running locally
       // if so we need to redirect to 127.0.0.1
-      if (universal.useProxy) {
+      if (backend.useProxy) {
         jdbcUrl = universal.localUrl;
       }
 
@@ -257,14 +268,23 @@ const convertToUniversalJdbc = (url) => {
       }
 
       console.log(
-        `...connecting to ${backend.label}${universal.useProxy ? " (via local proxy)" : ""}`,
+        `...connecting to ${backend.label}${backend.useProxy ? " (via local proxy)" : ""}`,
       );
 
       // Test 1: Connection
       console.log(jdbcUrl, universal);
 
       // The URL is now guaranteed to be an IP-based standard JDBC connection string for Postgres (or local proxy)
-      const connectFn = () => Jdbc.getConnection(jdbcUrl);
+      // On Apps Script, we must explicitly pass user/pass and use a queryless gasUrl to avoid unsupported properties.
+      const connectFn = () => {
+        // if running in live apps script, ScriptApp.isFake is essentially false or undefined
+        const isFakeEnvironment = typeof ScriptApp !== 'undefined' && typeof ScriptApp.isFake !== 'undefined' ? ScriptApp.isFake : false;
+        
+        if (!isFakeEnvironment) {
+           return Jdbc.getConnection(universal.gasUrl, universal.user, universal.pass);
+        }
+        return Jdbc.getConnection(jdbcUrl);
+      };
       
       t.is(t.threw(connectFn)?.message || "ok", "ok");
 
