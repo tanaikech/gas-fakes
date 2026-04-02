@@ -273,10 +273,9 @@ const convertToUniversalJdbc = (url) => {
       console.log(jdbcUrl, universal);
 
       // The URL is now guaranteed to be an IP-based standard JDBC connection string for Postgres (or local proxy)
-      // On Apps Script, we must explicitly pass user/pass and use a queryless gasUrl to avoid unsupported properties.
       const connectFn = () => {
         if (!ScriptApp.isFake) {
-           return Jdbc.getConnection(universal.gasUrl, universal.user, universal.pass);
+           return Jdbc.getConnection(universal.standardUrl);
         }
         return Jdbc.getConnection(jdbcUrl);
       };
