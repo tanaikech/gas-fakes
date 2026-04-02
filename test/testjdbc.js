@@ -159,19 +159,36 @@ const convertToUniversalJdbc = (url) => {
   };
 };
 
+  const getUseProxy = (envVar) => {
+    if (!ScriptApp.isFake) return false;
+    const val = process.env[envVar];
+    if (!val) return false;
+    const match = val.match(/^([^:]+):\/\/([^:]+):([^@]+)@([^/]+)\/([^?]+)/);
+    if (!match) return false;
+    const hostWithoutPort = match[4].trim().replace(/:\d+$/, "");
+    if (hostWithoutPort.includes(":")) {
+      const instanceParts = hostWithoutPort.split(":");
+      const instanceName = instanceParts[instanceParts.length - 1];
+      return isProxyRunning(instanceName);
+    }
+    return false;
+  };
+
   // Define potential backends
   const potentialBackends = [
     {
       prop: "CLOUD_PG_SQL_DATABASE_PG_URL",
       label: "Google Cloud SQL PG",
       isGoogle: true,
-      type: "pg"
+      type: "pg",
+      useProxy: getUseProxy("CLOUD_PG_SQL_DATABASE_PG_URL")
     },
     {
       prop: "DATABASE_PG_URL",
       label: "Neon Postgres",
       type: "pg",
-      isGoogle: false
+      isGoogle: false,
+      useProxy: false
     },
   ];
 
