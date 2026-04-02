@@ -1,10 +1,12 @@
 ---
 description: How to run tests for gas-fakes
 ---
+
 All tests must be run from the `test` directory to ensure environment variables and dependencies are correctly loaded.
 
 1. Set the working directory to the `test` folder.
 2. Run the specific test script using `npm run`.
+3. Only use tests that are present in the testing framework. You can find plenty of examples in the test folder.
 
 
 Or if you want to run a specific test file directly:

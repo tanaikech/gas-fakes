@@ -22,6 +22,16 @@ export const testJdbc = (pack) => {
   };
 
 /**
+ * Aggressively encodes characters for JDBC connection strings.
+ * Standard encodeURIComponent misses: ! ' ( ) *
+ */
+const aggressiveEncode = (str) => {
+  return encodeURIComponent(str).replace(/[!'()*]/g, (c) => {
+    return '%' + c.charCodeAt(0).toString(16).toUpperCase();
+  });
+};
+
+/**
  * Converts Database URLs to JDBC-compatible formats.
  * FIXES:
  * 1. Provides 'jdbcUrl' (Clean) for Apps Script Cloud SQL.
@@ -65,7 +75,7 @@ const convertToUniversalJdbc = (url) => {
   // If we detect a Cloud SQL instance format locally, we use gcloud to resolve its public IP
   // so the saved connection string uses the IP, bypassing the issue on Live Apps Script.
   // We also ensure the local machine's IP is authorized to avoid local connection timeouts.
-  if (isCloudSql && isPostgres && typeof process !== 'undefined' && ScriptApp.isFake) {
+  if (isCloudSql && isPostgres && typeof process !== 'undefined' && process.versions && process.versions.node && ScriptApp.isFake) {
     try {
       const instanceParts = hostWithoutPort.split(":");
       const instanceName = instanceParts[instanceParts.length - 1];
@@ -118,8 +128,8 @@ const convertToUniversalJdbc = (url) => {
   }
   
   // URL Encode for string-based URLs
-  const encodedUser = encodeURIComponent(user);
-  const encodedPass = encodeURIComponent(pass);
+  const encodedUser = aggressiveEncode(user);
+  const encodedPass = aggressiveEncode(pass);
 
   const protocol = isPostgres ? "jdbc:postgresql://" : "jdbc:mysql://";
   const port = isPostgres ? "5432" : "3306";
@@ -134,8 +144,7 @@ const convertToUniversalJdbc = (url) => {
 
   /**
    * gasUrl (The "Clean" URL for Apps Script)
-   * Apps Script's Jdbc.getConnection does not support connection properties in the URL for Postgres (like ssl=true).
-   * It requires the credentials to be passed explicitly.
+   * It should be just the base URL, we will pass credentials explicitly.
    */
   const gasUrl = `${protocol}${hostWithoutPort}:${port}/${db}`;
 
@@ -279,6 +288,7 @@ const convertToUniversalJdbc = (url) => {
       // The URL is now guaranteed to be an IP-based standard JDBC connection string for Postgres (or local proxy)
       const connectFn = () => {
         if (!ScriptApp.isFake) {
+           console.log(`...Jdbc.getConnection("${universal.gasUrl}", user, pass)`);
            return Jdbc.getConnection(universal.gasUrl, universal.user, universal.pass);
         }
         return Jdbc.getConnection(jdbcUrl);

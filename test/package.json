@@ -73,6 +73,7 @@
     "testmimetype": "node testmimetype.js execute",
     "testsheetschart": "node testsheetschart.js execute",
     "testchartsapp": "node testchartsapp.js execute",
+    "testjdbc": "node testjdbc.js execute",
     "testformwebhack": "node testformwebhack.js execute",
     "testdrivesharing": "node testdrivesharing.js execute",
     "testdwdrefresh": "node testdwdrefresh.js execute",

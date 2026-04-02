@@ -1,4 +1,5 @@
 import is from '@sindresorhus/is';
+import { _null } from 'zod/v4/core';
 // import { signatureArgs, notYetImplemented } from '../src/support/helpers.js';
 
 let __mss = null
@@ -46,6 +47,41 @@ export const cachePerformance = () => {
     console.log('...cumulative gmail cache performance', getGmailPerformance());
   }
 }
+
+export const getSharedScriptStore = (kind) => {
+
+  const type = kind === 'property' 
+    ? 'getScriptProperties' 
+    : kind === 'cache' ? 'getScriptCache' : null
+
+  if (!type) {
+    throw new Error(`Unsupported store kind: ${kind}`);
+  }
+
+  let store= PropertiesService[type]()
+
+  if (!ScriptApp.isFake) {
+
+    // on live apps script we'll try to use a drop in
+    // if its not defined then they'll need to be set up manually over there
+    const scriptStore = PropertiesService[type]();
+  
+    // this will define whether it knows how to share properties
+    const dope = scriptStore.getProperty("dropin_upstash_credentials");
+    const crob = dope && JSON.parse(dope);
+    if (crob) {
+      store = newCacheDropin({
+        creds: { ...crob, scriptId: ScriptApp.getScriptId(), kind },
+      });
+    } else {
+      console.log ('...didnt find a share store for '+kind + ' using native apps script store')
+      store = scriptStore;
+    }
+  }
+  return store
+}
+
+
 export const checkBackend = (name)=> {
     if (!ScriptApp.isFake) {
     console.log('...skipping ' + name + ' tests as not in fake mode')

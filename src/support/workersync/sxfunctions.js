@@ -14,3 +14,4 @@ export * from "../sxtoken.js";
 
 
 
+export * from "../sxjdbc.js";

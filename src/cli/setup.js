@@ -242,14 +242,58 @@ export async function initializeConfiguration(options = {}) {
   // Discover Scopes from appsscript.json (Shared across backends)
   const manifestPath = path.resolve(process.cwd(), responses.GF_MANIFEST_PATH);
   let manifestScopes = [];
+  let manifestHasCloudSql = false;
   if (fs.existsSync(manifestPath)) {
     try {
       const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
       manifestScopes = manifest.oauthScopes || [];
       console.log(`...discovered ${manifestScopes.length} scopes in ${responses.GF_MANIFEST_PATH}`);
+      
+      // Check for JDBC or Cloud SQL usage (simplified check)
+      const manifestContent = fs.readFileSync(manifestPath, "utf8");
+      if (manifestContent.includes("jdbc:google:") || manifestContent.includes("Jdbc.")) {
+        manifestHasCloudSql = true;
+      }
     } catch (err) {
       console.warn(`...warning: failed to parse ${responses.GF_MANIFEST_PATH}.`);
     }
+  }
+
+  // --- Step 2.5: Database & Cloud SQL Proxy Configuration ---
+  const hasJdbc = manifestHasCloudSql || existingConfig.DATABASE_URL || existingConfig.CLOUD_SQL_DATABASE_URL;
+  if (hasJdbc) {
+    console.log("\n--- Configuring Database & Cloud SQL Auth Proxy ---");
+    
+    // Check if proxy is installed
+    let proxyInstalled = false;
+    try {
+      execSync("cloud-sql-proxy --version", { stdio: "ignore" });
+      proxyInstalled = true;
+    } catch (e) {
+      // not installed or not in path
+    }
+
+    if (!proxyInstalled) {
+      console.log("\x1b[1;33mNotice: Cloud SQL Auth Proxy is not installed or not in your PATH.\x1b[0m");
+      console.log("If you plan to test Google Cloud SQL locally, please install it:");
+      console.log("  - macOS (Homebrew): brew install google-cloud-sdk");
+      console.log("    then: gcloud components install cloud-sql-proxy");
+      console.log("  - Other: https://cloud.google.com/sql/docs/postgres/sql-proxy#install\n");
+    }
+
+    const dbQuestions = [
+      {
+        type: "toggle",
+        name: "GF_USE_CLOUD_PG_SQL_PROXY",
+        message: "Use Cloud SQL Auth Proxy for local database connections?",
+        initial: existingConfig.GF_USE_CLOUD_PG_SQL_PROXY === "true",
+        active: "yes",
+        inactive: "no"
+      }
+    ];
+
+    const dbResponses = await prompts(dbQuestions);
+    Object.assign(responses, dbResponses);
   }
 
   // --- Step 3: Google Workspace Configuration ---
@@ -756,8 +800,8 @@ export async function authenticateUser(options = {}) {
         runCommandSync(`gcloud iam service-accounts add-iam-policy-binding "${sa_email}" --member="user:${current_user}" --role="roles/iam.serviceAccountTokenCreator" --quiet`, true);
 
         const saUniqueId = execSync(`gcloud iam service-accounts describe "${sa_email}" --format="value(uniqueId)"`, { shell: true }).toString().trim();
-        console.log(`\n\x1b[1;33m************************************************************************`);
-        console.log(`IMPORTANT: Add this to Admin Console (Domain-Wide Delegation):`);
+        console.log(`\n\x1b[1;33m*************************************************************************************************`);
+        console.log(`IMPORTANT: If you haven't already done it, add this to Admin Console (Domain-Wide Delegation):`);
         console.log(`************************************************************************\x1b[0m`);
         console.log(`URL: https://admin.google.com/ac/owl/domainwidedelegation`);
         console.log(`Client ID: ${saUniqueId}\nScopes: ${scopes}`);

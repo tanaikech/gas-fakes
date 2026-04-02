@@ -128,6 +128,32 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, cachePath,
 
     } catch (err) {
       syncWarn(`Google authentication failed: ${err.message}`);
+
+      // Provide guidance for Domain Wide Delegation issues
+      if (err.message.includes('unauthorized_client')) {
+        const clientId = Auth.getClientId();
+        const msg = [
+          "",
+          "=".repeat(80),
+          "GOOGLE AUTHENTICATION ERROR: unauthorized_client",
+          "This usually means Domain-Wide Delegation (DWD) is missing for one or more scopes.",
+          "",
+          `Your Service Account Client ID is: ${clientId || 'unknown (check your service account JSON file)'}`,
+          "",
+          "The following scopes should be authorized in the Google Admin Console:",
+          finalScopes.join(","),
+          "",
+          "To fix this:",
+          "1. Go to https://admin.google.com",
+          "2. Security -> Access and data control -> API controls",
+          "3. Manage Domain Wide Delegation",
+          "4. Find/Add your Client ID and ensure the list of scopes above matches exactly.",
+          "=".repeat(80),
+          ""
+        ].join("\n");
+        console.error(msg);
+      }
+
       if (!platforms.includes('ksuite') && !platforms.includes('msgraph')) throw err;
     }
   }

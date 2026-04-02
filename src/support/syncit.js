@@ -412,6 +412,21 @@ const fxTestRetry = (errorMessage) => {
   return safeCallSync("sxTestRetry", { errorMessage });
 };
 
+const fxJdbcConnect = (url, user, password) => {
+  const args = { url };
+  if (user !== null && typeof user !== 'undefined') args.user = user;
+  if (password !== null && typeof password !== 'undefined') args.password = password;
+  return safeCallSync("sxJdbcConnect", args);
+};
+
+const fxJdbcQuery = (connectionId, sql) => {
+  return safeCallSync("sxJdbcQuery", { connectionId, sql });
+};
+
+const fxJdbcClose = (connectionId) => {
+  return safeCallSync("sxJdbcClose", { connectionId });
+};
+
 const fxSheets = (args) =>
   fxGeneric({
     ...args,
@@ -479,5 +494,8 @@ export const Syncit = {
   fxGetAccessToken,
   fxGetAccessTokenInfo,
   fxGetSourceAccessTokenInfo,
-  fxTestRetry
+  fxTestRetry,
+  fxJdbcConnect,
+  fxJdbcQuery,
+  fxJdbcClose
 }

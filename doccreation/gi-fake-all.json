@@ -28105,8 +28105,8 @@
             "description": "Release this connection's database and all associated resources.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L19"
           },
           {
             "method": "commit()",
@@ -28168,8 +28168,8 @@
             "description": "Creates a JdbcStatement object for sending SQL statements to the database. See also \njava.sql.Connection#createStatement().",
             "returnType": "JdbcStatement",
             "returnDescription": "A statement instance to execute queries with.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L14"
           },
           {
             "method": "createStatement(Integer,Integer)",
@@ -28177,8 +28177,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L14"
           },
           {
             "method": "createStatement(Integer,Integer,Integer)",
@@ -28186,8 +28186,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L14"
           },
           {
             "method": "createStruct(String,Object)",
@@ -28258,8 +28258,8 @@
             "description": "For documentation of this method, see \njava.sql.Connection#isClosed().",
             "returnType": "Boolean",
             "returnDescription": "true if the connection is closed; false otherwise.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L26"
           },
           {
             "method": "isReadOnly()",
@@ -30846,8 +30846,8 @@
             "description": "For documentation of this method, see \njava.sql.ResultSet#close().",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L14"
           },
           {
             "method": "deleteRow()",
@@ -31026,8 +31026,8 @@
             "description": "For documentation of this method, see \njava.sql.ResultSet#getDate(int).",
             "returnType": "JdbcDate",
             "returnDescription": "The column value; null if the value was SQL NULL.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L45"
           },
           {
             "method": "getDate(Integer,String)",
@@ -31035,8 +31035,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L45"
           },
           {
             "method": "getDate(String)",
@@ -31044,8 +31044,8 @@
             "description": "For documentation of this method, see \njava.sql.ResultSet#getDate(String).",
             "returnType": "JdbcDate",
             "returnDescription": "The column value; null if the value was SQL NULL.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L45"
           },
           {
             "method": "getDate(String,String)",
@@ -31053,8 +31053,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L45"
           },
           {
             "method": "getDouble(Integer)",
@@ -31098,8 +31098,8 @@
             "description": "For documentation of this method, see \njava.sql.ResultSet#getFloat(int).",
             "returnType": "Number",
             "returnDescription": "The column value; 0 if the value was SQL NULL.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L40"
           },
           {
             "method": "getFloat(String)",
@@ -31107,8 +31107,8 @@
             "description": "For documentation of this method, see \njava.sql.ResultSet#getFloat(String).",
             "returnType": "Number",
             "returnDescription": "The column value; 0 if the value was SQL NULL.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L40"
           },
           {
             "method": "getHoldability()",
@@ -31125,8 +31125,8 @@
             "description": "For documentation of this method, see \njava.sql.ResultSet#getInt(int).",
             "returnType": "Integer",
             "returnDescription": "The column value; 0 if the value was SQL NULL.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L35"
           },
           {
             "method": "getInt(String)",
@@ -31134,8 +31134,8 @@
             "description": "For documentation of this method, see \njava.sql.ResultSet#getInt(String).",
             "returnType": "Integer",
             "returnDescription": "The column value; 0 if the value was SQL NULL.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L35"
           },
           {
             "method": "getLong(Integer)",
@@ -31161,8 +31161,8 @@
             "description": "For documentation of this method, see \njava.sql.ResultSet#getMetaData().",
             "returnType": "JdbcResultSetMetaData",
             "returnDescription": "The number, types, and properties of this result set's columns.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L54"
           },
           {
             "method": "getNClob(Integer)",
@@ -31206,8 +31206,8 @@
             "description": "For documentation of this method, see \njava.sql.ResultSet#getObject(int).",
             "returnType": "Object",
             "returnDescription": "The value of the designated column in the current row of this result set.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L50"
           },
           {
             "method": "getObject(String)",
@@ -31215,8 +31215,8 @@
             "description": "For documentation of this method, see \njava.sql.ResultSet#getObject(String).",
             "returnType": "Object",
             "returnDescription": "The value of the designated column in the current row of this result set.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L50"
           },
           {
             "method": "getRef(Integer)",
@@ -31314,8 +31314,8 @@
             "description": "For documentation of this method, see \njava.sql.ResultSet#getString(int).",
             "returnType": "String",
             "returnDescription": "The column value; null if the value was SQL NULL.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L30"
           },
           {
             "method": "getString(String)",
@@ -31323,8 +31323,8 @@
             "description": "For documentation of this method, see \njava.sql.ResultSet#getString(String).",
             "returnType": "String",
             "returnDescription": "The column value; null if the value was SQL NULL.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L30"
           },
           {
             "method": "getTime(Integer)",
@@ -31467,8 +31467,8 @@
             "description": "For documentation of this method, see \njava.sql.ResultSet#isClosed().",
             "returnType": "Boolean",
             "returnDescription": "true if this result set is closed; false otherwise.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L10"
           },
           {
             "method": "isFirst()",
@@ -31521,8 +31521,8 @@
             "description": "For documentation of this method, see \njava.sql.ResultSet#next().",
             "returnType": "Boolean",
             "returnDescription": "true if the new current row is valid; false otherwise.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L13"
           },
           {
             "method": "previous()",
@@ -32113,8 +32113,8 @@
             "description": "For documentation of this method, see \njava.sql.ResultSetMetaData#getColumnCount().",
             "returnType": "Integer",
             "returnDescription": "The number of columns in this result set.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcresultsetmetadata.js#L9"
           },
           {
             "method": "getColumnDisplaySize(Integer)",
@@ -32131,8 +32131,8 @@
             "description": "For documentation of this method, see \njava.sql.ResultSetMetaData#getColumnLabel(int).",
             "returnType": "String",
             "returnDescription": "The designated column's suggested title, usually specifed by a SQL AS clause.\n    Returns the same as getColumnName(column) if an AS is not specified.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcresultsetmetadata.js#L19"
           },
           {
             "method": "getColumnName(Integer)",
@@ -32140,8 +32140,8 @@
             "description": "For documentation of this method, see \njava.sql.ResultSetMetaData#getColumnName(int).",
             "returnType": "String",
             "returnDescription": "The designated column's name.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcresultsetmetadata.js#L13"
           },
           {
             "method": "getColumnType(Integer)",
@@ -32149,8 +32149,8 @@
             "description": "For documentation of this method, see \njava.sql.ResultSetMetaData#getColumnType(int).",
             "returnType": "Integer",
             "returnDescription": "The SQL\n    type of the designated column.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcresultsetmetadata.js#L23"
           },
           {
             "method": "getColumnTypeName(Integer)",
@@ -32158,8 +32158,8 @@
             "description": "For documentation of this method, see \njava.sql.ResultSetMetaData#getColumnTypeName(int).",
             "returnType": "String",
             "returnDescription": "The designated column's database-specific type name. Returns the fully-qualifed type\n    name if this is a user-defined type.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcresultsetmetadata.js#L32"
           },
           {
             "method": "getPrecision(Integer)",
@@ -32371,8 +32371,8 @@
             "description": "For documentation of this method, see \njava.sql.Statement#close().",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcstatement.js#L13"
           },
           {
             "method": "execute(String)",
@@ -32380,8 +32380,8 @@
             "description": "For documentation of this method, see \njava.sql.Statement#execute(String).",
             "returnType": "Boolean",
             "returnDescription": "true if the first result is a result set; false if it is an update\n    count or if there are no results.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcstatement.js#L12"
           },
           {
             "method": "execute(String,Integer)",
@@ -32389,8 +32389,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcstatement.js#L12"
           },
           {
             "method": "execute(String,String)",
@@ -32398,8 +32398,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcstatement.js#L12"
           },
           {
             "method": "executeBatch()",
@@ -32416,8 +32416,8 @@
             "description": "For documentation of this method, see \njava.sql.Statement#executeQuery(String).",
             "returnType": "JdbcResultSet",
             "returnDescription": "A result set containing the results of the execution. This is never null.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcstatement.js#L12"
           },
           {
             "method": "executeUpdate(String)",
@@ -32587,8 +32587,8 @@
             "description": "For documentation of this method, see \njava.sql.Statement#isClosed().",
             "returnType": "Boolean",
             "returnDescription": "true if this statement is closed; false otherwise.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcstatement.js#L9"
           },
           {
             "method": "isPoolable()",

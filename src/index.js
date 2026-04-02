@@ -28,3 +28,5 @@ import './services/slidesapp/app.js'
 import './services/mimetype/app.js'
 import './services/lock/app.js'
 import './services/libhandlerapp/app.js'
+import './services/jdbc/app.js'
+
