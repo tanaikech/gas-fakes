@@ -41,8 +41,12 @@ const convertToUniversalJdbc = (url) => {
 
   let [, scheme, user, pass, host, db] = match;
   scheme = scheme.trim();
-  user = user.trim();
-  pass = pass.trim();
+  
+  // URL Decode credentials! 
+  // Apps Script's Jdbc.getConnection() requires RAW, unencoded credentials.
+  user = decodeURIComponent(user.trim());
+  pass = decodeURIComponent(pass.trim());
+  
   host = host.trim();
   db = db.trim();
   
@@ -61,7 +65,7 @@ const convertToUniversalJdbc = (url) => {
   // If we detect a Cloud SQL instance format locally, we use gcloud to resolve its public IP
   // so the saved connection string uses the IP, bypassing the issue on Live Apps Script.
   // We also ensure the local machine's IP is authorized to avoid local connection timeouts.
-  if (isCloudSql && isPostgres && ScriptApp.isFake) {
+  if (isCloudSql && isPostgres && typeof process !== 'undefined' && ScriptApp.isFake) {
     try {
       const instanceParts = hostWithoutPort.split(":");
       const instanceName = instanceParts[instanceParts.length - 1];
