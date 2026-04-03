@@ -1,4 +1,5 @@
 import pg from 'pg';
+import mysql from 'mysql2/promise';
 
 const connections = new Map();
 
@@ -12,47 +13,102 @@ const connections = new Map();
  * @returns {object} Connection details/ID
  */
 export const sxJdbcConnect = async (Auth, { url, user, password }) => {
-  // gas-fakes primarily supports PostgreSQL mapping jdbc:postgresql to node-postgres (pg)
   let connectionString = url;
+  let type = 'pg';
+
   if (url.startsWith('jdbc:postgresql:')) {
     connectionString = url.replace('jdbc:postgresql:', 'postgresql:');
+    type = 'pg';
+  } else if (url.startsWith('jdbc:mysql:')) {
+    connectionString = url.replace('jdbc:mysql:', 'mysql:');
+    type = 'mysql';
+  } else if (url.startsWith('jdbc:google:mysql:')) {
+    connectionString = url.replace('jdbc:google:mysql:', 'mysql:');
+    type = 'mysql';
+  } else if (url.startsWith('mysql:')) {
+    type = 'mysql';
   }
 
   // Parse custom flags
   const disableSsl = connectionString.includes('ssl=false') || connectionString.includes('127.0.0.1');
 
-  // Strip ssl parameters to avoid conflict with explicit ssl object
-  connectionString = connectionString.replace(/([?&])ssl=[^&]*(&|$)/g, '$1').replace(/[?&]$/, '');
-
-  // Neon postgres usually requires ssl
-  // To avoid the pg security warning regarding sslmode=require, we append the recommended compat flag
-  if (connectionString.includes('sslmode=require') && !connectionString.includes('uselibpqcompat')) {
-    const separator = connectionString.includes('?') ? '&' : '?';
-    connectionString += `${separator}uselibpqcompat=true`;
-  }
-
-  const clientConfig = {
-    connectionString,
-    ssl: disableSsl ? false : { rejectUnauthorized: false }
-  };
-
   let client;
-  if (user !== null && typeof user !== 'undefined' && password !== null && typeof password !== 'undefined') {
-    // If explicit credentials are provided, use them with a config object
-    client = new pg.Client({
-      ...clientConfig,
-      user: String(user),
-      password: String(password)
-    });
-  } else {
-    // Otherwise rely on the connection string (which might already have them)
-    client = new pg.Client(clientConfig);
-  }
-  
-  await client.connect();
   const id = `conn_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  connections.set(id, client);
-  
+
+  if (type === 'pg') {
+    // Strip ssl parameters to avoid conflict with explicit ssl object
+    let pgConnectionString = connectionString.replace(/([?&])ssl=[^&]*(&|$)/g, '$1').replace(/[?&]$/, '');
+
+    // Neon postgres usually requires ssl
+    if (pgConnectionString.includes('sslmode=require') && !pgConnectionString.includes('uselibpqcompat')) {
+      const separator = pgConnectionString.includes('?') ? '&' : '?';
+      pgConnectionString += `${separator}uselibpqcompat=true`;
+    }
+
+    const clientConfig = {
+      connectionString: pgConnectionString,
+      ssl: disableSsl ? false : { rejectUnauthorized: false }
+    };
+
+    if (user !== null && typeof user !== 'undefined' && password !== null && typeof password !== 'undefined') {
+      client = new pg.Client({
+        ...clientConfig,
+        user: String(user),
+        password: String(password)
+      });
+    } else {
+      client = new pg.Client(clientConfig);
+    }
+    await client.connect();
+  } else if (type === 'mysql') {
+    let cleanUrl = connectionString.replace(/^jdbc:/, '');
+    if (!cleanUrl.startsWith('mysql://')) {
+      cleanUrl = 'mysql://' + cleanUrl;
+    }
+    
+    let host = '127.0.0.1';
+    let port = 3306;
+    let database = '';
+    let urlUser;
+    let urlPassword;
+    
+    try {
+      const parsedUrl = new URL(cleanUrl);
+      host = parsedUrl.hostname;
+      port = parsedUrl.port ? parseInt(parsedUrl.port, 10) : 3306;
+      database = parsedUrl.pathname.replace(/^\//, '');
+      urlUser = parsedUrl.username ? decodeURIComponent(parsedUrl.username) : parsedUrl.searchParams.get('user');
+      urlPassword = parsedUrl.password ? decodeURIComponent(parsedUrl.password) : parsedUrl.searchParams.get('password');
+    } catch (e) {
+      // Fallback for weird formats (like Cloud SQL instance names without resolved IPs)
+      const match = cleanUrl.match(/^mysql:\/\/(?:([^:]+):([^@]+)@)?([^/]+?)(?::(\d+))?(?:\/([^?]+))?(?:\?(.*))?$/);
+      if (match) {
+        urlUser = match[1] ? decodeURIComponent(match[1]) : undefined;
+        urlPassword = match[2] ? decodeURIComponent(match[2]) : undefined;
+        host = match[3];
+        port = match[4] ? parseInt(match[4], 10) : 3306;
+        database = match[5] || '';
+      } else {
+        host = cleanUrl.replace(/^mysql:\/\//, '');
+      }
+    }
+
+    const finalUser = (user !== null && typeof user !== 'undefined') ? String(user) : urlUser;
+    const finalPassword = (password !== null && typeof password !== 'undefined') ? String(password) : urlPassword;
+
+    const mysqlConfig = {
+      host: host,
+      port: port,
+      database: database,
+      user: finalUser,
+      password: finalPassword,
+      ssl: disableSsl ? undefined : { rejectUnauthorized: false }
+    };
+
+    client = await mysql.createConnection(mysqlConfig);
+  }
+
+  connections.set(id, { client, type });
   return { id };
 };
 
@@ -65,16 +121,27 @@ export const sxJdbcConnect = async (Auth, { url, user, password }) => {
  * @returns {object} The query result (rows, fields, etc.)
  */
 export const sxJdbcQuery = async (Auth, { connectionId, sql }) => {
-  const client = connections.get(connectionId);
-  if (!client) throw new Error('Invalid or closed JDBC connection.');
+  const entry = connections.get(connectionId);
+  if (!entry) throw new Error('Invalid or closed JDBC connection.');
   
-  const result = await client.query(sql);
+  const { client, type } = entry;
   
-  return {
-    rows: result.rows,
-    fields: result.fields,
-    rowCount: result.rowCount,
-  };
+  if (type === 'pg') {
+    const result = await client.query(sql);
+    return {
+      rows: result.rows,
+      fields: result.fields,
+      rowCount: result.rowCount,
+    };
+  } else if (type === 'mysql') {
+    // mysql2 returns [rows, fields]
+    const [rows, fields] = await client.query(sql);
+    return {
+      rows: rows,
+      fields: fields, // mysql2 fields are objects with name, columnType, etc.
+      rowCount: rows.length || 0,
+    };
+  }
 };
 
 /**
@@ -85,9 +152,14 @@ export const sxJdbcQuery = async (Auth, { connectionId, sql }) => {
  * @returns {boolean} True if closed successfully
  */
 export const sxJdbcClose = async (Auth, { connectionId }) => {
-  const client = connections.get(connectionId);
-  if (client) {
-    await client.end();
+  const entry = connections.get(connectionId);
+  if (entry) {
+    const { client, type } = entry;
+    if (type === 'pg') {
+      await client.end();
+    } else if (type === 'mysql') {
+      await client.end();
+    }
     connections.delete(connectionId);
   }
   return true;

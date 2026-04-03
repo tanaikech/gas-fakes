@@ -28106,7 +28106,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L19"
+            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L33"
           },
           {
             "method": "commit()",
@@ -28169,7 +28169,7 @@
             "returnType": "JdbcStatement",
             "returnDescription": "A statement instance to execute queries with.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L14"
+            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L20"
           },
           {
             "method": "createStatement(Integer,Integer)",
@@ -28178,7 +28178,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L14"
+            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L20"
           },
           {
             "method": "createStatement(Integer,Integer,Integer)",
@@ -28187,7 +28187,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L14"
+            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L20"
           },
           {
             "method": "createStruct(String,Object)",
@@ -28231,8 +28231,8 @@
             "description": "For documentation of this method, see \njava.sql.Connection#getMetaData().",
             "returnType": "JdbcDatabaseMetaData",
             "returnDescription": "The metadata of the database this connection connects to.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L24"
           },
           {
             "method": "getTransactionIsolation()",
@@ -28259,7 +28259,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the connection is closed; false otherwise.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L26"
+            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L40"
           },
           {
             "method": "isReadOnly()",

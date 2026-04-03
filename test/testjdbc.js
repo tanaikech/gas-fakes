@@ -14,178 +14,226 @@ export const testJdbc = (pack) => {
   const isProxyRunning = (instanceName) => {
     if (!ScriptApp.isFake) return false;
     try {
-      execSync(`pgrep -f "cloud.*sql.*proxy.*${instanceName}"`, { stdio: 'ignore' });
+      execSync(`pgrep -f "cloud.*sql.*proxy.*${instanceName}"`, {
+        stdio: "ignore",
+      });
       return true;
     } catch (e) {
       return false;
     }
   };
 
-/**
- * Aggressively encodes characters for JDBC connection strings.
- * Standard encodeURIComponent misses: ! ' ( ) *
- */
-const aggressiveEncode = (str) => {
-  return encodeURIComponent(str).replace(/[!'()*]/g, (c) => {
-    return '%' + c.charCodeAt(0).toString(16).toUpperCase();
-  });
-};
+  /**
+   * Aggressively encodes characters for JDBC connection strings.
+   * Standard encodeURIComponent misses: ! ' ( ) *
+   */
+  const aggressiveEncode = (str) => {
+    return encodeURIComponent(str).replace(/[!'()*]/g, (c) => {
+      return "%" + c.charCodeAt(0).toString(16).toUpperCase();
+    });
+  };
 
-/**
- * Converts Database URLs to JDBC-compatible formats.
- * FIXES:
- * 1. Provides 'jdbcUrl' (Clean) for Apps Script Cloud SQL.
- * 2. Provides 'standardUrl' (Full) for Node.js / External JDBC.
- * 3. Correctly handles Postgres protocol 'jdbc:postgresql://'.
- * * @param {string} url - Format: protocol://user:pass@host/db
- * @return {object} - Connection metadata.
- */
-const convertToUniversalJdbc = (url) => {
-  // Enhanced regex to handle complex passwords
-  const regex = /^([^:]+):\/\/([^:]+):([^@]+)@([^/]+)\/([^?]+)/;
-  const match = url.match(regex);
+  /**
+   * Converts Database URLs to JDBC-compatible formats.
+   * FIXES:
+   * 1. Provides 'jdbcUrl' (Clean) for Apps Script Cloud SQL.
+   * 2. Provides 'standardUrl' (Full) for Node.js / External JDBC.
+   * 3. Correctly handles Postgres protocol 'jdbc:postgresql://'.
+   * * @param {string} url - Format: protocol://user:pass@host/db
+   * @return {object} - Connection metadata.
+   */
+  const convertToUniversalJdbc = (url) => {
+    // Strip optional JDBC wrapper
+    const cleanUrl = url.replace(/^jdbc:google:/, "").replace(/^jdbc:/, "");
 
-  if (!match) {
-    throw new Error("Format not recognized. Use: protocol://user:pass@host/db");
-  }
+    // Enhanced regex to handle complex passwords, usernames with colons, and optional db
+    const regex = /^([^:]+):\/\/(.+):([^@]+)@([^/]+)(?:\/(.*))?/;
+    const match = cleanUrl.match(regex);
 
-  let [, scheme, user, pass, host, db] = match;
-  scheme = scheme.trim();
-  
-  // URL Decode credentials! 
-  // Apps Script's Jdbc.getConnection() requires RAW, unencoded credentials.
-  user = decodeURIComponent(user.trim());
-  pass = decodeURIComponent(pass.trim());
-  
-  host = host.trim();
-  db = db.trim();
-  
-  const isPostgres = scheme.toLowerCase().includes("post");
-  
-  // If host contains ':' it might be a Cloud SQL instance or host:port
-  // We remove the port if it's there to check if it's a Cloud SQL instance name
-  let hostWithoutPort = host.replace(/:\d+$/, "");
-  
-  // If it still contains a ':', it's likely a Google Cloud SQL instance connection name (project:region:instance)
-  let isCloudSql = hostWithoutPort.includes(":");
-  let publicIp = null;
-  let useProxy = false;
-  
-  // Apps Script PostgreSQL driver requires a public IP.
-  // If we detect a Cloud SQL instance format locally, we use gcloud to resolve its public IP
-  // so the saved connection string uses the IP, bypassing the issue on Live Apps Script.
-  // We also ensure the local machine's IP is authorized to avoid local connection timeouts.
-  if (isCloudSql && isPostgres && typeof process !== 'undefined' && process.versions && process.versions.node && ScriptApp.isFake) {
-    try {
-      const instanceParts = hostWithoutPort.split(":");
-      const instanceName = instanceParts[instanceParts.length - 1];
-      console.log(`...fetching details for Cloud SQL instance: ${instanceName} via gcloud`);
-      
-      useProxy = isProxyRunning(instanceName);
+    if (!match) {
+      throw new Error(
+        `Format not recognized for ${cleanUrl}. Use: protocol://user:pass@host/db`,
+      );
+    }
 
-      const instanceInfoStr = execSync(`gcloud sql instances describe ${instanceName} --format=json`, { encoding: 'utf-8', stdio: 'pipe' });
-      const instanceInfo = JSON.parse(instanceInfoStr);
-      
-      const primaryIpObj = instanceInfo.ipAddresses?.find(ip => ip.type === 'PRIMARY');
-      const ip = primaryIpObj ? primaryIpObj.ipAddress : null;
+    let [, scheme, user, pass, host, db] = match;
+    scheme = scheme.trim();
 
-      if (ip && ip.match(/^[0-9.]+$/)) {
-        publicIp = ip;
-        console.log(`...resolved Public IP: ${publicIp}. Rewriting host in URL.`);
-        
-        // Rewrite the host variables to use the IP, so it acts like a standard database
-        hostWithoutPort = publicIp;
-        host = publicIp;
-        isCloudSql = false; // It's now just a standard IP-based connection
-      } else {
-         console.warn(`...could not resolve valid Public IP for ${instanceName}, got: ${ip}`);
-      }
+    // URL Decode credentials!
+    // Apps Script's Jdbc.getConnection() requires RAW, unencoded credentials.
+    user = decodeURIComponent(user.trim());
+    pass = decodeURIComponent(pass.trim());
 
-      if (useProxy) {
-        console.log(`...Cloud SQL Proxy detected for ${instanceName}. Skipping local IP authorization.`);
-      } else {
-        // Check and authorize local IP
-        const localIp = execSync('curl -s https://ifconfig.me', { encoding: 'utf-8', stdio: 'pipe' }).trim();
-        if (localIp && localIp.match(/^[0-9.]+$/)) {
-          const authorizedNetworks = instanceInfo.settings?.ipConfiguration?.authorizedNetworks || [];
-          const isAuthorized = authorizedNetworks.some(net => net.value === localIp || net.value === `${localIp}/32`);
-          
-          if (!isAuthorized) {
-            console.log(`...authorizing local IP ${localIp} on ${instanceName} (this may take a minute)`);
-            const existingNetworks = authorizedNetworks.map(n => n.value);
-            existingNetworks.push(`${localIp}/32`);
-            const newNetworks = existingNetworks.join(',');
-            execSync(`gcloud sql instances patch ${instanceName} --authorized-networks="${newNetworks}" --quiet`, { encoding: 'utf-8', stdio: 'pipe' });
-            console.log(`...successfully authorized ${localIp}`);
-          } else {
-            console.log(`...local IP ${localIp} is already authorized.`);
+    host = host.trim();
+    db = db ? db.trim() : "postgres"; // Fallback to postgres if no DB is provided
+
+    const isPostgres = scheme.toLowerCase().includes("post");
+
+    // If host contains ':' it might be a Cloud SQL instance or host:port
+    // We remove the port if it's there to check if it's a Cloud SQL instance name
+    let hostWithoutPort = host.replace(/:\d+$/, "");
+
+    // If it still contains a ':', it's likely a Google Cloud SQL instance connection name (project:region:instance)
+    let isCloudSql = hostWithoutPort.includes(":");
+    let publicIp = null;
+    let useProxy = false;
+
+    // Apps Script PostgreSQL driver requires a public IP.
+    // If we detect a Cloud SQL instance format locally, we use gcloud to resolve its public IP
+    // so the saved connection string uses the IP, bypassing the issue on Live Apps Script.
+    // We also ensure the local machine's IP is authorized to avoid local connection timeouts.
+    if (
+      isCloudSql &&
+      typeof process !== "undefined" &&
+      process.versions &&
+      process.versions.node &&
+      ScriptApp.isFake
+    ) {
+      try {
+        const instanceParts = hostWithoutPort.split(":");
+        const instanceName = instanceParts[instanceParts.length - 1];
+        console.log(
+          `...fetching details for Cloud SQL instance: ${instanceName} via gcloud`,
+        );
+
+        useProxy = isProxyRunning(instanceName);
+
+        const instanceInfoStr = execSync(
+          `gcloud sql instances describe ${instanceName} --format=json`,
+          { encoding: "utf-8", stdio: "pipe" },
+        );
+        const instanceInfo = JSON.parse(instanceInfoStr);
+
+        const primaryIpObj = instanceInfo.ipAddresses?.find(
+          (ip) => ip.type === "PRIMARY",
+        );
+        const ip = primaryIpObj ? primaryIpObj.ipAddress : null;
+
+        if (ip && ip.match(/^[0-9.]+$/)) {
+          publicIp = ip;
+          console.log(
+            `...resolved Public IP: ${publicIp}. Rewriting host in URL.`,
+          );
+
+          // Rewrite the host variables to use the IP, so it acts like a standard database
+          hostWithoutPort = publicIp;
+          host = publicIp;
+          isCloudSql = false; // It's now just a standard IP-based connection
+        } else {
+          console.warn(
+            `...could not resolve valid Public IP for ${instanceName}, got: ${ip}`,
+          );
+        }
+
+        if (useProxy) {
+          console.log(
+            `...Cloud SQL Proxy detected for ${instanceName}. Skipping local IP authorization.`,
+          );
+        } else {
+          // Check and authorize local IP
+          const localIp = execSync("curl -s https://ifconfig.me", {
+            encoding: "utf-8",
+            stdio: "pipe",
+          }).trim();
+          if (localIp && localIp.match(/^[0-9.]+$/)) {
+            const authorizedNetworks =
+              instanceInfo.settings?.ipConfiguration?.authorizedNetworks || [];
+            const isAuthorized = authorizedNetworks.some(
+              (net) => net.value === localIp || net.value === `${localIp}/32`,
+            );
+
+            if (!isAuthorized) {
+              console.log(
+                `...authorizing local IP ${localIp} on ${instanceName} (this may take a minute)`,
+              );
+              const existingNetworks = authorizedNetworks.map((n) => n.value);
+              existingNetworks.push(`${localIp}/32`);
+              const newNetworks = existingNetworks.join(",");
+              execSync(
+                `gcloud sql instances patch ${instanceName} --authorized-networks="${newNetworks}" --quiet`,
+                { encoding: "utf-8", stdio: "pipe" },
+              );
+              console.log(`...successfully authorized ${localIp}`);
+            } else {
+              console.log(`...local IP ${localIp} is already authorized.`);
+            }
           }
         }
+      } catch (e) {
+        console.warn(
+          `...failed to fetch or update Cloud SQL instance details via gcloud: ${e.message}`,
+        );
       }
-    } catch (e) {
-      console.warn(`...failed to fetch or update Cloud SQL instance details via gcloud: ${e.message}`);
     }
-  }
-  
-  // URL Encode for string-based URLs
-  const encodedUser = aggressiveEncode(user);
-  const encodedPass = aggressiveEncode(pass);
 
-  const protocol = isPostgres ? "jdbc:postgresql://" : "jdbc:mysql://";
-  const port = isPostgres ? "5432" : "3306";
-  const ssl = isPostgres ? "ssl=true" : "useSSL=true";
+    // URL Encode for string-based URLs
+    const encodedUser = aggressiveEncode(user);
+    const encodedPass = aggressiveEncode(pass);
 
-  /**
-   * standardUrl (The "Full" URL)
-   * Use this for Node.js, Apps Script via Public IP, or any external JDBC client.
-   * It ALWAYS includes the port, encoded credentials, and SSL.
-   */
-  const standardUrl = `${protocol}${hostWithoutPort}:${port}/${db}?user=${encodedUser}&password=${encodedPass}&${ssl}`;
+    const protocol = isPostgres ? "jdbc:postgresql://" : "jdbc:mysql://";
+    const port = host.includes(":") ? "" : (isPostgres ? ":5432" : ":3306");
+    const ssl = isPostgres ? "ssl=true" : "useSSL=true";
+    
+    // Create a pure DB string without query parameters for gasUrl
+    const pureDb = db.includes("?") ? db.split("?")[0] : db;
 
-  /**
-   * gasUrl (The "Clean" URL for Apps Script)
-   * It should be just the base URL, we will pass credentials explicitly.
-   */
-  const gasUrl = `${protocol}${hostWithoutPort}:${port}/${db}`;
+    /**
+     * standardUrl (The "Full" URL)
+     * Use this for Node.js, Apps Script via Public IP, or any external JDBC client.
+     * The Java JDBC driver REQUIRES credentials to be query parameters or passed separately.
+     * It does NOT support user:pass@host syntax.
+     */
+    const sep = db.includes("?") ? "&" : "?";
+    const standardUrl = `${protocol}${host}${port}/${db}${sep}user=${encodedUser}&password=${encodedPass}&${ssl}`;
 
-  /**
-   * localUrl (The "Proxy" URL)
-   * Specifically for Node.js pg-client connecting via 127.0.0.1.
-   * The Cloud SQL Proxy handles SSL, so we disable it locally.
-   */
-  const localUrl = `${scheme}://${encodedUser}:${encodedPass}@127.0.0.1:${port}/${db}?ssl=false`;
+    /**
+     * gasUrl (The "Clean" URL for Apps Script)
+     * Apps Script's Jdbc.getConnection does not support connection properties in the URL for Postgres (like ssl=true).
+     * It requires the credentials to be passed explicitly.
+     */
+    const gasUrl = `${protocol}${host}${port}/${pureDb}`;
 
-  // If we rewrote the connection to use an IP, provide the updated full string
-  // so we can store the valid IP-based string in the property store
-  const rewrittenConnectionString = `${scheme}://${user}:${pass}@${hostWithoutPort}/${db}`;
+    /**
+     * localUrl (The "Proxy" URL)
+     * Specifically for Node.js pg-client connecting via 127.0.0.1.
+     * The Cloud SQL Proxy handles SSL, so we disable it locally.
+     */
+    const localUrl = `${scheme}://${encodedUser}:${encodedPass}@127.0.0.1${port}/${db}${sep}ssl=false`;
 
-  return {
-    jdbcUrl: standardUrl, // Node defaults to standardUrl
-    gasUrl,        // Live Apps Script should use gasUrl
-    standardUrl,
-    localUrl,
-    rewrittenConnectionString, // Clean, raw string with resolved IP
-    user,          // Raw user
-    pass,          // Raw pass
-    db,
-    isCloudSql,
-    isPostgres,
-    host,
-    hostWithoutPort,
-    encodedUser,
-    encodedPass,
-    ssl,
-    port,
-    publicIp,
-    useProxy
+    // If we rewrote the connection to use an IP, provide the updated full string
+    // so we can store the valid IP-based string in the property store
+    const rewrittenConnectionString = `${scheme}://${user}:${pass}@${host}/${db}`;
+
+    return {
+      jdbcUrl: standardUrl, // Node defaults to standardUrl
+      gasUrl, // Live Apps Script should use gasUrl
+      standardUrl,
+      localUrl,
+      rewrittenConnectionString, // Clean, raw string with resolved IP
+      user, // Raw user
+      pass, // Raw pass
+      db,
+      isCloudSql,
+      isPostgres,
+      host,
+      hostWithoutPort,
+      encodedUser,
+      encodedPass,
+      ssl,
+      port,
+      publicIp,
+      useProxy,
+    };
   };
-};
 
   const getUseProxy = (envVar) => {
     if (!ScriptApp.isFake) return false;
     const val = process.env[envVar];
     if (!val) return false;
-    const match = val.match(/^([^:]+):\/\/([^:]+):([^@]+)@([^/]+)\/([^?]+)/);
+    const cleanUrl = val.replace(/^jdbc:google:/, "").replace(/^jdbc:/, "");
+    const match = cleanUrl.match(
+      /^(?:([^:]+):\/\/)?([^:]+):([^@]+)@([^/]+)(?:\/(.*))?/,
+    );
     if (!match) return false;
     const hostWithoutPort = match[4].trim().replace(/:\d+$/, "");
     if (hostWithoutPort.includes(":")) {
@@ -199,18 +247,39 @@ const convertToUniversalJdbc = (url) => {
   // Define potential backends
   const potentialBackends = [
     {
-      prop: "CLOUD_PG_SQL_DATABASE_PG_URL",
+      prop: "DATABASE_AIVEN_MYSQL_URL",
+      label: "Aiven MySQL",
+      isGoogle: false,
+      type: "mysql",
+      useProxy: false,
+    },
+    {
+      prop: "DATABASE_COCKROACH_PG_URL",
+      label: "Cockroach DB",
+      isGoogle: false,
+      type: "pg",
+      useProxy: false,
+    },
+    {
+      prop: "CLOUD_SQL_DATABASE_MYSQL_URL",
+      label: "Google Cloud SQL MySQL",
+      isGoogle: true,
+      type: "mysql",
+      useProxy: getUseProxy("CLOUD_SQL_DATABASE_MYSQL_URL"),
+    },
+    {
+      prop: "CLOUD_SQL_DATABASE_PG_URL",
       label: "Google Cloud SQL PG",
       isGoogle: true,
       type: "pg",
-      useProxy: getUseProxy("CLOUD_PG_SQL_DATABASE_PG_URL")
+      useProxy: getUseProxy("CLOUD_SQL_DATABASE_PG_URL"),
     },
     {
       prop: "DATABASE_PG_URL",
       label: "Neon Postgres",
       type: "pg",
       isGoogle: false,
-      useProxy: false
+      useProxy: false,
     },
   ];
 
@@ -226,7 +295,12 @@ const convertToUniversalJdbc = (url) => {
       if (val) {
         // Resolve and rewrite IP early so the property store holds the valid Live string
         const universal = convertToUniversalJdbc(val);
-        props.setProperty(f.prop, universal.rewrittenConnectionString);
+        // For MySQL on Cloud SQL, we need to preserve the instance connection name for Live Apps Script
+        const stringToSave =
+          f.type === "mysql" && f.isGoogle
+            ? val
+            : universal.rewrittenConnectionString;
+        props.setProperty(f.prop, stringToSave);
       } else {
         // get rid of stale tests
         props.deleteProperty(f.prop);
@@ -275,7 +349,9 @@ const convertToUniversalJdbc = (url) => {
       // If the URL is an IP address rather than an instance connection string, it's fine.
       // We no longer throw an error because Live Apps Script actually requires a Public IP for PostgreSQL.
       if (isGoogle && !universal.isCloudSql) {
-        console.log(`...${backend.label} is using a Public IP pattern (${universal.host}).`);
+        console.log(
+          `...${backend.label} is using a Public IP pattern (${universal.host}).`,
+        );
       }
 
       console.log(
@@ -287,13 +363,41 @@ const convertToUniversalJdbc = (url) => {
 
       // The URL is now guaranteed to be an IP-based standard JDBC connection string for Postgres (or local proxy)
       const connectFn = () => {
+        if (!ScriptApp.isFake && isGoogle && type === "mysql") {
+          // For Google Cloud SQL on Live Apps Script
+          const gasUrl = `jdbc:google:mysql://${universal.hostWithoutPort}/${universal.db}`;
+          console.log(`...Jdbc.getCloudSqlConnection("${gasUrl}", user, pass)`);
+          return Jdbc.getCloudSqlConnection(
+            gasUrl,
+            universal.user,
+            universal.pass,
+          );
+        }
+
         if (!ScriptApp.isFake) {
-           console.log(`...Jdbc.getConnection("${universal.gasUrl}", user, pass)`);
-           return Jdbc.getConnection(universal.gasUrl, universal.user, universal.pass);
+          if (isGoogle) {
+            console.log(
+              `...Jdbc.getConnection("${universal.gasUrl}", user, pass)`,
+            );
+            return Jdbc.getConnection(
+              universal.gasUrl,
+              universal.user,
+              universal.pass,
+            );
+          } else {
+            console.log(
+              `...Jdbc.getConnection("${universal.gasUrl}", user, pass)`,
+            );
+            return Jdbc.getConnection(
+              universal.gasUrl,
+              universal.user,
+              universal.pass,
+            );
+          }
         }
         return Jdbc.getConnection(jdbcUrl);
       };
-      
+
       t.is(t.threw(connectFn)?.message || "ok", "ok");
 
       const conn = connectFn();
@@ -325,10 +429,13 @@ const convertToUniversalJdbc = (url) => {
       const sanitizedHeaders = headers.map((h) =>
         h.replace(/[^a-zA-Z0-9_]/g, "_").toLowerCase(),
       );
-      const colDef = sanitizedHeaders.map((h) => `"${h}" TEXT`).join(", ");
+      const q = type === "mysql" ? "`" : '"';
+      const colDef = sanitizedHeaders
+        .map((h) => `${q}${h}${q} TEXT`)
+        .join(", ");
 
-      stmt.execute(`DROP TABLE IF EXISTS "${tableName}";`);
-      stmt.execute(`CREATE TABLE "${tableName}" (${colDef});`);
+      stmt.execute(`DROP TABLE IF EXISTS ${q}${tableName}${q};`);
+      stmt.execute(`CREATE TABLE ${q}${tableName}${q} (${colDef});`);
 
       // Insert Data
       let currentValues = [];
@@ -340,14 +447,14 @@ const convertToUniversalJdbc = (url) => {
         currentValues.push(`(${vals})`);
 
         if (currentValues.length >= 100 || i === data.length - 1) {
-          const insertSql = `INSERT INTO "${tableName}" (${sanitizedHeaders.map((h) => `"${h}"`).join(", ")}) VALUES ${currentValues.join(",")};`;
+          const insertSql = `INSERT INTO ${q}${tableName}${q} (${sanitizedHeaders.map((h) => `${q}${h}${q}`).join(", ")}) VALUES ${currentValues.join(",")};`;
           stmt.execute(insertSql);
           currentValues = [];
         }
       }
 
       // Full Data Comparison (Unordered)
-      const rsAll = stmt.executeQuery(`SELECT * FROM "${tableName}";`);
+      const rsAll = stmt.executeQuery(`SELECT * FROM ${q}${tableName}${q};`);
       const dbSet = new Set();
       while (rsAll.next()) {
         const rowData = [];

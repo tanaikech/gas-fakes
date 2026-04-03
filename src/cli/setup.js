@@ -260,7 +260,7 @@ export async function initializeConfiguration(options = {}) {
   }
 
   // --- Step 2.5: Database & Cloud SQL Proxy Configuration ---
-  const hasJdbc = manifestHasCloudSql || existingConfig.DATABASE_URL || existingConfig.CLOUD_SQL_DATABASE_URL;
+  const hasJdbc = manifestHasCloudSql || Object.keys(existingConfig).some(k => k.includes("DATABASE_URL"));
   if (hasJdbc) {
     console.log("\n--- Configuring Database & Cloud SQL Auth Proxy ---");
     

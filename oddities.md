@@ -984,6 +984,100 @@ The Forms API returns item ids as hex strings, while Apps Script FormApp returns
 see https://issuetracker.google.com/issues/469115766
 
 
+## Jdbc
+
+Where to start? There's a lot of baggage here related to the old version of database connectors that live Apps Script uses. 
+
+### hosted mysql - password encryption
+
+Lets start google hosted mysql, using the getCloudSqlConnection - something like this
+
+```javascript
+function lm() {
+  const instanceConnName = 'project-id:region:instance-name'
+  const databaseName = 'mysql'
+  const user = 'user'
+  const password = 'password'
+  const url = `jdbc:google:mysql://${instanceConnName}/${databaseName}`;
+  const conn = Jdbc.getCloudSqlConnection(url, user, password);
+}
+```
+
+### ⚠️ The Problem
+Google Apps Script uses a legacy JDBC driver that is incompatible with the default authentication security introduced in MySQL 8.0 and 8.4.
+
+Symptoms: Jdbc.getCloudSqlConnection or Jdbc.getConnection fails with: "Failed to establish a database connection. Check connection string, username and password."
+
+Root Cause: MySQL 8.4 uses caching_sha2_password (SHA-256) by default. The Apps Script JDBC driver only supports the legacy mysql_native_password (SHA-1) handshake. In MySQL 8.4, this legacy plugin is disabled by default.
+
+### ✅ The Solution
+To allow Apps Script to connect, you must explicitly re-enable the legacy authentication plugin at the server level and then update the specific database user.
+
+1. Enable the Database Flag
+You must tell the Google Cloud SQL instance to load the legacy plugin.
+
+- Go to Cloud SQL Instances > [Your Instance] > Edit.
+- Navigate to Configuration options > Flags. 
+- Add the flag: mysql_native_password and set it to on.
+- Save (The instance will restart).
+
+2. Downgrade the User Authentication
+Run the following SQL command in the Cloud SQL Query Editor to update the specific user account:
+```
+SQL
+ALTER USER 'your-user'@'%' 
+IDENTIFIED WITH mysql_native_password BY 'your-password';
+
+FLUSH PRIVILEGES;
+```
+
+Notice - this means you'll have to do this each time you change the user password.
+
+### Jdbc.getCloudSqlConnection: Documentation Discrepancy: database Property
+
+
+Documentation Claim: The Google Apps Script JDBC [Reference](https://developers.google.com/apps-script/reference/jdbc/jdbc#getcloudsqlconnectionurl,-info) states that the info object (the second argument) can contain a database key to specify the schema.
+
+Actual Behavior: Passing { database: "my_db" } in the info object triggers ErrorException: The following connection properties are unsupported: database.
+
+#### ✅ The Verified Fix
+To resolve this, you must shift the database name from the Object to the URL String.
+
+❌ Incorrect (Per Documentation)
+```javascript
+// This triggers the "unsupported: database" error
+const url = "jdbc:google:mysql://project:region:instance";
+const conn = Jdbc.getCloudSqlConnection(url, {
+  user: "username",
+  password: "password",
+  database: "my_db" 
+});
+```
+✅ Correct (Actual Requirement)
+```javascript
+// Append the database name directly to the URL
+const url = "jdbc:google:mysql://project:region:instance/my_db";
+const conn = Jdbc.getCloudSqlConnection(url, {
+  user: "username",
+  password: "password"
+});
+```
+
+### Jdbc.getCloudSqlConnection: with postgres - on live apps script
+
+This doesn't waork, so we have to treat it as if its an external postgres database, and use Jdbc.getConnection() instead. This means that we need to get the external ip, but more importantly allow the ip ranges from which apps script might connect from. you can modify and run ./test/add-gas-ips.sh to add google ip ranges to the cloud sql instance.
+
+### Jdbc.getConnection when running from gas-fakes - google hosted databases
+
+- Option 1: run cloud-sql-proxy 'you-database-instance' in a teminal session. In this case, gas-fakes detect it and will automatically substitutes the local port and host for the google instance name in the connection string.
+- Option 2: if gas-fakes detects that the proxy is not running, it will automatically fetch the external ip address of the cloud sql instance, and add your current ip address as an allowed ip range. 
+
+These options apply for both postgres and mysql google hosted databases.
+
+
+
+
+
 ## Enums
 
 All Apps Script enums are imitated using a seperate class 'newFakeGasenum()'. A complete write up of that is in [fakegasenum](https://github.com/brucemcpherson/fakegasenum). The same functionality is also available as an Apps Script library if you'd like to make your own enums over on GAS just like you find in Apps Script.
