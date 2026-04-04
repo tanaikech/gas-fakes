@@ -1,263 +1,33 @@
 import "@mcpher/gas-fakes";
 import { initTests } from "./testinit.js";
 import { wrapupTest, trasher, getSharedScriptStore } from "./testassist.js";
-import { execSync } from "child_process";
 
-/**
- * testJdbc
- * @param {object} pack - the result of initTests
- */
 export const testJdbc = (pack) => {
   const toTrash = [];
   const { unit, fixes } = pack || initTests();
 
-  const isProxyRunning = (instanceName) => {
-    if (!ScriptApp.isFake) return false;
-    try {
-      execSync(`pgrep -f "cloud.*sql.*proxy.*${instanceName}"`, {
-        stdio: "ignore",
-      });
-      return true;
-    } catch (e) {
-      return false;
-    }
-  };
-
-  /**
-   * Aggressively encodes characters for JDBC connection strings.
-   * Standard encodeURIComponent misses: ! ' ( ) *
-   */
-  const aggressiveEncode = (str) => {
-    return encodeURIComponent(str).replace(/[!'()*]/g, (c) => {
-      return "%" + c.charCodeAt(0).toString(16).toUpperCase();
-    });
-  };
-
-  /**
-   * Converts Database URLs to JDBC-compatible formats.
-   * FIXES:
-   * 1. Provides 'jdbcUrl' (Clean) for Apps Script Cloud SQL.
-   * 2. Provides 'standardUrl' (Full) for Node.js / External JDBC.
-   * 3. Correctly handles Postgres protocol 'jdbc:postgresql://'.
-   * * @param {string} url - Format: protocol://user:pass@host/db
-   * @return {object} - Connection metadata.
-   */
-  const convertToUniversalJdbc = (url) => {
-    // Strip optional JDBC wrapper
-    const cleanUrl = url.replace(/^jdbc:google:/, "").replace(/^jdbc:/, "");
-
-    // Enhanced regex to handle complex passwords, usernames with colons, and optional db
-    const regex = /^([^:]+):\/\/(.+):([^@]+)@([^/]+)(?:\/(.*))?/;
-    const match = cleanUrl.match(regex);
-
-    if (!match) {
-      throw new Error(
-        `Format not recognized for ${cleanUrl}. Use: protocol://user:pass@host/db`,
-      );
-    }
-
-    let [, scheme, user, pass, host, db] = match;
-    scheme = scheme.trim();
-
-    // URL Decode credentials!
-    // Apps Script's Jdbc.getConnection() requires RAW, unencoded credentials.
-    user = decodeURIComponent(user.trim());
-    pass = decodeURIComponent(pass.trim());
-
-    host = host.trim();
-    db = db ? db.trim() : "postgres"; // Fallback to postgres if no DB is provided
-
-    const isPostgres = scheme.toLowerCase().includes("post");
-
-    // If host contains ':' it might be a Cloud SQL instance or host:port
-    // We remove the port if it's there to check if it's a Cloud SQL instance name
-    let hostWithoutPort = host.replace(/:\d+$/, "");
-
-    // If it still contains a ':', it's likely a Google Cloud SQL instance connection name (project:region:instance)
-    let isCloudSql = hostWithoutPort.includes(":");
-    let publicIp = null;
-    let useProxy = false;
-
-    // Apps Script PostgreSQL driver requires a public IP.
-    // If we detect a Cloud SQL instance format locally, we use gcloud to resolve its public IP
-    // so the saved connection string uses the IP, bypassing the issue on Live Apps Script.
-    // We also ensure the local machine's IP is authorized to avoid local connection timeouts.
-    if (
-      isCloudSql &&
-      typeof process !== "undefined" &&
-      process.versions &&
-      process.versions.node &&
-      ScriptApp.isFake
-    ) {
-      try {
-        const instanceParts = hostWithoutPort.split(":");
-        const instanceName = instanceParts[instanceParts.length - 1];
-        console.log(
-          `...fetching details for Cloud SQL instance: ${instanceName} via gcloud`,
-        );
-
-        useProxy = isProxyRunning(instanceName);
-
-        const instanceInfoStr = execSync(
-          `gcloud sql instances describe ${instanceName} --format=json`,
-          { encoding: "utf-8", stdio: "pipe" },
-        );
-        const instanceInfo = JSON.parse(instanceInfoStr);
-
-        const primaryIpObj = instanceInfo.ipAddresses?.find(
-          (ip) => ip.type === "PRIMARY",
-        );
-        const ip = primaryIpObj ? primaryIpObj.ipAddress : null;
-
-        if (ip && ip.match(/^[0-9.]+$/)) {
-          publicIp = ip;
-          console.log(
-            `...resolved Public IP: ${publicIp}. Rewriting host in URL.`,
-          );
-
-          // Rewrite the host variables to use the IP, so it acts like a standard database
-          hostWithoutPort = publicIp;
-          host = publicIp;
-          isCloudSql = false; // It's now just a standard IP-based connection
-        } else {
-          console.warn(
-            `...could not resolve valid Public IP for ${instanceName}, got: ${ip}`,
-          );
-        }
-
-        if (useProxy) {
-          console.log(
-            `...Cloud SQL Proxy detected for ${instanceName}. Skipping local IP authorization.`,
-          );
-        } else {
-          // Check and authorize local IP
-          const localIp = execSync("curl -s https://ifconfig.me", {
-            encoding: "utf-8",
-            stdio: "pipe",
-          }).trim();
-          if (localIp && localIp.match(/^[0-9.]+$/)) {
-            const authorizedNetworks =
-              instanceInfo.settings?.ipConfiguration?.authorizedNetworks || [];
-            const isAuthorized = authorizedNetworks.some(
-              (net) => net.value === localIp || net.value === `${localIp}/32`,
-            );
-
-            if (!isAuthorized) {
-              console.log(
-                `...authorizing local IP ${localIp} on ${instanceName} (this may take a minute)`,
-              );
-              const existingNetworks = authorizedNetworks.map((n) => n.value);
-              existingNetworks.push(`${localIp}/32`);
-              const newNetworks = existingNetworks.join(",");
-              execSync(
-                `gcloud sql instances patch ${instanceName} --authorized-networks="${newNetworks}" --quiet`,
-                { encoding: "utf-8", stdio: "pipe" },
-              );
-              console.log(`...successfully authorized ${localIp}`);
-            } else {
-              console.log(`...local IP ${localIp} is already authorized.`);
-            }
-          }
-        }
-      } catch (e) {
-        console.warn(
-          `...failed to fetch or update Cloud SQL instance details via gcloud: ${e.message}`,
-        );
-      }
-    }
-
-    // URL Encode for string-based URLs
-    const encodedUser = aggressiveEncode(user);
-    const encodedPass = aggressiveEncode(pass);
-
-    const protocol = isPostgres ? "jdbc:postgresql://" : "jdbc:mysql://";
-    const port = host.includes(":") ? "" : (isPostgres ? ":5432" : ":3306");
-    const ssl = isPostgres ? "ssl=true" : "useSSL=true";
-    
-    // Create a pure DB string without query parameters for gasUrl
-    const pureDb = db.includes("?") ? db.split("?")[0] : db;
-
-    /**
-     * standardUrl (The "Full" URL)
-     * Use this for Node.js, Apps Script via Public IP, or any external JDBC client.
-     * The Java JDBC driver REQUIRES credentials to be query parameters or passed separately.
-     * It does NOT support user:pass@host syntax.
-     */
-    const sep = db.includes("?") ? "&" : "?";
-    const standardUrl = `${protocol}${host}${port}/${db}${sep}user=${encodedUser}&password=${encodedPass}&${ssl}`;
-
-    /**
-     * gasUrl (The "Clean" URL for Apps Script)
-     * Apps Script's Jdbc.getConnection does not support connection properties in the URL for Postgres (like ssl=true).
-     * It requires the credentials to be passed explicitly.
-     */
-    const gasUrl = `${protocol}${host}${port}/${pureDb}`;
-
-    /**
-     * localUrl (The "Proxy" URL)
-     * Specifically for Node.js pg-client connecting via 127.0.0.1.
-     * The Cloud SQL Proxy handles SSL, so we disable it locally.
-     */
-    const localUrl = `${scheme}://${encodedUser}:${encodedPass}@127.0.0.1${port}/${db}${sep}ssl=false`;
-
-    // If we rewrote the connection to use an IP, provide the updated full string
-    // so we can store the valid IP-based string in the property store
-    const rewrittenConnectionString = `${scheme}://${user}:${pass}@${host}/${db}`;
-
-    return {
-      jdbcUrl: standardUrl, // Node defaults to standardUrl
-      gasUrl, // Live Apps Script should use gasUrl
-      standardUrl,
-      localUrl,
-      rewrittenConnectionString, // Clean, raw string with resolved IP
-      user, // Raw user
-      pass, // Raw pass
-      db,
-      isCloudSql,
-      isPostgres,
-      host,
-      hostWithoutPort,
-      encodedUser,
-      encodedPass,
-      ssl,
-      port,
-      publicIp,
-      useProxy,
-    };
-  };
-
+  // decide whether to use proxy
   const getUseProxy = (envVar) => {
+    // only relevant if running on node
     if (!ScriptApp.isFake) return false;
-    const val = process.env[envVar];
-    if (!val) return false;
-    const cleanUrl = val.replace(/^jdbc:google:/, "").replace(/^jdbc:/, "");
-    const match = cleanUrl.match(
-      /^(?:([^:]+):\/\/)?([^:]+):([^@]+)@([^/]+)(?:\/(.*))?/,
-    );
-    if (!match) return false;
-    const hostWithoutPort = match[4].trim().replace(/:\d+$/, "");
-    if (hostWithoutPort.includes(":")) {
-      const instanceParts = hostWithoutPort.split(":");
-      const instanceName = instanceParts[instanceParts.length - 1];
-      return isProxyRunning(instanceName);
-    }
-    return false;
+    const connectionString = process.env.envVar;
+    return Jdbc.__useProxy(connectionString);
   };
 
-  // Define potential backends
+  // list of backends to test and their environment vars
   const potentialBackends = [
-    {
-      prop: "DATABASE_AIVEN_MYSQL_URL",
-      label: "Aiven MySQL",
-      isGoogle: false,
-      type: "mysql",
-      useProxy: false,
-    },
     {
       prop: "DATABASE_COCKROACH_PG_URL",
       label: "Cockroach DB",
       isGoogle: false,
       type: "pg",
+      useProxy: false,
+    },
+    {
+      prop: "DATABASE_AIVEN_MYSQL_URL",
+      label: "Aiven MySQL",
+      isGoogle: false,
+      type: "mysql",
       useProxy: false,
     },
     {
@@ -283,213 +53,180 @@ export const testJdbc = (pack) => {
     },
   ];
 
-  // Handle sharing and discovery for each backend
-  // the idea is to share creds that originate in env via the shared property store
-  // we can delegate this to a shared function
+  // we are going to use shared properties store if possible so we can pass the .env values to live apps script
   const props = getSharedScriptStore("property");
 
-  // now we have a property store to target, we can write the creds if we are in fake
   if (ScriptApp.isFake) {
     potentialBackends.forEach((f) => {
       const val = process.env[f.prop];
       if (val) {
-        // Resolve and rewrite IP early so the property store holds the valid Live string
-        const universal = convertToUniversalJdbc(val);
-        // For MySQL on Cloud SQL, we need to preserve the instance connection name for Live Apps Script
-        const stringToSave =
-          f.type === "mysql" && f.isGoogle
-            ? val
-            : universal.rewrittenConnectionString;
-        props.setProperty(f.prop, stringToSave);
+        const universal = Jdbc.__normalConnection(val);
+        props.setProperty(f.prop, JSON.stringify(universal));
       } else {
-        // get rid of stale tests
         props.deleteProperty(f.prop);
-        console.log(
-          "...skipping backend " +
-            f.label +
-            " because " +
-            f.prop +
-            " is not set in environment",
-        );
       }
     });
   }
 
-  // only do the ones for which we have credentials
   const backends = potentialBackends.filter((b) => {
-    const connectionString = props.getProperty(b.prop);
-    return connectionString;
+    return props.getProperty(b.prop);
   });
 
-  // Run tests for each configured and credentialed backend
   backends.forEach((backend) => {
-    const { prop, label, isGoogle, type, useProxy } = backend;
-    let connectionString = props.getProperty(prop);
+    const { prop, label, type } = backend;
+    let storedVal = props.getProperty(prop);
 
     unit.section(`Jdbc Basics - ${label}`, (t) => {
-      if (!connectionString) {
-        console.warn(
-          `...skipping ${backend.label} tests: ${backend.prop} not set in ScriptProperties`,
-        );
+      if (!storedVal) {
+        console.warn(`...skipping ${label} tests: ${prop} not set in Properties Service.`);
         return;
       }
 
-      // various fiddle options with the url
-      let universal = convertToUniversalJdbc(connectionString);
-
-      // in live apps script we perhaps need to fiddle with the url
-      let jdbcUrl = universal.standardUrl;
-
-      // another wrinkle is that we might be using a proxy if running locally
-      // if so we need to redirect to 127.0.0.1
-      if (backend.useProxy) {
-        jdbcUrl = universal.localUrl;
+      let universal;
+      try {
+        universal = JSON.parse(storedVal);
+      } catch (e) {
+        console.error(`...skipping ${label} tests: Invalid JSON format stored for ${prop}. Please run tests locally first to serialize connections.`);
+        return;
       }
 
-      // If the URL is an IP address rather than an instance connection string, it's fine.
-      // We no longer throw an error because Live Apps Script actually requires a Public IP for PostgreSQL.
-      if (isGoogle && !universal.isCloudSql) {
-        console.log(
-          `...${backend.label} is using a Public IP pattern (${universal.host}).`,
-        );
-      }
+      // `current` is pre-computed directly as the `local` or `gas` object
+      const envConfig = universal.current;
 
       console.log(
-        `...connecting to ${backend.label}${backend.useProxy ? " (via local proxy)" : ""}`,
+        `...connecting to ${label}${envConfig.useProxy ? " (via local proxy)" : ""}`,
       );
 
-      // Test 1: Connection
-      console.log(jdbcUrl, universal);
+      // Always print the proxy command hint for Google connections in local mode, even if not currently running
+      if (ScriptApp.isFake && envConfig.proxyCommand) {
+        console.log(`...Hint: you can start the proxy with: ${envConfig.proxyCommand}`);
+      }
 
-      // The URL is now guaranteed to be an IP-based standard JDBC connection string for Postgres (or local proxy)
-      const connectFn = () => {
-        if (!ScriptApp.isFake && isGoogle && type === "mysql") {
-          // For Google Cloud SQL on Live Apps Script
-          const gasUrl = `jdbc:google:mysql://${universal.hostWithoutPort}/${universal.db}`;
-          console.log(`...Jdbc.getCloudSqlConnection("${gasUrl}", user, pass)`);
-          return Jdbc.getCloudSqlConnection(
-            gasUrl,
-            universal.user,
-            universal.pass,
-          );
+      const method = envConfig.isCloudSqlConnection ? "getCloudSqlConnection" : "getConnection";
+
+      // Helper function to execute the actual table creation and data validation logic against a given connection
+      const validateConnection = (conn, methodLabel) => {
+        t.truthy(conn, `Jdbc Connection to ${label} (${methodLabel}) should return a connection object`);
+        t.false(conn.isClosed(), "Connection should be open");
+
+        const stmt = conn.createStatement();
+        const tableName = (fixes.PREFIX + "_" + prop.toLowerCase() + "_airports")
+          .replace(/[^a-zA-Z0-9_]/g, "_")
+          .toLowerCase();
+
+        const ss = SpreadsheetApp.openById(fixes.TEST_AIRPORTS_ID);
+        const sheet = ss.getSheets()[0];
+        const data = sheet.getDataRange().getValues();
+        const headers = data.shift();
+
+        const sanitizedHeaders = headers.map((h) =>
+          h.replace(/[^a-zA-Z0-9_]/g, "_").toLowerCase(),
+        );
+        const q = type === "mysql" ? "`" : '"';
+        let colDef = sanitizedHeaders.map((h) => `${q}${h}${q} TEXT`).join(", ");
+
+        if (type === "mysql") {
+          colDef = `id INT AUTO_INCREMENT PRIMARY KEY, ` + colDef;
         }
 
-        if (!ScriptApp.isFake) {
-          if (isGoogle) {
-            console.log(
-              `...Jdbc.getConnection("${universal.gasUrl}", user, pass)`,
-            );
-            return Jdbc.getConnection(
-              universal.gasUrl,
-              universal.user,
-              universal.pass,
-            );
-          } else {
-            console.log(
-              `...Jdbc.getConnection("${universal.gasUrl}", user, pass)`,
-            );
-            return Jdbc.getConnection(
-              universal.gasUrl,
-              universal.user,
-              universal.pass,
-            );
+        stmt.execute(`DROP TABLE IF EXISTS ${q}${tableName}${q};`);
+        stmt.execute(`CREATE TABLE ${q}${tableName}${q} (${colDef});`);
+
+        let currentValues = [];
+        for (let i = 0; i < data.length; i++) {
+          const row = data[i];
+          const vals = row
+            .map((v) => `'${String(v).replace(/'/g, "''")}'`)
+            .join(", ");
+          currentValues.push(`(${vals})`);
+
+          if (currentValues.length >= 100 || i === data.length - 1) {
+            const insertCols = sanitizedHeaders
+              .map((h) => `${q}${h}${q}`)
+              .join(", ");
+            const insertSql = `INSERT INTO ${q}${tableName}${q} (${insertCols}) VALUES ${currentValues.join(",")};`;
+            stmt.execute(insertSql);
+            currentValues = [];
           }
         }
-        return Jdbc.getConnection(jdbcUrl);
+
+        try {
+          if (!conn.getAutoCommit()) {
+            conn.commit();
+          }
+        } catch (e) {}
+
+        const rsAll = stmt.executeQuery(`SELECT * FROM ${q}${tableName}${q};`);
+        const dbSet = new Set();
+        while (rsAll.next()) {
+          const rowData = [];
+          const startIndex = type === "mysql" ? 2 : 1;
+          for (
+            let j = startIndex;
+            j <= headers.length + (type === "mysql" ? 1 : 0);
+            j++
+          ) {
+            rowData.push(rsAll.getString(j));
+          }
+          dbSet.add(rowData.join("|"));
+        }
+        rsAll.close();
+
+        const sheetRows = data.map((row) => row.map((v) => String(v)).join("|"));
+        t.is(
+          dbSet.size,
+          sheetRows.length,
+          `Row count should match for ${backend.label} (${methodLabel})`,
+        );
+
+        let allFound = true;
+        for (const rowKey of sheetRows) {
+          if (!dbSet.has(rowKey)) {
+            allFound = false;
+            t.true(false, `Row not found in ${backend.label} DB: ${rowKey}`);
+            break;
+          }
+        }
+        t.true(allFound, `All rows should match for ${backend.label} (${methodLabel})`);
+
+        stmt.close();
+        conn.close();
+        t.is(conn.isClosed(), true, "Connection should be closed");
       };
 
-      t.is(t.threw(connectFn)?.message || "ok", "ok");
+      // Test multi-argument (url, user, password)
+      let multiConn;
+      let multiErr = "ok";
+      try {
+        console.log(`...Jdbc.${method}("${envConfig.url}", "${envConfig.user}", pass)`);
+        multiConn = Jdbc[method](envConfig.url, envConfig.user, envConfig.password);
+      } catch (e) {
+        multiErr = e.message;
+      }
+      t.is(multiErr, "ok", `Multi-argument connection to ${label} should not throw`);
+      if (multiConn) validateConnection(multiConn, "multi-arg");
 
-      const conn = connectFn();
-      t.truthy(
-        conn,
-        `Jdbc Connection to ${backend.label} should return a connection object`,
-      );
-      t.false(conn.isClosed(), "Connection should be open");
-
-      // Test 2: Table Operations
-
-      const stmt = conn.createStatement();
-      const tableName = (
-        fixes.PREFIX +
-        "_" +
-        backend.prop.toLowerCase() +
-        "_airports"
-      )
-        .replace(/[^a-zA-Z0-9_]/g, "_")
-        .toLowerCase();
-
-      // Fetch data from Spreadsheet
-      const ss = SpreadsheetApp.openById(fixes.TEST_AIRPORTS_ID);
-      const sheet = ss.getSheets()[0];
-      const data = sheet.getDataRange().getValues();
-      const headers = data.shift();
-
-      // Sanitize header names for SQL
-      const sanitizedHeaders = headers.map((h) =>
-        h.replace(/[^a-zA-Z0-9_]/g, "_").toLowerCase(),
-      );
-      const q = type === "mysql" ? "`" : '"';
-      const colDef = sanitizedHeaders
-        .map((h) => `${q}${h}${q} TEXT`)
-        .join(", ");
-
-      stmt.execute(`DROP TABLE IF EXISTS ${q}${tableName}${q};`);
-      stmt.execute(`CREATE TABLE ${q}${tableName}${q} (${colDef});`);
-
-      // Insert Data
-      let currentValues = [];
-      for (let i = 0; i < data.length; i++) {
-        const row = data[i];
-        const vals = row
-          .map((v) => `'${String(v).replace(/'/g, "''")}'`)
-          .join(", ");
-        currentValues.push(`(${vals})`);
-
-        if (currentValues.length >= 100 || i === data.length - 1) {
-          const insertSql = `INSERT INTO ${q}${tableName}${q} (${sanitizedHeaders.map((h) => `${q}${h}${q}`).join(", ")}) VALUES ${currentValues.join(",")};`;
-          stmt.execute(insertSql);
-          currentValues = [];
-        }
+      // Cloud SQL MySQL on Live Apps Script MUST use getCloudSqlConnection(url, user, pass) exclusively
+      // It does not support a single-argument connection string natively
+      if (!ScriptApp.isFake && envConfig.isCloudSqlConnection) {
+         console.log(`...skipping single-arg test for Cloud SQL MySQL on Live Apps Script (unsupported)`);
+         return;
       }
 
-      // Full Data Comparison (Unordered)
-      const rsAll = stmt.executeQuery(`SELECT * FROM ${q}${tableName}${q};`);
-      const dbSet = new Set();
-      while (rsAll.next()) {
-        const rowData = [];
-        for (let j = 1; j <= headers.length; j++) {
-          rowData.push(rsAll.getString(j));
-        }
-        dbSet.add(rowData.join("|"));
+      // Test single-argument (connectionString)
+      let singleConn;
+      let singleErr = "ok";
+      try {
+        console.log(`...Jdbc.${method}("${envConfig.connectionString}")`);
+        singleConn = Jdbc[method](envConfig.connectionString);
+      } catch (e) {
+        singleErr = e.message;
       }
-      rsAll.close();
-
-      const sheetRows = data.map((row) => row.map((v) => String(v)).join("|"));
-      t.is(
-        dbSet.size,
-        sheetRows.length,
-        `Row count should match for ${backend.label}`,
-      );
-
-      let allFound = true;
-      for (const rowKey of sheetRows) {
-        if (!dbSet.has(rowKey)) {
-          allFound = false;
-          t.true(false, `Row not found in ${backend.label} DB: ${rowKey}`);
-          break;
-        }
-      }
-      t.true(allFound, `All rows should match for ${backend.label}`);
-
-      // Cleanup
-      stmt.close();
-      conn.close();
-      t.is(conn.isClosed(), true, "Connection should be closed");
+      t.is(singleErr, "ok", `Single-argument connection to ${label} should not throw`);
+      if (singleConn) validateConnection(singleConn, "single-arg");
     });
   });
 
-  // running standalone
   if (!pack) {
     unit.report();
   }
