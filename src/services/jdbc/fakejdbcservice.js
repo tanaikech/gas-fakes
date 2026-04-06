@@ -61,22 +61,8 @@ class FakeJdbcService {
 
   __useProxy  (val) {
     if (!val) return false;
-    const normal = this.__normalConnect (val)
-    const {isCloudSql, hostWithoutPort } = normal
-    
-    if (isCloudSql && hostWithoutPort && hostWithoutPort.includes(":")) {
-      const instanceParts = hostWithoutPort.split(":");
-      const instanceName = instanceParts[instanceParts.length - 1];
-      try {
-        execSync(`pgrep -f "cloud.*sql.*proxy.*${instanceName}"`, {
-          stdio: "ignore",
-        });
-        return true;
-      } catch (e) {
-        return false;
-      }
-    }
-    return false;
+    const normal = this.__normalConnection (val)
+    return normal.local.useProxy;
   };
 
   /**
@@ -104,9 +90,8 @@ class FakeJdbcService {
 
     const cleanUrl = url.replace(/^jdbc:google:/, "").replace(/^jdbc:/, "");
 
-    let scheme, user, pass, host, db, isPostgres;
+    let scheme, user, pass, host, db;
 
-    // Try parsing with standard URL module to handle both `user:pass@host` and `host?user=x&password=y`
     try {
       const parsed = new URL(cleanUrl);
       scheme = parsed.protocol.replace(':', '');
@@ -117,35 +102,22 @@ class FakeJdbcService {
       if (portFromUrl) {
         host = `${host}:${portFromUrl}`;
       }
-      db = parsed.pathname.replace(/^\//, ''); // Remove leading slash
+      db = parsed.pathname.replace(/^\//, ''); 
       
-      // Extract credentials from search params if they weren't in the auth part
-      if (!user && parsed.searchParams.has('user')) {
-         user = parsed.searchParams.get('user');
-      }
-      if (!pass && parsed.searchParams.has('password')) {
-         pass = parsed.searchParams.get('password');
-      }
-
-      // Capture the remaining parameters, preserving everything except user and password
       const remainingParams = new URLSearchParams(parsed.search);
+      if (!user && remainingParams.has('user')) user = remainingParams.get('user');
+      if (!pass && remainingParams.has('password')) pass = remainingParams.get('password');
       remainingParams.delete('user');
       remainingParams.delete('password');
       
-      // Put remaining params back into db string if they exist
       const searchString = remainingParams.toString();
       if (searchString) {
         db = `${db}?${searchString}`;
       }
     } catch (e) {
-      // Fallback for strings that URL() fails on, such as Cloud SQL names with multiple colons
       const regex = /^([^:]+):\/\/(.+):([^@]+)@([^/]+)(?:\/(.*))?/;
       const match = cleanUrl.match(regex);
-      if (!match) {
-        throw new Error(
-          `Format not recognized for ${cleanUrl}. Use: protocol://user:pass@host/db`,
-        );
-      }
+      if (!match) throw new Error(`Format not recognized for ${cleanUrl}`);
       scheme = match[1].trim();
       user = match[2].trim();
       pass = match[3].trim();
@@ -153,28 +125,23 @@ class FakeJdbcService {
       db = match[5] ? match[5].trim() : "postgres";
     }
 
-    // URL Decode credentials!
     user = decodeURIComponent(user.trim());
     pass = decodeURIComponent(pass.trim());
-
     host = host.trim();
     
     let pureDb = db ? db.trim() : "postgres";
-    if (pureDb.includes('?')) {
-       pureDb = pureDb.split('?')[0];
-    }
-    
-    db = db ? db.trim() : "postgres"; 
+    if (pureDb.includes('?')) pureDb = pureDb.split('?')[0];
 
-    isPostgres = scheme.toLowerCase().includes("post");
+    const isPostgres = scheme.toLowerCase().includes("post");
     const type = isPostgres ? "pg" : "mysql";
+    const protocol = isPostgres ? "jdbc:postgresql://" : "jdbc:mysql://";
+    const defaultPort = isPostgres ? ":5432" : ":3306";
 
     let hostWithoutPort = host.replace(/:\d+$/, "");
     let isCloudSql = hostWithoutPort.includes(":");
     let isGoogle = isCloudSql || url.startsWith('jdbc:google:');
-    let publicIp = null;
     let useProxy = false;
-    let localHost = host;
+    let remoteHost = host;
     
     const cloudSqlInstanceName = hostWithoutPort;
 
@@ -182,167 +149,95 @@ class FakeJdbcService {
       try {
         const instanceParts = hostWithoutPort.split(":");
         const instanceName = instanceParts[instanceParts.length - 1];
-        console.log(
-          `...fetching details for Cloud SQL instance: ${instanceName} via gcloud`,
-        );
-
         useProxy = isProxyRunning(instanceName);
 
-        const instanceInfoStr = execSync(
-          `gcloud sql instances describe ${instanceName} --format=json`,
-          { encoding: "utf-8", stdio: "pipe" },
-        );
+        const instanceInfoStr = execSync(`gcloud sql instances describe ${instanceName} --format=json`, { encoding: "utf-8", stdio: "pipe" });
         const instanceInfo = JSON.parse(instanceInfoStr);
-
-        const primaryIpObj = instanceInfo.ipAddresses?.find(
-          (ip) => ip.type === "PRIMARY",
-        );
+        const primaryIpObj = instanceInfo.ipAddresses?.find((ip) => ip.type === "PRIMARY");
         const ip = primaryIpObj ? primaryIpObj.ipAddress : null;
 
         if (ip && ip.match(/^[0-9.]+$/)) {
-          publicIp = ip;
-          localHost = publicIp;
-          console.log(
-            `...resolved Public IP: ${publicIp}. Rewriting host in URL.`,
-          );
-
-          hostWithoutPort = publicIp;
-          isCloudSql = false; 
-        } else {
-          console.warn(
-            `...could not resolve valid Public IP for ${instanceName}, got: ${ip}`,
-          );
+          remoteHost = ip;
         }
 
-        if (useProxy) {
-          console.log(
-            `...Cloud SQL Proxy detected for ${instanceName}. Skipping local IP authorization.`,
-          );
-        } else {
-          const localIp = execSync("curl -s https://ifconfig.me", {
-            encoding: "utf-8",
-            stdio: "pipe",
-          }).trim();
+        if (!useProxy) {
+          const localIp = execSync("curl -s https://ifconfig.me", { encoding: "utf-8", stdio: "pipe" }).trim();
           if (localIp && localIp.match(/^[0-9.]+$/)) {
-            const authorizedNetworks =
-              instanceInfo.settings?.ipConfiguration?.authorizedNetworks || [];
-            const isAuthorized = authorizedNetworks.some(
-              (net) => net.value === localIp || net.value === `${localIp}/32`,
-            );
-
-            if (!isAuthorized) {
-              console.log(
-                `...authorizing local IP ${localIp} on ${instanceName} (this may take a minute)`,
-              );
-              const existingNetworks = authorizedNetworks.map((n) => n.value);
-              existingNetworks.push(`${localIp}/32`);
-              const newNetworks = existingNetworks.join(",");
-              execSync(
-                `gcloud sql instances patch ${instanceName} --authorized-networks="${newNetworks}" --quiet`,
-                { encoding: "utf-8", stdio: "pipe" },
-              );
-              console.log(`...successfully authorized ${localIp}`);
-            } else {
-              console.log(`...local IP ${localIp} is already authorized.`);
+            const authorizedNetworks = instanceInfo.settings?.ipConfiguration?.authorizedNetworks || [];
+            if (!authorizedNetworks.some((net) => net.value === localIp || net.value === `${localIp}/32`)) {
+              const newNetworks = authorizedNetworks.map((n) => n.value).concat(`${localIp}/32`).join(",");
+              execSync(`gcloud sql instances patch ${instanceName} --authorized-networks="${newNetworks}" --quiet`, { encoding: "utf-8", stdio: "pipe" });
             }
           }
         }
-      } catch (e) {
-        console.warn(
-          `...failed to fetch or update Cloud SQL instance details via gcloud: ${e.message}`,
-        );
-      }
+      } catch (e) {}
     }
+
+    if (!remoteHost.includes(":")) remoteHost += defaultPort;
 
     const encodedUser = aggressiveEncode(user);
     const encodedPass = aggressiveEncode(pass);
-
-    const protocol = isPostgres ? "jdbc:postgresql://" : "jdbc:mysql://";
-    const port = host.includes(":") ? "" : (isPostgres ? ":5432" : ":3306");
-    const ssl = isPostgres ? "ssl=true" : "useSSL=true";
-
-    const sep = db.includes("?") ? "&" : "?";
     
-    // Check if localHost already includes a port before appending the default port
-    const localPort = localHost.includes(":") ? "" : port;
+    // Live Apps Script Java JDBC requires properly encoded URI components to prevent "Connection URL is malformed"
+    const gasAuthQuery = (encodedUser || encodedPass) ? `?user=${encodedUser}&password=${encodedPass}` : '';
     
-    // Construct local params (Node.js pg/mysql2 drivers usually prefer strings with embedded credentials, especially proxy)
-    let localConnectionString;
-    let localUrlWithoutCredentials;
-    if (useProxy) {
-      localUrlWithoutCredentials = `${scheme}://127.0.0.1${port}/${db}${sep}ssl=false`;
-      localConnectionString = `${scheme}://${encodedUser}:${encodedPass}@127.0.0.1${port}/${db}${sep}ssl=false`;
-    } else {
-      localUrlWithoutCredentials = `${protocol}${localHost}${localPort}/${db}`;
-      localConnectionString = `${protocol}${localHost}${localPort}/${db}${sep}user=${encodedUser}&password=${encodedPass}&${ssl}`;
-    }
-
-    // Ensure we strip conflicting SSL parameters from the naked url used for 3-argument calls
-    if (localUrlWithoutCredentials.includes('?')) {
-       localUrlWithoutCredentials = localUrlWithoutCredentials
-         .replace(/([?&])sslmode=[^&]*(&|$)/gi, '$1')
-         .replace(/([?&])ssl=[^&]*(&|$)/gi, '$1')
-         .replace(/[?&]$/, '');
-    }
-
-    // Construct gas params
-    let gasConnectionString, gasFullConnectionString, gasUrlWithoutCredentials;
+    // --- GAS ---
+    let gasUrl, gasConnectionString, gasFullConnectionString;
     let isCloudSqlConnection = false;
 
     if (isGoogle && !isPostgres) {
-      // Google Cloud SQL MySQL must use getCloudSqlConnection on Live Apps Script
-      gasConnectionString = `jdbc:google:mysql://${cloudSqlInstanceName}/${pureDb}`;
-      gasUrlWithoutCredentials = gasConnectionString;
-      gasFullConnectionString = gasConnectionString; 
+      gasUrl = `jdbc:google:mysql://${cloudSqlInstanceName}/${pureDb}`;
+      gasConnectionString = gasUrl;
+      gasFullConnectionString = gasUrl;
       isCloudSqlConnection = true;
     } else {
-      // Standard getConnection for Postgres (Google or not) and Aiven MySQL
-      gasConnectionString = `${protocol}${localHost}${localPort}/${pureDb}`;
-      gasUrlWithoutCredentials = gasConnectionString;
-      gasFullConnectionString = `${protocol}${localHost}${localPort}/${db}${sep}user=${encodedUser}&password=${encodedPass}&${ssl}`;
+      gasUrl = `${protocol}${remoteHost}/${pureDb}`;
+      gasConnectionString = `${protocol}${remoteHost}/${pureDb}`;
+      // Drop all original query parameters, only append explicit unencoded user, password, and ssl
+      gasFullConnectionString = `${protocol}${remoteHost}/${pureDb}${gasAuthQuery}`;
     }
 
-    if (gasUrlWithoutCredentials.includes('?')) {
-       gasUrlWithoutCredentials = gasUrlWithoutCredentials
-         .replace(/([?&])sslmode=[^&]*(&|$)/gi, '$1')
-         .replace(/([?&])ssl=[^&]*(&|$)/gi, '$1')
-         .replace(/[?&]$/, '');
-    }
+    // --- LOCAL ---
+    let localHostAddr = useProxy ? `127.0.0.1${defaultPort}` : remoteHost;
+    let localSslParam = useProxy ? "ssl=false" : "";
+    let localAuthParams = (encodedUser || encodedPass) ? `user=${encodedUser}&password=${encodedPass}` : '';
     
+    // Add an ampersand if both auth params and ssl param exist
+    if (localAuthParams && localSslParam) {
+       localAuthParams += "&";
+    }
+
+    let localUrl = `${protocol}${localHostAddr}/${pureDb}`;
+    let localQuery = `${localAuthParams}${localSslParam}`;
+    let localConnectionString = `${protocol}${localHostAddr}/${pureDb}${localQuery ? '?' + localQuery : ''}`;
+    let localFullConnectionString = localConnectionString;
+
     const proxyCommand = (isCloudSql || isGoogle) && cloudSqlInstanceName.includes(":") ? `cloud-sql-proxy ${cloudSqlInstanceName}` : "";
 
     const gasObj = {
-      url: gasUrlWithoutCredentials,
-      connectionString: gasConnectionString, // To be used as arg 1 to Jdbc.getConnection/getCloudSqlConnection
-      user: user,                            // To be used as arg 2
-      password: pass,                        // To be used as arg 3
-      fullConnectionString: gasFullConnectionString, // Optional 1-arg approach if needed for logging
+      url: gasUrl,
+      connectionString: gasConnectionString,
+      user, password: pass,
+      fullConnectionString: gasFullConnectionString,
       isCloudSqlConnection,
       proxyCommand
     };
 
     const localObj = {
-      url: localUrlWithoutCredentials,
+      url: localUrl,
       connectionString: localConnectionString,
-      user: user,
-      password: pass,
-      fullConnectionString: localConnectionString,
-      useProxy,
-      proxyCommand
+      user, password: pass,
+      fullConnectionString: localFullConnectionString,
+      useProxy, proxyCommand
     };
 
-    // Determine the current context. If this code is running locally under gas-fakes, 
-    // `typeof ScriptApp` is defined and `ScriptApp.isFake` is true. On Live Apps Script, it's not.
-    const isLocalContext = (typeof ScriptApp !== 'undefined' && ScriptApp.isFake);
-
     return {
-      current: isLocalContext ? localObj : gasObj,
+      current: (typeof ScriptApp !== 'undefined' && ScriptApp.isFake) ? 'local' : 'gas',
       gas: gasObj,
       local: localObj,
-      host: localHost,
+      host: remoteHost,
       proxyCommand,
-      isGoogle,
-      type
+      isGoogle, type
     };
   }
 }

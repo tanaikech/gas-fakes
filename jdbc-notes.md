@@ -1,103 +1,333 @@
-# Notes on jdbc handling in Apps Script and gas-fakes
+# Notes on JDBC handling in Apps Script and gas-fakes
 
-The Apps Script implementation of JDBC is pretty old. Converting the connection string for a variety of databases can be complex and error prone. Gas-fakes uses modern connectors for pg and mysql so not only is it faster, but it able to handle connection strings more robustly.  However, since the objective is to emulate live apps script, I've added a few utilities to help you not only normalize the connection strings and dumb down the connectivity requirements to App Script supported ones, but also handle some of the less obvious connectivity problems you might face both from Live Apps Script and locally.
+The Google Apps Script implementation of JDBC is notoriously strict and frequently unsupported out-of-the-box by modern database providers. Converting a standard connection string for a variety of databases into one that Apps Script's underlying Java JDBC driver will accept can be complex and error-prone.
 
-## Databases so far tested
+Since the objective of `gas-fakes` is to emulate Live Apps Script, we've added a suite of utilities to help you normalize connection strings, strip unsupported connectivity requirements, and seamlessly bridge the gap between local development and Live Apps Script execution.
 
-These all work on both gas-fakes and live apps script. [testjdbc.js](test/testjdbc.js)  has examples of each. I'll be adding to this list as I get round to it.
+Under the hood, `gas-fakes` uses the highly performant `pg` and `mysql2` Node.js libraries. These libraries handle modern security and connection configurations smoothly, whereas Google's Java JDBC driver often rejects them.
 
-- PostgreSQL on [Neon](https://neon.com/)
-- MySQL on [Aiven](https://aiven.io/)
-- CockroachDB (postgres-like) on [cockroachdb.com](https://www.cockroachlabs.com/)
-- PostgreSQL on [Google Cloud SQL](https://cloud.google.com/sql)
-- MySQL on [Google Cloud SQL](https://cloud.google.com/sql)
+---
 
+## The Golden Rules of Live Apps Script JDBC
 
-## Connection String Normalization
+Through extensive testing, we've identified the exact limitations of Live Apps Script's JDBC driver. To successfully connect to a database from Apps Script, you **must** adhere to the following rules:
 
-Each of these databases will give you a connection string. However, none of them will work with apps script jdbc. In addition to the connection string fiddling, you'll also need to handle various proxying and permission gotchas, especially for the google hosted ones. gas-fakes cli however can provide a suitable jdbc connection string for both live apps script and local testing from a given database connection string. More on that later.
+1. **Use the 3-Argument Method:** Always prefer `Jdbc.getConnection(url, user, password)` over passing a single connection string with embedded credentials. Single-argument embedded strings are poorly parsed and frequently trigger authentication failures on Live Apps Script.
+2. **Do NOT URI-Encode Credentials:** When passing your `user` and `password` as explicit string arguments to `Jdbc.getConnection(url, user, password)`, **do not** URI-encode them (e.g., changing `%` to `%25`). The Java driver treats them as exact literal strings, and encoding them will cause authentication to fail.
+3. **Strip ALL SSL/Tunneling Query Parameters:** Apps Script's native driver strictly rejects connection parameters it does not understand. If your `url` contains `?sslmode=require`, `?ssl-mode=REQUIRED`, `?ssl=true`, `?useSSL=true`, or `?channel_binding=require`, the driver will crash immediately with an error like: `"The following connection properties are unsupported: sslmode,ssl."` These must be aggressively stripped from the end of the URL before calling `.getConnection()`.
 
-## Google Cloud SQL hosted databases
+Having said that, the simplest solution is to use gas-fakes cli, give it a standard connection string and it will give you all the possible connection options. See [test/testjdbc.js](test/testjdbc.js) for examples of which to use.
 
-Google SQL hosted databases have a few additional steps, most of which is detected and handled automatically by `gas-fakes`.
+---
 
-### Running locally
+## Databases Validated
 
-For the externally hosted databases (Neon, Aiven, CockroachDB) you can connect directly using a refactored connection string. More on that later in the normalization of connection strings section. You don't need to run the cloud proxy. 
+These databases have been thoroughly tested and verified to work correctly on both `gas-fakes` (locally) and Live Apps Script. Examples of their configurations can be found in [`test/testjdbc.js`](test/testjdbc.js).
 
+- **PostgreSQL** on [Neon](https://neon.com/)
+- **MySQL** on [Aiven](https://aiven.io/)
+- **CockroachDB** (Postgres-like) on [cockroachlabs.com](https://www.cockroachlabs.com/)
+- **PostgreSQL** on [Google Cloud SQL](https://cloud.google.com/sql)
+- **MySQL** on [Google Cloud SQL](https://cloud.google.com/sql)
 
-#### Connectivity
+---
 
-For the Google Cloud SQL (mySQL, postgres), you'll can use the cloud sql proxy or use the external ip address of your database. Gas-fakes can use either, automatically switching between either depending on whether it detects the cloud sql proxy running. It can also detect the external address of the database by interogating the cloud sql api, whitelist your local ip, and use that if the cloud sql proxy is not running for the target database. When `gas-fakes` detects that the cloud sql proxy is running, it will automatically patch in the localhost address and port to the connection string in place of the internal google address. 
+## Using the `gas-fakes` CLI String Normalizer
 
-##### Option 1: Starting the cloud sql proxy if running locally
+Because manually stripping unsupported query parameters and formatting host strings for Apps Script is tedious, `gas-fakes` includes a built-in CLI tool that parses any standard Database URL and provides the exact formatted variants required for both Local and Live Apps Script execution.
 
-There's some stuff to install with gcloud one-time
+Run the following command in your terminal, passing in the URL provided by your database host:
+
+```bash
+gas-fakes jdbc --connection-string "jdbc:postgresql://your-host.com:5432/mydb?sslmode=require&user=admin&password=secretPassword"
 ```
+
+The CLI will output a clean JSON payload mapping exactly what parameters should be used in both environments:
+
+```json
+{
+  "current": "local",
+  "gas": {
+    "url": "jdbc:postgresql://your-host.com:5432/mydb",
+    "connectionString": "jdbc:postgresql://your-host.com:5432/mydb",
+    "user": "admin",
+    "password": "secretPassword",
+    "fullConnectionString": "jdbc:postgresql://your-host.com:5432/mydb?user=admin&password=secretPassword",
+    "isCloudSqlConnection": false,
+    "proxyCommand": ""
+  },
+  "local": {
+    "url": "jdbc:postgresql://your-host.com:5432/mydb",
+    "connectionString": "jdbc:postgresql://your-host.com:5432/mydb?user=admin&password=secretPassword&ssl=true",
+    "user": "admin",
+    "password": "secretPassword",
+    "fullConnectionString": "jdbc:postgresql://your-host.com:5432/mydb?user=admin&password=secretPassword&ssl=true",
+    "useProxy": false,
+    "proxyCommand": ""
+  },
+  "host": "your-host.com:5432",
+  "proxyCommand": "",
+  "isGoogle": false,
+  "type": "pg"
+}
+```
+
+Notice how the `gas.url` property has completely stripped the `sslmode=require` query parameters, providing the pristine URL needed for Apps Script.
+
+### Google Cloud SQL CLI Example
+
+If you provide a Google Cloud SQL instance string when the proxy is running locally, `gas-fakes` will detect it and provide the correct internal `jdbc:google:mysql://` format for Live Apps Script, alongside the proxy command and mapped `127.0.0.1` endpoints for your local tests:
+
+```json
+{
+  "current": "local",
+  "gas": {
+    "url": "jdbc:google:mysql://gas-fakes-474508:europe-west2:gas-fakes-google-mysql/gas-fakes-test",
+    "connectionString": "jdbc:google:mysql://gas-fakes-474508:europe-west2:gas-fakes-google-mysql/gas-fakes-test",
+    "user": "gas-fakes-google-mysql",
+    "password": "secretPassword",
+    "fullConnectionString": "jdbc:google:mysql://gas-fakes-474508:europe-west2:gas-fakes-google-mysql/gas-fakes-test",
+    "isCloudSqlConnection": true,
+    "proxyCommand": "cloud-sql-proxy gas-fakes-474508:europe-west2:gas-fakes-google-mysql"
+  },
+  "local": {
+    "url": "jdbc:mysql://127.0.0.1:3306/gas-fakes-test",
+    "connectionString": "jdbc:mysql://127.0.0.1:3306/gas-fakes-test?user=gas-fakes-google-mysql&password=secretPassword&ssl=false",
+    "user": "gas-fakes-google-mysql",
+    "password": "secretPassword",
+    "fullConnectionString": "jdbc:mysql://127.0.0.1:3306/gas-fakes-test?user=gas-fakes-google-mysql&password=secretPassword&ssl=false",
+    "useProxy": true,
+    "proxyCommand": "cloud-sql-proxy gas-fakes-474508:europe-west2:gas-fakes-google-mysql"
+  },
+  "host": "35.234.147.127:3306",
+  "proxyCommand": "cloud-sql-proxy gas-fakes-474508:europe-west2:gas-fakes-google-mysql",
+  "isGoogle": true,
+  "type": "mysql"
+}
+```
+
+### Understanding the CLI Output Properties
+
+The JSON object provides two distinct contexts: `gas` (for Live Apps Script) and `local` (for Node.js `gas-fakes`). Each context contains properties formatted specifically for how the underlying database drivers on those platforms expect to receive them.
+
+*   **`current`**: Indicates which environment context (`gas` or `local`) is currently executing the code. If you query this in a local test script, it will dynamically return `"local"`.
+*   **`url`**: The cleanly formatted base URL of the database *without any embedded credentials or unsupported SSL query parameters*. 
+    *   **When to use:** Use this as the first argument in the standard 3-argument connection method: `Jdbc.getConnection(config.url, config.user, config.password)`. This is the recommended approach for almost all Live Apps Script connections.
+*   **`user` & `password`**: The cleanly decoded database credentials.
+    *   **When to use:** Use these as the second and third arguments in the 3-argument connection method alongside `url`.
+*   **`connectionString`**: Similar to `url`, but locally this may include appended SSL flags (like `ssl=false` for proxies or `ssl=true`). 
+    *   **When to use:** This is primarily used by the `gas-fakes` internal systems or if you need the naked connection string without auth. On Google Cloud SQL MySQL `gas` contexts, it points to the custom internal `jdbc:google:mysql://` format.
+*   **`fullConnectionString`**: The fully assembled database URL containing both the base URL *and* the embedded `user` and `password` inside the query string.
+    *   **When to use:** Use this if you are forced to use the single-argument execution method: `Jdbc.getConnection(config.fullConnectionString)`. **Warning:** Single-argument connections are heavily discouraged on Live Apps Script as they frequently cause parsing failures and authentication errors, particularly with Postgres. Use this mainly for local Node.js testing.
+*   **`proxyCommand`**: If the connection string points to a Google Cloud SQL instance, this provides the exact `cloud-sql-proxy` terminal command you need to run to expose it locally.
+*   **`isCloudSqlConnection`**: True only for Google Cloud SQL MySQL on Live Apps Script, indicating you must use `Jdbc.getCloudSqlConnection()` rather than `Jdbc.getConnection()`.
+
+---
+
+## Required Manifest Scopes (`appsscript.json`)
+
+To successfully use `Jdbc` methods on Live Apps Script, you **must** explicitly define the necessary OAuth scopes in your project's `appsscript.json` manifest file. 
+
+Ensure the following scopes are added to your `oauthScopes` array:
+
+```json
+{
+  "oauthScopes": [
+    "https://www.googleapis.com/auth/script.external_request",
+    "https://www.googleapis.com/auth/sqlservice"
+  ]
+}
+```
+
+- `script.external_request`: Required for standard JDBC connections to external databases like Aiven, Neon, or CockroachDB.
+- `sqlservice`: Required specifically when using `Jdbc.getCloudSqlConnection` to securely connect to internal Google Cloud SQL instances.
+
+---
+
+## Google Cloud SQL Hosted Databases
+
+Google Cloud SQL hosted databases require a few additional steps, most of which are detected and handled automatically by `gas-fakes` during local development.
+
+### Connectivity
+
+For Google Cloud SQL (MySQL and Postgres), you can use the Cloud SQL Proxy or use the external IP address of your database. `gas-fakes` can use either, automatically switching between them depending on whether it detects the Cloud SQL Proxy running in your local environment.
+
+#### Option 1: Using the Cloud SQL Proxy (Recommended for Local Dev)
+
+Install the proxy using gcloud:
+```bash
 gcloud components install cloud-sql-proxy
 ```
 
-Let's say your instance is project-id:region:instance-name. This is the internal address of a google host, so is only valid when using jdbc.getCloudSqlConnection() - which at this time is only valid for MySQL (not Postgres). cloud-sql-proxy is a service that runs locally and exposes itself on localhost. To use it you hit the localhost and it will securely connect to your cloud sql instance inside the google network using the internal google instance name. 
+Let's say your instance is `project-id:region:instance-name`. This is the internal address of a Google host, meaning it is only valid natively when using `Jdbc.getCloudSqlConnection()` (which is currently only valid for MySQL on Apps Script, not Postgres). 
 
-In a separate terminal session you can start the proxy like this:
+In a separate terminal session, start the proxy to expose your database to your local `gas-fakes` execution:
 
-```
+```bash
 cloud-sql-proxy <project-id>:<region>:<instance-name>
 ```
 
-##### Option 2: Using the external ip address of your database
+If `gas-fakes` detects the proxy running, it automatically patches in the `127.0.0.1` localhost address and port to the connection string during local execution, rather than attempting to route through Google's internal network.
 
-`gas-fakes` will attempt to use the sql proxy if it is running. If not, then it will do these things:
-- get the external ip address of your database from the cloud sql api
-- whitelist your local ip address for the database so you can access it
-- modify the connection string you provide to subsitute the google internal name of the instance with the external ip address of the database
+#### Option 2: Using the External IP Address
 
-You just need to supply the connection string as usual.
+`gas-fakes` will attempt to use the SQL proxy first. If it is not running, it will automatically:
+1. Fetch the external IP address of your database from the Cloud SQL API.
+2. Interrogate your current local IP address and seamlessly whitelist it on the Cloud SQL instance so you can access it.
+3. Modify the connection string you provide to substitute the Google internal instance name with the newly accessible external IP address.
 
-### Out of date password encryption for MySQL
+### Resolving Out-of-Date Password Encryption for MySQL
 
-For MySql, Google Apps Script uses a JDBC driver that is incompatible with the default authentication security introduced in MySQL 8.0 and 8.4 (which Cloud SQL uses). Jdbc.getCloudSqlConnection or Jdbc.getConnection will fail with the error "Failed to establish a database connection. Check connection string, username and password." This is because MySQL 8.4 uses caching_sha2_password (SHA-256) by default. The Apps Script JDBC driver only supports the legacy mysql_native_password (SHA-1) handshake. In MySQL 8.4, this legacy plugin is disabled by default.
+For MySQL, Google Apps Script uses an older Java JDBC driver that is **incompatible** with the default authentication security introduced in MySQL 8.0 and 8.4. 
 
-#### How to fix it
+If you try to connect, `Jdbc.getCloudSqlConnection` or `Jdbc.getConnection` will fail with the error: *"Failed to establish a database connection. Check connection string, username and password."* This happens because MySQL 8.4 uses `caching_sha2_password` (SHA-256) by default, while Apps Script only supports the legacy `mysql_native_password` (SHA-1) handshake.
 
-To allow Apps Script to connect, you must explicitly re-enable the legacy authentication plugin at the server level and then update the specific database user. It's a pain, but it is what it is.
+**How to fix it:**
+To allow Apps Script to connect, you must explicitly re-enable the legacy authentication plugin at the server level and update the specific database user.
 
-1. Enable the Database Flag
-You must tell the Google Cloud SQL instance to load the legacy plugin.
+1. **Enable the Database Flag**
+   - Go to Cloud SQL Instances > [Your Instance] > Edit.
+   - Navigate to Configuration options > Flags. 
+   - Add the flag: `mysql_native_password` and set it to `on`.
+   - Save (The instance will restart).
 
-- Go to Cloud SQL Instances > [Your Instance] > Edit.
-- Navigate to Configuration options > Flags. 
-- Add the flag: mysql_native_password and set it to on.
-- Save (The instance will restart).
+2. **Downgrade the User Authentication**
+   Run the following SQL command in your Cloud SQL Query Editor:
+   ```sql
+   ALTER USER 'your-user'@'%' 
+   IDENTIFIED WITH mysql_native_password BY 'your-password';
+   
+   FLUSH PRIVILEGES;
+   ```
+   *Note: You must repeat this step whenever you change the user password.*
 
-2. Downgrade the User Authentication
-Run the following SQL command in the Cloud SQL Query Editor to update the specific user account:
+---
+
+## Apps Script IP Whitelisting
+
+When running from `gas-fakes`, your local IP address is detected and whitelisted automatically. However, when running on Live Apps Script, you must whitelist the IP addresses of the Google data centers that execute the scripts. 
+
+These IPs are documented in the Google Cloud SQL documentation. You can use a script like the one below to quickly append the Google Apps Script execution IP ranges to your Google Cloud SQL authorized networks.
+
+```bash
+#!/bin/bash
+INSTANCE_NAME="your-cloud-sql-instance-name"
+
+echo "Fetching Google IP ranges..."
+# Get Google IP ranges for Apps Script (only IPv4 as Cloud SQL authorized networks generally use IPv4)
+GOOGLE_IPS=$(curl -s https://www.gstatic.com/ipranges/goog.json | jq -r '.prefixes[] | select(.ipv4Prefix) | .ipv4Prefix' | paste -sd, -)
+
+# Also get our local IP to add back in case we need it for node tests
+LOCAL_IP=$(curl -s https://ifconfig.me)
+LOCAL_NETWORK="${LOCAL_IP}/32"
+
+ALL_NETWORKS="${GOOGLE_IPS},${LOCAL_NETWORK}"
+
+echo "Found $(echo $ALL_NETWORKS | tr ',' '\n' | wc -l | xargs) IP ranges."
+
+echo "Attempting to patch instance $INSTANCE_NAME..."
+gcloud sql instances patch $INSTANCE_NAME --authorized-networks="${ALL_NETWORKS}" --quiet
 ```
-SQL
-ALTER USER 'your-user'@'%' 
-IDENTIFIED WITH mysql_native_password BY 'your-password';
 
-FLUSH PRIVILEGES;
+---
+
+## Sharing Credentials Between Environments
+
+If you are developing locally using `gas-fakes`, your connections will likely be defined in your `.env` file. To avoid duplicating effort and manually configuring the Properties Service on Live Apps Script, `gas-fakes` allows you to directly sync properties. 
+
+By executing a local setup script via `gas-fakes`, you can serialize the clean, stripped connection configurations from your `.env` variables and automatically populate the Live Properties Store via Upstash/DWD synchronization. 
+
+For an exact code-level implementation of how to do this flawlessly across both environments, review the [testjdbc.js](test/testjdbc.js) implementation, which dynamically reads the parsed JSON payload from the Properties Store depending on whether it is running on `ScriptApp.isFake`.
+
+For more details on bridging environments, see [sharing cache and properties between gas-fakes and live apps script](https://ramblings.mcpher.com/sharing-cache-and-properties-between-gas-fakes-and-live-apps-script/). 
+## A note on performance
+
+Here's the comparitive test results - this test opens a spreadsheet, creates a table, populates and checks that what was written matches the spreadsheet contents. Note that running locally with a modern client under gas-fakes (without any optimization attempts) is an order of magnitude (50x) faster than running live on Apps Script using its JDBC driver. 
+
+### gas-fakes
+```
+[Info] Section summary
+[Info]  0: Jdbc Basics - Cockroach DB passes:12 failures:0
+[Info]  1: Jdbc Basics - Aiven MySQL passes:12 failures:0
+[Info]  2: Jdbc Basics - Google Cloud SQL MySQL passes:12 failures:0
+[Info]  3: Jdbc Basics - Google Cloud SQL PG passes:12 failures:0
+[Info]  4: Jdbc Basics - Neon Postgres passes:12 failures:0
+[Info] Total passes 60 (100.0%) Total failures 0 (0.0%)
+[Info] ALL TESTS PASSED
+[Info] Total elapsed ms 17057
 ```
 
-**Note** - this means you'll have to do this each time you change the user password.
-
-
-### Running on Apps Script
-
-Apps Script has some challenges with connection strings, especially if they contain special characters. This doesnt seem to be fixable by url encoding, soI recommend you use the `(url,user, password)` variant of the constructor instead of the single connection string variant. There's another alleged constructor format `(url, options)` which is supposed to take options including `{user, password, database}` but `database` doesnt work - so if you use this option the url should include the database - for example `instance/database` and exclude the database property from the options argument.
-
-#### Connection strings
-
-The format of connection strings required by apps script is not the same as is generally given by cloud providers. I won't go into the differences here, but gas-fakes provides a useful utility that deconstructs a range of connection strings and provides various connection strings and user/password combinations you can use instead.
-
-#### Sharing credentials between apps script and gas-fakes
-
-I you are developing using gas-fakes, then your connections will likley be defined in your .env file. To avoid duplicating effort and working with properties service on Live Apps Script, you can directly create properties in live Apps Script - see [sharing cache and properties between gas-fakes and live apps script](https://ramblings.mcpher.com/sharing-cache-and-properties-between-gas-fakes-and-live-apps-script/).  This projects test suite (which runs on both live apps script and gas-fakes) does exactly that see - [testjdbc.js](test/testjdbc.js) 
-
+### live apps script
+```
+Info	Section summary
+Info	 0: Jdbc Basics - Cockroach DB passes:12 failures:0
+Info	 1: Jdbc Basics - Aiven MySQL passes:12 failures:0
+Info	 2: Jdbc Basics - Google Cloud SQL MySQL passes:6 failures:0
+Info	 3: Jdbc Basics - Google Cloud SQL PG passes:6 failures:0
+Info	 4: Jdbc Basics - Neon Postgres passes:12 failures:0
+Info	Total passes 48 (100.0%) Total failures 0 (0.0%)
+Info	ALL TESTS PASSED
+Info	Total elapsed ms 802800
+```
 
 
 
+## <img src="./logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
 
+## Watch the video
 
+[![Watch the video](introvideo.png)](https://youtu.be/oEjpIrkYpEM)
 
+## Read more docs
+
+- [gas fakes intro video](https://youtu.be/oEjpIrkYpEM)
+- [getting started](GETTING_STARTED.md) - how to handle authentication for Workspace scopes.
+- [readme](README.md)
+- [gas fakes cli](gas-fakes-cli.md)
+- [github actions using adc](https://github.com/brucemcpherson/gas-fakes-actions-adc)
+- [github actions using dwd and wif](https://github.com/brucemcpherson/gas-fakes-actions-dwd)
+- [ksuite as a back end](ksuite_poc.md)
+- [msgraph as a back end](msgraph.md)
+- [gas-fakes in serverless containers](https://docs.google.com/presentation/d/1JlXF9T--DD4ERHopyP3WyAMhjRCxxHblgCP5ynxaJ3k/edit?usp=sharing)
+- [apps script - a lingua franca for workspace platforms](https://ramblings.mcpher.com/apps-script-a-lingua-franca/)
+- [Apps Script: A ‘Lingua Franca’ for the Multi-Cloud Era](https://ramblings.mcpher.com/apps-script-with-ksuite/)
+- [running gas-fakes on google cloud run](https://github.com/brucemcpherson/gas-fakes-containers)
+- [running gas-fakes on google kubernetes engine](https://github.com/brucemcpherson/gas-fakes-containers)
+- [running gas-fakes on Amazon AWS lambda](https://github.com/brucemcpherson/gas-fakes-containers)
+- [running gas-fakes on Azure ACA](https://github.com/brucemcpherson/gas-fakes-containers)
+- [running gas-fakes on Github actions](https://github.com/brucemcpherson/gas-fakes-containers)
+- [Yes – you can run native apps script code on Azure ACA as well!](https://ramblings.mcpher.com/yes-you-can-run-native-apps-script-code-on-azure-aca-as-well/)
+- [Yes – you can run native apps script code on AWS Lambda!](https://ramblings.mcpher.com/apps-script-on-aws-lambda/)
+- [initial idea and thoughts](https://ramblings.mcpher.com/a-proof-of-concept-implementation-of-apps-script-environment-on-node/)
+- [Inside the volatile world of a Google Document](https://ramblings.mcpher.com/inside-the-volatile-world-of-a-google-document/)
+- [Apps Script Services on Node – using apps script libraries](https://ramblings.mcpher.com/apps-script-services-on-node-using-apps-script-libraries/)
+- [Apps Script environment on Node – more services](https://ramblings.mcpher.com/apps-script-environment-on-node-more-services/)
+- [Turning async into synch on Node using workers](https://ramblings.mcpher.com/turning-async-into-synch-on-node-using-workers/)
+- [All about Apps Script Enums and how to fake them](https://ramblings.mcpher.com/all-about-apps-script-enums-and-how-to-fake-them/)
+- [colaborators](collaborators.md) - additional information for collaborators
+- [oddities](oddities.md) - a collection of oddities uncovered during this project
+- [named colors](named-colors.md)
+- [sandbox](sandbox.md)
+- [senstive scopes](workspace_scopes.md)
+- [using apps script libraries with gas-fakes](libraries.md)
+- [how libhandler works](libhandler.md)
+- [article:using apps script libraries with gas-fakes](https://ramblings.mcpher.com/how-to-use-apps-script-libraries-directly-from-node/)
+- [named range identity](named-range-identity.md)
+- [Workspace scopes with local authentication](workspace_scopes.md)
+- [push test pull](pull-test-push.md)
+- [sharing cache and properties between gas-fakes and live apps script](https://ramblings.mcpher.com/sharing-cache-and-properties-between-gas-fakes-and-live-apps-script/)
+- [gas-fakes-cli now has built in mcp server and gemini extension](https://ramblings.mcpher.com/gas-fakes-cli-now-has-built-in-mcp-server-and-gemini-extension/)
+- [gas-fakes CLI: Run apps script code directly from your terminal](https://ramblings.mcpher.com/gas-fakes-cli-run-apps-script-code-directly-from-your-terminal/)
+- [How to allow access to Workspace scopes with Application Default Credentials](https://ramblings.mcpher.com/how-to-allow-access-to-sensitive-scopes-with-application-default-credentials/)
+- [Supercharge Your Google Apps Script Caching with GasFlexCache](https://ramblings.mcpher.com/supercharge-your-google-apps-script-caching-with-gasflexcache/)
+- [Fake-Sandbox for Google Apps Script: Granular controls.](https://ramblings.mcpher.com/fake-sandbox-for-google-apps-script-granular-controls/)
+- [A Fake-Sandbox for Google Apps Script: Securely Executing Code Generated by Gemini CLI](https://ramblings.mcpher.com/gas-fakes-sandbox/)
+- [Power of Google Apps Script: Building MCP Server Tools for Gemini CLI and Google Antigravity in Google Workspace Automation](https://medium.com/google-cloud/power-of-google-apps-script-building-mcp-server-tools-for-gemini-cli-and-google-antigravity-in-71e754e4b740)
+- [A New Era for Google Apps Script: Unlocking the Future of Google Workspace Automation with Natural Language](https://medium.com/google-cloud/a-new-era-for-google-apps-script-unlocking-the-future-of-google-workspace-automation-with-natural-a9cecf87b4c6)
+- [Next-Generation Google Apps Script Development: Leveraging Antigravity and Gemini 3.0](https://medium.com/google-cloud/next-generation-google-apps-script-development-leveraging-antigravity-and-gemini-3-0-c4d5affbc1a8)
+- [Modern Google Apps Script Workflow Building on the Cloud](https://medium.com/google-cloud/modern-google-apps-script-workflow-building-on-the-cloud-2255dbd32ac3)
+- [Bridging the Gap: Seamless Integration for Local Google Apps Script Development](https://medium.com/@tanaike/bridging-the-gap-seamless-integration-for-local-google-apps-script-development-9b9b973aeb02)
+- [Next-Level Google Apps Script Development](https://medium.com/google-cloud/next-level-google-apps-script-development-654be5153912)
+- [Secure and Streamlined Google Apps Script Development with gas-fakes CLI and Gemini CLI Extension](https://medium.com/google-cloud/secure-and-streamlined-google-apps-script-development-with-gas-fakes-cli-and-gemini-cli-extension-67bbce80e2c8)
+- [Secure and Conversational Google Workspace Automation: Integrating Gemini CLI with a gas-fakes MCP Server](https://medium.com/google-cloud/secure-and-conversational-google-workspace-automation-integrating-gemini-cli-with-a-gas-fakes-mcp-0a5341559865)
+- [A Fake-Sandbox for Google Apps Script: A Feasibility Study on Securely Executing Code Generated by Gemini CL](https://medium.com/google-cloud/a-fake-sandbox-for-google-apps-script-a-feasibility-study-on-securely-executing-code-generated-by-cc985ce5dae3)

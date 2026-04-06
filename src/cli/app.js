@@ -175,6 +175,24 @@ export async function main() {
     .option("-t, --tools <string>", "Path to custom tools file.")
     .action(startMcpServer);
 
+  // --- JDBC Command ---
+  program
+    .command("jdbc")
+    .description("Parse a JDBC connection string and output configurations for App Script and Local environments.")
+    .requiredOption("-c, --connection-string <string>", "The JDBC connection string to parse.")
+    .action(async (options) => {
+      try {
+        const { newFakeJdbcService } = await import("../services/jdbc/fakejdbcservice.js");
+        const service = newFakeJdbcService();
+        const config = service.__normalConnection(options.connectionString);
+        process.stdout.write(JSON.stringify(config, null, 2) + "\n");
+        process.exit(0);
+      } catch (err) {
+        process.stderr.write(`Error parsing connection string: ${err.message}\n`);
+        process.exit(1);
+      }
+    });
+
   program.showHelpAfterError("(add --help for additional information)");
 
   await program.parseAsync(process.argv);

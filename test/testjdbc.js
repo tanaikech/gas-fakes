@@ -10,7 +10,7 @@ export const testJdbc = (pack) => {
   const getUseProxy = (envVar) => {
     // only relevant if running on node
     if (!ScriptApp.isFake) return false;
-    const connectionString = process.env.envVar;
+    const connectionString = process.env[envVar];
     return Jdbc.__useProxy(connectionString);
   };
 
@@ -90,8 +90,8 @@ export const testJdbc = (pack) => {
         return;
       }
 
-      // `current` is pre-computed directly as the `local` or `gas` object
-      const envConfig = universal.current;
+      // ALWAYS select based on current runtime context, NOT the saved property
+      const envConfig = universal[ScriptApp.isFake ? "local" : "gas"];
 
       console.log(
         `...connecting to ${label}${envConfig.useProxy ? " (via local proxy)" : ""}`,
@@ -110,7 +110,7 @@ export const testJdbc = (pack) => {
         t.false(conn.isClosed(), "Connection should be open");
 
         const stmt = conn.createStatement();
-        const tableName = (fixes.PREFIX + "_" + prop.toLowerCase() + "_airports")
+        const tableName = (fixes.PREFIX + "_" + prop.toLowerCase() + "_" + methodLabel.replace(/-/g, '_') + "_airports")
           .replace(/[^a-zA-Z0-9_]/g, "_")
           .toLowerCase();
 
@@ -203,13 +203,13 @@ export const testJdbc = (pack) => {
       } catch (e) {
         multiErr = e.message;
       }
-      t.is(multiErr, "ok", `Multi-argument connection to ${label} should not throw`);
+      t.is(multiErr, "ok", `Multi-argument connection to ${label} should not throw: ${multiErr !== "ok" ? multiErr : ""}`);
       if (multiConn) validateConnection(multiConn, "multi-arg");
 
-      // Cloud SQL MySQL on Live Apps Script MUST use getCloudSqlConnection(url, user, pass) exclusively
-      // It does not support a single-argument connection string natively
-      if (!ScriptApp.isFake && envConfig.isCloudSqlConnection) {
-         console.log(`...skipping single-arg test for Cloud SQL MySQL on Live Apps Script (unsupported)`);
+      // Google Hosted databases on Live Apps Script do not consistently support single-argument connection strings natively
+      // The Java JDBC parser throws errors or malformed URL exceptions, so we skip the single-arg format tests for these on Live
+      if (!ScriptApp.isFake && universal.isGoogle) {
+         console.log(`...skipping single-arg test for Google Cloud SQL on Live Apps Script (unsupported)`);
          return;
       }
 
@@ -217,12 +217,13 @@ export const testJdbc = (pack) => {
       let singleConn;
       let singleErr = "ok";
       try {
-        console.log(`...Jdbc.${method}("${envConfig.connectionString}")`);
-        singleConn = Jdbc[method](envConfig.connectionString);
+        // We test `fullConnectionString` for single arg because it has the credentials embedded
+        console.log(`...Jdbc.${method}("${envConfig.fullConnectionString}")`);
+        singleConn = Jdbc[method](envConfig.fullConnectionString);
       } catch (e) {
         singleErr = e.message;
       }
-      t.is(singleErr, "ok", `Single-argument connection to ${label} should not throw`);
+      t.is(singleErr, "ok", `Single-argument connection to ${label} should not throw: ${singleErr !== "ok" ? singleErr : ""}`);
       if (singleConn) validateConnection(singleConn, "single-arg");
     });
   });
