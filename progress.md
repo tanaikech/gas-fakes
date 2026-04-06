@@ -12,7 +12,7 @@
 | [Forms](./progress/forms.md) | 41 | 504 | 270 | 0 | 234 |
 | [Gmail](./progress/gmail.md) | 6 | 168 | 58 | 0 | 110 |
 | [HTML](./progress/html.md) | 6 | 39 | 0 | 0 | 39 |
-| [JDBC](./progress/jdbc.md) | 20 | 749 | 33 | 0 | 716 |
+| [JDBC](./progress/JDBC.md) | 20 | 749 | 33 | 0 | 716 |
 | [Lock](./progress/Lock.md) | 2 | 7 | 7 | 0 | 0 |
 | [Mail](./progress/mail.md) | 1 | 5 | 0 | 0 | 5 |
 | [Properties](./progress/properties.md) | 4 | 11 | 6 | 5 | 0 |

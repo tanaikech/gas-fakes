@@ -136,6 +136,7 @@ execute `bash togas.sh` to copy all files to apps script IDE. All tests can be r
 - [running gas-fakes on Amazon AWS lambda](https://github.com/brucemcpherson/gas-fakes-containers)
 - [running gas-fakes on Azure ACA](https://github.com/brucemcpherson/gas-fakes-containers)
 - [running gas-fakes on Github actions](https://github.com/brucemcpherson/gas-fakes-containers)
+- [jdbc notes](jdbc-notes.md)
 - [Yes – you can run native apps script code on Azure ACA as well!](https://ramblings.mcpher.com/yes-you-can-run-native-apps-script-code-on-azure-aca-as-well/)
 - [Yes – you can run native apps script code on AWS Lambda!](https://ramblings.mcpher.com/apps-script-on-aws-lambda/)
 - [initial idea and thoughts](https://ramblings.mcpher.com/a-proof-of-concept-implementation-of-apps-script-environment-on-node/)
