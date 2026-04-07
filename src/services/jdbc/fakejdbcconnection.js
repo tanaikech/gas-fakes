@@ -2,6 +2,7 @@ import { Proxies } from '../../support/proxies.js';
 import { Syncit } from '../../support/syncit.js';
 import { newFakeJdbcStatement } from './fakejdbcstatement.js';
 import { newFakeJdbcPreparedStatement } from './fakejdbcpreparedstatement.js';
+import { newFakeJdbcDatabaseMetaData } from './fakejdbcdatabasemetadata.js';
 
 class FakeJdbcConnection {
   constructor(url, user, password) {
@@ -44,22 +45,7 @@ class FakeJdbcConnection {
   }
 
   getMetaData() {
-    // Return an object that mimics DatabaseMetaData
-    const url = this._url;
-    return Proxies.guard({
-      __fakeObjectType: 'JdbcDatabaseMetaData',
-      getURL: () => url,
-      getUserName: () => {
-         try {
-           const u = new URL(url.replace(/^jdbc:google:/, '').replace(/^jdbc:/, ''));
-           return u.username;
-         } catch(e) { return "unknown"; }
-      },
-      getDatabaseProductName: () => url.includes("postgres") ? "PostgreSQL" : "MySQL",
-      getDatabaseProductVersion: () => "Unknown",
-      getDriverName: () => "gas-fakes-jdbc-driver",
-      getDriverVersion: () => "1.0"
-    });
+    return newFakeJdbcDatabaseMetaData(this, this._connectionId, this._url);
   }
 
   // To match GAS JdbcConnection basic capabilities

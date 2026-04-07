@@ -5,9 +5,8 @@ import path from "path";
 import os from "os";
 import { randomUUID } from "node:crypto";
 import { execSync } from "child_process";
-import { checkForGcloudCli, checkForAzCli, runCommandSync } from "./utils.js";
+import { checkForGcloudCli, runCommandSync } from "./utils.js";
 import { getMsGraphToken, mapGasScopesToMsGraph } from "../support/msgraph/msauth.js";
-import { Platforms, PlatformDefaults } from "../services/enums/platformenums.js";
 
 // --- Utility Functions ---
 

@@ -1,9 +1,8 @@
 import { spawn, execSync } from "child_process";
-import { createRequire } from "node:module";
-const require = createRequire(import.meta.url);
-const pjson = require("../../package.json");
+import { initMetadata } from "../support/metadata.js";
+const GasFakes = initMetadata();
 
-export const VERSION = pjson.version;
+export const VERSION = GasFakes.metadata.version;
 export const CLI_VERSION = "0.0.20";
 export const MCP_VERSION = "0.0.7";
 

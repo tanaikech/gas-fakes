@@ -104,6 +104,19 @@ export const getJdbcBackends = (Jdbc) => {
   }));
 };
 
+/**
+ * Centeralized JDBC connection helper to handle Google Cloud SQL vs Standard
+ */
+export const getJdbcConnection = (Jdbc, envConfig) => {
+  const { url, user, password } = envConfig;
+  if (url.startsWith("jdbc:google:")) {
+    // Apps Script requires getCloudSqlConnection for jdbc:google: backends
+    return Jdbc.getCloudSqlConnection(url, user, password);
+  } else {
+    return Jdbc.getConnection(url, user, password);
+  }
+}
+
 
 export const checkBackend = (name)=> {
     if (!ScriptApp.isFake) {

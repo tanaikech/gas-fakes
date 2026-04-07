@@ -25,7 +25,7 @@ class FakeJdbcPreparedStatement {
   getConnection() { return this._connection; }
   getFetchDirection() { return this._fetchDirection; }
   getFetchSize() { return this._fetchSize; }
-  getGeneratedKeys() { return newFakeJdbcResultSet({ fields: [], rows: [] }); }
+  getGeneratedKeys() { return newFakeJdbcResultSet({ fields: [], rows: [] }, this); }
   getMaxFieldSize() { return this._maxFieldSize; }
   getMaxRows() { return this._maxRows; }
   getMoreResults(current) { return false; }
@@ -72,7 +72,7 @@ class FakeJdbcPreparedStatement {
     if (this._isClosed) throw new Error('Statement is closed.');
     const result = Syncit.fxJdbcExecutePrepared(this._connectionId, this._sql, this._params);
     this._lastUpdateCount = -1;
-    this._lastResultSet = newFakeJdbcResultSet(result);
+    this._lastResultSet = newFakeJdbcResultSet(result, this);
     return this._lastResultSet;
   }
 
@@ -89,7 +89,7 @@ class FakeJdbcPreparedStatement {
     const result = Syncit.fxJdbcExecutePrepared(this._connectionId, this._sql, this._params);
     this._lastUpdateCount = result.rowCount;
     if (result.fields && result.fields.length > 0) {
-      this._lastResultSet = newFakeJdbcResultSet(result);
+      this._lastResultSet = newFakeJdbcResultSet(result, this);
       return true;
     } else {
       this._lastResultSet = null;

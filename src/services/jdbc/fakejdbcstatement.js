@@ -44,7 +44,7 @@ class FakeJdbcStatement {
     // Fetch result synchronously from worker
     const result = Syncit.fxJdbcQuery(this._connectionId, sql);
     this._lastUpdateCount = -1;
-    this._lastResultSet = newFakeJdbcResultSet(result);
+    this._lastResultSet = newFakeJdbcResultSet(result, this);
     return this._lastResultSet;
   }
 
@@ -54,7 +54,7 @@ class FakeJdbcStatement {
     const result = Syncit.fxJdbcQuery(this._connectionId, sql);
     this._lastUpdateCount = result.rowCount || 0;
     if (result.fields && result.fields.length > 0) {
-      this._lastResultSet = newFakeJdbcResultSet(result);
+      this._lastResultSet = newFakeJdbcResultSet(result, this);
       return true;
     } else {
       this._lastResultSet = null;
@@ -92,7 +92,7 @@ class FakeJdbcStatement {
 
   getGeneratedKeys() {
     // Return empty results as we don't currently track generated auto-increment IDs
-    return newFakeJdbcResultSet({ fields: [], rows: [] });
+    return newFakeJdbcResultSet({ fields: [], rows: [] }, this);
   }
 
   getMaxFieldSize() {
