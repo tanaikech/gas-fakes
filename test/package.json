@@ -78,6 +78,7 @@
     "testformwebhack": "node testformwebhack.js execute",
     "testdrivesharing": "node testdrivesharing.js execute",
     "testdwdrefresh": "node testdwdrefresh.js execute",
+    "testjdbcstatement": "node testjdbcstatement.js execute",
     "testxmlservice": "node testxmlservice.js execute"
   },
   "name": "test-gas-fakes",

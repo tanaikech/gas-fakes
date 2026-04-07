@@ -19,11 +19,11 @@ class FakeJdbcConnection {
   }
 
   createStatement() {
-    return newFakeJdbcStatement(this._connectionId);
+    return newFakeJdbcStatement(this, this._connectionId);
   }
 
   prepareStatement(sql) {
-    return newFakeJdbcPreparedStatement(this._connectionId, sql);
+    return newFakeJdbcPreparedStatement(this, this._connectionId, sql);
   }
 
   commit() {

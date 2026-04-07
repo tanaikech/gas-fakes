@@ -37,4 +37,51 @@ export const testFixes = {
   "API_TYPE": "text\/javascript",
   "CLEAN": true,
   "PREFIX": ScriptApp.isFake ? "--f" : "--g",
-}
+};
+
+export const getPotentialBackends = (Jdbc) => {
+  const getUseProxy = (envVar) => {
+    // only relevant if running on node
+    if (!ScriptApp.isFake) return false;
+    const connectionString = process.env[envVar];
+    return Jdbc.__useProxy(connectionString);
+  };
+
+  return [
+    {
+      prop: "DATABASE_COCKROACH_PG_URL",
+      label: "Cockroach DB",
+      isGoogle: false,
+      type: "pg",
+      useProxy: false,
+    },
+    {
+      prop: "DATABASE_AIVEN_MYSQL_URL",
+      label: "Aiven MySQL",
+      isGoogle: false,
+      type: "mysql",
+      useProxy: false,
+    },
+    {
+      prop: "CLOUD_SQL_DATABASE_MYSQL_URL",
+      label: "Google Cloud SQL MySQL",
+      isGoogle: true,
+      type: "mysql",
+      useProxy: getUseProxy("CLOUD_SQL_DATABASE_MYSQL_URL"),
+    },
+    {
+      prop: "CLOUD_SQL_DATABASE_PG_URL",
+      label: "Google Cloud SQL PG",
+      isGoogle: true,
+      type: "pg",
+      useProxy: getUseProxy("CLOUD_SQL_DATABASE_PG_URL"),
+    },
+    {
+      prop: "DATABASE_PG_URL",
+      label: "Neon Postgres",
+      type: "pg",
+      isGoogle: false,
+      useProxy: false,
+    },
+  ];
+};

@@ -3,13 +3,49 @@ import { Syncit } from '../../support/syncit.js';
 import { newFakeJdbcResultSet } from './fakejdbcresultset.js';
 
 class FakeJdbcPreparedStatement {
-  constructor(connectionId, sql) {
+  constructor(connection, connectionId, sql) {
     this.__fakeObjectType = 'JdbcPreparedStatement';
+    this._connection = connection;
     this._connectionId = connectionId;
     this._sql = sql;
     this._params = [];
     this._batch = [];
     this._isClosed = false;
+    this._fetchSize = 0;
+    this._maxRows = 0;
+    this._queryTimeout = 0;
+    this._maxFieldSize = 0;
+    this._fetchDirection = 1000; // FETCH_FORWARD
+    this._isPoolable = false;
+    this._lastUpdateCount = -1;
+  }
+
+  cancel() { }
+  clearWarnings() { }
+  getConnection() { return this._connection; }
+  getFetchDirection() { return this._fetchDirection; }
+  getFetchSize() { return this._fetchSize; }
+  getGeneratedKeys() { return newFakeJdbcResultSet({ fields: [], rows: [] }); }
+  getMaxFieldSize() { return this._maxFieldSize; }
+  getMaxRows() { return this._maxRows; }
+  getMoreResults(current) { return false; }
+  getQueryTimeout() { return this._queryTimeout; }
+  getResultSetConcurrency() { return 1007; }
+  getResultSetHoldability() { return 1; }
+  getResultSetType() { return 1003; }
+  getWarnings() { return null; }
+  isPoolable() { return this._isPoolable; }
+  setCursorName(name) { }
+  setEscapeProcessing(enable) { }
+  setFetchDirection(direction) { this._fetchDirection = direction; }
+  setFetchSize(rows) { this._fetchSize = rows; }
+  setMaxFieldSize(max) { this._maxFieldSize = max; }
+  setMaxRows(max) { this._maxRows = max; }
+  setPoolable(poolable) { this._isPoolable = poolable; }
+  setQueryTimeout(seconds) { this._queryTimeout = seconds; }
+
+  getMetaData() {
+    return this._lastResultSet ? this._lastResultSet.getMetaData() : null;
   }
 
   addBatch() {

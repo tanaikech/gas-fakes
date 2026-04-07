@@ -1,5 +1,6 @@
 import is from '@sindresorhus/is';
 import { _null } from 'zod/v4/core';
+import { getPotentialBackends } from "./testfixes.js";
 // import { signatureArgs, notYetImplemented } from '../src/support/helpers.js';
 
 let __mss = null
@@ -80,6 +81,28 @@ export const getSharedScriptStore = (kind) => {
   }
   return store
 }
+
+export const getJdbcBackends = (Jdbc) => {
+  const potentialBackends = getPotentialBackends(Jdbc);
+  const props = getSharedScriptStore("property");
+
+  if (ScriptApp.isFake) {
+    potentialBackends.forEach((f) => {
+      const val = process.env[f.prop];
+      if (val) {
+        const universal = Jdbc.__normalConnection(val);
+        props.setProperty(f.prop, JSON.stringify(universal));
+      } else {
+        props.deleteProperty(f.prop);
+      }
+    });
+  }
+
+  return potentialBackends.filter((b) => props.getProperty(b.prop)).map(b => ({
+    ...b,
+    storedVal: props.getProperty(b.prop)
+  }));
+};
 
 
 export const checkBackend = (name)=> {

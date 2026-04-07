@@ -1,29 +1,13 @@
 import "@mcpher/gas-fakes";
 import { initTests } from "./testinit.js";
-import { wrapupTest, getSharedScriptStore } from "./testassist.js";
+import { wrapupTest, getJdbcBackends } from "./testassist.js";
 
 export const testJdbcAdv = (pack) => {
   const { unit, fixes } = pack || initTests();
-  const getUseProxy = (envVar) => {
-    if (!ScriptApp.isFake) return false;
-    const connectionString = process.env[envVar];
-    return Jdbc.__useProxy(connectionString);
-  };
-
-  const potentialBackends = [
-    { prop: "DATABASE_COCKROACH_PG_URL", label: "Cockroach DB", type: "pg" },
-    { prop: "DATABASE_AIVEN_MYSQL_URL", label: "Aiven MySQL", type: "mysql" },
-    { prop: "CLOUD_SQL_DATABASE_MYSQL_URL", label: "Google Cloud SQL MySQL", type: "mysql", useProxy: getUseProxy("CLOUD_SQL_DATABASE_MYSQL_URL") },
-    { prop: "CLOUD_SQL_DATABASE_PG_URL", label: "Google Cloud SQL PG", type: "pg", useProxy: getUseProxy("CLOUD_SQL_DATABASE_PG_URL") },
-    { prop: "DATABASE_PG_URL", label: "Neon Postgres", type: "pg" },
-  ];
-
-  const props = getSharedScriptStore("property");
-  const backends = potentialBackends.filter((b) => props.getProperty(b.prop));
+  const backends = getJdbcBackends(Jdbc);
 
   backends.forEach((backend) => {
-    const { prop, label, type } = backend;
-    const storedVal = props.getProperty(prop);
+    const { label, type, storedVal } = backend;
 
     unit.section(`Jdbc Advanced - ${label}`, (t) => {
       const universal = JSON.parse(storedVal);

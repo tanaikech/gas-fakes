@@ -1,86 +1,17 @@
 import "@mcpher/gas-fakes";
 import { initTests } from "./testinit.js";
-import { wrapupTest, trasher, getSharedScriptStore } from "./testassist.js";
+import { wrapupTest, trasher, getJdbcBackends } from "./testassist.js";
 
 export const testJdbc = (pack) => {
   const toTrash = [];
   const { unit, fixes } = pack || initTests();
 
-  // decide whether to use proxy
-  const getUseProxy = (envVar) => {
-    // only relevant if running on node
-    if (!ScriptApp.isFake) return false;
-    const connectionString = process.env[envVar];
-    return Jdbc.__useProxy(connectionString);
-  };
-
-  // list of backends to test and their environment vars
-  const potentialBackends = [
-    {
-      prop: "DATABASE_COCKROACH_PG_URL",
-      label: "Cockroach DB",
-      isGoogle: false,
-      type: "pg",
-      useProxy: false,
-    },
-    {
-      prop: "DATABASE_AIVEN_MYSQL_URL",
-      label: "Aiven MySQL",
-      isGoogle: false,
-      type: "mysql",
-      useProxy: false,
-    },
-    {
-      prop: "CLOUD_SQL_DATABASE_MYSQL_URL",
-      label: "Google Cloud SQL MySQL",
-      isGoogle: true,
-      type: "mysql",
-      useProxy: getUseProxy("CLOUD_SQL_DATABASE_MYSQL_URL"),
-    },
-    {
-      prop: "CLOUD_SQL_DATABASE_PG_URL",
-      label: "Google Cloud SQL PG",
-      isGoogle: true,
-      type: "pg",
-      useProxy: getUseProxy("CLOUD_SQL_DATABASE_PG_URL"),
-    },
-    {
-      prop: "DATABASE_PG_URL",
-      label: "Neon Postgres",
-      type: "pg",
-      isGoogle: false,
-      useProxy: false,
-    },
-  ];
-
-  // we are going to use shared properties store if possible so we can pass the .env values to live apps script
-  const props = getSharedScriptStore("property");
-
-  if (ScriptApp.isFake) {
-    potentialBackends.forEach((f) => {
-      const val = process.env[f.prop];
-      if (val) {
-        const universal = Jdbc.__normalConnection(val);
-        props.setProperty(f.prop, JSON.stringify(universal));
-      } else {
-        props.deleteProperty(f.prop);
-      }
-    });
-  }
-
-  const backends = potentialBackends.filter((b) => {
-    return props.getProperty(b.prop);
-  });
+  const backends = getJdbcBackends(Jdbc);
 
   backends.forEach((backend) => {
-    const { prop, label, type } = backend;
-    let storedVal = props.getProperty(prop);
+    const { prop, label, type, storedVal } = backend;
 
     unit.section(`Jdbc Basics - ${label}`, (t) => {
-      if (!storedVal) {
-        console.warn(`...skipping ${label} tests: ${prop} not set in Properties Service.`);
-        return;
-      }
 
       let universal;
       try {
