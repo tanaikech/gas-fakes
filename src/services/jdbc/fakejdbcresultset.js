@@ -1,6 +1,10 @@
 import { Proxies } from '../../support/proxies.js';
 import { newFakeJdbcResultSetMetaData } from './fakejdbcresultsetmetadata.js';
 import { FakeJdbcBigDecimal } from './fakejdbcbigdecimal.js';
+import { newFakeJdbcBlob } from './fakejdbcblob.js';
+import { newFakeJdbcClob } from './fakejdbcclob.js';
+import { newFakeJdbcArray } from './fakejdbcarray.js';
+import { newFakeInputStream, newFakeReader } from '../../support/fakeinputstream.js';
 
 class FakeJdbcResultSet {
   constructor(result, statement) {
@@ -140,11 +144,14 @@ class FakeJdbcResultSet {
 
   getFloat(columnIndex) {
     const val = this._getValue(columnIndex);
-    return val !== null && val !== undefined ? parseFloat(val) : 0.0;
+    // GAS getFloat() returns IEEE 754 single-precision (32-bit float)
+    return val !== null && val !== undefined ? Math.fround(parseFloat(val)) : 0.0;
   }
 
   getDouble(columnIndex) {
-    return this.getFloat(columnIndex);
+    // getDouble() returns full 64-bit precision
+    const val = this._getValue(columnIndex);
+    return val !== null && val !== undefined ? parseFloat(val) : 0.0;
   }
 
   getBigDecimal(columnIndex) {
@@ -163,6 +170,52 @@ class FakeJdbcResultSet {
 
   getObject(columnIndex) {
     return this._getValue(columnIndex);
+  }
+
+  getBytes(columnIndex) {
+    const val = this._getValue(columnIndex);
+    if (val === null || val === undefined) return null;
+    return Array.from(Buffer.from(val));
+  }
+
+  getBlob(columnIndex) {
+    const val = this._getValue(columnIndex);
+    return val !== null && val !== undefined ? newFakeJdbcBlob(val) : null;
+  }
+
+  getClob(columnIndex) {
+    const val = this._getValue(columnIndex);
+    return val !== null && val !== undefined ? newFakeJdbcClob(val) : null;
+  }
+
+  getArray(columnIndex) {
+    const val = this._getValue(columnIndex);
+    return val !== null && val !== undefined ? newFakeJdbcArray(val) : null;
+  }
+
+  getUnicodeStream(columnIndex) {
+    const val = this._getValue(columnIndex);
+    return val !== null && val !== undefined ? newFakeInputStream(Buffer.from(String(val), 'utf8')) : null;
+  }
+
+  getAsciiStream(columnIndex) {
+    const val = this._getValue(columnIndex);
+    return val !== null && val !== undefined ? newFakeInputStream(Buffer.from(String(val), 'ascii')) : null;
+  }
+
+  getBinaryStream(columnIndex) {
+    const val = this._getValue(columnIndex);
+    return val !== null && val !== undefined ? newFakeInputStream(Buffer.from(val)) : null;
+  }
+
+  getCharacterStream(columnIndex) {
+    const val = this._getValue(columnIndex);
+    return val !== null && val !== undefined ? newFakeReader(String(val)) : null;
+  }
+
+  getCursorName() {
+    if (this._isClosed) throw new Error('ResultSet is closed.');
+    return 'fake-cursor';
   }
 
   findColumn(columnLabel) {

@@ -80,6 +80,7 @@
     "testdwdrefresh": "node testdwdrefresh.js execute",
     "testjdbcstatement": "node testjdbcstatement.js execute",
     "testjdbcresultset": "node testjdbcresultset.js execute",
+    "testjdbcresultsetparity": "node testjdbcresultsetparity.js execute",
     "testjdbcdatabasemetadata": "node testjdbcdatabasemetadata.js execute",
     "testxmlservice": "node testxmlservice.js execute"
   },

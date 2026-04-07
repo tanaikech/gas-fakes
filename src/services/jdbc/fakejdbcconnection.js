@@ -19,7 +19,9 @@ class FakeJdbcConnection {
     this._connectionId = result.id;
   }
 
-  createStatement() {
+  // GAS overload: createStatement() or createStatement(resultSetType, resultSetConcurrency)
+  // resultSetType/Concurrency parameters are advisory in the fake since results are buffered in memory.
+  createStatement(resultSetType, resultSetConcurrency) {
     return newFakeJdbcStatement(this, this._connectionId);
   }
 

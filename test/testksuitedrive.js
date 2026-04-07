@@ -517,7 +517,9 @@ export const testKSuiteDrive = (pack) => {
   if (ScriptApp.isFake) {
     ScriptApp.__platform = 'google'
   }
-
+  if (!pack) {
+    unit.report()
+  }
   return { unit, fixes: kFixes }
 }
 

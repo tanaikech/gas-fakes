@@ -29,7 +29,12 @@ You must verify your implementation by writing and executing test scripts.
 - Execute the tests to ensure there are no errors and the behavior matches expectations.
 - Full instructions on test and other workflows are in ../../workflows. Be sure to read the relevant workflow file before starting any task.
 
-### 4. Holistic/Targeted Skill Evolution (Self-Updating SKILL)
+### 4. Test Registration and Suite Integrity (CRITICAL)
+Whenever you create a new test script (e.g., `test/testnewfeature.js`) or significantly modify an existing one:
+- **Registration**: You MUST add the new test to the main test suite in [**`test/test.js`**](file:///Users/brucemcpherson/Documents/repos/gas-fakes/test/test.js). This includes adding the `import` statement and the test call within the `testFakes()` function.
+- **Workflow Compliance**: At the beginning of EVERY task involving testing or implementation, you MUST consult the `.agents/workflows/` directory (specifically [**`test.md`**](file:///Users/brucemcpherson/Documents/repos/gas-fakes/.agents/workflows/test.md)) to ensure you are following the latest project-specific procedures.
+
+### 5. Holistic/Targeted Skill Evolution (Self-Updating SKILL)
 **[CRITICAL INSTRUCTION]**
 The `gas-fakes` project is complex, and bridging Node.js with GAS involves many hidden constraints, specific architectural patterns, and potential errors. You are required to continuously learn and autonomously evolve this SKILL.
 
@@ -69,6 +74,25 @@ The `gas-fakes` project is complex, and bridging Node.js with GAS involves many 
   - **PostgreSQL (All)**: MUST use `Jdbc.getConnection`.
 - **Parameter Index Errors (MySQL 8+)**: For external MySQL databases (e.g., Aiven), the `prepareStatement` method may fail with `Parameter index out of range (1 > 0)` because the older GAS driver cannot parse placeholders in modern MySQL 8+ protocols.
   - **Workaround**: Implement a `try/catch` fallback to standard `Statement.execute()` with manually escaped values if `prepareStatement` fails for MySQL backends.
+
+### Apps Script Constraints & Web APIs
+- **Unavailable Web APIs**: The GAS V8 runtime **DOES NOT** support many standard Web APIs, including `TextDecoder`, `TextEncoder`, `fetch`, `setTimeout`, and `ReadableStream`.
+- **String/Byte Conversion**: To convert a byte array to a string portably, use:
+  ```javascript
+  const str = Utilities.newBlob(bytes).getDataAsString();
+  ```
+- **IP Whitelisting**: Because Live Apps Script runs on dynamic Google IPs, you must whitelist Google's API IP ranges (fetched from `https://www.gstatic.com/ipranges/goog.json`) in your Cloud SQL instance's Authorized Networks to allow connection.
+- **Portability Rule**: When writing tests designed to run on both platforms, you MUST guard access to fake-only properties using `if (ScriptApp.isFake)`. 
+- **Minimization Strategy (CRITICAL)**: **Minimize** the use of `if (ScriptApp.isFake)` blocks. Whenever possible, verify behaviors and expected return values using the **Public API**. 
+    - *Example*: Instead of checking `__fakeObjectType === 'JdbcBlob'`, simply call `blob.length()` or `blob.getBytes()`. If these work, the object is implicitly of the correct type.
+- **Why?**: Extensive use of `if (ScriptApp.isFake)` makes the test suite harder to maintain and reduces confidence that the same test is actually verifying the same behavior on both platforms.
+
+### GAS JDBC Runtime Constraints (Critical for Live Tests)
+- **`getBlob()` requires an OID large object column — not BYTEA**: Calling `rs.getBlob(n)` on a `TEXT` or `BYTEA` column throws `"Bad value for type long : <value>"` because the PostgreSQL JDBC driver's `getBlob()` internally calls `getLong()` to retrieve a PostgreSQL large object OID from `pg_largeobject`. For inline binary data, use `getBytes()` / `getBinaryStream()` instead. MySQL's `BLOB` type maps directly and works with `getBlob()`. **In practice: never test `getBlob()` against a PostgreSQL/CockroachDB backend in a parity test.**
+- **`createStatement()` returns `FORWARD_ONLY`**: Plain `conn.createStatement()` returns a forward-only cursor. Navigation methods `last()`, `first()`, `absolute()`, `relative()`, `previous()`, `beforeFirst()`, `afterLast()` all throw `"Operation requires a scrollable ResultSet"`. Use `conn.createStatement(1004, 1007)` (TYPE_SCROLL_INSENSITIVE, CONCUR_READ_ONLY) to get a scrollable cursor. In the fake, these parameters are accepted but advisory — results are already buffered.
+- **`getFloat()` is 32-bit**: GAS `rs.getFloat()` returns an IEEE 754 single-precision float. `1.1` becomes `1.100000023841858`. Always compare with `Math.fround(expected)`. The fake applies `Math.fround()` accordingly.
+- **`getDouble()` is 64-bit**: Unlike the above, `rs.getDouble()` returns a full 64-bit double.
+- **Backend DDL differences**: Use `BLOB` for MySQL and `BYTEA` for PostgreSQL. Use `'value'::bytea` syntax for PostgreSQL literal binary inserts.
 
 ## Delivery
 - Output the complete code for modified or newly created service classes and test scripts.

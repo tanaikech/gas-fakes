@@ -322,6 +322,73 @@ When using `setBigDecimal()`, `gas-fakes` accepts both numeric values and `FakeJ
 
 ---
 
+## Binary Data & ResultSet Method Compatibility
+
+Not all `JdbcResultSet` methods work the same way across all JDBC backends. The following table documents the compatibility of common binary/stream access methods in live Apps Script.
+
+### `getBlob()` vs `getBytes()` by Backend
+
+| Backend | `getBlob()` | `getBytes()` on BYTEA/BLOB | Notes |
+|---|---|---|---|
+| **Aiven MySQL** | ✅ Works on `BLOB` column | ✅ Works | `BLOB` maps directly to JDBC `Blob` |
+| **Google Cloud SQL MySQL** | ✅ Works on `BLOB` column | ✅ Works | Same as Aiven |
+| **CockroachDB (PG)** | ❌ Fails on `BYTEA` | ✅ Works on `BYTEA` | `getBlob()` requires OID large object |
+| **Neon Postgres** | ❌ Fails on `BYTEA` | ✅ Works on `BYTEA` | Same as CockroachDB |
+| **Google Cloud SQL PG** | ❌ Fails on `BYTEA` | ✅ Works on `BYTEA` | Same as CockroachDB |
+| **gas-fakes (fake)** | ✅ Works on any column | ✅ Works on any column | Fake is permissive |
+
+### Why `getBlob()` Fails on PostgreSQL
+
+PostgreSQL treats binary large objects as *large objects* stored externally in `pg_largeobject` and referenced by an OID (a 64-bit integer). The PostgreSQL JDBC driver's `getBlob()` calls `getLong()` internally to retrieve that OID. When the column contains a `BYTEA` value (inline binary) or any other non-OID type, the driver throws:
+
+```
+Bad value for type long : <value>
+```
+
+**Correct approach by backend:**
+
+```javascript
+if (type === 'mysql') {
+  // MySQL: BLOB columns work with getBlob()
+  const blob = rs.getBlob(columnIndex);   // ✅
+  const bytes = blob.getBytes(1, blob.length());
+} else {
+  // PostgreSQL: use BYTEA columns with getBytes()
+  const bytes = rs.getBytes(columnIndex); // ✅
+  // Convert to string using Utilities (TextDecoder is NOT available in GAS)
+  const str = Utilities.newBlob(bytes).getDataAsString();
+}
+```
+
+### `ResultSet.TYPE_SCROLL_INSENSITIVE` — Scrollable Cursors
+
+Plain `conn.createStatement()` returns a **forward-only** cursor. Calling navigation methods like `last()`, `first()`, `absolute()`, `relative()`, `previous()`, `beforeFirst()`, or `afterLast()` on a forward-only ResultSet throws:
+
+```
+Operation requires a scrollable ResultSet, but this ResultSet is FORWARD_ONLY.
+```
+
+To get a scrollable cursor, use the two-argument overload:
+
+```javascript
+// TYPE_SCROLL_INSENSITIVE = 1004, CONCUR_READ_ONLY = 1007
+const stmt = conn.createStatement(1004, 1007);
+```
+
+In `gas-fakes`, the parameters are accepted but advisory — results are buffered in memory and all navigation works regardless of the cursor type specified.
+
+### `getFloat()` is 32-bit
+
+`rs.getFloat()` returns an **IEEE 754 single-precision (32-bit) float** in both live GAS and the fake. This means values like `1.1` are stored as `1.100000023841858`. Always compare using `Math.fround()`:
+
+```javascript
+t.is(rs.getFloat(col), Math.fround(1.1), "correct float comparison");
+```
+
+`rs.getDouble()` returns a full 64-bit double and does not have this issue.
+
+---
+
 ## <img src="./logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
 
 ## Watch the video

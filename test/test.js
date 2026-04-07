@@ -72,6 +72,12 @@ import { testMsGraphDrive } from './testmsgraphdrive.js';
 import { testMsGraphExcel } from './testmsgraphexcel.js';
 import { testJdbc } from "./testjdbc.js";
 import { testJdbcAdv } from "./testjdbcadv.js";
+import { testJdbcStatement } from "./testjdbcstatement.js";
+import { testJdbcResultSet } from "./testjdbcresultset.js";
+import { testJdbcResultSetParity } from "./testjdbcresultsetparity.js";
+import { testJdbcDatabaseMetaData } from "./testjdbcdatabasemetadata.js";
+import { testXmlService } from "./testxmlservice.js";
+import { testMultiBackend } from "./testmultibackend.js";
 import { testGmail } from "./testgmail.js";
 import { testSandboxGmail } from "./testsandboxgmail.js";
 
@@ -80,8 +86,29 @@ export const testFakes = () => {
   const pack = initTests();
   const { unit } = pack;
 
+  console.log("\n----Test multi-backend----");
+  testMultiBackend(pack);
+
+  console.log("\n----Test JDBC Basics----");
+  testJdbc(pack);
+
+  console.log("\n----Test JDBC Statement----");
+  testJdbcStatement(pack);
+
+  console.log("\n----Test JDBC ResultSet----");
+  testJdbcResultSet(pack);
+
+  console.log("\n----Test JDBC ResultSet Parity----");
+  testJdbcResultSetParity(pack);
+
+  console.log("\n----Test JDBC Database Metadata----");
+  testJdbcDatabaseMetaData(pack);
+
   console.log("\n----Test JDBC Advanced----");
   testJdbcAdv(pack);
+
+  console.log("\n----Test XML Service----");
+  testXmlService(pack);
 
   console.log("\n----Test KSuite Integration----");
   testKSuiteDrive(pack);

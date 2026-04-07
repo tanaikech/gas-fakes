@@ -7,7 +7,7 @@ export const testJdbcResultSet = (pack) => {
 
   const backends = getJdbcBackends(Jdbc);
 
-  // We'll use the first available backend for live verification, 
+  // We'll use the first available backend for live verification,
   // but also test the FakeJdbcResultSet logic directly with mocked data.
   const backend = backends[0];
   if (!backend) {
@@ -20,22 +20,37 @@ export const testJdbcResultSet = (pack) => {
   unit.section(`JdbcResultSet Parity - ${label}`, (t) => {
     const universal = JSON.parse(storedVal);
     const envConfig = universal[ScriptApp.isFake ? "local" : "gas"];
-    const conn = Jdbc.getConnection(envConfig.url, envConfig.user, envConfig.password);
-    
+    const conn = Jdbc.getConnection(
+      envConfig.url,
+      envConfig.user,
+      envConfig.password,
+    );
+
     const tableName = (label.replace(/ /g, "_") + "_rs_parity").toLowerCase();
     const q = type === "mysql" ? "`" : '"';
-    const stmt = conn.createStatement();
-    
-    stmt.execute(`DROP TABLE IF EXISTS ${q}${tableName}${q}`);
-    stmt.execute(`CREATE TABLE ${q}${tableName}${q} (id INT, name TEXT, val FLOAT)`);
-    
-    // Insert some test data
-    stmt.execute(`INSERT INTO ${q}${tableName}${q} (id, name, val) VALUES (1, 'item1', 1.1)`);
-    stmt.execute(`INSERT INTO ${q}${tableName}${q} (id, name, val) VALUES (2, 'item2', 2.2)`);
-    stmt.execute(`INSERT INTO ${q}${tableName}${q} (id, name, val) VALUES (3, 'item3', 3.3)`);
+    // TYPE_SCROLL_INSENSITIVE=1004, CONCUR_READ_ONLY=1007 - required for last/first/absolute etc.
+    const stmt = conn.createStatement(1004, 1007);
 
-    const rs = stmt.executeQuery(`SELECT * FROM ${q}${tableName}${q} ORDER BY id ASC`);
-    
+    stmt.execute(`DROP TABLE IF EXISTS ${q}${tableName}${q}`);
+    stmt.execute(
+      `CREATE TABLE ${q}${tableName}${q} (id INT, name TEXT, val FLOAT)`,
+    );
+
+    // Insert some test data
+    stmt.execute(
+      `INSERT INTO ${q}${tableName}${q} (id, name, val) VALUES (1, 'item1', 1.1)`,
+    );
+    stmt.execute(
+      `INSERT INTO ${q}${tableName}${q} (id, name, val) VALUES (2, 'item2', 2.2)`,
+    );
+    stmt.execute(
+      `INSERT INTO ${q}${tableName}${q} (id, name, val) VALUES (3, 'item3', 3.3)`,
+    );
+
+    const rs = stmt.executeQuery(
+      `SELECT * FROM ${q}${tableName}${q} ORDER BY id ASC`,
+    );
+
     // Metadata & Statement
     t.is(rs.getStatement(), stmt, "getStatement() returns correct statement");
     const meta = rs.getMetaData();
@@ -44,13 +59,14 @@ export const testJdbcResultSet = (pack) => {
     // Navigation & Position
     t.true(rs.isBeforeFirst(), "Starts before first");
     t.false(rs.isFirst(), "Not first initially");
-    
+
     t.true(rs.next(), "Moves to first row");
     t.is(rs.getRow(), 1, "getRow() is 1");
     t.true(rs.isFirst(), "isFirst() is true");
     t.is(rs.getInt(1), 1, "getInt(1) works");
     t.is(rs.getString("name"), "item1", "getString('name') works (overload)");
-    t.is(rs.getFloat(3), 1.1, "getFloat(3) works");
+    // getFloat() returns IEEE 754 single-precision (32-bit), so compare with Math.fround()
+    t.is(rs.getFloat(3), Math.fround(1.1), "getFloat(3) works");
     t.false(rs.wasNull(), "wasNull() is false");
 
     t.true(rs.last(), "Moves to last row");
@@ -95,10 +111,13 @@ export const testJdbcResultSet = (pack) => {
 
     rs.close();
     t.true(rs.isClosed(), "isClosed() is true after close");
-    
+
     stmt.execute(`DROP TABLE IF EXISTS ${q}${tableName}${q}`);
     conn.close();
   });
+  if (!pack) {
+    unit.report();
+  }
 };
 
 wrapupTest(testJdbcResultSet);

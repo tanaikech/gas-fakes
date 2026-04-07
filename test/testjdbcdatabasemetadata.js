@@ -1,6 +1,10 @@
 import "@mcpher/gas-fakes";
 import { initTests } from "./testinit.js";
-import { wrapupTest, getJdbcBackends, getJdbcConnection } from "./testassist.js";
+import {
+  wrapupTest,
+  getJdbcBackends,
+  getJdbcConnection,
+} from "./testassist.js";
 
 export const testJdbcDatabaseMetaData = (pack) => {
   const { unit, fixes } = pack || initTests();
@@ -46,9 +50,16 @@ export const testJdbcDatabaseMetaData = (pack) => {
       const q = meta.getIdentifierQuoteString();
       if (type === "mysql" && !ScriptApp.isFake) {
         // In native GAS, some MySQL drivers return " instead of `
-        t.truthy(["`","\""].includes(q), "MySQL quote string matches known types");
+        t.truthy(
+          ["`", '"'].includes(q),
+          "MySQL quote string matches known types",
+        );
       } else {
-        t.is(q, type === "mysql" ? "`" : '"', "Quote string is correct for type");
+        t.is(
+          q,
+          type === "mysql" ? "`" : '"',
+          "Quote string is correct for type",
+        );
       }
 
       // Capabilities
@@ -82,12 +93,15 @@ export const testJdbcDatabaseMetaData = (pack) => {
 
       const tables = meta.getTables(null, null, testTableName, null);
       if (!tables.next()) {
-         // Debug: let's see what IS there
-         const all = meta.getTables(null, null, null, null);
-         let list = [];
-         let count = 0;
-         while(all.next() && count++ < 10) list.push(all.getString("TABLE_NAME"));
-         throw new Error(`Expected table ${testTableName} not found in meta.getTables. First 10 tables: ${list.join(",")}`);
+        // Debug: let's see what IS there
+        const all = meta.getTables(null, null, null, null);
+        let list = [];
+        let count = 0;
+        while (all.next() && count++ < 10)
+          list.push(all.getString("TABLE_NAME"));
+        throw new Error(
+          `Expected table ${testTableName} not found in meta.getTables. First 10 tables: ${list.join(",")}`,
+        );
       }
       t.true(true, "Found our test table");
       t.is(
@@ -117,6 +131,9 @@ export const testJdbcDatabaseMetaData = (pack) => {
       conn.close();
     });
   });
+  if (!pack) {
+    unit.report();
+  }
 };
 
 wrapupTest(testJdbcDatabaseMetaData);
