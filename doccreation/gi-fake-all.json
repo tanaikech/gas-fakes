@@ -26113,8 +26113,8 @@
             "description": "For documentation of this method, see \njava.sql.Clob#truncate(long).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcclob.js#L61"
           },
           {
             "method": "getAppsScriptBlob()",
@@ -26131,8 +26131,8 @@
             "description": "Return the data inside this object as a blob converted to the specified content type. This\nmethod adds the appropriate extension to the filename—for example, \"myfile.pdf\". However, it\nassumes that the part of the filename that follows the last period (if any) is an existing\nextension that should be replaced. Consequently, \"ShoppingList.12.25.2014\" becomes\n\"ShoppingList.12.25.pdf\".",
             "returnType": "Blob",
             "returnDescription": "The data as a blob.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcclob.js#L11"
           },
           {
             "method": "getSubString(Integer,Integer)",
@@ -26140,8 +26140,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcclob.js#L21"
           },
           {
             "method": "length()",
@@ -26149,8 +26149,8 @@
             "description": "For documentation of this method, see \njava.sql.Clob#length().",
             "returnType": "Integer",
             "returnDescription": "The length (in characters) of this clob.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcclob.js#L27"
           },
           {
             "method": "position(JdbcClob,Integer)",
@@ -26158,8 +26158,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcclob.js#L32"
           },
           {
             "method": "position(String,Integer)",
@@ -26167,8 +26167,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcclob.js#L32"
           },
           {
             "method": "setString(Integer,BlobSource)",
@@ -26176,8 +26176,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcclob.js#L47"
           },
           {
             "method": "setString(Integer,BlobSource,Integer,Integer)",
@@ -26185,8 +26185,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcclob.js#L47"
           },
           {
             "method": "setString(Integer,String)",
@@ -26194,8 +26194,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcclob.js#L47"
           },
           {
             "method": "setString(Integer,String,Integer,Integer)",
@@ -26203,8 +26203,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcclob.js#L47"
           },
           {
             "method": "truncate(Integer)",
@@ -26212,8 +26212,8 @@
             "description": "For documentation of this method, see \njava.sql.Clob#truncate(long).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcclob.js#L56"
           }
         ]
       },
@@ -26229,8 +26229,8 @@
             "description": "For documentation of this method, see \njava.sql.Blob#free().",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcblob.js#L61"
           },
           {
             "method": "getAppsScriptBlob()",
@@ -26256,8 +26256,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcblob.js#L19"
           },
           {
             "method": "length()",
@@ -26265,8 +26265,8 @@
             "description": "For documentation of this method, see \njava.sql.Blob#length().",
             "returnType": "Integer",
             "returnDescription": "The number of bytes in this blob.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcblob.js#L27"
           },
           {
             "method": "position(Byte,Integer)",
@@ -26274,8 +26274,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcblob.js#L32"
           },
           {
             "method": "position(JdbcBlob,Integer)",
@@ -26283,8 +26283,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcblob.js#L32"
           },
           {
             "method": "setBytes(Integer,BlobSource)",
@@ -26292,8 +26292,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcblob.js#L45"
           },
           {
             "method": "setBytes(Integer,BlobSource,Integer,Integer)",
@@ -26301,8 +26301,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcblob.js#L45"
           },
           {
             "method": "setBytes(Integer,Byte)",
@@ -26310,8 +26310,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcblob.js#L45"
           },
           {
             "method": "setBytes(Integer,Byte,Integer,Integer)",
@@ -26319,8 +26319,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcblob.js#L45"
           },
           {
             "method": "truncate(Integer)",
@@ -26328,8 +26328,8 @@
             "description": "For documentation of this method, see \njava.sql.Blob#truncate(long).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcblob.js#L56"
           }
         ]
       },
@@ -26461,8 +26461,8 @@
             "description": "For documentation of this method, see \njava.sql.Array#free().",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcarray.js#L31"
           },
           {
             "method": "getArray()",
@@ -26470,8 +26470,8 @@
             "description": "For documentation of this method, see \njava.sql.Array#getArray()",
             "returnType": "Object",
             "returnDescription": "An object containing the ordered elements of the SQL array value.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcarray.js#L12"
           },
           {
             "method": "getArray(Integer,Integer)",
@@ -26479,8 +26479,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcarray.js#L12"
           },
           {
             "method": "getBaseType()",
@@ -26488,8 +26488,8 @@
             "description": "For documentation of this method, see \njava.sql.Array#getBaseType().",
             "returnType": "Integer",
             "returnDescription": "The type\n    code for the elements in this array.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcarray.js#L17"
           },
           {
             "method": "getBaseTypeName()",
@@ -26497,8 +26497,8 @@
             "description": "For documentation of this method, see \njava.sql.Array#getBaseTypeName().",
             "returnType": "String",
             "returnDescription": "The database-specific name for the built-in base type or else the fully-qualified SQL\n    type name for a base type that is a UDT.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcarray.js#L21"
           },
           {
             "method": "getResultSet()",
@@ -26506,8 +26506,8 @@
             "description": "For documentation of this method, see \njava.sql.Array#getResultSet().",
             "returnType": "JdbcResultSet",
             "returnDescription": "The JdbcResultSet containing one row for each of the elements in the array\n    designated by this Array object, with the rows in ascending order based on the indices.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcarray.js#L25"
           },
           {
             "method": "getResultSet(Integer,Integer)",
@@ -26515,8 +26515,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcarray.js#L25"
           }
         ]
       },
@@ -28106,7 +28106,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L52"
+            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L54"
           },
           {
             "method": "commit()",
@@ -28115,7 +28115,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L30"
+            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L32"
           },
           {
             "method": "createArrayOf(String,Object)",
@@ -28205,7 +28205,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the connection's auto-commit mode is enabled; false otherwise.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L42"
+            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L44"
           },
           {
             "method": "getCatalog()",
@@ -28232,7 +28232,7 @@
             "returnType": "JdbcDatabaseMetaData",
             "returnDescription": "The metadata of the database this connection connects to.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L47"
+            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L49"
           },
           {
             "method": "getTransactionIsolation()",
@@ -28259,7 +28259,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the connection is closed; false otherwise.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L59"
+            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L61"
           },
           {
             "method": "isReadOnly()",
@@ -28322,7 +28322,7 @@
             "returnType": "JdbcPreparedStatement",
             "returnDescription": "A prepared statement containing the pre-compiled SQL statement.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L26"
+            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L28"
           },
           {
             "method": "prepareStatement(String,Integer)",
@@ -28331,7 +28331,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L26"
+            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L28"
           },
           {
             "method": "prepareStatement(String,Integer,Integer)",
@@ -28340,7 +28340,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L26"
+            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L28"
           },
           {
             "method": "prepareStatement(String,Integer,Integer,Integer)",
@@ -28349,7 +28349,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L26"
+            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L28"
           },
           {
             "method": "prepareStatementByIndex(String,Integer)",
@@ -28385,7 +28385,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L34"
+            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L36"
           },
           {
             "method": "rollback(JdbcSavepoint)",
@@ -28394,7 +28394,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L34"
+            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L36"
           },
           {
             "method": "setAutoCommit(Boolean)",
@@ -28403,7 +28403,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L38"
+            "implementationLink": "src/services/jdbc/fakejdbcconnection.js#L40"
           },
           {
             "method": "setCatalog(String)",
@@ -30802,7 +30802,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the cursor is moved to a position in this result set; false if\n    the cursor is before the first row or after the last row.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L51"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L55"
           },
           {
             "method": "afterLast()",
@@ -30811,7 +30811,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L62"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L66"
           },
           {
             "method": "beforeFirst()",
@@ -30820,7 +30820,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L67"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L71"
           },
           {
             "method": "cancelRowUpdates()",
@@ -30838,7 +30838,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L230"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L283"
           },
           {
             "method": "close()",
@@ -30847,7 +30847,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L21"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L25"
           },
           {
             "method": "deleteRow()",
@@ -30865,7 +30865,7 @@
             "returnType": "Integer",
             "returnDescription": "The column index of the specified column.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L36"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L40"
           },
           {
             "method": "first()",
@@ -30874,7 +30874,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the cursor is on a valid row; false if there are no rows in the\n    result set.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L72"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L76"
           },
           {
             "method": "getArray(Integer)",
@@ -30882,8 +30882,8 @@
             "description": "For documentation of this method, see \njava.sql.ResultSet#getArray(int).",
             "returnType": "JdbcArray",
             "returnDescription": "The value of the designated column in the current row of this result set as an array.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L191"
           },
           {
             "method": "getArray(String)",
@@ -30891,8 +30891,8 @@
             "description": "For documentation of this method, see \njava.sql.ResultSet#getArray(String).",
             "returnType": "JdbcArray",
             "returnDescription": "The value of the designated column in the current row of this result set as an array.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L191"
           },
           {
             "method": "getBigDecimal(Integer)",
@@ -30901,7 +30901,7 @@
             "returnType": "BigNumber",
             "returnDescription": "The column value; null if the value was SQL NULL.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L150"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L157"
           },
           {
             "method": "getBigDecimal(String)",
@@ -30910,7 +30910,7 @@
             "returnType": "BigNumber",
             "returnDescription": "The column value; null if the value was SQL NULL.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L150"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L157"
           },
           {
             "method": "getBlob(Integer)",
@@ -30918,8 +30918,8 @@
             "description": "For documentation of this method, see \njava.sql.ResultSet#getBlob(int).",
             "returnType": "JdbcBlob",
             "returnDescription": "The value of the designated column in the current row of this result set as a blob.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L181"
           },
           {
             "method": "getBlob(String)",
@@ -30927,8 +30927,8 @@
             "description": "For documentation of this method, see \njava.sql.ResultSet#getBlob(String).",
             "returnType": "JdbcBlob",
             "returnDescription": "The value of the designated column in the current row of this result set as a blob.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L181"
           },
           {
             "method": "getBoolean(Integer)",
@@ -30937,7 +30937,7 @@
             "returnType": "Boolean",
             "returnDescription": "The column value; false if the value was SQL NULL.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L136"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L140"
           },
           {
             "method": "getBoolean(String)",
@@ -30946,7 +30946,7 @@
             "returnType": "Boolean",
             "returnDescription": "The column value; false if the value was SQL NULL.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L136"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L140"
           },
           {
             "method": "getByte(Integer)",
@@ -30955,7 +30955,7 @@
             "returnType": "Byte",
             "returnDescription": "The column value; 0 if the value was SQL NULL.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L186"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L175"
           },
           {
             "method": "getByte(String)",
@@ -30964,7 +30964,7 @@
             "returnType": "Byte",
             "returnDescription": "The column value; 0 if the value was SQL NULL.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L186"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L175"
           },
           {
             "method": "getBytes(Integer)",
@@ -30972,8 +30972,8 @@
             "description": "For documentation of this method, see \njava.sql.ResultSet#getBytes(int).",
             "returnType": "Byte[]",
             "returnDescription": "The column value; null if the value was SQL NULL.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L175"
           },
           {
             "method": "getBytes(String)",
@@ -30981,8 +30981,8 @@
             "description": "For documentation of this method, see \njava.sql.ResultSet#getBytes(String).",
             "returnType": "Byte[]",
             "returnDescription": "The column value; null if the value was SQL NULL.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L175"
           },
           {
             "method": "getClob(Integer)",
@@ -30990,8 +30990,8 @@
             "description": "For documentation of this method, see \njava.sql.ResultSet#getClob(int).",
             "returnType": "JdbcClob",
             "returnDescription": "The value of the designated column in the current row of this result set as a clob.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L186"
           },
           {
             "method": "getClob(String)",
@@ -30999,8 +30999,8 @@
             "description": "For documentation of this method, see \njava.sql.ResultSet#getClob(String).",
             "returnType": "JdbcClob",
             "returnDescription": "The value of the designated column in the current row of this result set as a clob.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L186"
           },
           {
             "method": "getConcurrency()",
@@ -31009,7 +31009,7 @@
             "returnType": "Integer",
             "returnDescription": "The concurrency type, which is either Jdbc.ResultSet.CONCUR_READ_ONLY or Jdbc.ResultSet.CONCUR_UPDATABLE.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L210"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L263"
           },
           {
             "method": "getCursorName()",
@@ -31017,8 +31017,8 @@
             "description": "For documentation of this method, see \njava.sql.ResultSet#getCursorName().",
             "returnType": "String",
             "returnDescription": "The SQL name for this result set's cursor.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L216"
           },
           {
             "method": "getDate(Integer)",
@@ -31027,7 +31027,7 @@
             "returnType": "JdbcDate",
             "returnDescription": "The column value; null if the value was SQL NULL.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L155"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L162"
           },
           {
             "method": "getDate(Integer,String)",
@@ -31036,7 +31036,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L155"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L162"
           },
           {
             "method": "getDate(String)",
@@ -31045,7 +31045,7 @@
             "returnType": "JdbcDate",
             "returnDescription": "The column value; null if the value was SQL NULL.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L155"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L162"
           },
           {
             "method": "getDate(String,String)",
@@ -31054,7 +31054,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L155"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L162"
           },
           {
             "method": "getDouble(Integer)",
@@ -31063,7 +31063,7 @@
             "returnType": "Number",
             "returnDescription": "The column value; 0 if the value was SQL NULL.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L146"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L151"
           },
           {
             "method": "getDouble(String)",
@@ -31072,7 +31072,7 @@
             "returnType": "Number",
             "returnDescription": "The column value; 0 if the value was SQL NULL.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L146"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L151"
           },
           {
             "method": "getFetchDirection()",
@@ -31081,7 +31081,7 @@
             "returnType": "Integer",
             "returnDescription": "The specified direction to set, which is either Jdbc.ResultSet.FETCH_FORWARD or\n    Jdbc.ResultSet.FETCH_REVERSE.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L198"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L251"
           },
           {
             "method": "getFetchSize()",
@@ -31090,7 +31090,7 @@
             "returnType": "Integer",
             "returnDescription": "The current fetch size for this result set.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L202"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L255"
           },
           {
             "method": "getFloat(Integer)",
@@ -31099,7 +31099,7 @@
             "returnType": "Number",
             "returnDescription": "The column value; 0 if the value was SQL NULL.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L141"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L145"
           },
           {
             "method": "getFloat(String)",
@@ -31108,7 +31108,7 @@
             "returnType": "Number",
             "returnDescription": "The column value; 0 if the value was SQL NULL.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L141"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L145"
           },
           {
             "method": "getHoldability()",
@@ -31126,7 +31126,7 @@
             "returnType": "Integer",
             "returnDescription": "The column value; 0 if the value was SQL NULL.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L123"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L127"
           },
           {
             "method": "getInt(String)",
@@ -31135,7 +31135,7 @@
             "returnType": "Integer",
             "returnDescription": "The column value; 0 if the value was SQL NULL.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L123"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L127"
           },
           {
             "method": "getLong(Integer)",
@@ -31144,7 +31144,7 @@
             "returnType": "Integer",
             "returnDescription": "The column value; 0 if the value was SQL NULL.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L128"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L132"
           },
           {
             "method": "getLong(String)",
@@ -31153,7 +31153,7 @@
             "returnType": "Integer",
             "returnDescription": "The column value; 0 if the value was SQL NULL.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L128"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L132"
           },
           {
             "method": "getMetaData()",
@@ -31162,7 +31162,7 @@
             "returnType": "JdbcResultSetMetaData",
             "returnDescription": "The number, types, and properties of this result set's columns.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L175"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L228"
           },
           {
             "method": "getNClob(Integer)",
@@ -31207,7 +31207,7 @@
             "returnType": "Object",
             "returnDescription": "The value of the designated column in the current row of this result set.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L164"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L171"
           },
           {
             "method": "getObject(String)",
@@ -31216,7 +31216,7 @@
             "returnType": "Object",
             "returnDescription": "The value of the designated column in the current row of this result set.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L164"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L171"
           },
           {
             "method": "getRef(Integer)",
@@ -31243,7 +31243,7 @@
             "returnType": "Integer",
             "returnDescription": "The current row number, or 0 if there is no current row.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L112"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L116"
           },
           {
             "method": "getRowId(Integer)",
@@ -31288,7 +31288,7 @@
             "returnType": "Integer",
             "returnDescription": "The column value; 0 if the value was SQL NULL.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L132"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L136"
           },
           {
             "method": "getShort(String)",
@@ -31297,7 +31297,7 @@
             "returnType": "Integer",
             "returnDescription": "The column value; 0 if the value was SQL NULL.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L132"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L136"
           },
           {
             "method": "getStatement()",
@@ -31306,7 +31306,7 @@
             "returnType": "JdbcStatement",
             "returnDescription": "The statement that produced this result set, or null if the result set was\n    produced some other way.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L222"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L275"
           },
           {
             "method": "getString(Integer)",
@@ -31315,7 +31315,7 @@
             "returnType": "String",
             "returnDescription": "The column value; null if the value was SQL NULL.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L118"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L122"
           },
           {
             "method": "getString(String)",
@@ -31324,7 +31324,7 @@
             "returnType": "String",
             "returnDescription": "The column value; null if the value was SQL NULL.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L118"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L122"
           },
           {
             "method": "getTime(Integer)",
@@ -31333,7 +31333,7 @@
             "returnType": "JdbcTime",
             "returnDescription": "The column value; null if the value was SQL NULL.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L160"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L167"
           },
           {
             "method": "getTime(Integer,String)",
@@ -31342,7 +31342,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L160"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L167"
           },
           {
             "method": "getTime(String)",
@@ -31351,7 +31351,7 @@
             "returnType": "JdbcTime",
             "returnDescription": "The column value; null if the value was SQL NULL.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L160"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L167"
           },
           {
             "method": "getTime(String,String)",
@@ -31360,7 +31360,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L160"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L167"
           },
           {
             "method": "getTimestamp(Integer)",
@@ -31369,7 +31369,7 @@
             "returnType": "JdbcTimestamp",
             "returnDescription": "The column value; null if the value was SQL NULL.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L160"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L167"
           },
           {
             "method": "getTimestamp(Integer,String)",
@@ -31378,7 +31378,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L160"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L167"
           },
           {
             "method": "getTimestamp(String)",
@@ -31387,7 +31387,7 @@
             "returnType": "JdbcTimestamp",
             "returnDescription": "The column value; null if the value was SQL NULL.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L160"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L167"
           },
           {
             "method": "getTimestamp(String,String)",
@@ -31396,7 +31396,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L160"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L167"
           },
           {
             "method": "getType()",
@@ -31405,7 +31405,7 @@
             "returnType": "Integer",
             "returnDescription": "The type of this result set, which is one of Jdbc.ResultSet.TYPE_FORWARD_ONLY,\n    Jdbc.ResultSet.TYPE_SCROLL_INSENSITIVE, or Jdbc.ResultSet.TYPE_SCROLL_INSENSITIVE.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L206"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L259"
           },
           {
             "method": "getURL(Integer)",
@@ -31414,7 +31414,7 @@
             "returnType": "String",
             "returnDescription": "The URL value of the designated column in the current row of this result set.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L194"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L247"
           },
           {
             "method": "getURL(String)",
@@ -31423,7 +31423,7 @@
             "returnType": "String",
             "returnDescription": "The URL value of the designated column in the current row of this result set.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L194"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L247"
           },
           {
             "method": "getWarnings()",
@@ -31432,7 +31432,7 @@
             "returnType": "String[]",
             "returnDescription": "The current set of warnings.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L226"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L279"
           },
           {
             "method": "insertRow()",
@@ -31450,7 +31450,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the cursor is after the last row; false if it is in any other\n    position or if the result set contains no rows.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L92"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L96"
           },
           {
             "method": "isBeforeFirst()",
@@ -31459,7 +31459,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the cursor is before the first row; false if it is in any other\n    position or if the result set contains no rows.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L97"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L101"
           },
           {
             "method": "isClosed()",
@@ -31468,7 +31468,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if this result set is closed; false otherwise.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L11"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L15"
           },
           {
             "method": "isFirst()",
@@ -31477,7 +31477,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the cursor is on the first row; false otherwise.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L102"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L106"
           },
           {
             "method": "isLast()",
@@ -31486,7 +31486,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the cursor is on the last row; false otherwise.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L107"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L111"
           },
           {
             "method": "last()",
@@ -31495,7 +31495,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the cursor is on a valid row; false if there are no rows in the\n    result set.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L13"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L17"
           },
           {
             "method": "moveToCurrentRow()",
@@ -31522,7 +31522,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the new current row is valid; false otherwise.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L20"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L24"
           },
           {
             "method": "previous()",
@@ -31531,7 +31531,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the cursor is on a valid row; false if the cursor is positioned\n    before the first row.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L80"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L84"
           },
           {
             "method": "refreshRow()",
@@ -31549,7 +31549,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the cursor is on a row; false otherwise.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L88"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L92"
           },
           {
             "method": "rowDeleted()",
@@ -31585,7 +31585,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L214"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L267"
           },
           {
             "method": "setFetchSize(Integer)",
@@ -31594,7 +31594,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L218"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L271"
           },
           {
             "method": "updateArray(Integer,JdbcArray)",
@@ -32044,7 +32044,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the last column read was SQL NULL; false otherwise.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L47"
+            "implementationLink": "src/services/jdbc/fakejdbcresultset.js#L51"
           }
         ]
       },

@@ -38,7 +38,7 @@
   },
   "name": "@mcpher/gas-fakes",
   "author": "bruce mcpherson",
-  "version": "2.3.5",
+  "version": "2.3.6",
   "license": "MIT",
   "main": "main.js",
   "description": "An implementation of the Google Workspace Apps Script runtime: Run native App Script Code on Node and Cloud Run",
