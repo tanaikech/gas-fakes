@@ -57,11 +57,18 @@ The `gas-fakes` project is complex, and bridging Node.js with GAS involves many 
   4. Ensure your local machine's IP address is authorized on the Cloud SQL instance.
 - **Node URL Parsing**: Avoid passing connection strings with instance names (colons) directly into standard Node.js URL parsers (like `new URL()`), as it will fail. Ensure the string is formatted as `[protocol://]user:pass@host/db` or parse the parameters manually.
 
-### Database Connection Strings with Existing Query Parameters (e.g. Neon Postgres)
-- Neon database URLs frequently use query parameters like `?channel_binding=require&sslmode=require` appended to the database name.
-- When parsing these URLs manually using regex (e.g. converting it to a standard `standardUrl` string via concatenation), ensure you check if the matched `db` parameter string *already* contains a `?`.
-- If the `db` parameter already has a `?`, you **must append additional connection parameters using `&`**.
-- Example Issue: Concatenating `?user=...` directly to a DB string that is `neondb?channel_binding=require` results in `neondb?channel_binding=require?user=...`. The Node `pg` client parser will choke on the double `?`, drop the explicit username credential entirely, fall back to authenticating with the OS system user (which will fail), and throw a confusing "password authentication failed" error.
+### Apps Script JDBC Data Types & Results
+- **BigDecimal Handling**: `JdbcResultSet.getBigDecimal()` returns a `JdbcBigDecimal` object on live GAS. This is a Java proxy that may NOT expose standard Java methods like `doubleValue()`. To get a numeric value safely across all platforms, use `Number(val)` or `parseFloat(val.toString())`.
+- **Column Resolution**: `JdbcResultSet` methods (e.g., `getString()`) support both 1-indexed integers and string column labels. Ensure the fake implementation resolves both using `findColumn`.
+
+### JDBC Driver Compatibility (Live GAS)
+- **Semicolons in Prepared Statements**: Avoid trailing semicolons (`;`) in strings passed to `prepareStatement`. Some drivers (e.g., MySQL on GAS) may fail to recognize `?` placeholders if a semicolon is present.
+- **Connection Methods**:
+  - **MySQL (Google Cloud)**: MUST use `Jdbc.getCloudSqlConnection`.
+  - **MySQL (Other/External)**: MUST use `Jdbc.getConnection`.
+  - **PostgreSQL (All)**: MUST use `Jdbc.getConnection`.
+- **Parameter Index Errors (MySQL 8+)**: For external MySQL databases (e.g., Aiven), the `prepareStatement` method may fail with `Parameter index out of range (1 > 0)` because the older GAS driver cannot parse placeholders in modern MySQL 8+ protocols.
+  - **Workaround**: Implement a `try/catch` fallback to standard `Statement.execute()` with manually escaped values if `prepareStatement` fails for MySQL backends.
 
 ## Delivery
 - Output the complete code for modified or newly created service classes and test scripts.

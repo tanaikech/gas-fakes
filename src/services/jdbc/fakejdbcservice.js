@@ -7,12 +7,12 @@ class FakeJdbcService {
     this.__fakeObjectType = 'Jdbc';
   }
 
-  /**
+    /**
    * Connects to a JDBC database.
    * In gas-fakes, we primarily support postgres via pg module, mapping jdbc:postgresql to it.
    * 
    * @param {string} url The URL of the database to connect to.
-   * @param {string} user (optional) The user name to connect as.
+   * @param {string|object} user (optional) The user name to connect as, or an object of property/value pairs.
    * @param {string} password (optional) The password for the user.
    * @returns {JdbcConnection} A JDBC connection object.
    */
@@ -24,39 +24,49 @@ class FakeJdbcService {
     }
 
     // Explicitly merge user/password into the URL structure for gas-fakes processing
-    if (user !== undefined && user !== null && password !== undefined && password !== null) {
-      try {
-        const cleanUrl = finalUrl.replace(/^jdbc:google:/, '').replace(/^jdbc:/, '');
-        const urlObj = new URL(cleanUrl);
-        urlObj.username = encodeURIComponent(String(user));
-        urlObj.password = encodeURIComponent(String(password));
-        
-        // Restore the prefix
-        let prefix = "jdbc:";
-        if (finalUrl.startsWith("jdbc:google:")) prefix = "jdbc:google:";
-        finalUrl = prefix + urlObj.toString();
-      } catch (e) {
-        // Fallback for malformed URLs
+    if (typeof user === 'object' && user !== null) {
+      // Handling info object
+      const info = user;
+      const u = info.user || info.userName;
+      const p = info.password;
+      if (u && p) {
+        finalUrl = this._mergeCredentials(finalUrl, u, p);
       }
+      // Note: other info properties aren't currently merged into the URL string,
+      // but Syncit.fxJdbcConnect will receive the info object anyway.
+    } else if (user !== undefined && user !== null && password !== undefined && password !== null) {
+      finalUrl = this._mergeCredentials(finalUrl, user, password);
     }
     
-    // We intentionally pass undefined for user and password so the worker only sees finalUrl
-    return newFakeJdbcConnection(finalUrl, undefined, undefined);
+    // Pass user (which might be the info object) and password to the connection
+    return newFakeJdbcConnection(finalUrl, user, password);
+  }
+
+  _mergeCredentials(url, user, password) {
+    try {
+      const cleanUrl = url.replace(/^jdbc:google:/, '').replace(/^jdbc:/, '');
+      const urlObj = new URL(cleanUrl);
+      urlObj.username = encodeURIComponent(String(user));
+      urlObj.password = encodeURIComponent(String(password));
+      
+      // Restore the prefix
+      let prefix = "jdbc:";
+      if (url.startsWith("jdbc:google:")) prefix = "jdbc:google:";
+      return prefix + urlObj.toString();
+    } catch (e) {
+      return url; // Fallback for malformed URLs
+    }
   }
 
   /**
-   * Connects to a Google Cloud SQL instance - but on gas-fakes its the same thing
+   * Connects to a Google Cloud SQL instance.
    * @param {string} url The URL of the database to connect to.
-   * @param {string} user (optional) The user name to connect as.
+   * @param {string|object} user (optional) The user name to connect as, or an object of property/value pairs.
    * @param {string} password (optional) The password for the user.
    * @returns {JdbcConnection} A JDBC connection object.
    */
   getCloudSqlConnection(url, user, password) {
-    return this.getConnection (url, user, password)
-  }
-
-  parseCsv(csv) {
-    throw new Error('Not implemented: parseCsv');
+    return this.getConnection(url, user, password);
   }
 
   __useProxy  (val) {
@@ -90,7 +100,7 @@ class FakeJdbcService {
 
     const cleanUrl = url.replace(/^jdbc:google:/, "").replace(/^jdbc:/, "");
 
-    let scheme, user, pass, host, db;
+    let scheme, user, pass, host, db, searchString = "";
 
     try {
       const parsed = new URL(cleanUrl);
@@ -110,7 +120,7 @@ class FakeJdbcService {
       remainingParams.delete('user');
       remainingParams.delete('password');
       
-      const searchString = remainingParams.toString();
+      searchString = remainingParams.toString();
       if (searchString) {
         db = `${db}?${searchString}`;
       }
@@ -181,7 +191,7 @@ class FakeJdbcService {
     // Live Apps Script Java JDBC requires properly encoded URI components to prevent "Connection URL is malformed"
     const gasAuthQuery = (encodedUser || encodedPass) ? `?user=${encodedUser}&password=${encodedPass}` : '';
     
-    // --- GAS ---
+    // --- GAS --- (Rule 3: Strip ALL SSL/Tunneling parameters)
     let gasUrl, gasConnectionString, gasFullConnectionString;
     let isCloudSqlConnection = false;
 
@@ -192,8 +202,8 @@ class FakeJdbcService {
       isCloudSqlConnection = true;
     } else {
       gasUrl = `${protocol}${remoteHost}/${pureDb}`;
-      gasConnectionString = `${protocol}${remoteHost}/${pureDb}`;
-      // Drop all original query parameters, only append explicit unencoded user, password, and ssl
+      gasConnectionString = gasUrl;
+      // Single-argument getConnection is discouraged on GAS, but if used, only append credentials
       gasFullConnectionString = `${protocol}${remoteHost}/${pureDb}${gasAuthQuery}`;
     }
 

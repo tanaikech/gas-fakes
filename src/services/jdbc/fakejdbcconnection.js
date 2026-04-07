@@ -1,6 +1,7 @@
 import { Proxies } from '../../support/proxies.js';
 import { Syncit } from '../../support/syncit.js';
 import { newFakeJdbcStatement } from './fakejdbcstatement.js';
+import { newFakeJdbcPreparedStatement } from './fakejdbcpreparedstatement.js';
 
 class FakeJdbcConnection {
   constructor(url, user, password) {
@@ -21,11 +22,43 @@ class FakeJdbcConnection {
     return newFakeJdbcStatement(this._connectionId);
   }
 
+  prepareStatement(sql) {
+    return newFakeJdbcPreparedStatement(this._connectionId, sql);
+  }
+
+  commit() {
+    Syncit.fxJdbcCommit(this._connectionId);
+  }
+
+  rollback() {
+    Syncit.fxJdbcRollback(this._connectionId);
+  }
+
+  setAutoCommit(autoCommit) {
+    Syncit.fxJdbcSetAutoCommit(this._connectionId, autoCommit);
+  }
+
+  getAutoCommit() {
+    // We don't currently track this in the proxy, but GAS default is true
+    return true; 
+  }
+
   getMetaData() {
     // Return an object that mimics DatabaseMetaData
+    const url = this._url;
     return Proxies.guard({
       __fakeObjectType: 'JdbcDatabaseMetaData',
-      getURL: () => this._url
+      getURL: () => url,
+      getUserName: () => {
+         try {
+           const u = new URL(url.replace(/^jdbc:google:/, '').replace(/^jdbc:/, ''));
+           return u.username;
+         } catch(e) { return "unknown"; }
+      },
+      getDatabaseProductName: () => url.includes("postgres") ? "PostgreSQL" : "MySQL",
+      getDatabaseProductVersion: () => "Unknown",
+      getDriverName: () => "gas-fakes-jdbc-driver",
+      getDriverVersion: () => "1.0"
     });
   }
 

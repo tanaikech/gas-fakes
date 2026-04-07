@@ -70,7 +70,8 @@ import { testKSuiteDrive } from './testksuitedrive.js';
 import { testKSuiteDriveSharing } from './testksuitedrivesharing.js';
 import { testMsGraphDrive } from './testmsgraphdrive.js';
 import { testMsGraphExcel } from './testmsgraphexcel.js';
-// important - run this last for now - see https://github.com/brucemcpherson/gas-fakes/issues/118
+import { testJdbc } from "./testjdbc.js";
+import { testJdbcAdv } from "./testjdbcadv.js";
 import { testGmail } from "./testgmail.js";
 import { testSandboxGmail } from "./testsandboxgmail.js";
 
@@ -78,6 +79,9 @@ import { testSandboxGmail } from "./testsandboxgmail.js";
 export const testFakes = () => {
   const pack = initTests();
   const { unit } = pack;
+
+  console.log("\n----Test JDBC Advanced----");
+  testJdbcAdv(pack);
 
   console.log("\n----Test KSuite Integration----");
   testKSuiteDrive(pack);

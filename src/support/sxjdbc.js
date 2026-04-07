@@ -128,20 +128,88 @@ export const sxJdbcQuery = async (Auth, { connectionId, sql }) => {
   
   if (type === 'pg') {
     const result = await client.query(sql);
+    const rows = Array.isArray(result) ? result[result.length - 1].rows : result.rows;
+    const fields = Array.isArray(result) ? result[result.length - 1].fields : result.fields;
+    const rowCount = Array.isArray(result) ? result[result.length - 1].rowCount : result.rowCount;
+    
     return {
-      rows: result.rows,
-      fields: result.fields,
-      rowCount: result.rowCount,
+      rows: rows || [],
+      fields: fields || [],
+      rowCount: rowCount || 0,
     };
   } else if (type === 'mysql') {
     // mysql2 returns [rows, fields]
     const [rows, fields] = await client.query(sql);
     return {
-      rows: rows,
-      fields: fields, // mysql2 fields are objects with name, columnType, etc.
-      rowCount: rows.length || 0,
+      rows: rows || [],
+      fields: fields || [], // mysql2 fields are objects with name, columnType, etc.
+      rowCount: (rows && rows.insertId) ? 1 : (rows && rows.affectedRows) || (rows && rows.length) || 0,
     };
   }
+};
+
+/**
+ * Executes a prepared statement on a given connection.
+ * @param {import('./auth.js').Auth} Auth
+ * @param {object} params
+ * @param {string} params.connectionId The stored connection ID
+ * @param {string} params.sql The SQL query with placeholders
+ * @param {any[]} params.values The parameter values
+ * @returns {object} The query result
+ */
+export const sxJdbcExecutePrepared = async (Auth, { connectionId, sql, values }) => {
+  const entry = connections.get(connectionId);
+  if (!entry) throw new Error('Invalid or closed JDBC connection.');
+  
+  const { client, type } = entry;
+  
+  if (type === 'pg') {
+    // pg uses $1, $2, etc. so we must convert ? to $n
+    let index = 1;
+    const pgSql = sql.replace(/\?/g, () => `$${index++}`);
+    const result = await client.query(pgSql, values);
+    return {
+      rows: result.rows || [],
+      fields: result.fields || [],
+      rowCount: result.rowCount || 0,
+    };
+  } else if (type === 'mysql') {
+    // mysql2 natively supports ? placeholders
+    const [rows, fields] = await client.execute(sql, values);
+    return {
+      rows: rows || [],
+      fields: fields || [],
+      rowCount: (rows && (rows.affectedRows || rows.length)) || 0,
+    };
+  }
+};
+
+export const sxJdbcCommit = async (Auth, { connectionId }) => {
+  return sxJdbcQuery(Auth, { connectionId, sql: 'COMMIT' });
+};
+
+export const sxJdbcRollback = async (Auth, { connectionId }) => {
+  return sxJdbcQuery(Auth, { connectionId, sql: 'ROLLBACK' });
+};
+
+/**
+ * Sets auto-commit mode for the connection.
+ * Note: Node drivers are technically always in a state where BEGIN is needed for transactions.
+ * @param {import('./auth.js').Auth} Auth
+ * @param {object} params
+ * @param {string} params.connectionId The stored connection ID
+ * @param {boolean} params.autoCommit Whether to enable auto-commit
+ */
+export const sxJdbcSetAutoCommit = async (Auth, { connectionId, autoCommit }) => {
+  const entry = connections.get(connectionId);
+  if (!entry) throw new Error('Invalid or closed JDBC connection.');
+  
+  if (!autoCommit) {
+    // If turning off auto-commit, start a transaction
+    await sxJdbcQuery(Auth, { connectionId, sql: 'BEGIN' });
+  }
+  entry.autoCommit = autoCommit;
+  return true;
 };
 
 /**

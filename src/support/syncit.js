@@ -414,13 +414,37 @@ const fxTestRetry = (errorMessage) => {
 
 const fxJdbcConnect = (url, user, password) => {
   const args = { url };
-  if (user !== null && typeof user !== 'undefined') args.user = user;
-  if (password !== null && typeof password !== 'undefined') args.password = password;
+  if (typeof user === 'object' && user !== null) {
+    // Handling info object
+    args.user = user.user || user.userName;
+    args.password = user.password;
+    // We could pass the whole object if the worker was ready for it, 
+    // but for now let's just stick to user/pass.
+  } else {
+    if (user !== null && typeof user !== 'undefined') args.user = user;
+    if (password !== null && typeof password !== 'undefined') args.password = password;
+  }
   return safeCallSync("sxJdbcConnect", args);
 };
 
 const fxJdbcQuery = (connectionId, sql) => {
   return safeCallSync("sxJdbcQuery", { connectionId, sql });
+};
+
+const fxJdbcExecutePrepared = (connectionId, sql, values) => {
+  return safeCallSync("sxJdbcExecutePrepared", { connectionId, sql, values });
+};
+
+const fxJdbcCommit = (connectionId) => {
+  return safeCallSync("sxJdbcCommit", { connectionId });
+};
+
+const fxJdbcRollback = (connectionId) => {
+  return safeCallSync("sxJdbcRollback", { connectionId });
+};
+
+const fxJdbcSetAutoCommit = (connectionId, autoCommit) => {
+  return safeCallSync("sxJdbcSetAutoCommit", { connectionId, autoCommit });
 };
 
 const fxJdbcClose = (connectionId) => {
@@ -497,5 +521,9 @@ export const Syncit = {
   fxTestRetry,
   fxJdbcConnect,
   fxJdbcQuery,
+  fxJdbcExecutePrepared,
+  fxJdbcCommit,
+  fxJdbcRollback,
+  fxJdbcSetAutoCommit,
   fxJdbcClose
 }

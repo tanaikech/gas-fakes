@@ -34,6 +34,14 @@ class FakeJdbcResultSetMetaData {
     if (!field) throw new Error(`Invalid column index: ${column}`);
     return `TYPE_${field.dataTypeID}`; // basic fallback
   }
+
+  getTableName(column) {
+    return "";
+  }
+
+  getSchemaName(column) {
+    return "";
+  }
 }
 
 export const newFakeJdbcResultSetMetaData = (...args) => Proxies.guard(new FakeJdbcResultSetMetaData(...args));
