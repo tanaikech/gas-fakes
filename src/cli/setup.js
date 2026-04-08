@@ -5,7 +5,7 @@ import path from "path";
 import os from "os";
 import { randomUUID } from "node:crypto";
 import { execSync } from "child_process";
-import { checkForGcloudCli, runCommandSync } from "./utils.js";
+import { checkForGcloudCli, runCommandSync, runCommandWithRetrySync } from "./utils.js";
 import { getMsGraphToken, mapGasScopesToMsGraph } from "../support/msgraph/msauth.js";
 
 // --- Utility Functions ---
@@ -794,9 +794,9 @@ export async function authenticateUser(options = {}) {
         }
 
         console.log("...applying IAM permissions");
-        runCommandSync(`gcloud projects add-iam-policy-binding "${projectId}" --member="serviceAccount:${sa_email}" --role="roles/editor" --quiet`, true);
-        runCommandSync(`gcloud iam service-accounts add-iam-policy-binding "${sa_email}" --member="serviceAccount:${sa_email}" --role="roles/iam.serviceAccountTokenCreator" --quiet`, true);
-        runCommandSync(`gcloud iam service-accounts add-iam-policy-binding "${sa_email}" --member="user:${current_user}" --role="roles/iam.serviceAccountTokenCreator" --quiet`, true);
+        runCommandWithRetrySync(`gcloud projects add-iam-policy-binding "${projectId}" --member="serviceAccount:${sa_email}" --role="roles/editor" --quiet`, true);
+        runCommandWithRetrySync(`gcloud iam service-accounts add-iam-policy-binding "${sa_email}" --member="serviceAccount:${sa_email}" --role="roles/iam.serviceAccountTokenCreator" --quiet`, true);
+        runCommandWithRetrySync(`gcloud iam service-accounts add-iam-policy-binding "${sa_email}" --member="user:${current_user}" --role="roles/iam.serviceAccountTokenCreator" --quiet`, true);
 
         const saUniqueId = execSync(`gcloud iam service-accounts describe "${sa_email}" --format="value(uniqueId)"`, { shell: true }).toString().trim();
         console.log(`\n\x1b[1;33m*************************************************************************************************`);

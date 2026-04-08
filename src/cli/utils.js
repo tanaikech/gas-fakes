@@ -100,6 +100,27 @@ export function runCommandSync(command, silent = false) {
 }
 
 /**
+ * Helper function to run a shell command sync with retries (useful for GCP eventual consistency).
+ */
+export function runCommandWithRetrySync(command, silent = false, retries = 5, delay = 5000) {
+  for (let i = 0; i <= retries; i++) {
+    try {
+      execSync(command, { stdio: silent ? "ignore" : "inherit", shell: true });
+      return;
+    } catch (error) {
+      if (i < retries) {
+        console.log(`...command failed, retrying in ${delay / 1000}s (${i + 1}/${retries})...`);
+        const start = Date.now();
+        while (Date.now() - start < delay);
+        continue;
+      }
+      console.error(`\nError executing command after ${retries} retries: ${command}`);
+      process.exit(1);
+    }
+  }
+}
+
+/**
  * Parses sandbox-related CLI options into a structured config object.
  */
 export function buildSandboxConfig(options) {

@@ -3,3 +3,5 @@ gaslibtests
 gasmess
 shells
 src_gas
+**/node_modules
+**/.DS_Store
