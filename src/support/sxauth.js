@@ -68,7 +68,7 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, cachePath,
         syncLog(`...appsscript.json missing or missing scopes. Emulating manifest using scopes from .env file`);
       }
     } else if (!_loggedSummary) {
-      syncWarn(`...Warning: No appsscript.json found and no DEFAULT_SCOPES/EXTRA_SCOPES defined in .env. Downstream API calls may fail with 'insufficient authentication scopes'.`);
+      syncWarn(`...Warning: No appsscript.json found and .env file missing or no DEFAULT_SCOPES/EXTRA_SCOPES defined in .env. Downstream API calls may fail with 'insufficient authentication scopes'.`);
     }
   }
 
@@ -98,6 +98,26 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, cachePath,
       const scopeSet = new Set(scopes)
       mandatoryScopes.forEach(scope => scopeSet.add(scope))
       const finalScopes = Array.from(scopeSet)
+
+      // Check for file-type scopes that also require Drive scope
+      const hasWorkspaceFileScope = finalScopes.some(s => 
+        s.includes('auth/spreadsheets') || 
+        s.includes('auth/documents') || 
+        s.includes('auth/presentations') || 
+        s.includes('auth/forms')
+      );
+      const hasDriveScope = finalScopes.some(s => s.includes('auth/drive'));
+
+      if (hasWorkspaceFileScope && !hasDriveScope && !_loggedSummary) {
+        const envScopesStr = (process.env.DEFAULT_SCOPES || "") + "," + (process.env.EXTRA_SCOPES || "");
+        const envHasDrive = envScopesStr.includes("auth/drive");
+        
+        if (envHasDrive) {
+          syncWarn(`...Warning: A Workspace file scope (e.g., spreadsheets) was requested, but the Drive scope is missing from your appsscript.json. Your .env file permits Drive access, so please add "https://www.googleapis.com/auth/drive" to your appsscript.json.`);
+        } else {
+          syncWarn(`...Warning: A Workspace file scope (e.g., spreadsheets) was requested, but the Drive scope is missing. Please add "https://www.googleapis.com/auth/drive" to your appsscript.json and .env file (EXTRA_SCOPES), then re-run 'gas-fakes auth' to re-authenticate.`);
+        }
+      }
 
       await Auth.setAuth(finalScopes);
 

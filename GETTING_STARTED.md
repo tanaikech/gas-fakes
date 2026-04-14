@@ -47,6 +47,19 @@ Run the initialization command:
 ```bash
 gas-fakes init
 ```
+## A note on insufficient scopes
+
+The .env file and the manifest file play different roles:
+- the manifest file in the folder from which you run `gas-fakes init` informs the auth process of all the scopes you might ever want to use in all the scripts in your project.
+- the .env file will hold a record of these scopes and will be used by `gas-fakes auth` to request them. 
+
+When you run a script, the manifest local to that script is read to determine the scopes required for the script. It can be a different one to the one you used to perform the auth process. If no manifest is found, then the all the scopes that were authorized are used for your script. If a mnifest is found ist should have all or a subset of the scopes you specified in your original manifest. If you request a scope in a manifest that was not authorized in the original manifest, then the script will fail with an insufficient scopes error.
+
+This is by design to allow you to specify least permissive scopes for individual scripts in your project, while avoiding a separate auth process for each of them. 
+
+### The Drive scope
+
+When you need a scope like Spreadsheets, which accesses Drive behind the scenes, you should explicitly ask for Drive scope too. Live Apps Script implicitly allows Drive access for such services, but `gas-fakes` does not in order to ensure that you are in complete control of scope authorization.
 
 ### Supported Backends
 
@@ -170,6 +183,8 @@ const root = DriveApp.getRootFolder(); // Returns Google Drive root
 - [github actions using dwd and wif](https://github.com/brucemcpherson/gas-fakes-actions-dwd)
 - [ksuite as a back end](ksuite_poc.md)
 - [msgraph as a back end](msgraph.md)
+- [resurrecting scriptDb repo](https://github.com/brucemcpherson/scriptdb-redux)
+- [Resurrecting ScriptDb – nosql database for Apps Script](https://ramblings.mcpher.com/resurrecting-scriptdb-nosql-database-for-apps-script/)
 - [gas-fakes in serverless containers](https://docs.google.com/presentation/d/1JlXF9T--DD4ERHopyP3WyAMhjRCxxHblgCP5ynxaJ3k/edit?usp=sharing)
 - [apps script - a lingua franca for workspace platforms](https://ramblings.mcpher.com/apps-script-a-lingua-franca/)
 - [Apps Script: A ‘Lingua Franca’ for the Multi-Cloud Era](https://ramblings.mcpher.com/apps-script-with-ksuite/)
