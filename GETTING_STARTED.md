@@ -53,7 +53,7 @@ The .env file and the manifest file play different roles:
 - the manifest file in the folder from which you run `gas-fakes init` informs the auth process of all the scopes you might ever want to use in all the scripts in your project.
 - the .env file will hold a record of these scopes and will be used by `gas-fakes auth` to request them. 
 
-When you run a script, the manifest local to that script is read to determine the scopes required for the script. It can be a different one to the one you used to perform the auth process. If no manifest is found, then the all the scopes that were authorized are used for your script. If a mnifest is found ist should have all or a subset of the scopes you specified in your original manifest. If you request a scope in a manifest that was not authorized in the original manifest, then the script will fail with an insufficient scopes error.
+When you run a script, the manifest local to that script is read to determine the scopes required for the script. It can be a different one to the one you used to perform the auth process. If no manifest is found, then the all the scopes that were authorized are used for your script. If a manifest is found it should have all, or a subset of the scopes you specified in your original manifest. If you request a scope in a manifest that was not authorized in the original manifest, then the script will fail with an insufficient scopes error.
 
 This is by design to allow you to specify least permissive scopes for individual scripts in your project, while avoiding a separate auth process for each of them. 
 
