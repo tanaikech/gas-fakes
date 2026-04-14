@@ -65,7 +65,7 @@ async function findEnvFiles(dir) {
 // --- Exported Command Implementations ---
 
 export async function initializeConfiguration(options = {}) {
-  console.log("...gas-fakes init v2.2.4 starting");
+  console.log("...gas-fakes init starting");
   let envPath;
 
   // need to figure out which env file we are operating on
