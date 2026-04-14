@@ -67,6 +67,8 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, cachePath,
       if (!_loggedSummary) {
         syncLog(`...appsscript.json missing or missing scopes. Emulating manifest using scopes from .env file`);
       }
+    } else if (!_loggedSummary) {
+      syncWarn(`...Warning: No appsscript.json found and no DEFAULT_SCOPES/EXTRA_SCOPES defined in .env. Downstream API calls may fail with 'insufficient authentication scopes'.`);
     }
   }
 
