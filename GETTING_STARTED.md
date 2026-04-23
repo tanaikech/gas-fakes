@@ -13,6 +13,9 @@ This guide provides a consolidated set of instructions to get you up and running
 
 The key principle is to use the exact same synchronous code you would write for Apps Script. `gas-fakes` handles the complexities of authentication and the asynchronous nature of the underlying Google Workspace APIs for you.
 
+### Natural Language Automation with `@gf_agent`
+You can now use the specialized `gf_agent` skill for Gemini CLI to automate tasks using natural language. The `gas-fakes init` process will offer to automatically install this skill and configure the built-in MCP server for you. This allows you to perform complex Workspace operations—like searching Drive or summarizing emails—using plain English prompts directly from your terminal. For more information, see the [gf_agent README](gf_agent/README.md).
+
 ## Prerequisites
 
 1.  **Node.js**: A current version of Node.js installed on your machine.

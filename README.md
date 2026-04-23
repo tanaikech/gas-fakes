@@ -22,6 +22,9 @@ Collaborators should fork the repo and use the local versions of these files - s
 ## Usage
 Just as on Apps Script, everything is executed synchronously so you don't need to bother with handling Promises/async/await. Just write normal Apps Script code. Usually you would have an associated App Script project if that's your eventual target. Just like Apps Script, you need a manifest file (appsscript.json) so you can be sure that the correct scopes are authorized and asked for.
 
+### Natural Language Automation with `@gf_agent`
+With the introduction of the `gf_agent` skill for Gemini CLI and the built-in MCP server, you can now automate Google Workspace tasks using natural language. This specialized agent understands the full range of `gas-fakes` services and can generate and execute code locally based on your plain English prompts. Whether it's summarizing emails in a Google Doc or analyzing spreadsheet data, you can now do it directly from your terminal using plain English. See the [gf_agent documentation](gf_agent/README.md) for more details.
+
 > **Note on `appsscript.json`:** For full fidelity with live Apps Script, you should have a manifest available. However, as a workaround for "pure" `gas-fakes` projects where there is no intention to run in live Apps Script, if `appsscript.json` is missing or has no scopes, the runtime will automatically emulate one using the `DEFAULT_SCOPES` and `EXTRA_SCOPES` defined in your `.env` file, and will default the script's `timeZone` to `America/New_York` (or `GF_TIMEZONE`).
 
 # gas-fakes-cli
