@@ -4639,8 +4639,8 @@
             "description": "Gets the date and time of this message.",
             "returnType": "Date",
             "returnDescription": "The date and time of this message.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailmessage.js#L60"
           },
           {
             "method": "getFrom()",
@@ -4648,8 +4648,8 @@
             "description": "Gets the sender of this message.",
             "returnType": "String",
             "returnDescription": "The email address of the message sender.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailmessage.js#L82"
           },
           {
             "method": "getHeader(String)",
@@ -4657,8 +4657,8 @@
             "description": "Gets the value of an RFC 2822 header given the header name.",
             "returnType": "String",
             "returnDescription": "The value of the header, or an empty string if the header doesn't exist in the message.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailmessage.js#L39"
           },
           {
             "method": "getId()",
@@ -4702,8 +4702,8 @@
             "description": "Gets the subject of this message.",
             "returnType": "String",
             "returnDescription": "The subject of this message.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailmessage.js#L51"
           },
           {
             "method": "getThread()",
@@ -4720,8 +4720,8 @@
             "description": "Gets the comma-separated recipients of this message.",
             "returnType": "String",
             "returnDescription": "The comma-separated recipients of this message.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailmessage.js#L91"
           },
           {
             "method": "isDraft()",
@@ -4900,7 +4900,7 @@
             "returnType": "GmailThread",
             "returnDescription": "this thread, useful for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailthread.js#L62"
+            "implementationLink": "src/services/gmailapp/fakegmailthread.js#L79"
           },
           {
             "method": "createDraftReply(String)",
@@ -4963,7 +4963,7 @@
             "returnType": "GmailLabel[]",
             "returnDescription": "an array of labels for this thread",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailthread.js#L27"
+            "implementationLink": "src/services/gmailapp/fakegmailthread.js#L44"
           },
           {
             "method": "getLastMessageDate()",
@@ -4989,8 +4989,8 @@
             "description": "Gets the messages in this thread.",
             "returnType": "GmailMessage[]",
             "returnDescription": "an array of Gmail messages in this thread",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailthread.js#L27"
           },
           {
             "method": "getPermalink()",
@@ -5152,7 +5152,7 @@
             "returnType": "GmailThread",
             "returnDescription": "this thread, useful for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailthread.js#L156"
+            "implementationLink": "src/services/gmailapp/fakegmailthread.js#L173"
           },
           {
             "method": "reply(String)",

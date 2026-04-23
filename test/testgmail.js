@@ -301,6 +301,13 @@ export const testGmail = (pack) => {
     t.true(is.nonEmptyString(message.getId()), 'message should have an ID');
     t.is(message.toString(), 'GmailMessage', 'message.toString() should be GmailMessage');
     t.is(message.getId(), createdMessageId, 'retrieved message ID should match created message ID');
+    
+    // Test the newly added methods for GmailMessage
+    t.is(message.getSubject(), subject, 'getSubject() should return the draft subject');
+    t.true(message.getDate() instanceof Date, 'getDate() should return a valid Date object');
+    t.true(is.string(message.getSnippet()), 'getSnippet() should return a string');
+    t.true(is.string(message.getFrom()), 'getFrom() should return a string');
+    t.true(is.string(message.getTo()), 'getTo() should return a string');
   });
 
   // Tests for getThreadById
@@ -335,6 +342,12 @@ export const testGmail = (pack) => {
       t.is(message.toString(), 'GmailMessage', 'each item should be a GmailMessage');
       t.true(is.nonEmptyString(message.getId()), 'each message should have an ID');
     });
+    
+    // Test the newly added getMessages() method on GmailThread
+    const threadMessages = thread.getMessages();
+    t.true(is.array(threadMessages), 'thread.getMessages() should return an array');
+    t.true(threadMessages.length > 0, 'should return at least one message');
+    t.is(threadMessages[0].getId(), messages[0].getId(), 'thread.getMessages() should return the same messages as GmailApp.getMessagesForThread()');
   });
 
   // Tests for getMessagesForThreads

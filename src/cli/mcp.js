@@ -1,49 +1,15 @@
-import fs from "fs";
-import path from "path";
-import { spawn } from "child_process";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
+import { spawn } from "child_process";
 import { MCP_VERSION } from "./utils.js";
-import { getLibraries } from "./lib-manager.js";
 
 /**
- * Constructs the CLI arguments array for gas-fakes execution.
+ * Executes a GAS script using the gas-fakes CLI logic.
  */
-function buildCliArguments(params) {
-  const {
-    filename,
-    script,
-    args,
-    sandbox,
-    whitelistRead,
-    whitelistReadWrite,
-    whitelistReadWriteTrash,
-    json,
-  } = params;
-
-  const cliArgs = [];
-
-  if (filename) cliArgs.push("-f", filename);
-  if (script) cliArgs.push("-s", script);
-  if (args) cliArgs.push("-a", JSON.stringify(args));
-  if (sandbox) cliArgs.push("-x");
-  if (whitelistRead) cliArgs.push("-w", whitelistRead);
-  if (whitelistReadWrite) cliArgs.push("--ww", whitelistReadWrite);
-  if (whitelistReadWriteTrash) cliArgs.push("--wt", whitelistReadWriteTrash);
-  if (json) cliArgs.push("-j", JSON.stringify(json));
-
-  return cliArgs;
-}
-
-/**
- * Executes the gas-fakes command via child_process.spawn.
- */
-async function runGasFakesProcess(cliArgs) {
+async function runGasFakes(script) {
   return new Promise((resolve) => {
-    // Invoke the current node executable with the current script (gas-fakes.js)
-    // We assume process.argv[1] points to the entry point
-    const child = spawn(process.execPath, [process.argv[1], ...cliArgs], {
+    const child = spawn(process.execPath, [process.argv[1], "-s", script], {
       env: process.env,
       stdio: ["ignore", "pipe", "pipe"],
       shell: false,
@@ -52,222 +18,113 @@ async function runGasFakesProcess(cliArgs) {
     let stdoutData = "";
     let stderrData = "";
 
-    child.stdout.on("data", (data) => {
-      stdoutData += data.toString();
-    });
-
-    child.stderr.on("data", (data) => {
-      stderrData += data.toString();
-    });
+    child.stdout.on("data", (data) => (stdoutData += data.toString()));
+    child.stderr.on("data", (data) => (stderrData += data.toString()));
 
     child.on("close", (code) => {
       if (code === 0) {
         resolve({
-          content: [
-            { type: "text", text: stdoutData || "Execution finished." },
-          ],
+          content: [{ type: "text", text: stdoutData || "Success" }],
           isError: false,
         });
       } else {
-        const output = stderrData || stdoutData || "Unknown error occurred";
         resolve({
-          content: [{ type: "text", text: output }],
+          content: [{ type: "text", text: stderrData || stdoutData || "Error" }],
           isError: true,
         });
       }
     });
-
-    child.on("error", (err) => {
-      resolve({
-        content: [{ type: "text", text: err.message }],
-        isError: true,
-      });
-    });
   });
 }
 
-function registerDefaultTool(server) {
-  const schema1 = {
-    description: [
-      `Use this to safely run Google Apps Script in a sandbox using gas-fakes.`,
-      `# Important`,
-      `- Use the extension of the Google Apps Script files as \`js\`. Don't use \`gs\``,
-      `- When providing script content, ensure functions are called (e.g., add \`sample();\`).`,
-    ].join("\n"),
-    inputSchema: {
-      filename: z
-        .string()
-        .optional()
-        .describe(`Path to the file containing Google Apps Script.`),
-      script: z
-        .string()
-        .optional()
-        .describe(`Direct GAS script content string.`),
-      sandbox: z
-        .boolean()
-        .describe("Use to run Google Apps Script in a sandbox."),
-      whitelistRead: z
-        .string()
-        .optional()
-        .describe("Whitelist of file IDs for readonly access."),
-      whitelistReadWrite: z
-        .string()
-        .optional()
-        .describe("Whitelist of file IDs for read/write access."),
-      whitelistReadWriteTrash: z
-        .string()
-        .optional()
-        .describe("Whitelist of file IDs for read/write/trash access."),
-      json: z.any().optional().describe("Advanced sandbox configuration JSON."),
-    },
-  };
-
-  server.registerTool("run-gas-by-gas-fakes", schema1, async (args) => {
-    if (!args.filename && !args.script) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: "Error: Either `filename` or `script` is required.",
-          },
-        ],
-        isError: true,
-      };
-    }
-    const cliArgs = buildCliArguments(args);
-    return await runGasFakesProcess(cliArgs);
-  });
-
-  const schema2 = {
-    description: "Use this to create the tools of the MCP server...",
-    inputSchema: {
-      filename: z.string().describe("Filename of the tool file (.js)."),
-      tools: z.array(
-        z.object({
-          name: z.string(),
-          schema: z.string(),
-          gas_script: z.string(),
-          libraries: z.array(z.string()).default([]),
-        })
-      ),
-    },
-  };
-
-  server.registerTool("create-new-tools", schema2, async (args) => {
-    if (!args.filename || !args.tools) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: "Error: `filename` and `tools` are required.",
-          },
-        ],
-        isError: true,
-      };
-    }
-
-    const tool_ar = [];
-    for (let i = 0; i < args.tools.length; i++) {
-      const { name, schema, gas_script, libraries } = args.tools[i];
-      tool_ar.push(
-        `{ name: "${name}", schema: ${schema}, func: (object = {}) => { \n\n${gas_script} }, libraries: ${JSON.stringify(
-          libraries || []
-        )} }`
-      );
-    }
-
-    const tool_script = [
-      `import { z } from "zod";`,
-      ``,
-      `const tools = [${tool_ar.join(", ")}];`,
-    ].join("\n");
-    const absolutePath = path.resolve(process.cwd(), args.filename);
-    fs.writeFileSync(absolutePath, tool_script);
-    return {
-      content: [
-        {
-          type: "text",
-          text: `A new file including tools for gas-fakes-mcp was successfully created as "${absolutePath}".`,
-        },
-      ],
-      isError: false,
-    };
-  });
-}
-
-async function registerCustomTools(server, toolsPath) {
-  if (!toolsPath || !fs.existsSync(toolsPath)) {
-    if (toolsPath) console.error(`No tool file: ${toolsPath}`);
-    return;
+const SERVICES = [
+  {
+    name: "spreadsheet_service",
+    description: "Automate Google Sheets: Create, read, and modify spreadsheets, ranges, and formatting.",
+    example: "const ss = SpreadsheetApp.create('Test'); ss.getActiveSheet().getRange('A1').setValue('Hello');"
+  },
+  {
+    name: "document_service",
+    description: "Automate Google Docs: Create and edit documents, paragraphs, tables, and styles.",
+    example: "const doc = DocumentApp.create('Hello'); doc.getBody().appendParagraph('World');"
+  },
+  {
+    name: "drive_service",
+    description: "Manage Google Drive: Search files, create folders, and handle permissions.",
+    example: "const files = DriveApp.getFilesByName('Test'); while(files.hasNext()) console.log(files.next().getName());"
+  },
+  {
+    name: "gmail_service",
+    description: "Automate Gmail: Send emails, search threads, and manage labels.",
+    example: "GmailApp.sendEmail('test@example.com', 'Subject', 'Body');"
+  },
+  {
+    name: "calendar_service",
+    description: "Manage Google Calendar: Create events, list calendars, and handle invitations.",
+    example: "CalendarApp.getDefaultCalendar().createEvent('Meeting', new Date(), new Date());"
+  },
+  {
+    name: "slides_service",
+    description: "Automate Google Slides: Create and edit presentations, slides, and shapes.",
+    example: "const deck = SlidesApp.create('Presentation'); deck.appendSlide().insertShape(SlidesApp.ShapeType.RECTANGLE);"
+  },
+  {
+    name: "forms_service",
+    description: "Automate Google Forms: Create forms, add items, and manage responses.",
+    example: "const form = FormApp.create('Survey'); form.addTextItem().setTitle('Name');"
+  },
+  {
+    name: "jdbc_service",
+    description: "Connect to databases via JDBC: Execute SQL queries and manage connections.",
+    example: "const conn = Jdbc.getConnection(url, user, pass); const stmt = conn.createStatement();"
+  },
+  {
+    name: "utilities_service",
+    description: "General utilities: Formatting, parsing, and base64 encoding/decoding.",
+    example: "const base64 = Utilities.base64Encode('hello');"
+  },
+  {
+    name: "urlfetch_service",
+    description: "HTTP Requests: Fetch external resources and APIs via GET/POST.",
+    example: "const res = UrlFetchApp.fetch('https://api.example.com'); console.log(res.getContentText());"
   }
+];
 
-  const absolutePath = path.resolve(process.cwd(), toolsPath);
-  let toolsStr = fs.readFileSync(absolutePath, "utf8");
-  toolsStr = toolsStr.replace(/^import.*/gm, "");
-  const getTools = new Function("z", `${toolsStr} return tools || [];`);
-  const tools = getTools(z);
-
-  if (!tools || tools.length === 0) return;
-
-  for (let i = 0; i < tools.length; i++) {
-    const tool = tools[i];
-    const extendedSchema = { ...tool.schema };
-    extendedSchema.inputSchema = {
-      gas_args: z
-        .object(tool.schema.inputSchema)
-        .describe("Arguments for Google Apps Script."),
-      sandbox: z.boolean().describe("Run in sandbox."),
-      whitelistRead: z.string().optional(),
-      whitelistReadWrite: z.string().optional(),
-      whitelistReadWriteTrash: z.string().optional(),
-      json: z.any().optional(),
-    };
-
-    let originalFuncStr = tool.func.toString();
-    if (tool.libraries && tool.libraries.length > 0) {
-      const gas_library = await getLibraries({ libraries: tool.libraries });
-
-      if (gas_library && gas_library.length > 0) {
-        const libs = gas_library.reduce((ar, { identifier, libScript }) => {
-          if (originalFuncStr.includes(identifier)) {
-            ar.push(libScript);
-          }
-          return ar;
-        }, []);
-        if (libs.length > 0) {
-          originalFuncStr = `(object = {}) => {\n\n${libs.join(
-            "\n\n"
-          )}\n\nconst main_gas_fakes = ${originalFuncStr}\n\nreturn main_gas_fakes(object);\n}`;
-        }
-      }
-    }
-
-    const toolHandler = async (opts) => {
-      const wrappedScript = `return (${originalFuncStr})(args)`;
-      const cliArgs = buildCliArguments({
-        script: wrappedScript,
-        args: opts.gas_args,
-        ...opts,
-      });
-      return await runGasFakesProcess(cliArgs);
-    };
-
-    server.registerTool(tool.name, extendedSchema, toolHandler);
-  }
-}
-
-export async function startMcpServer(options) {
-  const { tools } = options;
+export async function startMcpServer() {
   const server = new McpServer({
-    name: "gas-fakes-mcp",
+    name: "gas-fakes-skills-mcp",
     version: MCP_VERSION,
   });
 
-  registerDefaultTool(server);
-
-  if (tools) {
-    await registerCustomTools(server, tools);
+  // Register a tool for each high-level service
+  for (const service of SERVICES) {
+    server.registerTool(
+      service.name,
+      {
+        description: `${service.description}\nExample script:\n${service.example}`,
+        inputSchema: {
+          script: z.string().describe("The Google Apps Script code to execute locally."),
+        },
+      },
+      async ({ script }) => {
+        return await runGasFakes(script);
+      }
+    );
   }
+
+  // Also add a generic tool for tasks that span multiple services
+  server.registerTool(
+    "workspace_agent",
+    {
+      description: "A general-purpose agent to automate tasks across multiple Google Workspace services (Sheets, Docs, Drive, etc.)",
+      inputSchema: {
+        script: z.string().describe("The Google Apps Script code to execute locally."),
+      },
+    },
+    async ({ script }) => {
+      return await runGasFakes(script);
+    }
+  );
 
   const transport = new StdioServerTransport();
   await server.connect(transport);

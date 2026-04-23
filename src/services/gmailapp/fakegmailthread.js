@@ -21,6 +21,23 @@ class FakeGmailThread {
   }
 
   /**
+   * Gets the messages in this thread.
+   * @returns {GmailMessage[]} An array of messages in this thread.
+   */
+  getMessages() {
+    ScriptApp.__behavior.checkMethod('GmailThread', 'getMessages');
+    if (globalThis.GmailApp) {
+      return globalThis.GmailApp.getMessagesForThread(this);
+    }
+    // Fallback if GmailApp isn't initialized, though it should be.
+    if (this.__threadResource.messages) {
+      const { newFakeGmailMessage } = require('./fakegmailmessage.js');
+      return this.__threadResource.messages.map(m => newFakeGmailMessage(m));
+    }
+    return [];
+  }
+
+  /**
    * Gets the labels of this thread.
    * @returns {GmailLabel[]} An array of labels for this thread.
    */

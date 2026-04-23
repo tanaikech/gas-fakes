@@ -610,6 +610,41 @@ export async function initializeConfiguration(options = {}) {
 
   fs.writeFileSync(envPath, envContent + "\n", "utf8");
   console.log("Setup complete. Your .env file has been updated.");
+
+  // --- Skill Installation Hint ---
+  console.log("\n--- Gemini CLI Integration ---");
+  const skillResponse = await prompts({
+    type: "confirm",
+    name: "installSkills",
+    message: "Would you like to install the gas-fakes skills for Gemini CLI?",
+    initial: true,
+  });
+
+  if (skillResponse.installSkills) {
+    console.log("Installing Gemini CLI skills and MCP server...");
+    try {
+      // 1. Install the agent skill
+      const skillCmd = "gemini skills install https://github.com/brucemcpherson/gas-fakes.git --path gf_agent";
+      console.log(`Executing: ${skillCmd}`);
+      execSync(skillCmd, { stdio: "inherit" });
+
+      // 2. Add the MCP server
+      const mcpCmd = "gemini mcp add --scope project gas-fakes-mcp gas-fakes mcp";
+      console.log(`Executing: ${mcpCmd}`);
+      execSync(mcpCmd, { stdio: "inherit" });
+
+      console.log("\x1b[1;32mInstallation complete!\x1b[0m");
+      console.log("\nYou can now use natural language to automate tasks:");
+      console.log("   \x1b[1;33m\"Create a spreadsheet of my recent Drive files\"\x1b[0m");
+    } catch (err) {
+      console.error(`\x1b[1;31mError during Gemini installation: ${err.message}\x1b[0m`);
+      console.log("You may need to install them manually:");
+      console.log("1. gemini skills install https://github.com/brucemcpherson/gas-fakes.git --path gf_agent");
+      console.log("2. gemini mcp add --scope project gas-fakes-mcp gas-fakes mcp");
+    }
+  } else {
+    console.log("Skipping Gemini CLI integration.");
+  }
 }
 
 /**

@@ -92,6 +92,14 @@ The `gas-fakes` project is complex, and bridging Node.js with GAS involves many 
 - **`createStatement()` returns `FORWARD_ONLY`**: Plain `conn.createStatement()` returns a forward-only cursor. Navigation methods `last()`, `first()`, `absolute()`, `relative()`, `previous()`, `beforeFirst()`, `afterLast()` all throw `"Operation requires a scrollable ResultSet"`. Use `conn.createStatement(1004, 1007)` (TYPE_SCROLL_INSENSITIVE, CONCUR_READ_ONLY) to get a scrollable cursor. In the fake, these parameters are accepted but advisory — results are already buffered.
 - **`getFloat()` is 32-bit**: GAS `rs.getFloat()` returns an IEEE 754 single-precision float. `1.1` becomes `1.100000023841858`. Always compare with `Math.fround(expected)`. The fake applies `Math.fround()` accordingly.
 - **`getDouble()` is 64-bit**: Unlike the above, `rs.getDouble()` returns a full 64-bit double.
+### Running Tests (CRITICAL)
+- **Directory Requirement**: You **MUST** run all test commands from within the `test/` directory (e.g., `cd test && node testgmail.js execute` or `npm run test` from within `test/`). Running tests from the root directory will cause them to fail because they cannot locate the `.env` file or other local dependencies correctly.
+
+### GmailApp & GmailMessage Limitations
+- **Missing Methods**: `gas-fakes` implementation of `GmailMessage` (i.e. `FakeGmailMessage`) does not natively support all methods found in Apps Script (e.g., `getSubject()`, `getDate()`, `getSnippet()`, `getFrom()`, `getTo()`). 
+- **Workaround/Implementation**: When implementing these missing methods, you must extract the information from the raw Gmail API resource (e.g., parsing the `payload.headers` array to find the 'Subject' or 'Date').
+- **Message Retrieval**: `GmailThread.getMessages()` is not implemented directly on the `FakeGmailThread` object. You should use `GmailApp.getMessagesForThread(thread)` instead.
+
 ### Google Cloud CLI & Eventual Consistency
 - **IAM Propagation Delay**: When creating a new service account or applying IAM permissions via `gcloud`, Google Cloud IAM may take several seconds to propagate changes. Subsequent commands referencing the new entity may fail with "not found" errors if executed too quickly.
 - **Retry Mechanism**: Always implement a retry loop (e.g., 5 retries with 5s delay) for `gcloud iam` commands that depend on recently created resources. A simple busy-wait or `execSync` to a sleep command can be used in a synchronous CLI environment to ensure portability.
