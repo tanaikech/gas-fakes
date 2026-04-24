@@ -286,3 +286,30 @@ export const updateParagraphStyle = (element, paragraphStyle, fields) => {
   shadow.refresh();
   return element;
 };
+
+/**
+ * Updates the text style for a given element or range within it.
+ * @param {import('./fakeelement.js').FakeElement} element The element whose text style to update.
+ * @param {GoogleAppsScript.Document.TextStyle} textStyle The style object to apply.
+ * @param {string} fields The comma-separated string of field names to update.
+ * @param {object} [range] Optional specific range. Defaults to the element's range.
+ * @returns {import('./fakeelement.js').FakeElement} The element, for chaining.
+ */
+export const updateTextStyle = (element, textStyle, fields, range = null) => {
+  const shadow = element.shadowDocument;
+  const item = element.__elementMapItem;
+  const updateRange = range || {
+    startIndex: item.startIndex,
+    endIndex: item.endIndex,
+    segmentId: shadow.__segmentId,
+    tabId: shadow.__tabId,
+  };
+
+  const requests = [{
+    updateTextStyle: { range: updateRange, textStyle, fields },
+  }];
+
+  Docs.Documents.batchUpdate({ requests }, shadow.getId());
+  shadow.refresh();
+  return element;
+};

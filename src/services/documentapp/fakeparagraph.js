@@ -4,6 +4,7 @@ import { Utils } from '../../support/utils.js';
 import { imageOptions } from './elementoptions.js';
 import { FakeContainerElement } from './fakecontainerelement.js';
 import { registerElement } from './elementRegistry.js';
+import { newFakeText } from './faketext.js';
 import { appendText, addPositionedImage, appendImage, insertImage } from './appenderhelpers.js';
 import { getText as getTextHelper, getAttributes as getAttributesHelper, updateParagraphStyle } from './elementhelpers.js';
 
@@ -30,6 +31,19 @@ export class FakeParagraph extends FakeContainerElement {
     const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.getText');
     if (nargs !== 0) matchThrow();
     return getTextHelper(this);
+  }
+
+  /**
+   * Returns the contents of the paragraph as a Text element.
+   * @returns {GoogleAppsScript.Document.Text} The text element.
+   */
+  editAsText() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Paragraph.editAsText');
+    if (nargs !== 0) matchThrow();
+    // In gas-fakes, we can return a FakeText that points to the same underlying item.
+    // The getText and updateTextStyle methods will work correctly because they
+    // handle both PARAGRAPH and TEXT items or ranges.
+    return newFakeText(this.__shadowDocument, this.__name);
   }
 
   appendText(text) {

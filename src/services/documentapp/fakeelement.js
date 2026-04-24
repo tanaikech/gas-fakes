@@ -96,6 +96,14 @@ export class FakeElement {
       });
     }
 
+  /**
+   * Gets the shadow document manager associated with this element's structure.
+   * @type {import('./shadowdocument.js').ShadowDocument | null}
+   */
+  get shadowDocument() {
+    return this.__shadowDocument;
+  }
+
   get __structure() {
     if (this.__isDetached) return null;
     return this.__shadowDocument.structure;

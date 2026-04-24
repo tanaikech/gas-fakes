@@ -5597,7 +5597,7 @@
             "returnType": "ContainerElement",
             "returnDescription": "The parent element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L155"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L163"
           },
           {
             "method": "getTables()",
@@ -6207,7 +6207,7 @@
             "returnType": "ContainerElement",
             "returnDescription": "The parent element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L155"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L163"
           },
           {
             "method": "getPreviousSibling()",
@@ -7488,7 +7488,7 @@
             "returnType": "ContainerElement",
             "returnDescription": "The parent element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L155"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L163"
           },
           {
             "method": "getPreviousSibling()",
@@ -7766,7 +7766,7 @@
             "returnType": "ContainerElement",
             "returnDescription": "The parent element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L155"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L163"
           },
           {
             "method": "getTables()",
@@ -8098,7 +8098,7 @@
             "returnType": "ContainerElement",
             "returnDescription": "The parent element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L155"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L163"
           },
           {
             "method": "getPreviousSibling()",
@@ -8546,7 +8546,7 @@
             "returnType": "ContainerElement",
             "returnDescription": "The parent element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L155"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L163"
           },
           {
             "method": "getTables()",
@@ -8904,7 +8904,7 @@
             "returnType": "ContainerElement",
             "returnDescription": "The parent element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L155"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L163"
           },
           {
             "method": "getPreviousSibling()",
@@ -8922,7 +8922,7 @@
             "returnType": "ElementType",
             "returnDescription": "The element type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L121"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L129"
           },
           {
             "method": "isAtDocumentEnd()",
@@ -9091,7 +9091,7 @@
             "returnType": "ContainerElement",
             "returnDescription": "The parent element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L155"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L163"
           },
           {
             "method": "getPreviousSibling()",
@@ -9109,7 +9109,7 @@
             "returnType": "ElementType",
             "returnDescription": "The element type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L121"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L129"
           },
           {
             "method": "getWidth()",
@@ -9216,7 +9216,7 @@
             "returnType": "PositionedImage",
             "returnDescription": "the new positioned image",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L7"
+            "implementationLink": "src/services/documentapp/fakeparagraph.js#L8"
           },
           {
             "method": "appendHorizontalRule()",
@@ -9234,7 +9234,7 @@
             "returnType": "InlineImage",
             "returnDescription": "the appended image",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L53"
+            "implementationLink": "src/services/documentapp/fakeparagraph.js#L67"
           },
           {
             "method": "appendInlineImage(InlineImage)",
@@ -9243,7 +9243,7 @@
             "returnType": "InlineImage",
             "returnDescription": "the appended image",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L53"
+            "implementationLink": "src/services/documentapp/fakeparagraph.js#L67"
           },
           {
             "method": "appendPageBreak()",
@@ -9305,8 +9305,8 @@
             "description": "Obtains a Text version of the current element, for editing.",
             "returnType": "Text",
             "returnDescription": "a text version of the current element",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeparagraph.js#L40"
           },
           {
             "method": "findElement(ElementType)",
@@ -9486,7 +9486,7 @@
             "returnType": "ContainerElement",
             "returnDescription": "The parent element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L155"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L163"
           },
           {
             "method": "getPositionedImage(String)",
@@ -9576,7 +9576,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L59"
+            "implementationLink": "src/services/documentapp/fakeparagraph.js#L73"
           },
           {
             "method": "insertInlineImage(Integer,InlineImage)",
@@ -9585,7 +9585,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L59"
+            "implementationLink": "src/services/documentapp/fakeparagraph.js#L73"
           },
           {
             "method": "insertPageBreak(Integer)",
@@ -9845,7 +9845,7 @@
             "returnType": "PositionedImage",
             "returnDescription": "The new positioned image.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L7"
+            "implementationLink": "src/services/documentapp/fakeparagraph.js#L8"
           },
           {
             "method": "appendHorizontalRule()",
@@ -9863,7 +9863,7 @@
             "returnType": "InlineImage",
             "returnDescription": "The appended image.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L53"
+            "implementationLink": "src/services/documentapp/fakeparagraph.js#L67"
           },
           {
             "method": "appendInlineImage(InlineImage)",
@@ -9872,7 +9872,7 @@
             "returnType": "InlineImage",
             "returnDescription": "The appended image.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L53"
+            "implementationLink": "src/services/documentapp/fakeparagraph.js#L67"
           },
           {
             "method": "appendPageBreak()",
@@ -9899,7 +9899,7 @@
             "returnType": "Text",
             "returnDescription": "The new text element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L7"
+            "implementationLink": "src/services/documentapp/fakeparagraph.js#L8"
           },
           {
             "method": "appendText(Text)",
@@ -9908,7 +9908,7 @@
             "returnType": "Text",
             "returnDescription": "The appended text element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L7"
+            "implementationLink": "src/services/documentapp/fakeparagraph.js#L8"
           },
           {
             "method": "clear()",
@@ -9926,7 +9926,7 @@
             "returnType": "Paragraph",
             "returnDescription": "The new copy.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L19"
+            "implementationLink": "src/services/documentapp/fakeparagraph.js#L20"
           },
           {
             "method": "editAsText()",
@@ -9934,8 +9934,8 @@
             "description": "Obtains a Text version of the current element, for editing.",
             "returnType": "Text",
             "returnDescription": "a text version of the current element",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeparagraph.js#L40"
           },
           {
             "method": "findElement(ElementType)",
@@ -9980,7 +9980,7 @@
             "returnType": "HorizontalAlignment",
             "returnDescription": "The alignment.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L152"
+            "implementationLink": "src/services/documentapp/fakeparagraph.js#L166"
           },
           {
             "method": "getAttributes()",
@@ -9989,7 +9989,7 @@
             "returnType": "Object",
             "returnDescription": "The element's attributes.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L8"
+            "implementationLink": "src/services/documentapp/fakeparagraph.js#L9"
           },
           {
             "method": "getChild(Integer)",
@@ -9998,7 +9998,7 @@
             "returnType": "Element",
             "returnDescription": "The child element at the specified index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L69"
+            "implementationLink": "src/services/documentapp/fakeparagraph.js#L83"
           },
           {
             "method": "getChildIndex(Element)",
@@ -10079,7 +10079,7 @@
             "returnType": "Integer",
             "returnDescription": "The number of children.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L59"
+            "implementationLink": "src/services/documentapp/fakeparagraph.js#L73"
           },
           {
             "method": "getParent()",
@@ -10088,7 +10088,7 @@
             "returnType": "ContainerElement",
             "returnDescription": "The parent element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L155"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L163"
           },
           {
             "method": "getPositionedImage(String)",
@@ -10142,7 +10142,7 @@
             "returnType": "String",
             "returnDescription": "the contents of the element as text string",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L8"
+            "implementationLink": "src/services/documentapp/fakeparagraph.js#L9"
           },
           {
             "method": "getTextAlignment()",
@@ -10160,7 +10160,7 @@
             "returnType": "ElementType",
             "returnDescription": "The element type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L319"
+            "implementationLink": "src/services/documentapp/fakeparagraph.js#L333"
           },
           {
             "method": "insertHorizontalRule(Integer)",
@@ -10178,7 +10178,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L59"
+            "implementationLink": "src/services/documentapp/fakeparagraph.js#L73"
           },
           {
             "method": "insertInlineImage(Integer,InlineImage)",
@@ -10187,7 +10187,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L59"
+            "implementationLink": "src/services/documentapp/fakeparagraph.js#L73"
           },
           {
             "method": "insertPageBreak(Integer)",
@@ -10241,7 +10241,7 @@
             "returnType": "Boolean",
             "returnDescription": "the left-to-right setting",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L249"
+            "implementationLink": "src/services/documentapp/fakeparagraph.js#L263"
           },
           {
             "method": "merge()",
@@ -10295,7 +10295,7 @@
             "returnType": "Paragraph",
             "returnDescription": "the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L158"
+            "implementationLink": "src/services/documentapp/fakeparagraph.js#L172"
           },
           {
             "method": "setAttributes(Object)",
@@ -10447,7 +10447,7 @@
             "returnType": "ContainerElement",
             "returnDescription": "The parent element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L155"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L163"
           },
           {
             "method": "getPreviousSibling()",
@@ -10465,7 +10465,7 @@
             "returnType": "ElementType",
             "returnDescription": "The element type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L121"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L129"
           },
           {
             "method": "isAtDocumentEnd()",
@@ -11329,7 +11329,7 @@
             "returnType": "ContainerElement",
             "returnDescription": "The parent element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L155"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L163"
           },
           {
             "method": "getPreviousSibling()",
@@ -11769,7 +11769,7 @@
             "returnType": "ContainerElement",
             "returnDescription": "The parent element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L155"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L163"
           },
           {
             "method": "getParentRow()",
@@ -12272,7 +12272,7 @@
             "returnType": "ContainerElement",
             "returnDescription": "The parent element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L155"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L163"
           },
           {
             "method": "getParentTable()",
@@ -13007,7 +13007,7 @@
             "returnType": "ContainerElement",
             "returnDescription": "The parent element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L155"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L163"
           },
           {
             "method": "getPreviousSibling()",
@@ -13025,7 +13025,7 @@
             "returnType": "ElementType",
             "returnDescription": "The element type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L121"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L129"
           },
           {
             "method": "isAtDocumentEnd()",
@@ -13131,8 +13131,8 @@
             "description": "Retrieves the element's attributes.",
             "returnType": "Object",
             "returnDescription": "The element's attributes.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/faketext.js#L6"
           },
           {
             "method": "getAttributes(Integer)",
@@ -13140,8 +13140,8 @@
             "description": "Retrieves the attributes at the specified character offset.",
             "returnType": "Object",
             "returnDescription": "The element's attributes.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/faketext.js#L6"
           },
           {
             "method": "getBackgroundColor()",
@@ -13249,7 +13249,7 @@
             "returnType": "ContainerElement",
             "returnDescription": "The parent element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L155"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L163"
           },
           {
             "method": "getPreviousSibling()",
@@ -13267,7 +13267,7 @@
             "returnType": "String",
             "returnDescription": "the contents of the element as text string",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketext.js#L18"
+            "implementationLink": "src/services/documentapp/faketext.js#L6"
           },
           {
             "method": "getTextAlignment()",
@@ -13303,7 +13303,7 @@
             "returnType": "ElementType",
             "returnDescription": "The element type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L121"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L129"
           },
           {
             "method": "insertText(Integer,String)",
@@ -13329,8 +13329,8 @@
             "description": "Retrieves the bold setting.",
             "returnType": "Boolean",
             "returnDescription": "whether the text is bold, or null if the element contains multiple values for this\n    attribute",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/faketext.js#L78"
           },
           {
             "method": "isBold(Integer)",
@@ -13338,8 +13338,8 @@
             "description": "Retrieves the bold setting at the specified character offset.",
             "returnType": "Boolean",
             "returnDescription": "The bold setting.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/faketext.js#L78"
           },
           {
             "method": "isItalic()",
@@ -13347,8 +13347,8 @@
             "description": "Retrieves the italic setting.",
             "returnType": "Boolean",
             "returnDescription": "whether the text is italic, or null if the element contains multiple values for this\n    attribute",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/faketext.js#L90"
           },
           {
             "method": "isItalic(Integer)",
@@ -13356,8 +13356,8 @@
             "description": "Retrieves the italic setting at the specified character offset.",
             "returnType": "Boolean",
             "returnDescription": "The italic setting.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/faketext.js#L90"
           },
           {
             "method": "isStrikethrough()",
@@ -13365,8 +13365,8 @@
             "description": "Retrieves the strikethrough setting.",
             "returnType": "Boolean",
             "returnDescription": "whether the text is strikethrough, or null if the element contains multiple values for\n    this attribute",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/faketext.js#L188"
           },
           {
             "method": "isStrikethrough(Integer)",
@@ -13374,8 +13374,8 @@
             "description": "Retrieves the strikethrough setting at the specified character offset.",
             "returnType": "Boolean",
             "returnDescription": "The strikethrough setting.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/faketext.js#L188"
           },
           {
             "method": "isUnderline()",
@@ -13383,8 +13383,8 @@
             "description": "Retrieves the underline setting.",
             "returnType": "Boolean",
             "returnDescription": "whether the text is underlined, or null if the element contains multiple values for\n    this attribute",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/faketext.js#L102"
           },
           {
             "method": "isUnderline(Integer)",
@@ -13392,8 +13392,8 @@
             "description": "Retrieves the underline setting at the specified character offset.",
             "returnType": "Boolean",
             "returnDescription": "The underline setting.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/faketext.js#L102"
           },
           {
             "method": "merge()",
@@ -13428,8 +13428,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/faketext.js#L36"
           },
           {
             "method": "setAttributes(Object)",
@@ -13437,8 +13437,8 @@
             "description": "Sets the element's attributes.",
             "returnType": "Text",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/faketext.js#L36"
           },
           {
             "method": "setBackgroundColor(Integer,Integer,String)",

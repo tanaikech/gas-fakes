@@ -263,6 +263,63 @@ export const testDocsStyles = (pack) => {
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   });
 
+  unit.section("Text styling methods", t => {
+    let { doc } = maketdoc(toTrash, fixes, { forceNew: true });
+    const body = doc.getBody();
+    const p = body.appendParagraph("Text for styling.");
+    const text = p.editAsText();
+
+    t.is(text.getText(), "Text for styling.", "editAsText should return correct text");
+
+    // Test Bold
+    text.setBold(true);
+    t.is(text.isBold(), true, "get/set Bold should work");
+    text.setBold(false);
+    t.is(text.isBold(), false, "set Bold false should work");
+
+    // Test Italic
+    text.setItalic(true);
+    t.is(text.isItalic(), true, "get/set Italic should work");
+
+    // Test Underline
+    text.setUnderline(true);
+    t.is(text.isUnderline(), true, "get/set Underline should work");
+
+    // Test Strikethrough
+    text.setStrikethrough(true);
+    t.is(text.isStrikethrough(), true, "get/set Strikethrough should work");
+
+    // Test Font Family
+    text.setFontFamily("Courier New");
+    t.is(text.getFontFamily(), "Courier New", "get/set FontFamily should work");
+
+    // Test Font Size
+    text.setFontSize(14);
+    t.is(text.getFontSize(), 14, "get/set FontSize should work");
+
+    // Test Colors
+    text.setForegroundColor("#ff0000");
+    t.is(text.getForegroundColor(), "#ff0000", "get/set ForegroundColor should work");
+    text.setBackgroundColor("#ffff00");
+    t.is(text.getBackgroundColor(), "#ffff00", "get/set BackgroundColor should work");
+
+    // Test Link URL
+    text.setLinkUrl("https://example.com");
+    t.is(text.getLinkUrl(), "https://example.com", "get/set LinkUrl should work");
+
+    // Test setAttributes on Text
+    text.setAttributes({
+      [DocumentApp.Attribute.BOLD]: true,
+      [DocumentApp.Attribute.ITALIC]: false,
+      [DocumentApp.Attribute.FONT_SIZE]: 18
+    });
+    t.is(text.isBold(), true, "setAttributes Bold should work");
+    t.is(text.isItalic(), false, "setAttributes Italic should work");
+    t.is(text.getFontSize(), 18, "setAttributes FontSize should work");
+
+    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
+  });
+
   if (!pack) {
     unit.report();
   }

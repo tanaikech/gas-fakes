@@ -7,7 +7,7 @@
 | [Calendar](./progress/calendar.md) | 13 | 273 | 273 | 0 | 0 |
 | [Charts](./progress/charts.md) | 29 | 238 | 20 | 0 | 218 |
 | [Content](./progress/content.md) | 3 | 16 | 0 | 0 | 16 |
-| [Document](./progress/document.md) | 47 | 1032 | 468 | 22 | 542 |
+| [Document](./progress/document.md) | 47 | 1032 | 482 | 22 | 528 |
 | [Drive](./progress/drive.MD) | 8 | 164 | 115 | 29 | 20 |
 | [Forms](./progress/forms.md) | 41 | 504 | 270 | 0 | 234 |
 | [Gmail](./progress/Gmail.md) | 6 | 168 | 66 | 0 | 102 |
@@ -22,4 +22,4 @@
 | [URL Fetch](./progress/urlfetch.md) | 2 | 13 | 11 | 0 | 2 |
 | [Utilities](./progress/utilities.md) | 5 | 59 | 27 | 3 | 29 |
 | [XML](./progress/XML.md) | 14 | 149 | 30 | 0 | 119 |
-| **Total** | **420** | **6708** | **2988** | **74** | **3646** |
+| **Total** | **420** | **6708** | **3002** | **74** | **3632** |
