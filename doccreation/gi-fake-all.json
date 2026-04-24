@@ -4621,8 +4621,8 @@
             "description": "Gets the HTML content of the body of this message.",
             "returnType": "String",
             "returnDescription": "The body content of this message.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailmessage.js#L120"
           },
           {
             "method": "getCc()",
@@ -4675,8 +4675,8 @@
             "description": "Gets the content of the body of this message without HTML formatting. This is more complex than\ngetBody() and takes longer.",
             "returnType": "String",
             "returnDescription": "The plain body content of this message.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/gmailapp/fakegmailmessage.js#L131"
           },
           {
             "method": "getRawContent()",

@@ -55,10 +55,12 @@ Supported Methods:
 - `deleteLabel()`
 - `getId()`
 - `getName()`
+- `getBody()`
 - `getDate()`
 - `getFrom()`
 - `getHeader(String)`
 - `getId()`
+- `getPlainBody()`
 - `getSubject()`
 - `getThread()`
 - `getTo()`
@@ -91,10 +93,12 @@ Supported Methods:
 - `deleteLabel()`
 - `getId()`
 - `getName()`
+- `getBody()`
 - `getDate()`
 - `getFrom()`
 - `getHeader(String)`
 - `getId()`
+- `getPlainBody()`
 - `getSubject()`
 - `getThread()`
 - `getTo()`
@@ -112,10 +116,12 @@ Supported Methods:
 - `deleteLabel()`
 - `getId()`
 - `getName()`
+- `getBody()`
 - `getDate()`
 - `getFrom()`
 - `getHeader(String)`
 - `getId()`
+- `getPlainBody()`
 - `getSubject()`
 - `getThread()`
 - `getTo()`
@@ -131,10 +137,12 @@ Supported Methods:
 - `deleteLabel()`
 - `getId()`
 - `getName()`
+- `getBody()`
 - `getDate()`
 - `getFrom()`
 - `getHeader(String)`
 - `getId()`
+- `getPlainBody()`
 - `getSubject()`
 - `getThread()`
 - `getTo()`
@@ -147,10 +155,12 @@ Supported Methods:
 ## Class: GmailMessage
 
 Supported Methods:
+- `getBody()`
 - `getDate()`
 - `getFrom()`
 - `getHeader(String)`
 - `getId()`
+- `getPlainBody()`
 - `getSubject()`
 - `getThread()`
 - `getTo()`
