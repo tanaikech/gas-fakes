@@ -47,32 +47,32 @@ Agent:
 
 ## Lessons Learned & Best Practices (from Test Patterns)
 
+### Advanced Service Versioning (v3 Preference)
+- **Drive API**: `gas-fakes` follows the **Drive API v3** naming convention. 
+  - Use `Drive.Files.create()` instead of `insert()`.
+  - Use `name` instead of `title` in resource objects.
+  - If a method from a live Apps Script snippet fails, check for its v3 equivalent before assuming it is missing.
+- **Service Discovery**: If unsure about available methods, run a short `workspace_agent` script to log `Object.keys(Service.SubService)` to confirm implemented endpoints.
+
 ### Google Docs & Images
-- **Inline Image Resizing**: Standard Apps Script methods like `InlineImage.setWidth()` or `setHeight()` are currently **NOT** implemented in `gas-fakes` (throwing "not yet implemented").
-- **Docs API Limitations**: The Google Docs API does not support updating properties (like size) of existing inline objects. The `updateInlineObjectProperties` request is invalid and will be rejected by the API.
-- **Workaround**: To resize an image, you must use the Advanced `Docs` service to read the document, find the image's `contentUri` and `size`, locate its index, and then execute a `batchUpdate` that deletes the original image and inserts a new one with the desired size.
+- **Inline Image Resizing**: Native methods like `setWidth()`/`setHeight()` are **NOT** implemented.
+- **Conversion**: To create a Google Doc from HTML, use `Drive.Files.create()` with the correct v3 parameters:
   ```javascript
-  const requests = [];
-  // 1. Delete original image
-  requests.push({
-    deleteContentRange: {
-      range: { startIndex: imageStartIndex, endIndex: imageEndIndex }
-    }
-  });
-  // 2. Insert new image with resized dimensions
-  requests.push({
-    insertInlineImage: {
-      location: { index: imageStartIndex },
-      uri: imageContentUri,
-      objectSize: {
-        width: { magnitude: newWidth, unit: 'PT' },
-        height: { magnitude: newHeight, unit: 'PT' }
-      }
-    }
-  });
-  Docs.Documents.batchUpdate({ requests }, docId);
+  const resource = { name: "Doc Name", mimeType: "application/vnd.google-apps.document" };
+  Drive.Files.create(resource, htmlBlob);
   ```
-- **Detached Elements**: When copying elements (like images or paragraphs), ensure they are detached before attempting to insert or append them elsewhere using `.copy()`.
+- **Resizing Workaround**: The Docs API does not support updating image properties. You must **delete and re-insert** the image with the new dimensions.
+  - **Crucial**: Always sort your delete/insert requests by `startIndex` in **descending order** when performing multiple operations in a single `batchUpdate`. This prevents index shifting from invalidating subsequent operations in the same batch.
+  ```javascript
+  // Example: processing multiple images
+  const replacements = [...].sort((a, b) => b.startIndex - a.startIndex);
+  replacements.forEach(rep => {
+    requests.push({ deleteContentRange: { ... } });
+    requests.push({ insertInlineImage: { ... } });
+  });
+  ```
+- **Detached Elements**: Elements copied via `.copy()` are detached and cannot be modified until they are inserted back into a document.
+
 
 ### Google Slides
 - **Dynamic Element Creation**: Always use specific insertion methods like `slide.insertTextBox(text, l, t, w, h)` or `slide.insertTable(r, c, l, t, w, h)` to ensure proper positioning and sizing at creation time.
