@@ -1,4 +1,4 @@
-# Service: gmail
+# Service: Gmail
 
 ## Class: GmailApp
 
@@ -55,11 +55,17 @@ Supported Methods:
 - `deleteLabel()`
 - `getId()`
 - `getName()`
+- `getDate()`
+- `getFrom()`
+- `getHeader(String)`
 - `getId()`
+- `getSubject()`
 - `getThread()`
+- `getTo()`
 - `addLabel(GmailLabel)`
 - `getId()`
 - `getLabels()`
+- `getMessages()`
 - `removeLabel(GmailLabel)`
 
 ## Class: GmailAttachment
@@ -85,11 +91,17 @@ Supported Methods:
 - `deleteLabel()`
 - `getId()`
 - `getName()`
+- `getDate()`
+- `getFrom()`
+- `getHeader(String)`
 - `getId()`
+- `getSubject()`
 - `getThread()`
+- `getTo()`
 - `addLabel(GmailLabel)`
 - `getId()`
 - `getLabels()`
+- `getMessages()`
 - `removeLabel(GmailLabel)`
 
 ## Class: GmailDraft
@@ -100,11 +112,17 @@ Supported Methods:
 - `deleteLabel()`
 - `getId()`
 - `getName()`
+- `getDate()`
+- `getFrom()`
+- `getHeader(String)`
 - `getId()`
+- `getSubject()`
 - `getThread()`
+- `getTo()`
 - `addLabel(GmailLabel)`
 - `getId()`
 - `getLabels()`
+- `getMessages()`
 - `removeLabel(GmailLabel)`
 
 ## Class: GmailLabel
@@ -113,21 +131,33 @@ Supported Methods:
 - `deleteLabel()`
 - `getId()`
 - `getName()`
+- `getDate()`
+- `getFrom()`
+- `getHeader(String)`
 - `getId()`
+- `getSubject()`
 - `getThread()`
+- `getTo()`
 - `addLabel(GmailLabel)`
 - `getId()`
 - `getLabels()`
+- `getMessages()`
 - `removeLabel(GmailLabel)`
 
 ## Class: GmailMessage
 
 Supported Methods:
+- `getDate()`
+- `getFrom()`
+- `getHeader(String)`
 - `getId()`
+- `getSubject()`
 - `getThread()`
+- `getTo()`
 - `addLabel(GmailLabel)`
 - `getId()`
 - `getLabels()`
+- `getMessages()`
 - `removeLabel(GmailLabel)`
 
 ## Class: GmailThread
@@ -136,5 +166,6 @@ Supported Methods:
 - `addLabel(GmailLabel)`
 - `getId()`
 - `getLabels()`
+- `getMessages()`
 - `removeLabel(GmailLabel)`
 

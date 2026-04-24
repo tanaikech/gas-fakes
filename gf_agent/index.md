@@ -2,6 +2,7 @@
 
 This index lists all Google Apps Script services and classes supported by `gf_agent` via `gas-fakes`.
 
+- [Gmail](skills/gmail.md)
 - [JDBC](skills/jdbc.md)
 - [Lock](skills/lock.md)
 - [Spreadsheet](skills/spreadsheet.md)
@@ -13,7 +14,6 @@ This index lists all Google Apps Script services and classes supported by `gf_ag
 - [document](skills/document.md)
 - [drive](skills/drive.md)
 - [forms](skills/forms.md)
-- [gmail](skills/gmail.md)
 - [properties](skills/properties.md)
 - [script](skills/script.md)
 - [slides](skills/slides.md)
