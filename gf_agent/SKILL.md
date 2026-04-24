@@ -37,8 +37,9 @@ Agent:
 2. Execute: `node temp_task.js`
 3. Confirm completion to the user.
 
-## Constraints
+## Notes
 - Always use ES modules (`import`).
-- Prefer using the Public API over internal fake properties.
-- Use `Utilities.sleep()` if propagation delays are expected.
-- Remember that `gas-fakes` operates in a local sandbox by default.
+- Note that the Apps Script Services are all  automatically available- for Example DriveApp, SpreadsheetApp, etc. are all available in the global namespace - no need to import them.
+- the manifest file is used to conteol which scopes are required. dwd is the preferred authentication method but it needs the user to enable it from the domain admain console during the authentication stage.
+- Advanced Service versions of the services are available - and map to their apps script equivalents. These are also available via the global namespace for example Drive, Sheets , etc. 
+- Note that Apps Script is synchronous. gas-fake emulates this so all calls to services will be synchronous
