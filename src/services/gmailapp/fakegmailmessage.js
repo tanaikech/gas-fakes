@@ -93,6 +93,46 @@ class FakeGmailMessage {
     return this.__getHeader('To');
   }
 
+  /**
+   * Helper to extract body by mime type
+   * @param {Object} payload The message payload
+   * @param {string} mimeType The mime type to search for
+   * @returns {string} The decoded content
+   */
+  __extractBodyData(payload, mimeType) {
+    if (!payload) return '';
+    if (payload.mimeType === mimeType && payload.body && payload.body.data) {
+      return Buffer.from(payload.body.data, 'base64url').toString('utf8');
+    }
+    if (payload.parts && payload.parts.length > 0) {
+      for (const part of payload.parts) {
+        const data = this.__extractBodyData(part, mimeType);
+        if (data) return data;
+      }
+    }
+    return '';
+  }
+
+  /**
+   * Gets the HTML content of the body of this message.
+   * @returns {string} The body content.
+   */
+  getBody() {
+    ScriptApp.__behavior.checkMethod('GmailMessage', 'getBody');
+    const htmlData = this.__extractBodyData(this.__messageResource.payload, 'text/html');
+    if (htmlData) return htmlData;
+    return this.__extractBodyData(this.__messageResource.payload, 'text/plain');
+  }
+
+  /**
+   * Gets the plain-text content of the body of this message.
+   * @returns {string} The plain-text body content.
+   */
+  getPlainBody() {
+    ScriptApp.__behavior.checkMethod('GmailMessage', 'getPlainBody');
+    return this.__extractBodyData(this.__messageResource.payload, 'text/plain');
+  }
+
   toString() {
     return this.__fakeObjectType;
   }
