@@ -43,6 +43,7 @@ Agent:
 - the manifest file is used to conteol which scopes are required. dwd is the preferred authentication method but it needs the user to enable it from the domain admain console during the authentication stage.
 - Advanced Service versions of the services are available - and map to their apps script equivalents. These are also available via the global namespace for example Drive, Sheets , etc. 
 - Note that Apps Script is synchronous. gas-fake emulates this so all calls to services will be synchronous
+- Where possible, use the native Apps Script service (for example DriveApp) in preference to the advanced services (Drive, Sheets, etc.)
 
 ## Lessons Learned & Best Practices (from Test Patterns)
 
