@@ -49,19 +49,27 @@ Agent:
 
 ### Google Docs & Images
 - **Inline Image Resizing**: Standard Apps Script methods like `InlineImage.setWidth()` or `setHeight()` are currently **NOT** implemented in `gas-fakes` (throwing "not yet implemented").
-- **Workaround**: To resize images in Docs, use the Advanced `Docs` service:
+- **Docs API Limitations**: The Google Docs API does not support updating properties (like size) of existing inline objects. The `updateInlineObjectProperties` request is invalid and will be rejected by the API.
+- **Workaround**: To resize an image, you must use the Advanced `Docs` service to read the document, find the image's `contentUri` and `size`, locate its index, and then execute a `batchUpdate` that deletes the original image and inserts a new one with the desired size.
   ```javascript
-  const requests = [{
-    updateInlineObjectProperties: {
-      objectId: imageObjectId,
-      inlineObjectProperties: {
-        embeddedObject: {
-          size: { width: { magnitude: 200, unit: 'PT' }, height: { magnitude: 150, unit: 'PT' } }
-        }
-      },
-      fields: 'embeddedObject.size'
+  const requests = [];
+  // 1. Delete original image
+  requests.push({
+    deleteContentRange: {
+      range: { startIndex: imageStartIndex, endIndex: imageEndIndex }
     }
-  }];
+  });
+  // 2. Insert new image with resized dimensions
+  requests.push({
+    insertInlineImage: {
+      location: { index: imageStartIndex },
+      uri: imageContentUri,
+      objectSize: {
+        width: { magnitude: newWidth, unit: 'PT' },
+        height: { magnitude: newHeight, unit: 'PT' }
+      }
+    }
+  });
   Docs.Documents.batchUpdate({ requests }, docId);
   ```
 - **Detached Elements**: When copying elements (like images or paragraphs), ensure they are detached before attempting to insert or append them elsewhere using `.copy()`.

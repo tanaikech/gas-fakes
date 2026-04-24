@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "gas-fakes-mcp": {
+      "command": "gas-fakes",
+      "args": [
+        "mcp"
+      ]
+    }
+  }
+}
