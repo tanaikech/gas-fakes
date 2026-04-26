@@ -16,12 +16,12 @@ description: >
 - **Mock/Real Parity**: Write code that works both locally (using fakes) and on the real Google Apps Script platform.
 
 ## Instructions
-1. **Understand the Task**: Identify which Google Apps Script services are required (e.g., `SpreadsheetApp`, `DriveApp`).
-2. **Pre-Implementation Verification**: Before generating code, you MUST verify that the intended methods are supported:
-    - **Consult Local Index**: Check the `gf_agent/index.md` and the corresponding files in the `gf_agent/skills/` directory. These files contain a portable, comprehensive list of all implemented services, classes, and methods.
-    - **Use Service Discovery**: If still unsure, or if a method is not listed but you suspect it exists, run a short `workspace_agent` script (e.g., `console.log(Object.keys(SpreadsheetApp))`) to dynamically inspect the available methods.
-    - **Iterative Execution**: `gas-fakes` uses proxies that throw clear "not yet implemented" errors. You can execute a draft script, and if a method fails, automatically find an alternative approach.
-    - **Advanced Service Fallback**: While standard services (e.g., `DriveApp`) are STRONGLY preferred, you may use Advanced Service equivalents (e.g., `Drive`, `Docs`, `Sheets`) if a standard capability is missing. Advanced Services map directly to Google REST APIs and are extensively supported.
+1. **Understand the Task**: Identify which Google Apps Script services are required.
+2. **Pre-Implementation Verification (Strict Isolation)**: You MUST treat the `gf_agent/` directory as your ONLY source of truth for implemented capabilities. 
+    - **Prohibit Repository Access**: Even if running inside the `gas-fakes` source repository, you MUST NOT read the `progress/`, `test/`, or `src/` directories for verification.
+    - **Consult Portable Index**: ALWAYS read the `gf_agent/index.md` and the relevant files in `gf_agent/skills/` to confirm a method exists before using it.
+    - **Use Service Discovery**: If a method is not in the index but you believe it should exist, run a `workspace_agent` script (e.g., `console.log(Object.keys(Service))`) to verify the *actual* environment.
+    - **Iterative Execution**: Rely on the "not yet implemented" proxy errors for runtime correction.
 3. **Generate Script**: Create a Node.js script that:
     - Imports `@mcpher/gas-fakes`.
     - Uses standard GAS syntax.
