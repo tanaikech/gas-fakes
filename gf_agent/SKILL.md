@@ -64,6 +64,13 @@ Agent:
   - If a method from a live Apps Script snippet fails, check for its v3 equivalent before assuming it is missing.
 - **Service Discovery**: If unsure about available methods, run a short `workspace_agent` script to log `Object.keys(Service.SubService)` to confirm implemented endpoints.
 
+### Common Apps Script Syntax Gotchas (First-Time Accuracy)
+- **Google Docs Formatting**: You CANNOT apply formatting (bold, italic, etc.) directly to a `Paragraph` or `ListItem`. You MUST use `editAsText()` first.
+  - *Incorrect*: `paragraph.setItalic(true)`
+  - *Correct*: `paragraph.editAsText().setItalic(true)`
+- **Flush Requirements**: If your script creates a resource and immediately tries to perform a complex search or metadata operation on it, call `SpreadsheetApp.flush()` or `doc.saveAndClose()` to ensure the state is synchronized.
+- **Date Comparison**: When comparing dates from `getLastUpdated()` or `getDateCreated()`, remember they are JavaScript `Date` objects. Use `.getTime()` for reliable numerical comparison.
+
 ### Authentication & Troubleshooting
 - **Permission Denied/Auth Failures**: Most authentication errors stem from a mismatch between the script's required scopes and the authorized environment.
   - **Manifest & Scopes**: `gas-fakes` reads `appsscript.json` to discover required scopes. If these scopes weren't authorized during `gas-fakes auth`, the script will fail.
