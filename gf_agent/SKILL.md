@@ -17,7 +17,11 @@ description: >
 
 ## Instructions
 1. **Understand the Task**: Identify which Google Apps Script services are required (e.g., `SpreadsheetApp`, `DriveApp`).
-2. **Consult Progress**: Refer to the `skills/` directory in this agent to see which methods are implemented in `gas-fakes`.
+2. **Pre-Implementation Verification**: Before generating code, you MUST verify that the intended methods are supported:
+    - **Consult Local Index**: Check the `gf_agent/index.md` and the corresponding files in the `gf_agent/skills/` directory. These files contain a portable, comprehensive list of all implemented services, classes, and methods.
+    - **Use Service Discovery**: If still unsure, or if a method is not listed but you suspect it exists, run a short `workspace_agent` script (e.g., `console.log(Object.keys(SpreadsheetApp))`) to dynamically inspect the available methods.
+    - **Iterative Execution**: `gas-fakes` uses proxies that throw clear "not yet implemented" errors. You can execute a draft script, and if a method fails, automatically find an alternative approach.
+    - **Advanced Service Fallback**: While standard services (e.g., `DriveApp`) are STRONGLY preferred, you may use Advanced Service equivalents (e.g., `Drive`, `Docs`, `Sheets`) if a standard capability is missing. Advanced Services map directly to Google REST APIs and are extensively supported.
 3. **Generate Script**: Create a Node.js script that:
     - Imports `@mcpher/gas-fakes`.
     - Uses standard GAS syntax.
@@ -60,6 +64,32 @@ Agent:
   - If a method from a live Apps Script snippet fails, check for its v3 equivalent before assuming it is missing.
 - **Service Discovery**: If unsure about available methods, run a short `workspace_agent` script to log `Object.keys(Service.SubService)` to confirm implemented endpoints.
 
+### Authentication & Troubleshooting
+- **Permission Denied/Auth Failures**: Most authentication errors stem from a mismatch between the script's required scopes and the authorized environment.
+  - **Manifest & Scopes**: `gas-fakes` reads `appsscript.json` to discover required scopes. If these scopes weren't authorized during `gas-fakes auth`, the script will fail.
+  - **Advice for User**: 
+    - Check if `appsscript.json` contains the required `oauthScopes`.
+    - Run `gas-fakes auth` to ensure the environment has the latest credentials.
+    - If using **DWD (Domain Wide Delegation)**: Remind the user that the Service Account must be explicitly authorized in the Google Workspace Admin Console (Security > API Controls > Domain-wide Delegation) for the specific scopes being used.
+  - **Initialization**: Ensure the project has been initialized using `gas-fakes init`. The `.env` file must contain the correct `GF_PLATFORM_AUTH` and associated credentials.
+
+### Parity & Platform Logic
+- **`ScriptApp.isFake`**: Use this boolean to detect the `gas-fakes` environment.
+  - **Best Practice**: Guard **only** infrastructure logic (logging, cache checks, special backends) with this flag. 
+  - **Warning**: Do **not** use it to change the core business logic of a script, as this defeats the purpose of parity.
+- **Backend Selection**: `ScriptApp.__platform` can be dynamically switched to target `google`, `ksuite`, or `msgraph`. 
+  - **Self-Correcting**: `gas-fakes` resources (Files, Sheets) "remember" their platform at creation. Subsequent calls on that object will automatically use the correct backend even if `ScriptApp.__platform` has changed globally.
+
+### Advanced Service Usage & Interop
+- **Metadata Access**: If a standard service object (e.g., `Spreadsheet`) doesn't expose a specific property, use `Service.__getMetaProps(fields)` or `Service.__getMeta()` to fetch the underlying JSON resource from the Google API.
+- **Batching and Flush**:
+  - **Spreadsheets**: Use `SpreadsheetApp.flush()` to force calculation and commitment of values.
+  - **Documents**: Use `doc.saveAndClose()` followed by `DocumentApp.openById(id)` to synchronize the "Shadow Document" state with the Google servers.
+- **Advanced Drive (v3)**:
+  - **List Files**: `Drive.Files.list({ q: "...", fields: "files(id, name)" })` is the most efficient way to batch fetch file metadata.
+  - **Permissions**: `Drive.Permissions.create({ role, type, emailAddress }, fileId)` is preferred for programmatic sharing.
+- **Iterators**: `gas-fakes` iterators (like `FileIterator`) implement the native Apps Script `hasNext()` and `next()` methods, which differ from standard JavaScript iterators.
+
 ### Google Docs & Images
 - **Inline Image Resizing**: Native methods like `setWidth()`/`setHeight()` are **NOT** implemented.
 - **Conversion**: To create a Google Doc from HTML, use `Drive.Files.create()` with the correct v3 parameters:
@@ -69,70 +99,26 @@ Agent:
   ```
 - **Resizing Workaround**: The Docs API does not support updating image properties. You must **delete and re-insert** the image with the new dimensions.
   - **Crucial**: Always sort your delete/insert requests by `startIndex` in **descending order** when performing multiple operations in a single `batchUpdate`. This prevents index shifting from invalidating subsequent operations in the same batch.
-  ```javascript
-  // Example: processing multiple images
-  const replacements = [...].sort((a, b) => b.startIndex - a.startIndex);
-  replacements.forEach(rep => {
-    requests.push({ deleteContentRange: { ... } });
-    requests.push({ insertInlineImage: { ... } });
-  });
-  ```
-- **Detached Elements**: Elements copied via `.copy()` are detached and cannot be modified until they are inserted back into a document.
-
-
-### Google Slides
-- **Dynamic Element Creation**: Always use specific insertion methods like `slide.insertTextBox(text, l, t, w, h)` or `slide.insertTable(r, c, l, t, w, h)` to ensure proper positioning and sizing at creation time.
-- **Transformations**: Use `setLeft()`, `setTop()`, `setWidth()`, and `setHeight()` for precise manipulation of lines and shapes.
-
-### General Patterns
-- **Flush to Commit**: When performing multiple spreadsheet or doc operations in a tight loop, call `SpreadsheetApp.flush()` or `doc.saveAndClose()` to ensure data is committed and visible to subsequent operations.
-- **Advanced Service Discovery**: If a method is missing in the standard service (e.g., `SpreadsheetApp`), check if the Advanced Service (e.g., `Sheets`) provides a way to achieve the same result via `batchUpdate`.
-- **Iterators**: `gas-fakes` iterators (like `FileIterator`) implement the native Apps Script `hasNext()` and `next()` methods, which differ from standard JavaScript iterators.
-
-### Unusual Patterns & Technical Constraints
-
-#### Google Drive (DriveApp vs. Drive Advanced)
-- **File Export**: When using `Drive.Files.export`, the Apps Script Advanced Service often requires an extra `{alt: 'media'}` parameter to successfully download content, even if not documented. `gas-fakes` handles this automatically using the API's `export` method.
-- **Invalid Field Selection**: Some older files may trigger errors when requesting `createdTime` or `modifiedTime`. `gas-fakes` automatically retries these using v2 fields (`createdDate`/`modifiedDate`) if it detects this failure.
-
-#### Google Sheets (SpreadsheetApp)
-- **Chart Creation & Ranges**: When using `EmbeddedChartBuilder.addRange()`, the Sheets API requires `ChartSourceRange` domains and series to have a length of 1 for either rows or columns.
-  - **Crucial**: Do **not** pass a multi-column range (e.g., `sheet.getRange(1, 1, 10, 2)`) to `addRange()`, as it will throw an `Invalid requests[0].addChart` error.
-  - Instead, you MUST add domains and series as separate single-column ranges:
-    ```javascript
-    // CORRECT: Add domain (X-axis) then series (Y-axis) separately
-    chartBuilder.addRange(sheet.getRange(1, 1, 10, 1)) // Column A
-                .addRange(sheet.getRange(1, 2, 10, 1)) // Column B
-    ```
-- **Values vs. Display Values**: 
-  - `getValues()` returns unformatted data (e.g., `1` for a formatted cell).
-  - `getDisplayValues()` returns formatted strings (e.g., `"1.00"`).
-  - `setValues()` uses "USER_ENTERED" mode, meaning strings like `"=SUM(A1:A10)"` will be parsed as formulas.
-- **Bulk Operations (RangeList)**: For applying the same formatting or value to multiple non-contiguous ranges, use `sheet.getRangeList(['A1', 'C1', 'E1'])`. This is significantly more efficient than individual `getRange` calls.
-- **Data Validation**: Setting relative dates (e.g., `DATE_EQUAL_TO_RELATIVE`) via `withCriteria` is notoriously buggy in live Apps Script and is currently treated as an error-prone operation in `gas-fakes`.
-- **Notes**: `setNote(25)` will store the value as `"25.0"` in some contexts due to an underlying Apps Script inconsistency.
-- **Active Spreadsheet**: In local development, `getActiveSpreadsheet()` returns the sheet associated with the `GF_SCRIPT_ID` or `TEST_AIRPORTS_ID` found in `.env`.
-
-#### Google Docs (DocumentApp)
 - **Shadow Document & Named Ranges**: `gas-fakes` uses a "Shadow Document" approach. Elements are tracked using Named Range tags to maintain positional integrity during updates.
-- **Horizontal Rules**: There is no direct API method to insert a Horizontal Rule element. This is a known limitation.
-- **Table Creation**: `appendTable()` without arguments creates a 1x1 table in `gas-fakes`, whereas live Apps Script creates an empty table stub (which is impossible via the public API).
-- **Element Indices**: Adding a table always inserts a preceding newline. Precise index management is required when inserting elements before or after tables.
+- **Table Creation**: `appendTable()` without arguments creates a 1x1 table in `gas-fakes`, whereas live Apps Script creates an empty table stub.
+- **Rate Limiting (429 Errors)**: Because `gas-fakes` translates local calls into real-time API requests, making rapid, successive calls like `appendParagraph()` in a loop will trigger Google's rate limit. 
+  - **Best Practice**: Concatenate strings locally and make a single `appendParagraph()` call, rather than appending multiple short lines separately.
+  - **Real-time Feedback**: If you see retryable 429 errors in the console output during script execution, you MUST inform the user that the process is experiencing rate limiting but that `gas-fakes` is automatically handling retries.
 
-#### Google Slides (SlidesApp)
-- **Affine Transforms**: For advanced positioning, scaling, or shearing of elements, use `newAffineTransformBuilder()`. This allows for precise geometric manipulation beyond simple `setLeft`/`setTop`.
-- **Autofit**: Text boxes default to `AutofitType.NONE`. Use the `Autofit` class to manage how text scales within shapes.
+### Google Sheets (SpreadsheetApp)
+- **Chart Creation & Ranges**: When using `EmbeddedChartBuilder.addRange()`, the Sheets API requires `ChartSourceRange` domains and series to have a length of 1 for either rows or columns.
+  - **Crucial**: Do **not** pass a multi-column range to `addRange()`. Add domains and series as separate single-column ranges.
+- **Values vs. Display Values**: 
+  - `getValues()` returns unformatted data.
+  - `getDisplayValues()` returns formatted strings.
+  - `setValues()` uses "USER_ENTERED" mode.
+- **Bulk Operations (RangeList)**: Use `sheet.getRangeList(['A1', 'C1', 'E1'])` for multi-range formatting.
 
-#### Google Drive (DriveApp vs. Drive Advanced)
-- **Strict Sandbox Mode**: In some tests, the `strictSandbox` behavior is temporarily disabled to allow searching across the full Drive while still maintaining a localized worker context.
-- **File Export**: When using `Drive.Files.export`, the Apps Script Advanced Service often requires an extra `{alt: 'media'}` parameter to successfully download content, even if not documented. `gas-fakes` handles this automatically using the API's `export` method.
-- **Invalid Field Selection**: Some older files may trigger errors when requesting `createdTime` or `modifiedTime`. `gas-fakes` automatically retries these using v2 fields (`createdDate`/`modifiedDate`) if it detects this failure.
-
-#### Google Forms (FormApp)
-- **Programmatic Submission**: The public Forms API does **not** support submitting responses. `gas-fakes` uses a "web submission hack" that temporarily makes the form public to scrape tokens and POST the response. This is high-complexity and may have slight latency.
-- **Title Discrepancy**: `FormApp.create(name)` sets the **Drive File Name** but leaves the internal Form Title blank. The API requires a title, so `gas-fakes` sets both to ensure consistency.
+### Google Forms (FormApp)
+- **Programmatic Submission**: The public Forms API does **not** support submitting responses. `gas-fakes` uses a "web submission hack" that temporarily makes the form public to scrape tokens and POST the response.
 - **Choice IDs**: The Forms API uses hex string IDs, while Apps Script uses numbers. `gas-fakes` handles this conversion automatically.
 
-#### JDBC
-- **MySQL 8+ Authentication**: Live Apps Script drivers often fail with `caching_sha2_password`. You must downgrade users to `mysql_native_password` on the server for successful connection.
-- **BigDecimal**: `getBigDecimal()` returns a Java proxy object. Always wrap the result in `Number()` or `parseFloat()` for cross-platform compatibility.
+### JDBC
+- **MySQL 8+ Authentication**: You must downgrade users to `mysql_native_password` on the server for successful connection.
+- **BigDecimal**: Always wrap `getBigDecimal()` result in `Number()` or `parseFloat()` for cross-platform compatibility.
+
