@@ -96,6 +96,14 @@ Agent:
 - **Invalid Field Selection**: Some older files may trigger errors when requesting `createdTime` or `modifiedTime`. `gas-fakes` automatically retries these using v2 fields (`createdDate`/`modifiedDate`) if it detects this failure.
 
 #### Google Sheets (SpreadsheetApp)
+- **Chart Creation & Ranges**: When using `EmbeddedChartBuilder.addRange()`, the Sheets API requires `ChartSourceRange` domains and series to have a length of 1 for either rows or columns.
+  - **Crucial**: Do **not** pass a multi-column range (e.g., `sheet.getRange(1, 1, 10, 2)`) to `addRange()`, as it will throw an `Invalid requests[0].addChart` error.
+  - Instead, you MUST add domains and series as separate single-column ranges:
+    ```javascript
+    // CORRECT: Add domain (X-axis) then series (Y-axis) separately
+    chartBuilder.addRange(sheet.getRange(1, 1, 10, 1)) // Column A
+                .addRange(sheet.getRange(1, 2, 10, 1)) // Column B
+    ```
 - **Values vs. Display Values**: 
   - `getValues()` returns unformatted data (e.g., `1` for a formatted cell).
   - `getDisplayValues()` returns formatted strings (e.g., `"1.00"`).
