@@ -1,4 +1,5 @@
 import { Proxies } from '../../support/proxies.js';
+import { newFakeColorScheme } from './fakecolorscheme.js';
 
 export const newFakeMaster = (...args) => {
   return Proxies.guard(new FakeMaster(...args));
@@ -22,6 +23,15 @@ export class FakeMaster {
   getObjectId() {
     return this.__id;
   }
+
+  /**
+   * Gets the color scheme of the master.
+   * @returns {FakeColorScheme} The color scheme.
+   */
+  getColorScheme() {
+    return newFakeColorScheme(this);
+  }
+
   toString() {
     return 'Master';
   }

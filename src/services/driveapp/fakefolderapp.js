@@ -61,8 +61,25 @@ class FakeFolderApp {
 
 
 
-  createShortcutForTargetIdAndResourceKey() {
-    return notYetImplemented('createShortcutForTargetIdAndResourceKey')
+  createShortcut({ targetId, resourceKey, file = {} }) {
+    const target = Drive.Files.get(targetId, { fields: 'name' })
+    return this.createFile({
+      nargs: 2,
+      name: target.name,
+      content: "",
+      file: {
+        mimeType: 'application/vnd.google-apps.shortcut',
+        shortcutDetails: {
+          targetId,
+          targetResourceKey: resourceKey
+        },
+        ...file
+      }
+    })
+  }
+
+  createShortcutForTargetIdAndResourceKey({ targetId, resourceKey, file = {} }) {
+    return this.createShortcut({ targetId, resourceKey, file })
   }
 
 
@@ -90,10 +107,6 @@ class FakeFolderApp {
   }
   removeFile() {
     return notYetImplemented('removeFile')
-  }
-
-  createShortcut() {
-    return notYetImplemented('createShortcut')
   }
 
   /**

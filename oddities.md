@@ -133,7 +133,19 @@ I've come across various Apps Script bugs/issues as I work through this which I'
 
 Just a few things I've come across when digging into the differences between what the sheets API and Apps Script do. Whether or not you use gas fakes, some of this stuff might be useful if you are using the APIs directly, or indeed the Advanced service. I'll just make a growing list of stuff I've found, in no particular order.
 
-### DriveApp -vs- Drive Advanced services
+### DriveApp vs Drive API Role Hierarchy (Viewers and Editors)
+
+When querying for users attached to a file, there is a significant behavior difference between the Google Apps Script environment and the underlying Google Drive API (and by extension, the Drive Advanced Service).
+
+The Google Drive API strictly isolates users by their explicitly granted `role` (e.g., `writer`, `reader`, `commenter`, `owner`).
+
+However, the Live Apps Script environment treats these roles hierarchically:
+- `getViewers()` returns anyone with *at least* view access. This means the array returned will include users explicitly added as viewers, commenters, **editors**, and the **owner**.
+- `getEditors()` returns anyone with *at least* edit access. This includes explicitly added editors and the **owner**.
+
+If you rely on `getViewers()` in Apps Script to return *only* the users explicitly given "Viewer" permissions, your logic will be flawed as it will also include all editors and the owner.
+
+In `gas-fakes`, we mimic this Live Apps Script hierarchy. When `getViewers()` is called, `gas-fakes` expands the underlying API request to fetch users with `reader`, `commenter`, `writer`, and `owner` roles to ensure compatibility.
 
 The Drive.File.export needs an additional parameter (alt:'media') to return converted content. This is missing from the Autocomplete in the IDE. Without this parameter it fails. The service should add it automatically (presumably this is the intention, since the method is useless without it).
 

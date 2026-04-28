@@ -10,6 +10,9 @@ const __dirname = path.dirname(__filename);
 const sheetRangeMakerPath = path.resolve(__dirname, '../src/services/spreadsheetapp/sheetrangemakers.js');
 const { setterList, attrGetList, valuesGetList } = await import(sheetRangeMakerPath);
 
+const dataValidationMappingPath = path.resolve(__dirname, '../src/services/spreadsheetapp/datavalidationcriteriamapping.js');
+const { dataValidationCriteriaMapping } = await import(dataValidationMappingPath);
+
 const utilsPath = path.resolve(__dirname, '../src/support/utils.js');
 const { Utils } = await import(utilsPath);
 
@@ -18,6 +21,7 @@ const { Attribute } = await import(docEnumsPath);
 
 const dynamicSheetRangeMethods = new Map(); // methodName -> { specType, specIndex, specFile }
 const dynamicDocMethods = new Map(); // methodName -> { specType, specIndex }
+const dynamicDataValidationMethods = new Map(); // methodName -> { prop, specFile }
 
 const docServiceClasses = new Set(['Body', 'Paragraph', 'ListItem', 'Table', 'TableRow', 'TableCell', 'Text', 'InlineImage', 'PageBreak', 'HorizontalRule', 'Footnote', 'HeaderSection', 'FooterSection', 'FootnoteSection', 'ContainerElement', 'SectionElement', 'RichLink']);
 
@@ -110,14 +114,19 @@ const classSynonyms = {
   'FootnoteSection': ['containerelement', 'element'],
   'ContainerElement': ['element'],
   'SectionElement': ['element'],
-  'Range': ['range'],
+  'Range': ['sheetrange', 'range'],
+  'DeveloperMetadata': ['developermetadata'],
+  'DeveloperMetadataFinder': ['developermetadatafinder'],
+  'DeveloperMetadataLocation': ['developermetadatalocation'],
   'RichTextValue': ['richtextvalue'],
   'TextStyle': ['textstyle'],
   'ConditionalFormatRule': ['conditionalformatrule'],
   'Banding': ['banding'],
   'Borders': ['borders'],
-  'Color': ['colorbuilder'],
-  'RgbColor': ['rgbcolor'],
+  'Color': ['colorbuilder', 'colorbase'],
+  'ColorBuilder': ['colorbuilder', 'colorbase'],
+  'RgbColor': ['rgbcolor', 'colorbase'],
+  'ThemeColor': ['themecolor', 'colorbase'],
   'DataValidation': ['datavalidationbuilder'],
 };
 
@@ -131,7 +140,9 @@ const classToFileMap = {
   'PropertiesService': 'stores/fakestores.js',
   'CacheService': 'stores/fakestores.js',
   'ScriptApp': 'scriptapp/app.js',
-  'DriveApp': 'driveapp/fakedriveapp.js'
+  'DriveApp': 'driveapp/fakedriveapp.js',
+  'FileIterator': 'support/peeker.js',
+  'FolderIterator': 'support/peeker.js'
 };
 
 // Populate the dynamic methods map with metadata for proper linking
@@ -166,6 +177,13 @@ Object.keys(Attribute).forEach((key, index) => {
   const capitalizedProp = Utils.capital(propName);
   dynamicDocMethods.set(`get${capitalizedProp}`, { specType: 'Attribute', specIndex: index });
   dynamicDocMethods.set(`set${capitalizedProp}`, { specType: 'Attribute', specIndex: index });
+});
+
+Object.keys(dataValidationCriteriaMapping).forEach((prop) => {
+  const item = dataValidationCriteriaMapping[prop];
+  if (item.method) {
+    dynamicDataValidationMethods.set(item.method, { prop, specFile: dataValidationMappingPath });
+  }
 });
 for (const service of giData) {
   const serviceName = service.serviceName;
@@ -273,6 +291,22 @@ for (const service of giData) {
           const relativePath = path.relative(projectPath, docEnumsPath);
           status = 'completed';
           implementationLink = `${relativePath}#L1`;
+        }
+
+        // Special check for dynamically generated DataValidationBuilder methods
+        if (serviceName === 'Spreadsheet' && className === 'DataValidationBuilder' && dynamicDataValidationMethods.has(methodName)) {
+          handledAsDynamic = true;
+          const specInfo = dynamicDataValidationMethods.get(methodName);
+          const specFilePath = path.relative(projectPath, specInfo.specFile);
+          const specFileContent = fs.readFileSync(specInfo.specFile, 'utf8');
+          const specLines = specFileContent.split('\n');
+
+          // Find the line where the mapping starts
+          let lineNumber = specLines.findIndex(line => line.includes(`${specInfo.prop}: {`)) + 1;
+          if (lineNumber === 0) lineNumber = 1; // Fallback
+
+          status = 'completed';
+          implementationLink = `${specFilePath}#L${lineNumber}`;
         }
 
         // Only do file search if not handled as dynamic

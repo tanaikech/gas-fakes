@@ -26,8 +26,15 @@ Supported Methods:
 - `getRange()`
 - `asRgbColor()`
 - `asThemeColor()`
+- `getColorType()`
+- `getConcreteColor(ThemeColorType)`
+- `getThemeColors()`
+- `setConcreteColor(ThemeColorType,Color)`
+- `setConcreteColor(ThemeColorType,Integer,Integer,Integer)`
+- `setConcreteColor(ThemeColorType,String)`
 - `getIndex()`
 - `getPageElement()`
+- `getColorScheme()`
 - `getMaster()`
 - `getObjectId()`
 - `getConnectionSites()`
@@ -74,6 +81,7 @@ Supported Methods:
 - `getLinkType()`
 - `getSlideId()`
 - `getUrl()`
+- `getColorScheme()`
 - `getObjectId()`
 - `alignOnPage(AlignmentPosition)`
 - `asLine()`
@@ -116,6 +124,7 @@ Supported Methods:
 - `appendSlide(Slide,SlideLinkingMode)`
 - `appendSlide(Slide)`
 - `getId()`
+- `getMasters()`
 - `getName()`
 - `getSlideById(String)`
 - `getSlides()`
@@ -131,6 +140,7 @@ Supported Methods:
 - `getText()`
 - `duplicate()`
 - `getBackground()`
+- `getColorScheme()`
 - `getLayout()`
 - `getNotesPage()`
 - `getObjectId()`
@@ -216,8 +226,15 @@ Supported Methods:
 - `getRange()`
 - `asRgbColor()`
 - `asThemeColor()`
+- `getColorType()`
+- `getConcreteColor(ThemeColorType)`
+- `getThemeColors()`
+- `setConcreteColor(ThemeColorType,Color)`
+- `setConcreteColor(ThemeColorType,Integer,Integer,Integer)`
+- `setConcreteColor(ThemeColorType,String)`
 - `getIndex()`
 - `getPageElement()`
+- `getColorScheme()`
 - `getMaster()`
 - `getObjectId()`
 - `getConnectionSites()`
@@ -264,6 +281,7 @@ Supported Methods:
 - `getLinkType()`
 - `getSlideId()`
 - `getUrl()`
+- `getColorScheme()`
 - `getObjectId()`
 - `alignOnPage(AlignmentPosition)`
 - `asLine()`
@@ -306,6 +324,7 @@ Supported Methods:
 - `appendSlide(Slide,SlideLinkingMode)`
 - `appendSlide(Slide)`
 - `getId()`
+- `getMasters()`
 - `getName()`
 - `getSlideById(String)`
 - `getSlides()`
@@ -321,6 +340,7 @@ Supported Methods:
 - `getText()`
 - `duplicate()`
 - `getBackground()`
+- `getColorScheme()`
 - `getLayout()`
 - `getNotesPage()`
 - `getObjectId()`
@@ -399,8 +419,15 @@ Supported Methods:
 - `getRange()`
 - `asRgbColor()`
 - `asThemeColor()`
+- `getColorType()`
+- `getConcreteColor(ThemeColorType)`
+- `getThemeColors()`
+- `setConcreteColor(ThemeColorType,Color)`
+- `setConcreteColor(ThemeColorType,Integer,Integer,Integer)`
+- `setConcreteColor(ThemeColorType,String)`
 - `getIndex()`
 - `getPageElement()`
+- `getColorScheme()`
 - `getMaster()`
 - `getObjectId()`
 - `getConnectionSites()`
@@ -447,6 +474,7 @@ Supported Methods:
 - `getLinkType()`
 - `getSlideId()`
 - `getUrl()`
+- `getColorScheme()`
 - `getObjectId()`
 - `alignOnPage(AlignmentPosition)`
 - `asLine()`
@@ -489,6 +517,7 @@ Supported Methods:
 - `appendSlide(Slide,SlideLinkingMode)`
 - `appendSlide(Slide)`
 - `getId()`
+- `getMasters()`
 - `getName()`
 - `getSlideById(String)`
 - `getSlides()`
@@ -504,6 +533,7 @@ Supported Methods:
 - `getText()`
 - `duplicate()`
 - `getBackground()`
+- `getColorScheme()`
 - `getLayout()`
 - `getNotesPage()`
 - `getObjectId()`
@@ -578,8 +608,15 @@ Supported Methods:
 - `getRange()`
 - `asRgbColor()`
 - `asThemeColor()`
+- `getColorType()`
+- `getConcreteColor(ThemeColorType)`
+- `getThemeColors()`
+- `setConcreteColor(ThemeColorType,Color)`
+- `setConcreteColor(ThemeColorType,Integer,Integer,Integer)`
+- `setConcreteColor(ThemeColorType,String)`
 - `getIndex()`
 - `getPageElement()`
+- `getColorScheme()`
 - `getMaster()`
 - `getObjectId()`
 - `getConnectionSites()`
@@ -626,6 +663,7 @@ Supported Methods:
 - `getLinkType()`
 - `getSlideId()`
 - `getUrl()`
+- `getColorScheme()`
 - `getObjectId()`
 - `alignOnPage(AlignmentPosition)`
 - `asLine()`
@@ -668,6 +706,7 @@ Supported Methods:
 - `appendSlide(Slide,SlideLinkingMode)`
 - `appendSlide(Slide)`
 - `getId()`
+- `getMasters()`
 - `getName()`
 - `getSlideById(String)`
 - `getSlides()`
@@ -683,6 +722,7 @@ Supported Methods:
 - `getText()`
 - `duplicate()`
 - `getBackground()`
+- `getColorScheme()`
 - `getLayout()`
 - `getNotesPage()`
 - `getObjectId()`
@@ -754,8 +794,15 @@ Supported Methods:
 Supported Methods:
 - `asRgbColor()`
 - `asThemeColor()`
+- `getColorType()`
+- `getConcreteColor(ThemeColorType)`
+- `getThemeColors()`
+- `setConcreteColor(ThemeColorType,Color)`
+- `setConcreteColor(ThemeColorType,Integer,Integer,Integer)`
+- `setConcreteColor(ThemeColorType,String)`
 - `getIndex()`
 - `getPageElement()`
+- `getColorScheme()`
 - `getMaster()`
 - `getObjectId()`
 - `getConnectionSites()`
@@ -802,6 +849,7 @@ Supported Methods:
 - `getLinkType()`
 - `getSlideId()`
 - `getUrl()`
+- `getColorScheme()`
 - `getObjectId()`
 - `alignOnPage(AlignmentPosition)`
 - `asLine()`
@@ -844,6 +892,7 @@ Supported Methods:
 - `appendSlide(Slide,SlideLinkingMode)`
 - `appendSlide(Slide)`
 - `getId()`
+- `getMasters()`
 - `getName()`
 - `getSlideById(String)`
 - `getSlides()`
@@ -859,6 +908,7 @@ Supported Methods:
 - `getText()`
 - `duplicate()`
 - `getBackground()`
+- `getColorScheme()`
 - `getLayout()`
 - `getNotesPage()`
 - `getObjectId()`
@@ -930,8 +980,15 @@ Supported Methods:
 Supported Methods:
 - `asRgbColor()`
 - `asThemeColor()`
+- `getColorType()`
+- `getConcreteColor(ThemeColorType)`
+- `getThemeColors()`
+- `setConcreteColor(ThemeColorType,Color)`
+- `setConcreteColor(ThemeColorType,Integer,Integer,Integer)`
+- `setConcreteColor(ThemeColorType,String)`
 - `getIndex()`
 - `getPageElement()`
+- `getColorScheme()`
 - `getMaster()`
 - `getObjectId()`
 - `getConnectionSites()`
@@ -978,6 +1035,7 @@ Supported Methods:
 - `getLinkType()`
 - `getSlideId()`
 - `getUrl()`
+- `getColorScheme()`
 - `getObjectId()`
 - `alignOnPage(AlignmentPosition)`
 - `asLine()`
@@ -1020,6 +1078,7 @@ Supported Methods:
 - `appendSlide(Slide,SlideLinkingMode)`
 - `appendSlide(Slide)`
 - `getId()`
+- `getMasters()`
 - `getName()`
 - `getSlideById(String)`
 - `getSlides()`
@@ -1035,6 +1094,7 @@ Supported Methods:
 - `getText()`
 - `duplicate()`
 - `getBackground()`
+- `getColorScheme()`
 - `getLayout()`
 - `getNotesPage()`
 - `getObjectId()`
@@ -1104,8 +1164,14 @@ Supported Methods:
 ## Class: ColorScheme
 
 Supported Methods:
+- `getConcreteColor(ThemeColorType)`
+- `getThemeColors()`
+- `setConcreteColor(ThemeColorType,Color)`
+- `setConcreteColor(ThemeColorType,Integer,Integer,Integer)`
+- `setConcreteColor(ThemeColorType,String)`
 - `getIndex()`
 - `getPageElement()`
+- `getColorScheme()`
 - `getMaster()`
 - `getObjectId()`
 - `getConnectionSites()`
@@ -1152,6 +1218,7 @@ Supported Methods:
 - `getLinkType()`
 - `getSlideId()`
 - `getUrl()`
+- `getColorScheme()`
 - `getObjectId()`
 - `alignOnPage(AlignmentPosition)`
 - `asLine()`
@@ -1194,6 +1261,7 @@ Supported Methods:
 - `appendSlide(Slide,SlideLinkingMode)`
 - `appendSlide(Slide)`
 - `getId()`
+- `getMasters()`
 - `getName()`
 - `getSlideById(String)`
 - `getSlides()`
@@ -1209,6 +1277,7 @@ Supported Methods:
 - `getText()`
 - `duplicate()`
 - `getBackground()`
+- `getColorScheme()`
 - `getLayout()`
 - `getNotesPage()`
 - `getObjectId()`
@@ -1280,6 +1349,7 @@ Supported Methods:
 Supported Methods:
 - `getIndex()`
 - `getPageElement()`
+- `getColorScheme()`
 - `getMaster()`
 - `getObjectId()`
 - `getConnectionSites()`
@@ -1326,6 +1396,7 @@ Supported Methods:
 - `getLinkType()`
 - `getSlideId()`
 - `getUrl()`
+- `getColorScheme()`
 - `getObjectId()`
 - `alignOnPage(AlignmentPosition)`
 - `asLine()`
@@ -1368,6 +1439,7 @@ Supported Methods:
 - `appendSlide(Slide,SlideLinkingMode)`
 - `appendSlide(Slide)`
 - `getId()`
+- `getMasters()`
 - `getName()`
 - `getSlideById(String)`
 - `getSlides()`
@@ -1383,6 +1455,7 @@ Supported Methods:
 - `getText()`
 - `duplicate()`
 - `getBackground()`
+- `getColorScheme()`
 - `getLayout()`
 - `getNotesPage()`
 - `getObjectId()`
@@ -1452,6 +1525,7 @@ Supported Methods:
 ## Class: Fill
 
 Supported Methods:
+- `getColorScheme()`
 - `getMaster()`
 - `getObjectId()`
 - `getConnectionSites()`
@@ -1498,6 +1572,7 @@ Supported Methods:
 - `getLinkType()`
 - `getSlideId()`
 - `getUrl()`
+- `getColorScheme()`
 - `getObjectId()`
 - `alignOnPage(AlignmentPosition)`
 - `asLine()`
@@ -1540,6 +1615,7 @@ Supported Methods:
 - `appendSlide(Slide,SlideLinkingMode)`
 - `appendSlide(Slide)`
 - `getId()`
+- `getMasters()`
 - `getName()`
 - `getSlideById(String)`
 - `getSlides()`
@@ -1555,6 +1631,7 @@ Supported Methods:
 - `getText()`
 - `duplicate()`
 - `getBackground()`
+- `getColorScheme()`
 - `getLayout()`
 - `getNotesPage()`
 - `getObjectId()`
@@ -1624,6 +1701,7 @@ Supported Methods:
 ## Class: Group
 
 Supported Methods:
+- `getColorScheme()`
 - `getMaster()`
 - `getObjectId()`
 - `getConnectionSites()`
@@ -1670,6 +1748,7 @@ Supported Methods:
 - `getLinkType()`
 - `getSlideId()`
 - `getUrl()`
+- `getColorScheme()`
 - `getObjectId()`
 - `alignOnPage(AlignmentPosition)`
 - `asLine()`
@@ -1712,6 +1791,7 @@ Supported Methods:
 - `appendSlide(Slide,SlideLinkingMode)`
 - `appendSlide(Slide)`
 - `getId()`
+- `getMasters()`
 - `getName()`
 - `getSlideById(String)`
 - `getSlides()`
@@ -1727,6 +1807,7 @@ Supported Methods:
 - `getText()`
 - `duplicate()`
 - `getBackground()`
+- `getColorScheme()`
 - `getLayout()`
 - `getNotesPage()`
 - `getObjectId()`
@@ -1796,6 +1877,7 @@ Supported Methods:
 ## Class: Image
 
 Supported Methods:
+- `getColorScheme()`
 - `getMaster()`
 - `getObjectId()`
 - `getConnectionSites()`
@@ -1842,6 +1924,7 @@ Supported Methods:
 - `getLinkType()`
 - `getSlideId()`
 - `getUrl()`
+- `getColorScheme()`
 - `getObjectId()`
 - `alignOnPage(AlignmentPosition)`
 - `asLine()`
@@ -1884,6 +1967,7 @@ Supported Methods:
 - `appendSlide(Slide,SlideLinkingMode)`
 - `appendSlide(Slide)`
 - `getId()`
+- `getMasters()`
 - `getName()`
 - `getSlideById(String)`
 - `getSlides()`
@@ -1899,6 +1983,7 @@ Supported Methods:
 - `getText()`
 - `duplicate()`
 - `getBackground()`
+- `getColorScheme()`
 - `getLayout()`
 - `getNotesPage()`
 - `getObjectId()`
@@ -1968,6 +2053,7 @@ Supported Methods:
 ## Class: Layout
 
 Supported Methods:
+- `getColorScheme()`
 - `getMaster()`
 - `getObjectId()`
 - `getConnectionSites()`
@@ -2014,6 +2100,7 @@ Supported Methods:
 - `getLinkType()`
 - `getSlideId()`
 - `getUrl()`
+- `getColorScheme()`
 - `getObjectId()`
 - `alignOnPage(AlignmentPosition)`
 - `asLine()`
@@ -2056,6 +2143,7 @@ Supported Methods:
 - `appendSlide(Slide,SlideLinkingMode)`
 - `appendSlide(Slide)`
 - `getId()`
+- `getMasters()`
 - `getName()`
 - `getSlideById(String)`
 - `getSlides()`
@@ -2071,6 +2159,7 @@ Supported Methods:
 - `getText()`
 - `duplicate()`
 - `getBackground()`
+- `getColorScheme()`
 - `getLayout()`
 - `getNotesPage()`
 - `getObjectId()`
@@ -2184,6 +2273,7 @@ Supported Methods:
 - `getLinkType()`
 - `getSlideId()`
 - `getUrl()`
+- `getColorScheme()`
 - `getObjectId()`
 - `alignOnPage(AlignmentPosition)`
 - `asLine()`
@@ -2226,6 +2316,7 @@ Supported Methods:
 - `appendSlide(Slide,SlideLinkingMode)`
 - `appendSlide(Slide)`
 - `getId()`
+- `getMasters()`
 - `getName()`
 - `getSlideById(String)`
 - `getSlides()`
@@ -2241,6 +2332,7 @@ Supported Methods:
 - `getText()`
 - `duplicate()`
 - `getBackground()`
+- `getColorScheme()`
 - `getLayout()`
 - `getNotesPage()`
 - `getObjectId()`
@@ -2323,6 +2415,7 @@ Supported Methods:
 - `getLinkType()`
 - `getSlideId()`
 - `getUrl()`
+- `getColorScheme()`
 - `getObjectId()`
 - `alignOnPage(AlignmentPosition)`
 - `asLine()`
@@ -2365,6 +2458,7 @@ Supported Methods:
 - `appendSlide(Slide,SlideLinkingMode)`
 - `appendSlide(Slide)`
 - `getId()`
+- `getMasters()`
 - `getName()`
 - `getSlideById(String)`
 - `getSlides()`
@@ -2380,6 +2474,7 @@ Supported Methods:
 - `getText()`
 - `duplicate()`
 - `getBackground()`
+- `getColorScheme()`
 - `getLayout()`
 - `getNotesPage()`
 - `getObjectId()`
@@ -2452,6 +2547,7 @@ Supported Methods:
 - `getLinkType()`
 - `getSlideId()`
 - `getUrl()`
+- `getColorScheme()`
 - `getObjectId()`
 - `alignOnPage(AlignmentPosition)`
 - `asLine()`
@@ -2494,6 +2590,7 @@ Supported Methods:
 - `appendSlide(Slide,SlideLinkingMode)`
 - `appendSlide(Slide)`
 - `getId()`
+- `getMasters()`
 - `getName()`
 - `getSlideById(String)`
 - `getSlides()`
@@ -2509,6 +2606,7 @@ Supported Methods:
 - `getText()`
 - `duplicate()`
 - `getBackground()`
+- `getColorScheme()`
 - `getLayout()`
 - `getNotesPage()`
 - `getObjectId()`
@@ -2578,6 +2676,7 @@ Supported Methods:
 ## Class: List
 
 Supported Methods:
+- `getColorScheme()`
 - `getObjectId()`
 - `alignOnPage(AlignmentPosition)`
 - `asLine()`
@@ -2620,6 +2719,7 @@ Supported Methods:
 - `appendSlide(Slide,SlideLinkingMode)`
 - `appendSlide(Slide)`
 - `getId()`
+- `getMasters()`
 - `getName()`
 - `getSlideById(String)`
 - `getSlides()`
@@ -2635,6 +2735,7 @@ Supported Methods:
 - `getText()`
 - `duplicate()`
 - `getBackground()`
+- `getColorScheme()`
 - `getLayout()`
 - `getNotesPage()`
 - `getObjectId()`
@@ -2704,6 +2805,7 @@ Supported Methods:
 ## Class: ListStyle
 
 Supported Methods:
+- `getColorScheme()`
 - `getObjectId()`
 - `alignOnPage(AlignmentPosition)`
 - `asLine()`
@@ -2746,6 +2848,7 @@ Supported Methods:
 - `appendSlide(Slide,SlideLinkingMode)`
 - `appendSlide(Slide)`
 - `getId()`
+- `getMasters()`
 - `getName()`
 - `getSlideById(String)`
 - `getSlides()`
@@ -2761,6 +2864,7 @@ Supported Methods:
 - `getText()`
 - `duplicate()`
 - `getBackground()`
+- `getColorScheme()`
 - `getLayout()`
 - `getNotesPage()`
 - `getObjectId()`
@@ -2830,6 +2934,7 @@ Supported Methods:
 ## Class: Master
 
 Supported Methods:
+- `getColorScheme()`
 - `getObjectId()`
 - `alignOnPage(AlignmentPosition)`
 - `asLine()`
@@ -2872,6 +2977,7 @@ Supported Methods:
 - `appendSlide(Slide,SlideLinkingMode)`
 - `appendSlide(Slide)`
 - `getId()`
+- `getMasters()`
 - `getName()`
 - `getSlideById(String)`
 - `getSlides()`
@@ -2887,6 +2993,7 @@ Supported Methods:
 - `getText()`
 - `duplicate()`
 - `getBackground()`
+- `getColorScheme()`
 - `getLayout()`
 - `getNotesPage()`
 - `getObjectId()`
@@ -2997,6 +3104,7 @@ Supported Methods:
 - `appendSlide(Slide,SlideLinkingMode)`
 - `appendSlide(Slide)`
 - `getId()`
+- `getMasters()`
 - `getName()`
 - `getSlideById(String)`
 - `getSlides()`
@@ -3012,6 +3120,7 @@ Supported Methods:
 - `getText()`
 - `duplicate()`
 - `getBackground()`
+- `getColorScheme()`
 - `getLayout()`
 - `getNotesPage()`
 - `getObjectId()`
@@ -3122,6 +3231,7 @@ Supported Methods:
 - `appendSlide(Slide,SlideLinkingMode)`
 - `appendSlide(Slide)`
 - `getId()`
+- `getMasters()`
 - `getName()`
 - `getSlideById(String)`
 - `getSlides()`
@@ -3137,6 +3247,7 @@ Supported Methods:
 - `getText()`
 - `duplicate()`
 - `getBackground()`
+- `getColorScheme()`
 - `getLayout()`
 - `getNotesPage()`
 - `getObjectId()`
@@ -3247,6 +3358,7 @@ Supported Methods:
 - `appendSlide(Slide,SlideLinkingMode)`
 - `appendSlide(Slide)`
 - `getId()`
+- `getMasters()`
 - `getName()`
 - `getSlideById(String)`
 - `getSlides()`
@@ -3262,6 +3374,7 @@ Supported Methods:
 - `getText()`
 - `duplicate()`
 - `getBackground()`
+- `getColorScheme()`
 - `getLayout()`
 - `getNotesPage()`
 - `getObjectId()`
@@ -3372,6 +3485,7 @@ Supported Methods:
 - `appendSlide(Slide,SlideLinkingMode)`
 - `appendSlide(Slide)`
 - `getId()`
+- `getMasters()`
 - `getName()`
 - `getSlideById(String)`
 - `getSlides()`
@@ -3387,6 +3501,7 @@ Supported Methods:
 - `getText()`
 - `duplicate()`
 - `getBackground()`
+- `getColorScheme()`
 - `getLayout()`
 - `getNotesPage()`
 - `getObjectId()`
@@ -3497,6 +3612,7 @@ Supported Methods:
 - `appendSlide(Slide,SlideLinkingMode)`
 - `appendSlide(Slide)`
 - `getId()`
+- `getMasters()`
 - `getName()`
 - `getSlideById(String)`
 - `getSlides()`
@@ -3512,6 +3628,7 @@ Supported Methods:
 - `getText()`
 - `duplicate()`
 - `getBackground()`
+- `getColorScheme()`
 - `getLayout()`
 - `getNotesPage()`
 - `getObjectId()`
@@ -3591,6 +3708,7 @@ Supported Methods:
 - `appendSlide(Slide,SlideLinkingMode)`
 - `appendSlide(Slide)`
 - `getId()`
+- `getMasters()`
 - `getName()`
 - `getSlideById(String)`
 - `getSlides()`
@@ -3606,6 +3724,7 @@ Supported Methods:
 - `getText()`
 - `duplicate()`
 - `getBackground()`
+- `getColorScheme()`
 - `getLayout()`
 - `getNotesPage()`
 - `getObjectId()`
@@ -3685,6 +3804,7 @@ Supported Methods:
 - `appendSlide(Slide,SlideLinkingMode)`
 - `appendSlide(Slide)`
 - `getId()`
+- `getMasters()`
 - `getName()`
 - `getSlideById(String)`
 - `getSlides()`
@@ -3700,6 +3820,7 @@ Supported Methods:
 - `getText()`
 - `duplicate()`
 - `getBackground()`
+- `getColorScheme()`
 - `getLayout()`
 - `getNotesPage()`
 - `getObjectId()`
@@ -3779,6 +3900,7 @@ Supported Methods:
 - `appendSlide(Slide,SlideLinkingMode)`
 - `appendSlide(Slide)`
 - `getId()`
+- `getMasters()`
 - `getName()`
 - `getSlideById(String)`
 - `getSlides()`
@@ -3794,6 +3916,7 @@ Supported Methods:
 - `getText()`
 - `duplicate()`
 - `getBackground()`
+- `getColorScheme()`
 - `getLayout()`
 - `getNotesPage()`
 - `getObjectId()`
@@ -3871,6 +3994,7 @@ Supported Methods:
 - `appendSlide(Slide,SlideLinkingMode)`
 - `appendSlide(Slide)`
 - `getId()`
+- `getMasters()`
 - `getName()`
 - `getSlideById(String)`
 - `getSlides()`
@@ -3886,6 +4010,7 @@ Supported Methods:
 - `getText()`
 - `duplicate()`
 - `getBackground()`
+- `getColorScheme()`
 - `getLayout()`
 - `getNotesPage()`
 - `getObjectId()`
@@ -3963,6 +4088,7 @@ Supported Methods:
 - `appendSlide(Slide,SlideLinkingMode)`
 - `appendSlide(Slide)`
 - `getId()`
+- `getMasters()`
 - `getName()`
 - `getSlideById(String)`
 - `getSlides()`
@@ -3978,6 +4104,7 @@ Supported Methods:
 - `getText()`
 - `duplicate()`
 - `getBackground()`
+- `getColorScheme()`
 - `getLayout()`
 - `getNotesPage()`
 - `getObjectId()`
@@ -4055,6 +4182,7 @@ Supported Methods:
 - `appendSlide(Slide,SlideLinkingMode)`
 - `appendSlide(Slide)`
 - `getId()`
+- `getMasters()`
 - `getName()`
 - `getSlideById(String)`
 - `getSlides()`
@@ -4070,6 +4198,7 @@ Supported Methods:
 - `getText()`
 - `duplicate()`
 - `getBackground()`
+- `getColorScheme()`
 - `getLayout()`
 - `getNotesPage()`
 - `getObjectId()`
@@ -4145,6 +4274,7 @@ Supported Methods:
 - `appendSlide(Slide,SlideLinkingMode)`
 - `appendSlide(Slide)`
 - `getId()`
+- `getMasters()`
 - `getName()`
 - `getSlideById(String)`
 - `getSlides()`
@@ -4160,6 +4290,7 @@ Supported Methods:
 - `getText()`
 - `duplicate()`
 - `getBackground()`
+- `getColorScheme()`
 - `getLayout()`
 - `getNotesPage()`
 - `getObjectId()`
@@ -4234,6 +4365,7 @@ Supported Methods:
 - `getText()`
 - `duplicate()`
 - `getBackground()`
+- `getColorScheme()`
 - `getLayout()`
 - `getNotesPage()`
 - `getObjectId()`
@@ -4308,6 +4440,7 @@ Supported Methods:
 - `getText()`
 - `duplicate()`
 - `getBackground()`
+- `getColorScheme()`
 - `getLayout()`
 - `getNotesPage()`
 - `getObjectId()`
@@ -4379,6 +4512,7 @@ Supported Methods:
 Supported Methods:
 - `duplicate()`
 - `getBackground()`
+- `getColorScheme()`
 - `getLayout()`
 - `getNotesPage()`
 - `getObjectId()`
@@ -4450,6 +4584,7 @@ Supported Methods:
 Supported Methods:
 - `duplicate()`
 - `getBackground()`
+- `getColorScheme()`
 - `getLayout()`
 - `getNotesPage()`
 - `getObjectId()`

@@ -21,7 +21,7 @@ export const testFixes = {
   "TEST_SHEET_NAME": "sharedlibraries",
   "PUBLIC_SHARE_FILE_ID": "1OFJk38kW9TRrEf-B9F1gTZk2uLV-ZSpR",
   "SHARED_FILE_ID": "1uz4cxEDxtQzu0cBb1B4h6fsjgWy7hNFf",
-  "PDF_ID": "17t4ep9Jt6jRyDx0KlxMhHQNGZ3whg6GS",
+  "PDF_ID": "1-c_5JV1Br5KkEcG6Pu518ocM6CN4BBFz",
   "SCRATCH_VIEWER": "viewer@mcpher.com",
   "SCRATCH_EDITOR": "editor@mcpher.com",
   "SCRATCH_B_VIEWER": "viewer2@mcpher.com",
@@ -39,13 +39,19 @@ export const testFixes = {
   "PREFIX": ScriptApp.isFake ? "--f" : "--g",
 };
 
-export const getPotentialBackends = (Jdbc) => {
+// altough we are set up to use multiple backends, to save cost i;ve closed the paid for ones down
+const permdb = ["neon","cockroach"]
+const alldbs = permdb.concat(["cloudsql-mysql", "cloudsql-pg","aiven"])
+const usedbs = permdb
+
+export const getPotentialBackends = (Jdbc, use = usedbs) => {
   const getUseProxy = (envVar) => {
     // only relevant if running on node
     if (!ScriptApp.isFake) return false;
     const connectionString = process.env[envVar];
     return Jdbc.__useProxy(connectionString);
   };
+
 
   return [
     {
@@ -54,6 +60,7 @@ export const getPotentialBackends = (Jdbc) => {
       isGoogle: false,
       type: "pg",
       useProxy: false,
+      use: use.includes("cockroach"),
     },
     {
       prop: "DATABASE_AIVEN_MYSQL_URL",
@@ -61,6 +68,7 @@ export const getPotentialBackends = (Jdbc) => {
       isGoogle: false,
       type: "mysql",
       useProxy: false,
+      use: use.includes("aiven"),
     },
     {
       prop: "CLOUD_SQL_DATABASE_MYSQL_URL",
@@ -68,6 +76,7 @@ export const getPotentialBackends = (Jdbc) => {
       isGoogle: true,
       type: "mysql",
       useProxy: getUseProxy("CLOUD_SQL_DATABASE_MYSQL_URL"),
+      use: use.includes("cloudsql-mysql"),
     },
     {
       prop: "CLOUD_SQL_DATABASE_PG_URL",
@@ -75,6 +84,7 @@ export const getPotentialBackends = (Jdbc) => {
       isGoogle: true,
       type: "pg",
       useProxy: getUseProxy("CLOUD_SQL_DATABASE_PG_URL"),
+      use: use.includes("cloudsql-pg"),
     },
     {
       prop: "DATABASE_PG_URL",
@@ -82,6 +92,7 @@ export const getPotentialBackends = (Jdbc) => {
       type: "pg",
       isGoogle: false,
       useProxy: false,
+      use: use.includes("neon"),
     },
-  ];
+  ].filter((b) => b.use);
 };

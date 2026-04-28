@@ -58,6 +58,14 @@ export class FakeDriveFolder extends FakeDriveMeta {
     })
   }
 
+  createShortcut(targetId, resourceKey) {
+    return this.folderApp.createShortcut({ targetId, resourceKey, file: { parents: [this.getId()] } })
+  }
+
+  createShortcutForTargetIdAndResourceKey(targetId, resourceKey) {
+    return this.folderApp.createShortcutForTargetIdAndResourceKey({ targetId, resourceKey, file: { parents: [this.getId()] } })
+  }
+
   /**
    * get files in this folder
    * @return {FakeDriveFileIterator}

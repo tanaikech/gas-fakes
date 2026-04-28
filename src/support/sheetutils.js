@@ -256,4 +256,5 @@ export const SheetUtils = {
   fromRange,
   a1ToR1C1,
   r1c1ToA1,
+  columnToLetter,
 }

@@ -4,6 +4,7 @@ import { newFakeLayout } from './fakelayout.js';
 import { newFakeMaster } from './fakemaster.js';
 import { newFakePageElement } from './fakepageelement.js';
 import { newFakePageBackground } from './fakepagebackground.js';
+import { newFakeColorScheme } from './fakecolorscheme.js';
 import { asSpecificPageElement } from './pageelementfactory.js';
 
 export const newFakeSlide = (...args) => {
@@ -84,6 +85,14 @@ export class FakeSlide {
   getBackground() {
     const background = this.__resource.pageBackgroundFill;
     return background ? newFakePageBackground(this) : null;
+  }
+
+  /**
+   * Gets the color scheme of the slide.
+   * @returns {FakeColorScheme} The color scheme.
+   */
+  getColorScheme() {
+    return newFakeColorScheme(this);
   }
 
   /**

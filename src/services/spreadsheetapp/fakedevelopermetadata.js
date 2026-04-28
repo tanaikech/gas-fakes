@@ -1,5 +1,6 @@
 import { Proxies } from '../../support/proxies.js';
 import { Utils } from '../../support/utils.js';
+import { signatureArgs } from '../../support/helpers.js';
 import { newFakeDeveloperMetadataLocation } from './fakedevelopermetadatalocation.js';
 import { batchUpdate, makeSheetsGridRange } from './sheetrangehelpers.js';
 
@@ -40,11 +41,36 @@ class FakeDeveloperMetadata {
     return SpreadsheetApp.DeveloperMetadataVisibility[this.__metadata.visibility];
   }
 
-  moveTo(location) {
+  moveToColumn(column) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "moveToColumn")
+    if (nargs !== 1 || column.toString() !== 'Range') matchThrow()
+    return this.__moveTo(column)
+  }
+
+  moveToRow(row) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "moveToRow")
+    if (nargs !== 1 || row.toString() !== 'Range') matchThrow()
+    return this.__moveTo(row)
+  }
+
+  moveToSheet(sheet) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "moveToSheet")
+    if (nargs !== 1 || sheet.toString() !== 'Sheet') matchThrow()
+    return this.__moveTo(sheet)
+  }
+
+  moveToSpreadsheet() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "moveToSpreadsheet")
+    if (nargs !== 0) matchThrow()
+    return this.__moveTo(this.__spreadsheet)
+  }
+
+  __moveTo(location) {
     const newLocation = {};
-    if (location.toString() === 'Sheet') {
+    const locType = location.toString()
+    if (locType === 'Sheet') {
       newLocation.sheetId = location.getSheetId();
-    } else if (location.toString() === 'Range') {
+    } else if (locType === 'Range') {
       const isEntireRow = location.getNumRows() === 1 && location.getColumn() === 1 && location.getNumColumns() === location.getSheet().getMaxColumns();
       const isEntireColumn = location.getNumColumns() === 1 && location.getRow() === 1 && location.getNumRows() === location.getSheet().getMaxRows();
 
@@ -63,8 +89,10 @@ class FakeDeveloperMetadata {
         startIndex: startIndex,
         endIndex: endIndex,
       };
+    } else if (locType === 'Spreadsheet') {
+      newLocation.spreadsheet = true;
     } else {
-      throw new Error('Location must be a Sheet or Range.');
+      throw new Error('Location must be a Sheet, Range or Spreadsheet.');
     }
 
     this.__updateMetadata({ location: newLocation }, 'location');

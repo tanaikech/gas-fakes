@@ -70,10 +70,8 @@ const register = (id, cacher, result, allow404 = false, params) => {
   const { data, response } = result;
 
   if (checkResponseCacher(id, response, allow404, cacher)) {
-    return {
-      ...result,
-      data: cacher.setEntry(id, params, data),
-    };
+    cacher.setEntry(id, params, normalizeSerialization(data));
+    return result;
   } else {
     return result;
   }
@@ -147,7 +145,7 @@ const fxGeneric = ({
     const data = cacher.getEntry(resourceId, otherParams);
     if (data) {
       return {
-        data,
+        data: normalizeSerialization(data),
         response: {
           status: 200,
           fromCache: true,
@@ -203,7 +201,7 @@ const fxDriveGet = ({
     const { cachedFile, good } = getFromFileCache(id, params.fields);
     if (good)
       return {
-        data: cachedFile,
+        data: normalizeSerialization(cachedFile),
         // fake a good sxresponse
         response: {
           status: 200,

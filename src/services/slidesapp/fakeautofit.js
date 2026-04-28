@@ -8,39 +8,47 @@ export const newFakeAutofit = (...args) => {
 export class FakeAutofit {
   constructor(shape) {
     this.__shape = shape;
-    // Store autofit type on the shape resource or locally?
-    // Ideally on the resource so it persists if we reload the shape.
-    // But for now, let's look at the shape's property if meaningful or just a local property default.
-    // The resource might have 'text.autoFit'.
   }
 
   get __resource() {
-    // Ensure shape.text exists
-    if (!this.__shape.__resource.shape.text) {
-      this.__shape.__resource.shape.text = {};
+    const shapeResource = this.__shape.__resource;
+    if (shapeResource && shapeResource.shape && shapeResource.shape.shapeProperties && shapeResource.shape.shapeProperties.autofit) {
+      return shapeResource.shape.shapeProperties.autofit;
     }
-    return this.__shape.__resource.shape.text;
+    return {};
   }
 
   getAutofitType() {
-    const type = (this.__resource.autoFit && this.__resource.autoFit.autofitType) || 'NONE';
+    const type = this.__resource.autofitType || 'NONE';
     return AutofitType[type] || AutofitType.NONE;
   }
 
   disableAutofit() {
-    if (!this.__resource.autoFit) {
-      this.__resource.autoFit = {};
-    }
-    this.__resource.autoFit.autofitType = AutofitType.NONE.toString();
+    const objectId = this.__shape.getObjectId();
+    const presentationId = this.__shape.__presentation.getId();
+
+    const requests = [{
+      updateShapeProperties: {
+        objectId: objectId,
+        shapeProperties: {
+          autofit: {
+            autofitType: 'NONE'
+          }
+        },
+        fields: 'autofit.autofitType'
+      }
+    }];
+
+    Slides.Presentations.batchUpdate(requests, presentationId);
     return this;
   }
 
   getFontScale() {
-    return (this.__resource.autoFit && this.__resource.autoFit.fontScale) !== undefined ? this.__resource.autoFit.fontScale : 1;
+    return this.__resource.fontScale !== undefined ? this.__resource.fontScale : 1;
   }
 
   getLineSpacingReduction() {
-    return (this.__resource.autoFit && this.__resource.autoFit.lineSpacingReduction) !== undefined ? this.__resource.autoFit.lineSpacingReduction : 0;
+    return this.__resource.lineSpacingReduction !== undefined ? this.__resource.lineSpacingReduction : 0;
   }
 
   toString() {

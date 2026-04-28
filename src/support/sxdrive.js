@@ -550,25 +550,36 @@ const sxStreamer = async ({
   params,
   options = {},
   method = 'get' }) => {
-  // this is the node drive service
-  const drive = getDriveApiClient();
-  const streamed = await drive.files[method](params, {
-    responseType: 'stream',
-    ...options
-  })
-  const response = responseSyncify(streamed)
-  if (response.status === 200) {
-    const buf = await getStreamAsBuffer(streamed.data)
-    const data = Array.from(buf)
+  try {
+    // this is the node drive service
+    const drive = getDriveApiClient();
+    const streamed = await drive.files[method](params, {
+      responseType: 'stream',
+      ...options
+    })
+    const response = responseSyncify(streamed)
+    if (response.status === 200) {
+      const buf = await getStreamAsBuffer(streamed.data)
+      const data = Array.from(buf)
 
-    return {
-      data,
-      response
+      return {
+        data,
+        response
+      }
+    } else {
+      return {
+        data: null,
+        response
+      }
     }
-  } else {
+  } catch (err) {
+    // We don't want to crash the worker if the API call fails
+    // (e.g. exporting a non-exportable file)
+    const response = responseSyncify(err?.response || { status: err?.code || 500, statusText: err?.message })
     return {
       data: null,
-      response
+      response,
+      error: err?.response?.data || err?.message || err
     }
   }
 }

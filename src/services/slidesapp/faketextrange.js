@@ -17,10 +17,11 @@ export class FakeTextRange {
   }
 
   get __resource() {
-    if (!this.__shape.__resource.shape.text) {
-      this.__shape.__resource.shape.text = {};
+    const shapeResource = this.__shape.__resource;
+    if (shapeResource && shapeResource.shape && shapeResource.shape.text) {
+      return shapeResource.shape.text;
     }
-    return this.__shape.__resource.shape.text;
+    return {};
   }
 
   getStartIndex() {
@@ -42,7 +43,7 @@ export class FakeTextRange {
    * @returns {string} The text.
    */
   asString() {
-    const textElements = this.__resource.textElements || [];
+    const textElements = this.__resource?.textElements || [];
     let fullText = textElements.map(te => {
       if (te.textRun) return te.textRun.content;
       if (te.autoText) return te.autoText.content || '[AutoText]'; // Use placeholder
@@ -114,12 +115,6 @@ export class FakeTextRange {
 
     if (requests.length > 0) {
       Slides.Presentations.batchUpdate(requests, presentationId);
-
-      // REST API documentation: "The field is automatically set to NONE if a request is made that might affect text fitting within its bounding text box."
-      if (!this.__resource.autoFit) {
-        this.__resource.autoFit = {};
-      }
-      this.__resource.autoFit.autofitType = AutofitType.NONE;
     }
 
     return this;
@@ -176,7 +171,7 @@ export class FakeTextRange {
    * @returns {FakeAutoText[]} The auto texts.
    */
   getAutoTexts() {
-    const textElements = this.__resource.textElements || [];
+    const textElements = this.__resource?.textElements || [];
     const autoTexts = [];
     let charIndex = 0;
     let autoTextIndex = 0;

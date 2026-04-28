@@ -92,8 +92,16 @@ The `gas-fakes` project is complex, and bridging Node.js with GAS involves many 
 - **`createStatement()` returns `FORWARD_ONLY`**: Plain `conn.createStatement()` returns a forward-only cursor. Navigation methods `last()`, `first()`, `absolute()`, `relative()`, `previous()`, `beforeFirst()`, `afterLast()` all throw `"Operation requires a scrollable ResultSet"`. Use `conn.createStatement(1004, 1007)` (TYPE_SCROLL_INSENSITIVE, CONCUR_READ_ONLY) to get a scrollable cursor. In the fake, these parameters are accepted but advisory — results are already buffered.
 - **`getFloat()` is 32-bit**: GAS `rs.getFloat()` returns an IEEE 754 single-precision float. `1.1` becomes `1.100000023841858`. Always compare with `Math.fround(expected)`. The fake applies `Math.fround()` accordingly.
 - **`getDouble()` is 64-bit**: Unlike the above, `rs.getDouble()` returns a full 64-bit double.
-### Running Tests (CRITICAL)
-- **Directory Requirement**: You **MUST** run all test commands from within the `test/` directory (e.g., `cd test && node testgmail.js execute` or `npm run test` from within `test/`). Running tests from the root directory will cause them to fail because they cannot locate the `.env` file or other local dependencies correctly.
+### Test Suite Execution & Architecture
+- **Directory Requirement**: You **MUST** run all test commands from within the `test/` directory (e.g., `cd test && npm run test -- testsheetsdeveloper.js`).
+- **Dependency Aliasing (CRITICAL)**: The `test/package.json` resolves `"@mcpher/gas-fakes": "file:.."` as a local symlink. Because of this, `import '@mcpher/gas-fakes'` inside the `test/` directory *automatically* pulls in your local, uncommitted changes from `src/`. **NEVER** rewrite test imports to relative paths like `import '../src/index.js'`. Doing so breaks the test suite's isolation from module-level side effects and ignores the intended aliasing architecture.
+- **Worker Thread Error Re-hydration**: `gas-fakes` uses a background worker (`src/support/workersync/worker.js`) to make async API calls synchronous. If an API request fails, the worker catches the error, serializes it (often as a nested JSON string like `err.response.data.error`), and writes it to a `SharedArrayBuffer`. 
+  - To properly intercept these errors in tests using `@mcpher/unit`'s `t.threw`, you must ensure that the `synchronizer.js` successfully extracts the underlying error message and explicitly assigns it when re-hydrating the `Error` object on the main thread (otherwise `err.message` might be `undefined`).
+
+### Apps Script API Nuances & Discoveries
+- **DeveloperMetadata Location (Sheets API)**: When updating or creating `DeveloperMetadata` using the Sheets API (`batchUpdate`), the API considers the `location.locationType` property to be **read-only**. You must supply the boundary object (`dimensionRange`, `spreadsheet`, or `sheetId`), but you MUST NOT supply the string `locationType`. Including it will cause a 400 Bad Request.
+- **Drive API Exports (`file.getAs`)**: Live Apps Script allows developers to call `file.getAs('application/pdf')` on plain text files. However, the standard Google Drive REST API (`drive.files.export`) strictly only supports exporting **Google Docs Editor** files (Docs, Sheets, Slides). 
+  - To maintain parity with Apps Script, `gas-fakes` implements a **two-step conversion workaround** under the hood: when an export fails due to the `fileNotExportable` limitation, `gas-fakes` temporarily copies the file into a Google Doc (or Sheet/Slide), exports the temporary file to the requested format, and then trashes the temporary file. This ensures `file.getAs('application/pdf')` succeeds transparently for text and CSV files just like it does in live Apps Script.
 
 ### GmailApp & GmailMessage Limitations
 - **Missing Methods**: `gas-fakes` implementation of `GmailMessage` (i.e. `FakeGmailMessage`) does not natively support all methods found in Apps Script (e.g., `getSubject()`, `getDate()`, `getSnippet()`, `getFrom()`, `getTo()`). 
@@ -106,6 +114,39 @@ The `gas-fakes` project is complex, and bridging Node.js with GAS involves many 
 - **Portability**: For cross-platform sync sleep in Node.js, a busy-wait loop (`while (Date.now() - start < delay)`) is often more reliable than depending on OS-specific `sleep` or `timeout` commands when running inside a CLI tool.
 
 
-## Delivery
+### Caching & Data Mutation (CRITICAL)
+- **Problem**: When data is returned from a local cache (e.g., `sheetsCacher`), it may be returned as a reference. If the calling code mutates this data (e.g., using `Array.prototype.shift()` on results from `getValues()`), the mutation affects the cache itself. Subsequent calls for the same data will then return the mutated (incorrect) results.
+- **Fix**: ALWAYS return a deep copy of data from the cache. In `Syncit.js`, ensure that both `getEntry` results and data being passed to `setEntry` are deep-copied (e.g., using `JSON.parse(JSON.stringify(data))`). This ensures that the cache remains an immutable snapshot of the API response and that each caller receives a fresh, independent copy.
+- **Implementation**: The `fxGeneric` and `fxDriveGet` functions in `Syncit.js` have been updated to use `normalizeSerialization()` for this purpose.
+
+### Iterators and API Object Wrapping (CRITICAL)
+- **Problem**: When fetching a list of resources (like `Drive.Files.list`), the API returns plain JSON objects. If you convert an entire chunk of these objects into class instances (e.g., `FakeDriveFolder`) prematurely and store them in the state (or `tank`), and then subsequently pass those instances *back* through the instantiation function (`__settleClass`), you will double-wrap them. This causes the internal `this.meta` to be a Fake instance instead of a plain object.
+- **Consequence**: This corruption leaks into the `improveFileCache` mechanism (since the cached "raw" data is actually an instance). Later API calls that rely on reading `this.meta` (e.g., checking `Reflect.has(this.meta, 'id')`) fail because `normalizeSerialization` strips the prototype properties, resulting in a plain object missing its core fields. This leads to infinite resolution loops (e.g., `RangeError: Maximum call stack size exceeded` in `getId()`).
+- **Fix**: Generators and iterators (like `filesink()` in `driveiterators.js`) MUST store only plain API JSON objects in their state (`tank`). Only convert the raw API object into a Fake instance at the exact moment it is `yield`ed or returned to the caller.
+
+### Google Drive API vs Apps Script Roles (Parity)
+- **Problem**: When fetching the users attached to a file, the live Google Drive API (and thus `gas-fakes` using the `Drive.Permissions` endpoint) strictly isolates users by their specific role (e.g., `writer`, `reader`). However, Live Apps Script behaves differently: `getViewers()` returns anyone with *at least* view access (including Editors and the Owner), and `getEditors()` returns anyone with *at least* edit access (including the Owner). 
+- **Fix**: The `getSharers()` helper in `filesharers.js` dynamically expands the queried roles based on this hierarchy to match live GAS behavior. Specifically:
+  - When querying for `writer`, we also fetch `owner`.
+  - When querying for `reader` or `commenter`, we fetch `writer` and `owner` as well.
+
+### Slides API ColorScheme & Role Hierarchy (CRITICAL)
+- **Inheritance**: In the Google Slides REST API, the `colorScheme` property is only present on `Master` pages. `Slide` and `Layout` pages inherit their color scheme from their parent master. `gas-fakes` emulates this by resolving the master page when `getColorScheme()` is called on a slide or layout.
+- **Update Constraints**: When updating a `ColorScheme` via the API (`updatePageProperties`), you MUST provide the entire array of 12 theme color pairs (Dark 1, Light 1, etc.). Providing only the updated color will result in an API error.
+- **Data Structure Inconsistency**: While the REST API documentation for `OpaqueColor` specifies a nested `rgbColor` object, `ColorScheme` results (and updates) often use a flat structure where `red`, `green`, and `blue` are direct properties of the color object. `gas-fakes` handles both formats to ensure compatibility.
+- **Layout Properties**: In the Slides API, a layout's connection to its master is stored in `layoutProperties.masterObjectId`, not at the top level of the page resource.
+
+### Delivery
 - Output the complete code for modified or newly created service classes and test scripts.
 - **ALWAYS output the updated `SKILL.md`** when new knowledge is extracted and crystallized.
+
+### Documentation & Progress Tracking (CRITICAL)
+- **Do NOT update progress files manually**: Files in the `progress/` directory (e.g., `progress/Spreadsheet.md`) and the top-level `progress.md` are generated automatically.
+- **Generation Pipeline**: After implementing new methods or classes, you MUST run the documentation generation pipeline to update the progress tracking:
+  ```bash
+  cd doccreation && node gi-analyzer-all.js && node gi-render && node gi-progress-summary.js
+  ```
+- **Detection Logic**: The analyzer (`gi-analyzer-all.js`) detects implemented methods by searching for method names in the `src/` directory. 
+  - If a method is implemented in a base class or uses a synonym, ensure the class is correctly mapped in the `classSynonyms` object within `gi-analyzer-all.js`.
+  - For **dynamically generated methods** (like `require*` in `DataValidationBuilder` or `set*`/`get*` in `Range`), the analyzer must be explicitly updated to map these methods from their source definitions (e.g., `datavalidationcriteriamapping.js` or `sheetrangemakers.js`) to the target class.
+- **In-Progress Status**: Methods that call `notYetImplemented()` are automatically marked as `in progress`. Once the implementation is complete and the call to `notYetImplemented()` is removed, the status will switch to `completed` upon running the pipeline.

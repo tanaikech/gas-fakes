@@ -69,6 +69,96 @@ class FakeDriveFile extends FakeDriveMeta {
   }
 
   /**
+   * get as a blob
+   * @param {string} contentType 
+   * @returns {FakeBlob}
+   */
+  getAs(contentType) {
+    if (contentType === this.getMimeType()) {
+      return this.getBlob()
+    }
+    const result = Syncit.fxDriveExport({ id: this.getId(), mimeType: contentType })
+    if (result.error) {
+      // The error might be a string (from catch in sxStreamer) or an object
+      let isNotExportable = false;
+      let message = result.error;
+      if (typeof result.error === 'string' && result.error.startsWith('{')) {
+        try {
+          const parsed = JSON.parse(result.error);
+          isNotExportable = parsed.error?.errors?.[0]?.reason === 'fileNotExportable' ||
+                            parsed.error?.reason === 'fileNotExportable';
+          message = parsed.error?.message || parsed.message || result.error;
+        } catch (e) {
+          // ignore
+        }
+      } else if (typeof result.error === 'object') {
+        isNotExportable = result.error.error?.errors?.[0]?.reason === 'fileNotExportable' ||
+                          result.error.errors?.[0]?.reason === 'fileNotExportable' ||
+                          result.error.error?.reason === 'fileNotExportable' ||
+                          result.error.reason === 'fileNotExportable';
+        message = result.error.error?.message || result.error.message || JSON.stringify(result.error);
+      }
+
+      // Live GAS automatically handles exporting plain text/images to PDF etc.
+      // The REST API doesn't support this directly. We workaround it by 
+      // temporarily converting the file to a Google Doc, exporting that, and trashing it.
+      if (isNotExportable) {
+        let targetMimeType = 'application/vnd.google-apps.document';
+        const currentMime = this.getMimeType();
+        if (currentMime === 'text/csv' || currentMime === 'text/tab-separated-values' || currentMime === 'application/vnd.ms-excel' || currentMime === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+          targetMimeType = 'application/vnd.google-apps.spreadsheet';
+        } else if (currentMime === 'application/vnd.ms-powerpoint' || currentMime === 'application/vnd.openxmlformats-officedocument.presentationml.presentation') {
+          targetMimeType = 'application/vnd.google-apps.presentation';
+        }
+
+        try {
+          // 1. Copy to temp Google Doc format
+          const copyResult = Syncit.fxDrive({
+            prop: 'files',
+            method: 'copy',
+            params: {
+              fileId: this.getId(),
+              resource: {
+                mimeType: targetMimeType,
+                name: `Temp_gasfakes_conversion_${this.getName()}`
+              }
+            }
+          });
+
+          if (!copyResult.data || !copyResult.data.id) {
+             throw new Error(`Failed to copy to intermediate format: ${JSON.stringify(copyResult.response)}`);
+          }
+          const tempFileId = copyResult.data.id;
+
+          // 2. Export the temp file
+          const tempExportResult = Syncit.fxDriveExport({ id: tempFileId, mimeType: contentType });
+
+          // 3. Delete the temp file
+          Syncit.fxDrive({
+            prop: 'files',
+            method: 'update',
+            params: {
+              fileId: tempFileId,
+              resource: { trashed: true }
+            }
+          });
+
+          if (tempExportResult.error) {
+             throw new Error(tempExportResult.error.error?.message || tempExportResult.error.message || JSON.stringify(tempExportResult.error));
+          }
+
+          return Utilities.newBlob(tempExportResult.data, contentType, this.getName());
+        } catch (workaroundError) {
+          throw new Error(`getAs API returned: ${message}. Then, a temporary two-step conversion workaround failed: ${workaroundError.message}`);
+        }
+      }
+
+      throw new Error(message)
+    }
+    return Utilities.newBlob(result.data, contentType, this.getName())
+  }
+
+  /**
    * set the content to something else
    * @param {string} content apparently this can only be a string and not a blob 
    * @return {FakeDriveFile} self
@@ -149,6 +239,21 @@ class FakeDriveFile extends FakeDriveMeta {
 
     ScriptApp.__behavior.addFile(data.id);
     return newFakeDriveFile(data);
+  }
+
+  getTargetId() {
+    this.__decorateWithFields("shortcutDetails")
+    return this.meta.shortcutDetails?.targetId || null
+  }
+
+  getTargetMimeType() {
+    this.__decorateWithFields("shortcutDetails")
+    return this.meta.shortcutDetails?.targetMimeType || null
+  }
+
+  getTargetResourceKey() {
+    this.__decorateWithFields("shortcutDetails")
+    return this.meta.shortcutDetails?.targetResourceKey || null
   }
 
 }

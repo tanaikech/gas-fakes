@@ -54,11 +54,23 @@ async function writeResult(result) {
  * @param {Error} error The error to write.
  */
 function writeError(error) {
-  const errorObject = {
+  let errorObject = {
     message: error.message,
     stack: error.stack,
     name: error.name,
   };
+
+  // If the message is a JSON string (common for API errors that have been caught and re-thrown),
+  // try to parse it and merge the properties for better re-hydration on the main thread.
+  if (error.message && error.message.startsWith('{') && error.message.endsWith('}')) {
+    try {
+      const parsedMessage = JSON.parse(error.message);
+      errorObject = { ...errorObject, ...parsedMessage };
+    } catch (e) {
+      // Not valid JSON, keep as is
+    }
+  }
+
   const errorString = JSON.stringify(errorObject);
   const encodedError = textEncoder.encode(errorString);
 
@@ -142,7 +154,6 @@ parentPort.on('message', async (task) => {
     await writeResult(result);
 
   } catch (error) {
-    syncError('An unhandled error occurred in the worker', error);
     writeError(error);
   } finally {
     // 3. Signal completion and wake up the main thread.

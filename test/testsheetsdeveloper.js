@@ -175,6 +175,33 @@ export const testSheetsDeveloper = (pack) => {
     t.is(updatedMeta.getValue(), "updatedValue", "Metadata value should be updated");
     t.is(updatedMeta.getKey(), "updatedKey", "Metadata key should be updated");
 
+    // Test Move Methods
+    const moveRange1 = sheet.getRange("9:9");
+    const moveRange2 = sheet.getRange("J:J");
+    const metaToMove = entireRowRange.getDeveloperMetadata()[0];
+    
+    // Move to Column
+    metaToMove.moveToColumn(moveRange2);
+    t.is(metaToMove.getLocation().getLocationType().toString(), "COLUMN", "Location type should be COLUMN after moveToColumn");
+    t.is(metaToMove.getLocation().getColumn().getA1Notation(), "J:J", "Column should match after moveToColumn");
+    
+    // Move to Row
+    metaToMove.moveToRow(moveRange1);
+    t.is(metaToMove.getLocation().getLocationType().toString(), "ROW", "Location type should be ROW after moveToRow");
+    t.is(metaToMove.getLocation().getRow().getA1Notation(), "9:9", "Row should match after moveToRow");
+    
+    // Move to Sheet
+    const sheet2 = ss.insertSheet('MetaSheet2');
+    toTrash.push(sheet2);
+    metaToMove.moveToSheet(sheet2);
+    t.is(metaToMove.getLocation().getLocationType().toString(), "SHEET", "Location type should be SHEET after moveToSheet");
+    t.is(metaToMove.getLocation().getSheet().getSheetId(), sheet2.getSheetId(), "Sheet should match after moveToSheet");
+
+    // Move to Spreadsheet
+    metaToMove.moveToSpreadsheet();
+    t.is(metaToMove.getLocation().getLocationType().toString(), "SPREADSHEET", "Location type should be SPREADSHEET after moveToSpreadsheet");
+    t.is(metaToMove.getLocation().getSpreadsheet().getId(), ss.getId(), "Spreadsheet ID should match after moveToSpreadsheet");
+
     // Test remove
     colMeta.remove();
     t.is(entireColumnRange.getDeveloperMetadata().length, 0, "Column metadata should be removed from range");

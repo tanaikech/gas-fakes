@@ -31,7 +31,9 @@ export const getPermissionIterator = ({
         pageToken = nextPageToken
 
         // format the results into the folder or file object
-        tank = permissions
+        // we must copy the array because the cache returns a reference 
+        // and splicing it would empty the cache for subsequent calls
+        tank = [...permissions]
       }
 
       // if we've got anything in the tank send back the oldest one

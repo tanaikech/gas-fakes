@@ -181,10 +181,25 @@ export function callSync(method, ...args) {
 
   if (hasError) {
     // Re-hydrate the error object on the main thread.
-    const err = new Error(resultData.message);
+    // The error message from the worker might be a simple string or a JSON object from an API response
+    let message = resultData.message || resultString || "Unknown worker error";
+    
+    // If it's a Drive API error object, the message is often nested
+    if (resultData.error?.message) {
+      message = resultData.error.message;
+    }
+
+    const err = new Error(message);
     err.stack = resultData.stack;
-    // Copy other properties if they exist.
-    Object.assign(err, resultData);
+    
+    // Copy other important properties if they exist, except the ones we've handled
+    const skip = ['message', 'stack', 'name'];
+    Object.keys(resultData).forEach(key => {
+      if (!skip.includes(key)) {
+        err[key] = resultData[key];
+      }
+    });
+
     throw err;
   }
 

@@ -34,9 +34,11 @@ import { testDocsHeaders } from "./testdocsheaders.js";
 import { testDocsFooters } from "./testdocsfooters.js";
 import { testDocsFootnotes } from "./testdocsfootnotes.js";
 import { testDocsListItems } from "./testdocslistitems.js";
-import { testSlidesAdv } from "./testslidesadv.js";
-import { testSlidesTextRange } from "./testslidestextrange.js";
 import { testSlides } from "./testslides.js";
+import { testSlidesAdv } from "./testslidesadv.js";
+import { testConditionalFormat } from "./testconditionalformat.js";
+import { testSlidesTextRange } from "./testslidestextrange.js";
+import { testSlidesColorScheme } from "./testslidescolorscheme.js";
 import { testSlidesSlide } from "./testslidesslide.js";
 import { testForm } from "./testform.js";
 import { testFormsAdv } from "./testformsadv.js";
@@ -80,6 +82,7 @@ import { testXmlService } from "./testxmlservice.js";
 import { testMultiBackend } from "./testmultibackend.js";
 import { testGmail } from "./testgmail.js";
 import { testSandboxGmail } from "./testsandboxgmail.js";
+import { testDriveNew } from "./testdrivenew.js";
 
 
 export const testFakes = () => {
@@ -195,6 +198,8 @@ export const testFakes = () => {
   testSlides(pack);
   console.log("\n----Test slides text range----");
   testSlidesTextRange(pack);
+  console.log("\n----Test slides color scheme----");
+  testSlidesColorScheme(pack);
   console.log("\n----Test slidesparagraph----");
   testSlidesParagraph(pack);
   console.log("\n----Test slidesaffinetransform----");
@@ -213,6 +218,8 @@ export const testFakes = () => {
   testSlidesSlide(pack);
   console.log("\n----Test Sheets Permissions----");
   testSheetsPermissions(pack);
+  console.log("\n----Test Sheets Conditional Format----");
+  testConditionalFormat(pack);
   console.log("\n----Test Sheets----");
   testSheets(pack);
 
@@ -235,6 +242,8 @@ export const testFakes = () => {
   testFiddler(pack);
   console.log("\n----Test Drive----");
   testDrive(pack);
+  console.log("\n----Test Drive New----");
+  testDriveNew(pack);
   console.log("\n----Test Fetch----");
   testFetch(pack);
   console.log("\n----Test Session----");

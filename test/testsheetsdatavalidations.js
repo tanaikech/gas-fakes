@@ -325,6 +325,7 @@ export const testSheetsDataValidations = (pack) => {
     if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
   })
 
+
   unit.section("data validation basics", t => {
     const { sheet: sv } = maketss('datavalidation', toTrash, fixes)
 

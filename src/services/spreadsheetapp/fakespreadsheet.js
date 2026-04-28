@@ -152,17 +152,6 @@ export class FakeSpreadsheet {
       "deleteColumn",
       "getImages",
       "find",
-      "sort",
-      "addEditor",
-      "addEditors",
-      "addViewers",
-      "addViewer",
-      "removeViewer",
-      "removeEditor",
-
-      // these convert to a pdf so we'll need to figure out how to do that
-      // probably using the Drive export
-      "getAs",
       "getBlob",
     ];
 
@@ -179,6 +168,36 @@ export class FakeSpreadsheet {
   // TODO - something better
   getActiveSheet() {
     return this.__getFirstSheet();
+  }
+
+  addViewer(emailAddress) {
+    this.__file.addViewer(emailAddress);
+    return this;
+  }
+
+  addEditor(emailAddress) {
+    this.__file.addEditor(emailAddress);
+    return this;
+  }
+
+  addViewers(emailAddresses) {
+    this.__file.addViewers(emailAddresses);
+    return this;
+  }
+
+  addEditors(emailAddresses) {
+    this.__file.addEditors(emailAddresses);
+    return this;
+  }
+
+  removeViewer(emailAddress) {
+    this.__file.removeViewer(emailAddress);
+    return this;
+  }
+
+  removeEditor(emailAddress) {
+    this.__file.removeEditor(emailAddress);
+    return this;
   }
 
   

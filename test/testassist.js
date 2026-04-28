@@ -8,6 +8,9 @@ let __mdoc = null
 let __mfolder = null
 let __mcals = new Map();
 
+
+
+
 export let getDrivePerformance
 export let getSheetsPerformance
 export let getDocsPerformance
@@ -82,8 +85,9 @@ export const getSharedScriptStore = (kind) => {
   return store
 }
 
-export const getJdbcBackends = (Jdbc) => {
-  const potentialBackends = getPotentialBackends(Jdbc);
+export const getJdbcBackends = (Jdbc, use) => {
+  
+  const potentialBackends = getPotentialBackends(Jdbc, use);
   const props = getSharedScriptStore("property");
 
   if (ScriptApp.isFake) {

@@ -88,7 +88,7 @@ export class FakeDriveMeta {
       return this
     }
 
-    const newMeta = this.__withPlatform(() => Drive.Files.get(this.getId(), { fields }, { allow404: false }))
+    console.log("CHECK", fields, Reflect.has(this.meta, fields), Object.keys(this.meta)); const newMeta = this.__withPlatform(() => Drive.Files.get(this.getId(), { fields }, { allow404: false }))
     // need to merge this with already known fields
     this.meta = { ...this.meta, ...newMeta }
     improveFileCache(this.getId(), this.meta, fields)
@@ -207,10 +207,10 @@ export class FakeDriveMeta {
 
   /**
    * get the file viewers
-   * @returns {FakeUser} the file viewers
+   * @returns {FakeUser[]} the file viewers and commenters
    */
   getViewers() {
-    return getSharers(this.getId(), 'reader')
+    return getSharers(this.getId(), ['reader', 'commenter'])
   }
 
   /**
@@ -399,7 +399,8 @@ export class FakeDriveMeta {
   }
 
   __managePermissions(emails, role, add = true) {
-    const emailAddresses = is.array(emails) ? emails : [emails];
+    const arr = is.array(emails) ? emails : [emails];
+    const emailAddresses = arr.map(e => is.string(e) ? e : e?.getEmail?.() || e?.emailAddress || e);
 
     if (add) {
       // In Apps Script, this is not atomic. It just loops.
@@ -499,59 +500,110 @@ export class FakeDriveMeta {
   setSecurityUpdateEnabled() {
     return notYetImplemented('setSecurityUpdateEnabled')
   }
-  getAccess() {
-    return notYetImplemented('getAccess')
+  getAccess(user) {
+    const email = is.string(user) ? user : user?.getEmail?.() || user?.emailAddress || user;
+    const { permissions } = this.__withPlatform(() => Drive.Permissions.list(this.getId(), {
+      fields: 'permissions(role,emailAddress,type)'
+    }));
+    const p = permissions.find(p => p.emailAddress === email && p.type === 'user');
+    if (!p) return Permission.NONE;
+    if (p.role === 'owner') return Permission.OWNER;
+    if (p.role === 'writer') return Permission.EDIT;
+    if (p.role === 'commenter') return Permission.COMMENT;
+    if (p.role === 'reader') return Permission.VIEW;
+    return Permission.NONE;
   }
 
 
-  revokePermissions() {
-    return notYetImplemented('revokePermissions')
+  revokePermissions(user) {
+    const email = is.string(user) ? user : user?.getEmail?.() || user?.emailAddress || user;
+    const { permissions } = this.__withPlatform(() => Drive.Permissions.list(this.getId(), {
+      fields: 'permissions(id,emailAddress,type)'
+    }));
+    // Revoke all permissions for this user
+    const userPermissions = permissions.filter(p => p.emailAddress === email && p.type === 'user');
+    userPermissions.forEach(p => {
+      this.__withPlatform(() => Drive.Permissions.delete(this.getId(), p.id));
+    });
+    if (userPermissions.length > 0) {
+      improveFileCache(this.getId(), null);
+    }
+    return this;
   }
 
 
-  setOwner() {
-    return notYetImplemented('setOwner')
+  setOwner(user) {
+    const email = is.string(user) ? user : user?.getEmail?.() || user?.emailAddress || user;
+    this.__withPlatform(() => Drive.Permissions.create({
+      role: 'owner',
+      type: 'user',
+      emailAddress: email
+    }, this.getId(), { transferOwnership: true }));
+    
+    improveFileCache(this.getId(), null);
+    return this;
   }
 
   addViewers() {
     const { nargs, matchThrow } = signatureArgs(arguments, "addViewers");
     const [emailAddresses] = arguments;
-    if (nargs !== 1 || !is.array(emailAddresses) || !emailAddresses.every(is.string)) matchThrow();
+    if (nargs !== 1 || !is.array(emailAddresses)) matchThrow();
     return this.__managePermissions(emailAddresses, 'reader', true);
   }
 
   addViewer() {
     const { nargs, matchThrow } = signatureArgs(arguments, "addViewer");
     const [emailAddress] = arguments;
-    if (nargs !== 1 || !is.string(emailAddress)) matchThrow();
+    if (nargs !== 1) matchThrow();
     return this.__managePermissions(emailAddress, 'reader', true);
   }
 
   removeEditor() {
     const { nargs, matchThrow } = signatureArgs(arguments, "removeEditor");
     const [emailAddress] = arguments;
-    if (nargs !== 1 || !is.string(emailAddress)) matchThrow();
+    if (nargs !== 1) matchThrow();
     return this.__managePermissions(emailAddress, 'writer', false);
   }
 
   addEditor() {
     const { nargs, matchThrow } = signatureArgs(arguments, "addEditor");
     const [emailAddress] = arguments;
-    if (nargs !== 1 || !is.string(emailAddress)) matchThrow();
+    if (nargs !== 1) matchThrow();
     return this.__managePermissions(emailAddress, 'writer', true);
   }
 
   removeViewer() {
     const { nargs, matchThrow } = signatureArgs(arguments, "removeViewer");
     const [emailAddress] = arguments;
-    if (nargs !== 1 || !is.string(emailAddress)) matchThrow();
+    if (nargs !== 1) matchThrow();
     return this.__managePermissions(emailAddress, 'reader', false);
   }
 
   addEditors() {
     const { nargs, matchThrow } = signatureArgs(arguments, "addEditors");
     const [emailAddresses] = arguments;
-    if (nargs !== 1 || !is.array(emailAddresses) || !emailAddresses.every(is.string)) matchThrow();
+    if (nargs !== 1 || !is.array(emailAddresses)) matchThrow();
     return this.__managePermissions(emailAddresses, 'writer', true);
+  }
+
+  addCommenter() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "addCommenter");
+    const [emailAddress] = arguments;
+    if (nargs !== 1) matchThrow();
+    return this.__managePermissions(emailAddress, 'commenter', true);
+  }
+
+  addCommenters() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "addCommenters");
+    const [emailAddresses] = arguments;
+    if (nargs !== 1 || !is.array(emailAddresses)) matchThrow();
+    return this.__managePermissions(emailAddresses, 'commenter', true);
+  }
+
+  removeCommenter() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "removeCommenter");
+    const [emailAddress] = arguments;
+    if (nargs !== 1) matchThrow();
+    return this.__managePermissions(emailAddress, 'commenter', false);
   }
 }

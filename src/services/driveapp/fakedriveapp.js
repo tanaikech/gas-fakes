@@ -5,6 +5,8 @@ import { notYetImplemented, isFolder } from '../../support/helpers.js'
 import { Proxies } from '../../support/proxies.js'
 import { Utils } from '../../support/utils.js'
 import { Access, Permission } from '../enums/driveenums.js'
+import { getFilesIterator } from './driveiterators.js'
+import { Syncit } from '../../support/syncit.js'
 const { is } = Utils
 
 
@@ -19,6 +21,7 @@ export class FakeDriveApp {
     this.__rootFolder = null
     this.folderApp = newFakeFolderApp()
     this.__settleClass = (file) => isFolder(file) ? newFakeDriveFolder(file) : newFakeDriveFile(file)
+    this.__enforceSingleParent = true
   }
 
 
@@ -133,37 +136,68 @@ export class FakeDriveApp {
     return this.getRootFolder().createFolder(name)
   }
 
-  //-- TODO ---
-
-  getFolderByIdAndResourceKey() {
-    return notYetImplemented('getFolderByIdAndResourceKey')
-  }
-  getFileByIdAndResourceKey() {
-    return notYetImplemented('getFileByIdAndResourceKey')
+  createShortcut(targetId, resourceKey) {
+    return this.getRootFolder().createShortcut(targetId, resourceKey)
   }
 
-  continueFileIterator() {
-    return notYetImplemented('continueFileIterator')
+  createShortcutForTargetIdAndResourceKey(targetId, resourceKey) {
+    return this.getRootFolder().createShortcutForTargetIdAndResourceKey(targetId, resourceKey)
   }
-  continueFolderIterator() {
-    return notYetImplemented('continueFolderIterator')
+
+  getFolderByIdAndResourceKey(id, resourceKey) {
+    return this.getFolderById(id)
   }
+
+  getFileByIdAndResourceKey(id, resourceKey) {
+    return this.getFileById(id)
+  }
+
+  continueFileIterator(token) {
+    return getFilesIterator({ token })
+  }
+
+  continueFolderIterator(token) {
+    return getFilesIterator({ token })
+  }
+
   getTrashedFiles() {
-    return notYetImplemented('getTrashedFiles')
+    return getFilesIterator({
+      folderTypes: false,
+      fileTypes: true,
+      qob: ['trashed = true']
+    })
   }
+
   getTrashedFolders() {
-    return notYetImplemented('getTrashedFolders')
+    return getFilesIterator({
+      folderTypes: true,
+      fileTypes: false,
+      qob: ['trashed = true']
+    })
   }
 
   getStorageLimit() {
-    return notYetImplemented('getStorageLimit')
+    const { data } = Syncit.fxDrive({
+      prop: 'about',
+      method: 'get',
+      params: { fields: 'storageQuota' }
+    })
+    return parseInt(data.storageQuota.limit, 10)
   }
+
   getStorageUsed() {
-    return notYetImplemented('getStorageUsed')
+    const { data } = Syncit.fxDrive({
+      prop: 'about',
+      method: 'get',
+      params: { fields: 'storageQuota' }
+    })
+    return parseInt(data.storageQuota.usage, 10)
   }
-  enforceSingleParent() {
-    return notYetImplemented('enforceSingleParent')
+
+  enforceSingleParent(enabled) {
+    this.__enforceSingleParent = enabled
   }
+
   get Access() {
     return Access
   }

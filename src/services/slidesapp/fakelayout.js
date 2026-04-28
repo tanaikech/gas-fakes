@@ -1,5 +1,6 @@
 import { Proxies } from '../../support/proxies.js';
 import { newFakeMaster } from './fakemaster.js';
+import { newFakeColorScheme } from './fakecolorscheme.js';
 
 export const newFakeLayout = (...args) => {
   return Proxies.guard(new FakeLayout(...args));
@@ -21,7 +22,7 @@ export class FakeLayout {
   }
 
   getMaster() {
-    const masterId = this.__resource.masterObjectId;
+    const masterId = this.__resource.layoutProperties?.masterObjectId;
     if (!masterId) return null;
 
     const presentationResource = this.__presentation.__resource;
@@ -32,6 +33,15 @@ export class FakeLayout {
   getObjectId() {
     return this.__id;
   }
+
+  /**
+   * Gets the color scheme of the layout.
+   * @returns {FakeColorScheme} The color scheme.
+   */
+  getColorScheme() {
+    return newFakeColorScheme(this);
+  }
+
   toString() {
     return 'Layout';
   }

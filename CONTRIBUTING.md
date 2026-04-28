@@ -77,8 +77,7 @@ In principle test files specified in the .env file should belong to you, althoug
 
 | name | value | ownership | comments |
 |---|---|---|---|
-| TEST_BORDERS_ID | 1hRGdrYHEPixXTuQLeL3Z0qGRZVs_8ojMIm6D4KrCh1o | shared | used to test UI set values | 
-| TEST_AIRPORTS_ID | 1h9IGIShgVBVUrUjjawk5MaCEQte_7t32XeEP1Z5jXKQ | shared | used to test fiddler library with known values | 
+| TEST_AIRPORTS_ID | 1TS2JzPZa1LeA4TmpkSjoYTRZaphXDinM | shared | used to test fiddler library with known values | 
 | TEST_FOLDER_NAME | your own folder name | you | a folder in the top Drive level you create |
 | TEST_FOLDER_FILES | the number of files | your value | the number of files we should expect to find in TEST_FOLDER_NAME | 
 | TEST_FOLDER_ID | your own folder id | you | a folder you have write access to - its used to move files into |
@@ -87,9 +86,9 @@ In principle test files specified in the .env file should belong to you, althoug
 | TEXT_FILE_ID | 1142Vn7W-pGl5nWLpUSkpOB82JDiz9R6p | shared | the id of the TEXT_FILE_NAME |
 | TEXT_FILE_TYPE | text/plain | shared | the type of the TEXT_FILE_ID |
 | TEXT_FILE_CONTENT | foo is not bar | shared | the content of the TEXT_FILE_ID |
-| TEST_SHEET_ID | 1DlKpVVYCrCPNfRbGsz6N_K3oPTgdC9gQIKi0aNb42uI | shared | a sheet you have read access to |
+| TEST_SHEET_ID | 1IZAJKBTeW2zMFS3dynSFJKkdGopQXNLXHCrYKvDYtvI | shared | a sheet you have access to |
 | TEST_SHEET_NAME | sharedlibraries | shared | the name of TEST_SHEET_ID |
-| PDF_ID | 17t4ep9Jt6jRyDx0KlxMhHQNGZ3whg6GS | shared | id of a test pdf file you have access to |
+| PDF_ID | 1-c_5JV1Br5KkEcG6Pu518ocM6CN4BBFz | shared | id of a test pdf file you have access to |
 | SCRATCH_VIEWER | viewer@mcpher.com" | your own version | email addresses to use to test assigning permissions |
 | SCRATCH_EDITOR | editor@mcpher.com" | .. | .. |
 | SCRATCH_B_VIEWER | viewer2@mcpher.com" | .. | .. |
@@ -97,7 +96,7 @@ In principle test files specified in the .env file should belong to you, althoug
 | MIN_ROOT_PDFS | 20 | change to your own | the minimum number of pdfs to expect to find in your root folder |
 | MIN_PDFS | 400 | change to your own | the minimum number of pdfs to expect to find everywhere in drive |
 | MIN_FOLDERS_ROOT | change to your own | the minimum number of folders to expect to find in your root folder |
-
+https://drive.google.com/file/d/1-c_5JV1Br5KkEcG6Pu518ocM6CN4BBFz/view?usp=drive_link
 ### cleaning up
 
 Most unit sections are isolated so will create their own files with some easily recognizable nonsense names. Tis can lead to many files appearing in Drive. Test runs are supposed to clean them up afterards, but if you have a failure they won't. Lately I've been adding all test files to a specific folder. If you move that folder to the bin, then all test files will automatocally end up in the bin too.

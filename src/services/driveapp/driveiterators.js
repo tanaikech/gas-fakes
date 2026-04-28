@@ -14,14 +14,33 @@ export const getFilesIterator = ({
   qob,
   parentId = null,
   folderTypes,
-  fileTypes
+  fileTypes,
+  token
 }) => {
 
 
   // parentId can be null to search everywhere
   if (!is.null(parentId)) assert.nonEmptyString(parentId)
-  assert.boolean(folderTypes)
-  assert.boolean(fileTypes)
+  assert.boolean(folderTypes || !!token)
+  assert.boolean(fileTypes || !!token)
+
+  let state = {
+    qob,
+    parentId,
+    folderTypes,
+    fileTypes,
+    pageToken: null,
+    tank: []
+  }
+
+  if (token) {
+    const saved = JSON.parse(Buffer.from(token, 'base64').toString())
+    state = { ...state, ...saved }
+    qob = state.qob
+    parentId = state.parentId
+    folderTypes = state.folderTypes
+    fileTypes = state.fileTypes
+  }
 
   // DriveApp doesnt give option to specify these so this will be fixed
   const fields = `files(${minFields}),nextPageToken`
@@ -49,9 +68,9 @@ export const getFilesIterator = ({
    */
   function* filesink() {
     // the result tank
-    let tank = []
+    let tank = [...state.tank]
     // the next page token
-    let pageToken = null
+    let pageToken = state.pageToken
 
     do {
       // if nothing in the tank, fill it up
@@ -63,10 +82,14 @@ export const getFilesIterator = ({
         // format the results into the folder or file object
         assert.array(data.files)
         assert.function(DriveApp.__settleClass)
-        tank = data.files.map(DriveApp.__settleClass)
+        
+        // we store raw data in state for continuation
+        state.tank = data.files
+        tank = [...state.tank]
 
         // the presence of a nextPageToken is the signal that there's more to come
         pageToken = data.nextPageToken
+        state.pageToken = pageToken
 
         // if we still have nothing in the tank but there's a page token, keep going
         if (!tank.length && !pageToken) break;
@@ -74,7 +97,12 @@ export const getFilesIterator = ({
 
       // if we've got anything in the tank send back the oldest one
       if (tank.length) {
-        yield tank.splice(0, 1)[0]
+        const raw = tank.splice(0, 1)[0]
+        state.tank.splice(0, 1)
+        yield { 
+          __fakeResolved: DriveApp.__settleClass(raw),
+          __fakeRaw: raw
+        }
       }
 
       // if there's still anything left in the tank, 
@@ -85,9 +113,26 @@ export const getFilesIterator = ({
   // create the iterator
   const fileit = filesink()
 
+  const continuationHandler = (peeked) => {
+    // if we've peeked, we need to make sure the peeked item is included in the tank
+    // because GAS continuation tokens should represent the state AFTER the last next() call.
+    // Peeker already called generator.next(), so the item to be returned by the NEXT next() call
+    // is in peeked.value.
+    const tank = [...state.tank]
+    if (peeked && !peeked.done) {
+      // Put the pre-fetched item back at the start of the tank for the token
+      tank.unshift(peeked.value.__fakeRaw || peeked.value)
+    }
+    const tokenState = {
+      ...state,
+      tank
+    }
+    return Buffer.from(JSON.stringify(tokenState)).toString('base64')
+  }
+
   // a regular iterator doesnt support the same methods 
   // as Apps Script so we'll fake that too
-  return newPeeker(fileit)
+  return newPeeker(fileit, continuationHandler)
 
 }
 

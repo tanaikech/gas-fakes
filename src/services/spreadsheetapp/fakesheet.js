@@ -5,6 +5,7 @@ import { Utils } from "../../support/utils.js";
 import { SheetUtils } from "../../support/sheetutils.js";
 import { batchUpdate, makeSheetsGridRange } from "./sheetrangehelpers.js";
 import { newFakeFilter } from "./fakefilter.js";
+import { newFakeConditionalFormatRule } from "./fakeconditionalformatrule.js";
 import { newFakePivotTable } from "./fakepivottable.js";
 import { newFakeBanding } from "./fakebanding.js";
 import { newFakeDeveloperMetadataFinder } from "./fakedevelopermetadatafinder.js";
@@ -376,6 +377,68 @@ export class FakeSheet {
     return sheetMeta?.basicFilter
       ? newFakeFilter(sheetMeta.basicFilter, this)
       : null;
+  }
+
+  /**
+   * clearConditionalFormatRules() https://developers.google.com/apps-script/reference/spreadsheet/sheet#clearconditionalformatrules
+   * Removes all conditional format rules from the sheet. Equivalent to calling setConditionalFormatRules(rules) with an empty array as input.
+   */
+  clearConditionalFormatRules() {
+    this.setConditionalFormatRules([]);
+  }
+
+  /**
+   * getConditionalFormatRules() https://developers.google.com/apps-script/reference/spreadsheet/sheet#getconditionalformatrules
+   * Get all conditional format rules in this sheet.
+   * @returns {FakeConditionalFormatRule[]} An array of all rules in the sheet.
+   */
+  getConditionalFormatRules() {
+    const meta = this.getParent().__getMetaProps(
+      `sheets(conditionalFormats,properties.sheetId)`
+    );
+    const sheetMeta = meta.sheets.find(
+      (s) => s.properties.sheetId === this.getSheetId()
+    );
+    const rules = sheetMeta?.conditionalFormats || [];
+    return rules.map(rule => newFakeConditionalFormatRule(rule, this));
+  }
+
+  /**
+   * setConditionalFormatRules(rules) https://developers.google.com/apps-script/reference/spreadsheet/sheet#setconditionalformatrulesrules
+   * Replaces all currently existing conditional format rules in the sheet with the input rules. Rules are evaluated in their input order.
+   * @param {FakeConditionalFormatRule[]} rules The array of conditional format rules to set.
+   */
+  setConditionalFormatRules(rules) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Sheet.setConditionalFormatRules");
+    if (nargs !== 1 || !Array.isArray(rules)) matchThrow();
+
+    const requests = [];
+
+    // Delete existing rules
+    const existingRules = this.getConditionalFormatRules();
+    const existingCount = existingRules.length;
+    for (let i = existingCount - 1; i >= 0; i--) {
+      requests.push({
+        deleteConditionalFormatRule: {
+          sheetId: this.getSheetId(),
+          index: i
+        }
+      });
+    }
+
+    // Add new rules
+    rules.forEach((rule, index) => {
+      requests.push({
+        addConditionalFormatRule: {
+          rule: rule.__apiRule,
+          index: index
+        }
+      });
+    });
+
+    if (requests.length > 0) {
+      Sheets.Spreadsheets.batchUpdate({ requests: requests }, this.__parent.getId());
+    }
   }
 
   getPivotTables() {

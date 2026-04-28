@@ -12,6 +12,7 @@ import { newFakeRichTextValueBuilder } from "../common/fakerichtextvalue.js";
 import { newFakeTextStyleBuilder } from "../common/faketextstylebuilder.js";
 import { newFakeFilterCriteriaBuilder } from "./fakefiltercriteriabuilder.js";
 import { newFakeDataValidationBuilder } from "./fakedatavalidationbuilder.js";
+import { newFakeConditionalFormatRuleBuilder } from "./fakeconditionalformatrulebuilder.js";
 import { newFakeDataSourceSpecBuilder } from "./fakedatasourcespecbuilder.js";
 import { FakeTextFinder, newFakeTextFinder } from "./faketextfinder.js";
 
@@ -79,7 +80,6 @@ export class FakeSpreadsheetApp {
 
     const props = [
       "getActive",
-      "newConditionalFormatRule",
       "getActiveSheet",
       "getCurrentCell",
       "getActiveRange",
@@ -235,6 +235,15 @@ export class FakeSpreadsheetApp {
    */
   newColor() {
     return newFakeColorBuilder();
+  }
+
+  /**
+   * newConditionalFormatRule() https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#newconditionalformatrule
+   * Creates a builder for a conditional formatting rule.
+   * @returns {FakeConditionalFormatRuleBuilder}
+   */
+  newConditionalFormatRule() {
+    return newFakeConditionalFormatRuleBuilder();
   }
 
   /**

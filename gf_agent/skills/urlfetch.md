@@ -14,6 +14,8 @@ Supported Methods:
 - `fetch(String,Object)`
 - `fetch(String)`
 - `fetchAll(Object)`
+- `getRequest(String,Object)`
+- `getRequest(String)`
 
 ## Class: UrlFetchApp
 
@@ -21,4 +23,6 @@ Supported Methods:
 - `fetch(String,Object)`
 - `fetch(String)`
 - `fetchAll(Object)`
+- `getRequest(String,Object)`
+- `getRequest(String)`
 

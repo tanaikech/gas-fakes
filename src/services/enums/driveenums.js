@@ -11,6 +11,7 @@ export const Access = newFakeGasenum([
 export const Permission = newFakeGasenum([
   "COMMENT",
   "EDIT",
+  "FILE_ORGANIZER",
   "NONE",
   "ORGANIZER",
   "OWNER",

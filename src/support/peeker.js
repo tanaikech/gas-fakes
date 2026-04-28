@@ -8,13 +8,19 @@ class Peeker {
   /**
    * @constructor 
    * @param {function} generator the generator function to add a hasNext() to
+   * @param {function} [continuationHandler] a function to return a continuation token
    * @returns {Peeker}
    */
-  constructor(generator) {
+  constructor(generator, continuationHandler) {
     this.generator = generator
     // in order to be able to do a hasnext we have to actually get the value
     // this is the next value stored
     this.peeked = generator.next()
+    this.continuationHandler = continuationHandler
+  }
+
+  getContinuationToken() {
+    return this.continuationHandler ? this.continuationHandler(this.peeked) : null
   }
 
   /**
@@ -37,7 +43,7 @@ class Peeker {
     // instead of returning the next, we return the prepeeked next
     const value = this.peeked.value
     this.peeked = this.generator.next()
-    return value
+    return value?.__fakeResolved ?? value
   }
 }
 

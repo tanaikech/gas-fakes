@@ -116,6 +116,37 @@ const fetchAll = (requests) => {
   return responses.map(({ data }) => responsify(data))
 }
 
+const getRequest = (url, options = {}) => {
+  const defaultMethod = 'get';
+  const request = {
+    url: url,
+    method: (options.method || defaultMethod).toLowerCase(),
+    headers: options.headers || {},
+  };
+
+  // Apps Script defaults
+  if (options.contentType) {
+    request.contentType = options.contentType;
+  }
+  
+  if (options.payload) {
+    request.payload = options.payload;
+  }
+  
+  if (options.useIntranet !== undefined) {
+    request.useIntranet = options.useIntranet;
+  }
+
+  // Add standard fetch behavior
+  if (request.method === 'post' || request.method === 'put' || request.method === 'patch') {
+     if (!request.contentType) {
+       request.contentType = 'application/x-www-form-urlencoded';
+     }
+  }
+
+  return request;
+}
+
 
 // This will eventually hold a proxy for DriveApp
 let _app = null
@@ -131,7 +162,8 @@ if (typeof globalThis[name] === typeof undefined) {
     if (!_app) {
       _app = {
         fetch,
-        fetchAll
+        fetchAll,
+        getRequest
       }
     }
     // this is the actual driveApp we'll return from the proxy

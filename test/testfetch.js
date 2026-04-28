@@ -44,6 +44,36 @@ export const testFetch = (pack) => {
     t.is(responses[1].getBlob().getContentType(), 'image/jpeg', 'assumes the random image is a jpeg');
   });
 
+  unit.section('urlfetchapp getRequest', t => {
+    const url = 'https://api.github.com/users/brucemcpherson';
+    
+    // Test basic get
+    const req1 = UrlFetchApp.getRequest(url);
+    t.is(req1.url, url);
+    t.is(req1.method, 'get');
+    t.deepEqual(req1.headers, {});
+
+    // Test with options
+    const req2 = UrlFetchApp.getRequest(url, {
+      method: 'POST',
+      contentType: 'application/json',
+      payload: JSON.stringify({ hello: 'world' }),
+      headers: { 'X-Custom': 'test' }
+    });
+    
+    t.is(req2.url, url);
+    t.is(req2.method, 'post');
+    t.is(req2.contentType, 'application/json');
+    t.is(req2.payload, '{"hello":"world"}');
+    t.deepEqual(req2.headers, { 'X-Custom': 'test' });
+    
+    // Test default content type for POST
+    const req3 = UrlFetchApp.getRequest(url, {
+      method: 'post'
+    });
+    t.is(req3.contentType, 'application/x-www-form-urlencoded', 'Default content type for POST should be application/x-www-form-urlencoded');
+  });
+
   if (!pack) {
     unit.report()
   }

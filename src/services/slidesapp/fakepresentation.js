@@ -1,5 +1,7 @@
 import { Proxies } from '../../support/proxies.js';
 import { newFakeSlide } from './fakeslide.js';
+import { newFakeMaster } from './fakemaster.js';
+import { newFakeColorScheme } from './fakecolorscheme.js';
 
 export const newFakePresentation = (...args) => {
   return Proxies.guard(new FakePresentation(...args));
@@ -48,6 +50,31 @@ export class FakePresentation {
    */
   getUrl() {
     return `https://docs.google.com/presentation/d/${this.getId()}/edit`;
+  }
+
+  /**
+   * Gets the color scheme of the presentation.
+   * @returns {FakeColorScheme} The color scheme.
+   */
+  getColorScheme() {
+    return newFakeColorScheme(this);
+  }
+
+  /**
+   * Gets the masters in the presentation.
+   * @returns {FakeMaster[]} The masters.
+   */
+  getMasters() {
+    return (this.__resource.masters || []).map(m => newFakeMaster(m, this));
+  }
+
+  /**
+   * Gets a master by its ID.
+   * @param {string} id The master ID.
+   * @returns {FakeMaster | null} The master, or null if not found.
+   */
+  getMasterById(id) {
+    return this.getMasters().find(m => m.getObjectId() === id) || null;
   }
 
   /**
