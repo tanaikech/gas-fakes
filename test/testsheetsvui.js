@@ -407,7 +407,8 @@ export const testSheetsVui = (pack) => {
     t.is(builder.toString(), "CellImageBuilder", "Builder toString should be CellImageBuilder");
     
     builder.setSourceUrl(imgUrl);
-    t.is(builder.getContentUrl(), imgUrl, "Builder getContentUrl should match sourceUrl");
+    // On Live GAS, calling getContentUrl on an image not yet processed/hosted by Google throws an error
+    t.truthy(t.threw(() => builder.getContentUrl()), "getContentUrl on new Builder should throw on Live GAS");
     
     builder.setAltTextTitle(title);
     t.is(builder.getAltTextTitle(), title, "Builder getAltTextTitle should match");
@@ -417,19 +418,17 @@ export const testSheetsVui = (pack) => {
 
     // Test toBuilder on builder
     const builder2 = builder.toBuilder();
-    t.is(builder2.getContentUrl(), imgUrl, "toBuilder should copy url");
     t.is(builder2.getAltTextTitle(), title, "toBuilder should copy title");
     
     // Test CellImage
     const cellImage = builder.build();
     t.is(cellImage.toString(), "CellImage", "CellImage toString should be CellImage");
-    t.is(cellImage.getContentUrl(), imgUrl, "CellImage getContentUrl should match");
+    t.truthy(t.threw(() => cellImage.getContentUrl()), "getContentUrl on new CellImage should throw on Live GAS");
     t.is(cellImage.getAltTextTitle(), title, "CellImage getAltTextTitle should match");
     t.is(cellImage.getAltTextDescription(), desc, "CellImage getAltTextDescription should match");
 
     // Test toBuilder on CellImage
     const builder3 = cellImage.toBuilder();
-    t.is(builder3.getContentUrl(), imgUrl, "CellImage.toBuilder should copy url");
     t.is(builder3.getAltTextTitle(), title, "CellImage.toBuilder should copy title");
     
     // Test applying it to a range via setValue

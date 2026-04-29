@@ -2615,7 +2615,7 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
     const processedValues = values.map(row => 
       row.map(cell => {
         if (cell && typeof cell === 'object' && cell.toString() === 'CellImage') {
-          const url = cell.getContentUrl();
+          const url = cell._properties?.sourceUrl || null;
           return url ? `=IMAGE("${url}")` : "";
         }
         return cell;

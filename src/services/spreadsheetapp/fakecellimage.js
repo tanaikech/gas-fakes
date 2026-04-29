@@ -19,7 +19,11 @@ export class FakeCellImage {
   }
 
   getContentUrl() {
-    return this._properties.sourceUrl || null;
+    const url = this._properties.sourceUrl || null;
+    if (url && !url.includes('googleusercontent.com')) {
+      throw new Error('Unexpected error while getting the method or property getContentUrl on object SpreadsheetApp.CellImage.');
+    }
+    return url;
   }
 
   toBuilder() {
