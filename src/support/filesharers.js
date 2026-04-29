@@ -9,20 +9,7 @@ import { newFakeUser } from '../services/common/fakeuser.js';
  * @returns {FakeUser[]} the file viewers
  */
 export const getSharers = (id, roles) => {
-  let roleList = Array.isArray(roles) ? roles : [roles]
-  
-  // To match live Apps Script behavior:
-  // If requesting 'writer' (editors), we must also include 'owner'
-  if (roleList.includes('writer') && !roleList.includes('owner')) {
-    roleList.push('owner');
-  }
-  
-  // If requesting 'reader' (viewers), we must include 'writer' and 'owner'
-  if ((roleList.includes('reader') || roleList.includes('commenter')) && !roleList.includes('writer')) {
-    roleList.push('writer');
-    if (!roleList.includes('owner')) roleList.push('owner');
-  }
-
+  const roleList = Array.isArray(roles) ? roles : [roles]
   const pit = getPermissionIterator({ id })
   const viewers = []
   while (pit.hasNext()) {

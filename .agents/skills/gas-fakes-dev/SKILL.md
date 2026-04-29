@@ -102,6 +102,11 @@ The `gas-fakes` project is complex, and bridging Node.js with GAS involves many 
 - **DeveloperMetadata Location (Sheets API)**: When updating or creating `DeveloperMetadata` using the Sheets API (`batchUpdate`), the API considers the `location.locationType` property to be **read-only**. You must supply the boundary object (`dimensionRange`, `spreadsheet`, or `sheetId`), but you MUST NOT supply the string `locationType`. Including it will cause a 400 Bad Request.
 - **Drive API Exports (`file.getAs`)**: Live Apps Script allows developers to call `file.getAs('application/pdf')` on plain text files. However, the standard Google Drive REST API (`drive.files.export`) strictly only supports exporting **Google Docs Editor** files (Docs, Sheets, Slides). 
   - To maintain parity with Apps Script, `gas-fakes` implements a **two-step conversion workaround** under the hood: when an export fails due to the `fileNotExportable` limitation, `gas-fakes` temporarily copies the file into a Google Doc (or Sheet/Slide), exports the temporary file to the requested format, and then trashes the temporary file. This ensures `file.getAs('application/pdf')` succeeds transparently for text and CSV files just like it does in live Apps Script.
+- **Drive API Permissions & Roles Parity**: In `DriveApp`, functions like `getViewers()` and `getEditors()` do **NOT** cascade or inherit roles. A user is only returned in the specific group they are assigned to via the Drive API.
+  - `owner` role -> returned by `getOwner()`
+  - `writer` role -> returned by `getEditors()`
+  - `reader` and `commenter` roles -> returned by `getViewers()`
+  - There is no need to manually append "owners" or "writers" to the viewers list. Live Apps Script maintains strict segregation between these categories based on their primary role.
 
 ### GmailApp & GmailMessage Limitations
 - **Missing Methods**: `gas-fakes` implementation of `GmailMessage` (i.e. `FakeGmailMessage`) does not natively support all methods found in Apps Script (e.g., `getSubject()`, `getDate()`, `getSnippet()`, `getFrom()`, `getTo()`). 
