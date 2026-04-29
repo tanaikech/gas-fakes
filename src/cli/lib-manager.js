@@ -1,6 +1,7 @@
 import fs from "fs";
 import { parse } from "acorn";
 import { Auth } from "../support/auth.js"; // Relative to gas-fakes-cli directory
+import { Syncit } from "../support/syncit.js";
 import { checkForGcloudCli, spawnCommand } from "./utils.js";
 
 async function getAccessToken(pattern) {
@@ -8,12 +9,17 @@ async function getAccessToken(pattern) {
     // Authorization pattern 1
     // We use cloud-platform as it provides sufficient access for Drive API fetching
     // while avoiding the 'well-known client ID' block that targets Workspace scopes like drive.readonly.
-    const auth = await Auth.setAuth(
-      ["https://www.googleapis.com/auth/cloud-platform"],
-      true
-    );
-    auth.cachedCredential = null;
-    return await auth.getAccessToken();
+    
+    // Instead of bypassing the worker initialization by calling Auth.setAuth directly,
+    // we use fxInit. This ensures the background worker receives the identities 
+    // and is ready for any subsequent API calls in the main script.
+    const _platformAuth = process.env.GF_PLATFORM_AUTH ? process.env.GF_PLATFORM_AUTH.split(',') : ['google'];
+    
+    // Use the specific scope needed for downloading
+    Auth.setTokenScopes(["https://www.googleapis.com/auth/cloud-platform"]);
+    Syncit.fxInit({ platformAuth: _platformAuth });
+    
+    return Syncit.fxGetAccessToken(Auth);
   } else {
     // Authorization pattern 2
     await checkForGcloudCli();
