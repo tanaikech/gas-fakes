@@ -8,7 +8,7 @@ This is a pretty huge task, so I'm working on adding services a little bit at a 
 
 ## Getting started
 
-First take a look at the [readme](README.md) for how to get started as a user. The main difference is
+First take a look at the [readme](../README.md) for how to get started as a user. The main difference is
 - You'll be using a local fork from the [repo](https://github.com/brucemcpherson/gas-fakes) of the source code rather than from npm
 - You'll need a companion Apps Script project so you can test your work as you go
 - You can merge your updates, issues and tests into the main repo
@@ -56,7 +56,7 @@ If you need to convert an existing .env file, there's a shell script for that.
 
 ##### authentication mandatory enhancement
 
-With recent security changes, many methods requiring Workspace scopes have been restricted for regular local authentication. This affects both Application Default Credentials (ADC) and Domain-Wide Delegation (DWD) due to Google's token provenance tracking. We have to do a little fiddling to the local auth process to get around these - see [getting started](GETTING_STARTED.md) and [Workspace scopes](workspace_scopes.md) for additional guidance on how to configure a custom OAuth client to handle this.
+With recent security changes, many methods requiring Workspace scopes have been restricted for regular local authentication. This affects both Application Default Credentials (ADC) and Domain-Wide Delegation (DWD) due to Google's token provenance tracking. We have to do a little fiddling to the local auth process to get around these - see [getting started](../GETTING_STARTED.md) and [Workspace scopes](workspace_scopes.md) for additional guidance on how to configure a custom OAuth client to handle this.
 
 
 ##### how to redirect to use local files
@@ -124,7 +124,7 @@ There's a folder 'gasmess' for this. They don't form part of the project, but ca
 
 ## Using Gemini code assist
 
-I've had mixed result with Gemini on this large project. If you're planning to use Gemini to do some legwork, I have no objections but here's some [notes](gemini.md) - some reflections and experiences on using Gemini to help code large projects on my experience so far.
+I've had mixed result with Gemini on this large project. If you're planning to use Gemini to do some legwork, I have no objections but here's some [notes](../gemini.md) - some reflections and experiences on using Gemini to help code large projects on my experience so far.
 
 ## Help
 
@@ -139,9 +139,9 @@ As I mentioned earlier, to take this further, I'm going to need a lot of help to
 ## Read more docs
 
 - [gas fakes intro video](https://youtu.be/oEjpIrkYpEM)
-- [getting started](GETTING_STARTED.md) - how to handle authentication for Workspace scopes.
-- [readme](README.md)
-- [Natural Language Automation with Gemini Skills & MCP Server](gemini-skills-mcp.md) - new skills-based agent approach.
+- [getting started](../GETTING_STARTED.md) - how to handle authentication for Workspace scopes.
+- [readme](../README.md)
+- [Natural Language Automation with Gemini Skills & MCP Server](../gemini-skills-mcp.md) - new skills-based agent approach.
 - [gf_agent documentation](../gf_agent/README.md) - instructions for the Gemini CLI automation agent and MCP server.
 - [gas fakes cli](gas-fakes-cli.md)
 - [github actions using adc](https://github.com/brucemcpherson/gas-fakes-actions-adc)

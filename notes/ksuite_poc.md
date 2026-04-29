@@ -1,153 +1,111 @@
+# KSuite Integration: Apps Script as a "Lingua Franca"
 
-# <img src="./logo.png" alt="gas-fakes logo" width="50" align="top">  Using Google Apps Script Libraries with `gas-fakes`
+This document explains the architectural changes made to `gas-fakes` to support **Infomaniak KSuite** as a target platform. The core objective is to allow standard Google Apps Script code to run against non-Google platforms with zero or minimal modification.
 
-`gas-fakes` provides robust support for testing your Google Apps Script projects that use shared libraries. This allows you to develop and test your code locally, even when it has complex dependencies, by simulating the Apps Script library environment.
+## 1. The "Lingua Franca" Concept
 
-There are three primary ways to make your libraries available in the `gas-fakes` environment:
+The idea is to use the Google Apps Script API surface (e.g., `DriveApp`, `SpreadsheetApp`) as a universal interface for workspace products. 
 
-1.  **Automatic Loading**: From your project's `appsscript.json` manifest.
-2.  **Custom Manifest**: By providing a manifest object directly in your code.
-3.  **Manual Loading**: From the command line interface (CLI).
+*   **Logic**: Your business logic remains written in standard GAS.
+*   **Steering**: You tell `gas-fakes` which backend to use via `ScriptApp.__platform`.
+*   **Translation**: `gas-fakes` intercepts the calls and translates them to the target platform's API (in this case, Infomaniak V3).
 
-## 1. Automatic Library Loading from Manifest
+## 2. Architectural Overview
 
-If your project already has an `appsscript.json` file with libraries listed in the `dependencies` section, `gas-fakes` can automatically load them. This is the most seamless method as it uses your existing project configuration.
+### Platform Steering
+A new property `__platform` was added to the `ScriptApp` global.
+*   `ScriptApp.__platform = 'google'` (Default): Hits Google APIs.
+*   `ScriptApp.__platform = 'ksuite'`: Intercepts calls and routes them to the KSuite translation layer.
+*   `ScriptApp.__platform = 'msgraph'`: Intercepts calls and routes them to the Microsoft Graph (OneDrive) translation layer.
 
-### How it Works
+### Interception Point
+The translation happens at the `Syncit` / Worker level. When a script calls `DriveApp.getRootFolder()`, the request is sent to the worker thread. The worker checks `Auth.getPlatform()` and, if set to `ksuite`, routes the request through the `KSuiteDrive` translator instead of the standard `googleapis` client.
 
-`gas-fakes` provides a global object, `LibHandlerApp`, in the execution environment. To load the libraries from your project's manifest, simply call `LibHandlerApp.load()`. It's best practice to wrap this call in a check for `ScriptApp.isFake`, so your code doesn't produce errors when running on Google's actual servers.
+## 3. KSuite Implementation Details
 
-The `load()` method will:
+### Dynamic Discovery
+Infomaniak's API is multi-tenant and requires specific IDs (`account_id`, `drive_id`). To keep the experience seamless, `gas-fakes` performs **Dynamic Discovery**:
+1.  **Account Discovery**: Probes `/1/account` or `/profile` to find the user's organization ID.
+2.  **Drive Discovery**: Probes `/2/drive` or `/2/drive/preferences` to find the default kDrive ID.
+3.  **Caching**: These IDs are discovered once and cached for the remainder of the session to ensure high performance.
 
-1.  Read your `appsscript.json` manifest file.
-2.  Find all the libraries listed in the `dependencies.libraries` array.
-3.  Fetch the code for each library.
-4.  Recursively perform the same process for any libraries that your dependencies use.
-5.  "Inject" all the libraries into the global scope, making them available for your script to use.
+### Idiomatic Root Mapping
+In Google Drive, the root is "My Drive". In KSuite, the Super Root (ID `1`) contains both "Private" and "Common documents". 
+To match GAS expectations, `gas-fakes` **dynamically maps the "Private" folder as the Root**.
+*   `DriveApp.getRootFolder()` resolves to the user's "Private" folder.
+*   Files created in "root" land in "Private".
 
-### Example
+### Metadata Translation
+The `KSuiteDrive.translateFile` method maps KSuite's JSON response to the schema expected by `gas-fakes` service classes:
+*   `mime_type` -> `mimeType`
+*   `created_at` -> `createdTime`
+*   `last_modified_at` -> `modifiedTime`
+*   Root detection (ID `1` or `5`) maps to the standard folder behavior.
 
-Let's say your `appsscript.json` looks like this:
+## 4. Supported Operations (POC)
 
-```json
-{
-  "timeZone": "Europe/London",
-  "dependencies": {
-    "libraries": [{
-      "userSymbol": "TestLib",
-      "libraryId": "1zOlHMOpO89vqLPe5XpC-wzA9r5yaBkWt_qFjKqFNsIZtNJ-iUjBYDt-x",
-      "version": "1"
-    }]
+The current integration supports the following `DriveApp` and `Drive` advanced service operations on KSuite:
+*   **Navigation**: `getRootFolder()`, `getFolders()`, `getFiles()`, `getFolderById()`, `getFileById()`.
+*   **Creation**: `createFolder()`, `createFile()` (with content and type).
+*   **Management**: `setName()`, `setTrashed()`.
+*   **Content**: `getBlob()`, `getDataAsString()`.
+*   **Queries**: Basic `q` parameter parsing for parent and `mimeType` filtering.
+
+## 5. Setup & Usage
+
+### 1. Initialization
+Use the refactored `init` command to set up KSuite. When prompted, select both `google` and `ksuite` (or just `ksuite` if preferred).
+
+```bash
+gas-fakes init -b google,ksuite
+```
+
+### 2. Environment Configuration
+The `init` command will update your `.env` file with the necessary variables. Ensure `GF_PLATFORM_AUTH` includes `ksuite`, and add your Infomaniak API token:
+
+```env
+GF_PLATFORM_AUTH=google,ksuite
+KSUITE_TOKEN=your_infomaniak_api_token
+```
+
+`gas-fakes` uses `override: true` to ensure local tokens always take precedence.
+
+### 3. Authentication
+Run the `auth` command specifically for the `ksuite` backend to ensure your token is valid:
+
+```bash
+gas-fakes auth --backend ksuite
+```
+
+### Example Code
+```javascript
+import '@mcpher/gas-fakes'
+
+const main = () => {
+  // Switch to KSuite
+  ScriptApp.__platform = 'ksuite';
+
+  // This code is now running against Infomaniak kDrive!
+  const root = DriveApp.getRootFolder();
+  console.log("Root Folder:", root.getName()); 
+
+  const folder = root.createFolder("GAS-Fakes-Test");
+  folder.createFile("hello.txt", "This was created via standard GAS code.");
+  
+  const files = folder.getFiles();
+  while (files.hasNext()) {
+    console.log("Found file:", files.next().getName());
   }
 }
 ```
 
-Your script `main.js` can then load and use the library:
+## 6. Testing
 
-```javascript
-// main.js
-
-// Best practice: Only run this in the gas-fakes environment
-if (typeof ScriptApp !== 'undefined' && ScriptApp.isFake) {
-  // Load all libraries from the project manifest
-  LibHandlerApp.load();
-}
-
-function myFunction() {
-  // Now you can use functions from TestLib
-  TestLib.hello();
-}
-
-myFunction();
-```
-
-You can run this with `gas-fakes`, and it will automatically fetch and include `TestLib`:
-
+Tests are located in `test/testksuitedrive.js`. You can run them via npm:
 ```bash
-npx gas-fakes -f main.js
+cd test && npm run testksuitedrive
 ```
-
-## 2. Providing a Custom Manifest
-
-You can also pass a manifest object directly to `LibHandlerApp.load()`. This is useful for testing specific library configurations without modifying your project's `appsscript.json`.
-
-### Example
-
-Here's an example of loading a library using a custom-defined manifest object.
-
-```javascript
-// test-script.js
-
-// Best practice: Only run this in the gas-fakes environment
-if (typeof ScriptApp !== 'undefined' && ScriptApp.isFake) {
-  const mockManifest = {
-    dependencies: {
-      libraries: [
-        {
-          libraryId: '13JUFGY18RHfjjuKmIRRfvmGlCYrEkEtN6uUm-iLUcxOUFRJD-WBX-tkR',
-          userSymbol: 'bmPreFiddler',
-        },
-      ],
-    },
-  };
-  LibHandlerApp.load(mockManifest);
-}
-
-function runFiddler() {
-  // Use the library loaded from the mock manifest
-  const result = bmPreFiddler.PreFiddler().getFiddler({id:'xxx', sheetName:"yyy"}).getData();
-  console.log(result.slice(0, 5));
-}
-
-runFiddler();
-```
-
-## 3. Manual Library Loading from the CLI
-
-For quick tests or situations where you don't want to create a manifest, you can manually specify libraries using the `--libraries` flag with the `gas-fakes` CLI.
-
-### How it Works
-
-The `--libraries` flag takes an argument in the format `Identifier@Source`.
-
--   **`Identifier`**: This is the name your script will use to refer to the library (e.g., `MyLib`).
--   **`Source`**: This is where to get the library code. It can be:
-    -   A path to a local JavaScript file (e.g., `./libs/my-lib.js`).
-    -   A URL pointing to a raw JavaScript file.
-    -   The script ID of a deployed Google Apps Script library.
-
-You can provide the `--libraries` flag multiple times to load multiple libraries.
-
-### Example
-
-Imagine you have a local library file `sample-lib.js`:
-
-```javascript
-// sample-lib.js
-function sayHello() {
-  console.log('Hello from the library!');
-}
-```
-
-And a script `main.js` that wants to use it:
-
-```javascript
-// main.js
-function runTest() {
-  // MyLib is available because we are loading it via the CLI
-  MyLib.sayHello();
-}
-
-runTest();
-```
-
-You can run your main script and link the library using this command:
-
-```bash
-npx gas-fakes -f main.js --libraries "MyLib@sample-lib.js"
-```
-
-The output would be: `Hello from the library!`
+The test suite validates the full lifecycle: Discovery -> Mapping -> Creation -> Renaming -> Deletion.
 
 ## <img src="./logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
 
@@ -158,9 +116,9 @@ The output would be: `Hello from the library!`
 ## Read more docs
 
 - [gas fakes intro video](https://youtu.be/oEjpIrkYpEM)
-- [getting started](GETTING_STARTED.md) - how to handle authentication for Workspace scopes.
-- [readme](README.md)
-- [Natural Language Automation with Gemini Skills & MCP Server](gemini-skills-mcp.md) - new skills-based agent approach.
+- [getting started](../GETTING_STARTED.md) - how to handle authentication for Workspace scopes.
+- [readme](../README.md)
+- [Natural Language Automation with Gemini Skills & MCP Server](../gemini-skills-mcp.md) - new skills-based agent approach.
 - [gf_agent documentation](../gf_agent/README.md) - instructions for the Gemini CLI automation agent and MCP server.
 - [gas fakes cli](gas-fakes-cli.md)
 - [github actions using adc](https://github.com/brucemcpherson/gas-fakes-actions-adc)

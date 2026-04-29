@@ -398,9 +398,9 @@ t.is(rs.getFloat(col), Math.fround(1.1), "correct float comparison");
 ## Read more docs
 
 - [gas fakes intro video](https://youtu.be/oEjpIrkYpEM)
-- [getting started](GETTING_STARTED.md) - how to handle authentication for Workspace scopes.
-- [readme](README.md)
-- [Natural Language Automation with Gemini Skills & MCP Server](gemini-skills-mcp.md) - new skills-based agent approach.
+- [getting started](../GETTING_STARTED.md) - how to handle authentication for Workspace scopes.
+- [readme](../README.md)
+- [Natural Language Automation with Gemini Skills & MCP Server](../gemini-skills-mcp.md) - new skills-based agent approach.
 - [gf_agent documentation](../gf_agent/README.md) - instructions for the Gemini CLI automation agent and MCP server.
 - [gas fakes cli](gas-fakes-cli.md)
 - [github actions using adc](https://github.com/brucemcpherson/gas-fakes-actions-adc)

@@ -1,62 +1,153 @@
-### <img src="./logo.png" alt="gas-fakes logo" width="50" align="top"> How Named Ranges Are Used to Track Element Identity
 
-The core challenge in emulating `DocumentApp` is understanding how Apps Script objects, like a `Paragraph`, remain "alive" and valid even after the document is modified and their position changes.
+# <img src="./logo.png" alt="gas-fakes logo" width="50" align="top">  Using Google Apps Script Libraries with `gas-fakes`
 
-```javascript
-// Live Apps Script Example
-var body = DocumentApp.getActiveDocument().getBody();
-var p2 = body.appendParagraph("Paragraph 2");
+`gas-fakes` provides robust support for testing your Google Apps Script projects that use shared libraries. This allows you to develop and test your code locally, even when it has complex dependencies, by simulating the Apps Script library environment.
 
-// Now, insert a new paragraph before p2
-body.insertParagraph(1, "A new paragraph before p2"); 
+There are three primary ways to make your libraries available in the `gas-fakes` environment:
 
-// Even though p2 has shifted, this still works!
-p2.setText("Paragraph 2 has been updated."); 
+1.  **Automatic Loading**: From your project's `appsscript.json` manifest.
+2.  **Custom Manifest**: By providing a manifest object directly in your code.
+3.  **Manual Loading**: From the command line interface (CLI).
+
+## 1. Automatic Library Loading from Manifest
+
+If your project already has an `appsscript.json` file with libraries listed in the `dependencies` section, `gas-fakes` can automatically load them. This is the most seamless method as it uses your existing project configuration.
+
+### How it Works
+
+`gas-fakes` provides a global object, `LibHandlerApp`, in the execution environment. To load the libraries from your project's manifest, simply call `LibHandlerApp.load()`. It's best practice to wrap this call in a check for `ScriptApp.isFake`, so your code doesn't produce errors when running on Google's actual servers.
+
+The `load()` method will:
+
+1.  Read your `appsscript.json` manifest file.
+2.  Find all the libraries listed in the `dependencies.libraries` array.
+3.  Fetch the code for each library.
+4.  Recursively perform the same process for any libraries that your dependencies use.
+5.  "Inject" all the libraries into the global scope, making them available for your script to use.
+
+### Example
+
+Let's say your `appsscript.json` looks like this:
+
+```json
+{
+  "timeZone": "Europe/London",
+  "dependencies": {
+    "libraries": [{
+      "userSymbol": "TestLib",
+      "libraryId": "1zOlHMOpO89vqLPe5XpC-wzA9r5yaBkWt_qFjKqFNsIZtNJ-iUjBYDt-x",
+      "version": "1"
+    }]
+  }
+}
 ```
 
-The `p2` object somehow "knows" where it is in the document, even though its character indices (`startIndex`, `endIndex`) have changed. A simple approach of just storing an element's `startIndex` would fail immediately after the first insertion or deletion.
+Your script `main.js` can then load and use the library:
 
-### The Solution: Named Ranges as Stable Anchors
+```javascript
+// main.js
 
-`gas-fakes` solves this by using the Google Docs API's **Named Range** feature as a persistent, stable "tag" for every structural element in the document.
+// Best practice: Only run this in the gas-fakes environment
+if (typeof ScriptApp !== 'undefined' && ScriptApp.isFake) {
+  // Load all libraries from the project manifest
+  LibHandlerApp.load();
+}
 
-Here’s the step-by-step process:
+function myFunction() {
+  // Now you can use functions from TestLib
+  TestLib.hello();
+}
 
-#### 1. Initial "Tagging" on Document Load
+myFunction();
+```
 
-When a `FakeDocument` is opened or refreshed, `gas-fakes` performs a full scan of the document's structure using the advanced `Docs.Documents.get()` method.
+You can run this with `gas-fakes`, and it will automatically fetch and include `TestLib`:
 
-*   For every structural element it finds (a `PARAGRAPH`, `LIST_ITEM`, `TABLE`, etc.), it creates a corresponding **unique named range** in the live Google Doc.
-*   This named range is given a unique, randomly generated name, like `GAS_FAKE_body_PARAGRAPH_13260ced-7174-4bb9-b7e8-f39d1ad662a1`.
-*   This name becomes the **stable, unique identifier** for that specific element instance.
+```bash
+npx gas-fakes -f main.js
+```
 
-#### 2. The `FakeElement` Object's Identity
+## 2. Providing a Custom Manifest
 
-When `gas-fakes` returns an element object to your script (e.g., the `FakeParagraph` returned by `body.appendParagraph()`), that object doesn't just know its current position. Its most important internal property is this unique named range name, stored in `this.__name`.
+You can also pass a manifest object directly to `LibHandlerApp.load()`. This is useful for testing specific library configurations without modifying your project's `appsscript.json`.
 
-This `__name` is the element's "soul." It's the key that allows the object to find itself again, no matter how the document changes around it.
+### Example
 
-#### 3. The "Self-Healing" Mechanism on Method Calls
+Here's an example of loading a library using a custom-defined manifest object.
 
-When you call a method on a `FakeParagraph` object, like `p2.getText()`, the following happens:
+```javascript
+// test-script.js
 
-1.  The `FakeParagraph` object accesses its internal `__elementMapItem` property.
-2.  This is a dynamic getter that first tries to find the element in its local document model (`shadowDocument`) using its last known name (`this.__name`).
-3.  If the document has been modified and that name is no longer valid (the "stale reference" problem), the getter uses a fallback: it finds the element based on its **original `startIndex`** that was cached when the object was first created.
-4.  Once it finds the element at the new position, it retrieves the element's **new unique name** from the refreshed document model and updates its own `this.__name`.
-5.  With the "revived" element data, the `getText()` method can now execute correctly.
+// Best practice: Only run this in the gas-fakes environment
+if (typeof ScriptApp !== 'undefined' && ScriptApp.isFake) {
+  const mockManifest = {
+    dependencies: {
+      libraries: [
+        {
+          libraryId: '13JUFGY18RHfjjuKmIRRfvmGlCYrEkEtN6uUm-iLUcxOUFRJD-WBX-tkR',
+          userSymbol: 'bmPreFiddler',
+        },
+      ],
+    },
+  };
+  LibHandlerApp.load(mockManifest);
+}
 
-#### 4. The Critical Importance of Named Range Protection
+function runFiddler() {
+  // Use the library loaded from the mock manifest
+  const result = bmPreFiddler.PreFiddler().getFiddler({id:'xxx', sheetName:"yyy"}).getData();
+  console.log(result.slice(0, 5));
+}
 
-The self-healing mechanism described above only works if the element's identity is preserved in the live document across API calls.
+runFiddler();
+```
 
-*   **The Problem:** We discovered that when you send a `batchUpdate` request that modifies content (like `insertText` or `deleteContentRange`), the Docs API will often **move or delete** the named ranges that overlap with the modification. This breaks the link between our `FakeElement` object and its representation in the document.
+## 3. Manual Library Loading from the CLI
 
-*   **The Solution (The Core Principle):** To prevent this, any `batchUpdate` that modifies an element's content **must also include requests to protect its named range**. This is done by atomically:
-    1.  `deleteNamedRange`: Deleting the old named range by its ID.
-    2.  `createNamedRange`: Immediately recreating it with the **exact same name** but with the new, correct character range.
+For quick tests or situations where you don't want to create a manifest, you can manually specify libraries using the `--libraries` flag with the `gas-fakes` CLI.
 
-By doing this in a single `batchUpdate`, we are explicitly telling the Docs API: "I am changing this element, but I want it to keep its identity." This ensures that when the `shadowDocument` refreshes, it can still find the named range and the `FakeElement` object remains valid. This protection is the key to the entire system's stability.
+### How it Works
+
+The `--libraries` flag takes an argument in the format `Identifier@Source`.
+
+-   **`Identifier`**: This is the name your script will use to refer to the library (e.g., `MyLib`).
+-   **`Source`**: This is where to get the library code. It can be:
+    -   A path to a local JavaScript file (e.g., `./libs/my-lib.js`).
+    -   A URL pointing to a raw JavaScript file.
+    -   The script ID of a deployed Google Apps Script library.
+
+You can provide the `--libraries` flag multiple times to load multiple libraries.
+
+### Example
+
+Imagine you have a local library file `sample-lib.js`:
+
+```javascript
+// sample-lib.js
+function sayHello() {
+  console.log('Hello from the library!');
+}
+```
+
+And a script `main.js` that wants to use it:
+
+```javascript
+// main.js
+function runTest() {
+  // MyLib is available because we are loading it via the CLI
+  MyLib.sayHello();
+}
+
+runTest();
+```
+
+You can run your main script and link the library using this command:
+
+```bash
+npx gas-fakes -f main.js --libraries "MyLib@sample-lib.js"
+```
+
+The output would be: `Hello from the library!`
 
 ## <img src="./logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
 
@@ -67,9 +158,9 @@ By doing this in a single `batchUpdate`, we are explicitly telling the Docs API:
 ## Read more docs
 
 - [gas fakes intro video](https://youtu.be/oEjpIrkYpEM)
-- [getting started](GETTING_STARTED.md) - how to handle authentication for Workspace scopes.
-- [readme](README.md)
-- [Natural Language Automation with Gemini Skills & MCP Server](gemini-skills-mcp.md) - new skills-based agent approach.
+- [getting started](../GETTING_STARTED.md) - how to handle authentication for Workspace scopes.
+- [readme](../README.md)
+- [Natural Language Automation with Gemini Skills & MCP Server](../gemini-skills-mcp.md) - new skills-based agent approach.
 - [gf_agent documentation](../gf_agent/README.md) - instructions for the Gemini CLI automation agent and MCP server.
 - [gas fakes cli](gas-fakes-cli.md)
 - [github actions using adc](https://github.com/brucemcpherson/gas-fakes-actions-adc)

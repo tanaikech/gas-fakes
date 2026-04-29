@@ -31,7 +31,7 @@ Ensure your `oauthScopes` section includes all the scopes your script needs.
 
 > **Note on "Pure" Local Projects:** If you are building a project solely for the `gas-fakes` environment and do not intend to push it to the live Apps Script cloud, you can run without an `appsscript.json`. If it's missing (or has no scopes), `gas-fakes` will automatically emulate a manifest in memory, generating the scopes from your `.env` file (`DEFAULT_SCOPES` + `EXTRA_SCOPES`) and defaulting your timezone to `America/New_York` (or the value of `GF_TIMEZONE`). However, for full fidelity with live Apps Script, an `appsscript.json` is recommended.
 
-> **Automatic Scope Discovery:** `gas-fakes` automatically detects required scopes for both DWD and ADC methods by reading your manifest. You no longer need to manually select them during initialization. Note that because of some [changes](https://docs.cloud.google.com/docs/authentication/troubleshoot-adc#access_blocked_when_using_scopes) recently introduced by Google, you may need to provide a custom client id for ADC to work with Workspace scopes. See [How to allow access to Workspace scopes](workspace_scopes.md) for more details. For this reason, DWD is the recommended approach for Workspace projects as you don't need to bother with all that.
+> **Automatic Scope Discovery:** `gas-fakes` automatically detects required scopes for both DWD and ADC methods by reading your manifest. You no longer need to manually select them during initialization. Note that because of some [changes](https://docs.cloud.google.com/docs/authentication/troubleshoot-adc#access_blocked_when_using_scopes) recently introduced by Google, you may need to provide a custom client id for ADC to work with Workspace scopes. See [How to allow access to Workspace scopes](notes/workspace_scopes.md) for more details. For this reason, DWD is the recommended approach for Workspace projects as you don't need to bother with all that.
 
 ## Step 2: Install the Package
 
@@ -66,7 +66,7 @@ When you need a scope like Spreadsheets, which accesses Drive behind the scenes,
 
 ### Supported Backends
 
-`gas-fakes` now supports multiple backends simultaneously. Note that as from v2.1.0, the auth process has been streamlined to support this. for more details see [gas-fakes-cli](gas-fakes-cli.md) and [v2.1.0 release notes](./versionnotes/v2.1.0.md). 
+`gas-fakes` now supports multiple backends simultaneously. Note that as from v2.1.0, the auth process has been streamlined to support this. for more details see [gas-fakes-cli](notes/gas-fakes-cli.md) and [v2.1.0 release notes](./versionnotes/v2.1.0.md). 
 
 During `init`, you can select one or more:
 
@@ -84,7 +84,7 @@ During `init`, you can select one or more:
 If you select the Google backend, you can choose between:
 - **Domain-Wide Delegation (DWD)** (Default): Recommended for production-ready, cross-platform deployment. Requires admin action in the Workspace Admin Console.
 - **Application Default Credentials (ADC)**: Uses your local user login.
-    > **Note on Workspace Scopes (ADC):** If your project requires Workspace scopes (e.g., full Gmail or Calendar access), the standard Google CLI login process will be blocked by Google during the `auth` step. To resolve this, you must provide a custom OAuth2 client credentials JSON file during the `init` process. For a detailed guide on how to set this up, see [How to allow access to Workspace scopes](workspace_scopes.md). Better still, use DWD if your can. 
+    > **Note on Workspace Scopes (ADC):** If your project requires Workspace scopes (e.g., full Gmail or Calendar access), the standard Google CLI login process will be blocked by Google during the `auth` step. To resolve this, you must provide a custom OAuth2 client credentials JSON file during the `init` process. For a detailed guide on how to set this up, see [How to allow access to Workspace scopes](notes/workspace_scopes.md). Better still, use DWD if your can. 
 
 ### Consumer versus domain accounts
 
@@ -183,11 +183,11 @@ const root = DriveApp.getRootFolder(); // Returns Google Drive root
 - [readme](README.md)
 - [Natural Language Automation with Gemini Skills & MCP Server](gemini-skills-mcp.md) - new skills-based agent approach.
 - [gf_agent documentation](../gf_agent/README.md) - instructions for the Gemini CLI automation agent and MCP server.
-- [gas fakes cli](gas-fakes-cli.md)
+- [gas fakes cli](notes/gas-fakes-cli.md)
 - [github actions using adc](https://github.com/brucemcpherson/gas-fakes-actions-adc)
 - [github actions using dwd and wif](https://github.com/brucemcpherson/gas-fakes-actions-dwd)
-- [ksuite as a back end](ksuite_poc.md)
-- [msgraph as a back end](msgraph.md)
+- [ksuite as a back end](notes/ksuite_poc.md)
+- [msgraph as a back end](notes/msgraph.md)
 - [resurrecting scriptDb repo](https://github.com/brucemcpherson/scriptdb-redux)
 - [Resurrecting ScriptDb – nosql database for Apps Script](https://ramblings.mcpher.com/resurrecting-scriptdb-nosql-database-for-apps-script/)
 - [gas-fakes in serverless containers](https://docs.google.com/presentation/d/1JlXF9T--DD4ERHopyP3WyAMhjRCxxHblgCP5ynxaJ3k/edit?usp=sharing)
@@ -198,7 +198,7 @@ const root = DriveApp.getRootFolder(); // Returns Google Drive root
 - [running gas-fakes on Amazon AWS lambda](https://github.com/brucemcpherson/gas-fakes-containers)
 - [running gas-fakes on Azure ACA](https://github.com/brucemcpherson/gas-fakes-containers)
 - [running gas-fakes on Github actions](https://github.com/brucemcpherson/gas-fakes-containers)
-- [jdbc notes](jdbc-notes.md)
+- [jdbc notes](notes/jdbc-notes.md)
 - [Yes – you can run native apps script code on Azure ACA as well!](https://ramblings.mcpher.com/yes-you-can-run-native-apps-script-code-on-azure-aca-as-well/)
 - [Yes – you can run native apps script code on AWS Lambda!](https://ramblings.mcpher.com/apps-script-on-aws-lambda/)
 - [initial idea and thoughts](https://ramblings.mcpher.com/a-proof-of-concept-implementation-of-apps-script-environment-on-node/)
@@ -208,16 +208,16 @@ const root = DriveApp.getRootFolder(); // Returns Google Drive root
 - [Turning async into synch on Node using workers](https://ramblings.mcpher.com/turning-async-into-synch-on-node-using-workers/)
 - [All about Apps Script Enums and how to fake them](https://ramblings.mcpher.com/all-about-apps-script-enums-and-how-to-fake-them/)
 - [colaborators](collaborators.md) - additional information for collaborators
-- [oddities](oddities.md) - a collection of oddities uncovered during this project
-- [named colors](named-colors.md)
-- [sandbox](sandbox.md)
-- [senstive scopes](workspace_scopes.md)
-- [using apps script libraries with gas-fakes](libraries.md)
+- [oddities](notes/oddities.md) - a collection of oddities uncovered during this project
+- [named colors](notes/named-colors.md)
+- [sandbox](notes/sandbox.md)
+- [senstive scopes](notes/workspace_scopes.md)
+- [using apps script libraries with gas-fakes](notes/libraries.md)
 - [how libhandler works](libhandler.md)
 - [article:using apps script libraries with gas-fakes](https://ramblings.mcpher.com/how-to-use-apps-script-libraries-directly-from-node/)
-- [named range identity](named-range-identity.md)
-- [Workspace scopes with local authentication](workspace_scopes.md)
-- [push test pull](pull-test-push.md)
+- [named range identity](notes/named-range-identity.md)
+- [Workspace scopes with local authentication](notes/workspace_scopes.md)
+- [push test pull](notes/pull-test-push.md)
 - [sharing cache and properties between gas-fakes and live apps script](https://ramblings.mcpher.com/sharing-cache-and-properties-between-gas-fakes-and-live-apps-script/)
 - [gas-fakes-cli now has built in mcp server and gemini extension](https://ramblings.mcpher.com/gas-fakes-cli-now-has-built-in-mcp-server-and-gemini-extension/)
 - [gas-fakes CLI: Run apps script code directly from your terminal](https://ramblings.mcpher.com/gas-fakes-cli-run-apps-script-code-directly-from-your-terminal/)

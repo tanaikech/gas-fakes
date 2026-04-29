@@ -1,111 +1,116 @@
-# KSuite Integration: Apps Script as a "Lingua Franca"
+# <img src="./logo.png" alt="gas-fakes logo" width="50" align="top">  Collaborating
 
-This document explains the architectural changes made to `gas-fakes` to support **Infomaniak KSuite** as a target platform. The core objective is to allow standard Google Apps Script code to run against non-Google platforms with zero or minimal modification.
+Testing and updating in a collaborative environment can be hard. Here's how it works to minimize merge problems
+- Communicate what you're working on before starting
+- Work on service separately where possible - for Example if A is working on Drive, B should work on Sheets
 
-## 1. The "Lingua Franca" Concept
+## testing
 
-The idea is to use the Google Apps Script API surface (e.g., `DriveApp`, `SpreadsheetApp`) as a universal interface for workspace products. 
+All tests are now modular and should contain sections that tests what you're working on - for example.
 
-*   **Logic**: Your business logic remains written in standard GAS.
-*   **Steering**: You tell `gas-fakes` which backend to use via `ScriptApp.__platform`.
-*   **Translation**: `gas-fakes` intercepts the calls and translates them to the target platform's API (in this case, Infomaniak V3).
+testutilities.js
 
-## 2. Architectural Overview
+````js
 
-### Platform Steering
-A new property `__platform` was added to the `ScriptApp` global.
-*   `ScriptApp.__platform = 'google'` (Default): Hits Google APIs.
-*   `ScriptApp.__platform = 'ksuite'`: Intercepts calls and routes them to the KSuite translation layer.
-*   `ScriptApp.__platform = 'msgraph'`: Intercepts calls and routes them to the Microsoft Graph (OneDrive) translation layer.
+// all these imports 
 
-### Interception Point
-The translation happens at the `Syncit` / Worker level. When a script calls `DriveApp.getRootFolder()`, the request is sent to the worker thread. The worker checks `Auth.getPlatform()` and, if set to `ksuite`, routes the request through the `KSuiteDrive` translator instead of the standard `googleapis` client.
-
-## 3. KSuite Implementation Details
-
-### Dynamic Discovery
-Infomaniak's API is multi-tenant and requires specific IDs (`account_id`, `drive_id`). To keep the experience seamless, `gas-fakes` performs **Dynamic Discovery**:
-1.  **Account Discovery**: Probes `/1/account` or `/profile` to find the user's organization ID.
-2.  **Drive Discovery**: Probes `/2/drive` or `/2/drive/preferences` to find the default kDrive ID.
-3.  **Caching**: These IDs are discovered once and cached for the remainder of the session to ensure high performance.
-
-### Idiomatic Root Mapping
-In Google Drive, the root is "My Drive". In KSuite, the Super Root (ID `1`) contains both "Private" and "Common documents". 
-To match GAS expectations, `gas-fakes` **dynamically maps the "Private" folder as the Root**.
-*   `DriveApp.getRootFolder()` resolves to the user's "Private" folder.
-*   Files created in "root" land in "Private".
-
-### Metadata Translation
-The `KSuiteDrive.translateFile` method maps KSuite's JSON response to the schema expected by `gas-fakes` service classes:
-*   `mime_type` -> `mimeType`
-*   `created_at` -> `createdTime`
-*   `last_modified_at` -> `modifiedTime`
-*   Root detection (ID `1` or `5`) maps to the standard folder behavior.
-
-## 4. Supported Operations (POC)
-
-The current integration supports the following `DriveApp` and `Drive` advanced service operations on KSuite:
-*   **Navigation**: `getRootFolder()`, `getFolders()`, `getFiles()`, `getFolderById()`, `getFileById()`.
-*   **Creation**: `createFolder()`, `createFile()` (with content and type).
-*   **Management**: `setName()`, `setTrashed()`.
-*   **Content**: `getBlob()`, `getDataAsString()`.
-*   **Queries**: Basic `q` parameter parsing for parent and `mimeType` filtering.
-
-## 5. Setup & Usage
-
-### 1. Initialization
-Use the refactored `init` command to set up KSuite. When prompted, select both `google` and `ksuite` (or just `ksuite` if preferred).
-
-```bash
-gas-fakes init -b google,ksuite
-```
-
-### 2. Environment Configuration
-The `init` command will update your `.env` file with the necessary variables. Ensure `GF_PLATFORM_AUTH` includes `ksuite`, and add your Infomaniak API token:
-
-```env
-GF_PLATFORM_AUTH=google,ksuite
-KSUITE_TOKEN=your_infomaniak_api_token
-```
-
-`gas-fakes` uses `override: true` to ensure local tokens always take precedence.
-
-### 3. Authentication
-Run the `auth` command specifically for the `ksuite` backend to ensure your token is valid:
-
-```bash
-gas-fakes auth --backend ksuite
-```
-
-### Example Code
-```javascript
+import is from '@sindresorhus/is';
 import '@mcpher/gas-fakes'
 
-const main = () => {
-  // Switch to KSuite
-  ScriptApp.__platform = 'ksuite';
+// all the fake services are here
+//import '@mcpher/gas-fakes/main.js'
 
-  // This code is now running against Infomaniak kDrive!
-  const root = DriveApp.getRootFolder();
-  console.log("Root Folder:", root.getName()); 
+import { initTests, wrapupTest }  from  './testinit.js'
 
-  const folder = root.createFolder("GAS-Fakes-Test");
-  folder.createFile("hello.txt", "This was created via standard GAS code.");
-  
-  const files = folder.getFiles();
-  while (files.hasNext()) {
-    console.log("Found file:", files.next().getName());
+// this can run standalone, or as part of combined tests if result of inittests is passed over
+export const testUtilities = (pack) => {
+  const {unit, fixes} = pack || initTests()
+
+  unit.section("utilities base64 encoding", t => {
+    // ... tests
+
+  })
+
+  unit.section("utilities zipping", t => {
+    //.. tests
+    
+  })
+  // etc..
+
+  if (!pack) {
+    unit.report()
   }
+  return { unit, fixes }
 }
-```
 
-## 6. Testing
+// if we're running this test standalone, on Node - we need to actually kick it off
+// the provess.argv should contain "execute" 
+// on apps script we don't want it to run automatically
+// when running as part of a consolidated test, we dont want to run it, as the caller will do that
 
-Tests are located in `test/testksuitedrive.js`. You can run them via npm:
-```bash
-cd test && npm run testksuitedrive
-```
-The test suite validates the full lifecycle: Discovery -> Mapping -> Creation -> Renaming -> Deletion.
+wrapupTest(testUtilities);
+
+````
+
+## Running individual tests
+The package.json should contain a reference to the test
+````
+  "scripts": {
+    "test": "node  ./test/test.js",
+    "testdrive": node ./test/testdrive.js execute",
+    ....etc
+  },
+````
+they can be run individually with - for example
+````
+npm run testdrive
+````
+## Running all tests
+The consolidated test.js should contain references to all known tests
+````
+import '@mcpher/gas-fakes'
+import { initTests }  from  './testinit.js'
+import { testDrive } from './testdrive.js';
+import { testSheets } from './testsheets.js';
+...etc
+
+const testFakes = () => {
+  const pack = initTests()
+  const {unit} = pack
+
+  // add one of these for each service being tested
+  
+  testSheets(pack)
+  testDrive(pack)
+  ...etc
+  
+  unit.report()
+}
+
+// this required on Node but not on Apps Script
+if (ScriptApp.isFake) testFakes()
+
+````
+and can be run with
+````
+npm run test
+````
+
+## how to redirect to use local files
+
+When testing and you want to use the local files rather than @mcpher/gas-fakes, you can have a local package.json in the same folder as your tests which directs the package to a local file. just run npm i to install
+````
+  "dependencies": {
+    "@mcpher/gas-fakes": "file:../../"
+  }
+````
+where the file value points to the root of gas-fakes. If you want to instead use the npm version then just revert that normal npm syntax and install again. 
+
+
+
+## Running on apps script
+
+execute `bash togas.sh` to copy all files to apps script IDE. All tests can be run there either indivually or as a whole just like on Node
 
 ## <img src="./logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
 
@@ -116,9 +121,9 @@ The test suite validates the full lifecycle: Discovery -> Mapping -> Creation ->
 ## Read more docs
 
 - [gas fakes intro video](https://youtu.be/oEjpIrkYpEM)
-- [getting started](GETTING_STARTED.md) - how to handle authentication for Workspace scopes.
-- [readme](README.md)
-- [Natural Language Automation with Gemini Skills & MCP Server](gemini-skills-mcp.md) - new skills-based agent approach.
+- [getting started](../GETTING_STARTED.md) - how to handle authentication for Workspace scopes.
+- [readme](../README.md)
+- [Natural Language Automation with Gemini Skills & MCP Server](../gemini-skills-mcp.md) - new skills-based agent approach.
 - [gf_agent documentation](../gf_agent/README.md) - instructions for the Gemini CLI automation agent and MCP server.
 - [gas fakes cli](gas-fakes-cli.md)
 - [github actions using adc](https://github.com/brucemcpherson/gas-fakes-actions-adc)

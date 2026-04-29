@@ -1,116 +1,62 @@
-# <img src="./logo.png" alt="gas-fakes logo" width="50" align="top">  Collaborating
+### <img src="./logo.png" alt="gas-fakes logo" width="50" align="top"> How Named Ranges Are Used to Track Element Identity
 
-Testing and updating in a collaborative environment can be hard. Here's how it works to minimize merge problems
-- Communicate what you're working on before starting
-- Work on service separately where possible - for Example if A is working on Drive, B should work on Sheets
+The core challenge in emulating `DocumentApp` is understanding how Apps Script objects, like a `Paragraph`, remain "alive" and valid even after the document is modified and their position changes.
 
-## testing
+```javascript
+// Live Apps Script Example
+var body = DocumentApp.getActiveDocument().getBody();
+var p2 = body.appendParagraph("Paragraph 2");
 
-All tests are now modular and should contain sections that tests what you're working on - for example.
+// Now, insert a new paragraph before p2
+body.insertParagraph(1, "A new paragraph before p2"); 
 
-testutilities.js
+// Even though p2 has shifted, this still works!
+p2.setText("Paragraph 2 has been updated."); 
+```
 
-````js
+The `p2` object somehow "knows" where it is in the document, even though its character indices (`startIndex`, `endIndex`) have changed. A simple approach of just storing an element's `startIndex` would fail immediately after the first insertion or deletion.
 
-// all these imports 
+### The Solution: Named Ranges as Stable Anchors
 
-import is from '@sindresorhus/is';
-import '@mcpher/gas-fakes'
+`gas-fakes` solves this by using the Google Docs API's **Named Range** feature as a persistent, stable "tag" for every structural element in the document.
 
-// all the fake services are here
-//import '@mcpher/gas-fakes/main.js'
+Here’s the step-by-step process:
 
-import { initTests, wrapupTest }  from  './testinit.js'
+#### 1. Initial "Tagging" on Document Load
 
-// this can run standalone, or as part of combined tests if result of inittests is passed over
-export const testUtilities = (pack) => {
-  const {unit, fixes} = pack || initTests()
+When a `FakeDocument` is opened or refreshed, `gas-fakes` performs a full scan of the document's structure using the advanced `Docs.Documents.get()` method.
 
-  unit.section("utilities base64 encoding", t => {
-    // ... tests
+*   For every structural element it finds (a `PARAGRAPH`, `LIST_ITEM`, `TABLE`, etc.), it creates a corresponding **unique named range** in the live Google Doc.
+*   This named range is given a unique, randomly generated name, like `GAS_FAKE_body_PARAGRAPH_13260ced-7174-4bb9-b7e8-f39d1ad662a1`.
+*   This name becomes the **stable, unique identifier** for that specific element instance.
 
-  })
+#### 2. The `FakeElement` Object's Identity
 
-  unit.section("utilities zipping", t => {
-    //.. tests
-    
-  })
-  // etc..
+When `gas-fakes` returns an element object to your script (e.g., the `FakeParagraph` returned by `body.appendParagraph()`), that object doesn't just know its current position. Its most important internal property is this unique named range name, stored in `this.__name`.
 
-  if (!pack) {
-    unit.report()
-  }
-  return { unit, fixes }
-}
+This `__name` is the element's "soul." It's the key that allows the object to find itself again, no matter how the document changes around it.
 
-// if we're running this test standalone, on Node - we need to actually kick it off
-// the provess.argv should contain "execute" 
-// on apps script we don't want it to run automatically
-// when running as part of a consolidated test, we dont want to run it, as the caller will do that
+#### 3. The "Self-Healing" Mechanism on Method Calls
 
-wrapupTest(testUtilities);
+When you call a method on a `FakeParagraph` object, like `p2.getText()`, the following happens:
 
-````
+1.  The `FakeParagraph` object accesses its internal `__elementMapItem` property.
+2.  This is a dynamic getter that first tries to find the element in its local document model (`shadowDocument`) using its last known name (`this.__name`).
+3.  If the document has been modified and that name is no longer valid (the "stale reference" problem), the getter uses a fallback: it finds the element based on its **original `startIndex`** that was cached when the object was first created.
+4.  Once it finds the element at the new position, it retrieves the element's **new unique name** from the refreshed document model and updates its own `this.__name`.
+5.  With the "revived" element data, the `getText()` method can now execute correctly.
 
-## Running individual tests
-The package.json should contain a reference to the test
-````
-  "scripts": {
-    "test": "node  ./test/test.js",
-    "testdrive": node ./test/testdrive.js execute",
-    ....etc
-  },
-````
-they can be run individually with - for example
-````
-npm run testdrive
-````
-## Running all tests
-The consolidated test.js should contain references to all known tests
-````
-import '@mcpher/gas-fakes'
-import { initTests }  from  './testinit.js'
-import { testDrive } from './testdrive.js';
-import { testSheets } from './testsheets.js';
-...etc
+#### 4. The Critical Importance of Named Range Protection
 
-const testFakes = () => {
-  const pack = initTests()
-  const {unit} = pack
+The self-healing mechanism described above only works if the element's identity is preserved in the live document across API calls.
 
-  // add one of these for each service being tested
-  
-  testSheets(pack)
-  testDrive(pack)
-  ...etc
-  
-  unit.report()
-}
+*   **The Problem:** We discovered that when you send a `batchUpdate` request that modifies content (like `insertText` or `deleteContentRange`), the Docs API will often **move or delete** the named ranges that overlap with the modification. This breaks the link between our `FakeElement` object and its representation in the document.
 
-// this required on Node but not on Apps Script
-if (ScriptApp.isFake) testFakes()
+*   **The Solution (The Core Principle):** To prevent this, any `batchUpdate` that modifies an element's content **must also include requests to protect its named range**. This is done by atomically:
+    1.  `deleteNamedRange`: Deleting the old named range by its ID.
+    2.  `createNamedRange`: Immediately recreating it with the **exact same name** but with the new, correct character range.
 
-````
-and can be run with
-````
-npm run test
-````
-
-## how to redirect to use local files
-
-When testing and you want to use the local files rather than @mcpher/gas-fakes, you can have a local package.json in the same folder as your tests which directs the package to a local file. just run npm i to install
-````
-  "dependencies": {
-    "@mcpher/gas-fakes": "file:../../"
-  }
-````
-where the file value points to the root of gas-fakes. If you want to instead use the npm version then just revert that normal npm syntax and install again. 
-
-
-
-## Running on apps script
-
-execute `bash togas.sh` to copy all files to apps script IDE. All tests can be run there either indivually or as a whole just like on Node
+By doing this in a single `batchUpdate`, we are explicitly telling the Docs API: "I am changing this element, but I want it to keep its identity." This ensures that when the `shadowDocument` refreshes, it can still find the named range and the `FakeElement` object remains valid. This protection is the key to the entire system's stability.
 
 ## <img src="./logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
 
@@ -121,9 +67,9 @@ execute `bash togas.sh` to copy all files to apps script IDE. All tests can be r
 ## Read more docs
 
 - [gas fakes intro video](https://youtu.be/oEjpIrkYpEM)
-- [getting started](GETTING_STARTED.md) - how to handle authentication for Workspace scopes.
-- [readme](README.md)
-- [Natural Language Automation with Gemini Skills & MCP Server](gemini-skills-mcp.md) - new skills-based agent approach.
+- [getting started](../GETTING_STARTED.md) - how to handle authentication for Workspace scopes.
+- [readme](../README.md)
+- [Natural Language Automation with Gemini Skills & MCP Server](../gemini-skills-mcp.md) - new skills-based agent approach.
 - [gf_agent documentation](../gf_agent/README.md) - instructions for the Gemini CLI automation agent and MCP server.
 - [gas fakes cli](gas-fakes-cli.md)
 - [github actions using adc](https://github.com/brucemcpherson/gas-fakes-actions-adc)

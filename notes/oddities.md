@@ -1169,7 +1169,7 @@ When using workload identity/service account, the active user is the user being 
 
 #### Google-auth-library changes
 
-Another issue with 10.4, is we now get this error "Method doesn't allow unregistered callers (callers without established identity)". I believe this is to do with the use of certain scopes being restricted. When we are using ADC for authentication, but we can full it into thinking it's using an internal OAuth client by creating one in the console, then injecting its credentials into the file used by ADC. For a full explanation on setting this up see  this write up on setting up [getting started](GETTING_STARTED.md)
+Another issue with 10.4, is we now get this error "Method doesn't allow unregistered callers (callers without established identity)". I believe this is to do with the use of certain scopes being restricted. When we are using ADC for authentication, but we can full it into thinking it's using an internal OAuth client by creating one in the console, then injecting its credentials into the file used by ADC. For a full explanation on setting this up see  this write up on setting up [getting started](../GETTING_STARTED.md)
 
 #### Dependency security and overrides
 To address high-severity ReDoS vulnerabilities and deprecation warnings in transitive dependencies (specifically `minimatch` and `glob` pulled in via `archiver` and `google-auth-library`), `gas-fakes` uses the `overrides` field in `package.json`. This ensures that secure and supported versions of `minimatch` (>= 10.2.1) and `glob` (>= 13.0.0) are forced across all dependencies, even those that normally request older, vulnerable or deprecated versions.
@@ -1209,9 +1209,9 @@ If you want to play with the testing suite , then take a look at the [collaborat
 ## Read more docs
 
 - [gas fakes intro video](https://youtu.be/oEjpIrkYpEM)
-- [getting started](GETTING_STARTED.md) - how to handle authentication for Workspace scopes.
-- [readme](README.md)
-- [Natural Language Automation with Gemini Skills & MCP Server](gemini-skills-mcp.md) - new skills-based agent approach.
+- [getting started](../GETTING_STARTED.md) - how to handle authentication for Workspace scopes.
+- [readme](../README.md)
+- [Natural Language Automation with Gemini Skills & MCP Server](../gemini-skills-mcp.md) - new skills-based agent approach.
 - [gf_agent documentation](../gf_agent/README.md) - instructions for the Gemini CLI automation agent and MCP server.
 - [gas fakes cli](gas-fakes-cli.md)
 - [github actions using adc](https://github.com/brucemcpherson/gas-fakes-actions-adc)
