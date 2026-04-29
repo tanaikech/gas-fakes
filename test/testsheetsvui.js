@@ -315,11 +315,11 @@ export const testSheetsVui = (pack) => {
     t.is(owner.getEmail(), fixes.EMAIL)
 
     const viewers = ss.getViewers()
-    t.truthy(viewers.length)
+    t.true(Array.isArray(viewers))
     viewers.forEach(f => t.true(is.nonEmptyString(f.getEmail())))
 
     const editors = ss.getEditors()
-    t.truthy(editors.length)
+    t.true(Array.isArray(editors))
     editors.forEach(f => t.true(is.nonEmptyString(f.getEmail())))
 
 

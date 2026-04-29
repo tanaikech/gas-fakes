@@ -130,7 +130,7 @@ I've had mixed result with Gemini on this large project. If you're planning to u
 
 As I mentioned earlier, to take this further, I'm going to need a lot of help to extend the methods and services supported - so if you feel this would be useful to you, and would like to collaborate, please ping me on [bruce@mcpher.com](mailto:bruce@mcpher.com) and we'll talk.
 
-## <img src="./logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
+## <img src="../logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
 
 ## Watch the video
 
@@ -139,15 +139,15 @@ As I mentioned earlier, to take this further, I'm going to need a lot of help to
 ## Read more docs
 
 - [gas fakes intro video](https://youtu.be/oEjpIrkYpEM)
-- [getting started](../GETTING_STARTED.md) - how to handle authentication for Workspace scopes.
-- [readme](../README.md)
-- [Natural Language Automation with Gemini Skills & MCP Server](../gemini-skills-mcp.md) - new skills-based agent approach.
+- [getting started](GETTING_STARTED.md) - how to handle authentication for Workspace scopes.
+- [readme](README.md)
+- [Natural Language Automation with Gemini Skills & MCP Server](gemini-skills-mcp.md) - new skills-based agent approach.
 - [gf_agent documentation](../gf_agent/README.md) - instructions for the Gemini CLI automation agent and MCP server.
-- [gas fakes cli](gas-fakes-cli.md)
+- [gas fakes cli](notes/gas-fakes-cli.md)
 - [github actions using adc](https://github.com/brucemcpherson/gas-fakes-actions-adc)
 - [github actions using dwd and wif](https://github.com/brucemcpherson/gas-fakes-actions-dwd)
-- [ksuite as a back end](ksuite_poc.md)
-- [msgraph as a back end](msgraph.md)
+- [ksuite as a back end](notes/ksuite_poc.md)
+- [msgraph as a back end](notes/msgraph.md)
 - [resurrecting scriptDb repo](https://github.com/brucemcpherson/scriptdb-redux)
 - [Resurrecting ScriptDb – nosql database for Apps Script](https://ramblings.mcpher.com/resurrecting-scriptdb-nosql-database-for-apps-script/)
 - [gas-fakes in serverless containers](https://docs.google.com/presentation/d/1JlXF9T--DD4ERHopyP3WyAMhjRCxxHblgCP5ynxaJ3k/edit?usp=sharing)
@@ -158,7 +158,7 @@ As I mentioned earlier, to take this further, I'm going to need a lot of help to
 - [running gas-fakes on Amazon AWS lambda](https://github.com/brucemcpherson/gas-fakes-containers)
 - [running gas-fakes on Azure ACA](https://github.com/brucemcpherson/gas-fakes-containers)
 - [running gas-fakes on Github actions](https://github.com/brucemcpherson/gas-fakes-containers)
-- [jdbc notes](jdbc-notes.md)
+- [jdbc notes](notes/jdbc-notes.md)
 - [Yes – you can run native apps script code on Azure ACA as well!](https://ramblings.mcpher.com/yes-you-can-run-native-apps-script-code-on-azure-aca-as-well/)
 - [Yes – you can run native apps script code on AWS Lambda!](https://ramblings.mcpher.com/apps-script-on-aws-lambda/)
 - [initial idea and thoughts](https://ramblings.mcpher.com/a-proof-of-concept-implementation-of-apps-script-environment-on-node/)
@@ -168,16 +168,16 @@ As I mentioned earlier, to take this further, I'm going to need a lot of help to
 - [Turning async into synch on Node using workers](https://ramblings.mcpher.com/turning-async-into-synch-on-node-using-workers/)
 - [All about Apps Script Enums and how to fake them](https://ramblings.mcpher.com/all-about-apps-script-enums-and-how-to-fake-them/)
 - [colaborators](collaborators.md) - additional information for collaborators
-- [oddities](oddities.md) - a collection of oddities uncovered during this project
-- [named colors](named-colors.md)
-- [sandbox](sandbox.md)
-- [senstive scopes](workspace_scopes.md)
-- [using apps script libraries with gas-fakes](libraries.md)
+- [oddities](notes/oddities.md) - a collection of oddities uncovered during this project
+- [named colors](notes/named-colors.md)
+- [sandbox](notes/sandbox.md)
+- [senstive scopes](notes/workspace_scopes.md)
+- [using apps script libraries with gas-fakes](notes/libraries.md)
 - [how libhandler works](libhandler.md)
 - [article:using apps script libraries with gas-fakes](https://ramblings.mcpher.com/how-to-use-apps-script-libraries-directly-from-node/)
-- [named range identity](named-range-identity.md)
-- [Workspace scopes with local authentication](workspace_scopes.md)
-- [push test pull](pull-test-push.md)
+- [named range identity](notes/named-range-identity.md)
+- [Workspace scopes with local authentication](notes/workspace_scopes.md)
+- [push test pull](notes/pull-test-push.md)
 - [sharing cache and properties between gas-fakes and live apps script](https://ramblings.mcpher.com/sharing-cache-and-properties-between-gas-fakes-and-live-apps-script/)
 - [gas-fakes-cli now has built in mcp server and gemini extension](https://ramblings.mcpher.com/gas-fakes-cli-now-has-built-in-mcp-server-and-gemini-extension/)
 - [gas-fakes CLI: Run apps script code directly from your terminal](https://ramblings.mcpher.com/gas-fakes-cli-run-apps-script-code-directly-from-your-terminal/)

@@ -14,6 +14,7 @@ export const getSharers = (id, roles) => {
   const viewers = []
   while (pit.hasNext()) {
     const permission = pit.next()
+    // console.log(`...DEBUG: permission for ${id}:`, JSON.stringify(permission))
     if (roleList.includes(permission.role) && permission.type === "user") viewers.push(makeUserFromPermission(permission))
   }
   return viewers
