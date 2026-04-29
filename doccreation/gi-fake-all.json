@@ -33361,8 +33361,8 @@
             "description": "Returns the alt text description for this image.",
             "returnType": "String",
             "returnDescription": "The alt text description.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakecellimage.js#L13"
           },
           {
             "method": "getAltTextTitle()",
@@ -33370,8 +33370,8 @@
             "description": "Returns the alt text title for this image.",
             "returnType": "String",
             "returnDescription": "The alt text title.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakecellimage.js#L17"
           },
           {
             "method": "getContentUrl()",
@@ -33379,8 +33379,8 @@
             "description": "Returns a Google-hosted URL to the image. This URL is tagged with the account of the requester,\nso anyone with the URL effectively accesses the image as the original requester. Access to the\nimage might be lost if the spreadsheet's sharing settings change. The returned URL expires\nafter a short period of time.",
             "returnType": "String",
             "returnDescription": "The Google-hosted URL of the image.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakecellimage.js#L21"
           },
           {
             "method": "toBuilder()",
@@ -33388,8 +33388,8 @@
             "description": "Creates a cell image builder based on the current image properties. Use CellImageBuilder.setSourceUrl(url) to set the source URL of the new image. Then you can add it to a\ncell using Range.setValue(value) or Range.setValues(values).",
             "returnType": "CellImageBuilder",
             "returnDescription": "A builder that creates an image value type based on the given image properties.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakecellimage.js#L25"
           }
         ]
       },
@@ -33405,8 +33405,8 @@
             "description": "Creates the image value type needed to add an image to a cell. The image value is built from\nthe image properties added to the builder, such as the source URL.",
             "returnType": "CellImage",
             "returnDescription": "A representation of the image to add to a cell.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakecellimagebuilder.js#L13"
           },
           {
             "method": "getAltTextDescription()",
@@ -33414,8 +33414,8 @@
             "description": "Returns the alt text description for this image.",
             "returnType": "String",
             "returnDescription": "The alt text description.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakecellimagebuilder.js#L17"
           },
           {
             "method": "getAltTextTitle()",
@@ -33423,8 +33423,8 @@
             "description": "Returns the alt text title for this image.",
             "returnType": "String",
             "returnDescription": "The alt text title.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakecellimagebuilder.js#L21"
           },
           {
             "method": "getContentUrl()",
@@ -33432,8 +33432,8 @@
             "description": "Returns a Google-hosted URL to the image. This URL is tagged with the account of the requester,\nso anyone with the URL effectively accesses the image as the original requester. Access to the\nimage might be lost if the spreadsheet's sharing settings change. The returned URL expires\nafter a short period of time.",
             "returnType": "String",
             "returnDescription": "The Google-hosted URL of the image.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakecellimagebuilder.js#L25"
           },
           {
             "method": "setAltTextDescription(String)",
@@ -33441,8 +33441,8 @@
             "description": "Sets the alt-text description for this image.",
             "returnType": "CellImage",
             "returnDescription": "This image, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakecellimagebuilder.js#L29"
           },
           {
             "method": "setAltTextTitle(String)",
@@ -33450,8 +33450,8 @@
             "description": "Sets the alt text title for this image.",
             "returnType": "CellImage",
             "returnDescription": "This image, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakecellimagebuilder.js#L34"
           },
           {
             "method": "setSourceUrl(String)",
@@ -33459,8 +33459,8 @@
             "description": "Sets the image source URL.",
             "returnType": "CellImageBuilder",
             "returnDescription": "This builder, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakecellimagebuilder.js#L39"
           },
           {
             "method": "toBuilder()",
@@ -33468,8 +33468,8 @@
             "description": "Creates a cell image builder based on the current image properties. Use setSourceUrl(url) to set the source URL of the new image. Then you can add it to a\ncell using Range.setValue(value) or Range.setValues(values).",
             "returnType": "CellImageBuilder",
             "returnDescription": "A builder that creates an image value type based on the given image properties.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakecellimagebuilder.js#L44"
           }
         ]
       },
@@ -33530,7 +33530,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "a new spreadsheet",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L24"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L25"
           },
           {
             "method": "create(String,Integer,Integer)",
@@ -33539,7 +33539,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L24"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L25"
           },
           {
             "method": "enableAllDataSourcesExecution()",
@@ -33584,7 +33584,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "the active Spreadsheet object",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L82"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L83"
           },
           {
             "method": "getActiveRange()",
@@ -33593,7 +33593,7 @@
             "returnType": "Range",
             "returnDescription": "The active range.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L85"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L86"
           },
           {
             "method": "getActiveRangeList()",
@@ -33602,7 +33602,7 @@
             "returnType": "RangeList",
             "returnDescription": "the list of active ranges",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L86"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L87"
           },
           {
             "method": "getActiveSheet()",
@@ -33611,7 +33611,7 @@
             "returnType": "Sheet",
             "returnDescription": "the active Sheet object",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L83"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L84"
           },
           {
             "method": "getActiveSpreadsheet()",
@@ -33629,7 +33629,7 @@
             "returnType": "Range",
             "returnDescription": "the current cell",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L84"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L85"
           },
           {
             "method": "getSelection()",
@@ -33638,7 +33638,7 @@
             "returnType": "Selection",
             "returnDescription": "the current selection",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L87"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L88"
           },
           {
             "method": "getUi()",
@@ -33656,7 +33656,7 @@
             "returnType": "CellImageBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L92"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L232"
           },
           {
             "method": "newColor()",
@@ -33665,7 +33665,7 @@
             "returnType": "ColorBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L232"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L241"
           },
           {
             "method": "newConditionalFormatRule()",
@@ -33674,7 +33674,7 @@
             "returnType": "ConditionalFormatRuleBuilder",
             "returnDescription": "the new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L241"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L250"
           },
           {
             "method": "newDataSourceSpec()",
@@ -33683,7 +33683,7 @@
             "returnType": "DataSourceSpecBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L285"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L294"
           },
           {
             "method": "newDataValidation()",
@@ -33692,7 +33692,7 @@
             "returnType": "DataValidationBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L259"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L268"
           },
           {
             "method": "newFilterCriteria()",
@@ -33701,7 +33701,7 @@
             "returnType": "FilterCriteriaBuilder",
             "returnDescription": "the new builder",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L277"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L286"
           },
           {
             "method": "newRichTextValue()",
@@ -33710,7 +33710,7 @@
             "returnType": "RichTextValueBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L268"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L277"
           },
           {
             "method": "newTextStyle()",
@@ -33719,7 +33719,7 @@
             "returnType": "TextStyleBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L250"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L259"
           },
           {
             "method": "open(File)",
@@ -33755,7 +33755,7 @@
             "returnType": "Range",
             "returnDescription": "the new active Range",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L90"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L91"
           },
           {
             "method": "setActiveRangeList(RangeList)",
@@ -33764,7 +33764,7 @@
             "returnType": "RangeList",
             "returnDescription": "the newly selected list of ranges",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L91"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L92"
           },
           {
             "method": "setActiveSheet(Sheet)",
@@ -33773,7 +33773,7 @@
             "returnType": "Sheet",
             "returnDescription": "the sheet that has been made the new active sheet",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L88"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L89"
           },
           {
             "method": "setActiveSheet(Sheet,Boolean)",
@@ -33782,7 +33782,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L88"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L89"
           },
           {
             "method": "setActiveSpreadsheet(Spreadsheet)",
@@ -33800,7 +33800,7 @@
             "returnType": "Range",
             "returnDescription": "the newly set current cell",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L89"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L90"
           }
         ]
       },
@@ -42930,7 +42930,7 @@
             "returnType": "TextFinder",
             "returnDescription": "The TextFinder for the range",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheetrange.js#L2632"
+            "implementationLink": "src/services/spreadsheetapp/fakesheetrange.js#L2643"
           },
           {
             "method": "deleteCells(Dimension)",

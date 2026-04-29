@@ -2611,6 +2611,17 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
     // options = { valueInputOption: "RAW" },
     options = { valueInputOption: "USER_ENTERED" },
   }) {
+    // Intercept FakeCellImage objects and convert to =IMAGE(url) formula
+    const processedValues = values.map(row => 
+      row.map(cell => {
+        if (cell && typeof cell === 'object' && cell.toString() === 'CellImage') {
+          const url = cell.getContentUrl();
+          return url ? `=IMAGE("${url}")` : "";
+        }
+        return cell;
+      })
+    );
+
     const range = single
       ? this.__getRangeWithSheet(this.__getTopLeft())
       : this.__getWithSheet();
@@ -2620,7 +2631,7 @@ skipFilteredRows	Boolean	Whether to avoid clearing filtered rows.
         {
           majorDimension: "ROWS",
           range,
-          values,
+          values: processedValues,
         },
       ],
     };

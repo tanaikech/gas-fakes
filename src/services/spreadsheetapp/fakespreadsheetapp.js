@@ -14,7 +14,8 @@ import { newFakeFilterCriteriaBuilder } from "./fakefiltercriteriabuilder.js";
 import { newFakeDataValidationBuilder } from "./fakedatavalidationbuilder.js";
 import { newFakeConditionalFormatRuleBuilder } from "./fakeconditionalformatrulebuilder.js";
 import { newFakeDataSourceSpecBuilder } from "./fakedatasourcespecbuilder.js";
-import { FakeTextFinder, newFakeTextFinder } from "./faketextfinder.js";
+import { newFakeTextFinder } from "./faketextfinder.js";
+import { newFakeCellImageBuilder } from "./fakecellimagebuilder.js";
 
 import * as Enums from "../enums/sheetsenums.js";
 
@@ -89,7 +90,6 @@ export class FakeSpreadsheetApp {
       "setCurrentCell",
       "setActiveRange",
       "setActiveRangeList",
-      "newCellImage",
       "getUi",
       "open",
 
@@ -226,6 +226,15 @@ export class FakeSpreadsheetApp {
       throw new Error(`Invalid spreadsheet URL: ${url}`);
     }
     return this.openById(match[1]);
+  }
+
+  /**
+   * newCellImage() https://developers.google.com/apps-script/reference/spreadsheet/spreadsheet-app#newcellimage
+   * Creates a builder for a CellImage.
+   * @returns {FakeCellImageBuilder}
+   */
+  newCellImage() {
+    return newFakeCellImageBuilder();
   }
 
   /**
