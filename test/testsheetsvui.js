@@ -397,6 +397,63 @@ export const testSheetsVui = (pack) => {
   })
 
 
+  unit.section("CellImage and CellImageBuilder methods", t => {
+    const imgUrl = fixes.RANDOM_IMAGE || "https://picsum.photos/200";
+    const title = "Random Image";
+    const desc = "A randomly generated placeholder image";
+
+    // Test CellImageBuilder
+    const builder = SpreadsheetApp.newCellImage();
+    t.is(builder.toString(), "CellImageBuilder", "Builder toString should be CellImageBuilder");
+    
+    builder.setSourceUrl(imgUrl);
+    t.is(builder.getContentUrl(), imgUrl, "Builder getContentUrl should match sourceUrl");
+    
+    builder.setAltTextTitle(title);
+    t.is(builder.getAltTextTitle(), title, "Builder getAltTextTitle should match");
+    
+    builder.setAltTextDescription(desc);
+    t.is(builder.getAltTextDescription(), desc, "Builder getAltTextDescription should match");
+
+    // Test toBuilder on builder
+    const builder2 = builder.toBuilder();
+    t.is(builder2.getContentUrl(), imgUrl, "toBuilder should copy url");
+    t.is(builder2.getAltTextTitle(), title, "toBuilder should copy title");
+    
+    // Test CellImage
+    const cellImage = builder.build();
+    t.is(cellImage.toString(), "CellImage", "CellImage toString should be CellImage");
+    t.is(cellImage.getContentUrl(), imgUrl, "CellImage getContentUrl should match");
+    t.is(cellImage.getAltTextTitle(), title, "CellImage getAltTextTitle should match");
+    t.is(cellImage.getAltTextDescription(), desc, "CellImage getAltTextDescription should match");
+
+    // Test toBuilder on CellImage
+    const builder3 = cellImage.toBuilder();
+    t.is(builder3.getContentUrl(), imgUrl, "CellImage.toBuilder should copy url");
+    t.is(builder3.getAltTextTitle(), title, "CellImage.toBuilder should copy title");
+    
+    // Test applying it to a range via setValue
+    if (SpreadsheetApp.isFake) {
+      const ss = SpreadsheetApp.create("temp_cellimage_test");
+      const sheet = ss.getSheets()[0];
+      const testRange = sheet.getRange("Z99");
+      
+      testRange.setValue(cellImage);
+      
+      const formula = testRange.getFormula();
+      t.is(formula, `=IMAGE("${imgUrl}")`, "In gas-fakes, setting CellImage should write an =IMAGE() formula");
+      
+      // Also test setValues
+      testRange.setValues([[cellImage]]);
+      const formula2 = testRange.getFormula();
+      t.is(formula2, `=IMAGE("${imgUrl}")`, "In gas-fakes, setting CellImage via setValues should write an =IMAGE() formula");
+      
+      // Clean up
+      DriveApp.getFileById(ss.getId()).setTrashed(true);
+    }
+  })
+
+
   return { unit, fixes }
 }
 
