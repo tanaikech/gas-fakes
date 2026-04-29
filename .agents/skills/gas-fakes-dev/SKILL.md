@@ -107,6 +107,7 @@ The `gas-fakes` project is complex, and bridging Node.js with GAS involves many 
   - `writer` role -> returned by `getEditors()`
   - `reader` and `commenter` roles -> returned by `getViewers()`
   - There is no need to manually append "owners" or "writers" to the viewers list. Live Apps Script maintains strict segregation between these categories based on their primary role.
+- **Null IDs in Advanced Services**: Unlike standard `DriveApp` (which immediately throws an `Invalid argument: id` error if passed `null` or `undefined`), Live Apps Script Advanced Services (like `Drive.Files.get(null)`) might silently fail or not throw an easily catchable exception. Do not write parity tests that expect Advanced Services to consistently throw specific errors for `null` parameters.
 
 ### GmailApp & GmailMessage Limitations
 - **Missing Methods**: `gas-fakes` implementation of `GmailMessage` (i.e. `FakeGmailMessage`) does not natively support all methods found in Apps Script (e.g., `getSubject()`, `getDate()`, `getSnippet()`, `getFrom()`, `getTo()`). 

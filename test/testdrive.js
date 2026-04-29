@@ -773,11 +773,6 @@ export const testDrive = (pack) => {
     check(() => DriveApp.getFolderById(null), /Invalid argument: id/, 'getFolderById(null)')
     check(() => DriveApp.getFolderById(undefined), /Invalid argument: id/, 'getFolderById(undefined)')
     check(() => DriveApp.getFolderById(""), /Invalid argument: id|Unexpected error/, 'getFolderById("")')
-
-    // Advanced service behavior varies and might not throw on all platforms for null
-    check(() => Drive.Files.get(null), /Invalid argument: id|Unexpected error|required/, 'Drive.Files.get(null)')
-    check(() => Drive.Files.get(undefined), /Invalid argument: id|Unexpected error|required/, 'Drive.Files.get(undefined)')
-    check(() => Drive.Files.get(""), /Invalid argument: id|Unexpected error|required/, 'Drive.Files.get("")')
   })
 
 

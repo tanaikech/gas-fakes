@@ -70,16 +70,21 @@ Agent:
 - **Google Docs Formatting**: You CANNOT apply formatting (bold, italic, etc.) directly to a `Paragraph` or `ListItem`. You MUST use `editAsText()` first.
   - *Incorrect*: `paragraph.setItalic(true)`
   - *Correct*: `paragraph.editAsText().setItalic(true)`
+- **Google Docs Element Detachment**: To move or duplicate an element (like an image, paragraph, or table) within a document, you **cannot** just append it if it's already attached to the document tree. You must either detach it (`element.removeFromParent()`) or copy it (`element.copy()`) first, otherwise an "Element must be detached" error is thrown.
+- **Google Docs Headers/Footers**: You can only add one header/footer to a document tab. Calling `doc.addHeader()` twice will throw an error.
+- **Google Sheets Developer Metadata**: You **cannot** add `DeveloperMetadata` to an arbitrary range (e.g., `A1:B2`) or a partial row/column. It **only** works on full sheets, full rows (`9:9`), full columns (`J:J`), or the spreadsheet itself.
+- **Google Sheets Filters**: A sheet can only have one filter at a time. Attempting to call `range.createFilter()` on a sheet that already has a filter will throw an error.
+- **Google Drive Blob Naming**: When creating a file from a Blob (`DriveApp.createFile(blob)`), the Blob **must** have a name. `Utilities.newBlob("content")` does not set a name by default and will throw "Blob object must have non-null name". Always use `Utilities.newBlob("content", "text/plain", "filename.txt")`.
 - **Flush Requirements**: If your script creates a resource and immediately tries to perform a complex search or metadata operation on it, call `SpreadsheetApp.flush()` or `doc.saveAndClose()` to ensure the state is synchronized.
 - **Date Comparison**: When comparing dates from `getLastUpdated()` or `getDateCreated()`, remember they are JavaScript `Date` objects. Use `.getTime()` for reliable numerical comparison.
 
 ### Authentication & Troubleshooting
 - **Permission Denied/Auth Failures**: Most authentication errors stem from a mismatch between the script's required scopes and the authorized environment.
   - **Manifest & Scopes**: `gas-fakes` reads `appsscript.json` to discover required scopes. If these scopes weren't authorized during `gas-fakes auth`, the script will fail.
-  - **Advice for User**: 
-    - Check if `appsscript.json` contains the required `oauthScopes`.
-    - Run `gas-fakes auth` to ensure the environment has the latest credentials.
-    - If using **DWD (Domain Wide Delegation)**: Remind the user that the Service Account must be explicitly authorized in the Google Workspace Admin Console (Security > API Controls > Domain-wide Delegation) for the specific scopes being used.
+  - **Advice for User (Auth Methods)**: When a user needs help setting up authentication for `gas-fakes`, advise them based on their specific situation:
+    - **Service Account (Default)**: Recommend this for most automated tasks or server environments. They need a GCP project, a Service Account, and its JSON key file.
+    - **DWD (Domain Wide Delegation)**: Recommend this if the script needs to act on behalf of other users in a Google Workspace domain. Remind the user that the Service Account must be explicitly authorized in the Google Workspace Admin Console (Security > API Controls > Domain-wide Delegation) for the specific scopes being used, and they must provide the `Subject` email address during the `gas-fakes auth` flow.
+    - **Desktop/OAuth (CLI)**: Recommend this for personal scripting or if they cannot use a Service Account. It requires `OAuth Client ID` credentials from GCP (Application type: Desktop) and will prompt them to authenticate via a browser window.
   - **Initialization**: Ensure the project has been initialized using `gas-fakes init`. The `.env` file must contain the correct `GF_PLATFORM_AUTH` and associated credentials.
 
 ### Parity & Platform Logic
