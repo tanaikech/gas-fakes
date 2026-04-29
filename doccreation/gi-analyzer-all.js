@@ -128,6 +128,15 @@ const classSynonyms = {
   'RgbColor': ['rgbcolor', 'colorbase'],
   'ThemeColor': ['themecolor', 'colorbase'],
   'DataValidation': ['datavalidationbuilder'],
+  'EmbeddedAreaChartBuilder': ['embeddedchartbuilder'],
+  'EmbeddedBarChartBuilder': ['embeddedchartbuilder'],
+  'EmbeddedColumnChartBuilder': ['embeddedchartbuilder'],
+  'EmbeddedComboChartBuilder': ['embeddedchartbuilder'],
+  'EmbeddedHistogramChartBuilder': ['embeddedchartbuilder'],
+  'EmbeddedLineChartBuilder': ['embeddedchartbuilder'],
+  'EmbeddedPieChartBuilder': ['embeddedchartbuilder'],
+  'EmbeddedScatterChartBuilder': ['embeddedchartbuilder'],
+  'EmbeddedTableChartBuilder': ['embeddedchartbuilder'],
 };
 
 const classToFileMap = {

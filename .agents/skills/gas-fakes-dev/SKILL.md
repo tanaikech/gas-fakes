@@ -25,6 +25,7 @@ Generate Node.js code that maps GAS methods to the corresponding Google Cloud AP
 
 ### 3. Testing
 You must verify your implementation by writing and executing test scripts.
+- **Always Add Tests for New Methods**: Whenever you implement a new method, class, or service, you MUST immediately add corresponding tests in the `test/` directory to prove your implementation works and maintains parity. Never add code without adding tests.
 - Place your test scripts in the `test/` directory.
 - Execute the tests to ensure there are no errors and the behavior matches expectations.
 - Full instructions on test and other workflows are in ../../workflows. Be sure to read the relevant workflow file before starting any task.

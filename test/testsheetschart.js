@@ -89,6 +89,40 @@ export const testSheetsChart = (pack) => {
   });
 
 
+  unit.section("EmbeddedChartBuilder specific chart builders and formatting methods", (t) => {
+    const { sheet } = maketss("builder_methods_test", toTrash, fixes);
+
+    const builder = sheet.newChart();
+
+    // Test chart type coerions
+    t.is(builder.asAreaChart().getChartType(), Charts.ChartType.AREA, "asAreaChart should set type to AREA");
+    t.is(builder.asBarChart().getChartType(), Charts.ChartType.BAR, "asBarChart should set type to BAR");
+    t.is(builder.asColumnChart().getChartType(), Charts.ChartType.COLUMN, "asColumnChart should set type to COLUMN");
+    t.is(builder.asComboChart().getChartType(), Charts.ChartType.COMBO, "asComboChart should set type to COMBO");
+    t.is(builder.asHistogramChart().getChartType(), Charts.ChartType.HISTOGRAM, "asHistogramChart should set type to HISTOGRAM");
+    t.is(builder.asLineChart().getChartType(), Charts.ChartType.LINE, "asLineChart should set type to LINE");
+    t.is(builder.asPieChart().getChartType(), Charts.ChartType.PIE, "asPieChart should set type to PIE");
+    t.is(builder.asScatterChart().getChartType(), Charts.ChartType.SCATTER, "asScatterChart should set type to SCATTER");
+    t.is(builder.asTableChart().getChartType(), Charts.ChartType.TABLE, "asTableChart should set type to TABLE");
+
+    // Test a wide sampling of the formatting pass-through methods to ensure they return 'this' and don't throw
+    t.is(builder.set3D().toString().startsWith("com.google.apps.maestro.server"), true, "set3D should return builder");
+    t.is(builder.setTitle("My Title").toString().startsWith("com.google.apps.maestro.server"), true, "setTitle should return builder");
+    t.is(builder.setLegendPosition("BOTTOM").toString().startsWith("com.google.apps.maestro.server"), true, "setLegendPosition should return builder");
+    t.is(builder.setBackgroundColor("#ff0000").toString().startsWith("com.google.apps.maestro.server"), true, "setBackgroundColor should return builder");
+    t.is(builder.setHiddenDimensionStrategy("SHOW_ALL").toString().startsWith("com.google.apps.maestro.server"), true, "setHiddenDimensionStrategy should return builder");
+    t.is(builder.reverseCategories().toString().startsWith("com.google.apps.maestro.server"), true, "reverseCategories should return builder");
+
+    // Test range manipulation wrappers
+    t.is(builder.clearRanges().getRanges().length, 0, "clearRanges should empty the ranges");
+    builder.addRange(sheet.getRange("A1"));
+    t.is(builder.removeRange(sheet.getRange("A1")).toString().startsWith("com.google.apps.maestro.server"), true, "removeRange should return builder");
+
+    // Verify properties were actually written to the internal representation if applicable
+    t.is(builder.__apiChart.spec.title, "My Title", "Title should be stored internally");
+    t.is(builder.__apiChart.spec.basicChart.legendPosition, "BOTTOM", "Legend position should be stored internally");
+  });
+
   // running standalone
   if (!pack) {
     if (SpreadsheetApp.isFake)

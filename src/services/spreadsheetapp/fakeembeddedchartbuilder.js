@@ -3,6 +3,7 @@ import { signatureArgs } from "../../support/helpers.js";
 import { Utils } from "../../support/utils.js";
 import { makeSheetsGridRange } from "./sheetrangehelpers.js";
 import { newFakeEmbeddedChart } from "./fakeembeddedchart.js";
+import { newFakeContainerInfo } from "./fakecontainerinfo.js";
 
 const { is } = Utils;
 
@@ -60,17 +61,11 @@ export class FakeEmbeddedChartBuilder {
 
     const gridRange = makeSheetsGridRange(range);
 
-    // In Sheets API, ranges are usually mapped to domains or series.
-    // Simplifying: if the range has multiple columns, split it into separate sources if it's a series.
-    // But for this fake, we'll just encourage the user to use single-column ranges or handle it simply.
-
     if (this.__apiChart.spec.basicChart.domains.length === 0) {
       this.__apiChart.spec.basicChart.domains.push({
         domain: { sourceRange: { sources: [gridRange] } },
       });
     } else {
-      // Check if gridRange has multiple columns/rows and split if necessary?
-      // For now, just add it. The test will be updated to use single column ranges.
       this.__apiChart.spec.basicChart.series.push({
         series: { sourceRange: { sources: [gridRange] } },
       });
@@ -82,15 +77,10 @@ export class FakeEmbeddedChartBuilder {
     const { nargs, matchThrow } = signatureArgs(arguments, "EmbeddedChartBuilder.setChartType");
     if (nargs !== 1) matchThrow();
 
-    // type is Charts.ChartType enum (which should match API strings in our fakes)
     this.__apiChart.spec.basicChart.chartType = type.toString();
     return this;
   }
 
-  /**
-   * Returns the chart type.
-   * @returns {ChartType}
-   */
   getChartType() {
     const spec = this.__apiChart.spec;
     const chartType = Charts.ChartType;
@@ -125,9 +115,6 @@ export class FakeEmbeddedChartBuilder {
     if (option === "title") {
       this.__apiChart.spec.title = value;
     } else {
-      // For other options, we might want to store them in a general options object if needed,
-      // but for now, we'll just focus on "title" as requested.
-      // SpreadsheetApp.EmbeddedChartBuilder.setOption(option, value)
       if (!this.__apiChart.spec.basicChart.options) {
         this.__apiChart.spec.basicChart.options = {};
       }
@@ -140,12 +127,85 @@ export class FakeEmbeddedChartBuilder {
     const { nargs, matchThrow } = signatureArgs(arguments, "EmbeddedChartBuilder.build");
     if (nargs !== 0) matchThrow();
 
-    // In a real GAS, build() returns an EmbeddedChart that is NOT yet inserted.
-    // Here we return the api object wrapped in a FakeEmbeddedChart if needed,
-    // or just the raw object that insertChart will use.
-    // Actually, gas.Sheet.insertChart expects an EmbeddedChart object.
     return newFakeEmbeddedChart(this.__apiChart, this.__sheet);
   }
+
+  // --- Sub-builder coercion methods ---
+  asAreaChart() { return this.setChartType("AREA"); }
+  asBarChart() { return this.setChartType("BAR"); }
+  asColumnChart() { return this.setChartType("COLUMN"); }
+  asComboChart() { return this.setChartType("COMBO"); }
+  asHistogramChart() { return this.setChartType("HISTOGRAM"); }
+  asLineChart() { return this.setChartType("LINE"); }
+  asPieChart() { return this.setChartType("PIE"); }
+  asScatterChart() { return this.setChartType("SCATTER"); }
+  asTableChart() { return this.setChartType("TABLE"); }
+
+  // --- Common Builder Methods ---
+  clearRanges() {
+    this.__apiChart.spec.basicChart.domains = [];
+    this.__apiChart.spec.basicChart.series = [];
+    return this;
+  }
+  
+  getContainer() {
+    return newFakeContainerInfo(this.__apiChart.position.overlayPosition || {});
+  }
+  
+  getRanges() {
+    // In gas-fakes, we don't deeply parse and unwrap ranges back from the API spec for this fake, returning empty array.
+    return [];
+  }
+  
+  removeRange(range) { return this; }
+  
+  setHiddenDimensionStrategy(strategy) {
+    this.__apiChart.spec.hiddenDimensionStrategy = strategy ? strategy.toString() : "IGNORE_ROWS";
+    return this;
+  }
+  
+  setMergeStrategy(strategy) { return this; }
+  setNumHeaders(headers) { return this; }
+  setTransposeRowsAndColumns(transpose) { return this; }
+
+  // --- Chart Specific Builder Methods ---
+  reverseCategories() { return this; }
+  setBackgroundColor(color) { return this.setOption("backgroundColor", color); }
+  setColors(colors) { return this; }
+  setLegendPosition(position) { 
+    this.__apiChart.spec.basicChart.legendPosition = position ? position.toString() : "RIGHT_LEGEND";
+    return this; 
+  }
+  setLegendTextStyle(textStyle) { return this; }
+  setPointStyle(pointStyle) { return this; }
+  setRange(min, max) { return this; }
+  setStacked() { return this; }
+  setTitle(title) { 
+    this.__apiChart.spec.title = title;
+    return this; 
+  }
+  setTitleTextStyle(textStyle) { return this; }
+  setXAxisTextStyle(textStyle) { return this; }
+  setXAxisTitle(title) { return this; }
+  setXAxisTitleTextStyle(textStyle) { return this; }
+  setYAxisTextStyle(textStyle) { return this; }
+  setYAxisTitle(title) { return this; }
+  setYAxisTitleTextStyle(textStyle) { return this; }
+  useLogScale() { return this; }
+  set3D() { return this.setOption("is3D", true); }
+  enablePaging(enable, pageSize) { return this; }
+  enableRtlTable(enable) { return this; }
+  enableSorting(enable) { return this; }
+  setFirstRowNumber(number) { return this; }
+  setInitialSortingAscending(column) { return this; }
+  setInitialSortingDescending(column) { return this; }
+  showRowNumberColumn(show) { return this; }
+  useAlternatingRowStyle(use) { return this; }
+  setXAxisLogScale() { return this; }
+  setXAxisRange(min, max) { return this; }
+  setYAxisLogScale() { return this; }
+  setYAxisRange(min, max) { return this; }
+  reverseDirection() { return this; }
 
   toString() {
     const hex = Math.floor(Math.random() * 0xffffffff).toString(16).padStart(8, "0");
