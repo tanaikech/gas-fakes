@@ -106,12 +106,17 @@ export const testSheetsChart = (pack) => {
     t.is(builder.asTableChart().getChartType(), Charts.ChartType.TABLE, "asTableChart should set type to TABLE");
 
     // Test a wide sampling of the formatting pass-through methods to ensure they return 'this' and don't throw
-    t.is(builder.set3D().toString().startsWith("com.google.apps.maestro.server"), true, "set3D should return builder");
     t.is(builder.setTitle("My Title").toString().startsWith("com.google.apps.maestro.server"), true, "setTitle should return builder");
     t.is(builder.setLegendPosition("BOTTOM").toString().startsWith("com.google.apps.maestro.server"), true, "setLegendPosition should return builder");
     t.is(builder.setBackgroundColor("#ff0000").toString().startsWith("com.google.apps.maestro.server"), true, "setBackgroundColor should return builder");
     t.is(builder.setHiddenDimensionStrategy("SHOW_ALL").toString().startsWith("com.google.apps.maestro.server"), true, "setHiddenDimensionStrategy should return builder");
-    t.is(builder.reverseCategories().toString().startsWith("com.google.apps.maestro.server"), true, "reverseCategories should return builder");
+    
+    // Type-specific builder method testing
+    const pieBuilder = builder.asPieChart();
+    t.is(pieBuilder.set3D().toString().startsWith("com.google.apps.maestro.server"), true, "set3D should return pie builder");
+    
+    const barBuilder = builder.asBarChart();
+    t.is(barBuilder.reverseCategories().toString().startsWith("com.google.apps.maestro.server"), true, "reverseCategories should return bar builder");
 
     // Test range manipulation wrappers
     t.is(builder.clearRanges().getRanges().length, 0, "clearRanges should empty the ranges");
@@ -136,7 +141,3 @@ export const testSheetsChart = (pack) => {
 };
 
 wrapupTest(testSheetsChart);
-
-function runTestSheetsChart() {
-  testSheetsChart();
-}
