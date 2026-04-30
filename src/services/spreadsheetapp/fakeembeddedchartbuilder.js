@@ -180,11 +180,11 @@ export class FakeEmbeddedChartBuilder {
       // chart unless the series array explicitly mirrors the type.
       basic.series = basic.series || [];
       if (basic.chartType === "COMBO") {
-        if (basic.series.length === 0) basic.series.push({ type: "LINE" });
+        if (basic.series.length === 0) basic.series.push({ type: "COLUMN" });
       }
       
       basic.series.forEach(s => {
-        if (!s.type) s.type = basic.chartType === "COMBO" ? "LINE" : basic.chartType;
+        if (!s.type) s.type = basic.chartType === "COMBO" ? "COLUMN" : basic.chartType;
       });
 
       // Clean up internal-only 'options' field that the API doesn't recognize
