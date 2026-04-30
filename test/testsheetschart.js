@@ -104,33 +104,31 @@ export const testSheetsChart = (pack) => {
     t.is(builder.asPieChart().getChartType(), Charts.ChartType.PIE, "asPieChart should set type to PIE");
     t.is(builder.asScatterChart().getChartType(), Charts.ChartType.SCATTER, "asScatterChart should set type to SCATTER");
     t.is(builder.asTableChart().getChartType(), Charts.ChartType.TABLE, "asTableChart should set type to TABLE");
-// Test common methods available on the generic builder
-t.is(typeof builder.setHiddenDimensionStrategy(Charts.ChartHiddenDimensionStrategy.SHOW_ALL), "object", "setHiddenDimensionStrategy should return builder");
 
-// Type-specific builder method testing
-const pieBuilder = builder.asPieChart();
+    // Type-specific builder method testing
+    const pieBuilder = sheet.newChart().asPieChart();
 
-// Instead of strictly matching the maestro.server string (which changes depending on the builder type in Live GAS),
-// we just verify that chaining the method returns an object (the builder itself).
-t.is(typeof pieBuilder.setTitle("My Title"), "object", "setTitle should return pie builder");
-t.is(typeof pieBuilder.setLegendPosition(Charts.Position.BOTTOM), "object", "setLegendPosition should return pie builder");
-t.is(typeof pieBuilder.setBackgroundColor("#ff0000"), "object", "setBackgroundColor should return pie builder");
-t.is(typeof pieBuilder.set3D(), "object", "set3D should return pie builder");
+    // Instead of strictly matching the maestro.server string (which changes depending on the builder type in Live GAS),
+    // we just verify that chaining the method returns an object (the builder itself).
+    t.is(typeof pieBuilder.setTitle("My Title"), "object", "setTitle should return pie builder");
+    t.is(typeof pieBuilder.setLegendPosition(Charts.Position.BOTTOM), "object", "setLegendPosition should return pie builder");
+    t.is(typeof pieBuilder.setBackgroundColor("#ff0000"), "object", "setBackgroundColor should return pie builder");
+    t.is(typeof pieBuilder.set3D(), "object", "set3D should return pie builder");
 
-// Note: Live Apps Script throws an "Unexpected error" if you attempt to call setHiddenDimensionStrategy
-// on a PieChart builder. We apply it to a BarChart instead.
+    // Note: Live Apps Script throws an "Unexpected error" if you attempt to call setHiddenDimensionStrategy
+    // on certain chart types (like Pie or Table charts). We explicitly apply it to a BarChart.
 
-const barBuilder = builder.asBarChart();
-t.is(typeof barBuilder.reverseCategories(), "object", "reverseCategories should return bar builder");
-t.is(typeof barBuilder.setHiddenDimensionStrategy(Charts.ChartHiddenDimensionStrategy.IGNORE_COLUMNS), "object", "setHiddenDimensionStrategy should return bar builder");
+    const barBuilder = sheet.newChart().asBarChart();
+    t.is(typeof barBuilder.reverseCategories(), "object", "reverseCategories should return bar builder");
+    t.is(typeof barBuilder.setHiddenDimensionStrategy(Charts.ChartHiddenDimensionStrategy.IGNORE_COLUMNS), "object", "setHiddenDimensionStrategy should return bar builder");
     // Test range manipulation wrappers (available on generic builder)
     t.is(builder.clearRanges().getRanges().length, 0, "clearRanges should empty the ranges");
     builder.addRange(sheet.getRange("A1"));
     t.is(typeof builder.removeRange(sheet.getRange("A1")), "object", "removeRange should return builder");
 
     // Verify properties were actually written to the internal representation if applicable
-    t.is(builder.__apiChart.spec.title, "My Title", "Title should be stored internally");
-    t.is(builder.__apiChart.spec.basicChart.legendPosition, "BOTTOM", "Legend position should be stored internally");
+    t.is(pieBuilder.__apiChart.spec.title, "My Title", "Title should be stored internally");
+    t.is(pieBuilder.__apiChart.spec.basicChart.legendPosition, "BOTTOM", "Legend position should be stored internally");
   });
 
   // running standalone
