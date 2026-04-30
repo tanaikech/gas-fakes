@@ -4,6 +4,7 @@ import { Utils } from "../../support/utils.js";
 import { makeSheetsGridRange } from "./sheetrangehelpers.js";
 import { newFakeEmbeddedChart } from "./fakeembeddedchart.js";
 import { newFakeContainerInfo } from "./fakecontainerinfo.js";
+import { ChartEnumMapping } from "./chartenummapping.js";
 
 const { is } = Utils;
 
@@ -132,25 +133,12 @@ export class FakeEmbeddedChartBuilder {
     const basic = spec.basicChart;
 
     // 1. Translate Enums
-    const legendMap = {
-      BOTTOM: "BOTTOM_LEGEND",
-      TOP: "TOP_LEGEND",
-      LEFT: "LEFT_LEGEND",
-      RIGHT: "RIGHT_LEGEND",
-      NONE: "NO_LEGEND",
-    };
     if (basic && basic.legendPosition) {
-      basic.legendPosition = legendMap[basic.legendPosition] || basic.legendPosition;
+      basic.legendPosition = ChartEnumMapping.Position[basic.legendPosition] || basic.legendPosition;
     }
 
-    const strategyMap = {
-      IGNORE_BOTH: "SKIP_HIDDEN_ROWS_AND_COLUMNS",
-      IGNORE_ROWS: "SKIP_HIDDEN_ROWS",
-      IGNORE_COLUMNS: "SKIP_HIDDEN_COLUMNS",
-      SHOW_ALL: "SHOW_ALL",
-    };
     if (spec.hiddenDimensionStrategy) {
-      spec.hiddenDimensionStrategy = strategyMap[spec.hiddenDimensionStrategy] || spec.hiddenDimensionStrategy;
+      spec.hiddenDimensionStrategy = ChartEnumMapping.ChartHiddenDimensionStrategy[spec.hiddenDimensionStrategy] || spec.hiddenDimensionStrategy;
     }
 
     // 2. Handle Pie Chart specialized spec
