@@ -127,8 +127,10 @@ export const testSheetsChart = (pack) => {
     t.is(typeof builder.removeRange(sheet.getRange("A1")), "object", "removeRange should return builder");
 
     // Verify properties were actually written to the internal representation if applicable
-    t.is(pieBuilder.__apiChart.spec.title, "My Title", "Title should be stored internally");
-    t.is(pieBuilder.__apiChart.spec.basicChart.legendPosition, "BOTTOM", "Legend position should be stored internally");
+    if (SpreadsheetApp.isFake) {
+      t.is(pieBuilder.__apiChart.spec.title, "My Title", "Title should be stored internally");
+      t.is(pieBuilder.__apiChart.spec.basicChart.legendPosition, "BOTTOM", "Legend position should be stored internally");
+    }
   });
 
   // running standalone
