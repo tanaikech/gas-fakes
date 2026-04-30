@@ -24,7 +24,6 @@ export class FakeEmbeddedChartBuilder {
       spec: {
         title: "",
         basicChart: {
-          chartType: "COLUMN", // Default
           legendPosition: "RIGHT_LEGEND",
           axis: [],
           domains: [],
@@ -208,6 +207,16 @@ export class FakeEmbeddedChartBuilder {
   reverseDirection() { return this; }
 
   toString() {
+    const type = this.__apiChart.spec.basicChart?.chartType;
+    if (type) {
+      // The API uses string constants like "COLUMN", "PIE", "SCATTER".
+      // We convert them to CamelCase format like "EmbeddedPieChartBuilder".
+      const formattedType = type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
+      // Handle the underscore in STEPPED_AREA
+      const finalType = formattedType.replace(/_([a-z])/g, function (g) { return g[1].toUpperCase(); });
+      return `Embedded${finalType}ChartBuilder`;
+    }
+
     const hex = Math.floor(Math.random() * 0xffffffff).toString(16).padStart(8, "0");
     return `com.google.apps.maestro.server.beans.trix.impl.ChartPropertyApiEmbeddedChartBuilder@${hex}`;
   }
