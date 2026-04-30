@@ -106,12 +106,12 @@ export const testSheetsChart = (pack) => {
     t.is(builder.asTableChart().getChartType(), Charts.ChartType.TABLE, "asTableChart should set type to TABLE");
 
     // Test common methods available on the generic builder
-    t.is(builder.setHiddenDimensionStrategy("SHOW_ALL").toString().startsWith("com.google.apps.maestro.server"), true, "setHiddenDimensionStrategy should return builder");
+    t.is(builder.setHiddenDimensionStrategy(Charts.ChartHiddenDimensionStrategy.SHOW_ALL).toString().startsWith("com.google.apps.maestro.server"), true, "setHiddenDimensionStrategy should return builder");
     
     // Type-specific builder method testing
     const pieBuilder = builder.asPieChart();
     t.is(pieBuilder.setTitle("My Title").toString().startsWith("com.google.apps.maestro.server"), true, "setTitle should return pie builder");
-    t.is(pieBuilder.setLegendPosition("BOTTOM").toString().startsWith("com.google.apps.maestro.server"), true, "setLegendPosition should return pie builder");
+    t.is(pieBuilder.setLegendPosition(Charts.Position.BOTTOM).toString().startsWith("com.google.apps.maestro.server"), true, "setLegendPosition should return pie builder");
     t.is(pieBuilder.setBackgroundColor("#ff0000").toString().startsWith("com.google.apps.maestro.server"), true, "setBackgroundColor should return pie builder");
     t.is(pieBuilder.set3D().toString().startsWith("com.google.apps.maestro.server"), true, "set3D should return pie builder");
     

@@ -19,7 +19,12 @@ export const newFakeChartsApp = (...args) => {
 export class FakeChartsApp {
   constructor() {
     const enumProps = [
-      "ChartType", //	ChartType	An enumeration of the possible chart types.
+      "ChartType", //   ChartType       An enumeration of the possible chart types.
+      "ChartHiddenDimensionStrategy",
+      "ChartMergeStrategy",
+      "CurveStyle",
+      "PointStyle",
+      "Position"
     ];
 
     // import all known enums as props of chartsapp
