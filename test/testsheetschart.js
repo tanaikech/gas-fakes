@@ -98,6 +98,7 @@ export const testSheetsChart = (pack) => {
       .setChartType(Charts.ChartType.COLUMN)
       .addRange(range1)
       .addRange(range2)
+      .setPosition(1, 1, 0, 0)
       .build();
 
     sheet.insertChart(chart);
