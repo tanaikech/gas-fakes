@@ -101,7 +101,12 @@ function cleanup() {
 }
 
 // The 'exit' event is for when the process is already shutting down normally.
-process.on('exit', cleanup);
+process.on('exit', () => {
+  // Only terminate the worker if we aren't in the middle of an interactive CLI session
+  if (!process.env.GF_CLI_INTERACTIVE) {
+    cleanup();
+  }
+});
 // By not listening for 'SIGINT', we allow Node.js to perform its default action,
 // which is to exit the process. The 'exit' event will then be fired to clean up the worker.
 process.on('SIGTERM', cleanup); // Catches `kill`

@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+process.env.GF_CLI_INTERACTIVE = "true";
 import { main } from "./src/cli/app.js";
 
 main().catch((error) => {
