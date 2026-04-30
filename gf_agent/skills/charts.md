@@ -1,4 +1,4 @@
-# Service: charts
+# Service: Charts
 
 ## Class: AreaChartBuilder
 

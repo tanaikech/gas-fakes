@@ -5,7 +5,7 @@
 | [Base](./progress/base.MD) | 17 | 127 | 28 | 0 | 99 |
 | [Cache](./progress/cache.md) | 2 | 11 | 7 | 4 | 0 |
 | [Calendar](./progress/calendar.md) | 13 | 273 | 273 | 0 | 0 |
-| [Charts](./progress/charts.md) | 29 | 238 | 37 | 0 | 201 |
+| [Charts](./progress/Charts.md) | 29 | 238 | 37 | 0 | 201 |
 | [Content](./progress/content.md) | 3 | 16 | 0 | 0 | 16 |
 | [Document](./progress/document.md) | 47 | 1032 | 482 | 22 | 528 |
 | [Drive](./progress/drive.MD) | 8 | 164 | 157 | 7 | 0 |
@@ -17,7 +17,7 @@
 | [Mail](./progress/mail.md) | 1 | 5 | 0 | 0 | 5 |
 | [Properties](./progress/properties.md) | 4 | 11 | 6 | 5 | 0 |
 | [Script](./progress/script.md) | 16 | 84 | 4 | 0 | 80 |
-| [Slides](./progress/slides.md) | 76 | 1288 | 515 | 0 | 773 |
+| [Slides](./progress/slides.MD) | 76 | 1288 | 515 | 0 | 773 |
 | [Spreadsheet](./progress/Spreadsheet.md) | 108 | 1771 | 1417 | 11 | 343 |
 | [URL Fetch](./progress/urlfetch.md) | 2 | 13 | 13 | 0 | 0 |
 | [Utilities](./progress/utilities.md) | 5 | 59 | 27 | 3 | 29 |
