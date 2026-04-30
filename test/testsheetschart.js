@@ -92,6 +92,15 @@ export const testSheetsChart = (pack) => {
   unit.section("EmbeddedChartBuilder specific chart builders and formatting methods", (t) => {
     const { sheet } = maketss("builder_methods_test", toTrash, fixes);
 
+    // Add some data to chart
+    sheet.getRange("A1:B5").setValues([
+      ["Labels", "Values"],
+      ["A", 10],
+      ["B", 20],
+      ["C", 30],
+      ["D", 40],
+    ]);
+
     const builder = sheet.newChart();
 
     // Test chart type coerions
@@ -125,6 +134,17 @@ export const testSheetsChart = (pack) => {
     t.is(builder.clearRanges().getRanges().length, 0, "clearRanges should empty the ranges");
     builder.addRange(sheet.getRange("A1"));
     t.is(typeof builder.removeRange(sheet.getRange("A1")), "object", "removeRange should return builder");
+
+    // Actually insert the charts so they are visible in the resulting test sheet!
+    pieBuilder.addRange(sheet.getRange("A1:A5"))  // Labels
+              .addRange(sheet.getRange("B1:B5"))  // Values
+              .setPosition(1, 1, 0, 0);
+    sheet.insertChart(pieBuilder.build());
+
+    barBuilder.addRange(sheet.getRange("A1:A5"))  // Labels
+              .addRange(sheet.getRange("B1:B5"))  // Values
+              .setPosition(15, 1, 0, 0);
+    sheet.insertChart(barBuilder.build());
   });
 
   // running standalone

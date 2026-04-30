@@ -126,7 +126,52 @@ export class FakeEmbeddedChartBuilder {
     const { nargs, matchThrow } = signatureArgs(arguments, "EmbeddedChartBuilder.build");
     if (nargs !== 0) matchThrow();
 
-    return newFakeEmbeddedChart(this.__apiChart, this.__sheet);
+    // Perform translation from GAS internal state to Sheets REST API Spec
+    const apiChart = JSON.parse(JSON.stringify(this.__apiChart));
+    const spec = apiChart.spec;
+    const basic = spec.basicChart;
+
+    // 1. Translate Enums
+    const legendMap = {
+      BOTTOM: "BOTTOM_LEGEND",
+      TOP: "TOP_LEGEND",
+      LEFT: "LEFT_LEGEND",
+      RIGHT: "RIGHT_LEGEND",
+      NONE: "NO_LEGEND",
+    };
+    if (basic && basic.legendPosition) {
+      basic.legendPosition = legendMap[basic.legendPosition] || basic.legendPosition;
+    }
+
+    const strategyMap = {
+      IGNORE_BOTH: "SKIP_HIDDEN_ROWS_AND_COLUMNS",
+      IGNORE_ROWS: "SKIP_HIDDEN_ROWS",
+      IGNORE_COLUMNS: "SKIP_HIDDEN_COLUMNS",
+      SHOW_ALL: "SHOW_ALL",
+    };
+    if (spec.hiddenDimensionStrategy) {
+      spec.hiddenDimensionStrategy = strategyMap[spec.hiddenDimensionStrategy] || spec.hiddenDimensionStrategy;
+    }
+
+    // 2. Handle Pie Chart specialized spec
+    if (basic && basic.chartType === "PIE") {
+      spec.pieChart = {
+        domain: basic.domains?.[0]?.domain,
+        series: basic.series?.[0]?.series,
+        threeDimensional: basic.options?.is3D || false,
+        pieHole: basic.options?.pieHole || 0,
+      };
+      // Legend position for Pie is at the top level of pieChart
+      if (basic.legendPosition) {
+        spec.pieChart.legendPosition = basic.legendPosition;
+      }
+      delete spec.basicChart;
+    } else if (basic) {
+      // Clean up internal-only 'options' field that the API doesn't recognize
+      delete basic.options;
+    }
+
+    return newFakeEmbeddedChart(apiChart, this.__sheet);
   }
 
   // --- Sub-builder coercion methods ---
