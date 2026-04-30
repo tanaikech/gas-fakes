@@ -24,15 +24,11 @@ When you need to teach `gf_agent` something new, follow this exact workflow:
    Write your instructions clearly. Use Markdown headers (`###`). Keep it concise and actionable for an AI agent. 
    *Good Example:* "When creating a Foo, you MUST always set the Bar property, otherwise the API will crash with error X."
 
-3. **Compile the Skill**:
-   Once your file is saved, you MUST rebuild the monolithic skill file so the changes take effect. Run the overarching documentation command from the root of the repository:
-   ```bash
-   npm run docs
-   ```
-   *(This command triggers the entire documentation pipeline, ensuring the `gf_agent/SKILL.md` is fully updated with your new file.)*
-
-4. **Verify**:
-   Check `gf_agent/SKILL.md` to ensure your new knowledge block was successfully appended to the end of the file.
-
-5. **Commit**:
-   Stage your new file in `gf_agent/knowledge/` AND the auto-updated `gf_agent/SKILL.md` file, then commit. Because you only added a distinct file to a directory, your pull request will merge cleanly!
+3. **Submit Your Knowledge**:
+   You do **not** need to compile the monolithic `SKILL.md` file yourself. In fact, if you are a standalone user who has only cloned the `gf_agent` directory, you will not have the necessary build scripts to do so.
+   
+   Simply stage your new `gf_agent/knowledge/XX-my-topic.md` file and commit it.
+   
+4. **The Merge Process**:
+   Submit a Pull Request with your new file. Because you only added a distinct file to a directory, your pull request will not cause merge conflicts. 
+   Once your PR is merged, the repository maintainers will run the root-level documentation pipeline (`npm run docs`) which will automatically compile your new knowledge into the master `gf_agent/SKILL.md` for all users!
