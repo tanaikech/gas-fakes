@@ -9,13 +9,13 @@ import '@mcpher/gas-fakes'
 //import '@mcpher/gas-fakes/main.js'
 
 import { initTests } from './testinit.js'
-import { getSheetsPerformance, wrapupTest , getRandomHex} from './testassist.js';
+import { getSheetsPerformance, wrapupTest , getRandomHex, trasher} from './testassist.js';
 
 
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testSheetsVui = (pack) => {
-
+  const toTrash = [];
   const { unit, fixes } = pack || initTests()
 
   unit.section("getImages", (t) => {
@@ -448,11 +448,13 @@ export const testSheetsVui = (pack) => {
       t.is(formula2, `=IMAGE("${imgUrl}")`, "In gas-fakes, setting CellImage via setValues should write an =IMAGE() formula");
       
       // Clean up
-      DriveApp.getFileById(ss.getId()).setTrashed(true);
+      if (fixes.CLEAN) {
+        toTrash.push(DriveApp.getFileById(ss.getId()))
+      }
     }
   })
 
-
+  if (fixes.CLEAN) trasher(toTrash);
   return { unit, fixes }
 }
 

@@ -105,20 +105,20 @@ export const testSheetsChart = (pack) => {
     t.is(builder.asScatterChart().getChartType(), Charts.ChartType.SCATTER, "asScatterChart should set type to SCATTER");
     t.is(builder.asTableChart().getChartType(), Charts.ChartType.TABLE, "asTableChart should set type to TABLE");
 
-    // Test a wide sampling of the formatting pass-through methods to ensure they return 'this' and don't throw
-    t.is(builder.setTitle("My Title").toString().startsWith("com.google.apps.maestro.server"), true, "setTitle should return builder");
-    t.is(builder.setLegendPosition("BOTTOM").toString().startsWith("com.google.apps.maestro.server"), true, "setLegendPosition should return builder");
-    t.is(builder.setBackgroundColor("#ff0000").toString().startsWith("com.google.apps.maestro.server"), true, "setBackgroundColor should return builder");
+    // Test common methods available on the generic builder
     t.is(builder.setHiddenDimensionStrategy("SHOW_ALL").toString().startsWith("com.google.apps.maestro.server"), true, "setHiddenDimensionStrategy should return builder");
     
     // Type-specific builder method testing
     const pieBuilder = builder.asPieChart();
+    t.is(pieBuilder.setTitle("My Title").toString().startsWith("com.google.apps.maestro.server"), true, "setTitle should return pie builder");
+    t.is(pieBuilder.setLegendPosition("BOTTOM").toString().startsWith("com.google.apps.maestro.server"), true, "setLegendPosition should return pie builder");
+    t.is(pieBuilder.setBackgroundColor("#ff0000").toString().startsWith("com.google.apps.maestro.server"), true, "setBackgroundColor should return pie builder");
     t.is(pieBuilder.set3D().toString().startsWith("com.google.apps.maestro.server"), true, "set3D should return pie builder");
     
     const barBuilder = builder.asBarChart();
     t.is(barBuilder.reverseCategories().toString().startsWith("com.google.apps.maestro.server"), true, "reverseCategories should return bar builder");
 
-    // Test range manipulation wrappers
+    // Test range manipulation wrappers (available on generic builder)
     t.is(builder.clearRanges().getRanges().length, 0, "clearRanges should empty the ranges");
     builder.addRange(sheet.getRange("A1"));
     t.is(builder.removeRange(sheet.getRange("A1")).toString().startsWith("com.google.apps.maestro.server"), true, "removeRange should return builder");
