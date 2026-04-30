@@ -17,7 +17,9 @@ Instead, `gf_agent` uses a modular knowledge base. The `builder.js` script aggre
 When you need to teach `gf_agent` something new, you must first ensure you are working from a local Git clone, NOT the cached Gemini skills folder.
 
 1. **Clone the gf_agent Environment (Sparse Checkout)**:
-   Because `gf_agent` is a subfolder of the larger `gas-fakes` repository, you should use Git's Sparse Checkout feature to download *only* the `gf_agent` directory. Run this exact sequence in your terminal:
+   Because `gf_agent` is a subfolder of the larger `gas-fakes` repository, you should use Git's Sparse Checkout feature to download *only* the `gf_agent` directory. 
+   
+   **🤖 Agent Instruction**: If the user is not yet in a configured workspace, offer to run the sparse checkout setup for them! If they agree, use `run_shell_command` to execute this exact sequence (adjust the parent directory if they specify one):
    ```bash
    mkdir gf_agent_standalone && cd gf_agent_standalone
    git init
@@ -27,6 +29,7 @@ When you need to teach `gf_agent` something new, you must first ensure you are w
    git pull origin main
    gemini skills link ./gf_agent
    ```
+   *(If the user prefers to do it manually, provide them the script above).*
 
 2. **Create a Modular File**: 
    Navigate to the `gf_agent/knowledge/` directory inside your new standalone environment. Create a new markdown file for your topic. 
