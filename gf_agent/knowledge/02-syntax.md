@@ -1,0 +1,13 @@
+### Common Apps Script Syntax Gotchas (First-Time Accuracy)
+- **File Conversion (Exporting to PDF)**: While live Apps Script can seamlessly convert text files (`text/plain`) to PDF using `file.getAs('application/pdf')`, the underlying Google Drive API **only supports exporting Docs Editor files** (Docs, Sheets, Slides).
+  - **Automated Workaround in gas-fakes**: `gas-fakes` handles this transparently! If you attempt to convert a non-editor file to PDF locally via `.getAs()`, it automatically performs a temporary two-step conversion (copying it to a Google Doc, exporting it, and trashing the temp file). This ensures parity with live Apps Script without manual intervention.
+- **Google Docs Formatting**: You CANNOT apply formatting (bold, italic, etc.) directly to a `Paragraph` or `ListItem`. You MUST use `editAsText()` first.
+  - *Incorrect*: `paragraph.setItalic(true)`
+  - *Correct*: `paragraph.editAsText().setItalic(true)`
+- **Google Docs Element Detachment**: To move or duplicate an element (like an image, paragraph, or table) within a document, you **cannot** just append it if it's already attached to the document tree. You must either detach it (`element.removeFromParent()`) or copy it (`element.copy()`) first, otherwise an "Element must be detached" error is thrown.
+- **Google Docs Headers/Footers**: You can only add one header/footer to a document tab. Calling `doc.addHeader()` twice will throw an error.
+- **Google Sheets Developer Metadata**: You **cannot** add `DeveloperMetadata` to an arbitrary range (e.g., `A1:B2`) or a partial row/column. It **only** works on full sheets, full rows (`9:9`), full columns (`J:J`), or the spreadsheet itself.
+- **Google Sheets Filters**: A sheet can only have one filter at a time. Attempting to call `range.createFilter()` on a sheet that already has a filter will throw an error.
+- **Google Drive Blob Naming**: When creating a file from a Blob (`DriveApp.createFile(blob)`), the Blob **must** have a name. `Utilities.newBlob("content")` does not set a name by default and will throw "Blob object must have non-null name". Always use `Utilities.newBlob("content", "text/plain", "filename.txt")`.
+- **Flush Requirements**: If your script creates a resource and immediately tries to perform a complex search or metadata operation on it, call `SpreadsheetApp.flush()` or `doc.saveAndClose()` to ensure the state is synchronized.
+- **Date Comparison**: When comparing dates from `getLastUpdated()` or `getDateCreated()`, remember they are JavaScript `Date` objects. Use `.getTime()` for reliable numerical comparison.

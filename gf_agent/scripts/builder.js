@@ -56,7 +56,32 @@ async function build() {
   }
 
   await fs.writeFile(INDEX_FILE, masterIndex);
-  console.log('Build complete! Skills and Index generated.');
+  
+  // Aggregate knowledge files into SKILL.md
+  const TEMPLATE_FILE = './gf_agent/scripts/SKILL.template.md';
+  const KNOWLEDGE_DIR = './gf_agent/knowledge';
+  const SKILL_OUTPUT = './gf_agent/SKILL.md';
+  
+  let skillMarkdown = await fs.readFile(TEMPLATE_FILE, 'utf-8');
+  
+  try {
+    const knowledgeFiles = await fs.readdir(KNOWLEDGE_DIR);
+    // Sort files to ensure deterministic aggregation (e.g., 01-drive.md, 02-syntax.md)
+    knowledgeFiles.sort();
+    
+    for (const kFile of knowledgeFiles) {
+      if (kFile.endsWith('.md')) {
+        const kContent = await fs.readFile(path.join(KNOWLEDGE_DIR, kFile), 'utf-8');
+        skillMarkdown += `\n${kContent}\n`;
+      }
+    }
+  } catch (err) {
+    console.log("No knowledge directory found or error reading it:", err.message);
+  }
+
+  await fs.writeFile(SKILL_OUTPUT, skillMarkdown);
+
+  console.log('Build complete! Skills, Index, and monolithic SKILL.md generated.');
 }
 
 build().catch(console.error);

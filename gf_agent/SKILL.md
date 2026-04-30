@@ -51,6 +51,7 @@ Agent:
 
 ## Lessons Learned & Best Practices (from Test Patterns)
 
+
 ### Efficient Drive Searching (Best Practice)
 - **Prefer `searchFiles()` over manual iteration**: When looking for specific files (e.g., by name, date, or parent), always use `DriveApp.searchFiles(query)` instead of `DriveApp.getFiles()` with manual filtering. Searching happens on the server and is significantly faster.
 - **Date Formatting for Queries**: When searching by date (e.g., `modifiedTime` or `createdTime`), you MUST use the RFC3339 format (e.g., `YYYY-MM-DDThh:mm:ss`). 
@@ -63,6 +64,7 @@ Agent:
   - Use `name` instead of `title` in resource objects.
   - If a method from a live Apps Script snippet fails, check for its v3 equivalent before assuming it is missing.
 - **Service Discovery**: If unsure about available methods, run a short `workspace_agent` script to log `Object.keys(Service.SubService)` to confirm implemented endpoints.
+
 
 ### Common Apps Script Syntax Gotchas (First-Time Accuracy)
 - **File Conversion (Exporting to PDF)**: While live Apps Script can seamlessly convert text files (`text/plain`) to PDF using `file.getAs('application/pdf')`, the underlying Google Drive API **only supports exporting Docs Editor files** (Docs, Sheets, Slides).
@@ -77,6 +79,7 @@ Agent:
 - **Google Drive Blob Naming**: When creating a file from a Blob (`DriveApp.createFile(blob)`), the Blob **must** have a name. `Utilities.newBlob("content")` does not set a name by default and will throw "Blob object must have non-null name". Always use `Utilities.newBlob("content", "text/plain", "filename.txt")`.
 - **Flush Requirements**: If your script creates a resource and immediately tries to perform a complex search or metadata operation on it, call `SpreadsheetApp.flush()` or `doc.saveAndClose()` to ensure the state is synchronized.
 - **Date Comparison**: When comparing dates from `getLastUpdated()` or `getDateCreated()`, remember they are JavaScript `Date` objects. Use `.getTime()` for reliable numerical comparison.
+
 
 ### Authentication & Troubleshooting
 - **Permission Denied/Auth Failures**: Most authentication errors stem from a mismatch between the script's required scopes and the authorized environment.
@@ -93,6 +96,7 @@ Agent:
   - **Warning**: Do **not** use it to change the core business logic of a script, as this defeats the purpose of parity.
 - **Backend Selection**: `ScriptApp.__platform` can be dynamically switched to target `google`, `ksuite`, or `msgraph`. 
   - **Self-Correcting**: `gas-fakes` resources (Files, Sheets) "remember" their platform at creation. Subsequent calls on that object will automatically use the correct backend even if `ScriptApp.__platform` has changed globally.
+
 
 ### Advanced Service Usage & Interop
 - **Metadata Access**: If a standard service object (e.g., `Spreadsheet`) doesn't expose a specific property, use `Service.__getMetaProps(fields)` or `Service.__getMeta()` to fetch the underlying JSON resource from the Google API.
@@ -119,6 +123,7 @@ Agent:
   - **Best Practice**: Concatenate strings locally and make a single `appendParagraph()` call, rather than appending multiple short lines separately.
   - **Real-time Feedback**: If you see retryable 429 errors in the console output during script execution, you MUST inform the user that the process is experiencing rate limiting but that `gas-fakes` is automatically handling retries.
 
+
 ### Google Sheets (SpreadsheetApp)
 - **Chart Creation & Ranges**: When using `EmbeddedChartBuilder.addRange()`, the Sheets API requires `ChartSourceRange` domains and series to have a length of 1 for either rows or columns.
   - **Crucial**: Do **not** pass a multi-column range to `addRange()`. Add domains and series as separate single-column ranges.
@@ -136,7 +141,6 @@ Agent:
 - **MySQL 8+ Authentication**: You must downgrade users to `mysql_native_password` on the server for successful connection.
 - **BigDecimal**: Always wrap `getBigDecimal()` result in `Number()` or `parseFloat()` for cross-platform compatibility.
 
-
 ### Chart Generation Parity (SpreadsheetApp.newChart)
 When implementing Google Sheets Embedded Charts, be aware of the following Live Apps Script vs. REST API oddities:
 - **Enum Strictness**: Live GAS actively rejects string literals for `Charts` Enums (e.g., passing `"SHOW_ALL"` instead of `Charts.ChartHiddenDimensionStrategy.SHOW_ALL` throws `The parameters (String) don't match the method signature`). Ensure your generated test scripts strictly use the Enum objects.
@@ -145,3 +149,4 @@ When implementing Google Sheets Embedded Charts, be aware of the following Live 
 
 ### Environment-Agnostic Test Design
 - When generating scripts or test assertions designed to run interoperably (both locally on Node.js and on Live Apps Script), **never assert against internal private properties** (e.g., properties prefixed with `__`, like `__apiChart`). These properties do not exist on the Live Apps Script Java classes and will cause the script to crash in the cloud environment. Only assert against public, documented getter/setter methods.
+
