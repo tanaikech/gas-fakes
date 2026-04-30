@@ -25,7 +25,6 @@ export class FakeEmbeddedChartBuilder {
       spec: {
         title: "",
         basicChart: {
-          legendPosition: "RIGHT_LEGEND",
           axis: [],
           domains: [],
           series: [],
@@ -141,6 +140,21 @@ export class FakeEmbeddedChartBuilder {
       spec.hiddenDimensionStrategy = ChartEnumMapping.ChartHiddenDimensionStrategy[spec.hiddenDimensionStrategy] || spec.hiddenDimensionStrategy;
     }
 
+    // Translate background color from Hex to RGB object if present
+    if (basic && basic.options?.backgroundColor) {
+      const hex = basic.options.backgroundColor;
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      if (result) {
+        spec.backgroundColorStyle = {
+          rgbColor: {
+            red: parseInt(result[1], 16) / 255,
+            green: parseInt(result[2], 16) / 255,
+            blue: parseInt(result[3], 16) / 255
+          }
+        };
+      }
+    }
+
     // 2. Handle Specialized Spec Blocks
     if (basic && basic.chartType === "PIE") {
       spec.pieChart = {
@@ -162,18 +176,17 @@ export class FakeEmbeddedChartBuilder {
       if (basic.legendPosition) spec.histogramChart.legendPosition = basic.legendPosition;
       delete spec.basicChart;
     } else if (basic) {
+      // Sheets API quirk: even if basicChart.chartType is set, it often defaults to rendering as a LINE 
+      // chart unless the series array explicitly mirrors the type.
+      basic.series = basic.series || [];
       if (basic.chartType === "COMBO") {
-        // COMBO needs explicitly defined series mapping in basicChart. We default all series to line if empty.
-        basic.chartType = "COMBO";
-        basic.series = basic.series || [];
-        basic.series.forEach(s => {
-          if (!s.type) s.type = "LINE"; // Sheets API defaults to something, but COMBO requires explicit series types to not crash with "No basic chart type specified"
-        });
-        if (basic.series.length === 0) {
-           // Provide a default empty series for COMBO to satisfy API
-           basic.series.push({ type: "LINE" });
-        }
+        if (basic.series.length === 0) basic.series.push({ type: "LINE" });
       }
+      
+      basic.series.forEach(s => {
+        if (!s.type) s.type = basic.chartType === "COMBO" ? "LINE" : basic.chartType;
+      });
+
       // Clean up internal-only 'options' field that the API doesn't recognize
       delete basic.options;
     }
