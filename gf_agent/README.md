@@ -14,16 +14,24 @@ Before using the agent or the MCP tools, you **must** configure your local envir
 
 ## Installation & Integration
 
-*Note: You can skip these manual steps if you already chose to install the Gemini skills during the `gas-fakes init` process.*
+*Note: You can skip these manual steps if you already chose to install the Gemini skills during the `gas-fakes init` process. The `init` command will automatically detect if you are in a local clone and link the skills appropriately.*
 
 ### 1. Install the Skill Agent
 
-
+**For General Users:**
 You can install the `gf_agent` directly from this repository. To install **only** this skill:
 ```bash
 gemini skills install https://github.com/brucemcpherson/gas-fakes.git --path gf_agent
 ```
 *Note: This repository contains multiple specialized skills (for development, maintenance, etc.). Omitting the `--path` flag will install all of them.*
+
+**For Contributors & Developers:**
+Do **not** use the `install` command with the remote URL, as it will download a cached copy that is difficult to edit. Instead, clone the repository locally and link it:
+```bash
+git clone https://github.com/brucemcpherson/gas-fakes.git
+cd gas-fakes
+gemini skills add ./gf_agent
+```
 
 ### 2. Configure the MCP Server
 To use Google Workspace services as tools within Gemini CLI, add the MCP server to your settings. 
