@@ -26,10 +26,15 @@ gemini skills install https://github.com/brucemcpherson/gas-fakes.git --path gf_
 *Note: This repository contains multiple specialized skills (for development, maintenance, etc.). Omitting the `--path` flag will install all of them.*
 
 **For Contributors & Developers:**
-Do **not** use the `install` command with the remote URL, as it will download a cached copy that is difficult to edit. Instead, clone the repository locally and link it:
+Do **not** use the `install` command with the remote URL, as it will download a cached copy that is difficult to edit. Because `gf_agent` is a subfolder of the main `gas-fakes` repository, use Git Sparse Checkout to isolate it:
+
 ```bash
-git clone https://github.com/brucemcpherson/gas-fakes.git
-cd gas-fakes
+mkdir gf_agent_standalone && cd gf_agent_standalone
+git init
+git remote add origin https://github.com/brucemcpherson/gas-fakes.git
+git config core.sparseCheckout true
+echo "gf_agent/*" >> .git/info/sparse-checkout
+git pull origin main
 gemini skills link ./gf_agent
 ```
 

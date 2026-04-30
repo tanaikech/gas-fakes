@@ -16,16 +16,20 @@ Instead, `gf_agent` uses a modular knowledge base. The `builder.js` script aggre
 
 When you need to teach `gf_agent` something new, you must first ensure you are working from a local Git clone, NOT the cached Gemini skills folder.
 
-1. **Clone the Repository (Required)**:
-   If you installed this skill via `gemini skills install`, you cannot contribute directly from that cached folder. You MUST clone the core repository to your local machine, link it to Gemini, and work from there:
+1. **Clone the gf_agent Environment (Sparse Checkout)**:
+   Because `gf_agent` is a subfolder of the larger `gas-fakes` repository, you should use Git's Sparse Checkout feature to download *only* the `gf_agent` directory. Run this exact sequence in your terminal:
    ```bash
-   git clone https://github.com/brucemcpherson/gas-fakes.git
-   cd gas-fakes
+   mkdir gf_agent_standalone && cd gf_agent_standalone
+   git init
+   git remote add origin https://github.com/brucemcpherson/gas-fakes.git
+   git config core.sparseCheckout true
+   echo "gf_agent/*" >> .git/info/sparse-checkout
+   git pull origin main
    gemini skills link ./gf_agent
    ```
 
 2. **Create a Modular File**: 
-   Navigate to the `gf_agent/knowledge/` directory inside your new clone. Create a new markdown file for your topic. 
+   Navigate to the `gf_agent/knowledge/` directory inside your new standalone environment. Create a new markdown file for your topic. 
    - Use a numeric prefix to ensure it sorts correctly during compilation if order matters (e.g., `06-new-feature.md`). If it is a standalone topic, any descriptive name is fine.
    
 3. **Draft the Knowledge**:
