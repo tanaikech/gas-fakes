@@ -141,7 +141,7 @@ export class FakeEmbeddedChartBuilder {
       spec.hiddenDimensionStrategy = ChartEnumMapping.ChartHiddenDimensionStrategy[spec.hiddenDimensionStrategy] || spec.hiddenDimensionStrategy;
     }
 
-    // 2. Handle Pie Chart specialized spec
+    // 2. Handle Specialized Spec Blocks
     if (basic && basic.chartType === "PIE") {
       spec.pieChart = {
         domain: basic.domains?.[0]?.domain,
@@ -149,12 +149,31 @@ export class FakeEmbeddedChartBuilder {
         threeDimensional: basic.options?.is3D || false,
         pieHole: basic.options?.pieHole || 0,
       };
-      // Legend position for Pie is at the top level of pieChart
-      if (basic.legendPosition) {
-        spec.pieChart.legendPosition = basic.legendPosition;
-      }
+      if (basic.legendPosition) spec.pieChart.legendPosition = basic.legendPosition;
+      delete spec.basicChart;
+    } else if (basic && basic.chartType === "HISTOGRAM") {
+      spec.histogramChart = {
+        series: [
+          {
+            data: basic.series?.[0]?.series || basic.domains?.[0]?.domain,
+          }
+        ],
+      };
+      if (basic.legendPosition) spec.histogramChart.legendPosition = basic.legendPosition;
       delete spec.basicChart;
     } else if (basic) {
+      if (basic.chartType === "COMBO") {
+        // COMBO needs explicitly defined series mapping in basicChart. We default all series to line if empty.
+        basic.chartType = "COMBO";
+        basic.series = basic.series || [];
+        basic.series.forEach(s => {
+          if (!s.type) s.type = "LINE"; // Sheets API defaults to something, but COMBO requires explicit series types to not crash with "No basic chart type specified"
+        });
+        if (basic.series.length === 0) {
+           // Provide a default empty series for COMBO to satisfy API
+           basic.series.push({ type: "LINE" });
+        }
+      }
       // Clean up internal-only 'options' field that the API doesn't recognize
       delete basic.options;
     }

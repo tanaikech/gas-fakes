@@ -168,6 +168,25 @@ export const testSheetsChart = (pack) => {
               .addRange(sheet.getRange("B1:B5"))  // Values
               .setPosition(15, 1, 0, 0);
     sheet.insertChart(barBuilder.build());
+
+    // Visually generate remaining chart types for manual verification
+    const extraBuilders = [
+      sheet.newChart().asAreaChart(),
+      sheet.newChart().asColumnChart(),
+      sheet.newChart().asComboChart(),
+      sheet.newChart().asHistogramChart(),
+      sheet.newChart().asLineChart(),
+      sheet.newChart().asScatterChart()
+    ];
+
+    let row = 30;
+    extraBuilders.forEach(b => {
+      b.addRange(sheet.getRange("A1:A5"))
+       .addRange(sheet.getRange("B1:B5"))
+       .setPosition(row, 1, 0, 0);
+      sheet.insertChart(b.build());
+      row += 15;
+    });
   });
 
   // running standalone
