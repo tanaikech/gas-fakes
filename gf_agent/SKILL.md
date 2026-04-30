@@ -136,3 +136,12 @@ Agent:
 - **MySQL 8+ Authentication**: You must downgrade users to `mysql_native_password` on the server for successful connection.
 - **BigDecimal**: Always wrap `getBigDecimal()` result in `Number()` or `parseFloat()` for cross-platform compatibility.
 
+
+### Chart Generation Parity (SpreadsheetApp.newChart)
+When implementing Google Sheets Embedded Charts, be aware of the following Live Apps Script vs. REST API oddities:
+- **Enum Strictness**: Live GAS actively rejects string literals for `Charts` Enums (e.g., passing `"SHOW_ALL"` instead of `Charts.ChartHiddenDimensionStrategy.SHOW_ALL` throws `The parameters (String) don't match the method signature`). Ensure your generated test scripts strictly use the Enum objects.
+- **Method Availability**: Live GAS does not support visual formatting methods (`setTitle`, `setBackgroundColor`) on the generic `EmbeddedChartBuilder` returned by `sheet.newChart()`. They are only available *after* casting to a specific builder (e.g., `.asPieChart().setTitle(...)`). 
+- **Hidden Dimensions Crash**: `setHiddenDimensionStrategy` will throw a backend `Unexpected error` if called before assigning a chart type, or if called on an incompatible type (like a Pie chart or Table chart). Only call it on compatible builders (like a Bar or Column chart).
+
+### Environment-Agnostic Test Design
+- When generating scripts or test assertions designed to run interoperably (both locally on Node.js and on Live Apps Script), **never assert against internal private properties** (e.g., properties prefixed with `__`, like `__apiChart`). These properties do not exist on the Live Apps Script Java classes and will cause the script to crash in the cloud environment. Only assert against public, documented getter/setter methods.

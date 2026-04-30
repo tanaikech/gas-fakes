@@ -157,3 +157,17 @@ The `gas-fakes` project is complex, and bridging Node.js with GAS involves many 
   - If a method is implemented in a base class or uses a synonym, ensure the class is correctly mapped in the `classSynonyms` object within `gi-analyzer-all.js`.
   - For **dynamically generated methods** (like `require*` in `DataValidationBuilder` or `set*`/`get*` in `Range`), the analyzer must be explicitly updated to map these methods from their source definitions (e.g., `datavalidationcriteriamapping.js` or `sheetrangemakers.js`) to the target class.
 - **In-Progress Status**: Methods that call `notYetImplemented()` are automatically marked as `in progress`. Once the implementation is complete and the call to `notYetImplemented()` is removed, the status will switch to `completed` upon running the pipeline.
+### Chart Generation API Parity (SpreadsheetApp.newChart)
+When implementing or modifying `EmbeddedChartBuilder` features, you must handle the strict differences between Google's Java V8 engine and the actual Sheets REST API payloads:
+- **Enum Strictness**: Live GAS actively rejects string literals for `Charts` Enums (e.g., passing `"SHOW_ALL"` instead of `Charts.ChartHiddenDimensionStrategy.SHOW_ALL` throws `The parameters (String) don't match the method signature`). All new Enums MUST be mapped in `src/services/enums/` and exposed via the parent `FakeApp` proxy.
+- **REST API Translation**: The structure of the `EmbeddedChartBuilder` does not match the Google Sheets REST API. 
+  - `BOTTOM` becomes `BOTTOM_LEGEND`.
+  - `PIE` and `HISTOGRAM` charts cannot be sent in a `basicChart` spec wrapper; they require top-level `pieChart` and `histogramChart` payloads.
+  - `COMBO` charts will crash the Sheets API if their internal series arrays are missing explicit type definitions (`COLUMN` or `LINE`). The visual default fallback in Apps Script is `COLUMN`.
+  - Ensure all Enum and API-specific restructuring occurs in the `.build()` translation layer, or within dedicated mappers like `chartenummapping.js`.
+- **Dynamic toString**: A Live GAS builder's `toString()` output changes dynamically depending on the active internal chart type (e.g., `com.google.apps.maestro...` vs `EmbeddedPieChartBuilder`). Use `FakeEmbeddedChartBuilder`'s dynamic `toString()` pattern to maintain parity.
+- **Method Availability (Live GAS Crash Warning)**: Live GAS does not support visual formatting methods (`setTitle`, `setBackgroundColor`) on the root `EmbeddedChartBuilder`; they are only available *after* casting (`.asPieChart()`). Furthermore, `setHiddenDimensionStrategy` will throw a backend `Unexpected error` if called before assigning a type, or if called on an incompatible type (like a Pie chart).
+
+### Environment-Agnostic Test Design (CRITICAL)
+- **Private Data Structures**: Under no circumstances should test files directly assert against internal `gas-fakes` structural properties (e.g., checking `builder.__apiChart.spec.title`). The test suite executes against **both** local Node.js mocks and Live Apps Script Java classes. Live Apps Script does not expose these internal variables, causing tests to crash.
+- **Test Outcomes**: Only assert against public, documented getter/setter behavior or the visual/functional output of a method (e.g., inserting the chart into a sheet and validating the resulting API object). Avoid bypassing validations using `SpreadsheetApp.isFake` for private implementation assertions.
