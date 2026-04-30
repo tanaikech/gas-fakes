@@ -149,12 +149,13 @@ The `gas-fakes` project is complex, and bridging Node.js with GAS involves many 
 
 ### Documentation & Progress Tracking (CRITICAL)
 - **Do NOT update progress files manually**: Files in the `progress/` directory (e.g., `progress/Spreadsheet.md`) and the top-level `progress.md` are generated automatically.
-- **Generation Pipeline**: After implementing new methods or classes, you MUST run the documentation generation pipeline to update the progress tracking:
+- **Generation Pipeline**: After implementing or modifying ANY methods, classes, or enums, you MUST run the documentation generation pipeline to ensure your changes are discoverable and accurately reflected in the `progress/` documentation. This acts as your "Definition of Done".
   ```bash
-  cd doccreation && node gi-analyzer-all.js && node gi-render && node gi-progress-summary.js
+  npm run docs
   ```
-- **Detection Logic**: The analyzer (`gi-analyzer-all.js`) detects implemented methods by searching for method names in the `src/` directory. 
-  - If a method is implemented in a base class or uses a synonym, ensure the class is correctly mapped in the `classSynonyms` object within `gi-analyzer-all.js`.
+  *(This command executes the full documentation pipeline including `gi-analyzer-all.js`, `gi-render.js`, and `gi-progress-summary.js`.)*
+- **Detection Logic**: The analyzer (`doccreation/gi-analyzer-all.js`) detects implemented methods by searching for method names in the `src/` directory. 
+  - If a method is implemented in a base class or uses a synonym, ensure the class is correctly mapped in the `classSynonyms` object within `doccreation/gi-analyzer-all.js`.
   - For **dynamically generated methods** (like `require*` in `DataValidationBuilder` or `set*`/`get*` in `Range`), the analyzer must be explicitly updated to map these methods from their source definitions (e.g., `datavalidationcriteriamapping.js` or `sheetrangemakers.js`) to the target class.
 - **In-Progress Status**: Methods that call `notYetImplemented()` are automatically marked as `in progress`. Once the implementation is complete and the call to `notYetImplemented()` is removed, the status will switch to `completed` upon running the pipeline.
 ### Chart Generation API Parity (SpreadsheetApp.newChart)
