@@ -72,3 +72,17 @@ This allows Antigravity or other MCP-compatible clients to call Google Workspace
 - **Fast Iteration**: Test your automation logic without waiting for the Apps Script IDE or deployment.
 - **Security**: Run tasks locally using your own Google credentials (via ADC) without uploading code to a third-party service.
 - **Powerful Integration**: Use Node.js libraries alongside Google Apps Script APIs.
+
+## Contributing to gf_agent
+
+If you'd like to improve the agent by teaching it new tricks, outlining Apps Script API parity warnings, or documenting best practices, we welcome your contributions!
+
+To avoid Git merge conflicts on the large monolithic `SKILL.md` file, the `gf_agent` uses a **modular knowledge base**.
+
+1. Clone or fork this repository (or just the `gf_agent` directory).
+2. Create a new Markdown file inside the `gf_agent/knowledge/` directory (e.g., `06-new-feature.md`).
+3. Write your specific instructions or lessons learned in that file.
+4. **Do NOT** attempt to compile `SKILL.md` yourself.
+5. Commit and submit a Pull Request with your new Markdown file.
+
+Once merged, the repository maintainers will run the automated pipeline to compile your new knowledge into the master `gf_agent/SKILL.md` for all users! See the [Knowledge Base README](knowledge/README.md) or ask the `gf-agent-contributor` skill for more details.
