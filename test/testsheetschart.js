@@ -55,11 +55,22 @@ export const testSheetsChart = (pack) => {
   unit.section("EmbeddedChart.getContainerInfo()", (t) => {
     const { sheet } = maketss("container_info_test", toTrash, fixes);
 
+    sheet.getRange("A1:B5").setValues([
+      ["L", "V"],
+      ["A", 1],
+      ["B", 2],
+      ["C", 3],
+      ["D", 4],
+    ]);
+
     const chart = sheet.newChart()
       .setChartType(Charts.ChartType.COLUMN)
       .addRange(sheet.getRange("A1:A5"))
+      .addRange(sheet.getRange("B1:B5"))
       .setPosition(2, 3, 10, 20)
       .build();
+
+    sheet.insertChart(chart);
 
     const containerInfo = chart.getContainerInfo();
     t.is(containerInfo.toString(), "ContainerInfo", "containerInfo.toString() should be ContainerInfo");
@@ -71,6 +82,15 @@ export const testSheetsChart = (pack) => {
 
   unit.section("EmbeddedChart.getRanges()", (t) => {
     const { sheet } = maketss("chart_ranges_test", toTrash, fixes);
+    
+    sheet.getRange("A1:B5").setValues([
+      ["L", "V"],
+      ["A", 1],
+      ["B", 2],
+      ["C", 3],
+      ["D", 4],
+    ]);
+
     const range1 = sheet.getRange("A1:A5");
     const range2 = sheet.getRange("B1:B5");
     
@@ -79,6 +99,8 @@ export const testSheetsChart = (pack) => {
       .addRange(range1)
       .addRange(range2)
       .build();
+
+    sheet.insertChart(chart);
 
     const ranges = chart.getRanges();
     t.is(ranges.length, 2, "chart should have 2 ranges");
