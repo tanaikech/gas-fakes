@@ -30,7 +30,7 @@ Do **not** use the `install` command with the remote URL, as it will download a 
 ```bash
 git clone https://github.com/brucemcpherson/gas-fakes.git
 cd gas-fakes
-gemini skills add ./gf_agent
+gemini skills link ./gf_agent
 ```
 
 ### 2. Configure the MCP Server

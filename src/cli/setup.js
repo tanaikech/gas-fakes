@@ -622,17 +622,17 @@ export async function initializeConfiguration(options = {}) {
 
   if (skillResponse.installSkills) {
     console.log("Installing Gemini CLI skills and MCP server...");
+    let manualSkillCmd;
     try {
       // 1. Install or link the agent skill
       let skillCmd;
-      let manualSkillCmd;
       const localSkillPath = path.resolve(process.cwd(), "gf_agent", "SKILL.md");
       const isLocalClone = fs.existsSync(localSkillPath);
 
       if (isLocalClone) {
         console.log("Detected local gas-fakes repository. Linking local skill for development...");
-        skillCmd = "gemini skills add ./gf_agent";
-        manualSkillCmd = "1. gemini skills add ./gf_agent";
+        skillCmd = "gemini skills link ./gf_agent";
+        manualSkillCmd = "1. gemini skills link ./gf_agent";
       } else {
         skillCmd = "gemini skills install https://github.com/brucemcpherson/gas-fakes.git --path gf_agent";
         manualSkillCmd = "1. gemini skills install https://github.com/brucemcpherson/gas-fakes.git --path gf_agent";
