@@ -321,10 +321,10 @@ An enumeration of how hidden dimensions in a source are expressed in a chart.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| IGNORE_BOTH | Default; charts skips any hidden columns and hidden rows. | not started |  |
-| IGNORE_COLUMNS | Charts skips hidden columns only. | not started |  |
-| IGNORE_ROWS | Charts skips hidden rows only. | not started |  |
-| SHOW_BOTH | Charts does not skip hidden columns or hidden rows. | not started |  |
+| IGNORE_BOTH | Default; charts skips any hidden columns and hidden rows. | completed | [link](../src/services/enums/chartsenums.js#L27) |
+| IGNORE_COLUMNS | Charts skips hidden columns only. | completed | [link](../src/services/enums/chartsenums.js#L28) |
+| IGNORE_ROWS | Charts skips hidden rows only. | completed | [link](../src/services/enums/chartsenums.js#L29) |
+| SHOW_BOTH | Charts does not skip hidden columns or hidden rows. | completed | [link](../src/services/enums/chartsenums.js#L30) |
 
 ## Enum: [ChartMergeStrategy](https://developers.google.com/apps-script/reference/charts/chart-merge-strategy)
 
@@ -332,8 +332,8 @@ An enumeration of how multiple ranges in the source are expressed in a chart.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| MERGE_COLUMNS | Default. Charts merges the columns of multiple ranges. | not started |  |
-| MERGE_ROWS | Charts merges the rows of multiple ranges. | not started |  |
+| MERGE_COLUMNS | Default. Charts merges the columns of multiple ranges. | completed | [link](../src/services/enums/chartsenums.js#L34) |
+| MERGE_ROWS | Charts merges the rows of multiple ranges. | completed | [link](../src/services/enums/chartsenums.js#L35) |
 
 ## Enum: [ChartType](https://developers.google.com/apps-script/reference/charts/chart-type)
 
@@ -378,8 +378,8 @@ An enumeration of the styles for curves in a chart.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| NORMAL | Straight lines without curve. | not started |  |
-| SMOOTH | The angles of the line are smoothed. | not started |  |
+| NORMAL | Straight lines without curve. | completed | [link](../src/services/enums/chartsenums.js#L39) |
+| SMOOTH | The angles of the line are smoothed. | completed | [link](../src/services/enums/chartsenums.js#L40) |
 
 ## Enum: [MatchType](https://developers.google.com/apps-script/reference/charts/match-type)
 
@@ -418,11 +418,11 @@ An enumeration of the styles of points in a line.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| HUGE | Use largest sized line points. | not started |  |
-| LARGE | Use large sized line points. | not started |  |
-| MEDIUM | Use medium sized line points. | not started |  |
-| NONE | Do not display line points. | not started |  |
-| TINY | Use tiny line points. | not started |  |
+| HUGE | Use largest sized line points. | completed | [link](../src/services/enums/chartsenums.js#L48) |
+| LARGE | Use large sized line points. | completed | [link](../src/services/enums/chartsenums.js#L47) |
+| MEDIUM | Use medium sized line points. | completed | [link](../src/services/enums/chartsenums.js#L46) |
+| NONE | Do not display line points. | completed | [link](../src/services/enums/chartsenums.js#L44) |
+| TINY | Use tiny line points. | completed | [link](../src/services/enums/chartsenums.js#L45) |
 
 ## Enum: [Position](https://developers.google.com/apps-script/reference/charts/position)
 
@@ -430,10 +430,10 @@ An enumeration of legend positions within a chart.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| BOTTOM | Below the chart. | not started |  |
-| NONE | No legend is displayed. | not started |  |
-| RIGHT | To the right of the chart. | not started |  |
-| TOP | Above the chart. | not started |  |
+| BOTTOM | Below the chart. | completed | [link](../src/services/enums/chartsenums.js#L53) |
+| NONE | No legend is displayed. | completed | [link](../src/services/enums/chartsenums.js#L44) |
+| RIGHT | To the right of the chart. | completed | [link](../src/services/enums/chartsenums.js#L54) |
+| TOP | Above the chart. | completed | [link](../src/services/enums/chartsenums.js#L52) |
 
 ## Interface: [DataTableSource](https://developers.google.com/apps-script/reference/charts/data-table-source)
 
