@@ -25309,8 +25309,8 @@
             "description": "Charts does not skip hidden columns or hidden rows.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/chartsenums.js#L30"
           }
         ]
       },

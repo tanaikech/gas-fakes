@@ -27,7 +27,7 @@ export const ChartHiddenDimensionStrategy = newFakeGasenum([
   "IGNORE_BOTH", //     Enum    Ignore both hidden rows and columns.
   "IGNORE_COLUMNS", //  Enum    Ignore hidden columns.
   "IGNORE_ROWS", //     Enum    Ignore hidden rows.
-  "SHOW_ALL", //        Enum    Show all hidden rows and columns.
+  "SHOW_BOTH", //        Enum    Show all hidden rows and columns.
 ]);
 
 export const ChartMergeStrategy = newFakeGasenum([
