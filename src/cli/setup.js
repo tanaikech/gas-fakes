@@ -648,7 +648,7 @@ export async function initializeConfiguration(options = {}) {
 
       console.log("\x1b[1;32mInstallation complete!\x1b[0m");
       console.log("\nYou can now use natural language to automate tasks:");
-      console.log("   \x1b[1;33m\"Create a spreadsheet of my recent Drive files\"\x1b[0m");
+      console.log("   \x1b[1;33m\“Create a sheet called ‘Todays drive files' and add any files on Drive modified today to it\"\x1b[0m");
     } catch (err) {
       console.error(`\x1b[1;31mError during Gemini installation: ${err.message}\x1b[0m`);
       console.log("You may need to install them manually:");
