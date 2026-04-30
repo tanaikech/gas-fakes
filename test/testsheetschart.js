@@ -104,23 +104,25 @@ export const testSheetsChart = (pack) => {
     t.is(builder.asPieChart().getChartType(), Charts.ChartType.PIE, "asPieChart should set type to PIE");
     t.is(builder.asScatterChart().getChartType(), Charts.ChartType.SCATTER, "asScatterChart should set type to SCATTER");
     t.is(builder.asTableChart().getChartType(), Charts.ChartType.TABLE, "asTableChart should set type to TABLE");
+// Test common methods available on the generic builder
+t.is(typeof builder.setHiddenDimensionStrategy(Charts.ChartHiddenDimensionStrategy.SHOW_ALL), "object", "setHiddenDimensionStrategy should return builder");
 
-    // Type-specific builder method testing
-    const pieBuilder = builder.asPieChart();
-    
-    // Instead of strictly matching the maestro.server string (which changes depending on the builder type in Live GAS),
-    // we just verify that chaining the method returns an object (the builder itself).
-    t.is(typeof pieBuilder.setTitle("My Title"), "object", "setTitle should return pie builder");
-    t.is(typeof pieBuilder.setLegendPosition(Charts.Position.BOTTOM), "object", "setLegendPosition should return pie builder");
-    t.is(typeof pieBuilder.setBackgroundColor("#ff0000"), "object", "setBackgroundColor should return pie builder");
-    t.is(typeof pieBuilder.set3D(), "object", "set3D should return pie builder");
-    
-    // Note: Live Apps Script throws an "Unexpected error" if you attempt to call setHiddenDimensionStrategy
-    // on a new builder, even after it's been cast to a specific chart type. It is intentionally omitted here.
+// Type-specific builder method testing
+const pieBuilder = builder.asPieChart();
 
-    const barBuilder = builder.asBarChart();
-    t.is(typeof barBuilder.reverseCategories(), "object", "reverseCategories should return bar builder");
+// Instead of strictly matching the maestro.server string (which changes depending on the builder type in Live GAS),
+// we just verify that chaining the method returns an object (the builder itself).
+t.is(typeof pieBuilder.setTitle("My Title"), "object", "setTitle should return pie builder");
+t.is(typeof pieBuilder.setLegendPosition(Charts.Position.BOTTOM), "object", "setLegendPosition should return pie builder");
+t.is(typeof pieBuilder.setBackgroundColor("#ff0000"), "object", "setBackgroundColor should return pie builder");
+t.is(typeof pieBuilder.set3D(), "object", "set3D should return pie builder");
 
+// Note: Live Apps Script throws an "Unexpected error" if you attempt to call setHiddenDimensionStrategy
+// on a PieChart builder. We apply it to a BarChart instead.
+
+const barBuilder = builder.asBarChart();
+t.is(typeof barBuilder.reverseCategories(), "object", "reverseCategories should return bar builder");
+t.is(typeof barBuilder.setHiddenDimensionStrategy(Charts.ChartHiddenDimensionStrategy.IGNORE_COLUMNS), "object", "setHiddenDimensionStrategy should return bar builder");
     // Test range manipulation wrappers (available on generic builder)
     t.is(builder.clearRanges().getRanges().length, 0, "clearRanges should empty the ranges");
     builder.addRange(sheet.getRange("A1"));
