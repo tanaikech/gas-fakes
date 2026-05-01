@@ -626,20 +626,98 @@ export async function initializeConfiguration(options = {}) {
     try {
       // 1. Install or link the agent skill
       let skillCmd;
-      const localSkillPath = path.resolve(process.cwd(), "gf_agent", "SKILL.md");
-      const isLocalClone = fs.existsSync(localSkillPath);
+      const gfAgentSubdir = path.resolve(process.cwd(), "gf_agent", "SKILL.md");
+      const gfAgentCurrent = path.resolve(process.cwd(), "SKILL.md");
 
-      if (isLocalClone) {
+      if (fs.existsSync(gfAgentSubdir)) {
         console.log("Detected local gas-fakes repository. Linking local skill for development...");
-        skillCmd = "gemini skills link ./gf_agent";
+        skillCmd = "gemini skills link ./gf_agent --consent";
         manualSkillCmd = "1. gemini skills link ./gf_agent";
+        execSync(skillCmd, { stdio: ["ignore", "pipe", "ignore"] });
+        console.log("Skill linked successfully.");
+      } else if (fs.existsSync(gfAgentCurrent) && fs.existsSync(path.resolve(process.cwd(), "index.md"))) {
+        console.log("Detected local gf_agent directory. Linking local skill for development...");
+        skillCmd = "gemini skills link . --consent";
+        manualSkillCmd = "1. gemini skills link .";
+        execSync(skillCmd, { stdio: ["ignore", "pipe", "ignore"] });
+        console.log("Skill linked successfully.");
       } else {
-        skillCmd = "gemini skills install https://github.com/brucemcpherson/gas-fakes.git --path gf_agent";
-        manualSkillCmd = "1. gemini skills install https://github.com/brucemcpherson/gas-fakes.git --path gf_agent";
-      }
+        // Not a local clone, check if already installed to avoid overwriting
+        let isAlreadyInstalled = false;
+        try {
+          const existingSkills = execSync("gemini skills list", {
+            encoding: "utf8",
+            stdio: ["ignore", "pipe", "ignore"],
+          });
+          if (existingSkills.includes("gf_agent")) {
+            isAlreadyInstalled = true;
+          }
+        } catch (err) {
+          // Ignore errors checking skills list
+        }
 
-      console.log(`Executing: ${skillCmd}`);
-      execSync(skillCmd, { stdio: "inherit" });
+        if (isAlreadyInstalled) {
+          console.log("gf_agent skill is already installed. Skipping remote installation.");
+          manualSkillCmd = "1. gemini skills update gf_agent (if needed)";
+        } else {
+          const installChoice = await prompts({
+            type: "select",
+            name: "method",
+            message: "How would you like to install the gf_agent skill?",
+            choices: [
+              {
+                title: "Global (Standard)",
+                value: "global",
+                description: "Recommended for most users. Installs a read-only copy globally.",
+              },
+              {
+                title: "Local Standalone (Contributor)",
+                value: "local",
+                description: "Installs a local sparse-clone for skill development and linking.",
+              },
+            ],
+            initial: 0,
+          });
+
+          if (installChoice.method === "local") {
+            const standaloneDir = "gf_agent_standalone";
+            const fullStandalonePath = path.resolve(process.cwd(), standaloneDir);
+            console.log(`Setting up local standalone skill environment in "./${standaloneDir}"...`);
+
+            try {
+              if (!fs.existsSync(fullStandalonePath)) {
+                fs.mkdirSync(fullStandalonePath, { recursive: true });
+                execSync("git init", { cwd: fullStandalonePath, stdio: "ignore" });
+                execSync("git remote add origin https://github.com/brucemcpherson/gas-fakes.git", {
+                  cwd: fullStandalonePath,
+                  stdio: "ignore",
+                });
+                execSync("git config core.sparseCheckout true", { cwd: fullStandalonePath, stdio: "ignore" });
+
+                const sparsePath = path.join(fullStandalonePath, ".git", "info", "sparse-checkout");
+                fs.writeFileSync(sparsePath, "gf_agent/*\n");
+              }
+
+              execSync("git pull origin main", { cwd: fullStandalonePath, stdio: "ignore" });
+
+              skillCmd = "gemini skills link ./gf_agent --consent";
+              execSync(skillCmd, { cwd: fullStandalonePath, stdio: ["ignore", "pipe", "ignore"] });
+              console.log("Skill linked successfully.");
+
+              manualSkillCmd = `1. cd ${standaloneDir} && gemini skills link ./gf_agent`;
+            } catch (gitErr) {
+              console.error(`Error during local setup: ${gitErr.message}`);
+              throw gitErr;
+            }
+          } else {
+            skillCmd = "gemini skills install https://github.com/brucemcpherson/gas-fakes.git --path gf_agent --consent";
+            manualSkillCmd = "1. gemini skills install https://github.com/brucemcpherson/gas-fakes.git --path gf_agent";
+            console.log(`Installing global skill from remote...`);
+            execSync(skillCmd, { stdio: ["ignore", "pipe", "ignore"] });
+            console.log("Skill installed successfully.");
+          }
+        }
+      }
 
       // 2. Add the MCP server
       const mcpCmd = "gemini mcp add --scope project gas-fakes-mcp gas-fakes mcp";
