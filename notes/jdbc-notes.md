@@ -1,4 +1,4 @@
-# Notes on JDBC handling in Apps Script and gas-fakes
+# <img src="../logo.png" alt="gas-fakes logo" width="50" align="top"> Notes on JDBC handling in Apps Script and gas-fakes
 
 The Google Apps Script implementation of JDBC is notoriously strict and frequently unsupported out-of-the-box by modern database providers. Converting a standard connection string for a variety of databases into one that Apps Script's underlying Java JDBC driver will accept can be complex and error-prone.
 

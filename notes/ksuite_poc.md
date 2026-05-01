@@ -1,4 +1,4 @@
-# KSuite Integration: Apps Script as a "Lingua Franca"
+# <img src="./logo.png" alt="gas-fakes logo" width="50" align="top"> KSuite Integration: Apps Script as a "Lingua Franca"
 
 This document explains the architectural changes made to `gas-fakes` to support **Infomaniak KSuite** as a target platform. The core objective is to allow standard Google Apps Script code to run against non-Google platforms with zero or minimal modification.
 
