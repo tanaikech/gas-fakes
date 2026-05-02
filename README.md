@@ -1,4 +1,4 @@
-# <img src="./logo.png" alt="gas-fakes logo" width="50" align="top"> Run Native Apps Script code anywhere with gas-fakes
+# <img src="./pngs/logo.png" alt="gas-fakes logo" width="50" align="top"> Run Native Apps Script code anywhere with gas-fakes
 
 ## Google Apps Script, meet Local Development. 
 
@@ -175,11 +175,15 @@ For inspiration on pushing modified files to the IDE, see the togas.sh bash scri
 
 As I mentioned earlier, to take this further, I'm going to need a lot of help to extend the methods and services supported - so if you feel this would be useful to you, and would like to collaborate, please ping me on bruce@mcpher.com and we'll talk.
 
-## <img src="./logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
+## <img src="./pngs/logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
 
-## Watch the video
+## Watch the gas-fakes intro video
 
-[![Watch the video](introvideo.png)](https://youtu.be/oEjpIrkYpEM)
+[![Watch the intro video](./pngs/introvideo.png)](https://youtu.be/oEjpIrkYpEM)
+
+## Watch the gf_agent video on natural language automation
+
+[![Use natural language with gf_agent](./pngs/gfagent.png)](https://youtu.be/lujByoX71HU)
 
 ## Read more docs
 

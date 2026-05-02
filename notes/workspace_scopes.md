@@ -47,11 +47,15 @@ A browser window will open. As an internal user of your own project, you can now
 ---
 *Summary of article: [How to allow access to Workspace scopes with Application Default Credentials](https://ramblings.mcpher.com/how-to-allow-access-to-sensitive-scopes-with-application-default-credentials)*
 
-## <img src="../logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
+## <img src="./pngs/logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
 
-## Watch the video
+## Watch the gas-fakes intro video
 
-[![Watch the video](../introvideo.png)](https://youtu.be/oEjpIrkYpEM)
+[![Watch the intro video](../pngs/introvideo.png)](https://youtu.be/oEjpIrkYpEM)
+
+## Watch the gf_agent video on natural language automation
+
+[![Use natural language with gf_agent](../pngs/gfagent.png)](https://youtu.be/lujByoX71HU)
 
 ## Read more docs
 

@@ -112,11 +112,15 @@ where the file value points to the root of gas-fakes. If you want to instead use
 
 execute `bash togas.sh` to copy all files to apps script IDE. All tests can be run there either indivually or as a whole just like on Node
 
-## <img src="../logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
+## <img src="./pngs/logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
 
-## Watch the video
+## Watch the gas-fakes intro video
 
-[![Watch the video](../introvideo.png)](https://youtu.be/oEjpIrkYpEM)
+[![Watch the intro video](../pngs/introvideo.png)](https://youtu.be/oEjpIrkYpEM)
+
+## Watch the gf_agent video on natural language automation
+
+[![Use natural language with gf_agent](../pngs/gfagent.png)](https://youtu.be/lujByoX71HU)
 
 ## Read more docs
 

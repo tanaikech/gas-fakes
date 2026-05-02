@@ -149,11 +149,15 @@ npx gas-fakes -f main.js --libraries "MyLib@sample-lib.js"
 
 The output would be: `Hello from the library!`
 
-## <img src="../logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
+## <img src="./pngs/logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
 
-## Watch the video
+## Watch the gas-fakes intro video
 
-[![Watch the video](../introvideo.png)](https://youtu.be/oEjpIrkYpEM)
+[![Watch the intro video](../pngs/introvideo.png)](https://youtu.be/oEjpIrkYpEM)
+
+## Watch the gf_agent video on natural language automation
+
+[![Use natural language with gf_agent](../pngs/gfagent.png)](https://youtu.be/lujByoX71HU)
 
 ## Read more docs
 

@@ -58,11 +58,15 @@ The self-healing mechanism described above only works if the element's identity 
 
 By doing this in a single `batchUpdate`, we are explicitly telling the Docs API: "I am changing this element, but I want it to keep its identity." This ensures that when the `shadowDocument` refreshes, it can still find the named range and the `FakeElement` object remains valid. This protection is the key to the entire system's stability.
 
-## <img src="../logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
+## <img src="./pngs/logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
 
-## Watch the video
+## Watch the gas-fakes intro video
 
-[![Watch the video](../introvideo.png)](https://youtu.be/oEjpIrkYpEM)
+[![Watch the intro video](../pngs/introvideo.png)](https://youtu.be/oEjpIrkYpEM)
+
+## Watch the gf_agent video on natural language automation
+
+[![Use natural language with gf_agent](../pngs/gfagent.png)](https://youtu.be/lujByoX71HU)
 
 ## Read more docs
 

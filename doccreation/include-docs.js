@@ -4,7 +4,7 @@ import { globSync } from 'glob';
 
 const repoRoot = path.resolve(process.cwd());
 const includeFilePath = path.join(repoRoot, '_includes', 'further.md');
-const furtherReadingMarkerRegex = /## <img src="(\.\/|\.\.\/)logo\.png" alt="gas-fakes logo" width="50" align="top"> Further Reading/;
+const furtherReadingMarkerRegex = /## .* alt="gas-fakes logo" .* Further Reading/;
 
 function adjustRelativeLinks(content, depth) {
   if (depth === 0) return content;

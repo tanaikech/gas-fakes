@@ -63,11 +63,15 @@ Here are four real-world examples of tasks performed using only natural language
   - **Mariscal Sucre International Airport**: 7,841 ft (2389.94 m)
   - **Addis Ababa Bole International Airport**: 7,630 ft (2325.62 m)
 
-## <img src="./logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
+## <img src="./pngs/logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
 
-## Watch the video
+## Watch the gas-fakes intro video
 
-[![Watch the video](introvideo.png)](https://youtu.be/oEjpIrkYpEM)
+[![Watch the intro video](./pngs/introvideo.png)](https://youtu.be/oEjpIrkYpEM)
+
+## Watch the gf_agent video on natural language automation
+
+[![Use natural language with gf_agent](./pngs/gfagent.png)](https://youtu.be/lujByoX71HU)
 
 ## Read more docs
 
