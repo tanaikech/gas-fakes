@@ -88,7 +88,7 @@ export class FakeDriveMeta {
       return this
     }
 
-    // console.log("CHECK", fields, Reflect.has(this.meta, fields), Object.keys(this.meta)); const newMeta = this.__withPlatform(() => Drive.Files.get(this.getId(), { fields }, { allow404: false }))
+    const newMeta = this.__withPlatform(() => Drive.Files.get(this.getId(), { fields }, { allow404: false }))
     // need to merge this with already known fields
     this.meta = { ...this.meta, ...newMeta }
     improveFileCache(this.getId(), this.meta, fields)
