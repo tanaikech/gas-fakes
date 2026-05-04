@@ -41,3 +41,14 @@ Once all required service-specific knowledge is gathered:
 - **Zero-Search Dependency**: By using the remote `progress` files as the primary source of truth, the agent avoids the risk of using outdated or non-parity GAS snippets found on the web.
 - **Context Efficiency**: Researching one service at a time prevents the "interference" of unrelated documentation.
 - **Parity Guarantee**: The remote documentation is generated directly from the `gas-fakes` source code, ensuring 100% parity with the local environment.
+
+## Delegation Anti-Patterns (CRITICAL)
+- **NEVER Delegate Execution**: The main orchestrator agent MUST retain control of script generation and the execution tool (e.g., `mcp_gas-fakes-mcp_workspace_agent`). 
+- **Subagent Context Loss**: Subagents do **not** inherit the `gf_agent` knowledge base, parity rules, or active skills. If you tell a subagent to "execute these 5 tasks," it will generate standard Google Apps Script code that ignores `gas-fakes` specific workarounds (like avoiding `HorizontalRule` or `modifiedDate`), leading to widespread failures.
+- **Strict Role Boundary**: Subagents are strictly for **isolated documentation retrieval** (the Service Agent Phase). The main agent writes and runs the code.
+
+## Safe Parallelism (Performance)
+While delegating *orchestration* is dangerous, performing tasks in parallel is highly encouraged for efficiency. The orchestrator should achieve this in two ways:
+1. **Tool Call Parallelism**: The Main Agent generates multiple, parity-compliant scripts and issues them as independent, simultaneous calls to `mcp_gas-fakes-mcp_workspace_agent` within a single turn.
+2. **Execution-Level Async**: Since `gas-fakes` runs on Node.js, the Main Agent can generate a single script that uses `Promise.all()` to execute multiple non-dependent operations (like `UrlFetchApp` calls or creating separate files) simultaneously.
+3. **Sequence when Dependent**: Only use `wait_for_previous: true` or sequential turns when a task depends on the side-effect of a previous one (e.g., reading a sheet that was just created).

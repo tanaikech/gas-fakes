@@ -145,7 +145,7 @@ As I mentioned earlier, to take this further, I'm going to need a lot of help to
 - [gas fakes intro video](https://youtu.be/oEjpIrkYpEM)
 - [getting started](../GETTING_STARTED.md) - how to handle authentication for Workspace scopes.
 - [readme](../README.md)
-- [Natural Language Automation with Gemini Skills & MCP Server](../gemini-skills-mcp.md) - new skills-based agent approach.
+- [Natural Language Automation with Gemini Skills & MCP Server](../notes/gemini-skills-mcp.md) - new skills-based agent approach.
 - [Add agent skills to gf_agent](https://ramblings.mcpher.com/add-skills-gf_agent/)
 - [gf_agent documentation](../../gf_agent/README.md) - instructions for the Gemini CLI automation agent and MCP server.
 - [gas fakes cli](../notes/gas-fakes-cli.md)
