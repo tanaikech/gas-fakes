@@ -243,18 +243,23 @@ Upon receiving a user request, the agent acts as an **Orchestrator**.
 - **Decomposition**: Break the request into service-specific sub-tasks.
 - **Service Verification**: Verify that the required services and classes exist by checking the local `skills/` directory within the `gf_agent` skill.
 
-### 2. The Service Agent Phase
-For each identified service, the agent transitions into a **Service Agent** role (either in sequential turns or using parallel sub-agents).
-- **Deep Research**: Instead of using Google Search, the agent fetches the detailed implementation documentation from the remote `gas-fakes` repository.
-- **Source of Truth**: The `progress/` directory on GitHub contains the most granular documentation, including:
-    - Supported method names and parameter types.
-    - Status of implementation (completed vs. in-progress).
-    - Links to the actual source code for reference.
-- **Remote Document Retrieval**:
-  - You MUST ALWAYS use the `main` branch for the URL, regardless of what local branch you are on.
-  - `web_fetch("https://raw.githubusercontent.com/brucemcpherson/gas-fakes/main/progress/{Service}.md")`
-  - **CRITICAL (Case Sensitivity)**: GitHub Raw URLs are case-sensitive. The `progress/` files in the repository have mixed casing (e.g., `Spreadsheet.md`, `Drive.MD`, `gmail.md`). If a fetch fails with a 404, try TitleCase or check `git ls-files | grep progress` if running locally to confirm the exact casing.
-  - Example: `https://raw.githubusercontent.com/brucemcpherson/gas-fakes/main/progress/Spreadsheet.md`
+### 2. The Service Agent Phase (Context Compression)
+For each identified service, the main agent MUST invoke a **sub-agent** (e.g., `generalist`) to perform the deep research.
+- **Why?**: Large documentation files (like `spreadsheet.md`) can bloat the main context window. Sub-agents run in isolated environments and return only a distilled summary.
+- **Process**:
+  1. Main Agent calls `invoke_agent` with the instruction: "Research Class X in Service Y from remote docs. Return ONLY the method signatures for A, B, and C."
+  2. Sub-Agent uses `curl` + `awk` (or `web_fetch`) to find the information.
+  3. Sub-Agent returns a precise report.
+  4. The main context stays lean.
+
+- **Remote Document Retrieval (Sub-Agent Technique)**:
+  - Sub-agents should use `run_shell_command` with `curl` and `awk` for surgical class extraction.
+  - **Branch Routing (CRITICAL)**: 
+    - If the user is operating within the `gas-fakes` repository (developer mode), the sub-agent MUST run `git branch --show-current` to determine the active branch, and use THAT branch name in the URL. This ensures they get work-in-progress signatures.
+    - If the user is operating outside the repository (end-user mode), the sub-agent MUST ALWAYS use the `main` branch.
+  - **Command Template**:
+  - `curl -s https://raw.githubusercontent.com/brucemcpherson/gas-fakes/{BRANCH_NAME}/progress/{Service}.md | awk '/^## Class: \[{ClassName}\]/{flag=1; print; next} /^## Class:/{if(flag) {flag=0; exit}} flag'`
+  - *(Note: `{Service}.md` is case-sensitive. Check `gf_agent/skills/` for the exact casing, e.g., `Spreadsheet.md`)*
 
 ### 3. Synthesis and Execution
 Once all required service-specific knowledge is gathered:
