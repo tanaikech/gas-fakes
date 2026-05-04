@@ -1,4 +1,4 @@
-# Service: Spreadsheet
+# Service: spreadsheet
 
 ## Class: Banding
 

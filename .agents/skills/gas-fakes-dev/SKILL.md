@@ -148,7 +148,7 @@ The `gas-fakes` project is complex, and bridging Node.js with GAS involves many 
 - **ALWAYS output the updated `SKILL.md`** when new knowledge is extracted and crystallized.
 
 ### Documentation & Progress Tracking (CRITICAL)
-- **Do NOT update progress files manually**: Files in the `progress/` directory (e.g., `progress/Spreadsheet.md`) and the top-level `progress.md` are generated automatically.
+- **Do NOT update progress files manually**: Files in the `progress/` directory (e.g., `progress/spreadsheet.md`) and the top-level `progress.md` are generated automatically.
 - **Generation Pipeline**: After implementing or modifying ANY methods, classes, or enums, you MUST run the documentation generation pipeline to ensure your changes are discoverable and accurately reflected in the `progress/` documentation. This acts as your "Definition of Done".
   ```bash
   npm run docs

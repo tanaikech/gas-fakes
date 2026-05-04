@@ -1,4 +1,4 @@
-# Service: Lock
+# Service: lock
 
 ## Class: Lock
 

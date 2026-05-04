@@ -1,4 +1,4 @@
-# Service: XML
+# Service: xml
 
 ## Class: Attribute
 

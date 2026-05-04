@@ -16,31 +16,42 @@ description: >
 - **Mock/Real Parity**: Write code that works both locally (using fakes) and on the real Google Apps Script platform.
 
 ## Instructions
-1. **Understand the Task**: Identify which Google Apps Script services are required (e.g., SpreadsheetApp, DriveApp, DocumentApp).
-2. **Pre-Implementation Verification (MCP Documentation Lookup)**: You MUST NOT assume you know the implemented methods for any service. 
-    - **Use Documentation Tool**: ALWAYS use the `mcp_gas-fakes_lookup_docs` tool for the relevant service(s) to verify that the classes and methods you plan to use are supported.
-    - **Prohibit Repository Access**: Even if running inside the `gas-fakes` source repository, you MUST NOT read the `progress/`, `test/`, or `src/` directories for verification.
-    - **Local Truth**: The documentation returned by the MCP tool is the version-matched source of truth for your current installation.
+1. **Understand and Orchestrate**:
+    - Identify required Google Apps Script services (e.g., SpreadsheetApp, DriveApp).
+    - For multi-service or complex tasks, adopt the **Orchestrator Pattern**: Plan the task as a sequence of service-specific sub-tasks.
+2. **Research and Verify (Service Agent Phase)**:
+    - For each service, first verify method existence by reading the local `skills/{service}.md` files in the skill directory.
+    - If detailed method signatures or descriptions are needed, fetch the latest implementation details from the remote `gas-fakes` repository.
+    - **Remote URL**: `https://raw.githubusercontent.com/brucemcpherson/gas-fakes/main/progress/{service}.md` (Note: `{service}` is lowercase, e.g., `spreadsheet.md`).
+    - Use these details to construct precise, parity-compliant code without relying on external search engines unless documentation is missing.
 3. **Generate Script**: Create a Node.js script that:
     - Imports `@mcpher/gas-fakes`.
     - Uses standard GAS syntax.
     - (Optional) Uses `ScriptApp.isFake` for local-only logic like logging or cleanup.
-4. **Execute & Verify**: Use the `mcp_gas-fakes_run_script` tool to execute the code and report the results to the user.
+4. **Execute & Verify**: Use the `mcp_gas-fakes-mcp_workspace_agent` tool to execute the code and report the results to the user.
 
 ## Example Workflow
-User: "Create a sheet called 'Test' and add 'Hello World' to A1."
+User: "Summarize the last 5 unread emails and save the summary to a new Google Doc."
 Agent:
-1. **Lookup Docs**: Call `mcp_gas-fakes_lookup_docs({ service: 'spreadsheet' })`.
-2. **Verify**: Confirm `SpreadsheetApp.create`, `getActiveSheet`, `getRange`, and `setValue` are in the list.
+1. **Identify Services**: `GmailApp`, `DocumentApp`.
+2. **Verify Methods**: 
+   - Check `skills/gmail.md` and `skills/document.md`.
+   - (Optional) Fetch `progress/gmail.md` and `progress/document.md` from GitHub for detailed signatures.
 3. **Generate Script**:
    ```javascript
    import '@mcpher/gas-fakes';
-   const ss = SpreadsheetApp.create('Test');
-   ss.getActiveSheet().getRange('A1').setValue('Hello World');
-   console.log('Created sheet with ID:', ss.getId());
+   const threads = GmailApp.getInboxThreads(0, 5);
+   let summary = 'Email Summary:\n\n';
+   threads.forEach(t => {
+     const msg = t.getMessages()[0];
+     summary += `From: ${msg.getFrom()}\nSubject: ${msg.getSubject()}\n---\n`;
+   });
+   const doc = DocumentApp.create('Email Summaries');
+   doc.getBody().appendParagraph(summary);
+   console.log('Summary saved to Doc ID:', doc.getId());
    ```
-4. **Execute**: Call `mcp_gas-fakes_run_script({ script: '...' })`.
-5. **Report**: Confirm completion to the user.
+4. **Execute**: Call `mcp_gas-fakes-mcp_workspace_agent({ script: '...' })`.
+5. **Report**: Confirm completion and provide the Doc ID.
 
 ## Notes
 - Always use ES modules (`import`).

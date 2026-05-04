@@ -1,4 +1,4 @@
-# Service: Gmail
+# Service: gmail
 
 ## Class: GmailApp
 

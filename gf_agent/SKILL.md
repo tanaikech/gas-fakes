@@ -16,31 +16,42 @@ description: >
 - **Mock/Real Parity**: Write code that works both locally (using fakes) and on the real Google Apps Script platform.
 
 ## Instructions
-1. **Understand the Task**: Identify which Google Apps Script services are required (e.g., SpreadsheetApp, DriveApp, DocumentApp).
-2. **Pre-Implementation Verification (MCP Documentation Lookup)**: You MUST NOT assume you know the implemented methods for any service. 
-    - **Use Documentation Tool**: ALWAYS use the `mcp_gas-fakes_lookup_docs` tool for the relevant service(s) to verify that the classes and methods you plan to use are supported.
-    - **Prohibit Repository Access**: Even if running inside the `gas-fakes` source repository, you MUST NOT read the `progress/`, `test/`, or `src/` directories for verification.
-    - **Local Truth**: The documentation returned by the MCP tool is the version-matched source of truth for your current installation.
+1. **Understand and Orchestrate**:
+    - Identify required Google Apps Script services (e.g., SpreadsheetApp, DriveApp).
+    - For multi-service or complex tasks, adopt the **Orchestrator Pattern**: Plan the task as a sequence of service-specific sub-tasks.
+2. **Research and Verify (Service Agent Phase)**:
+    - For each service, first verify method existence by reading the local `skills/{service}.md` files in the skill directory.
+    - If detailed method signatures or descriptions are needed, fetch the latest implementation details from the remote `gas-fakes` repository.
+    - **Remote URL**: `https://raw.githubusercontent.com/brucemcpherson/gas-fakes/main/progress/{service}.md` (Note: `{service}` is lowercase, e.g., `spreadsheet.md`).
+    - Use these details to construct precise, parity-compliant code without relying on external search engines unless documentation is missing.
 3. **Generate Script**: Create a Node.js script that:
     - Imports `@mcpher/gas-fakes`.
     - Uses standard GAS syntax.
     - (Optional) Uses `ScriptApp.isFake` for local-only logic like logging or cleanup.
-4. **Execute & Verify**: Use the `mcp_gas-fakes_run_script` tool to execute the code and report the results to the user.
+4. **Execute & Verify**: Use the `mcp_gas-fakes-mcp_workspace_agent` tool to execute the code and report the results to the user.
 
 ## Example Workflow
-User: "Create a sheet called 'Test' and add 'Hello World' to A1."
+User: "Summarize the last 5 unread emails and save the summary to a new Google Doc."
 Agent:
-1. **Lookup Docs**: Call `mcp_gas-fakes_lookup_docs({ service: 'spreadsheet' })`.
-2. **Verify**: Confirm `SpreadsheetApp.create`, `getActiveSheet`, `getRange`, and `setValue` are in the list.
+1. **Identify Services**: `GmailApp`, `DocumentApp`.
+2. **Verify Methods**: 
+   - Check `skills/gmail.md` and `skills/document.md`.
+   - (Optional) Fetch `progress/gmail.md` and `progress/document.md` from GitHub for detailed signatures.
 3. **Generate Script**:
    ```javascript
    import '@mcpher/gas-fakes';
-   const ss = SpreadsheetApp.create('Test');
-   ss.getActiveSheet().getRange('A1').setValue('Hello World');
-   console.log('Created sheet with ID:', ss.getId());
+   const threads = GmailApp.getInboxThreads(0, 5);
+   let summary = 'Email Summary:\n\n';
+   threads.forEach(t => {
+     const msg = t.getMessages()[0];
+     summary += `From: ${msg.getFrom()}\nSubject: ${msg.getSubject()}\n---\n`;
+   });
+   const doc = DocumentApp.create('Email Summaries');
+   doc.getBody().appendParagraph(summary);
+   console.log('Summary saved to Doc ID:', doc.getId());
    ```
-4. **Execute**: Call `mcp_gas-fakes_run_script({ script: '...' })`.
-5. **Report**: Confirm completion to the user.
+4. **Execute**: Call `mcp_gas-fakes-mcp_workspace_agent({ script: '...' })`.
+5. **Report**: Confirm completion and provide the Doc ID.
 
 ## Notes
 - Always use ES modules (`import`).
@@ -157,27 +168,104 @@ When implementing Google Sheets Embedded Charts, be aware of the following Live 
 - When generating scripts or test assertions designed to run interoperably (both locally on Node.js and on Live Apps Script), **never assert against internal private properties** (e.g., properties prefixed with `__`, like `__apiChart`). These properties do not exist on the Live Apps Script Java classes and will cause the script to crash in the cloud environment. Only assert against public, documented getter/setter methods.
 
 
-### JDBC & MySQL 8.x/8.4 Authentication on Cloud SQL
-**The Problem:** Google Apps Script uses a legacy JDBC driver incompatible with the default `caching_sha2_password` security introduced in MySQL 8.0+. In MySQL 8.4, the required legacy plugin is disabled entirely by default, causing `Jdbc.getConnection` or `Jdbc.getCloudSqlConnection` to fail with: *"Failed to establish a database connection. Check connection string, username and password."*
+### JDBC & Cloud SQL Troubleshooting
 
-**The Solution:** You MUST explicitly enable the legacy `mysql_native_password` plugin at the server level and downgrade the specific user's authentication method.
+#### 1. MySQL 8.x/8.4 Authentication Plugin
+**The Problem:** Apps Script's JDBC driver is incompatible with the default `caching_sha2_password` security in MySQL 8.0+.
+**The Solution:** Use the legacy `mysql_native_password` plugin.
+1. **Enable Database Flag:** In Cloud SQL Console, add the flag `mysql_native_password` and set it to `on`.
+2. **Downgrade User:** Run `ALTER USER 'your-user'@'%' IDENTIFIED WITH mysql_native_password BY 'your-password';`.
 
-1. **Enable the Database Flag (Cloud SQL):** 
-   - In the Google Cloud Console, edit your Cloud SQL instance.
-   - Navigate to **Configuration options > Flags**.
-   - Add the flag `mysql_native_password` and set it to `on`. Save and allow the instance to restart.
-2. **Downgrade the User Authentication:** 
-   - Run the following SQL to switch the user to the legacy handshake:
-     ```sql
-     ALTER USER 'your-user'@'%' IDENTIFIED WITH mysql_native_password BY 'your-password';
-     FLUSH PRIVILEGES;
-     ```
-   - *Note: You must re-run this `ALTER USER` command anytime the user's password is changed.*
+#### 2. GCP Project Configuration
+**The Problem:** Connection fails even with correct DB credentials because the script isn't authorized to "tunnel" to the instance.
+**The Solution:**
+1. **Enable API:** Ensure the **Cloud SQL Admin API** is enabled in the Google Cloud project.
+2. **IAM Role:** The user running the script (or the service account) must have the **Cloud SQL Client** (`roles/cloudsql.client`) role.
+3. **OAuth Scopes:** The script must include the `https://www.googleapis.com/auth/sqlservice` scope. Add this to your `appsscript.json` manifest if not automatically prompted.
+
+#### 3. Connection Syntax
+**The Problem:** Using IP addresses with `getCloudSqlConnection`.
+**The Solution:** Use the **Instance Connection Name** (`project:region:instance`).
+- **MySQL:** `jdbc:google:mysql://INSTANCE_CONNECTION_NAME/DATABASE_NAME`
+- **PostgreSQL:** `jdbc:google:postgres://INSTANCE_CONNECTION_NAME/DATABASE_NAME`
+- **SQL Server:** `jdbc:google:sqlserver://INSTANCE_CONNECTION_NAME/DATABASE_NAME`
+
+### JDBC & Cloud SQL Authentication Guide
+
+#### 1. "Failed to establish a database connection" (Generic Error)
+This is the most common error. Systematically check:
+- **Cloud SQL Admin API**: MUST be enabled in the Google Cloud Console for the project.
+- **IAM Permissions**: The authenticated user (or service account) must have the **Cloud SQL Client** role (`roles/cloudsql.client`).
+- **OAuth Scopes**: Your `appsscript.json` manifest must include the `"https://www.googleapis.com/auth/sqlservice"` scope.
+- **Instance Connection Name**: Ensure you are using the full name (`project-id:region:instance-id`) and not just the instance ID or IP address when using `getCloudSqlConnection`.
+
+#### 2. "Access denied for user" (Database Level)
+Even if the secure tunnel is established, the database engine may reject the user:
+- **Host Wildcard**: In MySQL/PostgreSQL, users are often restricted by host (e.g., `'user'@'localhost'`). Connections via `getCloudSqlConnection` appear as coming from an internal Google network. Ensure your user is created with a wildcard host or a host that allows Google's internal ranges (e.g., `'user'@'%'`).
+- **Password Complexity**: While `Jdbc.getCloudSqlConnection` handles passwords as separate arguments (avoiding URI encoding issues), double-check for typos or expired passwords.
+
+#### 3. MySQL 8.0+ Authentication Plugin
+MySQL 8.0+ uses `caching_sha2_password` by default, which is incompatible with the Apps Script JDBC driver.
+- **Symptom**: `Handshake failed` or `Access denied` even with correct credentials.
+- **Fix**:
+  1. In the Cloud SQL Console, add the database flag `mysql_native_password` and set it to `on`.
+  2. Run the following SQL to downgrade the user: `ALTER USER 'your-user'@'%' IDENTIFIED WITH mysql_native_password BY 'your-password';`.
+
+#### 4. Connection Methods: Tunneling vs. Public IP
+- **Method A: `Jdbc.getCloudSqlConnection(url, user, password)` (Recommended)**
+  - Works for MySQL and PostgreSQL.
+  - Uses an internal secure tunnel; **no IP whitelisting required**.
+  - URL format: `jdbc:google:mysql://INSTANCE_CONNECTION_NAME/DATABASE_NAME`
+- **Method B: `Jdbc.getConnection(url, user, password)`**
+  - Required for **SQL Server** or non-Google hosted databases.
+  - **IP Whitelisting**: You MUST whitelist Apps Script's public IP ranges in your database firewall/networking settings.
+  - URL format: `jdbc:sqlserver://PUBLIC_IP:1433;databaseName=DB_NAME`
+
 
 ### Google Docs API Limitations
 
 - **Horizontal Rules**: The underlying Google Docs API does not support creating, updating, or managing `HorizontalRule` elements. Because `gas-fakes` maps local calls to the REST API, attempting to use methods like `body.appendHorizontalRule()` or `body.insertHorizontalRule()` will crash the script with a `GoogleJsonResponseException` (e.g., `Invalid requests...`).
   - **Workaround**: If you need to visually separate content in a generated Document, use simple text-based separators like `body.appendParagraph('--------------------------------------------------')` instead.
+
+
+# Orchestrator and Service Agent Pattern
+
+To improve the reliability and accuracy of `gf_agent` when handling complex Google Workspace tasks, the agent should follow an **Orchestrator/Service Agent** architecture. This pattern minimizes "tool space interference" and ensures that the agent always uses the most accurate and up-to-date implementation details for each service.
+
+## The Problem: Tool Space Interference
+When an agent attempts to handle multiple services (e.g., Spreadsheet, Drive, and Gmail) in a single turn, the context can become overwhelmed with conflicting method signatures or outdated knowledge from external search results. This often leads to "hallucinated" methods or incorrect parameter usage.
+
+## The Solution: Modular Delegation
+
+### 1. The Orchestrator Phase
+Upon receiving a user request, the agent acts as an **Orchestrator**. 
+- **Identify Services**: Determine exactly which Apps Script services are required (e.g., `SpreadsheetApp`, `DriveApp`).
+- **Decomposition**: Break the request into service-specific sub-tasks.
+- **Service Verification**: Verify that the required services and classes exist by checking the local `skills/` directory within the `gf_agent` skill.
+
+### 2. The Service Agent Phase
+For each identified service, the agent transitions into a **Service Agent** role (either in sequential turns or using parallel sub-agents).
+- **Deep Research**: Instead of using Google Search, the agent fetches the detailed implementation documentation from the remote `gas-fakes` repository.
+- **Source of Truth**: The `progress/` directory on GitHub contains the most granular documentation, including:
+    - Supported method names and parameter types.
+    - Status of implementation (completed vs. in-progress).
+    - Links to the actual source code for reference.
+- **Remote Document Retrieval**:
+  - You MUST ALWAYS use the `main` branch for the URL, regardless of what local branch you are on.
+  - `web_fetch("https://raw.githubusercontent.com/brucemcpherson/gas-fakes/main/progress/{Service}.md")`
+  - **CRITICAL (Case Sensitivity)**: GitHub Raw URLs are case-sensitive. The `progress/` files in the repository have mixed casing (e.g., `Spreadsheet.md`, `Drive.MD`, `gmail.md`). If a fetch fails with a 404, try TitleCase or check `git ls-files | grep progress` if running locally to confirm the exact casing.
+  - Example: `https://raw.githubusercontent.com/brucemcpherson/gas-fakes/main/progress/Spreadsheet.md`
+
+### 3. Synthesis and Execution
+Once all required service-specific knowledge is gathered:
+- **Unified Implementation**: Combine the gathered patterns into a single, cohesive Apps Script block.
+- **Execution**: Use the `mcp_gas-fakes-mcp_workspace_agent` to execute the script.
+- **Validation**: If the script fails, the agent returns to the Service Agent phase for the failing service to re-verify the implementation details.
+
+## Benefits
+- **Zero-Search Dependency**: By using the remote `progress` files as the primary source of truth, the agent avoids the risk of using outdated or non-parity GAS snippets found on the web.
+- **Context Efficiency**: Researching one service at a time prevents the "interference" of unrelated documentation.
+- **Parity Guarantee**: The remote documentation is generated directly from the `gas-fakes` source code, ensuring 100% parity with the local environment.
 
 
 # gf_agent Knowledge Base

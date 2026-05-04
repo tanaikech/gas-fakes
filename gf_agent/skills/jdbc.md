@@ -1,4 +1,4 @@
-# Service: JDBC
+# Service: jdbc
 
 ## Class: Jdbc
 
