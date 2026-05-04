@@ -39,10 +39,18 @@ When you need to teach `gf_agent` something new, you must first ensure you are w
    Write your instructions clearly. Use Markdown headers (`###`). Keep it concise and actionable for an AI agent. 
    *Good Example:* "When creating a Foo, you MUST always set the Bar property, otherwise the API will crash with error X."
 
-4. **Submit Your Knowledge**:
-   You do **not** need to compile the monolithic `SKILL.md` file yourself. 
+4. **Testing Your Contributions (Optional but Recommended)**:
+   If you want to verify that your new knowledge correctly guides the agent before you submit your PR:
+   - Run the builder script from the root of your standalone directory (or the `gas-fakes` root) to compile your change into the monolithic `SKILL.md`:
+     ```bash
+     node gf_agent/scripts/builder.js
+     ```
+   - Since you have already "linked" the skill in step 1, the Gemini CLI will immediately start using your updated `SKILL.md`. You can now test the behavior by asking the agent a question related to your new knowledge.
+
+5. **Submit Your Knowledge**:
+   Once satisfied, you do **not** need to include the updated monolithic `SKILL.md` in your commit (the repo maintainers will handle the final build). 
    Simply stage your new `gf_agent/knowledge/XX-my-topic.md` file, commit it, and push it to your fork.
    
-5. **The Merge Process**:
+6. **The Merge Process**:
    Submit a Pull Request with your new file. Because you only added a distinct file to a directory, your pull request will not cause merge conflicts. 
    Once your PR is merged, the repository maintainers will run the root-level documentation pipeline (`npm run docs`) which will automatically compile your new knowledge into the master `gf_agent/SKILL.md` for all users!

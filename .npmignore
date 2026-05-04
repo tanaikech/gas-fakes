@@ -8,6 +8,7 @@ shells
 .gitignore
 *.MD
 *.md
+!gf_agent/**/*.md
 .env*
 mainlocal.js
 mainnpm.js

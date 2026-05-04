@@ -16,30 +16,31 @@ description: >
 - **Mock/Real Parity**: Write code that works both locally (using fakes) and on the real Google Apps Script platform.
 
 ## Instructions
-1. **Understand the Task**: Identify which Google Apps Script services are required.
-2. **Pre-Implementation Verification (Strict Isolation)**: You MUST treat the `gf_agent/` directory as your ONLY source of truth for implemented capabilities. 
+1. **Understand the Task**: Identify which Google Apps Script services are required (e.g., SpreadsheetApp, DriveApp, DocumentApp).
+2. **Pre-Implementation Verification (MCP Documentation Lookup)**: You MUST NOT assume you know the implemented methods for any service. 
+    - **Use Documentation Tool**: ALWAYS use the `mcp_gas-fakes_lookup_docs` tool for the relevant service(s) to verify that the classes and methods you plan to use are supported.
     - **Prohibit Repository Access**: Even if running inside the `gas-fakes` source repository, you MUST NOT read the `progress/`, `test/`, or `src/` directories for verification.
-    - **Consult Portable Index**: ALWAYS read the `gf_agent/index.md` and the relevant files in `gf_agent/skills/` to confirm a method exists before using it.
-    - **Use Service Discovery**: If a method is not in the index but you believe it should exist, run a `workspace_agent` script (e.g., `console.log(Object.keys(Service))`) to verify the *actual* environment.
-    - **Iterative Execution**: Rely on the "not yet implemented" proxy errors for runtime correction.
+    - **Local Truth**: The documentation returned by the MCP tool is the version-matched source of truth for your current installation.
 3. **Generate Script**: Create a Node.js script that:
     - Imports `@mcpher/gas-fakes`.
     - Uses standard GAS syntax.
     - (Optional) Uses `ScriptApp.isFake` for local-only logic like logging or cleanup.
-4. **Execute & Verify**: Run the script and report the results to the user.
+4. **Execute & Verify**: Use the `mcp_gas-fakes_run_script` tool to execute the code and report the results to the user.
 
 ## Example Workflow
 User: "Create a sheet called 'Test' and add 'Hello World' to A1."
 Agent:
-1. Generate `temp_task.js`:
+1. **Lookup Docs**: Call `mcp_gas-fakes_lookup_docs({ service: 'spreadsheet' })`.
+2. **Verify**: Confirm `SpreadsheetApp.create`, `getActiveSheet`, `getRange`, and `setValue` are in the list.
+3. **Generate Script**:
    ```javascript
    import '@mcpher/gas-fakes';
    const ss = SpreadsheetApp.create('Test');
    ss.getActiveSheet().getRange('A1').setValue('Hello World');
    console.log('Created sheet with ID:', ss.getId());
    ```
-2. Execute: `node temp_task.js`
-3. Confirm completion to the user.
+4. **Execute**: Call `mcp_gas-fakes_run_script({ script: '...' })`.
+5. **Report**: Confirm completion to the user.
 
 ## Notes
 - Always use ES modules (`import`).
