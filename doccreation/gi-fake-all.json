@@ -5489,7 +5489,7 @@
             "returnType": "Integer",
             "returnDescription": "The child index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L169"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L257"
           },
           {
             "method": "getHeadingAttributes(ParagraphHeading)",
@@ -5506,8 +5506,8 @@
             "description": "Retrieves all the InlineImages contained in the section.",
             "returnType": "InlineImage[]",
             "returnDescription": "The section images.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L102"
           },
           {
             "method": "getListItems()",
@@ -5515,8 +5515,8 @@
             "description": "Retrieves all the ListItems contained in the section.",
             "returnType": "ListItem[]",
             "returnDescription": "The section list items.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L132"
           },
           {
             "method": "getMarginBottom()",
@@ -5587,8 +5587,8 @@
             "description": "Retrieves all the Paragraphs contained in the section (including ListItems).",
             "returnType": "Paragraph[]",
             "returnDescription": "The section paragraphs.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L151"
           },
           {
             "method": "getParent()",
@@ -5605,8 +5605,8 @@
             "description": "Retrieves all the Tables contained in the section.",
             "returnType": "Table[]",
             "returnDescription": "The section tables.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L171"
           },
           {
             "method": "getText()",
@@ -6162,7 +6162,7 @@
             "returnType": "Element",
             "returnDescription": "The child element at the specified index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L102"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L107"
           },
           {
             "method": "getChildIndex(Element)",
@@ -6171,7 +6171,7 @@
             "returnType": "Integer",
             "returnDescription": "The child index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L169"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L257"
           },
           {
             "method": "getLinkUrl()",
@@ -6198,7 +6198,7 @@
             "returnType": "Integer",
             "returnDescription": "The number of children.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L198"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L105"
           },
           {
             "method": "getParent()",
@@ -7712,7 +7712,7 @@
             "returnType": "Element",
             "returnDescription": "The child element at the specified index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L102"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L107"
           },
           {
             "method": "getChildIndex(Element)",
@@ -7721,7 +7721,7 @@
             "returnType": "Integer",
             "returnDescription": "The child index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L169"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L257"
           },
           {
             "method": "getImages()",
@@ -7729,8 +7729,8 @@
             "description": "Retrieves all the InlineImages contained in the section.",
             "returnType": "InlineImage[]",
             "returnDescription": "The section images.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L102"
           },
           {
             "method": "getListItems()",
@@ -7738,8 +7738,8 @@
             "description": "Retrieves all the ListItems contained in the section.",
             "returnType": "ListItem[]",
             "returnDescription": "The section list items.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L132"
           },
           {
             "method": "getNumChildren()",
@@ -7748,7 +7748,7 @@
             "returnType": "Integer",
             "returnDescription": "The number of children.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L198"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L105"
           },
           {
             "method": "getParagraphs()",
@@ -7756,8 +7756,8 @@
             "description": "Retrieves all the Paragraphs contained in the section (including ListItems).",
             "returnType": "Paragraph[]",
             "returnDescription": "The section paragraphs.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L151"
           },
           {
             "method": "getParent()",
@@ -7774,8 +7774,8 @@
             "description": "Retrieves all the Tables contained in the section.",
             "returnType": "Table[]",
             "returnDescription": "The section tables.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L171"
           },
           {
             "method": "getText()",
@@ -8062,7 +8062,7 @@
             "returnType": "Integer",
             "returnDescription": "The child index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L169"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L257"
           },
           {
             "method": "getNextSibling()",
@@ -8088,8 +8088,8 @@
             "description": "Retrieves all the Paragraphs contained in the section (including ListItems).",
             "returnType": "Paragraph[]",
             "returnDescription": "The section paragraphs.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L151"
           },
           {
             "method": "getParent()",
@@ -8492,7 +8492,7 @@
             "returnType": "Element",
             "returnDescription": "The child element at the specified index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L102"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L107"
           },
           {
             "method": "getChildIndex(Element)",
@@ -8501,7 +8501,7 @@
             "returnType": "Integer",
             "returnDescription": "The child index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L169"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L257"
           },
           {
             "method": "getImages()",
@@ -8509,8 +8509,8 @@
             "description": "Retrieves all the InlineImages contained in the section.",
             "returnType": "InlineImage[]",
             "returnDescription": "The section images.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L102"
           },
           {
             "method": "getListItems()",
@@ -8518,8 +8518,8 @@
             "description": "Retrieves all the ListItems contained in the section.",
             "returnType": "ListItem[]",
             "returnDescription": "The section list items.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L132"
           },
           {
             "method": "getNumChildren()",
@@ -8528,7 +8528,7 @@
             "returnType": "Integer",
             "returnDescription": "The number of children.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L198"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L105"
           },
           {
             "method": "getParagraphs()",
@@ -8536,8 +8536,8 @@
             "description": "Retrieves all the Paragraphs contained in the section (including ListItems).",
             "returnType": "Paragraph[]",
             "returnDescription": "The section paragraphs.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L151"
           },
           {
             "method": "getParent()",
@@ -8554,8 +8554,8 @@
             "description": "Retrieves all the Tables contained in the section.",
             "returnType": "Table[]",
             "returnDescription": "The section tables.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L171"
           },
           {
             "method": "getText()",
@@ -9369,7 +9369,7 @@
             "returnType": "Element",
             "returnDescription": "The child element at the specified index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L102"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L107"
           },
           {
             "method": "getChildIndex(Element)",
@@ -9378,7 +9378,7 @@
             "returnType": "Integer",
             "returnDescription": "The child index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L169"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L257"
           },
           {
             "method": "getGlyphType()",
@@ -9477,7 +9477,7 @@
             "returnType": "Integer",
             "returnDescription": "The number of children.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L198"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L105"
           },
           {
             "method": "getParent()",
@@ -10007,7 +10007,7 @@
             "returnType": "Integer",
             "returnDescription": "The child index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L169"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L257"
           },
           {
             "method": "getHeading()",
@@ -11275,7 +11275,7 @@
             "returnType": "Integer",
             "returnDescription": "The child index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L169"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L257"
           },
           {
             "method": "getColumnWidth(Integer)",
@@ -11679,7 +11679,7 @@
             "returnType": "Element",
             "returnDescription": "The child element at the specified index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L102"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L107"
           },
           {
             "method": "getChildIndex(Element)",
@@ -11688,7 +11688,7 @@
             "returnType": "Integer",
             "returnDescription": "The child index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L169"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L257"
           },
           {
             "method": "getColSpan()",
@@ -11724,7 +11724,7 @@
             "returnType": "Integer",
             "returnDescription": "The number of children.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L198"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L105"
           },
           {
             "method": "getPaddingBottom()",
@@ -12218,7 +12218,7 @@
             "returnType": "Integer",
             "returnDescription": "The child index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L169"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L257"
           },
           {
             "method": "getLinkUrl()",
@@ -33521,7 +33521,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L152"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L166"
           },
           {
             "method": "create(String)",
@@ -33548,7 +33548,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L134"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L148"
           },
           {
             "method": "enableBigQueryExecution()",
@@ -33557,7 +33557,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L125"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L139"
           },
           {
             "method": "enableLookerExecution()",
@@ -33566,7 +33566,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L143"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L157"
           },
           {
             "method": "flush()",
@@ -33575,7 +33575,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L152"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L166"
           },
           {
             "method": "getActive()",
@@ -33620,7 +33620,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "the active Spreadsheet object",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L109"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L123"
           },
           {
             "method": "getCurrentCell()",
@@ -33656,7 +33656,7 @@
             "returnType": "CellImageBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L232"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L246"
           },
           {
             "method": "newColor()",
@@ -33665,7 +33665,7 @@
             "returnType": "ColorBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L241"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L255"
           },
           {
             "method": "newConditionalFormatRule()",
@@ -33674,7 +33674,7 @@
             "returnType": "ConditionalFormatRuleBuilder",
             "returnDescription": "the new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L250"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L264"
           },
           {
             "method": "newDataSourceSpec()",
@@ -33683,7 +33683,7 @@
             "returnType": "DataSourceSpecBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L294"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L308"
           },
           {
             "method": "newDataValidation()",
@@ -33692,7 +33692,7 @@
             "returnType": "DataValidationBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L268"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L282"
           },
           {
             "method": "newFilterCriteria()",
@@ -33701,7 +33701,7 @@
             "returnType": "FilterCriteriaBuilder",
             "returnDescription": "the new builder",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L286"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L300"
           },
           {
             "method": "newRichTextValue()",
@@ -33710,7 +33710,7 @@
             "returnType": "RichTextValueBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L277"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L291"
           },
           {
             "method": "newTextStyle()",
@@ -33719,7 +33719,7 @@
             "returnType": "TextStyleBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L259"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L273"
           },
           {
             "method": "open(File)",
@@ -33728,7 +33728,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "the spreadsheet",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L94"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L114"
           },
           {
             "method": "openById(String)",
@@ -33737,7 +33737,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "the Spreadsheet object with the given id",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L114"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L120"
           },
           {
             "method": "openByUrl(String)",
@@ -33746,7 +33746,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "The spreadsheet object with the given URL.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L223"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L237"
           },
           {
             "method": "setActiveRange(Range)",
@@ -33791,7 +33791,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L119"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L133"
           },
           {
             "method": "setCurrentCell(Range)",
@@ -54479,7 +54479,7 @@
             "returnType": "Slide",
             "returnDescription": "The new slide that is appended.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepresentation.js#L102"
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L94"
           },
           {
             "method": "appendSlide(Layout)",
@@ -54488,7 +54488,7 @@
             "returnType": "Slide",
             "returnDescription": "The new slide that is appended.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepresentation.js#L102"
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L94"
           },
           {
             "method": "appendSlide(PredefinedLayout)",
@@ -54497,7 +54497,7 @@
             "returnType": "Slide",
             "returnDescription": "The new slide that is appended.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepresentation.js#L102"
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L94"
           },
           {
             "method": "appendSlide(Slide)",
@@ -54506,7 +54506,7 @@
             "returnType": "Slide",
             "returnDescription": "The new slide that is appended.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepresentation.js#L102"
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L94"
           },
           {
             "method": "appendSlide(Slide,SlideLinkingMode)",
@@ -54515,7 +54515,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepresentation.js#L102"
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L94"
           },
           {
             "method": "getEditors()",
@@ -54551,7 +54551,7 @@
             "returnType": "Master[]",
             "returnDescription": "The list of masters in this presentation.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepresentation.js#L67"
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L59"
           },
           {
             "method": "getName()",
@@ -54632,7 +54632,7 @@
             "returnType": "Slide",
             "returnDescription": "The slide with the given ID.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepresentation.js#L93"
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L85"
           },
           {
             "method": "getSlides()",
@@ -54641,7 +54641,7 @@
             "returnType": "Slide[]",
             "returnDescription": "The list of slides in this presentation.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepresentation.js#L84"
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L76"
           },
           {
             "method": "getUrl()",
@@ -54668,7 +54668,7 @@
             "returnType": "Slide",
             "returnDescription": "The new slide that is inserted.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepresentation.js#L125"
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L117"
           },
           {
             "method": "insertSlide(Integer,Layout)",
@@ -54677,7 +54677,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepresentation.js#L125"
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L117"
           },
           {
             "method": "insertSlide(Integer,PredefinedLayout)",
@@ -54686,7 +54686,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepresentation.js#L125"
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L117"
           },
           {
             "method": "insertSlide(Integer,Slide)",
@@ -54695,7 +54695,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepresentation.js#L125"
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L117"
           },
           {
             "method": "insertSlide(Integer,Slide,SlideLinkingMode)",
@@ -54704,7 +54704,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepresentation.js#L125"
+            "implementationLink": "src/services/slidesapp/fakepresentation.js#L117"
           },
           {
             "method": "removeEditor(String)",

@@ -50,11 +50,24 @@ export const sxJdbcConnect = async (Auth, { url, user, password }) => {
       ssl: disableSsl ? false : { rejectUnauthorized: false }
     };
 
-    if (user !== null && typeof user !== 'undefined' && password !== null && typeof password !== 'undefined') {
+    let finalUser = user;
+    let finalPassword = password;
+
+    if ((user === null || typeof user === 'undefined') && (password === null || typeof password === 'undefined')) {
+      try {
+        const parsedUrl = new URL(pgConnectionString);
+        if (parsedUrl.username) finalUser = decodeURIComponent(parsedUrl.username);
+        if (parsedUrl.password) finalPassword = decodeURIComponent(parsedUrl.password);
+      } catch (e) {
+        // ignore parsing errors
+      }
+    }
+
+    if (finalUser !== null && typeof finalUser !== 'undefined' && finalPassword !== null && typeof finalPassword !== 'undefined') {
       client = new pg.Client({
         ...clientConfig,
-        user: String(user),
-        password: String(password)
+        user: String(finalUser),
+        password: String(finalPassword)
       });
     } else {
       client = new pg.Client(clientConfig);

@@ -1,6 +1,6 @@
 {
   "name": "gas-inventory",
-  "version": "2.3.15",
+  "version": "2.3.16",
   "description": "Scrapes Google Apps Script documentation",
   "main": "gas-inventory.js",
   "type": "module",

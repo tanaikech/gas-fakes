@@ -96,6 +96,94 @@ export class FakeContainerElement extends FakeElement {
   }
 
   /**
+   * Retrieves all the InlineImages contained in the section.
+   * @returns {GoogleAppsScript.Document.InlineImage[]} The section images.
+   */
+  getImages() {
+    ScriptApp.__behavior.checkMethod(this.toString(), 'getImages');
+    const elements = [];
+    const numChildren = this.getNumChildren();
+    for (let i = 0; i < numChildren; i++) {
+      const child = this.getChild(i);
+      const type = child.getType().toString();
+      if (type === 'INLINE_IMAGE') {
+        elements.push(child);
+      } else if (child.getNumChildren) {
+        // Recurse into containers
+        elements.push(...child.getImages());
+      } else if (type === 'PARAGRAPH') {
+        // Paragraphs can contain inline images
+        const numParaChildren = child.getNumChildren();
+        for (let j = 0; j < numParaChildren; j++) {
+           const pChild = child.getChild(j);
+           if (pChild.getType().toString() === 'INLINE_IMAGE') {
+             elements.push(pChild);
+           }
+        }
+      }
+    }
+    return elements;
+  }
+
+  /**
+   * Retrieves all the ListItems contained in the section.
+   * @returns {GoogleAppsScript.Document.ListItem[]} The section list items.
+   */
+  getListItems() {
+    ScriptApp.__behavior.checkMethod(this.toString(), 'getListItems');
+    const elements = [];
+    const numChildren = this.getNumChildren();
+    for (let i = 0; i < numChildren; i++) {
+      const child = this.getChild(i);
+      if (child.getType().toString() === 'LIST_ITEM') {
+        elements.push(child);
+      } else if (child.getNumChildren) {
+        elements.push(...child.getListItems());
+      }
+    }
+    return elements;
+  }
+
+  /**
+   * Retrieves all the Paragraphs contained in the section (including ListItems).
+   * @returns {GoogleAppsScript.Document.Paragraph[]} The section paragraphs.
+   */
+  getParagraphs() {
+    ScriptApp.__behavior.checkMethod(this.toString(), 'getParagraphs');
+    const elements = [];
+    const numChildren = this.getNumChildren();
+    for (let i = 0; i < numChildren; i++) {
+      const child = this.getChild(i);
+      const type = child.getType().toString();
+      if (type === 'PARAGRAPH' || type === 'LIST_ITEM') {
+        elements.push(child);
+      } else if (child.getNumChildren) {
+        elements.push(...child.getParagraphs());
+      }
+    }
+    return elements;
+  }
+
+  /**
+   * Retrieves all the Tables contained in the section.
+   * @returns {GoogleAppsScript.Document.Table[]} The section tables.
+   */
+  getTables() {
+    ScriptApp.__behavior.checkMethod(this.toString(), 'getTables');
+    const elements = [];
+    const numChildren = this.getNumChildren();
+    for (let i = 0; i < numChildren; i++) {
+      const child = this.getChild(i);
+      if (child.getType().toString() === 'TABLE') {
+        elements.push(child);
+      } else if (child.getNumChildren) {
+        elements.push(...child.getTables());
+      }
+    }
+    return elements;
+  }
+
+  /**
    * Retrieves the child element at the specified index.
    * @param {number} childIndex The zero-based index of the child element to retrieve.
    * @returns {GoogleAppsScript.Document.Element} The child element at the specified index.

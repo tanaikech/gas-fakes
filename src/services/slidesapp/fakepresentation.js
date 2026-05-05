@@ -53,14 +53,6 @@ export class FakePresentation {
   }
 
   /**
-   * Gets the color scheme of the presentation.
-   * @returns {FakeColorScheme} The color scheme.
-   */
-  getColorScheme() {
-    return newFakeColorScheme(this);
-  }
-
-  /**
    * Gets the masters in the presentation.
    * @returns {FakeMaster[]} The masters.
    */

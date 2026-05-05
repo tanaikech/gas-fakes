@@ -49,6 +49,7 @@
     "testslidesautofit": "node testslidesautofit.js execute",
     "testslidesautotext": "node testslidesautotext.js execute",
     "testslidesconnectionsite": "node testslidesconnectionsite.js execute",
+    "testslidescolorscheme": "node testslidescolorscheme.js execute",
     "testslideslineprops": "node testslideslineprops.js execute",
     "testdocsnext": "node testdocsnext.js execute",
     "testsheetstext": "node testsheetstext.js execute",
@@ -85,7 +86,7 @@
     "testxmlservice": "node testxmlservice.js execute"
   },
   "name": "test-gas-fakes",
-  "version": "2.3.15",
+  "version": "2.3.16",
   "license": "MIT",
   "main": "test.js",
   "description": "test gas-fakes on both live and local apps script - version number should match the gas-fakes version number it tests",

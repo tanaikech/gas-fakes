@@ -81,9 +81,9 @@ export class FakeColorScheme {
    * @param {FakeColor} color
    * @returns {FakeColorScheme} self
    */
-  setConcreteColor(themeColorType, color) {
+  setConcreteColor(themeColorType, ...colorArgs) {
     const { nargs, matchThrow } = signatureArgs(arguments, "ColorScheme.setConcreteColor");
-    if (nargs !== 2) matchThrow();
+    if (nargs < 2 || nargs > 4) matchThrow();
 
     const master = this.__masterPage;
     if (!master) throw new Error('Could not find master page for color scheme');
@@ -96,15 +96,34 @@ export class FakeColorScheme {
     const currentResource = this.__resource;
     const colors = [...(currentResource.colors || [])];
 
-    // Convert the new Color to API format
     const apiColor = {};
-    if (color.getColorType().toString() === 'RGB') {
-      const rgb = color.asRgbColor();
-      apiColor.red = rgb.getRed() / 255;
-      apiColor.green = rgb.getGreen() / 255;
-      apiColor.blue = rgb.getBlue() / 255;
-    } else if (color.getColorType().toString() === 'THEME') {
-      apiColor.themeColor = color.asThemeColor().getThemeColorType().toString();
+    if (colorArgs.length === 3) {
+      // (ThemeColorType, r, g, b)
+      apiColor.red = colorArgs[0] / 255;
+      apiColor.green = colorArgs[1] / 255;
+      apiColor.blue = colorArgs[2] / 255;
+    } else if (typeof colorArgs[0] === 'string') {
+      // (ThemeColorType, hexString)
+      const hex = colorArgs[0];
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      if (result) {
+        apiColor.red = parseInt(result[1], 16) / 255;
+        apiColor.green = parseInt(result[2], 16) / 255;
+        apiColor.blue = parseInt(result[3], 16) / 255;
+      } else {
+        throw new Error("Invalid hex color string");
+      }
+    } else {
+      // (ThemeColorType, Color)
+      const color = colorArgs[0];
+      if (color.getColorType().toString() === 'RGB') {
+        const rgb = color.asRgbColor();
+        apiColor.red = rgb.getRed() / 255;
+        apiColor.green = rgb.getGreen() / 255;
+        apiColor.blue = rgb.getBlue() / 255;
+      } else if (color.getColorType().toString() === 'THEME') {
+        apiColor.themeColor = color.asThemeColor().getThemeColorType().toString();
+      }
     }
 
     // Find and update or add the color pair

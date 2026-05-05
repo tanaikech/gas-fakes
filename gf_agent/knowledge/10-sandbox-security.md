@@ -58,4 +58,5 @@ ScriptApp.__behavior.sandboxService.GmailApp.cleanup = false;
 ## Best Practices for `gf_agent`
 - **Session Isolation**: When a user provides a list of files or emails, always initialize the sandbox with those specific whitelists at the top of the script.
 - **Explicit Whitelisting**: Use `behavior.addIdWhitelist` for file access. DO NOT assume `sandboxService.SpreadsheetApp` has an `addFileWhitelist` method (it is handled globally by the behavior ID whitelist).
+- **Cross-Platform Portability**: The `ScriptApp.__behavior` object is a `gas-fakes` exclusive feature. If the generated script is intended to be copied and run in Live Apps Script later, you MUST wrap all sandbox-related boilerplate in an `if (ScriptApp.isFake)` block to prevent `TypeError` crashes in the cloud.
 - **Safe Execution**: In the Orchestrator Phase, identify if the task requires external access and include the necessary sandbox boilerplate in the generated script.

@@ -11,7 +11,10 @@ export const testSlidesColorScheme = (pack) => {
     const pres = SlidesApp.create(presName);
     toTrash.push(DriveApp.getFileById(pres.getId()));
 
-    const colorScheme = pres.getColorScheme();
+    // In Live GAS, there is no Presentation.getColorScheme(). 
+    // We must get the color scheme from a Master, Layout, or Slide.
+    const master = pres.getMasters()[0];
+    const colorScheme = master.getColorScheme();
     t.is(colorScheme.toString(), 'ColorScheme', 'getColorScheme() should return a ColorScheme');
 
     // getThemeColors()
@@ -28,13 +31,13 @@ export const testSlidesColorScheme = (pack) => {
     t.is(accent1.getColorType().toString(), 'RGB', 'Initial concrete color should be RGB');
 
     // setConcreteColor()
-    // Let's set ACCENT1 to a specific color
-    const newColor = SpreadsheetApp.newColor().setRgbColor('#FF0000').build();
-    colorScheme.setConcreteColor(SlidesApp.ThemeColorType.ACCENT1, newColor);
+    // Let's set ACCENT1 to a specific color using the Hex String overload, 
+    // as Live GAS does not allow passing SpreadsheetApp.Color objects to SlidesApp methods.
+    colorScheme.setConcreteColor(SlidesApp.ThemeColorType.ACCENT1, '#ff0000');
 
     // Verify change
     const updatedAccent1 = colorScheme.getConcreteColor(SlidesApp.ThemeColorType.ACCENT1);
-    t.is(updatedAccent1.asRgbColor().asHexString(), '#ff0000', 'ACCENT1 should be updated to #ff0000');
+    t.is(updatedAccent1.asRgbColor().asHexString(), '#FF0000', 'ACCENT1 should be updated to #FF0000');
 
     // Test on a Slide
     const slide = pres.getSlides()[0];
@@ -42,18 +45,12 @@ export const testSlidesColorScheme = (pack) => {
     t.is(slideColorScheme.toString(), 'ColorScheme', 'Slide.getColorScheme() should return a ColorScheme');
     
     const slideAccent1 = slideColorScheme.getConcreteColor(SlidesApp.ThemeColorType.ACCENT1);
-    t.is(slideAccent1.asRgbColor().asHexString(), '#ff0000', 'Slide should inherit the updated color scheme from master');
+    t.is(slideAccent1.asRgbColor().asHexString(), '#FF0000', 'Slide should inherit the updated color scheme from master');
 
     // Test on a Layout
     const layout = slide.getLayout();
     const layoutColorScheme = layout.getColorScheme();
-    t.is(layoutColorScheme.getConcreteColor(SlidesApp.ThemeColorType.ACCENT1).asRgbColor().asHexString(), '#ff0000', 'Layout should inherit the updated color scheme');
-
-    // Test on a Master
-    const master = layout.getMaster();
-    const masterColorScheme = master.getColorScheme();
-    t.is(masterColorScheme.getConcreteColor(SlidesApp.ThemeColorType.ACCENT1).asRgbColor().asHexString(), '#ff0000', 'Master should have the updated color scheme');
-
+    t.is(layoutColorScheme.getConcreteColor(SlidesApp.ThemeColorType.ACCENT1).asRgbColor().asHexString(), '#FF0000', 'Layout should inherit the updated color scheme');
   });
 
   if (!pack) {

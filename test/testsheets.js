@@ -30,6 +30,18 @@ export const testSheets = (pack) => {
   const toTrash = [];
   const { unit, fixes } = pack || initTests();
 
+  unit.section("SpreadsheetApp.open and file access", (t) => {
+    const { ss } = maketss("open_test", toTrash, fixes);
+    const fileId = ss.getId();
+    
+    const file = DriveApp.getFileById(fileId);
+    t.is(file.getId(), fileId, "DriveApp should return the file");
+    
+    const openedSs = SpreadsheetApp.open(file);
+    t.is(openedSs.getId(), fileId, "SpreadsheetApp.open(file) should return the spreadsheet with the matching ID");
+    t.is(openedSs.getName(), ss.getName(), "SpreadsheetApp.open(file) should return the spreadsheet with the matching name");
+  });
+
   unit.section("R1C1 Formula Notation", (t) => {
     const { sheet } = maketss("r1c1_formulas", toTrash, fixes);
     sheet.clear();

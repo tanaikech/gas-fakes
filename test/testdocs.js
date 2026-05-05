@@ -13,6 +13,37 @@ export const testDocs = (pack) => {
   const { unit, fixes } = pack || initTests();
 
 
+  unit.section("ContainerElement.get methods", t => {
+    const { doc } = maketdoc(toTrash, fixes);
+    const body = doc.getBody();
+
+    // Setup: append a mix of elements
+    body.appendParagraph("Para 1");
+    body.appendListItem("ListItem 1");
+    body.appendTable([["Cell 1", "Cell 2"]]);
+    body.appendParagraph("Para 2");
+
+    // Tests for body
+    const paragraphs = body.getParagraphs();
+    // Actually, getParagraphs includes ListItems. Let's just check length > 0 and types.
+    t.true(paragraphs.length >= 3, "body.getParagraphs() should return paragraphs and list items");
+    t.true(paragraphs.some(p => p.getType().toString() === 'PARAGRAPH'), "should contain PARAGRAPH");
+    t.true(paragraphs.some(p => p.getType().toString() === 'LIST_ITEM'), "should contain LIST_ITEM");
+
+    const listItems = body.getListItems();
+    t.true(listItems.length >= 1, "body.getListItems() should return list items");
+    t.true(listItems.every(li => li.getType().toString() === 'LIST_ITEM'), "every item should be a LIST_ITEM");
+
+    const tables = body.getTables();
+    t.true(tables.length >= 1, "body.getTables() should return tables");
+    t.true(tables.every(tb => tb.getType().toString() === 'TABLE'), "every item should be a TABLE");
+
+    // We can't easily append a real image blob in this test without uploading to a public URL first.
+    // So we just test that getImages returns an array.
+    const images = body.getImages();
+    t.true(is.array(images), "body.getImages() should return an array");
+  });
+
   unit.section("Document level append/insert methods", t => {
     const { doc } = maketdoc(toTrash, fixes);
 

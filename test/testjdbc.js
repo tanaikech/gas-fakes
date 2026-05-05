@@ -48,8 +48,21 @@ export const testJdbc = (pack) => {
 
         const ss = SpreadsheetApp.openById(fixes.TEST_AIRPORTS_ID);
         const sheet = ss.getSheets()[0];
-        const data = sheet.getDataRange().getValues();
-        const headers = data.shift();
+        const rawData = sheet.getDataRange().getValues();
+        const rawHeaders = rawData.shift();
+
+        // Find indices of columns that actually have headers
+        const validIndices = [];
+        const headers = [];
+        rawHeaders.forEach((h, idx) => {
+          if (h && String(h).trim() !== "") {
+            validIndices.push(idx);
+            headers.push(String(h));
+          }
+        });
+
+        // Filter the data rows to only include columns with valid headers
+        const data = rawData.map(row => validIndices.map(idx => row[idx]));
 
         const sanitizedHeaders = headers.map((h) =>
           h.replace(/[^a-zA-Z0-9_]/g, "_").toLowerCase(),

@@ -363,11 +363,11 @@ const normalizeColorStringToHex = (color) => {
   if (!is.string(color)) return null;
   const lowerColor = color.toLowerCase().replace(/\s/g, '');
   if (colorNameToHex[lowerColor]) {
-    return colorNameToHex[lowerColor];
+    return colorNameToHex[lowerColor].toUpperCase();
   }
   // Check if it's a valid hex string
   if (/^#[0-9a-f]{6}$/i.test(lowerColor)) {
-    return lowerColor;
+    return lowerColor.toUpperCase();
   }
   return null; // Invalid color string
 };

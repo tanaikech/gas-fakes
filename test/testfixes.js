@@ -40,7 +40,7 @@ export const testFixes = {
 };
 
 // altough we are set up to use multiple backends, to save cost i;ve closed the paid for ones down
-const permdb = ["neon","cockroach"]
+const permdb = ["neon"]
 const alldbs = permdb.concat(["cloudsql-mysql", "cloudsql-pg","aiven"])
 const usedbs = permdb
 

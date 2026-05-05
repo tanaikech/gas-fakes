@@ -91,7 +91,6 @@ export class FakeSpreadsheetApp {
       "setActiveRange",
       "setActiveRangeList",
       "getUi",
-      "open",
 
       "ChartAggregationType",
       "ChartTransformationType",
@@ -106,6 +105,21 @@ export class FakeSpreadsheetApp {
   toString() {
     return "SpreadsheetApp";
   }
+
+  /**
+   * Opens the spreadsheet that corresponds to the given File object.
+   * @param {File} file A Drive file object representing a spreadsheet.
+   * @returns {FakeSpreadsheet} the spreadsheet
+   */
+  open(file) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "SpreadsheetApp.open");
+    if (nargs !== 1) matchThrow();
+    if (!file || typeof file.getId !== 'function') {
+      throw new Error('Invalid file object');
+    }
+    return this.openById(file.getId());
+  }
+
   getActiveSpreadsheet() {
     if (this.__activeSpreadsheet) return this.__activeSpreadsheet;
     // because this is a faked container bound app, we need to get the documentId from the config file
