@@ -1,6 +1,6 @@
 {
   "name": "src-gas",
-  "version": "1.0.1",
+  "version": "2.3.15",
   "description": "this is to test bundling from gas",
   "main": "index.js",
   "scripts": {
