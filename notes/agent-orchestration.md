@@ -20,6 +20,20 @@ To ensure it uses the correct method signatures and handles platform-specific nu
 ### 3. Execution & Validation
 The agent synthesizes a parity-compliant script and executes it using the `mcp_gas-fakes-mcp_workspace_agent` tool. It then validates the outcome and reports success or handles any errors dynamically.
 
+## The Architecture of Efficiency
+
+The technical design of `gf_agent` is optimized for high-speed, low-cost AI interaction. Unlike traditional automation tools that might use complex JSON schemas or scrape live websites, `gf_agent` uses a **Two-Tier Documentation Pattern**:
+
+### Tier 1: The Local Index (Compressed Knowledge)
+The local `gf_agent/skills/` directory contains small Markdown files that simply list every supported method. 
+- **Token Efficiency**: By using Markdown bulleted lists instead of JSON, we reduce "structural noise" (brackets, quotes, commas) by 30-50%. This keeps the agent's context window lean and focused.
+- **Instant Verification**: The agent can instantly verify if a method like `GmailApp.createLabel()` exists without making a single external request.
+
+### Tier 2: The Remote Deep Dive (On-Demand Research)
+If the agent needs a specific method signature or return type it doesn't already know, it performs a "surgical fetch" of the remote `progress/*.md` files from the `gas-fakes` repository.
+- **Zero-Scrape Design**: Scraping the official Google Apps Script documentation brings in thousands of tokens of HTML boilerplate and navigation menus. The `progress/*.md` files are clean, pre-parsed Markdown tables that provide the same information at a fraction of the cost.
+- **Context Compression**: The agent only pays the "token tax" for deep documentation when it absolutely needs to, ensuring that long-running sessions remain fast and responsive.
+
 ---
 
 ## Orchestration Examples
