@@ -1,15 +1,13 @@
-## checking agent orchestration - run all these in parallel
+## checking agent orchestration - run all these in parallel. If any task is running slowly, provide execution feedback.
 - Summarise Data: “Find latest 5 emails from ‘Martin Hawksey’ and summarize them in a Google Doc”.                                                                                 
 - Manage Files: “Create a sheet called ‘Todays drive files” and add any files on Drive modified today to it”.                                                                      
 - Schedule Events: “Add a meeting to discuss gf_agent with martin Hawksey to my calendar for tomorrow at 10am - dont send any invites to anyone, this is just to test the agent”.                                                                    
 - Summarize and chart: “Create a bar chart of how much time by week ive spent in meetings in my calendar this year.                                                                
-- Compare and inform: “Am I on average spending more of my time in meetings this year than last? Show me the average hours per week for each year on the console.”                 
+- Compare and inform: “Did I spend more of my time in meetings last month than the same month last year ? Show me the average hours per week for each month on the console.”               
 - Multiple services and image manipulation: “get the content of https://ramblings.mcpher.com/resurrecting-scriptdb-nosql-database-for-apps-script/ and create a google document. Make  a copy of that document and reduce all the images to 25%  of their current size. 
-- Process Spreadsheets: Using my airports spreadsheet, from the sheet with the most data, find the highest 5 airports in the world, convert their elevation to metres and show their distance from London in kilometres.
+- Process Spreadsheets: Using my airports spreadsheet, use the sheet with the most data. Find the highest 5 airports in the world, convert their elevation to metres and show their distance from London in kilometres.
 - What is the latest exchange rate from USD to JPY?
 - Please tell me the weather in Tokyo at noon tomorrow.
 - I am traveling to Paris. Please check the weather in Paris on 2026-05-01 12:00 (Latitude 48.85, Longitude 2.35, Timezone Europe/Paris). Also, I need to plan my budget, so please provide the latest exchange rate from JPY to EUR simultaneously.
 - Create a new Google Spreadsheet by putting a formula `=GOOGLEFINANCE("CURRENCY:USDJPY")` in cell "A1" of the first sheet. Then, get and show the value of cell "A1".
-- Sandbox test: Convert https://docs.google.com/spreadsheets/d/1TS2JzPZa1LeA4TmpkSjoYTRZaphXDinM-Zjms76STIs/edit?usp=sharing to a pdf and send as an attachment to bruce.mcpherson@gmail.com     
-   with a covering summary message of number of airports and average elevation in meters by country. Sign the letter as from the Pink Panther. Use sandnox mode and whitelist the   
-   recipient, and also the input file for read only.
+- Sandbox test: Convert https://docs.google.com/spreadsheets/d/1TS2JzPZa1LeA4TmpkSjoYTRZaphXDinM-Zjms76STIs/edit?usp=sharing to a pdf and send as an attachment to bruce.mcpherson@gmail.com.  Add a covering summary message of number of airports and average elevation in meters by country. Sign the letter as from the Pink Panther. Use sandbox mode and whitelist the recipient, and also the input file for read only

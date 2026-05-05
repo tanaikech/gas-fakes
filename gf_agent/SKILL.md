@@ -25,7 +25,6 @@ description: >
     - **Remote URL**: `https://raw.githubusercontent.com/brucemcpherson/gas-fakes/main/progress/{service}.md` (Note: `{service}` is lowercase, e.g., `spreadsheet.md`).
     - Use these details to construct precise, parity-compliant code without relying on external search engines unless documentation is missing.
 3. **Generate Script**: Create a Node.js script that:
-    - Imports `@mcpher/gas-fakes`.
     - Uses standard GAS syntax.
     - (Optional) Uses `ScriptApp.isFake` for local-only logic like logging or cleanup.
 4. **Execute & Verify**: Use the `mcp_gas-fakes-mcp_workspace_agent` tool to execute the code and report the results to the user.
@@ -39,7 +38,6 @@ Agent:
    - (Optional) Fetch `progress/gmail.md` and `progress/document.md` from GitHub for detailed signatures.
 3. **Generate Script**:
    ```javascript
-   import '@mcpher/gas-fakes';
    const threads = GmailApp.getInboxThreads(0, 5);
    let summary = 'Email Summary:\n\n';
    threads.forEach(t => {
@@ -67,6 +65,7 @@ Agent:
 ### Execution Context & Artifacts (CRITICAL)
 - **Role Boundary**: You are the `gf_agent` operating on behalf of an end-user to automate Google Workspace tasks. You are NOT a developer writing internal tests for the `gas-fakes` emulator repository.
 - **Transient Execution**: When fulfilling automation requests (e.g., "Create a sheet", "Summarize emails"), you MUST use the provided MCP execution tools (e.g., `run_script` or `mcp_gas-fakes-mcp_workspace_agent`) to execute code dynamically on-the-fly.
+- **No Import Required**: Do NOT include `import '@mcpher/gas-fakes';` at the top of your scripts when using the MCP execution tools. The MCP server environment automatically provisions all Google Apps Script globals (like `SpreadsheetApp`, `DriveApp`, etc.) into the execution context for you.
 - **No Permanent Artifacts**: DO NOT write script files to disk (e.g., in a `test/` folder) to execute user tasks, and DO NOT use the internal `gas-fakes` testing harness (like `initTests()`). The end-user of `gf_agent` does not have or care about the emulator's testing environment. Provide the plain Apps Script code directly as a string parameter to the MCP tool.
 
 ### Efficient Drive Searching (Best Practice)
@@ -126,13 +125,14 @@ Agent:
 - **Iterators**: `gas-fakes` iterators (like `FileIterator`) implement the native Apps Script `hasNext()` and `next()` methods, which differ from standard JavaScript iterators.
 
 ### Google Docs & Images
-- **Inline Image Resizing**: Native methods like `setWidth()`/`setHeight()` are **NOT** implemented.
+- **Inline Image Resizing (DocumentApp)**: Native methods like `setWidth()` and `setHeight()` on `InlineImage` objects are **NOT** implemented in `gas-fakes`. If you call these, the script will crash with a "not yet implemented" error.
 - **Conversion**: To create a Google Doc from HTML, use `Drive.Files.create()` with the correct v3 parameters:
   ```javascript
   const resource = { name: "Doc Name", mimeType: "application/vnd.google-apps.document" };
   Drive.Files.create(resource, htmlBlob);
   ```
-- **Resizing Workaround**: The Docs API does not support updating image properties. You must **delete and re-insert** the image with the new dimensions.
+- **Resizing Workaround (Advanced Docs Service)**: Because the Docs API does not support updating image properties directly, you must use the Advanced Docs Service (`Docs.Documents.batchUpdate`) to **delete and re-insert** the image with the new dimensions. 
+  - To do this, fetch the document via `Docs.Documents.get()`, locate the inline image URIs and object IDs, and construct `deleteObject` and `insertInlineImage` requests.
   - **Crucial**: Always sort your delete/insert requests by `startIndex` in **descending order** when performing multiple operations in a single `batchUpdate`. This prevents index shifting from invalidating subsequent operations in the same batch.
 - **Shadow Document & Named Ranges**: `gas-fakes` uses a "Shadow Document" approach. Elements are tracked using Named Range tags to maintain positional integrity during updates.
 - **Table Creation**: `appendTable()` without arguments creates a 1x1 table in `gas-fakes`, whereas live Apps Script creates an empty table stub.
@@ -149,6 +149,7 @@ Agent:
   - `getDisplayValues()` returns formatted strings.
   - `setValues()` uses "USER_ENTERED" mode.
 - **Bulk Operations (RangeList)**: Use `sheet.getRangeList(['A1', 'C1', 'E1'])` for multi-range formatting.
+- **Exporting to PDF (`getAs`)**: The `Spreadsheet.getAs()` method is **NOT** implemented in `gas-fakes`. If you need to convert a Spreadsheet (or a Document/Presentation) to a PDF, you MUST use the `DriveApp` service workaround: `DriveApp.getFileById(spreadsheet.getId()).getAs('application/pdf')`.
 
 ### Google Forms (FormApp)
 - **Programmatic Submission**: The public Forms API does **not** support submitting responses. `gas-fakes` uses a "web submission hack" that temporarily makes the form public to scrape tokens and POST the response.

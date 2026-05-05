@@ -25,7 +25,6 @@ description: >
     - **Remote URL**: `https://raw.githubusercontent.com/brucemcpherson/gas-fakes/main/progress/{service}.md` (Note: `{service}` is lowercase, e.g., `spreadsheet.md`).
     - Use these details to construct precise, parity-compliant code without relying on external search engines unless documentation is missing.
 3. **Generate Script**: Create a Node.js script that:
-    - Imports `@mcpher/gas-fakes`.
     - Uses standard GAS syntax.
     - (Optional) Uses `ScriptApp.isFake` for local-only logic like logging or cleanup.
 4. **Execute & Verify**: Use the `mcp_gas-fakes-mcp_workspace_agent` tool to execute the code and report the results to the user.
@@ -39,7 +38,6 @@ Agent:
    - (Optional) Fetch `progress/gmail.md` and `progress/document.md` from GitHub for detailed signatures.
 3. **Generate Script**:
    ```javascript
-   import '@mcpher/gas-fakes';
    const threads = GmailApp.getInboxThreads(0, 5);
    let summary = 'Email Summary:\n\n';
    threads.forEach(t => {

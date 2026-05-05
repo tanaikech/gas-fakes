@@ -6,6 +6,7 @@
   - `getDisplayValues()` returns formatted strings.
   - `setValues()` uses "USER_ENTERED" mode.
 - **Bulk Operations (RangeList)**: Use `sheet.getRangeList(['A1', 'C1', 'E1'])` for multi-range formatting.
+- **Exporting to PDF (`getAs`)**: The `Spreadsheet.getAs()` method is **NOT** implemented in `gas-fakes`. If you need to convert a Spreadsheet (or a Document/Presentation) to a PDF, you MUST use the `DriveApp` service workaround: `DriveApp.getFileById(spreadsheet.getId()).getAs('application/pdf')`.
 
 ### Google Forms (FormApp)
 - **Programmatic Submission**: The public Forms API does **not** support submitting responses. `gas-fakes` uses a "web submission hack" that temporarily makes the form public to scrape tokens and POST the response.

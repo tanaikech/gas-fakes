@@ -9,13 +9,14 @@
 - **Iterators**: `gas-fakes` iterators (like `FileIterator`) implement the native Apps Script `hasNext()` and `next()` methods, which differ from standard JavaScript iterators.
 
 ### Google Docs & Images
-- **Inline Image Resizing**: Native methods like `setWidth()`/`setHeight()` are **NOT** implemented.
+- **Inline Image Resizing (DocumentApp)**: Native methods like `setWidth()` and `setHeight()` on `InlineImage` objects are **NOT** implemented in `gas-fakes`. If you call these, the script will crash with a "not yet implemented" error.
 - **Conversion**: To create a Google Doc from HTML, use `Drive.Files.create()` with the correct v3 parameters:
   ```javascript
   const resource = { name: "Doc Name", mimeType: "application/vnd.google-apps.document" };
   Drive.Files.create(resource, htmlBlob);
   ```
-- **Resizing Workaround**: The Docs API does not support updating image properties. You must **delete and re-insert** the image with the new dimensions.
+- **Resizing Workaround (Advanced Docs Service)**: Because the Docs API does not support updating image properties directly, you must use the Advanced Docs Service (`Docs.Documents.batchUpdate`) to **delete and re-insert** the image with the new dimensions. 
+  - To do this, fetch the document via `Docs.Documents.get()`, locate the inline image URIs and object IDs, and construct `deleteObject` and `insertInlineImage` requests.
   - **Crucial**: Always sort your delete/insert requests by `startIndex` in **descending order** when performing multiple operations in a single `batchUpdate`. This prevents index shifting from invalidating subsequent operations in the same batch.
 - **Shadow Document & Named Ranges**: `gas-fakes` uses a "Shadow Document" approach. Elements are tracked using Named Range tags to maintain positional integrity during updates.
 - **Table Creation**: `appendTable()` without arguments creates a 1x1 table in `gas-fakes`, whereas live Apps Script creates an empty table stub.
