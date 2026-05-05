@@ -4,8 +4,10 @@ Unlike the standard Apps Script Services (`SpreadsheetApp`, `DriveApp`), the sig
 
 If you are orchestrating a complex task that requires an Advanced Service (such as resizing an image via `Docs.Documents.batchUpdate` or applying granular formatting via `Sheets.Spreadsheets.batchUpdate`) and you do not know the exact JSON payload structure, you MUST research it using the Google API Discovery documents.
 
-**How to Research Advanced Services:**
-Do not guess the payload structure. Instead, use the `run_shell_command` tool to `curl` and `grep` the official Discovery Document for the specific API version.
+**How to Research Advanced Services (NO GOOGLE SEARCH):**
+You MUST NOT use the `google_web_search` tool to look for Google Docs API structures, `batchUpdate` examples, or how to delete inline images. Web search often returns outdated or non-REST API examples (like Java or Python SDKs) which cause script failures.
+
+Instead, you MUST use the `run_shell_command` tool to `curl` and `grep` the official Google API Discovery Document for the specific API version. This is the only way to guarantee accurate, 100% current REST JSON schemas.
 
 **Discovery Document URLs:**
 - **Docs API v1**: `https://docs.googleapis.com/$discovery/rest?version=v1`
@@ -18,6 +20,10 @@ Do not guess the payload structure. Instead, use the `run_shell_command` tool to
 If you need to know how to structure an `insertInlineImage` request for the Docs API, you would run:
 ```bash
 curl -s "https://docs.googleapis.com/$discovery/rest?version=v1" | grep -A 30 '"InsertInlineImageRequest":'
+```
+For `deleteObject` (e.g., deleting an image):
+```bash
+curl -s "https://docs.googleapis.com/$discovery/rest?version=v1" | grep -A 20 '"DeleteObjectRequest":'
 ```
 
 By fetching the exact schema from the discovery document, you ensure your `batchUpdate` arrays and payload objects are 100% accurate before generating the execution script.

@@ -164,8 +164,8 @@ Agent:
 
 
 ### Google Sheets (SpreadsheetApp)
-- **Chart Creation & Ranges**: When using `EmbeddedChartBuilder.addRange()`, the Sheets API requires `ChartSourceRange` domains and series to have a length of 1 for either rows or columns.
-  - **Crucial**: Do **not** pass a multi-column range to `addRange()`. Add domains and series as separate single-column ranges.
+- **Chart Creation & Ranges**: While `gas-fakes` now emulates Live Apps Script behavior by automatically splitting multi-column ranges in `addRange()` (first column as domain, rest as series), for **maximum reliability** and clear control over your chart structure, it is still recommended to add domains and series as separate single-column ranges.
+  - *Example*: `chart.addRange(sheet.getRange("A2:A10")).addRange(sheet.getRange("B2:B10"))` is preferred over `chart.addRange(sheet.getRange("A2:B10"))`.
 - **Values vs. Display Values**: 
   - `getValues()` returns unformatted data.
   - `getDisplayValues()` returns formatted strings.
@@ -408,8 +408,10 @@ Unlike the standard Apps Script Services (`SpreadsheetApp`, `DriveApp`), the sig
 
 If you are orchestrating a complex task that requires an Advanced Service (such as resizing an image via `Docs.Documents.batchUpdate` or applying granular formatting via `Sheets.Spreadsheets.batchUpdate`) and you do not know the exact JSON payload structure, you MUST research it using the Google API Discovery documents.
 
-**How to Research Advanced Services:**
-Do not guess the payload structure. Instead, use the `run_shell_command` tool to `curl` and `grep` the official Discovery Document for the specific API version.
+**How to Research Advanced Services (NO GOOGLE SEARCH):**
+You MUST NOT use the `google_web_search` tool to look for Google Docs API structures, `batchUpdate` examples, or how to delete inline images. Web search often returns outdated or non-REST API examples (like Java or Python SDKs) which cause script failures.
+
+Instead, you MUST use the `run_shell_command` tool to `curl` and `grep` the official Google API Discovery Document for the specific API version. This is the only way to guarantee accurate, 100% current REST JSON schemas.
 
 **Discovery Document URLs:**
 - **Docs API v1**: `https://docs.googleapis.com/$discovery/rest?version=v1`
@@ -422,6 +424,10 @@ Do not guess the payload structure. Instead, use the `run_shell_command` tool to
 If you need to know how to structure an `insertInlineImage` request for the Docs API, you would run:
 ```bash
 curl -s "https://docs.googleapis.com/$discovery/rest?version=v1" | grep -A 30 '"InsertInlineImageRequest":'
+```
+For `deleteObject` (e.g., deleting an image):
+```bash
+curl -s "https://docs.googleapis.com/$discovery/rest?version=v1" | grep -A 20 '"DeleteObjectRequest":'
 ```
 
 By fetching the exact schema from the discovery document, you ensure your `batchUpdate` arrays and payload objects are 100% accurate before generating the execution script.
@@ -439,6 +445,23 @@ When generating code that uses the `Utilities` service, you must adhere to the f
 2. **`parseDate` Error Handling**:
    - If `Utilities.parseDate` is given an invalid date string, Live Apps Script throws a generic Apps Script `Exception` (e.g., `{"name":"Exception"}`) rather than a standard JavaScript `Error` object. 
    - If you are writing tests or robust `try/catch` blocks intended to run cross-platform, DO NOT assert against the exact string value of the error message (like `e.message.includes("failed")`). Simply check that an exception was thrown.
+
+
+### Context Efficiency & Logging (CRITICAL)
+
+To maintain a clean and professional user experience, `gf_agent` MUST prioritize context efficiency and minimize redundant tool logging.
+
+1. **Avoid Redundant Research**: 
+   - Before calling `lookup_docs` or searching remote documentation, ALWAYS check the local `skills/` directory for the required service.
+   - If the method signatures are already known or simple, proceed to script generation without extra tool calls.
+   - DO NOT call `lookup_docs` for every service in every turn. Only call it when a specific method signature is unknown or when a script fails with a "not a function" error.
+
+2. **Minimize Output Verbosity**:
+   - When reporting the results of research to the user, DO NOT print long lists of method names found in documentation. Summarize only the relevant findings.
+   - The user does not need to see the "raw" output of discovery tools.
+
+3. **Quiet Execution**:
+   - Aim for a "one-shot" success pattern. Use the gathered knowledge to write a robust script that works on the first try, avoiding the "Retry/Correction" cycle which generates excessive terminal logs.
 
 
 # gf_agent Knowledge Base

@@ -36820,7 +36820,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "A builder for an area chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L217"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L242"
           },
           {
             "method": "asBarChart()",
@@ -36829,7 +36829,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "A builder for a bar chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L218"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L243"
           },
           {
             "method": "asColumnChart()",
@@ -36838,7 +36838,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "A builder for a column chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L219"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L244"
           },
           {
             "method": "asComboChart()",
@@ -36847,7 +36847,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "A builder for a combo chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L220"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L245"
           },
           {
             "method": "asHistogramChart()",
@@ -36856,7 +36856,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "A builder for a histogram chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L221"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L246"
           },
           {
             "method": "asLineChart()",
@@ -36865,7 +36865,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "A builder for a line chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L222"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L247"
           },
           {
             "method": "asPieChart()",
@@ -36874,7 +36874,7 @@
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "A builder for a pie chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L223"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L248"
           },
           {
             "method": "asScatterChart()",
@@ -36883,7 +36883,7 @@
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "A builder for a scatter chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L224"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L249"
           },
           {
             "method": "asTableChart()",
@@ -36892,7 +36892,7 @@
             "returnType": "EmbeddedTableChartBuilder",
             "returnDescription": "A builder for a table chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L225"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L250"
           },
           {
             "method": "build()",
@@ -36901,7 +36901,7 @@
             "returnType": "EmbeddedChart",
             "returnDescription": "The created chart, which must still be added to the spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L125"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L150"
           },
           {
             "method": "clearRanges()",
@@ -36910,7 +36910,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L228"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L253"
           },
           {
             "method": "getChartType()",
@@ -36919,7 +36919,7 @@
             "returnType": "ChartType",
             "returnDescription": "The chart type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L83"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L108"
           },
           {
             "method": "getContainer()",
@@ -36928,7 +36928,7 @@
             "returnType": "ContainerInfo",
             "returnDescription": "An object containing the chart container's position.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L234"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L259"
           },
           {
             "method": "getRanges()",
@@ -36937,7 +36937,7 @@
             "returnType": "Range[]",
             "returnDescription": "An array of ranges that serve as the chart to be built's data source.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L238"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L263"
           },
           {
             "method": "removeRange(Range)",
@@ -36946,7 +36946,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L243"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L268"
           },
           {
             "method": "reverseCategories()",
@@ -36955,7 +36955,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L270"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L295"
           },
           {
             "method": "setBackgroundColor(String)",
@@ -36964,7 +36964,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L271"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L296"
           },
           {
             "method": "setChartType(ChartType)",
@@ -36973,7 +36973,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L75"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L100"
           },
           {
             "method": "setColors(String)",
@@ -36982,7 +36982,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L273"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L298"
           },
           {
             "method": "setHiddenDimensionStrategy(ChartHiddenDimensionStrategy)",
@@ -36991,7 +36991,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L245"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L270"
           },
           {
             "method": "setLegendPosition(Position)",
@@ -37000,7 +37000,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L279"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L304"
           },
           {
             "method": "setLegendTextStyle(TextStyle)",
@@ -37009,7 +37009,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L284"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L309"
           },
           {
             "method": "setMergeStrategy(ChartMergeStrategy)",
@@ -37018,7 +37018,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L250"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L275"
           },
           {
             "method": "setNumHeaders(Integer)",
@@ -37027,7 +37027,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L251"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L276"
           },
           {
             "method": "setOption(String,Object)",
@@ -37036,7 +37036,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L110"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L135"
           },
           {
             "method": "setPointStyle(PointStyle)",
@@ -37045,7 +37045,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L285"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L310"
           },
           {
             "method": "setPosition(Integer,Integer,Integer,Integer)",
@@ -37054,7 +37054,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L99"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L124"
           },
           {
             "method": "setRange(Number,Number)",
@@ -37063,7 +37063,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L287"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L312"
           },
           {
             "method": "setStacked()",
@@ -37072,7 +37072,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L296"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L321"
           },
           {
             "method": "setTitle(String)",
@@ -37081,7 +37081,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L304"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L329"
           },
           {
             "method": "setTitleTextStyle(TextStyle)",
@@ -37090,7 +37090,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L310"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L335"
           },
           {
             "method": "setTransposeRowsAndColumns(Boolean)",
@@ -37099,7 +37099,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L252"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L277"
           },
           {
             "method": "setXAxisTextStyle(TextStyle)",
@@ -37108,7 +37108,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L311"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
           },
           {
             "method": "setXAxisTitle(String)",
@@ -37117,7 +37117,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L313"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L338"
           },
           {
             "method": "setXAxisTitleTextStyle(TextStyle)",
@@ -37126,7 +37126,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L319"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L344"
           },
           {
             "method": "setYAxisTextStyle(TextStyle)",
@@ -37135,7 +37135,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L320"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L345"
           },
           {
             "method": "setYAxisTitle(String)",
@@ -37144,7 +37144,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L322"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L347"
           },
           {
             "method": "setYAxisTitleTextStyle(TextStyle)",
@@ -37153,7 +37153,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L328"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L353"
           },
           {
             "method": "useLogScale()",
@@ -37162,7 +37162,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L329"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L354"
           }
         ]
       },
@@ -37429,7 +37429,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "A builder for an area chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L217"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L242"
           },
           {
             "method": "asBarChart()",
@@ -37438,7 +37438,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "A builder for a bar chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L218"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L243"
           },
           {
             "method": "asColumnChart()",
@@ -37447,7 +37447,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "A builder for a column chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L219"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L244"
           },
           {
             "method": "asComboChart()",
@@ -37456,7 +37456,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "A builder for a combo chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L220"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L245"
           },
           {
             "method": "asHistogramChart()",
@@ -37465,7 +37465,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "A builder for a histogram chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L221"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L246"
           },
           {
             "method": "asLineChart()",
@@ -37474,7 +37474,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "A builder for a line chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L222"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L247"
           },
           {
             "method": "asPieChart()",
@@ -37483,7 +37483,7 @@
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "A builder for a pie chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L223"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L248"
           },
           {
             "method": "asScatterChart()",
@@ -37492,7 +37492,7 @@
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "A builder for a scatter chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L224"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L249"
           },
           {
             "method": "asTableChart()",
@@ -37501,7 +37501,7 @@
             "returnType": "EmbeddedTableChartBuilder",
             "returnDescription": "A builder for a table chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L225"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L250"
           },
           {
             "method": "build()",
@@ -37510,7 +37510,7 @@
             "returnType": "EmbeddedChart",
             "returnDescription": "The created chart, which must still be added to the spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L125"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L150"
           },
           {
             "method": "clearRanges()",
@@ -37519,7 +37519,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L228"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L253"
           },
           {
             "method": "getChartType()",
@@ -37528,7 +37528,7 @@
             "returnType": "ChartType",
             "returnDescription": "The chart type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L83"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L108"
           },
           {
             "method": "getContainer()",
@@ -37537,7 +37537,7 @@
             "returnType": "ContainerInfo",
             "returnDescription": "An object containing the chart container's position.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L234"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L259"
           },
           {
             "method": "getRanges()",
@@ -37546,7 +37546,7 @@
             "returnType": "Range[]",
             "returnDescription": "An array of ranges that serve as the chart to be built's data source.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L238"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L263"
           },
           {
             "method": "removeRange(Range)",
@@ -37555,7 +37555,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L243"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L268"
           },
           {
             "method": "reverseCategories()",
@@ -37564,7 +37564,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L270"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L295"
           },
           {
             "method": "reverseDirection()",
@@ -37573,7 +37573,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L357"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L382"
           },
           {
             "method": "setBackgroundColor(String)",
@@ -37582,7 +37582,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L271"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L296"
           },
           {
             "method": "setChartType(ChartType)",
@@ -37591,7 +37591,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L75"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L100"
           },
           {
             "method": "setColors(String)",
@@ -37600,7 +37600,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L273"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L298"
           },
           {
             "method": "setHiddenDimensionStrategy(ChartHiddenDimensionStrategy)",
@@ -37609,7 +37609,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L245"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L270"
           },
           {
             "method": "setLegendPosition(Position)",
@@ -37618,7 +37618,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L279"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L304"
           },
           {
             "method": "setLegendTextStyle(TextStyle)",
@@ -37627,7 +37627,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L284"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L309"
           },
           {
             "method": "setMergeStrategy(ChartMergeStrategy)",
@@ -37636,7 +37636,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L250"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L275"
           },
           {
             "method": "setNumHeaders(Integer)",
@@ -37645,7 +37645,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L251"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L276"
           },
           {
             "method": "setOption(String,Object)",
@@ -37654,7 +37654,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L110"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L135"
           },
           {
             "method": "setPosition(Integer,Integer,Integer,Integer)",
@@ -37663,7 +37663,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L99"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L124"
           },
           {
             "method": "setRange(Number,Number)",
@@ -37672,7 +37672,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L287"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L312"
           },
           {
             "method": "setStacked()",
@@ -37681,7 +37681,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L296"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L321"
           },
           {
             "method": "setTitle(String)",
@@ -37690,7 +37690,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L304"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L329"
           },
           {
             "method": "setTitleTextStyle(TextStyle)",
@@ -37699,7 +37699,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L310"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L335"
           },
           {
             "method": "setTransposeRowsAndColumns(Boolean)",
@@ -37708,7 +37708,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L252"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L277"
           },
           {
             "method": "setXAxisTextStyle(TextStyle)",
@@ -37717,7 +37717,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L311"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
           },
           {
             "method": "setXAxisTitle(String)",
@@ -37726,7 +37726,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L313"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L338"
           },
           {
             "method": "setXAxisTitleTextStyle(TextStyle)",
@@ -37735,7 +37735,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L319"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L344"
           },
           {
             "method": "setYAxisTextStyle(TextStyle)",
@@ -37744,7 +37744,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L320"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L345"
           },
           {
             "method": "setYAxisTitle(String)",
@@ -37753,7 +37753,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L322"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L347"
           },
           {
             "method": "setYAxisTitleTextStyle(TextStyle)",
@@ -37762,7 +37762,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L328"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L353"
           },
           {
             "method": "useLogScale()",
@@ -37771,7 +37771,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L329"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L354"
           }
         ]
       },
@@ -37797,7 +37797,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "A builder for an area chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L217"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L242"
           },
           {
             "method": "asBarChart()",
@@ -37806,7 +37806,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "A builder for a bar chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L218"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L243"
           },
           {
             "method": "asColumnChart()",
@@ -37815,7 +37815,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "A builder for a column chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L219"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L244"
           },
           {
             "method": "asComboChart()",
@@ -37824,7 +37824,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "A builder for a combo chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L220"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L245"
           },
           {
             "method": "asHistogramChart()",
@@ -37833,7 +37833,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "A builder for a histogram chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L221"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L246"
           },
           {
             "method": "asLineChart()",
@@ -37842,7 +37842,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "A builder for a line chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L222"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L247"
           },
           {
             "method": "asPieChart()",
@@ -37851,7 +37851,7 @@
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "A builder for a pie chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L223"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L248"
           },
           {
             "method": "asScatterChart()",
@@ -37860,7 +37860,7 @@
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "A builder for a scatter chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L224"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L249"
           },
           {
             "method": "asTableChart()",
@@ -37869,7 +37869,7 @@
             "returnType": "EmbeddedTableChartBuilder",
             "returnDescription": "A builder for a table chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L225"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L250"
           },
           {
             "method": "build()",
@@ -37878,7 +37878,7 @@
             "returnType": "EmbeddedChart",
             "returnDescription": "The created chart, which must still be added to the spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L125"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L150"
           },
           {
             "method": "clearRanges()",
@@ -37887,7 +37887,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L228"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L253"
           },
           {
             "method": "getChartType()",
@@ -37896,7 +37896,7 @@
             "returnType": "ChartType",
             "returnDescription": "The chart type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L83"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L108"
           },
           {
             "method": "getContainer()",
@@ -37905,7 +37905,7 @@
             "returnType": "ContainerInfo",
             "returnDescription": "An object containing the chart container's position.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L234"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L259"
           },
           {
             "method": "getRanges()",
@@ -37914,7 +37914,7 @@
             "returnType": "Range[]",
             "returnDescription": "An array of ranges that serve as the chart to be built's data source.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L238"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L263"
           },
           {
             "method": "removeRange(Range)",
@@ -37923,7 +37923,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L243"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L268"
           },
           {
             "method": "setChartType(ChartType)",
@@ -37932,7 +37932,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L75"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L100"
           },
           {
             "method": "setHiddenDimensionStrategy(ChartHiddenDimensionStrategy)",
@@ -37941,7 +37941,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L245"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L270"
           },
           {
             "method": "setMergeStrategy(ChartMergeStrategy)",
@@ -37950,7 +37950,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L250"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L275"
           },
           {
             "method": "setNumHeaders(Integer)",
@@ -37959,7 +37959,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L251"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L276"
           },
           {
             "method": "setOption(String,Object)",
@@ -37968,7 +37968,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L110"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L135"
           },
           {
             "method": "setPosition(Integer,Integer,Integer,Integer)",
@@ -37977,7 +37977,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L99"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L124"
           },
           {
             "method": "setTransposeRowsAndColumns(Boolean)",
@@ -37986,7 +37986,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L252"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L277"
           }
         ]
       },
@@ -38012,7 +38012,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "A builder for an area chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L217"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L242"
           },
           {
             "method": "asBarChart()",
@@ -38021,7 +38021,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "A builder for a bar chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L218"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L243"
           },
           {
             "method": "asColumnChart()",
@@ -38030,7 +38030,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "A builder for a column chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L219"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L244"
           },
           {
             "method": "asComboChart()",
@@ -38039,7 +38039,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "A builder for a combo chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L220"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L245"
           },
           {
             "method": "asHistogramChart()",
@@ -38048,7 +38048,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "A builder for a histogram chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L221"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L246"
           },
           {
             "method": "asLineChart()",
@@ -38057,7 +38057,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "A builder for a line chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L222"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L247"
           },
           {
             "method": "asPieChart()",
@@ -38066,7 +38066,7 @@
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "A builder for a pie chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L223"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L248"
           },
           {
             "method": "asScatterChart()",
@@ -38075,7 +38075,7 @@
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "A builder for a scatter chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L224"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L249"
           },
           {
             "method": "asTableChart()",
@@ -38084,7 +38084,7 @@
             "returnType": "EmbeddedTableChartBuilder",
             "returnDescription": "A builder for a table chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L225"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L250"
           },
           {
             "method": "build()",
@@ -38093,7 +38093,7 @@
             "returnType": "EmbeddedChart",
             "returnDescription": "The created chart, which must still be added to the spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L125"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L150"
           },
           {
             "method": "clearRanges()",
@@ -38102,7 +38102,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L228"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L253"
           },
           {
             "method": "getChartType()",
@@ -38111,7 +38111,7 @@
             "returnType": "ChartType",
             "returnDescription": "The chart type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L83"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L108"
           },
           {
             "method": "getContainer()",
@@ -38120,7 +38120,7 @@
             "returnType": "ContainerInfo",
             "returnDescription": "An object containing the chart container's position.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L234"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L259"
           },
           {
             "method": "getRanges()",
@@ -38129,7 +38129,7 @@
             "returnType": "Range[]",
             "returnDescription": "An array of ranges that serve as the chart to be built's data source.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L238"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L263"
           },
           {
             "method": "removeRange(Range)",
@@ -38138,7 +38138,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L243"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L268"
           },
           {
             "method": "reverseCategories()",
@@ -38147,7 +38147,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L270"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L295"
           },
           {
             "method": "setBackgroundColor(String)",
@@ -38156,7 +38156,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L271"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L296"
           },
           {
             "method": "setChartType(ChartType)",
@@ -38165,7 +38165,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L75"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L100"
           },
           {
             "method": "setColors(String)",
@@ -38174,7 +38174,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L273"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L298"
           },
           {
             "method": "setHiddenDimensionStrategy(ChartHiddenDimensionStrategy)",
@@ -38183,7 +38183,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L245"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L270"
           },
           {
             "method": "setLegendPosition(Position)",
@@ -38192,7 +38192,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L279"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L304"
           },
           {
             "method": "setLegendTextStyle(TextStyle)",
@@ -38201,7 +38201,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L284"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L309"
           },
           {
             "method": "setMergeStrategy(ChartMergeStrategy)",
@@ -38210,7 +38210,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L250"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L275"
           },
           {
             "method": "setNumHeaders(Integer)",
@@ -38219,7 +38219,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L251"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L276"
           },
           {
             "method": "setOption(String,Object)",
@@ -38228,7 +38228,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L110"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L135"
           },
           {
             "method": "setPosition(Integer,Integer,Integer,Integer)",
@@ -38237,7 +38237,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L99"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L124"
           },
           {
             "method": "setRange(Number,Number)",
@@ -38246,7 +38246,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L287"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L312"
           },
           {
             "method": "setStacked()",
@@ -38255,7 +38255,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L296"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L321"
           },
           {
             "method": "setTitle(String)",
@@ -38264,7 +38264,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L304"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L329"
           },
           {
             "method": "setTitleTextStyle(TextStyle)",
@@ -38273,7 +38273,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L310"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L335"
           },
           {
             "method": "setTransposeRowsAndColumns(Boolean)",
@@ -38282,7 +38282,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L252"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L277"
           },
           {
             "method": "setXAxisTextStyle(TextStyle)",
@@ -38291,7 +38291,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L311"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
           },
           {
             "method": "setXAxisTitle(String)",
@@ -38300,7 +38300,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L313"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L338"
           },
           {
             "method": "setXAxisTitleTextStyle(TextStyle)",
@@ -38309,7 +38309,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L319"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L344"
           },
           {
             "method": "setYAxisTextStyle(TextStyle)",
@@ -38318,7 +38318,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L320"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L345"
           },
           {
             "method": "setYAxisTitle(String)",
@@ -38327,7 +38327,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L322"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L347"
           },
           {
             "method": "setYAxisTitleTextStyle(TextStyle)",
@@ -38336,7 +38336,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L328"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L353"
           },
           {
             "method": "useLogScale()",
@@ -38345,7 +38345,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L329"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L354"
           }
         ]
       },
@@ -38371,7 +38371,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "A builder for an area chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L217"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L242"
           },
           {
             "method": "asBarChart()",
@@ -38380,7 +38380,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "A builder for a bar chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L218"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L243"
           },
           {
             "method": "asColumnChart()",
@@ -38389,7 +38389,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "A builder for a column chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L219"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L244"
           },
           {
             "method": "asComboChart()",
@@ -38398,7 +38398,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "A builder for a combo chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L220"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L245"
           },
           {
             "method": "asHistogramChart()",
@@ -38407,7 +38407,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "A builder for a histogram chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L221"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L246"
           },
           {
             "method": "asLineChart()",
@@ -38416,7 +38416,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "A builder for a line chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L222"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L247"
           },
           {
             "method": "asPieChart()",
@@ -38425,7 +38425,7 @@
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "A builder for a pie chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L223"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L248"
           },
           {
             "method": "asScatterChart()",
@@ -38434,7 +38434,7 @@
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "A builder for a scatter chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L224"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L249"
           },
           {
             "method": "asTableChart()",
@@ -38443,7 +38443,7 @@
             "returnType": "EmbeddedTableChartBuilder",
             "returnDescription": "A builder for a table chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L225"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L250"
           },
           {
             "method": "build()",
@@ -38452,7 +38452,7 @@
             "returnType": "EmbeddedChart",
             "returnDescription": "The created chart, which must still be added to the spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L125"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L150"
           },
           {
             "method": "clearRanges()",
@@ -38461,7 +38461,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L228"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L253"
           },
           {
             "method": "getChartType()",
@@ -38470,7 +38470,7 @@
             "returnType": "ChartType",
             "returnDescription": "The chart type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L83"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L108"
           },
           {
             "method": "getContainer()",
@@ -38479,7 +38479,7 @@
             "returnType": "ContainerInfo",
             "returnDescription": "An object containing the chart container's position.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L234"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L259"
           },
           {
             "method": "getRanges()",
@@ -38488,7 +38488,7 @@
             "returnType": "Range[]",
             "returnDescription": "An array of ranges that serve as the chart to be built's data source.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L238"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L263"
           },
           {
             "method": "removeRange(Range)",
@@ -38497,7 +38497,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L243"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L268"
           },
           {
             "method": "reverseCategories()",
@@ -38506,7 +38506,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L270"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L295"
           },
           {
             "method": "setBackgroundColor(String)",
@@ -38515,7 +38515,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L271"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L296"
           },
           {
             "method": "setChartType(ChartType)",
@@ -38524,7 +38524,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L75"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L100"
           },
           {
             "method": "setColors(String)",
@@ -38533,7 +38533,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L273"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L298"
           },
           {
             "method": "setHiddenDimensionStrategy(ChartHiddenDimensionStrategy)",
@@ -38542,7 +38542,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L245"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L270"
           },
           {
             "method": "setLegendPosition(Position)",
@@ -38551,7 +38551,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L279"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L304"
           },
           {
             "method": "setLegendTextStyle(TextStyle)",
@@ -38560,7 +38560,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L284"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L309"
           },
           {
             "method": "setMergeStrategy(ChartMergeStrategy)",
@@ -38569,7 +38569,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L250"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L275"
           },
           {
             "method": "setNumHeaders(Integer)",
@@ -38578,7 +38578,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L251"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L276"
           },
           {
             "method": "setOption(String,Object)",
@@ -38587,7 +38587,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L110"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L135"
           },
           {
             "method": "setPosition(Integer,Integer,Integer,Integer)",
@@ -38596,7 +38596,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L99"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L124"
           },
           {
             "method": "setRange(Number,Number)",
@@ -38605,7 +38605,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L287"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L312"
           },
           {
             "method": "setStacked()",
@@ -38614,7 +38614,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L296"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L321"
           },
           {
             "method": "setTitle(String)",
@@ -38623,7 +38623,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L304"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L329"
           },
           {
             "method": "setTitleTextStyle(TextStyle)",
@@ -38632,7 +38632,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L310"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L335"
           },
           {
             "method": "setTransposeRowsAndColumns(Boolean)",
@@ -38641,7 +38641,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L252"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L277"
           },
           {
             "method": "setXAxisTextStyle(TextStyle)",
@@ -38650,7 +38650,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L311"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
           },
           {
             "method": "setXAxisTitle(String)",
@@ -38659,7 +38659,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L313"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L338"
           },
           {
             "method": "setXAxisTitleTextStyle(TextStyle)",
@@ -38668,7 +38668,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L319"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L344"
           },
           {
             "method": "setYAxisTextStyle(TextStyle)",
@@ -38677,7 +38677,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L320"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L345"
           },
           {
             "method": "setYAxisTitle(String)",
@@ -38686,7 +38686,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L322"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L347"
           },
           {
             "method": "setYAxisTitleTextStyle(TextStyle)",
@@ -38695,7 +38695,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L328"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L353"
           },
           {
             "method": "useLogScale()",
@@ -38704,7 +38704,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L329"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L354"
           }
         ]
       },
@@ -38730,7 +38730,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "A builder for an area chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L217"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L242"
           },
           {
             "method": "asBarChart()",
@@ -38739,7 +38739,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "A builder for a bar chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L218"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L243"
           },
           {
             "method": "asColumnChart()",
@@ -38748,7 +38748,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "A builder for a column chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L219"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L244"
           },
           {
             "method": "asComboChart()",
@@ -38757,7 +38757,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "A builder for a combo chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L220"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L245"
           },
           {
             "method": "asHistogramChart()",
@@ -38766,7 +38766,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "A builder for a histogram chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L221"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L246"
           },
           {
             "method": "asLineChart()",
@@ -38775,7 +38775,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "A builder for a line chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L222"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L247"
           },
           {
             "method": "asPieChart()",
@@ -38784,7 +38784,7 @@
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "A builder for a pie chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L223"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L248"
           },
           {
             "method": "asScatterChart()",
@@ -38793,7 +38793,7 @@
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "A builder for a scatter chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L224"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L249"
           },
           {
             "method": "asTableChart()",
@@ -38802,7 +38802,7 @@
             "returnType": "EmbeddedTableChartBuilder",
             "returnDescription": "A builder for a table chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L225"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L250"
           },
           {
             "method": "build()",
@@ -38811,7 +38811,7 @@
             "returnType": "EmbeddedChart",
             "returnDescription": "The created chart, which must still be added to the spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L125"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L150"
           },
           {
             "method": "clearRanges()",
@@ -38820,7 +38820,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L228"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L253"
           },
           {
             "method": "getChartType()",
@@ -38829,7 +38829,7 @@
             "returnType": "ChartType",
             "returnDescription": "The chart type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L83"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L108"
           },
           {
             "method": "getContainer()",
@@ -38838,7 +38838,7 @@
             "returnType": "ContainerInfo",
             "returnDescription": "An object containing the chart container's position.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L234"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L259"
           },
           {
             "method": "getRanges()",
@@ -38847,7 +38847,7 @@
             "returnType": "Range[]",
             "returnDescription": "An array of ranges that serve as the chart to be built's data source.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L238"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L263"
           },
           {
             "method": "removeRange(Range)",
@@ -38856,7 +38856,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L243"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L268"
           },
           {
             "method": "reverseCategories()",
@@ -38865,7 +38865,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L270"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L295"
           },
           {
             "method": "setBackgroundColor(String)",
@@ -38874,7 +38874,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L271"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L296"
           },
           {
             "method": "setChartType(ChartType)",
@@ -38883,7 +38883,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L75"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L100"
           },
           {
             "method": "setColors(String)",
@@ -38892,7 +38892,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L273"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L298"
           },
           {
             "method": "setCurveStyle(CurveStyle)",
@@ -38910,7 +38910,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L245"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L270"
           },
           {
             "method": "setLegendPosition(Position)",
@@ -38919,7 +38919,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L279"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L304"
           },
           {
             "method": "setLegendTextStyle(TextStyle)",
@@ -38928,7 +38928,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L284"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L309"
           },
           {
             "method": "setMergeStrategy(ChartMergeStrategy)",
@@ -38937,7 +38937,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L250"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L275"
           },
           {
             "method": "setNumHeaders(Integer)",
@@ -38946,7 +38946,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L251"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L276"
           },
           {
             "method": "setOption(String,Object)",
@@ -38955,7 +38955,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L110"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L135"
           },
           {
             "method": "setPointStyle(PointStyle)",
@@ -38964,7 +38964,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L285"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L310"
           },
           {
             "method": "setPosition(Integer,Integer,Integer,Integer)",
@@ -38973,7 +38973,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L99"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L124"
           },
           {
             "method": "setRange(Number,Number)",
@@ -38982,7 +38982,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L287"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L312"
           },
           {
             "method": "setTitle(String)",
@@ -38991,7 +38991,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L304"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L329"
           },
           {
             "method": "setTitleTextStyle(TextStyle)",
@@ -39000,7 +39000,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L310"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L335"
           },
           {
             "method": "setTransposeRowsAndColumns(Boolean)",
@@ -39009,7 +39009,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L252"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L277"
           },
           {
             "method": "setXAxisTextStyle(TextStyle)",
@@ -39018,7 +39018,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L311"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
           },
           {
             "method": "setXAxisTitle(String)",
@@ -39027,7 +39027,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L313"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L338"
           },
           {
             "method": "setXAxisTitleTextStyle(TextStyle)",
@@ -39036,7 +39036,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L319"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L344"
           },
           {
             "method": "setYAxisTextStyle(TextStyle)",
@@ -39045,7 +39045,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L320"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L345"
           },
           {
             "method": "setYAxisTitle(String)",
@@ -39054,7 +39054,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L322"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L347"
           },
           {
             "method": "setYAxisTitleTextStyle(TextStyle)",
@@ -39063,7 +39063,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L328"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L353"
           },
           {
             "method": "useLogScale()",
@@ -39072,7 +39072,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L329"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L354"
           }
         ]
       },
@@ -39098,7 +39098,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "A builder for an area chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L217"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L242"
           },
           {
             "method": "asBarChart()",
@@ -39107,7 +39107,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "A builder for a bar chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L218"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L243"
           },
           {
             "method": "asColumnChart()",
@@ -39116,7 +39116,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "A builder for a column chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L219"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L244"
           },
           {
             "method": "asComboChart()",
@@ -39125,7 +39125,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "A builder for a combo chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L220"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L245"
           },
           {
             "method": "asHistogramChart()",
@@ -39134,7 +39134,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "A builder for a histogram chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L221"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L246"
           },
           {
             "method": "asLineChart()",
@@ -39143,7 +39143,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "A builder for a line chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L222"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L247"
           },
           {
             "method": "asPieChart()",
@@ -39152,7 +39152,7 @@
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "A builder for a pie chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L223"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L248"
           },
           {
             "method": "asScatterChart()",
@@ -39161,7 +39161,7 @@
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "A builder for a scatter chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L224"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L249"
           },
           {
             "method": "asTableChart()",
@@ -39170,7 +39170,7 @@
             "returnType": "EmbeddedTableChartBuilder",
             "returnDescription": "A builder for a table chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L225"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L250"
           },
           {
             "method": "build()",
@@ -39179,7 +39179,7 @@
             "returnType": "EmbeddedChart",
             "returnDescription": "The created chart, which must still be added to the spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L125"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L150"
           },
           {
             "method": "clearRanges()",
@@ -39188,7 +39188,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L228"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L253"
           },
           {
             "method": "getChartType()",
@@ -39197,7 +39197,7 @@
             "returnType": "ChartType",
             "returnDescription": "The chart type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L83"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L108"
           },
           {
             "method": "getContainer()",
@@ -39206,7 +39206,7 @@
             "returnType": "ContainerInfo",
             "returnDescription": "An object containing the chart container's position.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L234"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L259"
           },
           {
             "method": "getRanges()",
@@ -39215,7 +39215,7 @@
             "returnType": "Range[]",
             "returnDescription": "An array of ranges that serve as the chart to be built's data source.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L238"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L263"
           },
           {
             "method": "removeRange(Range)",
@@ -39224,7 +39224,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L243"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L268"
           },
           {
             "method": "reverseCategories()",
@@ -39233,7 +39233,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L270"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L295"
           },
           {
             "method": "setBackgroundColor(String)",
@@ -39242,7 +39242,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L271"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L296"
           },
           {
             "method": "setChartType(ChartType)",
@@ -39251,7 +39251,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L75"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L100"
           },
           {
             "method": "setColors(String)",
@@ -39260,7 +39260,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L273"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L298"
           },
           {
             "method": "setHiddenDimensionStrategy(ChartHiddenDimensionStrategy)",
@@ -39269,7 +39269,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L245"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L270"
           },
           {
             "method": "setLegendPosition(Position)",
@@ -39278,7 +39278,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L279"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L304"
           },
           {
             "method": "setLegendTextStyle(TextStyle)",
@@ -39287,7 +39287,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L284"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L309"
           },
           {
             "method": "setMergeStrategy(ChartMergeStrategy)",
@@ -39296,7 +39296,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L250"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L275"
           },
           {
             "method": "setNumHeaders(Integer)",
@@ -39305,7 +39305,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L251"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L276"
           },
           {
             "method": "setOption(String,Object)",
@@ -39314,7 +39314,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L110"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L135"
           },
           {
             "method": "setPosition(Integer,Integer,Integer,Integer)",
@@ -39323,7 +39323,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L99"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L124"
           },
           {
             "method": "setRange(Number,Number)",
@@ -39332,7 +39332,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L287"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L312"
           },
           {
             "method": "setStacked()",
@@ -39341,7 +39341,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L296"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L321"
           },
           {
             "method": "setTitle(String)",
@@ -39350,7 +39350,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L304"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L329"
           },
           {
             "method": "setTitleTextStyle(TextStyle)",
@@ -39359,7 +39359,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L310"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L335"
           },
           {
             "method": "setTransposeRowsAndColumns(Boolean)",
@@ -39368,7 +39368,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L252"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L277"
           },
           {
             "method": "setXAxisTextStyle(TextStyle)",
@@ -39377,7 +39377,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L311"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
           },
           {
             "method": "setXAxisTitle(String)",
@@ -39386,7 +39386,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L313"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L338"
           },
           {
             "method": "setXAxisTitleTextStyle(TextStyle)",
@@ -39395,7 +39395,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L319"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L344"
           },
           {
             "method": "setYAxisTextStyle(TextStyle)",
@@ -39404,7 +39404,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L320"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L345"
           },
           {
             "method": "setYAxisTitle(String)",
@@ -39413,7 +39413,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L322"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L347"
           },
           {
             "method": "setYAxisTitleTextStyle(TextStyle)",
@@ -39422,7 +39422,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L328"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L353"
           },
           {
             "method": "useLogScale()",
@@ -39431,7 +39431,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L329"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L354"
           }
         ]
       },
@@ -39457,7 +39457,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "A builder for an area chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L217"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L242"
           },
           {
             "method": "asBarChart()",
@@ -39466,7 +39466,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "A builder for a bar chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L218"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L243"
           },
           {
             "method": "asColumnChart()",
@@ -39475,7 +39475,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "A builder for a column chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L219"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L244"
           },
           {
             "method": "asComboChart()",
@@ -39484,7 +39484,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "A builder for a combo chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L220"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L245"
           },
           {
             "method": "asHistogramChart()",
@@ -39493,7 +39493,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "A builder for a histogram chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L221"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L246"
           },
           {
             "method": "asLineChart()",
@@ -39502,7 +39502,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "A builder for a line chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L222"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L247"
           },
           {
             "method": "asPieChart()",
@@ -39511,7 +39511,7 @@
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "A builder for a pie chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L223"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L248"
           },
           {
             "method": "asScatterChart()",
@@ -39520,7 +39520,7 @@
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "A builder for a scatter chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L224"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L249"
           },
           {
             "method": "asTableChart()",
@@ -39529,7 +39529,7 @@
             "returnType": "EmbeddedTableChartBuilder",
             "returnDescription": "A builder for a table chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L225"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L250"
           },
           {
             "method": "build()",
@@ -39538,7 +39538,7 @@
             "returnType": "EmbeddedChart",
             "returnDescription": "The created chart, which must still be added to the spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L125"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L150"
           },
           {
             "method": "clearRanges()",
@@ -39547,7 +39547,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L228"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L253"
           },
           {
             "method": "enablePaging(Boolean)",
@@ -39556,7 +39556,7 @@
             "returnType": "EmbeddedTableChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L331"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L356"
           },
           {
             "method": "enablePaging(Integer)",
@@ -39565,7 +39565,7 @@
             "returnType": "EmbeddedTableChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L331"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L356"
           },
           {
             "method": "enablePaging(Integer,Integer)",
@@ -39574,7 +39574,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L331"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L356"
           },
           {
             "method": "enableRtlTable(Boolean)",
@@ -39583,7 +39583,7 @@
             "returnType": "EmbeddedTableChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L332"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L357"
           },
           {
             "method": "enableSorting(Boolean)",
@@ -39592,7 +39592,7 @@
             "returnType": "EmbeddedTableChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L333"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L358"
           },
           {
             "method": "getChartType()",
@@ -39601,7 +39601,7 @@
             "returnType": "ChartType",
             "returnDescription": "The chart type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L83"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L108"
           },
           {
             "method": "getContainer()",
@@ -39610,7 +39610,7 @@
             "returnType": "ContainerInfo",
             "returnDescription": "An object containing the chart container's position.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L234"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L259"
           },
           {
             "method": "getRanges()",
@@ -39619,7 +39619,7 @@
             "returnType": "Range[]",
             "returnDescription": "An array of ranges that serve as the chart to be built's data source.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L238"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L263"
           },
           {
             "method": "removeRange(Range)",
@@ -39628,7 +39628,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L243"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L268"
           },
           {
             "method": "setChartType(ChartType)",
@@ -39637,7 +39637,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L75"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L100"
           },
           {
             "method": "setFirstRowNumber(Integer)",
@@ -39646,7 +39646,7 @@
             "returnType": "EmbeddedTableChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L334"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L359"
           },
           {
             "method": "setHiddenDimensionStrategy(ChartHiddenDimensionStrategy)",
@@ -39655,7 +39655,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L245"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L270"
           },
           {
             "method": "setInitialSortingAscending(Integer)",
@@ -39664,7 +39664,7 @@
             "returnType": "EmbeddedTableChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L335"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L360"
           },
           {
             "method": "setInitialSortingDescending(Integer)",
@@ -39673,7 +39673,7 @@
             "returnType": "EmbeddedTableChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L361"
           },
           {
             "method": "setMergeStrategy(ChartMergeStrategy)",
@@ -39682,7 +39682,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L250"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L275"
           },
           {
             "method": "setNumHeaders(Integer)",
@@ -39691,7 +39691,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L251"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L276"
           },
           {
             "method": "setOption(String,Object)",
@@ -39700,7 +39700,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L110"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L135"
           },
           {
             "method": "setPosition(Integer,Integer,Integer,Integer)",
@@ -39709,7 +39709,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L99"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L124"
           },
           {
             "method": "setTransposeRowsAndColumns(Boolean)",
@@ -39718,7 +39718,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L252"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L277"
           },
           {
             "method": "showRowNumberColumn(Boolean)",
@@ -39727,7 +39727,7 @@
             "returnType": "EmbeddedTableChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L337"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L362"
           },
           {
             "method": "useAlternatingRowStyle(Boolean)",
@@ -39736,7 +39736,7 @@
             "returnType": "EmbeddedTableChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L338"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L363"
           }
         ]
       },
@@ -39824,7 +39824,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "A builder for an area chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L217"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L242"
           },
           {
             "method": "asBarChart()",
@@ -39833,7 +39833,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "A builder for a bar chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L218"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L243"
           },
           {
             "method": "asColumnChart()",
@@ -39842,7 +39842,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "A builder for a column chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L219"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L244"
           },
           {
             "method": "asComboChart()",
@@ -39851,7 +39851,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "A builder for a combo chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L220"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L245"
           },
           {
             "method": "asHistogramChart()",
@@ -39860,7 +39860,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "A builder for a histogram chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L221"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L246"
           },
           {
             "method": "asLineChart()",
@@ -39869,7 +39869,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "A builder for a line chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L222"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L247"
           },
           {
             "method": "asPieChart()",
@@ -39878,7 +39878,7 @@
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "A builder for a pie chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L223"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L248"
           },
           {
             "method": "asScatterChart()",
@@ -39887,7 +39887,7 @@
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "A builder for a scatter chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L224"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L249"
           },
           {
             "method": "asTableChart()",
@@ -39896,7 +39896,7 @@
             "returnType": "EmbeddedTableChartBuilder",
             "returnDescription": "A builder for a table chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L225"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L250"
           },
           {
             "method": "build()",
@@ -39905,7 +39905,7 @@
             "returnType": "EmbeddedChart",
             "returnDescription": "The created chart, which must still be added to the spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L125"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L150"
           },
           {
             "method": "clearRanges()",
@@ -39914,7 +39914,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L228"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L253"
           },
           {
             "method": "getChartType()",
@@ -39923,7 +39923,7 @@
             "returnType": "ChartType",
             "returnDescription": "The chart type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L83"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L108"
           },
           {
             "method": "getContainer()",
@@ -39932,7 +39932,7 @@
             "returnType": "ContainerInfo",
             "returnDescription": "An object containing the chart container's position.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L234"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L259"
           },
           {
             "method": "getRanges()",
@@ -39941,7 +39941,7 @@
             "returnType": "Range[]",
             "returnDescription": "An array of ranges that serve as the chart to be built's data source.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L238"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L263"
           },
           {
             "method": "removeRange(Range)",
@@ -39950,7 +39950,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L243"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L268"
           },
           {
             "method": "reverseCategories()",
@@ -39959,7 +39959,7 @@
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L270"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L295"
           },
           {
             "method": "set3D()",
@@ -39968,7 +39968,7 @@
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L330"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L355"
           },
           {
             "method": "setBackgroundColor(String)",
@@ -39977,7 +39977,7 @@
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L271"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L296"
           },
           {
             "method": "setChartType(ChartType)",
@@ -39986,7 +39986,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L75"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L100"
           },
           {
             "method": "setColors(String)",
@@ -39995,7 +39995,7 @@
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L273"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L298"
           },
           {
             "method": "setHiddenDimensionStrategy(ChartHiddenDimensionStrategy)",
@@ -40004,7 +40004,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L245"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L270"
           },
           {
             "method": "setLegendPosition(Position)",
@@ -40013,7 +40013,7 @@
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L279"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L304"
           },
           {
             "method": "setLegendTextStyle(TextStyle)",
@@ -40022,7 +40022,7 @@
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L284"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L309"
           },
           {
             "method": "setMergeStrategy(ChartMergeStrategy)",
@@ -40031,7 +40031,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L250"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L275"
           },
           {
             "method": "setNumHeaders(Integer)",
@@ -40040,7 +40040,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L251"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L276"
           },
           {
             "method": "setOption(String,Object)",
@@ -40049,7 +40049,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L110"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L135"
           },
           {
             "method": "setPosition(Integer,Integer,Integer,Integer)",
@@ -40058,7 +40058,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L99"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L124"
           },
           {
             "method": "setTitle(String)",
@@ -40067,7 +40067,7 @@
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L304"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L329"
           },
           {
             "method": "setTitleTextStyle(TextStyle)",
@@ -40076,7 +40076,7 @@
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L310"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L335"
           },
           {
             "method": "setTransposeRowsAndColumns(Boolean)",
@@ -40085,7 +40085,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L252"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L277"
           }
         ]
       },
@@ -40182,7 +40182,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "A builder for an area chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L217"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L242"
           },
           {
             "method": "asBarChart()",
@@ -40191,7 +40191,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "A builder for a bar chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L218"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L243"
           },
           {
             "method": "asColumnChart()",
@@ -40200,7 +40200,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "A builder for a column chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L219"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L244"
           },
           {
             "method": "asComboChart()",
@@ -40209,7 +40209,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "A builder for a combo chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L220"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L245"
           },
           {
             "method": "asHistogramChart()",
@@ -40218,7 +40218,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "A builder for a histogram chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L221"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L246"
           },
           {
             "method": "asLineChart()",
@@ -40227,7 +40227,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "A builder for a line chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L222"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L247"
           },
           {
             "method": "asPieChart()",
@@ -40236,7 +40236,7 @@
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "A builder for a pie chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L223"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L248"
           },
           {
             "method": "asScatterChart()",
@@ -40245,7 +40245,7 @@
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "A builder for a scatter chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L224"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L249"
           },
           {
             "method": "asTableChart()",
@@ -40254,7 +40254,7 @@
             "returnType": "EmbeddedTableChartBuilder",
             "returnDescription": "A builder for a table chart.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L225"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L250"
           },
           {
             "method": "build()",
@@ -40263,7 +40263,7 @@
             "returnType": "EmbeddedChart",
             "returnDescription": "The created chart, which must still be added to the spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L125"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L150"
           },
           {
             "method": "clearRanges()",
@@ -40272,7 +40272,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L228"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L253"
           },
           {
             "method": "getChartType()",
@@ -40281,7 +40281,7 @@
             "returnType": "ChartType",
             "returnDescription": "The chart type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L83"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L108"
           },
           {
             "method": "getContainer()",
@@ -40290,7 +40290,7 @@
             "returnType": "ContainerInfo",
             "returnDescription": "An object containing the chart container's position.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L234"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L259"
           },
           {
             "method": "getRanges()",
@@ -40299,7 +40299,7 @@
             "returnType": "Range[]",
             "returnDescription": "An array of ranges that serve as the chart to be built's data source.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L238"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L263"
           },
           {
             "method": "removeRange(Range)",
@@ -40308,7 +40308,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L243"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L268"
           },
           {
             "method": "setBackgroundColor(String)",
@@ -40317,7 +40317,7 @@
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L271"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L296"
           },
           {
             "method": "setChartType(ChartType)",
@@ -40326,7 +40326,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L75"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L100"
           },
           {
             "method": "setColors(String)",
@@ -40335,7 +40335,7 @@
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L273"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L298"
           },
           {
             "method": "setHiddenDimensionStrategy(ChartHiddenDimensionStrategy)",
@@ -40344,7 +40344,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L245"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L270"
           },
           {
             "method": "setLegendPosition(Position)",
@@ -40353,7 +40353,7 @@
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L279"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L304"
           },
           {
             "method": "setLegendTextStyle(TextStyle)",
@@ -40362,7 +40362,7 @@
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L284"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L309"
           },
           {
             "method": "setMergeStrategy(ChartMergeStrategy)",
@@ -40371,7 +40371,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L250"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L275"
           },
           {
             "method": "setNumHeaders(Integer)",
@@ -40380,7 +40380,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L251"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L276"
           },
           {
             "method": "setOption(String,Object)",
@@ -40389,7 +40389,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L110"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L135"
           },
           {
             "method": "setPointStyle(PointStyle)",
@@ -40398,7 +40398,7 @@
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L285"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L310"
           },
           {
             "method": "setPosition(Integer,Integer,Integer,Integer)",
@@ -40407,7 +40407,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L99"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L124"
           },
           {
             "method": "setTitle(String)",
@@ -40416,7 +40416,7 @@
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L304"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L329"
           },
           {
             "method": "setTitleTextStyle(TextStyle)",
@@ -40425,7 +40425,7 @@
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L310"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L335"
           },
           {
             "method": "setTransposeRowsAndColumns(Boolean)",
@@ -40434,7 +40434,7 @@
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L252"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L277"
           },
           {
             "method": "setXAxisLogScale()",
@@ -40443,7 +40443,7 @@
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L339"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L364"
           },
           {
             "method": "setXAxisRange(Number,Number)",
@@ -40452,7 +40452,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L291"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L316"
           },
           {
             "method": "setXAxisTextStyle(TextStyle)",
@@ -40461,7 +40461,7 @@
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L311"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
           },
           {
             "method": "setXAxisTitle(String)",
@@ -40470,7 +40470,7 @@
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L313"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L338"
           },
           {
             "method": "setXAxisTitleTextStyle(TextStyle)",
@@ -40479,7 +40479,7 @@
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L319"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L344"
           },
           {
             "method": "setYAxisLogScale()",
@@ -40488,7 +40488,7 @@
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L348"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L373"
           },
           {
             "method": "setYAxisRange(Number,Number)",
@@ -40497,7 +40497,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L293"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L318"
           },
           {
             "method": "setYAxisTextStyle(TextStyle)",
@@ -40506,7 +40506,7 @@
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L320"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L345"
           },
           {
             "method": "setYAxisTitle(String)",
@@ -40515,7 +40515,7 @@
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L322"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L347"
           },
           {
             "method": "setYAxisTitleTextStyle(TextStyle)",
@@ -40524,7 +40524,7 @@
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L328"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L353"
           }
         ]
       },

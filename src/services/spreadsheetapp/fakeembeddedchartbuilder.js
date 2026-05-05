@@ -59,15 +59,40 @@ export class FakeEmbeddedChartBuilder {
     if (nargs !== 1) matchThrow();
 
     const gridRange = makeSheetsGridRange(range);
+    const startCol = gridRange.startColumnIndex || 0;
+    const endCol = gridRange.endColumnIndex || startCol + 1;
+    const numCols = endCol - startCol;
 
-    if (this.__apiChart.spec.basicChart.domains.length === 0) {
+    // If it's a multi-column range, live GAS splits the first column as domain 
+    // and the rest as series (unless it's already got a domain)
+    if (numCols > 1 && this.__apiChart.spec.basicChart.domains.length === 0) {
+      // First column is domain
+      const domainRange = JSON.parse(JSON.stringify(gridRange));
+      domainRange.endColumnIndex = startCol + 1;
       this.__apiChart.spec.basicChart.domains.push({
-        domain: { sourceRange: { sources: [gridRange] } },
+        domain: { sourceRange: { sources: [domainRange] } },
       });
+
+      // Rest are series
+      for (let i = 1; i < numCols; i++) {
+        const seriesRange = JSON.parse(JSON.stringify(gridRange));
+        seriesRange.startColumnIndex = startCol + i;
+        seriesRange.endColumnIndex = startCol + i + 1;
+        this.__apiChart.spec.basicChart.series.push({
+          series: { sourceRange: { sources: [seriesRange] } },
+        });
+      }
     } else {
-      this.__apiChart.spec.basicChart.series.push({
-        series: { sourceRange: { sources: [gridRange] } },
-      });
+      // Standard behavior
+      if (this.__apiChart.spec.basicChart.domains.length === 0) {
+        this.__apiChart.spec.basicChart.domains.push({
+          domain: { sourceRange: { sources: [gridRange] } },
+        });
+      } else {
+        this.__apiChart.spec.basicChart.series.push({
+          series: { sourceRange: { sources: [gridRange] } },
+        });
+      }
     }
     return this;
   }

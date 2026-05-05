@@ -1,6 +1,6 @@
 ### Google Sheets (SpreadsheetApp)
-- **Chart Creation & Ranges**: When using `EmbeddedChartBuilder.addRange()`, the Sheets API requires `ChartSourceRange` domains and series to have a length of 1 for either rows or columns.
-  - **Crucial**: Do **not** pass a multi-column range to `addRange()`. Add domains and series as separate single-column ranges.
+- **Chart Creation & Ranges**: While `gas-fakes` now emulates Live Apps Script behavior by automatically splitting multi-column ranges in `addRange()` (first column as domain, rest as series), for **maximum reliability** and clear control over your chart structure, it is still recommended to add domains and series as separate single-column ranges.
+  - *Example*: `chart.addRange(sheet.getRange("A2:A10")).addRange(sheet.getRange("B2:B10"))` is preferred over `chart.addRange(sheet.getRange("A2:B10"))`.
 - **Values vs. Display Values**: 
   - `getValues()` returns unformatted data.
   - `getDisplayValues()` returns formatted strings.
