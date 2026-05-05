@@ -4,10 +4,10 @@ Unlike the standard Apps Script Services (`SpreadsheetApp`, `DriveApp`), the sig
 
 If you are orchestrating a complex task that requires an Advanced Service (such as resizing an image via `Docs.Documents.batchUpdate` or applying granular formatting via `Sheets.Spreadsheets.batchUpdate`) and you do not know the exact JSON payload structure, you MUST research it using the Google API Discovery documents.
 
-**How to Research Advanced Services (NO GOOGLE SEARCH):**
-You MUST NOT use the `google_web_search` tool to look for Google Docs API structures, `batchUpdate` examples, or how to delete inline images. Web search often returns outdated or non-REST API examples (like Java or Python SDKs) which cause script failures.
+**How to Research Advanced Services:**
+You SHOULD FIRST use the `run_shell_command` tool to `curl` and `grep` the official Google API Discovery Document for the specific API version. This is the most reliable way to guarantee accurate, 100% current REST JSON schemas.
 
-Instead, you MUST use the `run_shell_command` tool to `curl` and `grep` the official Google API Discovery Document for the specific API version. This is the only way to guarantee accurate, 100% current REST JSON schemas.
+**Web Search Fallback**: Only if `curl`ing the Discovery API fails, or if it does not provide enough clarity to construct the request, you MAY use the `google_web_search` tool as a fallback default. Be cautious: web search often returns outdated or non-REST API examples (like Java or Python SDKs) which cause script failures.
 
 **Discovery Document URLs:**
 - **Docs API v1**: `https://docs.googleapis.com/$discovery/rest?version=v1`

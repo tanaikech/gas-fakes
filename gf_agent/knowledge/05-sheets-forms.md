@@ -1,4 +1,5 @@
 ### Google Sheets (SpreadsheetApp)
+- **Efficiency & Batching (CRITICAL)**: Always prefer `range.setValues(array)` over making multiple individual `range.setValue(val)` calls. If you need to write multiple rows or columns of data to a sheet, batch them up into a 2D array and write them all at once. This significantly improves performance and avoids unnecessary API rate limits.
 - **Chart Creation & Ranges**: While `gas-fakes` now emulates Live Apps Script behavior by automatically splitting multi-column ranges in `addRange()` (first column as domain, rest as series), for **maximum reliability** and clear control over your chart structure, it is still recommended to add domains and series as separate single-column ranges.
   - *Example*: `chart.addRange(sheet.getRange("A2:A10")).addRange(sheet.getRange("B2:B10"))` is preferred over `chart.addRange(sheet.getRange("A2:B10"))`.
 - **Values vs. Display Values**: 
