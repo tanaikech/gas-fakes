@@ -20,6 +20,6 @@
 | [Slides](./progress/slides.md) | 76 | 1288 | 515 | 0 | 773 |
 | [Spreadsheet](./progress/Spreadsheet.md) | 108 | 1771 | 1344 | 84 | 343 |
 | [URL Fetch](./progress/urlfetch.md) | 2 | 13 | 13 | 0 | 0 |
-| [Utilities](./progress/utilities.md) | 5 | 59 | 27 | 3 | 29 |
+| [Utilities](./progress/utilities.md) | 5 | 59 | 59 | 0 | 0 |
 | [XML](./progress/xml.md) | 14 | 149 | 30 | 0 | 119 |
-| **Total** | **420** | **6708** | **3694** | **125** | **2889** |
+| **Total** | **420** | **6708** | **3726** | **122** | **2860** |

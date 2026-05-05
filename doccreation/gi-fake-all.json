@@ -25549,40 +25549,40 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/utilitiesenums.js#L16"
           },
           {
             "method": "HMAC_SHA_1",
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/utilitiesenums.js#L17"
           },
           {
             "method": "HMAC_SHA_256",
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/utilitiesenums.js#L18"
           },
           {
             "method": "HMAC_SHA_384",
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/utilitiesenums.js#L19"
           },
           {
             "method": "HMAC_SHA_512",
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/utilitiesenums.js#L20"
           }
         ]
       },
@@ -25597,48 +25597,48 @@
             "description": "MD2 algorithm",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/utilitiesenums.js#L7"
           },
           {
             "method": "MD5",
             "description": "MD5 algorithm",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/utilitiesenums.js#L8"
           },
           {
             "method": "SHA_1",
             "description": "SHA-1 algorithm",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/utilitiesenums.js#L9"
           },
           {
             "method": "SHA_256",
             "description": "SHA-256 algorithm",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/utilitiesenums.js#L10"
           },
           {
             "method": "SHA_384",
             "description": "SHA-384 algorithm",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/utilitiesenums.js#L11"
           },
           {
             "method": "SHA_512",
             "description": "SHA-512 algorithm",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/utilitiesenums.js#L12"
           }
         ]
       },
@@ -25653,16 +25653,16 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/utilitiesenums.js#L24"
           },
           {
             "method": "RSA_SHA_256",
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/utilitiesenums.js#L25"
           }
         ]
       },
@@ -25677,16 +25677,16 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/utilitiesenums.js#L3"
           },
           {
             "method": "UTF_8",
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/utilitiesenums.js#L2"
           }
         ]
       },
@@ -25703,7 +25703,7 @@
             "returnType": "Byte[]",
             "returnDescription": "The raw data represented by the base-64 encoded argument as a byte array.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/utilities/fakeutilities.js#L139"
+            "implementationLink": "src/services/utilities/fakeutilities.js#L148"
           },
           {
             "method": "base64Decode(String,Charset)",
@@ -25712,7 +25712,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/utilities/fakeutilities.js#L139"
+            "implementationLink": "src/services/utilities/fakeutilities.js#L148"
           },
           {
             "method": "base64DecodeWebSafe(String)",
@@ -25721,7 +25721,7 @@
             "returnType": "Byte[]",
             "returnDescription": "The raw data represented by the base-64 web-safe encoded argument as a byte array.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/utilities/fakeutilities.js#L143"
+            "implementationLink": "src/services/utilities/fakeutilities.js#L152"
           },
           {
             "method": "base64DecodeWebSafe(String,Charset)",
@@ -25730,7 +25730,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/utilities/fakeutilities.js#L143"
+            "implementationLink": "src/services/utilities/fakeutilities.js#L152"
           },
           {
             "method": "base64Encode(Byte)",
@@ -25739,7 +25739,7 @@
             "returnType": "String",
             "returnDescription": "The base-64 encoded representation of the passed in data.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/utilities/fakeutilities.js#L131"
+            "implementationLink": "src/services/utilities/fakeutilities.js#L140"
           },
           {
             "method": "base64Encode(String)",
@@ -25748,7 +25748,7 @@
             "returnType": "String",
             "returnDescription": "The base-64 encoded representation of the input string.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/utilities/fakeutilities.js#L131"
+            "implementationLink": "src/services/utilities/fakeutilities.js#L140"
           },
           {
             "method": "base64Encode(String,Charset)",
@@ -25757,7 +25757,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/utilities/fakeutilities.js#L131"
+            "implementationLink": "src/services/utilities/fakeutilities.js#L140"
           },
           {
             "method": "base64EncodeWebSafe(Byte)",
@@ -25766,7 +25766,7 @@
             "returnType": "String",
             "returnDescription": "The base-64 web-safe encoded representation of the passed in data.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/utilities/fakeutilities.js#L135"
+            "implementationLink": "src/services/utilities/fakeutilities.js#L144"
           },
           {
             "method": "base64EncodeWebSafe(String)",
@@ -25775,7 +25775,7 @@
             "returnType": "String",
             "returnDescription": "The base-64 web-safe encoded representation of the input string.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/utilities/fakeutilities.js#L135"
+            "implementationLink": "src/services/utilities/fakeutilities.js#L144"
           },
           {
             "method": "base64EncodeWebSafe(String,Charset)",
@@ -25784,7 +25784,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/utilities/fakeutilities.js#L135"
+            "implementationLink": "src/services/utilities/fakeutilities.js#L144"
           },
           {
             "method": "computeDigest(DigestAlgorithm,Byte)",
@@ -25792,8 +25792,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/utilities/fakeutilities.js#L154"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/utilities/fakeutilities.js#L163"
           },
           {
             "method": "computeDigest(DigestAlgorithm,String)",
@@ -25801,8 +25801,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/utilities/fakeutilities.js#L154"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/utilities/fakeutilities.js#L163"
           },
           {
             "method": "computeDigest(DigestAlgorithm,String,Charset)",
@@ -25810,8 +25810,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/utilities/fakeutilities.js#L154"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/utilities/fakeutilities.js#L163"
           },
           {
             "method": "computeHmacSha256Signature(Byte,Byte)",
@@ -25820,7 +25820,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/utilities/fakeutilities.js#L214"
+            "implementationLink": "src/services/utilities/fakeutilities.js#L225"
           },
           {
             "method": "computeHmacSha256Signature(String,String)",
@@ -25829,7 +25829,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/utilities/fakeutilities.js#L214"
+            "implementationLink": "src/services/utilities/fakeutilities.js#L225"
           },
           {
             "method": "computeHmacSha256Signature(String,String,Charset)",
@@ -25838,7 +25838,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/utilities/fakeutilities.js#L214"
+            "implementationLink": "src/services/utilities/fakeutilities.js#L225"
           },
           {
             "method": "computeHmacSignature(MacAlgorithm,Byte,Byte)",
@@ -25846,8 +25846,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/utilities/fakeutilities.js#L283"
           },
           {
             "method": "computeHmacSignature(MacAlgorithm,String,String)",
@@ -25855,8 +25855,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/utilities/fakeutilities.js#L283"
           },
           {
             "method": "computeHmacSignature(MacAlgorithm,String,String,Charset)",
@@ -25864,8 +25864,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/utilities/fakeutilities.js#L283"
           },
           {
             "method": "computeRsaSha1Signature(String,String)",
@@ -25873,8 +25873,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/utilities/fakeutilities.js#L346"
           },
           {
             "method": "computeRsaSha1Signature(String,String,Charset)",
@@ -25882,8 +25882,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/utilities/fakeutilities.js#L346"
           },
           {
             "method": "computeRsaSha256Signature(String,String)",
@@ -25891,8 +25891,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/utilities/fakeutilities.js#L357"
           },
           {
             "method": "computeRsaSha256Signature(String,String,Charset)",
@@ -25900,8 +25900,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/utilities/fakeutilities.js#L357"
           },
           {
             "method": "computeRsaSignature(RsaAlgorithm,String,String)",
@@ -25909,8 +25909,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/utilities/fakeutilities.js#L347"
           },
           {
             "method": "computeRsaSignature(RsaAlgorithm,String,String,Charset)",
@@ -25918,8 +25918,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/utilities/fakeutilities.js#L347"
           },
           {
             "method": "formatDate(Date,String,String)",
@@ -25927,8 +25927,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/utilities/fakeutilities.js#L418"
           },
           {
             "method": "formatString(String,Object...)",
@@ -25936,8 +25936,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/utilities/fakeutilities.js#L482"
           },
           {
             "method": "getUuid()",
@@ -25946,7 +25946,7 @@
             "returnType": "String",
             "returnDescription": "A string representation of the UUID.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/utilities/fakeutilities.js#L80"
+            "implementationLink": "src/services/utilities/fakeutilities.js#L89"
           },
           {
             "method": "gzip(BlobSource)",
@@ -25973,7 +25973,7 @@
             "returnType": "Blob",
             "returnDescription": "The newly created Blob.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/utilities/fakeutilities.js#L73"
+            "implementationLink": "src/services/utilities/fakeutilities.js#L82"
           },
           {
             "method": "newBlob(Byte,String)",
@@ -25982,7 +25982,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/utilities/fakeutilities.js#L73"
+            "implementationLink": "src/services/utilities/fakeutilities.js#L82"
           },
           {
             "method": "newBlob(Byte,String,String)",
@@ -25991,7 +25991,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/utilities/fakeutilities.js#L73"
+            "implementationLink": "src/services/utilities/fakeutilities.js#L82"
           },
           {
             "method": "newBlob(String)",
@@ -26000,7 +26000,7 @@
             "returnType": "Blob",
             "returnDescription": "The newly created Blob.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/utilities/fakeutilities.js#L73"
+            "implementationLink": "src/services/utilities/fakeutilities.js#L82"
           },
           {
             "method": "newBlob(String,String)",
@@ -26009,7 +26009,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/utilities/fakeutilities.js#L73"
+            "implementationLink": "src/services/utilities/fakeutilities.js#L82"
           },
           {
             "method": "newBlob(String,String,String)",
@@ -26018,7 +26018,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/utilities/fakeutilities.js#L73"
+            "implementationLink": "src/services/utilities/fakeutilities.js#L82"
           },
           {
             "method": "parseCsv(String)",
@@ -26026,8 +26026,8 @@
             "description": "Returns a tabular 2D array representation of a CSV string.",
             "returnType": "String[][]",
             "returnDescription": "A two-dimensional array containing the values in the CSV string.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/utilities/fakeutilities.js#L503"
           },
           {
             "method": "parseCsv(String,Char)",
@@ -26035,8 +26035,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/utilities/fakeutilities.js#L503"
           },
           {
             "method": "parseDate(String,String,String)",
@@ -26044,8 +26044,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/utilities/fakeutilities.js#L564"
           },
           {
             "method": "sleep(Integer)",
@@ -26063,7 +26063,7 @@
             "returnType": "Blob",
             "returnDescription": "A Blob representing the decompressed data.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/utilities/fakeutilities.js#L124"
+            "implementationLink": "src/services/utilities/fakeutilities.js#L133"
           },
           {
             "method": "unzip(BlobSource)",
