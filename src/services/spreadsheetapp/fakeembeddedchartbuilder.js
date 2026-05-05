@@ -1,5 +1,5 @@
 import { Proxies } from "../../support/proxies.js";
-import { signatureArgs } from "../../support/helpers.js";
+import { signatureArgs, notYetImplemented } from "../../support/helpers.js";
 import { Utils } from "../../support/utils.js";
 import { makeSheetsGridRange } from "./sheetrangehelpers.js";
 import { newFakeEmbeddedChart } from "./fakeembeddedchart.js";
@@ -155,6 +155,25 @@ export class FakeEmbeddedChartBuilder {
       }
     }
 
+    // Apply colors to series
+    if (this.__colors && basic && basic.series) {
+      basic.series.forEach((s, i) => {
+        if (this.__colors[i]) {
+          const hex = this.__colors[i];
+          const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+          if (result) {
+            s.colorStyle = {
+              rgbColor: {
+                red: parseInt(result[1], 16) / 255,
+                green: parseInt(result[2], 16) / 255,
+                blue: parseInt(result[3], 16) / 255
+              }
+            };
+          }
+        }
+      });
+    }
+
     // 2. Handle Specialized Spec Blocks
     if (basic && basic.chartType === "PIE") {
       spec.pieChart = {
@@ -233,43 +252,109 @@ export class FakeEmbeddedChartBuilder {
   setTransposeRowsAndColumns(transpose) { return this; }
 
   // --- Chart Specific Builder Methods ---
-  reverseCategories() { return this; }
+  __getAxis(position) {
+    if (!this.__apiChart.spec.basicChart) {
+      this.__apiChart.spec.basicChart = { axis: [], domains: [], series: [] };
+    }
+    if (!this.__apiChart.spec.basicChart.axis) {
+      this.__apiChart.spec.basicChart.axis = [];
+    }
+    let axis = this.__apiChart.spec.basicChart.axis.find(a => a.position === position);
+    if (!axis) {
+      axis = { position };
+      this.__apiChart.spec.basicChart.axis.push(axis);
+    }
+    return axis;
+  }
+
+  reverseCategories() { notYetImplemented('reverseCategories'); return this; }
   setBackgroundColor(color) { return this.setOption("backgroundColor", color); }
-  setColors(colors) { return this; }
+  
+  setColors(colors) { 
+    ScriptApp.__behavior.checkMethod("EmbeddedChartBuilder", "setColors");
+    this.__colors = Array.isArray(colors) ? colors : [colors];
+    return this; 
+  }
+  
   setLegendPosition(position) { 
     this.__apiChart.spec.basicChart.legendPosition = position ? position.toString() : "RIGHT_LEGEND";
     return this; 
   }
-  setLegendTextStyle(textStyle) { return this; }
-  setPointStyle(pointStyle) { return this; }
-  setRange(min, max) { return this; }
-  setStacked() { return this; }
+  
+  setLegendTextStyle(textStyle) { notYetImplemented('setLegendTextStyle'); return this; }
+  setPointStyle(pointStyle) { notYetImplemented('setPointStyle'); return this; }
+  
+  setRange(min, max) { 
+    ScriptApp.__behavior.checkMethod("EmbeddedChartBuilder", "setRange");
+    const chartType = this.__apiChart.spec.basicChart ? this.__apiChart.spec.basicChart.chartType : null;
+    if (chartType === "BAR") {
+      return this.setXAxisRange(min, max);
+    }
+    return this.setYAxisRange(min, max); 
+  }
+  
+  setStacked() { 
+    ScriptApp.__behavior.checkMethod("EmbeddedChartBuilder", "setStacked");
+    if (this.__apiChart.spec.basicChart) {
+      this.__apiChart.spec.basicChart.stackedType = "STACKED";
+    }
+    return this; 
+  }
+  
   setTitle(title) { 
+    ScriptApp.__behavior.checkMethod("EmbeddedChartBuilder", "setTitle");
     this.__apiChart.spec.title = title;
     return this; 
   }
-  setTitleTextStyle(textStyle) { return this; }
-  setXAxisTextStyle(textStyle) { return this; }
-  setXAxisTitle(title) { return this; }
-  setXAxisTitleTextStyle(textStyle) { return this; }
-  setYAxisTextStyle(textStyle) { return this; }
-  setYAxisTitle(title) { return this; }
-  setYAxisTitleTextStyle(textStyle) { return this; }
-  useLogScale() { return this; }
+  
+  setTitleTextStyle(textStyle) { notYetImplemented('setTitleTextStyle'); return this; }
+  setXAxisTextStyle(textStyle) { notYetImplemented('setXAxisTextStyle'); return this; }
+  
+  setXAxisTitle(title) { 
+    ScriptApp.__behavior.checkMethod("EmbeddedChartBuilder", "setXAxisTitle");
+    this.__getAxis("BOTTOM_AXIS").title = title;
+    return this; 
+  }
+  
+  setXAxisTitleTextStyle(textStyle) { notYetImplemented('setXAxisTitleTextStyle'); return this; }
+  setYAxisTextStyle(textStyle) { notYetImplemented('setYAxisTextStyle'); return this; }
+  
+  setYAxisTitle(title) { 
+    ScriptApp.__behavior.checkMethod("EmbeddedChartBuilder", "setYAxisTitle");
+    this.__getAxis("LEFT_AXIS").title = title;
+    return this; 
+  }
+  
+  setYAxisTitleTextStyle(textStyle) { notYetImplemented('setYAxisTitleTextStyle'); return this; }
+  useLogScale() { notYetImplemented('useLogScale'); return this; }
   set3D() { return this.setOption("is3D", true); }
-  enablePaging(enable, pageSize) { return this; }
-  enableRtlTable(enable) { return this; }
-  enableSorting(enable) { return this; }
-  setFirstRowNumber(number) { return this; }
-  setInitialSortingAscending(column) { return this; }
-  setInitialSortingDescending(column) { return this; }
-  showRowNumberColumn(show) { return this; }
-  useAlternatingRowStyle(use) { return this; }
-  setXAxisLogScale() { return this; }
-  setXAxisRange(min, max) { return this; }
-  setYAxisLogScale() { return this; }
-  setYAxisRange(min, max) { return this; }
-  reverseDirection() { return this; }
+  enablePaging(enable, pageSize) { notYetImplemented('enablePaging'); return this; }
+  enableRtlTable(enable) { notYetImplemented('enableRtlTable'); return this; }
+  enableSorting(enable) { notYetImplemented('enableSorting'); return this; }
+  setFirstRowNumber(number) { notYetImplemented('setFirstRowNumber'); return this; }
+  setInitialSortingAscending(column) { notYetImplemented('setInitialSortingAscending'); return this; }
+  setInitialSortingDescending(column) { notYetImplemented('setInitialSortingDescending'); return this; }
+  showRowNumberColumn(show) { notYetImplemented('showRowNumberColumn'); return this; }
+  useAlternatingRowStyle(use) { notYetImplemented('useAlternatingRowStyle'); return this; }
+  setXAxisLogScale() { notYetImplemented('setXAxisLogScale'); return this; }
+  
+  setXAxisRange(min, max) { 
+    ScriptApp.__behavior.checkMethod("EmbeddedChartBuilder", "setXAxisRange");
+    const axis = this.__getAxis("BOTTOM_AXIS");
+    axis.viewWindowOptions = { viewWindowMin: min, viewWindowMax: max };
+    return this; 
+  }
+  
+  setYAxisLogScale() { notYetImplemented('setYAxisLogScale'); return this; }
+  
+  setYAxisRange(min, max) { 
+    ScriptApp.__behavior.checkMethod("EmbeddedChartBuilder", "setYAxisRange");
+    const axis = this.__getAxis("LEFT_AXIS");
+    axis.viewWindowOptions = { viewWindowMin: min, viewWindowMax: max };
+    return this; 
+  }
+  
+  reverseDirection() { notYetImplemented('reverseDirection'); return this; }
 
   toString() {
     const type = this.__apiChart.spec.basicChart?.chartType;

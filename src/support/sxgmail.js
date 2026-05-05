@@ -16,8 +16,28 @@ export const sxGmail = async (Auth, { subProp, prop, method, params, options }) 
   const tag = `sxGmail for ${methodName}`;
 
   return sxRetry(Auth, tag, async () => {
-    const callish = subProp ? apiClient[prop][subProp] : apiClient[prop];
-    return callish[method](params, options);
+    let context = subProp ? apiClient[prop][subProp] : apiClient[prop];
+    let methodFunc = context[method];
+    
+    if (!methodFunc && method.includes('.')) {
+      const parts = method.split('.');
+      for (const part of parts) {
+        if (!context[part]) {
+          methodFunc = undefined;
+          break;
+        }
+        methodFunc = context[part];
+        if (part !== parts[parts.length - 1]) {
+          context = methodFunc;
+        }
+      }
+    }
+
+    if (typeof methodFunc !== 'function') {
+      throw new Error(`Method ${methodName} not found on Gmail API client`);
+    }
+
+    return methodFunc.call(context, params, options);
   }, {
     skipLog: (error, response) => {
       // Don't log 404, 409, or 400 as an error. 

@@ -468,7 +468,223 @@ class FakeGmailApp {
     ScriptApp.__behavior.checkMethod('GmailApp', 'moveThreadToTrash');
     this.__checkUsage('trash');
     this.__checkThreadAccess(thread.getId());
-    Gmail.Users.Threads.trash('me', thread.getId());
+    thread.moveToTrash();
+    return this;
+  }
+
+  getUserLabelByName(name) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'getUserLabelByName');
+    this.__checkUsage('read');
+    const { labels } = Gmail.Users.Labels.list('me');
+    const label = labels ? labels.find(l => l.name === name) : null;
+    return label ? newFakeGmailLabel(label) : null;
+  }
+
+  markMessageRead(message) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'markMessageRead');
+    this.__checkUsage('write');
+    message.markRead();
+    return this;
+  }
+
+  markMessagesRead(messages) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'markMessagesRead');
+    this.__checkUsage('write');
+    messages.forEach(m => m.markRead());
+    return this;
+  }
+
+  markMessagesUnread(messages) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'markMessagesUnread');
+    this.__checkUsage('write');
+    messages.forEach(m => m.markUnread());
+    return this;
+  }
+
+  markMessageUnread(message) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'markMessageUnread');
+    this.__checkUsage('write');
+    message.markUnread();
+    return this;
+  }
+
+  markThreadImportant(thread) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'markThreadImportant');
+    this.__checkUsage('write');
+    thread.markImportant();
+    return this;
+  }
+
+  markThreadRead(thread) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'markThreadRead');
+    this.__checkUsage('write');
+    thread.markRead();
+    return this;
+  }
+
+  markThreadsImportant(threads) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'markThreadsImportant');
+    this.__checkUsage('write');
+    threads.forEach(t => t.markImportant());
+    return this;
+  }
+
+  markThreadsRead(threads) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'markThreadsRead');
+    this.__checkUsage('write');
+    threads.forEach(t => t.markRead());
+    return this;
+  }
+
+  markThreadsUnimportant(threads) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'markThreadsUnimportant');
+    this.__checkUsage('write');
+    threads.forEach(t => t.markUnimportant());
+    return this;
+  }
+
+  markThreadsUnread(threads) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'markThreadsUnread');
+    this.__checkUsage('write');
+    threads.forEach(t => t.markUnread());
+    return this;
+  }
+
+  markThreadUnimportant(thread) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'markThreadUnimportant');
+    this.__checkUsage('write');
+    thread.markUnimportant();
+    return this;
+  }
+
+  markThreadUnread(thread) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'markThreadUnread');
+    this.__checkUsage('write');
+    thread.markUnread();
+    return this;
+  }
+
+  moveMessagesToTrash(messages) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'moveMessagesToTrash');
+    this.__checkUsage('trash');
+    messages.forEach(m => m.moveToTrash());
+    return this;
+  }
+
+  moveMessageToTrash(message) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'moveMessageToTrash');
+    this.__checkUsage('trash');
+    message.moveToTrash();
+    return this;
+  }
+
+  moveThreadsToArchive(threads) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'moveThreadsToArchive');
+    this.__checkUsage('write');
+    threads.forEach(t => t.moveToArchive());
+    return this;
+  }
+
+  moveThreadsToInbox(threads) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'moveThreadsToInbox');
+    this.__checkUsage('write');
+    threads.forEach(t => t.moveToInbox());
+    return this;
+  }
+
+  moveThreadsToSpam(threads) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'moveThreadsToSpam');
+    this.__checkUsage('write');
+    threads.forEach(t => t.moveToSpam());
+    return this;
+  }
+
+  moveThreadsToTrash(threads) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'moveThreadsToTrash');
+    this.__checkUsage('trash');
+    threads.forEach(t => t.moveToTrash());
+    return this;
+  }
+
+  moveThreadToArchive(thread) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'moveThreadToArchive');
+    this.__checkUsage('write');
+    thread.moveToArchive();
+    return this;
+  }
+
+  moveThreadToInbox(thread) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'moveThreadToInbox');
+    this.__checkUsage('write');
+    thread.moveToInbox();
+    return this;
+  }
+
+  moveThreadToSpam(thread) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'moveThreadToSpam');
+    this.__checkUsage('write');
+    thread.moveToSpam();
+    return this;
+  }
+
+  refreshMessage(message) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'refreshMessage');
+    this.__checkUsage('read');
+    message.refresh();
+    return this;
+  }
+
+  refreshMessages(messages) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'refreshMessages');
+    this.__checkUsage('read');
+    messages.forEach(m => m.refresh());
+    return this;
+  }
+
+  refreshThread(thread) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'refreshThread');
+    this.__checkUsage('read');
+    thread.refresh();
+    return this;
+  }
+
+  refreshThreads(threads) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'refreshThreads');
+    this.__checkUsage('read');
+    threads.forEach(t => t.refresh());
+    return this;
+  }
+
+  setCurrentMessageAccessToken(token) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'setCurrentMessageAccessToken');
+    // Stub implementation as this is for add-ons
+  }
+
+  starMessage(message) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'starMessage');
+    this.__checkUsage('write');
+    message.star();
+    return this;
+  }
+
+  starMessages(messages) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'starMessages');
+    this.__checkUsage('write');
+    messages.forEach(m => m.star());
+    return this;
+  }
+
+  unstarMessage(message) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'unstarMessage');
+    this.__checkUsage('write');
+    message.unstar();
+    return this;
+  }
+
+  unstarMessages(messages) {
+    ScriptApp.__behavior.checkMethod('GmailApp', 'unstarMessages');
+    this.__checkUsage('write');
+    messages.forEach(m => m.unstar());
     return this;
   }
 }

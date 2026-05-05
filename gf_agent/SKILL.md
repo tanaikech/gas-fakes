@@ -284,6 +284,99 @@ While delegating *orchestration* is dangerous, performing tasks in parallel is h
 3. **Sequence when Dependent**: Only use `wait_for_previous: true` or sequential turns when a task depends on the side-effect of a previous one (e.g., reading a sheet that was just created).
 
 
+# Sandbox and Security Controls
+
+`gf_agent` can operate in a **Sandbox Mode** to ensure that automated tasks are restricted to specific files, recipients, or usage quotas. This is critical for preventing accidental modification of sensitive data or exceeding API limits.
+
+## Core Concepts
+
+### 1. Enabling the Sandbox
+The sandbox is controlled via `ScriptApp.__behavior`. Enabling it locks down the environment.
+```javascript
+ScriptApp.__behavior.sandboxMode = true;
+ScriptApp.__behavior.strictSandbox = true; // Only allow files created in this session
+```
+
+### 2. ID Whitelisting (Files & Folders)
+In `strictSandbox` mode, all external files are blocked by default. Use whitelisting to grant granular access.
+- **Pattern**: `addIdWhitelist(item)`
+- **Permissions**: `.setRead(true)`, `.setWrite(true)`, `.setTrash(true)`
+```javascript
+const behavior = ScriptApp.__behavior;
+const item = behavior.newIdWhitelistItem('FILE_ID')
+  .setRead(true)
+  .setWrite(false) // Read-only
+  .setTrash(false);
+behavior.addIdWhitelist(item);
+```
+
+### 3. Gmail Security
+The Gmail service has specialized sandbox settings under `sandboxService.GmailApp`.
+- **Email Whitelist**: Restricts `sendEmail` to specific addresses.
+- **Label Whitelist**: Restricts which labels can be read, applied, or deleted.
+- **Usage Limits**: Sets quotas for `read`, `write`, `trash`, and `send` operations.
+```javascript
+const gmail = ScriptApp.__behavior.sandboxService.GmailApp;
+gmail.emailWhitelist = ['allowed@example.com'];
+gmail.usageLimit = { send: 5, read: 10 }; // Granular limits
+// OR
+gmail.usageLimit = 50; // Total operations limit
+```
+
+### 4. Service & Method Restrictions
+You can disable entire services or restrict scripts to a subset of allowed methods.
+```javascript
+// Disable a service entirely
+ScriptApp.__behavior.sandboxService.SlidesApp.enabled = false;
+
+// Whitelist specific methods for a service
+ScriptApp.__behavior.sandboxService.DriveApp.setMethodWhitelist(['getFileById', 'getBlob']);
+```
+
+### 5. Automated Cleanup
+The sandbox tracks every resource created during a session. When `behavior.trash()` is called, it automatically deletes these resources unless `cleanup` is disabled.
+```javascript
+ScriptApp.__behavior.cleanup = true; // Default: true
+// Set per-service
+ScriptApp.__behavior.sandboxService.GmailApp.cleanup = false;
+```
+
+## Best Practices for `gf_agent`
+- **Session Isolation**: When a user provides a list of files or emails, always initialize the sandbox with those specific whitelists at the top of the script.
+- **Explicit Whitelisting**: Use `behavior.addIdWhitelist` for file access. DO NOT assume `sandboxService.SpreadsheetApp` has an `addFileWhitelist` method (it is handled globally by the behavior ID whitelist).
+- **Safe Execution**: In the Orchestrator Phase, identify if the task requires external access and include the necessary sandbox boilerplate in the generated script.
+
+
+### Chart Builder Method Limitations (API Parity)
+
+When generating code that builds Embedded Charts in Google Sheets (`SpreadsheetApp.newChart()`), you must adhere to the following restrictions, as `gas-fakes` maps directly to the Google Sheets REST API v4 which has limitations compared to Live Apps Script:
+
+1. **Method Fragmentation (Range Settings)**: 
+   - You MUST NOT use `setXAxisRange()` or `setYAxisRange()` unless you are specifically building a `ScatterChart`. In Live Apps Script, these methods are exclusive to `EmbeddedScatterChartBuilder` and will throw a `TypeError` on other chart types.
+   - For all other chart types (Column, Bar, Line, Area), you MUST use the generic `setRange(min, max)` method.
+
+2. **Unimplemented Formatting Methods**: 
+   - The REST API v4 lacks direct properties for many granular text-styling and sub-scale formatting options. 
+   - You MUST NOT use the following methods as they will throw a `notYetImplemented` error in `gas-fakes`: `useLogScale()`, `setXAxisLogScale()`, `setYAxisLogScale()`, `reverseCategories()`, `reverseDirection()`, `setPointStyle()`, `enablePaging()`, `enableSorting()`, or any method ending in `*TextStyle()` (e.g., `setTitleTextStyle()`).
+   - Stick to core configurations: `setColors()`, `setXAxisTitle()`, `setYAxisTitle()`, `setRange()`, `setStacked()`, `setBackgroundColor()`, `setLegendPosition()`, and `set3D()`.
+
+3. **Pie Chart Custom Colors**: 
+   - The REST API v4 does not support setting custom slice colors for Pie Charts. Calling `setColors()` on a Pie Chart builder will be silently ignored. Do not attempt to style Pie Chart slices.
+
+### Gmail Modifiers and Eventual Consistency
+
+When writing scripts that modify Gmail objects (e.g., `GmailMessage.markRead()`, `GmailMessage.star()`, `GmailThread.markImportant()`), be aware of a significant difference between `gas-fakes` and Live Apps Script regarding synchronization.
+
+- **Live Apps Script (Eventual Consistency)**: Despite documentation claiming these methods are synchronous and "force a refresh", the backend operations are eventually consistent. If you check the state immediately after modifying it (e.g., `message.markRead(); console.log(message.isUnread());`), it will likely return the old state.
+- **Portable Code Pattern**: If you are writing tests or robust code that must run reliably in Live Apps Script as well as `gas-fakes`, you must introduce an artificial delay and manually refresh the object state:
+  ```javascript
+  message.markRead();
+  if (!ScriptApp.isFake) Utilities.sleep(1000); // Wait for Live GAS backend
+  message.refresh(); // Manually force a re-fetch of the state
+  console.log(message.isUnread()); // Now safe to assert
+  ```
+- **gas-fakes Execution**: When executing transient scripts locally via `gas-fakes` that don't need immediate assertions, this pattern is not strictly necessary as `gas-fakes` handles the REST API synchronization reliably, but it is best practice for cross-platform parity.
+
 # gf_agent Knowledge Base
 
 This directory contains modular markdown files representing the "Lessons Learned & Best Practices" for the `gf_agent` skill.

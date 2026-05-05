@@ -167,7 +167,7 @@ class FakeGmailThread {
     }
 
     Gmail.Users.Threads.modify({ addLabelIds: [label.getId()] }, 'me', this.getId());
-    return this;
+    return this.refresh();
   }
 
   removeLabel(label) {
@@ -215,6 +215,156 @@ class FakeGmailThread {
       }
     }
     Gmail.Users.Threads.modify({ removeLabelIds: [label.getId()] }, 'me', this.getId());
+    return this.refresh();
+  }
+
+  __hasLabel(label) {
+    if (!this.__threadResource.messages) return false;
+    for (const m of this.__threadResource.messages) {
+      if (m.labelIds && m.labelIds.includes(label)) return true;
+    }
+    return false;
+  }
+
+  hasStarredMessages() {
+    ScriptApp.__behavior.checkMethod('GmailThread', 'hasStarredMessages');
+    return this.__hasLabel('STARRED');
+  }
+
+  isImportant() {
+    ScriptApp.__behavior.checkMethod('GmailThread', 'isImportant');
+    return this.__hasLabel('IMPORTANT');
+  }
+
+  isInChats() {
+    ScriptApp.__behavior.checkMethod('GmailThread', 'isInChats');
+    return this.__hasLabel('CHAT');
+  }
+
+  isInInbox() {
+    ScriptApp.__behavior.checkMethod('GmailThread', 'isInInbox');
+    return this.__hasLabel('INBOX');
+  }
+
+  isInPriorityInbox() {
+    ScriptApp.__behavior.checkMethod('GmailThread', 'isInPriorityInbox');
+    return this.__hasLabel('INBOX') && this.__hasLabel('IMPORTANT');
+  }
+
+  isInSpam() {
+    ScriptApp.__behavior.checkMethod('GmailThread', 'isInSpam');
+    return this.__hasLabel('SPAM');
+  }
+
+  isInTrash() {
+    ScriptApp.__behavior.checkMethod('GmailThread', 'isInTrash');
+    return this.__hasLabel('TRASH');
+  }
+
+  isUnread() {
+    ScriptApp.__behavior.checkMethod('GmailThread', 'isUnread');
+    return this.__hasLabel('UNREAD');
+  }
+
+  getFirstMessageSubject() {
+    ScriptApp.__behavior.checkMethod('GmailThread', 'getFirstMessageSubject');
+    const msgs = this.getMessages();
+    return msgs.length > 0 ? msgs[0].getSubject() : '';
+  }
+
+  getLastMessageDate() {
+    ScriptApp.__behavior.checkMethod('GmailThread', 'getLastMessageDate');
+    const msgs = this.getMessages();
+    return msgs.length > 0 ? msgs[msgs.length - 1].getDate() : new Date();
+  }
+
+  getMessageCount() {
+    ScriptApp.__behavior.checkMethod('GmailThread', 'getMessageCount');
+    return this.getMessages().length;
+  }
+
+  getPermalink() {
+    ScriptApp.__behavior.checkMethod('GmailThread', 'getPermalink');
+    return `https://mail.google.com/mail/u/0/#inbox/${this.getId()}`;
+  }
+
+  refresh() {
+    ScriptApp.__behavior.checkMethod('GmailThread', 'refresh');
+    this.__threadResource = Gmail.Users.Threads.get('me', this.getId());
+    return this;
+  }
+
+  markImportant() {
+    ScriptApp.__behavior.checkMethod('GmailThread', 'markImportant');
+    Gmail.Users.Threads.modify({ addLabelIds: ['IMPORTANT'] }, 'me', this.getId());
+    return this.refresh();
+  }
+
+  markRead() {
+    ScriptApp.__behavior.checkMethod('GmailThread', 'markRead');
+    Gmail.Users.Threads.modify({ removeLabelIds: ['UNREAD'] }, 'me', this.getId());
+    return this.refresh();
+  }
+
+  markUnimportant() {
+    ScriptApp.__behavior.checkMethod('GmailThread', 'markUnimportant');
+    Gmail.Users.Threads.modify({ removeLabelIds: ['IMPORTANT'] }, 'me', this.getId());
+    return this.refresh();
+  }
+
+  markUnread() {
+    ScriptApp.__behavior.checkMethod('GmailThread', 'markUnread');
+    Gmail.Users.Threads.modify({ addLabelIds: ['UNREAD'] }, 'me', this.getId());
+    return this.refresh();
+  }
+
+  moveToArchive() {
+    ScriptApp.__behavior.checkMethod('GmailThread', 'moveToArchive');
+    Gmail.Users.Threads.modify({ removeLabelIds: ['INBOX'] }, 'me', this.getId());
+    return this.refresh();
+  }
+
+  moveToInbox() {
+    ScriptApp.__behavior.checkMethod('GmailThread', 'moveToInbox');
+    Gmail.Users.Threads.modify({ addLabelIds: ['INBOX'] }, 'me', this.getId());
+    return this.refresh();
+  }
+
+  moveToSpam() {
+    ScriptApp.__behavior.checkMethod('GmailThread', 'moveToSpam');
+    Gmail.Users.Threads.modify({ addLabelIds: ['SPAM'] }, 'me', this.getId());
+    return this.refresh();
+  }
+
+  moveToTrash() {
+    ScriptApp.__behavior.checkMethod('GmailThread', 'moveToTrash');
+    Gmail.Users.Threads.trash('me', this.getId());
+    return this.refresh();
+  }
+
+  createDraftReply(body, options) {
+    ScriptApp.__behavior.checkMethod('GmailThread', 'createDraftReply');
+    const msgs = this.getMessages();
+    return msgs.length > 0 ? msgs[msgs.length - 1].createDraftReply(body, options) : null;
+  }
+
+  createDraftReplyAll(body, options) {
+    ScriptApp.__behavior.checkMethod('GmailThread', 'createDraftReplyAll');
+    const msgs = this.getMessages();
+    return msgs.length > 0 ? msgs[msgs.length - 1].createDraftReplyAll(body, options) : null;
+  }
+
+  reply(body, options) {
+    ScriptApp.__behavior.checkMethod('GmailThread', 'reply');
+    const msgs = this.getMessages();
+    if (msgs.length > 0) msgs[msgs.length - 1].reply(body, options);
+    return this;
+  }
+
+  replyAll(body, options) {
+    ScriptApp.__behavior.checkMethod('GmailThread', 'replyAll');
+    const msgs = this.getMessages();
+    if (msgs.length > 0) msgs[msgs.length - 1].replyAll(body, options);
     return this;
   }
 

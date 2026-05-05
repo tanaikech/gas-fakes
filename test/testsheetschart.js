@@ -151,7 +151,24 @@ export const testSheetsChart = (pack) => {
     // on certain chart types (like Pie or Table charts). We explicitly apply it to a BarChart.
 
     const barBuilder = sheet.newChart().asBarChart();
-    t.is(typeof barBuilder.reverseCategories(), "object", "reverseCategories should return bar builder");
+    // Test the newly implemented visual formatting methods
+    t.is(typeof barBuilder.setColors(["#ff0000", "#00ff00"]), "object", "setColors should return builder");
+    t.is(typeof barBuilder.setXAxisTitle("X Axis Title"), "object", "setXAxisTitle should return builder");
+    t.is(typeof barBuilder.setYAxisTitle("Y Axis Title"), "object", "setYAxisTitle should return builder");
+    t.is(typeof barBuilder.setRange(0, 75), "object", "setRange should return builder");
+    t.is(typeof barBuilder.setStacked(), "object", "setStacked should return builder");
+
+    // ScatterChart specific range methods
+    const scatterBuilder = sheet.newChart().asScatterChart();
+    t.is(typeof scatterBuilder.setXAxisRange(0, 100), "object", "setXAxisRange should return builder");
+    t.is(typeof scatterBuilder.setYAxisRange(0, 50), "object", "setYAxisRange should return builder");
+
+    // reverseCategories is intentionally notYetImplemented
+    if (ScriptApp.isFake) {
+      const rcErr = t.threw(() => barBuilder.reverseCategories());
+      t.rxMatch(rcErr?.message, /not yet implemented/i, "reverseCategories should throw notYetImplemented");
+    }
+
     t.is(typeof barBuilder.setHiddenDimensionStrategy(Charts.ChartHiddenDimensionStrategy.IGNORE_COLUMNS), "object", "setHiddenDimensionStrategy should return bar builder");
     // Test range manipulation wrappers (available on generic builder)
     t.is(builder.clearRanges().getRanges().length, 0, "clearRanges should empty the ranges");
@@ -168,6 +185,45 @@ export const testSheetsChart = (pack) => {
               .addRange(sheet.getRange("B1:B5"))  // Values
               .setPosition(15, 1, 0, 0);
     sheet.insertChart(barBuilder.build());
+
+    // --- Visual Comparison Section ---
+    // This section renders charts specifically to test the newly implemented visual formatting methods.
+    
+    // Column Chart (Colors, Axes Titles, Range)
+    const columnChart = sheet.newChart().asColumnChart()
+      .addRange(sheet.getRange('A1:A5'))
+      .addRange(sheet.getRange('B1:B5'))
+      .setTitle('Visual Test: Custom Colors, Axis Titles & Y-Range')
+      .setColors(['#FF5733']) 
+      .setXAxisTitle('Categories')
+      .setYAxisTitle('Values ($)')
+      .setRange(0, 100) 
+      .setPosition(1, 10, 0, 0)
+      .build();
+    sheet.insertChart(columnChart);
+
+    // Stacked Bar Chart (Stacked, Background Color, Legend Position)
+    const stackedBarChart = sheet.newChart().asBarChart()
+      .addRange(sheet.getRange('A1:A5'))
+      .addRange(sheet.getRange('B1:B5'))
+      .setTitle('Visual Test: Stacked Bar, Background & Legend Bottom')
+      .setStacked()
+      .setBackgroundColor('#F0F8FF')
+      .setLegendPosition(Charts.Position.BOTTOM)
+      .setPosition(18, 10, 0, 0)
+      .build();
+    sheet.insertChart(stackedBarChart);
+
+    // 3D Pie Chart (3D, Custom Colors)
+    const pieChart3D = sheet.newChart().asPieChart()
+      .addRange(sheet.getRange('A1:A5'))
+      .addRange(sheet.getRange('B1:B5'))
+      .setTitle('Visual Test: 3D Pie Chart with Custom Colors')
+      .set3D()
+      .setColors(['#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#00FFFF'])
+      .setPosition(35, 10, 0, 0)
+      .build();
+    sheet.insertChart(pieChart3D);
 
     // Visually generate remaining chart types for manual verification
     const extraBuilders = [

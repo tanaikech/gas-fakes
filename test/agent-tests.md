@@ -10,3 +10,6 @@
 - Please tell me the weather in Tokyo at noon tomorrow.
 - I am traveling to Paris. Please check the weather in Paris on 2026-05-01 12:00 (Latitude 48.85, Longitude 2.35, Timezone Europe/Paris). Also, I need to plan my budget, so please provide the latest exchange rate from JPY to EUR simultaneously.
 - Create a new Google Spreadsheet by putting a formula `=GOOGLEFINANCE("CURRENCY:USDJPY")` in cell "A1" of the first sheet. Then, get and show the value of cell "A1".
+- Sandbox test: Convert https://docs.google.com/spreadsheets/d/1TS2JzPZa1LeA4TmpkSjoYTRZaphXDinM-Zjms76STIs/edit?usp=sharing to a pdf and send as an attachment to bruce.mcpherson@gmail.com     
+   with a covering summary message of number of airports and average elevation in meters by country. Sign the letter as from the Pink Panther. Use sandnox mode and whitelist the   
+   recipient, and also the input file for read only.

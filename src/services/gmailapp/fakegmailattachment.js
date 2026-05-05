@@ -27,6 +27,11 @@ class FakeGmailAttachment {
     return Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_1, this.getBytes()).map((b) => (b + 256).toString(16).slice(-2)).join('');
   }
 
+  getAs(contentType) {
+    ScriptApp.__behavior.checkMethod('GmailAttachment', 'getAs');
+    return this.__blob.getAs(contentType);
+  }
+
   // Delegate blob methods
   copyBlob() {
     return this.__blob.copyBlob();

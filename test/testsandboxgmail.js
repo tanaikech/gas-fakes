@@ -25,10 +25,10 @@ export const testSandboxGmail = () => {
     const gmailSettings = behavior.sandboxService.GmailApp;
 
     // Whitelist setup
-    gmailSettings.emailWhitelist = ['allowed@example.com'];
+    gmailSettings.emailWhitelist = ['bruce@mcpher.com'];
 
     // Test Allowed
-    t.not(GmailApp.sendEmail('allowed@example.com', 'Subject', 'Body'), undefined, 'Should succeed for allowed email');
+    t.not(GmailApp.sendEmail('bruce@mcpher.com', 'Subject', 'Body'), undefined, 'Should succeed for allowed email');
 
     // Test Denied
     const err = t.threw(() => GmailApp.sendEmail('denied@example.com', 'Subject', 'Body'));
@@ -77,7 +77,7 @@ export const testSandboxGmail = () => {
       GmailApp.createLabel('TrashTest');
       // Seed a thread? We need one for moveThreadToTrash. 
       // We can just create one.
-      GmailApp.sendEmail('example@example.com', 'Trash Subject', 'Body');
+      GmailApp.sendEmail('bruce.mcpherson@gmail.com', 'Trash Subject', 'Body');
       const th = GmailApp.search('subject:"Trash Subject"')[0];
       const lb = GmailApp.getUserLabels().find(l => l.getName() === 'TrashTest');
       th.addLabel(lb);
@@ -147,10 +147,10 @@ export const testSandboxGmail = () => {
 
     // Set usage limit to 2 (total limit)
     gmailSettings.usageLimit = 2;
-    gmailSettings.emailWhitelist = ['allowed@example.com'];
+    gmailSettings.emailWhitelist = ['bruce@mcpher.com'];
 
     // 1. Write op (sendEmail)
-    GmailApp.sendEmail('allowed@example.com', 'Subject 1', 'Body');
+    GmailApp.sendEmail('bruce@mcpher.com', 'Subject 1', 'Body');
     t.is(gmailSettings.usageCount.send, 1, 'Send count should increment');
 
     // 2. Read op (getUserLabels)
@@ -262,12 +262,12 @@ export const testSandboxGmail = () => {
     resetSandbox();
     const behavior = ScriptApp.__behavior;
     const gmailSettings = behavior.sandboxService.GmailApp;
-    gmailSettings.emailWhitelist = ['allowed@example.com'];
+    gmailSettings.emailWhitelist = ['bruce@mcpher.com'];
     gmailSettings.labelWhitelist = [{ name: 'AllowedLabel', read: true }];
 
     // 1. Session Access
     // Send email -> creates thread
-    GmailApp.sendEmail('allowed@example.com', 'Session Subject', 'Body');
+    GmailApp.sendEmail('bruce@mcpher.com', 'Session Subject', 'Body');
     // Find the thread. Since we can't easily get ID from sendEmail (returns GmailApp), 
     // we search. Search should find it because it is session-created.
     const threads = GmailApp.search('subject:"Session Subject"');
@@ -293,7 +293,7 @@ export const testSandboxGmail = () => {
     try {
       const lbl = GmailApp.getUserLabels().find(l => l.getName() === 'DeniedLabel');
       // Use sendEmail (sandbox off) to create a thread
-      GmailApp.sendEmail('example@example.com', 'Denied Subject', 'Body');
+      GmailApp.sendEmail('bruce.mcpherson@gmail.com', 'Denied Subject', 'Body');
       // Find it
       const threads = GmailApp.search('subject:"Denied Subject"');
       if (threads.length > 0) {
@@ -308,7 +308,7 @@ export const testSandboxGmail = () => {
     let allowedThreadId;
     try {
       const lblA = GmailApp.getUserLabels().find(l => l.getName() === 'AllowedLabel');
-      GmailApp.sendEmail('example@example.com', 'Allowed Subject', 'Body');
+      GmailApp.sendEmail('bruce.mcpherson@gmail.com', 'Allowed Subject', 'Body');
       const threads = GmailApp.search('subject:"Allowed Subject"');
       if (threads.length > 0) {
         allowedThreadId = threads[0].getId();
@@ -400,15 +400,15 @@ export const testSandboxGmail = () => {
     resetSandbox();
     const behavior = ScriptApp.__behavior;
     const gmailSettings = behavior.sandboxService.GmailApp;
-    gmailSettings.emailWhitelist = ['allowed@example.com'];
+    gmailSettings.emailWhitelist = ['bruce@mcpher.com'];
 
     // 1. Test Send Limit
     gmailSettings.usageLimit = { send: 1 };
 
-    GmailApp.sendEmail('allowed@example.com', 'Subject 1', 'Body');
+    GmailApp.sendEmail('bruce@mcpher.com', 'Subject 1', 'Body');
     t.is(gmailSettings.usageCount.send, 1, 'Send count should increment');
 
-    const errSend = t.threw(() => GmailApp.sendEmail('allowed@example.com', 'Subject 2', 'Body'));
+    const errSend = t.threw(() => GmailApp.sendEmail('bruce@mcpher.com', 'Subject 2', 'Body'));
     t.rxMatch(errSend?.message, /Gmail send usage limit of 1 exceeded/, 'Should fail when send limit exceeded');
 
     // 2. Test Label Security (addLabel)
@@ -431,7 +431,7 @@ export const testSandboxGmail = () => {
     gmailSettings.labelWhitelist = [{ name: labelName, read: true, write: false }];
 
     // Create thread (allowed)
-    GmailApp.sendEmail('allowed@example.com', 'Label Test', 'Body');
+    GmailApp.sendEmail('bruce@mcpher.com', 'Label Test', 'Body');
     const thread = GmailApp.search('subject:"Label Test"')[0];
 
     // Attempt addLabel - should fail

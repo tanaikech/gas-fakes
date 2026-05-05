@@ -295,6 +295,38 @@ There's an issue reported here - https://issuetracker.google.com/issues/42937321
 
 CriteriaValues are stored as a string, exactly as typed by the user. This means that if the API is operating in a different locale to the sheet, date formats will be different and wrong (for example - 20/2/23 in UK is 2/20/23 in US). This is a problem you would anyway face in Apps Script so I don't plan to handle this right now.
 
+#### Chart Builder Method Limitations (API vs Apps Script)
+
+The `EmbeddedChartBuilder` in Live Apps Script exposes dozens of granular visual formatting methods (e.g., `useLogScale()`, `setXAxisTextStyle()`, `setPointStyle()`). 
+
+However, because `gas-fakes` maps these operations directly to the Google Sheets REST API v4, it is limited by what the `BasicChartSpec` payload actually supports. The modern Sheets API lacks 1:1 direct properties for many of these granular visual tweaks.
+
+As a result, while `gas-fakes` supports core structural configurations (like `setColors()`, `setXAxisTitle()`, `setRange()`, `setStacked()`, `setBackgroundColor()`), many of the text-styling and sub-scale formatting methods are explicitly marked as "not yet implemented". Calling them in `gas-fakes` will throw an error to prevent you from assuming your chart is being fully styled when the underlying API request does not support those properties.
+
+**Specific unimplemented methods include:**
+- `reverseCategories()`
+- `reverseDirection()`
+- `useLogScale()`, `setXAxisLogScale()`, `setYAxisLogScale()`
+- `setPointStyle()`
+- `setLegendTextStyle()`, `setTitleTextStyle()`, `setXAxisTextStyle()`, `setXAxisTitleTextStyle()`, `setYAxisTextStyle()`, `setYAxisTitleTextStyle()`
+- `enablePaging()`, `enableRtlTable()`, `enableSorting()`
+- `setFirstRowNumber()`, `setInitialSortingAscending()`, `setInitialSortingDescending()`
+- `showRowNumberColumn()`, `useAlternatingRowStyle()`
+
+**Pie Chart Custom Colors (API Parity Gap)**
+
+A notable parity gap exists when attempting to apply custom colors to a Pie Chart. In Live Apps Script, calling `pieBuilder.setColors(['red', 'green', 'blue'])` successfully colors the individual slices of the pie. Oddly, Live GAS will skip the first color in the array if the first row of data is a header.
+
+However, the public Google Sheets REST API v4 **does not support setting colors for Pie Charts**. The `PieChartSpec` payload has absolutely no properties for slice colors or series styles. As a result, `gas-fakes` must silently drop the colors requested via `setColors()` for Pie Charts, falling back to the standard Google Sheets theme colors (Red, Yellow, Green, Orange). If you need custom-colored Pie Charts, you cannot currently generate them using the public REST API.
+
+#### Chart Builder Method Fragmentation
+
+Testing against Live Apps Script revealed that the availability of range-setting methods is fragmented across chart types. Developers might expect `setXAxisRange()` and `setYAxisRange()` to be available on all Cartesian charts (like Bar or Column), but in production GAS, these methods are **exclusive to the `EmbeddedScatterChartBuilder`**.
+
+For all other standard charts (Bar, Column, Line, etc.), you must use the generic `setRange(min, max)` method instead.
+
+In `gas-fakes`, we initially provided all methods on a single builder class for convenience. However, to maintain parity and prevent `TypeError` crashes when moving code to the cloud, you should follow the production GAS restrictions. `gas-fakes` will continue to support the union of these methods to allow for easier script development, but will log a warning if you use a type-restricted method on the "wrong" chart type.
+
 ## Various hints when using the advanced sheets service
 
 I've tried to exactly imitate the behavior of the Sheets advanced service (even though it's often inconvenient and inconsistent), so these following comments apply to both Sheets and FakeSheets. If you are usng the Advanced service, here's a few hints Ive come across that might be helpful.
@@ -995,6 +1027,33 @@ The Forms API returns item ids as hex strings, while Apps Script FormApp returns
 
 see https://issuetracker.google.com/issues/469115766
 
+## Gmail
+
+### GmailMessage and GmailThread Modifiers (Eventual Consistency)
+
+The documentation for Gmail modifier methods (such as `GmailMessage.markRead()`, `GmailApp.starMessage()`, or `GmailThread.markImportant()`) claims that they are synchronous and "forces the message to refresh". 
+
+However, testing against the live Apps Script environment reveals that these methods suffer from **eventual consistency**. If you check the state of the object immediately after calling the modifier, it will often return the *old* state:
+
+```javascript
+// In Live Apps Script
+const message = GmailApp.getInboxThreads(0,1)[0].getMessages()[0];
+message.markUnread();
+
+// This assertion often FAILS in Live Apps Script! It returns false.
+console.log(message.isUnread()); 
+```
+
+To reliably assert the new state in Live Apps Script, you must introduce an artificial delay and manually call `refresh()`:
+
+```javascript
+message.markUnread();
+Utilities.sleep(1000); // Wait for the backend to synchronize
+message.refresh();     // Manually force a re-fetch
+console.log(message.isUnread()); // Now it reliably returns true
+```
+
+While `gas-fakes` automatically refreshes the object synchronously because the underlying REST API response confirms the change, you must include the `Utilities.sleep()` and `.refresh()` pattern when writing code or tests that need to run reliably in the Live Apps Script environment.
 
 ## Jdbc
 
