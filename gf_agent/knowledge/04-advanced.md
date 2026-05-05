@@ -16,8 +16,29 @@
   Drive.Files.create(resource, htmlBlob);
   ```
 - **Resizing Workaround (Advanced Docs Service)**: Because the Docs API does not support updating image properties directly, you must use the Advanced Docs Service (`Docs.Documents.batchUpdate`) to **delete and re-insert** the image with the new dimensions. 
-  - To do this, fetch the document via `Docs.Documents.get()`, locate the inline image URIs and object IDs, and construct `deleteObject` and `insertInlineImage` requests.
-  - **Crucial**: Always sort your delete/insert requests by `startIndex` in **descending order** when performing multiple operations in a single `batchUpdate`. This prevents index shifting from invalidating subsequent operations in the same batch.
+  - To do this, fetch the document via `Docs.Documents.get()`, extract the `contentUri` from the existing inline image, and construct `deleteObject` and `insertInlineImage` requests.
+  - **Crucial**: Always sort your delete/insert operations by `startIndex` in **descending order** so you don't corrupt the document's indices during a batch update.
+  - **Example Code Pattern**:
+    ```javascript
+    const docData = Docs.Documents.get(docId);
+    const requests = [];
+    // ... logic to find images in docData.body.content, saving objectId, contentUri, startIndex, and dimensions ...
+    // ... sort found images by startIndex DESCENDING ...
+    images.forEach(img => {
+      requests.push({ deleteObject: { objectId: img.objectId } });
+      requests.push({ 
+        insertInlineImage: { 
+          uri: img.contentUri, 
+          location: { index: img.startIndex }, 
+          objectSize: { 
+            width: { magnitude: img.width * 0.25, unit: 'PT' }, 
+            height: { magnitude: img.height * 0.25, unit: 'PT' } 
+          } 
+        } 
+      });
+    });
+    if (requests.length > 0) Docs.Documents.batchUpdate({ requests }, docId);
+    ```
 - **Shadow Document & Named Ranges**: `gas-fakes` uses a "Shadow Document" approach. Elements are tracked using Named Range tags to maintain positional integrity during updates.
 - **Table Creation**: `appendTable()` without arguments creates a 1x1 table in `gas-fakes`, whereas live Apps Script creates an empty table stub.
 - **Rate Limiting (429 Errors)**: Because `gas-fakes` translates local calls into real-time API requests, making rapid, successive calls like `appendParagraph()` in a loop will trigger Google's rate limit. 

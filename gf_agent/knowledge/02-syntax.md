@@ -1,6 +1,7 @@
 ### Common Apps Script Syntax Gotchas (First-Time Accuracy)
-- **File Conversion (Exporting to PDF)**: While live Apps Script can seamlessly convert text files (`text/plain`) to PDF using `file.getAs('application/pdf')`, the underlying Google Drive API **only supports exporting Docs Editor files** (Docs, Sheets, Slides).
-  - **Automated Workaround in gas-fakes**: `gas-fakes` handles this transparently! If you attempt to convert a non-editor file to PDF locally via `.getAs()`, it automatically performs a temporary two-step conversion (copying it to a Google Doc, exporting it, and trashing the temp file). This ensures parity with live Apps Script without manual intervention.
+- **File Conversion (Exporting to PDF)**: 
+  - **`DriveApp.File.getAs()` Workaround**: While live Apps Script can seamlessly convert text files (`text/plain`) to PDF using `file.getAs('application/pdf')`, the underlying Google Drive API **only supports exporting Docs Editor files** (Docs, Sheets, Slides). `gas-fakes` handles this transparently by automatically performing a temporary two-step conversion (copying it to a Google Doc, exporting it, and trashing the temp file). This ensures parity with live Apps Script without manual intervention.
+  - **`Spreadsheet.getAs()` Limitation**: The `getAs()` method is **NOT** implemented directly on `Spreadsheet`, `Document`, or `Presentation` objects in `gas-fakes`. If you try to call `ss.getAs('application/pdf')`, the script will crash. **Crucial Rule**: You MUST fetch the file via DriveApp first to convert it: `DriveApp.getFileById(ss.getId()).getAs('application/pdf')`.
 - **Google Docs Formatting**: You CANNOT apply formatting (bold, italic, etc.) directly to a `Paragraph` or `ListItem`. You MUST use `editAsText()` first.
   - *Incorrect*: `paragraph.setItalic(true)`
   - *Correct*: `paragraph.editAsText().setItalic(true)`

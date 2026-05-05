@@ -83,8 +83,9 @@ Agent:
 
 
 ### Common Apps Script Syntax Gotchas (First-Time Accuracy)
-- **File Conversion (Exporting to PDF)**: While live Apps Script can seamlessly convert text files (`text/plain`) to PDF using `file.getAs('application/pdf')`, the underlying Google Drive API **only supports exporting Docs Editor files** (Docs, Sheets, Slides).
-  - **Automated Workaround in gas-fakes**: `gas-fakes` handles this transparently! If you attempt to convert a non-editor file to PDF locally via `.getAs()`, it automatically performs a temporary two-step conversion (copying it to a Google Doc, exporting it, and trashing the temp file). This ensures parity with live Apps Script without manual intervention.
+- **File Conversion (Exporting to PDF)**: 
+  - **`DriveApp.File.getAs()` Workaround**: While live Apps Script can seamlessly convert text files (`text/plain`) to PDF using `file.getAs('application/pdf')`, the underlying Google Drive API **only supports exporting Docs Editor files** (Docs, Sheets, Slides). `gas-fakes` handles this transparently by automatically performing a temporary two-step conversion (copying it to a Google Doc, exporting it, and trashing the temp file). This ensures parity with live Apps Script without manual intervention.
+  - **`Spreadsheet.getAs()` Limitation**: The `getAs()` method is **NOT** implemented directly on `Spreadsheet`, `Document`, or `Presentation` objects in `gas-fakes`. If you try to call `ss.getAs('application/pdf')`, the script will crash. **Crucial Rule**: You MUST fetch the file via DriveApp first to convert it: `DriveApp.getFileById(ss.getId()).getAs('application/pdf')`.
 - **Google Docs Formatting**: You CANNOT apply formatting (bold, italic, etc.) directly to a `Paragraph` or `ListItem`. You MUST use `editAsText()` first.
   - *Incorrect*: `paragraph.setItalic(true)`
   - *Correct*: `paragraph.editAsText().setItalic(true)`
@@ -132,8 +133,29 @@ Agent:
   Drive.Files.create(resource, htmlBlob);
   ```
 - **Resizing Workaround (Advanced Docs Service)**: Because the Docs API does not support updating image properties directly, you must use the Advanced Docs Service (`Docs.Documents.batchUpdate`) to **delete and re-insert** the image with the new dimensions. 
-  - To do this, fetch the document via `Docs.Documents.get()`, locate the inline image URIs and object IDs, and construct `deleteObject` and `insertInlineImage` requests.
-  - **Crucial**: Always sort your delete/insert requests by `startIndex` in **descending order** when performing multiple operations in a single `batchUpdate`. This prevents index shifting from invalidating subsequent operations in the same batch.
+  - To do this, fetch the document via `Docs.Documents.get()`, extract the `contentUri` from the existing inline image, and construct `deleteObject` and `insertInlineImage` requests.
+  - **Crucial**: Always sort your delete/insert operations by `startIndex` in **descending order** so you don't corrupt the document's indices during a batch update.
+  - **Example Code Pattern**:
+    ```javascript
+    const docData = Docs.Documents.get(docId);
+    const requests = [];
+    // ... logic to find images in docData.body.content, saving objectId, contentUri, startIndex, and dimensions ...
+    // ... sort found images by startIndex DESCENDING ...
+    images.forEach(img => {
+      requests.push({ deleteObject: { objectId: img.objectId } });
+      requests.push({ 
+        insertInlineImage: { 
+          uri: img.contentUri, 
+          location: { index: img.startIndex }, 
+          objectSize: { 
+            width: { magnitude: img.width * 0.25, unit: 'PT' }, 
+            height: { magnitude: img.height * 0.25, unit: 'PT' } 
+          } 
+        } 
+      });
+    });
+    if (requests.length > 0) Docs.Documents.batchUpdate({ requests }, docId);
+    ```
 - **Shadow Document & Named Ranges**: `gas-fakes` uses a "Shadow Document" approach. Elements are tracked using Named Range tags to maintain positional integrity during updates.
 - **Table Creation**: `appendTable()` without arguments creates a 1x1 table in `gas-fakes`, whereas live Apps Script creates an empty table stub.
 - **Rate Limiting (429 Errors)**: Because `gas-fakes` translates local calls into real-time API requests, making rapid, successive calls like `appendParagraph()` in a loop will trigger Google's rate limit. 
@@ -379,6 +401,30 @@ When writing scripts that modify Gmail objects (e.g., `GmailMessage.markRead()`,
   console.log(message.isUnread()); // Now safe to assert
   ```
 - **gas-fakes Execution**: When executing transient scripts locally via `gas-fakes` that don't need immediate assertions, this pattern is not strictly necessary as `gas-fakes` handles the REST API synchronization reliably, but it is best practice for cross-platform parity.
+
+### Researching Advanced Services (Google API Discovery)
+
+Unlike the standard Apps Script Services (`SpreadsheetApp`, `DriveApp`), the signatures and payloads for **Advanced Services** (`Docs`, `Sheets`, `Drive`, etc.) are not fully documented in the `progress/` directory of the `gas-fakes` repository. Advanced Services are 1:1 mappings of the underlying Google REST APIs.
+
+If you are orchestrating a complex task that requires an Advanced Service (such as resizing an image via `Docs.Documents.batchUpdate` or applying granular formatting via `Sheets.Spreadsheets.batchUpdate`) and you do not know the exact JSON payload structure, you MUST research it using the Google API Discovery documents.
+
+**How to Research Advanced Services:**
+Do not guess the payload structure. Instead, use the `run_shell_command` tool to `curl` and `grep` the official Discovery Document for the specific API version.
+
+**Discovery Document URLs:**
+- **Docs API v1**: `https://docs.googleapis.com/$discovery/rest?version=v1`
+- **Sheets API v4**: `https://sheets.googleapis.com/$discovery/rest?version=v4`
+- **Drive API v3**: `https://drive.googleapis.com/$discovery/rest?version=v3`
+- **Slides API v1**: `https://slides.googleapis.com/$discovery/rest?version=v1`
+- **Gmail API v1**: `https://gmail.googleapis.com/$discovery/rest?version=v1`
+
+**Example Research Command:**
+If you need to know how to structure an `insertInlineImage` request for the Docs API, you would run:
+```bash
+curl -s "https://docs.googleapis.com/$discovery/rest?version=v1" | grep -A 30 '"InsertInlineImageRequest":'
+```
+
+By fetching the exact schema from the discovery document, you ensure your `batchUpdate` arrays and payload objects are 100% accurate before generating the execution script.
 
 # gf_agent Knowledge Base
 
