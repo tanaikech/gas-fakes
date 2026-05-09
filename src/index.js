@@ -29,4 +29,5 @@ import './services/mimetype/app.js'
 import './services/lock/app.js'
 import './services/libhandlerapp/app.js'
 import './services/jdbc/app.js'
+import './services/html/app.js'
 

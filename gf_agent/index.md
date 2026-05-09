@@ -11,6 +11,7 @@ This index lists all Google Apps Script services and classes supported by `gf_ag
 - [document](skills/document.md)
 - [drive](skills/drive.md)
 - [forms](skills/forms.md)
+- [html](skills/html.md)
 - [jdbc](skills/jdbc.md)
 - [lock](skills/lock.md)
 - [properties](skills/properties.md)

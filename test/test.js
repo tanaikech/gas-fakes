@@ -83,11 +83,15 @@ import { testMultiBackend } from "./testmultibackend.js";
 import { testGmail } from "./testgmail.js";
 import { testSandboxGmail } from "./testsandboxgmail.js";
 import { testDriveNew } from "./testdrivenew.js";
+import { testHtmlService } from "./testhtmlservice.js";
 
 
 export const testFakes = () => {
   const pack = initTests();
   const { unit } = pack;
+
+  console.log("\n----Test HtmlService----");
+  testHtmlService(pack);
 
   console.log("\n----Test multi-backend----");
   testMultiBackend(pack);
