@@ -22450,8 +22450,8 @@
             "description": "Create a new TextOutput object.",
             "returnType": "TextOutput",
             "returnDescription": "the new TextOutput object.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/content/contentservice.js#L18"
           },
           {
             "method": "createTextOutput(String)",
@@ -22459,8 +22459,8 @@
             "description": "Create a new TextOutput object that can serve the given content.",
             "returnType": "TextOutput",
             "returnDescription": "the new TextOutput object.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/content/contentservice.js#L18"
           }
         ]
       },
@@ -22532,8 +22532,8 @@
             "description": "Appends new content to the content that will be served.",
             "returnType": "TextOutput",
             "returnDescription": "this TextOutput itself, useful for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/content/textoutput.js#L9"
           },
           {
             "method": "clear()",
@@ -22541,8 +22541,8 @@
             "description": "Clears the current content.",
             "returnType": "TextOutput",
             "returnDescription": "this TextOutput itself, useful for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/content/textoutput.js#L14"
           },
           {
             "method": "downloadAsFile(String)",
@@ -22550,8 +22550,8 @@
             "description": "Tells browsers to download rather than display this content.",
             "returnType": "TextOutput",
             "returnDescription": "the TextOutput object, useful for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/content/textoutput.js#L19"
           },
           {
             "method": "getContent()",
@@ -22559,8 +22559,8 @@
             "description": "Gets the content that will be served.",
             "returnType": "String",
             "returnDescription": "the content that will be served",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/content/textoutput.js#L24"
           },
           {
             "method": "getFileName()",
@@ -22577,8 +22577,8 @@
             "description": "Get the mime type this content will be served with.",
             "returnType": "MimeType",
             "returnDescription": "the mime type this will be served with",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/content/textoutput.js#L28"
           },
           {
             "method": "setContent(String)",
@@ -22586,8 +22586,8 @@
             "description": "Sets the content that will be served.",
             "returnType": "TextOutput",
             "returnDescription": "this TextOutput itself, useful for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/content/textoutput.js#L32"
           },
           {
             "method": "setMimeType(MimeType)",
@@ -22595,8 +22595,8 @@
             "description": "Sets the mime type for content that will be served. The default is plain text.",
             "returnType": "TextOutput",
             "returnDescription": "this TextOutput itself, useful for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/content/textoutput.js#L37"
           }
         ]
       }
@@ -22620,7 +22620,7 @@
             "returnType": "HtmlOutput",
             "returnDescription": "the new HtmlOutput object",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmlservice.js#L39"
+            "implementationLink": "src/services/html/htmlservice.js#L44"
           },
           {
             "method": "createHtmlOutput(BlobSource)",
@@ -22629,7 +22629,7 @@
             "returnType": "HtmlOutput",
             "returnDescription": "the new HtmlOutput object",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmlservice.js#L39"
+            "implementationLink": "src/services/html/htmlservice.js#L44"
           },
           {
             "method": "createHtmlOutput(String)",
@@ -22638,7 +22638,7 @@
             "returnType": "HtmlOutput",
             "returnDescription": "the new HtmlOutput object",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmlservice.js#L39"
+            "implementationLink": "src/services/html/htmlservice.js#L44"
           },
           {
             "method": "createHtmlOutputFromFile(String)",
@@ -22647,7 +22647,7 @@
             "returnType": "HtmlOutput",
             "returnDescription": "the new HtmlOutput object",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmlservice.js#L43"
+            "implementationLink": "src/services/html/htmlservice.js#L44"
           },
           {
             "method": "createTemplate(BlobSource)",
@@ -22656,7 +22656,7 @@
             "returnType": "HtmlTemplate",
             "returnDescription": "the new HtmlTemplate object",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmlservice.js#L49"
+            "implementationLink": "src/services/html/htmlservice.js#L76"
           },
           {
             "method": "createTemplate(String)",
@@ -22665,7 +22665,7 @@
             "returnType": "HtmlTemplate",
             "returnDescription": "the new HtmlTemplate object",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmlservice.js#L49"
+            "implementationLink": "src/services/html/htmlservice.js#L76"
           },
           {
             "method": "createTemplateFromFile(String)",
@@ -22674,7 +22674,7 @@
             "returnType": "HtmlTemplate",
             "returnDescription": "the new HtmlTemplate object",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmlservice.js#L53"
+            "implementationLink": "src/services/html/htmlservice.js#L80"
           },
           {
             "method": "getUserAgent()",
@@ -22726,7 +22726,7 @@
             "returnType": "HtmlOutput",
             "returnDescription": "an HtmlOutput object",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmltemplate.js#L21"
+            "implementationLink": "src/services/html/htmltemplate.js#L22"
           },
           {
             "method": "getCode()",
@@ -22753,7 +22753,7 @@
             "returnType": "String",
             "returnDescription": "the template's raw content",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmltemplate.js#L36"
+            "implementationLink": "src/services/html/htmltemplate.js#L54"
           }
         ]
       },
@@ -22802,7 +22802,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmloutput.js#L64"
+            "implementationLink": "src/services/html/htmloutput.js#L65"
           },
           {
             "method": "append(String)",
@@ -22811,7 +22811,7 @@
             "returnType": "HtmlOutput",
             "returnDescription": "This output, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmloutput.js#L23"
+            "implementationLink": "src/services/html/htmloutput.js#L24"
           },
           {
             "method": "appendUntrusted(String)",
@@ -22865,7 +22865,7 @@
             "returnType": "String",
             "returnDescription": "The content that is served.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmloutput.js#L14"
+            "implementationLink": "src/services/html/htmloutput.js#L15"
           },
           {
             "method": "getFaviconUrl()",
@@ -22874,7 +22874,7 @@
             "returnType": "String",
             "returnDescription": "The URL of the favicon image.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmloutput.js#L60"
+            "implementationLink": "src/services/html/htmloutput.js#L61"
           },
           {
             "method": "setFaviconUrl(String)",
@@ -22883,7 +22883,7 @@
             "returnType": "HtmlOutput",
             "returnDescription": "This output, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmloutput.js#L55"
+            "implementationLink": "src/services/html/htmloutput.js#L56"
           },
           {
             "method": "getHeight()",
@@ -22892,7 +22892,7 @@
             "returnType": "Integer",
             "returnDescription": "The height, in pixels.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmloutput.js#L51"
+            "implementationLink": "src/services/html/htmloutput.js#L52"
           },
           {
             "method": "getMetaTags()",
@@ -22910,7 +22910,7 @@
             "returnType": "String",
             "returnDescription": "The title of the page.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmloutput.js#L33"
+            "implementationLink": "src/services/html/htmloutput.js#L34"
           },
           {
             "method": "getWidth()",
@@ -22919,7 +22919,7 @@
             "returnType": "Integer",
             "returnDescription": "The width in pixels.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmloutput.js#L42"
+            "implementationLink": "src/services/html/htmloutput.js#L43"
           },
           {
             "method": "setContent(String)",
@@ -22928,7 +22928,7 @@
             "returnType": "HtmlOutput",
             "returnDescription": "This output, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmloutput.js#L18"
+            "implementationLink": "src/services/html/htmloutput.js#L19"
           },
           {
             "method": "setHeight(Integer)",
@@ -22937,7 +22937,7 @@
             "returnType": "HtmlOutput",
             "returnDescription": "This output, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmloutput.js#L46"
+            "implementationLink": "src/services/html/htmloutput.js#L47"
           },
           {
             "method": "setSandboxMode(SandboxMode)",
@@ -22946,7 +22946,7 @@
             "returnType": "HtmlOutput",
             "returnDescription": "This output, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmloutput.js#L74"
+            "implementationLink": "src/services/html/htmloutput.js#L75"
           },
           {
             "method": "setTitle(String)",
@@ -22955,7 +22955,7 @@
             "returnType": "HtmlOutput",
             "returnDescription": "This output, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmloutput.js#L28"
+            "implementationLink": "src/services/html/htmloutput.js#L29"
           },
           {
             "method": "setWidth(Integer)",
@@ -22964,7 +22964,7 @@
             "returnType": "HtmlOutput",
             "returnDescription": "This output, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmloutput.js#L37"
+            "implementationLink": "src/services/html/htmloutput.js#L38"
           },
           {
             "method": "setXFrameOptionsMode(XFrameOptionsMode)",
@@ -22973,7 +22973,7 @@
             "returnType": "HtmlOutput",
             "returnDescription": "This output, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmloutput.js#L69"
+            "implementationLink": "src/services/html/htmloutput.js#L70"
           }
         ]
       },

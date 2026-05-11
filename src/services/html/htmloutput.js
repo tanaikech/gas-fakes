@@ -9,6 +9,7 @@ export class FakeHtmlOutput {
     this._faviconUrl = '';
     this._xFrameOptionsMode = null;
     this._sandboxMode = null;
+    this.__isHtmlOutput = true;
   }
 
   getContent() {

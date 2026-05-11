@@ -13,8 +13,26 @@ const CONTROL_INDICES = {
 };
 
 export class ServerWorkerContext {
-  constructor() {
-    this._mainScriptPath = process.argv[1];
+  constructor(scriptPath = null) {
+    this._mainScriptPath = scriptPath || process.argv[1];
+    
+    // Fallback for test runners or dynamic imports where process.argv[1] is node itself or undefined
+    if (!this._mainScriptPath || this._mainScriptPath.endsWith('node') || this._mainScriptPath.endsWith('gas-fakes.js') || this._mainScriptPath.endsWith('gas-fakes')) {
+       const stack = new Error().stack;
+       const match = stack.match(/at file:\/\/(.*\.js)/);
+       if (match && match[1]) {
+           // We want to find the entry point, not this file itself
+           const lines = stack.split('\n');
+           for (let i = lines.length - 1; i >= 0; i--) {
+               const m = lines[i].match(/at (?:async )?file:\/\/(.*\.js)/);
+               if (m && m[1] && !m[1].includes('serverworker.js')) {
+                   this._mainScriptPath = m[1];
+                   break;
+               }
+           }
+       }
+    }
+
     
     // Create shared buffers for synchronous communication
     // 3 control Int32s
@@ -71,7 +89,7 @@ export class ServerWorkerContext {
     const resultData = JSON.parse(resultString);
 
     if (hasError) {
-      throw new Error(resultData.message);
+      throw new Error(resultData.stack || resultData.message);
     }
 
     return resultData;

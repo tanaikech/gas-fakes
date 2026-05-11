@@ -8,6 +8,7 @@ This index lists all Google Apps Script services and classes supported by `gf_ag
 - [cache](skills/cache.md)
 - [calendar](skills/calendar.md)
 - [charts](skills/charts.md)
+- [content](skills/content.md)
 - [document](skills/document.md)
 - [drive](skills/drive.md)
 - [forms](skills/forms.md)

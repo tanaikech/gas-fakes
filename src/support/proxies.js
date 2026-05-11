@@ -78,7 +78,7 @@ const registerProxy = (name, getApp) => {
   Object.defineProperty(globalThis, name, {
     value,
     enumerable: true,
-    configurable: false,
+    configurable: true,
     writable: false,
   });
 }

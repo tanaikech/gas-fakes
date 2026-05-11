@@ -228,6 +228,12 @@ export async function initializeConfiguration(options = {}) {
       name: "GF_PROPERTIES_PATH",
       message: "Properties storage path",
       initial: existingConfig.GF_PROPERTIES_PATH || "/tmp/gas-fakes/properties",
+    },
+    {
+      type: "number",
+      name: "GF_SERVER_PORT",
+      message: "Port for local web server (doGet/doPost)",
+      initial: parseInt(existingConfig.GF_SERVER_PORT) || 8080,
     }
   ];
 

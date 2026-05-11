@@ -9,6 +9,7 @@ import {
   authenticateUser,
   enableGoogleAPIs,
 } from "./setup.js";
+import { startWebApp } from "./server.js";
 import { startMcpServer } from "./mcp.js";
 import { Platforms, PlatformDefaults } from "../services/enums/platformenums.js";
 
@@ -174,6 +175,17 @@ export async function main() {
     .description("Launch gas-fakes as an MCP server.")
     .option("-t, --tools <string>", "Path to custom tools file.")
     .action(startMcpServer);
+
+  // --- Web Server Command ---
+  program
+    .command("serve")
+    .description("Starts a local web server to handle doGet and doPost requests.")
+    .requiredOption("-i, --input <string>", "Path to the Google Apps Script file containing doGet/doPost.")
+    .option("-p, --port <number>", "Port for local web server (overrides .env).")
+    .option("-e, --env <path>", "Path to a custom .env file.", "./.env")
+    .action(async (options) => {
+       await startWebApp({ ...options, filename: options.input });
+    });
 
   // --- JDBC Command ---
   program
