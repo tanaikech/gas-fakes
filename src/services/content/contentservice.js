@@ -1,18 +1,9 @@
 import { FakeTextOutput } from "./textoutput.js";
+import { ContentEnums } from "../enums/contentenums.js";
 
 export class FakeContentService {
   constructor() {
-    this.MimeType = {
-        ATOM: "application/atom+xml",
-        CSV: "text/csv",
-        ICAL: "text/calendar",
-        JAVASCRIPT: "text/javascript",
-        JSON: "application/json",
-        RSS: "application/rss+xml",
-        TEXT: "text/plain",
-        VCARD: "text/vcard",
-        XML: "application/xml"
-    };
+    this.MimeType = ContentEnums.MimeType;
   }
 
   createTextOutput(content = "") {

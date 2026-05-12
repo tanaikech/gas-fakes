@@ -3244,8 +3244,8 @@
             "description": "Creates a builder that can be used to insert a sub-menu into the editor's Extensions menu. The\nmenu isn't actually be updated until Menu.addToUi() is called. If the script is running\nas an add-on, the sub-menu name matches the add-on's name in the web store; if the script is bound to the document directly, the sub-menu name\nmatches the script's name. For more information, see the guide to menus.",
             "returnType": "Menu",
             "returnDescription": "The new menu builder.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "in progress",
+            "implementationLink": "src/services/common/fakeui.js#L13"
           },
           {
             "method": "createMenu(String)",
@@ -3253,8 +3253,8 @@
             "description": "Creates a builder that can be used to add a menu to the editor's user interface. The menu isn't\nactually be added until Menu.addToUi() is called. For more information, see the guide to menus. The label for a top-level menu should be\nin headline case (all major words capitalized), although the label for a sub-menu should be in\nsentence case (only the first word capitalized). If the script is published as an add-on, the caption parameter is ignored and the\nmenu is added as a sub-menu of the Extensions menu, equivalent to createAddonMenu().",
             "returnType": "Menu",
             "returnDescription": "The new menu builder.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "in progress",
+            "implementationLink": "src/services/common/fakeui.js#L17"
           },
           {
             "method": "prompt(String,String,ButtonSet)",
@@ -3271,8 +3271,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/fakeui.js#L33"
           },
           {
             "method": "showModelessDialog(Object,String)",
@@ -3289,8 +3289,8 @@
             "description": "Opens a sidebar in the user's editor with custom client-side content. This method does\nnot suspend the server-side script while the sidebar is open. To communicate with the\nserver-side script, the client-side component must make asynchronous callbacks using the google.script API for HtmlService. To close the sidebar\nprogrammatically, call \ngoogle.script.host.close() on the client side of an HtmlService web\napp. For more information, see the guide to dialogs and\nsidebars.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/common/fakeui.js#L21"
           }
         ]
       },
@@ -17701,7 +17701,7 @@
             "returnType": "Form",
             "returnDescription": "The new form.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformapp.js#L40"
+            "implementationLink": "src/services/formapp/fakeformapp.js#L41"
           },
           {
             "method": "create(String,Boolean)",
@@ -17710,7 +17710,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformapp.js#L40"
+            "implementationLink": "src/services/formapp/fakeformapp.js#L41"
           },
           {
             "method": "createCheckboxGridValidation()",
@@ -17773,7 +17773,7 @@
             "returnType": "Form",
             "returnDescription": "the form to which the script is bound, or null if the script is not bound to a\n    form",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformapp.js#L68"
+            "implementationLink": "src/services/formapp/fakeformapp.js#L69"
           },
           {
             "method": "getUi()",
@@ -17781,8 +17781,8 @@
             "description": "Returns an instance of the form editor's user-interface environment that allows the script to\nadd features like menus, dialogs, and sidebars. A script can only interact with the UI for the\ncurrent instance of an open form editor (not the view that a respondent sees), and only if the\nscript is bound to the form. For more\ninformation, see the guides to menus and dialogs and sidebars.",
             "returnType": "Ui",
             "returnDescription": "an instance of this form's user-interface environment",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/formapp/fakeformapp.js#L78"
           },
           {
             "method": "openById(String)",
@@ -17791,7 +17791,7 @@
             "returnType": "Form",
             "returnDescription": "the form with the given ID",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformapp.js#L74"
+            "implementationLink": "src/services/formapp/fakeformapp.js#L75"
           },
           {
             "method": "openByUrl(String)",
@@ -17800,7 +17800,7 @@
             "returnType": "Form",
             "returnDescription": "the form with the given URL",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeformapp.js#L96"
+            "implementationLink": "src/services/formapp/fakeformapp.js#L101"
           }
         ]
       },
@@ -22451,7 +22451,7 @@
             "returnType": "TextOutput",
             "returnDescription": "the new TextOutput object.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/content/contentservice.js#L18"
+            "implementationLink": "src/services/content/contentservice.js#L9"
           },
           {
             "method": "createTextOutput(String)",
@@ -22460,7 +22460,7 @@
             "returnType": "TextOutput",
             "returnDescription": "the new TextOutput object.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/content/contentservice.js#L18"
+            "implementationLink": "src/services/content/contentservice.js#L9"
           }
         ]
       },
@@ -22475,48 +22475,48 @@
             "description": "CSV Mime Type",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/contentenums.js#L6"
           },
           {
             "method": "ICAL",
             "description": "ICAL Mime Type",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/contentenums.js#L7"
           },
           {
             "method": "JAVASCRIPT",
             "description": "JAVASCRIPT Mime Type",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/contentenums.js#L8"
           },
           {
             "method": "JSON",
             "description": "JSON Mime Type",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/contentenums.js#L9"
           },
           {
             "method": "TEXT",
             "description": "TEXT Mime Type",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/contentenums.js#L11"
           },
           {
             "method": "VCARD",
             "description": "VCARD Mime Type",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/contentenums.js#L12"
           }
         ]
       },
@@ -22568,8 +22568,8 @@
             "description": "Returns the file name to download this file as, or null if it should be displayed rather than\ndownloaded.",
             "returnType": "String",
             "returnDescription": "the file name",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/content/textoutput.js#L28"
           },
           {
             "method": "getMimeType()",
@@ -22578,7 +22578,7 @@
             "returnType": "MimeType",
             "returnDescription": "the mime type this will be served with",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/content/textoutput.js#L28"
+            "implementationLink": "src/services/content/textoutput.js#L32"
           },
           {
             "method": "setContent(String)",
@@ -22587,7 +22587,7 @@
             "returnType": "TextOutput",
             "returnDescription": "this TextOutput itself, useful for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/content/textoutput.js#L32"
+            "implementationLink": "src/services/content/textoutput.js#L36"
           },
           {
             "method": "setMimeType(MimeType)",
@@ -22596,7 +22596,7 @@
             "returnType": "TextOutput",
             "returnDescription": "this TextOutput itself, useful for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/content/textoutput.js#L37"
+            "implementationLink": "src/services/content/textoutput.js#L41"
           }
         ]
       }
@@ -22620,7 +22620,7 @@
             "returnType": "HtmlOutput",
             "returnDescription": "the new HtmlOutput object",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmlservice.js#L44"
+            "implementationLink": "src/services/html/htmlservice.js#L38"
           },
           {
             "method": "createHtmlOutput(BlobSource)",
@@ -22629,7 +22629,7 @@
             "returnType": "HtmlOutput",
             "returnDescription": "the new HtmlOutput object",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmlservice.js#L44"
+            "implementationLink": "src/services/html/htmlservice.js#L38"
           },
           {
             "method": "createHtmlOutput(String)",
@@ -22638,7 +22638,7 @@
             "returnType": "HtmlOutput",
             "returnDescription": "the new HtmlOutput object",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmlservice.js#L44"
+            "implementationLink": "src/services/html/htmlservice.js#L38"
           },
           {
             "method": "createHtmlOutputFromFile(String)",
@@ -22647,7 +22647,7 @@
             "returnType": "HtmlOutput",
             "returnDescription": "the new HtmlOutput object",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmlservice.js#L44"
+            "implementationLink": "src/services/html/htmlservice.js#L38"
           },
           {
             "method": "createTemplate(BlobSource)",
@@ -22682,8 +22682,8 @@
             "description": "Gets the user-agent string for the current browser. Returns null for most script\nexecutions if not used in a web app's doGet() or doPost() function.",
             "returnType": "String",
             "returnDescription": "the user-agent string",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/html/htmlservice.js#L85"
           }
         ]
       },
@@ -22699,8 +22699,8 @@
             "description": "Gets the content of this meta tag.",
             "returnType": "String",
             "returnDescription": "the content of this meta tag.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/html/htmloutputmetatag.js#L7"
           },
           {
             "method": "getName()",
@@ -22708,8 +22708,8 @@
             "description": "Gets the name of this HtmlOutputMetaTag.",
             "returnType": "String",
             "returnDescription": "the name of this meta tag.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/html/htmloutputmetatag.js#L11"
           }
         ]
       },
@@ -22734,8 +22734,8 @@
             "description": "Generates a string of JavaScript code, based on the template file, that can be evaluated. This\nmethod produces a string of JavaScript code based on the template file. Calling \neval(<code>) will return a new HtmlOutput object with the content of the\ntemplate after running all embedded server scripts. The generated code is intended to be\nhuman-readable, and so if you need to debug a template you can call \nLogger.log(<code>) to see what was produced.",
             "returnType": "String",
             "returnDescription": "a string based on the template, which can be evaluated",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/html/htmltemplate.js#L58"
           },
           {
             "method": "getCodeWithComments()",
@@ -22743,8 +22743,8 @@
             "description": "Generates a string of JavaScript code that can be evaluated, with each line of the code\ncontaining the original line from the template as a comment. This method produces a string of\nJavaScript code based on the template file. Calling eval(<code>) will return\na new HtmlOutput object with the content of the template after running all embedded\nserver scripts. The generated code is intended to be human-readable, and so if you need to\ndebug a template you can call Logger.log(<code>) to see what was produced.",
             "returnType": "String",
             "returnDescription": "an string based on the template, which can be evaluated",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/html/htmltemplate.js#L62"
           },
           {
             "method": "getRawContent()",
@@ -22768,24 +22768,24 @@
             "description": "A legacy sandbox mode that emulates ECMAScript 5 strict mode using only the features available\nin ECMAScript 3. This mode was the default prior to February 2014.\n\n\nEMULATED was sunset as of December 10,\n2015. All scripts attempting use EMULATED will now use IFRAME instead.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/htmlenums.js#L5"
           },
           {
             "method": "IFRAME",
             "description": "A sandbox mode that uses iframe sandboxing instead of the Caja sandbox technology used by the\nEMULATED and NATIVE modes. This mode is the default for new scripts as of\nNovember 12, 2015 and for all scripts as of July 6, 2016.\n\nThis mode imposes many fewer restrictions than the other sandbox modes and runs fastest, but\ndoes not work at all in certain older browsers, including Internet Explorer 9.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/htmlenums.js#L6"
           },
           {
             "method": "NATIVE",
             "description": "A sandbox mode that is built on top of ECMAScript 5 strict mode. A sandbox mode built on top of\nECMAScript 5 strict mode. This mode was sunset as\nof July 6, 2016. All scripts now use IFRAME mode.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/htmlenums.js#L7"
           }
         ]
       },
@@ -22802,7 +22802,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmloutput.js#L65"
+            "implementationLink": "src/services/html/htmloutput.js#L82"
           },
           {
             "method": "append(String)",
@@ -22811,7 +22811,7 @@
             "returnType": "HtmlOutput",
             "returnDescription": "This output, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmloutput.js#L24"
+            "implementationLink": "src/services/html/htmloutput.js#L26"
           },
           {
             "method": "appendUntrusted(String)",
@@ -22819,8 +22819,8 @@
             "description": "Appends new content to the content of this HtmlOutput, using contextual escaping.",
             "returnType": "HtmlOutput",
             "returnDescription": "This output, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/html/htmloutput.js#L31"
           },
           {
             "method": "asTemplate()",
@@ -22828,8 +22828,8 @@
             "description": "Returns an HtmlTemplate backed by this HtmlOutput. This method can be used to\nbuild up a template incrementally. Future changes to HtmlOutput affect the contents of\nthe HtmlTemplate as well.",
             "returnType": "HtmlTemplate",
             "returnDescription": "The new HtmlTemplate.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/html/htmloutput.js#L101"
           },
           {
             "method": "clear()",
@@ -22837,8 +22837,8 @@
             "description": "Clears the current content.",
             "returnType": "HtmlOutput",
             "returnDescription": "This output, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/html/htmloutput.js#L41"
           },
           {
             "method": "getAs(String)",
@@ -22846,8 +22846,8 @@
             "description": "Return the data inside this object as a blob converted to the specified content type. This\nmethod adds the appropriate extension to the filename—for example, \"myfile.pdf\". However, it\nassumes that the part of the filename that follows the last period (if any) is an existing\nextension that should be replaced. Consequently, \"ShoppingList.12.25.2014\" becomes\n\"ShoppingList.12.25.pdf\".",
             "returnType": "Blob",
             "returnDescription": "The data as a blob.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/html/htmloutput.js#L109"
           },
           {
             "method": "getBlob()",
@@ -22855,8 +22855,8 @@
             "description": "Return the data inside this object as a blob.",
             "returnType": "Blob",
             "returnDescription": "The data as a blob.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/html/htmloutput.js#L105"
           },
           {
             "method": "getContent()",
@@ -22865,7 +22865,7 @@
             "returnType": "String",
             "returnDescription": "The content that is served.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmloutput.js#L15"
+            "implementationLink": "src/services/html/htmloutput.js#L17"
           },
           {
             "method": "getFaviconUrl()",
@@ -22874,7 +22874,7 @@
             "returnType": "String",
             "returnDescription": "The URL of the favicon image.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmloutput.js#L61"
+            "implementationLink": "src/services/html/htmloutput.js#L78"
           },
           {
             "method": "setFaviconUrl(String)",
@@ -22883,7 +22883,7 @@
             "returnType": "HtmlOutput",
             "returnDescription": "This output, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmloutput.js#L56"
+            "implementationLink": "src/services/html/htmloutput.js#L73"
           },
           {
             "method": "getHeight()",
@@ -22892,7 +22892,7 @@
             "returnType": "Integer",
             "returnDescription": "The height, in pixels.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmloutput.js#L52"
+            "implementationLink": "src/services/html/htmloutput.js#L69"
           },
           {
             "method": "getMetaTags()",
@@ -22900,8 +22900,8 @@
             "description": "Gets an array of objects that represent meta tags added to the page by calling addMetaTag(name, content). Meta tags included directly in an Apps Script HTML file are\nignored.",
             "returnType": "HtmlOutputMetaTag[]",
             "returnDescription": "An array of objects that represent meta tags added to the page by calling addMetaTag(name, content).",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/html/htmloutput.js#L87"
           },
           {
             "method": "getTitle()",
@@ -22910,7 +22910,7 @@
             "returnType": "String",
             "returnDescription": "The title of the page.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmloutput.js#L34"
+            "implementationLink": "src/services/html/htmloutput.js#L51"
           },
           {
             "method": "getWidth()",
@@ -22919,7 +22919,7 @@
             "returnType": "Integer",
             "returnDescription": "The width in pixels.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmloutput.js#L43"
+            "implementationLink": "src/services/html/htmloutput.js#L60"
           },
           {
             "method": "setContent(String)",
@@ -22928,7 +22928,7 @@
             "returnType": "HtmlOutput",
             "returnDescription": "This output, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmloutput.js#L19"
+            "implementationLink": "src/services/html/htmloutput.js#L21"
           },
           {
             "method": "setHeight(Integer)",
@@ -22937,7 +22937,7 @@
             "returnType": "HtmlOutput",
             "returnDescription": "This output, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmloutput.js#L47"
+            "implementationLink": "src/services/html/htmloutput.js#L64"
           },
           {
             "method": "setSandboxMode(SandboxMode)",
@@ -22946,7 +22946,7 @@
             "returnType": "HtmlOutput",
             "returnDescription": "This output, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmloutput.js#L75"
+            "implementationLink": "src/services/html/htmloutput.js#L96"
           },
           {
             "method": "setTitle(String)",
@@ -22955,7 +22955,7 @@
             "returnType": "HtmlOutput",
             "returnDescription": "This output, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmloutput.js#L29"
+            "implementationLink": "src/services/html/htmloutput.js#L46"
           },
           {
             "method": "setWidth(Integer)",
@@ -22964,7 +22964,7 @@
             "returnType": "HtmlOutput",
             "returnDescription": "This output, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmloutput.js#L38"
+            "implementationLink": "src/services/html/htmloutput.js#L55"
           },
           {
             "method": "setXFrameOptionsMode(XFrameOptionsMode)",
@@ -22973,7 +22973,7 @@
             "returnType": "HtmlOutput",
             "returnDescription": "This output, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/html/htmloutput.js#L70"
+            "implementationLink": "src/services/html/htmloutput.js#L91"
           }
         ]
       },
@@ -22988,16 +22988,16 @@
             "description": "No X-Frame-Options header will be set. This will let any site iframe the page, so the\ndeveloper should implement their own protection against clickjacking.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/htmlenums.js#L10"
           },
           {
             "method": "DEFAULT",
             "description": "Sets the default value for the X-Frame-Options header, which preserves normal security\nassumptions. If a script does not set an X-Frame-Options mode, Apps Script uses this\nmode as the default.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/htmlenums.js#L11"
           }
         ]
       }
@@ -33521,7 +33521,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L166"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L171"
           },
           {
             "method": "create(String)",
@@ -33530,7 +33530,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "a new spreadsheet",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L25"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L26"
           },
           {
             "method": "create(String,Integer,Integer)",
@@ -33539,7 +33539,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L25"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L26"
           },
           {
             "method": "enableAllDataSourcesExecution()",
@@ -33548,7 +33548,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L148"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L153"
           },
           {
             "method": "enableBigQueryExecution()",
@@ -33557,7 +33557,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L139"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L144"
           },
           {
             "method": "enableLookerExecution()",
@@ -33566,7 +33566,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L157"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L162"
           },
           {
             "method": "flush()",
@@ -33575,7 +33575,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L166"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L171"
           },
           {
             "method": "getActive()",
@@ -33584,7 +33584,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "the active Spreadsheet object",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L83"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L84"
           },
           {
             "method": "getActiveRange()",
@@ -33593,7 +33593,7 @@
             "returnType": "Range",
             "returnDescription": "The active range.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L86"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L87"
           },
           {
             "method": "getActiveRangeList()",
@@ -33602,7 +33602,7 @@
             "returnType": "RangeList",
             "returnDescription": "the list of active ranges",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L87"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L88"
           },
           {
             "method": "getActiveSheet()",
@@ -33611,7 +33611,7 @@
             "returnType": "Sheet",
             "returnDescription": "the active Sheet object",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L84"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L85"
           },
           {
             "method": "getActiveSpreadsheet()",
@@ -33620,7 +33620,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "the active Spreadsheet object",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L123"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L128"
           },
           {
             "method": "getCurrentCell()",
@@ -33629,7 +33629,7 @@
             "returnType": "Range",
             "returnDescription": "the current cell",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L85"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L86"
           },
           {
             "method": "getSelection()",
@@ -33638,7 +33638,7 @@
             "returnType": "Selection",
             "returnDescription": "the current selection",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L88"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L89"
           },
           {
             "method": "getUi()",
@@ -33647,7 +33647,7 @@
             "returnType": "Ui",
             "returnDescription": "an instance of this spreadsheet's user-interface environment",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L93"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L106"
           },
           {
             "method": "newCellImage()",
@@ -33656,7 +33656,7 @@
             "returnType": "CellImageBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L246"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L251"
           },
           {
             "method": "newColor()",
@@ -33665,7 +33665,7 @@
             "returnType": "ColorBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L255"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L260"
           },
           {
             "method": "newConditionalFormatRule()",
@@ -33674,7 +33674,7 @@
             "returnType": "ConditionalFormatRuleBuilder",
             "returnDescription": "the new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L264"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L269"
           },
           {
             "method": "newDataSourceSpec()",
@@ -33683,7 +33683,7 @@
             "returnType": "DataSourceSpecBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L308"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L313"
           },
           {
             "method": "newDataValidation()",
@@ -33692,7 +33692,7 @@
             "returnType": "DataValidationBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L282"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L287"
           },
           {
             "method": "newFilterCriteria()",
@@ -33701,7 +33701,7 @@
             "returnType": "FilterCriteriaBuilder",
             "returnDescription": "the new builder",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L300"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L305"
           },
           {
             "method": "newRichTextValue()",
@@ -33710,7 +33710,7 @@
             "returnType": "RichTextValueBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L291"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L296"
           },
           {
             "method": "newTextStyle()",
@@ -33719,7 +33719,7 @@
             "returnType": "TextStyleBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L273"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L278"
           },
           {
             "method": "open(File)",
@@ -33728,7 +33728,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "the spreadsheet",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L114"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L119"
           },
           {
             "method": "openById(String)",
@@ -33737,7 +33737,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "the Spreadsheet object with the given id",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L120"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L125"
           },
           {
             "method": "openByUrl(String)",
@@ -33746,7 +33746,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "The spreadsheet object with the given URL.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L237"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L242"
           },
           {
             "method": "setActiveRange(Range)",
@@ -33755,7 +33755,7 @@
             "returnType": "Range",
             "returnDescription": "the new active Range",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L91"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L92"
           },
           {
             "method": "setActiveRangeList(RangeList)",
@@ -33764,7 +33764,7 @@
             "returnType": "RangeList",
             "returnDescription": "the newly selected list of ranges",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L92"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L93"
           },
           {
             "method": "setActiveSheet(Sheet)",
@@ -33773,7 +33773,7 @@
             "returnType": "Sheet",
             "returnDescription": "the sheet that has been made the new active sheet",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L89"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L90"
           },
           {
             "method": "setActiveSheet(Sheet,Boolean)",
@@ -33782,7 +33782,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L89"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L90"
           },
           {
             "method": "setActiveSpreadsheet(Spreadsheet)",
@@ -33791,7 +33791,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L133"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L138"
           },
           {
             "method": "setCurrentCell(Range)",
@@ -33800,7 +33800,7 @@
             "returnType": "Range",
             "returnDescription": "the newly set current cell",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L90"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L91"
           }
         ]
       },
@@ -49631,7 +49631,7 @@
             "returnType": "Presentation",
             "returnDescription": "the presentation with the given name.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakeslidesapp.js#L66"
+            "implementationLink": "src/services/slidesapp/fakeslidesapp.js#L67"
           },
           {
             "method": "getActivePresentation()",
@@ -49640,7 +49640,7 @@
             "returnType": "",
             "returnDescription": "Presentation",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakeslidesapp.js#L79"
+            "implementationLink": "src/services/slidesapp/fakeslidesapp.js#L80"
           },
           {
             "method": "getUi()",
@@ -49648,8 +49648,8 @@
             "description": "Returns an instance of the presentation's user-interface environment that allows the script to\nadd features like menus, dialogs, and sidebars. A script can only interact with the UI for the\ncurrent instance of an open presentation, and only if the script is bound to the presentation. For more information, see\nthe guides to menus and dialogs and sidebars.",
             "returnType": "",
             "returnDescription": "Ui",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakeslidesapp.js#L89"
           },
           {
             "method": "newAffineTransformBuilder()",
@@ -49658,7 +49658,7 @@
             "returnType": "",
             "returnDescription": "AffineTransformBuilder",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakeslidesapp.js#L57"
+            "implementationLink": "src/services/slidesapp/fakeslidesapp.js#L58"
           },
           {
             "method": "openById(String)",
@@ -49667,7 +49667,7 @@
             "returnType": "Presentation",
             "returnDescription": "the presentation with the given ID",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakeslidesapp.js#L85"
+            "implementationLink": "src/services/slidesapp/fakeslidesapp.js#L86"
           },
           {
             "method": "openByUrl(String)",
@@ -49676,7 +49676,7 @@
             "returnType": "Presentation",
             "returnDescription": "the presentation with the given URL",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakeslidesapp.js#L107"
+            "implementationLink": "src/services/slidesapp/fakeslidesapp.js#L112"
           }
         ]
       },

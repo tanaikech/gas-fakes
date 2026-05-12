@@ -9,6 +9,7 @@ Supported Methods:
 - `clear()`
 - `downloadAsFile(String)`
 - `getContent()`
+- `getFileName()`
 - `getMimeType()`
 - `setContent(String)`
 - `setMimeType(MimeType)`
@@ -20,6 +21,7 @@ Supported Methods:
 - `clear()`
 - `downloadAsFile(String)`
 - `getContent()`
+- `getFileName()`
 - `getMimeType()`
 - `setContent(String)`
 - `setMimeType(MimeType)`

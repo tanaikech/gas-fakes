@@ -30,6 +30,8 @@ Supported Methods:
 - `getEffectiveUser()`
 - `getScriptTimeZone()`
 - `getTemporaryActiveUserKey()`
+- `showModalDialog(Object,String)`
+- `showSidebar(Object)`
 - `getEmail()`
 
 ## Class: Browser
@@ -49,6 +51,8 @@ Supported Methods:
 - `getEffectiveUser()`
 - `getScriptTimeZone()`
 - `getTemporaryActiveUserKey()`
+- `showModalDialog(Object,String)`
+- `showSidebar(Object)`
 - `getEmail()`
 
 ## Class: console
@@ -68,6 +72,8 @@ Supported Methods:
 - `getEffectiveUser()`
 - `getScriptTimeZone()`
 - `getTemporaryActiveUserKey()`
+- `showModalDialog(Object,String)`
+- `showSidebar(Object)`
 - `getEmail()`
 
 ## Class: Logger
@@ -87,6 +93,8 @@ Supported Methods:
 - `getEffectiveUser()`
 - `getScriptTimeZone()`
 - `getTemporaryActiveUserKey()`
+- `showModalDialog(Object,String)`
+- `showSidebar(Object)`
 - `getEmail()`
 
 ## Class: Menu
@@ -102,6 +110,8 @@ Supported Methods:
 - `getEffectiveUser()`
 - `getScriptTimeZone()`
 - `getTemporaryActiveUserKey()`
+- `showModalDialog(Object,String)`
+- `showSidebar(Object)`
 - `getEmail()`
 
 ## Class: PromptResponse
@@ -117,6 +127,8 @@ Supported Methods:
 - `getEffectiveUser()`
 - `getScriptTimeZone()`
 - `getTemporaryActiveUserKey()`
+- `showModalDialog(Object,String)`
+- `showSidebar(Object)`
 - `getEmail()`
 
 ## Class: RgbColor
@@ -132,6 +144,8 @@ Supported Methods:
 - `getEffectiveUser()`
 - `getScriptTimeZone()`
 - `getTemporaryActiveUserKey()`
+- `showModalDialog(Object,String)`
+- `showSidebar(Object)`
 - `getEmail()`
 
 ## Class: Session
@@ -142,11 +156,15 @@ Supported Methods:
 - `getEffectiveUser()`
 - `getScriptTimeZone()`
 - `getTemporaryActiveUserKey()`
+- `showModalDialog(Object,String)`
+- `showSidebar(Object)`
 - `getEmail()`
 
 ## Class: Ui
 
 Supported Methods:
+- `showModalDialog(Object,String)`
+- `showSidebar(Object)`
 - `getEmail()`
 
 ## Class: User

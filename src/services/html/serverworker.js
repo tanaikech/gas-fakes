@@ -89,7 +89,17 @@ export class ServerWorkerContext {
     const resultData = JSON.parse(resultString);
 
     if (hasError) {
-      throw new Error(resultData.stack || resultData.message);
+      // If the error was thrown as a string, its stack will be artificial (generated in writeError)
+      // and won't contain the actual message. Let's make sure the message is always visible.
+      const errorMsg = resultData.message || 'Unknown error in worker';
+      const errorStack = resultData.stack || '';
+      
+      const err = new Error(errorMsg);
+      // Only replace the stack if it contains useful information, otherwise use the standard one
+      if (errorStack && !errorStack.startsWith('Error\n    at writeError')) {
+        err.stack = errorStack;
+      }
+      throw err;
     }
 
     return resultData;

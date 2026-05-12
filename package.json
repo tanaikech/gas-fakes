@@ -5,7 +5,6 @@
   "dependencies": {
     "@azure/identity": "^4.13.1",
     "@mcpher/fake-gasenum": "^1.0.6",
-    "@mcpher/gas-fakes": "^2.3.9",
     "@mcpher/gas-flex-cache": "^1.1.5",
     "@microsoft/microsoft-graph-client": "^3.0.7",
     "@modelcontextprotocol/sdk": "^1.28.0",
@@ -40,7 +39,7 @@
   },
   "name": "@mcpher/gas-fakes",
   "author": "bruce mcpherson",
-  "version": "2.3.18",
+  "version": "2.4.0",
   "license": "MIT",
   "main": "main.js",
   "description": "An implementation of the Google Workspace Apps Script runtime: Run native App Script Code on Node and Cloud Run",

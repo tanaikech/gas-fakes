@@ -9,6 +9,7 @@ import { testSheetsValues } from "./testsheetsvalues.js";
 import { testFetch } from "./testfetch.js";
 import { testSession } from "./testsession.js";
 import { testUtilities } from "./testutilities.js";
+import { testContentService } from "./testcontent.js";
 import { testStores } from "./teststores.js";
 import { testScriptApp } from "./testscriptapp.js";
 import {
@@ -254,6 +255,8 @@ export const testFakes = () => {
   testSession(pack);
   console.log("\n----Test Utilities----");
   testUtilities(pack);
+  console.log("\n----Test ContentService----");
+  testContentService(pack);
   console.log("\n----Test Stores----");
   testStores(pack);
 

@@ -164,6 +164,7 @@ Supported Methods:
 - `replaceAllText(String,String)`
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
@@ -364,6 +365,7 @@ Supported Methods:
 - `replaceAllText(String,String)`
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
@@ -557,6 +559,7 @@ Supported Methods:
 - `replaceAllText(String,String)`
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
@@ -746,6 +749,7 @@ Supported Methods:
 - `replaceAllText(String,String)`
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
@@ -932,6 +936,7 @@ Supported Methods:
 - `replaceAllText(String,String)`
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
@@ -1118,6 +1123,7 @@ Supported Methods:
 - `replaceAllText(String,String)`
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
@@ -1301,6 +1307,7 @@ Supported Methods:
 - `replaceAllText(String,String)`
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
@@ -1479,6 +1486,7 @@ Supported Methods:
 - `replaceAllText(String,String)`
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
@@ -1655,6 +1663,7 @@ Supported Methods:
 - `replaceAllText(String,String)`
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
@@ -1831,6 +1840,7 @@ Supported Methods:
 - `replaceAllText(String,String)`
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
@@ -2007,6 +2017,7 @@ Supported Methods:
 - `replaceAllText(String,String)`
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
@@ -2183,6 +2194,7 @@ Supported Methods:
 - `replaceAllText(String,String)`
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
@@ -2356,6 +2368,7 @@ Supported Methods:
 - `replaceAllText(String,String)`
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
@@ -2498,6 +2511,7 @@ Supported Methods:
 - `replaceAllText(String,String)`
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
@@ -2630,6 +2644,7 @@ Supported Methods:
 - `replaceAllText(String,String)`
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
@@ -2759,6 +2774,7 @@ Supported Methods:
 - `replaceAllText(String,String)`
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
@@ -2888,6 +2904,7 @@ Supported Methods:
 - `replaceAllText(String,String)`
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
@@ -3017,6 +3034,7 @@ Supported Methods:
 - `replaceAllText(String,String)`
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
@@ -3144,6 +3162,7 @@ Supported Methods:
 - `replaceAllText(String,String)`
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
@@ -3271,6 +3290,7 @@ Supported Methods:
 - `replaceAllText(String,String)`
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
@@ -3398,6 +3418,7 @@ Supported Methods:
 - `replaceAllText(String,String)`
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
@@ -3525,6 +3546,7 @@ Supported Methods:
 - `replaceAllText(String,String)`
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
@@ -3652,6 +3674,7 @@ Supported Methods:
 - `replaceAllText(String,String)`
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
@@ -3748,6 +3771,7 @@ Supported Methods:
 - `replaceAllText(String,String)`
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
@@ -3844,6 +3868,7 @@ Supported Methods:
 - `replaceAllText(String,String)`
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
@@ -3940,6 +3965,7 @@ Supported Methods:
 - `replaceAllText(String,String)`
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
@@ -4034,6 +4060,7 @@ Supported Methods:
 - `replaceAllText(String,String)`
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
@@ -4128,6 +4155,7 @@ Supported Methods:
 - `replaceAllText(String,String)`
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
@@ -4222,6 +4250,7 @@ Supported Methods:
 - `replaceAllText(String,String)`
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
@@ -4314,6 +4343,7 @@ Supported Methods:
 - `replaceAllText(String,String)`
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
@@ -4389,6 +4419,7 @@ Supported Methods:
 - `replaceAllText(String,String)`
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
@@ -4464,6 +4495,7 @@ Supported Methods:
 - `replaceAllText(String,String)`
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
@@ -4536,6 +4568,7 @@ Supported Methods:
 - `replaceAllText(String,String)`
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
@@ -4608,6 +4641,7 @@ Supported Methods:
 - `replaceAllText(String,String)`
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
@@ -4656,6 +4690,7 @@ Supported Methods:
 Supported Methods:
 - `create(String)`
 - `getActivePresentation()`
+- `getUi()`
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`

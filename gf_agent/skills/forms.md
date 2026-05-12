@@ -108,6 +108,7 @@ Supported Methods:
 - `create(String,Boolean)`
 - `create(String)`
 - `getActiveForm()`
+- `getUi()`
 - `openById(String)`
 - `openByUrl(String)`
 - `getId()`
@@ -334,6 +335,7 @@ Supported Methods:
 - `create(String,Boolean)`
 - `create(String)`
 - `getActiveForm()`
+- `getUi()`
 - `openById(String)`
 - `openByUrl(String)`
 - `getId()`
@@ -560,6 +562,7 @@ Supported Methods:
 - `create(String,Boolean)`
 - `create(String)`
 - `getActiveForm()`
+- `getUi()`
 - `openById(String)`
 - `openByUrl(String)`
 - `getId()`
@@ -786,6 +789,7 @@ Supported Methods:
 - `create(String,Boolean)`
 - `create(String)`
 - `getActiveForm()`
+- `getUi()`
 - `openById(String)`
 - `openByUrl(String)`
 - `getId()`
@@ -1001,6 +1005,7 @@ Supported Methods:
 - `create(String,Boolean)`
 - `create(String)`
 - `getActiveForm()`
+- `getUi()`
 - `openById(String)`
 - `openByUrl(String)`
 - `getId()`
@@ -1216,6 +1221,7 @@ Supported Methods:
 - `create(String,Boolean)`
 - `create(String)`
 - `getActiveForm()`
+- `getUi()`
 - `openById(String)`
 - `openByUrl(String)`
 - `getId()`
@@ -1431,6 +1437,7 @@ Supported Methods:
 - `create(String,Boolean)`
 - `create(String)`
 - `getActiveForm()`
+- `getUi()`
 - `openById(String)`
 - `openByUrl(String)`
 - `getId()`
@@ -1644,6 +1651,7 @@ Supported Methods:
 - `create(String,Boolean)`
 - `create(String)`
 - `getActiveForm()`
+- `getUi()`
 - `openById(String)`
 - `openByUrl(String)`
 - `getId()`
@@ -1846,6 +1854,7 @@ Supported Methods:
 - `create(String,Boolean)`
 - `create(String)`
 - `getActiveForm()`
+- `getUi()`
 - `openById(String)`
 - `openByUrl(String)`
 - `getId()`
@@ -2038,6 +2047,7 @@ Supported Methods:
 - `create(String,Boolean)`
 - `create(String)`
 - `getActiveForm()`
+- `getUi()`
 - `openById(String)`
 - `openByUrl(String)`
 - `getId()`
@@ -2219,6 +2229,7 @@ Supported Methods:
 - `create(String,Boolean)`
 - `create(String)`
 - `getActiveForm()`
+- `getUi()`
 - `openById(String)`
 - `openByUrl(String)`
 - `getId()`
@@ -2358,6 +2369,7 @@ Supported Methods:
 - `create(String,Boolean)`
 - `create(String)`
 - `getActiveForm()`
+- `getUi()`
 - `openById(String)`
 - `openByUrl(String)`
 - `getId()`

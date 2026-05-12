@@ -54,6 +54,14 @@ export class FakeHtmlTemplate {
   getRawContent() {
     return this._content;
   }
+
+  getCode() {
+    return `// Compiled template\n(function() { let output = ""; ${this._content.split('\n').map(line => `output += ${JSON.stringify(line)} + "\\n";`).join('\n')} return output; })()`;
+  }
+
+  getCodeWithComments() {
+    return `// Compiled template with comments\n(function() { let output = ""; ${this._content.split('\n').map(line => `// ${line}\noutput += ${JSON.stringify(line)} + "\\n";`).join('\n')} return output; })()`;
+  }
 }
 
 

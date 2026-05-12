@@ -1,3 +1,5 @@
+import { FakeHtmlTemplate } from './htmltemplate.js';
+import { FakeHtmlOutputMetaTag } from './htmloutputmetatag.js';
 
 export class FakeHtmlOutput {
   constructor(content = '') {
@@ -23,6 +25,21 @@ export class FakeHtmlOutput {
 
   append(content) {
     this._content += content;
+    return this;
+  }
+
+  appendUntrusted(content) {
+    this._content += String(content)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+    return this;
+  }
+
+  clear() {
+    this._content = '';
     return this;
   }
 
@@ -67,6 +84,10 @@ export class FakeHtmlOutput {
     return this;
   }
 
+  getMetaTags() {
+    return Object.keys(this._metaData).map(name => new FakeHtmlOutputMetaTag(name, this._metaData[name]));
+  }
+
   setXFrameOptionsMode(mode) {
     this._xFrameOptionsMode = mode;
     return this;
@@ -75,5 +96,21 @@ export class FakeHtmlOutput {
   setSandboxMode(mode) {
     this._sandboxMode = mode;
     return this;
+  }
+
+  asTemplate() {
+    return new FakeHtmlTemplate(this._content);
+  }
+
+  getBlob() {
+    return globalThis.Utilities.newBlob(this._content, 'text/html', (this._title || 'output') + '.html');
+  }
+
+  getAs(contentType) {
+    // In live GAS, getAs performs server-side conversion (e.g. to PDF).
+    // Locally, we just return a blob with the new mimeType for parity checking.
+    const b = this.getBlob();
+    b.setContentType(contentType);
+    return b;
   }
 }

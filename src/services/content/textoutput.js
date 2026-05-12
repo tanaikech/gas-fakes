@@ -25,6 +25,10 @@ export class FakeTextOutput {
     return this._content;
   }
 
+  getFileName() {
+    return this._fileName;
+  }
+
   getMimeType() {
     return this._mimeType;
   }

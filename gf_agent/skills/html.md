@@ -5,9 +5,15 @@
 Supported Methods:
 - `addMetaTag(String,String)`
 - `append(String)`
+- `appendUntrusted(String)`
+- `asTemplate()`
+- `clear()`
+- `getAs(String)`
+- `getBlob()`
 - `getContent()`
 - `getFaviconUrl()`
 - `getHeight()`
+- `getMetaTags()`
 - `getTitle()`
 - `getWidth()`
 - `setContent(String)`
@@ -17,6 +23,8 @@ Supported Methods:
 - `setTitle(String)`
 - `setWidth(Integer)`
 - `setXFrameOptionsMode(XFrameOptionsMode)`
+- `getContent()`
+- `getName()`
 - `createHtmlOutput()`
 - `createHtmlOutput(BlobSource)`
 - `createHtmlOutput(String)`
@@ -24,12 +32,17 @@ Supported Methods:
 - `createTemplate(BlobSource)`
 - `createTemplate(String)`
 - `createTemplateFromFile(String)`
+- `getUserAgent()`
 - `evaluate()`
+- `getCode()`
+- `getCodeWithComments()`
 - `getRawContent()`
 
 ## Class: HtmlOutputMetaTag
 
 Supported Methods:
+- `getContent()`
+- `getName()`
 - `createHtmlOutput()`
 - `createHtmlOutput(BlobSource)`
 - `createHtmlOutput(String)`
@@ -37,7 +50,10 @@ Supported Methods:
 - `createTemplate(BlobSource)`
 - `createTemplate(String)`
 - `createTemplateFromFile(String)`
+- `getUserAgent()`
 - `evaluate()`
+- `getCode()`
+- `getCodeWithComments()`
 - `getRawContent()`
 
 ## Class: HtmlService
@@ -50,12 +66,17 @@ Supported Methods:
 - `createTemplate(BlobSource)`
 - `createTemplate(String)`
 - `createTemplateFromFile(String)`
+- `getUserAgent()`
 - `evaluate()`
+- `getCode()`
+- `getCodeWithComments()`
 - `getRawContent()`
 
 ## Class: HtmlTemplate
 
 Supported Methods:
 - `evaluate()`
+- `getCode()`
+- `getCodeWithComments()`
 - `getRawContent()`
 
