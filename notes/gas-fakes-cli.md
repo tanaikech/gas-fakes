@@ -106,9 +106,11 @@ Options:
 
 Commands:
   init [options]                            Initializes the configuration by creating or updating the .env file.
-  auth                                      Runs the Google Cloud authentication and authorization flow.
+  auth [options]                            Runs the Google Cloud authentication and authorization flow.
   enableAPIs [options]                      Enables or disables required Google Cloud APIs for the project.
   mcp [options]                             Launch gas-fakes as an MCP server.
+  serve [options]                           Starts a local web server to handle doGet and doPost requests.
+  jdbc [options]                            Parse a JDBC connection string and output configurations.
 ```
 
 ### Running a Script from a File
@@ -142,6 +144,26 @@ gas-fakes -s "const rootFolder = DriveApp.getRootFolder(); const rootFolderName 
 ```
 
 This will produce the same output as the file-based example.
+
+### Running a Local Web Server
+
+If your script contains web app logic (`doGet` or `doPost`) or you want to test UI components (Modal Dialogs/Sidebars) with `HtmlService` and client-side `google.script.run` RPC calls, you can use the `serve` command to launch a local HTTP emulator.
+
+**Example:**
+
+```bash
+gas-fakes serve -i ./main.js -p 8080
+```
+
+By default, visiting `http://localhost:8080` will execute the `doGet(e)` function in `./main.js`. 
+
+If you want to test a custom UI menu trigger (which typically doesn't use `doGet`), you can specify the entry point using the `-f` or `--function` flag:
+
+```bash
+gas-fakes serve -i ./addon.js -f showMySidebar
+```
+
+For a comprehensive guide on building UIs, templating, and handling client-side RPC calls locally, see the [Local Web Development Guide](local-web-development.md).
 
 ## Multi-Backend Support (KSuite)
 

@@ -1,5 +1,6 @@
 import { Proxies } from '../../support/proxies.js';
 import { newFakeAffineTransformBuilder } from './fakeaffinetransformbuilder.js';
+import { newFakeUi } from '../common/fakeui.js';
 import * as Enums from '../enums/slidesenums.js';
 import { newFakePresentation } from './fakepresentation.js';
 import { Auth } from '../../support/auth.js';
@@ -83,6 +84,10 @@ class FakeSlidesApp {
       return null;
     }
     return this.openById(id);
+  }
+
+  getUi() {
+    return newFakeUi();
   }
 
   /**

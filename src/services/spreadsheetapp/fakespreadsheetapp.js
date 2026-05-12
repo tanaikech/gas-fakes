@@ -16,6 +16,7 @@ import { newFakeConditionalFormatRuleBuilder } from "./fakeconditionalformatrule
 import { newFakeDataSourceSpecBuilder } from "./fakedatasourcespecbuilder.js";
 import { newFakeTextFinder } from "./faketextfinder.js";
 import { newFakeCellImageBuilder } from "./fakecellimagebuilder.js";
+import { newFakeUi } from "../common/fakeui.js";
 
 import * as Enums from "../enums/sheetsenums.js";
 
@@ -90,7 +91,6 @@ export class FakeSpreadsheetApp {
       "setCurrentCell",
       "setActiveRange",
       "setActiveRangeList",
-      "getUi",
 
       "ChartAggregationType",
       "ChartTransformationType",
@@ -102,6 +102,11 @@ export class FakeSpreadsheetApp {
       };
     });
   }
+
+  getUi() {
+    return newFakeUi();
+  }
+
   toString() {
     return "SpreadsheetApp";
   }

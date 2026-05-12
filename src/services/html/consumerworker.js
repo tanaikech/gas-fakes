@@ -9,6 +9,9 @@ const control = new Int32Array(workerData.controlBuf);
 const dataView = new Uint8Array(workerData.dataBuf);
 const textEncoder = new TextEncoder();
 
+// Expose the script path to the global environment so HtmlService can find files
+globalThis.__gasFakesMainScriptPath = mainScriptPath;
+
 await import('../../../main.js');
 
 const CONTROL_INDICES = {
@@ -131,42 +134,33 @@ async function run() {
       enumerable: true
     });
 
-    Object.defineProperty(sandbox, 'HtmlService', {
-      value: {
-        createTemplate: (html) => ({ evaluate: () => ({ getContent: () => html, getTitle: () => '', __isHtmlOutput: true }) }),
-        createHtmlOutput: (html) => {
-           let content = html;
-           let title = '';
-           return { 
-               getContent: () => content, 
-               setTitle: (t) => { title = t; return this; }, 
-               getTitle: () => title,
-               __isHtmlOutput: true 
-           };
-        },
-        createHtmlOutputFromFile: (filename) => {
-            // Very basic stub, real file loading should happen in main script if needed
-            return {
-               getContent: () => '<!-- Stub loaded from ' + filename + ' -->', 
-               setTitle: () => ({}), 
-               getTitle: () => '',
-               __isHtmlOutput: true 
-            };
-        },
-        createTemplateFromFile: (filename) => {
-            return { evaluate: () => ({ getContent: () => '<!-- Stub loaded from ' + filename + ' -->', getTitle: () => '', __isHtmlOutput: true }) };
-        },
-        __startWebApp: dummyProxy
-      },
-      writable: true,
-      configurable: true,
-      enumerable: true
-    });
+    // Provide the real HtmlService but stub out __startWebApp
+    if (globalThis.HtmlService) {
+      const realHtmlService = globalThis.HtmlService;
+      Object.defineProperty(sandbox, 'HtmlService', {
+        value: new Proxy(realHtmlService, {
+          get: (target, prop) => {
+            if (prop === '__startWebApp') return dummyProxy;
+            return target[prop];
+          }
+        }),
+        writable: true,
+        configurable: true,
+        enumerable: true
+      });
+    }
 
     // 4. Resolve Imports into the Sandbox
     const scriptDir = path.dirname(mainScriptPath);
     for (const imp of importsToResolve) {
       let importPath = imp.sourcePath;
+      
+      // If the consumer script is importing the library itself, ignore it.
+      // We've already loaded the correct version of gas-fakes above.
+      if (importPath === '@mcpher/gas-fakes') {
+          continue;
+      }
+
       if (importPath.startsWith('.')) {
         importPath = path.resolve(scriptDir, importPath);
       }
@@ -190,7 +184,20 @@ async function run() {
     }
 
     // 5. Execute Code in Sandbox
-    const context = vm.createContext(sandbox);
+    const sandboxProxy = new Proxy(sandbox, {
+      get: (target, prop) => {
+        if (Reflect.has(target, prop)) return Reflect.get(target, prop);
+        return Reflect.get(globalThis, prop);
+      },
+      has: (target, prop) => {
+        return Reflect.has(target, prop) || Reflect.has(globalThis, prop);
+      },
+      set: (target, prop, value) => {
+        return Reflect.set(target, prop, value);
+      }
+    });
+
+    const context = vm.createContext(sandboxProxy);
     try {
       vm.runInContext(modifiedSource, context);
     } catch (e) {
@@ -202,15 +209,18 @@ async function run() {
 
     // 6. Perform Requested Task
     if (isTemplate) {
-      result = templateString.replace(/<\?=\s*([^?]+)\s*\?>/g, (match, varName) => {
-        const trimmedVarName = varName.trim();
-        if (typeof availableContext[trimmedVarName] !== 'undefined') {
-          return availableContext[trimmedVarName];
+      result = templateString.replace(/<\?!=?\s*([\s\S]+?)\s*\?>/g, (match, expression) => {
+        try {
+           const exprResult = vm.runInContext(expression, context);
+           // If the result is a FakeHtmlOutput, unwrap it (e.g. from an include() function)
+           if (exprResult && typeof exprResult.getContent === 'function') {
+               return exprResult.getContent();
+           }
+           return typeof exprResult !== 'undefined' ? exprResult : '';
+        } catch (e) {
+           console.error(`gas-fakes template evaluation error for scriptlet '${expression}':`, e.message);
+           return match;
         }
-        if (typeof context[trimmedVarName] !== 'undefined') {
-          return context[trimmedVarName];
-        }
-        return match;
       });
     } else {
       let func = availableContext[funcName];
@@ -233,8 +243,11 @@ async function run() {
         result = {
           __isHtmlOutput: !!rawResult.__isHtmlOutput,
           __isTextOutput: !!rawResult.__isTextOutput,
+          __framingType: rawResult.__framingType || null,
           content: rawResult.getContent(),
           title: typeof rawResult.getTitle === 'function' ? rawResult.getTitle() : '',
+          width: typeof rawResult.getWidth === 'function' ? rawResult.getWidth() : null,
+          height: typeof rawResult.getHeight === 'function' ? rawResult.getHeight() : null,
           mimeType: typeof rawResult.getMimeType === 'function' ? rawResult.getMimeType() : null
         };
       } else {
@@ -265,7 +278,9 @@ function writeResult(result) {
 }
 
 function writeError(error) {
-  const errorString = JSON.stringify({ message: error.message, stack: error.stack });
+  const message = error instanceof Error ? error.message : String(error);
+  const stack = error instanceof Error ? error.stack : new Error().stack;
+  const errorString = JSON.stringify({ message, stack });
   const encodedError = textEncoder.encode(errorString);
   
   dataView.set(encodedError);

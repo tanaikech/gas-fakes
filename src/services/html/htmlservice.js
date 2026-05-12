@@ -2,6 +2,7 @@
 import { FakeHtmlOutput } from './htmloutput.js';
 import { FakeHtmlTemplate } from './htmltemplate.js';
 import { FakeGoogleScriptRun } from './googlescriptrun.js';
+import { HtmlEnums } from '../enums/htmlenums.js';
 import fs from 'fs';
 import path from 'path';
 
@@ -29,15 +30,8 @@ if (typeof globalThis.google === 'undefined') {
 
 export class FakeHtmlService {
   constructor() {
-    this.SandboxMode = {
-      EMULATED: 'EMULATED',
-      IFRAME: 'IFRAME',
-      NATIVE: 'NATIVE'
-    };
-    this.XFrameOptionsMode = {
-      ALLOWALL: 'ALLOWALL',
-      DEFAULT: 'DEFAULT'
-    };
+    this.SandboxMode = HtmlEnums.SandboxMode;
+    this.XFrameOptionsMode = HtmlEnums.XFrameOptionsMode;
   }
 
   _readLocalFile(filename) {
@@ -49,9 +43,15 @@ export class FakeHtmlService {
     }
 
     // Resolve relative to the consumer's main script
-    const mainScriptPath = process.argv[1];
-    if (!mainScriptPath) {
-        throw new Error("Could not determine project root. Ensure process.argv[1] is set.");
+    let mainScriptPath = process.argv[1];
+    
+    // In gas-fakes serve mode, we use worker threads. The worker passes the main script path via workerData.
+    if (globalThis.__gasFakesMainScriptPath) {
+        mainScriptPath = globalThis.__gasFakesMainScriptPath;
+    }
+
+    if (!mainScriptPath || mainScriptPath.endsWith('node')) {
+        throw new Error("Could not determine project root. Ensure process.argv[1] is set or __gasFakesMainScriptPath is defined.");
     }
     
     const projectDir = path.dirname(mainScriptPath);
@@ -80,6 +80,10 @@ export class FakeHtmlService {
   createTemplateFromFile(filename) {
     const content = this._readLocalFile(filename);
     return new FakeHtmlTemplate(content);
+  }
+
+  getUserAgent() {
+    return 'Node.js gas-fakes emulator';
   }
 
   __startWebApp(port = 3000) {

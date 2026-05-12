@@ -1,0 +1,88 @@
+<script>
+  let allData = [];
+  let currentPage = 0;
+  const pageSize = 10;
+
+  const prevBtn = document.getElementById('prev-btn');
+  const nextBtn = document.getElementById('next-btn');
+  const closeBtn = document.getElementById('close-btn');
+  const tableContainer = document.getElementById('table-container');
+  const pageInfo = document.getElementById('page-info');
+
+  closeBtn.addEventListener('click', () => {
+    google.script.host.close();
+  });
+
+  prevBtn.addEventListener('click', () => {
+    if (currentPage > 0) {
+      currentPage--;
+      renderTable();
+    }
+  });
+
+  nextBtn.addEventListener('click', () => {
+    if ((currentPage + 1) * pageSize < allData.length) {
+      currentPage++;
+      renderTable();
+    }
+  });
+
+  function renderTable() {
+    if (!allData || allData.length === 0) {
+      tableContainer.innerHTML = 'No data available.';
+      return;
+    }
+
+    const start = currentPage * pageSize;
+    const end = Math.min(start + pageSize, allData.length);
+    const pageData = allData.slice(start, end);
+
+    const columns = [
+      { key: 'name', label: 'Name' },
+      { key: 'iso_country', label: 'Country' },
+      { key: 'elevation_ft', label: 'Elevation' }
+    ];
+    
+    let html = '<table><thead><tr>';
+    columns.forEach(col => {
+      html += `<th>${col.label}</th>`;
+    });
+    html += '</tr></thead><tbody>';
+
+    pageData.forEach(row => {
+      html += '<tr>';
+      columns.forEach(col => {
+        html += `<td>${row[col.key] || ''}</td>`;
+      });
+      html += '</tr>';
+    });
+
+    html += '</tbody></table>';
+    tableContainer.innerHTML = html;
+
+    pageInfo.textContent = `Showing ${start + 1}-${end} of ${allData.length}`;
+
+    prevBtn.disabled = currentPage === 0;
+    nextBtn.disabled = end >= allData.length;
+  }
+
+  function loadData() {
+    const source = {
+      id: "1h9IGIShgVBVUrUjjawk5MaCEQte_7t32XeEP1Z5jXKQ",
+      sheetName: "airport list",
+    };
+
+    google.script.run
+      .withSuccessHandler((res) => {
+        allData = res.data;
+        currentPage = 0;
+        renderTable();
+      })
+      .withFailureHandler((err) => {
+        tableContainer.innerHTML = `<span class="error">ERROR: ${err.message || err}</span>`;
+      })
+      .getSheetData(source);
+  }
+
+  loadData();
+</script>

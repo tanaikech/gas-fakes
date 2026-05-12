@@ -1,6 +1,7 @@
 import { Proxies } from '../../support/proxies.js';
 import * as Enums from '../enums/formsenums.js';
 import { newFakeForm } from './fakeform.js';
+import { newFakeUi } from '../common/fakeui.js';
 import { Auth } from '../../support/auth.js';
 import { Url } from '../../support/url.js';
 import { signatureArgs } from '../../support/helpers.js'
@@ -72,6 +73,10 @@ class FakeFormApp {
       return null;
     }
     return this.openById(id);
+  }
+
+  getUi() {
+    return newFakeUi();
   }
 
   /**

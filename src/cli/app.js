@@ -183,6 +183,7 @@ export async function main() {
     .requiredOption("-i, --input <string>", "Path to the Google Apps Script file containing doGet/doPost.")
     .option("-p, --port <number>", "Port for local web server (overrides .env).")
     .option("-e, --env <path>", "Path to a custom .env file.", "./.env")
+    .option("-f, --function <string>", "The entry point function to execute on GET requests.", "doGet")
     .action(async (options) => {
        await startWebApp({ ...options, filename: options.input });
     });

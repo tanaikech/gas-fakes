@@ -7,7 +7,7 @@ import { startServer } from "../services/html/webapp.js";
  * Starts a web server to handle doGet and doPost requests.
  */
 export async function startWebApp(options = {}) {
-  const { filename, env, port } = options;
+  const { filename, env, port, function: entryFunction } = options;
 
   // Load environment variables
   const envPath = path.resolve(process.cwd(), env || "./.env");
@@ -23,6 +23,6 @@ export async function startWebApp(options = {}) {
       process.exit(1);
   }
 
-  console.log(`...starting web server for ${scriptPath}`);
-  startServer(serverPort, scriptPath);
+  console.log(`...starting web server for ${scriptPath} (entrypoint: ${entryFunction})`);
+  startServer(serverPort, scriptPath, entryFunction);
 }

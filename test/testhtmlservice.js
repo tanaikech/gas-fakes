@@ -11,26 +11,86 @@ export const testHtmlService = (pack) => {
 
   unit.section("HtmlService basics", t => {
     const output = HtmlService.createHtmlOutput("<h1>Title</h1>");
-    t.is(output.getContent(), "<h1>Title</h1>");
-    t.is(output.getTitle(), "");
+    t.is(output.getContent(), "<h1>Title</h1>", "getContent works");
+    t.is(output.getTitle(), "", "getTitle defaults to empty string");
     output.setTitle("My Page");
-    t.is(output.getTitle(), "My Page");
+    t.is(output.getTitle(), "My Page", "setTitle works");
     output.setHeight(100).setWidth(200);
-    t.is(output.getHeight(), 100);
-    t.is(output.getWidth(), 200);
+    t.is(output.getHeight(), 100, "setHeight works");
+    t.is(output.getWidth(), 200, "setWidth works");
+    
+    // Testing new HtmlOutput parity methods
+    output.appendUntrusted("<script>alert(1)</script>");
+    t.is(output.getContent(), "<h1>Title</h1>&lt;script&gt;alert(1)&lt;/script&gt;", "appendUntrusted escapes HTML");
+    
+    output.clear();
+    t.is(output.getContent(), "", "clear empties content");
+    
+    output.addMetaTag("viewport", "width=device-width");
+    const metas = output.getMetaTags();
+    t.is(metas.length, 1, "addMetaTag adds to meta tag list");
+    t.is(metas[0].getName(), "viewport", "HtmlOutputMetaTag.getName");
+    t.is(metas[0].getContent(), "width=device-width", "HtmlOutputMetaTag.getContent");
+    
+    output.setSandboxMode(HtmlService.SandboxMode.IFRAME);
+    output.setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+    // There are no getters for these in GAS, just test they are chainable and don't throw
+    output.setFaviconUrl("http://example.com/icon.ico");
+    t.is(output.getFaviconUrl(), "http://example.com/icon.ico", "set/getFaviconUrl");
+    
+    // Blob and Template conversion
+    output.setContent("<b>Blob</b>");
+    const blob = output.getBlob();
+    t.is(blob.getContentType(), "text/html", "getBlob content type");
+    t.is(blob.getDataAsString(), "<b>Blob</b>", "getBlob data");
+    
+    const asText = output.getAs("text/plain");
+    t.is(asText.getContentType(), "text/plain", "getAs content type");
+    
+    const templateFromOutput = output.asTemplate();
+    t.is(templateFromOutput.getRawContent(), "<b>Blob</b>", "asTemplate creates HtmlTemplate");
   });
 
   unit.section("HtmlTemplate basics", t => {
     const template = HtmlService.createTemplate("Hello <?= name ?>");
+    t.is(template.getRawContent(), "Hello <?= name ?>", "getRawContent");
+    
+    // Test code generation methods (they return strings, just assert they aren't empty)
+    t.true(template.getCode().includes("Hello "), "getCode includes template string");
+    t.true(template.getCodeWithComments().includes("Hello "), "getCodeWithComments includes template string");
+
     // Explicit property assignment is portable and works in both environments
     template.name = "Gemini";
     const evaluated = template.evaluate();
-    t.is(evaluated.getContent(), "Hello Gemini");
+    t.is(evaluated.getContent(), "Hello Gemini", "evaluate processes tags");
   });
 
-  unit.section("HtmlService constants", t => {
-    t.true(typeof HtmlService.SandboxMode !== 'undefined');
-    t.true(typeof HtmlService.XFrameOptionsMode !== 'undefined');
+  unit.section("HtmlService file loading", t => {
+    let error;
+    try {
+      HtmlService.createHtmlOutputFromFile("does_not_exist");
+    } catch (e) {
+      error = e;
+    }
+    t.true(!!error, "createHtmlOutputFromFile throws for missing files");
+
+    let templateError;
+    try {
+      HtmlService.createTemplateFromFile("does_not_exist");
+    } catch (e) {
+      templateError = e;
+    }
+    t.true(!!templateError, "createTemplateFromFile throws for missing files");
+  });
+
+  unit.section("HtmlService constants and properties", t => {
+    t.true(typeof HtmlService.SandboxMode !== 'undefined', "SandboxMode enum exists");
+    t.true(typeof HtmlService.XFrameOptionsMode !== 'undefined', "XFrameOptionsMode enum exists");
+    
+    const ua = HtmlService.getUserAgent();
+    // getUserAgent returns null when not running in a web app context in GAS,
+    // or the Node.js emulator string locally.
+    t.true(ua === null || typeof ua === 'string', "getUserAgent returns null or string");
   });
 
   return { unit, fixes };

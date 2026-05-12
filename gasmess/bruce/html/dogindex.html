@@ -1,0 +1,155 @@
+<!doctype html>
+<html>
+  <head>
+    <base target="_top" />
+    <style>
+      body {
+        padding: 12px;
+      }
+      #table-container {
+        margin-bottom: 16px;
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th, td {
+        border: 1px solid #e0e0e0;
+        padding: 6px 8px;
+        text-align: left;
+        font-size: 13px;
+      }
+      th {
+        background-color: #f8f9fa;
+        font-weight: 500;
+        text-transform: capitalize;
+      }
+      .bottom-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 10px;
+        border-top: 1px solid #e0e0e0;
+      }
+      .nav-buttons {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .page-info {
+        font-size: 13px;
+        color: #5f6368;
+        margin: 0 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2 class="gray">Airports (<?=foo?>)</h2>
+    
+    <div id="table-container">
+      <i>Loading spreadsheet data...</i>
+    </div>
+    
+    <div class="bottom-bar">
+      <div class="nav-buttons">
+        <button id="prev-btn" class="button" disabled>Previous</button>
+        <span id="page-info" class="page-info"></span>
+        <button id="next-btn" class="button" disabled>Next</button>
+      </div>
+      <button id="close-btn" class="button action">Close</button>
+    </div>
+
+    <script>
+      let allData = [];
+      let currentPage = 0;
+      const pageSize = 10;
+
+      const prevBtn = document.getElementById('prev-btn');
+      const nextBtn = document.getElementById('next-btn');
+      const closeBtn = document.getElementById('close-btn');
+      const tableContainer = document.getElementById('table-container');
+      const pageInfo = document.getElementById('page-info');
+
+      // Close the dialog using Apps Script host API
+      closeBtn.addEventListener('click', () => {
+        google.script.host.close();
+      });
+
+      prevBtn.addEventListener('click', () => {
+        if (currentPage > 0) {
+          currentPage--;
+          renderTable();
+        }
+      });
+
+      nextBtn.addEventListener('click', () => {
+        if ((currentPage + 1) * pageSize < allData.length) {
+          currentPage++;
+          renderTable();
+        }
+      });
+
+      function renderTable() {
+        if (!allData || allData.length === 0) {
+          tableContainer.innerHTML = 'No data available.';
+          return;
+        }
+
+        const start = currentPage * pageSize;
+        const end = Math.min(start + pageSize, allData.length);
+        const pageData = allData.slice(start, end);
+
+        // Map the specific columns requested
+        const columns = [
+          { key: 'name', label: 'Name' },
+          { key: 'iso_country', label: 'Country' },
+          { key: 'elevation_ft', label: 'Elevation' }
+        ];
+        
+        let html = '<table><thead><tr>';
+        columns.forEach(col => {
+          html += `<th>${col.label}</th>`;
+        });
+        html += '</tr></thead><tbody>';
+
+        pageData.forEach(row => {
+          html += '<tr>';
+          columns.forEach(col => {
+            html += `<td>${row[col.key] || ''}</td>`;
+          });
+          html += '</tr>';
+        });
+
+        html += '</tbody></table>';
+        tableContainer.innerHTML = html;
+
+        pageInfo.textContent = `Showing ${start + 1}-${end} of ${allData.length}`;
+
+        prevBtn.disabled = currentPage === 0;
+        nextBtn.disabled = end >= allData.length;
+      }
+
+      function loadData() {
+        const source = {
+          id: "1h9IGIShgVBVUrUjjawk5MaCEQte_7t32XeEP1Z5jXKQ",
+          sheetName: "airport list",
+        };
+
+        google.script.run
+          .withSuccessHandler((res) => {
+            allData = res.data;
+            currentPage = 0;
+            renderTable();
+          })
+          .withFailureHandler((err) => {
+            tableContainer.innerHTML = `<span class="error">ERROR: ${err.message || err}</span>`;
+          })
+          .getSheetData(source);
+      }
+
+      // Initialize
+      loadData();
+    </script>
+  </body>
+</html>

@@ -22,6 +22,16 @@ Collaborators should fork the repo and use the local versions of these files - s
 ## Usage
 Just as on Apps Script, everything is executed synchronously so you don't need to bother with handling Promises/async/await. Just write normal Apps Script code. Usually you would have an associated App Script project if that's your eventual target. Just like Apps Script, you need a manifest file (appsscript.json) so you can be sure that the correct scopes are authorized and asked for.
 
+### Local Web Development (`doGet` / `doPost`)
+You can develop and test Google Apps Script Web Apps and UI Add-ons entirely on your local machine using the built-in local web server. The `gas-fakes serve` command spins up a local HTTP endpoint that routes requests to your `doGet` or `doPost` functions, perfectly emulating the Apps Script environment.
+
+It features complete support for:
+- `HtmlService` templating (`<?!= include() ?>`).
+- Client-side RPC via `google.script.run`.
+- Visual UI emulation for Add-ons: Calling `SpreadsheetApp.getUi().showSidebar(html)` automatically frames your HTML output inside a visually accurate Workspace-style sidebar right in your browser!
+
+See the [Local Web Development Guide](notes/local-web-development.md) for full details.
+
 ### Natural Language Automation with `@gf_agent`
 With the introduction of the `gf_agent` skill for Gemini CLI and the built-in MCP server, you can now automate Google Workspace tasks using natural language. This specialized agent understands the full range of `gas-fakes` services and can generate and execute code locally based on your plain English prompts. Whether it's summarizing emails in a Google Doc or analyzing spreadsheet data, you can now do it directly from your terminal using plain English. See the [gf_agent documentation](gf_agent/README.md) for more details.
 

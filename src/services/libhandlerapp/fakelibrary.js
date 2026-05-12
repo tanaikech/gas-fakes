@@ -60,7 +60,7 @@ class FakeLibrary {
   }
 
   get combinedJs() {
-    return this.libContent.files.filter((f) => f.type === 'server_js').map((f) => `////-- ${f.name} --\n${f.source}`).join(`\n\n`)
+    return this.libContent.files.filter((f) => f.type === 'server_js').map((f) => `////-- ${f.name} --\n${f.source}\n;`).join(`\n\n`)
   }
 
   get content() {
@@ -90,7 +90,7 @@ class FakeLibrary {
     const functions = makeExports(ast, 'FunctionDeclaration', (f) => f.id.name)
     const variables = makeExports(ast, 'VariableDeclaration', (f) => f.declarations[0].id.name)
     const classes = makeExports(ast, 'ClassDeclaration', (f) => f.id.name)
-    const exports = [...functions, ...variables, ...classes];
+    const exports = [...functions, ...variables, ...classes].filter(Boolean);
     return `${this.combinedJs};\nreturn { ${exports.join(', ')} };`;
   }
 

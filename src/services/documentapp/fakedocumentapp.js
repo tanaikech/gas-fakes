@@ -3,7 +3,7 @@ import { newFakeDocument } from './fakedocument.js';
 
 import { signatureArgs } from '../../support/helpers.js';
 import is from '@sindresorhus/is';
-import { newFakeUi } from './fakeui.js';
+import { newFakeUi } from '../common/fakeui.js';
 import { Auth } from '../../support/auth.js';
 import * as Enums from '../enums/docsenums.js'
 import { defaultDocumentStyleRequests } from './elementblasters.js';
