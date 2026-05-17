@@ -49,20 +49,7 @@ For details see [gas fakes cli](notes/gas-fakes-cli.md)
 
 ### Configuration
 
-Configuration for your local Node environment is handled via environment variables, typically stored in a `.env` file and managed by the `gas-fakes init` process.
-
-| Environment Variable | Default | Description |
-|---|---|---|
-| `GF_MANIFEST_PATH` | `./appsscript.json` | Path to the `appsscript.json` manifest file. |
-| `GF_CLASP_PATH` | `./.clasp.json` | Path to the `.clasp.json` file. |
-| `GF_SCRIPT_ID` | from clasp, or random | Discovered from `.clasp.json` or generated as a random UUID during `gas-fakes init`. Used for `ScriptApp.getScriptId()` and partitioning stores. |
-| `GF_DOCUMENT_ID` | `null` | A bound document ID for testing container-bound scripts. |
-| `GF_CACHE_PATH` | `/tmp/gas-fakes/cache` | Path for `CacheService` local file emulation. |
-| `GF_PROPERTIES_PATH` | `/tmp/gas-fakes/properties` | Path for `PropertiesService` local file emulation. |
-| `GF_PLATFORM_AUTH` | `google` | Comma-separated list of backends to initialize (`google`, `ksuite`, `msgraph`). |
-| `AUTH_TYPE` | `dwd` | Google auth type: `dwd` (Domain-Wide Delegation) or `adc` (Application Default Credentials). |
-| `LOG_DESTINATION` | `CONSOLE` | Logging destination: `CONSOLE`, `CLOUD`, `BOTH`, or `NONE`. |
-| `STORE_TYPE` | `FILE` | Internal storage type for properties/cache: `FILE` (local) or `UPSTASH` (Redis). |
+Configuration for your local Node environment is handled interactively by the `gas-fakes init` process, which manages the necessary environment variables in your `.env` file.
 
 ### Note on Consumer Accounts and ADC
 
@@ -133,21 +120,6 @@ console.log ('....example cloud log link for this session',Logger.__cloudLogLink
 
 It contains a cloud logging query that will display any logging done in this session - the filter is based on the scriptId (from the environment), the projectId and userId (from Auth), as well as the start and end time of the session. 
 
-#### A note on .env location
-
-You will have used the gas-fakes init command to create a .env file, containing the LOG_DESTINATION setting. You can change any of the settings in the .env file manually if you want to.
-
-If you want to set an initial LOG_DESTINATION using that .env file, you have to let gas-fakes know where to find it. Let's assume it's in the same folder as your main script. 
-```env
-node yourapp.js
-# or if your .env is somewhere else
-node --env-file pathtoenv yourapp.js
-```
-
-Alternatively, instead of putting it in an env file, you can export it in your shell environment. 
-```sh
-export LOG_DESTINATION="BOTH"
-```
 Finally, another approach is to set it dynamically at the beginning of your app.
 ```javascript
 Logger.__logDestination="BOTH"
@@ -178,7 +150,7 @@ There are a couple of syntactical differences between Node and Apps Script. Not 
 // this required on Node but not on Apps Script
 if (ScriptApp.isFake) testFakes()
 ````
-For inspiration on pushing modified files to the IDE, see the togas.sh bash script I use for the test suite. There's also a complete push pull workflow available - see - [push test pull](notes/pull-test-push.md)
+For pushing modified files back to the Apps Script IDE, use the built-in `gas-fakes togas` CLI command which handles necessary module syntax transformations automatically.
 
 
 ## Help
@@ -237,7 +209,6 @@ As I mentioned earlier, to take this further, I'm going to need a lot of help to
 - [article:using apps script libraries with gas-fakes](https://ramblings.mcpher.com/how-to-use-apps-script-libraries-directly-from-node/)
 - [named range identity](notes/named-range-identity.md)
 - [Workspace scopes with local authentication](notes/workspace_scopes.md)
-- [push test pull](notes/pull-test-push.md)
 - [sharing cache and properties between gas-fakes and live apps script](https://ramblings.mcpher.com/sharing-cache-and-properties-between-gas-fakes-and-live-apps-script/)
 - [gas-fakes-cli now has built in mcp server and gemini extension](https://ramblings.mcpher.com/gas-fakes-cli-now-has-built-in-mcp-server-and-gemini-extension/)
 - [gas-fakes CLI: Run apps script code directly from your terminal](https://ramblings.mcpher.com/gas-fakes-cli-run-apps-script-code-directly-from-your-terminal/)

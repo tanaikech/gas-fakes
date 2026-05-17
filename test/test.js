@@ -31,7 +31,7 @@ import { testSheetsData } from "./testsheetsdata.js";
 import { testDocsAdv } from "./testdocsadv.js";
 import { testDocs } from "./testdocs.js";
 import { testDocsNext } from "./testdocsnext.js";
-import { testDocsHeaders } from "./testdocsheaders.js";
+import { testDocsSections } from "./testdocssections.js";
 import { testDocsFooters } from "./testdocsfooters.js";
 import { testDocsFootnotes } from "./testdocsfootnotes.js";
 import { testDocsListItems } from "./testdocslistitems.js";
@@ -161,6 +161,8 @@ export const testFakes = () => {
   testDocsImages(pack);
   console.log("\n----Test docs next----");
   testDocsNext(pack);
+  console.log("\n----Test docs sections----");
+  testDocsSections(pack);
   console.log("\n----Test docs list items----");
   testDocsListItems(pack);
   console.log("\n----Test Logger----");
@@ -190,8 +192,6 @@ export const testFakes = () => {
   testSandbox(pack);
   console.log("\n----Test docs styles----");
   testDocsStyles(pack);
-  console.log("\n----Test docs headers----");
-  testDocsHeaders(pack);
 
 
   console.log("\n----Test SheetsValues----");

@@ -7,12 +7,12 @@ import { startServer } from "../services/html/webapp.js";
  * Starts a web server to handle doGet and doPost requests.
  */
 export async function startWebApp(options = {}) {
-  const { filename, env, port, function: entryFunction } = options;
+  const { filename, env, port, main: entryFunction } = options;
 
   // Load environment variables
   const envPath = path.resolve(process.cwd(), env || "./.env");
   if (fs.existsSync(envPath)) {
-    dotenv.config({ path: envPath, quiet: true });
+    dotenv.config({ path: envPath, quiet: true, override: true });
   }
 
   const serverPort = port || process.env.GF_SERVER_PORT || 8080;

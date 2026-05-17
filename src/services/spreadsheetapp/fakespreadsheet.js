@@ -35,6 +35,7 @@ export class FakeSpreadsheet {
   constructor(file) {
     // when we insert/delete sheets row/cols we update this metadata too
     this.__meta = file;
+    this.__activeRange = null;
 
     // may of these props can be picked up from the Drive API, so we'll look as a file too
     this.__file = DriveApp.getFileById(file.spreadsheetId);
@@ -103,11 +104,9 @@ export class FakeSpreadsheet {
       "isWritable",
       "getSelection",
       "setActiveRangeList",
-      "setActiveRange",
       "getActiveRangeList",
       "getCurrentCell",
       "setCurrentCell",
-      "getActiveRange",
       "deleteRow",
       "hideRow",
       "appendRow",
@@ -160,7 +159,15 @@ export class FakeSpreadsheet {
         return notYetImplemented(f);
       };
     });
+  }
 
+  setActiveRange(range) {
+    this.__activeRange = range;
+    return this;
+  }
+
+  getActiveRange() {
+    return this.__activeRange;
   }
 
   // note this is a workaround as we don't have the concept of active sheet in a non bound document

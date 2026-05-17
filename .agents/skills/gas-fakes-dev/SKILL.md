@@ -26,7 +26,9 @@ Generate Node.js code that maps GAS methods to the corresponding Google Cloud AP
 ### 3. Testing
 You must verify your implementation by writing and executing test scripts.
 - **Always Add Tests for New Methods**: Whenever you implement a new method, class, or service, you MUST immediately add corresponding tests in the `test/` directory to prove your implementation works and maintains parity. Never add code without adding tests.
-- Place your test scripts in the `test/` directory.
+- **Network Call Safety**: All network-based commands (e.g., `curl`) MUST include an aggressive timeout (e.g., `--max-time 5` or `--connect-timeout 2`) to prevent processes from hanging and accruing costs in the event of a server deadlock.
+- **Temporary/Exploratory Scripts**: If you need to create temporary scripts to test logic, explore APIs, or run isolated experiments outside the formal test suite, you MUST create them in the `gasmess/gemini/` directory (e.g., `gasmess/gemini/test_something.js`). This folder is excluded from version control and prevents cluttering the repository root.
+- Place your formal test scripts in the `test/` directory.
 - Execute the tests to ensure there are no errors and the behavior matches expectations.
 - Full instructions on test and other workflows are in ../../workflows. Be sure to read the relevant workflow file before starting any task.
 
@@ -180,3 +182,12 @@ When implementing or modifying `EmbeddedChartBuilder` features, you must handle 
 - **Private Data Structures**: Under no circumstances should test files directly assert against internal `gas-fakes` structural properties (e.g., checking `builder.__apiChart.spec.title`). The test suite executes against **both** local Node.js mocks and Live Apps Script Java classes. Live Apps Script does not expose these internal variables, causing tests to crash.
 - **gas-fakes Specific Objects (`__behavior`)**: Objects like `ScriptApp.__behavior` or `sandboxMode` exist ONLY in the local Node.js environment. If you need to manipulate the sandbox during a test (e.g., adding a whitelist ID), you MUST wrap that code in an `if (ScriptApp.isFake)` block. Attempting to access `ScriptApp.__behavior.sandboxMode` in Live Apps Script will result in a `TypeError: Cannot read properties of undefined`.
 - **Test Outcomes**: Only assert against public, documented getter/setter behavior or the visual/functional output of a method (e.g., inserting the chart into a sheet and validating the resulting API object). Avoid bypassing validations using `ScriptApp.isFake` for private implementation assertions unless strictly manipulating the local test harness (like the sandbox).
+
+### Exporting Local Variables for Templates & RPC (Parity)
+- **Problem**: When developing an Apps Script project locally with `gas-fakes`, templates (`<?!= Include.html() ?>`) and client-side RPC calls (`google.script.run.foo()`) require backend functions/variables to be explicitly exported from the entry point (`index.js`). 
+- **Constraint**: The Google Apps Script V8 engine **DOES NOT** support ES6 `export` or `import` statements. Including them will cause syntax errors in the Apps Script environment.
+- **Fix (Using togas)**: Use the `gas-fakes togas` CLI command to prepare your local code for deployment.
+  1. The `togas` command automatically comments out `import` statements and removes `export` keywords.
+  2. It copies the transformed files to a target directory (configured via `init` or `--target`).
+  3. It uses `clasp push` to deploy the transformed code to Apps Script.
+- **Result**: You can maintain idiomatic Node.js code with ESM imports/exports locally while ensuring the deployed Apps Script code remains valid.

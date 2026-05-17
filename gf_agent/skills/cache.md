@@ -4,12 +4,13 @@
 
 Supported Methods:
 - `get(String)`
+- `getAll(String)`
 - `put(String,String,Integer)`
 - `put(String,String)`
+- `putAll(Object,Integer)`
+- `putAll(Object)`
 - `remove(String)`
-- `getDocumentCache()`
-- `getScriptCache()`
-- `getUserCache()`
+- `removeAll(String)`
 
 ## Class: CacheService
 

@@ -83,8 +83,20 @@ export class FakeBooleanCondition {
     if (!this.__apiCondition.values) return [];
     
     // API condition values are typically { userEnteredValue: 'string' } or { relativeDate: 'TODAY' }
+    const type = this.getCriteriaType()?.toString() || '';
+    const isNumberType = type.startsWith('NUMBER_');
+    const isDateType = type.startsWith('DATE_') && !type.endsWith('_RELATIVE');
+
     return this.__apiCondition.values.map(v => {
-      if (v.userEnteredValue !== undefined) return v.userEnteredValue;
+      if (v.userEnteredValue !== undefined) {
+        if (isNumberType && !isNaN(v.userEnteredValue) && v.userEnteredValue !== '') {
+          return Number(v.userEnteredValue);
+        }
+        if (isDateType && !isNaN(Date.parse(v.userEnteredValue))) {
+          return new Date(v.userEnteredValue);
+        }
+        return v.userEnteredValue;
+      }
       // In Apps Script, RelativeDate enum values are typically returned as strings matching the enum
       if (v.relativeDate !== undefined) return SpreadsheetApp.RelativeDate[v.relativeDate] || v.relativeDate; 
       return null;
@@ -114,6 +126,6 @@ export class FakeBooleanCondition {
   }
 
   toString() {
-    return 'BooleanCondition';
+    return 'ConditionalFormatBooleanCondition';
   }
 }

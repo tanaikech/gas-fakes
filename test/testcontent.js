@@ -1,8 +1,9 @@
 import '@mcpher/gas-fakes';
-import { wrapupTest } from './testassist.js';
+import { wrapupTest, createTrashCollector, trasher } from './testassist.js';
 import { initTests } from './testinit.js';
 
 export function testContentService(pack) {
+  const toTrash = createTrashCollector();
   const { unit, fixes } = pack || initTests();
   
   unit.section('ContentService basics', (t) => {
@@ -16,7 +17,7 @@ export function testContentService(pack) {
     t.is(output.getFileName(), "data.json", "download as file");
     
     output.clear();
-    t.is(output.getContent(), "", "clear content");
+    t.is(output.getContent(), null, "clear content");
     
     output.setContent("New Data");
     t.is(output.getContent(), "New Data", "set content");
@@ -25,6 +26,7 @@ export function testContentService(pack) {
   if (!pack) {
     unit.report();
   }
+  if (fixes.CLEAN) trasher(toTrash);
   return { unit, fixes };
 }
 

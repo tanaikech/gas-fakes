@@ -23,38 +23,12 @@ Supported Methods:
 - `setTitle(String)`
 - `setWidth(Integer)`
 - `setXFrameOptionsMode(XFrameOptionsMode)`
-- `getContent()`
-- `getName()`
-- `createHtmlOutput()`
-- `createHtmlOutput(BlobSource)`
-- `createHtmlOutput(String)`
-- `createHtmlOutputFromFile(String)`
-- `createTemplate(BlobSource)`
-- `createTemplate(String)`
-- `createTemplateFromFile(String)`
-- `getUserAgent()`
-- `evaluate()`
-- `getCode()`
-- `getCodeWithComments()`
-- `getRawContent()`
 
 ## Class: HtmlOutputMetaTag
 
 Supported Methods:
 - `getContent()`
 - `getName()`
-- `createHtmlOutput()`
-- `createHtmlOutput(BlobSource)`
-- `createHtmlOutput(String)`
-- `createHtmlOutputFromFile(String)`
-- `createTemplate(BlobSource)`
-- `createTemplate(String)`
-- `createTemplateFromFile(String)`
-- `getUserAgent()`
-- `evaluate()`
-- `getCode()`
-- `getCodeWithComments()`
-- `getRawContent()`
 
 ## Class: HtmlService
 
@@ -67,10 +41,6 @@ Supported Methods:
 - `createTemplate(String)`
 - `createTemplateFromFile(String)`
 - `getUserAgent()`
-- `evaluate()`
-- `getCode()`
-- `getCodeWithComments()`
-- `getRawContent()`
 
 ## Class: HtmlTemplate
 

@@ -502,7 +502,7 @@ export const testForm = (pack) => {
           t.is(initialDestType, null, 'Initial destination type should be null');
         } else {
           t.true (is.nonEmptyString(initialDestId), 'Initial destination ID should be a non-empty string');
-          t.true (is.nonEmptyString(initialDestType), 'Initial destination type should be a non-empty string');
+          t.is(initialDestType, FormApp.DestinationType.SPREADSHEET, 'Initial destination type should be SPREADSHEET');
         }
       } catch (e) {
         // live GAS throws if not set

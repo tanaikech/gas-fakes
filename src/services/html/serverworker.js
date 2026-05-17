@@ -14,7 +14,7 @@ const CONTROL_INDICES = {
 
 export class ServerWorkerContext {
   constructor(scriptPath = null) {
-    this._mainScriptPath = scriptPath || process.argv[1];
+    this._mainScriptPath = scriptPath || globalThis.__gasFakesMainScriptPath || process.argv[1];
     
     // Fallback for test runners or dynamic imports where process.argv[1] is node itself or undefined
     if (!this._mainScriptPath || this._mainScriptPath.endsWith('node') || this._mainScriptPath.endsWith('gas-fakes.js') || this._mainScriptPath.endsWith('gas-fakes')) {
@@ -56,11 +56,16 @@ export class ServerWorkerContext {
     const worker = new Worker(workerPath, {
       workerData: {
         ...workerDataPayload,
-        mainScriptPath: this._mainScriptPath,
+        mainScriptPath: globalThis.__gasFakesMainScriptPath || this._mainScriptPath,
         controlBuf: this._controlBuf,
         dataBuf: this._dataBuf
-      }
+      },
+      stdout: true,
+      stderr: true
     });
+
+    worker.stdout.pipe(process.stdout);
+    worker.stderr.pipe(process.stderr);
 
     // Handle unexpected worker crashes
     worker.on('error', (err) => {

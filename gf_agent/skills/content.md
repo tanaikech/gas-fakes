@@ -5,14 +5,6 @@
 Supported Methods:
 - `createTextOutput()`
 - `createTextOutput(String)`
-- `append(String)`
-- `clear()`
-- `downloadAsFile(String)`
-- `getContent()`
-- `getFileName()`
-- `getMimeType()`
-- `setContent(String)`
-- `setMimeType(MimeType)`
 
 ## Class: TextOutput
 

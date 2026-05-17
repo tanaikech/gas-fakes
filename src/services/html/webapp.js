@@ -49,7 +49,7 @@ const CLIENT_POLYFILL = `
               return;
             }
 
-            fetch('/__gas_rpc', {
+            fetch(window.location.origin + '/__gas_rpc', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ funcName: prop, args: args })
@@ -83,6 +83,7 @@ const CLIENT_POLYFILL = `
     setHeight: function(h) { console.log('gas-fakes: Host setHeight called with', h); },
     setWidth: function(w) { console.log('gas-fakes: Host setWidth called with', w); }
   };
+//# sourceURL=__gas_fakes_polyfill.js
 </script>
 `;
 
@@ -114,8 +115,8 @@ export function startServer(port = 3000, scriptPath = null, entryFunction = 'doG
 
            if (result.__framingType === 'modal' || result.__framingType === 'sidebar') {
                const isSidebar = result.__framingType === 'sidebar';
-               const widthStr = result.width ? `${result.width}px` : (isSidebar ? '300px' : '600px');
-               const heightStr = result.height && !isSidebar ? `${result.height}px` : '100vh';
+               const widthStr = isSidebar ? '300px' : '600px';
+               const heightStr = isSidebar ? '100vh' : '450px';
                const safeTitle = (result.title || 'gas-fakes Dialog').replace(/"/g, '&quot;');
                
                const modalCss = `
@@ -193,7 +194,7 @@ export function startServer(port = 3000, scriptPath = null, entryFunction = 'doG
         }
       } catch (err) {
         res.writeHead(500, { 'Content-Type': 'text/plain' });
-        res.end(`Error executing ${entryFunction}: ${err.message}`);
+        res.end("Error executing " + entryFunction + ": " + err.message);
       }
     } else if (req.method === 'POST' && req.url === '/__gas_rpc') {
       // 2. Handle google.script.run RPC requests
@@ -254,9 +255,9 @@ export function startServer(port = 3000, scriptPath = null, entryFunction = 'doG
   });
 
   server.listen(port, () => {
-    console.log(`\n=================================================`);
-    console.log(`🚀 gas-fakes Web App running at: http://localhost:${port}`);
-    console.log(`=================================================\n`);
+    console.log('\n=================================================');
+    console.log('🚀 gas-fakes Web App running at: http://localhost:' + port);
+    console.log('=================================================\n');
   });
   
   return server;

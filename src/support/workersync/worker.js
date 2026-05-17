@@ -121,8 +121,13 @@ parentPort.on('message', async (task) => {
     }
   }
 
+  // Sync settings (e.g., documentId)
+  if (task.settings) {
+    Auth.setSettings(task.settings);
+  }
 
   try {
+
     const asyncFn = allSxFunctions[task.method];
     if (!asyncFn) {
       throw new Error(`[Worker] Unknown method: ${task.method}`);

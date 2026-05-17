@@ -72,11 +72,15 @@ export const testDriveNew = (pack) => {
   })
 
   unit.section('File new methods: getAs', t => {
-    // We'll create a new file to test conversion if the fixture isn't available
-    const file = DriveApp.createFile('getAs-test.txt', 'some content')
+    // For reliable PDF conversion on Live GAS, we use a Google Doc
+    const doc = DocumentApp.create('getAs-test-doc')
+    doc.getBody().appendParagraph('some content')
+    doc.saveAndClose()
+    
+    const file = DriveApp.getFileById(doc.getId())
     toTrash.push(file)
     
-    // Test the 2-step workaround for exporting plain text to PDF
+    // Test conversion - this is natively supported for Docs on both platforms
     const blob = file.getAs('application/pdf')
     t.is(blob.getContentType(), 'application/pdf', "Blob content type should be application/pdf")
     t.true(blob.getBytes().length > 0, "Blob should have content")

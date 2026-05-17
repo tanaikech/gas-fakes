@@ -234,6 +234,24 @@ export async function initializeConfiguration(options = {}) {
       name: "GF_SERVER_PORT",
       message: "Port for local web server (doGet/doPost)",
       initial: parseInt(existingConfig.GF_SERVER_PORT) || 8080,
+    },
+    {
+      type: "text",
+      name: "TOGAS_TARGET",
+      message: "Togas: Target directory for clasp project (e.g., ../testongas)",
+      initial: existingConfig.TOGAS_TARGET || "../testongas",
+    },
+    {
+      type: "text",
+      name: "TOGAS_SCRIPT_ID",
+      message: "Togas: Script ID for the target clasp project",
+      initial: existingConfig.TOGAS_SCRIPT_ID || existingConfig.GF_SCRIPT_ID || "",
+    },
+    {
+      type: "text",
+      name: "TOGAS_PATTERN",
+      message: "Togas: Comma-separated glob patterns for files to include (e.g. abc*,xyz*)",
+      initial: existingConfig.TOGAS_PATTERN || "*",
     }
   ];
 

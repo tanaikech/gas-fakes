@@ -11,6 +11,7 @@ import {
 } from "./setup.js";
 import { startWebApp } from "./server.js";
 import { startMcpServer } from "./mcp.js";
+import { togas } from "./togas.js";
 import { Platforms, PlatformDefaults } from "../services/enums/platformenums.js";
 
 export async function main() {
@@ -27,7 +28,7 @@ export async function main() {
 
   // --- Main Execution Command ---
   program
-    .description("Execute a Google Apps Script file or string.")
+    .description("Execute a Google Apps Script file or string, or start the server.")
     .option("-f, --filename <string>", "Path to the Google Apps Script file.")
     .option(
       "-s, --script <string>",
@@ -88,7 +89,7 @@ export async function main() {
       if (!hasEnvFileFlag || !isDefaultEnv) {
         const envPath = path.resolve(process.cwd(), env);
         console.log(`...using env file in ${envPath}`);
-        dotenv.config({ path: envPath, quiet: true });
+        dotenv.config({ path: envPath, quiet: true, override: true });
       }
 
       const sandboxConfig = buildSandboxConfig(options);
@@ -183,7 +184,7 @@ export async function main() {
     .requiredOption("-i, --input <string>", "Path to the Google Apps Script file containing doGet/doPost.")
     .option("-p, --port <number>", "Port for local web server (overrides .env).")
     .option("-e, --env <path>", "Path to a custom .env file.", "./.env")
-    .option("-f, --function <string>", "The entry point function to execute on GET requests.", "doGet")
+    .option("-m, --main <string>", "The entry point function to execute on GET requests.", "doGet")
     .action(async (options) => {
        await startWebApp({ ...options, filename: options.input });
     });
@@ -205,6 +206,17 @@ export async function main() {
         process.exit(1);
       }
     });
+
+  // --- Togas Command ---
+  program
+    .command("togas")
+    .description("Prepares and pushes local code to Google Apps Script using clasp.")
+    .option("-p, --pattern <string>", "Comma-separated glob patterns for files to include (default: *)")
+    .option("-t, --target <string>", "Target directory for clasp project (default: TOGAS_TARGET in .env)")
+    .option("-s, --source <string>", "Source directory (default: ./ )")
+    .option("-e, --env <path>", "Path to a custom .env file.", "./.env")
+    .option("--scriptId <string>", "Script ID for the target clasp project.")
+    .action(togas);
 
   program.showHelpAfterError("(add --help for additional information)");
 

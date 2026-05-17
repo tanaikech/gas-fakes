@@ -56,7 +56,6 @@
     "testsheetsrange": "node testsheetsrange.js execute",
     "testdocslistitems": "node testdocslistitems.js execute",
     "testdocsall": "node testdocsall.js",
-    "testdocsheaders": "node testdocsheaders.js execute",
     "testdocsfooters": "node testdocsfooters.js execute",
     "testdocsfootnotes": "node testdocsfootnotes.js execute",
     "testdocsimages": "node testdocsimages.js execute",
@@ -82,8 +81,12 @@
     "testjdbcstatement": "node testjdbcstatement.js execute",
     "testjdbcresultset": "node testjdbcresultset.js execute",
     "testjdbcresultsetparity": "node testjdbcresultsetparity.js execute",
-    "testjdbcdatabasemetadata": "node testjdbcdatabasemetadata.js execute",
-    "testxmlservice": "node testxmlservice.js execute"
+    "testxmlservice": "node testxmlservice.js execute",
+    "testconditionalformat": "node testconditionalformat.js execute",
+    "testcontent": "node testcontent.js execute",
+    "testdocssections": "node testdocssections.js execute",
+    "testdrivenew": "node testdrivenew.js execute",
+    "testhtmlservice": "node testhtmlservice.js execute"
   },
   "name": "test-gas-fakes",
   "version": "2.3.16",

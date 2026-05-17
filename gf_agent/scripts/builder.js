@@ -37,28 +37,31 @@ async function build() {
     await fs.access(PROGRESS_DIR);
     const files = await fs.readdir(PROGRESS_DIR);
     const mdFiles = files.filter(f => f.endsWith('.md') || f.endsWith('.MD'));
+for (const file of mdFiles) {
+  const content = await fs.readFile(path.join(PROGRESS_DIR, file), 'utf-8');
+  const serviceName = file.replace(/\.md$/i, '');
+  const classes = [];
 
-    for (const file of mdFiles) {
-      const content = await fs.readFile(path.join(PROGRESS_DIR, file), 'utf-8');
-      const serviceName = file.replace(/\.md$/i, '');
-      
-      // Extract classes
-      const classMatches = content.matchAll(/## Class: \[(.*?)\]/g);
-      const classes = [];
-      
-      for (const match of classMatches) {
-        const className = match[1];
-        // Find the table for this class
-        const classSection = content.slice(match.index);
-        const tableEnd = classSection.indexOf('## Class:') > 0 ? classSection.indexOf('## Class:', 10) : classSection.length;
-        const tableContent = classSection.slice(0, tableEnd);
+  // Extract sections
+  const sections = content.split('## Class:');
+
+      for (const section of sections.slice(1)) {
+        const classNameMatch = section.match(/ \[(.*?)\]/);
+        if (!classNameMatch) continue;
+        const className = classNameMatch[1];
         
-        // Extract completed methods
-        const methodMatches = tableContent.matchAll(/\| \[(.*?)\]\(.*?\) \| .*? \| .*? \| .*? \| (completed) \|/g);
-        const methods = Array.from(methodMatches).map(m => m[1]);
+        // Find the method table within this section
+        const tableMatch = section.match(/\| Method \| Description \| Return Type \| Return Description \| Status \| Implementation \|([\s\S]*?)(\n\n|$)/);
         
-        if (methods.length > 0) {
-          classes.push({ name: className, methods });
+        if (tableMatch) {
+          const tableContent = tableMatch[1];
+          // Extract only completed methods for this specific table
+          const methodMatches = tableContent.matchAll(/^\| \[(.*?)\]\(.*?\) \| .*? \| .*? \| .*? \| (completed) \|/gm);
+          const methods = Array.from(methodMatches).map(m => m[1]);
+          
+          if (methods.length > 0) {
+            classes.push({ name: className, methods });
+          }
         }
       }
 

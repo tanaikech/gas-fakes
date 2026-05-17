@@ -16,65 +16,6 @@ Supported Methods:
 - `setDataFromString(String,String)`
 - `setDataFromString(String)`
 - `setName(String)`
-- `clear()`
-- `getLog()`
-- `log(Object)`
-- `log(String,Object...)`
-- `asHexString()`
-- `getBlue()`
-- `getColorType()`
-- `getGreen()`
-- `getRed()`
-- `getActiveUser()`
-- `getActiveUserLocale()`
-- `getEffectiveUser()`
-- `getScriptTimeZone()`
-- `getTemporaryActiveUserKey()`
-- `showModalDialog(Object,String)`
-- `showSidebar(Object)`
-- `getEmail()`
-
-## Class: Browser
-
-Supported Methods:
-- `clear()`
-- `getLog()`
-- `log(Object)`
-- `log(String,Object...)`
-- `asHexString()`
-- `getBlue()`
-- `getColorType()`
-- `getGreen()`
-- `getRed()`
-- `getActiveUser()`
-- `getActiveUserLocale()`
-- `getEffectiveUser()`
-- `getScriptTimeZone()`
-- `getTemporaryActiveUserKey()`
-- `showModalDialog(Object,String)`
-- `showSidebar(Object)`
-- `getEmail()`
-
-## Class: console
-
-Supported Methods:
-- `clear()`
-- `getLog()`
-- `log(Object)`
-- `log(String,Object...)`
-- `asHexString()`
-- `getBlue()`
-- `getColorType()`
-- `getGreen()`
-- `getRed()`
-- `getActiveUser()`
-- `getActiveUserLocale()`
-- `getEffectiveUser()`
-- `getScriptTimeZone()`
-- `getTemporaryActiveUserKey()`
-- `showModalDialog(Object,String)`
-- `showSidebar(Object)`
-- `getEmail()`
 
 ## Class: Logger
 
@@ -83,53 +24,6 @@ Supported Methods:
 - `getLog()`
 - `log(Object)`
 - `log(String,Object...)`
-- `asHexString()`
-- `getBlue()`
-- `getColorType()`
-- `getGreen()`
-- `getRed()`
-- `getActiveUser()`
-- `getActiveUserLocale()`
-- `getEffectiveUser()`
-- `getScriptTimeZone()`
-- `getTemporaryActiveUserKey()`
-- `showModalDialog(Object,String)`
-- `showSidebar(Object)`
-- `getEmail()`
-
-## Class: Menu
-
-Supported Methods:
-- `asHexString()`
-- `getBlue()`
-- `getColorType()`
-- `getGreen()`
-- `getRed()`
-- `getActiveUser()`
-- `getActiveUserLocale()`
-- `getEffectiveUser()`
-- `getScriptTimeZone()`
-- `getTemporaryActiveUserKey()`
-- `showModalDialog(Object,String)`
-- `showSidebar(Object)`
-- `getEmail()`
-
-## Class: PromptResponse
-
-Supported Methods:
-- `asHexString()`
-- `getBlue()`
-- `getColorType()`
-- `getGreen()`
-- `getRed()`
-- `getActiveUser()`
-- `getActiveUserLocale()`
-- `getEffectiveUser()`
-- `getScriptTimeZone()`
-- `getTemporaryActiveUserKey()`
-- `showModalDialog(Object,String)`
-- `showSidebar(Object)`
-- `getEmail()`
 
 ## Class: RgbColor
 
@@ -139,14 +33,6 @@ Supported Methods:
 - `getColorType()`
 - `getGreen()`
 - `getRed()`
-- `getActiveUser()`
-- `getActiveUserLocale()`
-- `getEffectiveUser()`
-- `getScriptTimeZone()`
-- `getTemporaryActiveUserKey()`
-- `showModalDialog(Object,String)`
-- `showSidebar(Object)`
-- `getEmail()`
 
 ## Class: Session
 
@@ -156,16 +42,14 @@ Supported Methods:
 - `getEffectiveUser()`
 - `getScriptTimeZone()`
 - `getTemporaryActiveUserKey()`
-- `showModalDialog(Object,String)`
-- `showSidebar(Object)`
-- `getEmail()`
 
 ## Class: Ui
 
 Supported Methods:
+- `createAddonMenu()`
+- `createMenu(String)`
 - `showModalDialog(Object,String)`
 - `showSidebar(Object)`
-- `getEmail()`
 
 ## Class: User
 

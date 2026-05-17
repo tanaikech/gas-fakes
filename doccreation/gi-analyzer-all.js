@@ -336,20 +336,27 @@ for (const service of giData) {
               try {
                 const ast = acorn.parse(file.content, { ecmaVersion: 'latest', sourceType: 'module' });
                 walk.simple(ast, {
-                  MethodDefinition(node) {
-                    if (node.key.name === methodName) {
-                      // Once we find the method, walk its body to check for notYetImplemented
-                      walk.simple(node.value.body, {
-                        CallExpression(callNode) {
-                          if (callNode.callee.name === 'notYetImplemented') {
-                            inProgress = true;
-                            // We can stop walking this method body now
+                  ClassDeclaration(classNode) {
+                    // Check if this is the class we are currently analyzing
+                    if (classNode.id.name === className) {
+                      walk.simple(classNode.body, {
+                        MethodDefinition(methodNode) {
+                          if (methodNode.key.name === methodName) {
+                            // Check if this method has notYetImplemented
+                            walk.simple(methodNode.value.body, {
+                              CallExpression(callNode) {
+                                if (callNode.callee.name === 'notYetImplemented') {
+                                  inProgress = true;
+                                  throw 'found';
+                                }
+                              }
+                            });
+                            // We found the method in the correct class
+                            status = 'completed';
                             throw 'found';
                           }
                         }
                       });
-                      // Stop walking the whole file if we've analyzed the method
-                      throw 'found';
                     }
                   }
                 });

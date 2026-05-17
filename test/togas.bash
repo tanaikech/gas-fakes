@@ -1,6 +1,10 @@
 # this simple script comments out the node import stuff 
 # and moves selected files recursively to a folder that can be moved to gas with clasp
 # load in environment variables from root folder
+echo "NOTE- you can now use 'gas-fakes togas'"
+echo "you can set up your target and clasp options in the .env file using gas-fakes init"
+echo "this script is just for historical/backup purposes and will be removed in the future"
+
 ROOT_DIRECTORY=$(git rev-parse --show-toplevel)
 set -a
 source "$ROOT_DIRECTORY/.env"

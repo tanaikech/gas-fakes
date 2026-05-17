@@ -7,9 +7,6 @@ Supported Methods:
 - `releaseLock()`
 - `tryLock(Integer)`
 - `waitLock(Integer)`
-- `getDocumentLock()`
-- `getScriptLock()`
-- `getUserLock()`
 
 ## Class: LockService
 

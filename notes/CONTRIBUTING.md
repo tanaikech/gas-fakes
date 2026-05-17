@@ -31,11 +31,11 @@ Here's some guidance on testing. Before submitting a PR always run all the exist
 
 ### Unit tester for both GAS and Node
 
-Note that I use a [unit tester](https://ramblings.mcpher.com/apps-script-test-runner-library-ported-to-node/) that runs in both GAS and Node, so the exact same tests will run in both environments. There are some example tests in the repo. Each test has been proved on both Node and GAS. There's also a shell (togas.sh) which will use clasp to push the test code to Apps Script.
+Note that I use a [unit tester](https://ramblings.mcpher.com/apps-script-test-runner-library-ported-to-node/) that runs in both GAS and Node, so the exact same tests will run in both environments. There are some example tests in the repo. Each test has been proved on both Node and GAS. Use the `gas-fakes togas` CLI command to push the test code to Apps Script.
 
 ### test location change at v1.2.7
 
-As of v1.2.7 all tests should be run from the test folder, and as of v1.2.11 togas.sh should also be run from the test folder
+As of v1.2.7 all tests should be run from the test folder, and the `gas-fakes togas` command can be used from there to deploy tests.
 
 Each test can be run individually (for example `npm run testdrive`) or all with `npm test`
 
@@ -103,7 +103,7 @@ Most unit sections are isolated so will create their own files with some easily 
 
 ### Pushing to GAS
 
-The script uses togas.sh will move the test scripts to GAS with clasp - just set the `SOURCE` and `TARGET` folders in the TOGAS script. Make sure you have an `appsscript.json` manifest in the `SOURCE` folder, as **gas-fakes** reads that to handle OAuth on Node.
+The `gas-fakes togas` command will move the test scripts to GAS with clasp - just set the target folder using `gas-fakes init` or the `--target` flag. Make sure you have an `appsscript.json` manifest in the source folder, as **gas-fakes** reads that to handle OAuth on Node.
 
 You can write your project to run on Node and call GAS services, and it will also run on the GAS environment with no code changes, except on the Node side you have this one import
 
@@ -112,7 +112,7 @@ You can write your project to run on Node and call GAS services, and it will als
 import '@mcpher/gas-fakes/main.js'
 ```
 
-togas.sh will remove imports and exports on the way to apps script, which doesnt support them.
+`gas-fakes togas` will remove imports and exports on the way to apps script, which doesnt support them.
 
 ## Mocking
 
@@ -182,7 +182,6 @@ As I mentioned earlier, to take this further, I'm going to need a lot of help to
 - [article:using apps script libraries with gas-fakes](https://ramblings.mcpher.com/how-to-use-apps-script-libraries-directly-from-node/)
 - [named range identity](../notes/named-range-identity.md)
 - [Workspace scopes with local authentication](../notes/workspace_scopes.md)
-- [push test pull](../notes/pull-test-push.md)
 - [sharing cache and properties between gas-fakes and live apps script](https://ramblings.mcpher.com/sharing-cache-and-properties-between-gas-fakes-and-live-apps-script/)
 - [gas-fakes-cli now has built in mcp server and gemini extension](https://ramblings.mcpher.com/gas-fakes-cli-now-has-built-in-mcp-server-and-gemini-extension/)
 - [gas-fakes CLI: Run apps script code directly from your terminal](https://ramblings.mcpher.com/gas-fakes-cli-run-apps-script-code-directly-from-your-terminal/)

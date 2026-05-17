@@ -1,6 +1,6 @@
 import '@mcpher/gas-fakes';
-import { maketdoc, getDocsPerformance } from './testassist.js';
-;
+import { maketdoc, getDocsPerformance, wrapupTest, trasher, createTrashCollector } from './testassist.js';
+import { initTests } from './testinit.js';
 
 /**
  * A generic test suite for Document sections (HeaderSection, FooterSection).
@@ -10,11 +10,11 @@ import { maketdoc, getDocsPerformance } from './testassist.js';
  * @param {string} options.addMethod The name of the method to add the section (e.g., 'addHeader').
  * @param {string} options.getMethod The name of the method to get the section (e.g., 'getHeader').
  * @param {string} options.dataPrefix A prefix for test data strings (e.g., 'h' or 'f').
- * @returns {{toTrash: object[]}} An object containing items to be trashed.
+ * @param {object[]} toTrash Array to collect items to be trashed.
  */
-export const testDocsSection = (pack, { sectionType, addMethod, getMethod, dataPrefix }) => {
+export const testDocsSection = (pack, options, toTrash) => {
+  const { sectionType, addMethod, getMethod, dataPrefix } = options;
   const { unit } = pack;
-  const toTrash = []
   const sectionClassName = `${sectionType}Section`;
   const lcSectionType = sectionType.toLowerCase();
 
@@ -41,6 +41,8 @@ export const testDocsSection = (pack, { sectionType, addMethod, getMethod, dataP
     section.appendParagraph(`This is the ${lcSectionType} text.`);
     const sameSection = doc[getMethod]();
     t.is(sameSection.getText(), `\nThis is the ${lcSectionType} text.`, `The ${lcSectionType} should contain the appended text`);
+    
+    // Live GAS throws "Document tab already contains a header." (or footer)
     t.rxMatch(t.threw(() => doc[addMethod]())?.message, new RegExp(`Document tab already contains a ${lcSectionType}.`), `Calling ${addMethod} again should throw an error`);
 
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
@@ -82,6 +84,34 @@ export const testDocsSection = (pack, { sectionType, addMethod, getMethod, dataP
 
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   });
-
-  return { toTrash };
 };
+
+export const testDocsSections = (pack) => {
+  const toTrash = createTrashCollector();
+  const { unit, fixes } = pack || initTests();
+
+  // Test Headers
+  testDocsSection({ unit, fixes }, {
+    sectionType: 'Header',
+    addMethod: 'addHeader',
+    getMethod: 'getHeader',
+    dataPrefix: 'h'
+  }, toTrash);
+
+  // Test Footers
+  testDocsSection({ unit, fixes }, {
+    sectionType: 'Footer',
+    addMethod: 'addFooter',
+    getMethod: 'getFooter',
+    dataPrefix: 'f'
+  }, toTrash);
+
+  if (!pack) {
+    unit.report();
+  }
+  if (fixes.CLEAN) trasher(toTrash);
+  return { unit, fixes };
+};
+
+wrapupTest(testDocsSections);
+

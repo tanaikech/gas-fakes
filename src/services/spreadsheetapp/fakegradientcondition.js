@@ -66,6 +66,6 @@ export class FakeGradientCondition {
   }
 
   toString() {
-    return 'GradientCondition';
+    return 'ConditionalFormatGradientCondition';
   }
 }

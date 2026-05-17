@@ -42,9 +42,9 @@ export const testConditionalFormat = (pack) => {
     const r1 = rules[0];
     const boolCond = r1.getBooleanCondition();
     t.truthy(boolCond, 'Rule 1 should have a boolean condition');
-    t.is(boolCond.toString(), 'BooleanCondition', 'getBooleanCondition() should return BooleanCondition');
+    t.is(boolCond.toString(), 'ConditionalFormatBooleanCondition', 'getBooleanCondition() should return ConditionalFormatBooleanCondition');
     t.is(boolCond.getCriteriaType().toString(), 'NUMBER_GREATER_THAN', 'Criteria type should map to Enum correctly');
-    t.deepEqual(boolCond.getCriteriaValues(), ["50"], 'Criteria values should match');
+    t.deepEqual(boolCond.getCriteriaValues(), [50], 'Criteria values should match');
     t.is(boolCond.getBackgroundObject().asRgbColor().asHexString(), '#ff0000', 'Background color should match');
     t.is(boolCond.getFontColorObject().asRgbColor().asHexString(), '#ffffff', 'Font color should match');
     t.is(boolCond.getBold(), true, 'Bold should be true');
@@ -53,7 +53,7 @@ export const testConditionalFormat = (pack) => {
     const r2 = rules[1];
     const gradCond = r2.getGradientCondition();
     t.truthy(gradCond, 'Rule 2 should have a gradient condition');
-    t.is(gradCond.toString(), 'GradientCondition', 'getGradientCondition() should return GradientCondition');
+    t.is(gradCond.toString(), 'ConditionalFormatGradientCondition', 'getGradientCondition() should return ConditionalFormatGradientCondition');
     t.is(gradCond.getMinColorObject().asRgbColor().asHexString(), '#00ff00', 'Gradient min color should match');
     t.is(gradCond.getMaxType().toString(), 'MAX', 'Gradient max type should match');
 
@@ -97,13 +97,17 @@ export const testConditionalFormat = (pack) => {
     t.deepEqual(rules[0].getBooleanCondition().getCriteriaValues(), ["hello"]);
 
     t.is(rules[1].getBooleanCondition().getCriteriaType().toString(), 'NUMBER_BETWEEN');
-    t.deepEqual(rules[1].getBooleanCondition().getCriteriaValues(), ["10", "20"]);
+    t.deepEqual(rules[1].getBooleanCondition().getCriteriaValues(), [10, 20]);
 
     t.is(rules[2].getBooleanCondition().getCriteriaType().toString(), 'DATE_EQUAL_TO_RELATIVE');
     t.deepEqual(rules[2].getBooleanCondition().getCriteriaValues().map(String), ["TODAY"]);
 
     t.is(rules[3].getBooleanCondition().getCriteriaType().toString(), 'DATE_AFTER');
-    t.deepEqual(rules[3].getBooleanCondition().getCriteriaValues(), ["5/1/2026"], 'Dates should be formatted as MM/dd/yyyy strings');
+    // Compare dates robustly
+    const retrievedDate = new Date(rules[3].getBooleanCondition().getCriteriaValues()[0]);
+    t.is(retrievedDate.getFullYear(), date.getFullYear());
+    t.is(retrievedDate.getMonth(), date.getMonth());
+    t.is(retrievedDate.getDate(), date.getDate());
 
     t.is(rules[4].getBooleanCondition().getCriteriaType().toString(), 'TEXT_STARTS_WITH');
     t.deepEqual(rules[4].getBooleanCondition().getCriteriaValues(), ["prefix"]);

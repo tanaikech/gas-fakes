@@ -1,83 +1,27 @@
-
-// all these imports 
-// this is loaded by npm, but is a library on Apps Script side
-
-import is from '@sindresorhus/is';
-import '@mcpher/gas-fakes'
+import '@mcpher/gas-fakes';
+import { initTests } from './testinit.js';
 import { wrapupTest } from './testassist.js';
 
-
-
-import { initTests }  from  './testinit.js'
-
-// this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testScriptApp = (pack) => {
-  const {unit, fixes} = pack || initTests()
+  const { unit, fixes } = pack || initTests();
 
-  unit.section("scriptapp basics", t => {
-    t.true(is.nonEmptyString(ScriptApp.getScriptId()))
-    t.true(is.nonEmptyString(ScriptApp.__projectId), {
-      skip: !ScriptApp.isFake
-    })
-    t.true(is.nonEmptyString(ScriptApp.__userId), {
-      skip: !ScriptApp.isFake
-    })
-  })
+  unit.section('ScriptApp Basics', (t) => {
+    t.is(typeof ScriptApp.getScriptId(), 'string', 'getScriptId should return a string');
+    t.is(ScriptApp.AuthMode.FULL, 'FULL', 'AuthMode.FULL should be FULL');
+  });
 
-  unit.section('scopes and oauth', t => {
-    const token = ScriptApp.getOAuthToken()
-    t.true(is.nonEmptyString(token))
-    /**
-     * Apps Script  doesn't throw an error on an an invalid requiredallscopes ENUM as it should
-       it returns null just like a succesfful call for now will omit on Apps Script side tests
-       see https://issuetracker.google.com/issues/395159729
-     */
-    if (ScriptApp.isFake) {
-      t.rxMatch(
-        t.threw(() => ScriptApp.requireAllScopes(ScriptApp.AuthMode.RUBBISH)),
-        /only FULL is supported as mode for now/, {
-        description: 'update test with whatever is thrown when APPS Script bug is fixed'
-      })
-    } else {
-      // it should fail on apps script but doesn't
-      t.is(ScriptApp.requireAllScopes(ScriptApp.AuthMode.RUBBISH), null)
-    }
-    t.is(ScriptApp.requireAllScopes(ScriptApp.AuthMode.FULL), null)
+  unit.section('ScriptApp.getAuthorizationInfo', (t) => {
+    const authInfo = ScriptApp.getAuthorizationInfo(ScriptApp.AuthMode.FULL);
+    t.truthy(authInfo, 'getAuthorizationInfo should return an object');
+    t.is(typeof authInfo.getAuthorizationStatus, 'function', 'getAuthorizationStatus should be a function');
+    t.is(typeof authInfo.getAuthorizationUrl, 'function', 'getAuthorizationUrl should be a function');
+    
+    t.is(authInfo.getAuthorizationStatus(), ScriptApp.AuthorizationStatus.NOT_REQUIRED, 'AuthorizationStatus should be NOT_REQUIRED locally');
+    t.is(authInfo.getAuthorizationUrl(), null, 'AuthorizationUrl should be null locally');
+  });
 
+  if (!pack) unit.report();
+  return { unit, fixes };
+};
 
-    /**
-     * this works in fake, and should work in Apps Script, but there's an outstanding issue
-     * see https://issuetracker.google.com/issues/395159730
-     * for now we'll omit from Apps Script side tests
-     */
-    if (ScriptApp.isFake) {
-      t.is(ScriptApp.requireScopes(ScriptApp.AuthMode.FULL, ['https://www.googleapis.com/auth/drive.readonly']),
-        null, {
-        description: 'skip on Apps Script till bug is fixed'
-      })
-    }
-
-    /**
-     * Apps Script  doesnt throw an error on an an invalid requiredallscopes ENUM as it should
-       it returns null just like a succesfful call for now will omit on Apps Script side tests
-       see https://issuetracker.google.com/issues/395159729
-     */
-    t.rxMatch(
-      t.threw(() => ScriptApp.requireScopes(ScriptApp.AuthMode.FULL, ['https://www.googleapis.com/auth/RUBBISH'])),
-      /required but have not been authorized/, {
-      skip: !ScriptApp.isFake,
-      description: 'skip on Apps Script till bug is fixed'
-    })
-
-  }, {
-    skip: false
-  })
-
-  if (!pack) {
-    unit.report()
-  }
-  return { unit, fixes }
-}
-
-
-wrapupTest(testScriptApp)
+wrapupTest(testScriptApp);

@@ -1,27 +1,48 @@
 import { parentPort, workerData } from 'worker_threads';
+import fs from 'fs';
+import path from 'path';
+import { runInThisContext } from 'vm';
+import { Utils as GasFakesUtils } from '../../support/utils.js';
+
+// Initialize the gas-fakes environment in this worker isolate
+import '../../index.js';
 
 // The worker is spawned with the path to the main script
 const { mainScriptPath, funcName, args, isTemplate, templateString } = workerData;
 
 async function run() {
   try {
-    // Dynamically import the consumer's main script
-    // This executes the script in a completely fresh isolate
-    const consumerModule = await import('file://' + mainScriptPath);
+    const projectDir = path.dirname(mainScriptPath);
     
-    // We also want to expose global functions they might have defined
-    // since they might not export them
-    const availableFunctions = { ...consumerModule, ...globalThis };
+    // Simulate Apps Script's global execution model:
+    // Read all .js and .gs files in the directory and evaluate them in this global context.
+    const files = fs.readdirSync(projectDir);
+    const scriptFiles = files.filter(f => f.endsWith('.js') || f.endsWith('.gs'));
+    
+    // Sort files to ensure deterministic execution (like clasp does)
+    scriptFiles.sort();
+
+    for (const file of scriptFiles) {
+      const fullPath = path.join(projectDir, file);
+      const content = fs.readFileSync(fullPath, 'utf8');
+      
+      // Strip ESM keywords to allow evaluation in the raw VM context
+      const strippedContent = GasFakesUtils.stripEsmKeywords(content);
+      
+      try {
+        // runInThisContext executes the code globally within the current V8 isolate
+        runInThisContext(strippedContent, { filename: fullPath });
+      } catch (e) {
+        console.error(`gas-fakes Error parsing ${file}: ${e.message}`);
+      }
+    }
 
     if (isTemplate) {
-        // Implement template logic here
-        // We'll need a way to pass the template string and get back the evaluated string
-        // For now, let's just send back a stub
         parentPort.postMessage({ result: "Template evaluation not yet implemented in worker" });
         return;
     }
 
-    const func = availableFunctions[funcName];
+    const func = globalThis[funcName];
 
     if (typeof func !== 'function') {
       throw new Error(`google.script.run: function "${funcName}" is not defined on the server.`);

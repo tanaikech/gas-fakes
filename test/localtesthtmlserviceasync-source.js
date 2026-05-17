@@ -1,9 +1,6 @@
 // This file simulates a pure Google Apps Script project.
 // No globalThis, no module exports. Pure local declarations.
 
-import '@mcpher/gas-fakes';
-import path from 'path'; // Test server-side imports
-
 // Local variable accessible by template
 const serverGreeting = "Hello from pure server variables!";
 
@@ -12,7 +9,7 @@ function getServerData() {
     return {
         message: "Data from pure function",
         timestamp: new Date().getTime(),
-        pathTest: path.join('foo', 'bar')
+        pathTest: "foo/bar"
     };
 }
 

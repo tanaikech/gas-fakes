@@ -23,12 +23,13 @@ export const testHtmlServiceAsync = (pack) => {
 
   unit.section("gas-fakes: Web App doGet/doPost from Pure Script", async t => {
       // 1. Trick the worker into reading the pure source file instead of this test runner
+      const scriptPath = path.join(__dirname, 'localtesthtmlserviceasync-source.js');
       const originalArgv = process.argv[1];
-      process.argv[1] = path.join(__dirname, 'testhtmlserviceasync-source.js');
+      process.argv[1] = scriptPath;
 
       // 2. Start the web app server
       const port = 3006;
-      const server = HtmlService.__startWebApp(port);
+      const server = HtmlService.__startWebApp(port, scriptPath);
 
       try {
           // Wait for server to start listening

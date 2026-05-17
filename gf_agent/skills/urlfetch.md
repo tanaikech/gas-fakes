@@ -11,11 +11,6 @@ Supported Methods:
 - `getContentText(String)`
 - `getHeaders()`
 - `getResponseCode()`
-- `fetch(String,Object)`
-- `fetch(String)`
-- `fetchAll(Object)`
-- `getRequest(String,Object)`
-- `getRequest(String)`
 
 ## Class: UrlFetchApp
 

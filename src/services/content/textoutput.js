@@ -12,7 +12,7 @@ export class FakeTextOutput {
   }
 
   clear() {
-    this._content = "";
+    this._content = null;
     return this;
   }
 

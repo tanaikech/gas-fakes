@@ -1,7 +1,5 @@
 import fs from 'fs';
 import path from 'path';
-import { parse } from 'acorn';
-import vm from 'vm';
 import { workerData } from 'worker_threads';
 
 const { mainScriptPath, funcName, args, isTemplate, templateString } = workerData;
@@ -9,10 +7,18 @@ const control = new Int32Array(workerData.controlBuf);
 const dataView = new Uint8Array(workerData.dataBuf);
 const textEncoder = new TextEncoder();
 
-// Expose the script path to the global environment so HtmlService can find files
+// Initialize the Apps Script environment
 globalThis.__gasFakesMainScriptPath = mainScriptPath;
-
 await import('../../../main.js');
+
+// Bootstrap Auth with settings from environment
+import { Auth } from '../../support/auth.js';
+Auth.setSettings({
+  documentId: process.env.GF_DOCUMENT_ID,
+  scriptId: process.env.GF_SCRIPT_ID,
+  cache: process.env.GF_CACHE_PATH,
+  properties: process.env.GF_PROPERTIES_PATH
+});
 
 const CONTROL_INDICES = {
   STATUS: 0,
@@ -22,197 +28,29 @@ const CONTROL_INDICES = {
 
 async function run() {
   try {
-    const source = fs.readFileSync(mainScriptPath, 'utf8');
-    const ast = parse(source, { ecmaVersion: 'latest', sourceType: 'module' });
+    console.log('Worker CWD:', process.cwd());
+    console.log('Worker mainScriptPath:', mainScriptPath);
+    console.log('Worker GF_DOCUMENT_ID:', process.env.GF_DOCUMENT_ID);
 
-    const importsToResolve = [];
-    const exportIdentifiers = new Set();
-    const replacements = [];
-
-    // 1. Analyze AST to find Imports, Exports, and Declarations
-    for (const node of ast.body) {
-      if (node.type === 'ImportDeclaration') {
-        const sourcePath = node.source.value;
-        const specifiers = node.specifiers;
-        importsToResolve.push({ sourcePath, specifiers });
-        replacements.push({ start: node.start, end: node.end });
-      } else if (node.type === 'ExportNamedDeclaration') {
-        if (node.declaration) {
-          // Remove the "export " keyword
-          replacements.push({ start: node.start, end: node.declaration.start });
-          
-          if (node.declaration.type === 'FunctionDeclaration' || node.declaration.type === 'ClassDeclaration') {
-            exportIdentifiers.add(node.declaration.id.name);
-          } else if (node.declaration.type === 'VariableDeclaration') {
-            node.declaration.declarations.forEach(d => {
-              if (d.id.type === 'Identifier') exportIdentifiers.add(d.id.name);
-            });
-          }
-        } else {
-          // e.g. export { x, y }
-          replacements.push({ start: node.start, end: node.end });
-        }
-      } else if (node.type === 'ExportDefaultDeclaration') {
-          // Replace "export default " with "const __defaultExport = "
-          replacements.push({ start: node.start, end: node.declaration.start, replaceWith: 'const __defaultExport = ' });
-          exportIdentifiers.add('__defaultExport');
-      } else if (node.type === 'VariableDeclaration') {
-        node.declarations.forEach(d => {
-          if (d.id.type === 'Identifier') exportIdentifiers.add(d.id.name);
-        });
-      } else if (node.type === 'FunctionDeclaration' || node.type === 'ClassDeclaration') {
-        exportIdentifiers.add(node.id.name);
-      } else if (node.type === 'ExpressionStatement' && 
-                 node.expression.type === 'AssignmentExpression' && 
-                 node.expression.left.type === 'MemberExpression' &&
-                 node.expression.left.object.type === 'Identifier' && 
-                 node.expression.left.object.name === 'globalThis' &&
-                 node.expression.left.property.type === 'Identifier') {
-        exportIdentifiers.add(node.expression.left.property.name);
-      }
-    }
-
-    // 2. Rewrite the source code
-    let modifiedSource = source;
-    // Sort replacements from end to start so indices remain valid
-    replacements.sort((a, b) => b.start - a.start);
-    for (const rep of replacements) {
-      const length = rep.end - rep.start;
-      const replacementText = rep.replaceWith !== undefined ? rep.replaceWith : ' '.repeat(length);
-      modifiedSource = modifiedSource.substring(0, rep.start) + replacementText + modifiedSource.substring(rep.end);
-    }
-
-    // Append code to gather all extracted top-level identifiers into an object we can read
-    const idents = Array.from(exportIdentifiers);
-    modifiedSource += `\n; globalThis.__extractedGasContext = { ${idents.map(id => `"${id}": typeof ${id} !== 'undefined' ? ${id} : undefined`).join(', ')} };`;
-
-    // 3. Prepare the sandbox
-    const sandbox = { 
-        console, 
-        setTimeout, 
-        clearTimeout,
-        setInterval,
-        clearInterval
-    };
+    // Dynamically load the user's module
+    const userModule = await import(mainScriptPath);
     
-    // Copy GAS globals populated by main.js into the sandbox
-    for (const key of Object.getOwnPropertyNames(globalThis)) {
-      if (key !== 'global' && key !== 'GLOBAL' && key !== 'root' && key !== 'console' && key !== 'setTimeout' && key !== 'clearTimeout' && key !== 'setInterval' && key !== 'clearInterval' && key !== 'HtmlService' && key !== 'google') {
-         const descriptor = Object.getOwnPropertyDescriptor(globalThis, key);
-         if (descriptor) {
-             try {
-                 descriptor.configurable = true;
-                 // If it has a value, make it writable too so VM code can reassign if needed
-                 if ('value' in descriptor) {
-                     descriptor.writable = true;
-                 }
-                 Object.defineProperty(sandbox, key, descriptor);
-             } catch (e) {
-                 throw new Error("Failed defining " + key + ": " + e.message);
-             }
-         } else {
-             sandbox[key] = globalThis[key];
-         }
-      }
-    }
-
-    sandbox.globalThis = sandbox;
-    sandbox.__isGasFakesServerContext = true;
-
-    // Prevent Recursion: Intercept google.script.run inside the sandbox
-    // When the consumer's code executes in the sandbox, their call to `testHtml()`
-    // will trigger these mock objects instead of spawning more workers.
-    const dummyProxy = new Proxy(function() {}, { 
-      get: () => dummyProxy,
-      apply: () => dummyProxy
+    // Expose all exports to globalThis for legacy patterns
+    Object.keys(userModule).forEach(key => {
+        globalThis[key] = userModule[key];
     });
     
-    Object.defineProperty(sandbox, 'google', {
-      value: { script: { run: dummyProxy } },
-      writable: true,
-      configurable: true,
-      enumerable: true
-    });
-
-    // Provide the real HtmlService but stub out __startWebApp
-    if (globalThis.HtmlService) {
-      const realHtmlService = globalThis.HtmlService;
-      Object.defineProperty(sandbox, 'HtmlService', {
-        value: new Proxy(realHtmlService, {
-          get: (target, prop) => {
-            if (prop === '__startWebApp') return dummyProxy;
-            return target[prop];
-          }
-        }),
-        writable: true,
-        configurable: true,
-        enumerable: true
-      });
-    }
-
-    // 4. Resolve Imports into the Sandbox
-    const scriptDir = path.dirname(mainScriptPath);
-    for (const imp of importsToResolve) {
-      let importPath = imp.sourcePath;
-      
-      // If the consumer script is importing the library itself, ignore it.
-      // We've already loaded the correct version of gas-fakes above.
-      if (importPath === '@mcpher/gas-fakes') {
-          continue;
-      }
-
-      if (importPath.startsWith('.')) {
-        importPath = path.resolve(scriptDir, importPath);
-      }
-      
-      const importedModule = await import(importPath);
-
-      for (const spec of imp.specifiers) {
-        if (importPath.includes('webapp.js') && spec.imported?.name === 'startServer') {
-            sandbox[spec.local.name] = dummyProxy;
-            continue;
-        }
-
-        if (spec.type === 'ImportDefaultSpecifier') {
-          sandbox[spec.local.name] = importedModule.default;
-        } else if (spec.type === 'ImportNamespaceSpecifier') {
-          sandbox[spec.local.name] = importedModule;
-        } else if (spec.type === 'ImportSpecifier') {
-          sandbox[spec.local.name] = importedModule[spec.imported.name];
-        }
-      }
-    }
-
-    // 5. Execute Code in Sandbox
-    const sandboxProxy = new Proxy(sandbox, {
-      get: (target, prop) => {
-        if (Reflect.has(target, prop)) return Reflect.get(target, prop);
-        return Reflect.get(globalThis, prop);
-      },
-      has: (target, prop) => {
-        return Reflect.has(target, prop) || Reflect.has(globalThis, prop);
-      },
-      set: (target, prop, value) => {
-        return Reflect.set(target, prop, value);
-      }
-    });
-
-    const context = vm.createContext(sandboxProxy);
-    try {
-      vm.runInContext(modifiedSource, context);
-    } catch (e) {
-      throw new Error("Error in vm.runInContext: " + e.message + "\nStack: " + e.stack);
-    }
-
-    const availableContext = context.__extractedGasContext || {};
     let result;
 
-    // 6. Perform Requested Task
     if (isTemplate) {
+      // Evaluate template
+      // We pass the userModule context to allow access to functions like Include
       result = templateString.replace(/<\?!=?\s*([\s\S]+?)\s*\?>/g, (match, expression) => {
         try {
-           const exprResult = vm.runInContext(expression, context);
-           // If the result is a FakeHtmlOutput, unwrap it (e.g. from an include() function)
+           // We use the userModule exports as the scope for template expressions
+           const func = new Function(...Object.keys(userModule), `return ${expression}`);
+           const exprResult = func(...Object.values(userModule));
+           
            if (exprResult && typeof exprResult.getContent === 'function') {
                return exprResult.getContent();
            }
@@ -223,22 +61,20 @@ async function run() {
         }
       });
     } else {
-      let func = availableContext[funcName];
+      // Run function
+      const func = userModule[funcName] || globalThis[funcName];
       if (typeof func !== 'function') {
-        func = context[funcName];
+        throw new Error(`google.script.run: function "${funcName}" is not defined.`);
       }
-      if (typeof func !== 'function') {
-        throw new Error(`google.script.run: function "${funcName}" is not defined on the server.`);
-      }
-      
-      // Re-hydrate doPost event object with missing Apps Script methods
+
+      // Re-hydrate doPost event object
       if (funcName === 'doPost' && args && args[0] && args[0].postData) {
          args[0].postData.getDataAsString = function() { return this.contents; };
       }
 
       const rawResult = await func(...(args || []));
       
-      // If the function returns a FakeHtmlOutput or FakeTextOutput object, serialize it
+      // Serialize output if it's a FakeHtmlOutput or FakeTextOutput
       if (rawResult && typeof rawResult.getContent === 'function') {
         result = {
           __isHtmlOutput: !!rawResult.__isHtmlOutput,
@@ -257,6 +93,7 @@ async function run() {
 
     writeResult(result);
   } catch (error) {
+    console.error('[gas-fakes worker error]', error);
     writeError(error);
   } finally {
     Atomics.store(control, CONTROL_INDICES.STATUS, 0);
@@ -278,8 +115,9 @@ function writeResult(result) {
 }
 
 function writeError(error) {
-  const message = error instanceof Error ? error.message : String(error);
-  const stack = error instanceof Error ? error.stack : new Error().stack;
+  const message = error?.message || (typeof error === 'string' ? error : JSON.stringify(error) || 'Unknown error');
+  const stack = error?.stack || new Error().stack;
+  console.error('[gas-fakes worker error details]:', message, stack);
   const errorString = JSON.stringify({ message, stack });
   const encodedError = textEncoder.encode(errorString);
   

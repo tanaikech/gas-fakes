@@ -129,8 +129,11 @@ export class FakeSpreadsheetApp {
     if (this.__activeSpreadsheet) return this.__activeSpreadsheet;
     // because this is a faked container bound app, we need to get the documentId from the config file
     const documentId = Auth.getDocumentId();
+    console.log('Worker Auth.getDocumentId():', documentId);
     if (documentId) {
-      return this.openById(documentId);
+      const ss = this.openById(documentId);
+      console.log('Worker openById result:', ss);
+      return ss;
     }
     return null;
   }

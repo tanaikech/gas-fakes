@@ -6,8 +6,12 @@ import { Syncit } from '../../support/syncit.js'
 import { Auth } from '../../support/auth.js'
 import { Proxies } from '../../support/proxies.js'
 import { newFakeBehavior } from './behavior.js'
+import { newFakeAuthorizationInfo } from './fakeauthorizationinfo.js'
+import { ScriptEnums } from '../enums/scriptenums.js'
 import { newCacheDropin } from '@mcpher/gas-flex-cache'
 import { slogger } from "../../support/slogger.js";
+import fs from 'fs';
+import path from 'path';
 
 // This will eventually hold a proxy for ScriptApp
 let _app = null
@@ -155,6 +159,41 @@ if (typeof globalThis[name] === typeof undefined) {
       _app = {
         getOAuthToken,
         __getSourceOAuthToken: getSourceOAuthToken,
+        getResource: (filename) => {
+          let mainScriptPath = process.argv[1];
+          if (globalThis.__gasFakesMainScriptPath) {
+              mainScriptPath = globalThis.__gasFakesMainScriptPath;
+          }
+          if (!mainScriptPath || mainScriptPath.endsWith('node')) {
+              throw new Error("Could not determine project root for getResource. Ensure process.argv[1] is set or __gasFakesMainScriptPath is defined.");
+          }
+          
+          const projectDir = path.dirname(mainScriptPath);
+          let fullPath = path.resolve(projectDir, filename);
+
+          if (!fs.existsSync(fullPath)) {
+            // Apps Script allows omitting the extension. Try common ones.
+            const exts = ['.js', '.gs', '.html'];
+            let found = false;
+            for (const ext of exts) {
+                if (fs.existsSync(fullPath + ext)) {
+                    fullPath += ext;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+               throw new Error(`File not found: ${fullPath}`);
+            }
+          }
+          const content = fs.readFileSync(fullPath, 'utf8');
+          // We can't import Utilities easily here without circular deps or breaking the proxy
+          // But we can just use the global Utilities object assuming it's loaded.
+          if (!globalThis.Utilities) {
+             throw new Error("Utilities service not loaded, cannot create Blob for getResource.");
+          }
+          return globalThis.Utilities.newBlob(content, "text/plain", filename);
+        },
         requireAllScopes,
         requireScopes,
         getScriptId: () => {
@@ -197,6 +236,11 @@ if (typeof globalThis[name] === typeof undefined) {
         },
         AuthMode: {
           FULL: 'FULL'
+        },
+        AuthorizationStatus: ScriptEnums.AuthorizationStatus,
+        getAuthorizationInfo: (authMode) => {
+          ensureInit();
+          return newFakeAuthorizationInfo(authMode);
         },
         // __behavior added below to break recursion
         __newCacheDropin: newCacheDropin,

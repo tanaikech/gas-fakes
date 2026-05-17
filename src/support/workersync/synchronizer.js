@@ -127,6 +127,7 @@ export function callSync(method, ...args) {
   // 2. Send the task to the worker.
   // Use Auth directly to get current platform context
   const platform = Auth.getPlatform();
+  console.log('Synchronizer Auth object keys:', Object.keys(Auth));
 
   // Send current identities to the worker so it remains in sync
   const identitiesData = {};
@@ -145,7 +146,13 @@ export function callSync(method, ...args) {
     }
   }
 
-  const payload = { method, args, platform, identitiesData };
+  const payload = { 
+    method, 
+    args, 
+    platform, 
+    identitiesData,
+    settings: Auth.getSettings() // Include current settings
+  };
   worker.postMessage(payload);
 
   // 3. Block and wait for the worker to finish.
