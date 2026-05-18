@@ -6,8 +6,8 @@
       "request": "launch",
       "name": "Debug Chordsnip",
       "program": "${workspaceFolder}/gas-fakes.js",
-      "args": ["serve", "index.js", "-m", "serve"],
-      "cwd": "${workspaceFolder}/gasmess/bruce/ChordSnip",
+      "args": ["serve", "localserve.js", "-m", "serve"],
+      "cwd": "${workspaceFolder}/gasmess/bruce/chordsnip-gas-fakes-redux",
       "console": "integratedTerminal",
       "skipFiles": [
         "<node_internals>/**"

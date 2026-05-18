@@ -65,17 +65,8 @@ export async function togas(options) {
     try {
         const claspConfig = JSON.parse(fs.readFileSync(claspJsonPath, "utf8"));
         if (scriptId && claspConfig.scriptId !== scriptId) {
-            const response = await prompts({
-                type: "confirm",
-                name: "update",
-                message: `.clasp.json scriptId (${claspConfig.scriptId}) does not match configured scriptId (${scriptId}). Update it?`,
-                initial: true
-            });
-            if (response.update) {
-                claspConfig.scriptId = scriptId;
-                fs.writeFileSync(claspJsonPath, JSON.stringify(claspConfig, null, 2));
-                console.log("Updated .clasp.json scriptId.");
-            }
+            console.error(`Error: .clasp.json scriptId (${claspConfig.scriptId}) does not match configured scriptId (${scriptId}).`);
+            process.exit(1);
         }
     } catch (e) {
         console.warn(`Warning: Failed to parse ${claspJsonPath}.`);
