@@ -136,3 +136,43 @@ export function doGet() {
   return HtmlService.createTemplateFromFile('index').evaluate();
 }
 ```
+
+## Debugging
+
+### 1. Named Modules in Chrome Debugger
+When debugging client-side JavaScript in Chrome DevTools, it can be difficult to locate your scripts if they are served as anonymous blocks. To give them a recognizable name in the "Sources" tab, add a `sourceURL` comment to the end of your script:
+
+```javascript
+// At the bottom of your script or .html file
+//# sourceURL=gas-fakes:///my_script_name.gs
+```
+This tells Chrome to map the script to the specified virtual path, making it much easier to set breakpoints and step through code.
+
+### 2. Debugging the Node.js Side (VS Code)
+To debug the `gas-fakes` server itself or your server-side Apps Script logic running in Node, you can use a VS Code launch configuration.
+
+#### Recommended Configuration
+If you experience missing output in the "Debug Console", it is recommended to use `console: "integratedTerminal"`. This ensures all output from both `gas-fakes` and your scripts is visible in the terminal tab.
+
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Debug gas-fakes",
+      "program": "${workspaceFolder}/gas-fakes.js",
+      "args": ["serve", "index.js", "-m", "doGet"],
+      "cwd": "${workspaceFolder}/your/project/path",
+      "console": "integratedTerminal"
+    }
+  ]
+}
+```
+
+#### Why is there no output in the Debug Console?
+If you use the default `internalConsole` and see no output, it is often due to `outputCapture` settings or conflicts with manual `--inspect` flags. 
+
+- **Avoid `runtimeArgs: ["--inspect"]`**: VS Code's `node` debugger automatically handles inspector attachment. Manually adding this flag can cause port conflicts or prevent VS Code from correctly capturing the debug protocol events.
+- **Avoid `outputCapture: "std"`**: While this flag is intended to capture stdout/stderr, it can sometimes interfere with the standard `console.log` interception used by the VS Code debug protocol. If you don't see logs, remove this flag or switch to `integratedTerminal`.

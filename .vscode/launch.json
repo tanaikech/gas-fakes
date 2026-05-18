@@ -1,4 +1,4 @@
- {
+{
   "version": "0.2.0",
   "configurations": [
     {
@@ -6,10 +6,12 @@
       "request": "launch",
       "name": "Debug Chordsnip",
       "program": "${workspaceFolder}/gas-fakes.js",
-      "args": ["serve", "-i", "serve.js", "-m", "serve"],
-      "runtimeArgs": ["--inspect"],
-      "outputCapture": "std",
-      "cwd": "${workspaceFolder}/gasmess/bruce/ChordSnip"
+      "args": ["serve", "index.js", "-m", "serve"],
+      "cwd": "${workspaceFolder}/gasmess/bruce/ChordSnip",
+      "console": "integratedTerminal",
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
     }
   ]
 }
