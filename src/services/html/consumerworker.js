@@ -39,7 +39,7 @@ async function run() {
     Object.keys(userModule).forEach(key => {
         globalThis[key] = userModule[key];
     });
-    
+
     let result;
 
     if (isTemplate) {

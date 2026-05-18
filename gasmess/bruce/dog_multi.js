@@ -1,5 +1,5 @@
 import '@mcpher/gas-fakes';
-import { getSheetData, foo, bar } from './dog_utils.js';
+export { getSheetData, foo, bar } from './dog_utils.js';
 
 export const showDialog = (e) => {
   const ssId = "1h9IGIShgVBVUrUjjawk5MaCEQte_7t32XeEP1Z5jXKQ";
@@ -21,10 +21,7 @@ export const showDialog = (e) => {
   return html;
 };
 
-// Global variables for template evaluation
-globalThis.foo = foo;
 
-export { getSheetData, bar };
 
 export function include(filename) {
   return HtmlService.createHtmlOutputFromFile(filename).getContent();

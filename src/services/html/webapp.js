@@ -157,7 +157,7 @@ export function startServer(port = 3000, scriptPath = null, entryFunction = 'doG
     <div class="dialog">
       <div class="dialog-header">
         <h2 class="dialog-title">${safeTitle}</h2>
-        <button class="dialog-close" aria-label="Close" onclick="closeDialog()">✕</button>
+        <button class="dialog-close" aria-label="Close" onclick="closeDialog()">x</button>
       </div>
       <div class="dialog-content">
         <iframe id="gas-fakes-frame"></iframe>
