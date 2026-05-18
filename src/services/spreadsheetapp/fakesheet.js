@@ -38,7 +38,6 @@ export class FakeSheet {
 
     const props = [
       // "getImages",
-      "insertImage",
       "removeImage",
       // "getNamedRanges",
       // "getRangeByName", // <--- This is a method for Class Spreadsheet.
@@ -1182,6 +1181,29 @@ export class FakeSheet {
       return ar.map((e) => newFakeProtection(sheet, e));
     }
     return [];
+  }
+
+  insertImage(blobSourceOrUrl, column, row, offsetX, offsetY) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Sheet.insertImage");
+    if (nargs < 3 || nargs > 5) matchThrow();
+
+    // Warn about API limitations
+    console.warn(
+      "Sheet.insertImage: Floating images are not supported via the Google Sheets REST API v4. This is a local mock."
+    );
+
+    const obj = {
+      row: row - 1,
+      col: column - 1,
+      anchorCellXOffset: offsetX || 0,
+      anchorCellYOffset: offsetY || 0,
+      width: 100, // Default width
+      height: 100, // Default height
+      blob: typeof blobSourceOrUrl === "string" ? null : blobSourceOrUrl,
+      url: typeof blobSourceOrUrl === "string" ? blobSourceOrUrl : null,
+    };
+
+    return newFakeOverGridImage(this, obj);
   }
 
   getImages() {

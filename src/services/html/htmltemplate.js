@@ -1,7 +1,6 @@
 
 import { FakeHtmlOutput } from './htmloutput.js';
 import { ServerWorkerContext } from './serverworker.js';
-import { sanitizeClientCode } from './sanitizer.js';
 
 export class FakeHtmlTemplate {
   constructor(content = '') {
@@ -23,31 +22,18 @@ export class FakeHtmlTemplate {
   evaluate() {
     let evaluatedContent = this._content;
 
-    // First, sanitize any <?!= Include.*(...) ?> calls before they are evaluated/processed
-    // This handles the user requirement to strip Node exports/imports from included files.
-    evaluatedContent = evaluatedContent.replace(/<\?!=?\s*Include\.(html|css|js|gs)\(([\s\S]+?)\)\s*\?>/g, (match, type, args) => {
-        // Simple mock to simulate file inclusion for sanitization
-        // In a real scenario, this would load the file. Here we just identify the block.
-        // Sanitization will be applied to the resolved content.
-        return match; 
-    });
-
     let workerResult = null;
     try {
       const ctx = new ServerWorkerContext();
       workerResult = ctx.evaluateTemplate(this._content);
     } catch (e) {
-      // Ignore worker failures
+      console.error(e);
+      throw e;
     }
 
     if (workerResult) {
        evaluatedContent = workerResult;
     }
-
-    // Apply sanitization to the final evaluated content if it contains script blocks
-    evaluatedContent = evaluatedContent.replace(/<script([^>]*)>([\s\S]+?)<\/script>/gi, (match, attrs, scriptBody) => {
-        return `<script${attrs}>${sanitizeClientCode(scriptBody)}</script>`;
-    });
 
     // Final pass for explicitly set template properties
     evaluatedContent = evaluatedContent.replace(/<\?=\s*([^?]+)\s*\?>/g, (match, varName) => {

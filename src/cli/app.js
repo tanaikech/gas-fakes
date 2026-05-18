@@ -177,16 +177,21 @@ export async function main() {
     .option("-t, --tools <string>", "Path to custom tools file.")
     .action(startMcpServer);
 
-  // --- Web Server Command ---
+  // --- Server Command ---
   program
-    .command("serve")
+    .command("serve [filename]")
     .description("Starts a local web server to handle doGet and doPost requests.")
-    .requiredOption("-i, --input <string>", "Path to the Google Apps Script file containing doGet/doPost.")
+    .option("-i, --input <string>", "Path to the Google Apps Script file containing doGet/doPost. (Deprecated: use positional argument instead)")
     .option("-p, --port <number>", "Port for local web server (overrides .env).")
     .option("-e, --env <path>", "Path to a custom .env file.", "./.env")
     .option("-m, --main <string>", "The entry point function to execute on GET requests.", "doGet")
-    .action(async (options) => {
-       await startWebApp({ ...options, filename: options.input });
+    .action(async (filename, options) => {
+       const fileToServe = filename || options.input;
+       if (!fileToServe) {
+         console.error("error: missing required argument 'filename' or option '-i, --input <string>'");
+         process.exit(1);
+       }
+       await startWebApp({ ...options, filename: fileToServe });
     });
 
   // --- JDBC Command ---

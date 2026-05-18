@@ -798,6 +798,10 @@ Supported Methods:
 - `getAnchorCellYOffset()`
 - `getHeight()`
 - `getWidth()`
+- `setAltTextDescription(String)`
+- `setAltTextTitle(String)`
+- `setHeight(Integer)`
+- `setWidth(Integer)`
 
 ## Class: PivotFilter
 

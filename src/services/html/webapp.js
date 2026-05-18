@@ -83,7 +83,7 @@ const CLIENT_POLYFILL = `
     setHeight: function(h) { console.log('gas-fakes: Host setHeight called with', h); },
     setWidth: function(w) { console.log('gas-fakes: Host setWidth called with', w); }
   };
-//# sourceURL=__gas_fakes_polyfill.js
+//# sourceURL=gas-fakes:///polyfill.js
 </script>
 `;
 

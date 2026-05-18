@@ -44,4 +44,29 @@ export class FakeOverGridImage {
   getHeight() {
     return this.object.height;
   }
+
+  setHeight(height) {
+    this.object.height = height;
+    return this;
+  }
+
+  setWidth(width) {
+    this.object.width = width;
+    return this;
+  }
+
+  setAltTextTitle(title) {
+    this.object.altTextTitle = title;
+    return this;
+  }
+
+  setAltTextDescription(description) {
+    this.object.altTextDescription = description;
+    return this;
+  }
+
+  deleteOverlaidDrawing() {
+    // No-op for now as it's a mock
+    return this;
+  }
 }

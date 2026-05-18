@@ -18,10 +18,12 @@ export class FakeHtmlOutput {
     return this._content
       .replace(/<script([^>]*)>([\s\S]*?)<\/script>/gi, (match, attrs, body) => {
         if (attrs.includes('src=')) return match;
+        if (body.includes('//# sourceURL=')) return match;
         const sourceUrl = `\n//# sourceURL=__gas_fakes_dynamic_script_${Date.now()}.js`;
         return `<script${attrs}>${body}${sourceUrl}</script>`;
       })
       .replace(/<style([^>]*)>([\s\S]*?)<\/style>/gi, (match, attrs, body) => {
+        if (body.includes('/*# sourceURL=')) return match;
         const sourceUrl = `\n/*# sourceURL=__gas_fakes_dynamic_style_${Date.now()}.css */`;
         return `<style${attrs}>${body}${sourceUrl}</style>`;
       });

@@ -52,6 +52,8 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, cachePath,
     getIfExists(claspFile)
   ])
 
+  const manifestExists = Object.keys(manifest).length > 0;
+
   // Emulate manifest scopes from .env if missing or empty
   if (!manifest.oauthScopes || manifest.oauthScopes.length === 0) {
     const envScopes = Array.from(new Set([
@@ -65,10 +67,18 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, cachePath,
         manifest.timeZone = process.env.GF_TIMEZONE || "America/New_York";
       }
       if (!_loggedSummary) {
-        syncLog(`...appsscript.json missing or missing scopes. Emulating manifest using scopes from .env file`);
+        if (manifestExists) {
+          syncLog(`...appsscript.json found but 'oauthScopes' is missing. Emulating scopes from .env file`);
+        } else {
+          syncLog(`...appsscript.json missing. Emulating manifest using scopes from .env file`);
+        }
       }
     } else if (!_loggedSummary) {
-      syncWarn(`...Warning: No appsscript.json found and .env file missing or no DEFAULT_SCOPES/EXTRA_SCOPES defined in .env. Downstream API calls may fail with 'insufficient authentication scopes'.`);
+      if (manifestExists) {
+        syncWarn(`...Warning: appsscript.json found but 'oauthScopes' is missing, and no DEFAULT_SCOPES/EXTRA_SCOPES defined in .env. Downstream API calls may fail with 'insufficient authentication scopes'.`);
+      } else {
+        syncWarn(`...Warning: No appsscript.json found and no DEFAULT_SCOPES/EXTRA_SCOPES defined in .env. Downstream API calls may fail with 'insufficient authentication scopes'.`);
+      }
     }
   }
 

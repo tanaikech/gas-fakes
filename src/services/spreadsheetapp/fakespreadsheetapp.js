@@ -82,15 +82,8 @@ export class FakeSpreadsheetApp {
 
     const props = [
       "getActive",
-      "getActiveSheet",
-      "getCurrentCell",
-      "getActiveRange",
       "getActiveRangeList",
       "getSelection",
-      "setActiveSheet",
-      "setCurrentCell",
-      "setActiveRange",
-      "setActiveRangeList",
 
       "ChartAggregationType",
       "ChartTransformationType",
@@ -132,7 +125,7 @@ export class FakeSpreadsheetApp {
     console.log('Worker Auth.getDocumentId():', documentId);
     if (documentId) {
       const ss = this.openById(documentId);
-      console.log('Worker openById result:', ss);
+      //console.log('Worker openById result:', ss);
       return ss;
     }
     return null;
@@ -143,6 +136,24 @@ export class FakeSpreadsheetApp {
     return this;
   }
 
+  getActiveSheet() {
+    const ss = this.getActiveSpreadsheet();
+    if (ss) return ss.getActiveSheet();
+    return null;
+  }
+
+  setActiveSheet(sheet, restoreSelection) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "SpreadsheetApp.setActiveSheet");
+    if (nargs < 1 || nargs > 2) matchThrow();
+    
+    // According to GAS docs, setActiveSheet on SpreadsheetApp also sets the active spreadsheet
+    const ss = sheet.getParent();
+    if (ss) {
+      this.setActiveSpreadsheet(ss);
+      ss.setActiveSheet(sheet, restoreSelection);
+    }
+    return sheet;
+  }
 
   enableBigQueryExecution() {
     const { nargs, matchThrow } = signatureArgs(
@@ -151,6 +162,48 @@ export class FakeSpreadsheetApp {
     );
     if (nargs) matchThrow();
     // This is a no-op in the fake environment, as there's no real execution to enable.
+  }
+
+  getActiveRange() {
+    const ss = this.getActiveSpreadsheet();
+    if (ss) return ss.getActiveRange();
+    return null;
+  }
+  
+  setActiveRange(range) {
+    const ss = range.getSheet().getParent();
+    if (ss) {
+       this.setActiveSpreadsheet(ss);
+       return ss.setActiveRange(range);
+    }
+    return range;
+  }
+  
+  setActiveRangeList(rangeList) {
+    const ranges = rangeList.getRanges();
+    if (ranges && ranges.length > 0) {
+      const ss = ranges[0].getSheet().getParent();
+      if (ss) {
+         this.setActiveSpreadsheet(ss);
+         return ss.setActiveRangeList(rangeList);
+      }
+    }
+    return rangeList;
+  }
+  
+  getCurrentCell() {
+    const ss = this.getActiveSpreadsheet();
+    if (ss) return ss.getCurrentCell();
+    return null;
+  }
+  
+  setCurrentCell(cell) {
+    const ss = cell.getSheet().getParent();
+    if (ss) {
+       this.setActiveSpreadsheet(ss);
+       return ss.setCurrentCell(cell);
+    }
+    return cell;
   }
 
   enableAllDataSourcesExecution() {

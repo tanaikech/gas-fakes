@@ -6,7 +6,7 @@
 # Usage: source . ./exgcp.sh
 
 # Define the path to your .env file relative to the script's location
-ENV_FILE="$(dirname "$0")/.env"
+ENV_FILE="./.env"
 
 # Check if the .env file exists
 

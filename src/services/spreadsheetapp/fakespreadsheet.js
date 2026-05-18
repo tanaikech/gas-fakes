@@ -36,13 +36,13 @@ export class FakeSpreadsheet {
     // when we insert/delete sheets row/cols we update this metadata too
     this.__meta = file;
     this.__activeRange = null;
+    this.__activeSheet = null;
 
     // may of these props can be picked up from the Drive API, so we'll look as a file too
     this.__file = DriveApp.getFileById(file.spreadsheetId);
 
     const props = [
       "getSpreadsheetTheme",
-      "setActiveSheet",
 
       "getBandings",
       "getDataSources",
@@ -103,10 +103,7 @@ export class FakeSpreadsheet {
       "isReadable",
       "isWritable",
       "getSelection",
-      "setActiveRangeList",
       "getActiveRangeList",
-      "getCurrentCell",
-      "setCurrentCell",
       "deleteRow",
       "hideRow",
       "appendRow",
@@ -132,9 +129,7 @@ export class FakeSpreadsheet {
       "getFrozenColumns",
       "unhideColumn",
       "insertColumnsBefore",
-      "setActiveSelection",
       "getDataSourceFormulas",
-      "insertImage",
       "getSheetPermissions",
       "insertColumnBefore",
 
@@ -163,18 +158,73 @@ export class FakeSpreadsheet {
 
   setActiveRange(range) {
     this.__activeRange = range;
-    return this;
+    this.__activeSheet = range.getSheet();
+    this.__currentCell = range.getCell(1, 1);
+    
+    // Sync with SpreadsheetApp if this is the active spreadsheet
+    const app = SpreadsheetApp;
+    if (app && app.getActiveSpreadsheet() === this) {
+       app.setActiveSpreadsheet(this);
+    }
+    return range;
+  }
+
+  setActiveRangeList(rangeList) {
+    const ranges = rangeList.getRanges();
+    if (ranges && ranges.length > 0) {
+      this.setActiveRange(ranges[ranges.length - 1]);
+    }
+    return rangeList;
+  }
+  
+  setActiveSelection(rangeOrA1Notation) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.setActiveSelection");
+    if (nargs !== 1) matchThrow();
+    
+    let range;
+    if (is.string(rangeOrA1Notation)) {
+        range = this.getRange(rangeOrA1Notation);
+    } else {
+        range = rangeOrA1Notation;
+    }
+    return this.setActiveRange(range);
   }
 
   getActiveRange() {
-    return this.__activeRange;
+    return this.__activeRange || this.getActiveSheet().getRange('A1');
+  }
+  
+  getCurrentCell() {
+    return this.__currentCell || this.getActiveSheet().getRange('A1');
+  }
+  
+  setCurrentCell(cell) {
+    this.__currentCell = cell;
+    this.__activeSheet = cell.getSheet();
+    // Setting current cell does not change the active range, just the cell within it.
+    // However, if there is no active range, it becomes the active range.
+    if (!this.__activeRange) {
+        this.__activeRange = cell;
+    }
+    return cell;
   }
 
-  // note this is a workaround as we don't have the concept of active sheet in a non bound document
-  // so instead we'll just get the first sheet for now
-  // TODO - something better
+  setActiveSheet(sheet, restoreSelection) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.setActiveSheet");
+    if (nargs < 1 || nargs > 2) matchThrow();
+    this.__activeSheet = sheet;
+    return sheet;
+  }
+
   getActiveSheet() {
+    if (this.__activeSheet) return this.__activeSheet;
     return this.__getFirstSheet();
+  }
+
+  insertImage(blobSourceOrUrl, column, row, offsetX, offsetY) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.insertImage");
+    if (nargs < 3 || nargs > 5) matchThrow();
+    return this.getActiveSheet().insertImage(blobSourceOrUrl, column, row, offsetX, offsetY);
   }
 
   addViewer(emailAddress) {
