@@ -1,6 +1,6 @@
 #  <img src="./logo.png" alt="gas-fakes logo" width="50" align="top">  Local Web Development with gas-fakes
 
-As of `gas-fakes` v2.4.0, you can develop and test Google Apps Script Web Apps and UI Add-ons entirely on your local machine using the built-in local web server.
+As of `gas-fakes` v2.4.0, you can develop and test Google Apps Script Web Apps and UI Add-ons entirely on your local machine using the built-in local web server. You will need to have the gas fakes cli installed globally (`npm i -g @mcpher/gas-fakes`) or use "npx". You'll also need to install "@mcpher/fake-gass in your project locally (`npm i @mcpher/fake-gass`). See [getting started with gas-fakes](GETTING_STARTED.md) if you are new to gas-fakes.
 
 ## Starting the Server
 
