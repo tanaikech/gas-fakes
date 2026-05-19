@@ -47,7 +47,7 @@ A browser window will open. As an internal user of your own project, you can now
 ---
 *Summary of article: [How to allow access to Workspace scopes with Application Default Credentials](https://ramblings.mcpher.com/how-to-allow-access-to-sensitive-scopes-with-application-default-credentials)*
 
-## <img src="./pngs/logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
+## <img src="../pngs/logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
 
 ## Watch the gas-fakes intro video
 
@@ -66,6 +66,7 @@ A browser window will open. As an internal user of your own project, you can now
 - [Add agent skills to gf_agent](https://ramblings.mcpher.com/add-skills-gf_agent/)
 - [gf_agent documentation](../../gf_agent/README.md) - instructions for the Gemini CLI automation agent and MCP server.
 - [gas fakes cli](../notes/gas-fakes-cli.md)
+-[local add-on and webapp development with gas-fakes](../notes/local-web-development.md)
 - [github actions using adc](https://github.com/brucemcpherson/gas-fakes-actions-adc)
 - [github actions using dwd and wif](https://github.com/brucemcpherson/gas-fakes-actions-dwd)
 - [ksuite as a back end](../notes/ksuite_poc.md)

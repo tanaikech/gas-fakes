@@ -63,7 +63,7 @@ Here are four real-world examples of tasks performed using only natural language
   - **Mariscal Sucre International Airport**: 7,841 ft (2389.94 m)
   - **Addis Ababa Bole International Airport**: 7,630 ft (2325.62 m)
 
-## <img src="./pngs/logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
+## <img src="../pngs/logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
 
 ## Watch the gas-fakes intro video
 
@@ -82,6 +82,7 @@ Here are four real-world examples of tasks performed using only natural language
 - [Add agent skills to gf_agent](https://ramblings.mcpher.com/add-skills-gf_agent/)
 - [gf_agent documentation](../../gf_agent/README.md) - instructions for the Gemini CLI automation agent and MCP server.
 - [gas fakes cli](../notes/gas-fakes-cli.md)
+-[local add-on and webapp development with gas-fakes](../notes/local-web-development.md)
 - [github actions using adc](https://github.com/brucemcpherson/gas-fakes-actions-adc)
 - [github actions using dwd and wif](https://github.com/brucemcpherson/gas-fakes-actions-dwd)
 - [ksuite as a back end](../notes/ksuite_poc.md)
