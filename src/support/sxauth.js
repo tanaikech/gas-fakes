@@ -94,6 +94,7 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, cachePath,
   const identities = {};
 
   // --- Google Auth Block ---
+  let finalScopes = [];
   if (platforms.includes('google')) {
     try {
       // Ensure platform is set for info discovery
@@ -107,7 +108,7 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, cachePath,
       ]
       const scopeSet = new Set(scopes)
       mandatoryScopes.forEach(scope => scopeSet.add(scope))
-      const finalScopes = Array.from(scopeSet)
+      finalScopes = Array.from(scopeSet)
 
       // Check for file-type scopes that also require Drive scope
       const hasWorkspaceFileScope = finalScopes.some(s => 
@@ -163,27 +164,24 @@ export const sxInit = async ({ manifestPath, claspPath, settingsPath, cachePath,
 
       // Provide guidance for Domain Wide Delegation issues
       if (err.message.includes('unauthorized_client')) {
-        const clientId = Auth.getClientId();
         const msg = [
           "",
           "=".repeat(80),
           "GOOGLE AUTHENTICATION ERROR: unauthorized_client",
-          "This usually means Domain-Wide Delegation (DWD) is missing for one or more scopes.",
+          "The scopes defined in your appsscript.json are not currently authorized.",
           "",
-          `Your Service Account Client ID is: ${clientId || 'unknown (check your service account JSON file)'}`,
-          "",
-          "The following scopes should be authorized in the Google Admin Console:",
+          "The following scopes are required:",
           finalScopes.join(","),
           "",
           "To fix this:",
-          "1. Go to https://admin.google.com",
-          "2. Security -> Access and data control -> API controls",
-          "3. Manage Domain Wide Delegation",
-          "4. Find/Add your Client ID and ensure the list of scopes above matches exactly.",
+          "1. Run 'gas-fakes init'",
+          "2. Run 'gas-fakes auth' to re-authenticate and sync your appsscript.json scopes.",
+          "3. If this is a Service Account with Domain-Wide Delegation (DWD), ensure these scopes are also added in the Google Admin Console (Security -> API Controls).",
           "=".repeat(80),
           ""
         ].join("\n");
         console.error(msg);
+        process.exit(1);
       }
 
       if (!platforms.includes('ksuite') && !platforms.includes('msgraph')) throw err;

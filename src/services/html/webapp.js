@@ -95,14 +95,16 @@ export function startServer(port = 3000, scriptPath = null, entryFunction = 'doG
         const ctx = new ServerWorkerContext(scriptPath);
         // Emulate the event object passed to doGet
         const url = new URL(req.url, `http://${req.headers.host}`);
+        const params = Object.fromEntries(url.searchParams.entries());
         const getEvent = { 
-            parameter: Object.fromEntries(url.searchParams.entries()), 
+            parameter: params, 
             parameters: Object.fromEntries([...url.searchParams.keys()].map(k => [k, url.searchParams.getAll(k)])), 
             queryString: url.search.substring(1), 
             contextPath: '', 
             contentLength: 0 
         };
-        const result = ctx.runFunction(entryFunction, [getEvent]);
+        const funcToRun = params.main || entryFunction || 'doGet';
+        const result = ctx.runFunction(funcToRun, [getEvent]);
         
         if (result && result.__isHtmlOutput) {
            let html = result.content;

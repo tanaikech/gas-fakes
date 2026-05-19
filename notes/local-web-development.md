@@ -7,10 +7,10 @@ As of `gas-fakes` v2.4.0, you can develop and test Google Apps Script Web Apps a
 To launch the emulator and test an HTML service script, use the `serve` command:
 
 ```bash
-gas-fakes serve -i ./main.js -p 8080
+gas-fakes serve ./main.js -p 8080
 ```
 
-By default, the server will load `./main.js` and execute the `doGet(e)` function whenever you visit `http://localhost:8080`.
+By default, visiting `http://localhost:8080` will execute the `doGet(e)` function in `./main.js`. 
 
 ## Testing Web Apps (`doGet` / `doPost`)
 
@@ -34,11 +34,12 @@ When you build Google Workspace Add-ons (e.g. for Google Sheets), your HTML isn'
 `gas-fakes` provides visual emulation for this framing!
 
 ### 1. Using a Custom Entry Point
-You don't need a `doGet` function to test a menu UI. You can tell `gas-fakes serve` to execute a specific function on load using the `-f` or `--function` flag:
+You don't need a `doGet` function to test a menu UI. You can tell `gas-fakes serve` to execute a specific function on load by using the `?main=name` query parameter:
 
 ```bash
-gas-fakes serve -i ./addon.js -f showMySidebar
+gas-fakes serve ./addon.js
 ```
+Then access `http://localhost:8080?main=showMySidebar`.
 
 ### 2. UI Framing Methods
 Inside your script, call the UI methods exactly as you would in Apps Script. 

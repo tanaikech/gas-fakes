@@ -152,16 +152,17 @@ If your script contains web app logic (`doGet` or `doPost`) or you want to test 
 **Example:**
 
 ```bash
-gas-fakes serve -i ./main.js -p 8080
+gas-fakes serve ./main.js -p 8080
 ```
 
 By default, visiting `http://localhost:8080` will execute the `doGet(e)` function in `./main.js`. 
 
-If you want to test a custom UI menu trigger (which typically doesn't use `doGet`), you can specify the entry point using the `-f` or `--function` flag:
+If you want to test a custom UI menu trigger (which typically doesn't use `doGet`), you can specify the entry point using the `?main=name` query parameter:
 
 ```bash
-gas-fakes serve -i ./addon.js -f showMySidebar
+gas-fakes serve ./addon.js
 ```
+Then access `http://localhost:8080?main=showMySidebar`.
 
 For a comprehensive guide on building UIs, templating, and handling client-side RPC calls locally, see the [Local Web Development Guide](local-web-development.md).
 

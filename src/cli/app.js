@@ -181,17 +181,15 @@ export async function main() {
   program
     .command("serve [filename]")
     .description("Starts a local web server to handle doGet and doPost requests.")
-    .option("-i, --input <string>", "Path to the Google Apps Script file containing doGet/doPost. (Deprecated: use positional argument instead)")
     .option("-p, --port <number>", "Port for local web server (overrides .env).")
     .option("-e, --env <path>", "Path to a custom .env file.", "./.env")
     .option("-m, --main <string>", "The entry point function to execute on GET requests.", "doGet")
     .action(async (filename, options) => {
-       const fileToServe = filename || options.input;
-       if (!fileToServe) {
-         console.error("error: missing required argument 'filename' or option '-i, --input <string>'");
+       if (!filename) {
+         console.error("error: missing required argument 'filename'");
          process.exit(1);
        }
-       await startWebApp({ ...options, filename: fileToServe });
+       await startWebApp({ ...options, filename });
     });
 
   // --- JDBC Command ---
