@@ -1,4 +1,4 @@
-# Service: document
+# Service: Document
 
 ## Class: Body
 

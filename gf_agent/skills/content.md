@@ -1,4 +1,4 @@
-# Service: content
+# Service: Content
 
 ## Class: ContentService
 

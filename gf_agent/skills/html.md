@@ -1,4 +1,4 @@
-# Service: html
+# Service: HTML
 
 ## Class: HtmlOutput
 

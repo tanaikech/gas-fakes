@@ -288,7 +288,7 @@ This will associate your local instance of your code with the container it would
 
 ### Include function
 
-This repo contains an example Include funciton. This is not part of gas-fakes, but I mention it here in case you want to implement something similar. This allows for a neater definition of the client side app, and it also allows me to share common code between client and server. For example, my main html looks like this. 
+This repo contains an example Include function. This is not part of gas-fakes, but I mention it here in case you want to implement something similar. This allows for a neater definition of the client side app, and it also allows me to share common code between client and server. For example, my main html looks like this. 
 
 ```html
 <!DOCTYPE html>
