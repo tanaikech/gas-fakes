@@ -2,12 +2,15 @@ import fs from 'fs';
 import path from 'path';
 import { workerData } from 'worker_threads';
 
-const { mainScriptPath, funcName, args, isTemplate, templateString } = workerData;
+const { mainScriptPath, funcName, args, isTemplate, templateString, env } = workerData;
 const control = new Int32Array(workerData.controlBuf);
 const dataView = new Uint8Array(workerData.dataBuf);
 const textEncoder = new TextEncoder();
 
 // Initialize the Apps Script environment
+if (env) {
+    Object.assign(process.env, env);
+}
 globalThis.__gasFakesMainScriptPath = mainScriptPath;
 await import('../../../main.js');
 

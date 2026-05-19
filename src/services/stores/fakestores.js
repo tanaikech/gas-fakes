@@ -191,6 +191,11 @@ export const newFakeService = (kind) => {
 const selectCache = (domain, kind, defaultExpirationSeconds) => {
   // actually we might be overriding the type of service
   domain = validateProp(domain, StoreDomain, 'store_domain')
+  
+  if (domain === StoreDomain.USER && !Auth.getUserId()) {
+    throw new Error('User Properties/Cache requested, but no authenticated user identity was found. Ensure you have authenticated via \'gas-fakes auth\'.');
+  }
+
   const which = whichCache()
   if (which.type === "UPSTASH") {
     const models = getStoreModels()

@@ -58,7 +58,8 @@ export class ServerWorkerContext {
         ...workerDataPayload,
         mainScriptPath: globalThis.__gasFakesMainScriptPath || this._mainScriptPath,
         controlBuf: this._controlBuf,
-        dataBuf: this._dataBuf
+        dataBuf: this._dataBuf,
+        env: process.env // Pass current environment
       },
       stdout: true,
       stderr: true

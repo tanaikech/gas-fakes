@@ -174,15 +174,16 @@ Set this up as a launch configuration with your required serve arguments.
 
 ```json
 {
+{
   "version": "0.2.0",
   "configurations": [
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug gas-fakes",
-      "program": "${workspaceFolder}/gas-fakes.js",
-      "args": ["serve", "localserve.js", "-m", "addon"],
-      "cwd": "${workspaceFolder}/your/project/path",
+      "name": "Debug Chordsnip",
+      "runtimeExecutable": "gas-fakes",
+      "runtimeArgs": ["serve", "localserve.js", "-m", "serve"],
+      "cwd": "${workspaceFolder}/chordsnip-gas-fakes-redux",
       "console": "integratedTerminal",
       "skipFiles": [
         "<node_internals>/**"

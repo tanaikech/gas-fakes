@@ -22116,7 +22116,7 @@
             "returnType": "Object",
             "returnDescription": "a JavaScript Object containing the key/value pairs for all keys found in the cache",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/stores/fakestores.js#L332"
+            "implementationLink": "src/services/stores/fakestores.js#L337"
           },
           {
             "method": "put(String,String)",
@@ -22125,7 +22125,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/stores/fakestores.js#L343"
+            "implementationLink": "src/services/stores/fakestores.js#L348"
           },
           {
             "method": "put(String,String,Integer)",
@@ -22134,7 +22134,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/stores/fakestores.js#L343"
+            "implementationLink": "src/services/stores/fakestores.js#L348"
           },
           {
             "method": "putAll(Object)",
@@ -22143,7 +22143,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/stores/fakestores.js#L348"
+            "implementationLink": "src/services/stores/fakestores.js#L353"
           },
           {
             "method": "putAll(Object,Integer)",
@@ -22152,7 +22152,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/stores/fakestores.js#L348"
+            "implementationLink": "src/services/stores/fakestores.js#L353"
           },
           {
             "method": "remove(String)",
@@ -22161,7 +22161,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/stores/fakestores.js#L357"
+            "implementationLink": "src/services/stores/fakestores.js#L362"
           },
           {
             "method": "removeAll(String)",
@@ -22170,7 +22170,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/stores/fakestores.js#L362"
+            "implementationLink": "src/services/stores/fakestores.js#L367"
           }
         ]
       },
@@ -22357,7 +22357,7 @@
             "returnType": "Properties",
             "returnDescription": "this Properties store, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/stores/fakestores.js#L279"
+            "implementationLink": "src/services/stores/fakestores.js#L284"
           },
           {
             "method": "deleteProperty(String)",
@@ -22366,7 +22366,7 @@
             "returnType": "Properties",
             "returnDescription": "this Properties store, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/stores/fakestores.js#L287"
+            "implementationLink": "src/services/stores/fakestores.js#L292"
           },
           {
             "method": "getKeys()",
@@ -22375,7 +22375,7 @@
             "returnType": "String[]",
             "returnDescription": "an array of all keys in the current Properties store",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/stores/fakestores.js#L291"
+            "implementationLink": "src/services/stores/fakestores.js#L296"
           },
           {
             "method": "getProperties()",
@@ -22384,7 +22384,7 @@
             "returnType": "Object",
             "returnDescription": "a copy of all key-value pairs in the current Properties store",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/stores/fakestores.js#L274"
+            "implementationLink": "src/services/stores/fakestores.js#L279"
           },
           {
             "method": "getProperty(String)",
@@ -22393,7 +22393,7 @@
             "returnType": "String",
             "returnDescription": "the value associated with the given key in the current Properties store",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/stores/fakestores.js#L302"
+            "implementationLink": "src/services/stores/fakestores.js#L307"
           },
           {
             "method": "setProperties(Object)",
@@ -22402,7 +22402,7 @@
             "returnType": "Properties",
             "returnDescription": "this Properties store, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/stores/fakestores.js#L307"
+            "implementationLink": "src/services/stores/fakestores.js#L312"
           },
           {
             "method": "setProperties(Object,Boolean)",
@@ -22411,7 +22411,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/stores/fakestores.js#L307"
+            "implementationLink": "src/services/stores/fakestores.js#L312"
           },
           {
             "method": "setProperty(String,String)",
@@ -22420,7 +22420,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/stores/fakestores.js#L316"
+            "implementationLink": "src/services/stores/fakestores.js#L321"
           }
         ]
       },
