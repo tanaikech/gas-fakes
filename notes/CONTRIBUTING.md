@@ -104,6 +104,7 @@ npm link
 ```
 
 **Step 3: Unlinking when you are done**
+
 Once you have finished testing and want to revert to using the published npm version:
 
 *Unlink the local module from your test project:*

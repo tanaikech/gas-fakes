@@ -111,6 +111,7 @@ class FakePropertiesService {
   constructor(type) {
     this.kind = ServiceKind.PROPERTIES
     this.type = type
+    Syncit.fxGetAccessTokenInfo();
   }
 
   /**
@@ -147,6 +148,7 @@ class FakeCacheService {
   constructor(type) {
     this.kind = ServiceKind.CACHE
     this.type = type
+    Syncit.fxGetAccessTokenInfo();
   }
 
   /**

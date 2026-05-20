@@ -8,7 +8,6 @@ shells
 .gitignore
 *.MD
 *.md
-!gf_agent/**/*.md
 .env*
 mainlocal.js
 mainnpm.js
@@ -23,8 +22,11 @@ versionnotes
 .npmignore
 .agent
 .gemini
-appscript.json
+appsscript.json
 **/*.jwt
 .DS_Store
 *.sh
 *.png
+skills-lock.json
+api-docs
+gf_agent
