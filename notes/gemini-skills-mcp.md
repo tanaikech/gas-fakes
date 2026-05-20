@@ -75,6 +75,7 @@ Here are four real-world examples of tasks performed using only natural language
 
 ## Read more docs
 
+- [release notes](../versionnotes/)
 - [gas fakes intro video](https://youtu.be/oEjpIrkYpEM)
 - [getting started](../GETTING_STARTED.md) - how to handle authentication for Workspace scopes.
 - [readme](../README.md)

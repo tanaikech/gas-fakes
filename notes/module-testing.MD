@@ -124,6 +124,7 @@ execute `bash togas.sh` to copy all files to apps script IDE. All tests can be r
 
 ## Read more docs
 
+- [release notes](../versionnotes/)
 - [gas fakes intro video](https://youtu.be/oEjpIrkYpEM)
 - [getting started](../GETTING_STARTED.md) - how to handle authentication for Workspace scopes.
 - [readme](../README.md)

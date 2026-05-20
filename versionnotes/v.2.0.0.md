@@ -85,6 +85,7 @@ In order to ensure that cloud run correctly logs messages in the proper order, t
 
 ## Read more docs
 
+- [release notes](../versionnotes/)
 - [gas fakes intro video](https://youtu.be/oEjpIrkYpEM)
 - [getting started](../GETTING_STARTED.md) - how to handle authentication for Workspace scopes.
 - [readme](../README.md)

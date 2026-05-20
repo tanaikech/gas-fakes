@@ -191,6 +191,7 @@ The colors used for banding themes can change over time with UI updates from Goo
 
 ## Read more docs
 
+- [release notes](../versionnotes/)
 - [gas fakes intro video](https://youtu.be/oEjpIrkYpEM)
 - [getting started](../GETTING_STARTED.md) - how to handle authentication for Workspace scopes.
 - [readme](../README.md)

@@ -70,6 +70,7 @@ By doing this in a single `batchUpdate`, we are explicitly telling the Docs API:
 
 ## Read more docs
 
+- [release notes](../versionnotes/)
 - [gas fakes intro video](https://youtu.be/oEjpIrkYpEM)
 - [getting started](../GETTING_STARTED.md) - how to handle authentication for Workspace scopes.
 - [readme](../README.md)
