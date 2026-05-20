@@ -69,6 +69,57 @@ When testing and you want to use the local files rather than @mcpher/gas-fakes, 
 ````
 where the file value points to the root of gas-fakes. If you want to instead use the npm version then just revert that normal npm syntax and install again. 
 
+##### Testing local changes using npm link
+
+If you are developing features or fixing bugs in the `gas-fakes` repository and need to test them in another local project *before* publishing to the npm registry, `npm link` is the most effective approach. This is often less confusing than updating `package.json` with file paths.
+
+**Step 1: Create the global link from your source code**
+Navigate to the root of your local `gas-fakes` repository (where its `package.json` is located) and create a global symlink:
+```sh
+cd /path/to/your/gas-fakes
+npm link
+```
+*This tells your global npm installation to point the package name `@mcpher/gas-fakes` to your local folder.*
+
+**Step 2: Use the linked version in your test project**
+Navigate to the project where you want to test your changes.
+
+*To link the module locally (so your `import '@mcpher/gas-fakes'` statements use your local source):*
+```sh
+cd /path/to/your/test-project
+npm link @mcpher/gas-fakes
+```
+
+*To link the CLI globally (so running `gas-fakes serve` in your terminal uses your local source):*
+If you have `gas-fakes` installed globally (e.g., `npm i -g @mcpher/gas-fakes`), you can temporarily override the global CLI with your local version.
+```sh
+# First, find where your global node_modules are located
+npm root -g
+
+# Navigate to the global @mcpher/gas-fakes directory
+cd $(npm root -g)/@mcpher/gas-fakes
+
+# Link it to your local source
+npm link
+```
+
+**Step 3: Unlinking when you are done**
+Once you have finished testing and want to revert to using the published npm version:
+
+*Unlink the local module from your test project:*
+```sh
+cd /path/to/your/test-project
+npm unlink @mcpher/gas-fakes
+npm install # To reinstall the standard version from the registry
+```
+
+*Unlink the global source (to stop pointing the global name to your folder):*
+```sh
+cd /path/to/your/gas-fakes
+npm unlink
+```
+*(If you linked the global CLI, you may need to run `npm install -g @mcpher/gas-fakes` to restore the published CLI).*
+
 
 
 #### Specifics on expectations for test files. 

@@ -14,14 +14,13 @@ if (env) {
 globalThis.__gasFakesMainScriptPath = mainScriptPath;
 await import('../../../main.js');
 
-// Bootstrap Auth with settings from environment
-import { Auth } from '../../support/auth.js';
-Auth.setSettings({
-  documentId: process.env.GF_DOCUMENT_ID,
-  scriptId: process.env.GF_SCRIPT_ID,
-  cache: process.env.GF_CACHE_PATH,
-  properties: process.env.GF_PROPERTIES_PATH
-});
+// Bootstrap Auth completely via standard initialization
+import { Syncit } from '../../support/syncit.js';
+
+// Trigger a fresh authentication flow to ensure Auth.getUserId() and others are populated.
+// We specify the platforms from environment or default to google.
+const platforms = process.env.GF_PLATFORM_AUTH ? process.env.GF_PLATFORM_AUTH.split(',') : ['google'];
+Syncit.fxInit({ platformAuth: platforms });
 
 const CONTROL_INDICES = {
   STATUS: 0,
@@ -31,9 +30,7 @@ const CONTROL_INDICES = {
 
 async function run() {
   try {
-    console.log('Worker CWD:', process.cwd());
-    console.log('Worker mainScriptPath:', mainScriptPath);
-    console.log('Worker GF_DOCUMENT_ID:', process.env.GF_DOCUMENT_ID);
+
 
     // Dynamically load the user's module
     const userModule = await import(mainScriptPath);

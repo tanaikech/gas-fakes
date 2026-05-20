@@ -6,7 +6,7 @@ import { clearFileCache } from "./filecache.js";
 
 // Multi-identity storage
 export const _identities = new Map();
-console.log('--- Auth.js initialized ---');
+
 // Prefer 'google' as the default platform if it is authorized in the environment
 let _platform = process.env.GF_PLATFORM_AUTH ? (process.env.GF_PLATFORM_AUTH.includes('google') ? 'google' : process.env.GF_PLATFORM_AUTH.split(',')[0]) : 'google';
 let _manifest = null;
