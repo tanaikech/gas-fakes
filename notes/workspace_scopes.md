@@ -67,7 +67,9 @@ A browser window will open. As an internal user of your own project, you can now
 - [Add agent skills to gf_agent](https://ramblings.mcpher.com/add-skills-gf_agent/)
 - [gf_agent documentation](../../gf_agent/README.md) - instructions for the Gemini CLI automation agent and MCP server.
 - [gas fakes cli](../notes/gas-fakes-cli.md)
--[local add-on and webapp development with gas-fakes](../notes/local-web-development.md)
+- [local add-on and webapp development with gas-fakes](../notes/local-web-development.md)
+- [Bringing the webapp home](https://ramblings.mcpher.com/local-apps-script-webapp-and-ui-emulation/)
+- [Local development example code](https://github.com/brucemcpherson/gf-serve)
 - [github actions using adc](https://github.com/brucemcpherson/gas-fakes-actions-adc)
 - [github actions using dwd and wif](https://github.com/brucemcpherson/gas-fakes-actions-dwd)
 - [ksuite as a back end](../notes/ksuite_poc.md)
