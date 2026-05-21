@@ -399,6 +399,10 @@ t.is(rs.getFloat(col), Math.fround(1.1), "correct float comparison");
 
 [![Use natural language with gf_agent](../pngs/gfagent.png)](https://youtu.be/lujByoX71HU)
 
+## Watch the local webapps and addons development video
+
+[![Local Apps Script Webapp and UI Emulation with gas-fakes](../pngs/srv.jpg)](https://youtu.be/vH9wl7QloZ4)
+
 ## Read more docs
 
 - [release notes](../versionnotes/)
