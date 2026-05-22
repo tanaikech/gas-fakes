@@ -59,7 +59,7 @@ Then access `http://localhost:8080?main=showMySidebar`. This will execute the `s
 By default the frame will the size of, and positioned in the same place as a sidebar. To get a dialog sized visualization instead use the `?modal` parameter instead of the applied default of '?sidebar'
 
 ### UI Framing Methods
-Inside your script, call the UI methods exactly as you would in Apps Script. 
+Inside your script, call the UI methods exactly as you would in Apps Script. But, note the comment on returning the UI. In Apps Script this is not necessary, but in Node you must return the ui object.
 
 ```javascript
 // localserve.js
@@ -69,7 +69,7 @@ export function showMySidebar() {
   // This tells gas-fakes to frame the output visually as a 300px sidebar
   SpreadsheetApp.getUi().showSidebar(html);
   
-  // You must return the HTML so the local server can render it to your browser
+  // IMPORTANT!! You must return the HTML so the local server can render it to your browser
   return html; 
 }
 
