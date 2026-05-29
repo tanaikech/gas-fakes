@@ -29,9 +29,28 @@ export class FakePageElement {
 
   get __resource() {
     const pageResource = this.__page.__resource;
-    const element = (pageResource.pageElements || []).find(e => e.objectId === this.__id);
+    const allElements = pageResource.pageElements || [];
+
+    const findElement = (elements, targetId) => {
+      for (const element of elements) {
+        if (element.objectId === targetId) {
+          return element;
+        }
+        if (element.group && element.group.children) {
+          const found = findElement(element.group.children, targetId);
+          if (found) return found;
+        }
+        if (element.elementGroup && element.elementGroup.children) {
+          const found = findElement(element.elementGroup.children, targetId);
+          if (found) return found;
+        }
+      }
+      return null;
+    };
+
+    const element = findElement(allElements, this.__id);
     if (!element) {
-      throw new Error(`PageElement with ID ${this.__id} not found on page`);
+      throw new Error(`Exception: Page element (${this.__id}) could not be found.`);
     }
     return element;
   }
@@ -77,6 +96,18 @@ export class FakePageElement {
   }
 
   /**
+   * Returns the page element as a group.
+   * @returns {FakeGroup} The group.
+   */
+  asGroup() {
+    if (this.__resource.elementGroup || this.__resource.group) {
+      const { newFakeGroup } = PageElementRegistry;
+      return newFakeGroup(this.__resource, this.__page);
+    }
+    throw new Error('PageElement is not a group.');
+  }
+
+  /**
    * Gets the type of the page element.
    * @returns {SlidesApp.PageElementType} The type.
    */
@@ -103,7 +134,7 @@ export class FakePageElement {
     if (this.__resource.sheetsChart) {
       return types.SHEETS_CHART;
     }
-    if (this.__resource.group) {
+    if (this.__resource.elementGroup || this.__resource.group) {
       return types.GROUP;
     }
     return types.UNSUPPORTED;
@@ -404,5 +435,7 @@ export class FakePageElement {
 export const PageElementRegistry = {
   newFakeShape: null,
   newFakeLine: null,
-  newFakeTable: null
+  newFakeTable: null,
+  newFakeGroup: null,
+  newFakePageElement: newFakePageElement
 };

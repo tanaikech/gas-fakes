@@ -15,15 +15,15 @@ This skill enables the agent to assist in the development of the `gas-fakes` pro
 
 ## Workflow
 
-### 0. Local Model Consultation
-Before starting any planning, code implementation, or debugging task, ALWAYS query the local model (via the `omlx:query_local_model` tool) with the task description to leverage local Gemma-based reasoning.
+### 0. Local Model Consultation (Hybrid Hierarchical Delegation)
+Before drafting implementation plans or code, Gemini (the Strategic Planner) must first gather all relevant file context, decompose the request into structured atomic sub-tasks, and call the local model (via the `omlx:query_local_model` tool with the `prompt` parameter) to generate precise code implementations, detailed tests, or updates.
 
 ### 1. Context and Specification Check
 Before implementing, verify the specifications of the target Google Apps Script classes and methods. Ensure that the functionality you are about to build aligns with real GAS behavior.
 
-### 2. Implementation
-Generate Node.js code that maps GAS methods to the corresponding Google Cloud APIs.
-- Refer to the existing codebase in the `src/` directory to understand the current architecture.
+### 2. Implementation & Focused Execution
+The local model acts as the Tactical Executor to generate specific code matching GAS methods.
+- The planner (Gemini) reviews the local model's output code, refines it, and applies it to the `src/` directory.
 - Ensure the code runs correctly in the Node.js environment.
 
 ### 3. Testing
@@ -154,6 +154,8 @@ The `gas-fakes` project is complex, and bridging Node.js with GAS involves many 
 - **Update Constraints**: When updating a `ColorScheme` via the API (`updatePageProperties`), you MUST provide the entire array of 12 theme color pairs (Dark 1, Light 1, etc.). Providing only the updated color will result in an API error.
 - **Data Structure Inconsistency**: While the REST API documentation for `OpaqueColor` specifies a nested `rgbColor` object, `ColorScheme` results (and updates) often use a flat structure where `red`, `green`, and `blue` are direct properties of the color object. `gas-fakes` handles both formats to ensure compatibility.
 - **Layout Properties**: In the Slides API, a layout's connection to its master is stored in `layoutProperties.masterObjectId`, not at the top level of the page resource.
+- **Background Fill propertyState**: The Slides REST API returns the `solidFill` object even when `propertyState` is `'NOT_RENDERED'` (representing transparent/none). When implementing `getType()` or `isVisible()`, you must verify that `propertyState !== 'NOT_RENDERED'` to correctly identify transparent fills.
+
 
 ### Delivery
 - Output the complete code for modified or newly created service classes and test scripts.

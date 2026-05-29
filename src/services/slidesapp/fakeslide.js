@@ -197,6 +197,31 @@ export class FakeSlide {
   }
 
   /**
+   * Groups all the specified page elements.
+   * @param {FakePageElement[]} elements The elements to group.
+   * @returns {FakeGroup} The new group.
+   */
+  group(elements) {
+    const presentationId = this.__presentation.getId();
+    const objectId = `group_${Math.random().toString(36).substring(2, 11)}`;
+    const childrenObjectIds = elements.map(e => e.getObjectId());
+
+    const requests = [{
+      groupObjects: {
+        groupObjectId: objectId,
+        childrenObjectIds
+      }
+    }];
+
+    Slides.Presentations.batchUpdate(requests, presentationId);
+
+    const allElements = this.getPageElements();
+    const newElement = allElements.find(e => e.getObjectId() === objectId);
+    if (!newElement) throw new Error('New group not found after batchUpdate');
+    return newElement.asGroup();
+  }
+
+  /**
    * Inserts a text box.
    * @param {string} text The text to insert.
    * @param {number} left The left position.

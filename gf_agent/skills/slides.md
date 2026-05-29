@@ -59,6 +59,29 @@ Supported Methods:
 - `getIndex()`
 - `getPageElement()`
 
+## Class: Fill
+
+Supported Methods:
+- `getSolidFill()`
+- `getType()`
+- `isVisible()`
+- `setSolidFill(Color,Number)`
+- `setSolidFill(Color)`
+- `setSolidFill(Integer,Integer,Integer,Number)`
+- `setSolidFill(Integer,Integer,Integer)`
+- `setSolidFill(String,Number)`
+- `setSolidFill(String)`
+- `setSolidFill(ThemeColorType,Number)`
+- `setSolidFill(ThemeColorType)`
+- `setTransparent()`
+
+## Class: Group
+
+Supported Methods:
+- `getChildren()`
+- `getObjectId()`
+- `ungroup()`
+
 ## Class: Layout
 
 Supported Methods:
@@ -132,6 +155,7 @@ Supported Methods:
 
 Supported Methods:
 - `alignOnPage(AlignmentPosition)`
+- `asGroup()`
 - `asLine()`
 - `asShape()`
 - `asTable()`
@@ -201,6 +225,7 @@ Supported Methods:
 Supported Methods:
 - `getAutofit()`
 - `getConnectionSites()`
+- `getFill()`
 - `getText()`
 
 ## Class: Slide
@@ -215,6 +240,7 @@ Supported Methods:
 - `getPageElements()`
 - `getShapes()`
 - `getTables()`
+- `group(PageElement)`
 - `insertLine(Line)`
 - `insertLine(LineCategory,ConnectionSite,ConnectionSite)`
 - `insertLine(LineCategory,Number,Number,Number,Number)`
@@ -240,6 +266,12 @@ Supported Methods:
 - `newAffineTransformBuilder()`
 - `openById(String)`
 - `openByUrl(String)`
+
+## Class: SolidFill
+
+Supported Methods:
+- `getAlpha()`
+- `getColor()`
 
 ## Class: Table
 

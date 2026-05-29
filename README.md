@@ -157,7 +157,7 @@ For pushing modified files back to the Apps Script IDE, use the built-in `gas-fa
 
 As I mentioned earlier, to take this further, I'm going to need a lot of help to extend the methods and services supported - so if you feel this would be useful to you, and would like to collaborate, please ping me on bruce@mcpher.com and we'll talk.
 
-## <img src="./pngs/logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
+## <img src="../pngs/logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
 
 ## Watch the gas-fakes intro video
 

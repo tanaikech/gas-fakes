@@ -3,6 +3,7 @@ import { newFakeTextRange } from './faketextrange.js';
 import { newFakeAutofit } from './fakeautofit.js';
 import { newFakeConnectionSite } from './fakeconnectionsite.js';
 import { FakePageElement, PageElementRegistry } from './fakepageelement.js';
+import { newFakeFill } from './fakefill.js';
 
 export const newFakeShape = (...args) => {
   const shape = Proxies.guard(new FakeShape(...args));
@@ -31,6 +32,14 @@ export class FakeShape extends FakePageElement {
 
   getAutofit() {
     return newFakeAutofit(this);
+  }
+
+  /**
+   * Gets the fill of the shape.
+   * @returns {FakeFill} The fill object.
+   */
+  getFill() {
+    return newFakeFill(this);
   }
 
   /**

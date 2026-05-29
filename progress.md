@@ -17,9 +17,9 @@
 | [Mail](./progress/mail.md) | 1 | 5 | 0 | 0 | 5 |
 | [Properties](./progress/properties.MD) | 4 | 11 | 11 | 0 | 0 |
 | [Script](./progress/script.MD) | 16 | 84 | 8 | 0 | 76 |
-| [Slides](./progress/slides.MD) | 76 | 1288 | 516 | 0 | 772 |
+| [Slides](./progress/slides.MD) | 76 | 1288 | 536 | 0 | 752 |
 | [Spreadsheet](./progress/spreadsheet.md) | 108 | 1771 | 1432 | 0 | 339 |
 | [URL Fetch](./progress/urlfetch.md) | 2 | 13 | 13 | 0 | 0 |
 | [Utilities](./progress/utilities.md) | 5 | 59 | 59 | 0 | 0 |
 | [XML](./progress/xml.md) | 14 | 149 | 30 | 0 | 119 |
-| **Total** | **420** | **6708** | **3917** | **0** | **2791** |
+| **Total** | **420** | **6708** | **3937** | **0** | **2771** |

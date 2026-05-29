@@ -170,7 +170,7 @@ const root = DriveApp.getRootFolder(); // Returns Google Drive root
 
 ---
 
-## <img src="./pngs/logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
+## <img src="../pngs/logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
 
 ## Watch the gas-fakes intro video
 

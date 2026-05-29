@@ -51,6 +51,8 @@
     "testslidesconnectionsite": "node testslidesconnectionsite.js execute",
     "testslidescolorscheme": "node testslidescolorscheme.js execute",
     "testslideslineprops": "node testslideslineprops.js execute",
+    "testslidesfill": "node testslidesfill.js execute",
+    "testslidesgroup": "node testslidesgroup.js execute",
     "testdocsnext": "node testdocsnext.js execute",
     "testsheetstext": "node testsheetstext.js execute",
     "testsheetsrange": "node testsheetsrange.js execute",
