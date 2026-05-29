@@ -15,6 +15,9 @@ This skill enables the agent to assist in the development of the `gas-fakes` pro
 
 ## Workflow
 
+### 0. Local Model Consultation
+Before starting any planning, code implementation, or debugging task, ALWAYS query the local model (via the `omlx:query_local_model` tool) with the task description to leverage local Gemma-based reasoning.
+
 ### 1. Context and Specification Check
 Before implementing, verify the specifications of the target Google Apps Script classes and methods. Ensure that the functionality you are about to build aligns with real GAS behavior.
 
