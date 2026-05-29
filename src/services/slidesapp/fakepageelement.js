@@ -181,13 +181,21 @@ export class FakePageElement {
   }
 
   getRotation() {
-    // Rotation can be calculated from scale and shear in affine transform
-    // But for fakes, we might just return 0 if not easily available.
+    if (this._rotation !== undefined) {
+      return this._rotation;
+    }
+    const t = this.__resource.transform;
+    if (t && (t.shearY !== undefined || t.scaleX !== undefined)) {
+      const shearY = t.shearY || 0;
+      const scaleX = t.scaleX || 1;
+      const angle = Math.round(Math.atan2(shearY, scaleX) * (180 / Math.PI));
+      return (angle + 360) % 360;
+    }
     return 0;
   }
 
   setRotation(angle) {
-    // In API, we usually setting rotation via updatePageElementTransform with RELATIVE mode or similar
+    this._rotation = angle;
     return this;
   }
 
@@ -427,6 +435,43 @@ export class FakePageElement {
     // For now, let's return a fixed number as a mock.
     return [0, 1, 2, 3].map(index => newFakeConnectionSite(this, index));
   }
+  scaleHeight(ratio) {
+    this.setHeight(this.getHeight() * ratio);
+    return this;
+  }
+
+  scaleWidth(ratio) {
+    this.setWidth(this.getWidth() * ratio);
+    return this;
+  }
+
+  select(replace = true) {
+    return this;
+  }
+
+  duplicate() {
+    const presentationId = this.__page.__presentation?.getId() || this.__page.__slide?.__presentation.getId();
+    const newObjectId = `duplicate_${Math.random().toString(36).substr(2, 9)}`;
+    
+    Slides.Presentations.batchUpdate([{
+      duplicateObject: {
+        objectId: this.getObjectId(),
+        objectIds: {
+          [this.getObjectId()]: newObjectId
+        }
+      }
+    }], presentationId);
+
+    const resourceCopy = JSON.parse(JSON.stringify(this.__resource));
+    resourceCopy.objectId = newObjectId;
+    this.__page.__resource.pageElements = this.__page.__resource.pageElements || [];
+    this.__page.__resource.pageElements.push(resourceCopy);
+
+    const { newFakePageElement } = PageElementRegistry;
+    const baseElement = newFakePageElement(resourceCopy, this.__page);
+    return baseElement;
+  }
+
   toString() {
     return 'PageElement';
   }
@@ -437,5 +482,6 @@ export const PageElementRegistry = {
   newFakeLine: null,
   newFakeTable: null,
   newFakeGroup: null,
-  newFakePageElement: newFakePageElement
+  newFakePageElement: newFakePageElement,
+  asSpecificPageElement: null
 };

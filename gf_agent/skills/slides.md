@@ -78,9 +78,88 @@ Supported Methods:
 ## Class: Group
 
 Supported Methods:
+- `alignOnPage(AlignmentPosition)`
+- `bringForward()`
+- `bringToFront()`
+- `duplicate()`
 - `getChildren()`
+- `getConnectionSites()`
+- `getDescription()`
+- `getHeight()`
+- `getLeft()`
 - `getObjectId()`
+- `getPageElementType()`
+- `getParentGroup()`
+- `getParentPage()`
+- `getRotation()`
+- `getTitle()`
+- `getTop()`
+- `getTransform()`
+- `getWidth()`
+- `preconcatenateTransform(AffineTransform)`
+- `remove()`
+- `scaleHeight(Number)`
+- `scaleWidth(Number)`
+- `select()`
+- `select(Boolean)`
+- `sendBackward()`
+- `sendToBack()`
+- `setDescription(String)`
+- `setHeight(Number)`
+- `setLeft(Number)`
+- `setRotation(Number)`
+- `setTitle(String)`
+- `setTop(Number)`
+- `setTransform(AffineTransform)`
+- `setWidth(Number)`
 - `ungroup()`
+
+## Class: Image
+
+Supported Methods:
+- `alignOnPage(AlignmentPosition)`
+- `bringForward()`
+- `bringToFront()`
+- `duplicate()`
+- `getConnectionSites()`
+- `getDescription()`
+- `getHeight()`
+- `getLeft()`
+- `getLink()`
+- `getObjectId()`
+- `getPageElementType()`
+- `getParentGroup()`
+- `getParentPage()`
+- `getRotation()`
+- `getTitle()`
+- `getTop()`
+- `getTransform()`
+- `getWidth()`
+- `preconcatenateTransform(AffineTransform)`
+- `remove()`
+- `removeLink()`
+- `replace(BlobSource,Boolean)`
+- `replace(BlobSource)`
+- `replace(String,Boolean)`
+- `replace(String)`
+- `scaleHeight(Number)`
+- `scaleWidth(Number)`
+- `select()`
+- `select(Boolean)`
+- `sendBackward()`
+- `sendToBack()`
+- `setDescription(String)`
+- `setHeight(Number)`
+- `setLeft(Number)`
+- `setLinkSlide(Integer)`
+- `setLinkSlide(Slide)`
+- `setLinkSlide(SlidePosition)`
+- `setLinkUrl(String)`
+- `setRotation(Number)`
+- `setTitle(String)`
+- `setTop(Number)`
+- `setTransform(AffineTransform)`
+- `setWidth(Number)`
 
 ## Class: Layout
 
@@ -92,8 +171,13 @@ Supported Methods:
 ## Class: Line
 
 Supported Methods:
+- `alignOnPage(AlignmentPosition)`
+- `bringForward()`
+- `bringToFront()`
+- `duplicate()`
 - `getConnectionSites()`
 - `getDashStyle()`
+- `getDescription()`
 - `getEnd()`
 - `getEndArrow()`
 - `getEndConnection()`
@@ -102,25 +186,51 @@ Supported Methods:
 - `getLineCategory()`
 - `getLineFill()`
 - `getLineType()`
+- `getLink()`
 - `getObjectId()`
+- `getPageElementType()`
+- `getParentGroup()`
+- `getParentPage()`
+- `getRotation()`
 - `getStart()`
 - `getStartArrow()`
 - `getStartConnection()`
+- `getTitle()`
 - `getTop()`
+- `getTransform()`
 - `getWeight()`
 - `getWidth()`
 - `isConnector()`
+- `preconcatenateTransform(AffineTransform)`
+- `remove()`
+- `removeLink()`
 - `reroute()`
+- `scaleHeight(Number)`
+- `scaleWidth(Number)`
+- `select()`
+- `select(Boolean)`
+- `sendBackward()`
+- `sendToBack()`
 - `setDashStyle(DashStyle)`
+- `setDescription(String)`
 - `setEnd(Number,Number)`
 - `setEnd(Point)`
 - `setEndArrow(ArrowStyle)`
 - `setEndConnection(ConnectionSite)`
 - `setHeight(Number)`
+- `setLeft(Number)`
+- `setLinkSlide(Integer)`
+- `setLinkSlide(Slide)`
+- `setLinkSlide(SlidePosition)`
+- `setLinkUrl(String)`
+- `setRotation(Number)`
 - `setStart(Number,Number)`
 - `setStart(Point)`
 - `setStartArrow(ArrowStyle)`
 - `setStartConnection(ConnectionSite)`
+- `setTitle(String)`
+- `setTop(Number)`
+- `setTransform(AffineTransform)`
 - `setWeight(Number)`
 - `setWidth(Number)`
 
@@ -161,6 +271,7 @@ Supported Methods:
 - `asTable()`
 - `bringForward()`
 - `bringToFront()`
+- `duplicate()`
 - `getConnectionSites()`
 - `getDescription()`
 - `getHeight()`
@@ -176,6 +287,10 @@ Supported Methods:
 - `getWidth()`
 - `preconcatenateTransform(AffineTransform)`
 - `remove()`
+- `scaleHeight(Number)`
+- `scaleWidth(Number)`
+- `select()`
+- `select(Boolean)`
 - `sendBackward()`
 - `sendToBack()`
 - `setDescription(String)`
@@ -223,10 +338,48 @@ Supported Methods:
 ## Class: Shape
 
 Supported Methods:
+- `alignOnPage(AlignmentPosition)`
+- `bringForward()`
+- `bringToFront()`
+- `duplicate()`
 - `getAutofit()`
 - `getConnectionSites()`
+- `getDescription()`
 - `getFill()`
+- `getHeight()`
+- `getLeft()`
+- `getLink()`
+- `getObjectId()`
+- `getPageElementType()`
+- `getParentGroup()`
+- `getParentPage()`
+- `getRotation()`
 - `getText()`
+- `getTitle()`
+- `getTop()`
+- `getTransform()`
+- `getWidth()`
+- `preconcatenateTransform(AffineTransform)`
+- `remove()`
+- `removeLink()`
+- `scaleHeight(Number)`
+- `scaleWidth(Number)`
+- `select()`
+- `select(Boolean)`
+- `sendBackward()`
+- `sendToBack()`
+- `setDescription(String)`
+- `setHeight(Number)`
+- `setLeft(Number)`
+- `setLinkSlide(Integer)`
+- `setLinkSlide(Slide)`
+- `setLinkSlide(SlidePosition)`
+- `setLinkUrl(String)`
+- `setRotation(Number)`
+- `setTitle(String)`
+- `setTop(Number)`
+- `setTransform(AffineTransform)`
+- `setWidth(Number)`
 
 ## Class: Slide
 
@@ -276,9 +429,42 @@ Supported Methods:
 ## Class: Table
 
 Supported Methods:
+- `alignOnPage(AlignmentPosition)`
+- `bringForward()`
+- `bringToFront()`
+- `duplicate()`
+- `getConnectionSites()`
+- `getDescription()`
+- `getHeight()`
+- `getLeft()`
 - `getNumColumns()`
 - `getNumRows()`
+- `getObjectId()`
+- `getPageElementType()`
+- `getParentGroup()`
+- `getParentPage()`
+- `getRotation()`
 - `getRow(Integer)`
+- `getTitle()`
+- `getTop()`
+- `getTransform()`
+- `getWidth()`
+- `preconcatenateTransform(AffineTransform)`
+- `remove()`
+- `scaleHeight(Number)`
+- `scaleWidth(Number)`
+- `select()`
+- `select(Boolean)`
+- `sendBackward()`
+- `sendToBack()`
+- `setDescription(String)`
+- `setHeight(Number)`
+- `setLeft(Number)`
+- `setRotation(Number)`
+- `setTitle(String)`
+- `setTop(Number)`
+- `setTransform(AffineTransform)`
+- `setWidth(Number)`
 
 ## Class: TableCell
 

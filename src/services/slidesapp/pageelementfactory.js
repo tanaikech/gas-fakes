@@ -2,6 +2,7 @@ import { newFakeShape } from './fakeshape.js';
 import { newFakeLine } from './fakeline.js';
 import { newFakeTable } from './faketable.js';
 import { newFakeGroup } from './fakegroup.js';
+import { PageElementRegistry } from './fakepageelement.js';
 
 /**
  * Converts a base PageElement to a more specific subclass (Shape, Line, etc.)
@@ -25,3 +26,5 @@ export const asSpecificPageElement = (pageElement) => {
   // Add other types as they are implemented
   return pageElement;
 };
+
+PageElementRegistry.asSpecificPageElement = asSpecificPageElement;

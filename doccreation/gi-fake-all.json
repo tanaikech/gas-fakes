@@ -39447,8 +39447,8 @@
             "description": "Adds a range to the chart this builder modifies. Does not add the range if it has already been\nadded to the chart.",
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L57"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "asAreaChart()",
@@ -39456,8 +39456,8 @@
             "description": "Sets the chart type to AreaChart and returns an EmbeddedAreaChartBuilder.",
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "A builder for an area chart.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L242"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "asBarChart()",
@@ -39465,8 +39465,8 @@
             "description": "Sets the chart type to BarChart and returns an EmbeddedBarChartBuilder.",
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "A builder for a bar chart.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L243"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "asColumnChart()",
@@ -39474,8 +39474,8 @@
             "description": "Sets the chart type to ColumnChart and returns an EmbeddedColumnChartBuilder.",
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "A builder for a column chart.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L244"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "asComboChart()",
@@ -39483,8 +39483,8 @@
             "description": "Sets the chart type to ComboChart and returns an EmbeddedComboChartBuilder.",
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "A builder for a combo chart.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L245"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "asHistogramChart()",
@@ -39492,8 +39492,8 @@
             "description": "Sets the chart type to HistogramChart and returns an EmbeddedHistogramChartBuilder.",
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "A builder for a histogram chart.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L246"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "asLineChart()",
@@ -39501,8 +39501,8 @@
             "description": "Sets the chart type to LineChart and returns an EmbeddedLineChartBuilder.",
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "A builder for a line chart.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L247"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "asPieChart()",
@@ -39510,8 +39510,8 @@
             "description": "Sets the chart type to PieChart and returns an EmbeddedPieChartBuilder.",
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "A builder for a pie chart.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L248"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "asScatterChart()",
@@ -39519,8 +39519,8 @@
             "description": "Sets the chart type to ScatterChart and returns an EmbeddedScatterChartBuilder.",
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "A builder for a scatter chart.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L249"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "asTableChart()",
@@ -39528,8 +39528,8 @@
             "description": "Sets the chart type to TableChart and returns an EmbeddedTableChartBuilder.",
             "returnType": "EmbeddedTableChartBuilder",
             "returnDescription": "A builder for a table chart.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L250"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "build()",
@@ -39537,8 +39537,8 @@
             "description": "Builds the chart to reflect all changes made to it.",
             "returnType": "EmbeddedChart",
             "returnDescription": "The created chart, which must still be added to the spreadsheet.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L150"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "clearRanges()",
@@ -39546,8 +39546,8 @@
             "description": "Removes all ranges from the chart this builder modifies.",
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L253"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "enablePaging(Boolean)",
@@ -39555,8 +39555,8 @@
             "description": "Sets whether to enable paging through the data.",
             "returnType": "EmbeddedTableChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L356"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "enablePaging(Integer)",
@@ -39564,8 +39564,8 @@
             "description": "Enables paging and sets the number of rows in each page.",
             "returnType": "EmbeddedTableChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L356"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "enablePaging(Integer,Integer)",
@@ -39573,8 +39573,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L356"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "enableRtlTable(Boolean)",
@@ -39582,8 +39582,8 @@
             "description": "Adds basic support for right-to-left languages (such as Arabic or Hebrew) by reversing the\ncolumn order of the table, so that column zero is the right-most column, and the last column is\nthe left-most column.",
             "returnType": "EmbeddedTableChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L357"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "enableSorting(Boolean)",
@@ -39591,8 +39591,8 @@
             "description": "Sets whether to sort columns when the user clicks a column heading.",
             "returnType": "EmbeddedTableChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L358"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getChartType()",
@@ -39600,8 +39600,8 @@
             "description": "Returns the current chart type.",
             "returnType": "ChartType",
             "returnDescription": "The chart type.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L108"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getContainer()",
@@ -39609,8 +39609,8 @@
             "description": "Return the chart ContainerInfo, which encapsulates where the chart appears on the\nsheet.",
             "returnType": "ContainerInfo",
             "returnDescription": "An object containing the chart container's position.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L259"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getRanges()",
@@ -39618,8 +39618,8 @@
             "description": "Returns a copy of the list of ranges currently providing data for this chart. Use addRange(range) and removeRange(range) to modify this list.",
             "returnType": "Range[]",
             "returnDescription": "An array of ranges that serve as the chart to be built's data source.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L263"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "removeRange(Range)",
@@ -39627,8 +39627,8 @@
             "description": "Removes the specified range from the chart this builder modifies. Does not throw an error if\nthe range is not in this chart.",
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L268"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setChartType(ChartType)",
@@ -39636,8 +39636,8 @@
             "description": "Changes the type of chart. Not all embedded chart types are currently supported. See ChartType.",
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L100"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setFirstRowNumber(Integer)",
@@ -39645,8 +39645,8 @@
             "description": "Sets the row number for the first row in the data table.",
             "returnType": "EmbeddedTableChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L359"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setHiddenDimensionStrategy(ChartHiddenDimensionStrategy)",
@@ -39654,8 +39654,8 @@
             "description": "Sets the strategy to use for hidden rows and columns. Defaults to IGNORE_ROWS.",
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L270"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setInitialSortingAscending(Integer)",
@@ -39663,8 +39663,8 @@
             "description": "Sets the index of the column according to which the table should be initially sorted\n(ascending).",
             "returnType": "EmbeddedTableChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L360"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setInitialSortingDescending(Integer)",
@@ -39672,8 +39672,8 @@
             "description": "Sets the index of the column according to which the table should be initially sorted\n(descending).",
             "returnType": "EmbeddedTableChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L361"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setMergeStrategy(ChartMergeStrategy)",
@@ -39681,8 +39681,8 @@
             "description": "Sets the merge strategy to use when more than one range exists. If MERGE_ROWS, rows are merged; if MERGE_COLUMNS, columns are merged. Defaults to MERGE_COLUMNS.",
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L275"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setNumHeaders(Integer)",
@@ -39690,8 +39690,8 @@
             "description": "Sets the number of rows or columns of the range that should be treated as headers.",
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L276"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setOption(String,Object)",
@@ -39699,8 +39699,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L135"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setPosition(Integer,Integer,Integer,Integer)",
@@ -39708,8 +39708,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L124"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setTransposeRowsAndColumns(Boolean)",
@@ -39717,8 +39717,8 @@
             "description": "Sets whether the chart's rows and columns are transposed. If set to true, the rows and\ncolumns are switched. Defaults to false.",
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L277"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "showRowNumberColumn(Boolean)",
@@ -39726,8 +39726,8 @@
             "description": "Sets whether to show the row number as the first column of the table.",
             "returnType": "EmbeddedTableChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L362"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "useAlternatingRowStyle(Boolean)",
@@ -39735,8 +39735,8 @@
             "description": "Sets whether alternating color style is assigned to odd and even rows of a table chart.",
             "returnType": "EmbeddedTableChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L363"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           }
         ]
       },
@@ -40172,8 +40172,8 @@
             "description": "Adds a range to the chart this builder modifies. Does not add the range if it has already been\nadded to the chart.",
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L57"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "asAreaChart()",
@@ -40181,8 +40181,8 @@
             "description": "Sets the chart type to AreaChart and returns an EmbeddedAreaChartBuilder.",
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "A builder for an area chart.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L242"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "asBarChart()",
@@ -40190,8 +40190,8 @@
             "description": "Sets the chart type to BarChart and returns an EmbeddedBarChartBuilder.",
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "A builder for a bar chart.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L243"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "asColumnChart()",
@@ -40199,8 +40199,8 @@
             "description": "Sets the chart type to ColumnChart and returns an EmbeddedColumnChartBuilder.",
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "A builder for a column chart.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L244"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "asComboChart()",
@@ -40208,8 +40208,8 @@
             "description": "Sets the chart type to ComboChart and returns an EmbeddedComboChartBuilder.",
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "A builder for a combo chart.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L245"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "asHistogramChart()",
@@ -40217,8 +40217,8 @@
             "description": "Sets the chart type to HistogramChart and returns an EmbeddedHistogramChartBuilder.",
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "A builder for a histogram chart.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L246"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "asLineChart()",
@@ -40226,8 +40226,8 @@
             "description": "Sets the chart type to LineChart and returns an EmbeddedLineChartBuilder.",
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "A builder for a line chart.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L247"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "asPieChart()",
@@ -40235,8 +40235,8 @@
             "description": "Sets the chart type to PieChart and returns an EmbeddedPieChartBuilder.",
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "A builder for a pie chart.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L248"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "asScatterChart()",
@@ -40244,8 +40244,8 @@
             "description": "Sets the chart type to ScatterChart and returns an EmbeddedScatterChartBuilder.",
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "A builder for a scatter chart.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L249"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "asTableChart()",
@@ -40253,8 +40253,8 @@
             "description": "Sets the chart type to TableChart and returns an EmbeddedTableChartBuilder.",
             "returnType": "EmbeddedTableChartBuilder",
             "returnDescription": "A builder for a table chart.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L250"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "build()",
@@ -40262,8 +40262,8 @@
             "description": "Builds the chart to reflect all changes made to it.",
             "returnType": "EmbeddedChart",
             "returnDescription": "The created chart, which must still be added to the spreadsheet.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L150"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "clearRanges()",
@@ -40271,8 +40271,8 @@
             "description": "Removes all ranges from the chart this builder modifies.",
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L253"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getChartType()",
@@ -40280,8 +40280,8 @@
             "description": "Returns the current chart type.",
             "returnType": "ChartType",
             "returnDescription": "The chart type.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L108"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getContainer()",
@@ -40289,8 +40289,8 @@
             "description": "Return the chart ContainerInfo, which encapsulates where the chart appears on the\nsheet.",
             "returnType": "ContainerInfo",
             "returnDescription": "An object containing the chart container's position.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L259"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getRanges()",
@@ -40298,8 +40298,8 @@
             "description": "Returns a copy of the list of ranges currently providing data for this chart. Use addRange(range) and removeRange(range) to modify this list.",
             "returnType": "Range[]",
             "returnDescription": "An array of ranges that serve as the chart to be built's data source.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L263"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "removeRange(Range)",
@@ -40307,8 +40307,8 @@
             "description": "Removes the specified range from the chart this builder modifies. Does not throw an error if\nthe range is not in this chart.",
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L268"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setBackgroundColor(String)",
@@ -40316,8 +40316,8 @@
             "description": "Sets the background color for the chart.",
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L296"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setChartType(ChartType)",
@@ -40325,8 +40325,8 @@
             "description": "Changes the type of chart. Not all embedded chart types are currently supported. See ChartType.",
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L100"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setColors(String)",
@@ -40334,8 +40334,8 @@
             "description": "Sets the colors for the lines in the chart.",
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L298"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setHiddenDimensionStrategy(ChartHiddenDimensionStrategy)",
@@ -40343,8 +40343,8 @@
             "description": "Sets the strategy to use for hidden rows and columns. Defaults to IGNORE_ROWS.",
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L270"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setLegendPosition(Position)",
@@ -40352,8 +40352,8 @@
             "description": "Sets the position of the legend with respect to the chart. By default, there is no legend.",
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L304"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setLegendTextStyle(TextStyle)",
@@ -40361,8 +40361,8 @@
             "description": "Sets the text style of the chart legend.",
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L309"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setMergeStrategy(ChartMergeStrategy)",
@@ -40370,8 +40370,8 @@
             "description": "Sets the merge strategy to use when more than one range exists. If MERGE_ROWS, rows are merged; if MERGE_COLUMNS, columns are merged. Defaults to MERGE_COLUMNS.",
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L275"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setNumHeaders(Integer)",
@@ -40379,8 +40379,8 @@
             "description": "Sets the number of rows or columns of the range that should be treated as headers.",
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L276"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setOption(String,Object)",
@@ -40388,8 +40388,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L135"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setPointStyle(PointStyle)",
@@ -40397,8 +40397,8 @@
             "description": "Sets the style for points in the line. By default, points have no particular styles, and only\nthe line is visible.",
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L310"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setPosition(Integer,Integer,Integer,Integer)",
@@ -40406,8 +40406,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L124"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setTitle(String)",
@@ -40415,8 +40415,8 @@
             "description": "Sets the title of the chart. The title is displayed centered above the chart.",
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L329"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setTitleTextStyle(TextStyle)",
@@ -40424,8 +40424,8 @@
             "description": "Sets the text style of the chart title.",
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L335"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setTransposeRowsAndColumns(Boolean)",
@@ -40433,8 +40433,8 @@
             "description": "Sets whether the chart's rows and columns are transposed. If set to true, the rows and\ncolumns are switched. Defaults to false.",
             "returnType": "EmbeddedChartBuilder",
             "returnDescription": "This builder, for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L277"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setXAxisLogScale()",
@@ -40442,8 +40442,8 @@
             "description": "Makes the horizontal axis into a logarithmic scale (requires all values to be positive).",
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L364"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setXAxisRange(Number,Number)",
@@ -40451,8 +40451,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L316"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setXAxisTextStyle(TextStyle)",
@@ -40460,8 +40460,8 @@
             "description": "Sets the horizontal axis text style.",
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setXAxisTitle(String)",
@@ -40469,8 +40469,8 @@
             "description": "Adds a title to the horizontal axis. The title is centered and appears below the axis value\nlabels.",
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L338"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setXAxisTitleTextStyle(TextStyle)",
@@ -40478,8 +40478,8 @@
             "description": "Sets the horizontal axis title text style.",
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L344"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setYAxisLogScale()",
@@ -40487,8 +40487,8 @@
             "description": "Makes the vertical axis into a logarithmic scale (requires all values to be positive).",
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L373"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setYAxisRange(Number,Number)",
@@ -40496,8 +40496,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L318"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setYAxisTextStyle(TextStyle)",
@@ -40505,8 +40505,8 @@
             "description": "Sets the vertical axis text style.",
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L345"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setYAxisTitle(String)",
@@ -40514,8 +40514,8 @@
             "description": "Adds a title to the vertical axis. The title is centered and appears to the left of the value\nlabels.",
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L347"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setYAxisTitleTextStyle(TextStyle)",
@@ -40523,8 +40523,8 @@
             "description": "Sets the vertical axis title text style.",
             "returnType": "EmbeddedScatterChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L353"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           }
         ]
       },
@@ -50214,8 +50214,8 @@
             "description": "Aligns the element to the specified alignment position on the page.",
             "returnType": "Group",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L231"
           },
           {
             "method": "bringForward()",
@@ -50223,8 +50223,8 @@
             "description": "Brings the page element forward on the page by one element.",
             "returnType": "Group",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L280"
           },
           {
             "method": "bringToFront()",
@@ -50232,8 +50232,8 @@
             "description": "Brings the page element to the front of the page.",
             "returnType": "Group",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L285"
           },
           {
             "method": "duplicate()",
@@ -50241,8 +50241,8 @@
             "description": "Duplicates the page element.",
             "returnType": "PageElement",
             "returnDescription": "The new duplicate of this page element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L452"
           },
           {
             "method": "getChildren()",
@@ -50259,8 +50259,8 @@
             "description": "Returns the list of ConnectionSites on the page element, or an empty list if the page\nelement does not have any connection sites.",
             "returnType": "ConnectionSite[]",
             "returnDescription": "The connection sites list, which may be empty if this element has no connection sites.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L433"
           },
           {
             "method": "getDescription()",
@@ -50268,8 +50268,8 @@
             "description": "Returns the page element's alt text description. The description is combined with the title to\ndisplay and read alt text.",
             "returnType": "String",
             "returnDescription": "The page element's alt text description.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L248"
           },
           {
             "method": "getHeight()",
@@ -50277,8 +50277,8 @@
             "description": "Gets the element's height in points, which is the height of the element's bounding box when the\nelement has no rotation.",
             "returnType": "Number",
             "returnDescription": "The page element's inherent height in points, or null if the page element does\n    not have a height.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L172"
           },
           {
             "method": "getInherentHeight()",
@@ -50304,8 +50304,8 @@
             "description": "Returns the element's horizontal position in points, measured from the upper-left corner of the\npage when the element has no rotation.",
             "returnType": "Number",
             "returnDescription": "This element's horizontal position in points, from the upper-left corner of the page.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L143"
           },
           {
             "method": "getObjectId()",
@@ -50322,8 +50322,8 @@
             "description": "Returns the page element's type, represented as a PageElementType enum.",
             "returnType": "PageElementType",
             "returnDescription": "The page element's type.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L114"
           },
           {
             "method": "getParentGroup()",
@@ -50331,8 +50331,8 @@
             "description": "Returns the group this page element belongs to, or null if the element is not in a\ngroup.",
             "returnType": "Group",
             "returnDescription": "The group this page element belongs to, or null.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L265"
           },
           {
             "method": "getParentPage()",
@@ -50340,8 +50340,8 @@
             "description": "Returns the page this page element is on.",
             "returnType": "Page",
             "returnDescription": "The page this element resides on.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L261"
           },
           {
             "method": "getRotation()",
@@ -50349,8 +50349,8 @@
             "description": "Returns the element's clockwise rotation angle around its center in degrees, where zero degrees\nmeans no rotation.",
             "returnType": "Number",
             "returnDescription": "The rotation angle in degrees between 0 (inclusive) and 360 (exclusive).",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L183"
           },
           {
             "method": "getTitle()",
@@ -50358,8 +50358,8 @@
             "description": "Returns the page element's alt text title. The title is combined with the description to\ndisplay and read alt text.",
             "returnType": "String",
             "returnDescription": "The page element's alt text title.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L243"
           },
           {
             "method": "getTop()",
@@ -50367,8 +50367,8 @@
             "description": "Gets the element's vertical position in points, measured from the upper-left corner of the page\nwhen the element has no rotation.",
             "returnType": "Number",
             "returnDescription": "This element's vertical position in points, from the upper-left corner of the page.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L152"
           },
           {
             "method": "getTransform()",
@@ -50376,8 +50376,8 @@
             "description": "Gets the page element's transform.",
             "returnType": "AffineTransform",
             "returnDescription": "The page element's transform.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L202"
           },
           {
             "method": "getWidth()",
@@ -50385,8 +50385,8 @@
             "description": "Returns the element's width in points, which is the width of the element's bounding box when\nthe element has no rotation.",
             "returnType": "Number",
             "returnDescription": "The page element's inherent width in points, or null if the page element does\n    not have a width.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L161"
           },
           {
             "method": "preconcatenateTransform(AffineTransform)",
@@ -50394,8 +50394,8 @@
             "description": "Preconcatenates the provided transform to the existing transform of the page element.",
             "returnType": "Group",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L226"
           },
           {
             "method": "remove()",
@@ -50403,8 +50403,8 @@
             "description": "Removes the page element.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L271"
           },
           {
             "method": "scaleHeight(Number)",
@@ -50412,8 +50412,8 @@
             "description": "Scales the element's height by the specified ratio. The element's height is the height of its\nbounding box when the element has no rotation.",
             "returnType": "Group",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L438"
           },
           {
             "method": "scaleWidth(Number)",
@@ -50421,8 +50421,8 @@
             "description": "Scales the element's width by the specified ratio. The element's width is the width of its\nbounding box when the element has no rotation.",
             "returnType": "Group",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L443"
           },
           {
             "method": "select()",
@@ -50430,8 +50430,8 @@
             "description": "Selects only the PageElement in the active presentation and removes any previous\nselection. This is the same as calling select(replace) with true.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L448"
           },
           {
             "method": "select(Boolean)",
@@ -50439,8 +50439,8 @@
             "description": "Selects the PageElement in the active presentation.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L448"
           },
           {
             "method": "sendBackward()",
@@ -50448,8 +50448,8 @@
             "description": "Sends the page element backward on the page by one element.",
             "returnType": "Group",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L290"
           },
           {
             "method": "sendToBack()",
@@ -50457,8 +50457,8 @@
             "description": "Sends the page element to the back of the page.",
             "returnType": "Group",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L295"
           },
           {
             "method": "setDescription(String)",
@@ -50466,8 +50466,8 @@
             "description": "Sets the page element's alt text description.",
             "returnType": "Group",
             "returnDescription": "This page element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L256"
           },
           {
             "method": "setHeight(Number)",
@@ -50475,8 +50475,8 @@
             "description": "Sets the element's height in points, which is the height of the element's bounding box when the\nelement has no rotation.",
             "returnType": "Group",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L178"
           },
           {
             "method": "setLeft(Number)",
@@ -50484,8 +50484,8 @@
             "description": "Sets the element's horizontal position in points, measured from the upper-left corner of the\npage when the element has no rotation.",
             "returnType": "Group",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L147"
           },
           {
             "method": "setRotation(Number)",
@@ -50493,8 +50493,8 @@
             "description": "Sets the element's clockwise rotation angle around its center in degrees.",
             "returnType": "Group",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L197"
           },
           {
             "method": "setTitle(String)",
@@ -50502,8 +50502,8 @@
             "description": "Sets the page element's alt text title.",
             "returnType": "Group",
             "returnDescription": "This page element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L247"
           },
           {
             "method": "setTop(Number)",
@@ -50511,8 +50511,8 @@
             "description": "Sets the element's vertical position in points, measured from the upper-left corner of the page\nwhen the element has no rotation.",
             "returnType": "Group",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L156"
           },
           {
             "method": "setTransform(AffineTransform)",
@@ -50520,8 +50520,8 @@
             "description": "Sets the transform of the page element with the provided transform.",
             "returnType": "Group",
             "returnDescription": "This element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L214"
           },
           {
             "method": "setWidth(Number)",
@@ -50529,8 +50529,8 @@
             "description": "Sets the element's width in points, which is the width of the element's bounding box when the\nelement has no rotation.",
             "returnType": "Group",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L167"
           },
           {
             "method": "ungroup()",
@@ -50555,8 +50555,8 @@
             "description": "Aligns the element to the specified alignment position on the page.",
             "returnType": "Image",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L231"
           },
           {
             "method": "bringForward()",
@@ -50564,8 +50564,8 @@
             "description": "Brings the page element forward on the page by one element.",
             "returnType": "Image",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L280"
           },
           {
             "method": "bringToFront()",
@@ -50573,8 +50573,8 @@
             "description": "Brings the page element to the front of the page.",
             "returnType": "Image",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L285"
           },
           {
             "method": "duplicate()",
@@ -50582,8 +50582,8 @@
             "description": "Duplicates the page element.",
             "returnType": "PageElement",
             "returnDescription": "The new duplicate of this page element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L452"
           },
           {
             "method": "getAs(String)",
@@ -50618,8 +50618,8 @@
             "description": "Returns the list of ConnectionSites on the page element, or an empty list if the page\nelement does not have any connection sites.",
             "returnType": "ConnectionSite[]",
             "returnDescription": "The connection sites list, which may be empty if this element has no connection sites.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L433"
           },
           {
             "method": "getContentUrl()",
@@ -50636,8 +50636,8 @@
             "description": "Returns the page element's alt text description. The description is combined with the title to\ndisplay and read alt text.",
             "returnType": "String",
             "returnDescription": "The page element's alt text description.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L248"
           },
           {
             "method": "getHeight()",
@@ -50645,8 +50645,8 @@
             "description": "Gets the element's height in points, which is the height of the element's bounding box when the\nelement has no rotation.",
             "returnType": "Number",
             "returnDescription": "The page element's inherent height in points, or null if the page element does\n    not have a height.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L172"
           },
           {
             "method": "getInherentHeight()",
@@ -50672,8 +50672,8 @@
             "description": "Returns the element's horizontal position in points, measured from the upper-left corner of the\npage when the element has no rotation.",
             "returnType": "Number",
             "returnDescription": "This element's horizontal position in points, from the upper-left corner of the page.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L143"
           },
           {
             "method": "getLink()",
@@ -50681,8 +50681,8 @@
             "description": "Returns the Link or null if there is no link.",
             "returnType": "Link",
             "returnDescription": "The Link or null if there is no link.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L300"
           },
           {
             "method": "getObjectId()",
@@ -50690,8 +50690,8 @@
             "description": "Returns the unique ID for this object. Object IDs used by pages and page elements share the\nsame namespace.",
             "returnType": "String",
             "returnDescription": "The unique ID for this object.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L58"
           },
           {
             "method": "getPageElementType()",
@@ -50699,8 +50699,8 @@
             "description": "Returns the page element's type, represented as a PageElementType enum.",
             "returnType": "PageElementType",
             "returnDescription": "The page element's type.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L114"
           },
           {
             "method": "getParentGroup()",
@@ -50708,8 +50708,8 @@
             "description": "Returns the group this page element belongs to, or null if the element is not in a\ngroup.",
             "returnType": "Group",
             "returnDescription": "The group this page element belongs to, or null.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L265"
           },
           {
             "method": "getParentPage()",
@@ -50717,8 +50717,8 @@
             "description": "Returns the page this page element is on.",
             "returnType": "Page",
             "returnDescription": "The page this element resides on.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L261"
           },
           {
             "method": "getParentPlaceholder()",
@@ -50753,8 +50753,8 @@
             "description": "Returns the element's clockwise rotation angle around its center in degrees, where zero degrees\nmeans no rotation.",
             "returnType": "Number",
             "returnDescription": "The rotation angle in degrees between 0 (inclusive) and 360 (exclusive).",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L183"
           },
           {
             "method": "getSourceUrl()",
@@ -50771,8 +50771,8 @@
             "description": "Returns the page element's alt text title. The title is combined with the description to\ndisplay and read alt text.",
             "returnType": "String",
             "returnDescription": "The page element's alt text title.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L243"
           },
           {
             "method": "getTop()",
@@ -50780,8 +50780,8 @@
             "description": "Gets the element's vertical position in points, measured from the upper-left corner of the page\nwhen the element has no rotation.",
             "returnType": "Number",
             "returnDescription": "This element's vertical position in points, from the upper-left corner of the page.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L152"
           },
           {
             "method": "getTransform()",
@@ -50789,8 +50789,8 @@
             "description": "Returns the page element's transform.",
             "returnType": "AffineTransform",
             "returnDescription": "The page element's transform.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L202"
           },
           {
             "method": "getWidth()",
@@ -50798,8 +50798,8 @@
             "description": "Returns the element's width in points, which is the width of the element's bounding box when\nthe element has no rotation.",
             "returnType": "Number",
             "returnDescription": "The page element's inherent width in points, or null if the page element does\n    not have a width.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L161"
           },
           {
             "method": "preconcatenateTransform(AffineTransform)",
@@ -50807,8 +50807,8 @@
             "description": "Preconcatenates the provided transform to the existing transform of the page element.",
             "returnType": "Image",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L226"
           },
           {
             "method": "remove()",
@@ -50816,8 +50816,8 @@
             "description": "Removes the page element.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L271"
           },
           {
             "method": "removeLink()",
@@ -50825,8 +50825,8 @@
             "description": "Removes a Link.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L334"
           },
           {
             "method": "replace(BlobSource)",
@@ -50834,8 +50834,8 @@
             "description": "Replaces this image with an image described by a BlobSource object.",
             "returnType": "Image",
             "returnDescription": "This Image after the replacement.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L448"
           },
           {
             "method": "replace(BlobSource,Boolean)",
@@ -50843,8 +50843,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L448"
           },
           {
             "method": "replace(String)",
@@ -50852,8 +50852,8 @@
             "description": "Replaces this image with another image downloaded from the provided URL.",
             "returnType": "Image",
             "returnDescription": "This Image after the replacement.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L448"
           },
           {
             "method": "replace(String,Boolean)",
@@ -50861,8 +50861,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L448"
           },
           {
             "method": "scaleHeight(Number)",
@@ -50870,8 +50870,8 @@
             "description": "Scales the element's height by the specified ratio. The element's height is the height of its\nbounding box when the element has no rotation.",
             "returnType": "Image",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L438"
           },
           {
             "method": "scaleWidth(Number)",
@@ -50879,8 +50879,8 @@
             "description": "Scales the element's width by the specified ratio. The element's width is the width of its\nbounding box when the element has no rotation.",
             "returnType": "Image",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L443"
           },
           {
             "method": "select()",
@@ -50888,8 +50888,8 @@
             "description": "Selects only the PageElement in the active presentation and removes any previous\nselection. This is the same as calling select(replace) with true.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L448"
           },
           {
             "method": "select(Boolean)",
@@ -50897,8 +50897,8 @@
             "description": "Selects the PageElement in the active presentation.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L448"
           },
           {
             "method": "sendBackward()",
@@ -50906,8 +50906,8 @@
             "description": "Sends the page element backward on the page by one element.",
             "returnType": "Image",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L290"
           },
           {
             "method": "sendToBack()",
@@ -50915,8 +50915,8 @@
             "description": "Sends the page element to the back of the page.",
             "returnType": "Image",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L295"
           },
           {
             "method": "setDescription(String)",
@@ -50924,8 +50924,8 @@
             "description": "Sets the page element's alt text description.",
             "returnType": "Image",
             "returnDescription": "This page element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L256"
           },
           {
             "method": "setHeight(Number)",
@@ -50933,8 +50933,8 @@
             "description": "Sets the element's height in points, which is the height of the element's bounding box when the\nelement has no rotation.",
             "returnType": "Image",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L178"
           },
           {
             "method": "setLeft(Number)",
@@ -50942,8 +50942,8 @@
             "description": "Sets the element's horizontal position in points, measured from the upper-left corner of the\npage when the element has no rotation.",
             "returnType": "Image",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L147"
           },
           {
             "method": "setLinkSlide(Integer)",
@@ -50951,8 +50951,8 @@
             "description": "Sets a Link to the given Slide using the zero-based index of the slide.",
             "returnType": "Link",
             "returnDescription": "The Link that was set.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L317"
           },
           {
             "method": "setLinkSlide(Slide)",
@@ -50960,8 +50960,8 @@
             "description": "Sets a Link to the given Slide, the link is set by the given slide ID.",
             "returnType": "Link",
             "returnDescription": "The Link that was set.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L317"
           },
           {
             "method": "setLinkSlide(SlidePosition)",
@@ -50969,8 +50969,8 @@
             "description": "Sets a Link to the given Slide using the relative position of the slide.",
             "returnType": "Link",
             "returnDescription": "The Link that was set.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L317"
           },
           {
             "method": "setLinkUrl(String)",
@@ -50978,8 +50978,8 @@
             "description": "Sets a Link to the given non-empty URL string.",
             "returnType": "Link",
             "returnDescription": "The Link that was set.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L312"
           },
           {
             "method": "setRotation(Number)",
@@ -50987,8 +50987,8 @@
             "description": "Sets the element's clockwise rotation angle around its center in degrees.",
             "returnType": "Image",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L197"
           },
           {
             "method": "setTitle(String)",
@@ -50996,8 +50996,8 @@
             "description": "Sets the page element's alt text title.",
             "returnType": "Image",
             "returnDescription": "This page element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L247"
           },
           {
             "method": "setTop(Number)",
@@ -51005,8 +51005,8 @@
             "description": "Sets the element's vertical position in points, measured from the upper-left corner of the page\nwhen the element has no rotation.",
             "returnType": "Image",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L156"
           },
           {
             "method": "setTransform(AffineTransform)",
@@ -51014,8 +51014,8 @@
             "description": "Sets the transform of the page element with the provided transform.",
             "returnType": "Image",
             "returnDescription": "This element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L214"
           },
           {
             "method": "setWidth(Number)",
@@ -51023,8 +51023,8 @@
             "description": "Sets the element's width in points, which is the width of the element's bounding box when the\nelement has no rotation.",
             "returnType": "Image",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L167"
           }
         ]
       },
@@ -51049,8 +51049,8 @@
             "description": "Aligns the element to the specified alignment position on the page.",
             "returnType": "Line",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L231"
           },
           {
             "method": "bringForward()",
@@ -51058,8 +51058,8 @@
             "description": "Brings the page element forward on the page by one element.",
             "returnType": "Line",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L280"
           },
           {
             "method": "bringToFront()",
@@ -51067,8 +51067,8 @@
             "description": "Brings the page element to the front of the page.",
             "returnType": "Line",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L285"
           },
           {
             "method": "duplicate()",
@@ -51076,8 +51076,8 @@
             "description": "Duplicates the page element.",
             "returnType": "PageElement",
             "returnDescription": "The new duplicate of this page element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L452"
           },
           {
             "method": "getConnectionSites()",
@@ -51103,8 +51103,8 @@
             "description": "Returns the page element's alt text description. The description is combined with the title to\ndisplay and read alt text.",
             "returnType": "String",
             "returnDescription": "The page element's alt text description.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L248"
           },
           {
             "method": "getEnd()",
@@ -51202,8 +51202,8 @@
             "description": "Returns the Link or null if there is no link.",
             "returnType": "Link",
             "returnDescription": "The Link or null if there is no link.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L300"
           },
           {
             "method": "getObjectId()",
@@ -51220,8 +51220,8 @@
             "description": "Returns the page element's type, represented as a PageElementType enum.",
             "returnType": "PageElementType",
             "returnDescription": "The page element's type.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L114"
           },
           {
             "method": "getParentGroup()",
@@ -51229,8 +51229,8 @@
             "description": "Returns the group this page element belongs to, or null if the element is not in a\ngroup.",
             "returnType": "Group",
             "returnDescription": "The group this page element belongs to, or null.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L265"
           },
           {
             "method": "getParentPage()",
@@ -51238,8 +51238,8 @@
             "description": "Returns the page this page element is on.",
             "returnType": "Page",
             "returnDescription": "The page this element resides on.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L261"
           },
           {
             "method": "getRotation()",
@@ -51247,8 +51247,8 @@
             "description": "Returns the element's clockwise rotation angle around its center in degrees, where zero degrees\nmeans no rotation.",
             "returnType": "Number",
             "returnDescription": "The rotation angle in degrees between 0 (inclusive) and 360 (exclusive).",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L183"
           },
           {
             "method": "getStart()",
@@ -51283,8 +51283,8 @@
             "description": "Returns the page element's alt text title. The title is combined with the description to\ndisplay and read alt text.",
             "returnType": "String",
             "returnDescription": "The page element's alt text title.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L243"
           },
           {
             "method": "getTop()",
@@ -51301,8 +51301,8 @@
             "description": "Returns the page element's transform.",
             "returnType": "AffineTransform",
             "returnDescription": "The page element's transform.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L202"
           },
           {
             "method": "getWeight()",
@@ -51328,8 +51328,8 @@
             "description": "Preconcatenates the provided transform to the existing transform of the page element.",
             "returnType": "Line",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L226"
           },
           {
             "method": "remove()",
@@ -51337,8 +51337,8 @@
             "description": "Removes the page element.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L271"
           },
           {
             "method": "removeLink()",
@@ -51346,8 +51346,8 @@
             "description": "Removes a Link.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L334"
           },
           {
             "method": "reroute()",
@@ -51364,8 +51364,8 @@
             "description": "Scales the element's height by the specified ratio. The element's height is the height of its\nbounding box when the element has no rotation.",
             "returnType": "Line",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L438"
           },
           {
             "method": "scaleWidth(Number)",
@@ -51373,8 +51373,8 @@
             "description": "Scales the element's width by the specified ratio. The element's width is the width of its\nbounding box when the element has no rotation.",
             "returnType": "Line",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L443"
           },
           {
             "method": "select()",
@@ -51382,8 +51382,8 @@
             "description": "Selects only the PageElement in the active presentation and removes any previous\nselection. This is the same as calling select(replace) with true.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L448"
           },
           {
             "method": "select(Boolean)",
@@ -51391,8 +51391,8 @@
             "description": "Selects the PageElement in the active presentation.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L448"
           },
           {
             "method": "sendBackward()",
@@ -51400,8 +51400,8 @@
             "description": "Sends the page element backward on the page by one element.",
             "returnType": "Line",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L290"
           },
           {
             "method": "sendToBack()",
@@ -51409,8 +51409,8 @@
             "description": "Sends the page element to the back of the page.",
             "returnType": "Line",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L295"
           },
           {
             "method": "setDashStyle(DashStyle)",
@@ -51427,8 +51427,8 @@
             "description": "Sets the page element's alt text description.",
             "returnType": "Line",
             "returnDescription": "This page element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L256"
           },
           {
             "method": "setEnd(Number,Number)",
@@ -51481,8 +51481,8 @@
             "description": "Sets the element's horizontal position in points, measured from the upper-left corner of the\npage when the element has no rotation.",
             "returnType": "Line",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L147"
           },
           {
             "method": "setLineCategory(LineCategory)",
@@ -51499,8 +51499,8 @@
             "description": "Sets a Link to the given Slide using the zero-based index of the slide.",
             "returnType": "Link",
             "returnDescription": "The Link that was set.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L317"
           },
           {
             "method": "setLinkSlide(Slide)",
@@ -51508,8 +51508,8 @@
             "description": "Sets a Link to the given Slide, the link is set by the given slide ID.",
             "returnType": "Link",
             "returnDescription": "The Link that was set.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L317"
           },
           {
             "method": "setLinkSlide(SlidePosition)",
@@ -51517,8 +51517,8 @@
             "description": "Sets a Link to the given Slide using the relative position of the slide.",
             "returnType": "Link",
             "returnDescription": "The Link that was set.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L317"
           },
           {
             "method": "setLinkUrl(String)",
@@ -51526,8 +51526,8 @@
             "description": "Sets a Link to the given non-empty URL string.",
             "returnType": "Link",
             "returnDescription": "The Link that was set.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L312"
           },
           {
             "method": "setRotation(Number)",
@@ -51535,8 +51535,8 @@
             "description": "Sets the element's clockwise rotation angle around its center in degrees.",
             "returnType": "Line",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L197"
           },
           {
             "method": "setStart(Number,Number)",
@@ -51580,8 +51580,8 @@
             "description": "Sets the page element's alt text title.",
             "returnType": "Line",
             "returnDescription": "This page element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L247"
           },
           {
             "method": "setTop(Number)",
@@ -51589,8 +51589,8 @@
             "description": "Sets the element's vertical position in points, measured from the upper-left corner of the page\nwhen the element has no rotation.",
             "returnType": "Line",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L156"
           },
           {
             "method": "setTransform(AffineTransform)",
@@ -51598,8 +51598,8 @@
             "description": "Sets the transform of the page element with the provided transform.",
             "returnType": "Line",
             "returnDescription": "This element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L214"
           },
           {
             "method": "setWeight(Number)",
@@ -52941,7 +52941,7 @@
             "returnType": "PageElement",
             "returnDescription": "This page element, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepageelement.js#L223"
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L231"
           },
           {
             "method": "asGroup()",
@@ -53031,7 +53031,7 @@
             "returnType": "PageElement",
             "returnDescription": "This page element, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepageelement.js#L272"
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L280"
           },
           {
             "method": "bringToFront()",
@@ -53040,7 +53040,7 @@
             "returnType": "PageElement",
             "returnDescription": "This page element, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepageelement.js#L277"
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L285"
           },
           {
             "method": "duplicate()",
@@ -53048,8 +53048,8 @@
             "description": "Duplicates the page element.",
             "returnType": "PageElement",
             "returnDescription": "The new duplicate of this page element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L452"
           },
           {
             "method": "getConnectionSites()",
@@ -53058,7 +53058,7 @@
             "returnType": "ConnectionSite[]",
             "returnDescription": "The connection sites list, which may be empty if this element has no connection sites.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepageelement.js#L425"
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L433"
           },
           {
             "method": "getDescription()",
@@ -53067,7 +53067,7 @@
             "returnType": "String",
             "returnDescription": "The page element's alt text description.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepageelement.js#L240"
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L248"
           },
           {
             "method": "getHeight()",
@@ -53130,7 +53130,7 @@
             "returnType": "Group",
             "returnDescription": "The group this page element belongs to, or null.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepageelement.js#L257"
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L265"
           },
           {
             "method": "getParentPage()",
@@ -53139,7 +53139,7 @@
             "returnType": "Page",
             "returnDescription": "The page this element resides on.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepageelement.js#L253"
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L261"
           },
           {
             "method": "getRotation()",
@@ -53157,7 +53157,7 @@
             "returnType": "String",
             "returnDescription": "The page element's alt text title.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepageelement.js#L235"
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L243"
           },
           {
             "method": "getTop()",
@@ -53175,7 +53175,7 @@
             "returnType": "AffineTransform",
             "returnDescription": "The page element's transform.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepageelement.js#L194"
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L202"
           },
           {
             "method": "getWidth()",
@@ -53193,7 +53193,7 @@
             "returnType": "PageElement",
             "returnDescription": "This page element, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepageelement.js#L218"
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L226"
           },
           {
             "method": "remove()",
@@ -53202,7 +53202,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepageelement.js#L263"
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L271"
           },
           {
             "method": "scaleHeight(Number)",
@@ -53210,8 +53210,8 @@
             "description": "Scales the element's height by the specified ratio. The element's height is the height of its\nbounding box when the element has no rotation.",
             "returnType": "PageElement",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L438"
           },
           {
             "method": "scaleWidth(Number)",
@@ -53219,8 +53219,8 @@
             "description": "Scales the element's width by the specified ratio. The element's width is the width of its\nbounding box when the element has no rotation.",
             "returnType": "PageElement",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L443"
           },
           {
             "method": "select()",
@@ -53228,8 +53228,8 @@
             "description": "Selects only the PageElement in the active presentation and removes any previous\nselection. This is the same as calling select(replace) with true.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L448"
           },
           {
             "method": "select(Boolean)",
@@ -53237,8 +53237,8 @@
             "description": "Selects the PageElement in the active presentation.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L448"
           },
           {
             "method": "sendBackward()",
@@ -53247,7 +53247,7 @@
             "returnType": "PageElement",
             "returnDescription": "This page element, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepageelement.js#L282"
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L290"
           },
           {
             "method": "sendToBack()",
@@ -53256,7 +53256,7 @@
             "returnType": "PageElement",
             "returnDescription": "This page element, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepageelement.js#L287"
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L295"
           },
           {
             "method": "setDescription(String)",
@@ -53265,7 +53265,7 @@
             "returnType": "PageElement",
             "returnDescription": "This page element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepageelement.js#L248"
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L256"
           },
           {
             "method": "setHeight(Number)",
@@ -53292,7 +53292,7 @@
             "returnType": "PageElement",
             "returnDescription": "This page element, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepageelement.js#L189"
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L197"
           },
           {
             "method": "setTitle(String)",
@@ -53301,7 +53301,7 @@
             "returnType": "PageElement",
             "returnDescription": "This page element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepageelement.js#L239"
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L247"
           },
           {
             "method": "setTop(Number)",
@@ -53319,7 +53319,7 @@
             "returnType": "PageElement",
             "returnDescription": "This element, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepageelement.js#L206"
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L214"
           },
           {
             "method": "setWidth(Number)",
@@ -54854,8 +54854,8 @@
             "description": "Aligns the element to the specified alignment position on the page.",
             "returnType": "Shape",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L231"
           },
           {
             "method": "bringForward()",
@@ -54863,8 +54863,8 @@
             "description": "Brings the page element forward on the page by one element.",
             "returnType": "Shape",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L280"
           },
           {
             "method": "bringToFront()",
@@ -54872,8 +54872,8 @@
             "description": "Brings the page element to the front of the page.",
             "returnType": "Shape",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L285"
           },
           {
             "method": "duplicate()",
@@ -54881,8 +54881,8 @@
             "description": "Duplicates the page element.",
             "returnType": "PageElement",
             "returnDescription": "The new duplicate of this page element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L452"
           },
           {
             "method": "getAutofit()",
@@ -54926,8 +54926,8 @@
             "description": "Returns the page element's alt text description. The description is combined with the title to\ndisplay and read alt text.",
             "returnType": "String",
             "returnDescription": "The page element's alt text description.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L248"
           },
           {
             "method": "getFill()",
@@ -54944,8 +54944,8 @@
             "description": "Gets the element's height in points, which is the height of the element's bounding box when the\nelement has no rotation.",
             "returnType": "Number",
             "returnDescription": "The page element's inherent height in points, or null if the page element does\n    not have a height.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L172"
           },
           {
             "method": "getInherentHeight()",
@@ -54971,8 +54971,8 @@
             "description": "Returns the element's horizontal position in points, measured from the upper-left corner of the\npage when the element has no rotation.",
             "returnType": "Number",
             "returnDescription": "This element's horizontal position in points, from the upper-left corner of the page.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L143"
           },
           {
             "method": "getLink()",
@@ -54980,8 +54980,8 @@
             "description": "Returns the Link or null if there is no link.",
             "returnType": "Link",
             "returnDescription": "The Link or null if there is no link.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L300"
           },
           {
             "method": "getObjectId()",
@@ -54989,8 +54989,8 @@
             "description": "Returns the unique ID for this object. Object IDs used by pages and page elements share the\nsame namespace.",
             "returnType": "String",
             "returnDescription": "The unique ID for this object.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L58"
           },
           {
             "method": "getPageElementType()",
@@ -54998,8 +54998,8 @@
             "description": "Returns the page element's type, represented as a PageElementType enum.",
             "returnType": "PageElementType",
             "returnDescription": "The page element's type.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L114"
           },
           {
             "method": "getParentGroup()",
@@ -55007,8 +55007,8 @@
             "description": "Returns the group this page element belongs to, or null if the element is not in a\ngroup.",
             "returnType": "Group",
             "returnDescription": "The group this page element belongs to, or null.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L265"
           },
           {
             "method": "getParentPage()",
@@ -55016,8 +55016,8 @@
             "description": "Returns the page this page element is on.",
             "returnType": "Page",
             "returnDescription": "The page this element resides on.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L261"
           },
           {
             "method": "getParentPlaceholder()",
@@ -55052,8 +55052,8 @@
             "description": "Returns the element's clockwise rotation angle around its center in degrees, where zero degrees\nmeans no rotation.",
             "returnType": "Number",
             "returnDescription": "The rotation angle in degrees between 0 (inclusive) and 360 (exclusive).",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L183"
           },
           {
             "method": "getShapeType()",
@@ -55079,8 +55079,8 @@
             "description": "Returns the page element's alt text title. The title is combined with the description to\ndisplay and read alt text.",
             "returnType": "String",
             "returnDescription": "The page element's alt text title.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L243"
           },
           {
             "method": "getTop()",
@@ -55088,8 +55088,8 @@
             "description": "Gets the element's vertical position in points, measured from the upper-left corner of the page\nwhen the element has no rotation.",
             "returnType": "Number",
             "returnDescription": "This element's vertical position in points, from the upper-left corner of the page.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L152"
           },
           {
             "method": "getTransform()",
@@ -55097,8 +55097,8 @@
             "description": "Returns the page element's transform.",
             "returnType": "AffineTransform",
             "returnDescription": "The page element's transform.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L202"
           },
           {
             "method": "getWidth()",
@@ -55106,8 +55106,8 @@
             "description": "Returns the element's width in points, which is the width of the element's bounding box when\nthe element has no rotation.",
             "returnType": "Number",
             "returnDescription": "The page element's inherent width in points, or null if the page element does\n    not have a width.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L161"
           },
           {
             "method": "preconcatenateTransform(AffineTransform)",
@@ -55115,8 +55115,8 @@
             "description": "Preconcatenates the provided transform to the existing transform of the page element.",
             "returnType": "Shape",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L226"
           },
           {
             "method": "remove()",
@@ -55124,8 +55124,8 @@
             "description": "Removes the page element.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L271"
           },
           {
             "method": "removeLink()",
@@ -55133,8 +55133,8 @@
             "description": "Removes a Link.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L334"
           },
           {
             "method": "replaceWithImage(BlobSource)",
@@ -55196,8 +55196,8 @@
             "description": "Scales the element's height by the specified ratio. The element's height is the height of its\nbounding box when the element has no rotation.",
             "returnType": "Shape",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L438"
           },
           {
             "method": "scaleWidth(Number)",
@@ -55205,8 +55205,8 @@
             "description": "Scales the element's width by the specified ratio. The element's width is the width of its\nbounding box when the element has no rotation.",
             "returnType": "Shape",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L443"
           },
           {
             "method": "select()",
@@ -55214,8 +55214,8 @@
             "description": "Selects only the PageElement in the active presentation and removes any previous\nselection. This is the same as calling select(replace) with true.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L448"
           },
           {
             "method": "select(Boolean)",
@@ -55223,8 +55223,8 @@
             "description": "Selects the PageElement in the active presentation.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L448"
           },
           {
             "method": "sendBackward()",
@@ -55232,8 +55232,8 @@
             "description": "Sends the page element backward on the page by one element.",
             "returnType": "Shape",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L290"
           },
           {
             "method": "sendToBack()",
@@ -55241,8 +55241,8 @@
             "description": "Sends the page element to the back of the page.",
             "returnType": "Shape",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L295"
           },
           {
             "method": "setContentAlignment(ContentAlignment)",
@@ -55259,8 +55259,8 @@
             "description": "Sets the page element's alt text description.",
             "returnType": "Shape",
             "returnDescription": "This page element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L256"
           },
           {
             "method": "setHeight(Number)",
@@ -55268,8 +55268,8 @@
             "description": "Sets the element's height in points, which is the height of the element's bounding box when the\nelement has no rotation.",
             "returnType": "Shape",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L178"
           },
           {
             "method": "setLeft(Number)",
@@ -55277,8 +55277,8 @@
             "description": "Sets the element's horizontal position in points, measured from the upper-left corner of the\npage when the element has no rotation.",
             "returnType": "Shape",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L147"
           },
           {
             "method": "setLinkSlide(Integer)",
@@ -55286,8 +55286,8 @@
             "description": "Sets a Link to the given Slide using the zero-based index of the slide.",
             "returnType": "Link",
             "returnDescription": "The Link that was set.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L317"
           },
           {
             "method": "setLinkSlide(Slide)",
@@ -55295,8 +55295,8 @@
             "description": "Sets a Link to the given Slide, the link is set by the given slide ID.",
             "returnType": "Link",
             "returnDescription": "The Link that was set.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L317"
           },
           {
             "method": "setLinkSlide(SlidePosition)",
@@ -55304,8 +55304,8 @@
             "description": "Sets a Link to the given Slide using the relative position of the slide.",
             "returnType": "Link",
             "returnDescription": "The Link that was set.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L317"
           },
           {
             "method": "setLinkUrl(String)",
@@ -55313,8 +55313,8 @@
             "description": "Sets a Link to the given non-empty URL string.",
             "returnType": "Link",
             "returnDescription": "The Link that was set.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L312"
           },
           {
             "method": "setRotation(Number)",
@@ -55322,8 +55322,8 @@
             "description": "Sets the element's clockwise rotation angle around its center in degrees.",
             "returnType": "Shape",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L197"
           },
           {
             "method": "setTitle(String)",
@@ -55331,8 +55331,8 @@
             "description": "Sets the page element's alt text title.",
             "returnType": "Shape",
             "returnDescription": "This page element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L247"
           },
           {
             "method": "setTop(Number)",
@@ -55340,8 +55340,8 @@
             "description": "Sets the element's vertical position in points, measured from the upper-left corner of the page\nwhen the element has no rotation.",
             "returnType": "Shape",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L156"
           },
           {
             "method": "setTransform(AffineTransform)",
@@ -55349,8 +55349,8 @@
             "description": "Sets the transform of the page element with the provided transform.",
             "returnType": "Shape",
             "returnDescription": "This element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L214"
           },
           {
             "method": "setWidth(Number)",
@@ -55358,8 +55358,8 @@
             "description": "Sets the element's width in points, which is the width of the element's bounding box when the\nelement has no rotation.",
             "returnType": "Shape",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L167"
           }
         ]
       },
@@ -56899,8 +56899,8 @@
             "description": "Aligns the element to the specified alignment position on the page.",
             "returnType": "Table",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L231"
           },
           {
             "method": "appendColumn()",
@@ -56926,8 +56926,8 @@
             "description": "Brings the page element forward on the page by one element.",
             "returnType": "Table",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L280"
           },
           {
             "method": "bringToFront()",
@@ -56935,8 +56935,8 @@
             "description": "Brings the page element to the front of the page.",
             "returnType": "Table",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L285"
           },
           {
             "method": "duplicate()",
@@ -56944,8 +56944,8 @@
             "description": "Duplicates the page element.",
             "returnType": "PageElement",
             "returnDescription": "The new duplicate of this page element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L452"
           },
           {
             "method": "getCell(Integer,Integer)",
@@ -56971,8 +56971,8 @@
             "description": "Returns the list of ConnectionSites on the page element, or an empty list if the page\nelement does not have any connection sites.",
             "returnType": "ConnectionSite[]",
             "returnDescription": "The connection sites list, which may be empty if this element has no connection sites.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L433"
           },
           {
             "method": "getDescription()",
@@ -56980,8 +56980,8 @@
             "description": "Returns the page element's alt text description. The description is combined with the title to\ndisplay and read alt text.",
             "returnType": "String",
             "returnDescription": "The page element's alt text description.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L248"
           },
           {
             "method": "getHeight()",
@@ -56989,8 +56989,8 @@
             "description": "Gets the element's height in points, which is the height of the element's bounding box when the\nelement has no rotation.",
             "returnType": "Number",
             "returnDescription": "The page element's inherent height in points, or null if the page element does\n    not have a height.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L172"
           },
           {
             "method": "getInherentHeight()",
@@ -57016,8 +57016,8 @@
             "description": "Returns the element's horizontal position in points, measured from the upper-left corner of the\npage when the element has no rotation.",
             "returnType": "Number",
             "returnDescription": "This element's horizontal position in points, from the upper-left corner of the page.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L143"
           },
           {
             "method": "getNumColumns()",
@@ -57043,8 +57043,8 @@
             "description": "Returns the unique ID for this object. Object IDs used by pages and page elements share the\nsame namespace.",
             "returnType": "String",
             "returnDescription": "The unique ID for this object.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L58"
           },
           {
             "method": "getPageElementType()",
@@ -57052,8 +57052,8 @@
             "description": "Returns the page element's type, represented as a PageElementType enum.",
             "returnType": "PageElementType",
             "returnDescription": "The page element's type.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L114"
           },
           {
             "method": "getParentGroup()",
@@ -57061,8 +57061,8 @@
             "description": "Returns the group this page element belongs to, or null if the element is not in a\ngroup.",
             "returnType": "Group",
             "returnDescription": "The group this page element belongs to, or null.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L265"
           },
           {
             "method": "getParentPage()",
@@ -57070,8 +57070,8 @@
             "description": "Returns the page this page element is on.",
             "returnType": "Page",
             "returnDescription": "The page this element resides on.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L261"
           },
           {
             "method": "getRotation()",
@@ -57079,8 +57079,8 @@
             "description": "Returns the element's clockwise rotation angle around its center in degrees, where zero degrees\nmeans no rotation.",
             "returnType": "Number",
             "returnDescription": "The rotation angle in degrees between 0 (inclusive) and 360 (exclusive).",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L183"
           },
           {
             "method": "getRow(Integer)",
@@ -57097,8 +57097,8 @@
             "description": "Returns the page element's alt text title. The title is combined with the description to\ndisplay and read alt text.",
             "returnType": "String",
             "returnDescription": "The page element's alt text title.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L243"
           },
           {
             "method": "getTop()",
@@ -57106,8 +57106,8 @@
             "description": "Gets the element's vertical position in points, measured from the upper-left corner of the page\nwhen the element has no rotation.",
             "returnType": "Number",
             "returnDescription": "This element's vertical position in points, from the upper-left corner of the page.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L152"
           },
           {
             "method": "getTransform()",
@@ -57115,8 +57115,8 @@
             "description": "Returns the page element's transform.",
             "returnType": "AffineTransform",
             "returnDescription": "The page element's transform.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L202"
           },
           {
             "method": "getWidth()",
@@ -57124,8 +57124,8 @@
             "description": "Returns the element's width in points, which is the width of the element's bounding box when\nthe element has no rotation.",
             "returnType": "Number",
             "returnDescription": "The page element's inherent width in points, or null if the page element does\n    not have a width.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L161"
           },
           {
             "method": "insertColumn(Integer)",
@@ -57151,8 +57151,8 @@
             "description": "Preconcatenates the provided transform to the existing transform of the page element.",
             "returnType": "Table",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L226"
           },
           {
             "method": "remove()",
@@ -57160,8 +57160,8 @@
             "description": "Removes the page element.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L271"
           },
           {
             "method": "scaleHeight(Number)",
@@ -57169,8 +57169,8 @@
             "description": "Scales the element's height by the specified ratio. The element's height is the height of its\nbounding box when the element has no rotation.",
             "returnType": "Table",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L438"
           },
           {
             "method": "scaleWidth(Number)",
@@ -57178,8 +57178,8 @@
             "description": "Scales the element's width by the specified ratio. The element's width is the width of its\nbounding box when the element has no rotation.",
             "returnType": "Table",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L443"
           },
           {
             "method": "select()",
@@ -57187,8 +57187,8 @@
             "description": "Selects only the PageElement in the active presentation and removes any previous\nselection. This is the same as calling select(replace) with true.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L448"
           },
           {
             "method": "select(Boolean)",
@@ -57196,8 +57196,8 @@
             "description": "Selects the PageElement in the active presentation.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L448"
           },
           {
             "method": "sendBackward()",
@@ -57205,8 +57205,8 @@
             "description": "Sends the page element backward on the page by one element.",
             "returnType": "Table",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L290"
           },
           {
             "method": "sendToBack()",
@@ -57214,8 +57214,8 @@
             "description": "Sends the page element to the back of the page.",
             "returnType": "Table",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L295"
           },
           {
             "method": "setDescription(String)",
@@ -57223,8 +57223,8 @@
             "description": "Sets the page element's alt text description.",
             "returnType": "Table",
             "returnDescription": "This page element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L256"
           },
           {
             "method": "setHeight(Number)",
@@ -57232,8 +57232,8 @@
             "description": "Sets the element's height in points, which is the height of the element's bounding box when the\nelement has no rotation.",
             "returnType": "Table",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L178"
           },
           {
             "method": "setLeft(Number)",
@@ -57241,8 +57241,8 @@
             "description": "Sets the element's horizontal position in points, measured from the upper-left corner of the\npage when the element has no rotation.",
             "returnType": "Table",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L147"
           },
           {
             "method": "setRotation(Number)",
@@ -57250,8 +57250,8 @@
             "description": "Sets the element's clockwise rotation angle around its center in degrees.",
             "returnType": "Table",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L197"
           },
           {
             "method": "setTitle(String)",
@@ -57259,8 +57259,8 @@
             "description": "Sets the page element's alt text title.",
             "returnType": "Table",
             "returnDescription": "This page element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L247"
           },
           {
             "method": "setTop(Number)",
@@ -57268,8 +57268,8 @@
             "description": "Sets the element's vertical position in points, measured from the upper-left corner of the page\nwhen the element has no rotation.",
             "returnType": "Table",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L156"
           },
           {
             "method": "setTransform(AffineTransform)",
@@ -57277,8 +57277,8 @@
             "description": "Sets the transform of the page element with the provided transform.",
             "returnType": "Table",
             "returnDescription": "This element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L214"
           },
           {
             "method": "setWidth(Number)",
@@ -57286,8 +57286,8 @@
             "description": "Sets the element's width in points, which is the width of the element's bounding box when the\nelement has no rotation.",
             "returnType": "Table",
             "returnDescription": "This page element, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L167"
           }
         ]
       },

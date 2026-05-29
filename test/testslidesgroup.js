@@ -27,6 +27,39 @@ export const testSlidesGroup = (pack) => {
     t.is(children[0].getObjectId(), shape1.getObjectId(), 'First child should be shape1');
     t.is(children[1].getObjectId(), shape2.getObjectId(), 'Second child should be shape2');
 
+    // Test scaling methods on child element (shape1 has defined size)
+    const initialHeight = shape1.getHeight();
+    const initialWidth = shape1.getWidth();
+    shape1.scaleHeight(1.5);
+    shape1.scaleWidth(2.0);
+    t.truthy(Math.abs(shape1.getHeight() - initialHeight * 1.5) < 0.5, 'scaleHeight should scale the height by 1.5');
+    t.truthy(Math.abs(shape1.getWidth() - initialWidth * 2.0) < 0.5, 'scaleWidth should scale the width by 2.0');
+
+    // Test rotation methods
+    t.is(group.getRotation(), 0, 'initial group rotation should be 0');
+    group.setRotation(45);
+    t.is(group.getRotation(), 45, 'getRotation should return 45 after setRotation(45)');
+
+    // Test selection methods
+    try {
+      t.truthy(group.select(), 'select() should execute successfully');
+      t.truthy(group.select(false), 'select(false) should execute successfully');
+    } catch (e) {
+      t.truthy(
+        e.message.includes('active presentation'),
+        'select() should throw active presentation exception on live GAS'
+      );
+    }
+
+    // Test duplicate method
+    const dupElement = group.duplicate();
+    t.is(dupElement.toString(), 'PageElement', 'duplicate() should return a PageElement');
+    t.not(dupElement.getObjectId(), group.getObjectId(), 'duplicated group should have a different object ID');
+
+    const dupGroup = dupElement.asGroup();
+    t.is(dupGroup.toString(), 'Group', 'asGroup() on duplicated element should return a Group');
+    t.is(dupGroup.getChildren().length, 2, 'duplicated group should contain 2 children');
+
     // Test ungroup()
     group.ungroup();
     t.truthy(t.threw(() => group.getChildren()), 'getChildren() after ungroup should throw exception');

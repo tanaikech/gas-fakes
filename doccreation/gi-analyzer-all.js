@@ -85,7 +85,6 @@ const classSynonyms = {
   'FolderIterator': ['iterator'],
   'Paragraph': ['containerelement', 'element'],
   'ListItem': ['containerelement', 'element', 'paragraph'],
-  'Table': ['containerelement', 'element'],
   'TableRow': ['containerelement', 'element'],
   'TableCell': ['containerelement', 'element'],
   'Text': ['element'],
@@ -135,8 +134,11 @@ const classSynonyms = {
   'EmbeddedHistogramChartBuilder': ['embeddedchartbuilder'],
   'EmbeddedLineChartBuilder': ['embeddedchartbuilder'],
   'EmbeddedPieChartBuilder': ['embeddedchartbuilder'],
-  'EmbeddedScatterChartBuilder': ['embeddedchartbuilder'],
-  'EmbeddedTableChartBuilder': ['embeddedchartbuilder'],
+  'Group': ['pageelement'],
+  'Shape': ['pageelement'],
+  'Line': ['pageelement'],
+  'Image': ['pageelement'],
+  'Table': ['containerelement', 'element', 'pageelement'],
 };
 
 const classToFileMap = {
