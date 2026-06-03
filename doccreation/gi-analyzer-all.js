@@ -152,6 +152,7 @@ const classToFileMap = {
   'CacheService': 'stores/fakestores.js',
   'ScriptApp': 'scriptapp/app.js',
   'DriveApp': 'driveapp/fakedriveapp.js',
+  'MimeType': 'mimetype/fakemimetype.js',
   'FileIterator': 'support/peeker.js',
   'FolderIterator': 'support/peeker.js'
 };

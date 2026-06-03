@@ -15,7 +15,10 @@ export class FakeFill {
     if (this.__element.__resource.shape) {
       return this.__element.__resource.shape.shapeProperties?.shapeBackgroundFill || {};
     }
-    return this.__element.__resource.pageBackgroundFill || {};
+    if (this.__element.__resource.tableCellProperties) {
+      return this.__element.__resource.tableCellProperties.tableCellBackgroundFill || {};
+    }
+    return this.__element.__resource.pageProperties?.pageBackgroundFill || {};
   }
 
   getType() {
@@ -98,9 +101,9 @@ export class FakeFill {
       solidFill.alpha = alpha;
     }
 
-    const presentationId = this.__element.__presentation?.getId() || this.__element.__page?.__presentation?.getId();
+    const presentationId = this.__element.__presentation?.getId() || this.__element.__page?.__presentation?.getId() || this.__element.__table?.__presentation?.getId();
     if (this.__element.__resource.shape) {
-      Slides.Presentations.batchUpdate([{
+      Slides.Presentations.batchUpdate({ requests: [{
         updateShapeProperties: {
           objectId: this.__element.getObjectId(),
           shapeProperties: {
@@ -111,9 +114,32 @@ export class FakeFill {
           },
           fields: 'shapeBackgroundFill'
         }
-      }], presentationId);
+      }] }, presentationId);
+
+    } else if (this.__element.__resource.tableCellProperties) {
+        Slides.Presentations.batchUpdate({ requests: [{
+          updateTableCellProperties: {
+            objectId: this.__element.getObjectId(),
+            tableCellProperties: {
+              tableCellBackgroundFill: {
+                propertyState: 'RENDERED',
+                solidFill: solidFill
+              }
+            },
+            fields: 'tableCellBackgroundFill',
+            tableRange: {
+              location: {
+                rowIndex: this.__element.getRowIndex(),
+                columnIndex: this.__element.getColumnIndex()
+              },
+              rowSpan: 1,
+              columnSpan: 1
+            }
+          }
+        }] }, presentationId);
+
     } else {
-      Slides.Presentations.batchUpdate([{
+      Slides.Presentations.batchUpdate({ requests: [{
         updatePageProperties: {
           objectId: this.__element.getObjectId(),
           pageProperties: {
@@ -124,16 +150,17 @@ export class FakeFill {
           },
           fields: 'pageBackgroundFill'
         }
-      }], presentationId);
+      }] }, presentationId);
+
     }
 
     return this;
   }
 
   setTransparent() {
-    const presentationId = this.__element.__presentation?.getId() || this.__element.__page?.__presentation?.getId();
+    const presentationId = this.__element.__presentation?.getId() || this.__element.__page?.__presentation?.getId() || this.__element.__table?.__presentation?.getId();
     if (this.__element.__resource.shape) {
-      Slides.Presentations.batchUpdate([{
+      Slides.Presentations.batchUpdate({ requests: [{
         updateShapeProperties: {
           objectId: this.__element.getObjectId(),
           shapeProperties: {
@@ -143,9 +170,31 @@ export class FakeFill {
           },
           fields: 'shapeBackgroundFill'
         }
-      }], presentationId);
+      }] }, presentationId);
+
+    } else if (this.__element.__resource.tableCellProperties) {
+        Slides.Presentations.batchUpdate({ requests: [{
+          updateTableCellProperties: {
+            objectId: this.__element.getObjectId(),
+            tableCellProperties: {
+              tableCellBackgroundFill: {
+                propertyState: 'NOT_RENDERED'
+              }
+            },
+            fields: 'tableCellBackgroundFill',
+            tableRange: {
+                location: {
+                  rowIndex: this.__element.getRowIndex(),
+                  columnIndex: this.__element.getColumnIndex()
+                },
+                rowSpan: 1,
+                columnSpan: 1
+              }
+          }
+        }] }, presentationId);
+
     } else {
-      Slides.Presentations.batchUpdate([{
+      Slides.Presentations.batchUpdate({ requests: [{
         updatePageProperties: {
           objectId: this.__element.getObjectId(),
           pageProperties: {
@@ -155,7 +204,8 @@ export class FakeFill {
           },
           fields: 'pageBackgroundFill'
         }
-      }], presentationId);
+      }] }, presentationId);
+
     }
     return this;
   }

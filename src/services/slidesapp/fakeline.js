@@ -180,13 +180,13 @@ export class FakeLine extends FakePageElement {
 
   __updateLineProps(lineProperties, fields) {
     const presentationId = this.__page.__presentation?.getId() || this.__page.__slide?.__presentation.getId();
-    Slides.Presentations.batchUpdate([{
+    Slides.Presentations.batchUpdate({ requests: [{
       updateLineProperties: {
         objectId: this.getObjectId(),
         lineProperties: lineProperties,
         fields: fields
       }
-    }], presentationId);
+    }] }, presentationId);
   }
 
   toString() {

@@ -1255,6 +1255,65 @@ Tokens cached in `.msgraph-token.jwt` are stored as a locally-signed JWT (JSON W
 #### Primary Drive Only
 The current implementation focuses on the primary User Drive. Group drives, sites, and multiple drives are not yet fully supported or tested.
 
+### Slides Service Revision Isolation (Split-Brain)
+
+A critical discovery in Google Slides automation is that the **standard `SlidesApp` service** and the **Advanced `Slides` service** (REST API) operate on isolated, uncommitted revisions of the presentation during a single script execution.
+
+- **Isolation Behavior**: Elements created via `SlidesApp` are **invisible** to the REST API until the script finishes (or potentially much later). Conversely, elements created via `batchUpdate` in the Advanced Service are **invisible** to `SlidesApp`, even if you re-open the presentation using `SlidesApp.openById()`.
+- **ID Strategy Discrepancy**:
+    - **`SlidesApp`**: Generates internal IDs with a `SLIDES_API{timestamp}_{index}` prefix for all newly created elements (Videos, Shapes, Tables).
+    - **Advanced Service**: Respects user-provided `objectId` strings, but these objects will not appear in `SlidesApp.getPageElements()` during the same session.
+- **Verification Strategy**: To reliably verify parity, tests must use the **same service** that performed the creation (e.g., verify `SlidesApp` results via `SlidesApp` methods, and Advanced Service results via `Slides.Presentations.get()`).
+
+### Slides API Nuances (REST vs Advanced Service)
+
+When using the **Slides Advanced Service** (or the REST API via `batchUpdate`), there is a specific payload discrepancy to be aware of:
+
+- **GAS Advanced Service**: Expects the `resource` object as the first argument, which contains a `requests` array.
+- **REST API (via googleapis Node library)**: Expects a `requestBody` property in the parameters object.
+- **Gas-Fakes Fix**: The Slides Advanced Service fake now robustly handles both a raw array of requests and a full resource object, mapping them correctly to the underlying REST `requestBody`. This prevents `Root element must be a message` errors often seen when passing the wrong wrapper structure.
+
+### Slides PageBackground Property Nesting
+
+Unlike other page elements where properties are often top-level in the `PageElement` resource, `PageBackground` properties (like `pageBackgroundFill`) are nested within a `pageProperties` object in the Slide/Layout/Master resource. 
+
+In `gas-fakes`, the `PageBackground` fake maps to this nested structure. When updating the background via `batchUpdate`, the `fields` parameter must explicitly include `pageBackgroundFill` to trigger a state update, especially when setting the property to `NOT_RENDERED` (Transparent).
+
+### Slides Text Indexing and Implicit Newlines
+
+A major point of friction in Slides automation is the handling of **implicit newlines**. Every shape or table cell in Google Slides ends with an implicit `\n` (represented by a `paragraphMarker` in the API).
+
+- **GAS Behavior**: `textRange.asString()` includes this trailing newline.
+- **API Restriction**: You **cannot** insert text after the final paragraph marker. Attempting to insert at `length` (where `length` includes the newline) will fail. You must insert at `length - 1` to append text before the final newline.
+- **Implementation**: `gas-fakes` uses a character-map reconstruction in `asString()` to ensure parity with global API indices, and automatically clamps insertion indices to valid boundaries.
+
+### Speaker Spotlight (Rollout Inconsistencies)
+
+The `SpeakerSpotlight` feature (introduced May 2024) allows a presenter's camera feed to be embedded in a slide. 
+
+- **API Discrepancy**: While listed in the REST v1 documentation, `createSpeakerSpotlight` is **not** available in the standard Apps Script `Slide` class (as of late 2024). It must be created via the Advanced Service.
+- **Rollout Issues**: In some accounts, `createSpeakerSpotlight` may return an `Unknown name` error despite being in the v1 discovery document. This suggests a tiered rollout or dependency on specific Google Workspace editions.
+
+### Service Implementation Locations (MimeType)
+
+Most Apps Script services follow a standard directory structure in `src/services/`. However, some shared classes like `MimeType` are located in dedicated utility folders (e.g., `src/services/mimetype/`) rather than within the `Base` service directory. 
+
+- **Discovery**: The documentation analyzer (`gi-analyzer-all.js`) requires explicit mapping in `classToFileMap` for these non-standard locations to correctly track implementation status across services.
+
+### Phantom "Base" Namespace
+
+Google's documentation for many fundamental enums (such as [Weekday](https://developers.google.com/apps-script/reference/base/weekday)) implies they belong to a `Base` service. 
+
+- **Discrepancy**: In the **Live Apps Script environment**, the `Base` namespace does **not exist**. You cannot access `Base.Weekday.SUNDAY`; instead, you must access the enum as a global constant (`Weekday.SUNDAY`).
+- **Gas-Fakes Handling**: To maintain parity with the *documented* API while supporting live execution, `gas-fakes` provides both: it exposes the `Base` namespace locally but also registers the enums as globals. Parity tests should only check the `Base` namespace when `ScriptApp.isFake` is true.
+
+### Git Case-Sensitivity Pitfalls
+
+On case-insensitive filesystems (macOS, Windows), Git may fail to track changes to filename casing (e.g., `.MD` to `.md`). 
+
+- **Discovery**: Renaming a file in the OS from `slides.MD` to `slides.md` may not be reflected in Git's index, causing automated documentation tools to generate broken links in environments with different casing (like Linux-based CI or some Node.js versions).
+- **Fix**: Use `git mv -f <old> <new>` to explicitly force Git to track the case change.
+
 ## Testing
 
 If you want to play with the testing suite , then take a look at the [collaborators](collaborators.md) writeup.
@@ -1279,6 +1338,7 @@ If you want to play with the testing suite , then take a look at the [collaborat
 - [gas fakes intro video](https://youtu.be/oEjpIrkYpEM)
 - [getting started](../GETTING_STARTED.md) - how to handle authentication for Workspace scopes.
 - [readme](../README.md)
+- [apps script parity](../notes/parity.md)
 - [Natural Language Automation with Gemini Skills & MCP Server](../notes/gemini-skills-mcp.md) - new skills-based agent approach.
 - [Add agent skills to gf_agent](https://ramblings.mcpher.com/add-skills-gf_agent/)
 - [gf_agent documentation](../../gf_agent/README.md) - instructions for the Gemini CLI automation agent and MCP server.

@@ -60,7 +60,7 @@ export class ServerWorkerContext {
         mainScriptPath: globalThis.__gasFakesMainScriptPath || this._mainScriptPath,
         controlBuf: this._controlBuf,
         dataBuf: this._dataBuf,
-        env: process.env // Pass current environment
+        env: { ...process.env, GAS_FAKES_WORKER: 'true' } // Pass current environment and mark as worker
       },
       stdout: true,
       stderr: true

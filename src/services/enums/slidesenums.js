@@ -142,7 +142,9 @@ export const PageType = newFakeGasenum([
   "UNSUPPORTED",
   "SLIDE",
   "LAYOUT",
-  "MASTER"
+  "MASTER",
+  "NOTES_MASTER",
+  "NOTES_PAGE"
 ])
 export const ParagraphAlignment = newFakeGasenum([
   "UNSUPPORTED",

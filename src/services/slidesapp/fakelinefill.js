@@ -14,32 +14,31 @@ export class FakeLineFill {
   }
 
   getSolidFill() {
-    // This should return a SolidFill object
-    // For now we might need a FakeSolidFill or just return something simple
     return null;
   }
 
   setSolidFill(color) {
-    // Implementing this requires updateLineProperties with solidFill
     const presentationId = this.__line.__page.__presentation?.getId() || this.__line.__page.__slide?.__presentation.getId();
 
     let solidFill = {};
     if (typeof color === 'string') {
       solidFill = { color: { rgbColor: this.__hexToRgb(color) } };
     }
-    // Handle other color types if needed
 
-    Slides.Presentations.batchUpdate([{
-      updateLineProperties: {
-        objectId: this.__line.getObjectId(),
-        lineProperties: {
-          lineFill: {
-            solidFill: solidFill
-          }
-        },
-        fields: 'lineFill.solidFill'
-      }
-    }], presentationId);
+    Slides.Presentations.batchUpdate({
+      requests: [{
+        updateLineProperties: {
+          objectId: this.__line.getObjectId(),
+          lineProperties: {
+            lineFill: {
+              solidFill: solidFill
+            }
+          },
+          fields: 'lineFill.solidFill'
+        }
+      }]
+    }, presentationId);
+
     return this;
   }
 

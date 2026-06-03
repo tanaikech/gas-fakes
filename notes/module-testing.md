@@ -1,6 +1,7 @@
-# <img src="./logo.png" alt="gas-fakes logo" width="50" align="top">  Collaborating
+# <img src="./logo.png" alt="gas-fakes logo" width="50" align="top"> Collaborating
 
 Testing and updating in a collaborative environment can be hard. Here's how it works to minimize merge problems
+
 - Communicate what you're working on before starting
 - Work on service separately where possible - for Example if A is working on Drive, B should work on Sheets
 
@@ -10,64 +11,67 @@ All tests are now modular and should contain sections that tests what you're wor
 
 testutilities.js
 
-````js
+```js
+// all these imports
 
-// all these imports 
-
-import is from '@sindresorhus/is';
-import '@mcpher/gas-fakes'
+import is from "@sindresorhus/is";
+import "@mcpher/gas-fakes";
 
 // all the fake services are here
 //import '@mcpher/gas-fakes/main.js'
 
-import { initTests, wrapupTest }  from  './testinit.js'
+import { initTests, wrapupTest } from "./testinit.js";
 
 // this can run standalone, or as part of combined tests if result of inittests is passed over
 export const testUtilities = (pack) => {
-  const {unit, fixes} = pack || initTests()
+  const { unit, fixes } = pack || initTests();
 
-  unit.section("utilities base64 encoding", t => {
+  unit.section("utilities base64 encoding", (t) => {
     // ... tests
+  });
 
-  })
-
-  unit.section("utilities zipping", t => {
+  unit.section("utilities zipping", (t) => {
     //.. tests
-    
-  })
+  });
   // etc..
 
   if (!pack) {
-    unit.report()
+    unit.report();
   }
-  return { unit, fixes }
-}
+  return { unit, fixes };
+};
 
 // if we're running this test standalone, on Node - we need to actually kick it off
-// the provess.argv should contain "execute" 
+// the provess.argv should contain "execute"
 // on apps script we don't want it to run automatically
 // when running as part of a consolidated test, we dont want to run it, as the caller will do that
 
 wrapupTest(testUtilities);
-
-````
+```
 
 ## Running individual tests
+
 The package.json should contain a reference to the test
-````
+
+```
   "scripts": {
     "test": "node  ./test/test.js",
     "testdrive": node ./test/testdrive.js execute",
     ....etc
   },
-````
+```
+
 they can be run individually with - for example
-````
+
+```
 npm run testdrive
-````
+```
+
 ## Running all tests
+
 The consolidated test.js should contain references to all known tests
-````
+
+```
 import '@mcpher/gas-fakes'
 import { initTests }  from  './testinit.js'
 import { testDrive } from './testdrive.js';
@@ -79,33 +83,39 @@ const testFakes = () => {
   const {unit} = pack
 
   // add one of these for each service being tested
-  
+
   testSheets(pack)
   testDrive(pack)
   ...etc
-  
+
   unit.report()
 }
 
 // this required on Node but not on Apps Script
 if (ScriptApp.isFake) testFakes()
 
-````
+```
+
 and can be run with
-````
+
+```
 npm run test
-````
+```
 
 ## how to redirect to use local files
 
-When testing and you want to use the local files rather than @mcpher/gas-fakes, you can have a local package.json in the same folder as your tests which directs the package to a local file. just run npm i to install
-````
+When testing and you want to use the local files rather than @mcpher/gas-fakes, you can have a local package.json in the same folder as your tests which directs the package to a local file. just run npm i to install.
+
+
+```
   "dependencies": {
     "@mcpher/gas-fakes": "file:../../"
   }
-````
-where the file value points to the root of gas-fakes. If you want to instead use the npm version then just revert that normal npm syntax and install again. 
+```
 
+where the file value points to the root of gas-fakes. If you want to instead use the npm version then just revert that normal npm syntax and install again.
+
+Alternatively you can use npm link to create a symbolic link to your version of source code. see [contributing](../contributing.md) for more info.
 
 
 ## Running on apps script
@@ -132,6 +142,7 @@ execute `bash togas.sh` to copy all files to apps script IDE. All tests can be r
 - [gas fakes intro video](https://youtu.be/oEjpIrkYpEM)
 - [getting started](../GETTING_STARTED.md) - how to handle authentication for Workspace scopes.
 - [readme](../README.md)
+- [apps script parity](../notes/parity.md)
 - [Natural Language Automation with Gemini Skills & MCP Server](../notes/gemini-skills-mcp.md) - new skills-based agent approach.
 - [Add agent skills to gf_agent](https://ramblings.mcpher.com/add-skills-gf_agent/)
 - [gf_agent documentation](../../gf_agent/README.md) - instructions for the Gemini CLI automation agent and MCP server.

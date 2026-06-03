@@ -37,7 +37,7 @@ export const testSlidesColorScheme = (pack) => {
 
     // Verify change
     const updatedAccent1 = colorScheme.getConcreteColor(SlidesApp.ThemeColorType.ACCENT1);
-    t.is(updatedAccent1.asRgbColor().asHexString(), '#FF0000', 'ACCENT1 should be updated to #FF0000');
+    t.is(updatedAccent1.asRgbColor().asHexString().toUpperCase(), '#FF0000', 'ACCENT1 should be updated to #FF0000');
 
     // Test on a Slide
     const slide = pres.getSlides()[0];
@@ -45,12 +45,12 @@ export const testSlidesColorScheme = (pack) => {
     t.is(slideColorScheme.toString(), 'ColorScheme', 'Slide.getColorScheme() should return a ColorScheme');
     
     const slideAccent1 = slideColorScheme.getConcreteColor(SlidesApp.ThemeColorType.ACCENT1);
-    t.is(slideAccent1.asRgbColor().asHexString(), '#FF0000', 'Slide should inherit the updated color scheme from master');
+    t.is(slideAccent1.asRgbColor().asHexString().toUpperCase(), '#FF0000', 'Slide should inherit the updated color scheme from master');
 
     // Test on a Layout
     const layout = slide.getLayout();
     const layoutColorScheme = layout.getColorScheme();
-    t.is(layoutColorScheme.getConcreteColor(SlidesApp.ThemeColorType.ACCENT1).asRgbColor().asHexString(), '#FF0000', 'Layout should inherit the updated color scheme');
+    t.is(layoutColorScheme.getConcreteColor(SlidesApp.ThemeColorType.ACCENT1).asRgbColor().asHexString().toUpperCase(), '#FF0000', 'Layout should inherit the updated color scheme');
   });
 
   if (!pack) {

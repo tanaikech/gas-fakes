@@ -39,11 +39,42 @@ export class FakeTableRow {
   }
 
   /**
+   * Returns the 0-based index of the row.
+   * @returns {number} The index.
+   */
+  getIndex() {
+    return this.__rowIndex;
+  }
+
+  /**
+   * Returns the minimum height of the row in points.
+   * @returns {number} The minimum height.
+   */
+  getMinimumHeight() {
+    return this.__table.__normalize(this.__resource?.rowHeight);
+  }
+
+  /**
    * Gets the number of cells in the row.
    * @returns {number} The number of cells.
    */
   getNumCells() {
     return (this.__resource?.tableCells || []).length;
+  }
+
+  /**
+   * Returns the table containing the current row.
+   * @returns {FakeTable} The parent table.
+   */
+  getParentTable() {
+    return this.__table;
+  }
+
+  /**
+   * Removes the table row.
+   */
+  remove() {
+    throw new Error('TableRow.remove() not yet implemented');
   }
 
   toString() {

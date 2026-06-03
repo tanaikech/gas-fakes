@@ -21,8 +21,19 @@ Before drafting implementation plans or code, Gemini (the Strategic Planner) mus
 ### 1. Context and Specification Check
 Before implementing, verify the specifications of the target Google Apps Script classes and methods. Ensure that the functionality you are about to build aligns with real GAS behavior.
 
-### 2. Implementation & Focused Execution
-The local model acts as the Tactical Executor to generate specific code matching GAS methods.
+### 2. Implementation & Focused Execution (CRITICAL DELEGATION GATE)
+> [!IMPORTANT] **ZERO-TOLERANCE DELEGATION GATE**
+> You are **FORBIDDEN** from using `write_file` or `replace` to implement logic or tests yourself. 
+> **MANDATORY SEQUENCE**:
+> 1.  Gather context (Research).
+> 2.  **CALL `omlx/query_local_model`** with a comprehensive prompt.
+> 3.  Review and synthesize the output.
+> 4.  Apply changes to `src/` or `test/`.
+> 
+> **EXCEPTION**: This mandate only applies if the local model is available and its use has not been explicitly forbidden by the user. If unavailable or forbidden, you may proceed with implementation using your own weights, but you MUST document the reason in your `update_topic`.
+> 
+> You MUST explicitly state "Delegating logic generation to local Gemma model" in your `update_topic` summary when transitioning to implementation.
+
 - The planner (Gemini) reviews the local model's output code, refines it, and applies it to the `src/` directory.
 - Ensure the code runs correctly in the Node.js environment.
 
@@ -36,9 +47,12 @@ You must verify your implementation by writing and executing test scripts.
 - Full instructions on test and other workflows are in ../../workflows. Be sure to read the relevant workflow file before starting any task.
 
 ### 4. Test Registration and Suite Integrity (CRITICAL)
-Whenever you create a new test script (e.g., `test/testnewfeature.js`) or significantly modify an existing one:
-- **Registration**: You MUST add the new test to the main test suite in [**`test/test.js`**](file:///Users/brucemcpherson/Documents/repos/gas-fakes/test/test.js). This includes adding the `import` statement and the test call within the `testFakes()` function.
-- **Workflow Compliance**: At the beginning of EVERY task involving testing or implementation, you MUST consult the `.agents/workflows/` directory (specifically [**`test.md`**](file:///Users/brucemcpherson/Documents/repos/gas-fakes/.agents/workflows/test.md)) to ensure you are following the latest project-specific procedures.
+Whenever you create a new test script (e.g., `test/testnewfeature.js`) or significantly modify an existing one, you MUST follow the [**`add-new-test.md`**](file:///Users/brucemcpherson/Documents/repos/gas-fakes/.agents/workflows/add-new-test.md) workflow exactly:
+1.  **Create the file** in the `test/` directory.
+2.  **Register in `test/test.js`**: Add the `import` statement and the test call within `testFakes()`.
+3.  **Register in `test/package.json`**: Add a corresponding entry to the `"scripts"` section (e.g., `"testnewfeature": "node testnewfeature.js execute"`).
+
+- **Workflow Compliance**: At the beginning of EVERY task involving testing or implementation, you MUST consult the `.agents/workflows/` directory (specifically [**`test.md`**](file:///Users/brucemcpherson/Documents/repos/gas-fakes/.agents/workflows/test.md) and [**`add-new-test.md`**](file:///Users/brucemcpherson/Documents/repos/gas-fakes/.agents/workflows/add-new-test.md)) to ensure you are following the latest project-specific procedures.
 
 ### 5. Holistic/Targeted Skill Evolution (Self-Updating SKILL)
 **[CRITICAL INSTRUCTION]**
@@ -98,9 +112,15 @@ The `gas-fakes` project is complex, and bridging Node.js with GAS involves many 
 - **`createStatement()` returns `FORWARD_ONLY`**: Plain `conn.createStatement()` returns a forward-only cursor. Navigation methods `last()`, `first()`, `absolute()`, `relative()`, `previous()`, `beforeFirst()`, `afterLast()` all throw `"Operation requires a scrollable ResultSet"`. Use `conn.createStatement(1004, 1007)` (TYPE_SCROLL_INSENSITIVE, CONCUR_READ_ONLY) to get a scrollable cursor. In the fake, these parameters are accepted but advisory — results are already buffered.
 - **`getFloat()` is 32-bit**: GAS `rs.getFloat()` returns an IEEE 754 single-precision float. `1.1` becomes `1.100000023841858`. Always compare with `Math.fround(expected)`. The fake applies `Math.fround()` accordingly.
 - **`getDouble()` is 64-bit**: Unlike the above, `rs.getDouble()` returns a full 64-bit double.
-### Test Suite Execution & Architecture
-- **Directory Requirement**: You **MUST** run all test commands from within the `test/` directory (e.g., `cd test && node testsheetsdeveloper.js execute`).
-- **Individual Test Execution (Efficiency)**: Do NOT run the full test suite (`node test.js` or `npm test`) unless explicitly requested or necessary for final verification. Instead, run only the specific test file you are working on (e.g., `node testcontent.js execute`). This saves significant time and avoids API rate limits.
+### Test Suite Execution & Architecture (CRITICAL)
+> [!DANGER] **NEVER RUN TESTS FROM THE ROOT DIRECTORY.**
+> All test commands MUST be run from within the `test/` directory. Failure to do so will result in `.env` variables not being loaded and tests failing silently or with obscure errors.
+> **CORRECT**: `cd test && node testsheetsdeveloper.js execute`
+> **INCORRECT**: `node test/testsheetsdeveloper.js`
+
+- **Directory Requirement**: You **MUST** run all test commands from within the `test/` directory.
+- **Execution Flag**: When running a test file directly with `node`, you MUST append the `execute` argument (e.g., `node testsomething.js execute`).
+- **Individual Test Execution (Efficiency)**: Do NOT run the full test suite (`node test.js` or `npm test`) unless explicitly requested or necessary for final verification. Instead, run only the specific test file you are working on. This saves significant time and avoids API rate limits.
 - **Dependency Aliasing (CRITICAL)**: The `test/package.json` resolves `"@mcpher/gas-fakes": "file:.."` as a local symlink. Because of this, `import '@mcpher/gas-fakes'` inside the `test/` directory *automatically* pulls in your local, uncommitted changes from `src/`. **NEVER** rewrite test imports to relative paths like `import '../src/index.js'`. Doing so breaks the test suite's isolation from module-level side effects and ignores the intended aliasing architecture.
 - **Worker Thread Error Re-hydration**: `gas-fakes` uses a background worker (`src/support/workersync/worker.js`) to make async API calls synchronous. If an API request fails, the worker catches the error, serializes it (often as a nested JSON string like `err.response.data.error`), and writes it to a `SharedArrayBuffer`. 
   - To properly intercept these errors in tests using `@mcpher/unit`'s `t.threw`, you must ensure that the `synchronizer.js` successfully extracts the underlying error message and explicitly assigns it when re-hydrating the `Error` object on the main thread (otherwise `err.message` might be `undefined`).

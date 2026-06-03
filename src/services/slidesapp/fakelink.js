@@ -5,8 +5,9 @@ export const newFakeLink = (...args) => {
 };
 
 export class FakeLink {
-  constructor(resource) {
+  constructor(resource, presentation) {
     this.__resource = resource;
+    this.__presentation = presentation;
   }
 
   getLinkType() {
@@ -17,12 +18,28 @@ export class FakeLink {
     return 'NONE';
   }
 
-  getUrl() {
-    return this.__resource.url || null;
+  getLinkedSlide() {
+    const slideId = this.getSlideId();
+    return slideId ? this.__presentation.getSlideById(slideId) : null;
   }
 
   getSlideId() {
     return this.__resource.slideId || null;
+  }
+
+  getSlideIndex() {
+    // Requires iterating slides to find index.
+    const slideId = this.getSlideId();
+    if (!slideId) return null;
+    return this.__presentation.getSlides().findIndex(s => s.getObjectId() === slideId);
+  }
+
+  getSlidePosition() {
+    return this.__resource.relativeSlide || null;
+  }
+
+  getUrl() {
+    return this.__resource.url || null;
   }
 
   toString() {

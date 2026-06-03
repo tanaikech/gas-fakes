@@ -39,7 +39,7 @@ export class FakeAutofit {
       }
     }];
 
-    Slides.Presentations.batchUpdate(requests, presentationId);
+    Slides.Presentations.batchUpdate({ requests }, presentationId);
     return this;
   }
 

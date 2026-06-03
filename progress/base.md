@@ -140,11 +140,11 @@ An enum representing predetermined, localized dialog buttons returned by an aler
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| CANCEL | A "Cancel" button, indicating that an operation should not proceed. | not started |  |
-| CLOSE | The standard close button displayed in every dialog's title bar. This button is not explicitly added to a dialog, and it cannot be removed. | not started |  |
-| NO | A "No" button, indicating a negative response to a question. | not started |  |
-| OK | An "OK" button, indicating that an operation should proceed. | not started |  |
-| YES | A "Yes" button, indicating a positive response to a question. | not started |  |
+| CANCEL | A "Cancel" button, indicating that an operation should not proceed. | completed | [link](../src/services/enums/baseenums.js#L4) |
+| CLOSE | The standard close button displayed in every dialog's title bar. This button is not explicitly added to a dialog, and it cannot be removed. | completed | [link](../src/services/enums/baseenums.js#L5) |
+| NO | A "No" button, indicating a negative response to a question. | completed | [link](../src/services/enums/baseenums.js#L6) |
+| OK | An "OK" button, indicating that an operation should proceed. | completed | [link](../src/services/enums/baseenums.js#L7) |
+| YES | A "Yes" button, indicating a positive response to a question. | completed | [link](../src/services/enums/baseenums.js#L8) |
 
 ## Enum: [ButtonSet](https://developers.google.com/apps-script/reference/base/button-set)
 
@@ -152,10 +152,10 @@ An enum representing predetermined, localized sets of one or more dialog buttons
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| OK | A single "OK" button, indicating an informational message that can only be dismissed. | not started |  |
-| OK_CANCEL | An "OK" button and a "Cancel" button, allowing the user to either proceed with or halt an operation. | not started |  |
-| YES_NO | A "Yes" button and a "No" button, allowing the user to answer a yes/no question. | not started |  |
-| YES_NO_CANCEL | A "Yes" button, a "No" button, and a "Cancel" button, allowing the user to either answer a yes/no question or halt an operation. | not started |  |
+| OK | A single "OK" button, indicating an informational message that can only be dismissed. | completed | [link](../src/services/enums/baseenums.js#L7) |
+| OK_CANCEL | An "OK" button and a "Cancel" button, allowing the user to either proceed with or halt an operation. | completed | [link](../src/services/enums/baseenums.js#L13) |
+| YES_NO | A "Yes" button and a "No" button, allowing the user to answer a yes/no question. | completed | [link](../src/services/enums/baseenums.js#L14) |
+| YES_NO_CANCEL | A "Yes" button, a "No" button, and a "Cancel" button, allowing the user to either answer a yes/no question or halt an operation. | completed | [link](../src/services/enums/baseenums.js#L15) |
 
 ## Enum: [ColorType](https://developers.google.com/apps-script/reference/base/color-type)
 
@@ -163,9 +163,9 @@ The types of Colors
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| RGB | A color defined by red, green, blue color channels. | not started |  |
-| THEME | A color that refers to an entry in the theme's color scheme. | not started |  |
-| UNSUPPORTED | A color type that is not supported. | not started |  |
+| RGB | A color defined by red, green, blue color channels. | completed | [link](../src/services/enums/baseenums.js#L19) |
+| THEME | A color that refers to an entry in the theme's color scheme. | completed | [link](../src/services/enums/baseenums.js#L20) |
+| UNSUPPORTED | A color type that is not supported. | completed | [link](../src/services/enums/baseenums.js#L21) |
 
 ## Enum: [MimeType](https://developers.google.com/apps-script/reference/base/mime-type)
 
@@ -173,38 +173,38 @@ An enumeration that provides access to MIME-type declarations without typing the
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| BMP | Representation of MIME type for a BMP image file (typically .bmp). | not started |  |
-| CSS | Representation of MIME type for a CSS text file (typically .css). | not started |  |
-| CSV | Representation of MIME type for a CSV text file (typically .csv). | not started |  |
-| FOLDER | Representation of MIME type for a Google Drive folder. | not started |  |
-| GIF | Representation of MIME type for a GIF image file (typically .gif). | not started |  |
-| GOOGLE_APPS_SCRIPT | Representation of MIME type for a Google Apps Script project. | not started |  |
-| GOOGLE_DOCS | Representation of MIME type for a Google Docs file. | not started |  |
-| GOOGLE_DRAWINGS | Representation of MIME type for a Google Drawings file. | not started |  |
-| GOOGLE_FORMS | Representation of MIME type for a Google Forms file. | not started |  |
-| GOOGLE_SHEETS | Representation of MIME type for a Google Sheets file. | not started |  |
-| GOOGLE_SITES | Representation of MIME type for a Google Sites file. | not started |  |
-| GOOGLE_SLIDES | Representation of MIME type for a Google Slides file. | not started |  |
-| HTML | Representation of MIME type for an HTML text file (typically .html). | not started |  |
-| JAVASCRIPT | Representation of MIME type for a JavaScript text file (typically .js). | not started |  |
-| JPEG | Representation of MIME type for a JPEG image file (typically .jpg). | not started |  |
-| MICROSOFT_EXCEL | Representation of MIME type for a Microsoft Excel spreadsheet file (typically .xlsx). | not started |  |
-| MICROSOFT_EXCEL_LEGACY | Representation of MIME type for a Microsoft Excel legacy file (typically .xls). | not started |  |
-| MICROSOFT_POWERPOINT | Representation of MIME type for a Microsoft PowerPoint presentation file (typically .pptx). | not started |  |
-| MICROSOFT_POWERPOINT_LEGACY | Representation of MIME type for a Microsoft PowerPoint legacy file (typically .ppt). | not started |  |
-| MICROSOFT_WORD | Representation of MIME type for a Microsoft Word document file (typically .docx). | not started |  |
-| MICROSOFT_WORD_LEGACY | Representation of MIME type for a Microsoft Word legacy file (typically .doc). | not started |  |
-| OPENDOCUMENT_GRAPHICS | Representation of MIME type for an OpenDocument graphics file (typically .odg). | not started |  |
-| OPENDOCUMENT_PRESENTATION | Representation of MIME type for an OpenDocument presentation file (typically .odp). | not started |  |
-| OPENDOCUMENT_SPREADSHEET | Representation of MIME type for an OpenDocument spreadsheet file (typically .ods). | not started |  |
-| OPENDOCUMENT_TEXT | Representation of MIME type for an OpenDocument word-processing file (typically .odt). | not started |  |
-| PDF | Representation of MIME type for a PDF file (typically .pdf). | not started |  |
-| PLAIN_TEXT | Representation of MIME type for a plain text file (typically .txt). | not started |  |
-| PNG | Representation of MIME type for a PNG image file (typically .png). | not started |  |
-| RTF | Representation of MIME type for a rich text file (typically .rtf). | not started |  |
-| SHORTCUT | Representation of MIME type for a Google Drive shortcut. | not started |  |
-| SVG | Representation of MIME type for an SVG image file (typically .svg). | not started |  |
-| ZIP | Representation of MIME type for a ZIP archive file (typically .zip). | not started |  |
+| BMP | Representation of MIME type for a BMP image file (typically .bmp). | completed | [link](../src/services/mimetype/fakemimetype.js#L12) |
+| CSS | Representation of MIME type for a CSS text file (typically .css). | completed | [link](../src/services/mimetype/fakemimetype.js#L13) |
+| CSV | Representation of MIME type for a CSV text file (typically .csv). | completed | [link](../src/services/mimetype/fakemimetype.js#L14) |
+| FOLDER | Representation of MIME type for a Google Drive folder. | completed | [link](../src/services/mimetype/fakemimetype.js#L15) |
+| GIF | Representation of MIME type for a GIF image file (typically .gif). | completed | [link](../src/services/mimetype/fakemimetype.js#L16) |
+| GOOGLE_APPS_SCRIPT | Representation of MIME type for a Google Apps Script project. | completed | [link](../src/services/mimetype/fakemimetype.js#L17) |
+| GOOGLE_DOCS | Representation of MIME type for a Google Docs file. | completed | [link](../src/services/mimetype/fakemimetype.js#L18) |
+| GOOGLE_DRAWINGS | Representation of MIME type for a Google Drawings file. | completed | [link](../src/services/mimetype/fakemimetype.js#L19) |
+| GOOGLE_FORMS | Representation of MIME type for a Google Forms file. | completed | [link](../src/services/mimetype/fakemimetype.js#L20) |
+| GOOGLE_SHEETS | Representation of MIME type for a Google Sheets file. | completed | [link](../src/services/mimetype/fakemimetype.js#L21) |
+| GOOGLE_SITES | Representation of MIME type for a Google Sites file. | completed | [link](../src/services/mimetype/fakemimetype.js#L22) |
+| GOOGLE_SLIDES | Representation of MIME type for a Google Slides file. | completed | [link](../src/services/mimetype/fakemimetype.js#L23) |
+| HTML | Representation of MIME type for an HTML text file (typically .html). | completed | [link](../src/services/mimetype/fakemimetype.js#L24) |
+| JAVASCRIPT | Representation of MIME type for a JavaScript text file (typically .js). | completed | [link](../src/services/mimetype/fakemimetype.js#L25) |
+| JPEG | Representation of MIME type for a JPEG image file (typically .jpg). | completed | [link](../src/services/mimetype/fakemimetype.js#L26) |
+| MICROSOFT_EXCEL | Representation of MIME type for a Microsoft Excel spreadsheet file (typically .xlsx). | completed | [link](../src/services/mimetype/fakemimetype.js#L27) |
+| MICROSOFT_EXCEL_LEGACY | Representation of MIME type for a Microsoft Excel legacy file (typically .xls). | completed | [link](../src/services/mimetype/fakemimetype.js#L28) |
+| MICROSOFT_POWERPOINT | Representation of MIME type for a Microsoft PowerPoint presentation file (typically .pptx). | completed | [link](../src/services/mimetype/fakemimetype.js#L29) |
+| MICROSOFT_POWERPOINT_LEGACY | Representation of MIME type for a Microsoft PowerPoint legacy file (typically .ppt). | completed | [link](../src/services/mimetype/fakemimetype.js#L30) |
+| MICROSOFT_WORD | Representation of MIME type for a Microsoft Word document file (typically .docx). | completed | [link](../src/services/mimetype/fakemimetype.js#L31) |
+| MICROSOFT_WORD_LEGACY | Representation of MIME type for a Microsoft Word legacy file (typically .doc). | completed | [link](../src/services/mimetype/fakemimetype.js#L32) |
+| OPENDOCUMENT_GRAPHICS | Representation of MIME type for an OpenDocument graphics file (typically .odg). | completed | [link](../src/services/mimetype/fakemimetype.js#L33) |
+| OPENDOCUMENT_PRESENTATION | Representation of MIME type for an OpenDocument presentation file (typically .odp). | completed | [link](../src/services/mimetype/fakemimetype.js#L34) |
+| OPENDOCUMENT_SPREADSHEET | Representation of MIME type for an OpenDocument spreadsheet file (typically .ods). | completed | [link](../src/services/mimetype/fakemimetype.js#L35) |
+| OPENDOCUMENT_TEXT | Representation of MIME type for an OpenDocument word-processing file (typically .odt). | completed | [link](../src/services/mimetype/fakemimetype.js#L36) |
+| PDF | Representation of MIME type for a PDF file (typically .pdf). | completed | [link](../src/services/mimetype/fakemimetype.js#L37) |
+| PLAIN_TEXT | Representation of MIME type for a plain text file (typically .txt). | completed | [link](../src/services/mimetype/fakemimetype.js#L38) |
+| PNG | Representation of MIME type for a PNG image file (typically .png). | completed | [link](../src/services/mimetype/fakemimetype.js#L39) |
+| RTF | Representation of MIME type for a rich text file (typically .rtf). | completed | [link](../src/services/mimetype/fakemimetype.js#L40) |
+| SHORTCUT | Representation of MIME type for a Google Drive shortcut. | completed | [link](../src/services/mimetype/fakemimetype.js#L41) |
+| SVG | Representation of MIME type for an SVG image file (typically .svg). | completed | [link](../src/services/mimetype/fakemimetype.js#L42) |
+| ZIP | Representation of MIME type for a ZIP archive file (typically .zip). | completed | [link](../src/services/mimetype/fakemimetype.js#L43) |
 
 ## Enum: [Month](https://developers.google.com/apps-script/reference/base/month)
 
@@ -212,18 +212,18 @@ An enum representing the months of the year.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| APRIL | April (month 4). | not started |  |
-| AUGUST | August (month 8). | not started |  |
-| DECEMBER | December (month 12). | not started |  |
-| FEBRUARY | February (month 2). | not started |  |
-| JANUARY | January (month 1). | not started |  |
-| JULY | July (month 7). | not started |  |
-| JUNE | June (month 6). | not started |  |
-| MARCH | March (month 3). | not started |  |
-| MAY | May (month 5). | not started |  |
-| NOVEMBER | November (month 11). | not started |  |
-| OCTOBER | October (month 10). | not started |  |
-| SEPTEMBER | September (month 9). | not started |  |
+| APRIL | April (month 4). | completed | [link](../src/services/enums/baseenums.js#L28) |
+| AUGUST | August (month 8). | completed | [link](../src/services/enums/baseenums.js#L32) |
+| DECEMBER | December (month 12). | completed | [link](../src/services/enums/baseenums.js#L36) |
+| FEBRUARY | February (month 2). | completed | [link](../src/services/enums/baseenums.js#L26) |
+| JANUARY | January (month 1). | completed | [link](../src/services/enums/baseenums.js#L25) |
+| JULY | July (month 7). | completed | [link](../src/services/enums/baseenums.js#L31) |
+| JUNE | June (month 6). | completed | [link](../src/services/enums/baseenums.js#L30) |
+| MARCH | March (month 3). | completed | [link](../src/services/enums/baseenums.js#L27) |
+| MAY | May (month 5). | completed | [link](../src/services/enums/baseenums.js#L29) |
+| NOVEMBER | November (month 11). | completed | [link](../src/services/enums/baseenums.js#L35) |
+| OCTOBER | October (month 10). | completed | [link](../src/services/enums/baseenums.js#L34) |
+| SEPTEMBER | September (month 9). | completed | [link](../src/services/enums/baseenums.js#L33) |
 
 ## Enum: [Weekday](https://developers.google.com/apps-script/reference/base/weekday)
 
@@ -231,13 +231,13 @@ An enum representing the days of the week.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| FRIDAY | Friday. | not started |  |
-| MONDAY | Monday. | not started |  |
-| SATURDAY | Saturday. | not started |  |
-| SUNDAY | Sunday. | not started |  |
-| THURSDAY | Thursday. | not started |  |
-| TUESDAY | Tuesday. | not started |  |
-| WEDNESDAY | Wednesday. | not started |  |
+| FRIDAY | Friday. | completed | [link](../src/services/enums/baseenums.js#L45) |
+| MONDAY | Monday. | completed | [link](../src/services/enums/baseenums.js#L41) |
+| SATURDAY | Saturday. | completed | [link](../src/services/enums/baseenums.js#L46) |
+| SUNDAY | Sunday. | completed | [link](../src/services/enums/baseenums.js#L40) |
+| THURSDAY | Thursday. | completed | [link](../src/services/enums/baseenums.js#L44) |
+| TUESDAY | Tuesday. | completed | [link](../src/services/enums/baseenums.js#L42) |
+| WEDNESDAY | Wednesday. | completed | [link](../src/services/enums/baseenums.js#L43) |
 
 ## Interface: [BlobSource](https://developers.google.com/apps-script/reference/base/blob-source)
 

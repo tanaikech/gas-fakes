@@ -1,6 +1,9 @@
 import { Proxies } from '../../support/proxies.js';
 import { newFakeParagraph } from './fakeparagraph.js';
 import { newFakeAutoText } from './fakeautotext.js';
+import { newFakeTextStyle } from './faketextstyle.js';
+import { newFakeParagraphStyle } from './fakeparagraphstyle.js';
+import { newFakeListStyle } from './fakeliststyle.js';
 import { AutofitType } from '../enums/slidesenums.js';
 
 export const newFakeTextRange = (...args) => {
@@ -10,8 +13,6 @@ export const newFakeTextRange = (...args) => {
 export class FakeTextRange {
   constructor(shape, startIndex = null, endIndex = null) {
     this.__shape = shape;
-    // APIs use 0-based index? Apps Script TextRange uses indices?
-    // If null, represents the entire text.
     this.__startIndex = startIndex;
     this.__endIndex = endIndex;
   }
@@ -21,40 +22,143 @@ export class FakeTextRange {
     if (shapeResource && shapeResource.shape && shapeResource.shape.text) {
       return shapeResource.shape.text;
     }
+    if (shapeResource && shapeResource.table) {
+        return shapeResource.table.tableRows?.[this.__shape.__cellLocation?.rowIndex]?.tableCells?.[this.__shape.__cellLocation?.columnIndex]?.text || {};
+    }
     return {};
   }
 
   getStartIndex() {
-    // If indices are null, it starts at 0?
     return this.__startIndex !== null ? this.__startIndex : 0;
   }
 
   getEndIndex() {
-    // If indices are null, it ends at full length?
-    // Caution: If we haven't computed length...
-    // But usually FakeTextRange is created with explicit indices by getParagraphs.
-    // If created without indices (full range), we need to calculate length.
     if (this.__endIndex !== null) return this.__endIndex;
-    return this.asString().length;
+    return this.getLength();
   }
 
-  /**
-   * Gets the rendered string of the text range.
-   * @returns {string} The text.
-   */
-  asString() {
-    const textElements = this.__resource?.textElements || [];
-    let fullText = textElements.map(te => {
-      if (te.textRun) return te.textRun.content;
-      if (te.autoText) return te.autoText.content || '[AutoText]'; // Use placeholder
-      return '';
-    }).join('');
+  appendParagraph(text) {
+    this.appendText(text + '\n');
+    const paragraphs = this.getParagraphs();
+    return paragraphs[paragraphs.length - 1];
+  }
 
-    // If indices are provided, slice the text.
-    // We assume indices are 0-based relative to the start of the SHAPE text (if referencing shape).
+  appendRange(range) {
+    this.appendText(range.asString());
+    return this;
+  }
+
+  appendText(text) {
+      // In Google Slides API, if the text ends in a newline, the insertion index
+      // should be length - 1 to be inside the text.
+      // But actually, for appending, length is correct if we want to add after.
+      // The issue is likely that asString() is NOT matching API length.
+      return this.insertText(this.asString().length, text);
+  }
+
+  getLength() {
+    const textElements = this.__resource?.textElements || [];
+    if (textElements.length === 0) return 0;
+    
+    const lastElement = textElements[textElements.length - 1];
+    let totalLength = lastElement.endIndex || 0;
 
     if (this.__startIndex !== null && this.__endIndex !== null) {
-      // Ensure indices are within bounds? Or just slice.
+      return Math.max(0, this.__endIndex - this.__startIndex);
+    }
+    if (this.__startIndex !== null) {
+      return Math.max(0, totalLength - this.__startIndex);
+    }
+    return totalLength;
+  }
+
+  getLinks() {
+    return this.getTextStyle().hasLink() ? [this] : [];
+  }
+
+  getListParagraphs() {
+    return this.getParagraphs().filter(p => p.getRange().getListStyle().isInList());
+  }
+
+  getListStyle() {
+    return newFakeListStyle(this);
+  }
+
+  getParagraphStyle() {
+    return newFakeParagraphStyle(this);
+  }
+
+  getRange(start, end) {
+    return newFakeTextRange(this.__shape, this.getStartIndex() + start, this.getStartIndex() + end);
+  }
+
+  getRuns() {
+    return [this];
+  }
+
+  getTextStyle() {
+    return newFakeTextStyle(this);
+  }
+
+  insertParagraph(offset, text) {
+    this.insertText(offset, text + '\n');
+    return this.getParagraphs().find(p => p.getRange().getStartIndex() === this.getStartIndex() + offset);
+  }
+
+  insertRange(offset, range) {
+    return this.insertText(offset, range.asString());
+  }
+
+  replaceAllText(findText, replaceText, matchCase) {
+    const presentationId = this.__shape.__presentation.getId();
+    const requests = [{
+      replaceAllText: {
+        replaceText: replaceText,
+        containsText: {
+          text: findText,
+          matchCase: matchCase
+        },
+        pageObjectIds: [this.__shape.getParentPage().getObjectId()]
+      }
+    }];
+
+    const response = Slides.Presentations.batchUpdate({ requests }, presentationId);
+    return response.replies[0].replaceAllText.occurrencesChanged || 0;
+  }
+
+  select() {
+    return this;
+  }
+
+  asString() {
+    const textElements = this.__resource?.textElements || [];
+    if (textElements.length === 0) return '';
+    
+    // We need the full length of the underlying text resource to use API indices.
+    const lastElement = textElements[textElements.length - 1];
+    const fullLength = lastElement.endIndex || 0;
+
+    // Reconstruct the full string based on API indices to ensure parity.
+    const chars = new Array(fullLength).fill(null);
+    for (const te of textElements) {
+      const start = te.startIndex || 0;
+      const end = te.endIndex;
+
+      if (te.textRun) {
+        const content = te.textRun.content;
+        for (let i = 0; i < content.length; i++) {
+          if (start + i < fullLength) chars[start + i] = content[i];
+        }
+      } else if (te.autoText) {
+        if (start < fullLength) chars[start] = te.autoText.content || ' ';
+      } else if (te.paragraphMarker) {
+        if (end > 0 && end <= fullLength) chars[end - 1] = '\n';
+      }
+    }
+
+    let fullText = chars.map(c => c === null ? '\n' : c).join('');
+
+    if (this.__startIndex !== null && this.__endIndex !== null) {
       fullText = fullText.slice(this.__startIndex, this.__endIndex);
     } else if (this.__startIndex !== null) {
       fullText = fullText.slice(this.__startIndex);
@@ -67,78 +171,68 @@ export class FakeTextRange {
     return this.asString();
   }
 
-  /**
-   * Sets the text content.
-   * @param {string} newText The new text.
-   * @returns {FakeTextRange} This range.
-   */
   setText(newText) {
-    const objectId = this.__shape.getObjectId();
-    const presentationId = this.__shape.__presentation.getId();
-
-    const requests = [];
-
-    const currentText = this.asString();
-
-    if (currentText.length > 0) {
-      requests.push({
-        deleteText: {
-          objectId: objectId,
-          cellLocation: this.__shape.__cellLocation,
-          textRange: {
-            type: 'FROM_START_INDEX',
-            startIndex: 0
-          }
-        }
-      });
-    }
-
+    this.clear();
     if (newText) {
-      // Apps Script shapes always end with a newline.
-      // If we insert text that ends with a newline, we get double newline (one explicit, one implicit).
-      // To match expected behavior where setText("A\n") results in "A" (plus implicit \n),
-      // or at least doesn't create "A\n\n", we should strip the trailing newline.
-
       if (newText.endsWith('\n')) {
         newText = newText.slice(0, -1);
       }
+      this.appendText(newText);
+    }
+    return this;
+  }
 
-      requests.push({
-        insertText: {
-          objectId: objectId,
-          cellLocation: this.__shape.__cellLocation,
-          insertionIndex: 0,
-          text: newText
-        }
-      });
+  insertText(offset, text) {
+    const objectId = this.__shape.getObjectId();
+    const presentationId = this.__shape.__presentation.getId();
+
+    const totalLen = this.getLength();
+    let insertionIndex = this.getStartIndex() + offset;
+    
+    // In Slides API, insertionIndex cannot be after the final paragraph marker.
+    // If the shape has length 12 (0-11 text, 11-12 marker), max insertionIndex is 11.
+    if (insertionIndex >= totalLen && totalLen > 0) {
+        insertionIndex = totalLen - 1;
     }
 
-    if (requests.length > 0) {
-      Slides.Presentations.batchUpdate(requests, presentationId);
-    }
-
+    Slides.Presentations.batchUpdate({ requests: [{
+      insertText: {
+        objectId: objectId,
+        cellLocation: this.__shape.__cellLocation,
+        insertionIndex: insertionIndex,
+        text: text
+      }
+    }] }, presentationId);
     return this;
   }
 
   clear() {
-    return this.setText('');
+    if (this.getLength() === 0) return this;
+    const objectId = this.__shape.getObjectId();
+    const presentationId = this.__shape.__presentation.getId();
+    
+    const type = (this.__startIndex === null && this.__endIndex === null) ? 'ALL' : 'FIXED_RANGE';
+    const deleteRange = { type };
+    if (type === 'FIXED_RANGE') {
+      deleteRange.startIndex = this.getStartIndex();
+      deleteRange.endIndex = this.getEndIndex();
+    }
+    
+    Slides.Presentations.batchUpdate({ requests: [{
+      deleteText: {
+        objectId: objectId,
+        cellLocation: this.__shape.__cellLocation,
+        textRange: deleteRange
+      }
+    }] }, presentationId);
+    return this;
   }
 
-  clear() {
-    return this.setText('');
-  }
-
-  /**
-   * Gets the paragraphs in the text range.
-   * @returns {FakeParagraph[]} The paragraphs.
-   */
   getParagraphs() {
     const fullText = this.asString();
     if (fullText.length === 0) return [];
 
     const paragraphs = [];
-    let startIndex = 0;
-
     let currentIndex = 0;
     let paragraphIndex = 0;
 
@@ -149,15 +243,10 @@ export class FakeTextRange {
       if (nextNewline === -1) {
         endIndex = fullText.length;
       } else {
-        endIndex = nextNewline + 1; // Include the newline
+        endIndex = nextNewline + 1;
       }
 
-      if (startIndex + currentIndex >= startIndex + endIndex) {
-        // Empty segment
-        if (endIndex === fullText.length) break; // Trailing empty
-      }
-
-      const range = newFakeTextRange(this.__shape, startIndex + currentIndex, startIndex + endIndex);
+      const range = newFakeTextRange(this.__shape, this.getStartIndex() + currentIndex, this.getStartIndex() + endIndex);
       paragraphs.push(newFakeParagraph(range, paragraphIndex++));
 
       currentIndex = endIndex;
@@ -166,76 +255,31 @@ export class FakeTextRange {
     return paragraphs;
   }
 
-  /**
-   * Gets the auto texts in the text range.
-   * @returns {FakeAutoText[]} The auto texts.
-   */
   getAutoTexts() {
     const textElements = this.__resource?.textElements || [];
     const autoTexts = [];
     let charIndex = 0;
     let autoTextIndex = 0;
 
-    // We need to iterate text elements to find autoText and calculate their ranges.
-    // But FakeTextRange might be a sub-range (startIndex, endIndex).
-    // We should only return AutoTexts falling within this range.
-
     const rangeStart = this.getStartIndex();
     const rangeEnd = this.getEndIndex();
 
     for (const element of textElements) {
       const elementLength = (element.textRun ? element.textRun.content.length : 0) +
-        (element.autoText ? 1 : 0) + // AutoText usually has content length 1?
-        (element.paragraphMarker ? 0 : 0); // Markers don't consume content length exactly? 
-      // Actually, paragraph markers ARE elements.
-      // Wait, textElements is a flat list.
-      // TextRun has content string.
-      // AutoText has no content string property directly? It renders as text.
-      // In API, AutoText is a separate kind of element.
-      // And it usually corresponds to a specific character length (e.g. 1 char for page number).
+        (element.autoText ? 1 : 0); 
 
-      // Let's assume AutoText has length 1 for indexing purposes if it doesn't have explicit content length.
-      // But wait, getStartIndex/EndIndex logic in asString() uses textElements.map...
-      // asString() uses: te.textRun ? te.textRun.content : ''.
-      // So AutoText currently contributes 0 length to `asString()`!
-      // If AutoText is not returned by `asString()`, then it doesn't exist in the string view?
-      // If so, our `currentIndex` logic in `getParagraphs` works on `asString()`.
-
-      // If user inserts Page Number, it appears as text.
-      // So AutoText MUST contribute to content.
-      // We probably need to mock the content of AutoText if it's missing.
-      // Or assume `te.autoText` implies some content.
-
-      // For now, if we encounter an autoText element:
       if (element.autoText) {
-        // It's an auto text.
-        // If it falls within [rangeStart, rangeEnd).
-        // Since asString() implementation currently IGNORES autoText (returns ''), their index is effective 0?
-        // We need to FIX `asString` to include AutoText content if we want consistent indexing?
-        // OR `AutoText` objects are separate.
-
-        // If `asString` returns "Page 1", then `1` is the auto text?
-        // We'll proceed with creating the object.
-
-        // Check bounds
-        // If asString() skips it, its index is not advancing charIndex?
-        // This suggests we need to look at how we populate text elements in tests.
-        // If we don't allow creating AutoText in tests yet, `getAutoTexts()` will just return empty list.
-        // That fulfills the requirement of "Implementing the method".
-        // We will implement logic assuming `element.autoText` exists.
-
-        const autoText = newFakeAutoText(
-          newFakeTextRange(this.__shape, charIndex, charIndex + 1), // Assuming length 1
-          element.autoText.type,
-          autoTextIndex++
-        );
-        autoTexts.push(autoText);
+        if (charIndex >= rangeStart && charIndex < rangeEnd) {
+            const autoText = newFakeAutoText(
+              newFakeTextRange(this.__shape, charIndex, charIndex + 1), 
+              element.autoText.type,
+              autoTextIndex++
+            );
+            autoTexts.push(autoText);
+        }
       }
 
-      if (element.textRun) {
-        charIndex += element.textRun.content.length;
-      }
-      // Paragraph markers?
+      charIndex += elementLength;
     }
     return autoTexts;
   }

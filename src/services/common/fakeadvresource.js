@@ -14,7 +14,7 @@ export class FakeAdvResource {
     this.__syncitMethod = syncitMethod; // e.g., Syncit.fxDocs or Syncit.fxSheets
   }
 
-  _call(method, params, options, subProp = null) {
+  _call(method, params, options, subProp = null, syncMethodOverride = null) {
     const pack = {
       prop: this.__serviceName,
       subProp,
@@ -22,7 +22,8 @@ export class FakeAdvResource {
       params,
       options
     };
-    const result = this.__syncitMethod(pack);
+    const syncMethod = syncMethodOverride || this.__syncitMethod;
+    const result = syncMethod(pack);
     if (!result || !result.response) {
       // Simulate an error response if the worker didn't provide one.
       return {

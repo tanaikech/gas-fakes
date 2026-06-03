@@ -20,6 +20,7 @@ export async function togas(options) {
   const scriptId = options.scriptId || process.env.TOGAS_SCRIPT_ID || process.env.GF_SCRIPT_ID;
   const pattern = options.pattern || process.env.TOGAS_PATTERN || "*";
   const source = options.source || "./";
+  const autoAccept = !!options.quiet;
 
   if (!target) {
     console.error("Error: TOGAS_TARGET is not set. Please run 'gas-fakes init' or provide --target.");
@@ -41,14 +42,18 @@ export async function togas(options) {
 
   const claspJsonPath = path.join(absoluteTarget, ".clasp.json");
   if (!fs.existsSync(claspJsonPath)) {
-    const response = await prompts({
-      type: "confirm",
-      name: "create",
-      message: `No .clasp.json found in ${target}. Create one?`,
-      initial: true
-    });
+    let create = autoAccept;
+    if (!create) {
+      const response = await prompts({
+        type: "confirm",
+        name: "create",
+        message: `No .clasp.json found in ${target}. Create one?`,
+        initial: true
+      });
+      create = response.create;
+    }
 
-    if (response.create) {
+    if (create) {
         if (!scriptId) {
              console.error("Error: No Script ID found. Please provide one with --scriptId or in .env.");
              process.exit(1);
@@ -157,14 +162,18 @@ export async function togas(options) {
   console.log(`Ready for clasp push in ${target}.`);
 
   // 5. Clasp push
-  const response = await prompts({
-    type: "confirm",
-    name: "push",
-    message: "Push to Apps Script using clasp now?",
-    initial: true
-  });
+  let push = autoAccept;
+  if (!push) {
+    const response = await prompts({
+      type: "confirm",
+      name: "push",
+      message: "Push to Apps Script using clasp now?",
+      initial: true
+    });
+    push = response.push;
+  }
 
-  if (response.push) {
+  if (push) {
     console.log("Running clasp push...");
     try {
       execSync("clasp push", { cwd: absoluteTarget, stdio: "inherit" });

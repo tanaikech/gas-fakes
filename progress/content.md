@@ -32,10 +32,10 @@ An enum for mime types that can be served from a script.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| CSV | CSV Mime Type | completed | [link](../src/services/enums/contentenums.js#L6) |
-| ICAL | ICAL Mime Type | completed | [link](../src/services/enums/contentenums.js#L7) |
-| JAVASCRIPT | JAVASCRIPT Mime Type | completed | [link](../src/services/enums/contentenums.js#L8) |
-| JSON | JSON Mime Type | completed | [link](../src/services/enums/contentenums.js#L9) |
-| TEXT | TEXT Mime Type | completed | [link](../src/services/enums/contentenums.js#L11) |
-| VCARD | VCARD Mime Type | completed | [link](../src/services/enums/contentenums.js#L12) |
+| CSV | CSV Mime Type | completed | [link](../src/services/mimetype/fakemimetype.js#L14) |
+| ICAL | ICAL Mime Type | not started |  |
+| JAVASCRIPT | JAVASCRIPT Mime Type | completed | [link](../src/services/mimetype/fakemimetype.js#L25) |
+| JSON | JSON Mime Type | not started |  |
+| TEXT | TEXT Mime Type | completed | [link](../src/services/mimetype/fakemimetype.js#L36) |
+| VCARD | VCARD Mime Type | not started |  |
 

@@ -12,7 +12,7 @@ import { initTests } from './testinit.js';
  * @param {string} options.dataPrefix A prefix for test data strings (e.g., 'h' or 'f').
  * @param {object[]} toTrash Array to collect items to be trashed.
  */
-export const testDocsSection = (pack, options, toTrash) => {
+export const testDocsSection = (pack, options, toTrash = []) => {
   const { sectionType, addMethod, getMethod, dataPrefix } = options;
   const { unit } = pack;
   const sectionClassName = `${sectionType}Section`;
@@ -84,6 +84,8 @@ export const testDocsSection = (pack, options, toTrash) => {
 
     if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
   });
+
+  return { toTrash };
 };
 
 export const testDocsSections = (pack) => {

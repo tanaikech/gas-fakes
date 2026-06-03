@@ -52,7 +52,16 @@ import { testSlidesAutoText } from "./testslidesautotext.js";
 import { testSlidesConnectionSite } from "./testslidesconnectionsite.js";
 import { testSlidesLineProps } from "./testslideslineprops.js";
 import { testSlidesFill } from "./testslidesfill.js";
+import { testSlidesLayout } from "./testslideslayout.js";
+import { testSlidesPageClasses } from "./testslidespageclasses.js";
+import { testSlidesTable } from "./testslidestable.js";
+import { testSlidesTextParity } from "./testslidestextparity.js";
+import { testSlidesPresentation } from "./testslidespresentation.js";
+import { testSlidesMedia } from "./testslidesmedia.js";
+import { testSlidesRanges } from "./testslidesranges.js";
+import { testSlidesFills } from "./testslidesfills.js";
 import { testSlidesGroup } from "./testslidesgroup.js";
+import { testSlidesImage } from "./testslidesimage.js";
 import { testSheetsChart } from "./testsheetschart.js";
 import { testSheetsRange } from "./testsheetsrange.js";
 import { testDocsImages } from "./testdocsimages.js";
@@ -65,6 +74,7 @@ import { testCalendarSandbox } from './testcalendarsandbox.js';
 import { testTasks } from './testtasks.js';
 import { testWorkspaceEvents } from './testworkspaceevents.js';
 import { testLogger } from "./testlogger.js";
+import { testBase } from "./testbase.js";
 import { testMimeType } from './testmimetype.js';
 import { testLock } from './testlock.js';
 import { testChartsApp } from "./testchartsapp.js";
@@ -170,6 +180,9 @@ export const testFakes = () => {
   console.log("\n----Test Logger----");
   testLogger(pack);
 
+  console.log("\n----Test base----");
+  testBase(pack);
+
   console.log("\n----Test lock----");
   testLock(pack);
   console.log("\n----Test mimetype----");
@@ -221,8 +234,26 @@ export const testFakes = () => {
   testSlidesLineProps(pack);
   console.log("\n----Test slidesfill----");
   testSlidesFill(pack);
+  console.log("\n----Test slideslayout----");
+  testSlidesLayout(pack);
+  console.log("\n----Test slidespageclasses----");
+  testSlidesPageClasses(pack);
+  console.log("\n----Test slidestable----");
+  testSlidesTable(pack);
+  console.log("\n----Test slidestextparity----");
+  testSlidesTextParity(pack);
+  console.log("\n----Test slidespresentation----");
+  testSlidesPresentation(pack);
+  console.log("\n----Test slidesmedia----");
+  testSlidesMedia(pack);
+  console.log("\n----Test slidesranges----");
+  testSlidesRanges(pack);
+  console.log("\n----Test slidesfills----");
+  testSlidesFills(pack);
   console.log("\n----Test slidesgroup----");
   testSlidesGroup(pack);
+  console.log("\n----Test slidesimage----");
+  testSlidesImage(pack);
   console.log("\n----Test slidesadv----");
   testSlidesAdv(pack);
   console.log("\n----Test slidesslide----");
@@ -300,4 +331,5 @@ export const testFakes = () => {
 };
 
 // this required on Node but not on Apps Script
-if (ScriptApp.isFake) testFakes();
+// but skip if we are in a worker to avoid infinite loops during HtmlService.evaluate()
+if (ScriptApp.isFake && process.env.GAS_FAKES_WORKER !== 'true') testFakes();

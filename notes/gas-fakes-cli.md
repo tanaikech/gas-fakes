@@ -110,6 +110,7 @@ Commands:
   enableAPIs [options]                      Enables or disables required Google Cloud APIs for the project.
   mcp [options]                             Launch gas-fakes as an MCP server.
   serve [options]                           Starts a local web server to handle doGet and doPost requests.
+  togas [options]                           Deploy local files to a Google Apps Script project.
   jdbc [options]                            Parse a JDBC connection string and output configurations.
 ```
 
@@ -165,6 +166,24 @@ gas-fakes serve ./addon.js
 Then access `http://localhost:8080?main=showMySidebar`.
 
 For a comprehensive guide on building UIs, templating, and handling client-side RPC calls locally, see the [Local Web Development Guide](local-web-development.md).
+
+### Deploying to Google Apps Script (`togas`)
+
+The `togas` command allows you to synchronize your local development environment with a live Google Apps Script project. It handles the bundling and deployment of your local JavaScript and HTML files.
+
+**Example:**
+
+```bash
+gas-fakes togas
+```
+
+#### Non-Interactive Mode (`--quiet`)
+
+For automated workflows, CI/CD pipelines, or when running within an AI-assisted environment, you can use the `-q` or `--quiet` flag to bypass interactive confirmation prompts. This will automatically accept default actions.
+
+```bash
+gas-fakes togas --quiet
+```
 
 ## Multi-Backend Support (KSuite)
 
@@ -691,6 +710,7 @@ const tools = [
 - [gas fakes intro video](https://youtu.be/oEjpIrkYpEM)
 - [getting started](../GETTING_STARTED.md) - how to handle authentication for Workspace scopes.
 - [readme](../README.md)
+- [apps script parity](../notes/parity.md)
 - [Natural Language Automation with Gemini Skills & MCP Server](../notes/gemini-skills-mcp.md) - new skills-based agent approach.
 - [Add agent skills to gf_agent](https://ramblings.mcpher.com/add-skills-gf_agent/)
 - [gf_agent documentation](../../gf_agent/README.md) - instructions for the Gemini CLI automation agent and MCP server.

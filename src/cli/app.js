@@ -219,6 +219,7 @@ export async function main() {
     .option("-s, --source <string>", "Source directory (default: ./ )")
     .option("-e, --env <path>", "Path to a custom .env file.", "./.env")
     .option("--scriptId <string>", "Script ID for the target clasp project.")
+    .option("-q, --quiet", "Automatically accept all prompts.")
     .action(togas);
 
   program.showHelpAfterError("(add --help for additional information)");

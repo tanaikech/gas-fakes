@@ -150,7 +150,7 @@ export class FakeColorScheme {
       }
     }];
 
-    Slides.Presentations.batchUpdate(requests, presentationId);
+    Slides.Presentations.batchUpdate({ requests }, presentationId);
     return this;
   }
 

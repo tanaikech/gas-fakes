@@ -72,6 +72,18 @@ export class FakePageElement {
   }
 
   /**
+   * Returns the page element as an image.
+   * @returns {FakeImage} The image.
+   */
+  asImage() {
+    if (this.__resource.image) {
+      const { newFakeImage } = PageElementRegistry;
+      return newFakeImage(this.__resource, this.__page);
+    }
+    throw new Error('PageElement is not an image.');
+  }
+
+  /**
    * Returns the page element as a line.
    * @returns {FakeLine} The line.
    */
@@ -108,6 +120,42 @@ export class FakePageElement {
   }
 
   /**
+   * Returns the page element as a video.
+   * @returns {FakeVideo} The video.
+   */
+  asVideo() {
+    if (this.__resource.video) {
+      const { newFakeVideo } = PageElementRegistry;
+      return newFakeVideo(this.__resource, this.__page);
+    }
+    throw new Error('PageElement is not a video.');
+  }
+
+  /**
+   * Returns the page element as a speaker spotlight.
+   * @returns {FakeSpeakerSpotlight} The speaker spotlight.
+   */
+  asSpeakerSpotlight() {
+    if (this.__resource.speakerSpotlight) {
+      const { newFakeSpeakerSpotlight } = PageElementRegistry;
+      return newFakeSpeakerSpotlight(this.__resource, this.__page);
+    }
+    throw new Error('PageElement is not a speaker spotlight.');
+  }
+
+  /**
+   * Returns the page element as word art.
+   * @returns {FakeWordArt} The word art.
+   */
+  asWordArt() {
+    if (this.__resource.wordArt) {
+      const { newFakeWordArt } = PageElementRegistry;
+      return newFakeWordArt(this.__resource, this.__page);
+    }
+    throw new Error('PageElement is not word art.');
+  }
+
+  /**
    * Gets the type of the page element.
    * @returns {SlidesApp.PageElementType} The type.
    */
@@ -138,6 +186,14 @@ export class FakePageElement {
       return types.GROUP;
     }
     return types.UNSUPPORTED;
+  }
+
+  getInherentHeight() {
+    return this.__normalize(this.__resource.size?.height);
+  }
+
+  getInherentWidth() {
+    return this.__normalize(this.__resource.size?.width);
   }
 
   getLeft() {
@@ -230,13 +286,13 @@ export class FakePageElement {
 
   alignOnPage(alignmentPosition) {
     const presentationId = this.__page.__presentation?.getId() || this.__page.__slide?.__presentation.getId();
-    Slides.Presentations.batchUpdate([{
+    Slides.Presentations.batchUpdate({ requests: [{
       updatePageElementProperties: {
         objectId: this.getObjectId(),
         pageElementProperties: {}, // API doesn't have direct align?
         fields: '*'
       }
-    }], presentationId);
+    }] }, presentationId);
     return this;
   }
 
@@ -270,11 +326,11 @@ export class FakePageElement {
 
   remove() {
     const presentationId = this.__page.__presentation.getId();
-    Slides.Presentations.batchUpdate([{
+    Slides.Presentations.batchUpdate({ requests: [{
       deleteObject: {
         objectId: this.getObjectId()
       }
-    }], presentationId);
+    }] }, presentationId);
   }
 
   bringForward() {
@@ -339,7 +395,7 @@ export class FakePageElement {
   __updateTransform(transform) {
     const t = this.getTransform();
     const presentationId = this.__page.__presentation?.getId() || this.__page.__slide?.__presentation.getId();
-    Slides.Presentations.batchUpdate([{
+    Slides.Presentations.batchUpdate({ requests: [{
       updatePageElementTransform: {
         objectId: this.getObjectId(),
         transform: {
@@ -354,7 +410,7 @@ export class FakePageElement {
         },
         applyMode: 'ABSOLUTE'
       }
-    }], presentationId);
+    }] }, presentationId);
   }
 
   __updateSize(size) {
@@ -377,13 +433,13 @@ export class FakePageElement {
 
   __updateAltText(title, description) {
     const presentationId = this.__page.__presentation.getId();
-    Slides.Presentations.batchUpdate([{
+    Slides.Presentations.batchUpdate({ requests: [{
       updatePageElementAltText: {
         objectId: this.getObjectId(),
         title: title,
         description: description
       }
-    }], presentationId);
+    }] }, presentationId);
   }
 
   __updateProperties(props, fields) {
@@ -412,18 +468,18 @@ export class FakePageElement {
     if (request) {
       if (request.updateShapeProperties) request.updateShapeProperties.fields = fields || '*';
       if (request.updateLineProperties) request.updateLineProperties.fields = fields || '*';
-      Slides.Presentations.batchUpdate([request], presentationId);
+      Slides.Presentations.batchUpdate({ requests: [request] }, presentationId);
     }
   }
 
   __updateZOrder(operation) {
     const presentationId = this.__page.__presentation.getId();
-    Slides.Presentations.batchUpdate([{
+    Slides.Presentations.batchUpdate({ requests: [{
       updatePageElementZOrder: {
         pageElementObjectIds: [this.getObjectId()],
         zOrderOperation: operation
       }
-    }], presentationId);
+    }] }, presentationId);
   }
 
   /**
@@ -453,14 +509,14 @@ export class FakePageElement {
     const presentationId = this.__page.__presentation?.getId() || this.__page.__slide?.__presentation.getId();
     const newObjectId = `duplicate_${Math.random().toString(36).substr(2, 9)}`;
     
-    Slides.Presentations.batchUpdate([{
+    Slides.Presentations.batchUpdate({ requests: [{
       duplicateObject: {
         objectId: this.getObjectId(),
         objectIds: {
           [this.getObjectId()]: newObjectId
         }
       }
-    }], presentationId);
+    }] }, presentationId);
 
     const resourceCopy = JSON.parse(JSON.stringify(this.__resource));
     resourceCopy.objectId = newObjectId;
@@ -482,6 +538,10 @@ export const PageElementRegistry = {
   newFakeLine: null,
   newFakeTable: null,
   newFakeGroup: null,
+  newFakeImage: null,
+  newFakeVideo: null,
+  newFakeSpeakerSpotlight: null,
+  newFakeWordArt: null,
   newFakePageElement: newFakePageElement,
   asSpecificPageElement: null
 };

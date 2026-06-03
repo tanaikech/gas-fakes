@@ -51,7 +51,12 @@ export const testFetch = (pack) => {
     const req1 = UrlFetchApp.getRequest(url);
     t.is(req1.url, url);
     t.is(req1.method, 'get');
-    t.deepEqual(req1.headers, {});
+    // On live GAS, headers might contain injected values like X-Forwarded-For
+    if (ScriptApp.isFake) {
+      t.deepEqual(req1.headers, {});
+    } else {
+      t.true(is.object(req1.headers), 'headers should be an object');
+    }
 
     // Test with options
     const req2 = UrlFetchApp.getRequest(url, {
@@ -65,7 +70,12 @@ export const testFetch = (pack) => {
     t.is(req2.method, 'post');
     t.is(req2.contentType, 'application/json');
     t.is(req2.payload, '{"hello":"world"}');
-    t.deepEqual(req2.headers, { 'X-Custom': 'test' });
+    
+    if (ScriptApp.isFake) {
+      t.deepEqual(req2.headers, { 'X-Custom': 'test' });
+    } else {
+      t.is(req2.headers['X-Custom'], 'test', 'Custom header should be present');
+    }
     
     // Test default content type for POST
     const req3 = UrlFetchApp.getRequest(url, {

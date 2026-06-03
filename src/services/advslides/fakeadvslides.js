@@ -16,15 +16,15 @@ class FakeAdvSlidesPresentations extends FakeAdvResource {
   // Override 'get' to use the caching-enabled function fxSlidesGet.
   get(presentationId, options) {
     ScriptApp.__behavior.isAccessible(presentationId, 'Slides', 'read');
-    const { response, data } = this._call('get', { presentationId, ...options }, Syncit.fxSlidesGet);
+    const { response, data } = this._call('get', { presentationId, ...options }, {}, null, Syncit.fxSlidesGet);
     gError(response, 'slides.presentations', 'get');
     return data;    
   }
 
   // Signature matches Apps Script advanced service.
   create(presentation) {
-    // The underlying API wants the resource in a 'resource' property.
-    const result = this._call('create', { resource: presentation });
+    // The underlying API wants the resource in a 'requestBody' property for Node.js.
+    const result = this._call('create', { requestBody: presentation });
     if (result.data) {
       this.slides.__addAllowed(result.data.presentationId);
     }
@@ -32,12 +32,18 @@ class FakeAdvSlidesPresentations extends FakeAdvResource {
   }
 
   // Signature matches Apps Script advanced service.
-  batchUpdate(requests, presentationId) {
+  // Robustly handle both resource object and raw requests array.
+  batchUpdate(resource, presentationId) {
     // for slides, any batch update is a write
     ScriptApp.__behavior.isAccessible(presentationId, 'Slides', 'write');
+    
+    const requestBody = Array.isArray(resource) 
+      ? { requests: resource } 
+      : resource;
+
     const result = this._call('batchUpdate', {
       presentationId,
-      resource: { requests },
+      requestBody,
     });
     gError(result.response, 'slides.presentations', 'batchUpdate');
 

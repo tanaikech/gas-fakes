@@ -5,7 +5,6 @@ import { newFakeMaster } from './fakemaster.js';
 import { newFakePageElement } from './fakepageelement.js';
 import { newFakePageBackground } from './fakepagebackground.js';
 import { newFakeColorScheme } from './fakecolorscheme.js';
-import { asSpecificPageElement } from './pageelementfactory.js';
 
 export const newFakeSlide = (...args) => {
   return Proxies.guard(new FakeSlide(...args));
@@ -75,7 +74,11 @@ export class FakeSlide {
    * @returns {FakePageElement[]} The page elements.
    */
   getPageElements() {
-    return (this.__resource.pageElements || []).map(pe => asSpecificPageElement(newFakePageElement(pe, this)));
+    return (this.__resource.pageElements || []).map(pe => newFakePageElement(pe, this));
+  }
+
+  getPageElementById(id) {
+    return this.getPageElements().find(pe => pe.getObjectId() === id) || null;
   }
 
   /**
@@ -83,8 +86,7 @@ export class FakeSlide {
    * @returns {FakePageBackground} The background.
    */
   getBackground() {
-    const background = this.__resource.pageBackgroundFill;
-    return background ? newFakePageBackground(this) : null;
+    return newFakePageBackground(this);
   }
 
   /**
@@ -101,7 +103,7 @@ export class FakeSlide {
    */
   getTables() {
     return this.getPageElements()
-      .filter(pe => pe.toString() === 'Table')
+      .filter(pe => pe.getPageElementType().toString() === 'TABLE')
       .map(pe => pe.asTable());
   }
 
@@ -111,8 +113,173 @@ export class FakeSlide {
    */
   getShapes() {
     return this.getPageElements()
-      .filter(pe => pe.toString() === 'Shape')
+      .filter(pe => pe.getPageElementType().toString() === 'SHAPE')
       .map(pe => pe.asShape());
+  }
+
+  /**
+   * Gets the list of images on the slide.
+   * @returns {FakeImage[]} The images.
+   */
+  getImages() {
+    return this.getPageElements()
+      .filter(pe => pe.getPageElementType().toString() === 'IMAGE')
+      .map(pe => pe.asImage());
+  }
+
+  /**
+   * Inserts a Google Sheets chart on the slide.
+   * @param {EmbeddedChart} chart The chart.
+   * @returns {SheetsChart} The inserted chart.
+   */
+  insertSheetsChart(chart) {
+    const presentationId = this.__presentation.getId();
+    const objectId = `chart_${Math.random().toString(36).substring(2, 11)}`;
+    const spreadsheetId = chart.getSpreadsheetId ? chart.getSpreadsheetId() : '';
+    const chartId = chart.getChartId ? chart.getChartId() : 0;
+
+    const requests = [{
+      createSheetsChart: {
+        objectId,
+        spreadsheetId,
+        chartId,
+        linkingMode: 'LINKED',
+        elementProperties: {
+          pageObjectId: this.getObjectId(),
+          size: {
+            width: { magnitude: 400, unit: 'PT' },
+            height: { magnitude: 300, unit: 'PT' }
+          }
+        }
+      }
+    }];
+
+    Slides.Presentations.batchUpdate({ requests }, presentationId);
+    return this.getPageElementById(objectId).asSheetsChart();
+  }
+
+  /**
+   * Inserts a Google Sheets chart as an image on the slide.
+   * @param {EmbeddedChart} chart The chart.
+   * @returns {Image} The inserted image.
+   */
+  insertSheetsChartAsImage(chart) {
+      // In GAS, this is usually implemented as a static image capture.
+      // For the fake, we'll just insert it as a non-linked chart or a placeholder image.
+      const presentationId = this.__presentation.getId();
+      const objectId = `chart_img_${Math.random().toString(36).substring(2, 11)}`;
+      
+      const requests = [{
+        createImage: {
+          objectId,
+          url: 'https://via.placeholder.com/400x300?text=Sheets+Chart',
+          elementProperties: {
+            pageObjectId: this.getObjectId()
+          }
+        }
+      }];
+      Slides.Presentations.batchUpdate({ requests }, presentationId);
+      return this.getPageElementById(objectId).asImage();
+  }
+
+  /**
+   * Inserts a video at the top left corner of the page with a default size from the provided URL.
+   * @param {string} videoUrl The video URL.
+   * @param {number} [left]
+   * @param {number} [top]
+   * @param {number} [width]
+   * @param {number} [height]
+   * @returns {FakeVideo} The inserted video.
+   */
+  insertVideo(videoUrl, left = 0, top = 0, width = 300, height = 200) {
+    const presentationId = this.__presentation.getId();
+    const objectId = `video_${Math.random().toString(36).substring(2, 11)}`;
+    
+    // Standard YouTube URL parsing
+    let videoId = videoUrl;
+    if (videoUrl.includes('v=')) {
+      videoId = videoUrl.split('v=')[1].split('&')[0];
+    } else if (videoUrl.includes('youtu.be/')) {
+      videoId = videoUrl.split('youtu.be/')[1].split('?')[0];
+    }
+
+    const requests = [{
+      createVideo: {
+        objectId,
+        source: 'YOUTUBE',
+        id: videoId,
+        elementProperties: {
+          pageObjectId: this.getObjectId(),
+          size: {
+            width: { magnitude: width, unit: 'PT' },
+            height: { magnitude: height, unit: 'PT' }
+          },
+          transform: {
+            scaleX: 1,
+            scaleY: 1,
+            translateX: left,
+            translateY: top,
+            unit: 'PT'
+          }
+        }
+      }
+    }];
+
+    Slides.Presentations.batchUpdate({ requests }, presentationId);
+    return this.getPageElementById(objectId).asVideo();
+  }
+
+  /**
+   * Inserts an image.
+   * @param {string|FakeBlob|FakeImage} urlOrBlobOrImage The image to insert.
+   * @param {number} [left]
+   * @param {number} [top]
+   * @param {number} [width]
+   * @param {number} [height]
+   * @returns {FakeImage} The new image.
+   */
+  insertImage(urlOrBlobOrImage, left = 0, top = 0, width = 300, height = 300) {
+    const presentationId = this.__presentation.getId();
+    const objectId = `image_${Math.random().toString(36).substring(2, 11)}`;
+    let sourceUrl = '';
+
+    if (typeof urlOrBlobOrImage === 'string') {
+      sourceUrl = urlOrBlobOrImage;
+    } else if (urlOrBlobOrImage && urlOrBlobOrImage.getSourceUrl) {
+      sourceUrl = urlOrBlobOrImage.getSourceUrl();
+    }
+
+    const requests = [{
+      createImage: {
+        objectId,
+        url: sourceUrl || 'https://via.placeholder.com/150', // Fallback URL
+        elementProperties: {
+          pageObjectId: this.getObjectId(),
+          size: {
+            width: { magnitude: width, unit: 'PT' },
+            height: { magnitude: height, unit: 'PT' }
+          },
+          transform: {
+            scaleX: 1,
+            scaleY: 1,
+            translateX: left,
+            translateY: top,
+            unit: 'PT'
+          }
+        }
+      }
+    }];
+
+    try {
+      Slides.Presentations.batchUpdate({ requests }, presentationId);
+    } catch (err) {
+      if (!err?.message?.includes('already exists')) throw err;
+    }
+
+    const elements = this.getPageElements();
+    const newElement = elements.find(e => e.getObjectId() === objectId);
+    if (!newElement) throw new Error('New image not found');
+    return newElement.asImage();
   }
 
   /**
@@ -121,11 +288,11 @@ export class FakeSlide {
   remove() {
     const presentationId = this.__presentation.getId();
     try {
-      Slides.Presentations.batchUpdate([{
+      Slides.Presentations.batchUpdate({ requests: [{
         deleteObject: {
           objectId: this.getObjectId()
         }
-      }], presentationId);
+      }] }, presentationId);
     } catch (err) {
       // If not found, it's already deleted (perhaps on a previous timeouted attempt)
       if (!err?.message?.includes('not found')) throw err;
@@ -168,7 +335,7 @@ export class FakeSlide {
     }];
 
     try {
-      Slides.Presentations.batchUpdate(requests, presentationId);
+      Slides.Presentations.batchUpdate({ requests }, presentationId);
     } catch (err) {
       if (!err?.message?.includes('already exists')) throw err;
     }
@@ -213,7 +380,7 @@ export class FakeSlide {
       }
     }];
 
-    Slides.Presentations.batchUpdate(requests, presentationId);
+    Slides.Presentations.batchUpdate({ requests }, presentationId);
 
     const allElements = this.getPageElements();
     const newElement = allElements.find(e => e.getObjectId() === objectId);
@@ -272,7 +439,7 @@ export class FakeSlide {
     }];
 
     try {
-      Slides.Presentations.batchUpdate(requests, presentationId);
+      Slides.Presentations.batchUpdate({ requests }, presentationId);
     } catch (err) {
       if (!err?.message?.includes('already exists')) throw err;
     }
@@ -349,7 +516,7 @@ export class FakeSlide {
     }
 
     try {
-      Slides.Presentations.batchUpdate([request], presentationId);
+      Slides.Presentations.batchUpdate({ requests: [request] }, presentationId);
     } catch (err) {
       if (!err?.message?.includes('already exists')) throw err;
     }
@@ -364,16 +531,16 @@ export class FakeSlide {
     if (typeof rowsOrTable !== 'number') {
       const sourceTable = rowsOrTable;
       const targetTable = newTable;
-      const rows = sourceTable.getRows();
-      const targetRows = targetTable.getRows();
+      const numRows = sourceTable.getNumRows();
 
-      for (let r = 0; r < rows.length; r++) {
-        const cells = rows[r].getCells();
-        const targetCells = targetRows[r].getCells();
-        for (let c = 0; c < cells.length; c++) {
-          const text = cells[c].getText().asString();
+      for (let r = 0; r < numRows; r++) {
+        const sourceRow = sourceTable.getRow(r);
+        const targetRow = targetTable.getRow(r);
+        const numCells = sourceRow.getNumCells();
+        for (let c = 0; c < numCells; c++) {
+          const text = sourceRow.getCell(c).getText().asString();
           if (text) {
-            targetCells[c].getText().setText(text);
+            targetRow.getCell(c).getText().setText(text);
           }
         }
       }
@@ -395,7 +562,7 @@ export class FakeSlide {
     }];
 
     try {
-      Slides.Presentations.batchUpdate(requests, presentationId);
+      Slides.Presentations.batchUpdate({ requests }, presentationId);
     } catch (err) {
       if (!err?.message?.includes('already exists')) throw err;
     }
@@ -413,12 +580,12 @@ export class FakeSlide {
   move(index) {
     const presentationId = this.__presentation.getId();
 
-    Slides.Presentations.batchUpdate([{
+    Slides.Presentations.batchUpdate({ requests: [{
       updateSlidesPosition: {
         slideObjectIds: [this.getObjectId()],
         insertionIndex: index
       }
-    }], presentationId);
+    }] }, presentationId);
   }
 
   /**
@@ -441,7 +608,7 @@ export class FakeSlide {
       }
     }];
 
-    const response = Slides.Presentations.batchUpdate(requests, presentationId);
+    const response = Slides.Presentations.batchUpdate({ requests }, presentationId);
     return response.replies[0].replaceAllText.occurrencesChanged || 0;
   }
 
