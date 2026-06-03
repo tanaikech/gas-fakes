@@ -11,3 +11,4 @@ src-gas/
 api-docs
 **/.msgraph-token*.*
 gasmess
+.antigravitycli
