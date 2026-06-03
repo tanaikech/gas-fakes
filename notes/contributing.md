@@ -1,10 +1,9 @@
 # <img src="./logo.png" alt="gas-fakes logo" width="50" align="top"> Some notes for gas-fakes collaborators 
 
-This is a proof of concept so I've implemented a subset of number of services and methods, but the tricky parts are all in place so all that's left is a load of busy work (to which I heartily invite any interested collaborators).
 
 ## progress
 
-This is a pretty huge task, so I'm working on adding services a little bit at a time, with usually just a few methods added in each release. I'm looking for collaborators who not only want to help on this project, but also to deepen their understanding of Apps Script services, and the worksace APIs. I've certainly learned a lot so far.
+ I'm looking for collaborators who not only want to help on this project, but also to deepen their understanding of Apps Script services, and the worksace APIs. I've certainly learned a lot so far. As far as progress is concerned, we're well into Apps Script parity. For progress against Apps Script landscape [see](../progress.md). Also see [parity](../notes/parity.md).
 
 ## Getting started
 
@@ -17,7 +16,7 @@ First take a look at the [readme](../README.md) for how to get started as a user
 
 ### Development schedule
 
-As a background project I'm chipping away at this when I can. There's a mountain of work to do, and I'm not that bothered about the general order I do it in. If you would specifically like some service or method prioritized, let me know and I'll see if I can push it forward. Better still, if you'd like to have a crack at implementing it yourself, let me know and I'll get you started.
+ If you would specifically like some service or method prioritized, let me know and I'll see if I can push it forward. Better still, if you'd like to have a crack at implementing it yourself, let me know and I'll get you started.
 
 
 ## Testing
@@ -33,9 +32,9 @@ Here's some guidance on testing. Before submitting a PR always run all the exist
 
 Note that I use a [unit tester](https://ramblings.mcpher.com/apps-script-test-runner-library-ported-to-node/) that runs in both GAS and Node, so the exact same tests will run in both environments. There are some example tests in the repo. Each test has been proved on both Node and GAS. Use the `gas-fakes togas` CLI command to push the test code to Apps Script.
 
-### test location change at v1.2.7
+### test location
 
-As of v1.2.7 all tests should be run from the test folder, and the `gas-fakes togas` command can be used from there to deploy tests.
+All tests should be run from the test folder, and the `gas-fakes togas` command can be used from there to deploy tests.
 
 Each test can be run individually (for example `npm run testdrive`) or all with `npm test`
 
@@ -170,17 +169,14 @@ import '@mcpher/gas-fakes/main.js'
 
 I haven't found a real need to create many mocks, as the Live Apps Script environment has all you need to check test scripts. I always run all tests on Apps Script first, then strive to get the same result in Node. In principle there should be no 'special exceptions' in the test files, except in the case of outstanding issues reported in buganizer (where apps script is not behaving as it should) and also in the issues of the repo.
 
-## Experiments
 
-There's a folder 'gasmess' for this. They don't form part of the project, but can be used for playing around. It can be useful to preservce these for future use. See the readme in the gasmess folder for more info.
+## Using Gemini etc
 
-## Using Gemini code assist
-
-I've had mixed result with Gemini on this large project. If you're planning to use Gemini to do some legwork, I have no objections but here's some [notes](../gemini.md) - some reflections and experiences on using Gemini to help code large projects on my experience so far.
+I've had mixed result with Gemini on this large project, and in any case I can't afford to. The accuracy of generated code is much better now the project has such large coverage, but it still needs careful audit of any tests you ask it to generate as it tends to test what it has coded, not necessaily what it should have coded. The jury is still out on whether it saves any tiem and whether teh quality is good enough.
 
 ## Help
 
-As I mentioned earlier, to take this further, I'm going to need a lot of help to extend the methods and services supported - so if you feel this would be useful to you, and would like to collaborate, please ping me on [bruce@mcpher.com](mailto:bruce@mcpher.com) and we'll talk.
+As I mentioned earlier, I'd love to improve the project sustainability with mpre contributors - so if you feel this would be useful to you, and would like to collaborate, please ping me on [bruce@mcpher.com](mailto:bruce@mcpher.com) and we'll talk.
 
 ## <img src="../pngs/logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
 
@@ -227,7 +223,7 @@ As I mentioned earlier, to take this further, I'm going to need a lot of help to
 - [jdbc notes](../notes/jdbc-notes.md)
 - [Yes – you can run native apps script code on Azure ACA as well!](https://ramblings.mcpher.com/yes-you-can-run-native-apps-script-code-on-azure-aca-as-well/)
 - [Yes – you can run native apps script code on AWS Lambda!](https://ramblings.mcpher.com/apps-script-on-aws-lambda/)
-- [initial idea and thoughts](https://ramblings.mcpher.com/a-proof-of-concept-implementation-of-apps-script-environment-on-node/)
+- [initial idea and thoughts - how it all started](https://ramblings.mcpher.com/a-proof-of-concept-implementation-of-apps-script-environment-on-node/)
 - [Inside the volatile world of a Google Document](https://ramblings.mcpher.com/inside-the-volatile-world-of-a-google-document/)
 - [Apps Script Services on Node – using apps script libraries](https://ramblings.mcpher.com/apps-script-services-on-node-using-apps-script-libraries/)
 - [Apps Script environment on Node – more services](https://ramblings.mcpher.com/apps-script-environment-on-node-more-services/)

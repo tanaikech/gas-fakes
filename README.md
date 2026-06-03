@@ -16,7 +16,7 @@ npm i @mcpher/gas-fakes
 
 For a complete guide on how to set up your local environment for authentication and development, please see the consolidated guide: [Getting Started with `gas-fakes`](GETTING_STARTED.md)
 
-Collaborators should fork the repo and use the local versions of these files - see collaborators info.
+Collaborators should fork the repo and use the local versions of these files - see [collaborators info](./notes/contributing.md)
 
 ### Use exactly the same code as in Apps Script
 ## Usage
@@ -202,7 +202,7 @@ As I mentioned earlier, to take this further, I'm going to need a lot of help to
 - [jdbc notes](notes/jdbc-notes.md)
 - [Yes – you can run native apps script code on Azure ACA as well!](https://ramblings.mcpher.com/yes-you-can-run-native-apps-script-code-on-azure-aca-as-well/)
 - [Yes – you can run native apps script code on AWS Lambda!](https://ramblings.mcpher.com/apps-script-on-aws-lambda/)
-- [initial idea and thoughts](https://ramblings.mcpher.com/a-proof-of-concept-implementation-of-apps-script-environment-on-node/)
+- [initial idea and thoughts - how it all started](https://ramblings.mcpher.com/a-proof-of-concept-implementation-of-apps-script-environment-on-node/)
 - [Inside the volatile world of a Google Document](https://ramblings.mcpher.com/inside-the-volatile-world-of-a-google-document/)
 - [Apps Script Services on Node – using apps script libraries](https://ramblings.mcpher.com/apps-script-services-on-node-using-apps-script-libraries/)
 - [Apps Script environment on Node – more services](https://ramblings.mcpher.com/apps-script-environment-on-node-more-services/)

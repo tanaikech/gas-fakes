@@ -1,6 +1,9 @@
+---
+description: 
+---
+
 ## The idea is to use Apps Script as the 'lingua franca' for workspace type products.
 
-This is a proof of concept, soo we just need to implement a few methods for now to see if it is feasible.
 
 ### Defining the platform
 
