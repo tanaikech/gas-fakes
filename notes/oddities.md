@@ -56,11 +56,9 @@ It's additionally slowed down because there are an unnatural amount of rapid, co
 
 There's an article here, if you want to read more on this [Apps Script environment on Node – more services](https://ramblings.mcpher.com/apps-script-environment-on-node-more-services/)
 
-### Global intialization
+### Global intialization and completeness
 
-This was a little problematic to sequence, but I wanted to make sure that any GAS services being imitated were available and initialized on the Node side, just as they are in GAS. At the time of writing these services and classes are partially implemented.
-
-Only a subset of methods are currently available for some of them - the rest are work in progress. You can see the progress by service and method in the [progress folder](./progress)
+ You can see the progress by service and method in the [progress folder](./progress)
 
 ### Testing coverage
 
