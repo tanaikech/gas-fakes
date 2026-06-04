@@ -103,3 +103,94 @@ Historically, testing Apps Script Web Apps (`doGet`, `doPost`) required continuo
 
 ---
 
+## Claude
+
+Now I have enough material for a thorough, well-evidenced scorecard. Let me produce it.Here's the written analysis behind the scorecard:
+
+---
+
+**Overall: A−** — a genuinely impressive piece of engineering, remarkable for what is largely a solo project, with a depth of platform fidelity that very few open-source emulators reach.
+
+---
+
+**What earns the high marks**
+
+The testing story is the standout achievement. The project maintains over 10,500 active tests (as of v2.5.3) that are executed across two distinct environments: the local emulator and the live GAS runtime. That dual-environment discipline is rare — it means the emulator is validated against the ground truth continuously, not just against its own assumptions.
+
+The parity tracking is unusually transparent. The progress summary table covers 20 services, 420 classes, and 6,708 total methods, with 4,399 completed, 0 in-progress, and 2,309 not started. That's not just an aspirational roadmap — it's a live audit trail, with per-service breakdowns in `/progress`, and direct, clickable links to the exact line of source code where every method is implemented in the parity docs.
+
+`oddities.md` deserves special mention. At ~99.5 KB, it documents every GAS bug, undocumented behaviour, and API divergence discovered during development — things like the hierarchy difference between `getViewers()` and `getEditors()` in DriveApp vs the underlying Drive API, the various Forms API limitations that make `setPublished()`, `deleteAllResponses()`, and `FormResponse.submit()` impossible to emulate faithfully through the public API, and dozens of Sheets, Docs, and Slides edge cases. Crucially, the author makes a principled choice each time: emulate the buggy live behaviour (for fidelity), emulate the correct behaviour (for pragmatism), or throw a clear error (to prevent false confidence). That level of intellectual honesty is engineering maturity.
+
+The synchronous execution model is architecturally elegant. Worker threads and Node Atomics are used to provide a mutex-style control that allows the main thread to effectively "wait" for results, mimicking the blocking behaviour of the original GAS runtime while allowing the worker to execute multiple asynchronous activities — a dramatic speed improvement over the earlier subprocess approach.
+
+The local web development support (v2.4.0+) is a genuine differentiator: sidebar/dialog frame emulation, full `google.script.run` RPC polyfill, `HtmlTemplate` scriptlet evaluation in a Node worker, and simultaneous Chrome + VS Code debugging of client and server code.
+
+---
+
+**Where marks are withheld**
+
+API coverage sits at 65% overall. Eight services are complete, but Document (50%), Forms (54%), JDBC (42%), Charts (16%), XML (20%), and Script (10%) remain substantially unfinished. This is entirely understandable for a solo project of this scope, and the gaps are honestly disclosed — unimplemented methods throw errors rather than silently misbehaving. But users of those services need to verify coverage before relying on the emulator.
+
+There are 56 open issues and no visible pull request activity, which reflects both healthy community engagement and the practical reality of a single maintainer. The GitHub Actions repos exist for CI patterns, but the main repo carries no CI badge and tests appear to be run manually. Automated test gating on PRs would strengthen confidence in contributions.
+
+Mail service (0 of 5 methods) and significant Script service gaps (8 of 84) are worth noting for anyone using those.
+
+---
+
+**Bottom line** — for its target audience (GAS developers wanting local Node.js development, testing, and multi-cloud deployment), gas-fakes is the most complete and rigorously documented solution that exists. Its honesty about what it can't do is as impressive as what it can.
+
+---
+
+## Notebook LLM
+
+Based on the provided sources, **gas-fakes** is an architectural emulation layer designed to bring the Google Apps Script (GAS) runtime experience into a local Node.js environment. It aims to "liberate" Apps Script by decoupling its syntax from the proprietary Google IDE, allowing it to run anywhere Node.js runs.
+
+Below is a comprehensive **scorecard and review** of the project based on the current implementation (version 2.5.3).
+
+### **gas-fakes Project Scorecard**
+
+| Category | Score | Key Highlights |
+| :--- | :--- | :--- |
+| **API Parity & Fidelity** | **Good** | ~65% of total methods implemented (4,399 of 6,708); 10,500+ tests. |
+| **Developer Experience (DX)** | **Excellent** | Full Node.js stack, NPM support, and real-time local debugging. |
+| **Security & Identity** | **Excellent** | Keyless authentication via DWD and WIF; granular sandboxing. |
+| **Portability & Scalability** | **Exceptional** | Bypasses 6-minute limit; runs on AWS, Azure, GCP, and Kubernetes. |
+| **AI & Next-Gen Readiness** | **Excellent** | Native MCP server; integration with Gemini CLI and Google Antigravity. |
+
+---
+
+### **Detailed Review**
+
+#### **1. Core Functionality & Parity**
+The primary challenge of the project is emulating the asynchronous Google REST APIs as synchronous GAS methods.
+*   **The Mechanism:** It uses **Worker Threads** and **Atomics** to create a "Sync-to-Async Bridge," allowing developers to write standard synchronous GAS code that executes against live APIs without `async/await`.
+*   **Progress:** As of version 2.5.3, it has reached significant maturity, covering nearly **two-thirds of the total GAS API surface**.
+*   **Fidelity:** It goes beyond simple API mapping by meticulously reproducing **"behavioral oddities"**—the quirks, rate limits, and undocumented behaviors of the live GAS environment—to ensure code behaves identically in both environments.
+
+#### **2. Developer Workflow (The "Desktop Liberation")**
+The sources highlight a massive leap in productivity for developers who have outgrown the browser-based IDE.
+*   **Local Tooling:** Developers gain access to the **NPM ecosystem**, version control (Git), and professional debuggers like VS Code.
+*   **CLI Integration:** The `gas-fakes-cli` handles `init`, `auth`, and `serve` commands, automating project setup and local web app emulation.
+*   **Round-Trip Development:** Using scripts like `fromgas` and `togas`, developers can pull code from the cloud, test it locally, and push it back while automatically stripping out Node-specific syntax.
+
+#### **3. Security and Identity Management**
+Identity is cited as the most difficult aspect of moving GAS to a container.
+*   **Keyless Authentication:** By leveraging **Domain-Wide Delegation (DWD)** and **Workload Identity Federation (WIF)**, the tool eliminates the need for dangerous, long-lived JSON keys.
+*   **The Sandbox:** A secure sandbox allows for the execution of untrusted or AI-generated code by whitelisting specific files and services, protecting against "Vibe coding" hallucinations or malicious scripts.
+
+#### **4. Scaling Beyond Limits**
+Perhaps the most significant value proposition is defeating the **"6-minute wall"**—the execution timeout limit of the live GAS environment.
+*   **Platform Flexibility:** Once containerized, GAS logic can run on platforms like **Azure Container Apps** (up to 24-hour timeouts) or **AWS Lambda**, providing enterprise-grade reliability and scalability.
+*   **Hybrid Interoperability:** It allows local and live environments to share state via external stores like Redis, ensuring a seamless transition from development to production.
+
+#### **5. AI & Automation Integration**
+The project has pivoted strongly toward the "AI-driven workflow" era.
+*   **Agent Skills:** The `gf_agent` acts as a natural language translator, converting prompts like *"Summarize my last 5 emails"* into executable GAS code.
+*   **MCP Server:** The built-in **Model Context Protocol (MCP)** server allows local AI agents (like Gemini or Antigravity) to directly automate Google Workspace without needing complex cloud deployments.
+
+### **Summary of Limitations**
+*   **API Gaps:** While extensive, roughly 35% of the API remains unimplemented or in progress.
+*   **Authentication Complexity:** While automated, the initial setup for DWD or custom OAuth clients for ADC requires specific Google Cloud permissions that may be daunting for beginners.
+*   **Consumer Account Constraints:** Users with `@gmail.com` accounts cannot use the preferred DWD method and must rely on Application Default Credentials (ADC).
+
+---
