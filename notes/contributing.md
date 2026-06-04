@@ -18,6 +18,9 @@ First take a look at the [readme](../README.md) for how to get started as a user
 
  If you would specifically like some service or method prioritized, let me know and I'll see if I can push it forward. Better still, if you'd like to have a crack at implementing it yourself, let me know and I'll get you started.
 
+### Typescript vs Javascript
+
+This project is fully JavaScript by design. This makes it entirely accessible to the Apps Script developer, who would not necessarily have typescript knowledge. This is key for the transparency of the project. Using the [generated code links in](../progress) all developers will be able to examine and understand how each method is implemented.
 
 ## Testing
 
