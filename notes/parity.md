@@ -166,9 +166,15 @@ To use `gas-fakes` just include `import @mcpher/gas-fakes` at the top of your re
 
 ## <img src="../pngs/logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
 
+
+
 ## Watch the gas-fakes intro video
 
 [![Watch the intro video](../pngs/introvideo.png)](https://youtu.be/oEjpIrkYpEM)
+
+## Watch the explainer about delegating work to local LLMs to save token costs
+
+[![Use local LLMs to save tokens](../pngs/hybrid_LLM_Architecture_Overview.png)](https://youtu.be/tcvU2NLEaNE)
 
 ## Watch the gf_agent video on natural language automation
 
