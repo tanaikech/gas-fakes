@@ -1685,7 +1685,7 @@
             "returnType": "AuthorizationInfo",
             "returnDescription": "An object that can provide information about the user's authorization status.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/scriptapp/app.js#L241"
+            "implementationLink": "src/services/scriptapp/app.js#L242"
           },
           {
             "method": "getAuthorizationInfo(AuthMode,String)",
@@ -1694,7 +1694,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/scriptapp/app.js#L241"
+            "implementationLink": "src/services/scriptapp/app.js#L242"
           },
           {
             "method": "getIdentityToken()",
@@ -2277,40 +2277,40 @@
             "description": "Google Sheets causes the trigger to fire.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/scriptenums.js#L11"
           },
           {
             "method": "CLOCK",
             "description": "A time-driven event causes the trigger to fire.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/scriptenums.js#L8"
           },
           {
             "method": "FORMS",
             "description": "Google Forms causes the trigger to fire.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/scriptenums.js#L10"
           },
           {
             "method": "DOCUMENTS",
             "description": "Google Docs causes the trigger to fire.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/scriptenums.js#L9"
           },
           {
             "method": "CALENDAR",
             "description": "Google Calendar causes the trigger to fire.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/scriptenums.js#L7"
           }
         ]
       },
@@ -2325,8 +2325,8 @@
             "description": "The trigger fires once the time-driven event reaches a specific time.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/scriptenums.js#L8"
           },
           {
             "method": "ON_OPEN",

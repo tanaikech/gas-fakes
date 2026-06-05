@@ -81,6 +81,7 @@ A standard method that returns the string `'LibHandlerApp'`, identifying the obj
 - [getting started](../GETTING_STARTED.md) - how to handle authentication for Workspace scopes.
 - [readme](../README.md)
 - [apps script parity](../notes/parity.md)
+- [omlx setup](../notes/omlx-setup.md)
 - [Natural Language Automation with Gemini Skills & MCP Server](../notes/gemini-skills-mcp.md) - new skills-based agent approach.
 - [Add agent skills to gf_agent](https://ramblings.mcpher.com/add-skills-gf_agent/)
 - [gf_agent documentation](../../gf_agent/README.md) - instructions for the Gemini CLI automation agent and MCP server.
