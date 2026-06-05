@@ -238,6 +238,7 @@ if (typeof globalThis[name] === typeof undefined) {
           FULL: 'FULL'
         },
         AuthorizationStatus: ScriptEnums.AuthorizationStatus,
+        TriggerSource: ScriptEnums.TriggerSource,
         getAuthorizationInfo: (authMode) => {
           ensureInit();
           return newFakeAuthorizationInfo(authMode);

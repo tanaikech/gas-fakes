@@ -16,23 +16,23 @@ This skill enables the agent to assist in the development of the `gas-fakes` pro
 ## Workflow
 
 ### 0. Local Model Consultation (Hybrid Hierarchical Delegation)
-Before drafting implementation plans or code, Gemini (the Strategic Planner) must first gather all relevant file context, decompose the request into structured atomic sub-tasks, and call the local model (via the `omlx:query_local_model` tool with the `prompt` parameter) to generate precise code implementations, detailed tests, or updates.
+Before drafting implementation plans, code, tests, refactoring, debugging, analyzing logs, or drafting documentation, Gemini (the Strategic Planner) must first gather all relevant file context, decompose the request into structured atomic sub-tasks, and call the local model (via the `omlx:query_local_model` tool with the `prompt` parameter) to generate precise code implementations, detailed tests, refactored components, bug fixes, or documentation updates.
 
 ### 1. Context and Specification Check
 Before implementing, verify the specifications of the target Google Apps Script classes and methods. Ensure that the functionality you are about to build aligns with real GAS behavior.
 
 ### 2. Implementation & Focused Execution (CRITICAL DELEGATION GATE)
 > [!IMPORTANT] **ZERO-TOLERANCE DELEGATION GATE**
-> You are **FORBIDDEN** from using `write_file` or `replace` to implement logic or tests yourself. 
+> You are **FORBIDDEN** from using `write_file` or `replace` to implement logic, write tests, perform refactoring, diagnose/fix debug errors, or draft documentation yourself. 
 > **MANDATORY SEQUENCE**:
 > 1.  Gather context (Research).
-> 2.  **CALL `omlx/query_local_model`** with a comprehensive prompt.
+> 2.  **CALL `omlx/query_local_model`** with a comprehensive prompt containing specific constraints.
 > 3.  Review and synthesize the output.
-> 4.  Apply changes to `src/` or `test/`.
+> 4.  Apply changes to files (e.g., in `src/`, `test/`, etc.).
 > 
-> **EXCEPTION**: This mandate only applies if the local model is available and its use has not been explicitly forbidden by the user. If unavailable or forbidden, you may proceed with implementation using your own weights, but you MUST document the reason in your `update_topic`.
+> **EXCEPTION**: This mandate only applies if the local model is available and its use has not been explicitly forbidden by the user. If unavailable or forbidden, you may proceed with the tasks using your own weights, but you MUST document the reason in your `update_topic`.
 > 
-> You MUST explicitly state "Delegating logic generation to local Gemma model" in your `update_topic` summary when transitioning to implementation.
+> You MUST explicitly state "Delegating logic generation/task to local Gemma model" in your `update_topic` summary when transitioning to execution.
 
 - The planner (Gemini) reviews the local model's output code, refines it, and applies it to the `src/` directory.
 - Ensure the code runs correctly in the Node.js environment.

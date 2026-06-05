@@ -19,15 +19,19 @@ description: >
 1. **Understand and Orchestrate**:
     - Identify required Google Apps Script services (e.g., SpreadsheetApp, DriveApp).
     - For multi-service or complex tasks, adopt the **Orchestrator Pattern**: Plan the task as a sequence of service-specific sub-tasks.
-2. **Research and Verify (Service Agent Phase)**:
+2. **Local Model Consultation (Hybrid Hierarchical Delegation)**:
+    - Before drafting code, scripts, or logical steps yourself, check if the `omlx/query_local_model` tool is available.
+    - If available, decompose the task, construct a detailed prompt with exact requirements, and call the local model to generate the necessary Apps Script code or logic.
+    - Use the generated code as the base, review/refine it, and prepare it for execution.
+3. **Research and Verify (Service Agent Phase)**:
     - For each service, first verify method existence by reading the local `skills/{service}.md` files in the skill directory.
     - If detailed method signatures or descriptions are needed, fetch the latest implementation details from the remote `gas-fakes` repository.
     - **Remote URL**: `https://raw.githubusercontent.com/brucemcpherson/gas-fakes/main/progress/{service}.md` (Note: `{service}` is lowercase, e.g., `spreadsheet.md`).
-    - Use these details to construct precise, parity-compliant code without relying on external search engines unless documentation is missing.
-3. **Generate Script**: Create a Node.js script that:
+    - Use these details to construct precise, parity-compliant code.
+4. **Generate Script**: Create a Node.js script that:
     - Uses standard GAS syntax.
     - (Optional) Uses `ScriptApp.isFake` for local-only logic like logging or cleanup.
-4. **Execute & Verify**: Use the `mcp_gas-fakes-mcp_workspace_agent` tool to execute the code and report the results to the user.
+5. **Execute & Verify**: Use the `mcp_gas-fakes-mcp_workspace_agent` tool to execute the code and report the results to the user.
 
 ## Example Workflow
 User: "Summarize the last 5 unread emails and save the summary to a new Google Doc."

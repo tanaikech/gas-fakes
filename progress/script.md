@@ -192,9 +192,9 @@ An enumeration denoting the source of the event that causes the trigger to fire.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| CALENDAR | Google Calendar causes the trigger to fire. | not started |  |
-| CLOCK | A time-driven event causes the trigger to fire. | not started |  |
-| DOCUMENTS | Google Docs causes the trigger to fire. | not started |  |
-| FORMS | Google Forms causes the trigger to fire. | not started |  |
-| SPREADSHEETS | Google Sheets causes the trigger to fire. | not started |  |
+| CALENDAR | Google Calendar causes the trigger to fire. | completed | [link](../src/services/enums/scriptenums.js#L7) |
+| CLOCK | A time-driven event causes the trigger to fire. | completed | [link](../src/services/enums/scriptenums.js#L8) |
+| DOCUMENTS | Google Docs causes the trigger to fire. | completed | [link](../src/services/enums/scriptenums.js#L9) |
+| FORMS | Google Forms causes the trigger to fire. | completed | [link](../src/services/enums/scriptenums.js#L10) |
+| SPREADSHEETS | Google Sheets causes the trigger to fire. | completed | [link](../src/services/enums/scriptenums.js#L11) |
 

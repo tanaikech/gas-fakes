@@ -156,6 +156,16 @@ export const testEnums = (pack) => {
     enumProps.forEach(f => testEnumProp(f, DriveApp, t))
   })
 
+  unit.section("check script app enums", t => {
+    // test that all directly accessible enums work
+    const enumProps = [
+      "AuthorizationStatus",
+      "TriggerSource"
+    ]
+
+    enumProps.forEach(f => testEnumProp(f, ScriptApp, t))
+  })
+
 
 
 

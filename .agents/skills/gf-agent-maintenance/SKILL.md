@@ -11,6 +11,7 @@ This skill is used to maintain and update the `gf_agent` (Google Apps Script Loc
 
 ## Workflow
 1. **Detect Changes**: Monitor `progress/` and `test/` for updates.
-2. **Run Builder**: Execute the build script to regenerate markdown files.
-3. **Refine Patterns**: If a new service or complex pattern is added to `test/`, document it in `gf_agent/documentation.md`.
-4. **Test the Agent**: Simulate a user request and verify that the agent can generate valid code using the updated knowledge.
+2. **Local Model Consultation**: Delegate log analysis, pattern extraction from tests, and drafts of documentation updates (`gf_agent/documentation.md`, etc.) to the local model via the `omlx/query_local_model` tool.
+3. **Run Builder**: Execute the build script to regenerate markdown files.
+4. **Refine Patterns**: If a new service or complex pattern is added to `test/`, document it in `gf_agent/documentation.md` using the local model's extracted patterns.
+5. **Test/Verify the Agent**: Use the local model to simulate user requests, verify code generation, and ensure the agent performs as expected.
