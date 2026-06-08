@@ -6,6 +6,10 @@ import { FakeFormat } from './fakeformat.js';
 import { FakeAttribute } from './fakeattribute.js';
 import { FakeCdata } from './fakecdata.js';
 import { FakeDocType } from './fakedoctype.js';
+import { FakeComment } from './fakecomment.js';
+import { FakeText } from './faketext.js';
+import { FakeEntityRef } from './fakeentityref.js';
+import { FakeProcessingInstruction } from './fakeprocessinginstruction.js';
 import { XMLParser } from 'fast-xml-parser';
 import * as Enums from '../enums/xmlenums.js';
 
@@ -47,6 +51,22 @@ class FakeXmlService {
     return new FakeFormat({ pretty: false });
   }
 
+  getCompactFormat() {
+    // defaults to UTF-8 encoding, no indentation, and no additional line breaks, but includes the XML declaration and its encoding
+    const fmt = new FakeFormat({ pretty: false });
+    fmt.setIndent(null);
+    fmt.setLineSeparator('');
+    return fmt;
+  }
+
+  getNoNamespace() {
+    return new FakeNamespace('', '');
+  }
+
+  getXmlNamespace() {
+    return new FakeNamespace('xml', 'http://www.w3.org/XML/1998/namespace');
+  }
+
   // Factory methods implemented as instance methods
   createDocument(rootElement) {
     if (arguments.length > 0 && (rootElement === null || rootElement === undefined)) {
@@ -57,7 +77,11 @@ class FakeXmlService {
 
   createElement(name, namespace = null) {
     const qname = namespace && namespace.getPrefix() ? `${namespace.getPrefix()}:${name}` : name;
-    return new FakeElement(qname, {}, null);
+    const el = new FakeElement(qname, {}, null);
+    if (namespace) {
+      el.setNamespace(namespace);
+    }
+    return el;
   }
 
   createCdata(text) {
@@ -65,12 +89,7 @@ class FakeXmlService {
   }
 
   createComment(text) {
-    return {
-      _text: text,
-      getText: () => text,
-      getValue: () => text,
-      toString: () => `[Comment: <!--${text}-->]`
-    };
+    return new FakeComment(text);
   }
 
   createDocType(name, publicId = null, systemId = null) {
@@ -78,12 +97,15 @@ class FakeXmlService {
   }
 
   createText(text) {
-    return {
-      _text: text,
-      getText: () => text,
-      getValue: () => text,
-      toString: () => `[Text: ${text}]`
-    };
+    return new FakeText(text);
+  }
+
+  createEntityRef(name, publicId = null, systemId = null) {
+    return new FakeEntityRef(name, publicId, systemId);
+  }
+
+  createProcessingInstruction(target, data = '') {
+    return new FakeProcessingInstruction(target, data);
   }
 
   toString() {

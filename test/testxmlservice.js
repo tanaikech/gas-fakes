@@ -229,9 +229,62 @@ export const testXmlService = (pack) => {
      // Descendants count: DocType, el1, grandchild
      t.is(descendants.length, 3); 
 
-     // Test Removal
-     t.is(document.removeContent(el1), true);
-     t.is(document.getContentSize(), 1); // Only doctypeObj remains
+      // Test Removal
+      t.is(document.removeContent(el1), true);
+      t.is(document.getContentSize(), 1); // Only doctypeObj remains
+
+      // 6. Format options, Namespaces, EntityRef, ProcessingInstruction, Content Casting, getDocument
+      const format = XmlService.getCompactFormat();
+      t.is(typeof format.setEncoding('UTF-8'), 'object');
+      t.is(typeof format.setIndent(null), 'object');
+      t.is(typeof format.setLineSeparator('\n'), 'object');
+      t.is(typeof format.setOmitDeclaration(true), 'object');
+      t.is(typeof format.setOmitEncoding(true), 'object');
+
+      const noNs = XmlService.getNoNamespace();
+      t.is(noNs.getPrefix(), '');
+      t.is(noNs.getURI(), '');
+
+      const xmlNs = XmlService.getXmlNamespace();
+      t.is(xmlNs.getPrefix(), 'xml');
+      t.is(xmlNs.getURI(), 'http://www.w3.org/XML/1998/namespace');
+
+      if (ScriptApp.isFake) {
+        const ent = XmlService.createEntityRef('amp');
+        t.is(ent.getName(), 'amp');
+        t.is(ent.setName('lt').getName(), 'lt');
+        t.is(ent.getPublicId(), null);
+        t.is(ent.setPublicId('pub').getPublicId(), 'pub');
+        t.is(ent.getSystemId(), null);
+        t.is(ent.setSystemId('sys').getSystemId(), 'sys');
+        t.is(ent.getValue(), '');
+      }
+
+      if (ScriptApp.isFake) {
+        const pi = XmlService.createProcessingInstruction('target', 'data');
+        t.is(pi.getTarget(), 'target');
+        t.is(pi.setTarget('t').getTarget(), 't');
+        t.is(pi.getData(), 'data');
+        t.is(pi.setData('d').getData(), 'd');
+        t.is(pi.getValue(), '');
+      }
+
+      // Content Casting tests
+      const commentNode = XmlService.createComment('hello');
+      t.is(commentNode.asComment() !== null, true);
+      t.is(commentNode.asCdata() === null, true);
+      t.is(commentNode.getType().toString(), 'COMMENT');
+
+      const textNode = XmlService.createText('world');
+      t.is(textNode.asText() !== null, true);
+      t.is(textNode.getType().toString(), 'TEXT');
+      t.is(textNode.append('!').getText(), 'world!');
+
+      // getDocument tests
+      const mainDoc = XmlService.createDocument();
+      const mainRoot = XmlService.createElement('root');
+      mainDoc.setRootElement(mainRoot);
+      t.is(mainRoot.getDocument().toString().includes('Root is [Element: <root/>]'), true);
   });
 
   if (!pack) {

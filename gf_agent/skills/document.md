@@ -119,21 +119,9 @@ Supported Methods:
 ## Class: DocumentTab
 
 Supported Methods:
-- `addBookmark(Position)`
-- `addFooter()`
 - `addHeader()`
-- `addNamedRange(String,Range)`
 - `getBody()`
-- `getBookmark(String)`
-- `getBookmarks()`
-- `getFooter()`
-- `getFootnotes()`
 - `getHeader()`
-- `getNamedRangeById(String)`
-- `getNamedRanges()`
-- `getNamedRanges(String)`
-- `newPosition(Element,Integer)`
-- `newRange()`
 
 ## Class: FooterSection
 
@@ -315,11 +303,7 @@ Supported Methods:
 Supported Methods:
 - `getElement()`
 - `getOffset()`
-- `getSurroundingText()`
-- `getSurroundingTextOffset()`
 - `insertBookmark()`
-- `insertInlineImage(BlobSource)`
-- `insertText(String)`
 
 ## Class: PositionedImage
 
@@ -331,11 +315,6 @@ Supported Methods:
 - `getLeftOffset()`
 - `getTopOffset()`
 - `getWidth()`
-- `setHeight(Integer)`
-- `setLayout(PositionedLayout)`
-- `setLeftOffset(Number)`
-- `setTopOffset(Number)`
-- `setWidth(Integer)`
 
 ## Class: Range
 
@@ -364,7 +343,6 @@ Supported Methods:
 - `getId()`
 - `getIndex()`
 - `getTitle()`
-- `getType()`
 
 ## Class: Table
 

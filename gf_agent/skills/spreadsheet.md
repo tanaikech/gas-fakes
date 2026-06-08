@@ -186,7 +186,6 @@ Supported Methods:
 - `isCalculatedColumn()`
 - `remove()`
 - `setFormula(String)`
-- `setName(String)`
 
 ## Class: DataSourceParameter
 
@@ -199,7 +198,6 @@ Supported Methods:
 
 Supported Methods:
 - `asBigQuery()`
-- `asLooker()`
 - `copy()`
 - `getParameters()`
 - `getType()`
@@ -208,7 +206,6 @@ Supported Methods:
 
 Supported Methods:
 - `asBigQuery()`
-- `asLooker()`
 - `build()`
 - `copy()`
 - `getParameters()`
@@ -1227,14 +1224,6 @@ Supported Methods:
 - `insertRowBefore(Integer)`
 - `insertRowsAfter(Integer,Integer)`
 - `insertRowsBefore(Integer,Integer)`
-- `insertSheet()`
-- `insertSheet(Integer,Object)`
-- `insertSheet(Integer)`
-- `insertSheet(Object)`
-- `insertSheet(String,Integer,Object)`
-- `insertSheet(String,Integer)`
-- `insertSheet(String,Object)`
-- `insertSheet(String)`
 - `insertSheetWithDataSourceTable(DataSourceSpec)`
 - `isColumnHiddenByUser(Integer)`
 - `isIterativeCalculationEnabled()`

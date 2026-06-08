@@ -3244,7 +3244,7 @@
             "description": "Creates a builder that can be used to insert a sub-menu into the editor's Extensions menu. The\nmenu isn't actually be updated until Menu.addToUi() is called. If the script is running\nas an add-on, the sub-menu name matches the add-on's name in the web store; if the script is bound to the document directly, the sub-menu name\nmatches the script's name. For more information, see the guide to menus.",
             "returnType": "Menu",
             "returnDescription": "The new menu builder.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/common/fakeui.js#L13"
           },
           {
@@ -3253,7 +3253,7 @@
             "description": "Creates a builder that can be used to add a menu to the editor's user interface. The menu isn't\nactually be added until Menu.addToUi() is called. For more information, see the guide to menus. The label for a top-level menu should be\nin headline case (all major words capitalized), although the label for a sub-menu should be in\nsentence case (only the first word capitalized). If the script is published as an add-on, the caption parameter is ignored and the\nmenu is added as a sub-menu of the Extensions menu, equivalent to createAddonMenu().",
             "returnType": "Menu",
             "returnDescription": "The new menu builder.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/common/fakeui.js#L17"
           },
           {
@@ -6735,7 +6735,7 @@
             "description": "Adds a Bookmark at the given Position.",
             "returnType": "Bookmark",
             "returnDescription": "The new bookmark.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/documentapp/fakedocumenttab.js#L37"
           },
           {
@@ -6744,7 +6744,7 @@
             "description": "Adds a tab footer section, if none exists.",
             "returnType": "FooterSection",
             "returnDescription": "The tab footer.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/documentapp/fakedocumenttab.js#L41"
           },
           {
@@ -6762,7 +6762,7 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/documentapp/fakedocumenttab.js#L53"
           },
           {
@@ -6780,7 +6780,7 @@
             "description": "Gets the Bookmark with the given ID. This method returns null if no such Bookmark exists within this tab.",
             "returnType": "Bookmark",
             "returnDescription": "The Bookmark with the given ID, or null if no such Bookmark\n    exists within the tab.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/documentapp/fakedocumenttab.js#L57"
           },
           {
@@ -6789,7 +6789,7 @@
             "description": "Gets all Bookmark objects in the tab.",
             "returnType": "Bookmark[]",
             "returnDescription": "An array of the Bookmark objects in the tab.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/documentapp/fakedocumenttab.js#L61"
           },
           {
@@ -6798,7 +6798,7 @@
             "description": "Retrieves the tab's footer section, if one exists.",
             "returnType": "FooterSection",
             "returnDescription": "The tab's footer.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/documentapp/fakedocumenttab.js#L65"
           },
           {
@@ -6807,7 +6807,7 @@
             "description": "Retrieves all the Footnote elements in the tab's body.",
             "returnType": "Footnote[]",
             "returnDescription": "The tab's footnotes.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/documentapp/fakedocumenttab.js#L73"
           },
           {
@@ -6825,7 +6825,7 @@
             "description": "Gets the NamedRange with the given ID. This method returns null if no such\nNamedRange exists in the tab. Names are not necessarily unique, even across tabs;\nseveral different ranges in the same document may share the same name, much like a class in\nHTML. By contrast, IDs are unique within the tab, like an ID in HTML.",
             "returnType": "NamedRange",
             "returnDescription": "The NamedRange with the given ID, or null if no such range exists in\n    the tab.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/documentapp/fakedocumenttab.js#L81"
           },
           {
@@ -6834,7 +6834,7 @@
             "description": "Gets all NamedRange objects in the tab.",
             "returnType": "NamedRange[]",
             "returnDescription": "An array of the NamedRange objects in the tab, possibly including multiple\n    ranges with the same name.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/documentapp/fakedocumenttab.js#L85"
           },
           {
@@ -6843,7 +6843,7 @@
             "description": "Gets all NamedRange objects in the tab with the given name. Names are not necessarily\nunique, even across tabs; several different ranges in the same document may share the same\nname, much like a class in HTML. By contrast, IDs are unique within the tab, like an ID in\nHTML.",
             "returnType": "NamedRange[]",
             "returnDescription": "An array of the NamedRange objects in the tab with the given name.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/documentapp/fakedocumenttab.js#L85"
           },
           {
@@ -6852,7 +6852,7 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/documentapp/fakedocumenttab.js#L89"
           },
           {
@@ -6861,7 +6861,7 @@
             "description": "Creates a builder used to construct Range objects from tab elements.",
             "returnType": "RangeBuilder",
             "returnDescription": "The new builder.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/documentapp/fakedocumenttab.js#L93"
           }
         ]
@@ -10705,7 +10705,7 @@
             "description": "Sets the image's height, in pixels.",
             "returnType": "PositionedImage",
             "returnDescription": "the current object",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/documentapp/fakepositionedimage.js#L74"
           },
           {
@@ -10714,7 +10714,7 @@
             "description": "Sets the definition of how the image is laid out.",
             "returnType": "PositionedImage",
             "returnDescription": "this object for chaining",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/documentapp/fakepositionedimage.js#L78"
           },
           {
@@ -10723,7 +10723,7 @@
             "description": "Sets the image's offset, in points, from the paragraph's left.",
             "returnType": "PositionedImage",
             "returnDescription": "this object for chaining",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/documentapp/fakepositionedimage.js#L76"
           },
           {
@@ -10732,7 +10732,7 @@
             "description": "Sets the image's offset, in points, from the paragraph's top.",
             "returnType": "PositionedImage",
             "returnDescription": "this object for chaining",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/documentapp/fakepositionedimage.js#L77"
           },
           {
@@ -10741,7 +10741,7 @@
             "description": "Sets the image's width, in pixels.",
             "returnType": "PositionedImage",
             "returnDescription": "the current object",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/documentapp/fakepositionedimage.js#L75"
           }
         ]
@@ -10908,7 +10908,7 @@
             "description": "Creates an artificial Text element that represents the text and formatting of the\nParagraph or ListItem that contains the Position, either directly or through a chain of child elements. To determine the Position's offset in the returned Text element, use getSurroundingTextOffset().",
             "returnType": "Text",
             "returnDescription": "an element equivalent to the result of calling editAsText()\n    on the Paragraph or ListItem that contains the Position, either directly or through a chain of child elements",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/documentapp/fakeposition.js#L49"
           },
           {
@@ -10917,7 +10917,7 @@
             "description": "Gets the offset of this Position within the Text element returned by getSurroundingText(). The offset is the number of characters before the Position\n(that is, the index of the character after this Position).",
             "returnType": "Integer",
             "returnDescription": "the number of characters before this Position in the Paragraph or ListItem that contains the Position, either directly or through a chain of child elements",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/documentapp/fakeposition.js#L53"
           },
           {
@@ -10935,7 +10935,7 @@
             "description": "Creates and inserts a new InlineImage at this Position from the specified image\nblob.",
             "returnType": "InlineImage",
             "returnDescription": "the new image element, or null if the element in which this Position is\n    located does not allow images to be inserted",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/documentapp/fakeposition.js#L72"
           },
           {
@@ -10944,7 +10944,7 @@
             "description": "Inserts the specified text at this Position. This method creates a new Text\nelement, even if the string is inserted within an existing Text element, so that it is\neasy to style the new element.",
             "returnType": "Text",
             "returnDescription": "the new text element, or null if the element in which this Position is\n    located does not allow text to be inserted",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/documentapp/fakeposition.js#L76"
           }
         ]
@@ -11131,7 +11131,7 @@
             "description": "Retrieves the type of tab.",
             "returnType": "TabType",
             "returnDescription": "The tab's type.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/documentapp/faketab.js#L50"
           }
         ]
@@ -22115,7 +22115,7 @@
             "description": "Returns a JavaScript Object containing all key/value pairs found in the cache for an array of\nkeys.",
             "returnType": "Object",
             "returnDescription": "a JavaScript Object containing the key/value pairs for all keys found in the cache",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/stores/fakestores.js#L339"
           },
           {
@@ -22142,7 +22142,7 @@
             "description": "Adds a set of key/value pairs to the cache.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/stores/fakestores.js#L355"
           },
           {
@@ -22151,7 +22151,7 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/stores/fakestores.js#L355"
           },
           {
@@ -22169,7 +22169,7 @@
             "description": "Removes a set of entries from the cache.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/stores/fakestores.js#L369"
           }
         ]
@@ -22356,7 +22356,7 @@
             "description": "Deletes all properties in the current Properties store.",
             "returnType": "Properties",
             "returnDescription": "this Properties store, for chaining",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/stores/fakestores.js#L286"
           },
           {
@@ -22374,7 +22374,7 @@
             "description": "Gets all keys in the current Properties store.",
             "returnType": "String[]",
             "returnDescription": "an array of all keys in the current Properties store",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/stores/fakestores.js#L298"
           },
           {
@@ -22383,7 +22383,7 @@
             "description": "Gets a copy of all key-value pairs in the current Properties store. Note that the\nreturned object is not a live view of the store. Consequently, changing the properties on the\nreturned object will not automatically update them in storage, or vice versa.",
             "returnType": "Object",
             "returnDescription": "a copy of all key-value pairs in the current Properties store",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/stores/fakestores.js#L281"
           },
           {
@@ -22401,7 +22401,7 @@
             "description": "Sets all key-value pairs from the given object in the current Properties store.",
             "returnType": "Properties",
             "returnDescription": "this Properties store, for chaining",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/stores/fakestores.js#L314"
           },
           {
@@ -22410,7 +22410,7 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/stores/fakestores.js#L314"
           },
           {
@@ -35235,7 +35235,7 @@
             "description": "Sets the name of the data source column.",
             "returnType": "DataSourceColumn",
             "returnDescription": "The data source column, for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakedatasourcecolumn.js#L134"
           }
         ]
@@ -35697,7 +35697,7 @@
             "description": "Gets the spec for Looker data source.",
             "returnType": "LookerDataSourceSpec",
             "returnDescription": "The Looker data source spec.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakedatasourcespec.js#L39"
           },
           {
@@ -35991,7 +35991,7 @@
             "description": "Gets the builder for Looker data source.",
             "returnType": "LookerDataSourceSpecBuilder",
             "returnDescription": "The Looker data source specification builder.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakedatasourcespecbuilder.js#L41"
           },
           {
@@ -47166,7 +47166,7 @@
             "description": "Inserts a new sheet into the spreadsheet, using a default sheet name. The new sheet becomes the\nactive sheet.",
             "returnType": "Sheet",
             "returnDescription": "The new sheet.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L97"
           },
           {
@@ -47175,7 +47175,7 @@
             "description": "Inserts a new sheet into the spreadsheet at the given index. The new sheet becomes the active\nsheet.",
             "returnType": "Sheet",
             "returnDescription": "The new sheet.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L97"
           },
           {
@@ -47184,7 +47184,7 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L97"
           },
           {
@@ -47193,7 +47193,7 @@
             "description": "Inserts a new sheet into the spreadsheet, using a default sheet name and optional advanced\narguments. The new sheet becomes the active sheet.",
             "returnType": "Sheet",
             "returnDescription": "The new sheet.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L97"
           },
           {
@@ -47202,7 +47202,7 @@
             "description": "Inserts a new sheet into the spreadsheet with the given name. The new sheet becomes the active\nsheet.",
             "returnType": "Sheet",
             "returnDescription": "The new sheet.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L97"
           },
           {
@@ -47211,7 +47211,7 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L97"
           },
           {
@@ -47220,7 +47220,7 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L97"
           },
           {
@@ -47229,7 +47229,7 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L97"
           },
           {
@@ -61526,7 +61526,7 @@
             "returnType": "Content",
             "returnDescription": "the detached node",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakedoctype.js#L9"
+            "implementationLink": "src/services/xmlservice/fakedoctype.js#L57"
           },
           {
             "method": "getElementName()",
@@ -61535,7 +61535,7 @@
             "returnType": "String",
             "returnDescription": "the name of the root Element node specified in the DocType declaration",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakedoctype.js#L10"
+            "implementationLink": "src/services/xmlservice/fakedoctype.js#L14"
           },
           {
             "method": "getInternalSubset()",
@@ -61544,7 +61544,7 @@
             "returnType": "String",
             "returnDescription": "the internal subset data",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakedoctype.js#L11"
+            "implementationLink": "src/services/xmlservice/fakedoctype.js#L18"
           },
           {
             "method": "getParentElement()",
@@ -61553,7 +61553,7 @@
             "returnType": "Element",
             "returnDescription": "the parent Element node",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakedoctype.js#L12"
+            "implementationLink": "src/services/xmlservice/fakedoctype.js#L61"
           },
           {
             "method": "getPublicId()",
@@ -61562,7 +61562,7 @@
             "returnType": "String",
             "returnDescription": "the public ID of the external subset data",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakedoctype.js#L13"
+            "implementationLink": "src/services/xmlservice/fakedoctype.js#L22"
           },
           {
             "method": "getSystemId()",
@@ -61571,7 +61571,7 @@
             "returnType": "String",
             "returnDescription": "the system ID of the external subset data",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakedoctype.js#L14"
+            "implementationLink": "src/services/xmlservice/fakedoctype.js#L26"
           },
           {
             "method": "getValue()",
@@ -61580,7 +61580,7 @@
             "returnType": "String",
             "returnDescription": "the text value of all nodes that are direct or indirect children of the node",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakedoctype.js#L15"
+            "implementationLink": "src/services/xmlservice/fakedoctype.js#L30"
           },
           {
             "method": "setElementName(String)",
@@ -61589,7 +61589,7 @@
             "returnType": "DocType",
             "returnDescription": "the DocumentType node, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakedoctype.js#L18"
+            "implementationLink": "src/services/xmlservice/fakedoctype.js#L34"
           },
           {
             "method": "setInternalSubset(String)",
@@ -61598,7 +61598,7 @@
             "returnType": "DocType",
             "returnDescription": "the DocumentType node, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakedoctype.js#L19"
+            "implementationLink": "src/services/xmlservice/fakedoctype.js#L39"
           },
           {
             "method": "setPublicId(String)",
@@ -61607,7 +61607,7 @@
             "returnType": "DocType",
             "returnDescription": "the DocumentType node, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakedoctype.js#L26"
+            "implementationLink": "src/services/xmlservice/fakedoctype.js#L47"
           },
           {
             "method": "setSystemId(String)",
@@ -61616,7 +61616,7 @@
             "returnType": "DocType",
             "returnDescription": "the DocumentType node, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakedoctype.js#L27"
+            "implementationLink": "src/services/xmlservice/fakedoctype.js#L52"
           }
         ]
       },
@@ -61633,7 +61633,7 @@
             "returnType": "Text",
             "returnDescription": "the Text node, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakecdata.js#L6"
+            "implementationLink": "src/services/xmlservice/fakecdata.js#L11"
           },
           {
             "method": "detach()",
@@ -61642,7 +61642,7 @@
             "returnType": "Content",
             "returnDescription": "the detached node",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakecdata.js#L7"
+            "implementationLink": "src/services/xmlservice/fakecdata.js#L29"
           },
           {
             "method": "getParentElement()",
@@ -61651,7 +61651,7 @@
             "returnType": "Element",
             "returnDescription": "the parent Element node",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakecdata.js#L8"
+            "implementationLink": "src/services/xmlservice/fakecdata.js#L33"
           },
           {
             "method": "getText()",
@@ -61660,7 +61660,7 @@
             "returnType": "String",
             "returnDescription": "the text value of the Text node",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakecdata.js#L9"
+            "implementationLink": "src/services/xmlservice/fakecdata.js#L16"
           },
           {
             "method": "getValue()",
@@ -61669,7 +61669,7 @@
             "returnType": "String",
             "returnDescription": "the text value of all nodes that are direct or indirect children of the node",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakecdata.js#L10"
+            "implementationLink": "src/services/xmlservice/fakecdata.js#L20"
           },
           {
             "method": "setText(String)",
@@ -61678,7 +61678,7 @@
             "returnType": "Text",
             "returnDescription": "the Text node, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakecdata.js#L11"
+            "implementationLink": "src/services/xmlservice/fakecdata.js#L24"
           }
         ]
       },
@@ -61694,8 +61694,8 @@
             "description": "Detaches the node from its parent Element node. If the node does not have a parent,\nthis method has no effect.",
             "returnType": "Content",
             "returnDescription": "the detached node",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakecomment.js#L23"
           },
           {
             "method": "getParentElement()",
@@ -61703,8 +61703,8 @@
             "description": "Gets the node's parent Element node. If the node does not have a parent, this method\nreturns null.",
             "returnType": "Element",
             "returnDescription": "the parent Element node",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakecomment.js#L27"
           },
           {
             "method": "getText()",
@@ -61712,8 +61712,8 @@
             "description": "Gets the text value of the Comment node.",
             "returnType": "String",
             "returnDescription": "the text value of the Comment node",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakecomment.js#L10"
           },
           {
             "method": "getValue()",
@@ -61721,8 +61721,8 @@
             "description": "Gets the text value of all nodes that are direct or indirect children of the node, in the order\nthey appear in the document.",
             "returnType": "String",
             "returnDescription": "the text value of all nodes that are direct or indirect children of the node",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakecomment.js#L19"
           },
           {
             "method": "setText(String)",
@@ -61730,8 +61730,8 @@
             "description": "Sets the text value of the Comment node.",
             "returnType": "Comment",
             "returnDescription": "the Comment node, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakecomment.js#L14"
           }
         ]
       },
@@ -61810,7 +61810,7 @@
             "returnType": "Cdata",
             "returnDescription": "the newly created CDATASection node",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakexmlservice.js#L63"
+            "implementationLink": "src/services/xmlservice/fakexmlservice.js#L87"
           },
           {
             "method": "createComment(String)",
@@ -61819,7 +61819,7 @@
             "returnType": "Comment",
             "returnDescription": "the newly created Comment node",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakexmlservice.js#L67"
+            "implementationLink": "src/services/xmlservice/fakexmlservice.js#L91"
           },
           {
             "method": "createDocType(String)",
@@ -61828,7 +61828,7 @@
             "returnType": "DocType",
             "returnDescription": "the newly created DocumentType node",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakexmlservice.js#L76"
+            "implementationLink": "src/services/xmlservice/fakexmlservice.js#L95"
           },
           {
             "method": "createDocType(String,String)",
@@ -61837,7 +61837,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakexmlservice.js#L76"
+            "implementationLink": "src/services/xmlservice/fakexmlservice.js#L95"
           },
           {
             "method": "createDocType(String,String,String)",
@@ -61846,7 +61846,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakexmlservice.js#L76"
+            "implementationLink": "src/services/xmlservice/fakexmlservice.js#L95"
           },
           {
             "method": "createDocument()",
@@ -61855,7 +61855,7 @@
             "returnType": "Document",
             "returnDescription": "the newly created document",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakexmlservice.js#L51"
+            "implementationLink": "src/services/xmlservice/fakexmlservice.js#L71"
           },
           {
             "method": "createDocument(Element)",
@@ -61864,7 +61864,7 @@
             "returnType": "Document",
             "returnDescription": "the newly created document",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakexmlservice.js#L51"
+            "implementationLink": "src/services/xmlservice/fakexmlservice.js#L71"
           },
           {
             "method": "createElement(String)",
@@ -61873,7 +61873,7 @@
             "returnType": "Element",
             "returnDescription": "the newly created Element node",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakexmlservice.js#L58"
+            "implementationLink": "src/services/xmlservice/fakexmlservice.js#L78"
           },
           {
             "method": "createElement(String,Namespace)",
@@ -61882,7 +61882,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakexmlservice.js#L58"
+            "implementationLink": "src/services/xmlservice/fakexmlservice.js#L78"
           },
           {
             "method": "createText(String)",
@@ -61891,7 +61891,7 @@
             "returnType": "Text",
             "returnDescription": "the newly created Text node",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakexmlservice.js#L80"
+            "implementationLink": "src/services/xmlservice/fakexmlservice.js#L99"
           },
           {
             "method": "getCompactFormat()",
@@ -61899,8 +61899,8 @@
             "description": "Creates a Format object for outputting a compact XML document. The formatter\ndefaults to UTF-8 encoding, no indentation, and no additional line breaks, but includes\nthe XML declaration and its encoding.",
             "returnType": "Format",
             "returnDescription": "the newly created formatter",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakexmlservice.js#L54"
           },
           {
             "method": "getNamespace(String)",
@@ -61909,7 +61909,7 @@
             "returnType": "Namespace",
             "returnDescription": "the newly created namespace",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakexmlservice.js#L38"
+            "implementationLink": "src/services/xmlservice/fakexmlservice.js#L42"
           },
           {
             "method": "getNamespace(String,String)",
@@ -61918,7 +61918,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakexmlservice.js#L38"
+            "implementationLink": "src/services/xmlservice/fakexmlservice.js#L42"
           },
           {
             "method": "getNoNamespace()",
@@ -61926,8 +61926,8 @@
             "description": "Creates a Namespace that represents the absence of a real namespace.",
             "returnType": "Namespace",
             "returnDescription": "the newly created namespace",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakexmlservice.js#L62"
           },
           {
             "method": "getPrettyFormat()",
@@ -61936,7 +61936,7 @@
             "returnType": "Format",
             "returnDescription": "the newly created formatter",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakexmlservice.js#L42"
+            "implementationLink": "src/services/xmlservice/fakexmlservice.js#L46"
           },
           {
             "method": "getRawFormat()",
@@ -61945,7 +61945,7 @@
             "returnType": "Format",
             "returnDescription": "the newly created formatter",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakexmlservice.js#L46"
+            "implementationLink": "src/services/xmlservice/fakexmlservice.js#L50"
           },
           {
             "method": "getXmlNamespace()",
@@ -61953,8 +61953,8 @@
             "description": "Creates a Namespace with the standard xml prefix.",
             "returnType": "Namespace",
             "returnDescription": "the newly created namespace",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakexmlservice.js#L66"
           },
           {
             "method": "parse(String)",
@@ -61963,7 +61963,7 @@
             "returnType": "Document",
             "returnDescription": "the newly created document",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakexmlservice.js#L9"
+            "implementationLink": "src/services/xmlservice/fakexmlservice.js#L13"
           }
         ]
       },
@@ -61980,7 +61980,7 @@
             "returnType": "Document",
             "returnDescription": "the document, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakedocument.js#L48"
+            "implementationLink": "src/services/xmlservice/fakedocument.js#L63"
           },
           {
             "method": "addContent(Integer,Content)",
@@ -61989,7 +61989,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakedocument.js#L48"
+            "implementationLink": "src/services/xmlservice/fakedocument.js#L63"
           },
           {
             "method": "cloneContent()",
@@ -61998,7 +61998,7 @@
             "returnType": "Content[]",
             "returnDescription": "an array of unattached copies of all nodes that are immediate children of the\n    document",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakedocument.js#L62"
+            "implementationLink": "src/services/xmlservice/fakedocument.js#L80"
           },
           {
             "method": "detachRootElement()",
@@ -62007,7 +62007,7 @@
             "returnType": "Element",
             "returnDescription": "the detached Element node, or null if the document does not have a root\n    Element node",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakedocument.js#L26"
+            "implementationLink": "src/services/xmlservice/fakedocument.js#L35"
           },
           {
             "method": "getAllContent()",
@@ -62016,7 +62016,7 @@
             "returnType": "Content[]",
             "returnDescription": "an array of all nodes that are immediate children of the document",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakedocument.js#L65"
+            "implementationLink": "src/services/xmlservice/fakedocument.js#L83"
           },
           {
             "method": "getContent(Integer)",
@@ -62025,7 +62025,7 @@
             "returnType": "Content",
             "returnDescription": "the node, or null if there is no node at the given index",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakedocument.js#L66"
+            "implementationLink": "src/services/xmlservice/fakedocument.js#L84"
           },
           {
             "method": "getContentSize()",
@@ -62034,7 +62034,7 @@
             "returnType": "Integer",
             "returnDescription": "the number of nodes that are immediate children of the document",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakedocument.js#L67"
+            "implementationLink": "src/services/xmlservice/fakedocument.js#L85"
           },
           {
             "method": "getDescendants()",
@@ -62043,7 +62043,7 @@
             "returnType": "Content[]",
             "returnDescription": "an array of all nodes that are direct or indirect children of the document",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakedocument.js#L68"
+            "implementationLink": "src/services/xmlservice/fakedocument.js#L86"
           },
           {
             "method": "getDocType()",
@@ -62052,7 +62052,7 @@
             "returnType": "DocType",
             "returnDescription": "the DocumentType node, or null if the document does not have a DocumentType node",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakedocument.js#L35"
+            "implementationLink": "src/services/xmlservice/fakedocument.js#L47"
           },
           {
             "method": "getRootElement()",
@@ -62061,7 +62061,7 @@
             "returnType": "Element",
             "returnDescription": "the root Element node, or null if the document does not have a root\n    Element node",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakedocument.js#L12"
+            "implementationLink": "src/services/xmlservice/fakedocument.js#L15"
           },
           {
             "method": "hasRootElement()",
@@ -62070,7 +62070,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the document has a root Element node; false if not",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakedocument.js#L25"
+            "implementationLink": "src/services/xmlservice/fakedocument.js#L34"
           },
           {
             "method": "removeContent()",
@@ -62079,7 +62079,7 @@
             "returnType": "Content[]",
             "returnDescription": "an array of all nodes that were immediate children of the document before they\n    were removed",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakedocument.js#L79"
+            "implementationLink": "src/services/xmlservice/fakedocument.js#L97"
           },
           {
             "method": "removeContent(Content)",
@@ -62088,7 +62088,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the node was an immediate child and was removed; false if not",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakedocument.js#L79"
+            "implementationLink": "src/services/xmlservice/fakedocument.js#L97"
           },
           {
             "method": "removeContent(Integer)",
@@ -62097,7 +62097,7 @@
             "returnType": "Content",
             "returnDescription": "the node that was removed, or null if there is no node at the given index",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakedocument.js#L79"
+            "implementationLink": "src/services/xmlservice/fakedocument.js#L97"
           },
           {
             "method": "setDocType(DocType)",
@@ -62106,7 +62106,7 @@
             "returnType": "Document",
             "returnDescription": "the document, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakedocument.js#L38"
+            "implementationLink": "src/services/xmlservice/fakedocument.js#L50"
           },
           {
             "method": "setRootElement(Element)",
@@ -62115,7 +62115,7 @@
             "returnType": "Document",
             "returnDescription": "the document, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakedocument.js#L13"
+            "implementationLink": "src/services/xmlservice/fakedocument.js#L16"
           }
         ]
       },
@@ -62131,8 +62131,8 @@
             "description": "Detaches the node from its parent Element node. If the node does not have a parent,\nthis method has no effect.",
             "returnType": "Content",
             "returnDescription": "the detached node",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeentityref.js#L43"
           },
           {
             "method": "getName()",
@@ -62140,8 +62140,8 @@
             "description": "Gets the name of the EntityReference node.",
             "returnType": "String",
             "returnDescription": "the name of the EntityReference node",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeentityref.js#L12"
           },
           {
             "method": "getParentElement()",
@@ -62149,8 +62149,8 @@
             "description": "Gets the node's parent Element node. If the node does not have a parent, this method\nreturns null.",
             "returnType": "Element",
             "returnDescription": "the parent Element node",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeentityref.js#L47"
           },
           {
             "method": "getPublicId()",
@@ -62158,8 +62158,8 @@
             "description": "Gets the public ID of the EntityReference node. If the node does not have a public ID,\nthis method returns null.",
             "returnType": "String",
             "returnDescription": "the public ID of the EntityReference node, or null if it has none",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeentityref.js#L21"
           },
           {
             "method": "getSystemId()",
@@ -62167,8 +62167,8 @@
             "description": "Gets the system ID of the EntityReference node. If the node does not have a system ID,\nthis method returns null.",
             "returnType": "String",
             "returnDescription": "the system ID of the EntityReference node, or null if it has none",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeentityref.js#L30"
           },
           {
             "method": "getValue()",
@@ -62176,8 +62176,8 @@
             "description": "Gets the text value of all nodes that are direct or indirect children of the node, in the order\nthey appear in the document.",
             "returnType": "String",
             "returnDescription": "the text value of all nodes that are direct or indirect children of the node",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeentityref.js#L39"
           },
           {
             "method": "setName(String)",
@@ -62185,8 +62185,8 @@
             "description": "Sets the name of the EntityReference node.",
             "returnType": "EntityRef",
             "returnDescription": "the EntityReference node, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeentityref.js#L16"
           },
           {
             "method": "setPublicId(String)",
@@ -62194,8 +62194,8 @@
             "description": "Sets the public ID of the EntityReference node.",
             "returnType": "EntityRef",
             "returnDescription": "the EntityReference node, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeentityref.js#L25"
           },
           {
             "method": "setSystemId(String)",
@@ -62203,8 +62203,8 @@
             "description": "Sets the system ID of the EntityReference node.",
             "returnType": "EntityRef",
             "returnDescription": "the EntityReference node, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeentityref.js#L34"
           }
         ]
       },
@@ -62221,7 +62221,7 @@
             "returnType": "Element",
             "returnDescription": "the Element node, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakeelement.js#L139"
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L269"
           },
           {
             "method": "addContent(Integer,Content)",
@@ -62230,7 +62230,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakeelement.js#L139"
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L269"
           },
           {
             "method": "cloneContent()",
@@ -62238,8 +62238,8 @@
             "description": "Creates unattached copies of all nodes that are immediate children of the {@code Element} node.",
             "returnType": "Content[]",
             "returnDescription": "an array of unattached copies of all nodes that are immediate children of the\n    {@code Element} node",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L313"
           },
           {
             "method": "detach()",
@@ -62247,8 +62247,8 @@
             "description": "Detaches the node from its parent Element node. If the node does not have a parent,\nthis method has no effect.",
             "returnType": "Content",
             "returnDescription": "the detached node",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L262"
           },
           {
             "method": "getAllContent()",
@@ -62256,8 +62256,8 @@
             "description": "Gets all nodes that are immediate children of the {@code Element} node.",
             "returnType": "Content[]",
             "returnDescription": "an array of all nodes that are immediate children of the {@code Element} node",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L328"
           },
           {
             "method": "getAttribute(String)",
@@ -62266,7 +62266,7 @@
             "returnType": "Attribute",
             "returnDescription": "the attribute, or null if there is no attribute with the given name and no\n    namespace",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakeelement.js#L72"
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L180"
           },
           {
             "method": "getAttribute(String,Namespace)",
@@ -62275,7 +62275,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakeelement.js#L72"
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L180"
           },
           {
             "method": "getAttributes()",
@@ -62284,7 +62284,7 @@
             "returnType": "Attribute[]",
             "returnDescription": "an array of all attributes for this Element node",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakeelement.js#L79"
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L187"
           },
           {
             "method": "getChild(String)",
@@ -62293,7 +62293,7 @@
             "returnType": "Element",
             "returnDescription": "the Element node, or null if there is no immediate child Element node with the given name and no namespace",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakeelement.js#L33"
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L140"
           },
           {
             "method": "getChild(String,Namespace)",
@@ -62302,7 +62302,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakeelement.js#L33"
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L140"
           },
           {
             "method": "getChildText(String)",
@@ -62311,7 +62311,7 @@
             "returnType": "String",
             "returnDescription": "the text value of the child node, or null if there is no immediate child node\n    with the given name and no namespace",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakeelement.js#L67"
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L159"
           },
           {
             "method": "getChildText(String,Namespace)",
@@ -62320,7 +62320,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakeelement.js#L67"
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L159"
           },
           {
             "method": "getChildren()",
@@ -62329,7 +62329,7 @@
             "returnType": "Element[]",
             "returnDescription": "an array of all Element nodes that are immediate children of this Element node",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakeelement.js#L34"
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L141"
           },
           {
             "method": "getChildren(String)",
@@ -62338,7 +62338,7 @@
             "returnType": "Element[]",
             "returnDescription": "an array of all Element nodes with the given name and no namespace that are\n    immediate children of this Element node",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakeelement.js#L34"
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L141"
           },
           {
             "method": "getChildren(String,Namespace)",
@@ -62347,7 +62347,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakeelement.js#L34"
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L141"
           },
           {
             "method": "getContent(Integer)",
@@ -62355,8 +62355,8 @@
             "description": "Gets the node at the given index among all nodes that are immediate children of the\n{@code Element} node. If there is no node at the given index, this method returns null.",
             "returnType": "Content",
             "returnDescription": "the node, or null if there is no node at the given index",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L333"
           },
           {
             "method": "getContentSize()",
@@ -62364,8 +62364,8 @@
             "description": "Gets the number of nodes that are immediate children of the {@code Element} node.",
             "returnType": "Integer",
             "returnDescription": "the number of nodes that are immediate children of the {@code Element} node",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L338"
           },
           {
             "method": "getDescendants()",
@@ -62373,8 +62373,8 @@
             "description": "Gets all nodes that are direct or indirect children of the {@code Element} node, in the order they\nappear in the document.",
             "returnType": "Content[]",
             "returnDescription": "an array of all nodes that are direct or indirect children of the {@code Element} node",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L164"
           },
           {
             "method": "getDocument()",
@@ -62382,8 +62382,8 @@
             "description": "Gets the XML document that contains the {@code Element} node.",
             "returnType": "Document",
             "returnDescription": "the document that contains the {@code Element} node",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L251"
           },
           {
             "method": "getName()",
@@ -62392,7 +62392,7 @@
             "returnType": "String",
             "returnDescription": "the local name of the Element node",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakeelement.js#L13"
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L32"
           },
           {
             "method": "getNamespace()",
@@ -62400,8 +62400,8 @@
             "description": "Gets the namespace for the Element node.",
             "returnType": "Namespace",
             "returnDescription": "the namespace for the Element node",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L40"
           },
           {
             "method": "getNamespace(String)",
@@ -62409,8 +62409,8 @@
             "description": "Gets the namespace with the given prefix for the Element node.",
             "returnType": "Namespace",
             "returnDescription": "the namespace with the given prefix for the Element node",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L40"
           },
           {
             "method": "getParentElement()",
@@ -62419,7 +62419,7 @@
             "returnType": "Element",
             "returnDescription": "the parent Element node",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakeelement.js#L162"
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L234"
           },
           {
             "method": "getQualifiedName()",
@@ -62428,7 +62428,7 @@
             "returnType": "String",
             "returnDescription": "the local name and namespace prefix of the Element node, in the form [namespacePrefix]:[localName]",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakeelement.js#L17"
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L36"
           },
           {
             "method": "getText()",
@@ -62437,7 +62437,7 @@
             "returnType": "String",
             "returnDescription": "the text value of the Element node",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakeelement.js#L21"
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L114"
           },
           {
             "method": "getValue()",
@@ -62446,7 +62446,7 @@
             "returnType": "String",
             "returnDescription": "the text value of all nodes that are direct or indirect children of the node",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakeelement.js#L29"
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L114"
           },
           {
             "method": "isAncestorOf(Element)",
@@ -62454,8 +62454,8 @@
             "description": "Determines whether this Element node is a direct or indirect parent of a given Element node.",
             "returnType": "Boolean",
             "returnDescription": "true if this Element node is a direct or indirect parent of the given\n    Element node; false if not",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L242"
           },
           {
             "method": "isRootElement()",
@@ -62463,8 +62463,8 @@
             "description": "Determines whether the Element node is the document's root node.",
             "returnType": "Boolean",
             "returnDescription": "true if the Element node is the document's root node; false if\n    not",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L238"
           },
           {
             "method": "removeAttribute(Attribute)",
@@ -62473,7 +62473,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the attribute existed and was removed; false if not",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakeelement.js#L99"
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L207"
           },
           {
             "method": "removeAttribute(String)",
@@ -62482,7 +62482,7 @@
             "returnType": "Boolean",
             "returnDescription": "true if the attribute existed and was removed; false if not",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakeelement.js#L99"
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L207"
           },
           {
             "method": "removeAttribute(String,Namespace)",
@@ -62491,7 +62491,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakeelement.js#L99"
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L207"
           },
           {
             "method": "removeContent()",
@@ -62499,8 +62499,8 @@
             "description": "Removes all nodes that are immediate children of the {@code Element} node.",
             "returnType": "Content[]",
             "returnDescription": "an array of all nodes that were immediate children of the {@code Element} node before they\n    were removed",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L286"
           },
           {
             "method": "removeContent(Content)",
@@ -62508,8 +62508,8 @@
             "description": "Removes the given node, if the node is an immediate child of the {@code Element} node. The content argument can be a Element object or any node object that corresponds to a\ntype listed in ContentType.",
             "returnType": "Boolean",
             "returnDescription": "true if the node was an immediate child and was removed; false if not",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L286"
           },
           {
             "method": "removeContent(Integer)",
@@ -62517,8 +62517,8 @@
             "description": "Removes the node at the given index among all nodes that are immediate children of the\n{@code Element} node. If there is no node at the given index, this method returns null.",
             "returnType": "Content",
             "returnDescription": "the node that was removed, or null if there is no node at the given index",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L286"
           },
           {
             "method": "setAttribute(Attribute)",
@@ -62527,7 +62527,7 @@
             "returnType": "Element",
             "returnDescription": "the Element node, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakeelement.js#L89"
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L197"
           },
           {
             "method": "setAttribute(String,String)",
@@ -62536,7 +62536,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakeelement.js#L89"
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L197"
           },
           {
             "method": "setAttribute(String,String,Namespace)",
@@ -62545,7 +62545,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakeelement.js#L89"
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L197"
           },
           {
             "method": "setName(String)",
@@ -62553,8 +62553,8 @@
             "description": "Sets the local name of the Element node. To set a namespace prefix for the node, use\nsetNamespace(namespace) in conjunction with XmlService.getNamespace(prefix, uri).",
             "returnType": "Element",
             "returnDescription": "the Element node, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L50"
           },
           {
             "method": "setNamespace(Namespace)",
@@ -62562,8 +62562,8 @@
             "description": "Sets the namespace for the Element node.",
             "returnType": "Element",
             "returnDescription": "the Element node, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L50"
           },
           {
             "method": "setText(String)",
@@ -62572,7 +62572,7 @@
             "returnType": "Element",
             "returnDescription": "the Element node, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakeelement.js#L108"
+            "implementationLink": "src/services/xmlservice/fakeelement.js#L218"
           }
         ]
       },
@@ -62589,7 +62589,7 @@
             "returnType": "String",
             "returnDescription": "the formatted document",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakeformat.js#L13"
+            "implementationLink": "src/services/xmlservice/fakeformat.js#L43"
           },
           {
             "method": "format(Element)",
@@ -62598,7 +62598,7 @@
             "returnType": "String",
             "returnDescription": "the formatted element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakeformat.js#L13"
+            "implementationLink": "src/services/xmlservice/fakeformat.js#L43"
           },
           {
             "method": "setEncoding(String)",
@@ -62606,8 +62606,8 @@
             "description": "Sets the character encoding that the formatter should use. The encoding argument must\nbe an accepted XML encoding like ISO-8859-1, US-ASCII, UTF-8, or UTF-16.",
             "returnType": "Format",
             "returnDescription": "the formatter, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeformat.js#L15"
           },
           {
             "method": "setIndent(String)",
@@ -62615,8 +62615,8 @@
             "description": "Sets the string used to indent child nodes relative to their parents. Setting an indent other\nthan null will cause the formatter to insert a line break after every node.",
             "returnType": "Format",
             "returnDescription": "the formatter, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeformat.js#L20"
           },
           {
             "method": "setLineSeparator(String)",
@@ -62624,8 +62624,8 @@
             "description": "Sets the string to insert whenever the formatter would normally insert a line break. The three\npre-defined formatters have different conditions under which they insert a line break. The\ndefault line separator is \\r\\n.",
             "returnType": "Format",
             "returnDescription": "the formatter, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeformat.js#L25"
           },
           {
             "method": "setOmitDeclaration(Boolean)",
@@ -62633,8 +62633,8 @@
             "description": "Sets whether the formatter should omit the XML declaration, such as <?xml version=\"1.0\"\nencoding=\"UTF-8\"?>.",
             "returnType": "Format",
             "returnDescription": "the formatter, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeformat.js#L30"
           },
           {
             "method": "setOmitEncoding(Boolean)",
@@ -62642,8 +62642,8 @@
             "description": "Sets whether the formatter should omit the encoding in the XML declaration, such as the\nencoding field in <?xml version=\"1.0\" encoding=\"UTF-8\"?>.",
             "returnType": "Format",
             "returnDescription": "the formatter, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeformat.js#L35"
           }
         ]
       },
@@ -62659,8 +62659,8 @@
             "description": "Detaches the node from its parent Element node. If the node does not have a parent,\nthis method has no effect.",
             "returnType": "Content",
             "returnDescription": "the detached node",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeprocessinginstruction.js#L33"
           },
           {
             "method": "getData()",
@@ -62668,8 +62668,8 @@
             "description": "Gets the raw data for every instruction in the ProcessingInstruction node.",
             "returnType": "String",
             "returnDescription": "the raw data for every instruction in the ProcessingInstruction node",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeprocessinginstruction.js#L20"
           },
           {
             "method": "getParentElement()",
@@ -62677,8 +62677,8 @@
             "description": "Gets the node's parent Element node. If the node does not have a parent, this method\nreturns null.",
             "returnType": "Element",
             "returnDescription": "the parent Element node",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeprocessinginstruction.js#L37"
           },
           {
             "method": "getTarget()",
@@ -62686,8 +62686,8 @@
             "description": "Gets the target for the ProcessingInstruction node.",
             "returnType": "String",
             "returnDescription": "the target for the ProcessingInstruction node",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeprocessinginstruction.js#L11"
           },
           {
             "method": "getValue()",
@@ -62695,8 +62695,8 @@
             "description": "Gets the text value of all nodes that are direct or indirect children of the node, in the order\nthey appear in the document.",
             "returnType": "String",
             "returnDescription": "the text value of all nodes that are direct or indirect children of the node",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakeprocessinginstruction.js#L29"
           }
         ]
       },
@@ -62738,8 +62738,8 @@
             "description": "Casts the node as a CDATASection node for the purposes of autocomplete. If the\nnode's ContentType is not already CDATA, this method returns null.",
             "returnType": "Cdata",
             "returnDescription": "the CDATASection node",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakecontent.js#L40"
           },
           {
             "method": "asComment()",
@@ -62747,8 +62747,8 @@
             "description": "Casts the node as a Comment node for the purposes of autocomplete. If the node's\nContentType is not already COMMENT, this method returns null.",
             "returnType": "Comment",
             "returnDescription": "the Comment node, or null if the node's content type is not COMMENT",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakecontent.js#L41"
           },
           {
             "method": "asDocType()",
@@ -62756,8 +62756,8 @@
             "description": "Casts the node as a DocumentType node for the purposes of autocomplete. If\nthe node's ContentType is not already DOCTYPE, this method returns null.",
             "returnType": "DocType",
             "returnDescription": "the DocumentType node",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakecontent.js#L42"
           },
           {
             "method": "asElement()",
@@ -62765,8 +62765,8 @@
             "description": "Casts the node as an Element node for the purposes of autocomplete. If the node's\nContentType is not already ELEMENT, this method returns null.",
             "returnType": "Element",
             "returnDescription": "the Element node",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakecontent.js#L43"
           },
           {
             "method": "asEntityRef()",
@@ -62774,8 +62774,8 @@
             "description": "Casts the node as a EntityReference node for the purposes of autocomplete.\nIf the node's ContentType is not already ENTITYREF, this method returns\nnull.",
             "returnType": "EntityRef",
             "returnDescription": "the EntityReference node",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakecontent.js#L44"
           },
           {
             "method": "asProcessingInstruction()",
@@ -62783,8 +62783,8 @@
             "description": "Casts the node as a ProcessingInstruction node for the purposes of autocomplete. If\nthe node's ContentType is not already PROCESSINGINSTRUCTION, this method\nreturns null.",
             "returnType": "ProcessingInstruction",
             "returnDescription": "the ProcessingInstruction node",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakecontent.js#L45"
           },
           {
             "method": "asText()",
@@ -62792,8 +62792,8 @@
             "description": "Casts the node as a Text node for the purposes of autocomplete. If the node's ContentType is not already TEXT, this method returns null.",
             "returnType": "Text",
             "returnDescription": "the Text node",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakecontent.js#L46"
           },
           {
             "method": "detach()",
@@ -62801,8 +62801,8 @@
             "description": "Detaches the node from its parent Element node. If the node does not have a parent,\nthis method has no effect.",
             "returnType": "Content",
             "returnDescription": "the detached node",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakecontent.js#L31"
           },
           {
             "method": "getParentElement()",
@@ -62810,8 +62810,8 @@
             "description": "Gets the node's parent Element node. If the node does not have a parent, this method\nreturns null.",
             "returnType": "Element",
             "returnDescription": "the parent Element node",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakecontent.js#L20"
           },
           {
             "method": "getType()",
@@ -62819,8 +62819,8 @@
             "description": "Gets the node's content type.",
             "returnType": "ContentType",
             "returnDescription": "the node's content type",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakecontent.js#L16"
           },
           {
             "method": "getValue()",
@@ -62828,8 +62828,8 @@
             "description": "Gets the text value of all nodes that are direct or indirect children of the node, in the order\nthey appear in the document.",
             "returnType": "String",
             "returnDescription": "the text value of all nodes that are direct or indirect children of the node",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/fakecontent.js#L48"
           }
         ]
       },
@@ -62909,8 +62909,8 @@
             "description": "Appends the given text to any content that already exists in the node.",
             "returnType": "Text",
             "returnDescription": "the Text node, for chaining",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/faketext.js#L23"
           },
           {
             "method": "detach()",
@@ -62918,8 +62918,8 @@
             "description": "Detaches the node from its parent Element node. If the node does not have a parent,\nthis method has no effect.",
             "returnType": "Content",
             "returnDescription": "the detached node",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/xmlservice/faketext.js#L28"
           },
           {
             "method": "getParentElement()",
@@ -62928,7 +62928,7 @@
             "returnType": "Element",
             "returnDescription": "the parent Element node",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakeelement.js#L162"
+            "implementationLink": "src/services/xmlservice/faketext.js#L32"
           },
           {
             "method": "getText()",
@@ -62937,7 +62937,7 @@
             "returnType": "String",
             "returnDescription": "the text value of the Text node",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakeelement.js#L21"
+            "implementationLink": "src/services/xmlservice/faketext.js#L10"
           },
           {
             "method": "getValue()",
@@ -62946,7 +62946,7 @@
             "returnType": "String",
             "returnDescription": "the text value of all nodes that are direct or indirect children of the node",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakeelement.js#L29"
+            "implementationLink": "src/services/xmlservice/faketext.js#L19"
           },
           {
             "method": "setText(String)",
@@ -62955,7 +62955,7 @@
             "returnType": "Text",
             "returnDescription": "the Text node, for chaining",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/xmlservice/fakeelement.js#L108"
+            "implementationLink": "src/services/xmlservice/faketext.js#L14"
           }
         ]
       }

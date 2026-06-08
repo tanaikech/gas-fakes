@@ -46,8 +46,6 @@ Supported Methods:
 ## Class: Ui
 
 Supported Methods:
-- `createAddonMenu()`
-- `createMenu(String)`
 - `showModalDialog(Object,String)`
 - `showSidebar(Object)`
 

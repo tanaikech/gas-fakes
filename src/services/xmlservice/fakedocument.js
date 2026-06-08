@@ -7,6 +7,9 @@ export class FakeDocument {
     this._rootElement = rootElement;
     if (rootElement) {
       this._content.push(rootElement);
+      if (typeof rootElement.setParentElement === 'function') {
+        rootElement.setParentElement(this);
+      }
     }
   }
   getRootElement() { return this._rootElement; }
@@ -16,10 +19,16 @@ export class FakeDocument {
       if (idx !== -1) {
         this._content[idx] = element;
       }
+      if (typeof this._rootElement.setParentElement === 'function') {
+        this._rootElement.setParentElement(null);
+      }
     } else {
       this._content.push(element);
     }
     this._rootElement = element;
+    if (element && typeof element.setParentElement === 'function') {
+      element.setParentElement(this);
+    }
     return this;
   }
   hasRootElement() { return !!this._rootElement; }
@@ -28,6 +37,9 @@ export class FakeDocument {
     if (root) {
       const idx = this._content.indexOf(root);
       if (idx !== -1) this._content.splice(idx, 1);
+      if (typeof root.setParentElement === 'function') {
+        root.setParentElement(null);
+      }
       this._rootElement = null;
     }
     return root;
@@ -43,6 +55,9 @@ export class FakeDocument {
     } else {
       this._content.unshift(doctype);
     }
+    if (doctype && typeof doctype.setParentElement === 'function') {
+      doctype.setParentElement(this);
+    }
     return this;
   }
   addContent(content, index = null) {
@@ -51,6 +66,9 @@ export class FakeDocument {
         throw new Error("XmlService: Document already has a root element");
       }
       this._rootElement = content;
+    }
+    if (content && typeof content.setParentElement === 'function') {
+      content.setParentElement(this);
     }
     if (index === null) {
       this._content.push(content);

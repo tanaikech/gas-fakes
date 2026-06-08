@@ -341,7 +341,7 @@ for (const service of giData) {
                 walk.simple(ast, {
                   ClassDeclaration(classNode) {
                     // Check if this is the class we are currently analyzing
-                    if (classNode.id.name === className) {
+                    if (classNode.id.name === className || classNode.id.name === 'Fake' + className) {
                       walk.simple(classNode.body, {
                         MethodDefinition(methodNode) {
                           if (methodNode.key.name === methodName) {

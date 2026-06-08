@@ -5,49 +5,94 @@ import { XMLBuilder } from 'fast-xml-parser';
  */
 export class FakeFormat {
   constructor(options = {}) {
-    this._options = options;
+    this._encoding = 'UTF-8';
+    this._indent = options.pretty ? '  ' : null;
+    this._lineSeparator = '\r\n';
+    this._omitDeclaration = false;
+    this._omitEncoding = false;
+  }
+
+  setEncoding(encoding) {
+    this._encoding = encoding || 'UTF-8';
+    return this;
+  }
+
+  setIndent(indent) {
+    this._indent = indent;
+    return this;
+  }
+
+  setLineSeparator(separator) {
+    this._lineSeparator = separator || '\r\n';
+    return this;
+  }
+
+  setOmitDeclaration(omit) {
+    this._omitDeclaration = !!omit;
+    return this;
+  }
+
+  setOmitEncoding(omit) {
+    this._omitEncoding = !!omit;
+    return this;
   }
 
   /**
-   * Formats the given document as an XML string.
-   * @param {FakeDocument} document The document to format.
+   * Formats the given document or element as an XML string.
+   * @param {FakeDocument|FakeElement} documentOrElement
    * @return {string} The formatted XML string.
    */
-  format(document) {
-    if (!document || typeof document.getRootElement !== 'function') {
-      throw new Error("XmlService: Invalid document provided to format().");
+  format(documentOrElement) {
+    if (!documentOrElement) {
+      throw new Error("XmlService: Invalid argument provided to format().");
     }
 
-    const root = document.getRootElement();
+    let root;
+    if (typeof documentOrElement.getRootElement === 'function') {
+      root = documentOrElement.getRootElement();
+    } else if (typeof documentOrElement.getQualifiedName === 'function') {
+      root = documentOrElement;
+    } else {
+      throw new Error("XmlService: Invalid document/element provided to format().");
+    }
+
+    if (!root) return '';
+
+    const isPretty = this._indent !== null && this._indent !== '';
+    const indentBy = isPretty ? this._indent : '';
+
     const builderOptions = {
       ignoreAttributes: false,
       attributeNamePrefix: "@_",
       textNodeName: "#text",
-      format: this._options.pretty || false,
-      indentBy: this._options.pretty ? "  " : "",
-      suppressEmptyNode: false // GAS usually outputs <tag></tag> or <tag/>? Actually GAS uses <tag/> for empty elements usually.
+      format: isPretty,
+      indentBy: indentBy,
+      suppressEmptyNode: false
     };
 
     const builder = new XMLBuilder(builderOptions);
-
-    // Construct the object for building
-    // We access the internal _data property of FakeElement
     const data = {
       [root.getQualifiedName()]: root._data
     };
 
     let xml = builder.build(data);
 
-    // GAS adds XML declaration followed by a line separator (\r\n)
-    const declaration = '<?xml version="1.0" encoding="UTF-8"?>\r\n';
-
-    if (this._options.pretty) {
-      // GAS pretty format uses \r\n and has a newline after declaration
-      // XMLBuilder uses \n, so we replace it.
-      return declaration + xml.replace(/\n/g, '\r\n') + '\r\n';
-    } else {
-      // Raw format - declaration, compact XML, and trailing newline
-      return declaration + xml + '\r\n';
+    if (isPretty) {
+      // XMLBuilder uses \n, replace with line separator if different
+      if (this._lineSeparator !== '\n') {
+        xml = xml.replace(/\n/g, this._lineSeparator);
+      }
     }
+
+    let declaration = '';
+    if (!this._omitDeclaration) {
+      if (this._omitEncoding) {
+        declaration = '<?xml version="1.0"?>' + this._lineSeparator;
+      } else {
+        declaration = `<?xml version="1.0" encoding="${this._encoding}"?>` + this._lineSeparator;
+      }
+    }
+
+    return declaration + xml + this._lineSeparator;
   }
 }

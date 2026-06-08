@@ -1,29 +1,23 @@
 import { FakeContent } from './fakecontent.js';
 import * as Enums from '../enums/xmlenums.js';
 
-export class FakeCdata extends FakeContent {
-  constructor(text, parentElement = null) {
-    super(Enums.ContentTypes.CDATA);
-    this._text = text || '';
-    this._parent = parentElement;
-  }
-
-  append(text) {
-    this._text += text || '';
-    return this;
+export class FakeComment extends FakeContent {
+  constructor(text = '') {
+    super(Enums.ContentTypes.COMMENT);
+    this._text = text;
   }
 
   getText() {
     return this._text;
   }
 
-  getValue() {
-    return this._text;
-  }
-
   setText(text) {
     this._text = text || '';
     return this;
+  }
+
+  getValue() {
+    return this._text;
   }
 
   detach() {
@@ -35,6 +29,6 @@ export class FakeCdata extends FakeContent {
   }
 
   toString() {
-    return `[CDATA: ${this._text}]`;
+    return `[Comment: <!--${this._text}-->]`;
   }
 }
