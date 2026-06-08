@@ -1312,6 +1312,13 @@ On case-insensitive filesystems (macOS, Windows), Git may fail to track changes 
 - **Discovery**: Renaming a file in the OS from `slides.MD` to `slides.md` may not be reflected in Git's index, causing automated documentation tools to generate broken links in environments with different casing (like Linux-based CI or some Node.js versions).
 - **Fix**: Use `git mv -f <old> <new>` to explicitly force Git to track the case change.
 
+### XmlService.ContentTypes Documentation Error
+
+The official Google Apps Script documentation incorrectly documents the enum container property name for `XmlService` as `XmlService.ContentType`. 
+
+- **Discrepancy**: In the **Live Apps Script environment**, accessing `XmlService.ContentType` is undefined. The correct, functional property name is `XmlService.ContentTypes`.
+- **Gas-Fakes Handling**: `gas-fakes` aligns its enum reference to `XmlService.ContentTypes` to match the correct property in the live environment. To maintain strict parity/fidelity, `XmlService.ContentType` is left as `undefined` (we do not preserve it as an alias).
+
 ## Testing
 
 If you want to play with the testing suite , then take a look at the [collaborators](collaborators.md) writeup.

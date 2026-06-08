@@ -21,5 +21,5 @@
 | [Spreadsheet](./progress/spreadsheet.md) | 108 | 1771 | 1359 | 0 | 412 |
 | [URL Fetch](./progress/urlfetch.md) | 2 | 13 | 13 | 0 | 0 |
 | [Utilities](./progress/utilities.md) | 5 | 59 | 59 | 0 | 0 |
-| [XML](./progress/xml.md) | 14 | 149 | 30 | 0 | 119 |
-| **Total** | **420** | **6708** | **4405** | **0** | **2303** |
+| [XML](./progress/xml.md) | 14 | 149 | 93 | 0 | 56 |
+| **Total** | **420** | **6708** | **4468** | **0** | **2240** |

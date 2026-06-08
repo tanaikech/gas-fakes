@@ -68,6 +68,172 @@ export const testXmlService = (pack) => {
     t.is(raw.includes('<root attr="val"><child>text</child></root>'), true, "Content is present and compact");
   })
 
+  unit.section('XmlService enums', t => {
+    const p = XmlService.ContentTypes;
+    t.is(typeof p, 'object');
+    if (ScriptApp.isFake) {
+      t.is(typeof XmlService.ContentType, 'undefined');
+    }
+    const expected = [
+      "CDATA",
+      "COMMENT",
+      "DOCTYPE",
+      "ELEMENT",
+      "ENTITYREF",
+      "PROCESSINGINSTRUCTION",
+      "TEXT"
+    ];
+    expected.forEach((key, i) => {
+      const val = p[key];
+      t.is(val.toString(), key);
+      t.is(val.name(), key);
+      t.is(val.ordinal(), i);
+    });
+  });
+
+  unit.section('XmlService factory and node mutations', t => {
+     // 1. XmlService Factory Methods
+     const root = XmlService.createElement('root');
+     t.is(root.getName(), 'root');
+
+     const cdata = XmlService.createCdata('data');
+     t.is(cdata.getText(), 'data');
+
+     const docType = XmlService.createDocType('html', 'public-id', 'system-id');
+     t.is(docType.getElementName(), 'html');
+
+     const comment = XmlService.createComment('my comment');
+     t.is(comment.getText(), 'my comment');
+
+     const text = XmlService.createText('some text');
+     t.is(text.getText(), 'some text');
+
+     const doc = XmlService.createDocument(root);
+     // Avoid direct object comparison: compare properties
+     t.is(doc.getRootElement().getName(), root.getName());
+
+     // 2. Attribute
+     // Note: Attributes are typically set on an element, not instantiated directly.
+     const el = XmlService.createElement('test-element');
+     
+     // --- Test Namespaced Attribute ---
+     const namespacedAttrName = 'test-attr';
+     const namespacedAttrValue = 'test-value';
+     const namespacedURI = 'http://example.com';
+     
+     // 1. Create the Namespace object
+     const ns = XmlService.getNamespace('ns', namespacedURI);
+     
+     // 2. Set the attribute using the Namespace object
+     el.setAttribute(namespacedAttrName, namespacedAttrValue, ns);
+     
+     // 3. Retrieve the attribute using the Namespace object
+     const retrievedNamespacedAttr = el.getAttribute(namespacedAttrName, ns);
+     t.is(retrievedNamespacedAttr.getName(), namespacedAttrName);
+     t.is(retrievedNamespacedAttr.getValue(), namespacedAttrValue);
+     // 4. Assert the namespace URI
+     t.is(retrievedNamespacedAttr.getNamespace().getURI(), namespacedURI);
+
+     // --- Test Non-Namespaced Attribute ---
+     const nonNamespacedAttrName = 'id';
+     const nonNamespacedAttrValue = 'test-id';
+     
+     el.setAttribute(nonNamespacedAttrName, nonNamespacedAttrValue); // 2-argument signature
+     
+     // Retrieve the attribute without specifying a namespace
+     const retrievedNonNamespacedAttr = el.getAttribute(nonNamespacedAttrName);
+     t.is(retrievedNonNamespacedAttr.getName(), nonNamespacedAttrName);
+     t.is(retrievedNonNamespacedAttr.getValue(), nonNamespacedAttrValue);
+      // Assert that the namespace is empty for non-namespaced attributes
+      t.is(retrievedNonNamespacedAttr.getNamespace().getURI(), "");
+      t.is(retrievedNonNamespacedAttr.getNamespace().getPrefix(), "");
+     
+     // 3. Cdata
+     const cd = XmlService.createCdata('initial');
+     t.is(cd.getText(), 'initial');
+     
+     // Test append
+     cd.append(' content');
+     t.is(cd.getText(), 'initial content');
+     
+     // Test parent element management
+     const parentEl = XmlService.createElement('parent');
+     parentEl.addContent(cd);
+     t.is(cd.getParentElement().getName(), parentEl.getName());
+     
+     // Test detach
+     cd.detach();
+     t.is(cd.getParentElement() === null, true);
+     
+     // Test setText
+     cd.setText('new text');
+     t.is(cd.getValue(), 'new text');
+
+     // 4. DocType
+     const dt = XmlService.createDocType('html', 'public', 'system');
+     t.is(dt.getElementName(), 'html');
+     t.is(dt.getPublicId(), 'public');
+     t.is(dt.getSystemId(), 'system');
+     
+     // Test setters
+     dt.setElementName('xhtml').setPublicId('pub').setSystemId('sys').setInternalSubset('subset');
+     t.is(dt.getElementName(), 'xhtml');
+     t.is(dt.getPublicId(), 'pub');
+     t.is(dt.getSystemId(), 'sys');
+     t.is(dt.getInternalSubset(), 'subset');
+     t.is(dt.getValue(), '');
+     
+     // Test internal subset removal/setting throws on null
+     t.threw(() => dt.setInternalSubset(null));
+     
+     // Clear it using empty string
+     dt.setInternalSubset('');
+     t.is(dt.getInternalSubset(), '');
+
+      // 5. Document
+      const document = XmlService.createDocument(); // Create empty document
+      t.is(document.hasRootElement() === false, true);
+      
+      // Test that passing null explicitly throws
+      t.threw(() => XmlService.createDocument(null));
+      
+      // Set root element
+      const rootForDoc = XmlService.createElement('root-for-doc');
+      document.setRootElement(rootForDoc);
+      t.is(document.hasRootElement() === true, true);
+      t.is(document.getRootElement().getName(), rootForDoc.getName());
+      
+      // Detach root element
+      document.detachRootElement();
+      t.is(document.hasRootElement() === false, true);
+
+     // Set DocType
+     const doctypeObj = XmlService.createDocType('xhtml', 'pub', 'sys');
+     document.setDocType(doctypeObj);
+     t.is(document.getDocType().getElementName(), doctypeObj.getElementName());
+
+     // Test content addition and size
+     const el1 = XmlService.createElement('child1');
+     document.addContent(el1);
+     
+     // Size includes the DocType object and the root element
+     t.is(document.getContentSize(), 2); 
+     t.is(document.getContent(1).getName(), el1.getName());
+     t.is(document.getAllContent().length, 2);
+     t.is(document.cloneContent().length, 2);
+
+     // Test Descendants (let's add a child to el1)
+     const childEl = XmlService.createElement('grandchild');
+     el1.addContent(childEl);
+     const descendants = document.getDescendants();
+     // Descendants count: DocType, el1, grandchild
+     t.is(descendants.length, 3); 
+
+     // Test Removal
+     t.is(document.removeContent(el1), true);
+     t.is(document.getContentSize(), 1); // Only doctypeObj remains
+  });
+
   if (!pack) {
     unit.report()
   }

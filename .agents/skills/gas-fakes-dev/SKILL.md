@@ -204,6 +204,7 @@ When implementing or modifying `EmbeddedChartBuilder` features, you must handle 
 - **Method Availability (Live GAS Crash Warning)**: Live GAS does not support visual formatting methods (`setTitle`, `setBackgroundColor`) on the root `EmbeddedChartBuilder`; they are only available *after* casting (`.asPieChart()`). Furthermore, `setHiddenDimensionStrategy` will throw a backend `Unexpected error` if called before assigning a type, or if called on an incompatible type (like a Pie chart).
 
 ### Environment-Agnostic Test Design (CRITICAL)
+- **No Direct Mock Class References**: Test files MUST NOT import or directly reference fake classes using `new` (e.g. `new FakeElement()`, `new FakeAttribute()`, etc.). These classes do not exist in the live Google Apps Script environment, where the same tests are run. Instead, always instantiate objects via the public factory methods of their respective service (e.g., `XmlService.createElement()`) and assert against properties instead of direct object reference comparisons.
 - **Private Data Structures**: Under no circumstances should test files directly assert against internal `gas-fakes` structural properties (e.g., checking `builder.__apiChart.spec.title`). The test suite executes against **both** local Node.js mocks and Live Apps Script Java classes. Live Apps Script does not expose these internal variables, causing tests to crash.
 - **gas-fakes Specific Objects (`__behavior`)**: Objects like `ScriptApp.__behavior` or `sandboxMode` exist ONLY in the local Node.js environment. If you need to manipulate the sandbox during a test (e.g., adding a whitelist ID), you MUST wrap that code in an `if (ScriptApp.isFake)` block. Attempting to access `ScriptApp.__behavior.sandboxMode` in Live Apps Script will result in a `TypeError: Cannot read properties of undefined`.
 - **Test Outcomes**: Only assert against public, documented getter/setter behavior or the visual/functional output of a method (e.g., inserting the chart into a sheet and validating the resulting API object). Avoid bypassing validations using `ScriptApp.isFake` for private implementation assertions unless strictly manipulating the local test harness (like the sandbox).
@@ -216,3 +217,19 @@ When implementing or modifying `EmbeddedChartBuilder` features, you must handle 
   2. It copies the transformed files to a target directory (configured via `init` or `--target`).
   3. It uses `clasp push` to deploy the transformed code to Apps Script.
 - **Result**: You can maintain idiomatic Node.js code with ESM imports/exports locally while ensuring the deployed Apps Script code remains valid.
+
+### Local Documentation Discovery (Parity & Method Verification)
+
+For rapid and accurate verification of Apps Script class and method signatures, parameter lists, return types, and descriptions, developers should prioritize searching the local documentation repository.
+
+The file `/Users/brucemcpherson/Documents/repos/gas-fakes/doccreation/gi-fake-all.json` contains a complete, comprehensive duplicate of all Apps Script documentation.
+
+**Prioritization Strategy:**
+
+Instead of relying on external web searches, which can be slow, prone to outdated information, or lack precise syntax matching, use local command-line tools (`grep`, `jq`, etc.) to query `gi-fake-all.json`.
+
+**Why Local Search is Superior:**
+
+1.  **Efficiency:** Local searches are instantaneous compared to network latency.
+2.  **Offline Access:** Documentation is available even without an internet connection.
+3.  **Guaranteed Accuracy:** The JSON file provides a guaranteed, static snapshot of the documentation, ensuring that the syntax and usage details match the expected environment, eliminating ambiguity found in general web searches.

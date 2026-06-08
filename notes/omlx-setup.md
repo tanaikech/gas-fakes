@@ -95,7 +95,9 @@ The adoption of the oMLX delegation pattern provides significant operational and
 By delegating complex generation tasks (like large code blocks or detailed data analysis) to the local Focused Executor, you offload computational load from the cloud. This allows you to leverage specialized local hardware (e.g., dedicated GPUs) for high-throughput, low-latency execution of specific tasks.
 
 ### 💰 Cost and Token Savings
-For hosted LLMs operating under token-based pricing (especially Flash plans), complex, verbose outputs can quickly accumulate costs. By offloading the heavy lifting to the local model, you drastically reduce the number of tokens consumed by the expensive hosted Gemini API, leading to substantial cost savings.
+For hosted LLMs operating under token-based pricing (especially Flash plans), complex, verbose outputs can quickly accumulate costs. By offloading the heavy lifting to the local model, you drastically reduce the number of tokens consumed by the expensive hosted Gemini API, leading to substantial cost savings. Note that `npx ccusage` gives a very useful breakdown of your daily model token and cost usage. 
 
 ### 🎯 High-Fidelity Execution
 Local models can be fine-tuned or specialized for specific domains (e.g., a code-generation model trained exclusively on Python). Delegation ensures that the most specialized and high-fidelity model is used for the task, resulting in superior output quality for that specific domain compared to a general-purpose cloud model.
+
+
