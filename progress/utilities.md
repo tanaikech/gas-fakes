@@ -59,8 +59,8 @@ A typesafe enum for character sets.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| US_ASCII |  | completed | [link](../src/services/enums/utilitiesenums.js#L3) |
-| UTF_8 |  | completed | [link](../src/services/enums/utilitiesenums.js#L2) |
+| US_ASCII | US ASCII charset. | completed | [link](../src/services/enums/utilitiesenums.js#L3) |
+| UTF_8 | UTF-8 charset. | completed | [link](../src/services/enums/utilitiesenums.js#L2) |
 
 ## Enum: [DigestAlgorithm](https://developers.google.com/apps-script/reference/utilities/digest-algorithm)
 

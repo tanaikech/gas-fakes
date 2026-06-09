@@ -64,10 +64,6 @@ Supported Methods:
 ## Class: ContainerElement
 
 Supported Methods:
-- `asParagraph()`
-- `asTable()`
-- `asTableCell()`
-- `asTableRow()`
 - `copy()`
 - `getChild(Integer)`
 - `getChildIndex(Element)`
@@ -95,7 +91,6 @@ Supported Methods:
 - `getHeader()`
 - `getId()`
 - `getName()`
-- `getTab(String)`
 - `getTabs()`
 - `getUrl()`
 - `getViewers()`
@@ -233,8 +228,6 @@ Supported Methods:
 - `getType()`
 - `insertInlineImage(Integer,BlobSource)`
 - `insertInlineImage(Integer,InlineImage)`
-- `insertText(Integer,String)`
-- `insertText(Integer,Text)`
 - `isLeftToRight()`
 - `setAlignment(HorizontalAlignment)`
 - `setGlyphType(GlyphType)`
@@ -328,7 +321,6 @@ Supported Methods:
 - `addElement(Text,Integer,Integer)`
 - `addRange(Range)`
 - `build()`
-- `getRangeElements()`
 
 ## Class: RangeElement
 

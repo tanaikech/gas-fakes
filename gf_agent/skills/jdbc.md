@@ -29,7 +29,6 @@ Supported Methods:
 
 Supported Methods:
 - `free()`
-- `getAs(String)`
 - `getSubString(Integer,Integer)`
 - `length()`
 - `position(JdbcClob,Integer)`
@@ -173,6 +172,7 @@ Supported Methods:
 - `execute(String,String)`
 - `execute(String)`
 - `executeBatch()`
+- `executeBatch(Object)`
 - `executeQuery()`
 - `executeQuery(String)`
 - `executeUpdate()`
@@ -217,8 +217,6 @@ Supported Methods:
 - `setPoolable(Boolean)`
 - `setQueryTimeout(Integer)`
 - `setString(Integer,String)`
-- `setTime(Integer,JdbcTime,String)`
-- `setTime(Integer,JdbcTime)`
 - `setTimestamp(Integer,JdbcTimestamp,String)`
 - `setTimestamp(Integer,JdbcTimestamp)`
 

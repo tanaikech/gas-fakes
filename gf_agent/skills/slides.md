@@ -161,10 +161,6 @@ Supported Methods:
 - `preconcatenateTransform(AffineTransform)`
 - `remove()`
 - `removeLink()`
-- `replace(BlobSource,Boolean)`
-- `replace(BlobSource)`
-- `replace(String,Boolean)`
-- `replace(String)`
 - `scaleHeight(Number)`
 - `scaleWidth(Number)`
 - `select()`
@@ -801,8 +797,6 @@ Supported Methods:
 - `asString()`
 - `clear()`
 - `clear(Integer,Integer)`
-- `find(String,Integer)`
-- `find(String)`
 - `getAutoTexts()`
 - `getEndIndex()`
 - `getLength()`

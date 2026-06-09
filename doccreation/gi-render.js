@@ -8,6 +8,11 @@ const cleanText = (text) => {
   return text.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
 };
 
+const escapePipe = (text) => {
+  if (!text) return '';
+  return text.replace(/\|/g, '\\|');
+};
+
 data.sort((a, b) => a.serviceName.localeCompare(b.serviceName));
 
 for (const service of data) {
@@ -55,12 +60,12 @@ for (const service of data) {
       const implementationLink = method['implementationLink'] ? `[link](../${method['implementationLink']})` : '';
 
       if (a_class.type === 'Enum' || a_class.type === 'Interface') {
-        markdown += `| ${methodName} | ${cleanText(method.description)} | ${status} | ${implementationLink} |\n`;
+        markdown += `| ${escapePipe(methodName)} | ${escapePipe(cleanText(method.description))} | ${escapePipe(status)} | ${escapePipe(implementationLink)} |\n`;
       } else {
         if (method.methodUrl) {
-          markdown += `| [${methodName}](${method.methodUrl}) | ${cleanText(method.description)} | ${returnType} | ${cleanText(method.returnDescription)} | ${status} | ${implementationLink} |\n`;
+          markdown += `| [${escapePipe(methodName)}](${method.methodUrl}) | ${escapePipe(cleanText(method.description))} | ${escapePipe(returnType)} | ${escapePipe(cleanText(method.returnDescription))} | ${escapePipe(status)} | ${escapePipe(implementationLink)} |\n`;
         } else {
-          markdown += `| ${methodName} | ${cleanText(method.description)} | ${returnType} | ${cleanText(method.returnDescription)} | ${status} | ${implementationLink} |\n`;
+          markdown += `| ${escapePipe(methodName)} | ${escapePipe(cleanText(method.description))} | ${escapePipe(returnType)} | ${escapePipe(cleanText(method.returnDescription))} | ${escapePipe(status)} | ${escapePipe(implementationLink)} |\n`;
         }
       }
     }

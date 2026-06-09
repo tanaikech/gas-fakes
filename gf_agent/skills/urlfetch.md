@@ -4,7 +4,6 @@
 
 Supported Methods:
 - `getAllHeaders()`
-- `getAs(String)`
 - `getBlob()`
 - `getContent()`
 - `getContentText()`

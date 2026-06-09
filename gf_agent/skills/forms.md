@@ -114,7 +114,6 @@ Supported Methods:
 - `getItems()`
 - `getItems(ItemType)`
 - `getPublishedUrl()`
-- `getResponse(String)`
 - `getResponses()`
 - `getResponses(Date)`
 - `getTitle()`
@@ -196,9 +195,6 @@ Supported Methods:
 - `createChoice(String)`
 - `createResponse(String)`
 - `getChoices()`
-- `getId()`
-- `getIndex()`
-- `getType()`
 - `setChoices(Choice)`
 
 ## Class: MultipleChoiceItem
@@ -297,7 +293,6 @@ Supported Methods:
 
 Supported Methods:
 - `createResponse(String)`
-- `getType()`
 
 ## Class: TimeItem
 

@@ -84,6 +84,62 @@ export const testFetch = (pack) => {
     t.is(req3.contentType, 'application/x-www-form-urlencoded', 'Default content type for POST should be application/x-www-form-urlencoded');
   });
 
+  unit.section('urlfetchapp advanced options', t => {
+    // 1. Test followRedirects: false (e.g. fetching http://google.com which redirects to https)
+    const resRedirect = UrlFetchApp.fetch('http://google.com', {
+      followRedirects: false,
+      muteHttpExceptions: true
+    });
+    const code = resRedirect.getResponseCode();
+    t.true(code >= 300 && code < 400, `should return 3xx redirect code when followRedirects is false (got ${code})`);
+
+    // 2. Test timeoutSeconds
+    try {
+      const resTimeout = UrlFetchApp.fetch(fixes.API_URL, {
+        timeoutSeconds: 30
+      });
+      t.is(resTimeout.getResponseCode(), 200, 'timeoutSeconds option should be accepted and succeed');
+    } catch (e) {
+      t.fail('timeoutSeconds option failed: ' + e.message);
+    }
+
+    // 3. Test validateHttpsCertificates
+    try {
+      const resCert = UrlFetchApp.fetch(fixes.API_URL, {
+        validateHttpsCertificates: true
+      });
+      t.is(resCert.getResponseCode(), 200, 'validateHttpsCertificates option should be accepted and succeed');
+    } catch (e) {
+      t.fail('validateHttpsCertificates option failed: ' + e.message);
+    }
+
+    // 4. Test payload as byte array
+    try {
+      const byteArray = [104, 101, 108, 108, 111]; // "hello" in ASCII
+      const req = UrlFetchApp.getRequest('http://test.com', {
+        method: 'POST',
+        payload: byteArray
+      });
+      t.is(req.method, 'post');
+      t.deepEqual(req.payload, byteArray, 'getRequest should preserve byte array payload');
+    } catch (e) {
+      t.fail('payload byte array failed: ' + e.message);
+    }
+
+    // 5. Test payload as Blob
+    try {
+      const blob = Utilities.newBlob('blob content', 'text/plain', 'test.txt');
+      const req = UrlFetchApp.getRequest('http://test.com', {
+        method: 'POST',
+        payload: blob
+      });
+      t.is(req.method, 'post');
+      t.is(req.payload, blob, 'getRequest should preserve Blob payload');
+    } catch (e) {
+      t.fail('payload Blob failed: ' + e.message);
+    }
+  });
+
   if (!pack) {
     unit.report()
   }

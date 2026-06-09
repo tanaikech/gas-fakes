@@ -128,7 +128,6 @@ Supported Methods:
 - `getCc()`
 - `getDate()`
 - `getFrom()`
-- `getHeader(String)`
 - `getId()`
 - `getPlainBody()`
 - `getRawContent()`

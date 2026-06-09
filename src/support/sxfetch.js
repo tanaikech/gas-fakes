@@ -11,16 +11,76 @@ const fixOptions = (options) => {
   let fixedOptions = {}
   if (options) {
     fixedOptions = { ...options }
+
+    // --- 1. Handle specific advanced parameters ---
+
+    // 1.1. Timeout
+    if (typeof fixedOptions.timeoutSeconds === 'number') {
+      fixedOptions.timeout = { request: fixedOptions.timeoutSeconds * 1000 };
+      delete fixedOptions.timeoutSeconds;
+    }
+
+    // 1.2. Redirects
+    if (typeof fixedOptions.followRedirects === 'boolean') {
+      fixedOptions.followRedirect = fixedOptions.followRedirects;
+      delete fixedOptions.followRedirects;
+    }
+
+    // 1.3. HTTPS Certificate Validation
+    if (typeof fixedOptions.validateHttpsCertificates === 'boolean') {
+      fixedOptions.https = fixedOptions.https || {};
+      fixedOptions.https.rejectUnauthorized = fixedOptions.validateHttpsCertificates;
+      delete fixedOptions.validateHttpsCertificates;
+    }
+
+    // 1.4. Escaping (Note: got handles escaping natively, this is primarily for documentation/acceptance)
+    if (typeof fixedOptions.escaping === 'boolean') {
+      // If escaping is false, we assume the URL provided is already fully escaped/raw.
+      // We accept the parameter but rely on got's default behavior unless we manually modify the URL, 
+      // which is complex and usually unnecessary for standard fetch implementations.
+      delete fixedOptions.escaping; 
+    }
+
+    // 1.5. Payload Handling (Blob or Byte Array)
+    if (fixedOptions.payload) {
+      const payload = fixedOptions.payload;
+      
+      // Check for Blob-like object (has getBytes and getContentType)
+      if (typeof payload === 'object' && payload !== null && typeof payload.getBytes === 'function' && typeof payload.getContentType === 'function') {
+        const bytes = payload.getBytes();
+        fixedOptions.body = Buffer.from(bytes);
+        
+        // Set Content-Type if not already specified
+        const contentType = payload.getContentType();
+        if (!fixedOptions.headers || !fixedOptions.headers['Content-Type'] || fixedOptions.headers['Content-Type'] !== contentType) {
+          fixedOptions.headers = fixedOptions.headers || {};
+          fixedOptions.headers['Content-Type'] = contentType;
+        }
+        delete fixedOptions.payload;
+        
+      // Check for Byte Array (Array of numbers)
+      } else if (Array.isArray(payload) && payload.every(item => typeof item === 'number')) {
+        fixedOptions.body = Buffer.from(payload);
+        delete fixedOptions.payload;
+      }
+    }
+
+
+    // --- 2. Handle existing options (Content-Type, payload object, muteHttpExceptions) ---
+
     Object.keys(fixedOptions).forEach(k => {
+      // Content-Type handling
       if (k.match(/Content-Type|contentType/i)) {
         fixedOptions.headers = fixedOptions.headers || {}
         fixedOptions.headers['Content-Type'] = fixedOptions[k]
         delete fixedOptions[k]
       }
+      // Payload object handling (for application/x-www-form-urlencoded)
       if (k.match(/payload/i)) {
         fixedOptions.body = fixedOptions[k]
         delete fixedOptions[k]
       }
+      // Mute HTTP Exceptions
       if (k.match(/muteHttpExceptions/i)) {
         fixedOptions.throwHttpErrors = !fixedOptions[k]
         delete fixedOptions[k]

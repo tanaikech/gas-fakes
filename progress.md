@@ -12,14 +12,14 @@
 | [Forms](./progress/forms.md) | 41 | 504 | 266 | 0 | 238 |
 | [Gmail](./progress/gmail.md) | 6 | 168 | 167 | 0 | 1 |
 | [HTML](./progress/html.md) | 6 | 39 | 34 | 0 | 5 |
-| [JDBC](./progress/jdbc.md) | 20 | 749 | 310 | 0 | 439 |
+| [JDBC](./progress/jdbc.md) | 20 | 753 | 311 | 0 | 442 |
 | [Lock](./progress/lock.md) | 2 | 7 | 7 | 0 | 0 |
 | [Mail](./progress/mail.md) | 1 | 5 | 0 | 0 | 5 |
 | [Properties](./progress/properties.md) | 4 | 11 | 6 | 5 | 0 |
 | [Script](./progress/script.md) | 16 | 84 | 22 | 0 | 62 |
 | [Slides](./progress/slides.md) | 76 | 1288 | 1005 | 0 | 283 |
 | [Spreadsheet](./progress/spreadsheet.md) | 108 | 1771 | 1199 | 65 | 507 |
-| [URL Fetch](./progress/urlfetch.md) | 2 | 13 | 0 | 0 | 13 |
+| [URL Fetch](./progress/urlfetch.md) | 2 | 13 | 12 | 0 | 1 |
 | [Utilities](./progress/utilities.md) | 5 | 59 | 59 | 0 | 0 |
 | [XML](./progress/xml.md) | 14 | 149 | 142 | 0 | 7 |
-| **Total** | **420** | **6708** | **4208** | **106** | **2394** |
+| **Total** | **420** | **6712** | **4221** | **106** | **2385** |
