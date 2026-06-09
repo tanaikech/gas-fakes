@@ -175,8 +175,40 @@ export class FakeUrlFetchApp {
       request.contentType = options.contentType;
     }
 
-    if (options.payload) {
-      request.payload = options.payload;
+    if (options.payload !== undefined && options.payload !== null) {
+      const payload = options.payload;
+
+      // 1. Handle Blob payload
+      if (typeof payload.getDataAsString === 'function') {
+        request.payload = payload.getDataAsString();
+      }
+      // 2. Handle Byte[] array payload (Array of numbers)
+      else if (Array.isArray(payload) && payload.every(item => typeof item === 'number')) {
+        // Convert byte array to UTF-8 string
+        request.payload = Buffer.from(payload).toString('utf8');
+      }
+      // 3. Handle plain JavaScript object payload
+      else if (typeof payload === 'object' && !Buffer.isBuffer(payload)) {
+        // Serialize object to form-encoded string
+        const params = new URLSearchParams();
+        for (const key in payload) {
+          if (Object.prototype.hasOwnProperty.call(payload, key)) {
+            params.append(key, payload[key]);
+          }
+        }
+        request.payload = params.toString();
+        
+        // Set default content type for form data
+        if (!request.contentType) {
+          request.contentType = 'application/x-www-form-urlencoded';
+        }
+      }
+      // Default case: pass payload directly (e.g., string, Buffer, etc.)
+      else {
+        request.payload = payload;
+      }
+    } else if (options.payload === null) {
+      request.payload = null;
     }
 
     if (options.useIntranet !== undefined) {

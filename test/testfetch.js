@@ -94,50 +94,34 @@ export const testFetch = (pack) => {
     t.true(code >= 300 && code < 400, `should return 3xx redirect code when followRedirects is false (got ${code})`);
 
     // 2. Test timeoutSeconds
-    try {
-      const resTimeout = UrlFetchApp.fetch(fixes.API_URL, {
-        timeoutSeconds: 30
-      });
-      t.is(resTimeout.getResponseCode(), 200, 'timeoutSeconds option should be accepted and succeed');
-    } catch (e) {
-      t.fail('timeoutSeconds option failed: ' + e.message);
-    }
+    const resTimeout = UrlFetchApp.fetch(fixes.API_URL, {
+      timeoutSeconds: 30
+    });
+    t.is(resTimeout.getResponseCode(), 200, 'timeoutSeconds option should be accepted and succeed');
 
     // 3. Test validateHttpsCertificates
-    try {
-      const resCert = UrlFetchApp.fetch(fixes.API_URL, {
-        validateHttpsCertificates: true
-      });
-      t.is(resCert.getResponseCode(), 200, 'validateHttpsCertificates option should be accepted and succeed');
-    } catch (e) {
-      t.fail('validateHttpsCertificates option failed: ' + e.message);
-    }
+    const resCert = UrlFetchApp.fetch(fixes.API_URL, {
+      validateHttpsCertificates: true
+    });
+    t.is(resCert.getResponseCode(), 200, 'validateHttpsCertificates option should be accepted and succeed');
 
     // 4. Test payload as byte array
-    try {
-      const byteArray = [104, 101, 108, 108, 111]; // "hello" in ASCII
-      const req = UrlFetchApp.getRequest('http://test.com', {
-        method: 'POST',
-        payload: byteArray
-      });
-      t.is(req.method, 'post');
-      t.deepEqual(req.payload, byteArray, 'getRequest should preserve byte array payload');
-    } catch (e) {
-      t.fail('payload byte array failed: ' + e.message);
-    }
+    const byteArray = [104, 101, 108, 108, 111]; // "hello" in ASCII
+    const req = UrlFetchApp.getRequest('http://test.com', {
+      method: 'POST',
+      payload: byteArray
+    });
+    t.is(req.method, 'post');
+    t.is(req.payload, 'hello', 'getRequest should convert byte array payload to string');
 
     // 5. Test payload as Blob
-    try {
-      const blob = Utilities.newBlob('blob content', 'text/plain', 'test.txt');
-      const req = UrlFetchApp.getRequest('http://test.com', {
-        method: 'POST',
-        payload: blob
-      });
-      t.is(req.method, 'post');
-      t.is(req.payload, blob, 'getRequest should preserve Blob payload');
-    } catch (e) {
-      t.fail('payload Blob failed: ' + e.message);
-    }
+    const blob = Utilities.newBlob('blob content', 'text/plain', 'test.txt');
+    const reqBlob = UrlFetchApp.getRequest('http://test.com', {
+      method: 'POST',
+      payload: blob
+    });
+    t.is(reqBlob.method, 'post');
+    t.is(reqBlob.payload, 'blob content', 'getRequest should convert Blob payload to string');
   });
 
   if (!pack) {
