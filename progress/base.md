@@ -173,38 +173,38 @@ An enumeration that provides access to MIME-type declarations without typing the
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| BMP | Representation of MIME type for a BMP image file (typically .bmp). | not started |  |
-| CSS | Representation of MIME type for a CSS text file (typically .css). | not started |  |
-| CSV | Representation of MIME type for a CSV text file (typically .csv). | not started |  |
-| FOLDER | Representation of MIME type for a Google Drive folder. | not started |  |
-| GIF | Representation of MIME type for a GIF image file (typically .gif). | not started |  |
-| GOOGLE_APPS_SCRIPT | Representation of MIME type for a Google Apps Script project. | not started |  |
-| GOOGLE_DOCS | Representation of MIME type for a Google Docs file. | not started |  |
-| GOOGLE_DRAWINGS | Representation of MIME type for a Google Drawings file. | not started |  |
-| GOOGLE_FORMS | Representation of MIME type for a Google Forms file. | not started |  |
-| GOOGLE_SHEETS | Representation of MIME type for a Google Sheets file. | not started |  |
-| GOOGLE_SITES | Representation of MIME type for a Google Sites file. | not started |  |
-| GOOGLE_SLIDES | Representation of MIME type for a Google Slides file. | not started |  |
-| HTML | Representation of MIME type for an HTML text file (typically .html). | not started |  |
-| JAVASCRIPT | Representation of MIME type for a JavaScript text file (typically .js). | not started |  |
-| JPEG | Representation of MIME type for a JPEG image file (typically .jpg). | not started |  |
-| MICROSOFT_EXCEL | Representation of MIME type for a Microsoft Excel spreadsheet file (typically .xlsx). | not started |  |
-| MICROSOFT_EXCEL_LEGACY | Representation of MIME type for a Microsoft Excel legacy file (typically .xls). | not started |  |
-| MICROSOFT_POWERPOINT | Representation of MIME type for a Microsoft PowerPoint presentation file (typically .pptx). | not started |  |
-| MICROSOFT_POWERPOINT_LEGACY | Representation of MIME type for a Microsoft PowerPoint legacy file (typically .ppt). | not started |  |
-| MICROSOFT_WORD | Representation of MIME type for a Microsoft Word document file (typically .docx). | not started |  |
-| MICROSOFT_WORD_LEGACY | Representation of MIME type for a Microsoft Word legacy file (typically .doc). | not started |  |
-| OPENDOCUMENT_GRAPHICS | Representation of MIME type for an OpenDocument graphics file (typically .odg). | not started |  |
-| OPENDOCUMENT_PRESENTATION | Representation of MIME type for an OpenDocument presentation file (typically .odp). | not started |  |
-| OPENDOCUMENT_SPREADSHEET | Representation of MIME type for an OpenDocument spreadsheet file (typically .ods). | not started |  |
-| OPENDOCUMENT_TEXT | Representation of MIME type for an OpenDocument word-processing file (typically .odt). | not started |  |
-| PDF | Representation of MIME type for a PDF file (typically .pdf). | not started |  |
-| PLAIN_TEXT | Representation of MIME type for a plain text file (typically .txt). | not started |  |
-| PNG | Representation of MIME type for a PNG image file (typically .png). | not started |  |
-| RTF | Representation of MIME type for a rich text file (typically .rtf). | not started |  |
-| SHORTCUT | Representation of MIME type for a Google Drive shortcut. | not started |  |
-| SVG | Representation of MIME type for an SVG image file (typically .svg). | not started |  |
-| ZIP | Representation of MIME type for a ZIP archive file (typically .zip). | not started |  |
+| BMP | Representation of MIME type for a BMP image file (typically .bmp). | completed | [link](../src/services/mimetype/fakemimetype.js#L12) |
+| CSS | Representation of MIME type for a CSS text file (typically .css). | completed | [link](../src/services/mimetype/fakemimetype.js#L13) |
+| CSV | Representation of MIME type for a CSV text file (typically .csv). | completed | [link](../src/services/mimetype/fakemimetype.js#L14) |
+| FOLDER | Representation of MIME type for a Google Drive folder. | completed | [link](../src/services/mimetype/fakemimetype.js#L15) |
+| GIF | Representation of MIME type for a GIF image file (typically .gif). | completed | [link](../src/services/mimetype/fakemimetype.js#L16) |
+| GOOGLE_APPS_SCRIPT | Representation of MIME type for a Google Apps Script project. | completed | [link](../src/services/mimetype/fakemimetype.js#L17) |
+| GOOGLE_DOCS | Representation of MIME type for a Google Docs file. | completed | [link](../src/services/mimetype/fakemimetype.js#L18) |
+| GOOGLE_DRAWINGS | Representation of MIME type for a Google Drawings file. | completed | [link](../src/services/mimetype/fakemimetype.js#L19) |
+| GOOGLE_FORMS | Representation of MIME type for a Google Forms file. | completed | [link](../src/services/mimetype/fakemimetype.js#L20) |
+| GOOGLE_SHEETS | Representation of MIME type for a Google Sheets file. | completed | [link](../src/services/mimetype/fakemimetype.js#L21) |
+| GOOGLE_SITES | Representation of MIME type for a Google Sites file. | completed | [link](../src/services/mimetype/fakemimetype.js#L22) |
+| GOOGLE_SLIDES | Representation of MIME type for a Google Slides file. | completed | [link](../src/services/mimetype/fakemimetype.js#L23) |
+| HTML | Representation of MIME type for an HTML text file (typically .html). | completed | [link](../src/services/mimetype/fakemimetype.js#L24) |
+| JAVASCRIPT | Representation of MIME type for a JavaScript text file (typically .js). | completed | [link](../src/services/mimetype/fakemimetype.js#L25) |
+| JPEG | Representation of MIME type for a JPEG image file (typically .jpg). | completed | [link](../src/services/mimetype/fakemimetype.js#L26) |
+| MICROSOFT_EXCEL | Representation of MIME type for a Microsoft Excel spreadsheet file (typically .xlsx). | completed | [link](../src/services/mimetype/fakemimetype.js#L27) |
+| MICROSOFT_EXCEL_LEGACY | Representation of MIME type for a Microsoft Excel legacy file (typically .xls). | completed | [link](../src/services/mimetype/fakemimetype.js#L28) |
+| MICROSOFT_POWERPOINT | Representation of MIME type for a Microsoft PowerPoint presentation file (typically .pptx). | completed | [link](../src/services/mimetype/fakemimetype.js#L29) |
+| MICROSOFT_POWERPOINT_LEGACY | Representation of MIME type for a Microsoft PowerPoint legacy file (typically .ppt). | completed | [link](../src/services/mimetype/fakemimetype.js#L30) |
+| MICROSOFT_WORD | Representation of MIME type for a Microsoft Word document file (typically .docx). | completed | [link](../src/services/mimetype/fakemimetype.js#L31) |
+| MICROSOFT_WORD_LEGACY | Representation of MIME type for a Microsoft Word legacy file (typically .doc). | completed | [link](../src/services/mimetype/fakemimetype.js#L32) |
+| OPENDOCUMENT_GRAPHICS | Representation of MIME type for an OpenDocument graphics file (typically .odg). | completed | [link](../src/services/mimetype/fakemimetype.js#L33) |
+| OPENDOCUMENT_PRESENTATION | Representation of MIME type for an OpenDocument presentation file (typically .odp). | completed | [link](../src/services/mimetype/fakemimetype.js#L34) |
+| OPENDOCUMENT_SPREADSHEET | Representation of MIME type for an OpenDocument spreadsheet file (typically .ods). | completed | [link](../src/services/mimetype/fakemimetype.js#L35) |
+| OPENDOCUMENT_TEXT | Representation of MIME type for an OpenDocument word-processing file (typically .odt). | completed | [link](../src/services/mimetype/fakemimetype.js#L36) |
+| PDF | Representation of MIME type for a PDF file (typically .pdf). | completed | [link](../src/services/mimetype/fakemimetype.js#L37) |
+| PLAIN_TEXT | Representation of MIME type for a plain text file (typically .txt). | completed | [link](../src/services/mimetype/fakemimetype.js#L38) |
+| PNG | Representation of MIME type for a PNG image file (typically .png). | completed | [link](../src/services/mimetype/fakemimetype.js#L39) |
+| RTF | Representation of MIME type for a rich text file (typically .rtf). | completed | [link](../src/services/mimetype/fakemimetype.js#L40) |
+| SHORTCUT | Representation of MIME type for a Google Drive shortcut. | completed | [link](../src/services/mimetype/fakemimetype.js#L41) |
+| SVG | Representation of MIME type for an SVG image file (typically .svg). | completed | [link](../src/services/mimetype/fakemimetype.js#L42) |
+| ZIP | Representation of MIME type for a ZIP archive file (typically .zip). | completed | [link](../src/services/mimetype/fakemimetype.js#L43) |
 
 ## Enum: [Month](https://developers.google.com/apps-script/reference/base/month)
 

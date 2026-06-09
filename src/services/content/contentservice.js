@@ -1,9 +1,10 @@
 import { FakeTextOutput } from "./textoutput.js";
-import { ContentEnums } from "../enums/contentenums.js";
+// just avoid conflict with global MimeType
+import { MimeType as mt } from "../enums/contentenums.js";
 
 export class FakeContentService {
   constructor() {
-    this.MimeType = ContentEnums.MimeType;
+    this.MimeType = mt;
   }
 
   createTextOutput(content = "") {

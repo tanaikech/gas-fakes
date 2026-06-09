@@ -1762,256 +1762,256 @@
             "description": "Representation of MIME type for a Google Apps Script project.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/mimetype/fakemimetype.js#L17"
           },
           {
             "method": "GOOGLE_DRAWINGS",
             "description": "Representation of MIME type for a Google Drawings file.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/mimetype/fakemimetype.js#L19"
           },
           {
             "method": "GOOGLE_DOCS",
             "description": "Representation of MIME type for a Google Docs file.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/mimetype/fakemimetype.js#L18"
           },
           {
             "method": "GOOGLE_FORMS",
             "description": "Representation of MIME type for a Google Forms file.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/mimetype/fakemimetype.js#L20"
           },
           {
             "method": "GOOGLE_SHEETS",
             "description": "Representation of MIME type for a Google Sheets file.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/mimetype/fakemimetype.js#L21"
           },
           {
             "method": "GOOGLE_SITES",
             "description": "Representation of MIME type for a Google Sites file.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/mimetype/fakemimetype.js#L22"
           },
           {
             "method": "GOOGLE_SLIDES",
             "description": "Representation of MIME type for a Google Slides file.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/mimetype/fakemimetype.js#L23"
           },
           {
             "method": "FOLDER",
             "description": "Representation of MIME type for a Google Drive folder.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/mimetype/fakemimetype.js#L15"
           },
           {
             "method": "SHORTCUT",
             "description": "Representation of MIME type for a Google Drive shortcut.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/mimetype/fakemimetype.js#L41"
           },
           {
             "method": "BMP",
             "description": "Representation of MIME type for a BMP image file (typically .bmp).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/mimetype/fakemimetype.js#L12"
           },
           {
             "method": "GIF",
             "description": "Representation of MIME type for a GIF image file (typically .gif).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/mimetype/fakemimetype.js#L16"
           },
           {
             "method": "JPEG",
             "description": "Representation of MIME type for a JPEG image file (typically .jpg).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/mimetype/fakemimetype.js#L26"
           },
           {
             "method": "PNG",
             "description": "Representation of MIME type for a PNG image file (typically .png).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/mimetype/fakemimetype.js#L39"
           },
           {
             "method": "SVG",
             "description": "Representation of MIME type for an SVG image file (typically .svg).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/mimetype/fakemimetype.js#L42"
           },
           {
             "method": "PDF",
             "description": "Representation of MIME type for a PDF file (typically .pdf).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/mimetype/fakemimetype.js#L37"
           },
           {
             "method": "CSS",
             "description": "Representation of MIME type for a CSS text file (typically .css).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/mimetype/fakemimetype.js#L13"
           },
           {
             "method": "CSV",
             "description": "Representation of MIME type for a CSV text file (typically .csv).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/mimetype/fakemimetype.js#L14"
           },
           {
             "method": "HTML",
             "description": "Representation of MIME type for an HTML text file (typically .html).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/mimetype/fakemimetype.js#L24"
           },
           {
             "method": "JAVASCRIPT",
             "description": "Representation of MIME type for a JavaScript text file (typically .js).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/mimetype/fakemimetype.js#L25"
           },
           {
             "method": "PLAIN_TEXT",
             "description": "Representation of MIME type for a plain text file (typically .txt).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/mimetype/fakemimetype.js#L38"
           },
           {
             "method": "RTF",
             "description": "Representation of MIME type for a rich text file (typically .rtf).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/mimetype/fakemimetype.js#L40"
           },
           {
             "method": "OPENDOCUMENT_GRAPHICS",
             "description": "Representation of MIME type for an OpenDocument graphics file (typically .odg).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/mimetype/fakemimetype.js#L33"
           },
           {
             "method": "OPENDOCUMENT_PRESENTATION",
             "description": "Representation of MIME type for an OpenDocument presentation file (typically .odp).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/mimetype/fakemimetype.js#L34"
           },
           {
             "method": "OPENDOCUMENT_SPREADSHEET",
             "description": "Representation of MIME type for an OpenDocument spreadsheet file (typically .ods).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/mimetype/fakemimetype.js#L35"
           },
           {
             "method": "OPENDOCUMENT_TEXT",
             "description": "Representation of MIME type for an OpenDocument word-processing file (typically .odt).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/mimetype/fakemimetype.js#L36"
           },
           {
             "method": "MICROSOFT_EXCEL",
             "description": "Representation of MIME type for a Microsoft Excel spreadsheet file (typically .xlsx).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/mimetype/fakemimetype.js#L27"
           },
           {
             "method": "MICROSOFT_EXCEL_LEGACY",
             "description": "Representation of MIME type for a Microsoft Excel legacy file (typically .xls).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/mimetype/fakemimetype.js#L28"
           },
           {
             "method": "MICROSOFT_POWERPOINT",
             "description": "Representation of MIME type for a Microsoft PowerPoint presentation file (typically .pptx).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/mimetype/fakemimetype.js#L29"
           },
           {
             "method": "MICROSOFT_POWERPOINT_LEGACY",
             "description": "Representation of MIME type for a Microsoft PowerPoint legacy file (typically .ppt).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/mimetype/fakemimetype.js#L30"
           },
           {
             "method": "MICROSOFT_WORD",
             "description": "Representation of MIME type for a Microsoft Word document file (typically .docx).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/mimetype/fakemimetype.js#L31"
           },
           {
             "method": "MICROSOFT_WORD_LEGACY",
             "description": "Representation of MIME type for a Microsoft Word legacy file (typically .doc).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/mimetype/fakemimetype.js#L32"
           },
           {
             "method": "ZIP",
             "description": "Representation of MIME type for a ZIP archive file (typically .zip).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/mimetype/fakemimetype.js#L43"
           }
         ]
       },
@@ -22449,48 +22449,48 @@
             "description": "CSV Mime Type",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/contentenums.js#L5"
           },
           {
             "method": "ICAL",
             "description": "ICAL Mime Type",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/contentenums.js#L6"
           },
           {
             "method": "JAVASCRIPT",
             "description": "JAVASCRIPT Mime Type",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/contentenums.js#L7"
           },
           {
             "method": "JSON",
             "description": "JSON Mime Type",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/contentenums.js#L8"
           },
           {
             "method": "TEXT",
             "description": "TEXT Mime Type",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/contentenums.js#L10"
           },
           {
             "method": "VCARD",
             "description": "VCARD Mime Type",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/contentenums.js#L11"
           }
         ]
       },
@@ -22507,7 +22507,7 @@
             "returnType": "TextOutput",
             "returnDescription": "the new TextOutput object.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/content/contentservice.js#L9"
+            "implementationLink": "src/services/content/contentservice.js#L10"
           },
           {
             "method": "createTextOutput(String)",
@@ -22516,7 +22516,7 @@
             "returnType": "TextOutput",
             "returnDescription": "the new TextOutput object.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/content/contentservice.js#L9"
+            "implementationLink": "src/services/content/contentservice.js#L10"
           }
         ]
       },

@@ -1,7 +1,6 @@
 import { newFakeGasenum } from "@mcpher/fake-gasenum";
 
-export const ContentEnums = {
-  MimeType: newFakeGasenum([
+export const  MimeType = newFakeGasenum([
     "ATOM",
     "CSV",
     "ICAL",
@@ -12,4 +11,3 @@ export const ContentEnums = {
     "VCARD",
     "XML"
   ])
-}

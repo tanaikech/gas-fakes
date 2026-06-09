@@ -152,7 +152,7 @@ const classToFileMap = {
   'CacheService': 'stores/fakestores.js',
   'ScriptApp': 'scriptapp/app.js',
   'DriveApp': 'driveapp/fakedriveapp.js',
-  'MimeType': 'mimetype/fakemimetype.js',
+  'Base.MimeType': 'mimetype/fakemimetype.js',
   'FileIterator': 'support/peeker.js',
   'FolderIterator': 'support/peeker.js'
 };
@@ -204,7 +204,7 @@ for (const service of giData) {
   for (const classData of service.classes) {
     const className = classData.className;
     const fileContents = [];
-    const mappedFile = classToFileMap[className];
+    const mappedFile = classToFileMap[`${serviceName}.${className}`] || classToFileMap[className];
     if (mappedFile) {
       const filePath = allJsFiles.find(p => p.endsWith(mappedFile));
       if (filePath && fileCache.has(filePath)) {
@@ -342,7 +342,7 @@ for (const service of giData) {
                 if (classData.type === 'Enum') {
                   walk.simple(ast, {
                     VariableDeclarator(varNode) {
-                      if (varNode.id.name === className) {
+                      if (varNode.id.name === className || (file.filePath.endsWith('fakemimetype.js') && varNode.id.name === 'props')) {
                         const init = varNode.init;
                         if (init && init.type === 'CallExpression') {
                           const arg = init.arguments[0];
