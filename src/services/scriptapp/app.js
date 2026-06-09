@@ -7,7 +7,13 @@ import { Auth } from '../../support/auth.js'
 import { Proxies } from '../../support/proxies.js'
 import { newFakeBehavior } from './behavior.js'
 import { newFakeAuthorizationInfo } from './fakeauthorizationinfo.js'
-import { ScriptEnums } from '../enums/scriptenums.js'
+import {
+  AuthMode,
+  AuthorizationStatus,
+  TriggerSource,
+  EventType,
+  InstallationSource
+} from '../enums/scriptenums.js'
 import { newCacheDropin } from '@mcpher/gas-flex-cache'
 import { slogger } from "../../support/slogger.js";
 import fs from 'fs';
@@ -48,8 +54,8 @@ const getSourceOAuthToken = () => {
 
 
 const limitMode = (mode) => {
-  if (mode !== ScriptApp.AuthMode.FULL) {
-    throw new Error(`only ${ScriptApp.AuthMode.FULL} is supported as mode for now`)
+  if (mode !== ScriptApp.AuthMode.FULL.toString()) {
+    throw new Error(`only ${ScriptApp.AuthMode.FULL.toString()} is supported as mode for now`)
   }
 
   return mode
@@ -234,11 +240,11 @@ if (typeof globalThis[name] === typeof undefined) {
           ensureInit()
           return Auth.getActiveUser()?.id
         },
-        AuthMode: {
-          FULL: 'FULL'
-        },
-        AuthorizationStatus: ScriptEnums.AuthorizationStatus,
-        TriggerSource: ScriptEnums.TriggerSource,
+        AuthMode,
+        AuthorizationStatus,
+        TriggerSource,
+        EventType,
+        InstallationSource,
         getAuthorizationInfo: (authMode) => {
           ensureInit();
           return newFakeAuthorizationInfo(authMode);

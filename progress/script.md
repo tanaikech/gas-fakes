@@ -8,8 +8,8 @@ An object that checks if the user has granted authorization for the required sco
 
 | Method | Description | Return Type | Return Description | Status | Implementation |
 |--- |--- |--- |--- |--- |--- |
-| [getAuthorizationStatus()](https://developers.google.com/apps-script/reference/script/authorization-info#getAuthorizationStatus()) | Gets a value that indicates whether the user needs to authorize this script to use one or more services (for example, ScriptApp.AuthorizationStatus.REQUIRED). | [AuthorizationStatus](#enum-authorizationstatus) | the authorization status | not started |  |
-| [getAuthorizationUrl()](https://developers.google.com/apps-script/reference/script/authorization-info#getAuthorizationUrl()) | Gets the authorization URL that can be used to grant access to the script. This method returns null if no authorization is required. The page at the URL will close automatically if it is accessed and the script does not require any authorization. | String | a URL that can be used to authorize the script | not started |  |
+| [getAuthorizationStatus()](https://developers.google.com/apps-script/reference/script/authorization-info#getAuthorizationStatus()) | Gets a value that indicates whether the user needs to authorize this script to use one or more services (for example, ScriptApp.AuthorizationStatus.REQUIRED). | [AuthorizationStatus](#enum-authorizationstatus) | the authorization status | completed | [link](../src/services/scriptapp/fakeauthorizationinfo.js#L8) |
+| [getAuthorizationUrl()](https://developers.google.com/apps-script/reference/script/authorization-info#getAuthorizationUrl()) | Gets the authorization URL that can be used to grant access to the script. This method returns null if no authorization is required. The page at the URL will close automatically if it is accessed and the script does not require any authorization. | String | a URL that can be used to authorize the script | completed | [link](../src/services/scriptapp/fakeauthorizationinfo.js#L14) |
 | [getAuthorizedScopes()](https://developers.google.com/apps-script/reference/script/authorization-info#getAuthorizedScopes()) | Gets a list of authorized scopes for the script. If authorization information is requested for a specified list of scopes, returns the authorized scopes from the specified list. | String[] | The list of authorized scopes. | not started |  |
 
 ## Class: [CalendarTriggerBuilder](https://developers.google.com/apps-script/reference/script/calendar-trigger-builder)
@@ -67,13 +67,13 @@ Access and manipulate script publishing and triggers. This class allows users to
 | Method | Description | Return Type | Return Description | Status | Implementation |
 |--- |--- |--- |--- |--- |--- |
 | [deleteTrigger(Trigger)](https://developers.google.com/apps-script/reference/script/script-app#deleteTrigger(Trigger)) | Removes the given trigger so it no longer runs. |  |  | not started |  |
-| [getAuthorizationInfo(AuthMode,String)](https://developers.google.com/apps-script/reference/script/script-app#getAuthorizationInfo(AuthMode,String)) |  |  |  | completed | [link](../src/services/scriptapp/app.js#L242) |
-| [getAuthorizationInfo(AuthMode)](https://developers.google.com/apps-script/reference/script/script-app#getAuthorizationInfo(AuthMode)) | Gets an object that checks if the user has granted authorization for all the script requirements. The object also provides an authorization URL for users to grant those permissions, in case any of the script requirements are not authorized. | [AuthorizationInfo](#class-authorizationinfo) | An object that can provide information about the user's authorization status. | completed | [link](../src/services/scriptapp/app.js#L242) |
+| [getAuthorizationInfo(AuthMode,String)](https://developers.google.com/apps-script/reference/script/script-app#getAuthorizationInfo(AuthMode,String)) |  |  |  | not started |  |
+| [getAuthorizationInfo(AuthMode)](https://developers.google.com/apps-script/reference/script/script-app#getAuthorizationInfo(AuthMode)) | Gets an object that checks if the user has granted authorization for all the script requirements. The object also provides an authorization URL for users to grant those permissions, in case any of the script requirements are not authorized. | [AuthorizationInfo](#class-authorizationinfo) | An object that can provide information about the user's authorization status. | not started |  |
 | [getIdentityToken()](https://developers.google.com/apps-script/reference/script/script-app#getIdentityToken()) | Gets an OpenID Connect identity token for the effective user, if the openid scope has been granted. This scope is not included by default, and you must add it as an explicit scope in the manifest file to request it. Include the scopes https://www.googleapis.com/auth/userinfo.email or https://www.googleapis.com/auth/userinfo.profile to return additional user information in the token. | String | The identity token if available; otherwise null. | not started |  |
 | [getInstallationSource()](https://developers.google.com/apps-script/reference/script/script-app#getInstallationSource()) | Returns an enum value that indicates how the script came to be installed as an add-on for the current user (for example, whether the user installed it personally through the Chrome Web Store, or whether a domain administrator installed it for all users). | [InstallationSource](#enum-installationsource) | The source of installation. | not started |  |
-| [getOAuthToken()](https://developers.google.com/apps-script/reference/script/script-app#getOAuthToken()) | Gets the OAuth 2.0 access token for the effective user. If the script's OAuth scopes are sufficient to authorize another Google API that normally requires its own OAuth flow (like Google Picker), scripts can bypass the second authorization prompt by passing this token instead. The token expires after a time (a few minutes at minimum); scripts should handle authorization failures and call this method to obtain a fresh token when needed. | String | A string representation of the OAuth 2.0 token. | completed | [link](../src/services/scriptapp/app.js#L32) |
+| [getOAuthToken()](https://developers.google.com/apps-script/reference/script/script-app#getOAuthToken()) | Gets the OAuth 2.0 access token for the effective user. If the script's OAuth scopes are sufficient to authorize another Google API that normally requires its own OAuth flow (like Google Picker), scripts can bypass the second authorization prompt by passing this token instead. The token expires after a time (a few minutes at minimum); scripts should handle authorization failures and call this method to obtain a fresh token when needed. | String | A string representation of the OAuth 2.0 token. | not started |  |
 | [getProjectTriggers()](https://developers.google.com/apps-script/reference/script/script-app#getProjectTriggers()) | Gets all installable triggers associated with the current project and current user. | [Trigger[]](#class-trigger) | An array of the current user's triggers associated with this project. | not started |  |
-| [getScriptId()](https://developers.google.com/apps-script/reference/script/script-app#getScriptId()) | Gets the script project's unique ID. This is the preferred method to get the unique identifier for the script project as opposed to getProjectKey(). This ID can be used in all places where project key was previously provided. | String | The script project's ID. | completed | [link](../src/services/scriptapp/app.js#L199) |
+| [getScriptId()](https://developers.google.com/apps-script/reference/script/script-app#getScriptId()) | Gets the script project's unique ID. This is the preferred method to get the unique identifier for the script project as opposed to getProjectKey(). This ID can be used in all places where project key was previously provided. | String | The script project's ID. | not started |  |
 | [getService()](https://developers.google.com/apps-script/reference/script/script-app#getService()) | Gets an object used to control publishing the script as a web app. | [Service](#class-service) | An object used to observe and control publishing the script as a web app. | not started |  |
 | [getUserTriggers(Document)](https://developers.google.com/apps-script/reference/script/script-app#getUserTriggers(Document)) | Gets all installable triggers owned by this user in the given document, for this script or add-on only. This method cannot be used to see the triggers attached to other scripts. | [Trigger[]](#class-trigger) | An array of triggers owned by this user in the given document. | not started |  |
 | [getUserTriggers(Form)](https://developers.google.com/apps-script/reference/script/script-app#getUserTriggers(Form)) | Gets all installable triggers owned by this user in the given form, for this script or add-on only. This method cannot be used to see the triggers attached to other scripts. | [Trigger[]](#class-trigger) | An array of triggers owned by this user in the given form. | not started |  |
@@ -81,8 +81,8 @@ Access and manipulate script publishing and triggers. This class allows users to
 | [invalidateAuth()](https://developers.google.com/apps-script/reference/script/script-app#invalidateAuth()) | Invalidates the authorization the effective user has to execute the current script. Used to invalidate any permissions for the current script. This is especially useful for functions tagged as one-shot authorization. Since one-shot authorization functions can only be called the first run after the script has acquired authorization, if you wish to perform an action afterwards, you must revoke any authorization the script had, so the user can see the authorization dialog again. |  |  | not started |  |
 | [newStateToken()](https://developers.google.com/apps-script/reference/script/script-app#newStateToken()) | Creates a builder for a state token that can be used in a callback API (like an OAuth flow). | [StateTokenBuilder](#class-statetokenbuilder) | An object used to continue the state-token-building process. | not started |  |
 | [newTrigger(String)](https://developers.google.com/apps-script/reference/script/script-app#newTrigger(String)) | Begins the process of creating an installable trigger that, when fired, calls a given function. | [TriggerBuilder](#class-triggerbuilder) | An object used to continue the trigger-building process. | not started |  |
-| [requireAllScopes(AuthMode)](https://developers.google.com/apps-script/reference/script/script-app#requireAllScopes(AuthMode)) | Validates if the user has granted consent for all of the scopes requested by the script. Use this method if an execution flow relies on all of the scopes that a script requests. If any consents are missing, then this method ends the current execution and renders an authorization prompt to request the missing consents. |  |  | completed | [link](../src/services/scriptapp/app.js#L63) |
-| [requireScopes(AuthMode,String)](https://developers.google.com/apps-script/reference/script/script-app#requireScopes(AuthMode,String)) |  |  |  | completed | [link](../src/services/scriptapp/app.js#L71) |
+| [requireAllScopes(AuthMode)](https://developers.google.com/apps-script/reference/script/script-app#requireAllScopes(AuthMode)) | Validates if the user has granted consent for all of the scopes requested by the script. Use this method if an execution flow relies on all of the scopes that a script requests. If any consents are missing, then this method ends the current execution and renders an authorization prompt to request the missing consents. |  |  | not started |  |
+| [requireScopes(AuthMode,String)](https://developers.google.com/apps-script/reference/script/script-app#requireScopes(AuthMode,String)) |  |  |  | not started |  |
 
 ## Class: [Service](https://developers.google.com/apps-script/reference/script/service)
 
@@ -149,10 +149,10 @@ An enumeration that identifies which categories of authorized services Apps Scri
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| CUSTOM_FUNCTION | A mode that allows access to a limited subset of services for use in custom spreadsheet functions. Some of these services — including read-only access to Spreadsheet service — normally require authorization, but are permitted without authorization when used in a custom function. Because custom functions do not include an event parameter, this value is never returned; it is documented only to demonstrate that custom functions run in their own authorization mode. | not started |  |
-| FULL | A mode that allows access to all services that require authorization. This mode occurs when an add-on or a script executes as the result of any trigger other than the cases described for LIMITED or NONE. | not started |  |
-| LIMITED | A mode that allows access to a limited subset of services. This mode occurs when an add-on or a script bound to a document executes an onOpen(e) or onEdit(e) simple trigger, except in the case described for NONE. | not started |  |
-| NONE | A mode that does not allow access to any services that require authorization. This mode occurs when an add-on executes an onOpen(e) simple trigger, and the user has installed an add-on in a different document but the add-on has not been used in the current document. | not started |  |
+| CUSTOM_FUNCTION | A mode that allows access to a limited subset of services for use in custom spreadsheet functions. Some of these services — including read-only access to Spreadsheet service — normally require authorization, but are permitted without authorization when used in a custom function. Because custom functions do not include an event parameter, this value is never returned; it is documented only to demonstrate that custom functions run in their own authorization mode. | completed | [link](../src/services/enums/scriptenums.js#L16) |
+| FULL | A mode that allows access to all services that require authorization. This mode occurs when an add-on or a script executes as the result of any trigger other than the cases described for LIMITED or NONE. | completed | [link](../src/services/enums/scriptenums.js#L18) |
+| LIMITED | A mode that allows access to a limited subset of services. This mode occurs when an add-on or a script bound to a document executes an onOpen(e) or onEdit(e) simple trigger, except in the case described for NONE. | completed | [link](../src/services/enums/scriptenums.js#L17) |
+| NONE | A mode that does not allow access to any services that require authorization. This mode occurs when an add-on executes an onOpen(e) simple trigger, and the user has installed an add-on in a different document but the add-on has not been used in the current document. | completed | [link](../src/services/enums/scriptenums.js#L15) |
 
 ## Enum: [AuthorizationStatus](https://developers.google.com/apps-script/reference/script/authorization-status)
 
@@ -160,8 +160,8 @@ An enumeration denoting the authorization status of a script.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| NOT_REQUIRED | The user has granted this script all the authorization it currently requires. | completed | [link](../src/services/enums/scriptenums.js#L4) |
-| REQUIRED | The user needs to authorize this script to use one or more services. In most cases, the script prompts the user for authorization the next time it runs; however, if the script is published as an add-on that uses installable triggers, the trigger runs the script without prompting for authorization but throws an exception if the script attempts to call the unauthorized service. | completed | [link](../src/services/enums/scriptenums.js#L3) |
+| NOT_REQUIRED | The user has granted this script all the authorization it currently requires. | completed | [link](../src/services/enums/scriptenums.js#L5) |
+| REQUIRED | The user needs to authorize this script to use one or more services. In most cases, the script prompts the user for authorization the next time it runs; however, if the script is published as an add-on that uses installable triggers, the trigger runs the script without prompting for authorization but throws an exception if the script attempts to call the unauthorized service. | completed | [link](../src/services/enums/scriptenums.js#L4) |
 
 ## Enum: [EventType](https://developers.google.com/apps-script/reference/script/event-type)
 
@@ -169,12 +169,12 @@ An enumeration denoting the type of triggered event.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| CLOCK | The trigger fires once the time-driven event reaches a specific time. | completed | [link](../src/services/enums/scriptenums.js#L8) |
-| ON_CHANGE | The trigger fires once the user changes the Google Sheets file (for example, by adding a row, which counts as a change instead of an edit). | not started |  |
-| ON_EDIT | The trigger fires once the user edits the Google Sheets file (for example, by entering a new value into a cell, which counts as an edit instead of a change). | not started |  |
-| ON_EVENT_UPDATED | The trigger fires once an event gets created, updated, or deleted on the specified Google Calendar. | not started |  |
-| ON_FORM_SUBMIT | The trigger fires once the user responds to a Google Form. This trigger is available either in the Google Form itself or in the Google Sheets file that the form sends its responses to. | not started |  |
-| ON_OPEN | The trigger fires once the user opens the Google Docs, Sheets, or Forms file. | not started |  |
+| CLOCK | The trigger fires once the time-driven event reaches a specific time. | completed | [link](../src/services/enums/scriptenums.js#L9) |
+| ON_CHANGE | The trigger fires once the user changes the Google Sheets file (for example, by adding a row, which counts as a change instead of an edit). | completed | [link](../src/services/enums/scriptenums.js#L25) |
+| ON_EDIT | The trigger fires once the user edits the Google Sheets file (for example, by entering a new value into a cell, which counts as an edit instead of a change). | completed | [link](../src/services/enums/scriptenums.js#L23) |
+| ON_EVENT_UPDATED | The trigger fires once an event gets created, updated, or deleted on the specified Google Calendar. | completed | [link](../src/services/enums/scriptenums.js#L26) |
+| ON_FORM_SUBMIT | The trigger fires once the user responds to a Google Form. This trigger is available either in the Google Form itself or in the Google Sheets file that the form sends its responses to. | completed | [link](../src/services/enums/scriptenums.js#L24) |
+| ON_OPEN | The trigger fires once the user opens the Google Docs, Sheets, or Forms file. | completed | [link](../src/services/enums/scriptenums.js#L22) |
 
 ## Enum: [InstallationSource](https://developers.google.com/apps-script/reference/script/installation-source)
 
@@ -182,9 +182,9 @@ An enumeration that indicates how the script came to be installed as an add-on f
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| APPS_MARKETPLACE_DOMAIN_ADD_ON | Add-on was installed by the administrator for the user's domain. | not started |  |
-| NONE | Script is not running as an add-on. | not started |  |
-| WEB_STORE_ADD_ON | Add-on was installed by the user from the Chrome Web Store. | not started |  |
+| APPS_MARKETPLACE_DOMAIN_ADD_ON | Add-on was installed by the administrator for the user's domain. | completed | [link](../src/services/enums/scriptenums.js#L29) |
+| NONE | Script is not running as an add-on. | completed | [link](../src/services/enums/scriptenums.js#L15) |
+| WEB_STORE_ADD_ON | Add-on was installed by the user from the Chrome Web Store. | completed | [link](../src/services/enums/scriptenums.js#L31) |
 
 ## Enum: [TriggerSource](https://developers.google.com/apps-script/reference/script/trigger-source)
 
@@ -192,9 +192,9 @@ An enumeration denoting the source of the event that causes the trigger to fire.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| CALENDAR | Google Calendar causes the trigger to fire. | completed | [link](../src/services/enums/scriptenums.js#L7) |
-| CLOCK | A time-driven event causes the trigger to fire. | completed | [link](../src/services/enums/scriptenums.js#L8) |
-| DOCUMENTS | Google Docs causes the trigger to fire. | completed | [link](../src/services/enums/scriptenums.js#L9) |
-| FORMS | Google Forms causes the trigger to fire. | completed | [link](../src/services/enums/scriptenums.js#L10) |
-| SPREADSHEETS | Google Sheets causes the trigger to fire. | completed | [link](../src/services/enums/scriptenums.js#L11) |
+| CALENDAR | Google Calendar causes the trigger to fire. | completed | [link](../src/services/enums/scriptenums.js#L8) |
+| CLOCK | A time-driven event causes the trigger to fire. | completed | [link](../src/services/enums/scriptenums.js#L9) |
+| DOCUMENTS | Google Docs causes the trigger to fire. | completed | [link](../src/services/enums/scriptenums.js#L10) |
+| FORMS | Google Forms causes the trigger to fire. | completed | [link](../src/services/enums/scriptenums.js#L11) |
+| SPREADSHEETS | Google Sheets causes the trigger to fire. | completed | [link](../src/services/enums/scriptenums.js#L12) |
 

@@ -70,9 +70,9 @@ An enum representing the sandbox modes that can be used for client-side HtmlServ
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| EMULATED | A legacy sandbox mode that emulates ECMAScript 5 strict mode using only the features available in ECMAScript 3. This mode was the default prior to February 2014. EMULATED was sunset as of December 10, 2015. All scripts attempting use EMULATED will now use IFRAME instead. | completed | [link](../src/services/enums/htmlenums.js#L5) |
-| IFRAME | A sandbox mode that uses iframe sandboxing instead of the Caja sandbox technology used by the EMULATED and NATIVE modes. This mode is the default for new scripts as of November 12, 2015 and for all scripts as of July 6, 2016. This mode imposes many fewer restrictions than the other sandbox modes and runs fastest, but does not work at all in certain older browsers, including Internet Explorer 9. | completed | [link](../src/services/enums/htmlenums.js#L6) |
-| NATIVE | A sandbox mode that is built on top of ECMAScript 5 strict mode. A sandbox mode built on top of ECMAScript 5 strict mode. This mode was sunset as of July 6, 2016. All scripts now use IFRAME mode. | completed | [link](../src/services/enums/htmlenums.js#L7) |
+| EMULATED | A legacy sandbox mode that emulates ECMAScript 5 strict mode using only the features available in ECMAScript 3. This mode was the default prior to February 2014. EMULATED was sunset as of December 10, 2015. All scripts attempting use EMULATED will now use IFRAME instead. | not started |  |
+| IFRAME | A sandbox mode that uses iframe sandboxing instead of the Caja sandbox technology used by the EMULATED and NATIVE modes. This mode is the default for new scripts as of November 12, 2015 and for all scripts as of July 6, 2016. This mode imposes many fewer restrictions than the other sandbox modes and runs fastest, but does not work at all in certain older browsers, including Internet Explorer 9. | not started |  |
+| NATIVE | A sandbox mode that is built on top of ECMAScript 5 strict mode. A sandbox mode built on top of ECMAScript 5 strict mode. This mode was sunset as of July 6, 2016. All scripts now use IFRAME mode. | not started |  |
 
 ## Enum: [XFrameOptionsMode](https://developers.google.com/apps-script/reference/html/x-frame-options-mode)
 
@@ -80,6 +80,6 @@ An enum representing the X-Frame-Options modes that can be used for client-side 
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| ALLOWALL | No X-Frame-Options header will be set. This will let any site iframe the page, so the developer should implement their own protection against clickjacking. | completed | [link](../src/services/enums/htmlenums.js#L10) |
-| DEFAULT | Sets the default value for the X-Frame-Options header, which preserves normal security assumptions. If a script does not set an X-Frame-Options mode, Apps Script uses this mode as the default. | completed | [link](../src/services/enums/htmlenums.js#L11) |
+| ALLOWALL | No X-Frame-Options header will be set. This will let any site iframe the page, so the developer should implement their own protection against clickjacking. | not started |  |
+| DEFAULT | Sets the default value for the X-Frame-Options header, which preserves normal security assumptions. If a script does not set an X-Frame-Options mode, Apps Script uses this mode as the default. | not started |  |
 

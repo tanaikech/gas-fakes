@@ -114,8 +114,8 @@
             "description": "Return the data inside this object as a blob converted to the specified content type. This\nmethod adds the appropriate extension to the filename—for example, \"myfile.pdf\". However, it\nassumes that the part of the filename that follows the last period (if any) is an existing\nextension that should be replaced. Consequently, \"ShoppingList.12.25.2014\" becomes\n\"ShoppingList.12.25.pdf\".",
             "returnType": "Blob",
             "returnDescription": "The data as a blob.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefile.js#L76"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getBlob()",
@@ -123,8 +123,8 @@
             "description": "Return the data inside this object as a blob.",
             "returnType": "Blob",
             "returnDescription": "The data as a blob.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefile.js#L44"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getDateCreated()",
@@ -150,8 +150,8 @@
             "description": "Gets the URL that can be used to download the file. Only users with permission to open the file\nin Google Drive can access the URL. You can use this URL in a browser to download the file, but\nyou can't use to fetch the file with UrlFetchApp. If you want the contents of the\nfile in the script, use getBlob().",
             "returnType": "String",
             "returnDescription": "The URL that can be used to download the file.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefile.js#L67"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getEditors()",
@@ -169,7 +169,7 @@
             "returnType": "String",
             "returnDescription": "the ID of the File",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefile.js#L46"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L73"
           },
           {
             "method": "getLastUpdated()",
@@ -186,8 +186,8 @@
             "description": "Gets the MIME type of the file.",
             "returnType": "String",
             "returnDescription": "The MIME type of the file.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefile.js#L37"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getName()",
@@ -196,7 +196,7 @@
             "returnType": "String",
             "returnDescription": "the name of the File",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefile.js#L48"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L141"
           },
           {
             "method": "getOwner()",
@@ -222,8 +222,8 @@
             "description": "Gets the resource key of the File that is required to access items that\nhave been shared using a link.",
             "returnType": "String",
             "returnDescription": "The resource key of the File.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefile.js#L254"
+            "gas-fakes status": "in progress",
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L490"
           },
           {
             "method": "getSecurityUpdateEligible()",
@@ -231,7 +231,7 @@
             "description": "Gets whether this File is eligible to apply the security update that\nrequires a resource key for access when it's shared using a link.",
             "returnType": "Boolean",
             "returnDescription": "Whether the resource key requirement can be applied for the File.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/driveapp/fakedrivemeta.js#L494"
           },
           {
@@ -240,7 +240,7 @@
             "description": "Gets whether this File requires a resource key for access when it's\nshared using a link. This requirement is turned on by default for eligible files and folders.\nTo turn the resource key requirement on or off for eligible files, use \nsetSecurityUpdateEnabled.",
             "returnType": "Boolean",
             "returnDescription": "Whether the resource key requirement is enabled for this File.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/driveapp/fakedrivemeta.js#L497"
           },
           {
@@ -276,8 +276,8 @@
             "description": "If this is a Shortcut, returns the ID of the item it points to.",
             "returnType": "String",
             "returnDescription": "The target item ID.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefile.js#L244"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getTargetMimeType()",
@@ -285,8 +285,8 @@
             "description": "If this is a Shortcut, returns the mime type of the item it points to.",
             "returnType": "String",
             "returnDescription": "The target item mime type.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefile.js#L249"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getTargetResourceKey()",
@@ -294,8 +294,8 @@
             "description": "If the file is a shortcut, returns the resource key of the item it points to. A resource key is\nan additional parameter that you need to pass to access files that have been shared using a\nlink.",
             "returnType": "String",
             "returnDescription": "The target item's resource key or null if the file is not a shortcut.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefile.js#L254"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getThumbnail()",
@@ -303,8 +303,8 @@
             "description": "Gets a thumbnail image for the file, or null if no thumbnail exists.",
             "returnType": "Blob",
             "returnDescription": "The thumbnail image for the file.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefile.js#L56"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getUrl()",
@@ -357,8 +357,8 @@
             "description": "Creates a copy of the file.",
             "returnType": "File",
             "returnDescription": "The new copy.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefile.js#L191"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "makeCopy(Folder)",
@@ -366,8 +366,8 @@
             "description": "Creates a copy of the file in the destination directory.",
             "returnType": "File",
             "returnDescription": "The new copy.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefile.js#L191"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "makeCopy(String)",
@@ -375,8 +375,8 @@
             "description": "Creates a copy of the file and names it with the name provided.",
             "returnType": "File",
             "returnDescription": "The new copy.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefile.js#L191"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "makeCopy(String,Folder)",
@@ -384,8 +384,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefile.js#L191"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "moveTo(Folder)",
@@ -474,8 +474,8 @@
             "description": "Overwrites the content of the file with a given replacement. Throws an exception if content is larger than 10MB.",
             "returnType": "File",
             "returnDescription": "This File, for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefile.js#L166"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setDescription(String)",
@@ -519,7 +519,7 @@
             "description": "Sets whether the File requires a resource key for access when it's\nshared using a link. Eligible files and folders are enabled by default.",
             "returnType": "File",
             "returnDescription": "This File, for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/driveapp/fakedrivemeta.js#L500"
           },
           {
@@ -572,8 +572,8 @@
             "description": "Gets a token that can be used to resume this iteration at a later time. This method is useful\nif processing an iterator in one execution would exceed the maximum execution time.\nContinuation tokens are generally valid for one week.",
             "returnType": "String",
             "returnDescription": "a continuation token that can be used to resume this iteration with the items that\n    remained in the iterator when the token was generated",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/support/peeker.js#L22"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "hasNext()",
@@ -581,8 +581,8 @@
             "description": "Determines whether calling next() will return an item.",
             "returnType": "Boolean",
             "returnDescription": "true if next() will return an item; false if not",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/support/peeker.js#L10"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "next()",
@@ -590,8 +590,8 @@
             "description": "Gets the next item in the collection of files or folders. Throws an exception if no items\nremain.",
             "returnType": "Folder",
             "returnDescription": "the next item in the collection",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/support/peeker.js#L3"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           }
         ]
       },
@@ -661,8 +661,8 @@
             "description": "Creates a file in the current folder from a given Blob of arbitrary data.",
             "returnType": "File",
             "returnDescription": "The new file.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L44"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "createFile(String,String)",
@@ -670,8 +670,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L44"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "createFile(String,String,String)",
@@ -679,8 +679,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L44"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "createFolder(String)",
@@ -688,8 +688,8 @@
             "description": "Creates a folder in the current folder with the given name.",
             "returnType": "Folder",
             "returnDescription": "The new folder.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L54"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "createShortcut(String)",
@@ -697,8 +697,8 @@
             "description": "Creates a shortcut to the provided Drive item ID, and returns it.",
             "returnType": "File",
             "returnDescription": "The new shortcut.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L61"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "createShortcutForTargetIdAndResourceKey(String,String)",
@@ -706,8 +706,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L65"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getAccess(String)",
@@ -760,8 +760,8 @@
             "description": "Gets a collection of all files that are children of the current folder.",
             "returnType": "FileIterator",
             "returnDescription": "A collection of all files that are children of the current folder.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L73"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getFilesByName(String)",
@@ -769,8 +769,8 @@
             "description": "Gets a collection of all files that are children of the current folder and have the given name.",
             "returnType": "FileIterator",
             "returnDescription": "A collection of all files that are children of the current folder and have the given name.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L91"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getFilesByType(String)",
@@ -778,8 +778,8 @@
             "description": "Gets a collection of all files that are children of the current folder and have the given MIME type.",
             "returnType": "FileIterator",
             "returnDescription": "A collection of all files that are children of the current folder and have the given MIME\n    type.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L108"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getFolders()",
@@ -787,8 +787,8 @@
             "description": "Gets a collection of all folders that are children of the current folder.",
             "returnType": "FolderIterator",
             "returnDescription": "A collection of all folders that are children of the current folder.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L81"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getFoldersByName(String)",
@@ -796,8 +796,8 @@
             "description": "Gets a collection of all folders that are children of the current folder and have the given name.",
             "returnType": "FolderIterator",
             "returnDescription": "A collection of all folders that are children of the current folder and have the given name.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L90"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getId()",
@@ -806,7 +806,7 @@
             "returnType": "String",
             "returnDescription": "the ID of the Folder",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L31"
+            "implementationLink": "src/services/driveapp/fakedrivemeta.js#L73"
           },
           {
             "method": "getLastUpdated()",
@@ -850,7 +850,7 @@
             "description": "Gets the resource key of the Folder that is required to access items that\nhave been shared using a link.",
             "returnType": "String",
             "returnDescription": "The resource key of the Folder.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/driveapp/fakedrivemeta.js#L490"
           },
           {
@@ -859,7 +859,7 @@
             "description": "Gets whether this Folder is eligible to apply the security update that\nrequires a resource key for access when it's shared using a link.",
             "returnType": "Boolean",
             "returnDescription": "Whether the resource key requirement can be applied for the Folder.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/driveapp/fakedrivemeta.js#L494"
           },
           {
@@ -868,7 +868,7 @@
             "description": "Gets whether this Folder requires a resource key for access when it's\nshared using a link. This requirement is turned on by default for eligible files and folders.\nTo turn the resource key requirement on or off for eligible files, use \nsetSecurityUpdateEnabled.",
             "returnType": "Boolean",
             "returnDescription": "Whether the resource key requirement is enabled for this Folder.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/driveapp/fakedrivemeta.js#L497"
           },
           {
@@ -1012,8 +1012,8 @@
             "description": "Gets a collection of all files that are children of the current folder and match the given search\ncriteria. The search criteria are detailed in the Google Drive SDK documentation. Note that the Drive\nservice uses v2 of the Drive API and some query fields differ from v3. Review the field\ndifferences between v2 and v3.",
             "returnType": "FileIterator",
             "returnDescription": "A collection of all files that are children of the current folder and match the search\n    criteria.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L30"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "searchFolders(String)",
@@ -1021,8 +1021,8 @@
             "description": "Gets a collection of all folders that are children of the current folder and match the given search\ncriteria. The search criteria are detailed in the Google Drive SDK documentation. Note that the Drive\nservice uses v2 of the Drive API and some query fields differ from v3. Review the field\ndifferences between v2 and v3.",
             "returnType": "FolderIterator",
             "returnDescription": "A collection of all folders that are children of the current folder and match the search\n    criteria.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/driveapp/fakedrivefolder.js#L34"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setDescription(String)",
@@ -1066,7 +1066,7 @@
             "description": "Sets whether the Folder requires a resource key for access when it's\nshared using a link. Eligible files and folders are enabled by default.",
             "returnType": "Folder",
             "returnDescription": "This Folder, for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/driveapp/fakedrivemeta.js#L500"
           },
           {
@@ -1119,8 +1119,8 @@
             "description": "Gets a token that can be used to resume this iteration at a later time. This method is useful\nif processing an iterator in one execution would exceed the maximum execution time.\nContinuation tokens are generally valid for one week.",
             "returnType": "String",
             "returnDescription": "a continuation token that can be used to resume this iteration with the items that\n    remained in the iterator when the token was generated",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/support/peeker.js#L22"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "hasNext()",
@@ -1128,8 +1128,8 @@
             "description": "Determines whether calling next() will return an item.",
             "returnType": "Boolean",
             "returnDescription": "true if next() will return an item; false if not",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/support/peeker.js#L10"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "next()",
@@ -1137,8 +1137,8 @@
             "description": "Gets the next item in the collection of files or folders. Throws an exception if no items\nremain.",
             "returnType": "File",
             "returnDescription": "the next item in the collection",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/support/peeker.js#L3"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           }
         ]
       },
@@ -1684,8 +1684,8 @@
             "description": "Gets an object that checks if the user has granted authorization for all the script\nrequirements. The object also provides an authorization URL for users to grant those\npermissions, in case any of the script requirements are not authorized.",
             "returnType": "AuthorizationInfo",
             "returnDescription": "An object that can provide information about the user's authorization status.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/scriptapp/app.js#L242"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getAuthorizationInfo(AuthMode,String)",
@@ -1693,8 +1693,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/scriptapp/app.js#L242"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getIdentityToken()",
@@ -1720,8 +1720,8 @@
             "description": "Gets the OAuth 2.0 access\ntoken for the effective user. If the script's OAuth scopes are sufficient to authorize\nanother Google API that normally requires its own OAuth flow (like Google Picker), scripts can bypass the\nsecond authorization prompt by passing this token instead. The token expires after a time (a\nfew minutes at minimum); scripts should handle authorization failures and call this method to\nobtain a fresh token when needed.",
             "returnType": "String",
             "returnDescription": "A string representation of the OAuth 2.0 token.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/scriptapp/app.js#L32"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getProjectTriggers()",
@@ -1738,8 +1738,8 @@
             "description": "Gets the script project's unique ID. This is the preferred method to get the unique identifier\nfor the script project as opposed to getProjectKey(). This ID can be used in all places\nwhere project key was previously provided.",
             "returnType": "String",
             "returnDescription": "The script project's ID.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/scriptapp/app.js#L199"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getService()",
@@ -1810,8 +1810,8 @@
             "description": "Validates if the user has granted consent for all of the scopes requested by the script. Use\nthis method if an execution flow relies on all of the scopes that a script requests. If any\nconsents are missing, then this method ends the current execution and renders an authorization\nprompt to request the missing consents.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/scriptapp/app.js#L63"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "requireScopes(AuthMode,String)",
@@ -1819,8 +1819,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/scriptapp/app.js#L71"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           }
         ]
       },
@@ -1862,8 +1862,8 @@
             "description": "Gets a value that indicates whether the user needs to authorize this script to use one or more\nservices (for example, ScriptApp.AuthorizationStatus.REQUIRED).",
             "returnType": "AuthorizationStatus",
             "returnDescription": "the authorization status",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/scriptapp/fakeauthorizationinfo.js#L8"
           },
           {
             "method": "getAuthorizationUrl()",
@@ -1871,8 +1871,8 @@
             "description": "Gets the authorization URL that can be used to grant access to the script. This method returns\nnull if no authorization is required. The page at the URL will close automatically if\nit is accessed and the script does not require any authorization.",
             "returnType": "String",
             "returnDescription": "a URL that can be used to authorize the script",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/scriptapp/fakeauthorizationinfo.js#L14"
           },
           {
             "method": "getAuthorizedScopes()",
@@ -2213,32 +2213,32 @@
             "description": "A mode that does not allow access to any services that require authorization. This mode occurs\nwhen an add-on executes an onOpen(e) simple trigger, and the user has installed an\nadd-on in a different document but the add-on has not been used in the current document.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/scriptenums.js#L15"
           },
           {
             "method": "CUSTOM_FUNCTION",
             "description": "A mode that allows access to a limited subset of services for use in custom spreadsheet\nfunctions. Some of these services — including read-only access to Spreadsheet service —\nnormally require authorization, but are permitted without authorization when used in a custom\nfunction. Because custom functions do not include an event parameter, this value is never\nreturned; it is documented only to demonstrate that custom functions run in their own\nauthorization mode.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/scriptenums.js#L16"
           },
           {
             "method": "LIMITED",
             "description": "A mode that allows access to a limited subset of services. This mode occurs when an add-on or a\nscript bound to a document executes an onOpen(e) or onEdit(e) simple trigger, except in the case described for NONE.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/scriptenums.js#L17"
           },
           {
             "method": "FULL",
             "description": "A mode that allows access to all services that require authorization. This mode occurs when an\nadd-on or a script executes as the result of any trigger other than the cases described for\nLIMITED or NONE.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/scriptenums.js#L18"
           }
         ]
       },
@@ -2254,7 +2254,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/scriptenums.js#L3"
+            "implementationLink": "src/services/enums/scriptenums.js#L4"
           },
           {
             "method": "NOT_REQUIRED",
@@ -2262,7 +2262,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/scriptenums.js#L4"
+            "implementationLink": "src/services/enums/scriptenums.js#L5"
           }
         ]
       },
@@ -2278,7 +2278,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/scriptenums.js#L11"
+            "implementationLink": "src/services/enums/scriptenums.js#L12"
           },
           {
             "method": "CLOCK",
@@ -2286,7 +2286,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/scriptenums.js#L8"
+            "implementationLink": "src/services/enums/scriptenums.js#L9"
           },
           {
             "method": "FORMS",
@@ -2294,7 +2294,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/scriptenums.js#L10"
+            "implementationLink": "src/services/enums/scriptenums.js#L11"
           },
           {
             "method": "DOCUMENTS",
@@ -2302,7 +2302,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/scriptenums.js#L9"
+            "implementationLink": "src/services/enums/scriptenums.js#L10"
           },
           {
             "method": "CALENDAR",
@@ -2310,7 +2310,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/scriptenums.js#L7"
+            "implementationLink": "src/services/enums/scriptenums.js#L8"
           }
         ]
       },
@@ -2326,47 +2326,47 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/scriptenums.js#L8"
+            "implementationLink": "src/services/enums/scriptenums.js#L9"
           },
           {
             "method": "ON_OPEN",
             "description": "The trigger fires once the user opens the Google Docs, Sheets, or Forms file.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/scriptenums.js#L22"
           },
           {
             "method": "ON_EDIT",
             "description": "The trigger fires once the user edits the Google Sheets file (for example, by entering a new\nvalue into a cell, which counts as an edit instead of a change).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/scriptenums.js#L23"
           },
           {
             "method": "ON_FORM_SUBMIT",
             "description": "The trigger fires once the user responds to a Google Form. This trigger is available either in\nthe Google Form itself or in the Google Sheets file that the form sends its responses to.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/scriptenums.js#L24"
           },
           {
             "method": "ON_CHANGE",
             "description": "The trigger fires once the user changes the Google Sheets file (for example, by adding a row,\nwhich counts as a change instead of an edit).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/scriptenums.js#L25"
           },
           {
             "method": "ON_EVENT_UPDATED",
             "description": "The trigger fires once an event gets created, updated, or deleted on the specified Google\nCalendar.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/scriptenums.js#L26"
           }
         ]
       },
@@ -2381,24 +2381,24 @@
             "description": "Add-on was installed by the administrator for the user's domain.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/scriptenums.js#L29"
           },
           {
             "method": "NONE",
             "description": "Script is not running as an add-on.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/scriptenums.js#L15"
           },
           {
             "method": "WEB_STORE_ADD_ON",
             "description": "Add-on was installed by the user from the Chrome Web Store.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/enums/scriptenums.js#L31"
           }
         ]
       }
@@ -2535,256 +2535,256 @@
             "description": "Representation of MIME type for a Google Apps Script project.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L17"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "GOOGLE_DRAWINGS",
             "description": "Representation of MIME type for a Google Drawings file.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L19"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "GOOGLE_DOCS",
             "description": "Representation of MIME type for a Google Docs file.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L18"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "GOOGLE_FORMS",
             "description": "Representation of MIME type for a Google Forms file.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L20"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "GOOGLE_SHEETS",
             "description": "Representation of MIME type for a Google Sheets file.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L21"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "GOOGLE_SITES",
             "description": "Representation of MIME type for a Google Sites file.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L22"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "GOOGLE_SLIDES",
             "description": "Representation of MIME type for a Google Slides file.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L23"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "FOLDER",
             "description": "Representation of MIME type for a Google Drive folder.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L15"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "SHORTCUT",
             "description": "Representation of MIME type for a Google Drive shortcut.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L41"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "BMP",
             "description": "Representation of MIME type for a BMP image file (typically .bmp).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L12"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "GIF",
             "description": "Representation of MIME type for a GIF image file (typically .gif).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L16"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "JPEG",
             "description": "Representation of MIME type for a JPEG image file (typically .jpg).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L26"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "PNG",
             "description": "Representation of MIME type for a PNG image file (typically .png).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L39"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "SVG",
             "description": "Representation of MIME type for an SVG image file (typically .svg).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L42"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "PDF",
             "description": "Representation of MIME type for a PDF file (typically .pdf).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L37"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "CSS",
             "description": "Representation of MIME type for a CSS text file (typically .css).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L13"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "CSV",
             "description": "Representation of MIME type for a CSV text file (typically .csv).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L14"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "HTML",
             "description": "Representation of MIME type for an HTML text file (typically .html).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L24"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "JAVASCRIPT",
             "description": "Representation of MIME type for a JavaScript text file (typically .js).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L25"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "PLAIN_TEXT",
             "description": "Representation of MIME type for a plain text file (typically .txt).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L38"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "RTF",
             "description": "Representation of MIME type for a rich text file (typically .rtf).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L40"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "OPENDOCUMENT_GRAPHICS",
             "description": "Representation of MIME type for an OpenDocument graphics file (typically .odg).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L33"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "OPENDOCUMENT_PRESENTATION",
             "description": "Representation of MIME type for an OpenDocument presentation file (typically .odp).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L34"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "OPENDOCUMENT_SPREADSHEET",
             "description": "Representation of MIME type for an OpenDocument spreadsheet file (typically .ods).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L35"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "OPENDOCUMENT_TEXT",
             "description": "Representation of MIME type for an OpenDocument word-processing file (typically .odt).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L36"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "MICROSOFT_EXCEL",
             "description": "Representation of MIME type for a Microsoft Excel spreadsheet file (typically .xlsx).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L27"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "MICROSOFT_EXCEL_LEGACY",
             "description": "Representation of MIME type for a Microsoft Excel legacy file (typically .xls).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L28"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "MICROSOFT_POWERPOINT",
             "description": "Representation of MIME type for a Microsoft PowerPoint presentation file (typically .pptx).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L29"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "MICROSOFT_POWERPOINT_LEGACY",
             "description": "Representation of MIME type for a Microsoft PowerPoint legacy file (typically .ppt).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L30"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "MICROSOFT_WORD",
             "description": "Representation of MIME type for a Microsoft Word document file (typically .docx).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L31"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "MICROSOFT_WORD_LEGACY",
             "description": "Representation of MIME type for a Microsoft Word legacy file (typically .doc).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L32"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "ZIP",
             "description": "Representation of MIME type for a ZIP archive file (typically .zip).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L43"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           }
         ]
       },
@@ -4657,8 +4657,8 @@
             "description": "Gets the value of an RFC 2822 header given the header name.",
             "returnType": "String",
             "returnDescription": "The value of the header, or an empty string if the header doesn't exist in the message.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/gmailapp/fakegmailmessage.js#L42"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getId()",
@@ -5480,7 +5480,7 @@
             "returnType": "Element",
             "returnDescription": "The child element at the specified index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakebody.js#L23"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L107"
           },
           {
             "method": "getChildIndex(Element)",
@@ -5561,7 +5561,7 @@
             "returnType": "Integer",
             "returnDescription": "The number of children.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakebody.js#L24"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L105"
           },
           {
             "method": "getPageHeight()",
@@ -5633,7 +5633,7 @@
             "returnType": "ElementType",
             "returnDescription": "The element type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L79"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L129"
           },
           {
             "method": "insertHorizontalRule(Integer)",
@@ -6044,8 +6044,8 @@
             "description": "Returns the current element as a Paragraph.",
             "returnType": "Paragraph",
             "returnDescription": "The current element.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L19"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "asTable()",
@@ -6053,8 +6053,8 @@
             "description": "Returns the current element as a Table.",
             "returnType": "Table",
             "returnDescription": "The current element.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L27"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "asTableCell()",
@@ -6062,8 +6062,8 @@
             "description": "Returns the current element as a TableCell.",
             "returnType": "TableCell",
             "returnDescription": "The current element.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L33"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "asTableOfContents()",
@@ -6080,8 +6080,8 @@
             "description": "Returns the current element as a TableRow.",
             "returnType": "TableRow",
             "returnDescription": "The current element.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L30"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "clear()",
@@ -6243,7 +6243,7 @@
             "returnType": "ElementType",
             "returnDescription": "The element type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L79"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L129"
           },
           {
             "method": "isAtDocumentEnd()",
@@ -6583,8 +6583,8 @@
             "description": "Gets the Tab with the specified ID. This method returns null if no such Tab exists. Can access tabs at any nesting level.",
             "returnType": "Tab",
             "returnDescription": "The Tab with the specified ID, or null if no such Tab exists.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakedocument.js#L263"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getTabs()",
@@ -7506,7 +7506,7 @@
             "returnType": "ElementType",
             "returnDescription": "The element type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L79"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L129"
           },
           {
             "method": "isAtDocumentEnd()",
@@ -7802,7 +7802,7 @@
             "returnType": "ElementType",
             "returnDescription": "The element type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L79"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L129"
           },
           {
             "method": "insertHorizontalRule(Integer)",
@@ -8053,7 +8053,7 @@
             "returnType": "Element",
             "returnDescription": "The child element at the specified index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakefootnotesection.js#L89"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L107"
           },
           {
             "method": "getChildIndex(Element)",
@@ -8080,7 +8080,7 @@
             "returnType": "Integer",
             "returnDescription": "The number of children.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakefootnotesection.js#L91"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L105"
           },
           {
             "method": "getParagraphs()",
@@ -8134,7 +8134,7 @@
             "returnType": "ElementType",
             "returnDescription": "The element type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L79"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L129"
           },
           {
             "method": "insertParagraph(Integer,Paragraph)",
@@ -8582,7 +8582,7 @@
             "returnType": "ElementType",
             "returnDescription": "The element type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L79"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L129"
           },
           {
             "method": "insertHorizontalRule(Integer)",
@@ -9270,7 +9270,7 @@
             "returnType": "Text",
             "returnDescription": "the new text element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakelistitem.js#L8"
+            "implementationLink": "src/services/documentapp/fakeparagraph.js#L8"
           },
           {
             "method": "appendText(Text)",
@@ -9279,7 +9279,7 @@
             "returnType": "Text",
             "returnDescription": "the appended text element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakelistitem.js#L8"
+            "implementationLink": "src/services/documentapp/fakeparagraph.js#L8"
           },
           {
             "method": "clear()",
@@ -9297,7 +9297,7 @@
             "returnType": "ListItem",
             "returnDescription": "The new copy.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakelistitem.js#L40"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L52"
           },
           {
             "method": "editAsText()",
@@ -9540,7 +9540,7 @@
             "returnType": "String",
             "returnDescription": "the contents of the element as text string",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakelistitem.js#L7"
+            "implementationLink": "src/services/documentapp/fakeparagraph.js#L9"
           },
           {
             "method": "getTextAlignment()",
@@ -9558,7 +9558,7 @@
             "returnType": "ElementType",
             "returnDescription": "The element type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L79"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L129"
           },
           {
             "method": "insertHorizontalRule(Integer)",
@@ -9611,8 +9611,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakelistitem.js#L371"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "insertText(Integer,Text)",
@@ -9620,8 +9620,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakelistitem.js#L371"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "isAtDocumentEnd()",
@@ -9926,7 +9926,7 @@
             "returnType": "Paragraph",
             "returnDescription": "The new copy.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L20"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L52"
           },
           {
             "method": "editAsText()",
@@ -9998,7 +9998,7 @@
             "returnType": "Element",
             "returnDescription": "The child element at the specified index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L83"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L107"
           },
           {
             "method": "getChildIndex(Element)",
@@ -10079,7 +10079,7 @@
             "returnType": "Integer",
             "returnDescription": "The number of children.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L73"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L105"
           },
           {
             "method": "getParent()",
@@ -10160,7 +10160,7 @@
             "returnType": "ElementType",
             "returnDescription": "The element type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L333"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L129"
           },
           {
             "method": "insertHorizontalRule(Integer)",
@@ -10873,8 +10873,8 @@
             "description": "Gets all elements in this Range, including any partial Text elements (for example, in the case\nof a selection that includes only part of a Text element). To determine whether a\nText element is only partially included in the range, see RangeElement.isPartial().",
             "returnType": "RangeElement[]",
             "returnDescription": "an array of elements, in the order they appear in the document",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakerangebuilder.js#L36"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           }
         ]
       },
@@ -11266,7 +11266,7 @@
             "returnType": "Element",
             "returnDescription": "The child element at the specified index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketable.js#L46"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L107"
           },
           {
             "method": "getChildIndex(Element)",
@@ -11311,7 +11311,7 @@
             "returnType": "Integer",
             "returnDescription": "The number of children.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketable.js#L36"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L105"
           },
           {
             "method": "getNumRows()",
@@ -11374,7 +11374,7 @@
             "returnType": "ElementType",
             "returnDescription": "The element type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L79"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L129"
           },
           {
             "method": "insertTableRow(Integer)",
@@ -11832,7 +11832,7 @@
             "returnType": "ElementType",
             "returnDescription": "The element type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L79"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L129"
           },
           {
             "method": "getVerticalAlignment()",
@@ -12209,7 +12209,7 @@
             "returnType": "Element",
             "returnDescription": "The child element at the specified index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketablerow.js#L29"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L107"
           },
           {
             "method": "getChildIndex(Element)",
@@ -12263,7 +12263,7 @@
             "returnType": "Integer",
             "returnDescription": "The number of children.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/faketablerow.js#L38"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L105"
           },
           {
             "method": "getParent()",
@@ -12317,7 +12317,7 @@
             "returnType": "ElementType",
             "returnDescription": "The element type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L79"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L129"
           },
           {
             "method": "insertTableCell(Integer)",
@@ -12835,8 +12835,8 @@
             "description": "Returns the current element as a Footnote.",
             "returnType": "Footnote",
             "returnDescription": "The current element.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L45"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "asFootnoteSection()",
@@ -12862,8 +12862,8 @@
             "description": "Returns the current element as a HorizontalRule.",
             "returnType": "HorizontalRule",
             "returnDescription": "The current element.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L42"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "asInlineDrawing()",
@@ -12898,8 +12898,8 @@
             "description": "Returns the current element as a PageBreak.",
             "returnType": "PageBreak",
             "returnDescription": "The current element.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L39"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "asParagraph()",
@@ -12907,8 +12907,8 @@
             "description": "Returns the current element as a Paragraph.",
             "returnType": "Paragraph",
             "returnDescription": "The current element.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L19"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "asPerson()",
@@ -12934,8 +12934,8 @@
             "description": "Returns the current element as a Table.",
             "returnType": "Table",
             "returnDescription": "The current element.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L27"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "asTableCell()",
@@ -12943,8 +12943,8 @@
             "description": "Returns the current element as a TableCell.",
             "returnType": "TableCell",
             "returnDescription": "The current element.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L33"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "asTableOfContents()",
@@ -12961,8 +12961,8 @@
             "description": "Returns the current element as a TableRow.",
             "returnType": "TableRow",
             "returnDescription": "The current element.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L30"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "asText()",
@@ -12970,8 +12970,8 @@
             "description": "Returns the current element as a Text.",
             "returnType": "Text",
             "returnDescription": "The current element.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L36"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "copy()",
@@ -17587,7 +17587,7 @@
             "returnType": "Integer",
             "returnDescription": "the index of the item",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakecheckboxgriditem.js#L95"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L120"
           },
           {
             "method": "getRows()",
@@ -17975,7 +17975,7 @@
             "returnType": "ItemType",
             "returnDescription": "the item's type",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakedateitem.js#L29"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L36"
           },
           {
             "method": "includesYear()",
@@ -18754,8 +18754,8 @@
             "description": "Gets a single form response based on its response ID. Response IDs can be retrieved from FormResponse.getId().",
             "returnType": "FormResponse",
             "returnDescription": "The form response.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakeform.js#L452"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getResponses()",
@@ -19396,8 +19396,8 @@
             "description": "Gets the item's unique identifier.",
             "returnType": "Integer",
             "returnDescription": "the item's ID",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakelistitem.js#L58"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getIndex()",
@@ -19405,8 +19405,8 @@
             "description": "Gets the index of the item among all the items in the form.",
             "returnType": "Integer",
             "returnDescription": "the index of the item",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakelistitem.js#L133"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getPoints()",
@@ -19432,8 +19432,8 @@
             "description": "Gets the item's type, represented as an ItemType.",
             "returnType": "ItemType",
             "returnDescription": "the item's type",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakelistitem.js#L66"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "isRequired()",
@@ -19585,7 +19585,7 @@
             "returnType": "Integer",
             "returnDescription": "the index of the item",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakegriditem.js#L95"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L120"
           },
           {
             "method": "getRows()",
@@ -20485,7 +20485,7 @@
             "returnType": "Integer",
             "returnDescription": "the index of the item",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/fakescaleitem.js#L107"
+            "implementationLink": "src/services/formapp/fakeformitem.js#L120"
           },
           {
             "method": "getLeftLabel()",
@@ -20976,8 +20976,8 @@
             "description": "Gets the item's type, represented as an ItemType.",
             "returnType": "ItemType",
             "returnDescription": "the item's type",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/formapp/faketextitem.js#L30"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "isRequired()",
@@ -22475,8 +22475,8 @@
             "description": "CSV Mime Type",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L14"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "ICAL",
@@ -22491,8 +22491,8 @@
             "description": "JAVASCRIPT Mime Type",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L25"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "JSON",
@@ -22507,8 +22507,8 @@
             "description": "TEXT Mime Type",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/mimetype/fakemimetype.js#L36"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "VCARD",
@@ -22768,24 +22768,24 @@
             "description": "A legacy sandbox mode that emulates ECMAScript 5 strict mode using only the features available\nin ECMAScript 3. This mode was the default prior to February 2014.\n\n\nEMULATED was sunset as of December 10,\n2015. All scripts attempting use EMULATED will now use IFRAME instead.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/htmlenums.js#L5"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "IFRAME",
             "description": "A sandbox mode that uses iframe sandboxing instead of the Caja sandbox technology used by the\nEMULATED and NATIVE modes. This mode is the default for new scripts as of\nNovember 12, 2015 and for all scripts as of July 6, 2016.\n\nThis mode imposes many fewer restrictions than the other sandbox modes and runs fastest, but\ndoes not work at all in certain older browsers, including Internet Explorer 9.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/htmlenums.js#L6"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "NATIVE",
             "description": "A sandbox mode that is built on top of ECMAScript 5 strict mode. A sandbox mode built on top of\nECMAScript 5 strict mode. This mode was sunset as\nof July 6, 2016. All scripts now use IFRAME mode.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/htmlenums.js#L7"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           }
         ]
       },
@@ -22988,16 +22988,16 @@
             "description": "No X-Frame-Options header will be set. This will let any site iframe the page, so the\ndeveloper should implement their own protection against clickjacking.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/htmlenums.js#L10"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "DEFAULT",
             "description": "Sets the default value for the X-Frame-Options header, which preserves normal security\nassumptions. If a script does not set an X-Frame-Options mode, Apps Script uses this\nmode as the default.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/htmlenums.js#L11"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           }
         ]
       }
@@ -23080,8 +23080,8 @@
             "description": "Makes a request to fetch a URL.",
             "returnType": "HTTPResponse",
             "returnDescription": "The HTTP response data.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/urlfetchapp/app.js#L87"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "fetch(String,Object)",
@@ -23089,8 +23089,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/urlfetchapp/app.js#L87"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "fetchAll(Object)",
@@ -23098,8 +23098,8 @@
             "description": "Makes multiple requests to fetch multiple URLs using optional advanced parameters.",
             "returnType": "HTTPResponse[]",
             "returnDescription": "An array of HTTP response data from each input request.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/urlfetchapp/app.js#L105"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getRequest(String)",
@@ -23107,8 +23107,8 @@
             "description": "Returns the request that is made if the operation was invoked.",
             "returnType": "Object",
             "returnDescription": "A map of Field Name to Value. The map has at least the following keys: url,\n    method, contentType, payload, and headers.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/urlfetchapp/app.js#L119"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getRequest(String,Object)",
@@ -23116,8 +23116,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/urlfetchapp/app.js#L119"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           }
         ]
       },
@@ -23133,8 +23133,8 @@
             "description": "Returns an attribute/value map of headers for the HTTP response, with headers that have\nmultiple values returned as arrays.",
             "returnType": "Object",
             "returnDescription": "a JavaScript key/value map of HTTP headers",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/urlfetchapp/app.js#L19"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getAs(String)",
@@ -23142,8 +23142,8 @@
             "description": "Return the data inside this object as a blob converted to the specified content type. This\nmethod adds the appropriate extension to the filename—for example, \"myfile.pdf\". However, it\nassumes that the part of the filename that follows the last period (if any) is an existing\nextension that should be replaced. Consequently, \"ShoppingList.12.25.2014\" becomes\n\"ShoppingList.12.25.pdf\".",
             "returnType": "Blob",
             "returnDescription": "The data as a blob.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/urlfetchapp/app.js#L71"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getBlob()",
@@ -23151,8 +23151,8 @@
             "description": "Return the data inside this object as a blob.",
             "returnType": "Blob",
             "returnDescription": "The data as a blob.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/urlfetchapp/app.js#L23"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getContent()",
@@ -23160,8 +23160,8 @@
             "description": "Gets the raw binary content of an HTTP response.",
             "returnType": "Byte[]",
             "returnDescription": "the content as a raw binary array",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/urlfetchapp/app.js#L21"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getContentText()",
@@ -23169,8 +23169,8 @@
             "description": "Gets the content of an HTTP response encoded as a string.",
             "returnType": "String",
             "returnDescription": "the content of the HTTP response, as a string",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/urlfetchapp/app.js#L21"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getContentText(String)",
@@ -23178,8 +23178,8 @@
             "description": "Returns the content of an HTTP response encoded as a string of the given charset.",
             "returnType": "String",
             "returnDescription": "the content of the HTTP response, encoded using the given charset",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/urlfetchapp/app.js#L21"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getHeaders()",
@@ -23187,8 +23187,8 @@
             "description": "Returns an attribute/value map of headers for the HTTP response.",
             "returnType": "Object",
             "returnDescription": "a JavaScript key/value map of HTTP headers",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/urlfetchapp/app.js#L22"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getResponseCode()",
@@ -23196,8 +23196,8 @@
             "description": "Get the HTTP status code (200 for OK, etc.) of an HTTP response.",
             "returnType": "Integer",
             "returnDescription": "The HTTP response code (for example, 200 for OK).",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/urlfetchapp/app.js#L20"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           }
         ]
       }
@@ -26131,8 +26131,8 @@
             "description": "Return the data inside this object as a blob converted to the specified content type. This\nmethod adds the appropriate extension to the filename—for example, \"myfile.pdf\". However, it\nassumes that the part of the filename that follows the last period (if any) is an existing\nextension that should be replaced. Consequently, \"ShoppingList.12.25.2014\" becomes\n\"ShoppingList.12.25.pdf\".",
             "returnType": "Blob",
             "returnDescription": "The data as a blob.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcclob.js#L11"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getSubString(Integer,Integer)",
@@ -30748,8 +30748,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcpreparedstatement.js#L112"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setTime(Integer,JdbcTime,String)",
@@ -30757,8 +30757,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/jdbc/fakejdbcpreparedstatement.js#L112"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setTimestamp(Integer,JdbcTimestamp)",
@@ -33583,8 +33583,8 @@
             "description": "Returns the currently active spreadsheet, or null if there is none.",
             "returnType": "Spreadsheet",
             "returnDescription": "the active Spreadsheet object",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L84"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getActiveRange()",
@@ -33601,8 +33601,8 @@
             "description": "Returns the list of active ranges in the active sheet or null if there are no ranges\nselected. The active range containing the current highlighted cell is placed last in the list.",
             "returnType": "RangeList",
             "returnDescription": "the list of active ranges",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L85"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getActiveSheet()",
@@ -33637,8 +33637,8 @@
             "description": "Returns the current Selection in the spreadsheet.",
             "returnType": "Selection",
             "returnDescription": "the current selection",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheetapp.js#L86"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getUi()",
@@ -36954,7 +36954,7 @@
             "description": "Reverses the drawing of series in the domain axis. For vertical-range charts (such as line,\narea or column charts), this means the horizontal axis is drawn from right to left. For\nhorizontal-range charts (such as bar charts), this means the vertical axis is drawn from top to\nbottom. For pie charts, this means the slices are drawn counterclockwise.",
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L295"
           },
           {
@@ -37008,7 +37008,7 @@
             "description": "Sets the text style of the chart legend.",
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L309"
           },
           {
@@ -37044,7 +37044,7 @@
             "description": "Sets the style for points in the line. By default, points have no particular styles, and only\nthe line is visible.",
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L310"
           },
           {
@@ -37089,7 +37089,7 @@
             "description": "Sets the text style of the chart title.",
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L335"
           },
           {
@@ -37107,7 +37107,7 @@
             "description": "Sets the horizontal axis text style.",
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
           },
           {
@@ -37125,7 +37125,7 @@
             "description": "Sets the horizontal axis title text style.",
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L344"
           },
           {
@@ -37134,7 +37134,7 @@
             "description": "Sets the vertical axis text style.",
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L345"
           },
           {
@@ -37152,7 +37152,7 @@
             "description": "Sets the vertical axis title text style.",
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L353"
           },
           {
@@ -37161,7 +37161,7 @@
             "description": "Makes the range axis into a logarithmic scale (requires all values to be positive). The range\naxis are the vertical axis for vertical charts (such as line, area, or column) and the\nhorizontal axis for horizontal charts (such as bar).",
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L354"
           }
         ]
@@ -37312,8 +37312,8 @@
             "description": "Return the data inside this object as a blob converted to the specified content type. This\nmethod adds the appropriate extension to the filename—for example, \"myfile.pdf\". However, it\nassumes that the part of the filename that follows the last period (if any) is an existing\nextension that should be replaced. Consequently, \"ShoppingList.12.25.2014\" becomes\n\"ShoppingList.12.25.pdf\".",
             "returnType": "Blob",
             "returnDescription": "The data as a blob.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchart.js#L27"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getBlob()",
@@ -37321,8 +37321,8 @@
             "description": "Return the data inside this object as a blob.",
             "returnType": "Blob",
             "returnDescription": "The data as a blob.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchart.js#L28"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getChartId()",
@@ -37563,7 +37563,7 @@
             "description": "Reverses the drawing of series in the domain axis. For vertical-range charts (such as line,\narea or column charts), this means the horizontal axis is drawn from right to left. For\nhorizontal-range charts (such as bar charts), this means the vertical axis is drawn from top to\nbottom. For pie charts, this means the slices are drawn counterclockwise.",
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L295"
           },
           {
@@ -37572,7 +37572,7 @@
             "description": "Reverses the direction in which the bars grow along the horizontal axis. By default, values\ngrow from left to right. Calling this method causes them to grow from right to left.",
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L382"
           },
           {
@@ -37626,7 +37626,7 @@
             "description": "Sets the text style of the chart legend.",
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L309"
           },
           {
@@ -37698,7 +37698,7 @@
             "description": "Sets the text style of the chart title.",
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L335"
           },
           {
@@ -37716,7 +37716,7 @@
             "description": "Sets the horizontal axis text style.",
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
           },
           {
@@ -37734,7 +37734,7 @@
             "description": "Sets the horizontal axis title text style.",
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L344"
           },
           {
@@ -37743,7 +37743,7 @@
             "description": "Sets the vertical axis text style.",
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L345"
           },
           {
@@ -37761,7 +37761,7 @@
             "description": "Sets the vertical axis title text style.",
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L353"
           },
           {
@@ -37770,7 +37770,7 @@
             "description": "Makes the range axis into a logarithmic scale (requires all values to be positive). The range\naxis are the vertical axis for vertical charts (such as line, area, or column) and the\nhorizontal axis for horizontal charts (such as bar).",
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L354"
           }
         ]
@@ -38146,7 +38146,7 @@
             "description": "Reverses the drawing of series in the domain axis. For vertical-range charts (such as line,\narea or column charts), this means the horizontal axis is drawn from right to left. For\nhorizontal-range charts (such as bar charts), this means the vertical axis is drawn from top to\nbottom. For pie charts, this means the slices are drawn counterclockwise.",
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L295"
           },
           {
@@ -38200,7 +38200,7 @@
             "description": "Sets the text style of the chart legend.",
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L309"
           },
           {
@@ -38272,7 +38272,7 @@
             "description": "Sets the text style of the chart title.",
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L335"
           },
           {
@@ -38290,7 +38290,7 @@
             "description": "Sets the horizontal axis text style.",
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
           },
           {
@@ -38308,7 +38308,7 @@
             "description": "Sets the horizontal axis title text style.",
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L344"
           },
           {
@@ -38317,7 +38317,7 @@
             "description": "Sets the vertical axis text style.",
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L345"
           },
           {
@@ -38335,7 +38335,7 @@
             "description": "Sets the vertical axis title text style.",
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L353"
           },
           {
@@ -38344,7 +38344,7 @@
             "description": "Makes the range axis into a logarithmic scale (requires all values to be positive). The range\naxis are the vertical axis for vertical charts (such as line, area, or column) and the\nhorizontal axis for horizontal charts (such as bar).",
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L354"
           }
         ]
@@ -38505,7 +38505,7 @@
             "description": "Reverses the drawing of series in the domain axis. For vertical-range charts (such as line,\narea or column charts), this means the horizontal axis is drawn from right to left. For\nhorizontal-range charts (such as bar charts), this means the vertical axis is drawn from top to\nbottom. For pie charts, this means the slices are drawn counterclockwise.",
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L295"
           },
           {
@@ -38559,7 +38559,7 @@
             "description": "Sets the text style of the chart legend.",
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L309"
           },
           {
@@ -38631,7 +38631,7 @@
             "description": "Sets the text style of the chart title.",
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L335"
           },
           {
@@ -38649,7 +38649,7 @@
             "description": "Sets the horizontal axis text style.",
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
           },
           {
@@ -38667,7 +38667,7 @@
             "description": "Sets the horizontal axis title text style.",
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L344"
           },
           {
@@ -38676,7 +38676,7 @@
             "description": "Sets the vertical axis text style.",
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L345"
           },
           {
@@ -38694,7 +38694,7 @@
             "description": "Sets the vertical axis title text style.",
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L353"
           },
           {
@@ -38703,7 +38703,7 @@
             "description": "Makes the range axis into a logarithmic scale (requires all values to be positive). The range\naxis are the vertical axis for vertical charts (such as line, area, or column) and the\nhorizontal axis for horizontal charts (such as bar).",
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L354"
           }
         ]
@@ -38864,7 +38864,7 @@
             "description": "Reverses the drawing of series in the domain axis. For vertical-range charts (such as line,\narea or column charts), this means the horizontal axis is drawn from right to left. For\nhorizontal-range charts (such as bar charts), this means the vertical axis is drawn from top to\nbottom. For pie charts, this means the slices are drawn counterclockwise.",
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L295"
           },
           {
@@ -38927,7 +38927,7 @@
             "description": "Sets the text style of the chart legend.",
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L309"
           },
           {
@@ -38963,7 +38963,7 @@
             "description": "Sets the style for points in the line. By default, points have no particular styles, and only\nthe line is visible.",
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L310"
           },
           {
@@ -38999,7 +38999,7 @@
             "description": "Sets the text style of the chart title.",
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L335"
           },
           {
@@ -39017,7 +39017,7 @@
             "description": "Sets the horizontal axis text style.",
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
           },
           {
@@ -39035,7 +39035,7 @@
             "description": "Sets the horizontal axis title text style.",
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L344"
           },
           {
@@ -39044,7 +39044,7 @@
             "description": "Sets the vertical axis text style.",
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L345"
           },
           {
@@ -39062,7 +39062,7 @@
             "description": "Sets the vertical axis title text style.",
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L353"
           },
           {
@@ -39071,7 +39071,7 @@
             "description": "Makes the range axis into a logarithmic scale (requires all values to be positive). The range\naxis are the vertical axis for vertical charts (such as line, area, or column) and the\nhorizontal axis for horizontal charts (such as bar).",
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L354"
           }
         ]
@@ -39232,7 +39232,7 @@
             "description": "Reverses the drawing of series in the domain axis. For vertical-range charts (such as line,\narea or column charts), this means the horizontal axis is drawn from right to left. For\nhorizontal-range charts (such as bar charts), this means the vertical axis is drawn from top to\nbottom. For pie charts, this means the slices are drawn counterclockwise.",
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L295"
           },
           {
@@ -39286,7 +39286,7 @@
             "description": "Sets the text style of the chart legend.",
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L309"
           },
           {
@@ -39358,7 +39358,7 @@
             "description": "Sets the text style of the chart title.",
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L335"
           },
           {
@@ -39376,7 +39376,7 @@
             "description": "Sets the horizontal axis text style.",
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
           },
           {
@@ -39394,7 +39394,7 @@
             "description": "Sets the horizontal axis title text style.",
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L344"
           },
           {
@@ -39403,7 +39403,7 @@
             "description": "Sets the vertical axis text style.",
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L345"
           },
           {
@@ -39421,7 +39421,7 @@
             "description": "Sets the vertical axis title text style.",
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L353"
           },
           {
@@ -39430,7 +39430,7 @@
             "description": "Makes the range axis into a logarithmic scale (requires all values to be positive). The range\naxis are the vertical axis for vertical charts (such as line, area, or column) and the\nhorizontal axis for horizontal charts (such as bar).",
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L354"
           }
         ]
@@ -39958,7 +39958,7 @@
             "description": "Reverses the drawing of series in the domain axis. For vertical-range charts (such as line,\narea or column charts), this means the horizontal axis is drawn from right to left. For\nhorizontal-range charts (such as bar charts), this means the vertical axis is drawn from top to\nbottom. For pie charts, this means the slices are drawn counterclockwise.",
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L295"
           },
           {
@@ -40021,7 +40021,7 @@
             "description": "Sets the text style of the chart legend.",
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L309"
           },
           {
@@ -40075,7 +40075,7 @@
             "description": "Sets the text style of the chart title.",
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L335"
           },
           {
@@ -42605,8 +42605,8 @@
             "description": "Sets the specified range as the active range, with the top\nleft cell in the range as the current cell.",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheetrange.js#L103"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "activateAsCurrentCell()",
@@ -42614,8 +42614,8 @@
             "description": "Sets the specified cell as the current cell.",
             "returnType": "Range",
             "returnDescription": "This range, for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheetrange.js#L105"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "addDeveloperMetadata(String)",
@@ -42884,8 +42884,8 @@
             "description": "Creates an empty data source pivot table from the data source, anchored at the first cell in\nthis range.",
             "returnType": "DataSourcePivotTable",
             "returnDescription": "The newly created data source pivot table.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheetrange.js#L102"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "createDataSourceTable(DataSource)",
@@ -42893,8 +42893,8 @@
             "description": "Creates an empty data source table from the data source, anchored at the first cell in this\nrange.",
             "returnType": "DataSourceTable",
             "returnDescription": "The newly created data source table.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheetrange.js#L108"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "createDeveloperMetadataFinder()",
@@ -43046,8 +43046,8 @@
             "description": "Returns the DataSourceFormula for the first cell in the range, or null if\nthe cell doesn't contain a data source formula.",
             "returnType": "DataSourceFormula",
             "returnDescription": "The DataSourceFormula for the cell.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheetrange.js#L104"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getDataSourceFormulas()",
@@ -43064,8 +43064,8 @@
             "description": "Gets all the data source pivot tables intersecting with the range.",
             "returnType": "DataSourcePivotTable[]",
             "returnDescription": "A list of data source pivot tables.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheetrange.js#L114"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getDataSourceTables()",
@@ -43082,8 +43082,8 @@
             "description": "Returns a URL for the data in this range, which can be used to create charts and queries.",
             "returnType": "String",
             "returnDescription": "A URL for this range as a data source that can be passed to other APIs such as charts.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheetrange.js#L112"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getDataTable()",
@@ -44861,8 +44861,8 @@
             "description": "Gets all the data source formulas.",
             "returnType": "DataSourceFormula[]",
             "returnDescription": "A list of data source formulas.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L79"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getDataSourcePivotTables()",
@@ -44870,8 +44870,8 @@
             "description": "Gets all the data source pivot tables.",
             "returnType": "DataSourcePivotTable[]",
             "returnDescription": "A list of data source pivot tables.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L80"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getDataSourceTables()",
@@ -44879,8 +44879,8 @@
             "description": "Gets all the data source tables.",
             "returnType": "DataSourceTable[]",
             "returnDescription": "A list of data source tables.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L78"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getDeveloperMetadata()",
@@ -45158,8 +45158,8 @@
             "description": "Returns an array of slicers on the sheet.",
             "returnType": "Slicer[]",
             "returnDescription": "The list of slicers on this sheet.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L48"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getTabColorObject()",
@@ -45410,8 +45410,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L49"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "insertSlicer(Range,Integer,Integer,Integer,Integer)",
@@ -45419,8 +45419,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesheet.js#L49"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "isColumnHiddenByUser(Integer)",
@@ -45849,8 +45849,8 @@
             "description": "Returns the background color used for sorting, or null if absent.",
             "returnType": "Color",
             "returnDescription": "The background color.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesortspec.js#L52"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getDataSourceColumn()",
@@ -45858,8 +45858,8 @@
             "description": "Gets the data source column the sort spec acts on. Returns null if this sort spec is\nnot acting on a data source column.",
             "returnType": "DataSourceColumn",
             "returnDescription": "The data source column the sort spec acts on.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesortspec.js#L16"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getDimensionIndex()",
@@ -45876,8 +45876,8 @@
             "description": "Returns the foreground color used for sorting, or null if absent.",
             "returnType": "Color",
             "returnDescription": "The foreground color.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakesortspec.js#L59"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getSortOrder()",
@@ -46437,8 +46437,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L83"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "addViewer(String)",
@@ -46473,8 +46473,8 @@
             "description": "Appends a row to the bottom of the current data region in the sheet. If a cell's content begins\nwith =, it's interpreted as a formula.",
             "returnType": "Sheet",
             "returnDescription": "The sheet, useful for method chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L109"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "autoResizeColumn(Integer)",
@@ -46482,8 +46482,8 @@
             "description": "Sets the width of the given column to fit its contents.",
             "returnType": "Sheet",
             "returnDescription": "The sheet, useful for method chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L128"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "copy(String)",
@@ -46491,8 +46491,8 @@
             "description": "Copies the spreadsheet and returns the new one.",
             "returnType": "Spreadsheet",
             "returnDescription": "This spreadsheet, for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L101"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "createDeveloperMetadataFinder()",
@@ -46518,8 +46518,8 @@
             "description": "Deletes the currently active sheet.",
             "returnType": "Sheet",
             "returnDescription": "The new active sheet.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L76"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "deleteColumn(Integer)",
@@ -46527,8 +46527,8 @@
             "description": "Deletes the column at the given column position.",
             "returnType": "Sheet",
             "returnDescription": "The sheet, useful for method chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L144"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "deleteColumns(Integer,Integer)",
@@ -46536,8 +46536,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L144"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "deleteRow(Integer)",
@@ -46545,8 +46545,8 @@
             "description": "Deletes the row at the given row position.",
             "returnType": "Sheet",
             "returnDescription": "The sheet, useful for method chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L68"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "deleteRows(Integer,Integer)",
@@ -46554,8 +46554,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L68"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "deleteSheet(Sheet)",
@@ -46563,8 +46563,8 @@
             "description": "Deletes the specified sheet.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L70"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "duplicateActiveSheet()",
@@ -46572,8 +46572,8 @@
             "description": "Duplicates the active sheet and makes it the active sheet.",
             "returnType": "Sheet",
             "returnDescription": "The new sheet.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L73"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getActiveCell()",
@@ -46581,8 +46581,8 @@
             "description": "Returns the active cell in this sheet.",
             "returnType": "Range",
             "returnDescription": "The current active cell.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L142"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getActiveRange()",
@@ -46599,8 +46599,8 @@
             "description": "Returns the list of active ranges in the active sheet or null if there are no active\nranges.",
             "returnType": "RangeList",
             "returnDescription": "The list of active ranges.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L106"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getActiveSheet()",
@@ -46626,8 +46626,8 @@
             "description": "Returns all the bandings in this spreadsheet.",
             "returnType": "Banding[]",
             "returnDescription": "The bandings in this spreadsheet.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L47"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getBlob()",
@@ -46635,8 +46635,8 @@
             "description": "Return the data inside this object as a blob.",
             "returnType": "Blob",
             "returnDescription": "The data as a blob.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L149"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getColumnWidth(Integer)",
@@ -46671,8 +46671,8 @@
             "description": "Gets all the data source formulas.",
             "returnType": "DataSourceFormula[]",
             "returnDescription": "A list of data source formulas.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L132"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getDataSourcePivotTables()",
@@ -46680,8 +46680,8 @@
             "description": "Gets all the data source pivot tables.",
             "returnType": "DataSourcePivotTable[]",
             "returnDescription": "A list of data source pivot tables.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L143"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getDataSourceRefreshSchedules()",
@@ -46689,8 +46689,8 @@
             "description": "Gets the refresh schedules of this spreadsheet.",
             "returnType": "DataSourceRefreshSchedule[]",
             "returnDescription": "The refresh schedules of this spreadsheet.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L98"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getDataSourceSheets()",
@@ -46698,8 +46698,8 @@
             "description": "Returns all the data source sheets in the spreadsheet.",
             "returnType": "DataSourceSheet[]",
             "returnDescription": "An array of all the data source sheets.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L80"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getDataSourceTables()",
@@ -46707,8 +46707,8 @@
             "description": "Gets all the data source tables.",
             "returnType": "DataSourceTable[]",
             "returnDescription": "A list of data source tables.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L125"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getDataSources()",
@@ -46716,8 +46716,8 @@
             "description": "Returns all the data sources in the spreadsheet.",
             "returnType": "DataSource[]",
             "returnDescription": "An array of all the data sources.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L48"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getDeveloperMetadata()",
@@ -46743,8 +46743,8 @@
             "description": "Returns the URL for the form that sends its responses to this spreadsheet, or null if\nthis spreadsheet has no associated form. If multiple forms send responses to this spreadsheet,\nthe form URL returned is indeterminate. As an alternative, per sheet form URL associations can\nbe retrieved through the Sheet.getFormUrl() method. Throws an exception if the user\ndoes not have permission to edit the spreadsheet.",
             "returnType": "String",
             "returnDescription": "The URL for the form that places its responses in this spreadsheet, or null if\n    this spreadsheet doesn't have an associated form.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L74"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getFrozenColumns()",
@@ -46752,8 +46752,8 @@
             "description": "Returns the number of frozen columns.",
             "returnType": "Integer",
             "returnDescription": "The number of frozen columns.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L129"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getFrozenRows()",
@@ -46761,8 +46761,8 @@
             "description": "Returns the number of frozen rows.",
             "returnType": "Integer",
             "returnDescription": "The number of frozen rows.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L117"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getId()",
@@ -46779,8 +46779,8 @@
             "description": "Returns all over-the-grid images on the sheet.",
             "returnType": "OverGridImage[]",
             "returnDescription": "An array of over-the-grid images.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L147"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getIterativeCalculationConvergenceThreshold()",
@@ -46788,8 +46788,8 @@
             "description": "Returns the threshold value used during iterative calculation. When the results of successive\ncalculation differ by less than this value, the iterative calculation stops.",
             "returnType": "Number",
             "returnDescription": "The convergence threshold.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L92"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getLastColumn()",
@@ -46815,8 +46815,8 @@
             "description": "Returns the maximum number of iterations to use during iterative calculation.",
             "returnType": "Integer",
             "returnDescription": "The maximum number of calculation iterations.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L87"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getName()",
@@ -46860,8 +46860,8 @@
             "description": "Returns the list of predefined themes.",
             "returnType": "SpreadsheetTheme[]",
             "returnDescription": "List of predefined themes.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L99"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getProtections(ProtectionType)",
@@ -46896,8 +46896,8 @@
             "description": "Returns the RangeList collection representing the ranges in the same sheet specified\nby a non-empty list of A1 notations or R1C1 notations.",
             "returnType": "RangeList",
             "returnDescription": "The range list at the location designated.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L137"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getRecalculationInterval()",
@@ -46923,8 +46923,8 @@
             "description": "Returns the current Selection in the spreadsheet.",
             "returnType": "Selection",
             "returnDescription": "The current selection.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L105"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getSheetById(Integer)",
@@ -46968,8 +46968,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L123"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getSheets()",
@@ -46986,8 +46986,8 @@
             "description": "Gets the spreadsheet locale.",
             "returnType": "String",
             "returnDescription": "The spreadsheet locale.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L61"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getSpreadsheetTheme()",
@@ -46995,8 +46995,8 @@
             "description": "Returns the current theme of the spreadsheet, or null if no theme is applied.",
             "returnType": "SpreadsheetTheme",
             "returnDescription": "The current applied theme.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L45"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getSpreadsheetTimeZone()",
@@ -47004,8 +47004,8 @@
             "description": "Gets the time zone for the spreadsheet.",
             "returnType": "String",
             "returnDescription": "The time zone, specified in \"long\" format (for example, \"America/New_York\", as listed\n    by Joda.org).",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L52"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getUrl()",
@@ -47031,8 +47031,8 @@
             "description": "Hides the column or columns in the given range.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L127"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "hideRow(Range)",
@@ -47040,8 +47040,8 @@
             "description": "Hides the rows in the given range.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L108"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "insertColumnAfter(Integer)",
@@ -47049,8 +47049,8 @@
             "description": "Inserts a column after the given column position.",
             "returnType": "Sheet",
             "returnDescription": "The sheet, useful for method chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L115"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "insertColumnBefore(Integer)",
@@ -47058,8 +47058,8 @@
             "description": "Inserts a column before the given column position.",
             "returnType": "Sheet",
             "returnDescription": "The sheet, useful for method chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L134"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "insertColumnsAfter(Integer,Integer)",
@@ -47067,8 +47067,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L126"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "insertColumnsBefore(Integer,Integer)",
@@ -47076,8 +47076,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L131"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "insertDataSourceSheet(DataSourceSpec)",
@@ -47130,8 +47130,8 @@
             "description": "Inserts a row after the given row position.",
             "returnType": "Sheet",
             "returnDescription": "The sheet, useful for method chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L139"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "insertRowBefore(Integer)",
@@ -47139,8 +47139,8 @@
             "description": "Inserts a row before the given row position.",
             "returnType": "Sheet",
             "returnDescription": "The sheet, useful for method chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L138"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "insertRowsAfter(Integer,Integer)",
@@ -47148,8 +47148,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L112"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "insertRowsBefore(Integer,Integer)",
@@ -47157,8 +47157,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L120"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "insertSheet()",
@@ -47238,8 +47238,8 @@
             "description": "Inserts a new sheet in the spreadsheet, creates a DataSourceTable spanning the\nentire sheet with the given data source specification, and starts data execution. As a side\neffect, makes the new sheet the active sheet.",
             "returnType": "Sheet",
             "returnDescription": "The new sheet.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L97"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "isColumnHiddenByUser(Integer)",
@@ -47247,8 +47247,8 @@
             "description": "Returns whether the given column is hidden by the user.",
             "returnType": "Boolean",
             "returnDescription": "true if the column is hidden, false otherwise.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L136"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "isIterativeCalculationEnabled()",
@@ -47256,8 +47256,8 @@
             "description": "Returns whether iterative calculation is activated in this spreadsheet.",
             "returnType": "Boolean",
             "returnDescription": "true if iterative calculation is activated, false otherwise.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L96"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "isRowHiddenByFilter(Integer)",
@@ -47265,8 +47265,8 @@
             "description": "Returns whether the given row is hidden by a filter (not a filter view).",
             "returnType": "Boolean",
             "returnDescription": "true if the row is hidden, false otherwise.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L119"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "isRowHiddenByUser(Integer)",
@@ -47274,8 +47274,8 @@
             "description": "Returns whether the given row is hidden by the user.",
             "returnType": "Boolean",
             "returnDescription": "true if the row is hidden, false otherwise.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L121"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "moveActiveSheet(Integer)",
@@ -47283,8 +47283,8 @@
             "description": "Moves the active sheet to the given position in the list of sheets. Throws an exception if the\nposition is negative or greater than the number of sheets.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L71"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "moveChartToObjectSheet(EmbeddedChart)",
@@ -47292,8 +47292,8 @@
             "description": "Creates a new SheetType.OBJECT sheet and moves the provided chart to it. If the chart\nis already on its own sheet, that sheet is returned without creating a new one.",
             "returnType": "Sheet",
             "returnDescription": "The sheet that the chart is on.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L67"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "refreshAllDataSources()",
@@ -47301,8 +47301,8 @@
             "description": "Refreshes all supported data sources and their linked data source objects, skipping invalid\ndata source objects.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L51"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "removeEditor(String)",
@@ -47328,8 +47328,8 @@
             "description": "Removes a menu that was added by addMenu(name, subMenus). The name argument\nshould have the same value as the corresponding call to addMenu(name, subMenus).",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L84"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "removeNamedRange(String)",
@@ -47337,8 +47337,8 @@
             "description": "Deletes a named range with the given name. Throws an exception if no range with the given name\nis found in the spreadsheet.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L65"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "removeViewer(String)",
@@ -47364,8 +47364,8 @@
             "description": "Renames the document.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L64"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "renameActiveSheet(String)",
@@ -47373,8 +47373,8 @@
             "description": "Renames the current active sheet to the given new name.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L64"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "resetSpreadsheetTheme()",
@@ -47382,8 +47382,8 @@
             "description": "Removes the applied theme and sets the default theme on the spreadsheet.",
             "returnType": "SpreadsheetTheme",
             "returnDescription": "The default theme.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L63"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setActiveRange(Range)",
@@ -47463,8 +47463,8 @@
             "description": "Freezes the given number of columns. If zero, no columns are frozen.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L116"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setFrozenRows(Integer)",
@@ -47472,8 +47472,8 @@
             "description": "Freezes the given number of rows. If zero, no rows are frozen.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L118"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setIterativeCalculationConvergenceThreshold(Number)",
@@ -47481,8 +47481,8 @@
             "description": "Sets the minimum threshold value for iterative calculation. When the results of successive\ncalculation differ by less than this value, the iterative calculation stops. This value must be\nnon-negative, and defaults to 0.05.",
             "returnType": "Spreadsheet",
             "returnDescription": "This spreadsheet, for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L93"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setIterativeCalculationEnabled(Boolean)",
@@ -47490,8 +47490,8 @@
             "description": "Sets whether iterative calculation is activated in this spreadsheet. If the maximum number of\ncalculation cycles and convergence threshold have not previously been set when the calculation\nis activated, they default to 50 and 0.05 respectively. If either has been set previously, they\nretain their previous values.",
             "returnType": "Spreadsheet",
             "returnDescription": "This spreadsheet, for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L95"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setMaxIterativeCalculationCycles(Integer)",
@@ -47499,8 +47499,8 @@
             "description": "Sets the maximum number of calculation iterations that should be performed during iterative\ncalculation. This value must be between 1 and 10,000 (inclusive), and defaults to 50.",
             "returnType": "Spreadsheet",
             "returnDescription": "This spreadsheet, for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L86"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setNamedRange(String,Range)",
@@ -47517,8 +47517,8 @@
             "description": "Sets how often this spreadsheet should recalculate.",
             "returnType": "Spreadsheet",
             "returnDescription": "This spreadsheet, for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L94"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setRowHeight(Integer,Integer)",
@@ -47535,8 +47535,8 @@
             "description": "Sets the spreadsheet locale.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L79"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setSpreadsheetTheme(SpreadsheetTheme)",
@@ -47544,8 +47544,8 @@
             "description": "Sets a theme on the spreadsheet.",
             "returnType": "SpreadsheetTheme",
             "returnDescription": "The new current theme.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L63"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "setSpreadsheetTimeZone(String)",
@@ -47553,8 +47553,8 @@
             "description": "Sets the time zone for the spreadsheet.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L53"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "show(Object)",
@@ -47562,8 +47562,8 @@
             "description": "Displays a custom user interface component in a dialog centered in the user's browser's\nviewport. The server-side script's execution is not suspended. To communicate with the\nserver side, the user interface component must make asynchronous callbacks to the server-side\nscript.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L91"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "sort(Integer)",
@@ -47589,8 +47589,8 @@
             "description": "Shows a popup window in the lower right corner of the spreadsheet with the given message.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L90"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "toast(String,String)",
@@ -47598,8 +47598,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L90"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "toast(String,String,Number)",
@@ -47607,8 +47607,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L90"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "unhideColumn(Range)",
@@ -47616,8 +47616,8 @@
             "description": "Unhides the column in the given range.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L130"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "unhideRow(Range)",
@@ -47625,8 +47625,8 @@
             "description": "Unhides the row in the given range.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L111"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "updateMenu(String,Object)",
@@ -47634,8 +47634,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L50"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "waitForAllDataExecutionsCompletion(Integer)",
@@ -47643,8 +47643,8 @@
             "description": "Waits until all the current executions in the spreadsheet complete, timing out after the\nprovided number of seconds. Throws an exception if the executions are not completed when timing\nout, but does not cancel the data executions.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L88"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           }
         ]
       },
@@ -49575,7 +49575,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/common/fakewrapstrategy.js#L16"
+            "implementationLink": "src/services/enums/sheetsenums.js#L267"
           },
           {
             "method": "OVERFLOW",
@@ -49583,7 +49583,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/common/fakewrapstrategy.js#L16"
+            "implementationLink": "src/services/enums/sheetsenums.js#L268"
           },
           {
             "method": "CLIP",
@@ -49591,7 +49591,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/common/fakewrapstrategy.js#L19"
+            "implementationLink": "src/services/enums/sheetsenums.js#L268"
           }
         ]
       },
@@ -50314,7 +50314,7 @@
             "returnType": "String",
             "returnDescription": "The unique ID for this object.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakegroup.js#L27"
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L58"
           },
           {
             "method": "getPageElementType()",
@@ -50646,7 +50646,7 @@
             "returnType": "Number",
             "returnDescription": "The page element's inherent height in points, or null if the page element does\n    not have a height.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakeimage.js#L65"
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L228"
           },
           {
             "method": "getInherentHeight()",
@@ -50799,7 +50799,7 @@
             "returnType": "Number",
             "returnDescription": "The page element's inherent width in points, or null if the page element does\n    not have a width.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakeimage.js#L78"
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L217"
           },
           {
             "method": "preconcatenateTransform(AffineTransform)",
@@ -50834,8 +50834,8 @@
             "description": "Replaces this image with an image described by a BlobSource object.",
             "returnType": "Image",
             "returnDescription": "This Image after the replacement.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepageelement.js#L504"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "replace(BlobSource,Boolean)",
@@ -50843,8 +50843,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepageelement.js#L504"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "replace(String)",
@@ -50852,8 +50852,8 @@
             "description": "Replaces this image with another image downloaded from the provided URL.",
             "returnType": "Image",
             "returnDescription": "This Image after the replacement.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepageelement.js#L504"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "replace(String,Boolean)",
@@ -50861,8 +50861,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakepageelement.js#L504"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "scaleHeight(Number)",
@@ -51086,7 +51086,7 @@
             "returnType": "ConnectionSite[]",
             "returnDescription": "The connection sites list, which may be empty if this element has no connection sites.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakeline.js#L142"
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L489"
           },
           {
             "method": "getDashStyle()",
@@ -51140,7 +51140,7 @@
             "returnType": "Number",
             "returnDescription": "The page element's inherent height in points, or null if the page element does\n    not have a height.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakeline.js#L103"
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L228"
           },
           {
             "method": "getInherentHeight()",
@@ -51167,7 +51167,7 @@
             "returnType": "Number",
             "returnDescription": "This element's horizontal position in points, from the upper-left corner of the page.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakeline.js#L81"
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L199"
           },
           {
             "method": "getLineCategory()",
@@ -51212,7 +51212,7 @@
             "returnType": "String",
             "returnDescription": "The unique ID for this object.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakeline.js#L138"
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L58"
           },
           {
             "method": "getPageElementType()",
@@ -51293,7 +51293,7 @@
             "returnType": "Number",
             "returnDescription": "This element's vertical position in points, from the upper-left corner of the page.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakeline.js#L81"
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L208"
           },
           {
             "method": "getTransform()",
@@ -51320,7 +51320,7 @@
             "returnType": "Number",
             "returnDescription": "The page element's inherent width in points, or null if the page element does\n    not have a width.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakeline.js#L103"
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L217"
           },
           {
             "method": "preconcatenateTransform(AffineTransform)",
@@ -51473,7 +51473,7 @@
             "returnType": "Line",
             "returnDescription": "This page element, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakeline.js#L120"
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L234"
           },
           {
             "method": "setLeft(Number)",
@@ -51617,7 +51617,7 @@
             "returnType": "Line",
             "returnDescription": "This page element, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/fakeline.js#L119"
+            "implementationLink": "src/services/slidesapp/fakepageelement.js#L223"
           }
         ]
       },
@@ -57454,8 +57454,8 @@
             "description": "Returns all the ranges matching the search pattern in the current text range. The search is\ncase sensitive.",
             "returnType": "TextRange[]",
             "returnDescription": "A list of text ranges.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/faketextrange.js#L105"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "find(String,Integer)",
@@ -57463,8 +57463,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/slidesapp/faketextrange.js#L105"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "getAutoTexts()",
@@ -62844,56 +62844,56 @@
             "description": "An XML CDATASection node.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/xmlenums.js#L7"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "COMMENT",
             "description": "An XML Comment node.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/xmlenums.js#L8"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "DOCTYPE",
             "description": "An XML DocumentType node.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/xmlenums.js#L9"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "ELEMENT",
             "description": "An XML Element node.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/xmlenums.js#L10"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "ENTITYREF",
             "description": "An XML EntityReference node.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/xmlenums.js#L11"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "PROCESSINGINSTRUCTION",
             "description": "An XML ProcessingInstruction node.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/xmlenums.js#L12"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "TEXT",
             "description": "An XML Text node.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/enums/xmlenums.js#L13"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           }
         ]
       },

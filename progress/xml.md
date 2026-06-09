@@ -223,13 +223,13 @@ An enumeration representing the types of XML content nodes.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| CDATA | An XML CDATASection node. | completed | [link](../src/services/enums/xmlenums.js#L7) |
-| COMMENT | An XML Comment node. | completed | [link](../src/services/enums/xmlenums.js#L8) |
-| DOCTYPE | An XML DocumentType node. | completed | [link](../src/services/enums/xmlenums.js#L9) |
-| ELEMENT | An XML Element node. | completed | [link](../src/services/enums/xmlenums.js#L10) |
-| ENTITYREF | An XML EntityReference node. | completed | [link](../src/services/enums/xmlenums.js#L11) |
-| PROCESSINGINSTRUCTION | An XML ProcessingInstruction node. | completed | [link](../src/services/enums/xmlenums.js#L12) |
-| TEXT | An XML Text node. | completed | [link](../src/services/enums/xmlenums.js#L13) |
+| CDATA | An XML CDATASection node. | not started |  |
+| COMMENT | An XML Comment node. | not started |  |
+| DOCTYPE | An XML DocumentType node. | not started |  |
+| ELEMENT | An XML Element node. | not started |  |
+| ENTITYREF | An XML EntityReference node. | not started |  |
+| PROCESSINGINSTRUCTION | An XML ProcessingInstruction node. | not started |  |
+| TEXT | An XML Text node. | not started |  |
 
 ## Interface: [Content](https://developers.google.com/apps-script/reference/xml-service/content)
 

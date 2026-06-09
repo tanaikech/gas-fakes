@@ -70,7 +70,7 @@ const serviceToDirectoryMap = {
   'HTML': 'html',
   'Lock': 'lock',
   'Properties': 'properties',
-  'Script': 'script',
+  'Script': 'scriptapp',
   'Utilities': 'utilities',
   'URL Fetch': 'urlfetchapp',
   'JDBC': 'jdbc',
@@ -336,43 +336,103 @@ for (const service of giData) {
 
             if (isImplemented) {
               let inProgress = false;
+              let found = false;
               try {
                 const ast = acorn.parse(file.content, { ecmaVersion: 'latest', sourceType: 'module' });
-                walk.simple(ast, {
-                  ClassDeclaration(classNode) {
-                    // Check if this is the class we are currently analyzing
-                    if (classNode.id.name === className || classNode.id.name === 'Fake' + className) {
-                      walk.simple(classNode.body, {
-                        MethodDefinition(methodNode) {
-                          if (methodNode.key.name === methodName) {
-                            // Check if this method has notYetImplemented
-                            walk.simple(methodNode.value.body, {
-                              CallExpression(callNode) {
-                                if (callNode.callee.name === 'notYetImplemented') {
-                                  inProgress = true;
+                if (classData.type === 'Enum') {
+                  walk.simple(ast, {
+                    VariableDeclarator(varNode) {
+                      if (varNode.id.name === className) {
+                        const init = varNode.init;
+                        if (init && init.type === 'CallExpression') {
+                          const arg = init.arguments[0];
+                          if (arg) {
+                            if (arg.type === 'ObjectExpression') {
+                              arg.properties.forEach(prop => {
+                                const name = prop.key.name || prop.key.value;
+                                if (name === methodName) {
+                                  found = true;
+                                  status = 'completed';
                                   throw 'found';
                                 }
-                              }
-                            });
-                            // We found the method in the correct class
-                            status = 'completed';
-                            throw 'found';
+                              });
+                            } else if (arg.type === 'ArrayExpression') {
+                              arg.elements.forEach(elem => {
+                                if (elem && elem.type === 'Literal' && elem.value === methodName) {
+                                  found = true;
+                                  status = 'completed';
+                                  throw 'found';
+                                }
+                              });
+                            }
                           }
+                        } else if (init && init.type === 'ObjectExpression') {
+                          init.properties.forEach(prop => {
+                            const name = prop.key.name || prop.key.value;
+                            if (name === methodName) {
+                              found = true;
+                              status = 'completed';
+                              throw 'found';
+                            }
+                          });
                         }
-                      });
+                      }
                     }
-                  }
-                });
+                  });
+                } else {
+                  walk.simple(ast, {
+                    ClassDeclaration(classNode) {
+                      const lowerName = classNode.id.name.toLowerCase();
+                      const synonyms = classSynonyms[className] || [];
+                      const isMatch = lowerName === className.toLowerCase() ||
+                                      lowerName === ('fake' + className).toLowerCase() ||
+                                      synonyms.some(s => lowerName === s.toLowerCase() || lowerName === ('fake' + s).toLowerCase());
+                      if (isMatch) {
+                        walk.simple(classNode.body, {
+                          MethodDefinition(methodNode) {
+                            if (methodNode.key.name === methodName) {
+                              found = true;
+                              // Check if this method has notYetImplemented
+                              walk.simple(methodNode.value.body, {
+                                CallExpression(callNode) {
+                                  if (callNode.callee.name === 'notYetImplemented') {
+                                    inProgress = true;
+                                    throw 'found';
+                                  }
+                                }
+                              });
+                              // We found the method in the correct class
+                              status = 'completed';
+                              throw 'found';
+                            }
+                          }
+                        });
+                      }
+                    }
+                  });
+                }
               } catch (e) {
                 if (e !== 'found') {
                   console.error(`Failed to parse ${file.filePath} with acorn. Error: ${e.message}`);
                 }
               }
 
-              if (inProgress) {
-                status = 'in progress';
+              if (classData.type === 'Enum') {
+                if (!found) {
+                  status = 'not started';
+                  continue;
+                }
               } else {
-                status = 'completed';
+                if (found) {
+                  if (inProgress) {
+                    status = 'in progress';
+                  } else {
+                    status = 'completed';
+                  }
+                } else {
+                  status = 'not started';
+                  continue;
+                }
               }
 
               const relativePath = path.relative(projectPath, file.filePath);

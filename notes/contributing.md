@@ -123,7 +123,8 @@ npm unlink
 ```
 *(If you linked the global CLI, you may need to run `npm install -g @mcpher/gas-fakes` to restore the published CLI).*
 
-
+#### handy check for large tests 
+I you run the entire test suire there are hundreds of tests and for now the "SOME TESTS FAILED" message at the very end isnt very useful to help finding them. If using a mac, you can copy the the terminal log to the paste buffer and use 'pbpaste | grep -E "failures:[1-9][0-9]*"  ' to see only lines with more than 0 failures
 
 #### Specifics on expectations for test files. 
 

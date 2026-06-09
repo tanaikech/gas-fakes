@@ -1,4 +1,4 @@
-import { ScriptEnums } from '../enums/scriptenums.js';
+import { AuthorizationStatus } from '../enums/scriptenums.js';
 
 export class FakeAuthorizationInfo {
   constructor(authMode) {
@@ -8,12 +8,12 @@ export class FakeAuthorizationInfo {
   getAuthorizationStatus() {
     // gas-fakes always handles auth out-of-band via CLI, 
     // so during script execution, we assume auth is not required.
-    return ScriptEnums.AuthorizationStatus.NOT_REQUIRED;
+    return AuthorizationStatus.NOT_REQUIRED;
   }
 
   getAuthorizationUrl() {
-    // Return null since we don't require inline authorization
-    return null;
+    // Return empty string since we don't require inline authorization, matching live Apps Script parity
+    return "";
   }
 }
 
