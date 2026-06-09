@@ -292,7 +292,34 @@ export class FakeEmbeddedChartBuilder {
     return axis;
   }
 
-  reverseCategories() { notYetImplemented('reverseCategories'); return this; }
+  __extractTextStyle(textStyle) {
+    if (!textStyle || !textStyle.getFontFamily) return textStyle; // fallback if it's not a FakeTextStyle
+    const format = {};
+    if (textStyle.getFontFamily() !== undefined) format.fontFamily = textStyle.getFontFamily();
+    if (textStyle.getFontSize() !== undefined) format.fontSize = textStyle.getFontSize();
+    if (textStyle.isBold() !== undefined) format.bold = textStyle.isBold();
+    if (textStyle.isItalic() !== undefined) format.italic = textStyle.isItalic();
+    if (textStyle.isStrikethrough() !== undefined) format.strikethrough = textStyle.isStrikethrough();
+    if (textStyle.isUnderline() !== undefined) format.underline = textStyle.isUnderline();
+    const color = textStyle.getForegroundColorObject && textStyle.getForegroundColorObject();
+    if (color && color.asRgbColor) {
+      const rgb = color.asRgbColor();
+      format.foregroundColorStyle = {
+        rgbColor: { red: rgb.getRed() / 255, green: rgb.getGreen() / 255, blue: rgb.getBlue() / 255 }
+      };
+    }
+    return format;
+  }
+
+  reverseCategories() { 
+    ScriptApp.__behavior.checkMethod("EmbeddedChartBuilder", "reverseCategories");
+    const chartType = this.__apiChart.spec.basicChart ? this.__apiChart.spec.basicChart.chartType : null;
+    const axisPos = chartType === "BAR" ? "LEFT_AXIS" : "BOTTOM_AXIS";
+    const axis = this.__getAxis(axisPos);
+    axis.reverseDirection = true;
+    return this; 
+  }
+
   setBackgroundColor(color) { return this.setOption("backgroundColor", color); }
   
   setColors(colors) { 
@@ -306,8 +333,17 @@ export class FakeEmbeddedChartBuilder {
     return this; 
   }
   
-  setLegendTextStyle(textStyle) { notYetImplemented('setLegendTextStyle'); return this; }
-  setPointStyle(pointStyle) { notYetImplemented('setPointStyle'); return this; }
+  setLegendTextStyle(textStyle) { 
+    ScriptApp.__behavior.checkMethod("EmbeddedChartBuilder", "setLegendTextStyle");
+    if (!this.__apiChart.spec.basicChart) this.__apiChart.spec.basicChart = {};
+    this.__apiChart.spec.basicChart.legendTextStyle = this.__extractTextStyle(textStyle);
+    return this; 
+  }
+
+  setPointStyle(pointStyle) { 
+    ScriptApp.__behavior.checkMethod("EmbeddedChartBuilder", "setPointStyle");
+    return this.setOption("pointStyle", pointStyle ? pointStyle.toString() : "NONE");
+  }
   
   setRange(min, max) { 
     ScriptApp.__behavior.checkMethod("EmbeddedChartBuilder", "setRange");
@@ -332,8 +368,17 @@ export class FakeEmbeddedChartBuilder {
     return this; 
   }
   
-  setTitleTextStyle(textStyle) { notYetImplemented('setTitleTextStyle'); return this; }
-  setXAxisTextStyle(textStyle) { notYetImplemented('setXAxisTextStyle'); return this; }
+  setTitleTextStyle(textStyle) { 
+    ScriptApp.__behavior.checkMethod("EmbeddedChartBuilder", "setTitleTextStyle");
+    this.__apiChart.spec.titleTextStyle = this.__extractTextStyle(textStyle);
+    return this; 
+  }
+
+  setXAxisTextStyle(textStyle) { 
+    ScriptApp.__behavior.checkMethod("EmbeddedChartBuilder", "setXAxisTextStyle");
+    this.__getAxis("BOTTOM_AXIS").textStyle = this.__extractTextStyle(textStyle);
+    return this; 
+  }
   
   setXAxisTitle(title) { 
     ScriptApp.__behavior.checkMethod("EmbeddedChartBuilder", "setXAxisTitle");
@@ -341,8 +386,17 @@ export class FakeEmbeddedChartBuilder {
     return this; 
   }
   
-  setXAxisTitleTextStyle(textStyle) { notYetImplemented('setXAxisTitleTextStyle'); return this; }
-  setYAxisTextStyle(textStyle) { notYetImplemented('setYAxisTextStyle'); return this; }
+  setXAxisTitleTextStyle(textStyle) { 
+    ScriptApp.__behavior.checkMethod("EmbeddedChartBuilder", "setXAxisTitleTextStyle");
+    this.__getAxis("BOTTOM_AXIS").titleTextStyle = this.__extractTextStyle(textStyle);
+    return this; 
+  }
+
+  setYAxisTextStyle(textStyle) { 
+    ScriptApp.__behavior.checkMethod("EmbeddedChartBuilder", "setYAxisTextStyle");
+    this.__getAxis("LEFT_AXIS").textStyle = this.__extractTextStyle(textStyle);
+    return this; 
+  }
   
   setYAxisTitle(title) { 
     ScriptApp.__behavior.checkMethod("EmbeddedChartBuilder", "setYAxisTitle");
@@ -350,8 +404,21 @@ export class FakeEmbeddedChartBuilder {
     return this; 
   }
   
-  setYAxisTitleTextStyle(textStyle) { notYetImplemented('setYAxisTitleTextStyle'); return this; }
-  useLogScale() { notYetImplemented('useLogScale'); return this; }
+  setYAxisTitleTextStyle(textStyle) { 
+    ScriptApp.__behavior.checkMethod("EmbeddedChartBuilder", "setYAxisTitleTextStyle");
+    this.__getAxis("LEFT_AXIS").titleTextStyle = this.__extractTextStyle(textStyle);
+    return this; 
+  }
+
+  useLogScale() { 
+    ScriptApp.__behavior.checkMethod("EmbeddedChartBuilder", "useLogScale");
+    const chartType = this.__apiChart.spec.basicChart ? this.__apiChart.spec.basicChart.chartType : null;
+    const axisPos = chartType === "BAR" ? "BOTTOM_AXIS" : "LEFT_AXIS";
+    const axis = this.__getAxis(axisPos);
+    axis.logScale = true;
+    return this; 
+  }
+
   set3D() { return this.setOption("is3D", true); }
   enablePaging(enable, pageSize) { notYetImplemented('enablePaging'); return this; }
   enableRtlTable(enable) { notYetImplemented('enableRtlTable'); return this; }
@@ -361,7 +428,12 @@ export class FakeEmbeddedChartBuilder {
   setInitialSortingDescending(column) { notYetImplemented('setInitialSortingDescending'); return this; }
   showRowNumberColumn(show) { notYetImplemented('showRowNumberColumn'); return this; }
   useAlternatingRowStyle(use) { notYetImplemented('useAlternatingRowStyle'); return this; }
-  setXAxisLogScale() { notYetImplemented('setXAxisLogScale'); return this; }
+
+  setXAxisLogScale() { 
+    ScriptApp.__behavior.checkMethod("EmbeddedChartBuilder", "setXAxisLogScale");
+    this.__getAxis("BOTTOM_AXIS").logScale = true;
+    return this; 
+  }
   
   setXAxisRange(min, max) { 
     ScriptApp.__behavior.checkMethod("EmbeddedChartBuilder", "setXAxisRange");
@@ -370,7 +442,11 @@ export class FakeEmbeddedChartBuilder {
     return this; 
   }
   
-  setYAxisLogScale() { notYetImplemented('setYAxisLogScale'); return this; }
+  setYAxisLogScale() { 
+    ScriptApp.__behavior.checkMethod("EmbeddedChartBuilder", "setYAxisLogScale");
+    this.__getAxis("LEFT_AXIS").logScale = true;
+    return this; 
+  }
   
   setYAxisRange(min, max) { 
     ScriptApp.__behavior.checkMethod("EmbeddedChartBuilder", "setYAxisRange");
@@ -379,7 +455,11 @@ export class FakeEmbeddedChartBuilder {
     return this; 
   }
   
-  reverseDirection() { notYetImplemented('reverseDirection'); return this; }
+  reverseDirection() { 
+    ScriptApp.__behavior.checkMethod("EmbeddedChartBuilder", "reverseDirection");
+    this.__getAxis("BOTTOM_AXIS").reverseDirection = true;
+    return this; 
+  }
 
   toString() {
     const type = this.__apiChart.spec.basicChart?.chartType;

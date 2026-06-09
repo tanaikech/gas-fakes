@@ -11,6 +11,7 @@ import { newFakeDataSource } from "./fakedatasource.js";
 import { batchUpdate } from "./sheetrangehelpers.js";
 import { FakeTextFinder, newFakeTextFinder } from "./faketextfinder.js";
 import { newFakeNamedRange } from "./fakenamedrange.js";
+import { newFakeSpreadsheetTheme } from "./fakespreadsheettheme.js";
 
 // import { newFakeProtection } from "../common/fakeprotection.js";
 import { newFakeProtection } from "./fakeprotection.js";
@@ -42,108 +43,46 @@ export class FakeSpreadsheet {
     this.__file = DriveApp.getFileById(file.spreadsheetId);
 
     const props = [
-      "getSpreadsheetTheme",
-
       "getBandings",
       "getDataSources",
       "addCollaborator",
-      "updateMenu",
       "refreshAllDataSources",
-      "getSpreadsheetTimeZone",
-      "setSpreadsheetTimeZone",
-      "findSheet",
       "getCollaborators",
       "getChanges",
-      // "createTextFinder",
-
-      "findSheetByName",
       "removeCollaborator",
-      "getSpreadsheetLocale",
       "setAnonymousAccess",
-      "resetSpreadsheetTheme",
-      "renameActiveSheet",
       "removeNamedRange",
-      // "getRangeByName",
       "moveChartToObjectSheet",
-      "deleteRows",
       "addCollaborators",
-      "deleteSheet",
       "moveActiveSheet",
       "isAnonymousView",
-      "duplicateActiveSheet",
       "getFormUrl",
-      // "getNamedRanges",
-      "deleteActiveSheet",
-      // "setNamedRange",
-
-      "setSpreadsheetLocale",
       "getDataSourceSheets",
-      "setSpreadsheetTheme",
       "isAnonymousWrite",
       "addMenu",
       "removeMenu",
       "inputBox",
-      "setMaxIterativeCalculationCycles",
-      "getMaxIterativeCalculationCycles",
       "waitForAllDataExecutionsCompletion",
       "msgBox",
-      "toast",
-      "show",
-      "getIterativeCalculationConvergenceThreshold",
-      "setIterativeCalculationConvergenceThreshold",
-      "setRecalculationInterval",
-      "setIterativeCalculationEnabled",
-      "isIterativeCalculationEnabled",
       "insertSheetWithDataSourceTable",
       "getDataSourceRefreshSchedules",
       "getPredefinedSpreadsheetThemes",
-      "setName",
       "copy",
-      "rename",
       "isReadable",
       "isWritable",
-      "getSelection",
-      "getActiveRangeList",
-      "deleteRow",
-      "hideRow",
-      "appendRow",
       "getSheetProtection",
-      "unhideRow",
-      "insertRowsAfter",
-      "revealRow",
       "setSheetPermissions",
-      "insertColumnAfter",
-      "setFrozenColumns",
-      "getFrozenRows",
-      "setFrozenRows",
       "isRowHiddenByFilter",
-      "insertRowsBefore",
-      "isRowHiddenByUser",
       "setActiveCell",
       "getSheetValues",
       "setSheetProtection",
       "getDataSourceTables",
-      "insertColumnsAfter",
-      "hideColumn",
-      "autoResizeColumn",
-      "getFrozenColumns",
-      "unhideColumn",
-      "insertColumnsBefore",
       "getDataSourceFormulas",
       "getSheetPermissions",
-      "insertColumnBefore",
-
-      "isColumnHiddenByUser",
       "getRangeList",
-      "insertRowBefore",
-      "insertRowAfter",
-
-      "revealColumn",
       "getActiveCell",
       "getDataSourcePivotTables",
-      "deleteColumns",
       "getActiveSelection",
-      "deleteColumn",
       "getImages",
       "find",
       "getBlob",
@@ -462,6 +401,365 @@ export class FakeSpreadsheet {
 
   getRecalculationInterval() {
     return this.__getMetaProps("properties.autoRecalc").properties.autoRecalc;
+  }
+
+  setSpreadsheetLocale(locale) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.setSpreadsheetLocale");
+    if (nargs !== 1) matchThrow();
+    this.__meta.properties.locale = locale;
+    return this;
+  }
+
+  getSpreadsheetLocale() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.getSpreadsheetLocale");
+    if (nargs) matchThrow();
+    return this.__meta.properties.locale;
+  }
+
+  setSpreadsheetTimeZone(timezone) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.setSpreadsheetTimeZone");
+    if (nargs !== 1) matchThrow();
+    this.__meta.properties.timeZone = timezone;
+    return this;
+  }
+
+  getSpreadsheetTimeZone() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.getSpreadsheetTimeZone");
+    if (nargs) matchThrow();
+    return this.__meta.properties.timeZone;
+  }
+
+  setIterativeCalculationEnabled(enabled) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.setIterativeCalculationEnabled");
+    if (nargs !== 1) matchThrow();
+    if (!this.__meta.properties.iterativeCalculationSettings) this.__meta.properties.iterativeCalculationSettings = {};
+    this.__meta.properties.iterativeCalculationSettings.maxIterativeCalculationCycles = enabled ? (this.__meta.properties.iterativeCalculationSettings.maxIterativeCalculationCycles || 50) : 0;
+    return this;
+  }
+
+  isIterativeCalculationEnabled() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.isIterativeCalculationEnabled");
+    if (nargs) matchThrow();
+    return (this.__meta.properties.iterativeCalculationSettings?.maxIterativeCalculationCycles || 0) > 0;
+  }
+
+  setMaxIterativeCalculationCycles(cycles) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.setMaxIterativeCalculationCycles");
+    if (nargs !== 1) matchThrow();
+    if (!this.__meta.properties.iterativeCalculationSettings) this.__meta.properties.iterativeCalculationSettings = {};
+    this.__meta.properties.iterativeCalculationSettings.maxIterativeCalculationCycles = cycles;
+    return this;
+  }
+
+  getMaxIterativeCalculationCycles() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.getMaxIterativeCalculationCycles");
+    if (nargs) matchThrow();
+    return this.__meta.properties.iterativeCalculationSettings?.maxIterativeCalculationCycles || 50;
+  }
+
+  setIterativeCalculationConvergenceThreshold(threshold) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.setIterativeCalculationConvergenceThreshold");
+    if (nargs !== 1) matchThrow();
+    if (!this.__meta.properties.iterativeCalculationSettings) this.__meta.properties.iterativeCalculationSettings = {};
+    this.__meta.properties.iterativeCalculationSettings.convergenceThreshold = threshold;
+    return this;
+  }
+
+  getIterativeCalculationConvergenceThreshold() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.getIterativeCalculationConvergenceThreshold");
+    if (nargs) matchThrow();
+    return this.__meta.properties.iterativeCalculationSettings?.convergenceThreshold || 0.05;
+  }
+
+  setRecalculationInterval(interval) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.setRecalculationInterval");
+    if (nargs !== 1) matchThrow();
+    this.__meta.properties.autoRecalc = interval;
+    return this;
+  }
+
+  setFrozenRows(rows) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.setFrozenRows");
+    if (nargs !== 1) matchThrow();
+    this.getActiveSheet().setFrozenRows(rows);
+    return this;
+  }
+
+  getFrozenRows() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.getFrozenRows");
+    if (nargs) matchThrow();
+    return this.getActiveSheet().getFrozenRows();
+  }
+
+  setFrozenColumns(columns) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.setFrozenColumns");
+    if (nargs !== 1) matchThrow();
+    this.getActiveSheet().setFrozenColumns(columns);
+    return this;
+  }
+
+  getFrozenColumns() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.getFrozenColumns");
+    if (nargs) matchThrow();
+    return this.getActiveSheet().getFrozenColumns();
+  }
+
+  unhideColumn(range) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.unhideColumn");
+    if (nargs !== 1) matchThrow();
+    this.getActiveSheet().unhideColumn(range);
+    return this;
+  }
+
+  unhideRow(range) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.unhideRow");
+    if (nargs !== 1) matchThrow();
+    this.getActiveSheet().unhideRow(range);
+    return this;
+  }
+
+  getActiveRangeList() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.getActiveRangeList");
+    if (nargs) matchThrow();
+    return this.getActiveSheet().getActiveRangeList();
+  }
+
+  getSelection() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.getSelection");
+    if (nargs) matchThrow();
+    const rangeList = this.getActiveRangeList() || this.getActiveSheet().getRangeList([this.getActiveRange().getA1Notation()]);
+    return {
+      getActiveRange: () => this.getActiveRange(),
+      getActiveRangeList: () => rangeList,
+      getActiveSheet: () => this.getActiveSheet(),
+      getCurrentCell: () => this.getCurrentCell()
+    };
+  }
+
+  toast(msg, title, timeout) {
+    return this;
+  }
+
+  show(userInterface) {
+    return this;
+  }
+
+  updateMenu(name, menu) {
+    return this;
+  }
+
+  getSpreadsheetTheme() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.getSpreadsheetTheme");
+    if (nargs) matchThrow();
+    if (!this.__theme) {
+      this.__theme = newFakeSpreadsheetTheme(this.__meta.properties.spreadsheetTheme);
+    }
+    return this.__theme;
+  }
+
+  setSpreadsheetTheme(theme) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.setSpreadsheetTheme");
+    if (nargs !== 1) matchThrow();
+    this.__theme = theme;
+    return this;
+  }
+
+  resetSpreadsheetTheme() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.resetSpreadsheetTheme");
+    if (nargs) matchThrow();
+    this.__theme = newFakeSpreadsheetTheme();
+    return this.__theme;
+  }
+
+  deleteRow(rowPosition) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.deleteRow");
+    if (nargs !== 1) matchThrow();
+    this.getActiveSheet().deleteRow(rowPosition);
+    return this;
+  }
+
+  deleteRows(rowPosition, howMany) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.deleteRows");
+    if (nargs !== 2) matchThrow();
+    this.getActiveSheet().deleteRows(rowPosition, howMany);
+    return this;
+  }
+
+  hideRow(row) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.hideRow");
+    if (nargs !== 1) matchThrow();
+    this.getActiveSheet().hideRow(row);
+    return this;
+  }
+
+  appendRow(rowContents) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.appendRow");
+    if (nargs !== 1) matchThrow();
+    this.getActiveSheet().appendRow(rowContents);
+    return this;
+  }
+
+  insertRowsAfter(afterPosition, howMany) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.insertRowsAfter");
+    if (nargs < 1 || nargs > 2) matchThrow();
+    this.getActiveSheet().insertRowsAfter(afterPosition, howMany || 1);
+    return this;
+  }
+
+  revealRow(row) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.revealRow");
+    if (nargs !== 1) matchThrow();
+    this.getActiveSheet().unhideRow(row);
+    return this;
+  }
+
+  insertColumnAfter(afterPosition) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.insertColumnAfter");
+    if (nargs !== 1) matchThrow();
+    this.getActiveSheet().insertColumnsAfter(afterPosition, 1);
+    return this;
+  }
+
+  isRowHiddenByUser(rowPosition) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.isRowHiddenByUser");
+    if (nargs !== 1) matchThrow();
+    return this.getActiveSheet().isRowHiddenByUser(rowPosition);
+  }
+
+  insertRowsBefore(beforePosition, howMany) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.insertRowsBefore");
+    if (nargs < 1 || nargs > 2) matchThrow();
+    this.getActiveSheet().insertRowsBefore(beforePosition, howMany || 1);
+    return this;
+  }
+
+  insertColumnsAfter(afterPosition, howMany) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.insertColumnsAfter");
+    if (nargs < 1 || nargs > 2) matchThrow();
+    this.getActiveSheet().insertColumnsAfter(afterPosition, howMany || 1);
+    return this;
+  }
+
+  hideColumn(column) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.hideColumn");
+    if (nargs !== 1) matchThrow();
+    this.getActiveSheet().hideColumn(column);
+    return this;
+  }
+
+  autoResizeColumn(columnPosition) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.autoResizeColumn");
+    if (nargs !== 1) matchThrow();
+    this.getActiveSheet().autoResizeColumn(columnPosition);
+    return this;
+  }
+
+  insertColumnsBefore(beforePosition, howMany) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.insertColumnsBefore");
+    if (nargs < 1 || nargs > 2) matchThrow();
+    this.getActiveSheet().insertColumnsBefore(beforePosition, howMany || 1);
+    return this;
+  }
+
+  insertColumnBefore(beforePosition) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.insertColumnBefore");
+    if (nargs !== 1) matchThrow();
+    this.getActiveSheet().insertColumnsBefore(beforePosition, 1);
+    return this;
+  }
+
+  isColumnHiddenByUser(columnPosition) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.isColumnHiddenByUser");
+    if (nargs !== 1) matchThrow();
+    return this.getActiveSheet().isColumnHiddenByUser(columnPosition);
+  }
+
+  insertRowBefore(beforePosition) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.insertRowBefore");
+    if (nargs !== 1) matchThrow();
+    this.getActiveSheet().insertRowsBefore(beforePosition, 1);
+    return this;
+  }
+
+  insertRowAfter(afterPosition) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.insertRowAfter");
+    if (nargs !== 1) matchThrow();
+    this.getActiveSheet().insertRowsAfter(afterPosition, 1);
+    return this;
+  }
+
+  revealColumn(column) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.revealColumn");
+    if (nargs !== 1) matchThrow();
+    this.getActiveSheet().unhideColumn(column);
+    return this;
+  }
+
+  deleteColumns(columnPosition, howMany) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.deleteColumns");
+    if (nargs !== 2) matchThrow();
+    this.getActiveSheet().deleteColumns(columnPosition, howMany);
+    return this;
+  }
+
+  deleteColumn(columnPosition) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.deleteColumn");
+    if (nargs !== 1) matchThrow();
+    this.getActiveSheet().deleteColumn(columnPosition);
+    return this;
+  }
+
+  rename(newName) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.rename");
+    if (nargs !== 1) matchThrow();
+    this.__meta.properties.title = newName;
+    return this;
+  }
+
+  setName(name) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.setName");
+    if (nargs !== 1) matchThrow();
+    return this.rename(name);
+  }
+
+  renameActiveSheet(newName) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.renameActiveSheet");
+    if (nargs !== 1) matchThrow();
+    this.getActiveSheet().setName(newName);
+    return this;
+  }
+
+  duplicateActiveSheet() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.duplicateActiveSheet");
+    if (nargs) matchThrow();
+    const sheet = this.getActiveSheet();
+    const newName = "Copy of " + sheet.getName();
+    return this.insertSheet(newName);
+  }
+
+  deleteActiveSheet() {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.deleteActiveSheet");
+    if (nargs) matchThrow();
+    return this.deleteSheet(this.getActiveSheet());
+  }
+
+  deleteSheet(sheet) {
+    const { nargs, matchThrow } = signatureArgs(arguments, "Spreadsheet.deleteSheet");
+    if (nargs !== 1) matchThrow();
+    const id = sheet.getSheetId();
+    this.__meta.sheets = this.__meta.sheets.filter(s => s.properties.sheetId !== id);
+    if (this.__activeSheet && this.__activeSheet.getSheetId() === id) {
+      this.__activeSheet = this.getSheets()[0];
+    }
+    return this;
+  }
+
+  findSheetByName(name) {
+    return this.getSheetByName(name);
+  }
+
+  findSheet(name) {
+    return this.getSheetByName(name);
   }
 
   /**

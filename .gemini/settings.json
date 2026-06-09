@@ -9,7 +9,7 @@
     "omlx": {
       "command": "node",
       "args": [
-        "/Users/brucemcpherson/.gemini/antigravity-cli/scratch/omlx_mcp_server.js"
+        "/Users/brucemcpherson/Documents/repos/gas-fakes/tools/omlx_mcp_server.cjs"
       ]
     }
   }

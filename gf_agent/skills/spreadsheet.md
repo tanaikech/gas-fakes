@@ -321,21 +321,30 @@ Supported Methods:
 - `getContainer()`
 - `getRanges()`
 - `removeRange(Range)`
+- `reverseCategories()`
 - `setBackgroundColor(String)`
 - `setChartType(ChartType)`
 - `setColors(String)`
 - `setHiddenDimensionStrategy(ChartHiddenDimensionStrategy)`
 - `setLegendPosition(Position)`
+- `setLegendTextStyle(TextStyle)`
 - `setMergeStrategy(ChartMergeStrategy)`
 - `setNumHeaders(Integer)`
 - `setOption(String,Object)`
+- `setPointStyle(PointStyle)`
 - `setPosition(Integer,Integer,Integer,Integer)`
 - `setRange(Number,Number)`
 - `setStacked()`
 - `setTitle(String)`
+- `setTitleTextStyle(TextStyle)`
 - `setTransposeRowsAndColumns(Boolean)`
+- `setXAxisTextStyle(TextStyle)`
 - `setXAxisTitle(String)`
+- `setXAxisTitleTextStyle(TextStyle)`
+- `setYAxisTextStyle(TextStyle)`
 - `setYAxisTitle(String)`
+- `setYAxisTitleTextStyle(TextStyle)`
+- `useLogScale()`
 
 ## Class: EmbeddedBarChartBuilder
 
@@ -356,11 +365,14 @@ Supported Methods:
 - `getContainer()`
 - `getRanges()`
 - `removeRange(Range)`
+- `reverseCategories()`
+- `reverseDirection()`
 - `setBackgroundColor(String)`
 - `setChartType(ChartType)`
 - `setColors(String)`
 - `setHiddenDimensionStrategy(ChartHiddenDimensionStrategy)`
 - `setLegendPosition(Position)`
+- `setLegendTextStyle(TextStyle)`
 - `setMergeStrategy(ChartMergeStrategy)`
 - `setNumHeaders(Integer)`
 - `setOption(String,Object)`
@@ -368,9 +380,15 @@ Supported Methods:
 - `setRange(Number,Number)`
 - `setStacked()`
 - `setTitle(String)`
+- `setTitleTextStyle(TextStyle)`
 - `setTransposeRowsAndColumns(Boolean)`
+- `setXAxisTextStyle(TextStyle)`
 - `setXAxisTitle(String)`
+- `setXAxisTitleTextStyle(TextStyle)`
+- `setYAxisTextStyle(TextStyle)`
 - `setYAxisTitle(String)`
+- `setYAxisTitleTextStyle(TextStyle)`
+- `useLogScale()`
 
 ## Class: EmbeddedChart
 
@@ -427,11 +445,13 @@ Supported Methods:
 - `getContainer()`
 - `getRanges()`
 - `removeRange(Range)`
+- `reverseCategories()`
 - `setBackgroundColor(String)`
 - `setChartType(ChartType)`
 - `setColors(String)`
 - `setHiddenDimensionStrategy(ChartHiddenDimensionStrategy)`
 - `setLegendPosition(Position)`
+- `setLegendTextStyle(TextStyle)`
 - `setMergeStrategy(ChartMergeStrategy)`
 - `setNumHeaders(Integer)`
 - `setOption(String,Object)`
@@ -439,9 +459,15 @@ Supported Methods:
 - `setRange(Number,Number)`
 - `setStacked()`
 - `setTitle(String)`
+- `setTitleTextStyle(TextStyle)`
 - `setTransposeRowsAndColumns(Boolean)`
+- `setXAxisTextStyle(TextStyle)`
 - `setXAxisTitle(String)`
+- `setXAxisTitleTextStyle(TextStyle)`
+- `setYAxisTextStyle(TextStyle)`
 - `setYAxisTitle(String)`
+- `setYAxisTitleTextStyle(TextStyle)`
+- `useLogScale()`
 
 ## Class: EmbeddedComboChartBuilder
 
@@ -462,11 +488,13 @@ Supported Methods:
 - `getContainer()`
 - `getRanges()`
 - `removeRange(Range)`
+- `reverseCategories()`
 - `setBackgroundColor(String)`
 - `setChartType(ChartType)`
 - `setColors(String)`
 - `setHiddenDimensionStrategy(ChartHiddenDimensionStrategy)`
 - `setLegendPosition(Position)`
+- `setLegendTextStyle(TextStyle)`
 - `setMergeStrategy(ChartMergeStrategy)`
 - `setNumHeaders(Integer)`
 - `setOption(String,Object)`
@@ -474,9 +502,15 @@ Supported Methods:
 - `setRange(Number,Number)`
 - `setStacked()`
 - `setTitle(String)`
+- `setTitleTextStyle(TextStyle)`
 - `setTransposeRowsAndColumns(Boolean)`
+- `setXAxisTextStyle(TextStyle)`
 - `setXAxisTitle(String)`
+- `setXAxisTitleTextStyle(TextStyle)`
+- `setYAxisTextStyle(TextStyle)`
 - `setYAxisTitle(String)`
+- `setYAxisTitleTextStyle(TextStyle)`
+- `useLogScale()`
 
 ## Class: EmbeddedHistogramChartBuilder
 
@@ -497,11 +531,13 @@ Supported Methods:
 - `getContainer()`
 - `getRanges()`
 - `removeRange(Range)`
+- `reverseCategories()`
 - `setBackgroundColor(String)`
 - `setChartType(ChartType)`
 - `setColors(String)`
 - `setHiddenDimensionStrategy(ChartHiddenDimensionStrategy)`
 - `setLegendPosition(Position)`
+- `setLegendTextStyle(TextStyle)`
 - `setMergeStrategy(ChartMergeStrategy)`
 - `setNumHeaders(Integer)`
 - `setOption(String,Object)`
@@ -509,9 +545,15 @@ Supported Methods:
 - `setRange(Number,Number)`
 - `setStacked()`
 - `setTitle(String)`
+- `setTitleTextStyle(TextStyle)`
 - `setTransposeRowsAndColumns(Boolean)`
+- `setXAxisTextStyle(TextStyle)`
 - `setXAxisTitle(String)`
+- `setXAxisTitleTextStyle(TextStyle)`
+- `setYAxisTextStyle(TextStyle)`
 - `setYAxisTitle(String)`
+- `setYAxisTitleTextStyle(TextStyle)`
+- `useLogScale()`
 
 ## Class: EmbeddedLineChartBuilder
 
@@ -532,20 +574,29 @@ Supported Methods:
 - `getContainer()`
 - `getRanges()`
 - `removeRange(Range)`
+- `reverseCategories()`
 - `setBackgroundColor(String)`
 - `setChartType(ChartType)`
 - `setColors(String)`
 - `setHiddenDimensionStrategy(ChartHiddenDimensionStrategy)`
 - `setLegendPosition(Position)`
+- `setLegendTextStyle(TextStyle)`
 - `setMergeStrategy(ChartMergeStrategy)`
 - `setNumHeaders(Integer)`
 - `setOption(String,Object)`
+- `setPointStyle(PointStyle)`
 - `setPosition(Integer,Integer,Integer,Integer)`
 - `setRange(Number,Number)`
 - `setTitle(String)`
+- `setTitleTextStyle(TextStyle)`
 - `setTransposeRowsAndColumns(Boolean)`
+- `setXAxisTextStyle(TextStyle)`
 - `setXAxisTitle(String)`
+- `setXAxisTitleTextStyle(TextStyle)`
+- `setYAxisTextStyle(TextStyle)`
 - `setYAxisTitle(String)`
+- `setYAxisTitleTextStyle(TextStyle)`
+- `useLogScale()`
 
 ## Class: EmbeddedPieChartBuilder
 
@@ -566,17 +617,20 @@ Supported Methods:
 - `getContainer()`
 - `getRanges()`
 - `removeRange(Range)`
+- `reverseCategories()`
 - `set3D()`
 - `setBackgroundColor(String)`
 - `setChartType(ChartType)`
 - `setColors(String)`
 - `setHiddenDimensionStrategy(ChartHiddenDimensionStrategy)`
 - `setLegendPosition(Position)`
+- `setLegendTextStyle(TextStyle)`
 - `setMergeStrategy(ChartMergeStrategy)`
 - `setNumHeaders(Integer)`
 - `setOption(String,Object)`
 - `setPosition(Integer,Integer,Integer,Integer)`
 - `setTitle(String)`
+- `setTitleTextStyle(TextStyle)`
 - `setTransposeRowsAndColumns(Boolean)`
 
 ## Class: Filter
@@ -1075,18 +1129,32 @@ Supported Methods:
 - `addViewer(String)`
 - `addViewer(User)`
 - `addViewers(String)`
+- `appendRow(Object)`
+- `autoResizeColumn(Integer)`
 - `createDeveloperMetadataFinder()`
 - `createTextFinder(String)`
+- `deleteActiveSheet()`
+- `deleteColumn(Integer)`
+- `deleteColumns(Integer,Integer)`
+- `deleteRow(Integer)`
+- `deleteRows(Integer,Integer)`
+- `deleteSheet(Sheet)`
+- `duplicateActiveSheet()`
 - `getActiveRange()`
+- `getActiveRangeList()`
 - `getActiveSheet()`
 - `getColumnWidth(Integer)`
 - `getCurrentCell()`
 - `getDataRange()`
 - `getDeveloperMetadata()`
 - `getEditors()`
+- `getFrozenColumns()`
+- `getFrozenRows()`
 - `getId()`
+- `getIterativeCalculationConvergenceThreshold()`
 - `getLastColumn()`
 - `getLastRow()`
+- `getMaxIterativeCalculationCycles()`
 - `getName()`
 - `getNamedRanges()`
 - `getNumSheets()`
@@ -1096,22 +1164,42 @@ Supported Methods:
 - `getRangeByName(String)`
 - `getRecalculationInterval()`
 - `getRowHeight(Integer)`
+- `getSelection()`
 - `getSheetById(Integer)`
 - `getSheetByName(String)`
 - `getSheetId()`
 - `getSheetName()`
 - `getSheets()`
+- `getSpreadsheetLocale()`
+- `getSpreadsheetTheme()`
+- `getSpreadsheetTimeZone()`
 - `getUrl()`
 - `getViewers()`
+- `hideColumn(Range)`
+- `hideRow(Range)`
+- `insertColumnAfter(Integer)`
+- `insertColumnBefore(Integer)`
+- `insertColumnsAfter(Integer,Integer)`
+- `insertColumnsBefore(Integer,Integer)`
 - `insertDataSourceSheet(DataSourceSpec)`
 - `insertImage(BlobSource,Integer,Integer,Integer,Integer)`
 - `insertImage(BlobSource,Integer,Integer)`
 - `insertImage(String,Integer,Integer,Integer,Integer)`
 - `insertImage(String,Integer,Integer)`
+- `insertRowAfter(Integer)`
+- `insertRowBefore(Integer)`
+- `insertRowsAfter(Integer,Integer)`
+- `insertRowsBefore(Integer,Integer)`
+- `isColumnHiddenByUser(Integer)`
+- `isIterativeCalculationEnabled()`
+- `isRowHiddenByUser(Integer)`
 - `removeEditor(String)`
 - `removeEditor(User)`
 - `removeViewer(String)`
 - `removeViewer(User)`
+- `rename(String)`
+- `renameActiveSheet(String)`
+- `resetSpreadsheetTheme()`
 - `setActiveRange(Range)`
 - `setActiveRangeList(RangeList)`
 - `setActiveSelection(Range)`
@@ -1120,8 +1208,24 @@ Supported Methods:
 - `setActiveSheet(Sheet)`
 - `setColumnWidth(Integer,Integer)`
 - `setCurrentCell(Range)`
+- `setFrozenColumns(Integer)`
+- `setFrozenRows(Integer)`
+- `setIterativeCalculationConvergenceThreshold(Number)`
+- `setIterativeCalculationEnabled(Boolean)`
+- `setMaxIterativeCalculationCycles(Integer)`
 - `setNamedRange(String,Range)`
+- `setRecalculationInterval(RecalculationInterval)`
 - `setRowHeight(Integer,Integer)`
+- `setSpreadsheetLocale(String)`
+- `setSpreadsheetTheme(SpreadsheetTheme)`
+- `setSpreadsheetTimeZone(String)`
+- `show(Object)`
+- `toast(String,String,Number)`
+- `toast(String,String)`
+- `toast(String)`
+- `unhideColumn(Range)`
+- `unhideRow(Range)`
+- `updateMenu(String,Object)`
 
 ## Class: SpreadsheetApp
 
@@ -1155,6 +1259,16 @@ Supported Methods:
 - `setActiveSheet(Sheet)`
 - `setActiveSpreadsheet(Spreadsheet)`
 - `setCurrentCell(Range)`
+
+## Class: SpreadsheetTheme
+
+Supported Methods:
+- `getConcreteColor(ThemeColorType)`
+- `getFontFamily()`
+- `getThemeColors()`
+- `setConcreteColor(ThemeColorType,Color)`
+- `setConcreteColor(ThemeColorType,Integer,Integer,Integer)`
+- `setFontFamily(String)`
 
 ## Class: TextFinder
 

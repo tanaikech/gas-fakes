@@ -64,6 +64,8 @@ import { testSlidesGroup } from "./testslidesgroup.js";
 import { testSlidesImage } from "./testslidesimage.js";
 import { testSheetsChart } from "./testsheetschart.js";
 import { testSheetsRange } from "./testsheetsrange.js";
+import { testSheetsFormatting } from "./testsheetsformatting.js";
+import { testSheetsBasic } from "./testsheetsbasic.js";
 import { testDocsImages } from "./testdocsimages.js";
 import { testSandbox } from "./testsandbox.js";
 import { testDocsStyles } from "./testdocsstyles.js";
@@ -105,6 +107,12 @@ export const testFakes = () => {
 
   console.log("\n----Test HtmlService----");
   testHtmlService(pack);
+
+  console.log("\n----Test Sheets Basic----");
+  testSheetsBasic(pack);
+
+  console.log("\n----Test Sheets Formatting----");
+  testSheetsFormatting(pack);
 
   console.log("\n----Test multi-backend----");
   testMultiBackend(pack);

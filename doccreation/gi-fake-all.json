@@ -27278,8 +27278,8 @@
             "description": "Reverses the drawing of series in the domain axis. For vertical-range charts (such as line,\narea or column charts), this means the horizontal axis is drawn from right to left. For\nhorizontal-range charts (such as bar charts), this means the vertical axis is drawn from top to\nbottom. For pie charts, this means the slices are drawn counterclockwise.",
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L295"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L314"
           },
           {
             "method": "setBackgroundColor(String)",
@@ -27288,7 +27288,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L296"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L323"
           },
           {
             "method": "setChartType(ChartType)",
@@ -27306,7 +27306,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L298"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L325"
           },
           {
             "method": "setHiddenDimensionStrategy(ChartHiddenDimensionStrategy)",
@@ -27324,7 +27324,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L304"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L331"
           },
           {
             "method": "setLegendTextStyle(TextStyle)",
@@ -27332,8 +27332,8 @@
             "description": "Sets the text style of the chart legend.",
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L309"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
           },
           {
             "method": "setMergeStrategy(ChartMergeStrategy)",
@@ -27368,8 +27368,8 @@
             "description": "Sets the style for points in the line. By default, points have no particular styles, and only\nthe line is visible.",
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L310"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L343"
           },
           {
             "method": "setPosition(Integer,Integer,Integer,Integer)",
@@ -27387,7 +27387,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L312"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L348"
           },
           {
             "method": "setStacked()",
@@ -27396,7 +27396,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L321"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L357"
           },
           {
             "method": "setTitle(String)",
@@ -27405,7 +27405,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L329"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L365"
           },
           {
             "method": "setTitleTextStyle(TextStyle)",
@@ -27413,8 +27413,8 @@
             "description": "Sets the text style of the chart title.",
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L335"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L371"
           },
           {
             "method": "setTransposeRowsAndColumns(Boolean)",
@@ -27431,8 +27431,8 @@
             "description": "Sets the horizontal axis text style.",
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L377"
           },
           {
             "method": "setXAxisTitle(String)",
@@ -27441,7 +27441,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L338"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L383"
           },
           {
             "method": "setXAxisTitleTextStyle(TextStyle)",
@@ -27449,8 +27449,8 @@
             "description": "Sets the horizontal axis title text style.",
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L344"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L389"
           },
           {
             "method": "setYAxisTextStyle(TextStyle)",
@@ -27458,8 +27458,8 @@
             "description": "Sets the vertical axis text style.",
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L345"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L395"
           },
           {
             "method": "setYAxisTitle(String)",
@@ -27468,7 +27468,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L347"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L401"
           },
           {
             "method": "setYAxisTitleTextStyle(TextStyle)",
@@ -27476,8 +27476,8 @@
             "description": "Sets the vertical axis title text style.",
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L353"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L407"
           },
           {
             "method": "useLogScale()",
@@ -27485,8 +27485,8 @@
             "description": "Makes the range axis into a logarithmic scale (requires all values to be positive). The range\naxis are the vertical axis for vertical charts (such as line, area, or column) and the\nhorizontal axis for horizontal charts (such as bar).",
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L354"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L413"
           }
         ]
       },
@@ -27646,8 +27646,8 @@
             "description": "Reverses the drawing of series in the domain axis. For vertical-range charts (such as line,\narea or column charts), this means the horizontal axis is drawn from right to left. For\nhorizontal-range charts (such as bar charts), this means the vertical axis is drawn from top to\nbottom. For pie charts, this means the slices are drawn counterclockwise.",
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L295"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L314"
           },
           {
             "method": "reverseDirection()",
@@ -27655,8 +27655,8 @@
             "description": "Reverses the direction in which the bars grow along the horizontal axis. By default, values\ngrow from left to right. Calling this method causes them to grow from right to left.",
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L382"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L319"
           },
           {
             "method": "setBackgroundColor(String)",
@@ -27665,7 +27665,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L296"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L323"
           },
           {
             "method": "setChartType(ChartType)",
@@ -27683,7 +27683,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L298"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L325"
           },
           {
             "method": "setHiddenDimensionStrategy(ChartHiddenDimensionStrategy)",
@@ -27701,7 +27701,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L304"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L331"
           },
           {
             "method": "setLegendTextStyle(TextStyle)",
@@ -27709,8 +27709,8 @@
             "description": "Sets the text style of the chart legend.",
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L309"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
           },
           {
             "method": "setMergeStrategy(ChartMergeStrategy)",
@@ -27755,7 +27755,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L312"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L348"
           },
           {
             "method": "setStacked()",
@@ -27764,7 +27764,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L321"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L357"
           },
           {
             "method": "setTitle(String)",
@@ -27773,7 +27773,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L329"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L365"
           },
           {
             "method": "setTitleTextStyle(TextStyle)",
@@ -27781,8 +27781,8 @@
             "description": "Sets the text style of the chart title.",
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L335"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L371"
           },
           {
             "method": "setTransposeRowsAndColumns(Boolean)",
@@ -27799,8 +27799,8 @@
             "description": "Sets the horizontal axis text style.",
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L377"
           },
           {
             "method": "setXAxisTitle(String)",
@@ -27809,7 +27809,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L338"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L383"
           },
           {
             "method": "setXAxisTitleTextStyle(TextStyle)",
@@ -27817,8 +27817,8 @@
             "description": "Sets the horizontal axis title text style.",
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L344"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L389"
           },
           {
             "method": "setYAxisTextStyle(TextStyle)",
@@ -27826,8 +27826,8 @@
             "description": "Sets the vertical axis text style.",
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L345"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L395"
           },
           {
             "method": "setYAxisTitle(String)",
@@ -27836,7 +27836,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L347"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L401"
           },
           {
             "method": "setYAxisTitleTextStyle(TextStyle)",
@@ -27844,8 +27844,8 @@
             "description": "Sets the vertical axis title text style.",
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L353"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L407"
           },
           {
             "method": "useLogScale()",
@@ -27853,8 +27853,8 @@
             "description": "Makes the range axis into a logarithmic scale (requires all values to be positive). The range\naxis are the vertical axis for vertical charts (such as line, area, or column) and the\nhorizontal axis for horizontal charts (such as bar).",
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L354"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L413"
           }
         ]
       },
@@ -28130,8 +28130,8 @@
             "description": "Reverses the drawing of series in the domain axis. For vertical-range charts (such as line,\narea or column charts), this means the horizontal axis is drawn from right to left. For\nhorizontal-range charts (such as bar charts), this means the vertical axis is drawn from top to\nbottom. For pie charts, this means the slices are drawn counterclockwise.",
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L295"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L314"
           },
           {
             "method": "setBackgroundColor(String)",
@@ -28140,7 +28140,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L296"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L323"
           },
           {
             "method": "setChartType(ChartType)",
@@ -28158,7 +28158,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L298"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L325"
           },
           {
             "method": "setHiddenDimensionStrategy(ChartHiddenDimensionStrategy)",
@@ -28176,7 +28176,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L304"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L331"
           },
           {
             "method": "setLegendTextStyle(TextStyle)",
@@ -28184,8 +28184,8 @@
             "description": "Sets the text style of the chart legend.",
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L309"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
           },
           {
             "method": "setMergeStrategy(ChartMergeStrategy)",
@@ -28230,7 +28230,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L312"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L348"
           },
           {
             "method": "setStacked()",
@@ -28239,7 +28239,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L321"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L357"
           },
           {
             "method": "setTitle(String)",
@@ -28248,7 +28248,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L329"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L365"
           },
           {
             "method": "setTitleTextStyle(TextStyle)",
@@ -28256,8 +28256,8 @@
             "description": "Sets the text style of the chart title.",
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L335"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L371"
           },
           {
             "method": "setTransposeRowsAndColumns(Boolean)",
@@ -28274,8 +28274,8 @@
             "description": "Sets the horizontal axis text style.",
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L377"
           },
           {
             "method": "setXAxisTitle(String)",
@@ -28284,7 +28284,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L338"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L383"
           },
           {
             "method": "setXAxisTitleTextStyle(TextStyle)",
@@ -28292,8 +28292,8 @@
             "description": "Sets the horizontal axis title text style.",
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L344"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L389"
           },
           {
             "method": "setYAxisTextStyle(TextStyle)",
@@ -28301,8 +28301,8 @@
             "description": "Sets the vertical axis text style.",
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L345"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L395"
           },
           {
             "method": "setYAxisTitle(String)",
@@ -28311,7 +28311,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L347"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L401"
           },
           {
             "method": "setYAxisTitleTextStyle(TextStyle)",
@@ -28319,8 +28319,8 @@
             "description": "Sets the vertical axis title text style.",
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L353"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L407"
           },
           {
             "method": "useLogScale()",
@@ -28328,8 +28328,8 @@
             "description": "Makes the range axis into a logarithmic scale (requires all values to be positive). The range\naxis are the vertical axis for vertical charts (such as line, area, or column) and the\nhorizontal axis for horizontal charts (such as bar).",
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L354"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L413"
           }
         ]
       },
@@ -28489,8 +28489,8 @@
             "description": "Reverses the drawing of series in the domain axis. For vertical-range charts (such as line,\narea or column charts), this means the horizontal axis is drawn from right to left. For\nhorizontal-range charts (such as bar charts), this means the vertical axis is drawn from top to\nbottom. For pie charts, this means the slices are drawn counterclockwise.",
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L295"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L314"
           },
           {
             "method": "setBackgroundColor(String)",
@@ -28499,7 +28499,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L296"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L323"
           },
           {
             "method": "setChartType(ChartType)",
@@ -28517,7 +28517,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L298"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L325"
           },
           {
             "method": "setHiddenDimensionStrategy(ChartHiddenDimensionStrategy)",
@@ -28535,7 +28535,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L304"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L331"
           },
           {
             "method": "setLegendTextStyle(TextStyle)",
@@ -28543,8 +28543,8 @@
             "description": "Sets the text style of the chart legend.",
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L309"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
           },
           {
             "method": "setMergeStrategy(ChartMergeStrategy)",
@@ -28589,7 +28589,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L312"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L348"
           },
           {
             "method": "setStacked()",
@@ -28598,7 +28598,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L321"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L357"
           },
           {
             "method": "setTitle(String)",
@@ -28607,7 +28607,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L329"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L365"
           },
           {
             "method": "setTitleTextStyle(TextStyle)",
@@ -28615,8 +28615,8 @@
             "description": "Sets the text style of the chart title.",
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L335"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L371"
           },
           {
             "method": "setTransposeRowsAndColumns(Boolean)",
@@ -28633,8 +28633,8 @@
             "description": "Sets the horizontal axis text style.",
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L377"
           },
           {
             "method": "setXAxisTitle(String)",
@@ -28643,7 +28643,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L338"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L383"
           },
           {
             "method": "setXAxisTitleTextStyle(TextStyle)",
@@ -28651,8 +28651,8 @@
             "description": "Sets the horizontal axis title text style.",
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L344"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L389"
           },
           {
             "method": "setYAxisTextStyle(TextStyle)",
@@ -28660,8 +28660,8 @@
             "description": "Sets the vertical axis text style.",
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L345"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L395"
           },
           {
             "method": "setYAxisTitle(String)",
@@ -28670,7 +28670,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L347"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L401"
           },
           {
             "method": "setYAxisTitleTextStyle(TextStyle)",
@@ -28678,8 +28678,8 @@
             "description": "Sets the vertical axis title text style.",
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L353"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L407"
           },
           {
             "method": "useLogScale()",
@@ -28687,8 +28687,8 @@
             "description": "Makes the range axis into a logarithmic scale (requires all values to be positive). The range\naxis are the vertical axis for vertical charts (such as line, area, or column) and the\nhorizontal axis for horizontal charts (such as bar).",
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L354"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L413"
           }
         ]
       },
@@ -28848,8 +28848,8 @@
             "description": "Reverses the drawing of series in the domain axis. For vertical-range charts (such as line,\narea or column charts), this means the horizontal axis is drawn from right to left. For\nhorizontal-range charts (such as bar charts), this means the vertical axis is drawn from top to\nbottom. For pie charts, this means the slices are drawn counterclockwise.",
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L295"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L314"
           },
           {
             "method": "set3D()",
@@ -28858,7 +28858,7 @@
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L355"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L422"
           },
           {
             "method": "setBackgroundColor(String)",
@@ -28867,7 +28867,7 @@
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L296"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L323"
           },
           {
             "method": "setChartType(ChartType)",
@@ -28885,7 +28885,7 @@
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L298"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L325"
           },
           {
             "method": "setHiddenDimensionStrategy(ChartHiddenDimensionStrategy)",
@@ -28903,7 +28903,7 @@
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L304"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L331"
           },
           {
             "method": "setLegendTextStyle(TextStyle)",
@@ -28911,8 +28911,8 @@
             "description": "Sets the text style of the chart legend.",
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L309"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
           },
           {
             "method": "setMergeStrategy(ChartMergeStrategy)",
@@ -28957,7 +28957,7 @@
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L329"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L365"
           },
           {
             "method": "setTitleTextStyle(TextStyle)",
@@ -28965,8 +28965,8 @@
             "description": "Sets the text style of the chart title.",
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L335"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L371"
           },
           {
             "method": "setTransposeRowsAndColumns(Boolean)",
@@ -29135,8 +29135,8 @@
             "description": "Reverses the drawing of series in the domain axis. For vertical-range charts (such as line,\narea or column charts), this means the horizontal axis is drawn from right to left. For\nhorizontal-range charts (such as bar charts), this means the vertical axis is drawn from top to\nbottom. For pie charts, this means the slices are drawn counterclockwise.",
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L295"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L314"
           },
           {
             "method": "setBackgroundColor(String)",
@@ -29145,7 +29145,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L296"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L323"
           },
           {
             "method": "setChartType(ChartType)",
@@ -29163,7 +29163,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L298"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L325"
           },
           {
             "method": "setHiddenDimensionStrategy(ChartHiddenDimensionStrategy)",
@@ -29181,7 +29181,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L304"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L331"
           },
           {
             "method": "setLegendTextStyle(TextStyle)",
@@ -29189,8 +29189,8 @@
             "description": "Sets the text style of the chart legend.",
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L309"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
           },
           {
             "method": "setMergeStrategy(ChartMergeStrategy)",
@@ -29235,7 +29235,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L312"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L348"
           },
           {
             "method": "setStacked()",
@@ -29244,7 +29244,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L321"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L357"
           },
           {
             "method": "setTitle(String)",
@@ -29253,7 +29253,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L329"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L365"
           },
           {
             "method": "setTitleTextStyle(TextStyle)",
@@ -29261,8 +29261,8 @@
             "description": "Sets the text style of the chart title.",
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L335"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L371"
           },
           {
             "method": "setTransposeRowsAndColumns(Boolean)",
@@ -29279,8 +29279,8 @@
             "description": "Sets the horizontal axis text style.",
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L377"
           },
           {
             "method": "setXAxisTitle(String)",
@@ -29289,7 +29289,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L338"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L383"
           },
           {
             "method": "setXAxisTitleTextStyle(TextStyle)",
@@ -29297,8 +29297,8 @@
             "description": "Sets the horizontal axis title text style.",
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L344"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L389"
           },
           {
             "method": "setYAxisTextStyle(TextStyle)",
@@ -29306,8 +29306,8 @@
             "description": "Sets the vertical axis text style.",
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L345"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L395"
           },
           {
             "method": "setYAxisTitle(String)",
@@ -29316,7 +29316,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L347"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L401"
           },
           {
             "method": "setYAxisTitleTextStyle(TextStyle)",
@@ -29324,8 +29324,8 @@
             "description": "Sets the vertical axis title text style.",
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L353"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L407"
           },
           {
             "method": "useLogScale()",
@@ -29333,8 +29333,8 @@
             "description": "Makes the range axis into a logarithmic scale (requires all values to be positive). The range\naxis are the vertical axis for vertical charts (such as line, area, or column) and the\nhorizontal axis for horizontal charts (such as bar).",
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L354"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L413"
           }
         ]
       },
@@ -29494,8 +29494,8 @@
             "description": "Reverses the drawing of series in the domain axis. For vertical-range charts (such as line,\narea or column charts), this means the horizontal axis is drawn from right to left. For\nhorizontal-range charts (such as bar charts), this means the vertical axis is drawn from top to\nbottom. For pie charts, this means the slices are drawn counterclockwise.",
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L295"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L314"
           },
           {
             "method": "setBackgroundColor(String)",
@@ -29504,7 +29504,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L296"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L323"
           },
           {
             "method": "setChartType(ChartType)",
@@ -29522,7 +29522,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L298"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L325"
           },
           {
             "method": "setCurveStyle(CurveStyle)",
@@ -29549,7 +29549,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L304"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L331"
           },
           {
             "method": "setLegendTextStyle(TextStyle)",
@@ -29557,8 +29557,8 @@
             "description": "Sets the text style of the chart legend.",
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L309"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
           },
           {
             "method": "setMergeStrategy(ChartMergeStrategy)",
@@ -29593,8 +29593,8 @@
             "description": "Sets the style for points in the line. By default, points have no particular styles, and only\nthe line is visible.",
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L310"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L343"
           },
           {
             "method": "setPosition(Integer,Integer,Integer,Integer)",
@@ -29612,7 +29612,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L312"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L348"
           },
           {
             "method": "setTitle(String)",
@@ -29621,7 +29621,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L329"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L365"
           },
           {
             "method": "setTitleTextStyle(TextStyle)",
@@ -29629,8 +29629,8 @@
             "description": "Sets the text style of the chart title.",
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L335"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L371"
           },
           {
             "method": "setTransposeRowsAndColumns(Boolean)",
@@ -29647,8 +29647,8 @@
             "description": "Sets the horizontal axis text style.",
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L377"
           },
           {
             "method": "setXAxisTitle(String)",
@@ -29657,7 +29657,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L338"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L383"
           },
           {
             "method": "setXAxisTitleTextStyle(TextStyle)",
@@ -29665,8 +29665,8 @@
             "description": "Sets the horizontal axis title text style.",
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L344"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L389"
           },
           {
             "method": "setYAxisTextStyle(TextStyle)",
@@ -29674,8 +29674,8 @@
             "description": "Sets the vertical axis text style.",
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L345"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L395"
           },
           {
             "method": "setYAxisTitle(String)",
@@ -29684,7 +29684,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L347"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L401"
           },
           {
             "method": "setYAxisTitleTextStyle(TextStyle)",
@@ -29692,8 +29692,8 @@
             "description": "Sets the vertical axis title text style.",
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L353"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L407"
           },
           {
             "method": "useLogScale()",
@@ -29701,8 +29701,8 @@
             "description": "Makes the range axis into a logarithmic scale (requires all values to be positive). The range\naxis are the vertical axis for vertical charts (such as line, area, or column) and the\nhorizontal axis for horizontal charts (such as bar).",
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L354"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L413"
           }
         ]
       },
@@ -36290,7 +36290,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "This spreadsheet, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L261"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L200"
           },
           {
             "method": "addDeveloperMetadata(String,DeveloperMetadataVisibility)",
@@ -36299,7 +36299,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L261"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L200"
           },
           {
             "method": "addDeveloperMetadata(String,String)",
@@ -36308,7 +36308,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L261"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L200"
           },
           {
             "method": "addDeveloperMetadata(String,String,DeveloperMetadataVisibility)",
@@ -36317,7 +36317,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L261"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L200"
           },
           {
             "method": "addEditor(String)",
@@ -36326,7 +36326,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "This Spreadsheet, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L235"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L174"
           },
           {
             "method": "addEditor(User)",
@@ -36335,7 +36335,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "This Spreadsheet, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L235"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L174"
           },
           {
             "method": "addEditors(String)",
@@ -36344,7 +36344,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "This Spreadsheet, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L245"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L184"
           },
           {
             "method": "addMenu(String,Object)",
@@ -36362,7 +36362,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "This Spreadsheet, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L230"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L169"
           },
           {
             "method": "addViewer(User)",
@@ -36371,7 +36371,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "This Spreadsheet, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L230"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L169"
           },
           {
             "method": "addViewers(String)",
@@ -36380,7 +36380,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "This Spreadsheet, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L240"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L179"
           },
           {
             "method": "appendRow(Object)",
@@ -36388,8 +36388,8 @@
             "description": "Appends a row to the bottom of the current data region in the sheet. If a cell's content begins\nwith =, it's interpreted as a formula.",
             "returnType": "Sheet",
             "returnDescription": "The sheet, useful for method chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L595"
           },
           {
             "method": "autoResizeColumn(Integer)",
@@ -36397,8 +36397,8 @@
             "description": "Sets the width of the given column to fit its contents.",
             "returnType": "Sheet",
             "returnDescription": "The sheet, useful for method chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L650"
           },
           {
             "method": "copy(String)",
@@ -36416,7 +36416,7 @@
             "returnType": "DeveloperMetadataFinder",
             "returnDescription": "A developer metadata finder to search for metadata in the scope of this spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L302"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L241"
           },
           {
             "method": "createTextFinder(String)",
@@ -36425,7 +36425,7 @@
             "returnType": "TextFinder",
             "returnDescription": "The TextFinder for the spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L57"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L1068"
           },
           {
             "method": "deleteActiveSheet()",
@@ -36433,8 +36433,8 @@
             "description": "Deletes the currently active sheet.",
             "returnType": "Sheet",
             "returnDescription": "The new active sheet.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L740"
           },
           {
             "method": "deleteColumn(Integer)",
@@ -36442,8 +36442,8 @@
             "description": "Deletes the column at the given column position.",
             "returnType": "Sheet",
             "returnDescription": "The sheet, useful for method chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L698"
           },
           {
             "method": "deleteColumns(Integer,Integer)",
@@ -36451,8 +36451,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L698"
           },
           {
             "method": "deleteRow(Integer)",
@@ -36460,8 +36460,8 @@
             "description": "Deletes the row at the given row position.",
             "returnType": "Sheet",
             "returnDescription": "The sheet, useful for method chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L574"
           },
           {
             "method": "deleteRows(Integer,Integer)",
@@ -36469,8 +36469,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L581"
           },
           {
             "method": "deleteSheet(Sheet)",
@@ -36478,8 +36478,8 @@
             "description": "Deletes the specified sheet.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L743"
           },
           {
             "method": "duplicateActiveSheet()",
@@ -36487,8 +36487,8 @@
             "description": "Duplicates the active sheet and makes it the active sheet.",
             "returnType": "Sheet",
             "returnDescription": "The new sheet.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L732"
           },
           {
             "method": "getActiveCell()",
@@ -36506,7 +36506,7 @@
             "returnType": "Range",
             "returnDescription": "The active range.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L106"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L132"
           },
           {
             "method": "getActiveRangeList()",
@@ -36514,8 +36514,8 @@
             "description": "Returns the list of active ranges in the active sheet or null if there are no active\nranges.",
             "returnType": "RangeList|null",
             "returnDescription": "The list of active ranges.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L521"
           },
           {
             "method": "getActiveSheet()",
@@ -36524,7 +36524,7 @@
             "returnType": "Sheet",
             "returnDescription": "The active sheet in the spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L194"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L133"
           },
           {
             "method": "getAs(String)",
@@ -36560,7 +36560,7 @@
             "returnType": "Integer",
             "returnDescription": "Column width in pixels.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L492"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L790"
           },
           {
             "method": "getCurrentCell()",
@@ -36569,7 +36569,7 @@
             "returnType": "Range|null",
             "returnDescription": "The current cell.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L197"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L136"
           },
           {
             "method": "getDataRange()",
@@ -36578,7 +36578,7 @@
             "returnType": "Range",
             "returnDescription": "A range consisting of all the data in the spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L483"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L781"
           },
           {
             "method": "getDataSourceFormulas()",
@@ -36641,7 +36641,7 @@
             "returnType": "DeveloperMetadata[]",
             "returnDescription": "The developer metadata associated with this range.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L344"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L283"
           },
           {
             "method": "getEditors()",
@@ -36650,7 +36650,7 @@
             "returnType": "User[]",
             "returnDescription": "An array of users with edit permission.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L362"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L301"
           },
           {
             "method": "getFormUrl()",
@@ -36667,8 +36667,8 @@
             "description": "Returns the number of frozen columns.",
             "returnType": "Integer",
             "returnDescription": "The number of frozen columns.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L501"
           },
           {
             "method": "getFrozenRows()",
@@ -36676,8 +36676,8 @@
             "description": "Returns the number of frozen rows.",
             "returnType": "Integer",
             "returnDescription": "The number of frozen rows.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L488"
           },
           {
             "method": "getId()",
@@ -36686,7 +36686,7 @@
             "returnType": "String",
             "returnDescription": "The unique ID (or key) for the spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L322"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L261"
           },
           {
             "method": "getImages()",
@@ -36703,8 +36703,8 @@
             "description": "Returns the threshold value used during iterative calculation. When the results of successive\ncalculation differ by less than this value, the iterative calculation stops.",
             "returnType": "Number",
             "returnDescription": "The convergence threshold.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L468"
           },
           {
             "method": "getLastColumn()",
@@ -36713,7 +36713,7 @@
             "returnType": "Integer",
             "returnDescription": "The last column of the sheet that contains content.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L468"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L766"
           },
           {
             "method": "getLastRow()",
@@ -36722,7 +36722,7 @@
             "returnType": "Integer",
             "returnDescription": "The last row of the sheet that contains content.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L476"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L774"
           },
           {
             "method": "getMaxIterativeCalculationCycles()",
@@ -36730,8 +36730,8 @@
             "description": "Returns the maximum number of iterations to use during iterative calculation.",
             "returnType": "Integer",
             "returnDescription": "The maximum number of calculation iterations.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L454"
           },
           {
             "method": "getName()",
@@ -36740,7 +36740,7 @@
             "returnType": "String",
             "returnDescription": "The name of the spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L75"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L736"
           },
           {
             "method": "getNamedRanges()",
@@ -36749,7 +36749,7 @@
             "returnType": "NamedRange[]",
             "returnDescription": "An array of all the named ranges in the spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L75"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L1077"
           },
           {
             "method": "getNumSheets()",
@@ -36758,7 +36758,7 @@
             "returnType": "Integer",
             "returnDescription": "The number of sheets in the spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L532"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L830"
           },
           {
             "method": "getOwner()",
@@ -36767,7 +36767,7 @@
             "returnType": "User",
             "returnDescription": "The owner of the document, or null if the document is in a shared drive.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L371"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L310"
           },
           {
             "method": "getPredefinedSpreadsheetThemes()",
@@ -36785,7 +36785,7 @@
             "returnType": "Protection[]",
             "returnDescription": "An array of objects representing all protected ranges or sheets in the spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L390"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L329"
           },
           {
             "method": "getRange(String)",
@@ -36794,7 +36794,7 @@
             "returnType": "Range",
             "returnDescription": "The range at the location designated.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L66"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L82"
           },
           {
             "method": "getRangeByName(String)",
@@ -36803,7 +36803,7 @@
             "returnType": "Range",
             "returnDescription": "The range of cells with the given name.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L66"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L1128"
           },
           {
             "method": "getRangeList(String)",
@@ -36821,7 +36821,7 @@
             "returnType": "RecalculationInterval",
             "returnDescription": "The calculation interval for this spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L458"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L397"
           },
           {
             "method": "getRowHeight(Integer)",
@@ -36830,7 +36830,7 @@
             "returnType": "Integer",
             "returnDescription": "Row height in pixels.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L502"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L800"
           },
           {
             "method": "getSelection()",
@@ -36838,8 +36838,8 @@
             "description": "Returns the current Selection in the spreadsheet.",
             "returnType": "Selection",
             "returnDescription": "The current selection.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L527"
           },
           {
             "method": "getSheetById(Integer)",
@@ -36848,7 +36848,7 @@
             "returnType": "Sheet|null",
             "returnDescription": "The sheet with the given ID or null if no sheet is found.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L449"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L388"
           },
           {
             "method": "getSheetByName(String)",
@@ -36857,7 +36857,7 @@
             "returnType": "Sheet|null",
             "returnDescription": "The sheet with the given name, or null if no sheet is found.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L565"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L758"
           },
           {
             "method": "getSheetId()",
@@ -36866,7 +36866,7 @@
             "returnType": "Integer",
             "returnDescription": "An ID for the sheet unique to the spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L558"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L749"
           },
           {
             "method": "getSheetName()",
@@ -36875,7 +36875,7 @@
             "returnType": "String",
             "returnDescription": "The name of the sheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L584"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L882"
           },
           {
             "method": "getSheetValues(Integer,Integer,Integer,Integer)",
@@ -36893,7 +36893,7 @@
             "returnType": "Sheet[]",
             "returnDescription": "An array of all the sheets in the spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L331"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L270"
           },
           {
             "method": "getSpreadsheetLocale()",
@@ -36901,8 +36901,8 @@
             "description": "Gets the spreadsheet locale.",
             "returnType": "String",
             "returnDescription": "The spreadsheet locale.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L413"
           },
           {
             "method": "getSpreadsheetTheme()",
@@ -36910,8 +36910,8 @@
             "description": "Returns the current theme of the spreadsheet, or null if no theme is applied.",
             "returnType": "SpreadsheetTheme|null",
             "returnDescription": "The current applied theme.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L551"
           },
           {
             "method": "getSpreadsheetTimeZone()",
@@ -36919,8 +36919,8 @@
             "description": "Gets the time zone for the spreadsheet.",
             "returnType": "String",
             "returnDescription": "The time zone, specified in \"long\" format (for example, \"America/New_York\", as listed\n    by Joda.org).",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L426"
           },
           {
             "method": "getUrl()",
@@ -36929,7 +36929,7 @@
             "returnType": "String",
             "returnDescription": "The URL for the given spreadsheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L548"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L846"
           },
           {
             "method": "getViewers()",
@@ -36938,7 +36938,7 @@
             "returnType": "User[]",
             "returnDescription": "An array of users with view or comment permission.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L354"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L293"
           },
           {
             "method": "hideColumn(Range)",
@@ -36946,8 +36946,8 @@
             "description": "Hides the column or columns in the given range.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L507"
           },
           {
             "method": "hideRow(Range)",
@@ -36955,8 +36955,8 @@
             "description": "Hides the rows in the given range.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L514"
           },
           {
             "method": "insertColumnAfter(Integer)",
@@ -36964,8 +36964,8 @@
             "description": "Inserts a column after the given column position.",
             "returnType": "Sheet",
             "returnDescription": "The sheet, useful for method chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L616"
           },
           {
             "method": "insertColumnBefore(Integer)",
@@ -36973,8 +36973,8 @@
             "description": "Inserts a column before the given column position.",
             "returnType": "Sheet",
             "returnDescription": "The sheet, useful for method chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L664"
           },
           {
             "method": "insertColumnsAfter(Integer,Integer)",
@@ -36982,8 +36982,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L619"
           },
           {
             "method": "insertColumnsBefore(Integer,Integer)",
@@ -36991,8 +36991,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L657"
           },
           {
             "method": "insertDataSourceSheet(DataSourceSpec)",
@@ -37001,7 +37001,7 @@
             "returnType": "DataSourceSheet",
             "returnDescription": "The new data source sheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L708"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L1006"
           },
           {
             "method": "insertImage(BlobSource,Integer,Integer)",
@@ -37010,7 +37010,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L224"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L163"
           },
           {
             "method": "insertImage(BlobSource,Integer,Integer,Integer,Integer)",
@@ -37019,7 +37019,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L224"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L163"
           },
           {
             "method": "insertImage(String,Integer,Integer)",
@@ -37028,7 +37028,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L224"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L163"
           },
           {
             "method": "insertImage(String,Integer,Integer,Integer,Integer)",
@@ -37037,7 +37037,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L224"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L163"
           },
           {
             "method": "insertRowAfter(Integer)",
@@ -37045,8 +37045,8 @@
             "description": "Inserts a row after the given row position.",
             "returnType": "Sheet",
             "returnDescription": "The sheet, useful for method chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L684"
           },
           {
             "method": "insertRowBefore(Integer)",
@@ -37054,8 +37054,8 @@
             "description": "Inserts a row before the given row position.",
             "returnType": "Sheet",
             "returnDescription": "The sheet, useful for method chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L677"
           },
           {
             "method": "insertRowsAfter(Integer,Integer)",
@@ -37063,8 +37063,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L602"
           },
           {
             "method": "insertRowsBefore(Integer,Integer)",
@@ -37072,8 +37072,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L629"
           },
           {
             "method": "insertSheet()",
@@ -37082,7 +37082,7 @@
             "returnType": "Sheet",
             "returnDescription": "The new sheet.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L97"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L67"
           },
           {
             "method": "insertSheet(Integer)",
@@ -37091,7 +37091,7 @@
             "returnType": "Sheet",
             "returnDescription": "The new sheet.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L97"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L67"
           },
           {
             "method": "insertSheet(Integer,Object)",
@@ -37100,7 +37100,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L97"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L67"
           },
           {
             "method": "insertSheet(Object)",
@@ -37109,7 +37109,7 @@
             "returnType": "Sheet",
             "returnDescription": "The new sheet.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L97"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L67"
           },
           {
             "method": "insertSheet(String)",
@@ -37118,7 +37118,7 @@
             "returnType": "Sheet",
             "returnDescription": "The new sheet.",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L97"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L67"
           },
           {
             "method": "insertSheet(String,Integer)",
@@ -37127,7 +37127,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L97"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L67"
           },
           {
             "method": "insertSheet(String,Integer,Object)",
@@ -37136,7 +37136,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L97"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L67"
           },
           {
             "method": "insertSheet(String,Object)",
@@ -37145,7 +37145,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "in progress",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L97"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L67"
           },
           {
             "method": "insertSheetWithDataSourceTable(DataSourceSpec)",
@@ -37162,8 +37162,8 @@
             "description": "Returns whether the given column is hidden by the user.",
             "returnType": "Boolean",
             "returnDescription": "true if the column is hidden, false otherwise.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L671"
           },
           {
             "method": "isIterativeCalculationEnabled()",
@@ -37171,8 +37171,8 @@
             "description": "Returns whether iterative calculation is activated in this spreadsheet.",
             "returnType": "Boolean",
             "returnDescription": "true if iterative calculation is activated, false otherwise.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L440"
           },
           {
             "method": "isRowHiddenByFilter(Integer)",
@@ -37189,8 +37189,8 @@
             "description": "Returns whether the given row is hidden by the user.",
             "returnType": "Boolean",
             "returnDescription": "true if the row is hidden, false otherwise.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L623"
           },
           {
             "method": "moveActiveSheet(Integer)",
@@ -37226,7 +37226,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "This Spreadsheet, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L255"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L194"
           },
           {
             "method": "removeEditor(User)",
@@ -37235,7 +37235,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "This Spreadsheet, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L255"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L194"
           },
           {
             "method": "removeMenu(String)",
@@ -37262,7 +37262,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "This Spreadsheet for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L250"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L189"
           },
           {
             "method": "removeViewer(User)",
@@ -37271,7 +37271,7 @@
             "returnType": "Spreadsheet",
             "returnDescription": "This Spreadsheet for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L250"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L189"
           },
           {
             "method": "rename(String)",
@@ -37279,8 +37279,8 @@
             "description": "Renames the document.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L712"
           },
           {
             "method": "renameActiveSheet(String)",
@@ -37288,8 +37288,8 @@
             "description": "Renames the current active sheet to the given new name.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L725"
           },
           {
             "method": "resetSpreadsheetTheme()",
@@ -37297,8 +37297,8 @@
             "description": "Removes the applied theme and sets the default theme on the spreadsheet.",
             "returnType": "SpreadsheetTheme",
             "returnDescription": "The default theme.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L567"
           },
           {
             "method": "setActiveRange(Range)",
@@ -37307,7 +37307,7 @@
             "returnType": "Range",
             "returnDescription": "The newly active range.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L159"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L98"
           },
           {
             "method": "setActiveRangeList(RangeList)",
@@ -37316,7 +37316,7 @@
             "returnType": "RangeList",
             "returnDescription": "The newly selected list of ranges.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L172"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L111"
           },
           {
             "method": "setActiveSelection(Range)",
@@ -37325,7 +37325,7 @@
             "returnType": "Range",
             "returnDescription": "The newly active range.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L180"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L119"
           },
           {
             "method": "setActiveSelection(String)",
@@ -37334,7 +37334,7 @@
             "returnType": "Range",
             "returnDescription": "The newly active range.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L180"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L119"
           },
           {
             "method": "setActiveSheet(Sheet)",
@@ -37343,7 +37343,7 @@
             "returnType": "Sheet",
             "returnDescription": "The active sheet.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L212"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L151"
           },
           {
             "method": "setActiveSheet(Sheet,Boolean)",
@@ -37352,7 +37352,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L212"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L151"
           },
           {
             "method": "setColumnWidth(Integer,Integer)",
@@ -37361,7 +37361,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L588"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L886"
           },
           {
             "method": "setCurrentCell(Range)",
@@ -37370,7 +37370,7 @@
             "returnType": "Range",
             "returnDescription": "The newly set current cell.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L201"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L140"
           },
           {
             "method": "setFrozenColumns(Integer)",
@@ -37378,8 +37378,8 @@
             "description": "Freezes the given number of columns. If zero, no columns are frozen.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L494"
           },
           {
             "method": "setFrozenRows(Integer)",
@@ -37387,8 +37387,8 @@
             "description": "Freezes the given number of rows. If zero, no rows are frozen.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L481"
           },
           {
             "method": "setIterativeCalculationConvergenceThreshold(Number)",
@@ -37396,8 +37396,8 @@
             "description": "Sets the minimum threshold value for iterative calculation. When the results of successive\ncalculation differ by less than this value, the iterative calculation stops. This value must be\nnon-negative, and defaults to 0.05.",
             "returnType": "Spreadsheet",
             "returnDescription": "This spreadsheet, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L460"
           },
           {
             "method": "setIterativeCalculationEnabled(Boolean)",
@@ -37405,8 +37405,8 @@
             "description": "Sets whether iterative calculation is activated in this spreadsheet. If the maximum number of\ncalculation cycles and convergence threshold have not previously been set when the calculation\nis activated, they default to 50 and 0.05 respectively. If either has been set previously, they\nretain their previous values.",
             "returnType": "Spreadsheet",
             "returnDescription": "This spreadsheet, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L432"
           },
           {
             "method": "setMaxIterativeCalculationCycles(Integer)",
@@ -37414,8 +37414,8 @@
             "description": "Sets the maximum number of calculation iterations that should be performed during iterative\ncalculation. This value must be between 1 and 10,000 (inclusive), and defaults to 50.",
             "returnType": "Spreadsheet",
             "returnDescription": "This spreadsheet, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L446"
           },
           {
             "method": "setNamedRange(String,Range)",
@@ -37424,7 +37424,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L77"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L1094"
           },
           {
             "method": "setRecalculationInterval(RecalculationInterval)",
@@ -37432,8 +37432,8 @@
             "description": "Sets how often this spreadsheet should recalculate.",
             "returnType": "Spreadsheet",
             "returnDescription": "This spreadsheet, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L474"
           },
           {
             "method": "setRowHeight(Integer,Integer)",
@@ -37442,7 +37442,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L599"
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L897"
           },
           {
             "method": "setSpreadsheetLocale(String)",
@@ -37450,8 +37450,8 @@
             "description": "Sets the spreadsheet locale.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L406"
           },
           {
             "method": "setSpreadsheetTheme(SpreadsheetTheme)",
@@ -37459,8 +37459,8 @@
             "description": "Sets a theme on the spreadsheet.",
             "returnType": "SpreadsheetTheme",
             "returnDescription": "The new current theme.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L560"
           },
           {
             "method": "setSpreadsheetTimeZone(String)",
@@ -37468,8 +37468,8 @@
             "description": "Sets the time zone for the spreadsheet.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L419"
           },
           {
             "method": "show(Object)",
@@ -37477,8 +37477,8 @@
             "description": "Displays a custom user interface component in a dialog centered in the user's browser's\nviewport. The server-side script's execution is not suspended. To communicate with the\nserver side, the user interface component must make asynchronous callbacks to the server-side\nscript.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L543"
           },
           {
             "method": "sort(Integer)",
@@ -37504,8 +37504,8 @@
             "description": "Shows a popup window in the lower right corner of the spreadsheet with the given message.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L539"
           },
           {
             "method": "toast(String,String)",
@@ -37513,8 +37513,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L539"
           },
           {
             "method": "toast(String,String,Number)",
@@ -37522,8 +37522,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L539"
           },
           {
             "method": "unhideColumn(Range)",
@@ -37531,8 +37531,8 @@
             "description": "Unhides the column in the given range.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L507"
           },
           {
             "method": "unhideRow(Range)",
@@ -37540,8 +37540,8 @@
             "description": "Unhides the row in the given range.",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L514"
           },
           {
             "method": "updateMenu(String,Object)",
@@ -37549,8 +37549,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheet.js#L547"
           },
           {
             "method": "waitForAllDataExecutionsCompletion(Integer)",
@@ -37797,8 +37797,8 @@
             "description": "Returns the concrete Color for a valid theme color type. Throws exception if the theme\ncolor type is not set in the current theme.",
             "returnType": "Color",
             "returnDescription": "Concrete color.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheettheme.js#L36"
           },
           {
             "method": "getFontFamily()",
@@ -37806,8 +37806,8 @@
             "description": "Returns the font family of the theme, or null if it's a null theme.",
             "returnType": "String|null",
             "returnDescription": "The theme font family.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheettheme.js#L16"
           },
           {
             "method": "getThemeColors()",
@@ -37815,8 +37815,8 @@
             "description": "Returns a list of all possible theme color types for the current theme.",
             "returnType": "ThemeColorType[]",
             "returnDescription": "A list of theme colors.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheettheme.js#L29"
           },
           {
             "method": "setConcreteColor(ThemeColorType,Color)",
@@ -37824,8 +37824,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheettheme.js#L46"
           },
           {
             "method": "setConcreteColor(ThemeColorType,Integer,Integer,Integer)",
@@ -37833,8 +37833,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheettheme.js#L46"
           },
           {
             "method": "setFontFamily(String)",
@@ -37842,8 +37842,8 @@
             "description": "Sets the font family for the theme.",
             "returnType": "SpreadsheetTheme",
             "returnDescription": "This theme, for chaining.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/spreadsheetapp/fakespreadsheettheme.js#L22"
           }
         ]
       },
