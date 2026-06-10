@@ -15,7 +15,7 @@ A data interchange object for Apps Script services.
 | [getDataAsString()](https://developers.google.com/apps-script/reference/base/blob#getDataAsString()) | Gets the data of this blob as a String with UTF-8 encoding. | String | The data as a string. | completed | [link](../src/services/utilities/fakeblob.js#L63) |
 | [getDataAsString(String)](https://developers.google.com/apps-script/reference/base/blob#getDataAsString(String)) | Gets the data of this blob as a string with the specified encoding. | String | The data as a string. | completed | [link](../src/services/utilities/fakeblob.js#L63) |
 | [getName()](https://developers.google.com/apps-script/reference/base/blob#getName()) | Gets the name of this blob. | String\|null | The name of this data, if known, or null. | completed | [link](../src/services/utilities/fakeblob.js#L55) |
-| [isGoogleType()](https://developers.google.com/apps-script/reference/base/blob#isGoogleType()) | Returns whether this blob is a Google Workspace file (Sheets, Docs, etc.). | Boolean | true if this blob is a Google Workspace file; false if not. | completed | [link](../src/services/utilities/fakeblob.js#L3) |
+| [isGoogleType()](https://developers.google.com/apps-script/reference/base/blob#isGoogleType()) | Returns whether this blob is a Google Workspace file (Sheets, Docs, etc.). | Boolean | true if this blob is a Google Workspace file; false if not. | completed | [link](../src/services/utilities/fakeblob.js#L59) |
 | [setBytes(Byte)](https://developers.google.com/apps-script/reference/base/blob#setBytes(Byte)) | Sets the data stored in this blob. | [Blob](#class-blob) | This blob, for chaining. | completed | [link](../src/services/utilities/fakeblob.js#L71) |
 | [setContentType(String)](https://developers.google.com/apps-script/reference/base/blob#setContentType(String)) | Sets the content type of the bytes in this blob. | [Blob](#class-blob) | This blob, for chaining. | completed | [link](../src/services/utilities/fakeblob.js#L76) |
 | [setContentTypeFromExtension()](https://developers.google.com/apps-script/reference/base/blob#setContentTypeFromExtension()) | Sets the content type of the bytes in this blob based on the file extension. The contentType is null if it cannot be guessed from its extension. | [Blob](#class-blob) | This blob, for chaining. | completed | [link](../src/services/utilities/fakeblob.js#L81) |
@@ -61,8 +61,8 @@ This class allows the developer to write to the Execution log and to Google Clou
 |--- |--- |--- |--- |--- |--- |
 | [clear()](https://developers.google.com/apps-script/reference/base/logger#clear()) | Clears the log. |  |  | completed | [link](../src/services/logger/fakelogger.js#L35) |
 | [getLog()](https://developers.google.com/apps-script/reference/base/logger#getLog()) | Returns a complete list of messages in the current log. This method can be used to save or email the entire log output generated during script execution. | String | the log from the logging console | completed | [link](../src/services/logger/fakelogger.js#L43) |
-| [log(Object)](https://developers.google.com/apps-script/reference/base/logger#log(Object)) | Writes the data to the log. The data can be a string, a JavaScript object, or an object with a message property. | [Logger](#class-logger) | the Logger, for chaining. | completed | [link](../src/services/logger/fakelogger.js#L19) |
-| [log(String,Object...)](https://developers.google.com/apps-script/reference/base/logger#log(String,Object...)) |  |  |  | completed | [link](../src/services/logger/fakelogger.js#L19) |
+| [log(Object)](https://developers.google.com/apps-script/reference/base/logger#log(Object)) | Writes the data to the log. The data can be a string, a JavaScript object, or an object with a message property. | [Logger](#class-logger) | the Logger, for chaining. | completed | [link](../src/services/logger/fakelogger.js#L53) |
+| [log(String,Object...)](https://developers.google.com/apps-script/reference/base/logger#log(String,Object...)) |  |  |  | completed | [link](../src/services/logger/fakelogger.js#L53) |
 
 ## Class: [Menu](https://developers.google.com/apps-script/reference/base/menu)
 
@@ -90,11 +90,11 @@ A color defined by red, green, blue color channels.
 
 | Method | Description | Return Type | Return Description | Status | Implementation |
 |--- |--- |--- |--- |--- |--- |
-| [asHexString()](https://developers.google.com/apps-script/reference/base/rgb-color#asHexString()) | Returns the color as a CSS-style 7 character hexadecimal string (#rrggbb) or 9 character hexadecimal string (#aarrggbb). | String | The hex representation of color. | completed | [link](../src/services/common/fakergbcolor.js#L35) |
-| [getBlue()](https://developers.google.com/apps-script/reference/base/rgb-color#getBlue()) | The blue channel of this color, as a number from 0 to 255. | Integer | The value of blue channel. | completed | [link](../src/services/common/fakergbcolor.js#L44) |
-| [getColorType()](https://developers.google.com/apps-script/reference/base/rgb-color#getColorType()) | Get the type of this color. | [ColorType](#enum-colortype) | The color type. | completed | [link](../src/services/common/fakergbcolor.js#L52) |
-| [getGreen()](https://developers.google.com/apps-script/reference/base/rgb-color#getGreen()) | The green channel of this color, as a number from 0 to 255. | Integer | The value of green channel. | completed | [link](../src/services/common/fakergbcolor.js#L60) |
-| [getRed()](https://developers.google.com/apps-script/reference/base/rgb-color#getRed()) | The red channel of this color, as a number from 0 to 255. | Integer | The value of red channel. | completed | [link](../src/services/common/fakergbcolor.js#L68) |
+| [asHexString()](https://developers.google.com/apps-script/reference/base/rgb-color#asHexString()) | Returns the color as a CSS-style 7 character hexadecimal string (#rrggbb) or 9 character hexadecimal string (#aarrggbb). | String | The hex representation of color. | completed | [link](../src/services/common/fakergbcolor.js#L39) |
+| [getBlue()](https://developers.google.com/apps-script/reference/base/rgb-color#getBlue()) | The blue channel of this color, as a number from 0 to 255. | Integer | The value of blue channel. | completed | [link](../src/services/common/fakergbcolor.js#L48) |
+| [getColorType()](https://developers.google.com/apps-script/reference/base/rgb-color#getColorType()) | Get the type of this color. | [ColorType](#enum-colortype) | The color type. | completed | [link](../src/services/common/fakergbcolor.js#L56) |
+| [getGreen()](https://developers.google.com/apps-script/reference/base/rgb-color#getGreen()) | The green channel of this color, as a number from 0 to 255. | Integer | The value of green channel. | completed | [link](../src/services/common/fakergbcolor.js#L64) |
+| [getRed()](https://developers.google.com/apps-script/reference/base/rgb-color#getRed()) | The red channel of this color, as a number from 0 to 255. | Integer | The value of red channel. | completed | [link](../src/services/common/fakergbcolor.js#L72) |
 
 ## Class: [Session](https://developers.google.com/apps-script/reference/base/session)
 
@@ -132,7 +132,7 @@ Representation of a user, suitable for scripting.
 
 | Method | Description | Return Type | Return Description | Status | Implementation |
 |--- |--- |--- |--- |--- |--- |
-| [getEmail()](https://developers.google.com/apps-script/reference/base/user#getEmail()) | Gets the user's email address, if available. If security policies do not allow access to the user's email address, this method returns a blank string. The circumstances in which the email address is available vary: for example, the user's email address is not available in any context that allows a script to run without that user's authorization, like a simple onOpen(e) or onEdit(e) trigger, a custom function in Google Sheets, or a web app deployed to "execute as me" (that is, authorized by the developer instead of the user). However, these restrictions generally do not apply if the developer runs the script themselves or belongs to the same Google Workspace domain as the user. | String | The user's email's address, or a blank string if security policies do not allow access to the user's email address. | completed | [link](../src/services/common/fakeuser.js#L5) |
+| [getEmail()](https://developers.google.com/apps-script/reference/base/user#getEmail()) | Gets the user's email address, if available. If security policies do not allow access to the user's email address, this method returns a blank string. The circumstances in which the email address is available vary: for example, the user's email address is not available in any context that allows a script to run without that user's authorization, like a simple onOpen(e) or onEdit(e) trigger, a custom function in Google Sheets, or a web app deployed to "execute as me" (that is, authorized by the developer instead of the user). However, these restrictions generally do not apply if the developer runs the script themselves or belongs to the same Google Workspace domain as the user. | String | The user's email's address, or a blank string if security policies do not allow access to the user's email address. | completed | [link](../src/services/common/fakeuser.js#L20) |
 
 ## Enum: [Button](https://developers.google.com/apps-script/reference/base/button)
 
@@ -152,7 +152,7 @@ An enum representing predetermined, localized sets of one or more dialog buttons
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| OK | A single "OK" button, indicating an informational message that can only be dismissed. | completed | [link](../src/services/enums/baseenums.js#L7) |
+| OK | A single "OK" button, indicating an informational message that can only be dismissed. | completed | [link](../src/services/enums/baseenums.js#L12) |
 | OK_CANCEL | An "OK" button and a "Cancel" button, allowing the user to either proceed with or halt an operation. | completed | [link](../src/services/enums/baseenums.js#L13) |
 | YES_NO | A "Yes" button and a "No" button, allowing the user to answer a yes/no question. | completed | [link](../src/services/enums/baseenums.js#L14) |
 | YES_NO_CANCEL | A "Yes" button, a "No" button, and a "Cancel" button, allowing the user to either answer a yes/no question or halt an operation. | completed | [link](../src/services/enums/baseenums.js#L15) |

@@ -28,7 +28,7 @@ Represents a calendar that the user owns or is subscribed to.
 | [getEventSeriesById(String)](https://developers.google.com/apps-script/reference/calendar/calendar#getEventSeriesById(String)) | Gets the event series with the given ID. If the ID given is for a single CalendarEvent, then a CalendarEventSeries is returned with a single event in the series. Note that if the event series belongs to a calendar other than the default calendar, this method must be called from that Calendar; calling CalendarApp.getEventSeriesById(iCalId) directly only returns an event series that exists in the default calendar. | [CalendarEventSeries](#class-calendareventseries) | The series with the given ID, or null if the series doesn't exist or the user cannot access it. | completed | [link](../src/services/calendarapp/fakecalendar.js#L299) |
 | [getEventsForDay(Date,Object)](https://developers.google.com/apps-script/reference/calendar/calendar#getEventsForDay(Date,Object)) |  |  |  | completed | [link](../src/services/calendarapp/fakecalendar.js#L237) |
 | [getEventsForDay(Date)](https://developers.google.com/apps-script/reference/calendar/calendar#getEventsForDay(Date)) | Gets all events that occur on a given day. | [CalendarEvent[]](#class-calendarevent) | the events that occur on the given date | completed | [link](../src/services/calendarapp/fakecalendar.js#L237) |
-| [getId()](https://developers.google.com/apps-script/reference/calendar/calendar#getId()) | Gets the ID of the calendar. The ID for a user's default calendar is their email address. | String | The ID of the calendar. | completed | [link](../src/services/calendarapp/fakecalendar.js#L20) |
+| [getId()](https://developers.google.com/apps-script/reference/calendar/calendar#getId()) | Gets the ID of the calendar. The ID for a user's default calendar is their email address. | String | The ID of the calendar. | completed | [link](../src/services/calendarapp/fakecalendar.js#L44) |
 | [getName()](https://developers.google.com/apps-script/reference/calendar/calendar#getName()) | Gets the name of the calendar. | String | This calendar's name. | completed | [link](../src/services/calendarapp/fakecalendar.js#L48) |
 | [getTimeZone()](https://developers.google.com/apps-script/reference/calendar/calendar#getTimeZone()) | Gets the time zone of the calendar. | String | The time zone, specified in "long" format (for example, "America/New_York", as listed by Joda.org). | completed | [link](../src/services/calendarapp/fakecalendar.js#L72) |
 | [isHidden()](https://developers.google.com/apps-script/reference/calendar/calendar#isHidden()) | Determines whether the calendar is hidden in the user interface. | Boolean | true if the calendar is hidden in the user interface; false if it isn't. | completed | [link](../src/services/calendarapp/fakecalendar.js#L96) |
@@ -82,7 +82,7 @@ Allows a script to read and update the user's Google Calendar. This class provid
 | [getTimeZone()](https://developers.google.com/apps-script/reference/calendar/calendar-app#getTimeZone()) | Gets the time zone of the calendar. | String | The time zone, specified in "long" format (for example, "America/New_York", as listed by Joda.org). | completed | [link](../src/services/calendarapp/fakecalendarapp.js#L172) |
 | [isHidden()](https://developers.google.com/apps-script/reference/calendar/calendar-app#isHidden()) | Determines whether the calendar is hidden in the user interface. | Boolean | true if the calendar is hidden in the user interface; false if it isn't. | completed | [link](../src/services/calendarapp/fakecalendarapp.js#L180) |
 | [isMyPrimaryCalendar()](https://developers.google.com/apps-script/reference/calendar/calendar-app#isMyPrimaryCalendar()) | Determines whether the calendar is the primary calendar for the effective user. | Boolean | true if the calendar is the default calendar for the effective user; false if it isn't. | completed | [link](../src/services/calendarapp/fakecalendarapp.js#L196) |
-| [isOwnedByMe()](https://developers.google.com/apps-script/reference/calendar/calendar-app#isOwnedByMe()) | Determines whether the calendar is owned by you. | Boolean | true if the calendar is owned by you; false if not. | completed | [link](../src/services/calendarapp/fakecalendarapp.js#L75) |
+| [isOwnedByMe()](https://developers.google.com/apps-script/reference/calendar/calendar-app#isOwnedByMe()) | Determines whether the calendar is owned by you. | Boolean | true if the calendar is owned by you; false if not. | completed | [link](../src/services/calendarapp/fakecalendarapp.js#L200) |
 | [isSelected()](https://developers.google.com/apps-script/reference/calendar/calendar-app#isSelected()) | Determines whether the calendar's events are displayed in the user interface. | Boolean | true if the calendar's events are displayed in the user interface; false if not | completed | [link](../src/services/calendarapp/fakecalendarapp.js#L188) |
 | [newRecurrence()](https://developers.google.com/apps-script/reference/calendar/calendar-app#newRecurrence()) | Creates a new recurrence object, which can be used to create rules for event recurrence. | [EventRecurrence](#class-eventrecurrence) | a new recurrence object with no rules set (behaves as a weekly recurrence) | completed | [link](../src/services/calendarapp/fakecalendarapp.js#L26) |
 | [setColor(String)](https://developers.google.com/apps-script/reference/calendar/calendar-app#setColor(String)) | Sets the color of the calendar. | [Calendar](#class-calendar) | This calendar for chaining. | completed | [link](../src/services/calendarapp/fakecalendarapp.js#L148) |
@@ -309,17 +309,17 @@ An enum representing the named event colors available in the Calendar service.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| BLUE | Blue ("9"), referred to as "Blueberry" in the Calendar UI. | completed | [link](../src/services/enums/calendarenums.js#L5) |
+| BLUE | Blue ("9"), referred to as "Blueberry" in the Calendar UI. | completed | [link](../src/services/enums/calendarenums.js#L30) |
 | CYAN | Cyan ("7"), referred to as "Peacock" in the Calendar UI. | completed | [link](../src/services/enums/calendarenums.js#L31) |
-| GRAY | Gray ("8"), referred to as "Graphite" in the Calendar UI. | completed | [link](../src/services/enums/calendarenums.js#L9) |
-| GREEN | Green ("10"), referred to as "Basil" in the Calendar UI. | completed | [link](../src/services/enums/calendarenums.js#L10) |
+| GRAY | Gray ("8"), referred to as "Graphite" in the Calendar UI. | completed | [link](../src/services/enums/calendarenums.js#L32) |
+| GREEN | Green ("10"), referred to as "Basil" in the Calendar UI. | completed | [link](../src/services/enums/calendarenums.js#L33) |
 | MAUVE | Mauve ("3"), referred to as "Grape" in the Calendar UI. | completed | [link](../src/services/enums/calendarenums.js#L34) |
-| ORANGE | Orange ("6"), referred to as "Tangerine" in the Calendar UI. | completed | [link](../src/services/enums/calendarenums.js#L15) |
+| ORANGE | Orange ("6"), referred to as "Tangerine" in the Calendar UI. | completed | [link](../src/services/enums/calendarenums.js#L35) |
 | PALE_BLUE | Pale Blue ("1"), referred to as "Lavender" in the Calendar UI. | completed | [link](../src/services/enums/calendarenums.js#L36) |
 | PALE_GREEN | Pale Green ("2"), referred to as "Sage" in the Calendar UI. | completed | [link](../src/services/enums/calendarenums.js#L37) |
 | PALE_RED | Pale Red ("4"), referred to as "Flamingo" in the Calendar UI. | completed | [link](../src/services/enums/calendarenums.js#L38) |
-| RED | Red ("11"), referred to as "Tomato" in the Calendar UI. | completed | [link](../src/services/enums/calendarenums.js#L19) |
-| YELLOW | Yellow ("5"), referred to as "Banana" in the Calendar UI. | completed | [link](../src/services/enums/calendarenums.js#L25) |
+| RED | Red ("11"), referred to as "Tomato" in the Calendar UI. | completed | [link](../src/services/enums/calendarenums.js#L39) |
+| YELLOW | Yellow ("5"), referred to as "Banana" in the Calendar UI. | completed | [link](../src/services/enums/calendarenums.js#L40) |
 
 ## Enum: [EventTransparency](https://developers.google.com/apps-script/reference/calendar/event-transparency)
 
@@ -362,7 +362,7 @@ An enum representing the visibility of an event.
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
 | CONFIDENTIAL | The event is private. This value is provided for compatibility reasons. | completed | [link](../src/services/enums/calendarenums.js#L77) |
-| DEFAULT | Uses the default visibility for events on the calendar. | completed | [link](../src/services/enums/calendarenums.js#L48) |
+| DEFAULT | Uses the default visibility for events on the calendar. | completed | [link](../src/services/enums/calendarenums.js#L78) |
 | PRIVATE | The event is private and only event attendees may view event details. | completed | [link](../src/services/enums/calendarenums.js#L79) |
 | PUBLIC | The event is public and event details are visible to all readers of the calendar. | completed | [link](../src/services/enums/calendarenums.js#L80) |
 

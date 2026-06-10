@@ -19,9 +19,9 @@ const { Utils } = await import(utilsPath);
 const docEnumsPath = path.resolve(__dirname, '../src/services/enums/docsenums.js');
 const { Attribute } = await import(docEnumsPath);
 
-const dynamicSheetRangeMethods = new Map(); // methodName -> { specType, specIndex, specFile }
-const dynamicDocMethods = new Map(); // methodName -> { specType, specIndex }
-const dynamicDataValidationMethods = new Map(); // methodName -> { prop, specFile }
+const dynamicSheetRangeMethods = new Map(); // methodName -> { specFile, line }
+const dynamicDocMethods = new Map(); // methodName -> { specFile, line }
+const dynamicDataValidationMethods = new Map(); // methodName -> { specFile, line }
 
 const docServiceClasses = new Set(['Body', 'Paragraph', 'ListItem', 'Table', 'TableRow', 'TableCell', 'Text', 'InlineImage', 'PageBreak', 'HorizontalRule', 'Footnote', 'HeaderSection', 'FooterSection', 'FootnoteSection', 'ContainerElement', 'SectionElement', 'RichLink']);
 
@@ -158,45 +158,101 @@ const classToFileMap = {
 };
 
 // Populate the dynamic methods map with metadata for proper linking
-setterList.forEach((item, index) => {
-  const single = `set${Utils.capital(item.single || item.name)}`;
-  dynamicSheetRangeMethods.set(single, { specType: 'setterList', specIndex: index, specFile: sheetRangeMakerPath });
-  if (item.plural !== false) {
-    const plural = item.plural || `set${Utils.capital(item.single || item.name)}s`;
-    dynamicSheetRangeMethods.set(plural, { specType: 'setterList', specIndex: index, specFile: sheetRangeMakerPath });
-  }
-});
-attrGetList.forEach((item, index) => {
-  dynamicSheetRangeMethods.set(item.name, { specType: 'attrGetList', specIndex: index, specFile: sheetRangeMakerPath });
-  const plural = item.plural || `${item.name}s`;
-  if (!item.skipPlural) {
-    dynamicSheetRangeMethods.set(plural, { specType: 'attrGetList', specIndex: index, specFile: sheetRangeMakerPath });
-  }
-});
-valuesGetList.forEach((item, index) => {
-  dynamicSheetRangeMethods.set(item.name, { specType: 'valuesGetList', specIndex: index, specFile: sheetRangeMakerPath });
-  const plural = item.plural || `${item.name}s`;
-  if (!item.skipPlural) {
-    dynamicSheetRangeMethods.set(plural, { specType: 'valuesGetList', specIndex: index, specFile: sheetRangeMakerPath });
+const sheetRangeMakerContent = fs.readFileSync(sheetRangeMakerPath, 'utf8');
+const sheetRangeMakerAst = acorn.parse(sheetRangeMakerContent, { ecmaVersion: 'latest', sourceType: 'module', locations: true });
+
+walk.simple(sheetRangeMakerAst, {
+  VariableDeclarator(node) {
+    const specType = node.id.name;
+    if (['setterList', 'attrGetList', 'valuesGetList'].includes(specType)) {
+      const init = node.init;
+      if (init && init.type === 'ArrayExpression') {
+        init.elements.forEach((element) => {
+          if (element && element.type === 'ObjectExpression') {
+            const nameProp = element.properties.find(p => p.key.name === 'name' || p.key.value === 'name');
+            const singleProp = element.properties.find(p => p.key.name === 'single' || p.key.value === 'single');
+            const pluralProp = element.properties.find(p => p.key.name === 'plural' || p.key.value === 'plural');
+            const skipPluralProp = element.properties.find(p => p.key.name === 'skipPlural' || p.key.value === 'skipPlural');
+            
+            const name = nameProp ? nameProp.value.value : null;
+            const single = singleProp ? singleProp.value.value : null;
+            const plural = pluralProp ? (pluralProp.value.value === false ? false : pluralProp.value.value) : null;
+            const skipPlural = skipPluralProp ? skipPluralProp.value.value : false;
+
+            const line = element.loc.start.line;
+
+            if (specType === 'setterList') {
+              const s = `set${Utils.capital(single || name)}`;
+              dynamicSheetRangeMethods.set(s, { specFile: sheetRangeMakerPath, line });
+              if (plural !== false) {
+                const p = plural || `set${Utils.capital(single || name)}s`;
+                dynamicSheetRangeMethods.set(p, { specFile: sheetRangeMakerPath, line });
+              }
+            } else if (name) {
+              dynamicSheetRangeMethods.set(name, { specFile: sheetRangeMakerPath, line });
+              if (!skipPlural) {
+                const p = plural || `${name}s`;
+                dynamicSheetRangeMethods.set(p, { specFile: sheetRangeMakerPath, line });
+              }
+            }
+          }
+        });
+      }
+    }
   }
 });
 
 // Populate the dynamic methods map for Document service
 const snakeToCamel = str => str.toLowerCase().replace(/([-_][a-z])/g, group => group.toUpperCase().replace('-', '').replace('_', ''));
 
-Object.keys(Attribute).forEach((key, index) => {
-  const propName = snakeToCamel(key);
-  const capitalizedProp = Utils.capital(propName);
-  dynamicDocMethods.set(`get${capitalizedProp}`, { specType: 'Attribute', specIndex: index });
-  dynamicDocMethods.set(`set${capitalizedProp}`, { specType: 'Attribute', specIndex: index });
-});
+const docEnumsContent = fs.readFileSync(docEnumsPath, 'utf8');
+const docEnumsAst = acorn.parse(docEnumsContent, { ecmaVersion: 'latest', sourceType: 'module', locations: true });
 
-Object.keys(dataValidationCriteriaMapping).forEach((prop) => {
-  const item = dataValidationCriteriaMapping[prop];
-  if (item.method) {
-    dynamicDataValidationMethods.set(item.method, { prop, specFile: dataValidationMappingPath });
+walk.simple(docEnumsAst, {
+  VariableDeclarator(node) {
+    if (node.id.name === 'Attribute') {
+      const init = node.init;
+      if (init && init.type === 'CallExpression') {
+        const arg = init.arguments[0];
+        if (arg && arg.type === 'ArrayExpression') {
+          arg.elements.forEach((elem) => {
+            if (elem && elem.type === 'Literal') {
+              const key = elem.value;
+              const propName = snakeToCamel(key);
+              const capitalizedProp = Utils.capital(propName);
+              const line = elem.loc.start.line;
+              dynamicDocMethods.set(`get${capitalizedProp}`, { specFile: docEnumsPath, line });
+              dynamicDocMethods.set(`set${capitalizedProp}`, { specFile: docEnumsPath, line });
+            }
+          });
+        }
+      }
+    }
   }
 });
+
+const dataValidationMappingContent = fs.readFileSync(dataValidationMappingPath, 'utf8');
+const dataValidationMappingAst = acorn.parse(dataValidationMappingContent, { ecmaVersion: 'latest', sourceType: 'module', locations: true });
+
+walk.simple(dataValidationMappingAst, {
+  VariableDeclarator(node) {
+    if (node.id.name === 'dataValidationCriteriaMapping') {
+      const init = node.init;
+      if (init && init.type === 'ObjectExpression') {
+        init.properties.forEach(prop => {
+          const value = prop.value;
+          if (value && value.type === 'ObjectExpression') {
+            const methodProp = value.properties.find(p => p.key.name === 'method' || p.key.value === 'method');
+            if (methodProp && methodProp.value.type === 'Literal') {
+              dynamicDataValidationMethods.set(methodProp.value.value, { specFile: dataValidationMappingPath, line: prop.loc.start.line });
+            }
+          }
+        });
+      }
+    }
+  }
+});
+
 for (const service of giData) {
   const serviceName = service.serviceName;
   const serviceDirectory = serviceToDirectoryMap[serviceName] || serviceName.toLowerCase();
@@ -243,20 +299,10 @@ for (const service of giData) {
 
       // Check in the src/services/enums folder for all services
       if (classData.type === 'Enum') {
-        // Common pattern: src/services/enums/servicenameenums.js
-        // e.g. calendarapp -> calendarenums.js, documentapp -> docsenums.js
-        // We need to map serviceName to the prefix used in the enums folder.
-        // Service names in gi.json are capitalized, e.g., 'Calendar', 'Document'.
-        // The enum files seem to follow a pattern: calendarenums.js, docsenums.js, formsenums.js
-
         let enumPrefix = serviceName.toLowerCase();
-        // Handle specific mapping quirks if any (e.g. Document -> docs, Spreadsheet -> sheets)
         if (serviceName === 'Document') enumPrefix = 'docs';
         if (serviceName === 'Spreadsheet') enumPrefix = 'sheets';
         if (serviceName === 'Forms') enumPrefix = 'forms';
-        // Calendar -> calendar (default works)
-        // Gmail -> gmail (default works)
-        // Slides -> slides (default works)
 
         const enumFileName = `${enumPrefix}enums.js`;
         const filePath = allJsFiles.find(p => p.endsWith(`enums/${enumFileName}`));
@@ -282,27 +328,17 @@ for (const service of giData) {
           handledAsDynamic = true;
           const specInfo = dynamicSheetRangeMethods.get(methodName);
           const specFilePath = path.relative(projectPath, specInfo.specFile);
-          const specFileContent = fs.readFileSync(specInfo.specFile, 'utf8');
-          const specLines = specFileContent.split('\n');
-
-          // Find the line where the spec list starts
-          const listStartPattern = new RegExp(`export const ${specInfo.specType}\\s*=`);
-          let lineNumber = specLines.findIndex(line => listStartPattern.test(line));
-
-          if (lineNumber !== -1) {
-            // Add offset for the specific item in the array (approximate)
-            lineNumber += 1 + specInfo.specIndex;
-            status = 'completed';
-            implementationLink = `${specFilePath}#L${lineNumber}`;
-          }
+          status = 'completed';
+          implementationLink = `${specFilePath}#L${specInfo.line}`;
         }
 
         // Special check for dynamically generated Document methods
         if (serviceName === 'Document' && docServiceClasses.has(className) && dynamicDocMethods.has(methodName)) {
           handledAsDynamic = true;
-          const relativePath = path.relative(projectPath, docEnumsPath);
+          const specInfo = dynamicDocMethods.get(methodName);
+          const specFilePath = path.relative(projectPath, specInfo.specFile);
           status = 'completed';
-          implementationLink = `${relativePath}#L1`;
+          implementationLink = `${specFilePath}#L${specInfo.line}`;
         }
 
         // Special check for dynamically generated DataValidationBuilder methods
@@ -310,15 +346,8 @@ for (const service of giData) {
           handledAsDynamic = true;
           const specInfo = dynamicDataValidationMethods.get(methodName);
           const specFilePath = path.relative(projectPath, specInfo.specFile);
-          const specFileContent = fs.readFileSync(specInfo.specFile, 'utf8');
-          const specLines = specFileContent.split('\n');
-
-          // Find the line where the mapping starts
-          let lineNumber = specLines.findIndex(line => line.includes(`${specInfo.prop}: {`)) + 1;
-          if (lineNumber === 0) lineNumber = 1; // Fallback
-
           status = 'completed';
-          implementationLink = `${specFilePath}#L${lineNumber}`;
+          implementationLink = `${specFilePath}#L${specInfo.line}`;
         }
 
         // Only do file search if not handled as dynamic
@@ -326,8 +355,6 @@ for (const service of giData) {
           for (const file of fileContents) {
             let isImplemented;
             if (classData.type === 'Enum') {
-              // Enums can be keys in an object literal or quoted strings in an array
-              // Fix: escape \\s properly and allow ] or } for the last item in a list/object
               const enumRegex = new RegExp(`[\"']?${methodName}[\"']?\\s*[:,\\]\\}]`);
               isImplemented = enumRegex.test(file.content);
             } else {
@@ -337,8 +364,9 @@ for (const service of giData) {
             if (isImplemented) {
               let inProgress = false;
               let found = false;
+              let implementationLineNumber = null;
               try {
-                const ast = acorn.parse(file.content, { ecmaVersion: 'latest', sourceType: 'module' });
+                const ast = acorn.parse(file.content, { ecmaVersion: 'latest', sourceType: 'module', locations: true });
                 if (classData.type === 'Enum') {
                   walk.simple(ast, {
                     VariableDeclarator(varNode) {
@@ -353,6 +381,7 @@ for (const service of giData) {
                                 if (name === methodName) {
                                   found = true;
                                   status = 'completed';
+                                  implementationLineNumber = prop.loc.start.line;
                                   throw 'found';
                                 }
                               });
@@ -361,6 +390,7 @@ for (const service of giData) {
                                 if (elem && elem.type === 'Literal' && elem.value === methodName) {
                                   found = true;
                                   status = 'completed';
+                                  implementationLineNumber = elem.loc.start.line;
                                   throw 'found';
                                 }
                               });
@@ -372,6 +402,7 @@ for (const service of giData) {
                             if (name === methodName) {
                               found = true;
                               status = 'completed';
+                              implementationLineNumber = prop.loc.start.line;
                               throw 'found';
                             }
                           });
@@ -392,7 +423,7 @@ for (const service of giData) {
                           MethodDefinition(methodNode) {
                             if (methodNode.key.name === methodName) {
                               found = true;
-                              // Check if this method has notYetImplemented
+                              implementationLineNumber = methodNode.loc.start.line;
                               walk.simple(methodNode.value.body, {
                                 CallExpression(callNode) {
                                   if (callNode.callee.name === 'notYetImplemented') {
@@ -401,7 +432,6 @@ for (const service of giData) {
                                   }
                                 }
                               });
-                              // We found the method in the correct class
                               status = 'completed';
                               throw 'found';
                             }
@@ -436,10 +466,8 @@ for (const service of giData) {
               }
 
               const relativePath = path.relative(projectPath, file.filePath);
-              const lines = file.content.split('\n');
-              const lineNumber = lines.findIndex(line => line.includes(methodName)) + 1;
-              implementationLink = `${relativePath}#L${lineNumber}`;
-              if (status === 'completed') break; // Stop searching if a completed version is found
+              implementationLink = `${relativePath}#L${implementationLineNumber || 1}`;
+              if (status === 'completed') break;
             }
           }
         }

@@ -310,10 +310,10 @@ A builder used to create TextStyle objects. It allows configuration of the text'
 
 | Method | Description | Return Type | Return Description | Status | Implementation |
 |--- |--- |--- |--- |--- |--- |
-| [build()](https://developers.google.com/apps-script/reference/charts/text-style-builder#build()) | Builds and returns a text style configuration object that was built using this builder. | [TextStyle](#class-textstyle) | A text style object built using this builder. | completed | [link](../src/services/common/faketextstylebuilder.js#L4) |
+| [build()](https://developers.google.com/apps-script/reference/charts/text-style-builder#build()) | Builds and returns a text style configuration object that was built using this builder. | [TextStyle](#class-textstyle) | A text style object built using this builder. | completed | [link](../src/services/common/faketextstylebuilder.js#L117) |
 | [setColor(String)](https://developers.google.com/apps-script/reference/charts/text-style-builder#setColor(String)) | Sets the color of the text style. | [TextStyleBuilder](#class-textstylebuilder) | This builder, useful for chaining. | not started |  |
 | [setFontName(String)](https://developers.google.com/apps-script/reference/charts/text-style-builder#setFontName(String)) | Sets the font name of the text style. | [TextStyleBuilder](#class-textstylebuilder) | This builder, useful for chaining. | not started |  |
-| [setFontSize(Number)](https://developers.google.com/apps-script/reference/charts/text-style-builder#setFontSize(Number)) | Sets the font size of the text style. | [TextStyleBuilder](#class-textstylebuilder) | This builder, useful for chaining. | completed | [link](../src/services/common/faketextstylebuilder.js#L41) |
+| [setFontSize(Number)](https://developers.google.com/apps-script/reference/charts/text-style-builder#setFontSize(Number)) | Sets the font size of the text style. | [TextStyleBuilder](#class-textstylebuilder) | This builder, useful for chaining. | completed | [link](../src/services/common/faketextstylebuilder.js#L199) |
 
 ## Enum: [ChartHiddenDimensionStrategy](https://developers.google.com/apps-script/reference/charts/chart-hidden-dimension-strategy)
 
@@ -431,7 +431,7 @@ An enumeration of legend positions within a chart.
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
 | BOTTOM | Below the chart. | completed | [link](../src/services/enums/chartsenums.js#L53) |
-| NONE | No legend is displayed. | completed | [link](../src/services/enums/chartsenums.js#L44) |
+| NONE | No legend is displayed. | completed | [link](../src/services/enums/chartsenums.js#L56) |
 | RIGHT | To the right of the chart. | completed | [link](../src/services/enums/chartsenums.js#L54) |
 | TOP | Above the chart. | completed | [link](../src/services/enums/chartsenums.js#L52) |
 

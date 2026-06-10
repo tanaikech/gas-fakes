@@ -8,7 +8,7 @@ A reference to a particular cache.
 
 | Method | Description | Return Type | Return Description | Status | Implementation |
 |--- |--- |--- |--- |--- |--- |
-| [get(String)](https://developers.google.com/apps-script/reference/cache/cache#get(String)) | Gets the cached value for the given key, or null if none is found. | String\|null | The cached value, or null if none was found. | completed | [link](../src/services/stores/fakestores.js#L5) |
+| [get(String)](https://developers.google.com/apps-script/reference/cache/cache#get(String)) | Gets the cached value for the given key, or null if none is found. | String\|null | The cached value, or null if none was found. | completed | [link](../src/services/stores/fakestores.js#L372) |
 | [getAll(String)](https://developers.google.com/apps-script/reference/cache/cache#getAll(String)) | Returns a JavaScript Object containing all key/value pairs found in the cache for an array of keys. | Object | A JavaScript Object containing the key/value pairs for all keys found in the cache. | in progress | [link](../src/services/stores/fakestores.js#L339) |
 | [put(String,String,Integer)](https://developers.google.com/apps-script/reference/cache/cache#put(String,String,Integer)) |  |  |  | completed | [link](../src/services/stores/fakestores.js#L350) |
 | [put(String,String)](https://developers.google.com/apps-script/reference/cache/cache#put(String,String)) |  |  |  | completed | [link](../src/services/stores/fakestores.js#L350) |

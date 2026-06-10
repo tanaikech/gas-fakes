@@ -59,7 +59,7 @@ Describes the border around an element.
 |--- |--- |--- |--- |--- |--- |
 | [getDashStyle()](https://developers.google.com/apps-script/reference/slides/border#getDashStyle()) | Gets the DashStyle of the border. |  | DashStyle\|null | completed | [link](../src/services/slidesapp/fakeborder.js#L95) |
 | [getLineFill()](https://developers.google.com/apps-script/reference/slides/border#getLineFill()) | Gets the LineFill of the border. |  | LineFill | completed | [link](../src/services/slidesapp/fakeborder.js#L26) |
-| [getWeight()](https://developers.google.com/apps-script/reference/slides/border#getWeight()) | Gets the thickness of the border in points. Returns null if the element does not have a border. |  | Number\|null | completed | [link](../src/services/slidesapp/fakeborder.js#L31) |
+| [getWeight()](https://developers.google.com/apps-script/reference/slides/border#getWeight()) | Gets the thickness of the border in points. Returns null if the element does not have a border. |  | Number\|null | completed | [link](../src/services/slidesapp/fakeborder.js#L83) |
 | [isVisible()](https://developers.google.com/apps-script/reference/slides/border#isVisible()) | Gets whether the border is visible or not. |  | Boolean | completed | [link](../src/services/slidesapp/fakeborder.js#L30) |
 | [setDashStyle(DashStyle)](https://developers.google.com/apps-script/reference/slides/border#setDashStyle(DashStyle)) | Sets the DashStyle of the border. | [Border](#class-border) | This Border, for chaining. | completed | [link](../src/services/slidesapp/fakeborder.js#L35) |
 | [setTransparent()](https://developers.google.com/apps-script/reference/slides/border#setTransparent()) | Sets the border to be transparent. | [Border](#class-border) | This Border, for chaining. | completed | [link](../src/services/slidesapp/fakeborder.js#L40) |
@@ -81,11 +81,11 @@ A color scheme defines a mapping from members of ThemeColorType to the actual co
 
 | Method | Description | Return Type | Return Description | Status | Implementation |
 |--- |--- |--- |--- |--- |--- |
-| [getConcreteColor(ThemeColorType)](https://developers.google.com/apps-script/reference/slides/color-scheme#getConcreteColor(ThemeColorType)) | Returns the concrete Color associated with the ThemeColorType in this color scheme. | [Color](#class-color) | The concrete color corresponding the theme color type in this scheme. | completed | [link](../src/services/slidesapp/fakecolorscheme.js#L49) |
-| [getThemeColors()](https://developers.google.com/apps-script/reference/slides/color-scheme#getThemeColors()) | Returns a list of all possible theme color types in a color scheme. | [ThemeColorType[]](#enum-themecolortype) | The possible theme color types in this scheme. | completed | [link](../src/services/slidesapp/fakecolorscheme.js#L69) |
-| [setConcreteColor(ThemeColorType,Color)](https://developers.google.com/apps-script/reference/slides/color-scheme#setConcreteColor(ThemeColorType,Color)) |  |  |  | completed | [link](../src/services/slidesapp/fakecolorscheme.js#L79) |
-| [setConcreteColor(ThemeColorType,Integer,Integer,Integer)](https://developers.google.com/apps-script/reference/slides/color-scheme#setConcreteColor(ThemeColorType,Integer,Integer,Integer)) |  |  |  | completed | [link](../src/services/slidesapp/fakecolorscheme.js#L79) |
-| [setConcreteColor(ThemeColorType,String)](https://developers.google.com/apps-script/reference/slides/color-scheme#setConcreteColor(ThemeColorType,String)) |  |  |  | completed | [link](../src/services/slidesapp/fakecolorscheme.js#L79) |
+| [getConcreteColor(ThemeColorType)](https://developers.google.com/apps-script/reference/slides/color-scheme#getConcreteColor(ThemeColorType)) | Returns the concrete Color associated with the ThemeColorType in this color scheme. | [Color](#class-color) | The concrete color corresponding the theme color type in this scheme. | completed | [link](../src/services/slidesapp/fakecolorscheme.js#L53) |
+| [getThemeColors()](https://developers.google.com/apps-script/reference/slides/color-scheme#getThemeColors()) | Returns a list of all possible theme color types in a color scheme. | [ThemeColorType[]](#enum-themecolortype) | The possible theme color types in this scheme. | completed | [link](../src/services/slidesapp/fakecolorscheme.js#L72) |
+| [setConcreteColor(ThemeColorType,Color)](https://developers.google.com/apps-script/reference/slides/color-scheme#setConcreteColor(ThemeColorType,Color)) |  |  |  | completed | [link](../src/services/slidesapp/fakecolorscheme.js#L84) |
+| [setConcreteColor(ThemeColorType,Integer,Integer,Integer)](https://developers.google.com/apps-script/reference/slides/color-scheme#setConcreteColor(ThemeColorType,Integer,Integer,Integer)) |  |  |  | completed | [link](../src/services/slidesapp/fakecolorscheme.js#L84) |
+| [setConcreteColor(ThemeColorType,String)](https://developers.google.com/apps-script/reference/slides/color-scheme#setConcreteColor(ThemeColorType,String)) |  |  |  | completed | [link](../src/services/slidesapp/fakecolorscheme.js#L84) |
 
 ## Class: [ConnectionSite](https://developers.google.com/apps-script/reference/slides/connection-site)
 
@@ -127,7 +127,7 @@ A collection of PageElements joined as a single unit.
 | [duplicate()](https://developers.google.com/apps-script/reference/slides/group#duplicate()) | Duplicates the page element. | [PageElement](#class-pageelement) | The new duplicate of this page element. | completed | [link](../src/services/slidesapp/fakepageelement.js#L508) |
 | [getChildren()](https://developers.google.com/apps-script/reference/slides/group#getChildren()) | Gets the collection of page elements in the group. The minimum size of a group is 2. | [PageElement[]](#class-pageelement) | The list of page elements in this group. | completed | [link](../src/services/slidesapp/fakegroup.js#L15) |
 | [getConnectionSites()](https://developers.google.com/apps-script/reference/slides/group#getConnectionSites()) | Returns the list of ConnectionSites on the page element, or an empty list if the page element does not have any connection sites. | [ConnectionSite[]](#class-connectionsite) | The connection sites list, which may be empty if this element has no connection sites. | completed | [link](../src/services/slidesapp/fakepageelement.js#L489) |
-| [getDescription()](https://developers.google.com/apps-script/reference/slides/group#getDescription()) | Returns the page element's alt text description. The description is combined with the title to display and read alt text. | String | The page element's alt text description. | completed | [link](../src/services/slidesapp/fakepageelement.js#L304) |
+| [getDescription()](https://developers.google.com/apps-script/reference/slides/group#getDescription()) | Returns the page element's alt text description. The description is combined with the title to display and read alt text. | String | The page element's alt text description. | completed | [link](../src/services/slidesapp/fakepageelement.js#L308) |
 | [getHeight()](https://developers.google.com/apps-script/reference/slides/group#getHeight()) | Gets the element's height in points, which is the height of the element's bounding box when the element has no rotation. | Number\|null | The page element's inherent height in points, or null if the page element does not have a height. | completed | [link](../src/services/slidesapp/fakepageelement.js#L228) |
 | [getInherentHeight()](https://developers.google.com/apps-script/reference/slides/group#getInherentHeight()) | Returns the element's inherent height in points. | Number\|null | The page element's inherent height in points, or null if the page element does not have a height. | completed | [link](../src/services/slidesapp/fakepageelement.js#L191) |
 | [getInherentWidth()](https://developers.google.com/apps-script/reference/slides/group#getInherentWidth()) | Returns the element's inherent width in points. | Number\|null | The page element's inherent width in points, or null if the page element does not have a width. | completed | [link](../src/services/slidesapp/fakepageelement.js#L195) |
@@ -174,7 +174,7 @@ A PageElement representing an image.
 | [getBorder()](https://developers.google.com/apps-script/reference/slides/image#getBorder()) | Returns the Border of the image. | [Border](#class-border) | The border of the image. | completed | [link](../src/services/slidesapp/fakeimage.js#L40) |
 | [getConnectionSites()](https://developers.google.com/apps-script/reference/slides/image#getConnectionSites()) | Returns the list of ConnectionSites on the page element, or an empty list if the page element does not have any connection sites. | [ConnectionSite[]](#class-connectionsite) | The connection sites list, which may be empty if this element has no connection sites. | completed | [link](../src/services/slidesapp/fakepageelement.js#L489) |
 | [getContentUrl()](https://developers.google.com/apps-script/reference/slides/image#getContentUrl()) | Gets a URL to the image. |  | String | completed | [link](../src/services/slidesapp/fakeimage.js#L48) |
-| [getDescription()](https://developers.google.com/apps-script/reference/slides/image#getDescription()) | Returns the page element's alt text description. The description is combined with the title to display and read alt text. | String | The page element's alt text description. | completed | [link](../src/services/slidesapp/fakepageelement.js#L304) |
+| [getDescription()](https://developers.google.com/apps-script/reference/slides/image#getDescription()) | Returns the page element's alt text description. The description is combined with the title to display and read alt text. | String | The page element's alt text description. | completed | [link](../src/services/slidesapp/fakepageelement.js#L308) |
 | [getHeight()](https://developers.google.com/apps-script/reference/slides/image#getHeight()) | Gets the element's height in points, which is the height of the element's bounding box when the element has no rotation. | Number\|null | The page element's inherent height in points, or null if the page element does not have a height. | completed | [link](../src/services/slidesapp/fakepageelement.js#L228) |
 | [getInherentHeight()](https://developers.google.com/apps-script/reference/slides/image#getInherentHeight()) | Returns the element's inherent height in points. | Number\|null | The page element's inherent height in points, or null if the page element does not have a height. | completed | [link](../src/services/slidesapp/fakeimage.js#L56) |
 | [getInherentWidth()](https://developers.google.com/apps-script/reference/slides/image#getInherentWidth()) | Returns the element's inherent width in points. | Number\|null | The page element's inherent width in points, or null if the page element does not have a width. | completed | [link](../src/services/slidesapp/fakeimage.js#L72) |
@@ -236,8 +236,8 @@ A layout in a presentation.
 | [getPageElementById(String)](https://developers.google.com/apps-script/reference/slides/layout#getPageElementById(String)) | Returns the PageElement on the page with the given ID, or null if none exists. | PageElement\|null | The page element with the given ID. | completed | [link](../src/services/slidesapp/fakelayout.js#L80) |
 | [getPageElements()](https://developers.google.com/apps-script/reference/slides/layout#getPageElements()) | Returns the list of PageElement objects rendered on the page. |  | PageElement[] | completed | [link](../src/services/slidesapp/fakelayout.js#L71) |
 | [getPageType()](https://developers.google.com/apps-script/reference/slides/layout#getPageType()) | Gets the type of the page. | [PageType](#enum-pagetype) | The page type. | completed | [link](../src/services/slidesapp/fakelayout.js#L63) |
-| [getPlaceholder(PlaceholderType,Integer)](https://developers.google.com/apps-script/reference/slides/layout#getPlaceholder(PlaceholderType,Integer)) |  |  |  | completed | [link](../src/services/slidesapp/fakelayout.js#L184) |
-| [getPlaceholder(PlaceholderType)](https://developers.google.com/apps-script/reference/slides/layout#getPlaceholder(PlaceholderType)) | Returns the placeholder PageElement object for a specified PlaceholderType or null if a matching placeholder is not present. | PageElement\|null | The placeholder page element, or null if none is found. | completed | [link](../src/services/slidesapp/fakelayout.js#L184) |
+| [getPlaceholder(PlaceholderType,Integer)](https://developers.google.com/apps-script/reference/slides/layout#getPlaceholder(PlaceholderType,Integer)) |  |  |  | completed | [link](../src/services/slidesapp/fakelayout.js#L189) |
+| [getPlaceholder(PlaceholderType)](https://developers.google.com/apps-script/reference/slides/layout#getPlaceholder(PlaceholderType)) | Returns the placeholder PageElement object for a specified PlaceholderType or null if a matching placeholder is not present. | PageElement\|null | The placeholder page element, or null if none is found. | completed | [link](../src/services/slidesapp/fakelayout.js#L189) |
 | [getPlaceholders()](https://developers.google.com/apps-script/reference/slides/layout#getPlaceholders()) | Returns the list of placeholder PageElement objects in the page. |  | PageElement[] | completed | [link](../src/services/slidesapp/fakelayout.js#L184) |
 | [getShapes()](https://developers.google.com/apps-script/reference/slides/layout#getShapes()) | Returns the list of Shape objects on the page. |  | Shape[] | completed | [link](../src/services/slidesapp/fakelayout.js#L102) |
 | [getSheetsCharts()](https://developers.google.com/apps-script/reference/slides/layout#getSheetsCharts()) | Returns the list of SheetsChart objects on the page. |  | SheetsChart[] | completed | [link](../src/services/slidesapp/fakelayout.js#L126) |
@@ -289,8 +289,8 @@ A PageElement representing a line.
 | [duplicate()](https://developers.google.com/apps-script/reference/slides/line#duplicate()) | Duplicates the page element. | [PageElement](#class-pageelement) | The new duplicate of this page element. | completed | [link](../src/services/slidesapp/fakepageelement.js#L508) |
 | [getConnectionSites()](https://developers.google.com/apps-script/reference/slides/line#getConnectionSites()) | Returns the list of ConnectionSites on the page element, or an empty list if the page element does not have any connection sites. | [ConnectionSite[]](#class-connectionsite) | The connection sites list, which may be empty if this element has no connection sites. | completed | [link](../src/services/slidesapp/fakepageelement.js#L489) |
 | [getDashStyle()](https://developers.google.com/apps-script/reference/slides/line#getDashStyle()) | Gets the DashStyle of the line. | [DashStyle](#enum-dashstyle) | The style of the dashing used with this line. | completed | [link](../src/services/slidesapp/fakeline.js#L47) |
-| [getDescription()](https://developers.google.com/apps-script/reference/slides/line#getDescription()) | Returns the page element's alt text description. The description is combined with the title to display and read alt text. | String | The page element's alt text description. | completed | [link](../src/services/slidesapp/fakepageelement.js#L304) |
-| [getEnd()](https://developers.google.com/apps-script/reference/slides/line#getEnd()) | Returns the end point of the line, measured from the upper-left corner of the page. | [Point](#class-point) | The ending point of the line. | completed | [link](../src/services/slidesapp/fakeline.js#L67) |
+| [getDescription()](https://developers.google.com/apps-script/reference/slides/line#getDescription()) | Returns the page element's alt text description. The description is combined with the title to display and read alt text. | String | The page element's alt text description. | completed | [link](../src/services/slidesapp/fakepageelement.js#L308) |
+| [getEnd()](https://developers.google.com/apps-script/reference/slides/line#getEnd()) | Returns the end point of the line, measured from the upper-left corner of the page. | [Point](#class-point) | The ending point of the line. | completed | [link](../src/services/slidesapp/fakeline.js#L102) |
 | [getEndArrow()](https://developers.google.com/apps-script/reference/slides/line#getEndArrow()) | Gets the ArrowStyle of the arrow at the end of the line. | [ArrowStyle](#enum-arrowstyle) | The style of the arrow at the end of this line. | completed | [link](../src/services/slidesapp/fakeline.js#L67) |
 | [getEndConnection()](https://developers.google.com/apps-script/reference/slides/line#getEndConnection()) | Returns the connection at the end of the line, or null if there is no connection. | ConnectionSite\|null | The connection at the end of the line. | completed | [link](../src/services/slidesapp/fakeline.js#L148) |
 | [getHeight()](https://developers.google.com/apps-script/reference/slides/line#getHeight()) | Gets the element's height in points, which is the height of the element's bounding box when the element has no rotation. | Number\|null | The page element's inherent height in points, or null if the page element does not have a height. | completed | [link](../src/services/slidesapp/fakepageelement.js#L228) |
@@ -306,7 +306,7 @@ A PageElement representing a line.
 | [getParentGroup()](https://developers.google.com/apps-script/reference/slides/line#getParentGroup()) | Returns the group this page element belongs to, or null if the element is not in a group. | Group\|null | The group this page element belongs to, or null. | completed | [link](../src/services/slidesapp/fakepageelement.js#L321) |
 | [getParentPage()](https://developers.google.com/apps-script/reference/slides/line#getParentPage()) | Returns the page this page element is on. | [Page](#class-page) | The page this element resides on. | completed | [link](../src/services/slidesapp/fakepageelement.js#L317) |
 | [getRotation()](https://developers.google.com/apps-script/reference/slides/line#getRotation()) | Returns the element's clockwise rotation angle around its center in degrees, where zero degrees means no rotation. | Number | The rotation angle in degrees between 0 (inclusive) and 360 (exclusive). | completed | [link](../src/services/slidesapp/fakepageelement.js#L239) |
-| [getStart()](https://developers.google.com/apps-script/reference/slides/line#getStart()) | Returns the start point of the line, measured from the upper-left corner of the page. | [Point](#class-point) | The starting point of the line. | completed | [link](../src/services/slidesapp/fakeline.js#L57) |
+| [getStart()](https://developers.google.com/apps-script/reference/slides/line#getStart()) | Returns the start point of the line, measured from the upper-left corner of the page. | [Point](#class-point) | The starting point of the line. | completed | [link](../src/services/slidesapp/fakeline.js#L77) |
 | [getStartArrow()](https://developers.google.com/apps-script/reference/slides/line#getStartArrow()) | Gets the ArrowStyle of the arrow at the beginning of the line. | [ArrowStyle](#enum-arrowstyle) | The style of the arrow at the beginning of this line. | completed | [link](../src/services/slidesapp/fakeline.js#L57) |
 | [getStartConnection()](https://developers.google.com/apps-script/reference/slides/line#getStartConnection()) | Returns the connection at the beginning of the line, or null if there is no connection. | ConnectionSite\|null | The connection at the beginning of the line. | completed | [link](../src/services/slidesapp/fakeline.js#L133) |
 | [getTitle()](https://developers.google.com/apps-script/reference/slides/line#getTitle()) | Returns the page element's alt text title. The title is combined with the description to display and read alt text. | String | The page element's alt text title. | completed | [link](../src/services/slidesapp/fakepageelement.js#L299) |
@@ -327,8 +327,8 @@ A PageElement representing a line.
 | [sendToBack()](https://developers.google.com/apps-script/reference/slides/line#sendToBack()) | Sends the page element to the back of the page. | [Line](#class-line) | This page element, for chaining. | completed | [link](../src/services/slidesapp/fakepageelement.js#L351) |
 | [setDashStyle(DashStyle)](https://developers.google.com/apps-script/reference/slides/line#setDashStyle(DashStyle)) | Sets the DashStyle of the line. | [Line](#class-line) | This line, for chaining. | completed | [link](../src/services/slidesapp/fakeline.js#L52) |
 | [setDescription(String)](https://developers.google.com/apps-script/reference/slides/line#setDescription(String)) | Sets the page element's alt text description. | [Line](#class-line) | This page element. | completed | [link](../src/services/slidesapp/fakepageelement.js#L312) |
-| [setEnd(Number,Number)](https://developers.google.com/apps-script/reference/slides/line#setEnd(Number,Number)) |  |  |  | completed | [link](../src/services/slidesapp/fakeline.js#L72) |
-| [setEnd(Point)](https://developers.google.com/apps-script/reference/slides/line#setEnd(Point)) | Sets the position of the end point of the line. | [Line](#class-line) | This line, for chaining. | completed | [link](../src/services/slidesapp/fakeline.js#L72) |
+| [setEnd(Number,Number)](https://developers.google.com/apps-script/reference/slides/line#setEnd(Number,Number)) |  |  |  | completed | [link](../src/services/slidesapp/fakeline.js#L106) |
+| [setEnd(Point)](https://developers.google.com/apps-script/reference/slides/line#setEnd(Point)) | Sets the position of the end point of the line. | [Line](#class-line) | This line, for chaining. | completed | [link](../src/services/slidesapp/fakeline.js#L106) |
 | [setEndArrow(ArrowStyle)](https://developers.google.com/apps-script/reference/slides/line#setEndArrow(ArrowStyle)) | Sets the ArrowStyle of the arrow at the end of the line. | [Line](#class-line) | This line, for chaining. | completed | [link](../src/services/slidesapp/fakeline.js#L72) |
 | [setEndConnection(ConnectionSite)](https://developers.google.com/apps-script/reference/slides/line#setEndConnection(ConnectionSite)) | Sets the connection at the end of the line. It moves the end of the line to the specified connection site while keeping the other end intact. | [Line](#class-line) | The line. | completed | [link](../src/services/slidesapp/fakeline.js#L171) |
 | [setHeight(Number)](https://developers.google.com/apps-script/reference/slides/line#setHeight(Number)) | Sets the element's height in points, which is the height of the element's bounding box when the element has no rotation. | [Line](#class-line) | This page element, for chaining. | completed | [link](../src/services/slidesapp/fakepageelement.js#L234) |
@@ -339,8 +339,8 @@ A PageElement representing a line.
 | [setLinkSlide(SlidePosition)](https://developers.google.com/apps-script/reference/slides/line#setLinkSlide(SlidePosition)) | Sets a Link to the given Slide using the relative position of the slide. | [Link](#class-link) | The Link that was set. | completed | [link](../src/services/slidesapp/fakepageelement.js#L373) |
 | [setLinkUrl(String)](https://developers.google.com/apps-script/reference/slides/line#setLinkUrl(String)) | Sets a Link to the given non-empty URL string. | [Link](#class-link) | The Link that was set. | completed | [link](../src/services/slidesapp/fakepageelement.js#L368) |
 | [setRotation(Number)](https://developers.google.com/apps-script/reference/slides/line#setRotation(Number)) | Sets the element's clockwise rotation angle around its center in degrees. | [Line](#class-line) | This page element, for chaining. | completed | [link](../src/services/slidesapp/fakepageelement.js#L253) |
-| [setStart(Number,Number)](https://developers.google.com/apps-script/reference/slides/line#setStart(Number,Number)) |  |  |  | completed | [link](../src/services/slidesapp/fakeline.js#L62) |
-| [setStart(Point)](https://developers.google.com/apps-script/reference/slides/line#setStart(Point)) | Sets the position of the start point of the line. | [Line](#class-line) | This line, for chaining. | completed | [link](../src/services/slidesapp/fakeline.js#L62) |
+| [setStart(Number,Number)](https://developers.google.com/apps-script/reference/slides/line#setStart(Number,Number)) |  |  |  | completed | [link](../src/services/slidesapp/fakeline.js#L84) |
+| [setStart(Point)](https://developers.google.com/apps-script/reference/slides/line#setStart(Point)) | Sets the position of the start point of the line. | [Line](#class-line) | This line, for chaining. | completed | [link](../src/services/slidesapp/fakeline.js#L84) |
 | [setStartArrow(ArrowStyle)](https://developers.google.com/apps-script/reference/slides/line#setStartArrow(ArrowStyle)) | Sets the ArrowStyle of the arrow at the beginning of the line. | [Line](#class-line) | This line, for chaining. | completed | [link](../src/services/slidesapp/fakeline.js#L62) |
 | [setStartConnection(ConnectionSite)](https://developers.google.com/apps-script/reference/slides/line#setStartConnection(ConnectionSite)) | Sets the connection at the beginning of the line. It moves the start of the line to the specified connection site while keeping the other end intact. | [Line](#class-line) | The line. | completed | [link](../src/services/slidesapp/fakeline.js#L161) |
 | [setTitle(String)](https://developers.google.com/apps-script/reference/slides/line#setTitle(String)) | Sets the page element's alt text title. | [Line](#class-line) | This page element. | completed | [link](../src/services/slidesapp/fakepageelement.js#L303) |
@@ -374,7 +374,7 @@ A hypertext link.
 |--- |--- |--- |--- |--- |--- |
 | [getLinkedSlide()](https://developers.google.com/apps-script/reference/slides/link#getLinkedSlide()) | Returns the linked Slide for non-URL links types, if it exists. Returns null if the slide doesn't exist in the presentation, or if the LinkType is LinkType.URL. |  | Slide\|null | completed | [link](../src/services/slidesapp/fakelink.js#L21) |
 | [getLinkType()](https://developers.google.com/apps-script/reference/slides/link#getLinkType()) | Returns the LinkType. |  | LinkType | completed | [link](../src/services/slidesapp/fakelink.js#L13) |
-| [getSlideId()](https://developers.google.com/apps-script/reference/slides/link#getSlideId()) | Returns the ID of the linked Slide or null if the LinkType is not LinkType.SLIDE_ID. |  | String\|null | completed | [link](../src/services/slidesapp/fakelink.js#L22) |
+| [getSlideId()](https://developers.google.com/apps-script/reference/slides/link#getSlideId()) | Returns the ID of the linked Slide or null if the LinkType is not LinkType.SLIDE_ID. |  | String\|null | completed | [link](../src/services/slidesapp/fakelink.js#L26) |
 | [getSlideIndex()](https://developers.google.com/apps-script/reference/slides/link#getSlideIndex()) | Returns the zero-based index of the linked Slide or null if the LinkType is not LinkType.SLIDE_INDEX. |  | Integer\|null | completed | [link](../src/services/slidesapp/fakelink.js#L30) |
 | [getSlidePosition()](https://developers.google.com/apps-script/reference/slides/link#getSlidePosition()) | Returns the SlidePosition of the linked Slide or null if the LinkType is not LinkType.SLIDE_POSITION. |  | SlidePosition\|null | completed | [link](../src/services/slidesapp/fakelink.js#L37) |
 | [getUrl()](https://developers.google.com/apps-script/reference/slides/link#getUrl()) | Returns the URL to the external web page or null if the LinkType is not LinkType.URL. |  | String\|null | completed | [link](../src/services/slidesapp/fakelink.js#L41) |
@@ -417,8 +417,8 @@ A master in a presentation.
 | [getPageElementById(String)](https://developers.google.com/apps-script/reference/slides/master#getPageElementById(String)) | Returns the PageElement on the page with the given ID, or null if none exists. | PageElement\|null | The page element with the given ID. | completed | [link](../src/services/slidesapp/fakemaster.js#L67) |
 | [getPageElements()](https://developers.google.com/apps-script/reference/slides/master#getPageElements()) | Returns the list of PageElement objects rendered on the page. |  | PageElement[] | completed | [link](../src/services/slidesapp/fakemaster.js#L58) |
 | [getPageType()](https://developers.google.com/apps-script/reference/slides/master#getPageType()) | Gets the type of the page. | [PageType](#enum-pagetype) | The page type. | completed | [link](../src/services/slidesapp/fakemaster.js#L50) |
-| [getPlaceholder(PlaceholderType,Integer)](https://developers.google.com/apps-script/reference/slides/master#getPlaceholder(PlaceholderType,Integer)) |  |  |  | completed | [link](../src/services/slidesapp/fakemaster.js#L182) |
-| [getPlaceholder(PlaceholderType)](https://developers.google.com/apps-script/reference/slides/master#getPlaceholder(PlaceholderType)) | Returns the placeholder PageElement object for a specified PlaceholderType or null if a matching placeholder is not present. | PageElement\|null | The placeholder page element, or null if none is found. | completed | [link](../src/services/slidesapp/fakemaster.js#L182) |
+| [getPlaceholder(PlaceholderType,Integer)](https://developers.google.com/apps-script/reference/slides/master#getPlaceholder(PlaceholderType,Integer)) |  |  |  | completed | [link](../src/services/slidesapp/fakemaster.js#L186) |
+| [getPlaceholder(PlaceholderType)](https://developers.google.com/apps-script/reference/slides/master#getPlaceholder(PlaceholderType)) | Returns the placeholder PageElement object for a specified PlaceholderType or null if a matching placeholder is not present. | PageElement\|null | The placeholder page element, or null if none is found. | completed | [link](../src/services/slidesapp/fakemaster.js#L186) |
 | [getPlaceholders()](https://developers.google.com/apps-script/reference/slides/master#getPlaceholders()) | Returns the list of placeholder PageElement objects in the page. |  | PageElement[] | completed | [link](../src/services/slidesapp/fakemaster.js#L182) |
 | [getShapes()](https://developers.google.com/apps-script/reference/slides/master#getShapes()) | Returns the list of Shape objects on the page. |  | Shape[] | completed | [link](../src/services/slidesapp/fakemaster.js#L89) |
 | [getSheetsCharts()](https://developers.google.com/apps-script/reference/slides/master#getSheetsCharts()) | Returns the list of SheetsChart objects on the page. |  | SheetsChart[] | completed | [link](../src/services/slidesapp/fakemaster.js#L113) |
@@ -470,8 +470,8 @@ A notes master in a presentation.
 | [getObjectId()](https://developers.google.com/apps-script/reference/slides/notes-master#getObjectId()) | Gets the unique ID for the page. Object IDs used by pages and page elements share the same namespace. |  | String | completed | [link](../src/services/slidesapp/fakenotesmaster.js#L25) |
 | [getPageElementById(String)](https://developers.google.com/apps-script/reference/slides/notes-master#getPageElementById(String)) | Returns the PageElement on the page with the given ID, or null if none exists. | PageElement\|null | The page element with the given ID. | completed | [link](../src/services/slidesapp/fakenotesmaster.js#L58) |
 | [getPageElements()](https://developers.google.com/apps-script/reference/slides/notes-master#getPageElements()) | Returns the list of PageElement objects rendered on the page. |  | PageElement[] | completed | [link](../src/services/slidesapp/fakenotesmaster.js#L49) |
-| [getPlaceholder(PlaceholderType,Integer)](https://developers.google.com/apps-script/reference/slides/notes-master#getPlaceholder(PlaceholderType,Integer)) |  |  |  | completed | [link](../src/services/slidesapp/fakenotesmaster.js#L110) |
-| [getPlaceholder(PlaceholderType)](https://developers.google.com/apps-script/reference/slides/notes-master#getPlaceholder(PlaceholderType)) | Returns the placeholder PageElement object for a specified PlaceholderType or null if a matching placeholder is not present. | PageElement\|null | The placeholder page element, or null if none is found. | completed | [link](../src/services/slidesapp/fakenotesmaster.js#L110) |
+| [getPlaceholder(PlaceholderType,Integer)](https://developers.google.com/apps-script/reference/slides/notes-master#getPlaceholder(PlaceholderType,Integer)) |  |  |  | completed | [link](../src/services/slidesapp/fakenotesmaster.js#L114) |
+| [getPlaceholder(PlaceholderType)](https://developers.google.com/apps-script/reference/slides/notes-master#getPlaceholder(PlaceholderType)) | Returns the placeholder PageElement object for a specified PlaceholderType or null if a matching placeholder is not present. | PageElement\|null | The placeholder page element, or null if none is found. | completed | [link](../src/services/slidesapp/fakenotesmaster.js#L114) |
 | [getPlaceholders()](https://developers.google.com/apps-script/reference/slides/notes-master#getPlaceholders()) | Returns the list of placeholder PageElement objects in the page. |  | PageElement[] | completed | [link](../src/services/slidesapp/fakenotesmaster.js#L110) |
 | [getShapes()](https://developers.google.com/apps-script/reference/slides/notes-master#getShapes()) | Returns the list of Shape objects on the page. |  | Shape[] | completed | [link](../src/services/slidesapp/fakenotesmaster.js#L80) |
 | [getSheetsCharts()](https://developers.google.com/apps-script/reference/slides/notes-master#getSheetsCharts()) | Returns the list of SheetsChart objects on the page. |  | SheetsChart[] | completed | [link](../src/services/slidesapp/fakenotesmaster.js#L104) |
@@ -488,12 +488,12 @@ A notes page in a presentation.
 | [getGroups()](https://developers.google.com/apps-script/reference/slides/notes-page#getGroups()) | Returns the list of Group objects on the page. |  | Group[] | completed | [link](../src/services/slidesapp/fakenotespage.js#L43) |
 | [getImages()](https://developers.google.com/apps-script/reference/slides/notes-page#getImages()) | Returns the list of Image objects on the page. |  | Image[] | completed | [link](../src/services/slidesapp/fakenotespage.js#L49) |
 | [getLines()](https://developers.google.com/apps-script/reference/slides/notes-page#getLines()) | Returns the list of Line objects on the page. |  | Line[] | completed | [link](../src/services/slidesapp/fakenotespage.js#L55) |
-| [getObjectId()](https://developers.google.com/apps-script/reference/slides/notes-page#getObjectId()) | Gets the unique ID for the page. Object IDs used by pages and page elements share the same namespace. |  | String | completed | [link](../src/services/slidesapp/fakenotespage.js#L18) |
+| [getObjectId()](https://developers.google.com/apps-script/reference/slides/notes-page#getObjectId()) | Gets the unique ID for the page. Object IDs used by pages and page elements share the same namespace. |  | String | completed | [link](../src/services/slidesapp/fakenotespage.js#L23) |
 | [getPageElementById(String)](https://developers.google.com/apps-script/reference/slides/notes-page#getPageElementById(String)) | Returns the PageElement on the page with the given ID, or null if none exists. | PageElement\|null | The page element with the given ID. | completed | [link](../src/services/slidesapp/fakenotespage.js#L39) |
 | [getPageElements()](https://developers.google.com/apps-script/reference/slides/notes-page#getPageElements()) | Returns the list of PageElement objects rendered on the page. |  | PageElement[] | completed | [link](../src/services/slidesapp/fakenotespage.js#L35) |
-| [getPlaceholder(PlaceholderType,Integer)](https://developers.google.com/apps-script/reference/slides/notes-page#getPlaceholder(PlaceholderType,Integer)) |  |  |  | completed | [link](../src/services/slidesapp/fakenotespage.js#L94) |
-| [getPlaceholder(PlaceholderType)](https://developers.google.com/apps-script/reference/slides/notes-page#getPlaceholder(PlaceholderType)) | Returns the placeholder PageElement object for a specified PlaceholderType or null if a matching placeholder is not present. | PageElement\|null | The placeholder page element, or null if none is found. | completed | [link](../src/services/slidesapp/fakenotespage.js#L94) |
-| [getPlaceholders()](https://developers.google.com/apps-script/reference/slides/notes-page#getPlaceholders()) | Returns the list of placeholder PageElement objects in the page. |  | PageElement[] | completed | [link](../src/services/slidesapp/fakenotespage.js#L94) |
+| [getPlaceholder(PlaceholderType,Integer)](https://developers.google.com/apps-script/reference/slides/notes-page#getPlaceholder(PlaceholderType,Integer)) |  |  |  | completed | [link](../src/services/slidesapp/fakenotespage.js#L104) |
+| [getPlaceholder(PlaceholderType)](https://developers.google.com/apps-script/reference/slides/notes-page#getPlaceholder(PlaceholderType)) | Returns the placeholder PageElement object for a specified PlaceholderType or null if a matching placeholder is not present. | PageElement\|null | The placeholder page element, or null if none is found. | completed | [link](../src/services/slidesapp/fakenotespage.js#L104) |
+| [getPlaceholders()](https://developers.google.com/apps-script/reference/slides/notes-page#getPlaceholders()) | Returns the list of placeholder PageElement objects in the page. |  | PageElement[] | completed | [link](../src/services/slidesapp/fakenotespage.js#L100) |
 | [getShapes()](https://developers.google.com/apps-script/reference/slides/notes-page#getShapes()) | Returns the list of Shape objects on the page. |  | Shape[] | completed | [link](../src/services/slidesapp/fakenotespage.js#L61) |
 | [getSheetsCharts()](https://developers.google.com/apps-script/reference/slides/notes-page#getSheetsCharts()) | Returns the list of SheetsChart objects on the page. |  | SheetsChart[] | completed | [link](../src/services/slidesapp/fakenotespage.js#L85) |
 | [getSpeakerNotesShape()](https://developers.google.com/apps-script/reference/slides/notes-page#getSpeakerNotesShape()) | Gets the shape containing the speaker notes on the page. |  | Shape | completed | [link](../src/services/slidesapp/fakenotespage.js#L91) |
@@ -604,7 +604,7 @@ A visual element rendered on a page.
 | [bringToFront()](https://developers.google.com/apps-script/reference/slides/page-element#bringToFront()) | Brings the page element to the front of the page. | [PageElement](#class-pageelement) | This page element, for chaining. | completed | [link](../src/services/slidesapp/fakepageelement.js#L341) |
 | [duplicate()](https://developers.google.com/apps-script/reference/slides/page-element#duplicate()) | Duplicates the page element. | [PageElement](#class-pageelement) | The new duplicate of this page element. | completed | [link](../src/services/slidesapp/fakepageelement.js#L508) |
 | [getConnectionSites()](https://developers.google.com/apps-script/reference/slides/page-element#getConnectionSites()) | Returns the list of ConnectionSites on the page element, or an empty list if the page element does not have any connection sites. | [ConnectionSite[]](#class-connectionsite) | The connection sites list, which may be empty if this element has no connection sites. | completed | [link](../src/services/slidesapp/fakepageelement.js#L489) |
-| [getDescription()](https://developers.google.com/apps-script/reference/slides/page-element#getDescription()) | Returns the page element's alt text description. The description is combined with the title to display and read alt text. | String | The page element's alt text description. | completed | [link](../src/services/slidesapp/fakepageelement.js#L304) |
+| [getDescription()](https://developers.google.com/apps-script/reference/slides/page-element#getDescription()) | Returns the page element's alt text description. The description is combined with the title to display and read alt text. | String | The page element's alt text description. | completed | [link](../src/services/slidesapp/fakepageelement.js#L308) |
 | [getHeight()](https://developers.google.com/apps-script/reference/slides/page-element#getHeight()) | Gets the element's height in points, which is the height of the element's bounding box when the element has no rotation. | Number\|null | The page element's inherent height in points, or null if the page element does not have a height. | completed | [link](../src/services/slidesapp/fakepageelement.js#L228) |
 | [getInherentHeight()](https://developers.google.com/apps-script/reference/slides/page-element#getInherentHeight()) | Returns the element's inherent height in points. | Number\|null | The page element's inherent height in points, or null if the page element does not have a height. | completed | [link](../src/services/slidesapp/fakepageelement.js#L191) |
 | [getInherentWidth()](https://developers.google.com/apps-script/reference/slides/page-element#getInherentWidth()) | Returns the element's inherent width in points. | Number\|null | The page element's inherent width in points, or null if the page element does not have a width. | completed | [link](../src/services/slidesapp/fakepageelement.js#L195) |
@@ -658,7 +658,7 @@ A segment of text terminated by a newline character.
 | Method | Description | Return Type | Return Description | Status | Implementation |
 |--- |--- |--- |--- |--- |--- |
 | [getIndex()](https://developers.google.com/apps-script/reference/slides/paragraph#getIndex()) | Returns the index of the paragraph's newline. Returns null if the newline has been deleted. |  | Integer\|null | completed | [link](../src/services/slidesapp/fakeparagraph.js#L25) |
-| [getRange()](https://developers.google.com/apps-script/reference/slides/paragraph#getRange()) | Returns a TextRange spanning the text in the paragraph ended by this object's newline character. Returns null if the paragraph's newline has been deleted. |  | TextRange\|null | completed | [link](../src/services/slidesapp/fakeparagraph.js#L17) |
+| [getRange()](https://developers.google.com/apps-script/reference/slides/paragraph#getRange()) | Returns a TextRange spanning the text in the paragraph ended by this object's newline character. Returns null if the paragraph's newline has been deleted. |  | TextRange\|null | completed | [link](../src/services/slidesapp/fakeparagraph.js#L37) |
 
 ## Class: [ParagraphStyle](https://developers.google.com/apps-script/reference/slides/paragraph-style)
 
@@ -692,8 +692,8 @@ A fill that renders an image that's stretched to the dimensions of its container
 | Method | Description | Return Type | Return Description | Status | Implementation |
 |--- |--- |--- |--- |--- |--- |
 | [getAs(String)](https://developers.google.com/apps-script/reference/slides/picture-fill#getAs(String)) | Return the data inside this object as a blob converted to the specified content type. | Blob | The data as a blob. | completed | [link](../src/services/slidesapp/fakepicturefill.js#L13) |
-| [getBlob()](https://developers.google.com/apps-script/reference/slides/picture-fill#getBlob()) | Return the data inside this object as a converted blob. | Blob | The data as a blob. | completed | [link](../src/services/slidesapp/fakepicturefill.js#L14) |
-| [getContentUrl()](https://developers.google.com/apps-script/reference/slides/picture-fill#getContentUrl()) | Gets a URL to the image. |  | String | completed | [link](../src/services/slidesapp/fakepicturefill.js#L18) |
+| [getBlob()](https://developers.google.com/apps-script/reference/slides/picture-fill#getBlob()) | Return the data inside this object as a converted blob. | Blob | The data as a blob. | completed | [link](../src/services/slidesapp/fakepicturefill.js#L17) |
+| [getContentUrl()](https://developers.google.com/apps-script/reference/slides/picture-fill#getContentUrl()) | Gets a URL to the image. |  | String | completed | [link](../src/services/slidesapp/fakepicturefill.js#L21) |
 | [getSourceUrl()](https://developers.google.com/apps-script/reference/slides/picture-fill#getSourceUrl()) | Gets the image's source URL, if available. | String\|null | The image URL, or null if the image does not have a source URL. | completed | [link](../src/services/slidesapp/fakepicturefill.js#L25) |
 
 ## Class: [Point](https://developers.google.com/apps-script/reference/slides/point)
@@ -779,7 +779,7 @@ A PageElement representing a generic shape that does not have a more specific cl
 | [getBorder()](https://developers.google.com/apps-script/reference/slides/shape#getBorder()) | Returns the Border of the shape. | [Border](#class-border) | The border setting of this shape. | not started |  |
 | [getConnectionSites()](https://developers.google.com/apps-script/reference/slides/shape#getConnectionSites()) | Returns the list of ConnectionSites on the page element, or an empty list if the page element does not have any connection sites. | [ConnectionSite[]](#class-connectionsite) | The connection sites list, which may be empty if this element has no connection sites. | completed | [link](../src/services/slidesapp/fakeshape.js#L49) |
 | [getContentAlignment()](https://developers.google.com/apps-script/reference/slides/shape#getContentAlignment()) | Returns the ContentAlignment of the text in the shape. | [ContentAlignment](#enum-contentalignment) | The alignment of text within this shape. | not started |  |
-| [getDescription()](https://developers.google.com/apps-script/reference/slides/shape#getDescription()) | Returns the page element's alt text description. The description is combined with the title to display and read alt text. | String | The page element's alt text description. | completed | [link](../src/services/slidesapp/fakepageelement.js#L304) |
+| [getDescription()](https://developers.google.com/apps-script/reference/slides/shape#getDescription()) | Returns the page element's alt text description. The description is combined with the title to display and read alt text. | String | The page element's alt text description. | completed | [link](../src/services/slidesapp/fakepageelement.js#L308) |
 | [getFill()](https://developers.google.com/apps-script/reference/slides/shape#getFill()) | Returns the Fill of the shape. | [Fill](#class-fill) | The fill setting of this shape. | completed | [link](../src/services/slidesapp/fakeshape.js#L41) |
 | [getHeight()](https://developers.google.com/apps-script/reference/slides/shape#getHeight()) | Gets the element's height in points, which is the height of the element's bounding box when the element has no rotation. | Number\|null | The page element's inherent height in points, or null if the page element does not have a height. | completed | [link](../src/services/slidesapp/fakepageelement.js#L228) |
 | [getInherentHeight()](https://developers.google.com/apps-script/reference/slides/shape#getInherentHeight()) | Returns the element's inherent height in points. | Number\|null | The page element's inherent height in points, or null if the page element does not have a height. | completed | [link](../src/services/slidesapp/fakepageelement.js#L191) |
@@ -888,7 +888,7 @@ A slide in a presentation.
 
 | Method | Description | Return Type | Return Description | Status | Implementation |
 |--- |--- |--- |--- |--- |--- |
-| [duplicate()](https://developers.google.com/apps-script/reference/slides/slide#duplicate()) | Duplicates the slide. | [Slide](#class-slide) | The duplicated slide. | completed | [link](../src/services/slidesapp/fakeslide.js#L491) |
+| [duplicate()](https://developers.google.com/apps-script/reference/slides/slide#duplicate()) | Duplicates the slide. | [Slide](#class-slide) | The duplicated slide. | completed | [link](../src/services/slidesapp/fakeslide.js#L552) |
 | [getBackground()](https://developers.google.com/apps-script/reference/slides/slide#getBackground()) | Gets the page's background. | [PageBackground](#class-pagebackground) | The page's background. | completed | [link](../src/services/slidesapp/fakeslide.js#L88) |
 | [getColorScheme()](https://developers.google.com/apps-script/reference/slides/slide#getColorScheme()) | Gets the ColorScheme associated with the page. | [ColorScheme](#class-colorscheme) | The page's color scheme. | completed | [link](../src/services/slidesapp/fakeslide.js#L96) |
 | [getGroups()](https://developers.google.com/apps-script/reference/slides/slide#getGroups()) | Returns the list of Group objects on the page. |  | Group[] | not started |  |
@@ -911,7 +911,7 @@ A slide in a presentation.
 | [getTables()](https://developers.google.com/apps-script/reference/slides/slide#getTables()) | Returns the list of Table objects on the page. |  | Table[] | completed | [link](../src/services/slidesapp/fakeslide.js#L104) |
 | [getVideos()](https://developers.google.com/apps-script/reference/slides/slide#getVideos()) | Returns the list of Video objects on the page. |  | Video[] | not started |  |
 | [getWordArts()](https://developers.google.com/apps-script/reference/slides/slide#getWordArts()) | Returns the list of WordArt objects on the page. |  | WordArt[] | not started |  |
-| [group(PageElement)](https://developers.google.com/apps-script/reference/slides/slide#group(PageElement)) | Groups all the specified page elements. | [Group](#class-group) | The new group. | completed | [link](../src/services/slidesapp/fakeslide.js#L368) |
+| [group(PageElement)](https://developers.google.com/apps-script/reference/slides/slide#group(PageElement)) | Groups all the specified page elements. | [Group](#class-group) | The new group. | completed | [link](../src/services/slidesapp/fakeslide.js#L371) |
 | [insertGroup(Group)](https://developers.google.com/apps-script/reference/slides/slide#insertGroup(Group)) | Inserts a copy of the provided Group on the page. | [Group](#class-group) | The inserted group. | not started |  |
 | [insertImage(BlobSource,Number,Number,Number,Number)](https://developers.google.com/apps-script/reference/slides/slide#insertImage(BlobSource,Number,Number,Number,Number)) |  |  |  | completed | [link](../src/services/slidesapp/fakeslide.js#L241) |
 | [insertImage(BlobSource)](https://developers.google.com/apps-script/reference/slides/slide#insertImage(BlobSource)) | Inserts an image at the top left corner of the page with a default size from the specified image blob. | [Image](#class-image) | The inserted image. | completed | [link](../src/services/slidesapp/fakeslide.js#L241) |
@@ -940,7 +940,7 @@ A slide in a presentation.
 | [insertVideo(Video)](https://developers.google.com/apps-script/reference/slides/slide#insertVideo(Video)) | Inserts a copy of the provided Video on the page. | [Video](#class-video) | The inserted video. | completed | [link](../src/services/slidesapp/fakeslide.js#L194) |
 | [insertWordArt(WordArt)](https://developers.google.com/apps-script/reference/slides/slide#insertWordArt(WordArt)) | Inserts a copy of the provided WordArt on the page. | [WordArt](#class-wordart) | The inserted word art. | not started |  |
 | [isSkipped()](https://developers.google.com/apps-script/reference/slides/slide#isSkipped()) | Returns whether the slide is skipped in the presentation mode. | Boolean | True if the slide is skipped in the presentation mode. | not started |  |
-| [move(Integer)](https://developers.google.com/apps-script/reference/slides/slide#move(Integer)) | Move the slide to the specified index. |  |  | completed | [link](../src/services/slidesapp/fakeslide.js#L288) |
+| [move(Integer)](https://developers.google.com/apps-script/reference/slides/slide#move(Integer)) | Move the slide to the specified index. |  |  | completed | [link](../src/services/slidesapp/fakeslide.js#L580) |
 | [refreshSlide()](https://developers.google.com/apps-script/reference/slides/slide#refreshSlide()) | Refreshes the slide to reflect any changes made to the linked source slide. If this slide is not linked, returns without making any changes. |  |  | not started |  |
 | [remove()](https://developers.google.com/apps-script/reference/slides/slide#remove()) | Removes the page. |  |  | completed | [link](../src/services/slidesapp/fakeslide.js#L288) |
 | [replaceAllText(String,String,Boolean)](https://developers.google.com/apps-script/reference/slides/slide#replaceAllText(String,String,Boolean)) |  |  |  | completed | [link](../src/services/slidesapp/fakeslide.js#L598) |
@@ -959,7 +959,7 @@ Creates and opens Presentations that can be edited.
 | [getActivePresentation()](https://developers.google.com/apps-script/reference/slides/slides-app#getActivePresentation()) | Returns the currently active presentation to which the script is container-bound, or null if there is no active presentation. To interact with a presentation to which the script is not container-bound, use openById(id) instead. |  | Presentation\|null | completed | [link](../src/services/slidesapp/fakeslidesapp.js#L80) |
 | [getUi()](https://developers.google.com/apps-script/reference/slides/slides-app#getUi()) | Returns an instance of the presentation's user-interface environment that allows the script to add features like menus, dialogs, and sidebars. A script can only interact with the UI for the current instance of an open presentation, and only if the script is bound to the presentation. For more information, see the guides to menus and dialogs and sidebars. |  | Ui | completed | [link](../src/services/slidesapp/fakeslidesapp.js#L89) |
 | [newAffineTransformBuilder()](https://developers.google.com/apps-script/reference/slides/slides-app#newAffineTransformBuilder()) | Returns a new AffineTransformBuilder to build an AffineTransform. The builder | [AffineTransformBuilder](#class-affinetransformbuilder) | A new AffineTransformBuilder. | completed | [link](../src/services/slidesapp/fakeslidesapp.js#L58) |
-| [openById(String)](https://developers.google.com/apps-script/reference/slides/slides-app#openById(String)) | Opens the Presentation with the given ID. | [Presentation](#class-presentation) | The presentation with the given ID. | completed | [link](../src/services/slidesapp/fakeslidesapp.js#L86) |
+| [openById(String)](https://developers.google.com/apps-script/reference/slides/slides-app#openById(String)) | Opens the Presentation with the given ID. | [Presentation](#class-presentation) | The presentation with the given ID. | completed | [link](../src/services/slidesapp/fakeslidesapp.js#L98) |
 | [openByUrl(String)](https://developers.google.com/apps-script/reference/slides/slides-app#openByUrl(String)) | Opens the Presentation with the given URL. | [Presentation](#class-presentation) | The presentation with the given URL. | completed | [link](../src/services/slidesapp/fakeslidesapp.js#L112) |
 
 ## Class: [SolidFill](https://developers.google.com/apps-script/reference/slides/solid-fill)
@@ -1030,25 +1030,25 @@ A PageElement representing a table.
 | [getCell(Integer,Integer)](https://developers.google.com/apps-script/reference/slides/table#getCell(Integer,Integer)) |  |  |  | completed | [link](../src/services/slidesapp/faketable.js#L55) |
 | [getColumn(Integer)](https://developers.google.com/apps-script/reference/slides/table#getColumn(Integer)) | Returns the specified column in the table. | [TableColumn](#class-tablecolumn) | The table column retrieved. | completed | [link](../src/services/slidesapp/faketable.js#L42) |
 | [getConnectionSites()](https://developers.google.com/apps-script/reference/slides/table#getConnectionSites()) | Returns the list of ConnectionSites on the page element, or an empty list if the page element does not have any connection sites. | [ConnectionSite[]](#class-connectionsite) | The connection sites list, which may be empty if this element has no connection sites. | completed | [link](../src/services/slidesapp/fakepageelement.js#L489) |
-| [getDescription()](https://developers.google.com/apps-script/reference/slides/table#getDescription()) | Returns the page element's alt text description. The description is combined with the title to display and read alt text. | String | The page element's alt text description. | completed | [link](../src/services/slidesapp/fakepageelement.js#L304) |
+| [getDescription()](https://developers.google.com/apps-script/reference/slides/table#getDescription()) | Returns the page element's alt text description. The description is combined with the title to display and read alt text. | String | The page element's alt text description. | completed | [link](../src/services/slidesapp/fakepageelement.js#L308) |
 | [getHeight()](https://developers.google.com/apps-script/reference/slides/table#getHeight()) | Gets the element's height in points, which is the height of the element's bounding box when the element has no rotation. | Number\|null | The page element's inherent height in points, or null if the page element does not have a height. | completed | [link](../src/services/slidesapp/fakepageelement.js#L228) |
 | [getInherentHeight()](https://developers.google.com/apps-script/reference/slides/table#getInherentHeight()) | Returns the element's inherent height in points. | Number\|null | The page element's inherent height in points, or null if the page element does not have a height. | completed | [link](../src/services/slidesapp/fakepageelement.js#L191) |
 | [getInherentWidth()](https://developers.google.com/apps-script/reference/slides/table#getInherentWidth()) | Returns the element's inherent width in points. | Number\|null | The page element's inherent width in points, or null if the page element does not have a width. | completed | [link](../src/services/slidesapp/fakepageelement.js#L195) |
 | [getLeft()](https://developers.google.com/apps-script/reference/slides/table#getLeft()) | Returns the element's horizontal position in points, measured from the upper-left corner of the page when the element has no rotation. | Number | This element's horizontal position in points, from the upper-left corner of the page. | completed | [link](../src/services/slidesapp/fakepageelement.js#L199) |
-| [getNumColumns()](https://developers.google.com/apps-script/reference/slides/table#getNumColumns()) | Returns the number of columns in the table. | Integer | The number fo columns in this table. | completed | [link](../src/services/slidesapp/faketable.js#L26) |
-| [getNumRows()](https://developers.google.com/apps-script/reference/slides/table#getNumRows()) | Returns the number of rows in the table. | Integer | The number of rows in this table. | completed | [link](../src/services/slidesapp/faketable.js#L34) |
+| [getNumColumns()](https://developers.google.com/apps-script/reference/slides/table#getNumColumns()) | Returns the number of columns in the table. | Integer | The number fo columns in this table. | completed | [link](../src/services/slidesapp/faketable.js#L83) |
+| [getNumRows()](https://developers.google.com/apps-script/reference/slides/table#getNumRows()) | Returns the number of rows in the table. | Integer | The number of rows in this table. | completed | [link](../src/services/slidesapp/faketable.js#L75) |
 | [getObjectId()](https://developers.google.com/apps-script/reference/slides/table#getObjectId()) | Returns the unique ID for this object. Object IDs used by pages and page elements share the same namespace. | String | The unique ID for this object. | completed | [link](../src/services/slidesapp/fakepageelement.js#L58) |
 | [getPageElementType()](https://developers.google.com/apps-script/reference/slides/table#getPageElementType()) | Returns the page element's type, represented as a PageElementType enum. | [PageElementType](#enum-pageelementtype) | The page element's type. | completed | [link](../src/services/slidesapp/fakepageelement.js#L162) |
 | [getParentGroup()](https://developers.google.com/apps-script/reference/slides/table#getParentGroup()) | Returns the group this page element belongs to, or null if the element is not in a group. | Group\|null | The group this page element belongs to, or null. | completed | [link](../src/services/slidesapp/fakepageelement.js#L321) |
 | [getParentPage()](https://developers.google.com/apps-script/reference/slides/table#getParentPage()) | Returns the page this page element is on. | [Page](#class-page) | The page this element resides on. | completed | [link](../src/services/slidesapp/fakepageelement.js#L317) |
 | [getRotation()](https://developers.google.com/apps-script/reference/slides/table#getRotation()) | Returns the element's clockwise rotation angle around its center in degrees, where zero degrees means no rotation. | Number | The rotation angle in degrees between 0 (inclusive) and 360 (exclusive). | completed | [link](../src/services/slidesapp/fakepageelement.js#L239) |
-| [getRow(Integer)](https://developers.google.com/apps-script/reference/slides/table#getRow(Integer)) | Returns the specified row in the table. | [TableRow](#class-tablerow) | The table row retrieved. | completed | [link](../src/services/slidesapp/faketable.js#L56) |
+| [getRow(Integer)](https://developers.google.com/apps-script/reference/slides/table#getRow(Integer)) | Returns the specified row in the table. | [TableRow](#class-tablerow) | The table row retrieved. | completed | [link](../src/services/slidesapp/faketable.js#L64) |
 | [getTitle()](https://developers.google.com/apps-script/reference/slides/table#getTitle()) | Returns the page element's alt text title. The title is combined with the description to display and read alt text. | String | The page element's alt text title. | completed | [link](../src/services/slidesapp/fakepageelement.js#L299) |
 | [getTop()](https://developers.google.com/apps-script/reference/slides/table#getTop()) | Gets the element's vertical position in points, measured from the upper-left corner of the page when the element has no rotation. | Number | This element's vertical position in points, from the upper-left corner of the page. | completed | [link](../src/services/slidesapp/fakepageelement.js#L208) |
 | [getTransform()](https://developers.google.com/apps-script/reference/slides/table#getTransform()) | Returns the page element's transform. | [AffineTransform](#class-affinetransform) | The page element's transform. | completed | [link](../src/services/slidesapp/fakepageelement.js#L258) |
 | [getWidth()](https://developers.google.com/apps-script/reference/slides/table#getWidth()) | Returns the element's width in points, which is the width of the element's bounding box when the element has no rotation. | Number\|null | The page element's inherent width in points, or null if the page element does not have a width. | completed | [link](../src/services/slidesapp/fakepageelement.js#L217) |
-| [insertColumn(Integer)](https://developers.google.com/apps-script/reference/slides/table#insertColumn(Integer)) | Inserts a new column at the specified index of the table. | [TableColumn](#class-tablecolumn) | The new inserted column. | completed | [link](../src/services/slidesapp/faketable.js#L26) |
-| [insertRow(Integer)](https://developers.google.com/apps-script/reference/slides/table#insertRow(Integer)) | Inserts a new row at the specified index of the table. | [TableRow](#class-tablerow) | The new inserted row. | completed | [link](../src/services/slidesapp/faketable.js#L34) |
+| [insertColumn(Integer)](https://developers.google.com/apps-script/reference/slides/table#insertColumn(Integer)) | Inserts a new column at the specified index of the table. | [TableColumn](#class-tablecolumn) | The new inserted column. | completed | [link](../src/services/slidesapp/faketable.js#L93) |
+| [insertRow(Integer)](https://developers.google.com/apps-script/reference/slides/table#insertRow(Integer)) | Inserts a new row at the specified index of the table. | [TableRow](#class-tablerow) | The new inserted row. | completed | [link](../src/services/slidesapp/faketable.js#L102) |
 | [preconcatenateTransform(AffineTransform)](https://developers.google.com/apps-script/reference/slides/table#preconcatenateTransform(AffineTransform)) | Preconcatenates the provided transform to the existing transform of the page element. | [Table](#class-table) | This page element, for chaining. | completed | [link](../src/services/slidesapp/fakepageelement.js#L282) |
 | [remove()](https://developers.google.com/apps-script/reference/slides/table#remove()) | Removes the page element. |  |  | completed | [link](../src/services/slidesapp/fakepageelement.js#L327) |
 | [scaleHeight(Number)](https://developers.google.com/apps-script/reference/slides/table#scaleHeight(Number)) | Scales the element's height by the specified ratio. The element's height is the height of its bounding box when the element has no rotation. | [Table](#class-table) | This page element, for chaining. | completed | [link](../src/services/slidesapp/fakepageelement.js#L494) |
@@ -1082,7 +1082,7 @@ A cell in a table.
 | [getParentRow()](https://developers.google.com/apps-script/reference/slides/table-cell#getParentRow()) | Returns the table row containing the current cell. |  | TableRow | completed | [link](../src/services/slidesapp/faketablecell.js#L98) |
 | [getParentTable()](https://developers.google.com/apps-script/reference/slides/table-cell#getParentTable()) | Returns the table containing the current cell. |  | Table | completed | [link](../src/services/slidesapp/faketablecell.js#L106) |
 | [getRowIndex()](https://developers.google.com/apps-script/reference/slides/table-cell#getRowIndex()) | Returns the 0-based row index of the table cell. |  | Integer | completed | [link](../src/services/slidesapp/faketablecell.js#L114) |
-| [getRowSpan()](https://developers.google.com/apps-script/reference/slides/table-cell#getRowSpan()) | Returns the row span of the table cell. |  | Integer | completed | [link](../src/services/slidesapp/faketablecell.js#L77) |
+| [getRowSpan()](https://developers.google.com/apps-script/reference/slides/table-cell#getRowSpan()) | Returns the row span of the table cell. |  | Integer | completed | [link](../src/services/slidesapp/faketablecell.js#L122) |
 | [getText()](https://developers.google.com/apps-script/reference/slides/table-cell#getText()) | Returns the text content of the table cell. Returns null if the cell is merged but is not a head cell. |  | TextRange | completed | [link](../src/services/slidesapp/faketablecell.js#L157) |
 | [setContentAlignment(ContentAlignment)](https://developers.google.com/apps-script/reference/slides/table-cell#setContentAlignment(ContentAlignment)) | Sets the ContentAlignment of the text in the table cell. | [TableCell](#class-tablecell) | This TableCell, for chaining. | completed | [link](../src/services/slidesapp/faketablecell.js#L131) |
 
@@ -1113,7 +1113,7 @@ A row in a table. A row consists of a list of table cells. A row is identified b
 
 | Method | Description | Return Type | Return Description | Status | Implementation |
 |--- |--- |--- |--- |--- |--- |
-| [getCell(Integer)](https://developers.google.com/apps-script/reference/slides/table-row#getCell(Integer)) | Returns the cell at the specified index. | [TableCell](#class-tablecell) | The cell. | completed | [link](../src/services/slidesapp/faketablerow.js#L22) |
+| [getCell(Integer)](https://developers.google.com/apps-script/reference/slides/table-row#getCell(Integer)) | Returns the cell at the specified index. | [TableCell](#class-tablecell) | The cell. | completed | [link](../src/services/slidesapp/faketablerow.js#L33) |
 | [getIndex()](https://developers.google.com/apps-script/reference/slides/table-row#getIndex()) | Returns the 0-based index of the row. | Integer | The 0-based index of the row. | completed | [link](../src/services/slidesapp/faketablerow.js#L45) |
 | [getMinimumHeight()](https://developers.google.com/apps-script/reference/slides/table-row#getMinimumHeight()) | Returns the minimum height of the row in points. The actual height depends on the length of the content of the cell. | Number | The minimum height of the row in points. | completed | [link](../src/services/slidesapp/faketablerow.js#L53) |
 | [getNumCells()](https://developers.google.com/apps-script/reference/slides/table-row#getNumCells()) | Returns the number of cells in this row. | Integer | The number of cells in this row. | completed | [link](../src/services/slidesapp/faketablerow.js#L61) |
@@ -1129,29 +1129,29 @@ A segment of the text contents of a Shape or a TableCell.
 | [appendParagraph(String)](https://developers.google.com/apps-script/reference/slides/text-range#appendParagraph(String)) | Appends a paragraph at the end of the text range. The paragraph maintains the styling of the end of the current text range. | [Paragraph](#class-paragraph) | The appended Paragraph. | completed | [link](../src/services/slidesapp/faketextrange.js#L40) |
 | [appendRange(TextRange,Boolean)](https://developers.google.com/apps-script/reference/slides/text-range#appendRange(TextRange,Boolean)) |  |  |  | completed | [link](../src/services/slidesapp/faketextrange.js#L46) |
 | [appendRange(TextRange)](https://developers.google.com/apps-script/reference/slides/text-range#appendRange(TextRange)) | Appends a copy of the provided text range to the end of the current text range. | [TextRange](#class-textrange) | The text range representing the appended text. | completed | [link](../src/services/slidesapp/faketextrange.js#L46) |
-| [appendText(String)](https://developers.google.com/apps-script/reference/slides/text-range#appendText(String)) | Appends text at the end of the text range. The text maintains the styling of the end of the existing text. | [TextRange](#class-textrange) | The text range representing the appended text. | completed | [link](../src/services/slidesapp/faketextrange.js#L41) |
+| [appendText(String)](https://developers.google.com/apps-script/reference/slides/text-range#appendText(String)) | Appends text at the end of the text range. The text maintains the styling of the end of the existing text. | [TextRange](#class-textrange) | The text range representing the appended text. | completed | [link](../src/services/slidesapp/faketextrange.js#L51) |
 | [asRenderedString()](https://developers.google.com/apps-script/reference/slides/text-range#asRenderedString()) | Returns the rendered text bounded by this range of the associated shape or table cell in a format appropriate to display to end users. | String | The rendered text in the range. | completed | [link](../src/services/slidesapp/faketextrange.js#L170) |
-| [asString()](https://developers.google.com/apps-script/reference/slides/text-range#asString()) | Returns the raw text bounded by this range of the associated shape or table cell. | String | The raw text in the range. | completed | [link](../src/services/slidesapp/faketextrange.js#L47) |
-| [clear()](https://developers.google.com/apps-script/reference/slides/text-range#clear()) | Clears the text bounded by this range. |  |  | completed | [link](../src/services/slidesapp/faketextrange.js#L175) |
-| [clear(Integer,Integer)](https://developers.google.com/apps-script/reference/slides/text-range#clear(Integer,Integer)) |  |  |  | completed | [link](../src/services/slidesapp/faketextrange.js#L175) |
+| [asString()](https://developers.google.com/apps-script/reference/slides/text-range#asString()) | Returns the raw text bounded by this range of the associated shape or table cell. | String | The raw text in the range. | completed | [link](../src/services/slidesapp/faketextrange.js#L133) |
+| [clear()](https://developers.google.com/apps-script/reference/slides/text-range#clear()) | Clears the text bounded by this range. |  |  | completed | [link](../src/services/slidesapp/faketextrange.js#L209) |
+| [clear(Integer,Integer)](https://developers.google.com/apps-script/reference/slides/text-range#clear(Integer,Integer)) |  |  |  | completed | [link](../src/services/slidesapp/faketextrange.js#L209) |
 | [find(String,Integer)](https://developers.google.com/apps-script/reference/slides/text-range#find(String,Integer)) |  |  |  | not started |  |
 | [find(String)](https://developers.google.com/apps-script/reference/slides/text-range#find(String)) | Returns all the ranges matching the search pattern in the current text range. The search is case sensitive. | [TextRange[]](#class-textrange) | A list of text ranges. | not started |  |
 | [getAutoTexts()](https://developers.google.com/apps-script/reference/slides/text-range#getAutoTexts()) | Returns the auto texts within the current text range. | [AutoText[]](#class-autotext) | A list of auto texts. | completed | [link](../src/services/slidesapp/faketextrange.js#L258) |
 | [getEndIndex()](https://developers.google.com/apps-script/reference/slides/text-range#getEndIndex()) | Returns the exclusive, 0-based index for the last character in this range. If the start and end indices are equal, the range is considered to be empty. | Integer | The end index of the range. | completed | [link](../src/services/slidesapp/faketextrange.js#L35) |
-| [getLength()](https://developers.google.com/apps-script/reference/slides/text-range#getLength()) | Returns the number of characters in this range. | Integer | The number of characters in this range. | completed | [link](../src/services/slidesapp/faketextrange.js#L37) |
+| [getLength()](https://developers.google.com/apps-script/reference/slides/text-range#getLength()) | Returns the number of characters in this range. | Integer | The number of characters in this range. | completed | [link](../src/services/slidesapp/faketextrange.js#L59) |
 | [getLinks()](https://developers.google.com/apps-script/reference/slides/text-range#getLinks()) | Returns a collection of text ranges that correspond to all Links within the current text range or overlapping the current text range. | [TextRange[]](#class-textrange) | A list of text ranges. | completed | [link](../src/services/slidesapp/faketextrange.js#L75) |
 | [getListParagraphs()](https://developers.google.com/apps-script/reference/slides/text-range#getListParagraphs()) | Returns the paragraphs in lists that overlap the current text range. | [Paragraph[]](#class-paragraph) | A list of paragraphs in lists. | completed | [link](../src/services/slidesapp/faketextrange.js#L79) |
-| [getListStyle()](https://developers.google.com/apps-script/reference/slides/text-range#getListStyle()) | Returns the ListStyle of the current text range. | [ListStyle](#class-liststyle) | The list style of the current text range. | completed | [link](../src/services/slidesapp/faketextrange.js#L80) |
-| [getParagraphs()](https://developers.google.com/apps-script/reference/slides/text-range#getParagraphs()) | Returns the paragraphs that overlap the current text range. | [Paragraph[]](#class-paragraph) | A list of paragraphs. | completed | [link](../src/services/slidesapp/faketextrange.js#L42) |
+| [getListStyle()](https://developers.google.com/apps-script/reference/slides/text-range#getListStyle()) | Returns the ListStyle of the current text range. | [ListStyle](#class-liststyle) | The list style of the current text range. | completed | [link](../src/services/slidesapp/faketextrange.js#L83) |
+| [getParagraphs()](https://developers.google.com/apps-script/reference/slides/text-range#getParagraphs()) | Returns the paragraphs that overlap the current text range. | [Paragraph[]](#class-paragraph) | A list of paragraphs. | completed | [link](../src/services/slidesapp/faketextrange.js#L231) |
 | [getParagraphStyle()](https://developers.google.com/apps-script/reference/slides/text-range#getParagraphStyle()) | Returns the ParagraphStyle of the current text range. | [ParagraphStyle](#class-paragraphstyle) | The paragraph style of the current text range. | completed | [link](../src/services/slidesapp/faketextrange.js#L87) |
-| [getRange(Integer,Integer)](https://developers.google.com/apps-script/reference/slides/text-range#getRange(Integer,Integer)) |  |  |  | completed | [link](../src/services/slidesapp/faketextrange.js#L80) |
+| [getRange(Integer,Integer)](https://developers.google.com/apps-script/reference/slides/text-range#getRange(Integer,Integer)) |  |  |  | completed | [link](../src/services/slidesapp/faketextrange.js#L91) |
 | [getRuns()](https://developers.google.com/apps-script/reference/slides/text-range#getRuns()) | Returns the text runs that overlap the current text range. A text run is a segment of text where all the characters have the same text style. | [TextRange[]](#class-textrange) | A list of text ranges. | completed | [link](../src/services/slidesapp/faketextrange.js#L95) |
 | [getStartIndex()](https://developers.google.com/apps-script/reference/slides/text-range#getStartIndex()) | Returns the inclusive, 0-based index for the first character in this range. If the start and end indices are equal, the range is considered to be empty. | Integer | The start index of the range. | completed | [link](../src/services/slidesapp/faketextrange.js#L31) |
-| [getTextStyle()](https://developers.google.com/apps-script/reference/slides/text-range#getTextStyle()) | Returns the text style of the range, or null if the range is empty. | TextStyle\|null | The text style of the range. | completed | [link](../src/services/slidesapp/faketextrange.js#L76) |
+| [getTextStyle()](https://developers.google.com/apps-script/reference/slides/text-range#getTextStyle()) | Returns the text style of the range, or null if the range is empty. | TextStyle\|null | The text style of the range. | completed | [link](../src/services/slidesapp/faketextrange.js#L99) |
 | [insertParagraph(Integer,String)](https://developers.google.com/apps-script/reference/slides/text-range#insertParagraph(Integer,String)) |  |  |  | completed | [link](../src/services/slidesapp/faketextrange.js#L103) |
 | [insertRange(Integer,TextRange,Boolean)](https://developers.google.com/apps-script/reference/slides/text-range#insertRange(Integer,TextRange,Boolean)) |  |  |  | completed | [link](../src/services/slidesapp/faketextrange.js#L108) |
 | [insertRange(Integer,TextRange)](https://developers.google.com/apps-script/reference/slides/text-range#insertRange(Integer,TextRange)) |  |  |  | completed | [link](../src/services/slidesapp/faketextrange.js#L108) |
-| [insertText(Integer,String)](https://developers.google.com/apps-script/reference/slides/text-range#insertText(Integer,String)) |  |  |  | completed | [link](../src/services/slidesapp/faketextrange.js#L56) |
+| [insertText(Integer,String)](https://developers.google.com/apps-script/reference/slides/text-range#insertText(Integer,String)) |  |  |  | completed | [link](../src/services/slidesapp/faketextrange.js#L185) |
 | [isEmpty()](https://developers.google.com/apps-script/reference/slides/text-range#isEmpty()) | Returns true if there are no characters in this range, and returns false otherwise. | Boolean | true if there are no characters in this range, and returns false otherwise. | completed | [link](../src/services/slidesapp/faketextrange.js#L287) |
 | [replaceAllText(String,String,Boolean)](https://developers.google.com/apps-script/reference/slides/text-range#replaceAllText(String,String,Boolean)) |  |  |  | completed | [link](../src/services/slidesapp/faketextrange.js#L112) |
 | [replaceAllText(String,String)](https://developers.google.com/apps-script/reference/slides/text-range#replaceAllText(String,String)) |  |  |  | completed | [link](../src/services/slidesapp/faketextrange.js#L112) |
@@ -1208,7 +1208,7 @@ A color that refers to an entry in the page's ColorScheme.
 
 | Method | Description | Return Type | Return Description | Status | Implementation |
 |--- |--- |--- |--- |--- |--- |
-| [getColorType()](https://developers.google.com/apps-script/reference/slides/theme-color#getColorType()) | Get the type of this color. | ColorType | The color type. | completed | [link](../src/services/common/fakethemecolor.js#L26) |
+| [getColorType()](https://developers.google.com/apps-script/reference/slides/theme-color#getColorType()) | Get the type of this color. | ColorType | The color type. | completed | [link](../src/services/common/fakethemecolor.js#L30) |
 | [getThemeColorType()](https://developers.google.com/apps-script/reference/slides/theme-color#getThemeColorType()) | Get the theme color type of this color. |  | ThemeColorType | completed | [link](../src/services/common/fakethemecolor.js#L34) |
 
 ## Class: [Video](https://developers.google.com/apps-script/reference/slides/video)
@@ -1239,7 +1239,7 @@ A PageElement representing a video.
 | [getTop()](https://developers.google.com/apps-script/reference/slides/video#getTop()) | Gets the element's vertical position in points, measured from the upper-left corner of the page when the element has no rotation. | Number | This element's vertical position in points, from the upper-left corner of the page. | not started |  |
 | [getTransform()](https://developers.google.com/apps-script/reference/slides/video#getTransform()) | Returns the page element's transform. | [AffineTransform](#class-affinetransform) | The page element's transform. | not started |  |
 | [getUrl()](https://developers.google.com/apps-script/reference/slides/video#getUrl()) | Gets an URL to the video. The URL is valid as long as the source video exists and sharing settings do not change. Returns null when the video source is not supported. | String\|null | The URL of this video, or null if the video source is not supported. | completed | [link](../src/services/slidesapp/fakevideo.js#L24) |
-| [getVideoId()](https://developers.google.com/apps-script/reference/slides/video#getVideoId()) | Gets the video source's unique identifier for this video. | String | The source ID for this video. | completed | [link](../src/services/slidesapp/fakevideo.js#L21) |
+| [getVideoId()](https://developers.google.com/apps-script/reference/slides/video#getVideoId()) | Gets the video source's unique identifier for this video. | String | The source ID for this video. | completed | [link](../src/services/slidesapp/fakevideo.js#L28) |
 | [getWidth()](https://developers.google.com/apps-script/reference/slides/video#getWidth()) | Returns the element's width in points, which is the width of the element's bounding box when the element has no rotation. | Number\|null | The page element's inherent width in points, or null if the page element does not have a width. | not started |  |
 | [preconcatenateTransform(AffineTransform)](https://developers.google.com/apps-script/reference/slides/video#preconcatenateTransform(AffineTransform)) | Preconcatenates the provided transform to the existing transform of the page element. | [Video](#class-video) | This page element, for chaining. | not started |  |
 | [remove()](https://developers.google.com/apps-script/reference/slides/video#remove()) | Removes the page element. |  |  | not started |  |
@@ -1341,10 +1341,10 @@ The autofit types.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| NONE | Autofit isn't applied. | completed | [link](../src/services/enums/slidesenums.js#L11) |
+| NONE | Autofit isn't applied. | completed | [link](../src/services/enums/slidesenums.js#L32) |
 | SHAPE_AUTOFIT | Resizes the shape to fit the text. | completed | [link](../src/services/enums/slidesenums.js#L34) |
 | TEXT_AUTOFIT | Shrinks the text on overflow. | completed | [link](../src/services/enums/slidesenums.js#L33) |
-| UNSUPPORTED | An autofit type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
+| UNSUPPORTED | An autofit type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L31) |
 
 ## Enum: [AutoTextType](https://developers.google.com/apps-script/reference/slides/auto-text-type)
 
@@ -1353,7 +1353,7 @@ The types of auto text.
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
 | SLIDE_NUMBER | A slide number. | completed | [link](../src/services/enums/slidesenums.js#L28) |
-| UNSUPPORTED | An auto text type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
+| UNSUPPORTED | An auto text type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L27) |
 
 ## Enum: [CellMergeState](https://developers.google.com/apps-script/reference/slides/cell-merge-state)
 
@@ -1374,7 +1374,7 @@ The content alignments for a Shape or TableCell. The supported alignments corres
 | BOTTOM | Aligns the content to the bottom of the content holder. Corresponds to ECMA-376 ST_TextAnchoringType 'b'. | completed | [link](../src/services/enums/slidesenums.js#L50) |
 | MIDDLE | Aligns the content to the middle of the content holder. Corresponds to ECMA-376 ST_TextAnchoringType 'ctr'. | completed | [link](../src/services/enums/slidesenums.js#L49) |
 | TOP | Aligns the content to the top of the content holder. Corresponds to ECMA-376 ST_TextAnchoringType 't'. | completed | [link](../src/services/enums/slidesenums.js#L48) |
-| UNSUPPORTED | A content alignment that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
+| UNSUPPORTED | A content alignment that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L47) |
 
 ## Enum: [DashStyle](https://developers.google.com/apps-script/reference/slides/dash-style)
 
@@ -1382,13 +1382,13 @@ The kinds of dashes with which linear geometry can be rendered. These values are
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| DASH | Dashed line. Corresponds to ECMA-376 ST_PresetLineDashVal value 'dash'. | completed | [link](../src/services/enums/slidesenums.js#L53) |
+| DASH | Dashed line. Corresponds to ECMA-376 ST_PresetLineDashVal value 'dash'. | completed | [link](../src/services/enums/slidesenums.js#L57) |
 | DASH_DOT | Alternating dashes and dots. Corresponds to ECMA-376 ST_PresetLineDashVal value 'dashDot'. | completed | [link](../src/services/enums/slidesenums.js#L58) |
 | DOT | Dotted line. Corresponds to ECMA-376 ST_PresetLineDashVal value 'dot'. | completed | [link](../src/services/enums/slidesenums.js#L56) |
 | LONG_DASH | Line with large dashes. Corresponds to ECMA-376 ST_PresetLineDashVal value 'lgDash'. | completed | [link](../src/services/enums/slidesenums.js#L59) |
 | LONG_DASH_DOT | Alternating large dashes and dots. Corresponds to ECMA-376 ST_PresetLineDashVal value 'lgDashDot'. | completed | [link](../src/services/enums/slidesenums.js#L60) |
 | SOLID | Solid line. Corresponds to ECMA-376 ST_PresetLineDashVal value 'solid'. This is the default dash style. | completed | [link](../src/services/enums/slidesenums.js#L55) |
-| UNSUPPORTED | A dash style that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
+| UNSUPPORTED | A dash style that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L54) |
 
 ## Enum: [FillType](https://developers.google.com/apps-script/reference/slides/fill-type)
 
@@ -1396,9 +1396,9 @@ The kinds of fill.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| NONE | No fill, so the background is transparent. | completed | [link](../src/services/enums/slidesenums.js#L11) |
-| SOLID | A solid color fill. | completed | [link](../src/services/enums/slidesenums.js#L55) |
-| UNSUPPORTED | A fill type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
+| NONE | No fill, so the background is transparent. | completed | [link](../src/services/enums/slidesenums.js#L64) |
+| SOLID | A solid color fill. | completed | [link](../src/services/enums/slidesenums.js#L65) |
+| UNSUPPORTED | A fill type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L63) |
 
 ## Enum: [LineCategory](https://developers.google.com/apps-script/reference/slides/line-category)
 
@@ -1409,7 +1409,7 @@ The line category.
 | BENT | Bent connectors, including bent connector 2 to 5. | completed | [link](../src/services/enums/slidesenums.js#L72) |
 | CURVED | Curved connectors, including curved connector 2 to 5. | completed | [link](../src/services/enums/slidesenums.js#L73) |
 | STRAIGHT | Straight connectors, including straight connector 1. | completed | [link](../src/services/enums/slidesenums.js#L71) |
-| UNSUPPORTED | A line category that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
+| UNSUPPORTED | A line category that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L70) |
 
 ## Enum: [LineFillType](https://developers.google.com/apps-script/reference/slides/line-fill-type)
 
@@ -1417,9 +1417,9 @@ The kinds of line fill.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| NONE | No fill, so the line or outline is transparent. | completed | [link](../src/services/enums/slidesenums.js#L11) |
-| SOLID | A solid color fill. | completed | [link](../src/services/enums/slidesenums.js#L55) |
-| UNSUPPORTED | A line fill type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
+| NONE | No fill, so the line or outline is transparent. | completed | [link](../src/services/enums/slidesenums.js#L77) |
+| SOLID | A solid color fill. | completed | [link](../src/services/enums/slidesenums.js#L78) |
+| UNSUPPORTED | A line fill type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L76) |
 
 ## Enum: [LineType](https://developers.google.com/apps-script/reference/slides/line-type)
 
@@ -1437,7 +1437,7 @@ The line types.
 | CURVED_CONNECTOR_5 | Curved connector 5 form. Corresponds to ECMA-376 ST_ShapeType 'curvedConnector5'. | completed | [link](../src/services/enums/slidesenums.js#L91) |
 | STRAIGHT_CONNECTOR_1 | Straight connector 1 form. Corresponds to ECMA-376 ST_ShapeType 'straightConnector1'. | completed | [link](../src/services/enums/slidesenums.js#L83) |
 | STRAIGHT_LINE | Straight line. Corresponds to ECMA-376 ST_ShapeType 'line'. This line type is not a connector. | completed | [link](../src/services/enums/slidesenums.js#L92) |
-| UNSUPPORTED | A line type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
+| UNSUPPORTED | A line type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L82) |
 
 ## Enum: [LinkType](https://developers.google.com/apps-script/reference/slides/link-type)
 
@@ -1448,7 +1448,7 @@ The types of a Link.
 | SLIDE_ID | A link to a specific slide in this presentation, addressed by its ID. | completed | [link](../src/services/enums/slidesenums.js#L98) |
 | SLIDE_INDEX | A link to a specific slide in this presentation, addressed by its zero-based index. | completed | [link](../src/services/enums/slidesenums.js#L99) |
 | SLIDE_POSITION | A link to a specific slide in this presentation, addressed by its position. | completed | [link](../src/services/enums/slidesenums.js#L97) |
-| UNSUPPORTED | A link type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
+| UNSUPPORTED | A link type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L95) |
 | URL | A link to an external web page. | completed | [link](../src/services/enums/slidesenums.js#L96) |
 
 ## Enum: [ListPreset](https://developers.google.com/apps-script/reference/slides/list-preset)
@@ -1479,10 +1479,10 @@ The kinds of page backgrounds.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| NONE | No fill, so the background is rendered white. | completed | [link](../src/services/enums/slidesenums.js#L11) |
+| NONE | No fill, so the background is rendered white. | completed | [link](../src/services/enums/slidesenums.js#L120) |
 | PICTURE | A picture that is stretched to fill the page. | completed | [link](../src/services/enums/slidesenums.js#L122) |
-| SOLID | A solid color fill. | completed | [link](../src/services/enums/slidesenums.js#L55) |
-| UNSUPPORTED | A page background type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
+| SOLID | A solid color fill. | completed | [link](../src/services/enums/slidesenums.js#L121) |
+| UNSUPPORTED | A page background type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L119) |
 
 ## Enum: [PageElementType](https://developers.google.com/apps-script/reference/slides/page-element-type)
 
@@ -1492,12 +1492,12 @@ The page element type.
 |--- |--- |--- |--- |
 | GROUP | Represents a collection of page elements joined as a single unit. | completed | [link](../src/services/enums/slidesenums.js#L133) |
 | IMAGE | Represents an image. | completed | [link](../src/services/enums/slidesenums.js#L130) |
-| LINE | Represents a line. | completed | [link](../src/services/enums/slidesenums.js#L66) |
-| SHAPE | Represents a generic shape that does not have a more specific classification. | completed | [link](../src/services/enums/slidesenums.js#L34) |
+| LINE | Represents a line. | completed | [link](../src/services/enums/slidesenums.js#L134) |
+| SHAPE | Represents a generic shape that does not have a more specific classification. | completed | [link](../src/services/enums/slidesenums.js#L129) |
 | SHEETS_CHART | Represents a linked chart embedded from Google Sheets. | completed | [link](../src/services/enums/slidesenums.js#L136) |
 | SPEAKER_SPOTLIGHT | Represents a speaker spotlight. | completed | [link](../src/services/enums/slidesenums.js#L138) |
 | TABLE | Represents a table. | completed | [link](../src/services/enums/slidesenums.js#L132) |
-| UNSUPPORTED | Represents a page element that is not supported and cannot be further classified. | completed | [link](../src/services/enums/slidesenums.js#L10) |
+| UNSUPPORTED | Represents a page element that is not supported and cannot be further classified. | completed | [link](../src/services/enums/slidesenums.js#L128) |
 | VIDEO | Represents a video. | completed | [link](../src/services/enums/slidesenums.js#L131) |
 | WORD_ART | Represents word art. | completed | [link](../src/services/enums/slidesenums.js#L135) |
 
@@ -1509,8 +1509,8 @@ The page types.
 |--- |--- |--- |--- |
 | LAYOUT | A layout page. | completed | [link](../src/services/enums/slidesenums.js#L144) |
 | MASTER | A master page. | completed | [link](../src/services/enums/slidesenums.js#L145) |
-| SLIDE | A slide page. | completed | [link](../src/services/enums/slidesenums.js#L28) |
-| UNSUPPORTED | A page type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
+| SLIDE | A slide page. | completed | [link](../src/services/enums/slidesenums.js#L143) |
+| UNSUPPORTED | A page type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L142) |
 
 ## Enum: [ParagraphAlignment](https://developers.google.com/apps-script/reference/slides/paragraph-alignment)
 
@@ -1518,11 +1518,11 @@ The types of text alignment for a paragraph.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| CENTER | The paragraph is centered. | completed | [link](../src/services/enums/slidesenums.js#L4) |
+| CENTER | The paragraph is centered. | completed | [link](../src/services/enums/slidesenums.js#L152) |
 | END | The paragraph is aligned to the end of the line. Right-aligned for left-to-right text, left-aligned otherwise. | completed | [link](../src/services/enums/slidesenums.js#L153) |
 | JUSTIFIED | The paragraph is justified. | completed | [link](../src/services/enums/slidesenums.js#L154) |
 | START | The paragraph is aligned to the start of the line. Left-aligned for left-to-right text, right-aligned otherwise. | completed | [link](../src/services/enums/slidesenums.js#L151) |
-| UNSUPPORTED | A paragraph alignment that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
+| UNSUPPORTED | A paragraph alignment that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L150) |
 
 ## Enum: [PlaceholderType](https://developers.google.com/apps-script/reference/slides/placeholder-type)
 
@@ -1532,22 +1532,22 @@ The placeholder types. Many of these placeholder types correspond to placeholder
 |--- |--- |--- |--- |
 | BODY | Body text. | completed | [link](../src/services/enums/slidesenums.js#L160) |
 | CENTERED_TITLE | Title centered. | completed | [link](../src/services/enums/slidesenums.js#L163) |
-| CHART | Chart or graph. | completed | [link](../src/services/enums/slidesenums.js#L136) |
+| CHART | Chart or graph. | completed | [link](../src/services/enums/slidesenums.js#L161) |
 | CLIP_ART | Clip art image. | completed | [link](../src/services/enums/slidesenums.js#L162) |
 | DATE_AND_TIME | Date and time. | completed | [link](../src/services/enums/slidesenums.js#L165) |
 | DIAGRAM | Diagram. | completed | [link](../src/services/enums/slidesenums.js#L164) |
 | FOOTER | Footer text. | completed | [link](../src/services/enums/slidesenums.js#L166) |
 | HEADER | Header text. | completed | [link](../src/services/enums/slidesenums.js#L167) |
 | MEDIA | Multimedia. | completed | [link](../src/services/enums/slidesenums.js#L168) |
-| NONE | Not a Placeholder. | completed | [link](../src/services/enums/slidesenums.js#L11) |
+| NONE | Not a Placeholder. | completed | [link](../src/services/enums/slidesenums.js#L159) |
 | OBJECT | Any content type. | completed | [link](../src/services/enums/slidesenums.js#L169) |
-| PICTURE | Picture. | completed | [link](../src/services/enums/slidesenums.js#L122) |
+| PICTURE | Picture. | completed | [link](../src/services/enums/slidesenums.js#L170) |
 | SLIDE_IMAGE | Slide image. | completed | [link](../src/services/enums/slidesenums.js#L175) |
-| SLIDE_NUMBER | Number of a slide. | completed | [link](../src/services/enums/slidesenums.js#L28) |
+| SLIDE_NUMBER | Number of a slide. | completed | [link](../src/services/enums/slidesenums.js#L171) |
 | SUBTITLE | Subtitle. | completed | [link](../src/services/enums/slidesenums.js#L172) |
-| TABLE | Table. | completed | [link](../src/services/enums/slidesenums.js#L132) |
-| TITLE | Slide title. | completed | [link](../src/services/enums/slidesenums.js#L163) |
-| UNSUPPORTED | A placeholder type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
+| TABLE | Table. | completed | [link](../src/services/enums/slidesenums.js#L173) |
+| TITLE | Slide title. | completed | [link](../src/services/enums/slidesenums.js#L174) |
+| UNSUPPORTED | A placeholder type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L158) |
 
 ## Enum: [PredefinedLayout](https://developers.google.com/apps-script/reference/slides/predefined-layout)
 
@@ -1562,11 +1562,11 @@ Predefined layouts. These are commonly found layouts in presentations. However, 
 | ONE_COLUMN_TEXT | Layout with one title and one body, arranged in a single column. Matches the "One column text" layout in the Google Slides UI. | completed | [link](../src/services/enums/slidesenums.js#L188) |
 | SECTION_HEADER | Layout with a section title. Matches the "Section header" layout in the Google Slides UI. | completed | [link](../src/services/enums/slidesenums.js#L186) |
 | SECTION_TITLE_AND_DESCRIPTION | Layout with a title and subtitle on one side and description on the other. Matches the "Section title and description" layout in the Google Slides UI. | completed | [link](../src/services/enums/slidesenums.js#L187) |
-| TITLE | Layout with a title and a subtitle. Matches the "Title slide" layout in the Google Slides UI. | completed | [link](../src/services/enums/slidesenums.js#L163) |
+| TITLE | Layout with a title and a subtitle. Matches the "Title slide" layout in the Google Slides UI. | completed | [link](../src/services/enums/slidesenums.js#L182) |
 | TITLE_AND_BODY | Layout with a title and body. Matches the "Title and body" layout in the Google Slides UI. | completed | [link](../src/services/enums/slidesenums.js#L183) |
 | TITLE_AND_TWO_COLUMNS | Layout with a title and two columns. Matches the "Title and two columns" layout in the Google Slides UI. | completed | [link](../src/services/enums/slidesenums.js#L184) |
 | TITLE_ONLY | Layout with only a title. Matches the "Title only" layout in the Google Slides UI. | completed | [link](../src/services/enums/slidesenums.js#L185) |
-| UNSUPPORTED | A layout that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
+| UNSUPPORTED | A layout that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L179) |
 
 ## Enum: [SelectionType](https://developers.google.com/apps-script/reference/slides/selection-type)
 
@@ -1575,12 +1575,12 @@ Type of Selection.
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
 | CURRENT_PAGE | Current page selection. | completed | [link](../src/services/enums/slidesenums.js#L219) |
-| NONE | No selection. | completed | [link](../src/services/enums/slidesenums.js#L11) |
-| PAGE | Page selection in the thumbnail flimstrip. | completed | [link](../src/services/enums/slidesenums.js#L127) |
-| PAGE_ELEMENT | Page element selection. | completed | [link](../src/services/enums/slidesenums.js#L127) |
+| NONE | No selection. | completed | [link](../src/services/enums/slidesenums.js#L214) |
+| PAGE | Page selection in the thumbnail flimstrip. | completed | [link](../src/services/enums/slidesenums.js#L217) |
+| PAGE_ELEMENT | Page element selection. | completed | [link](../src/services/enums/slidesenums.js#L218) |
 | TABLE_CELL | Table cell selection. | completed | [link](../src/services/enums/slidesenums.js#L216) |
-| TEXT | Text selection. | completed | [link](../src/services/enums/slidesenums.js#L33) |
-| UNSUPPORTED | A selection type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
+| TEXT | Text selection. | completed | [link](../src/services/enums/slidesenums.js#L215) |
+| UNSUPPORTED | A selection type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L213) |
 
 ## Enum: [ShapeType](https://developers.google.com/apps-script/reference/slides/shape-type)
 
@@ -1590,7 +1590,7 @@ The shape types. Many of these shapes correspond to predefined shapes from the E
 |--- |--- |--- |--- |
 | ARC | Curved arc shape. Corresponds to ECMA-376 ST_ShapeType 'arc'. | completed | [link](../src/services/enums/slidesenums.js#L232) |
 | ARROW_EAST | East arrow shape. | completed | [link](../src/services/enums/slidesenums.js#L360) |
-| ARROW_NORTH | North arrow shape. | completed | [link](../src/services/enums/slidesenums.js#L361) |
+| ARROW_NORTH | North arrow shape. | completed | [link](../src/services/enums/slidesenums.js#L362) |
 | ARROW_NORTH_EAST | Northeast arrow shape. | completed | [link](../src/services/enums/slidesenums.js#L361) |
 | BENT_ARROW | Bent arrow shape. Corresponds to ECMA-376 ST_ShapeType 'bentArrow'. | completed | [link](../src/services/enums/slidesenums.js#L233) |
 | BENT_UP_ARROW | Bent up arrow shape. Corresponds to ECMA-376 ST_ShapeType 'bentUpArrow'. | completed | [link](../src/services/enums/slidesenums.js#L234) |
@@ -1612,11 +1612,11 @@ The shape types. Many of these shapes correspond to predefined shapes from the E
 | CUSTOM | Custom shape. | completed | [link](../src/services/enums/slidesenums.js#L369) |
 | DECAGON | Decagon shape. Corresponds to ECMA-376 ST_ShapeType 'decagon'. | completed | [link](../src/services/enums/slidesenums.js#L249) |
 | DIAGONAL_STRIPE | Diagonal stripe shape. Corresponds to ECMA-376 ST_ShapeType 'diagStripe'. | completed | [link](../src/services/enums/slidesenums.js#L250) |
-| DIAMOND | Diamond shape. Corresponds to ECMA-376 ST_ShapeType 'diamond'. | completed | [link](../src/services/enums/slidesenums.js#L16) |
+| DIAMOND | Diamond shape. Corresponds to ECMA-376 ST_ShapeType 'diamond'. | completed | [link](../src/services/enums/slidesenums.js#L251) |
 | DODECAGON | Dodecagon shape. Corresponds to ECMA-376 ST_ShapeType 'dodecagon'. | completed | [link](../src/services/enums/slidesenums.js#L252) |
 | DONUT | Donut shape. Corresponds to ECMA-376 ST_ShapeType 'donut'. | completed | [link](../src/services/enums/slidesenums.js#L253) |
 | DOUBLE_WAVE | Double wave shape. Corresponds to ECMA-376 ST_ShapeType 'doubleWave'. | completed | [link](../src/services/enums/slidesenums.js#L254) |
-| DOWN_ARROW | Down arrow shape. Corresponds to ECMA-376 ST_ShapeType 'downArrow'. | completed | [link](../src/services/enums/slidesenums.js#L245) |
+| DOWN_ARROW | Down arrow shape. Corresponds to ECMA-376 ST_ShapeType 'downArrow'. | completed | [link](../src/services/enums/slidesenums.js#L255) |
 | DOWN_ARROW_CALLOUT | Callout down arrow shape. Corresponds to ECMA-376 ST_ShapeType 'downArrowCallout'. | completed | [link](../src/services/enums/slidesenums.js#L256) |
 | ELLIPSE | Ellipse shape. Corresponds to ECMA-376 ST_ShapeType 'ellipse'. | completed | [link](../src/services/enums/slidesenums.js#L231) |
 | ELLIPSE_RIBBON | Ellipse ribbon shape. Corresponds to ECMA-376 ST_ShapeType 'ellipseRibbon'. | completed | [link](../src/services/enums/slidesenums.js#L366) |
@@ -1660,7 +1660,7 @@ The shape types. Many of these shapes correspond to predefined shapes from the E
 | HORIZONTAL_SCROLL | Horizontal scroll shape. Corresponds to ECMA-376 ST_ShapeType 'horizontalScroll'. | completed | [link](../src/services/enums/slidesenums.js#L264) |
 | IRREGULAR_SEAL_1 | Irregular seal 1 shape. Corresponds to ECMA-376 ST_ShapeType 'irregularSeal1'. | completed | [link](../src/services/enums/slidesenums.js#L265) |
 | IRREGULAR_SEAL_2 | Irregular seal 2 shape. Corresponds to ECMA-376 ST_ShapeType 'irregularSeal2'. | completed | [link](../src/services/enums/slidesenums.js#L266) |
-| LEFT_ARROW | Left arrow shape. Corresponds to ECMA-376 ST_ShapeType 'leftArrow'. | completed | [link](../src/services/enums/slidesenums.js#L246) |
+| LEFT_ARROW | Left arrow shape. Corresponds to ECMA-376 ST_ShapeType 'leftArrow'. | completed | [link](../src/services/enums/slidesenums.js#L267) |
 | LEFT_ARROW_CALLOUT | Callout left arrow shape. Corresponds to ECMA-376 ST_ShapeType 'leftArrowCallout'. | completed | [link](../src/services/enums/slidesenums.js#L268) |
 | LEFT_BRACE | Left brace shape. Corresponds to ECMA-376 ST_ShapeType 'leftBrace'. | completed | [link](../src/services/enums/slidesenums.js#L269) |
 | LEFT_BRACKET | Left bracket shape. Corresponds to ECMA-376 ST_ShapeType 'leftBracket'. | completed | [link](../src/services/enums/slidesenums.js#L270) |
@@ -1683,14 +1683,14 @@ The shape types. Many of these shapes correspond to predefined shapes from the E
 | PENTAGON | Pentagon shape. Corresponds to ECMA-376 ST_ShapeType 'pentagon'. | completed | [link](../src/services/enums/slidesenums.js#L287) |
 | PIE | Pie shape. Corresponds to ECMA-376 ST_ShapeType 'pie'. | completed | [link](../src/services/enums/slidesenums.js#L288) |
 | PLAQUE | Plaque shape. Corresponds to ECMA-376 ST_ShapeType 'plaque'. | completed | [link](../src/services/enums/slidesenums.js#L289) |
-| PLUS | Plus shape. Corresponds to ECMA-376 ST_ShapeType 'plus'. | completed | [link](../src/services/enums/slidesenums.js#L281) |
+| PLUS | Plus shape. Corresponds to ECMA-376 ST_ShapeType 'plus'. | completed | [link](../src/services/enums/slidesenums.js#L290) |
 | QUAD_ARROW | Quad-arrow shape. Corresponds to ECMA-376 ST_ShapeType 'quadArrow'. | completed | [link](../src/services/enums/slidesenums.js#L291) |
 | QUAD_ARROW_CALLOUT | Callout quad-arrow shape. Corresponds to ECMA-376 ST_ShapeType 'quadArrowCallout'. | completed | [link](../src/services/enums/slidesenums.js#L292) |
 | RECTANGLE | Rectangle shape. Corresponds to ECMA-376 ST_ShapeType 'rect'. | completed | [link](../src/services/enums/slidesenums.js#L229) |
 | RIBBON | Ribbon shape. Corresponds to ECMA-376 ST_ShapeType 'ribbon'. | completed | [link](../src/services/enums/slidesenums.js#L293) |
 | RIBBON_2 | Ribbon 2 shape. Corresponds to ECMA-376 ST_ShapeType 'ribbon2'. | completed | [link](../src/services/enums/slidesenums.js#L294) |
-| RIGHT_ARROW | Right arrow shape. Corresponds to ECMA-376 ST_ShapeType 'rightArrow'. | completed | [link](../src/services/enums/slidesenums.js#L247) |
-| RIGHT_ARROW_CALLOUT | Callout right arrow shape. Corresponds to ECMA-376 ST_ShapeType 'rightArrowCallout'. | completed | [link](../src/services/enums/slidesenums.js#L272) |
+| RIGHT_ARROW | Right arrow shape. Corresponds to ECMA-376 ST_ShapeType 'rightArrow'. | completed | [link](../src/services/enums/slidesenums.js#L295) |
+| RIGHT_ARROW_CALLOUT | Callout right arrow shape. Corresponds to ECMA-376 ST_ShapeType 'rightArrowCallout'. | completed | [link](../src/services/enums/slidesenums.js#L296) |
 | RIGHT_BRACE | Right brace shape. Corresponds to ECMA-376 ST_ShapeType 'rightBrace'. | completed | [link](../src/services/enums/slidesenums.js#L297) |
 | RIGHT_BRACKET | Right bracket shape. Corresponds to ECMA-376 ST_ShapeType 'rightBracket'. | completed | [link](../src/services/enums/slidesenums.js#L298) |
 | RIGHT_TRIANGLE | Right triangle shape. Corresponds to ECMA-376 ST_ShapeType 'rtTriangle'. | completed | [link](../src/services/enums/slidesenums.js#L302) |
@@ -1720,14 +1720,14 @@ The shape types. Many of these shapes correspond to predefined shapes from the E
 | TEARDROP | Teardrop shape. Corresponds to ECMA-376 ST_ShapeType 'teardrop'. | completed | [link](../src/services/enums/slidesenums.js#L365) |
 | TEXT_BOX | Text box shape. | completed | [link](../src/services/enums/slidesenums.js#L228) |
 | TRAPEZOID | Trapezoid shape. Corresponds to ECMA-376 ST_ShapeType 'trapezoid'. | completed | [link](../src/services/enums/slidesenums.js#L320) |
-| TRIANGLE | Triangle shape. Corresponds to ECMA-376 ST_ShapeType 'triangle'. | completed | [link](../src/services/enums/slidesenums.js#L108) |
-| UNSUPPORTED | A shape type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
-| UP_ARROW | Up arrow shape. Corresponds to ECMA-376 ST_ShapeType 'upArrow'. | completed | [link](../src/services/enums/slidesenums.js#L234) |
+| TRIANGLE | Triangle shape. Corresponds to ECMA-376 ST_ShapeType 'triangle'. | completed | [link](../src/services/enums/slidesenums.js#L321) |
+| UNSUPPORTED | A shape type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L227) |
+| UP_ARROW | Up arrow shape. Corresponds to ECMA-376 ST_ShapeType 'upArrow'. | completed | [link](../src/services/enums/slidesenums.js#L322) |
 | UP_ARROW_CALLOUT | Callout up arrow shape. Corresponds to ECMA-376 ST_ShapeType 'upArrowCallout'. | completed | [link](../src/services/enums/slidesenums.js#L323) |
 | UP_DOWN_ARROW | Up down arrow shape. Corresponds to ECMA-376 ST_ShapeType 'upDownArrow'. | completed | [link](../src/services/enums/slidesenums.js#L324) |
 | UTURN_ARROW | U-turn arrow shape. Corresponds to ECMA-376 ST_ShapeType 'uturnArrow'. | completed | [link](../src/services/enums/slidesenums.js#L325) |
 | VERTICAL_SCROLL | Vertical scroll shape. Corresponds to ECMA-376 ST_ShapeType 'verticalScroll'. | completed | [link](../src/services/enums/slidesenums.js#L326) |
-| WAVE | Wave shape. Corresponds to ECMA-376 ST_ShapeType 'wave'. | completed | [link](../src/services/enums/slidesenums.js#L254) |
+| WAVE | Wave shape. Corresponds to ECMA-376 ST_ShapeType 'wave'. | completed | [link](../src/services/enums/slidesenums.js#L327) |
 | WEDGE_ELLIPSE_CALLOUT | Callout wedge ellipse shape. Corresponds to ECMA-376 ST_ShapeType 'wedgeEllipseCallout'. | completed | [link](../src/services/enums/slidesenums.js#L328) |
 | WEDGE_RECTANGLE_CALLOUT | Callout wedge rectangle shape. Corresponds to ECMA-376 ST_ShapeType 'wedgeRectCallout'. | completed | [link](../src/services/enums/slidesenums.js#L329) |
 | WEDGE_ROUND_RECTANGLE_CALLOUT | Callout wedge round rectangle shape. Corresponds to ECMA-376 ST_ShapeType 'wedgeRoundRectCallout'. | completed | [link](../src/services/enums/slidesenums.js#L330) |
@@ -1738,8 +1738,8 @@ The Sheets chart's embed type.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| IMAGE | Indicates that the chart is embedded as an image. | completed | [link](../src/services/enums/slidesenums.js#L130) |
-| UNSUPPORTED | Represents a chart that is not supported and cannot be further classified. | completed | [link](../src/services/enums/slidesenums.js#L10) |
+| IMAGE | Indicates that the chart is embedded as an image. | completed | [link](../src/services/enums/slidesenums.js#L374) |
+| UNSUPPORTED | Represents a chart that is not supported and cannot be further classified. | completed | [link](../src/services/enums/slidesenums.js#L373) |
 
 ## Enum: [SlideLinkingMode](https://developers.google.com/apps-script/reference/slides/slide-linking-mode)
 
@@ -1749,7 +1749,7 @@ The mode of links between slides.
 |--- |--- |--- |--- |
 | LINKED | Indicates that slides are linked. | completed | [link](../src/services/enums/slidesenums.js#L378) |
 | NOT_LINKED | Indicates that slides aren't linked. | completed | [link](../src/services/enums/slidesenums.js#L379) |
-| UNSUPPORTED | A slide linking mode that isn't supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
+| UNSUPPORTED | A slide linking mode that isn't supported. | completed | [link](../src/services/enums/slidesenums.js#L377) |
 
 ## Enum: [SlidePosition](https://developers.google.com/apps-script/reference/slides/slide-position)
 
@@ -1770,7 +1770,7 @@ The different modes for paragraph spacing.
 |--- |--- |--- |--- |
 | COLLAPSE_LISTS | Paragraph spacing is skipped between list elements. | completed | [link](../src/services/enums/slidesenums.js#L390) |
 | NEVER_COLLAPSE | Paragraph spacing is always rendered. | completed | [link](../src/services/enums/slidesenums.js#L389) |
-| UNSUPPORTED | A spacing mode that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
+| UNSUPPORTED | A spacing mode that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L388) |
 
 ## Enum: [TextBaselineOffset](https://developers.google.com/apps-script/reference/slides/text-baseline-offset)
 
@@ -1778,10 +1778,10 @@ The text vertical offset from its normal position.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| NONE | The text is not vertically offset. | completed | [link](../src/services/enums/slidesenums.js#L11) |
+| NONE | The text is not vertically offset. | completed | [link](../src/services/enums/slidesenums.js#L394) |
 | SUBSCRIPT | The text is vertically offset downwards. | completed | [link](../src/services/enums/slidesenums.js#L396) |
 | SUPERSCRIPT | The text is vertically offset upwards. | completed | [link](../src/services/enums/slidesenums.js#L395) |
-| UNSUPPORTED | A text baseline offset that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
+| UNSUPPORTED | A text baseline offset that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L393) |
 
 ## Enum: [TextDirection](https://developers.google.com/apps-script/reference/slides/text-direction)
 
@@ -1791,7 +1791,7 @@ The directions text can flow in.
 |--- |--- |--- |--- |
 | LEFT_TO_RIGHT | The text goes from left to right. | completed | [link](../src/services/enums/slidesenums.js#L400) |
 | RIGHT_TO_LEFT | The text goes from right to left. | completed | [link](../src/services/enums/slidesenums.js#L401) |
-| UNSUPPORTED | A text direction that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
+| UNSUPPORTED | A text direction that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L399) |
 
 ## Enum: [ThemeColorType](https://developers.google.com/apps-script/reference/slides/theme-color-type)
 
@@ -1811,7 +1811,7 @@ The name of an entry in the page's color scheme.
 | HYPERLINK | Represents the color to use for hyperlinks. | completed | [link](../src/services/enums/slidesenums.js#L415) |
 | LIGHT1 | Represents the first light color. | completed | [link](../src/services/enums/slidesenums.js#L406) |
 | LIGHT2 | Represents the second light color. | completed | [link](../src/services/enums/slidesenums.js#L408) |
-| UNSUPPORTED | Represents a theme color that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
+| UNSUPPORTED | Represents a theme color that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L404) |
 
 ## Enum: [VideoSourceType](https://developers.google.com/apps-script/reference/slides/video-source-type)
 
@@ -1819,6 +1819,6 @@ The video source types.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| UNSUPPORTED | A video source type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L10) |
+| UNSUPPORTED | A video source type that is not supported. | completed | [link](../src/services/enums/slidesenums.js#L420) |
 | YOUTUBE | YouTube video. | completed | [link](../src/services/enums/slidesenums.js#L421) |
 

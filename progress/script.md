@@ -169,7 +169,7 @@ An enumeration denoting the type of triggered event.
 
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
-| CLOCK | The trigger fires once the time-driven event reaches a specific time. | completed | [link](../src/services/enums/scriptenums.js#L9) |
+| CLOCK | The trigger fires once the time-driven event reaches a specific time. | completed | [link](../src/services/enums/scriptenums.js#L21) |
 | ON_CHANGE | The trigger fires once the user changes the Google Sheets file (for example, by adding a row, which counts as a change instead of an edit). | completed | [link](../src/services/enums/scriptenums.js#L25) |
 | ON_EDIT | The trigger fires once the user edits the Google Sheets file (for example, by entering a new value into a cell, which counts as an edit instead of a change). | completed | [link](../src/services/enums/scriptenums.js#L23) |
 | ON_EVENT_UPDATED | The trigger fires once an event gets created, updated, or deleted on the specified Google Calendar. | completed | [link](../src/services/enums/scriptenums.js#L26) |
@@ -183,7 +183,7 @@ An enumeration that indicates how the script came to be installed as an add-on f
 | Property | Description | Status | Implementation |
 |--- |--- |--- |--- |
 | APPS_MARKETPLACE_DOMAIN_ADD_ON | Add-on was installed by the administrator for the user's domain. | completed | [link](../src/services/enums/scriptenums.js#L29) |
-| NONE | Script is not running as an add-on. | completed | [link](../src/services/enums/scriptenums.js#L15) |
+| NONE | Script is not running as an add-on. | completed | [link](../src/services/enums/scriptenums.js#L30) |
 | WEB_STORE_ADD_ON | Add-on was installed by the user from the Chrome Web Store. | completed | [link](../src/services/enums/scriptenums.js#L31) |
 
 ## Enum: [TriggerSource](https://developers.google.com/apps-script/reference/script/trigger-source)
