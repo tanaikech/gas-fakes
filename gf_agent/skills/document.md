@@ -16,6 +16,12 @@ Supported Methods:
 - `appendTable(Table)`
 - `clear()`
 - `copy()`
+- `editAsText()`
+- `findElement(ElementType,RangeElement)`
+- `findElement(ElementType)`
+- `findText(String,RangeElement)`
+- `findText(String)`
+- `getAttributes()`
 - `getChild(Integer)`
 - `getChildIndex(Element)`
 - `getImages()`
@@ -31,6 +37,7 @@ Supported Methods:
 - `getParent()`
 - `getTables()`
 - `getText()`
+- `getTextAlignment()`
 - `getType()`
 - `insertImage(Integer,BlobSource)`
 - `insertImage(Integer,InlineImage)`
@@ -43,6 +50,7 @@ Supported Methods:
 - `insertTable(Integer,String)`
 - `insertTable(Integer,Table)`
 - `insertTable(Integer)`
+- `replaceText(String,String)`
 - `setAttributes(Object)`
 - `setHeadingAttributes(ParagraphHeading,Object)`
 - `setMarginBottom(Number)`
@@ -64,18 +72,47 @@ Supported Methods:
 ## Class: ContainerElement
 
 Supported Methods:
+- `asBody()`
+- `asEquation()`
+- `asFooterSection()`
+- `asFootnoteSection()`
+- `asHeaderSection()`
+- `asListItem()`
+- `asParagraph()`
+- `asTable()`
+- `asTableCell()`
+- `asTableOfContents()`
+- `asTableRow()`
+- `clear()`
 - `copy()`
+- `editAsText()`
+- `findElement(ElementType,RangeElement)`
+- `findElement(ElementType)`
+- `findText(String,RangeElement)`
+- `findText(String)`
+- `getAttributes()`
 - `getChild(Integer)`
 - `getChildIndex(Element)`
 - `getLinkUrl()`
+- `getNextSibling()`
 - `getNumChildren()`
 - `getParent()`
+- `getPreviousSibling()`
+- `getText()`
+- `getTextAlignment()`
 - `getType()`
+- `isAtDocumentEnd()`
+- `merge()`
+- `removeFromParent()`
+- `replaceText(String,String)`
+- `setAttributes(Object)`
 - `setLinkUrl(String)`
+- `setTextAlignment(TextAlignment)`
 
 ## Class: Document
 
 Supported Methods:
+- `addBookmark(Position)`
 - `addEditor(String)`
 - `addEditor(User)`
 - `addEditors(String)`
@@ -85,6 +122,7 @@ Supported Methods:
 - `addViewer(User)`
 - `addViewers(String)`
 - `getBody()`
+- `getBookmark(String)`
 - `getEditors()`
 - `getFooter()`
 - `getFootnotes()`
@@ -94,6 +132,7 @@ Supported Methods:
 - `getTabs()`
 - `getUrl()`
 - `getViewers()`
+- `newPosition(Element,Integer)`
 - `newRange()`
 - `removeEditor(String)`
 - `removeEditor(User)`
@@ -114,14 +153,31 @@ Supported Methods:
 ## Class: DocumentTab
 
 Supported Methods:
-- `addHeader()`
+- `addBookmark(Position)`
+- `addNamedRange(String,Range)`
 - `getBody()`
+- `getBookmark(String)`
+- `getBookmarks()`
+- `getFooter()`
+- `getFootnotes()`
 - `getHeader()`
+- `getNamedRangeById(String)`
+- `getNamedRanges()`
+- `getNamedRanges(String)`
+- `newPosition(Element,Integer)`
+- `newRange()`
 
 ## Class: FooterSection
 
 Supported Methods:
+- `clear()`
 - `copy()`
+- `editAsText()`
+- `findElement(ElementType,RangeElement)`
+- `findElement(ElementType)`
+- `findText(String,RangeElement)`
+- `findText(String)`
+- `getAttributes()`
 - `getChild(Integer)`
 - `getChildIndex(Element)`
 - `getImages()`
@@ -130,15 +186,27 @@ Supported Methods:
 - `getParagraphs()`
 - `getParent()`
 - `getTables()`
+- `getText()`
+- `getTextAlignment()`
 - `getType()`
+- `removeFromParent()`
+- `replaceText(String,String)`
+- `setAttributes(Object)`
+- `setTextAlignment(TextAlignment)`
 
 ## Class: Footnote
 
 Supported Methods:
 - `copy()`
+- `getAttributes()`
 - `getFootnoteContents()`
+- `getNextSibling()`
 - `getParent()`
+- `getPreviousSibling()`
 - `getType()`
+- `isAtDocumentEnd()`
+- `removeFromParent()`
+- `setAttributes(Object)`
 
 ## Class: FootnoteSection
 
@@ -147,19 +215,39 @@ Supported Methods:
 - `appendParagraph(String)`
 - `clear()`
 - `copy()`
+- `editAsText()`
+- `findElement(ElementType,RangeElement)`
+- `findElement(ElementType)`
+- `findText(String,RangeElement)`
+- `findText(String)`
+- `getAttributes()`
 - `getChild(Integer)`
 - `getChildIndex(Element)`
+- `getNextSibling()`
 - `getNumChildren()`
 - `getParagraphs()`
 - `getParent()`
+- `getPreviousSibling()`
 - `getText()`
+- `getTextAlignment()`
 - `getType()`
+- `removeFromParent()`
+- `replaceText(String,String)`
+- `setAttributes(Object)`
 - `setText(String)`
+- `setTextAlignment(TextAlignment)`
 
 ## Class: HeaderSection
 
 Supported Methods:
+- `clear()`
 - `copy()`
+- `editAsText()`
+- `findElement(ElementType,RangeElement)`
+- `findElement(ElementType)`
+- `findText(String,RangeElement)`
+- `findText(String)`
+- `getAttributes()`
 - `getChild(Integer)`
 - `getChildIndex(Element)`
 - `getImages()`
@@ -168,14 +256,26 @@ Supported Methods:
 - `getParagraphs()`
 - `getParent()`
 - `getTables()`
+- `getText()`
+- `getTextAlignment()`
 - `getType()`
+- `removeFromParent()`
+- `replaceText(String,String)`
+- `setAttributes(Object)`
+- `setTextAlignment(TextAlignment)`
 
 ## Class: HorizontalRule
 
 Supported Methods:
 - `copy()`
+- `getAttributes()`
+- `getNextSibling()`
 - `getParent()`
+- `getPreviousSibling()`
 - `getType()`
+- `isAtDocumentEnd()`
+- `removeFromParent()`
+- `setAttributes(Object)`
 
 ## Class: InlineImage
 
@@ -184,14 +284,21 @@ Supported Methods:
 - `getAltDescription()`
 - `getAltTitle()`
 - `getAs(String)`
+- `getAttributes()`
 - `getBlob()`
 - `getHeight()`
 - `getLinkUrl()`
+- `getNextSibling()`
 - `getParent()`
+- `getPreviousSibling()`
 - `getType()`
 - `getWidth()`
+- `isAtDocumentEnd()`
+- `merge()`
+- `removeFromParent()`
 - `setAltDescription(String)`
 - `setAltTitle(String)`
+- `setAttributes(Object)`
 - `setHeight(Integer)`
 - `setLinkUrl(String)`
 - `setWidth(Integer)`
@@ -207,6 +314,10 @@ Supported Methods:
 - `clear()`
 - `copy()`
 - `editAsText()`
+- `findElement(ElementType,RangeElement)`
+- `findElement(ElementType)`
+- `findText(String,RangeElement)`
+- `findText(String)`
 - `getAlignment()`
 - `getAttributes()`
 - `getChild(Integer)`
@@ -220,16 +331,24 @@ Supported Methods:
 - `getLinkUrl()`
 - `getListId()`
 - `getNestingLevel()`
+- `getNextSibling()`
 - `getNumChildren()`
 - `getParent()`
+- `getPreviousSibling()`
 - `getSpacingAfter()`
 - `getSpacingBefore()`
 - `getText()`
+- `getTextAlignment()`
 - `getType()`
 - `insertInlineImage(Integer,BlobSource)`
 - `insertInlineImage(Integer,InlineImage)`
+- `isAtDocumentEnd()`
 - `isLeftToRight()`
+- `merge()`
+- `removeFromParent()`
+- `replaceText(String,String)`
 - `setAlignment(HorizontalAlignment)`
+- `setAttributes(Object)`
 - `setGlyphType(GlyphType)`
 - `setHeading(ParagraphHeading)`
 - `setIndentEnd(Number)`
@@ -243,13 +362,20 @@ Supported Methods:
 - `setSpacingAfter(Number)`
 - `setSpacingBefore(Number)`
 - `setText(String)`
+- `setTextAlignment(TextAlignment)`
 
 ## Class: PageBreak
 
 Supported Methods:
 - `copy()`
+- `getAttributes()`
+- `getNextSibling()`
 - `getParent()`
+- `getPreviousSibling()`
 - `getType()`
+- `isAtDocumentEnd()`
+- `removeFromParent()`
+- `setAttributes(Object)`
 
 ## Class: Paragraph
 
@@ -259,8 +385,13 @@ Supported Methods:
 - `appendInlineImage(InlineImage)`
 - `appendText(String)`
 - `appendText(Text)`
+- `clear()`
 - `copy()`
 - `editAsText()`
+- `findElement(ElementType,RangeElement)`
+- `findElement(ElementType)`
+- `findText(String,RangeElement)`
+- `findText(String)`
 - `getAlignment()`
 - `getAttributes()`
 - `getChild(Integer)`
@@ -271,16 +402,24 @@ Supported Methods:
 - `getIndentStart()`
 - `getLineSpacing()`
 - `getLinkUrl()`
+- `getNextSibling()`
 - `getNumChildren()`
 - `getParent()`
+- `getPreviousSibling()`
 - `getSpacingAfter()`
 - `getSpacingBefore()`
 - `getText()`
+- `getTextAlignment()`
 - `getType()`
 - `insertInlineImage(Integer,BlobSource)`
 - `insertInlineImage(Integer,InlineImage)`
+- `isAtDocumentEnd()`
 - `isLeftToRight()`
+- `merge()`
+- `removeFromParent()`
+- `replaceText(String,String)`
 - `setAlignment(HorizontalAlignment)`
+- `setAttributes(Object)`
 - `setHeading(ParagraphHeading)`
 - `setIndentEnd(Number)`
 - `setIndentFirstLine(Number)`
@@ -290,6 +429,7 @@ Supported Methods:
 - `setLinkUrl(String)`
 - `setSpacingAfter(Number)`
 - `setSpacingBefore(Number)`
+- `setTextAlignment(TextAlignment)`
 
 ## Class: Position
 
@@ -326,6 +466,9 @@ Supported Methods:
 
 Supported Methods:
 - `getElement()`
+- `getEndOffsetInclusive()`
+- `getStartOffset()`
+- `isPartial()`
 
 ## Class: Tab
 
@@ -339,66 +482,113 @@ Supported Methods:
 ## Class: Table
 
 Supported Methods:
+- `clear()`
 - `copy()`
+- `editAsText()`
+- `findElement(ElementType,RangeElement)`
+- `findElement(ElementType)`
+- `findText(String,RangeElement)`
+- `findText(String)`
+- `getAttributes()`
 - `getBorderColor()`
 - `getBorderWidth()`
 - `getCell(Integer,Integer)`
 - `getChild(Integer)`
 - `getChildIndex(Element)`
 - `getLinkUrl()`
+- `getNextSibling()`
 - `getNumChildren()`
 - `getNumRows()`
 - `getParent()`
+- `getPreviousSibling()`
 - `getRow(Integer)`
 - `getText()`
+- `getTextAlignment()`
 - `getType()`
+- `isAtDocumentEnd()`
+- `removeFromParent()`
+- `replaceText(String,String)`
+- `setAttributes(Object)`
 - `setBorderColor(String)`
 - `setBorderWidth(Number)`
 - `setLinkUrl(String)`
+- `setTextAlignment(TextAlignment)`
 
 ## Class: TableCell
 
 Supported Methods:
+- `clear()`
 - `copy()`
+- `editAsText()`
+- `findElement(ElementType,RangeElement)`
+- `findElement(ElementType)`
+- `findText(String,RangeElement)`
+- `findText(String)`
+- `getAttributes()`
 - `getBackgroundColor()`
 - `getChild(Integer)`
 - `getChildIndex(Element)`
 - `getLinkUrl()`
+- `getNextSibling()`
 - `getNumChildren()`
 - `getPaddingBottom()`
 - `getPaddingLeft()`
 - `getPaddingRight()`
 - `getPaddingTop()`
 - `getParent()`
+- `getPreviousSibling()`
 - `getText()`
+- `getTextAlignment()`
 - `getType()`
 - `getVerticalAlignment()`
 - `getWidth()`
+- `isAtDocumentEnd()`
+- `merge()`
+- `removeFromParent()`
+- `replaceText(String,String)`
+- `setAttributes(Object)`
 - `setBackgroundColor(String)`
 - `setLinkUrl(String)`
 - `setPaddingBottom(Number)`
 - `setPaddingLeft(Number)`
 - `setPaddingRight(Number)`
 - `setPaddingTop(Number)`
+- `setTextAlignment(TextAlignment)`
 - `setVerticalAlignment(VerticalAlignment)`
 - `setWidth(Number)`
 
 ## Class: TableRow
 
 Supported Methods:
+- `clear()`
 - `copy()`
+- `editAsText()`
+- `findElement(ElementType,RangeElement)`
+- `findElement(ElementType)`
+- `findText(String,RangeElement)`
+- `findText(String)`
+- `getAttributes()`
 - `getCell(Integer)`
 - `getChild(Integer)`
 - `getChildIndex(Element)`
 - `getLinkUrl()`
 - `getMinimumHeight()`
+- `getNextSibling()`
 - `getNumCells()`
 - `getNumChildren()`
 - `getParent()`
+- `getPreviousSibling()`
 - `getText()`
+- `getTextAlignment()`
 - `getType()`
+- `isAtDocumentEnd()`
+- `merge()`
+- `removeFromParent()`
+- `replaceText(String,String)`
+- `setAttributes(Object)`
 - `setLinkUrl(String)`
 - `setMinimumHeight(Number)`
+- `setTextAlignment(TextAlignment)`
 
 ## Class: Text
 
@@ -416,9 +606,12 @@ Supported Methods:
 - `getForegroundColor(Integer)`
 - `getLinkUrl()`
 - `getLinkUrl(Integer)`
+- `getNextSibling()`
 - `getParent()`
+- `getPreviousSibling()`
 - `getText()`
 - `getType()`
+- `isAtDocumentEnd()`
 - `isBold()`
 - `isBold(Integer)`
 - `isItalic()`
@@ -427,6 +620,8 @@ Supported Methods:
 - `isStrikethrough(Integer)`
 - `isUnderline()`
 - `isUnderline(Integer)`
+- `merge()`
+- `removeFromParent()`
 - `setAttributes(Integer,Integer,Object)`
 - `setAttributes(Object)`
 - `setBackgroundColor(Integer,Integer,String)`
