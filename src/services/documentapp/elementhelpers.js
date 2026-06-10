@@ -53,16 +53,22 @@ const getTextRecursive = (twig, structure) => {
   const item = structure.elementMap.get(twig.name);
   if (!item) return '';
 
-  // Base case: Text element. In the API, text is inside a paragraph's elements array.
-  if (item.paragraph) {
-    return item.paragraph.elements.map(e => e.textRun?.content || '').join('');
+  // Base case: Text element.
+  if (item.textRun) {
+    return item.textRun.content || '';
   }
 
   // Recursive case: Container element.
-  if (item.__twig && item.__twig.children) {
+  // Note: For Paragraph, item.paragraph.elements will be processed as children via __twig.children
+  if (item.__twig && item.__twig.children && item.__twig.children.length > 0) {
     return item.__twig.children
       .map(childTwig => getTextRecursive(childTwig, structure))
       .join('');
+  }
+
+  // Fallback for elements that might not have children in twig yet (e.g. Paragraph during initial map)
+  if (item.paragraph) {
+    return item.paragraph.elements.map(e => e.textRun?.content || '').join('');
   }
 
   return '';
@@ -74,11 +80,16 @@ const getTextRecursive = (twig, structure) => {
  * @returns {string} The text content.
  */
 export const getText = (element) => {
-  if (!element || element.__isDetached) {
-    const item = element.__elementMapItem;
+  if (!element) return '';
+  const item = element.__elementMapItem;
+  if (!item) return '';
+
+  if (element.__isDetached) {
     let text = '';
 
-    if (item.paragraph) { // It's a Paragraph
+    if (item.textRun) {
+      text = item.textRun.content || '';
+    } else if (item.paragraph) { // It's a Paragraph
       text = item.paragraph.elements?.map(e => e.textRun?.content || '').join('') || '';
     } else if (item.content) { // It's a TableCell
       text = item.content.map(structuralElement =>
@@ -195,6 +206,133 @@ export const getAttributes = (element) => {
   });
 
   return attributes;
+};
+
+/**
+ * Converts a DocumentApp.Attribute map to Docs API style objects.
+ * @param {object} attributes The attributes to convert.
+ * @returns {{paragraphStyle: object, textStyle: object, paraFields: string, textFields: string}}
+ */
+export const attributesToStyle = (attributes) => {
+  const paragraphStyle = {};
+  const textStyle = {};
+  const paraFields = [];
+  const textFields = [];
+
+  const Attribute = DocumentApp.Attribute;
+
+  const hexToRgb = (hex) => {
+    if (!hex || !is.string(hex) || !hex.startsWith('#')) return null;
+    const r = parseInt(hex.slice(1, 3), 16) / 255;
+    const g = parseInt(hex.slice(3, 5), 16) / 255;
+    const b = parseInt(hex.slice(5, 7), 16) / 255;
+    return { color: { rgbColor: { red: r, green: g, blue: b } } };
+  };
+
+  const alignmentMap = {
+    [DocumentApp.HorizontalAlignment.LEFT]: 'START',
+    [DocumentApp.HorizontalAlignment.CENTER]: 'CENTER',
+    [DocumentApp.HorizontalAlignment.RIGHT]: 'END',
+    [DocumentApp.HorizontalAlignment.JUSTIFIED]: 'JUSTIFY',
+  };
+
+  for (const [key, value] of Object.entries(attributes)) {
+    // Note: keys are likely strings like "BOLD", "HORIZONTAL_ALIGNMENT"
+    switch (key) {
+      case 'HORIZONTAL_ALIGNMENT':
+      case Attribute.HORIZONTAL_ALIGNMENT.toString():
+        paragraphStyle.alignment = alignmentMap[value] || value;
+        paraFields.push('alignment');
+        break;
+      case 'LEFT_TO_RIGHT':
+      case Attribute.LEFT_TO_RIGHT.toString():
+        paragraphStyle.direction = value ? 'LEFT_TO_RIGHT' : 'RIGHT_TO_LEFT';
+        paraFields.push('direction');
+        break;
+      case 'LINE_SPACING':
+      case Attribute.LINE_SPACING.toString():
+        paragraphStyle.lineSpacing = Math.round(value * 100);
+        paraFields.push('lineSpacing');
+        break;
+      case 'INDENT_START':
+      case Attribute.INDENT_START.toString():
+        paragraphStyle.indentStart = { magnitude: value, unit: 'PT' };
+        paraFields.push('indentStart');
+        break;
+      case 'INDENT_END':
+      case Attribute.INDENT_END.toString():
+        paragraphStyle.indentEnd = { magnitude: value, unit: 'PT' };
+        paraFields.push('indentEnd');
+        break;
+      case 'INDENT_FIRST_LINE':
+      case Attribute.INDENT_FIRST_LINE.toString():
+        paragraphStyle.indentFirstLine = { magnitude: value, unit: 'PT' };
+        paraFields.push('indentFirstLine');
+        break;
+      case 'SPACING_BEFORE':
+      case Attribute.SPACING_BEFORE.toString():
+        paragraphStyle.spaceAbove = { magnitude: value, unit: 'PT' };
+        paraFields.push('spaceAbove');
+        break;
+      case 'SPACING_AFTER':
+      case Attribute.SPACING_AFTER.toString():
+        paragraphStyle.spaceBelow = { magnitude: value, unit: 'PT' };
+        paraFields.push('spaceBelow');
+        break;
+      case 'BACKGROUND_COLOR':
+      case Attribute.BACKGROUND_COLOR.toString():
+        textStyle.backgroundColor = hexToRgb(value);
+        textFields.push('backgroundColor');
+        break;
+      case 'BOLD':
+      case Attribute.BOLD.toString():
+        textStyle.bold = value;
+        textFields.push('bold');
+        break;
+      case 'FONT_FAMILY':
+      case Attribute.FONT_FAMILY.toString():
+        textStyle.weightedFontFamily = { fontFamily: value };
+        textFields.push('weightedFontFamily');
+        break;
+      case 'FONT_SIZE':
+      case Attribute.FONT_SIZE.toString():
+        textStyle.fontSize = { magnitude: value, unit: 'PT' };
+        textFields.push('fontSize');
+        break;
+      case 'FOREGROUND_COLOR':
+      case Attribute.FOREGROUND_COLOR.toString():
+        textStyle.foregroundColor = hexToRgb(value);
+        textFields.push('foregroundColor');
+        break;
+      case 'ITALIC':
+      case Attribute.ITALIC.toString():
+        textStyle.italic = value;
+        textFields.push('italic');
+        break;
+      case 'STRIKETHROUGH':
+      case Attribute.STRIKETHROUGH.toString():
+        textStyle.strikethrough = value;
+        textFields.push('strikethrough');
+        break;
+      case 'UNDERLINE':
+      case Attribute.UNDERLINE.toString():
+        textStyle.underline = value;
+        textFields.push('underline');
+        break;
+      case 'LINK_URL':
+      case Attribute.LINK_URL.toString():
+        textStyle.link = { url: value };
+        textFields.push('link');
+        break;
+    }
+  }
+
+  return { 
+    paragraphStyle, 
+    textStyle, 
+    paraFields: paraFields.join(','), 
+    textFields: textFields.join(',') 
+  };
 };
 
 export const findItem = (elementMap, type, startIndex, segmentId) => {

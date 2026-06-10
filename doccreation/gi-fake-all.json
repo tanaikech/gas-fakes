@@ -12685,8 +12685,8 @@
             "description": "Returns the current element as a Body.",
             "returnType": "Body",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L388"
           },
           {
             "method": "asEquation()",
@@ -12694,8 +12694,8 @@
             "description": "Returns the current element as an Equation.",
             "returnType": "Equation",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L408"
           },
           {
             "method": "asFooterSection()",
@@ -12703,8 +12703,8 @@
             "description": "Returns the current element as a FooterSection.",
             "returnType": "FooterSection",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L448"
           },
           {
             "method": "asFootnoteSection()",
@@ -12712,8 +12712,8 @@
             "description": "Returns the current element as a FootnoteSection.",
             "returnType": "FootnoteSection",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L468"
           },
           {
             "method": "asHeaderSection()",
@@ -12721,8 +12721,8 @@
             "description": "Returns the current element as a HeaderSection.",
             "returnType": "HeaderSection",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L478"
           },
           {
             "method": "asListItem()",
@@ -12730,8 +12730,8 @@
             "description": "Returns the current element as a ListItem.",
             "returnType": "ListItem",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L518"
           },
           {
             "method": "asParagraph()",
@@ -12739,8 +12739,8 @@
             "description": "Returns the current element as a Paragraph.",
             "returnType": "Paragraph",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L538"
           },
           {
             "method": "asTable()",
@@ -12748,8 +12748,8 @@
             "description": "Returns the current element as a Table.",
             "returnType": "Table",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L568"
           },
           {
             "method": "asTableCell()",
@@ -12757,8 +12757,8 @@
             "description": "Returns the current element as a TableCell.",
             "returnType": "TableCell",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L578"
           },
           {
             "method": "asTableOfContents()",
@@ -12766,8 +12766,8 @@
             "description": "Returns the current element as a TableOfContents.",
             "returnType": "TableOfContents",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L588"
           },
           {
             "method": "asTableRow()",
@@ -12775,8 +12775,8 @@
             "description": "Returns the current element as a TableRow.",
             "returnType": "TableRow",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L598"
           },
           {
             "method": "clear()",
@@ -12784,8 +12784,8 @@
             "description": "Clears the contents of the element.",
             "returnType": "ContainerElement",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L192"
           },
           {
             "method": "copy()",
@@ -12794,7 +12794,7 @@
             "returnType": "ContainerElement",
             "returnDescription": "The new copy.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L201"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L321"
           },
           {
             "method": "editAsText()",
@@ -12802,8 +12802,8 @@
             "description": "Obtains a Text version of the current element, for editing.",
             "returnType": "Text",
             "returnDescription": "a text version of the current element",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L210"
           },
           {
             "method": "findElement(ElementType)",
@@ -12811,8 +12811,8 @@
             "description": "Searches the contents of the element for a descendant of the specified type.",
             "returnType": "RangeElement|null",
             "returnDescription": "A search result indicating the position of the search element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L224"
           },
           {
             "method": "findElement(ElementType,RangeElement)",
@@ -12820,8 +12820,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L224"
           },
           {
             "method": "findText(String)",
@@ -12829,8 +12829,8 @@
             "description": "Searches the contents of the element for the specified text pattern using regular expressions.",
             "returnType": "RangeElement|null",
             "returnDescription": "a search result indicating the position of the search text, or null if there is no\n    match",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L268"
           },
           {
             "method": "findText(String,RangeElement)",
@@ -12838,8 +12838,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L268"
           },
           {
             "method": "getAttributes()",
@@ -12847,8 +12847,8 @@
             "description": "Retrieves the element's attributes.",
             "returnType": "Object",
             "returnDescription": "The element's attributes.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L212"
           },
           {
             "method": "getChild(Integer)",
@@ -12857,7 +12857,7 @@
             "returnType": "Element",
             "returnDescription": "The child element at the specified index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L192"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L320"
           },
           {
             "method": "getChildIndex(Element)",
@@ -12866,7 +12866,7 @@
             "returnType": "Integer",
             "returnDescription": "The child index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L259"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L447"
           },
           {
             "method": "getLinkUrl()",
@@ -12883,8 +12883,8 @@
             "description": "Retrieves the element's next sibling element.",
             "returnType": "Element|null",
             "returnDescription": "The next sibling element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L131"
           },
           {
             "method": "getNumChildren()",
@@ -12893,7 +12893,7 @@
             "returnType": "Integer",
             "returnDescription": "The number of children.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L288"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L476"
           },
           {
             "method": "getParent()",
@@ -12902,7 +12902,7 @@
             "returnType": "ContainerElement|null",
             "returnDescription": "The parent element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L165"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L177"
           },
           {
             "method": "getPreviousSibling()",
@@ -12910,8 +12910,8 @@
             "description": "Retrieves the element's previous sibling element.",
             "returnType": "Element|null",
             "returnDescription": "The previous sibling element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L154"
           },
           {
             "method": "getText()",
@@ -12919,8 +12919,8 @@
             "description": "Retrieves the contents of the element as a text string.",
             "returnType": "String",
             "returnDescription": "the contents of the element as text string",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L386"
           },
           {
             "method": "getTextAlignment()",
@@ -12928,8 +12928,8 @@
             "description": "Gets the text alignment. The available types of alignment are DocumentApp.TextAlignment.NORMAL, DocumentApp.TextAlignment.SUBSCRIPT, and DocumentApp.TextAlignment.SUPERSCRIPT.",
             "returnType": "TextAlignment|null",
             "returnDescription": "the type of text alignment, or null if the text contains multiple types of text\n    alignments or if the text alignment has never been set",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L398"
           },
           {
             "method": "getType()",
@@ -12938,7 +12938,7 @@
             "returnType": "ElementType",
             "returnDescription": "The element type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L186"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L198"
           },
           {
             "method": "isAtDocumentEnd()",
@@ -12946,8 +12946,8 @@
             "description": "Determines whether the element is at the end of the Document.",
             "returnType": "Boolean",
             "returnDescription": "Whether the element is at the end of the tab.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L246"
           },
           {
             "method": "merge()",
@@ -12955,8 +12955,8 @@
             "description": "Merges the element with the preceding sibling of the same type.",
             "returnType": "ContainerElement|null",
             "returnDescription": "The merged element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L271"
           },
           {
             "method": "removeFromParent()",
@@ -12964,8 +12964,8 @@
             "description": "Removes the element from its parent.",
             "returnType": "ContainerElement|null",
             "returnDescription": "The removed element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L284"
           },
           {
             "method": "replaceText(String,String)",
@@ -12973,8 +12973,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L431"
           },
           {
             "method": "setAttributes(Object)",
@@ -12982,8 +12982,8 @@
             "description": "Sets the element's attributes.",
             "returnType": "ContainerElement",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L225"
           },
           {
             "method": "setLinkUrl(String)",
@@ -13000,8 +13000,8 @@
             "description": "Sets the text alignment. The available types of alignment are DocumentApp.TextAlignment.NORMAL, DocumentApp.TextAlignment.SUBSCRIPT, and DocumentApp.TextAlignment.SUPERSCRIPT.",
             "returnType": "ContainerElement",
             "returnDescription": "the current element",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L414"
           }
         ]
       },
@@ -13313,7 +13313,7 @@
             "returnType": "Body",
             "returnDescription": "The new copy.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L201"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L321"
           },
           {
             "method": "editAsText()",
@@ -13321,8 +13321,8 @@
             "description": "Obtains a Text version of the current element, for editing.",
             "returnType": "Text",
             "returnDescription": "a text version of the current element",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L210"
           },
           {
             "method": "findElement(ElementType)",
@@ -13330,8 +13330,8 @@
             "description": "Searches the contents of the element for a descendant of the specified type.",
             "returnType": "RangeElement|null",
             "returnDescription": "A search result indicating the position of the search element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L224"
           },
           {
             "method": "findElement(ElementType,RangeElement)",
@@ -13339,8 +13339,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L224"
           },
           {
             "method": "findText(String)",
@@ -13348,8 +13348,8 @@
             "description": "Searches the contents of the element for the specified text pattern using regular expressions.",
             "returnType": "RangeElement|null",
             "returnDescription": "a search result indicating the position of the search text, or null if there is no\n    match",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L268"
           },
           {
             "method": "findText(String,RangeElement)",
@@ -13357,8 +13357,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L268"
           },
           {
             "method": "getAttributes()",
@@ -13366,8 +13366,8 @@
             "description": "Retrieves the element's attributes.",
             "returnType": "Object",
             "returnDescription": "The element's attributes.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L212"
           },
           {
             "method": "getChild(Integer)",
@@ -13376,7 +13376,7 @@
             "returnType": "Element",
             "returnDescription": "The child element at the specified index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L192"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L320"
           },
           {
             "method": "getChildIndex(Element)",
@@ -13385,7 +13385,7 @@
             "returnType": "Integer",
             "returnDescription": "The child index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L259"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L447"
           },
           {
             "method": "getHeadingAttributes(ParagraphHeading)",
@@ -13403,7 +13403,7 @@
             "returnType": "InlineImage[]|null",
             "returnDescription": "The section images.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L102"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L103"
           },
           {
             "method": "getListItems()",
@@ -13412,7 +13412,7 @@
             "returnType": "ListItem[]|null",
             "returnDescription": "The section list items.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L132"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L133"
           },
           {
             "method": "getMarginBottom()",
@@ -13457,7 +13457,7 @@
             "returnType": "Integer",
             "returnDescription": "The number of children.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L288"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L476"
           },
           {
             "method": "getPageHeight()",
@@ -13484,7 +13484,7 @@
             "returnType": "Paragraph[]|null",
             "returnDescription": "The section paragraphs.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L151"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L152"
           },
           {
             "method": "getParent()",
@@ -13493,7 +13493,7 @@
             "returnType": "ContainerElement|null",
             "returnDescription": "The parent element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L165"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L177"
           },
           {
             "method": "getTables()",
@@ -13502,7 +13502,7 @@
             "returnType": "Table[]|null",
             "returnDescription": "The section tables.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L171"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L172"
           },
           {
             "method": "getText()",
@@ -13519,8 +13519,8 @@
             "description": "Gets the text alignment. The available types of alignment are DocumentApp.TextAlignment.NORMAL, DocumentApp.TextAlignment.SUBSCRIPT, and DocumentApp.TextAlignment.SUPERSCRIPT.",
             "returnType": "TextAlignment|null",
             "returnDescription": "the type of text alignment, or null if the text contains multiple types of text\n    alignments or if the text alignment has never been set",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L398"
           },
           {
             "method": "getType()",
@@ -13529,7 +13529,7 @@
             "returnType": "ElementType",
             "returnDescription": "The element type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L186"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L198"
           },
           {
             "method": "insertHorizontalRule(Integer)",
@@ -13654,8 +13654,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L431"
           },
           {
             "method": "setAttributes(Object)",
@@ -13771,7 +13771,7 @@
             "returnType": "Position",
             "returnDescription": "The position of the Bookmark.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakebookmark.js#L53"
+            "implementationLink": "src/services/documentapp/fakebookmark.js#L51"
           },
           {
             "method": "remove()",
@@ -13780,7 +13780,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakebookmark.js#L79"
+            "implementationLink": "src/services/documentapp/fakebookmark.js#L77"
           }
         ]
       },
@@ -13796,8 +13796,8 @@
             "description": "Adds a Bookmark at the given Position to the first tab or, for scripts that are\nbound to a document, the active tab. To add a\nbookmark to any tab, use the DocumentTab.addBookmark(position) method.",
             "returnType": "Bookmark",
             "returnDescription": "The new bookmark.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakedocument.js#L354"
           },
           {
             "method": "addEditor(String)",
@@ -13806,7 +13806,7 @@
             "returnType": "Document",
             "returnDescription": "This Document, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakedocument.js#L348"
+            "implementationLink": "src/services/documentapp/fakedocument.js#L399"
           },
           {
             "method": "addEditor(User)",
@@ -13815,7 +13815,7 @@
             "returnType": "Document",
             "returnDescription": "This Document, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakedocument.js#L348"
+            "implementationLink": "src/services/documentapp/fakedocument.js#L399"
           },
           {
             "method": "addEditors(String)",
@@ -13824,7 +13824,7 @@
             "returnType": "Document",
             "returnDescription": "This Document, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakedocument.js#L353"
+            "implementationLink": "src/services/documentapp/fakedocument.js#L404"
           },
           {
             "method": "addFooter()",
@@ -13833,7 +13833,7 @@
             "returnType": "FooterSection",
             "returnDescription": "The tab footer.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakedocument.js#L54"
+            "implementationLink": "src/services/documentapp/fakedocument.js#L56"
           },
           {
             "method": "addHeader()",
@@ -13842,7 +13842,7 @@
             "returnType": "HeaderSection",
             "returnDescription": "The tab header.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakedocument.js#L31"
+            "implementationLink": "src/services/documentapp/fakedocument.js#L33"
           },
           {
             "method": "addNamedRange(String,Range)",
@@ -13860,7 +13860,7 @@
             "returnType": "Document",
             "returnDescription": "This Document, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakedocument.js#L358"
+            "implementationLink": "src/services/documentapp/fakedocument.js#L409"
           },
           {
             "method": "addViewer(User)",
@@ -13869,7 +13869,7 @@
             "returnType": "Document",
             "returnDescription": "This Document, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakedocument.js#L358"
+            "implementationLink": "src/services/documentapp/fakedocument.js#L409"
           },
           {
             "method": "addViewers(String)",
@@ -13878,7 +13878,7 @@
             "returnType": "Document",
             "returnDescription": "This Document, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakedocument.js#L363"
+            "implementationLink": "src/services/documentapp/fakedocument.js#L414"
           },
           {
             "method": "getActiveTab()",
@@ -13914,7 +13914,7 @@
             "returnType": "Body",
             "returnDescription": "The tab body section.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakedocument.js#L259"
+            "implementationLink": "src/services/documentapp/fakedocument.js#L261"
           },
           {
             "method": "getBookmark(String)",
@@ -13922,8 +13922,8 @@
             "description": "Gets the Bookmark with the given ID in the first tab or, for scripts that are bound to a document, the active tab. To get a\nbookmark in any tab, use the DocumentTab.getBookmark(id) method. This method returns null if no such Bookmark exists within the tab.",
             "returnType": "Bookmark|null",
             "returnDescription": "The Bookmark with the given ID, or null if no such Bookmark\n    exists within the tab.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakedocument.js#L384"
           },
           {
             "method": "getBookmarks()",
@@ -13950,7 +13950,7 @@
             "returnType": "User[]",
             "returnDescription": "An array of users with edit permission.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakedocument.js#L324"
+            "implementationLink": "src/services/documentapp/fakedocument.js#L326"
           },
           {
             "method": "getFooter()",
@@ -13959,7 +13959,7 @@
             "returnType": "FooterSection|null",
             "returnDescription": "The tab's footer.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakedocument.js#L95"
+            "implementationLink": "src/services/documentapp/fakedocument.js#L97"
           },
           {
             "method": "getFootnotes()",
@@ -13968,7 +13968,7 @@
             "returnType": "Footnote[]",
             "returnDescription": "The tab's footnotes.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakedocument.js#L129"
+            "implementationLink": "src/services/documentapp/fakedocument.js#L131"
           },
           {
             "method": "getHeader()",
@@ -13977,7 +13977,7 @@
             "returnType": "HeaderSection|null",
             "returnDescription": "The tab's header.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakedocument.js#L76"
+            "implementationLink": "src/services/documentapp/fakedocument.js#L78"
           },
           {
             "method": "getId()",
@@ -13986,7 +13986,7 @@
             "returnType": "String",
             "returnDescription": "The document's ID.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakedocument.js#L278"
+            "implementationLink": "src/services/documentapp/fakedocument.js#L280"
           },
           {
             "method": "getLanguage()",
@@ -14004,7 +14004,7 @@
             "returnType": "String",
             "returnDescription": "The document title.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakedocument.js#L282"
+            "implementationLink": "src/services/documentapp/fakedocument.js#L284"
           },
           {
             "method": "getNamedRangeById(String)",
@@ -14067,7 +14067,7 @@
             "returnType": "Tab[]",
             "returnDescription": "The list of all Tabs that are part of the document.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakedocument.js#L263"
+            "implementationLink": "src/services/documentapp/fakedocument.js#L265"
           },
           {
             "method": "getUrl()",
@@ -14076,7 +14076,7 @@
             "returnType": "String",
             "returnDescription": "The URL to access the current document.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakedocument.js#L338"
+            "implementationLink": "src/services/documentapp/fakedocument.js#L340"
           },
           {
             "method": "getViewers()",
@@ -14085,7 +14085,7 @@
             "returnType": "User[]",
             "returnDescription": "An array of users with view or comment permission.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakedocument.js#L304"
+            "implementationLink": "src/services/documentapp/fakedocument.js#L306"
           },
           {
             "method": "newPosition(Element,Integer)",
@@ -14093,8 +14093,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakedocument.js#L348"
           },
           {
             "method": "newRange()",
@@ -14103,7 +14103,7 @@
             "returnType": "RangeBuilder",
             "returnDescription": "The new builder.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakedocument.js#L342"
+            "implementationLink": "src/services/documentapp/fakedocument.js#L344"
           },
           {
             "method": "removeEditor(String)",
@@ -14112,7 +14112,7 @@
             "returnType": "Document",
             "returnDescription": "This Document, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakedocument.js#L368"
+            "implementationLink": "src/services/documentapp/fakedocument.js#L419"
           },
           {
             "method": "removeEditor(User)",
@@ -14121,7 +14121,7 @@
             "returnType": "Document",
             "returnDescription": "This Document, for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakedocument.js#L368"
+            "implementationLink": "src/services/documentapp/fakedocument.js#L419"
           },
           {
             "method": "removeViewer(String)",
@@ -14130,7 +14130,7 @@
             "returnType": "Document",
             "returnDescription": "This Document for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakedocument.js#L380"
+            "implementationLink": "src/services/documentapp/fakedocument.js#L431"
           },
           {
             "method": "removeViewer(User)",
@@ -14139,7 +14139,7 @@
             "returnType": "Document",
             "returnDescription": "This Document for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakedocument.js#L380"
+            "implementationLink": "src/services/documentapp/fakedocument.js#L431"
           },
           {
             "method": "saveAndClose()",
@@ -14148,7 +14148,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakedocument.js#L255"
+            "implementationLink": "src/services/documentapp/fakedocument.js#L257"
           },
           {
             "method": "setActiveTab(String)",
@@ -14184,7 +14184,7 @@
             "returnType": "Document",
             "returnDescription": "The current document.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakedocument.js#L288"
+            "implementationLink": "src/services/documentapp/fakedocument.js#L290"
           },
           {
             "method": "setSelection(Range)",
@@ -14209,7 +14209,7 @@
             "description": "Adds a Bookmark at the given Position.",
             "returnType": "Bookmark",
             "returnDescription": "The new bookmark.",
-            "gas-fakes status": "in progress",
+            "gas-fakes status": "completed",
             "implementationLink": "src/services/documentapp/fakedocumenttab.js#L37"
           },
           {
@@ -14218,8 +14218,8 @@
             "description": "Adds a tab footer section, if none exists.",
             "returnType": "FooterSection",
             "returnDescription": "The tab footer.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/documentapp/fakedocumenttab.js#L41"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "addHeader()",
@@ -14227,8 +14227,8 @@
             "description": "Adds a tab header section, if none exists.",
             "returnType": "HeaderSection",
             "returnDescription": "The tab header.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakedocumenttab.js#L49"
+            "gas-fakes status": "not started",
+            "implementationLink": null
           },
           {
             "method": "addNamedRange(String,Range)",
@@ -14236,8 +14236,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/documentapp/fakedocumenttab.js#L53"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakedocumenttab.js#L41"
           },
           {
             "method": "getBody()",
@@ -14254,8 +14254,8 @@
             "description": "Gets the Bookmark with the given ID. This method returns null if no such Bookmark exists within this tab.",
             "returnType": "Bookmark|null",
             "returnDescription": "The Bookmark with the given ID, or null if no such Bookmark\n    exists within the tab.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/documentapp/fakedocumenttab.js#L57"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakedocumenttab.js#L45"
           },
           {
             "method": "getBookmarks()",
@@ -14263,8 +14263,8 @@
             "description": "Gets all Bookmark objects in the tab.",
             "returnType": "Bookmark[]",
             "returnDescription": "An array of the Bookmark objects in the tab.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/documentapp/fakedocumenttab.js#L61"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakedocumenttab.js#L49"
           },
           {
             "method": "getFooter()",
@@ -14272,8 +14272,8 @@
             "description": "Retrieves the tab's footer section, if one exists.",
             "returnType": "FooterSection|null",
             "returnDescription": "The tab's footer.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/documentapp/fakedocumenttab.js#L65"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakedocumenttab.js#L53"
           },
           {
             "method": "getFootnotes()",
@@ -14281,8 +14281,8 @@
             "description": "Retrieves all the Footnote elements in the tab's body.",
             "returnType": "Footnote[]|null",
             "returnDescription": "The tab's footnotes.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/documentapp/fakedocumenttab.js#L73"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakedocumenttab.js#L57"
           },
           {
             "method": "getHeader()",
@@ -14291,7 +14291,7 @@
             "returnType": "HeaderSection|null",
             "returnDescription": "The tab's header.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakedocumenttab.js#L77"
+            "implementationLink": "src/services/documentapp/fakedocumenttab.js#L61"
           },
           {
             "method": "getNamedRangeById(String)",
@@ -14299,8 +14299,8 @@
             "description": "Gets the NamedRange with the given ID. This method returns null if no such\nNamedRange exists in the tab. Names are not necessarily unique, even across tabs;\nseveral different ranges in the same document may share the same name, much like a class in\nHTML. By contrast, IDs are unique within the tab, like an ID in HTML.",
             "returnType": "NamedRange|null",
             "returnDescription": "The NamedRange with the given ID, or null if no such range exists in\n    the tab.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/documentapp/fakedocumenttab.js#L81"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakedocumenttab.js#L65"
           },
           {
             "method": "getNamedRanges()",
@@ -14308,8 +14308,8 @@
             "description": "Gets all NamedRange objects in the tab.",
             "returnType": "NamedRange[]",
             "returnDescription": "An array of the NamedRange objects in the tab, possibly including multiple\n    ranges with the same name.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/documentapp/fakedocumenttab.js#L85"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakedocumenttab.js#L69"
           },
           {
             "method": "getNamedRanges(String)",
@@ -14317,8 +14317,8 @@
             "description": "Gets all NamedRange objects in the tab with the given name. Names are not necessarily\nunique, even across tabs; several different ranges in the same document may share the same\nname, much like a class in HTML. By contrast, IDs are unique within the tab, like an ID in\nHTML.",
             "returnType": "NamedRange[]",
             "returnDescription": "An array of the NamedRange objects in the tab with the given name.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/documentapp/fakedocumenttab.js#L85"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakedocumenttab.js#L69"
           },
           {
             "method": "newPosition(Element,Integer)",
@@ -14326,8 +14326,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/documentapp/fakedocumenttab.js#L89"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakedocumenttab.js#L73"
           },
           {
             "method": "newRange()",
@@ -14335,8 +14335,8 @@
             "description": "Creates a builder used to construct Range objects from tab elements.",
             "returnType": "RangeBuilder",
             "returnDescription": "The new builder.",
-            "gas-fakes status": "in progress",
-            "implementationLink": "src/services/documentapp/fakedocumenttab.js#L93"
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakedocumenttab.js#L77"
           }
         ]
       },
@@ -15122,8 +15122,8 @@
             "description": "Clears the contents of the element.",
             "returnType": "FooterSection",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L192"
           },
           {
             "method": "copy()",
@@ -15132,7 +15132,7 @@
             "returnType": "FooterSection",
             "returnDescription": "The new copy.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L201"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L321"
           },
           {
             "method": "editAsText()",
@@ -15140,8 +15140,8 @@
             "description": "Obtains a Text version of the current element, for editing.",
             "returnType": "Text",
             "returnDescription": "a text version of the current element",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L210"
           },
           {
             "method": "findElement(ElementType)",
@@ -15149,8 +15149,8 @@
             "description": "Searches the contents of the element for a descendant of the specified type.",
             "returnType": "RangeElement|null",
             "returnDescription": "A search result indicating the position of the search element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L224"
           },
           {
             "method": "findElement(ElementType,RangeElement)",
@@ -15158,8 +15158,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L224"
           },
           {
             "method": "findText(String)",
@@ -15167,8 +15167,8 @@
             "description": "Searches the contents of the element for the specified text pattern using regular expressions.",
             "returnType": "RangeElement|null",
             "returnDescription": "a search result indicating the position of the search text, or null if there is no\n    match",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L268"
           },
           {
             "method": "findText(String,RangeElement)",
@@ -15176,8 +15176,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L268"
           },
           {
             "method": "getAttributes()",
@@ -15185,8 +15185,8 @@
             "description": "Retrieves the element's attributes.",
             "returnType": "Object",
             "returnDescription": "The element's attributes.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L212"
           },
           {
             "method": "getChild(Integer)",
@@ -15195,7 +15195,7 @@
             "returnType": "Element",
             "returnDescription": "The child element at the specified index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L192"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L320"
           },
           {
             "method": "getChildIndex(Element)",
@@ -15204,7 +15204,7 @@
             "returnType": "Integer",
             "returnDescription": "The child index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L259"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L447"
           },
           {
             "method": "getImages()",
@@ -15213,7 +15213,7 @@
             "returnType": "InlineImage[]|null",
             "returnDescription": "The section images.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L102"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L103"
           },
           {
             "method": "getListItems()",
@@ -15222,7 +15222,7 @@
             "returnType": "ListItem[]|null",
             "returnDescription": "The section list items.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L132"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L133"
           },
           {
             "method": "getNumChildren()",
@@ -15231,7 +15231,7 @@
             "returnType": "Integer",
             "returnDescription": "The number of children.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L288"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L476"
           },
           {
             "method": "getParagraphs()",
@@ -15240,7 +15240,7 @@
             "returnType": "Paragraph[]|null",
             "returnDescription": "The section paragraphs.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L151"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L152"
           },
           {
             "method": "getParent()",
@@ -15249,7 +15249,7 @@
             "returnType": "ContainerElement|null",
             "returnDescription": "The parent element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L165"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L177"
           },
           {
             "method": "getTables()",
@@ -15258,7 +15258,7 @@
             "returnType": "Table[]|null",
             "returnDescription": "The section tables.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L171"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L172"
           },
           {
             "method": "getText()",
@@ -15266,8 +15266,8 @@
             "description": "Retrieves the contents of the element as a text string.",
             "returnType": "String",
             "returnDescription": "the contents of the element as text string",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L386"
           },
           {
             "method": "getTextAlignment()",
@@ -15275,8 +15275,8 @@
             "description": "Gets the text alignment. The available types of alignment are DocumentApp.TextAlignment.NORMAL, DocumentApp.TextAlignment.SUBSCRIPT, and DocumentApp.TextAlignment.SUPERSCRIPT.",
             "returnType": "TextAlignment|null",
             "returnDescription": "the type of text alignment, or null if the text contains multiple types of text\n    alignments or if the text alignment has never been set",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L398"
           },
           {
             "method": "getType()",
@@ -15285,7 +15285,7 @@
             "returnType": "ElementType",
             "returnDescription": "The element type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L186"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L198"
           },
           {
             "method": "insertHorizontalRule(Integer)",
@@ -15392,8 +15392,8 @@
             "description": "Removes the element from its parent.",
             "returnType": "FooterSection|null",
             "returnDescription": "The removed element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L284"
           },
           {
             "method": "replaceText(String,String)",
@@ -15401,8 +15401,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L431"
           },
           {
             "method": "setAttributes(Object)",
@@ -15410,8 +15410,8 @@
             "description": "Sets the element's attributes.",
             "returnType": "FooterSection",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L225"
           },
           {
             "method": "setText(String)",
@@ -15428,8 +15428,8 @@
             "description": "Sets the text alignment. The available types of alignment are DocumentApp.TextAlignment.NORMAL, DocumentApp.TextAlignment.SUBSCRIPT, and DocumentApp.TextAlignment.SUPERSCRIPT.",
             "returnType": "FooterSection",
             "returnDescription": "the current element",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L414"
           }
         ]
       },
@@ -15446,7 +15446,7 @@
             "returnType": "Footnote",
             "returnDescription": "The new copy.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L201"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L321"
           },
           {
             "method": "getAttributes()",
@@ -15454,8 +15454,8 @@
             "description": "Retrieves the element's attributes.",
             "returnType": "Object",
             "returnDescription": "The element's attributes.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L212"
           },
           {
             "method": "getFootnoteContents()",
@@ -15472,8 +15472,8 @@
             "description": "Retrieves the element's next sibling element.",
             "returnType": "Element|null",
             "returnDescription": "The next sibling element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L131"
           },
           {
             "method": "getParent()",
@@ -15482,7 +15482,7 @@
             "returnType": "ContainerElement|null",
             "returnDescription": "The parent element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L165"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L177"
           },
           {
             "method": "getPreviousSibling()",
@@ -15490,8 +15490,8 @@
             "description": "Retrieves the element's previous sibling element.",
             "returnType": "Element|null",
             "returnDescription": "The previous sibling element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L154"
           },
           {
             "method": "getType()",
@@ -15500,7 +15500,7 @@
             "returnType": "ElementType",
             "returnDescription": "The element type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L186"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L198"
           },
           {
             "method": "isAtDocumentEnd()",
@@ -15508,8 +15508,8 @@
             "description": "Determines whether the element is at the end of the Document.",
             "returnType": "Boolean",
             "returnDescription": "Whether the element is at the end of the tab.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L246"
           },
           {
             "method": "removeFromParent()",
@@ -15517,8 +15517,8 @@
             "description": "Removes the element from its parent.",
             "returnType": "Footnote|null",
             "returnDescription": "The removed element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L284"
           },
           {
             "method": "setAttributes(Object)",
@@ -15526,8 +15526,8 @@
             "description": "Sets the element's attributes.",
             "returnType": "Footnote",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L225"
           }
         ]
       },
@@ -15571,7 +15571,7 @@
             "returnType": "FootnoteSection",
             "returnDescription": "The new copy.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L201"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L321"
           },
           {
             "method": "editAsText()",
@@ -15579,8 +15579,8 @@
             "description": "Obtains a Text version of the current element, for editing.",
             "returnType": "Text",
             "returnDescription": "a text version of the current element",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L210"
           },
           {
             "method": "findElement(ElementType)",
@@ -15588,8 +15588,8 @@
             "description": "Searches the contents of the element for a descendant of the specified type.",
             "returnType": "RangeElement|null",
             "returnDescription": "A search result indicating the position of the search element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L224"
           },
           {
             "method": "findElement(ElementType,RangeElement)",
@@ -15597,8 +15597,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L224"
           },
           {
             "method": "findText(String)",
@@ -15606,8 +15606,8 @@
             "description": "Searches the contents of the element for the specified text pattern using regular expressions.",
             "returnType": "RangeElement|null",
             "returnDescription": "a search result indicating the position of the search text, or null if there is no\n    match",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L268"
           },
           {
             "method": "findText(String,RangeElement)",
@@ -15615,8 +15615,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L268"
           },
           {
             "method": "getAttributes()",
@@ -15624,8 +15624,8 @@
             "description": "Retrieves the element's attributes.",
             "returnType": "Object",
             "returnDescription": "The element's attributes.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L212"
           },
           {
             "method": "getChild(Integer)",
@@ -15634,7 +15634,7 @@
             "returnType": "Element",
             "returnDescription": "The child element at the specified index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L192"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L320"
           },
           {
             "method": "getChildIndex(Element)",
@@ -15643,7 +15643,7 @@
             "returnType": "Integer",
             "returnDescription": "The child index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L259"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L447"
           },
           {
             "method": "getNextSibling()",
@@ -15651,8 +15651,8 @@
             "description": "Retrieves the element's next sibling element.",
             "returnType": "Element|null",
             "returnDescription": "The next sibling element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L131"
           },
           {
             "method": "getNumChildren()",
@@ -15661,7 +15661,7 @@
             "returnType": "Integer",
             "returnDescription": "The number of children.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L288"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L476"
           },
           {
             "method": "getParagraphs()",
@@ -15670,7 +15670,7 @@
             "returnType": "Paragraph[]|null",
             "returnDescription": "The section paragraphs.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L151"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L152"
           },
           {
             "method": "getParent()",
@@ -15679,7 +15679,7 @@
             "returnType": "ContainerElement|null",
             "returnDescription": "The parent element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L165"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L177"
           },
           {
             "method": "getPreviousSibling()",
@@ -15687,8 +15687,8 @@
             "description": "Retrieves the element's previous sibling element.",
             "returnType": "Element|null",
             "returnDescription": "The previous sibling element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L154"
           },
           {
             "method": "getText()",
@@ -15705,8 +15705,8 @@
             "description": "Gets the text alignment. The available types of alignment are DocumentApp.TextAlignment.NORMAL, DocumentApp.TextAlignment.SUBSCRIPT, and DocumentApp.TextAlignment.SUPERSCRIPT.",
             "returnType": "TextAlignment|null",
             "returnDescription": "the type of text alignment, or null if the text contains multiple types of text\n    alignments or if the text alignment has never been set",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L398"
           },
           {
             "method": "getType()",
@@ -15715,7 +15715,7 @@
             "returnType": "ElementType",
             "returnDescription": "The element type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L186"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L198"
           },
           {
             "method": "insertParagraph(Integer,Paragraph)",
@@ -15750,8 +15750,8 @@
             "description": "Removes the element from its parent.",
             "returnType": "FootnoteSection|null",
             "returnDescription": "The removed element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L284"
           },
           {
             "method": "replaceText(String,String)",
@@ -15759,8 +15759,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L431"
           },
           {
             "method": "setAttributes(Object)",
@@ -15768,8 +15768,8 @@
             "description": "Sets the element's attributes.",
             "returnType": "FootnoteSection",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L225"
           },
           {
             "method": "setText(String)",
@@ -15786,8 +15786,8 @@
             "description": "Sets the text alignment. The available types of alignment are DocumentApp.TextAlignment.NORMAL, DocumentApp.TextAlignment.SUBSCRIPT, and DocumentApp.TextAlignment.SUPERSCRIPT.",
             "returnType": "FootnoteSection",
             "returnDescription": "the current element",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L414"
           }
         ]
       },
@@ -15804,7 +15804,7 @@
             "returnType": "HorizontalRule",
             "returnDescription": "The new copy.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L201"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L321"
           },
           {
             "method": "getAttributes()",
@@ -15812,8 +15812,8 @@
             "description": "Retrieves the element's attributes.",
             "returnType": "Object",
             "returnDescription": "The element's attributes.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L212"
           },
           {
             "method": "getNextSibling()",
@@ -15821,8 +15821,8 @@
             "description": "Retrieves the element's next sibling element.",
             "returnType": "Element|null",
             "returnDescription": "The next sibling element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L131"
           },
           {
             "method": "getParent()",
@@ -15831,7 +15831,7 @@
             "returnType": "ContainerElement|null",
             "returnDescription": "The parent element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L165"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L177"
           },
           {
             "method": "getPreviousSibling()",
@@ -15839,8 +15839,8 @@
             "description": "Retrieves the element's previous sibling element.",
             "returnType": "Element|null",
             "returnDescription": "The previous sibling element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L154"
           },
           {
             "method": "getType()",
@@ -15849,7 +15849,7 @@
             "returnType": "ElementType",
             "returnDescription": "The element type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L186"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L198"
           },
           {
             "method": "isAtDocumentEnd()",
@@ -15857,8 +15857,8 @@
             "description": "Determines whether the element is at the end of the Document.",
             "returnType": "Boolean",
             "returnDescription": "Whether the element is at the end of the tab.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L246"
           },
           {
             "method": "removeFromParent()",
@@ -15866,8 +15866,8 @@
             "description": "Removes the element from its parent.",
             "returnType": "HorizontalRule|null",
             "returnDescription": "The removed element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L284"
           },
           {
             "method": "setAttributes(Object)",
@@ -15875,8 +15875,8 @@
             "description": "Sets the element's attributes.",
             "returnType": "HorizontalRule",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L225"
           }
         ]
       },
@@ -16116,8 +16116,8 @@
             "description": "Clears the contents of the element.",
             "returnType": "HeaderSection",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L192"
           },
           {
             "method": "copy()",
@@ -16126,7 +16126,7 @@
             "returnType": "HeaderSection",
             "returnDescription": "The new copy.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L201"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L321"
           },
           {
             "method": "editAsText()",
@@ -16134,8 +16134,8 @@
             "description": "Obtains a Text version of the current element, for editing.",
             "returnType": "Text",
             "returnDescription": "a text version of the current element",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L210"
           },
           {
             "method": "findElement(ElementType)",
@@ -16143,8 +16143,8 @@
             "description": "Searches the contents of the element for a descendant of the specified type.",
             "returnType": "RangeElement|null",
             "returnDescription": "A search result indicating the position of the search element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L224"
           },
           {
             "method": "findElement(ElementType,RangeElement)",
@@ -16152,8 +16152,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L224"
           },
           {
             "method": "findText(String)",
@@ -16161,8 +16161,8 @@
             "description": "Searches the contents of the element for the specified text pattern using regular expressions.",
             "returnType": "RangeElement|null",
             "returnDescription": "a search result indicating the position of the search text, or null if there is no\n    match",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L268"
           },
           {
             "method": "findText(String,RangeElement)",
@@ -16170,8 +16170,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L268"
           },
           {
             "method": "getAttributes()",
@@ -16179,8 +16179,8 @@
             "description": "Retrieves the element's attributes.",
             "returnType": "Object",
             "returnDescription": "The element's attributes.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L212"
           },
           {
             "method": "getChild(Integer)",
@@ -16189,7 +16189,7 @@
             "returnType": "Element",
             "returnDescription": "The child element at the specified index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L192"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L320"
           },
           {
             "method": "getChildIndex(Element)",
@@ -16198,7 +16198,7 @@
             "returnType": "Integer",
             "returnDescription": "The child index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L259"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L447"
           },
           {
             "method": "getImages()",
@@ -16207,7 +16207,7 @@
             "returnType": "InlineImage[]|null",
             "returnDescription": "The section images.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L102"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L103"
           },
           {
             "method": "getListItems()",
@@ -16216,7 +16216,7 @@
             "returnType": "ListItem[]|null",
             "returnDescription": "The section list items.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L132"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L133"
           },
           {
             "method": "getNumChildren()",
@@ -16225,7 +16225,7 @@
             "returnType": "Integer",
             "returnDescription": "The number of children.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L288"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L476"
           },
           {
             "method": "getParagraphs()",
@@ -16234,7 +16234,7 @@
             "returnType": "Paragraph[]|null",
             "returnDescription": "The section paragraphs.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L151"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L152"
           },
           {
             "method": "getParent()",
@@ -16243,7 +16243,7 @@
             "returnType": "ContainerElement|null",
             "returnDescription": "The parent element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L165"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L177"
           },
           {
             "method": "getTables()",
@@ -16252,7 +16252,7 @@
             "returnType": "Table[]|null",
             "returnDescription": "The section tables.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L171"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L172"
           },
           {
             "method": "getText()",
@@ -16260,8 +16260,8 @@
             "description": "Retrieves the contents of the element as a text string.",
             "returnType": "String",
             "returnDescription": "the contents of the element as text string",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L386"
           },
           {
             "method": "getTextAlignment()",
@@ -16269,8 +16269,8 @@
             "description": "Gets the text alignment. The available types of alignment are DocumentApp.TextAlignment.NORMAL, DocumentApp.TextAlignment.SUBSCRIPT, and DocumentApp.TextAlignment.SUPERSCRIPT.",
             "returnType": "TextAlignment|null",
             "returnDescription": "the type of text alignment, or null if the text contains multiple types of text\n    alignments or if the text alignment has never been set",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L398"
           },
           {
             "method": "getType()",
@@ -16279,7 +16279,7 @@
             "returnType": "ElementType",
             "returnDescription": "The element type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L186"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L198"
           },
           {
             "method": "insertHorizontalRule(Integer)",
@@ -16386,8 +16386,8 @@
             "description": "Removes the element from its parent.",
             "returnType": "HeaderSection|null",
             "returnDescription": "The removed element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L284"
           },
           {
             "method": "replaceText(String,String)",
@@ -16395,8 +16395,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L431"
           },
           {
             "method": "setAttributes(Object)",
@@ -16404,8 +16404,8 @@
             "description": "Sets the element's attributes.",
             "returnType": "HeaderSection",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L225"
           },
           {
             "method": "setText(String)",
@@ -16422,8 +16422,8 @@
             "description": "Sets the text alignment. The available types of alignment are DocumentApp.TextAlignment.NORMAL, DocumentApp.TextAlignment.SUBSCRIPT, and DocumentApp.TextAlignment.SUPERSCRIPT.",
             "returnType": "HeaderSection",
             "returnDescription": "the current element",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L414"
           }
         ]
       },
@@ -16475,8 +16475,8 @@
             "description": "Retrieves the element's attributes.",
             "returnType": "Object",
             "returnDescription": "The element's attributes.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L212"
           },
           {
             "method": "getBlob()",
@@ -16511,8 +16511,8 @@
             "description": "Retrieves the element's next sibling element.",
             "returnType": "Element|null",
             "returnDescription": "The next sibling element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L131"
           },
           {
             "method": "getParent()",
@@ -16521,7 +16521,7 @@
             "returnType": "ContainerElement|null",
             "returnDescription": "The parent element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L165"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L177"
           },
           {
             "method": "getPreviousSibling()",
@@ -16529,8 +16529,8 @@
             "description": "Retrieves the element's previous sibling element.",
             "returnType": "Element|null",
             "returnDescription": "The previous sibling element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L154"
           },
           {
             "method": "getType()",
@@ -16539,7 +16539,7 @@
             "returnType": "ElementType",
             "returnDescription": "The element type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L186"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L198"
           },
           {
             "method": "getWidth()",
@@ -16556,8 +16556,8 @@
             "description": "Determines whether the element is at the end of the Document.",
             "returnType": "Boolean",
             "returnDescription": "Whether the element is at the end of the tab.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L246"
           },
           {
             "method": "merge()",
@@ -16565,8 +16565,8 @@
             "description": "Merges the element with the preceding sibling of the same type.",
             "returnType": "InlineImage|null",
             "returnDescription": "The merged element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L271"
           },
           {
             "method": "removeFromParent()",
@@ -16574,8 +16574,8 @@
             "description": "Removes the element from its parent.",
             "returnType": "InlineImage|null",
             "returnDescription": "The removed element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L284"
           },
           {
             "method": "setAltDescription(String)",
@@ -16601,8 +16601,8 @@
             "description": "Sets the element's attributes.",
             "returnType": "InlineImage",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L225"
           },
           {
             "method": "setHeight(Integer)",
@@ -16727,7 +16727,7 @@
             "returnType": "ListItem",
             "returnDescription": "The new copy.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L201"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L321"
           },
           {
             "method": "editAsText()",
@@ -16736,7 +16736,7 @@
             "returnType": "Text",
             "returnDescription": "a text version of the current element",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L40"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L210"
           },
           {
             "method": "findElement(ElementType)",
@@ -16744,8 +16744,8 @@
             "description": "Searches the contents of the element for a descendant of the specified type.",
             "returnType": "RangeElement|null",
             "returnDescription": "A search result indicating the position of the search element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L224"
           },
           {
             "method": "findElement(ElementType,RangeElement)",
@@ -16753,8 +16753,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L224"
           },
           {
             "method": "findText(String)",
@@ -16762,8 +16762,8 @@
             "description": "Searches the contents of the element for the specified text pattern using regular expressions.",
             "returnType": "RangeElement|null",
             "returnDescription": "a search result indicating the position of the search text, or null if there is no\n    match",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L268"
           },
           {
             "method": "findText(String,RangeElement)",
@@ -16771,8 +16771,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L268"
           },
           {
             "method": "getAlignment()",
@@ -16799,7 +16799,7 @@
             "returnType": "Element",
             "returnDescription": "The child element at the specified index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L192"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L320"
           },
           {
             "method": "getChildIndex(Element)",
@@ -16808,7 +16808,7 @@
             "returnType": "Integer",
             "returnDescription": "The child index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L259"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L447"
           },
           {
             "method": "getGlyphType()",
@@ -16897,8 +16897,8 @@
             "description": "Retrieves the element's next sibling element.",
             "returnType": "Element|null",
             "returnDescription": "The next sibling element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L131"
           },
           {
             "method": "getNumChildren()",
@@ -16907,7 +16907,7 @@
             "returnType": "Integer",
             "returnDescription": "The number of children.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L288"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L476"
           },
           {
             "method": "getParent()",
@@ -16916,7 +16916,7 @@
             "returnType": "ContainerElement|null",
             "returnDescription": "The parent element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L165"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L177"
           },
           {
             "method": "getPositionedImage(String)",
@@ -16942,8 +16942,8 @@
             "description": "Retrieves the element's previous sibling element.",
             "returnType": "Element|null",
             "returnDescription": "The previous sibling element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L154"
           },
           {
             "method": "getSpacingAfter()",
@@ -16970,7 +16970,7 @@
             "returnType": "String",
             "returnDescription": "the contents of the element as text string",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeparagraph.js#L30"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L386"
           },
           {
             "method": "getTextAlignment()",
@@ -16978,8 +16978,8 @@
             "description": "Gets the text alignment. The available types of alignment are DocumentApp.TextAlignment.NORMAL, DocumentApp.TextAlignment.SUBSCRIPT, and DocumentApp.TextAlignment.SUPERSCRIPT.",
             "returnType": "TextAlignment|null",
             "returnDescription": "the type of text alignment, or null if the text contains multiple types of text\n    alignments or if the text alignment has never been set",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L398"
           },
           {
             "method": "getType()",
@@ -16988,7 +16988,7 @@
             "returnType": "ElementType",
             "returnDescription": "The element type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L186"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L198"
           },
           {
             "method": "insertHorizontalRule(Integer)",
@@ -17059,8 +17059,8 @@
             "description": "Determines whether the element is at the end of the Document.",
             "returnType": "Boolean",
             "returnDescription": "Whether the element is at the end of the tab.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L246"
           },
           {
             "method": "isLeftToRight()",
@@ -17077,8 +17077,8 @@
             "description": "Merges the element with the preceding sibling of the same type.",
             "returnType": "ListItem|null",
             "returnDescription": "The merged element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L271"
           },
           {
             "method": "removeChild(Element)",
@@ -17095,8 +17095,8 @@
             "description": "Removes the element from its parent.",
             "returnType": "ListItem|null",
             "returnDescription": "The removed element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L284"
           },
           {
             "method": "removePositionedImage(String)",
@@ -17113,8 +17113,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L431"
           },
           {
             "method": "setAlignment(HorizontalAlignment)",
@@ -17131,8 +17131,8 @@
             "description": "Sets the element's attributes.",
             "returnType": "ListItem",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L225"
           },
           {
             "method": "setGlyphType(GlyphType)",
@@ -17257,8 +17257,8 @@
             "description": "Sets the text alignment. The available types of alignment are DocumentApp.TextAlignment.NORMAL, DocumentApp.TextAlignment.SUBSCRIPT, and DocumentApp.TextAlignment.SUPERSCRIPT.",
             "returnType": "ListItem",
             "returnDescription": "the current element",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L414"
           }
         ]
       },
@@ -17390,8 +17390,8 @@
             "description": "Clears the contents of the element.",
             "returnType": "Paragraph",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L192"
           },
           {
             "method": "copy()",
@@ -17400,7 +17400,7 @@
             "returnType": "Paragraph",
             "returnDescription": "The new copy.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L201"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L321"
           },
           {
             "method": "editAsText()",
@@ -17417,8 +17417,8 @@
             "description": "Searches the contents of the element for a descendant of the specified type.",
             "returnType": "RangeElement|null",
             "returnDescription": "A search result indicating the position of the search element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L224"
           },
           {
             "method": "findElement(ElementType,RangeElement)",
@@ -17426,8 +17426,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L224"
           },
           {
             "method": "findText(String)",
@@ -17435,8 +17435,8 @@
             "description": "Searches the contents of the element for the specified text pattern using regular expressions.",
             "returnType": "RangeElement|null",
             "returnDescription": "a search result indicating the position of the search text, or null if there is no\n    match",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L268"
           },
           {
             "method": "findText(String,RangeElement)",
@@ -17444,8 +17444,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L268"
           },
           {
             "method": "getAlignment()",
@@ -17472,7 +17472,7 @@
             "returnType": "Element",
             "returnDescription": "The child element at the specified index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L192"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L320"
           },
           {
             "method": "getChildIndex(Element)",
@@ -17481,7 +17481,7 @@
             "returnType": "Integer",
             "returnDescription": "The child index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L259"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L447"
           },
           {
             "method": "getHeading()",
@@ -17543,8 +17543,8 @@
             "description": "Retrieves the element's next sibling element.",
             "returnType": "Element|null",
             "returnDescription": "The next sibling element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L131"
           },
           {
             "method": "getNumChildren()",
@@ -17553,7 +17553,7 @@
             "returnType": "Integer",
             "returnDescription": "The number of children.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L288"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L476"
           },
           {
             "method": "getParent()",
@@ -17562,7 +17562,7 @@
             "returnType": "ContainerElement|null",
             "returnDescription": "The parent element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L165"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L177"
           },
           {
             "method": "getPositionedImage(String)",
@@ -17588,8 +17588,8 @@
             "description": "Retrieves the element's previous sibling element.",
             "returnType": "Element|null",
             "returnDescription": "The previous sibling element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L154"
           },
           {
             "method": "getSpacingAfter()",
@@ -17624,8 +17624,8 @@
             "description": "Gets the text alignment. The available types of alignment are DocumentApp.TextAlignment.NORMAL, DocumentApp.TextAlignment.SUBSCRIPT, and DocumentApp.TextAlignment.SUPERSCRIPT.",
             "returnType": "TextAlignment|null",
             "returnDescription": "the type of text alignment, or null if the text contains multiple types of text\n    alignments or if the text alignment has never been set",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L398"
           },
           {
             "method": "getType()",
@@ -17634,7 +17634,7 @@
             "returnType": "ElementType",
             "returnDescription": "The element type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L186"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L198"
           },
           {
             "method": "insertHorizontalRule(Integer)",
@@ -17705,8 +17705,8 @@
             "description": "Determines whether the element is at the end of the Document.",
             "returnType": "Boolean",
             "returnDescription": "Whether the element is at the end of the tab.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L246"
           },
           {
             "method": "isLeftToRight()",
@@ -17723,8 +17723,8 @@
             "description": "Merges the element with the preceding sibling of the same type.",
             "returnType": "Paragraph|null",
             "returnDescription": "The merged element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L271"
           },
           {
             "method": "removeChild(Element)",
@@ -17741,8 +17741,8 @@
             "description": "Removes the element from its parent.",
             "returnType": "Paragraph|null",
             "returnDescription": "The removed element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L284"
           },
           {
             "method": "removePositionedImage(String)",
@@ -17759,8 +17759,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L431"
           },
           {
             "method": "setAlignment(HorizontalAlignment)",
@@ -17777,8 +17777,8 @@
             "description": "Sets the element's attributes.",
             "returnType": "Paragraph",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L225"
           },
           {
             "method": "setHeading(ParagraphHeading)",
@@ -17876,8 +17876,8 @@
             "description": "Sets the text alignment. The available types of alignment are DocumentApp.TextAlignment.NORMAL, DocumentApp.TextAlignment.SUBSCRIPT, and DocumentApp.TextAlignment.SUPERSCRIPT.",
             "returnType": "Paragraph",
             "returnDescription": "the current element",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L414"
           }
         ]
       },
@@ -17894,7 +17894,7 @@
             "returnType": "PageBreak",
             "returnDescription": "The new copy.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L201"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L321"
           },
           {
             "method": "getAttributes()",
@@ -17902,8 +17902,8 @@
             "description": "Retrieves the element's attributes.",
             "returnType": "Object",
             "returnDescription": "The element's attributes.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L212"
           },
           {
             "method": "getNextSibling()",
@@ -17911,8 +17911,8 @@
             "description": "Retrieves the element's next sibling element.",
             "returnType": "Element|null",
             "returnDescription": "The next sibling element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L131"
           },
           {
             "method": "getParent()",
@@ -17921,7 +17921,7 @@
             "returnType": "ContainerElement|null",
             "returnDescription": "The parent element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L165"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L177"
           },
           {
             "method": "getPreviousSibling()",
@@ -17929,8 +17929,8 @@
             "description": "Retrieves the element's previous sibling element.",
             "returnType": "Element|null",
             "returnDescription": "The previous sibling element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L154"
           },
           {
             "method": "getType()",
@@ -17939,7 +17939,7 @@
             "returnType": "ElementType",
             "returnDescription": "The element type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L186"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L198"
           },
           {
             "method": "isAtDocumentEnd()",
@@ -17947,8 +17947,8 @@
             "description": "Determines whether the element is at the end of the Document.",
             "returnType": "Boolean",
             "returnDescription": "Whether the element is at the end of the tab.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L246"
           },
           {
             "method": "removeFromParent()",
@@ -17956,8 +17956,8 @@
             "description": "Removes the element from its parent.",
             "returnType": "PageBreak|null",
             "returnDescription": "The removed element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L284"
           },
           {
             "method": "setAttributes(Object)",
@@ -17965,8 +17965,8 @@
             "description": "Sets the element's attributes.",
             "returnType": "PageBreak",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L225"
           }
         ]
       },
@@ -18321,7 +18321,7 @@
             "returnType": "Element",
             "returnDescription": "the element that corresponds to this RangeElement",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakerangeelement.js#L21"
+            "implementationLink": "src/services/documentapp/fakerangeelement.js#L23"
           },
           {
             "method": "getEndOffsetInclusive()",
@@ -18329,8 +18329,8 @@
             "description": "Gets the position of the end of a partial range within the range element. If the element is a\nText element and isPartial() returns true, the offset is the number of characters before the last\ncharacter in the range (that is, the index of the last character in the range); in any other\ncase, this method returns -1.",
             "returnType": "Integer",
             "returnDescription": "for Text elements, the\n    number of character before the last character in the range; for other elements, -1",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakerangeelement.js#L39"
           },
           {
             "method": "getStartOffset()",
@@ -18338,8 +18338,8 @@
             "description": "Gets the position of the start of a partial range within the range element. If the element is a\nText element and isPartial() returns true, the offset is the number of characters before the start of\nthe range (that is, the index of the first character in the range); in any other case, this\nmethod returns -1.",
             "returnType": "Integer",
             "returnDescription": "for Text elements, the\n    number of characters before the start of the range; for other elements, -1",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakerangeelement.js#L31"
           },
           {
             "method": "isPartial()",
@@ -18347,8 +18347,8 @@
             "description": "Determines whether this range element covers the entire element or a partial selection of the\nelement's characters. The beginning and end of a partial range element's range can be\ndetermined using getStartOffset() and getEndOffsetInclusive(), respectively.",
             "returnType": "Boolean",
             "returnDescription": "true if the element is partially included; false if not",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakerangeelement.js#L47"
           }
         ]
       },
@@ -18650,8 +18650,8 @@
             "description": "Clears the contents of the element.",
             "returnType": "TableCell",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L192"
           },
           {
             "method": "copy()",
@@ -18660,7 +18660,7 @@
             "returnType": "TableCell",
             "returnDescription": "The new copy.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L201"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L321"
           },
           {
             "method": "editAsText()",
@@ -18668,8 +18668,8 @@
             "description": "Obtains a Text version of the current element, for editing.",
             "returnType": "Text",
             "returnDescription": "a text version of the current element",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L210"
           },
           {
             "method": "findElement(ElementType)",
@@ -18677,8 +18677,8 @@
             "description": "Searches the contents of the element for a descendant of the specified type.",
             "returnType": "RangeElement|null",
             "returnDescription": "A search result indicating the position of the search element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L224"
           },
           {
             "method": "findElement(ElementType,RangeElement)",
@@ -18686,8 +18686,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L224"
           },
           {
             "method": "findText(String)",
@@ -18695,8 +18695,8 @@
             "description": "Searches the contents of the element for the specified text pattern using regular expressions.",
             "returnType": "RangeElement|null",
             "returnDescription": "a search result indicating the position of the search text, or null if there is no\n    match",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L268"
           },
           {
             "method": "findText(String,RangeElement)",
@@ -18704,8 +18704,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L268"
           },
           {
             "method": "getAttributes()",
@@ -18713,8 +18713,8 @@
             "description": "Retrieves the element's attributes.",
             "returnType": "Object",
             "returnDescription": "The element's attributes.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L212"
           },
           {
             "method": "getBackgroundColor()",
@@ -18732,7 +18732,7 @@
             "returnType": "Element",
             "returnDescription": "The child element at the specified index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L192"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L320"
           },
           {
             "method": "getChildIndex(Element)",
@@ -18741,7 +18741,7 @@
             "returnType": "Integer",
             "returnDescription": "The child index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L259"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L447"
           },
           {
             "method": "getColSpan()",
@@ -18767,8 +18767,8 @@
             "description": "Retrieves the element's next sibling element.",
             "returnType": "Element|null",
             "returnDescription": "The next sibling element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L131"
           },
           {
             "method": "getNumChildren()",
@@ -18777,7 +18777,7 @@
             "returnType": "Integer",
             "returnDescription": "The number of children.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L288"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L476"
           },
           {
             "method": "getPaddingBottom()",
@@ -18822,7 +18822,7 @@
             "returnType": "ContainerElement|null",
             "returnDescription": "The parent element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L165"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L177"
           },
           {
             "method": "getParentRow()",
@@ -18848,8 +18848,8 @@
             "description": "Retrieves the element's previous sibling element.",
             "returnType": "Element|null",
             "returnDescription": "The previous sibling element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L154"
           },
           {
             "method": "getRowSpan()",
@@ -18875,8 +18875,8 @@
             "description": "Gets the text alignment. The available types of alignment are DocumentApp.TextAlignment.NORMAL, DocumentApp.TextAlignment.SUBSCRIPT, and DocumentApp.TextAlignment.SUPERSCRIPT.",
             "returnType": "TextAlignment|null",
             "returnDescription": "the type of text alignment, or null if the text contains multiple types of text\n    alignments or if the text alignment has never been set",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L398"
           },
           {
             "method": "getType()",
@@ -18885,7 +18885,7 @@
             "returnType": "ElementType",
             "returnDescription": "The element type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L186"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L198"
           },
           {
             "method": "getVerticalAlignment()",
@@ -19001,8 +19001,8 @@
             "description": "Determines whether the element is at the end of the Document.",
             "returnType": "Boolean",
             "returnDescription": "Whether the element is at the end of the tab.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L246"
           },
           {
             "method": "merge()",
@@ -19010,8 +19010,8 @@
             "description": "Merges the element with the preceding sibling of the same type.",
             "returnType": "TableCell|null",
             "returnDescription": "The merged element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L271"
           },
           {
             "method": "removeChild(Element)",
@@ -19028,8 +19028,8 @@
             "description": "Removes the element from its parent.",
             "returnType": "TableCell|null",
             "returnDescription": "The removed element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L284"
           },
           {
             "method": "replaceText(String,String)",
@@ -19037,8 +19037,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L431"
           },
           {
             "method": "setAttributes(Object)",
@@ -19046,8 +19046,8 @@
             "description": "Sets the element's attributes.",
             "returnType": "TableCell",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L225"
           },
           {
             "method": "setBackgroundColor(String)",
@@ -19118,8 +19118,8 @@
             "description": "Sets the text alignment. The available types of alignment are DocumentApp.TextAlignment.NORMAL, DocumentApp.TextAlignment.SUBSCRIPT, and DocumentApp.TextAlignment.SUPERSCRIPT.",
             "returnType": "TableCell",
             "returnDescription": "the current element",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L414"
           },
           {
             "method": "setVerticalAlignment(VerticalAlignment)",
@@ -19242,8 +19242,8 @@
             "description": "Clears the contents of the element.",
             "returnType": "TableRow",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L192"
           },
           {
             "method": "copy()",
@@ -19252,7 +19252,7 @@
             "returnType": "TableRow",
             "returnDescription": "The new copy.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L201"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L321"
           },
           {
             "method": "editAsText()",
@@ -19260,8 +19260,8 @@
             "description": "Obtains a Text version of the current element, for editing.",
             "returnType": "Text",
             "returnDescription": "a text version of the current element",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L210"
           },
           {
             "method": "findElement(ElementType)",
@@ -19269,8 +19269,8 @@
             "description": "Searches the contents of the element for a descendant of the specified type.",
             "returnType": "RangeElement|null",
             "returnDescription": "A search result indicating the position of the search element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L224"
           },
           {
             "method": "findElement(ElementType,RangeElement)",
@@ -19278,8 +19278,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L224"
           },
           {
             "method": "findText(String)",
@@ -19287,8 +19287,8 @@
             "description": "Searches the contents of the element for the specified text pattern using regular expressions.",
             "returnType": "RangeElement|null",
             "returnDescription": "a search result indicating the position of the search text, or null if there is no\n    match",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L268"
           },
           {
             "method": "findText(String,RangeElement)",
@@ -19296,8 +19296,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L268"
           },
           {
             "method": "getAttributes()",
@@ -19305,8 +19305,8 @@
             "description": "Retrieves the element's attributes.",
             "returnType": "Object",
             "returnDescription": "The element's attributes.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L212"
           },
           {
             "method": "getCell(Integer)",
@@ -19324,7 +19324,7 @@
             "returnType": "Element",
             "returnDescription": "The child element at the specified index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L192"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L320"
           },
           {
             "method": "getChildIndex(Element)",
@@ -19333,7 +19333,7 @@
             "returnType": "Integer",
             "returnDescription": "The child index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L259"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L447"
           },
           {
             "method": "getLinkUrl()",
@@ -19359,8 +19359,8 @@
             "description": "Retrieves the element's next sibling element.",
             "returnType": "Element|null",
             "returnDescription": "The next sibling element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L131"
           },
           {
             "method": "getNumCells()",
@@ -19378,7 +19378,7 @@
             "returnType": "Integer",
             "returnDescription": "The number of children.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L288"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L476"
           },
           {
             "method": "getParent()",
@@ -19387,7 +19387,7 @@
             "returnType": "ContainerElement|null",
             "returnDescription": "The parent element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L165"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L177"
           },
           {
             "method": "getParentTable()",
@@ -19404,8 +19404,8 @@
             "description": "Retrieves the element's previous sibling element.",
             "returnType": "Element|null",
             "returnDescription": "The previous sibling element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L154"
           },
           {
             "method": "getText()",
@@ -19422,8 +19422,8 @@
             "description": "Gets the text alignment. The available types of alignment are DocumentApp.TextAlignment.NORMAL, DocumentApp.TextAlignment.SUBSCRIPT, and DocumentApp.TextAlignment.SUPERSCRIPT.",
             "returnType": "TextAlignment|null",
             "returnDescription": "the type of text alignment, or null if the text contains multiple types of text\n    alignments or if the text alignment has never been set",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L398"
           },
           {
             "method": "getType()",
@@ -19432,7 +19432,7 @@
             "returnType": "ElementType",
             "returnDescription": "The element type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L186"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L198"
           },
           {
             "method": "insertTableCell(Integer)",
@@ -19467,8 +19467,8 @@
             "description": "Determines whether the element is at the end of the Document.",
             "returnType": "Boolean",
             "returnDescription": "Whether the element is at the end of the tab.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L246"
           },
           {
             "method": "merge()",
@@ -19476,8 +19476,8 @@
             "description": "Merges the element with the preceding sibling of the same type.",
             "returnType": "TableRow|null",
             "returnDescription": "The merged element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L271"
           },
           {
             "method": "removeCell(Integer)",
@@ -19503,8 +19503,8 @@
             "description": "Removes the element from its parent.",
             "returnType": "TableRow|null",
             "returnDescription": "The removed element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L284"
           },
           {
             "method": "replaceText(String,String)",
@@ -19512,8 +19512,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L431"
           },
           {
             "method": "setAttributes(Object)",
@@ -19521,8 +19521,8 @@
             "description": "Sets the element's attributes.",
             "returnType": "TableRow",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L225"
           },
           {
             "method": "setLinkUrl(String)",
@@ -19548,8 +19548,8 @@
             "description": "Sets the text alignment. The available types of alignment are DocumentApp.TextAlignment.NORMAL, DocumentApp.TextAlignment.SUBSCRIPT, and DocumentApp.TextAlignment.SUPERSCRIPT.",
             "returnType": "TableRow",
             "returnDescription": "the current element",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L414"
           }
         ]
       },
@@ -19575,7 +19575,7 @@
             "returnType": "Text",
             "returnDescription": "The new copy.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L201"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L321"
           },
           {
             "method": "deleteText(Integer,Integer)",
@@ -19727,8 +19727,8 @@
             "description": "Retrieves the element's next sibling element.",
             "returnType": "Element|null",
             "returnDescription": "The next sibling element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L131"
           },
           {
             "method": "getParent()",
@@ -19737,7 +19737,7 @@
             "returnType": "ContainerElement|null",
             "returnDescription": "The parent element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L165"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L177"
           },
           {
             "method": "getPreviousSibling()",
@@ -19745,8 +19745,8 @@
             "description": "Retrieves the element's previous sibling element.",
             "returnType": "Element|null",
             "returnDescription": "The previous sibling element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L154"
           },
           {
             "method": "getText()",
@@ -19791,7 +19791,7 @@
             "returnType": "ElementType",
             "returnDescription": "The element type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L186"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L198"
           },
           {
             "method": "insertText(Integer,String)",
@@ -19808,8 +19808,8 @@
             "description": "Determines whether the element is at the end of the Document.",
             "returnType": "Boolean",
             "returnDescription": "Whether the element is at the end of the tab.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L246"
           },
           {
             "method": "isBold()",
@@ -19889,8 +19889,8 @@
             "description": "Merges the element with the preceding sibling of the same type.",
             "returnType": "Text|null",
             "returnDescription": "The merged element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L271"
           },
           {
             "method": "removeFromParent()",
@@ -19898,8 +19898,8 @@
             "description": "Removes the element from its parent.",
             "returnType": "Text|null",
             "returnDescription": "The removed element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L284"
           },
           {
             "method": "replaceText(String,String)",
@@ -20149,8 +20149,8 @@
             "description": "Clears the contents of the element.",
             "returnType": "Table",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L192"
           },
           {
             "method": "copy()",
@@ -20159,7 +20159,7 @@
             "returnType": "Table",
             "returnDescription": "The new copy.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L201"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L321"
           },
           {
             "method": "editAsText()",
@@ -20167,8 +20167,8 @@
             "description": "Obtains a Text version of the current element, for editing.",
             "returnType": "Text",
             "returnDescription": "a text version of the current element",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L210"
           },
           {
             "method": "findElement(ElementType)",
@@ -20176,8 +20176,8 @@
             "description": "Searches the contents of the element for a descendant of the specified type.",
             "returnType": "RangeElement|null",
             "returnDescription": "A search result indicating the position of the search element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L224"
           },
           {
             "method": "findElement(ElementType,RangeElement)",
@@ -20185,8 +20185,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L224"
           },
           {
             "method": "findText(String)",
@@ -20194,8 +20194,8 @@
             "description": "Searches the contents of the element for the specified text pattern using regular expressions.",
             "returnType": "RangeElement|null",
             "returnDescription": "a search result indicating the position of the search text, or null if there is no\n    match",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L268"
           },
           {
             "method": "findText(String,RangeElement)",
@@ -20203,8 +20203,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L268"
           },
           {
             "method": "getAttributes()",
@@ -20212,8 +20212,8 @@
             "description": "Retrieves the element's attributes.",
             "returnType": "Object",
             "returnDescription": "The element's attributes.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L212"
           },
           {
             "method": "getBorderColor()",
@@ -20249,7 +20249,7 @@
             "returnType": "Element",
             "returnDescription": "The child element at the specified index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L192"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L320"
           },
           {
             "method": "getChildIndex(Element)",
@@ -20258,7 +20258,7 @@
             "returnType": "Integer",
             "returnDescription": "The child index.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L259"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L447"
           },
           {
             "method": "getColumnWidth(Integer)",
@@ -20284,8 +20284,8 @@
             "description": "Retrieves the element's next sibling element.",
             "returnType": "Element|null",
             "returnDescription": "The next sibling element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L131"
           },
           {
             "method": "getNumChildren()",
@@ -20294,7 +20294,7 @@
             "returnType": "Integer",
             "returnDescription": "The number of children.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L288"
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L476"
           },
           {
             "method": "getNumRows()",
@@ -20312,7 +20312,7 @@
             "returnType": "ContainerElement|null",
             "returnDescription": "The parent element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L165"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L177"
           },
           {
             "method": "getPreviousSibling()",
@@ -20320,8 +20320,8 @@
             "description": "Retrieves the element's previous sibling element.",
             "returnType": "Element|null",
             "returnDescription": "The previous sibling element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L154"
           },
           {
             "method": "getRow(Integer)",
@@ -20347,8 +20347,8 @@
             "description": "Gets the text alignment. The available types of alignment are DocumentApp.TextAlignment.NORMAL, DocumentApp.TextAlignment.SUBSCRIPT, and DocumentApp.TextAlignment.SUPERSCRIPT.",
             "returnType": "TextAlignment|null",
             "returnDescription": "the type of text alignment, or null if the text contains multiple types of text\n    alignments or if the text alignment has never been set",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L398"
           },
           {
             "method": "getType()",
@@ -20357,7 +20357,7 @@
             "returnType": "ElementType",
             "returnDescription": "The element type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L186"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L198"
           },
           {
             "method": "insertTableRow(Integer)",
@@ -20383,8 +20383,8 @@
             "description": "Determines whether the element is at the end of the Document.",
             "returnType": "Boolean",
             "returnDescription": "Whether the element is at the end of the tab.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L246"
           },
           {
             "method": "removeChild(Element)",
@@ -20401,8 +20401,8 @@
             "description": "Removes the element from its parent.",
             "returnType": "Table|null",
             "returnDescription": "The removed element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L284"
           },
           {
             "method": "removeRow(Integer)",
@@ -20419,8 +20419,8 @@
             "description": "",
             "returnType": "",
             "returnDescription": "",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L431"
           },
           {
             "method": "setAttributes(Object)",
@@ -20428,8 +20428,8 @@
             "description": "Sets the element's attributes.",
             "returnType": "Table",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L225"
           },
           {
             "method": "setBorderColor(String)",
@@ -20473,8 +20473,8 @@
             "description": "Sets the text alignment. The available types of alignment are DocumentApp.TextAlignment.NORMAL, DocumentApp.TextAlignment.SUBSCRIPT, and DocumentApp.TextAlignment.SUPERSCRIPT.",
             "returnType": "Table",
             "returnDescription": "the current element",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakecontainerelement.js#L414"
           }
         ]
       },
@@ -21124,8 +21124,8 @@
             "description": "Returns the current element as a Body.",
             "returnType": "Body",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L388"
           },
           {
             "method": "asDate()",
@@ -21133,8 +21133,8 @@
             "description": "Returns the current element as a Date.",
             "returnType": "Date",
             "returnDescription": "The current element with its type set as Date.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L398"
           },
           {
             "method": "asEquation()",
@@ -21142,8 +21142,8 @@
             "description": "Returns the current element as an Equation.",
             "returnType": "Equation",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L408"
           },
           {
             "method": "asEquationFunction()",
@@ -21151,8 +21151,8 @@
             "description": "Returns the current element as a EquationFunction.",
             "returnType": "EquationFunction",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L418"
           },
           {
             "method": "asEquationFunctionArgumentSeparator()",
@@ -21160,8 +21160,8 @@
             "description": "Returns the current element as a EquationFunctionArgumentSeparator.",
             "returnType": "EquationFunctionArgumentSeparator",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L428"
           },
           {
             "method": "asEquationSymbol()",
@@ -21169,8 +21169,8 @@
             "description": "Returns the current element as a EquationSymbol.",
             "returnType": "EquationSymbol",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L438"
           },
           {
             "method": "asFooterSection()",
@@ -21178,8 +21178,8 @@
             "description": "Returns the current element as a FooterSection.",
             "returnType": "FooterSection",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L448"
           },
           {
             "method": "asFootnote()",
@@ -21187,8 +21187,8 @@
             "description": "Returns the current element as a Footnote.",
             "returnType": "Footnote",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L458"
           },
           {
             "method": "asFootnoteSection()",
@@ -21196,8 +21196,8 @@
             "description": "Returns the current element as a FootnoteSection.",
             "returnType": "FootnoteSection",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L468"
           },
           {
             "method": "asHeaderSection()",
@@ -21205,8 +21205,8 @@
             "description": "Returns the current element as a HeaderSection.",
             "returnType": "HeaderSection",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L478"
           },
           {
             "method": "asHorizontalRule()",
@@ -21214,8 +21214,8 @@
             "description": "Returns the current element as a HorizontalRule.",
             "returnType": "HorizontalRule",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L488"
           },
           {
             "method": "asInlineDrawing()",
@@ -21223,8 +21223,8 @@
             "description": "Returns the current element as a InlineDrawing.",
             "returnType": "InlineDrawing",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L498"
           },
           {
             "method": "asInlineImage()",
@@ -21232,8 +21232,8 @@
             "description": "Returns the current element as a InlineImage.",
             "returnType": "InlineImage",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L508"
           },
           {
             "method": "asListItem()",
@@ -21241,8 +21241,8 @@
             "description": "Returns the current element as a ListItem.",
             "returnType": "ListItem",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L518"
           },
           {
             "method": "asPageBreak()",
@@ -21250,8 +21250,8 @@
             "description": "Returns the current element as a PageBreak.",
             "returnType": "PageBreak",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L528"
           },
           {
             "method": "asParagraph()",
@@ -21259,8 +21259,8 @@
             "description": "Returns the current element as a Paragraph.",
             "returnType": "Paragraph",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L538"
           },
           {
             "method": "asPerson()",
@@ -21268,8 +21268,8 @@
             "description": "Returns the current element as a Person.",
             "returnType": "Person",
             "returnDescription": "The current element with its type set as Person.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L548"
           },
           {
             "method": "asRichLink()",
@@ -21277,8 +21277,8 @@
             "description": "Returns the current element as a RichLink, for example, a link to a Google Sheets file.",
             "returnType": "RichLink",
             "returnDescription": "The current element with its type set as RichLink.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L558"
           },
           {
             "method": "asTable()",
@@ -21286,8 +21286,8 @@
             "description": "Returns the current element as a Table.",
             "returnType": "Table",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L568"
           },
           {
             "method": "asTableCell()",
@@ -21295,8 +21295,8 @@
             "description": "Returns the current element as a TableCell.",
             "returnType": "TableCell",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L578"
           },
           {
             "method": "asTableOfContents()",
@@ -21304,8 +21304,8 @@
             "description": "Returns the current element as a TableOfContents.",
             "returnType": "TableOfContents",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L588"
           },
           {
             "method": "asTableRow()",
@@ -21313,8 +21313,8 @@
             "description": "Returns the current element as a TableRow.",
             "returnType": "TableRow",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L598"
           },
           {
             "method": "asText()",
@@ -21322,8 +21322,8 @@
             "description": "Returns the current element as a Text.",
             "returnType": "Text",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L608"
           },
           {
             "method": "copy()",
@@ -21332,7 +21332,7 @@
             "returnType": "Element",
             "returnDescription": "The new copy.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L201"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L321"
           },
           {
             "method": "getAttributes()",
@@ -21340,8 +21340,8 @@
             "description": "Retrieves the element's attributes.",
             "returnType": "Object",
             "returnDescription": "The element's attributes.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L212"
           },
           {
             "method": "getNextSibling()",
@@ -21349,8 +21349,8 @@
             "description": "Retrieves the element's next sibling element.",
             "returnType": "Element|null",
             "returnDescription": "The next sibling element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L131"
           },
           {
             "method": "getParent()",
@@ -21359,7 +21359,7 @@
             "returnType": "ContainerElement|null",
             "returnDescription": "The parent element.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L165"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L177"
           },
           {
             "method": "getPreviousSibling()",
@@ -21367,8 +21367,8 @@
             "description": "Retrieves the element's previous sibling element.",
             "returnType": "Element|null",
             "returnDescription": "The previous sibling element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L154"
           },
           {
             "method": "getType()",
@@ -21377,7 +21377,7 @@
             "returnType": "ElementType",
             "returnDescription": "The element type.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/documentapp/fakeelement.js#L186"
+            "implementationLink": "src/services/documentapp/fakeelement.js#L198"
           },
           {
             "method": "isAtDocumentEnd()",
@@ -21385,8 +21385,8 @@
             "description": "Determines whether the element is at the end of the Document.",
             "returnType": "Boolean",
             "returnDescription": "Whether the element is at the end of the tab.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L246"
           },
           {
             "method": "merge()",
@@ -21394,8 +21394,8 @@
             "description": "Merges the element with the preceding sibling of the same type.",
             "returnType": "Element|null",
             "returnDescription": "The merged element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L271"
           },
           {
             "method": "removeFromParent()",
@@ -21403,8 +21403,8 @@
             "description": "Removes the element from its parent.",
             "returnType": "Element|null",
             "returnDescription": "The removed element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L284"
           },
           {
             "method": "setAttributes(Object)",
@@ -21412,8 +21412,8 @@
             "description": "Sets the element's attributes.",
             "returnType": "Element",
             "returnDescription": "The current element.",
-            "gas-fakes status": "not started",
-            "implementationLink": null
+            "gas-fakes status": "completed",
+            "implementationLink": "src/services/documentapp/fakeelement.js#L225"
           }
         ]
       },

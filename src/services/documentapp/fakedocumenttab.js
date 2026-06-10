@@ -35,35 +35,19 @@ class FakeDocumentTab extends FakeElement {
     }
 
     addBookmark(position) {
-        return notYetImplemented('DocumentTab.addBookmark(position)');
-    }
-
-    addFooter() {
-        return notYetImplemented('DocumentTab.addFooter()');
-    }
-
-    addFooter() {
-        return this.__document.addFooter();
-    }
-
-    addHeader() {
-        return this.__document.addHeader();
+        return this.__document.addBookmark(position);
     }
 
     addNamedRange(name, range) {
-        return notYetImplemented('DocumentTab.addNamedRange(name, range)');
+        return this.__document.addNamedRange(name, range);
     }
 
     getBookmark(id) {
-        return notYetImplemented('DocumentTab.getBookmark(id)');
+        return this.__document.getBookmark(id);
     }
 
     getBookmarks() {
-        return notYetImplemented('DocumentTab.getBookmarks()');
-    }
-
-    getFooter() {
-        return notYetImplemented('DocumentTab.getFooter()');
+        return this.__document.getBookmarks();
     }
 
     getFooter() {
@@ -71,7 +55,7 @@ class FakeDocumentTab extends FakeElement {
     }
 
     getFootnotes() {
-        return notYetImplemented('DocumentTab.getFootnotes()');
+        return this.__document.getFootnotes();
     }
 
     getHeader() {
@@ -79,19 +63,19 @@ class FakeDocumentTab extends FakeElement {
     }
 
     getNamedRangeById(id) {
-        return notYetImplemented('DocumentTab.getNamedRangeById(id)');
+        return this.__document.getNamedRangeById(id);
     }
 
     getNamedRanges() {
-        return notYetImplemented('DocumentTab.getNamedRanges()');
+        return this.__document.getNamedRanges();
     }
 
     newPosition(element, offset) {
-        return notYetImplemented('DocumentTab.newPosition(element, offset)');
+        return this.__document.newPosition(element, offset);
     }
 
     newRange() {
-        return notYetImplemented('DocumentTab.newRange()');
+        return this.__document.newRange();
     }
 
 

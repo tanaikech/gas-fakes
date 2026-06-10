@@ -8,6 +8,8 @@ import { newFakeBody } from './fakebody.js';
 import { newFakeRangeBuilder } from './fakerangebuilder.js';
 import { newFakeHeaderSection } from './fakeheadersection.js';
 import { newFakeFooterSection } from './fakefootersection.js';
+import { newFakePosition } from './fakeposition.js';
+import { newFakeBookmark } from './fakebookmark.js';
 import { shadowPrefix } from './nrhelpers.js';
 import { defaultDocumentStyleRequests } from './elementblasters.js';
 
@@ -343,6 +345,55 @@ class FakeDocument {
     return newFakeRangeBuilder();
   }
 
+  newPosition(element, offset) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Document.newPosition');
+    if (nargs !== 2) matchThrow();
+    return newFakePosition(element, offset);
+  }
+
+  addBookmark(position) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Document.addBookmark');
+    if (nargs !== 1) matchThrow();
+
+    const shadow = this.__shadowDocument;
+    const element = position.getElement();
+    const offset = position.getOffset();
+    
+    // We use a NamedRange to emulate the bookmark.
+    // Use the prefix 'kix.' as it's what FakeBookmark expects.
+    const name = 'kix.' + Utilities.getUuid();
+    
+    const requests = [{
+      createNamedRange: {
+        name,
+        range: {
+          startIndex: element.__elementMapItem.startIndex + offset,
+          endIndex: element.__elementMapItem.startIndex + offset + 1,
+          segmentId: shadow.__segmentId,
+          tabId: shadow.__tabId
+        }
+      }
+    }];
+
+    Docs.Documents.batchUpdate({ requests }, shadow.getId());
+    shadow.refresh();
+
+    return this.getBookmark(name.substring(4)); 
+  }
+
+  getBookmark(id) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'Document.getBookmark');
+    if (nargs !== 1) matchThrow();
+
+    const shadow = this.__shadowDocument;
+    const name = 'kix.' + id;
+    
+    // Refresh to ensure we have the latest named ranges
+    const item = shadow.getElement(name);
+    if (!item) return null;
+
+    return newFakeBookmark(shadow, name);
+  }
 
   // these are all actually preformed by the Drive api
   addEditor(emailAddress) {

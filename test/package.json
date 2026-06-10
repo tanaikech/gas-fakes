@@ -65,6 +65,7 @@
     "testslidesranges": "node testslidesranges.js execute",
     "testslidesfills": "node testslidesfills.js execute",
     "testdocsnext": "node testdocsnext.js execute",
+    "testdocsextra": "node testdocsextra.js execute",
     "testsheetstext": "node testsheetstext.js execute",
     "testsheetsrange": "node testsheetsrange.js execute",
     "testdocslistitems": "node testdocslistitems.js execute",

@@ -10,6 +10,7 @@ const { is } = Utils;
 import { getElementProp } from './elementhelpers.js';
 import { FakeElement } from './fakeelement.js';
 import { createFootnote } from './appenderhelpers.js';
+import { newFakeRangeElement } from './fakerangeelement.js';
 
 /**
  * Creates a new proxied FakeContainerElement instance.
@@ -184,6 +185,133 @@ export class FakeContainerElement extends FakeElement {
   }
 
   /**
+   * Clears the contents of the element.
+   * @returns {GoogleAppsScript.Document.ContainerElement} The current element.
+   * @see https://developers.google.com/apps-script/reference/document/container-element#clear()
+   */
+  clear() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'ContainerElement.clear');
+    if (nargs !== 0) matchThrow();
+
+    // Snapshot the children names to avoid issues with index shifting during removal
+    const childrenNames = this.__twig.children.map(c => c.name);
+    childrenNames.forEach(name => {
+      newFakeElement(this.shadowDocument, name).removeFromParent();
+    });
+
+    return this;
+  }
+
+  /**
+   * Obtains a Text version of the current element, for editing.
+   * @returns {GoogleAppsScript.Document.Text} a text version of the current element
+   * @see https://developers.google.com/apps-script/reference/document/container-element#editAsText()
+   */
+  editAsText() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'ContainerElement.editAsText');
+    if (nargs !== 0) matchThrow();
+    // For now, we'll mark it as not implemented but mark as draft.
+    throw new Error('editAsText() is not yet implemented in gas-fakes');
+  }
+
+  /**
+   * Searches the contents of the element for a descendant of the specified type.
+   * @param {GoogleAppsScript.Document.ElementType} elementType The type of element to search for.
+   * @param {GoogleAppsScript.Document.RangeElement} [from] The element to start searching from.
+   * @returns {GoogleAppsScript.Document.RangeElement | null} A search result indicating the position of the search element.
+   * @see https://developers.google.com/apps-script/reference/document/container-element#findElement(ElementType,RangeElement)
+   */
+  findElement(elementType, from = null) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'ContainerElement.findElement');
+    if (nargs < 1 || nargs > 2) matchThrow();
+
+    const searchFromElement = from ? from.getElement() : null;
+    let foundStart = !searchFromElement;
+
+    const findRecursive = (container) => {
+      const numChildren = container.getNumChildren();
+      for (let i = 0; i < numChildren; i++) {
+        const child = container.getChild(i);
+        
+        if (!foundStart) {
+          if (child.__name === searchFromElement.__name) {
+            foundStart = true;
+          } else if (child.getNumChildren) {
+            const result = findRecursive(child);
+            if (result) return result;
+          }
+          continue;
+        }
+
+        if (child.getType().toString() === elementType.toString()) {
+          return newFakeRangeElement({ element: child });
+        }
+
+        if (child.getNumChildren) {
+          const result = findRecursive(child);
+          if (result) return result;
+        }
+      }
+      return null;
+    };
+
+    return findRecursive(this);
+  }
+
+  /**
+   * Searches the contents of the element for the specified text pattern using regular expressions.
+   * @param {string} searchPattern The text pattern to search for.
+   * @param {GoogleAppsScript.Document.RangeElement} [from] The element to start searching from.
+   * @returns {GoogleAppsScript.Document.RangeElement | null} a search result indicating the position of the search text, or null if there is no match
+   * @see https://developers.google.com/apps-script/reference/document/container-element#findText(String,RangeElement)
+   */
+  findText(searchPattern, from = null) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'ContainerElement.findText');
+    if (nargs < 1 || nargs > 2) matchThrow();
+
+    const searchFromElement = from ? from.getElement() : null;
+    let foundStart = !searchFromElement;
+    const regex = new RegExp(searchPattern);
+
+    const findRecursive = (container) => {
+      const numChildren = container.getNumChildren();
+      for (let i = 0; i < numChildren; i++) {
+        const child = container.getChild(i);
+
+        if (!foundStart) {
+          if (child.__name === searchFromElement.__name) {
+            foundStart = true;
+          } else if (child.getNumChildren) {
+            const result = findRecursive(child);
+            if (result) return result;
+          }
+          continue;
+        }
+
+        if (child.getType().toString() === 'TEXT') {
+          const text = child.getText();
+          const match = regex.exec(text);
+          if (match) {
+            return newFakeRangeElement({ 
+              element: child, 
+              startOffset: match.index, 
+              endOffsetInclusive: match.index + match[0].length - 1 
+            });
+          }
+        }
+
+        if (child.getNumChildren) {
+          const result = findRecursive(child);
+          if (result) return result;
+        }
+      }
+      return null;
+    };
+
+    return findRecursive(this);
+  }
+
+  /**
    * Retrieves the child element at the specified index.
    * @param {number} childIndex The zero-based index of the child element to retrieve.
    * @returns {GoogleAppsScript.Document.Element} The child element at the specified index.
@@ -248,6 +376,66 @@ export class FakeContainerElement extends FakeElement {
     if (!childTwig) throw new Error(`child with index ${childIndex} not found`);
     
     return newFakeElement(this.shadowDocument, childTwig.name).__cast();
+  }
+
+  /**
+   * Retrieves the contents of the element as a text string.
+   * @returns {string} the contents of the element as text string
+   * @see https://developers.google.com/apps-script/reference/document/container-element#getText()
+   */
+  getText() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'ContainerElement.getText');
+    if (nargs !== 0) matchThrow();
+
+    return getText(this);
+  }
+
+  /**
+   * Gets the text alignment.
+   * @returns {GoogleAppsScript.Document.TextAlignment | null} the type of text alignment
+   * @see https://developers.google.com/apps-script/reference/document/container-element#getTextAlignment()
+   */
+  getTextAlignment() {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'ContainerElement.getTextAlignment');
+    if (nargs !== 0) matchThrow();
+
+    const attrs = this.getAttributes();
+    // ContainerElement doesn't have a single text alignment, it's usually paragraph-level.
+    // However, if we are a Paragraph, this should work.
+    return attrs[DocumentApp.Attribute.TEXT_ALIGNMENT] || null;
+  }
+
+  /**
+   * Sets the text alignment.
+   * @param {GoogleAppsScript.Document.TextAlignment} textAlignment The text alignment to set.
+   * @returns {GoogleAppsScript.Document.ContainerElement} the current element
+   * @see https://developers.google.com/apps-script/reference/document/container-element#setTextAlignment(TextAlignment)
+   */
+  setTextAlignment(textAlignment) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'ContainerElement.setTextAlignment');
+    if (nargs !== 1) matchThrow();
+
+    this.setAttributes({
+      [DocumentApp.Attribute.TEXT_ALIGNMENT]: textAlignment
+    });
+    return this;
+  }
+
+  /**
+   * Replaces all occurrences of a search pattern with a replacement string.
+   * @param {string} searchPattern The text pattern to search for.
+   * @param {string} replacement The replacement string.
+   * @returns {GoogleAppsScript.Document.ContainerElement} the current element
+   * @see https://developers.google.com/apps-script/reference/document/container-element#replaceText(String,String)
+   */
+  replaceText(searchPattern, replacement) {
+    const { nargs, matchThrow } = signatureArgs(arguments, 'ContainerElement.replaceText');
+    if (nargs !== 2 || !is.string(searchPattern) || !is.string(replacement)) matchThrow();
+
+    // replaceText in GAS is global if called on Body, or scoped if called on other containers.
+    // Implementing scoped replaceText via API is complex (requires finding and replacing chunks).
+    // For now, let's mark it.
+    throw new Error('replaceText() is not yet implemented in gas-fakes');
   }
 
   /**

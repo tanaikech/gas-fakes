@@ -21,8 +21,9 @@ export const makeNrPrefix = (type = null, segmentId = null) => {
 // get all the relevant named ranges from the current document
 export const getCurrentNr = (data) => {
   // filter out unrelated namedranges, and add the rest for lookup later
+  // Include kix. for bookmarks.
   return Reflect.ownKeys(data.namedRanges || {})
-    .filter(key => key.startsWith(shadowPrefix))
+    .filter(key => key.startsWith(shadowPrefix) || key.startsWith('kix.'))
     .reduce((p, c) => {
       // strangly there's another level of .namedRanges property
       const nrs = data.namedRanges[c].namedRanges;

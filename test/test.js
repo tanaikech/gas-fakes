@@ -35,6 +35,7 @@ import { testDocsSections } from "./testdocssections.js";
 import { testDocsFooters } from "./testdocsfooters.js";
 import { testDocsFootnotes } from "./testdocsfootnotes.js";
 import { testDocsListItems } from "./testdocslistitems.js";
+import { testDocsExtra } from "./testdocsextra.js";
 import { testSlides } from "./testslides.js";
 import { testSlidesAdv } from "./testslidesadv.js";
 import { testConditionalFormat } from "./testconditionalformat.js";
@@ -185,6 +186,8 @@ export const testFakes = () => {
   testDocsSections(pack);
   console.log("\n----Test docs list items----");
   testDocsListItems(pack);
+  console.log("\n----Test docs extra----");
+  testDocsExtra(pack);
   console.log("\n----Test Logger----");
   testLogger(pack);
 

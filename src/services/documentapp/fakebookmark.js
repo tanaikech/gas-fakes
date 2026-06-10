@@ -41,8 +41,6 @@ export class FakeBookmark extends FakeContainerElement {
    */
   getId() {
     const item = this.__elementMapItem;
-    // The name is the full named range name, e.g., "kix.abcdef123".
-    // The ID is the part after "kix.".
     return item.name.startsWith(BOOKMARK_PREFIX) ? item.name.substring(BOOKMARK_PREFIX.length) : item.name;
   }
 
@@ -67,7 +65,7 @@ export class FakeBookmark extends FakeContainerElement {
     }
 
     const factory = getElementFactory(containingElementItem.__type);
-    const element = factory(shadow.structure, containingElementItem.__name);
+    const element = factory(shadow, containingElementItem.__name);
     const offset = startIndex - containingElementItem.startIndex;
 
     return newFakePosition(element, offset);

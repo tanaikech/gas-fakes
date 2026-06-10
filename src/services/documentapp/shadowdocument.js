@@ -282,10 +282,24 @@ class ShadowDocument {
       footnoteSectionTree.children = footnoteTwigs;
     };
     mapFootnotes(footnotes);
+
+    // Filter out kix. bookmarks from deletion and add them to elementMap
+    const bookmarkNrs = currentNr.filter(r => r.name.startsWith('kix.'));
+    const remainingUnused = currentNr.filter(r => !r.name.startsWith('kix.'));
+
+    bookmarkNrs.forEach(r => {
+      // Add to elementMap so FakeBookmark can find it
+      this.__elementMap.set(r.name, {
+        ...r,
+        __type: 'BOOKMARK',
+        __name: r.name,
+        __twig: { name: r.name, children: [], parent: null }
+      });
+    });
+
     // delete the named ranges that weren't used
     // findOrCreate... consumes the currentNr list, so what's left are unused ranges.
-
-    const deleteRequests = currentNr.map(r => ({
+    const deleteRequests = remainingUnused.map(r => ({
       deleteNamedRange: {
         namedRangeId: r.namedRangeId
       }
