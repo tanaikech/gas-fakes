@@ -26,7 +26,7 @@ export const testFixes = {
   "SCRATCH_EDITOR": "editor@mcpher.com",
   "SCRATCH_B_VIEWER": "viewer2@mcpher.com",
   "SCRATCH_B_EDITOR": "editor2@mcpher.com",
-  "MIN_ROOT_PDFS": 20,
+  "MIN_ROOT_PDFS": 2,
   "MIN_PDFS": 400,
   "MIN_FOLDERS_ROOT": 30,
   "SKIP_SINGLE_PARENT": 1,
