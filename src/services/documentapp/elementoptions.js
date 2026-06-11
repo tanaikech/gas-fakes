@@ -58,6 +58,34 @@ const handleTextless = (loc, isAppend, self, type, extras = {}) => {
 
       break;
 
+    case 'HORIZONTAL_RULE':
+      reqs.push({
+        insertText: {
+          location,
+          text: '\n'
+        }
+      });
+      reqs.push({
+        updateParagraphStyle: {
+          range: {
+            startIndex: loc.index,
+            endIndex: loc.index + 1,
+            segmentId: loc.segmentId,
+            tabId: loc.tabId
+          },
+          paragraphStyle: {
+            borderBottom: {
+              color: { color: { rgbColor: { blue: 0, green: 0, red: 0 } } },
+              width: { magnitude: 1, unit: 'PT' },
+              padding: { magnitude: 0, unit: 'PT' },
+              dashStyle: 'SOLID'
+            }
+          },
+          fields: 'borderBottom'
+        }
+      });
+      break;
+
     default:
       throw new Error(`unknown type ${type} in handleTextless `)
   }
@@ -261,6 +289,18 @@ export const pageBreakOptions = {
   findChildType: ElementType.PAGE_BREAK.toString()
 
 
+};
+
+export const horizontalRuleOptions = {
+  elementType: ElementType.HORIZONTAL_RULE,
+  insertMethodSignature: 'DocumentApp.Body.horizontalRule',
+  packCanBeNull: true,
+  canAcceptText: false,
+  getMainRequest: ({ location: loc, isAppend, self, leading }) => {
+    return handleTextless(loc, isAppend, self, 'HORIZONTAL_RULE')
+  },
+  getStyleRequests: null, 
+  findType: ElementType.PARAGRAPH.toString()
 };
 
 export const tableOptions = {

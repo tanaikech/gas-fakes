@@ -39,6 +39,70 @@ class FakeHeaderSection extends FakeSectionElement {
   toString() {
     return 'HeaderSection';
   }
+
+  appendHorizontalRule() {
+    return super.appendHorizontalRule();
+  }
+
+  appendImage(image) {
+    return super.appendImage(image);
+  }
+
+  appendListItem(listItemOrText) {
+    return super.appendListItem(listItemOrText);
+  }
+
+  appendParagraph(paragraphOrText) {
+    return super.appendParagraph(paragraphOrText);
+  }
+
+  appendTable(tableOrCells) {
+    return super.appendTable(tableOrCells);
+  }
+
+  clear() {
+    return super.clear();
+  }
+
+  editAsText() {
+    return super.editAsText();
+  }
+
+  getText() {
+    return super.getText();
+  }
+
+  insertHorizontalRule(childIndex) {
+    return super.insertHorizontalRule(childIndex);
+  }
+
+  insertImage(childIndex, image) {
+    return super.insertImage(childIndex, image);
+  }
+
+  insertListItem(childIndex, listItemOrText) {
+    return super.insertListItem(childIndex, listItemOrText);
+  }
+
+  insertParagraph(childIndex, paragraph) {
+    return super.insertParagraph(childIndex, paragraph);
+  }
+
+  insertTable(childIndex, table) {
+    return super.insertTable(childIndex, table);
+  }
+
+  removeChild(child) {
+    return super.removeChild(child);
+  }
+
+  setText(text) {
+    return super.setText(text);
+  }
+
+  removeFromParent() {
+    return super.removeFromParent();
+  }
 }
 
 registerElement('HEADER_SECTION', newFakeHeaderSection);

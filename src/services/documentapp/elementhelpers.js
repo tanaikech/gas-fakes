@@ -32,6 +32,9 @@ export const getElementProp = (se) => {
   if (se.horizontalRule) return { prop: null, type: 'HORIZONTAL_RULE' };
   if (se.footnoteReference) return { prop: null, type: 'FOOTNOTE_REFERENCE' };
   if (se.inlineObjectElement) return { prop: null, type: 'INLINE_IMAGE' };
+  if (se.person) return { prop: null, type: 'PERSON' };
+  if (se.richLink) return { prop: null, type: 'RICH_LINK' };
+  if (se.date) return { prop: null, type: 'DATE' };
   if (se.positionedObjectElement) return { prop: null, type: 'POSITIONED_IMAGE' };
 
   if (se.body) {

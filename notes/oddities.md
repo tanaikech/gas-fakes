@@ -520,7 +520,9 @@ I've taken a different approach while faking the DocumentApp service. I do have 
 
 #### Horizonal rule
 
-The api doesnt provide a way to insert a horizontal rule element. Apps Script inserts a specific horizontal rule element, and then uses paragraph styling using a border to create that line. Although we could do all that, we'd still have a missing element. I'm parking this one for now and revisit it later. Here's the reported issue  https://issuetracker.google.com/issues/437825936
+The api doesnt provide a way to insert a horizontal rule element. Apps Script inserts a specific horizontal rule element, and then uses paragraph styling using a border to create that line. Although we could do all that, we'd still have a missing element.
+
+For now we can't implement horizontal rules in gas-fakes - to be revisited once this issue is resolved bu google.
 
 https://github.com/brucemcpherson/gas-fakes/issues/43
 
@@ -804,9 +806,49 @@ I've set up gas-fakes document app to retrieve tab information and to make reque
 
 #### Bookmarks
 
-Rather like various other disconnects between Apps Script and the Docs API, there is no way to create, manage or even detect bookmarks that have been created by Apps Script within the Document resource using the Docs API.
+Rather like various other disconnects between Apps Script and the Docs API, there is no way to create, manage or even detect bookmarks that have been created by Apps Script within the Document resource using the Docs API. 
 
-I'm parking the work on Bookmarks until this issue is resolved - https://issuetracker.google.com/issues/441253571
+The `gas-fakes` implementation provides a local workaround by emulating bookmarks using `NamedRange` elements prefixed with `kix.`. This allows you to use methods like `Document.addBookmark()` and `Bookmark.getPosition()` locally. However, **these emulated bookmarks will not be recognized as native bookmarks in the Google Docs UI**, and native bookmarks created in the UI will not be visible to the `gas-fakes` API.
+
+I'm parking further work on native Bookmarks until this issue is resolved - https://issuetracker.google.com/issues/441253571
+
+#### Equations
+
+The Google Docs API v1 does not provide a native endpoint to programmatically create or insert `Equation`, `EquationFunction`, `EquationSymbol`, or `EquationFunctionArgumentSeparator` elements. Like Smart Chips, `gas-fakes` can only parse them if they were manually inserted via the Google Docs UI.
+
+**Workaround:** If you need to programmatically insert an equation, you can use a `batchUpdate` request to insert a dynamically generated LaTeX image using a service like CodeCogs. For example:
+
+```json
+{
+  "requests": [
+    {
+      "insertInlineImage": {
+        "uri": "https://latex.codecogs.com/png.image?\\dpi{150}\\frac{-b\\pm\\sqrt{b^2-4ac}}{2a}",
+        "location": { "index": 1 },
+        "objectSize": {
+          "height": { "magnitude": 40, "unit": "PT" },
+          "width":  { "magnitude": 120, "unit": "PT" }
+        }
+      }
+    }
+  ]
+}
+```
+*Note that this inserts a static image (`InlineImage`), not a native Docs `Equation` element.*
+
+#### Smart Chips (Person, Date, RichLink)
+
+Google Docs supports inserting "Smart Chips" for dates, people, and rich links (like Google Drive files). In Apps Script, these are represented by the `Date`, `Person`, and `RichLink` element classes.
+
+However, **there is currently no way to programmatically create or insert these elements using the Google Docs API v1**. 
+
+Because `gas-fakes` relies on the public API, you cannot use code to append these items. You can only read and parse them *if they were already inserted into the document via the Google Docs UI*. 
+
+- **`FakePerson`**: Can extract the `personId` (email) and `name` from an existing chip.
+- **`FakeDate`**: Can extract the underlying timestamp.
+- **`FakeRichLink`**: Can extract the URI, title, and MIME type.
+
+If you attempt to instantiate these objects directly in a cross-platform test (one that runs on both Node and live Apps Script), you must use a pre-existing fixture document, as `gas-fakes` internal factories (like `getElementFactory`) are not available in the live environment.
 
 #### Document body
 
@@ -1322,6 +1364,32 @@ The official Google Apps Script documentation incorrectly documents the enum con
 ## Testing
 
 If you want to play with the testing suite , then take a look at the [collaborators](collaborators.md) writeup.
+
+# Gas-Fakes Progress Summary
+
+| Service | Classes | Methods | Completed | In Progress | Not Started |
+|---|---|---|---|---|---|
+| [Base](../progress/base.md) | 17 | 127 | 93 | 2 | 32 |
+| [Cache](../progress/cache.md) | 2 | 11 | 7 | 4 | 0 |
+| [Calendar](../progress/calendar.md) | 13 | 273 | 273 | 0 | 0 |
+| [Charts](../progress/charts.md) | 29 | 238 | 37 | 0 | 201 |
+| [Content](../progress/content.md) | 3 | 16 | 16 | 0 | 0 |
+| [Document](../progress/document.md) | 47 | 1032 | 880 | 12 | 140 |
+| [Drive](../progress/drive.md) | 8 | 164 | 124 | 8 | 32 |
+| [Forms](../progress/forms.md) | 41 | 504 | 266 | 0 | 238 |
+| [Gmail](../progress/gmail.md) | 6 | 168 | 167 | 0 | 1 |
+| [HTML](../progress/html.md) | 6 | 39 | 34 | 0 | 5 |
+| [JDBC](../progress/jdbc.md) | 20 | 753 | 311 | 0 | 442 |
+| [Lock](../progress/lock.md) | 2 | 7 | 7 | 0 | 0 |
+| [Mail](../progress/mail.md) | 1 | 5 | 0 | 0 | 5 |
+| [Properties](../progress/properties.md) | 4 | 11 | 6 | 5 | 0 |
+| [Script](../progress/script.md) | 16 | 84 | 22 | 0 | 62 |
+| [Slides](../progress/slides.md) | 76 | 1288 | 1005 | 0 | 283 |
+| [Spreadsheet](../progress/spreadsheet.md) | 108 | 1771 | 1309 | 11 | 451 |
+| [URL Fetch](../progress/urlfetch.md) | 2 | 13 | 12 | 0 | 1 |
+| [Utilities](../progress/utilities.md) | 5 | 59 | 59 | 0 | 0 |
+| [XML](../progress/xml.md) | 14 | 149 | 142 | 0 | 7 |
+| **Total** | **420** | **6712** | **4770** | **42** | **1900** |
 
 ## <img src="../pngs/logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
 

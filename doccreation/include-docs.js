@@ -1,9 +1,14 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { globSync } from 'glob';
+import { fileURLToPath } from 'url';
 
-const repoRoot = path.resolve(process.cwd());
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const repoRoot = path.resolve(__dirname, '..');
 const includeFilePath = path.join(repoRoot, '_includes', 'further.md');
+const progressFilePath = path.join(repoRoot, 'progress.md');
 const furtherReadingMarkerRegex = /## .* alt="gas-fakes logo" .* Further Reading/;
 
 function adjustRelativeLinks(content, depth) {
@@ -14,22 +19,14 @@ function adjustRelativeLinks(content, depth) {
   // Replace standard markdown links [text](link)
   // We only want to adjust links that don't start with http, https, or /
   return content.replace(/\]\((?!http|#|\/)(.*?)\)/g, (match, linkUrl) => {
-    // If the link already starts with ../ or ./, we might need to resolve it 
-    // relative to the root first. Assuming _includes/further.md links are
-    // authored relative to the repo root.
-    
+    // If the link already starts with ./, we strip it out so the relativePrefix applies correctly
     let normalizedLink = linkUrl;
     if (normalizedLink.startsWith('./')) {
       normalizedLink = normalizedLink.substring(2);
     }
     
-    // Prevent double-prefixing if the author already put '../' in the root further.md
-    // (though ideally, further.md should be authored exactly as if it were in the root)
+    // Prevent double-prefixing if the author already put '../'
     if (normalizedLink.startsWith('../')) {
-       // It's tricky to know what the author intended. We'll assume the link in further.md
-       // is authored from the perspective of the repo root. If it's `../gf_agent`, it means
-       // it's going UP from the repo root.
-       // We just prepend our depth prefix.
        return `](${relativePrefix}${normalizedLink})`;
     }
     
@@ -40,11 +37,12 @@ function adjustRelativeLinks(content, depth) {
 async function processMarkdownFiles() {
   try {
     const includeContentBase = await fs.readFile(includeFilePath, 'utf8');
+    const progressContentBase = await fs.readFile(progressFilePath, 'utf8');
 
     // Find all .md files in the root, excluding those in node_modules and _includes
     const files = globSync('**/*.md', {
       cwd: repoRoot,
-      ignore: ['**/node_modules/**', '_includes/**'],
+      ignore: ['**/node_modules/**', '_includes/**', 'progress.md'],
       absolute: true,
     });
 
@@ -56,10 +54,17 @@ async function processMarkdownFiles() {
       }
 
       let content = await fs.readFile(file, 'utf8');
-      const markerMatch = content.match(furtherReadingMarkerRegex);
+      
+      // We look for either the new combined injection starting point (progress.md title)
+      // or the legacy marker (further reading)
+      const progressMarkerRegex = /# Gas-Fakes Progress Summary/;
+      let markerMatch = content.match(progressMarkerRegex);
+      
+      if (!markerMatch) {
+        markerMatch = content.match(furtherReadingMarkerRegex);
+      }
 
       if (!markerMatch) {
-        // Only log for debug to keep output clean, but it's fine to skip
         continue;
       }
 
@@ -68,16 +73,17 @@ async function processMarkdownFiles() {
       // Calculate depth to determine relative paths
       const relativePath = path.relative(repoRoot, file);
       const depth = relativePath.split(path.sep).length - 1;
-      const logoPath = depth === 0 ? './logo.png' : '../'.repeat(depth) + 'logo.png';
+      const logoPath = depth === 0 ? './pngs/logo.png' : '../'.repeat(depth) + 'pngs/logo.png';
 
       // Update include content with correct logo path
       let adjustedIncludeContent = includeContentBase.replace(
-        /src="(\.\/|\.\.\/)logo\.png"/,
+        /src="(\.\/|\.\.\/)*pngs\/logo\.png"/,
         `src="${logoPath}"`
       );
 
       // Adjust relative markdown links based on the depth of the target file
       adjustedIncludeContent = adjustRelativeLinks(adjustedIncludeContent, depth);
+      let adjustedProgressContent = adjustRelativeLinks(progressContentBase, depth);
 
       // 1. Remove all content from the marker onwards (the old appended block)
       content = content.substring(0, markerIndex);
@@ -85,8 +91,8 @@ async function processMarkdownFiles() {
       // 2. Normalize the remaining content by trimming all trailing whitespace (including newlines).
       content = content.trimEnd();
 
-      // 3. Append the new content with explicit newlines for separation.
-      const newContent = content + '\n\n' + adjustedIncludeContent;
+      // 3. Append the progress content, then the further reading content
+      const newContent = content + '\n\n' + adjustedProgressContent + '\n\n' + adjustedIncludeContent;
 
       await fs.writeFile(file, newContent, 'utf8');
       console.log(`Updated ${path.basename(file)} (depth: ${depth})`);

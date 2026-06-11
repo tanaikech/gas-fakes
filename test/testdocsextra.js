@@ -123,6 +123,31 @@ export const testDocsExtra = (pack) => {
     t.is(doc.getBookmark(id), null, "Bookmark should be removed");
   });
 
+  if (typeof ScriptApp !== 'undefined' && ScriptApp.isFake) {
+    unit.section("Detached Equation elements", async t => {
+      // We dynamically import the fakes here so that the live GAS transpiler doesn't
+      // trip over internal module resolutions, and it's guarded by isFake.
+      const { newFakeEquation } = await import('../src/services/documentapp/fakeequation.js');
+      const { newFakeEquationFunction } = await import('../src/services/documentapp/fakeequationfunction.js');
+      const { newFakeEquationSymbol } = await import('../src/services/documentapp/fakeequationsymbol.js');
+      const { newFakeEquationFunctionArgumentSeparator } = await import('../src/services/documentapp/fakeequationfunctionargumentseparator.js');
+
+      const eq = newFakeEquation(null, { __type: 'EQUATION' });
+      t.is(eq.getType().toString(), 'EQUATION', 'Equation type matches');
+
+      const eqFunc = newFakeEquationFunction(null, { equationFunctionStyle: { code: 'sum' }, __type: 'EQUATION_FUNCTION' });
+      t.is(eqFunc.getType().toString(), 'EQUATION_FUNCTION', 'Function type matches');
+      t.is(eqFunc.getCode(), 'sum', 'Function code matches');
+
+      const eqSym = newFakeEquationSymbol(null, { equationSymbolStyle: { code: '\\alpha' }, __type: 'EQUATION_SYMBOL' });
+      t.is(eqSym.getType().toString(), 'EQUATION_SYMBOL', 'Symbol type matches');
+      t.is(eqSym.getCode(), '\\alpha', 'Symbol code matches');
+
+      const eqSep = newFakeEquationFunctionArgumentSeparator(null, { __type: 'EQUATION_FUNCTION_ARGUMENT_SEPARATOR' });
+      t.is(eqSep.getType().toString(), 'EQUATION_FUNCTION_ARGUMENT_SEPARATOR', 'Separator type matches');
+    });
+  }
+
   if (!pack) {
     unit.report();
   }

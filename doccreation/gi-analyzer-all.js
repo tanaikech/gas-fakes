@@ -23,7 +23,7 @@ const dynamicSheetRangeMethods = new Map(); // methodName -> { specFile, line }
 const dynamicDocMethods = new Map(); // methodName -> { specFile, line }
 const dynamicDataValidationMethods = new Map(); // methodName -> { specFile, line }
 
-const docServiceClasses = new Set(['Body', 'Paragraph', 'ListItem', 'Table', 'TableRow', 'TableCell', 'Text', 'InlineImage', 'PageBreak', 'HorizontalRule', 'Footnote', 'HeaderSection', 'FooterSection', 'FootnoteSection', 'ContainerElement', 'SectionElement', 'RichLink']);
+const docServiceClasses = new Set(['Body', 'Paragraph', 'ListItem', 'Table', 'TableRow', 'TableCell', 'Text', 'InlineImage', 'PageBreak', 'HorizontalRule', 'Footnote', 'HeaderSection', 'FooterSection', 'FootnoteSection', 'ContainerElement', 'SectionElement', 'RichLink', 'Equation', 'EquationFunction', 'EquationFunctionArgumentSeparator', 'EquationSymbol']);
 
 const giPath = path.resolve(__dirname, 'gi.json');
 const projectPath = path.resolve(__dirname, '..');
@@ -87,8 +87,18 @@ const classSynonyms = {
   'ListItem': ['containerelement', 'element', 'paragraph'],
   'TableRow': ['containerelement', 'element'],
   'TableCell': ['containerelement', 'element'],
+  'HeaderSection': ['sectionelement', 'containerelement', 'element'],
+  'FooterSection': ['sectionelement', 'containerelement', 'element'],
+  'FootnoteSection': ['containerelement', 'element'],
   'Text': ['element'],
   'InlineImage': ['element'],
+  'Date': ['element'],
+  'Person': ['element'],
+  'RichLink': ['element'],
+  'Equation': ['containerelement', 'element'],
+  'EquationFunction': ['containerelement', 'element'],
+  'EquationFunctionArgumentSeparator': ['element'],
+  'EquationSymbol': ['element'],
   'CheckboxItem': ['formitem'],
   'DateItem': ['formitem'],
   'DateTimeItem': ['formitem'],

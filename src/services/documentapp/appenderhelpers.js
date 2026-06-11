@@ -4,7 +4,7 @@ const { is, isBlob , stringCircular, lobify} = Utils
 import { getElementFactory } from './elementRegistry.js'
 import { signatureArgs, notYetImplemented } from '../../support/helpers.js';
 import { findItem } from './elementhelpers.js';
-import { paragraphOptions, pageBreakOptions, tableOptions, textOptions, listItemOptions, imageOptions, positionedImageOptions } from './elementoptions.js';
+import { horizontalRuleOptions, paragraphOptions, pageBreakOptions, tableOptions, textOptions, listItemOptions, imageOptions, positionedImageOptions } from './elementoptions.js';
 import { deleteContentRange, createParagraphBullets, reverseUpdateContent, deleteParagraphBullets } from "./elementblasters.js";
 
 /**
@@ -430,10 +430,15 @@ export const createFootnote = (parent, text) => {
 };
 
 
-// THE API has no way of inserting a horizontal rule
-// parking this for now - it'll need to be resurrected if this issue ever gets resolved
+// THE API has no way of inserting a horizontal rule natively.
 // https://issuetracker.google.com/issues/437825936
+export const appendHorizontalRule = (self, horizontalRule) => {
+  return notYetImplemented('appendHorizontalRule');
+};
 
+export const insertHorizontalRule = (self, childIndex, horizontalRule) => {
+  return notYetImplemented('insertHorizontalRule');
+};
 
 export const appendText = (self, textOrTextElement) => {
   return elementInserter(self, textOrTextElement, null, textOptions);

@@ -298,8 +298,8 @@ export class FakeElement {
     const range = {
       startIndex: item.startIndex,
       endIndex: item.endIndex,
-      segmentId: this.__shadowDocument.__segmentId,
-      tabId: this.__shadowDocument.__tabId
+      segmentId: item.__segmentId,
+      tabId: item.__tabId
     };
 
     Docs.Documents.batchUpdate({

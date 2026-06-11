@@ -1,1 +1,1 @@
-bash togas.bash
+echo 'togas.sh has been deprecated - use gas-fakes togas intead'

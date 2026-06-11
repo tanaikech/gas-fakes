@@ -25,7 +25,6 @@ versionnotes
 appsscript.json
 **/*.jwt
 .DS_Store
-*.sh
 *.png
 skills-lock.json
 api-docs

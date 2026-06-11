@@ -17,5 +17,12 @@ import './fakefootnote.js';
 import './fakeinlineimage.js';
 import './fakefootnotesection.js';
 import './fakepositionedimage.js';
+import './fakedate.js';
+import './fakeperson.js';
+import './fakerichlink.js';
+import './fakeequation.js';
+import './fakeequationfunction.js';
+import './fakeequationfunctionargumentseparator.js';
+import './fakeequationsymbol.js';
 // As you create more element types (e.g., Table, ListItem), import them here.
 // import './faketable.js';

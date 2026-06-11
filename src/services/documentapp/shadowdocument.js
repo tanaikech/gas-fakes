@@ -202,6 +202,9 @@ class ShadowDocument {
                 childElement.horizontalRule ||
                 childElement.footnoteReference ||
                 childElement.inlineObjectElement ||
+                childElement.person ||
+                childElement.richLink ||
+                childElement.date ||
                 (childElement.textRun && childElement.textRun.content && childElement.textRun.content !== '\n');
             });
         } else {

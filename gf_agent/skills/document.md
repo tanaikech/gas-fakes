@@ -109,6 +109,23 @@ Supported Methods:
 - `setLinkUrl(String)`
 - `setTextAlignment(TextAlignment)`
 
+## Class: Date
+
+Supported Methods:
+- `copy()`
+- `getAttributes()`
+- `getDisplayText()`
+- `getLocale()`
+- `getNextSibling()`
+- `getParent()`
+- `getPreviousSibling()`
+- `getTimestamp()`
+- `getType()`
+- `isAtDocumentEnd()`
+- `merge()`
+- `removeFromParent()`
+- `setAttributes(Object)`
+
 ## Class: Document
 
 Supported Methods:
@@ -167,9 +184,107 @@ Supported Methods:
 - `newPosition(Element,Integer)`
 - `newRange()`
 
+## Class: Equation
+
+Supported Methods:
+- `clear()`
+- `copy()`
+- `editAsText()`
+- `findElement(ElementType,RangeElement)`
+- `findElement(ElementType)`
+- `findText(String,RangeElement)`
+- `findText(String)`
+- `getAttributes()`
+- `getChild(Integer)`
+- `getChildIndex(Element)`
+- `getLinkUrl()`
+- `getNextSibling()`
+- `getNumChildren()`
+- `getParent()`
+- `getPreviousSibling()`
+- `getText()`
+- `getTextAlignment()`
+- `getType()`
+- `isAtDocumentEnd()`
+- `merge()`
+- `removeFromParent()`
+- `replaceText(String,String)`
+- `setAttributes(Object)`
+- `setLinkUrl(String)`
+- `setTextAlignment(TextAlignment)`
+
+## Class: EquationFunction
+
+Supported Methods:
+- `clear()`
+- `copy()`
+- `editAsText()`
+- `findElement(ElementType,RangeElement)`
+- `findElement(ElementType)`
+- `findText(String,RangeElement)`
+- `findText(String)`
+- `getAttributes()`
+- `getChild(Integer)`
+- `getChildIndex(Element)`
+- `getCode()`
+- `getLinkUrl()`
+- `getNextSibling()`
+- `getNumChildren()`
+- `getParent()`
+- `getPreviousSibling()`
+- `getText()`
+- `getTextAlignment()`
+- `getType()`
+- `isAtDocumentEnd()`
+- `merge()`
+- `removeFromParent()`
+- `replaceText(String,String)`
+- `setAttributes(Object)`
+- `setLinkUrl(String)`
+- `setTextAlignment(TextAlignment)`
+
+## Class: EquationFunctionArgumentSeparator
+
+Supported Methods:
+- `copy()`
+- `getAttributes()`
+- `getNextSibling()`
+- `getParent()`
+- `getPreviousSibling()`
+- `getType()`
+- `isAtDocumentEnd()`
+- `merge()`
+- `removeFromParent()`
+- `setAttributes(Object)`
+
+## Class: EquationSymbol
+
+Supported Methods:
+- `copy()`
+- `getAttributes()`
+- `getCode()`
+- `getNextSibling()`
+- `getParent()`
+- `getPreviousSibling()`
+- `getType()`
+- `isAtDocumentEnd()`
+- `merge()`
+- `removeFromParent()`
+- `setAttributes(Object)`
+
 ## Class: FooterSection
 
 Supported Methods:
+- `appendHorizontalRule()`
+- `appendImage(BlobSource)`
+- `appendImage(InlineImage)`
+- `appendListItem(ListItem)`
+- `appendListItem(String)`
+- `appendParagraph(Paragraph)`
+- `appendParagraph(String)`
+- `appendTable()`
+- `appendTable(String)`
+- `appendTable(Table)`
 - `clear()`
 - `copy()`
 - `editAsText()`
@@ -189,9 +304,21 @@ Supported Methods:
 - `getText()`
 - `getTextAlignment()`
 - `getType()`
+- `insertHorizontalRule(Integer)`
+- `insertImage(Integer,BlobSource)`
+- `insertImage(Integer,InlineImage)`
+- `insertListItem(Integer,ListItem)`
+- `insertListItem(Integer,String)`
+- `insertParagraph(Integer,Paragraph)`
+- `insertParagraph(Integer,String)`
+- `insertTable(Integer,String)`
+- `insertTable(Integer,Table)`
+- `insertTable(Integer)`
+- `removeChild(Element)`
 - `removeFromParent()`
 - `replaceText(String,String)`
 - `setAttributes(Object)`
+- `setText(String)`
 - `setTextAlignment(TextAlignment)`
 
 ## Class: Footnote
@@ -240,6 +367,16 @@ Supported Methods:
 ## Class: HeaderSection
 
 Supported Methods:
+- `appendHorizontalRule()`
+- `appendImage(BlobSource)`
+- `appendImage(InlineImage)`
+- `appendListItem(ListItem)`
+- `appendListItem(String)`
+- `appendParagraph(Paragraph)`
+- `appendParagraph(String)`
+- `appendTable()`
+- `appendTable(String)`
+- `appendTable(Table)`
 - `clear()`
 - `copy()`
 - `editAsText()`
@@ -259,9 +396,21 @@ Supported Methods:
 - `getText()`
 - `getTextAlignment()`
 - `getType()`
+- `insertHorizontalRule(Integer)`
+- `insertImage(Integer,BlobSource)`
+- `insertImage(Integer,InlineImage)`
+- `insertListItem(Integer,ListItem)`
+- `insertListItem(Integer,String)`
+- `insertParagraph(Integer,Paragraph)`
+- `insertParagraph(Integer,String)`
+- `insertTable(Integer,String)`
+- `insertTable(Integer,Table)`
+- `insertTable(Integer)`
+- `removeChild(Element)`
 - `removeFromParent()`
 - `replaceText(String,String)`
 - `setAttributes(Object)`
+- `setText(String)`
 - `setTextAlignment(TextAlignment)`
 
 ## Class: HorizontalRule
@@ -431,6 +580,22 @@ Supported Methods:
 - `setSpacingBefore(Number)`
 - `setTextAlignment(TextAlignment)`
 
+## Class: Person
+
+Supported Methods:
+- `copy()`
+- `getAttributes()`
+- `getEmail()`
+- `getName()`
+- `getNextSibling()`
+- `getParent()`
+- `getPreviousSibling()`
+- `getType()`
+- `isAtDocumentEnd()`
+- `merge()`
+- `removeFromParent()`
+- `setAttributes(Object)`
+
 ## Class: Position
 
 Supported Methods:
@@ -469,6 +634,23 @@ Supported Methods:
 - `getEndOffsetInclusive()`
 - `getStartOffset()`
 - `isPartial()`
+
+## Class: RichLink
+
+Supported Methods:
+- `copy()`
+- `getAttributes()`
+- `getMimeType()`
+- `getNextSibling()`
+- `getParent()`
+- `getPreviousSibling()`
+- `getTitle()`
+- `getType()`
+- `getUrl()`
+- `isAtDocumentEnd()`
+- `merge()`
+- `removeFromParent()`
+- `setAttributes(Object)`
 
 ## Class: Tab
 
@@ -517,6 +699,15 @@ Supported Methods:
 ## Class: TableCell
 
 Supported Methods:
+- `appendImage(BlobSource)`
+- `appendImage(InlineImage)`
+- `appendListItem(ListItem)`
+- `appendListItem(String)`
+- `appendParagraph(Paragraph)`
+- `appendParagraph(String)`
+- `appendTable()`
+- `appendTable(String)`
+- `appendTable(Table)`
 - `clear()`
 - `copy()`
 - `editAsText()`
@@ -528,6 +719,7 @@ Supported Methods:
 - `getBackgroundColor()`
 - `getChild(Integer)`
 - `getChildIndex(Element)`
+- `getColSpan()`
 - `getLinkUrl()`
 - `getNextSibling()`
 - `getNumChildren()`
@@ -536,12 +728,24 @@ Supported Methods:
 - `getPaddingRight()`
 - `getPaddingTop()`
 - `getParent()`
+- `getParentRow()`
+- `getParentTable()`
 - `getPreviousSibling()`
+- `getRowSpan()`
 - `getText()`
 - `getTextAlignment()`
 - `getType()`
 - `getVerticalAlignment()`
 - `getWidth()`
+- `insertImage(Integer,BlobSource)`
+- `insertImage(Integer,InlineImage)`
+- `insertListItem(Integer,ListItem)`
+- `insertListItem(Integer,String)`
+- `insertParagraph(Integer,Paragraph)`
+- `insertParagraph(Integer,String)`
+- `insertTable(Integer,String)`
+- `insertTable(Integer,Table)`
+- `insertTable(Integer)`
 - `isAtDocumentEnd()`
 - `merge()`
 - `removeFromParent()`

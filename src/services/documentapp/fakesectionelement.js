@@ -1,8 +1,9 @@
 /**
  * @file Provides a base class for HeaderSection and FooterSection.
  */
+import is from '@sindresorhus/is';
 import { FakeContainerElement } from './fakecontainerelement.js';
-import { notYetImplemented, signatureArgs } from '../../support/helpers.js';
+import { signatureArgs } from '../../support/helpers.js';
 import { getText } from './elementhelpers.js';
 import {
   appendParagraph,
@@ -11,6 +12,10 @@ import {
   insertTable,
   appendListItem,
   insertListItem,
+  appendImage,
+  insertImage,
+  appendHorizontalRule,
+  insertHorizontalRule
 } from './appenderhelpers.js';
 import { ElementType } from '../enums/docsenums.js';
 
@@ -31,19 +36,19 @@ export class FakeSectionElement extends FakeContainerElement {
 
   /**
    * Appends a horizontal rule.
-   * @returns {GoogleAppsScript.Document.HorizontalRule} The appended horizontal rule.
+   * @returns {GoogleAppsScript.Document.Paragraph} The appended paragraph acting as a horizontal rule.
    */
-  appendHorizontalRule() {
-    return notYetImplemented(`${this.toString()}.appendHorizontalRule`);
+  appendHorizontalRule(horizontalRule) {
+    return appendHorizontalRule(this, horizontalRule);
   }
 
   /**
    * Appends an image.
-   * @param {GoogleAppsScript.Base.BlobSource} image The image data.
+   * @param {GoogleAppsScript.Base.BlobSource|GoogleAppsScript.Document.InlineImage} image The image data.
    * @returns {GoogleAppsScript.Document.InlineImage} The appended image.
    */
   appendImage(image) {
-    return notYetImplemented(`${this.toString()}.appendImage`);
+    return appendImage(this, image);
   }
 
   /**
@@ -112,7 +117,7 @@ export class FakeSectionElement extends FakeContainerElement {
    * @returns {GoogleAppsScript.Document.Text} The contents as a Text element.
    */
   editAsText() {
-    return notYetImplemented(`${this.toString()}.editAsText`);
+    return super.editAsText();
   }
 
   /**
@@ -126,20 +131,20 @@ export class FakeSectionElement extends FakeContainerElement {
   /**
    * Inserts a horizontal rule at a specific index.
    * @param {number} childIndex The index to insert at.
-   * @returns {GoogleAppsScript.Document.HorizontalRule} The inserted horizontal rule.
+   * @returns {GoogleAppsScript.Document.Paragraph} The inserted horizontal rule (as a Paragraph).
    */
-  insertHorizontalRule(childIndex) {
-    return notYetImplemented(`${this.toString()}.insertHorizontalRule`);
+  insertHorizontalRule(childIndex, horizontalRule) {
+    return insertHorizontalRule(this, childIndex, horizontalRule);
   }
 
   /**
    * Inserts an image at a specific index.
    * @param {number} childIndex The index to insert at.
-   * @param {GoogleAppsScript.Base.BlobSource} image The image data.
+   * @param {GoogleAppsScript.Base.BlobSource|GoogleAppsScript.Document.InlineImage} image The image data.
    * @returns {GoogleAppsScript.Document.InlineImage} The inserted image.
    */
   insertImage(childIndex, image) {
-    return notYetImplemented(`${this.toString()}.insertImage`);
+    return insertImage(this, childIndex, image);
   }
 
   /**
@@ -179,6 +184,40 @@ export class FakeSectionElement extends FakeContainerElement {
       return this.appendTable(table);
     }
     return insertTable(this, childIndex, table);
+  }
+
+  /**
+   * Removes a child element from the section.
+   * @param {FakeElement} child The child element to remove.
+   * @returns {FakeSectionElement} The section.
+   */
+  removeChild(child) {
+    const { nargs, matchThrow } = signatureArgs(arguments, `${this.toString()}.removeChild`);
+    if (nargs !== 1) matchThrow();
+    child.removeFromParent();
+    return this;
+  }
+
+  /**
+   * Sets the text content of the section.
+   * @param {string} text The text to set.
+   * @returns {FakeSectionElement} The section.
+   */
+  setText(text) {
+    const { nargs, matchThrow } = signatureArgs(arguments, `${this.toString()}.setText`);
+    if (nargs !== 1 || !is.string(text)) matchThrow();
+
+    this.clear();
+
+    if (text) {
+      const shadow = this.shadowDocument;
+      const requests = [{
+        insertText: { location: { index: 0, segmentId: this.__segmentId, tabId: this.__tabId }, text }
+      }];
+      Docs.Documents.batchUpdate({ requests }, shadow.getId());
+      shadow.refresh();
+    }
+    return this;
   }
 
   /**

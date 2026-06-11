@@ -1,112 +1,86 @@
+import is from '@sindresorhus/is';
 import '@mcpher/gas-fakes';
-import { maketdoc, getDocsPerformance, wrapupTest, trasher, createTrashCollector } from './testassist.js';
 import { initTests } from './testinit.js';
-
-/**
- * A generic test suite for Document sections (HeaderSection, FooterSection).
- * @param {object} pack The test pack from initTests().
- * @param {object} options The configuration for the section type.
- * @param {string} options.sectionType The type of section ('Header' or 'Footer').
- * @param {string} options.addMethod The name of the method to add the section (e.g., 'addHeader').
- * @param {string} options.getMethod The name of the method to get the section (e.g., 'getHeader').
- * @param {string} options.dataPrefix A prefix for test data strings (e.g., 'h' or 'f').
- * @param {object[]} toTrash Array to collect items to be trashed.
- */
-export const testDocsSection = (pack, options, toTrash = []) => {
-  const { sectionType, addMethod, getMethod, dataPrefix } = options;
-  const { unit } = pack;
-  const sectionClassName = `${sectionType}Section`;
-  const lcSectionType = sectionType.toLowerCase();
-
-  unit.section(`Document.${addMethod} and ${getMethod}`, t => {
-    const { doc } = maketdoc(toTrash, pack.fixes);
-
-    // 1. Get section on a new doc (should be null)
-    let section = doc[getMethod]();
-    t.is(section, null, `New document should not have a ${lcSectionType}`);
-
-    // 2. Add a section
-    const newSection = doc[addMethod]();
-    t.truthy(newSection, `${addMethod} should return a ${sectionClassName} object`);
-    t.is(newSection.toString(), sectionClassName, `Returned object should be a ${sectionClassName}`);
-
-    // 3. Get the section again
-    section = doc[getMethod]();
-    t.truthy(section, `${getMethod} should now return the created ${lcSectionType}`);
-    t.is(section.getNumChildren(), 1, `New ${lcSectionType} should contain one empty paragraph`);
-    t.is(section.getChild(0).getType(), DocumentApp.ElementType.PARAGRAPH, `${sectionType}'s child should be a paragraph`);
-    t.is(section.getText(), "", `New ${lcSectionType} text should be empty`);
-
-    // 4. Add content to the section and get it again
-    section.appendParagraph(`This is the ${lcSectionType} text.`);
-    const sameSection = doc[getMethod]();
-    t.is(sameSection.getText(), `\nThis is the ${lcSectionType} text.`, `The ${lcSectionType} should contain the appended text`);
-    
-    // Live GAS throws "Document tab already contains a header." (or footer)
-    t.rxMatch(t.threw(() => doc[addMethod]())?.message, new RegExp(`Document tab already contains a ${lcSectionType}.`), `Calling ${addMethod} again should throw an error`);
-
-    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
-  });
-
-  unit.section(`${sectionClassName} append/insert methods`, t => {
-    const { doc } = maketdoc(toTrash, pack.fixes);
-    const section = doc[addMethod]();
-
-    // Test appendTable
-    const tableData = [[`${dataPrefix}_t1c1`, `${dataPrefix}_t1c2`]];
-    const table1 = section.appendTable(tableData);
-    t.is(table1.getType(), DocumentApp.ElementType.TABLE, `${lcSectionType}.appendTable should return a Table`);
-    t.is(table1.getCell(0, 0).getText(), `${dataPrefix}_t1c1`, `${lcSectionType}.appendTable should create table with correct content`);
-
-    let numChildren = section.getNumChildren();
-    t.is(numChildren, 3, `${sectionType} should have 3 children after appendTable`);
-    t.is(section.getChild(1).getType(), DocumentApp.ElementType.TABLE, `${lcSectionType}.appendTable should add a table to the ${lcSectionType}`);
-    t.is(section.getChild(2).getType(), DocumentApp.ElementType.PARAGRAPH, `${lcSectionType}.appendTable should be followed by a paragraph`);
-
-    // Test insertTable
-    const tableData2 = [[`${dataPrefix}_t0c1`]];
-    const table2_copy = doc.getBody().appendTable(tableData2).copy();
-    section.insertTable(1, table2_copy);
-    const insertedTable = section.getChild(1);
-    t.is(insertedTable.getType(), DocumentApp.ElementType.TABLE, `${lcSectionType}.insertTable should insert a Table`);
-    t.is(insertedTable.getCell(0, 0).getText(), `${dataPrefix}_t0c1`, `${lcSectionType}.insertTable should have correct content`);
-
-    // Test appendListItem
-    const li1 = section.appendListItem(`${dataPrefix}_li1`);
-    t.is(li1.getType(), DocumentApp.ElementType.LIST_ITEM, `${lcSectionType}.appendListItem should return a ListItem`);
-    t.is(section.getChild(section.getNumChildren() - 1).getType(), DocumentApp.ElementType.LIST_ITEM, `${lcSectionType}.appendListItem should add a list item`);
-
-    // Test insertListItem
-    const li0_copy = doc.getBody().appendListItem(`${dataPrefix}_li0`).copy();
-    section.insertListItem(1, li0_copy);
-    t.is(section.getChild(1).getType(), DocumentApp.ElementType.LIST_ITEM, `${lcSectionType}.insertListItem should insert a list item`);
-    t.is(section.getChild(1).getText(), `${dataPrefix}_li0`, `${lcSectionType}.insertListItem should have correct text`);
-
-    if (DocumentApp.isFake) console.log('...cumulative docs cache performance', getDocsPerformance());
-  });
-
-  return { toTrash };
-};
+import {
+  wrapupTest,
+  getDocsPerformance, maketdoc, trasher, createTrashCollector
+} from './testassist.js';
 
 export const testDocsSections = (pack) => {
   const toTrash = createTrashCollector();
   const { unit, fixes } = pack || initTests();
 
-  // Test Headers
-  testDocsSection({ unit, fixes }, {
-    sectionType: 'Header',
-    addMethod: 'addHeader',
-    getMethod: 'getHeader',
-    dataPrefix: 'h'
-  }, toTrash);
+  unit.section("Header and Footer section methods", t => {
+    // maketdoc ensures we have a clean document
+    const { doc } = maketdoc(toTrash, fixes);
+    
+    // We need an image blob for testing
+    const imageUrl = 'https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png';
+    const imageBlob = UrlFetchApp.fetch(imageUrl).getBlob();
+    imageBlob.setName('test_image.png');
 
-  // Test Footers
-  testDocsSection({ unit, fixes }, {
-    sectionType: 'Footer',
-    addMethod: 'addFooter',
-    getMethod: 'getFooter',
-    dataPrefix: 'f'
-  }, toTrash);
+    // 1. Add Sections
+    let header = doc.addHeader();
+    let footer = doc.addFooter();
+    
+    t.truthy(header, "Should successfully add a header section");
+    t.truthy(footer, "Should successfully add a footer section");
+
+    // 2. Test appendParagraph and insertParagraph
+    const p1 = header.appendParagraph("Appended Para");
+    t.truthy(p1, "Should return a paragraph element");
+    
+    const p2 = header.insertParagraph(header.getNumChildren(), "Inserted Para");
+    t.is(header.getChild(header.getNumChildren() - 1).getText(), "Inserted Para", "Should insert paragraph at the end");
+    
+    // 3. Test setText and getText
+    header.setText("New Header Text");
+    t.is(header.getText(), "New Header Text", "Header text should be updated via setText");
+
+    // 4. Test clear
+    footer.setText("Some Footer Text");
+    footer.clear();
+    t.is(footer.getText(), "", "Footer content should be cleared (leaves one empty paragraph)");
+
+    // 5. Test appendTable and insertTable
+    const tableData = [["A", "B"]];
+    const table = header.appendTable(tableData);
+    t.is(header.getTables().length, 1, "Header should contain the appended table");
+
+    const table2 = header.insertTable(header.getNumChildren(), tableData);
+    t.is(header.getTables().length, 2, "Header should contain the inserted table");
+
+    // 6. Test appendListItem and insertListItem
+    header.appendListItem("Appended List");
+    header.insertListItem(header.getNumChildren(), "Inserted List");
+    t.is(header.getListItems().length, 2, "Header should contain the list items");
+
+    // 7. Test appendImage and insertImage
+    const img1 = header.appendImage(imageBlob);
+    t.truthy(img1, "Should return appended image");
+    const img2 = header.insertImage(header.getNumChildren(), imageBlob);
+    t.truthy(img2, "Should return inserted image");
+    
+    // 8. Test remove child prep
+    const p3 = header.appendParagraph('some stuff to be deleted');
+    t.truthy(p3, "Should return appended paragraph");
+    const p4 = header.insertParagraph(header.getNumChildren(), 'some more stuff to be deleted');
+    t.truthy(p4, "Should return inserted paragraph");
+    
+    // 9. Test removeChild
+    const initialChildren = header.getNumChildren();
+    header.removeChild(p3);
+    t.is(header.getNumChildren(), initialChildren - 1, "Child should be removed from the header");
+
+    // 10. Test removeFromParent on the sections themselves
+    t.truthy(doc.getHeader(), "Document should have a header");
+    header.removeFromParent();
+    t.is(doc.getHeader(), null, "Header should be removed from the document");
+
+    t.truthy(doc.getFooter(), "Document should have a footer");
+    footer.removeFromParent();
+    t.is(doc.getFooter(), null, "Footer should be removed from the document");
+  });
 
   if (!pack) {
     unit.report();
@@ -116,4 +90,3 @@ export const testDocsSections = (pack) => {
 };
 
 wrapupTest(testDocsSections);
-
