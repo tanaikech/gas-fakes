@@ -27278,7 +27278,7 @@
             "description": "Reverses the drawing of series in the domain axis. For vertical-range charts (such as line,\narea or column charts), this means the horizontal axis is drawn from right to left. For\nhorizontal-range charts (such as bar charts), this means the vertical axis is drawn from top to\nbottom. For pie charts, this means the slices are drawn counterclockwise.",
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L314"
           },
           {
@@ -27288,7 +27288,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L323"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L319"
           },
           {
             "method": "setChartType(ChartType)",
@@ -27306,7 +27306,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L325"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L321"
           },
           {
             "method": "setHiddenDimensionStrategy(ChartHiddenDimensionStrategy)",
@@ -27324,7 +27324,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L331"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L327"
           },
           {
             "method": "setLegendTextStyle(TextStyle)",
@@ -27333,7 +27333,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L332"
           },
           {
             "method": "setMergeStrategy(ChartMergeStrategy)",
@@ -27369,7 +27369,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L343"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L339"
           },
           {
             "method": "setPosition(Integer,Integer,Integer,Integer)",
@@ -27387,7 +27387,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L348"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L344"
           },
           {
             "method": "setStacked()",
@@ -27396,7 +27396,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L357"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L353"
           },
           {
             "method": "setTitle(String)",
@@ -27405,7 +27405,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L365"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L361"
           },
           {
             "method": "setTitleTextStyle(TextStyle)",
@@ -27414,7 +27414,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L371"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L367"
           },
           {
             "method": "setTransposeRowsAndColumns(Boolean)",
@@ -27432,7 +27432,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L377"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L373"
           },
           {
             "method": "setXAxisTitle(String)",
@@ -27441,7 +27441,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L383"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L379"
           },
           {
             "method": "setXAxisTitleTextStyle(TextStyle)",
@@ -27450,7 +27450,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L389"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L385"
           },
           {
             "method": "setYAxisTextStyle(TextStyle)",
@@ -27459,7 +27459,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L395"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L391"
           },
           {
             "method": "setYAxisTitle(String)",
@@ -27468,7 +27468,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L401"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L397"
           },
           {
             "method": "setYAxisTitleTextStyle(TextStyle)",
@@ -27477,7 +27477,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L407"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L403"
           },
           {
             "method": "useLogScale()",
@@ -27486,7 +27486,7 @@
             "returnType": "EmbeddedAreaChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L413"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L409"
           }
         ]
       },
@@ -27646,7 +27646,7 @@
             "description": "Reverses the drawing of series in the domain axis. For vertical-range charts (such as line,\narea or column charts), this means the horizontal axis is drawn from right to left. For\nhorizontal-range charts (such as bar charts), this means the vertical axis is drawn from top to\nbottom. For pie charts, this means the slices are drawn counterclockwise.",
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L314"
           },
           {
@@ -27655,8 +27655,8 @@
             "description": "Reverses the direction in which the bars grow along the horizontal axis. By default, values\ngrow from left to right. Calling this method causes them to grow from right to left.",
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L458"
+            "gas-fakes status": "in progress",
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L454"
           },
           {
             "method": "setBackgroundColor(String)",
@@ -27665,7 +27665,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L323"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L319"
           },
           {
             "method": "setChartType(ChartType)",
@@ -27683,7 +27683,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L325"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L321"
           },
           {
             "method": "setHiddenDimensionStrategy(ChartHiddenDimensionStrategy)",
@@ -27701,7 +27701,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L331"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L327"
           },
           {
             "method": "setLegendTextStyle(TextStyle)",
@@ -27710,7 +27710,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L332"
           },
           {
             "method": "setMergeStrategy(ChartMergeStrategy)",
@@ -27755,7 +27755,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L348"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L344"
           },
           {
             "method": "setStacked()",
@@ -27764,7 +27764,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L357"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L353"
           },
           {
             "method": "setTitle(String)",
@@ -27773,7 +27773,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L365"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L361"
           },
           {
             "method": "setTitleTextStyle(TextStyle)",
@@ -27782,7 +27782,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L371"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L367"
           },
           {
             "method": "setTransposeRowsAndColumns(Boolean)",
@@ -27800,7 +27800,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L377"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L373"
           },
           {
             "method": "setXAxisTitle(String)",
@@ -27809,7 +27809,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L383"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L379"
           },
           {
             "method": "setXAxisTitleTextStyle(TextStyle)",
@@ -27818,7 +27818,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L389"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L385"
           },
           {
             "method": "setYAxisTextStyle(TextStyle)",
@@ -27827,7 +27827,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L395"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L391"
           },
           {
             "method": "setYAxisTitle(String)",
@@ -27836,7 +27836,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L401"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L397"
           },
           {
             "method": "setYAxisTitleTextStyle(TextStyle)",
@@ -27845,7 +27845,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L407"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L403"
           },
           {
             "method": "useLogScale()",
@@ -27854,7 +27854,7 @@
             "returnType": "EmbeddedBarChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L413"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L409"
           }
         ]
       },
@@ -28130,7 +28130,7 @@
             "description": "Reverses the drawing of series in the domain axis. For vertical-range charts (such as line,\narea or column charts), this means the horizontal axis is drawn from right to left. For\nhorizontal-range charts (such as bar charts), this means the vertical axis is drawn from top to\nbottom. For pie charts, this means the slices are drawn counterclockwise.",
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L314"
           },
           {
@@ -28140,7 +28140,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L323"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L319"
           },
           {
             "method": "setChartType(ChartType)",
@@ -28158,7 +28158,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L325"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L321"
           },
           {
             "method": "setHiddenDimensionStrategy(ChartHiddenDimensionStrategy)",
@@ -28176,7 +28176,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L331"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L327"
           },
           {
             "method": "setLegendTextStyle(TextStyle)",
@@ -28185,7 +28185,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L332"
           },
           {
             "method": "setMergeStrategy(ChartMergeStrategy)",
@@ -28230,7 +28230,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L348"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L344"
           },
           {
             "method": "setStacked()",
@@ -28239,7 +28239,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L357"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L353"
           },
           {
             "method": "setTitle(String)",
@@ -28248,7 +28248,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L365"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L361"
           },
           {
             "method": "setTitleTextStyle(TextStyle)",
@@ -28257,7 +28257,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L371"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L367"
           },
           {
             "method": "setTransposeRowsAndColumns(Boolean)",
@@ -28275,7 +28275,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L377"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L373"
           },
           {
             "method": "setXAxisTitle(String)",
@@ -28284,7 +28284,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L383"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L379"
           },
           {
             "method": "setXAxisTitleTextStyle(TextStyle)",
@@ -28293,7 +28293,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L389"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L385"
           },
           {
             "method": "setYAxisTextStyle(TextStyle)",
@@ -28302,7 +28302,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L395"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L391"
           },
           {
             "method": "setYAxisTitle(String)",
@@ -28311,7 +28311,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L401"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L397"
           },
           {
             "method": "setYAxisTitleTextStyle(TextStyle)",
@@ -28320,7 +28320,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L407"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L403"
           },
           {
             "method": "useLogScale()",
@@ -28329,7 +28329,7 @@
             "returnType": "EmbeddedColumnChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L413"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L409"
           }
         ]
       },
@@ -28489,7 +28489,7 @@
             "description": "Reverses the drawing of series in the domain axis. For vertical-range charts (such as line,\narea or column charts), this means the horizontal axis is drawn from right to left. For\nhorizontal-range charts (such as bar charts), this means the vertical axis is drawn from top to\nbottom. For pie charts, this means the slices are drawn counterclockwise.",
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L314"
           },
           {
@@ -28499,7 +28499,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L323"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L319"
           },
           {
             "method": "setChartType(ChartType)",
@@ -28517,7 +28517,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L325"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L321"
           },
           {
             "method": "setHiddenDimensionStrategy(ChartHiddenDimensionStrategy)",
@@ -28535,7 +28535,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L331"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L327"
           },
           {
             "method": "setLegendTextStyle(TextStyle)",
@@ -28544,7 +28544,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L332"
           },
           {
             "method": "setMergeStrategy(ChartMergeStrategy)",
@@ -28589,7 +28589,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L348"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L344"
           },
           {
             "method": "setStacked()",
@@ -28598,7 +28598,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L357"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L353"
           },
           {
             "method": "setTitle(String)",
@@ -28607,7 +28607,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L365"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L361"
           },
           {
             "method": "setTitleTextStyle(TextStyle)",
@@ -28616,7 +28616,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L371"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L367"
           },
           {
             "method": "setTransposeRowsAndColumns(Boolean)",
@@ -28634,7 +28634,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L377"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L373"
           },
           {
             "method": "setXAxisTitle(String)",
@@ -28643,7 +28643,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L383"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L379"
           },
           {
             "method": "setXAxisTitleTextStyle(TextStyle)",
@@ -28652,7 +28652,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L389"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L385"
           },
           {
             "method": "setYAxisTextStyle(TextStyle)",
@@ -28661,7 +28661,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L395"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L391"
           },
           {
             "method": "setYAxisTitle(String)",
@@ -28670,7 +28670,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L401"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L397"
           },
           {
             "method": "setYAxisTitleTextStyle(TextStyle)",
@@ -28679,7 +28679,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L407"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L403"
           },
           {
             "method": "useLogScale()",
@@ -28688,7 +28688,7 @@
             "returnType": "EmbeddedComboChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L413"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L409"
           }
         ]
       },
@@ -28848,7 +28848,7 @@
             "description": "Reverses the drawing of series in the domain axis. For vertical-range charts (such as line,\narea or column charts), this means the horizontal axis is drawn from right to left. For\nhorizontal-range charts (such as bar charts), this means the vertical axis is drawn from top to\nbottom. For pie charts, this means the slices are drawn counterclockwise.",
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L314"
           },
           {
@@ -28858,7 +28858,7 @@
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L422"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L418"
           },
           {
             "method": "setBackgroundColor(String)",
@@ -28867,7 +28867,7 @@
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L323"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L319"
           },
           {
             "method": "setChartType(ChartType)",
@@ -28885,7 +28885,7 @@
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L325"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L321"
           },
           {
             "method": "setHiddenDimensionStrategy(ChartHiddenDimensionStrategy)",
@@ -28903,7 +28903,7 @@
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L331"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L327"
           },
           {
             "method": "setLegendTextStyle(TextStyle)",
@@ -28912,7 +28912,7 @@
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L332"
           },
           {
             "method": "setMergeStrategy(ChartMergeStrategy)",
@@ -28957,7 +28957,7 @@
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L365"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L361"
           },
           {
             "method": "setTitleTextStyle(TextStyle)",
@@ -28966,7 +28966,7 @@
             "returnType": "EmbeddedPieChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L371"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L367"
           },
           {
             "method": "setTransposeRowsAndColumns(Boolean)",
@@ -29135,7 +29135,7 @@
             "description": "Reverses the drawing of series in the domain axis. For vertical-range charts (such as line,\narea or column charts), this means the horizontal axis is drawn from right to left. For\nhorizontal-range charts (such as bar charts), this means the vertical axis is drawn from top to\nbottom. For pie charts, this means the slices are drawn counterclockwise.",
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L314"
           },
           {
@@ -29145,7 +29145,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L323"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L319"
           },
           {
             "method": "setChartType(ChartType)",
@@ -29163,7 +29163,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L325"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L321"
           },
           {
             "method": "setHiddenDimensionStrategy(ChartHiddenDimensionStrategy)",
@@ -29181,7 +29181,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L331"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L327"
           },
           {
             "method": "setLegendTextStyle(TextStyle)",
@@ -29190,7 +29190,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L332"
           },
           {
             "method": "setMergeStrategy(ChartMergeStrategy)",
@@ -29235,7 +29235,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L348"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L344"
           },
           {
             "method": "setStacked()",
@@ -29244,7 +29244,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L357"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L353"
           },
           {
             "method": "setTitle(String)",
@@ -29253,7 +29253,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L365"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L361"
           },
           {
             "method": "setTitleTextStyle(TextStyle)",
@@ -29262,7 +29262,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L371"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L367"
           },
           {
             "method": "setTransposeRowsAndColumns(Boolean)",
@@ -29280,7 +29280,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L377"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L373"
           },
           {
             "method": "setXAxisTitle(String)",
@@ -29289,7 +29289,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L383"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L379"
           },
           {
             "method": "setXAxisTitleTextStyle(TextStyle)",
@@ -29298,7 +29298,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L389"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L385"
           },
           {
             "method": "setYAxisTextStyle(TextStyle)",
@@ -29307,7 +29307,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L395"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L391"
           },
           {
             "method": "setYAxisTitle(String)",
@@ -29316,7 +29316,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L401"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L397"
           },
           {
             "method": "setYAxisTitleTextStyle(TextStyle)",
@@ -29325,7 +29325,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L407"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L403"
           },
           {
             "method": "useLogScale()",
@@ -29334,7 +29334,7 @@
             "returnType": "EmbeddedHistogramChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L413"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L409"
           }
         ]
       },
@@ -29494,7 +29494,7 @@
             "description": "Reverses the drawing of series in the domain axis. For vertical-range charts (such as line,\narea or column charts), this means the horizontal axis is drawn from right to left. For\nhorizontal-range charts (such as bar charts), this means the vertical axis is drawn from top to\nbottom. For pie charts, this means the slices are drawn counterclockwise.",
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
-            "gas-fakes status": "completed",
+            "gas-fakes status": "in progress",
             "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L314"
           },
           {
@@ -29504,7 +29504,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L323"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L319"
           },
           {
             "method": "setChartType(ChartType)",
@@ -29522,7 +29522,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L325"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L321"
           },
           {
             "method": "setCurveStyle(CurveStyle)",
@@ -29549,7 +29549,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L331"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L327"
           },
           {
             "method": "setLegendTextStyle(TextStyle)",
@@ -29558,7 +29558,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L336"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L332"
           },
           {
             "method": "setMergeStrategy(ChartMergeStrategy)",
@@ -29594,7 +29594,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L343"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L339"
           },
           {
             "method": "setPosition(Integer,Integer,Integer,Integer)",
@@ -29612,7 +29612,7 @@
             "returnType": "",
             "returnDescription": "",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L348"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L344"
           },
           {
             "method": "setTitle(String)",
@@ -29621,7 +29621,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L365"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L361"
           },
           {
             "method": "setTitleTextStyle(TextStyle)",
@@ -29630,7 +29630,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L371"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L367"
           },
           {
             "method": "setTransposeRowsAndColumns(Boolean)",
@@ -29648,7 +29648,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L377"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L373"
           },
           {
             "method": "setXAxisTitle(String)",
@@ -29657,7 +29657,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L383"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L379"
           },
           {
             "method": "setXAxisTitleTextStyle(TextStyle)",
@@ -29666,7 +29666,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L389"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L385"
           },
           {
             "method": "setYAxisTextStyle(TextStyle)",
@@ -29675,7 +29675,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L395"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L391"
           },
           {
             "method": "setYAxisTitle(String)",
@@ -29684,7 +29684,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L401"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L397"
           },
           {
             "method": "setYAxisTitleTextStyle(TextStyle)",
@@ -29693,7 +29693,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L407"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L403"
           },
           {
             "method": "useLogScale()",
@@ -29702,7 +29702,7 @@
             "returnType": "EmbeddedLineChartBuilder",
             "returnDescription": "This builder, useful for chaining.",
             "gas-fakes status": "completed",
-            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L413"
+            "implementationLink": "src/services/spreadsheetapp/fakeembeddedchartbuilder.js#L409"
           }
         ]
       },

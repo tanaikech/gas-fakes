@@ -321,7 +321,6 @@ Supported Methods:
 - `getContainer()`
 - `getRanges()`
 - `removeRange(Range)`
-- `reverseCategories()`
 - `setBackgroundColor(String)`
 - `setChartType(ChartType)`
 - `setColors(String)`
@@ -365,8 +364,6 @@ Supported Methods:
 - `getContainer()`
 - `getRanges()`
 - `removeRange(Range)`
-- `reverseCategories()`
-- `reverseDirection()`
 - `setBackgroundColor(String)`
 - `setChartType(ChartType)`
 - `setColors(String)`
@@ -445,7 +442,6 @@ Supported Methods:
 - `getContainer()`
 - `getRanges()`
 - `removeRange(Range)`
-- `reverseCategories()`
 - `setBackgroundColor(String)`
 - `setChartType(ChartType)`
 - `setColors(String)`
@@ -488,7 +484,6 @@ Supported Methods:
 - `getContainer()`
 - `getRanges()`
 - `removeRange(Range)`
-- `reverseCategories()`
 - `setBackgroundColor(String)`
 - `setChartType(ChartType)`
 - `setColors(String)`
@@ -531,7 +526,6 @@ Supported Methods:
 - `getContainer()`
 - `getRanges()`
 - `removeRange(Range)`
-- `reverseCategories()`
 - `setBackgroundColor(String)`
 - `setChartType(ChartType)`
 - `setColors(String)`
@@ -574,7 +568,6 @@ Supported Methods:
 - `getContainer()`
 - `getRanges()`
 - `removeRange(Range)`
-- `reverseCategories()`
 - `setBackgroundColor(String)`
 - `setChartType(ChartType)`
 - `setColors(String)`
@@ -617,7 +610,6 @@ Supported Methods:
 - `getContainer()`
 - `getRanges()`
 - `removeRange(Range)`
-- `reverseCategories()`
 - `set3D()`
 - `setBackgroundColor(String)`
 - `setChartType(ChartType)`
