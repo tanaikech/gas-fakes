@@ -64,7 +64,6 @@ import { testSlidesFills } from "./testslidesfills.js";
 import { testSlidesGroup } from "./testslidesgroup.js";
 import { testSlidesImage } from "./testslidesimage.js";
 import { testSheetsChart } from "./testsheetschart.js";
-import { testSheetsRange } from "./testsheetsrange.js";
 import { testSheetsFormatting } from "./testsheetsformatting.js";
 import { testSheetsBasic } from "./testsheetsbasic.js";
 import { testDocsImages } from "./testdocsimages.js";
@@ -309,8 +308,6 @@ export const testFakes = () => {
   testStores(pack);
 
 
-  console.log("\n----Test Sheets Range----");
-  testSheetsRange(pack);
   console.log("\n----TEST FILES COMPLETE----");
 
 

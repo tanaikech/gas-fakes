@@ -50,14 +50,18 @@ export const initTests = () => {
 
     // Automatically whitelist all test file IDs for read access
     // This allows tests to access fixture files without needing to disable the sandbox.
+    let wc = 0
     Object.keys(fixes).forEach(key => {
+
       if (key.endsWith('_ID') && fixes[key]) {
         const platform = ScriptApp.__platform || 'google';
-        console.log(`...whitelisting test file ${key}: ${fixes[key]} on ${platform}`);
+        wc++;
+       //  console.log(`...whitelisting test file ${key}: ${fixes[key]} on ${platform}`);
         behavior.addIdWhitelist(behavior.newIdWhitelistItem(fixes[key]));
       }
-    });
 
+    });
+    console.log ('...whitelisted', wc, 'fixture files')
     // The root folder should always be accessible for read operations.
     // We'll add its ID to the whitelist to ensure tests that traverse
     // up to the root folder don't fail in sandbox mode.
