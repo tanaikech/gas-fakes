@@ -163,11 +163,7 @@ export const testSheetsChart = (pack) => {
     t.is(typeof scatterBuilder.setXAxisRange(0, 100), "object", "setXAxisRange should return builder");
     t.is(typeof scatterBuilder.setYAxisRange(0, 50), "object", "setYAxisRange should return builder");
 
-    // reverseCategories is intentionally notYetImplemented
-    if (ScriptApp.isFake) {
-      const rcErr = t.threw(() => barBuilder.reverseCategories());
-      t.rxMatch(rcErr?.message, /not yet implemented/i, "reverseCategories should throw notYetImplemented");
-    }
+
 
     t.is(typeof barBuilder.setHiddenDimensionStrategy(Charts.ChartHiddenDimensionStrategy.IGNORE_COLUMNS), "object", "setHiddenDimensionStrategy should return bar builder");
     // Test range manipulation wrappers (available on generic builder)

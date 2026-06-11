@@ -313,11 +313,7 @@ export class FakeEmbeddedChartBuilder {
 
   reverseCategories() { 
     ScriptApp.__behavior.checkMethod("EmbeddedChartBuilder", "reverseCategories");
-    const chartType = this.__apiChart.spec.basicChart ? this.__apiChart.spec.basicChart.chartType : null;
-    const axisPos = chartType === "BAR" ? "LEFT_AXIS" : "BOTTOM_AXIS";
-    const axis = this.__getAxis(axisPos);
-    axis.reverseDirection = true;
-    return this; 
+    return notYetImplemented('ChartBuilder.reverseCategories');
   }
 
   setBackgroundColor(color) { return this.setOption("backgroundColor", color); }
@@ -457,8 +453,7 @@ export class FakeEmbeddedChartBuilder {
   
   reverseDirection() { 
     ScriptApp.__behavior.checkMethod("EmbeddedChartBuilder", "reverseDirection");
-    this.__getAxis("BOTTOM_AXIS").reverseDirection = true;
-    return this; 
+    return notYetImplemented('ChartBuilder.reverseDirection');
   }
 
   toString() {
