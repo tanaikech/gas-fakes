@@ -123,8 +123,9 @@ export const testDocsExtra = (pack) => {
     t.is(doc.getBookmark(id), null, "Bookmark should be removed");
   });
 
-  if (typeof ScriptApp !== 'undefined' && ScriptApp.isFake) {
-    unit.section("Detached Equation elements", async t => {
+  let asyncTests = Promise.resolve()
+  if (ScriptApp.isFake) {
+   asyncTests = unit.section("Detached Equation elements", async t => {
       // We dynamically import the fakes here so that the live GAS transpiler doesn't
       // trip over internal module resolutions, and it's guarded by isFake.
       const { newFakeEquation } = await import('../src/services/documentapp/fakeequation.js');
@@ -145,14 +146,19 @@ export const testDocsExtra = (pack) => {
 
       const eqSep = newFakeEquationFunctionArgumentSeparator(null, { __type: 'EQUATION_FUNCTION_ARGUMENT_SEPARATOR' });
       t.is(eqSep.getType().toString(), 'EQUATION_FUNCTION_ARGUMENT_SEPARATOR', 'Separator type matches');
+      return Promise.resolve()
     });
+
   }
 
-  if (!pack) {
-    unit.report();
-  }
-  if (fixes.CLEAN) trasher(toTrash);
-  return { unit, fixes };
+  asyncTests.then ( () => {
+    if (!pack) {
+      unit.report();
+    }
+    if (fixes.CLEAN) trasher(toTrash);
+    return { unit, fixes };
+  });
+
 };
 
 wrapupTest(testDocsExtra);

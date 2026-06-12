@@ -177,11 +177,11 @@ As I mentioned earlier, to take this further, I'm going to need a lot of help to
 | [Properties](./progress/properties.md) | 4 | 11 | 6 | 5 | 0 |
 | [Script](./progress/script.md) | 16 | 84 | 22 | 0 | 62 |
 | [Slides](./progress/slides.md) | 76 | 1288 | 1005 | 0 | 283 |
-| [Spreadsheet](./progress/spreadsheet.md) | 108 | 1771 | 1309 | 11 | 451 |
+| [Spreadsheet](./progress/spreadsheet.md) | 108 | 1771 | 1301 | 19 | 451 |
 | [URL Fetch](./progress/urlfetch.md) | 2 | 13 | 12 | 0 | 1 |
 | [Utilities](./progress/utilities.md) | 5 | 59 | 59 | 0 | 0 |
 | [XML](./progress/xml.md) | 14 | 149 | 142 | 0 | 7 |
-| **Total** | **420** | **6712** | **4770** | **42** | **1900** |
+| **Total** | **420** | **6712** | **4762** | **50** | **1900** |
 
 ## <img src="./pngs/logo.png" alt="gas-fakes logo" width="50" align="top"> Further Reading
 
