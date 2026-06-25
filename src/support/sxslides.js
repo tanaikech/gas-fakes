@@ -19,12 +19,13 @@ import { getSlidesApiClient } from '../services/advslides/slapis.js';
  * @param {object} p.options gaxios options
  * @return {import('./sxdrive.js').SxResult} from the Slides api
  */
-export const sxSlides = async (Auth, { prop, method, params, options = {} }) => {
+export const sxSlides = async (Auth, { subProp, prop, method, params, options = {} }) => {
 
   const apiClient = getSlidesApiClient();
-  const tag = `sxSlides for ${prop}.${method}`;
+  const tag = `sxSlides for ${prop}${subProp ? '.' + subProp : ''}.${method}`;
 
   return sxRetry(Auth, tag, async () => {
-    return apiClient[prop][method](params, options);
+    const callish = subProp ? apiClient[prop][subProp] : apiClient[prop];
+    return callish[method](params, options);
   });
 };

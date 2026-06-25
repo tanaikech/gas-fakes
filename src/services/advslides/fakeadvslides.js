@@ -5,12 +5,31 @@ import { slidesCacher } from '../../support/slidescacher.js';
 import { Proxies } from '../../support/proxies.js';
 
 /**
+ * @class FakeAdvSlidesPresentationsPages
+ */
+class FakeAdvSlidesPresentationsPages extends FakeAdvResource {
+  constructor(mainService) {
+    super(mainService, 'presentations', Syncit.fxSlides);
+  }
+
+
+  //https://developers.google.com/workspace/slides/api/reference/rest/v1/presentations.pages/getThumbnail
+  getThumbnail(presentationId, pageObjectId, options) {
+    ScriptApp.__behavior.isAccessible(presentationId, 'Slides', 'read');
+    const { response, data } = this._call('getThumbnail', { presentationId, pageObjectId, ...options }, {}, 'pages');
+    gError(response, 'slides.presentations.pages', 'getThumbnail');
+    return data;
+  }
+}
+
+/**
  * @class FakeAdvSlidesPresentations
  */
 class FakeAdvSlidesPresentations extends FakeAdvResource {
   constructor(mainService) {
     super(mainService, 'presentations', Syncit.fxSlides);
-    this.slides = mainService
+    this.slides = mainService;
+    this.Pages = Proxies.guard(new FakeAdvSlidesPresentationsPages(mainService));
   }
 
   // Override 'get' to use the caching-enabled function fxSlidesGet.

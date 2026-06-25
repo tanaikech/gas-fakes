@@ -32,12 +32,40 @@ export const testSlidesAdv = (pack) => {
       })
     t.is(is(Slides.Presentations), "Object")
     t.is(Slides.toString(), Slides.Presentations.toString())
-    if (SlidesApp.isFake) console.log('...cumulative slides cache performance', getSlidesPerformance())
+
   })
+
+  unit.section ("slide thumbnail", t=> {
+    const presName = `gas-fakes-test-thumbnail-${new Date().getTime()}`;
+    const pres = SlidesApp.create(presName);
+    toTrash.push(DriveApp.getFileById(pres.getId()));
+
+    const presentation = SlidesApp.openById(pres.getId());
+    const firstSlideId = presentation.getSlides()[0].getObjectId();
+
+    // Call the Advanced Slides API to get a thumbnail URL
+    // You can specify the size using "thumbnailProperties.thumbnailSize" (LARGE, MEDIUM, or SMALL)
+    const thumbs = ["SMALL", "MEDIUM", "LARGE"]
+    const getThumb = (size) => {
+      const thumb = Slides.Presentations.Pages.getThumbnail(pres.getId(), firstSlideId, {
+        "thumbnailProperties.thumbnailSize": size
+      });
+      t.true(is.nonEmptyString(thumb.contentUrl))
+      const thumbResponse = UrlFetchApp.fetch(thumb.contentUrl);
+      const thumbBlob = thumbResponse.getBlob()
+      t.is(thumbBlob.getContentType(),'image/png' )
+      t.true(is.number(thumbBlob.getBytes().length))
+      return thumbBlob
+    }
+
+    const [small, med, large] = thumbs.map (f=>getThumb (f));
+    t.true (small.getBytes().length < med.getBytes().length)
+    t.true (med.getBytes().length < large.getBytes().length)
+  })
+  
 
   // running standalone
   if (!pack) {
-    /// if (SpreadsheetApp.isFake) console.log('...cumulative sheets cache performance', getSheetsPerformance())
     unit.report()
 
   }
